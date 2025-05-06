@@ -2,7 +2,7 @@
 
 #include "engine/UpdateContext.h"
 
-#include "script/ScriptEngine.h"
+#include "script/ScriptSystem.h"
 
 #include "registry/Registry.h"
 
@@ -27,7 +27,7 @@ namespace script
 
         m_finished = m_elapsedTime >= m_duration;
         if (m_finished) {
-            script::ScriptEngine::get().emitEvent(m_listenerId, m_type, m_data);
+            script::ScriptSystem::get().emitEvent(m_listenerId, m_type, m_data);
         }
     }
 }

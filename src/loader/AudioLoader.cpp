@@ -9,7 +9,7 @@
 
 #include "audio/Source.h"
 #include "audio/Listener.h"
-#include "audio/AudioEngine.h"
+#include "audio/AudioSystem.h"
 
 #include "registry/Registry.h"
 
@@ -164,7 +164,7 @@ namespace loader
         audio::sound_id soundId;
         {
             std::string fullPath = util::joinPath(assets.assetsDir, data.path);
-            soundId = audio::AudioEngine::get().registerSound(fullPath);
+            soundId = audio::AudioSystem::get().registerSound(fullPath);
 
             if (!soundId) return;
         }

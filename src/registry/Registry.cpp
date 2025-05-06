@@ -8,16 +8,16 @@
 
 #include "event/Dispatcher.h"
 
-#include "audio/AudioEngine.h"
+#include "audio/AudioSystem.h"
 
 #include "engine/PrepareContext.h"
 
-#include "physics/PhysicsEngine.h"
+#include "physics/PhysicsSystem.h"
 
 #include "shader/ProgramRegistry.h"
 
 #include "script/CommandEngine.h"
-#include "script/ScriptEngine.h"
+#include "script/ScriptSystem.h"
 
 #include "particle/ParticleSystem.h"
 #include "decal/DecalSystem.h"
@@ -92,7 +92,7 @@ void Registry::prepareShared()
     NodeRegistry::get().prepare(this);
     SelectionRegistry::get().prepare(this);
 
-    physics::PhysicsEngine::get().prepare(m_alive);
+    physics::PhysicsSystem::get().prepare(m_alive);
 
     particle::ParticleSystem::get().prepare();
 
@@ -105,12 +105,12 @@ void Registry::clearWT()
 {
     ASSERT_WT();
 
-    audio::AudioEngine::get().clear();
+    audio::AudioSystem::get().clear();
 
     ControllerRegistry::get().clear();
 
     script::CommandEngine::get().clear();
-    script::ScriptEngine::get().clear();
+    script::ScriptSystem::get().clear();
 
     animation::AnimationSystem::get().clearWT();
 
@@ -121,14 +121,14 @@ void Registry::shutdownWT()
 {
     ASSERT_WT();
 
-    physics::PhysicsEngine::get().shutdown();
+    physics::PhysicsSystem::get().shutdown();
 
-    audio::AudioEngine::get().shutdown();
+    audio::AudioSystem::get().shutdown();
 
     ControllerRegistry::get().shutdown();
 
     script::CommandEngine::get().shutdown();
-    script::ScriptEngine::get().shutdown();
+    script::ScriptSystem::get().shutdown();
 
     animation::AnimationSystem::get().shutdownWT();
 
@@ -141,14 +141,14 @@ void Registry::prepareWT()
 
     PrepareContext ctx{ this };
 
-    audio::AudioEngine::get().prepare();
+    audio::AudioSystem::get().prepare();
 
     animation::AnimationSystem::get().prepareWT();
 
     ControllerRegistry::get().prepare(this);
 
     script::CommandEngine::get().prepare(this);
-    script::ScriptEngine::get().prepare(ctx, &script::CommandEngine::get());
+    script::ScriptSystem::get().prepare(ctx, &script::CommandEngine::get());
 
     decal::DecalSystem::get().prepareWT();
 }

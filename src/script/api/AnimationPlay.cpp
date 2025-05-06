@@ -14,7 +14,7 @@
 
 #include "engine/UpdateContext.h"
 
-#include "audio/AudioEngine.h"
+#include "audio/AudioSystem.h"
 
 #include "registry/Registry.h"
 

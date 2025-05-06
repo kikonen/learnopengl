@@ -363,7 +363,7 @@
     <ClCompile Include="src\audio\Listener.cpp" />
     <ClCompile Include="src\audio\SoundRegistry.cpp" />
     <ClCompile Include="src\audio\Source.cpp" />
-    <ClCompile Include="src\audio\AudoEngine.cpp" />
+    <ClCompile Include="src\audio\AudioSystem.cpp" />
     <ClCompile Include="src\audio\Sound.cpp" />
     <ClCompile Include="src\engine\UpdateViewContext.cpp" />
     <ClCompile Include="src\model\Snapshot.cpp" />
@@ -415,7 +415,7 @@
     <ClCompile Include="src\model\NodeState.cpp" />
     <ClCompile Include="src\physics\HeightMap.cpp" />
     <ClCompile Include="src\physics\Surface.cpp" />
-    <ClCompile Include="src\physics\PhysicsEngine.cpp" />
+    <ClCompile Include="src\physics\PhysicsSystem.cpp" />
     <ClCompile Include="src\registry\ControllerRegistry.cpp" />
     <ClCompile Include="src\material\ImageRegistry.cpp" />
     <ClCompile Include="src\material\MaterialRegistry.cpp" />
@@ -436,7 +436,7 @@
     <ClCompile Include="src\script\api\RotateNode.cpp" />
     <ClCompile Include="src\script\api\ScaleNode.cpp" />
     <ClCompile Include="src\script\ScriptFile.cpp" />
-    <ClCompile Include="src\script\ScriptEngine.cpp" />
+    <ClCompile Include="src\script\ScriptSystem.cpp" />
     <ClCompile Include="src\script\CommandEngine.cpp" />
     <ClCompile Include="src\script\api\MoveNode.cpp" />
     <ClCompile Include="src\script\api\StartNode.cpp" />
@@ -828,7 +828,7 @@
     <ClInclude Include="src\audio\size.h" />
     <ClInclude Include="src\audio\SoundRegistry.h" />
     <ClInclude Include="src\audio\Source.h" />
-    <ClInclude Include="src\audio\AudioEngine.h" />
+    <ClInclude Include="src\audio\AudioSystem.h" />
     <ClInclude Include="src\audio\Sound.h" />
     <ClInclude Include="src\model\Snapshot.h" />
     <ClInclude Include="src\scene\SceneUpdater.h" />
@@ -923,7 +923,7 @@
     <ClInclude Include="src\physics\HeightMap.h" />
     <ClInclude Include="src\physics\Plane.h" />
     <ClInclude Include="src\physics\Surface.h" />
-    <ClInclude Include="src\physics\PhysicsEngine.h" />
+    <ClInclude Include="src\physics\PhysicsSystem.h" />
     <ClInclude Include="src\query\TimeElapsedQuery.h" />
     <ClInclude Include="src\registry\ControllerRegistry.h" />
     <ClInclude Include="src\model\NodeType.h" />
@@ -950,7 +950,7 @@
     <ClInclude Include="src\script\api\RotateNode.h" />
     <ClInclude Include="src\script\api\ScaleNode.h" />
     <ClInclude Include="src\script\ScriptFile.h" />
-    <ClInclude Include="src\script\ScriptEngine.h" />
+    <ClInclude Include="src\script\ScriptSystem.h" />
     <ClInclude Include="src\script\api\MoveNode.h" />
     <ClInclude Include="src\script\api\StartNode.h" />
     <ClInclude Include="src\script\api\Wait.h" />

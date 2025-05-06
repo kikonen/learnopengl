@@ -29,17 +29,17 @@ namespace script
     struct ScriptFile;
     struct ScriptEntry;
 
-    class ScriptEngine final
+    class ScriptSystem final
     {
     public:
         static void init() noexcept;
         static void release() noexcept;
-        static ScriptEngine& get() noexcept;
+        static ScriptSystem& get() noexcept;
 
-        ScriptEngine();
-        ScriptEngine& operator=(const ScriptEngine&) = delete;
+        ScriptSystem();
+        ScriptSystem& operator=(const ScriptSystem&) = delete;
 
-        ~ScriptEngine();
+        ~ScriptSystem();
 
         void clear();
 

@@ -11,7 +11,7 @@
 #include "util/log.h"
 
 #include "script/lua_binding.h"
-#include "script/ScriptEngine.h"
+#include "script/ScriptSystem.h"
 
 #include "render/RenderContext.h"
 #include "render/DebugContext.h"
@@ -83,7 +83,7 @@ namespace editor
 
     void ConsoleFrame::prepare(const PrepareContext& ctx)
     {
-        m_scriptEngine = &script::ScriptEngine::get();
+        m_scriptSystem = &script::ScriptSystem::get();
     }
 
     void ConsoleFrame::draw(const RenderContext& ctx)
@@ -275,7 +275,7 @@ namespace editor
         HistoryItem item;
         item.m_command = cmd;
 
-        const auto& result = m_scriptEngine->execRepl(cmd);
+        const auto& result = m_scriptSystem->execRepl(cmd);
 
         item.m_result = convert(result);
         m_state.addItem(item);

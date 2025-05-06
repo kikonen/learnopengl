@@ -84,7 +84,7 @@ namespace loader {
         m_meta{ std::make_unique<MetaData>() },
         m_root{ std::make_unique<RootData>() },
         m_skybox{ std::make_unique<SkyboxData>() },
-        m_scriptEngineData{ std::make_unique<ScriptEngineData>() }
+        m_scriptSystemData{ std::make_unique<ScriptSystemData>() }
     {
         // NOTE KI white causes least unexpectedly tinted results
         m_defaultMaterial = std::make_unique<Material>(Material::createMaterial(BasicMaterial::white));
@@ -134,7 +134,7 @@ namespace loader {
                 l.m_skyboxLoader.loadSkybox(doc.findNode("skybox"), *m_skybox);
 
                 l.m_rootLoader.loadRoot(doc.findNode("root"), *m_root);
-                l.m_scriptLoader.loadScriptEngine(doc.findNode("script"), *m_scriptEngineData);
+                l.m_scriptLoader.loadScriptSystem(doc.findNode("script"), *m_scriptSystemData);
                 l.m_materialUpdaterLoader.loadMaterialUpdaters(
                     doc.findNode("material_updaters"),
                     m_materialUpdaters,
@@ -227,7 +227,7 @@ namespace loader {
         auto& l = *m_loaders;
 
         l.m_rootLoader.attachRoot(root);
-        l.m_scriptLoader.createScriptEngine(*m_scriptEngineData);
+        l.m_scriptLoader.createScriptSystem(*m_scriptSystemData);
 
         l.m_skyboxLoader.attachSkybox(root.rootId, *m_skybox);
 

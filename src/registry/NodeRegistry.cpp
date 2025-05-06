@@ -35,14 +35,14 @@
 
 #include "audio/Listener.h"
 #include "audio/Source.h"
-#include "audio/AudioEngine.h"
+#include "audio/AudioSystem.h"
 
-#include "physics/PhysicsEngine.h"
+#include "physics/PhysicsSystem.h"
 #include "physics/physics_util.h"
 
 #include "render/DebugContext.h"
 
-#include "script/ScriptEngine.h"
+#include "script/ScriptSystem.h"
 
 #include "EntitySSBO.h"
 
@@ -195,7 +195,7 @@ void NodeRegistry::updateWT(const UpdateContext& ctx)
     }
 
     {
-        auto& physicsEngine = physics::PhysicsEngine::get();
+        auto& physicsSystem = physics::PhysicsSystem::get();
 
         {
             auto& state = m_states[NULL_INDEX];
@@ -220,13 +220,13 @@ void NodeRegistry::updateWT(const UpdateContext& ctx)
             const auto& parentState = m_states[m_parentIndeces[i]];
             auto* generator = node->m_generator.get();
 
-            if (physicsEngine.isEnabled() &&
+            if (physicsSystem.isEnabled() &&
                 (!generator || !generator->isLightWeight()))
             {
                 const auto* type = node->getType();
                 if (type->m_flags.dynamicBounds || type->m_flags.staticBounds)
                 {
-                    updateBounds(ctx, state, parentState, type, physicsEngine);
+                    updateBounds(ctx, state, parentState, type, physicsSystem);
                 }
             }
 
@@ -241,7 +241,7 @@ void NodeRegistry::updateWT(const UpdateContext& ctx)
             }
 
             if (node->m_audioListener) {
-                if (audio::AudioEngine::get().isActiveListener(node->getId())) {
+                if (audio::AudioSystem::get().isActiveListener(node->getId())) {
                     node->m_audioListener->updateActive(state);
                 }
             }
@@ -468,17 +468,17 @@ void NodeRegistry::attachListeners()
                 !(node->m_generator &&
                 node->m_generator->isLightWeight()) )
             {
-                auto& pe = physics::PhysicsEngine::get();
+                auto& physicsEngine = physics::PhysicsSystem::get();
 
                 physics::Object obj;
                 obj.m_body = data.body;
                 obj.m_geom = data.geom;
-                pe.registerObject(handle, node->m_entityIndex, data.update, std::move(obj));
+                physicsEngine.registerObject(handle, node->m_entityIndex, data.update, std::move(obj));
             }
 
             if (auto& sources = node->m_audioSources; sources) {
                 for (auto& src : *sources) {
-                    audio::AudioEngine::get().prepareSource(src);
+                    audio::AudioSystem::get().prepareSource(src);
                 }
             }
         });
@@ -502,7 +502,7 @@ void NodeRegistry::attachListeners()
     //    event::Type::audio_listener_activate,
     //    [this](const event::Event& e) {
     //        auto& data = e.body.audioListener;
-    //        audio::AudioEngine::get().setActiveListener(data.target);
+    //        audio::AudioSystem::get().setActiveListener(data.target);
     //    });
 
     if (assets.useScript) {
@@ -722,8 +722,8 @@ void NodeRegistry::setActiveNode(pool::NodeHandle handle)
     // NOTE KI active player is listener of audio
     // (regardless what camera is active)
     if (node->m_audioListener) {
-        auto& ae = audio::AudioEngine::get();
-        ae.setActiveListenerId(node->getId());
+        auto& audioSystem = audio::AudioSystem::get();
+        audioSystem.setActiveListenerId(node->getId());
     }
 }
 
@@ -788,14 +788,14 @@ void NodeRegistry::updateBounds(
     NodeState& state,
     const NodeState& parentState,
     const mesh::MeshType* type,
-    const physics::PhysicsEngine& physicsEngine)
+    const physics::PhysicsSystem& physicsSystem)
 {
     if (state.boundStaticDone) return;
 
     const glm::vec3 dir{ 0, -1, 0 };
     const uint32_t boundsMask = physics::mask(physics::Category::terrain);
 
-    const auto& [success, level] = physicsEngine.getWorldSurfaceLevel(
+    const auto& [success, level] = physicsSystem.getWorldSurfaceLevel(
         state.getWorldPosition(),
         dir,
         boundsMask);

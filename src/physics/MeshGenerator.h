@@ -18,11 +18,11 @@ namespace mesh {
 }
 
 namespace physics {
-    class PhysicsEngine;
+    class PhysicsSystem;
 
     class MeshGenerator {
     public:
-        MeshGenerator(const PhysicsEngine& engine);
+        MeshGenerator(const PhysicsSystem& engine);
 
         void clear();
         std::shared_ptr<std::vector<mesh::MeshInstance>> generateMeshes();
@@ -39,7 +39,7 @@ namespace physics {
             std::shared_ptr<mesh::Mesh> mesh);
 
     private:
-        const PhysicsEngine& m_engine;
+        const PhysicsSystem& m_engine;
 
         std::map<std::string, std::shared_ptr<mesh::Mesh>> m_cache;
     };

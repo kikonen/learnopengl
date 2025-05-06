@@ -22,16 +22,16 @@ namespace audio
     //
     // https://indiegamedev.net/2020/02/15/the-complete-guide-to-openal-with-c-part-1-playing-a-sound/
     //
-    class AudioEngine {
+    class AudioSystem {
     public:
         static void init() noexcept;
         static void release() noexcept;
-        static AudioEngine& get() noexcept;
+        static AudioSystem& get() noexcept;
 
-        AudioEngine();
-        AudioEngine& operator=(const AudioEngine&) = delete;
+        AudioSystem();
+        AudioSystem& operator=(const AudioSystem&) = delete;
 
-        ~AudioEngine();
+        ~AudioSystem();
 
         void clear();
 

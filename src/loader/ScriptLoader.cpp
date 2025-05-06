@@ -9,7 +9,7 @@
 
 #include "model/Node.h"
 
-#include "script/ScriptEngine.h"
+#include "script/ScriptSystem.h"
 #include "script/ScriptFile.h"
 #include "event/Dispatcher.h"
 #include "registry/Registry.h"
@@ -28,9 +28,9 @@ namespace loader {
     {
     }
 
-    void ScriptLoader::loadScriptEngine(
+    void ScriptLoader::loadScriptSystem(
         const loader::DocNode& node,
-        ScriptEngineData& data) const
+        ScriptSystemData& data) const
     {
         data.enabled = true;
 
@@ -150,8 +150,8 @@ namespace loader {
         }
     }
 
-    void ScriptLoader::createScriptEngine(
-        const ScriptEngineData& data)
+    void ScriptLoader::createScriptSystem(
+        const ScriptSystemData& data)
     {
         if (!data.enabled) return;
         const auto& registeredIds = createScripts(data.scripts);
@@ -199,7 +199,7 @@ namespace loader {
         for (const auto& scriptFile : scriptFiles) {
             if (scriptFile.m_source.empty()) continue;
 
-            auto scriptId = script::ScriptEngine::get().registerScript(scriptFile);
+            auto scriptId = script::ScriptSystem::get().registerScript(scriptFile);
             registeredIds.push_back(scriptId);
         }
 

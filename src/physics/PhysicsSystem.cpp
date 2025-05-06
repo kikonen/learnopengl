@@ -1,5 +1,5 @@
-#include "PhysicsEngine.h"
-#include "PhysicsEngine.h"
+#include "PhysicsSystem.h"
+#include "PhysicsSystem.h"
 
 #include <iostream>
 
@@ -105,28 +105,28 @@ namespace {
         }
     }
 
-    static physics::PhysicsEngine* s_engine{ nullptr };
+    static physics::PhysicsSystem* s_system{ nullptr };
 }
 
 namespace physics
 {
-    void PhysicsEngine::init() noexcept
+    void PhysicsSystem::init() noexcept
     {
-        assert(!s_engine);
-        s_engine = new PhysicsEngine();
+        assert(!s_system);
+        s_system = new PhysicsSystem();
     }
 
-    void PhysicsEngine::release() noexcept
+    void PhysicsSystem::release() noexcept
     {
-        auto* s = s_engine;
-        s_engine = nullptr;
+        auto* s = s_system;
+        s_system = nullptr;
         delete s;
     }
 
-    PhysicsEngine& PhysicsEngine::get() noexcept
+    PhysicsSystem& PhysicsSystem::get() noexcept
     {
-        assert(s_engine);
-        return *s_engine;
+        assert(s_system);
+        return *s_system;
     }
 }
 
@@ -178,7 +178,7 @@ namespace physics
         if (b1 && b2 && dAreConnectedExcluding(b1, b2, dJointTypeContact))
             return;
 
-        PhysicsEngine* engine = (PhysicsEngine*)data;
+        PhysicsSystem* engine = (PhysicsSystem*)data;
 
         const auto worldId = engine->m_worldId;
         const auto groupId = engine->m_contactgroupId;
@@ -205,17 +205,17 @@ namespace physics
         }
     };
 
-    PhysicsEngine::PhysicsEngine()
+    PhysicsSystem::PhysicsSystem()
     {
         m_heightMaps.emplace_back();
         registerObject({}, 0, false, {});
     }
 
-    PhysicsEngine::~PhysicsEngine()
+    PhysicsSystem::~PhysicsSystem()
     {
     }
 
-    void PhysicsEngine::clear(bool shutdown)
+    void PhysicsSystem::clear(bool shutdown)
     {
         //ASSERT_WT();
 
@@ -231,7 +231,7 @@ namespace physics
         }
     }
 
-    void PhysicsEngine::shutdown()
+    void PhysicsSystem::shutdown()
     {
         ASSERT_WT();
 
@@ -251,7 +251,7 @@ namespace physics
         }
     }
 
-    void PhysicsEngine::prepare(std::shared_ptr<std::atomic<bool>> alive)
+    void PhysicsSystem::prepare(std::shared_ptr<std::atomic<bool>> alive)
     {
         //ASSERT_WT();
 
@@ -291,7 +291,7 @@ namespace physics
         //clear(false);
     }
 
-    void PhysicsEngine::updatePrepare(const UpdateContext& ctx)
+    void PhysicsSystem::updatePrepare(const UpdateContext& ctx)
     {
         ASSERT_WT();
 
@@ -302,7 +302,7 @@ namespace physics
         preparePending(ctx);
     }
 
-    void PhysicsEngine::updateObjects(const UpdateContext& ctx)
+    void PhysicsSystem::updateObjects(const UpdateContext& ctx)
     {
         ASSERT_WT();
 
@@ -360,7 +360,7 @@ namespace physics
         }
     }
 
-    void PhysicsEngine::preparePending(const UpdateContext& ctx)
+    void PhysicsSystem::preparePending(const UpdateContext& ctx)
     {
         ASSERT_WT();
 
@@ -409,7 +409,7 @@ namespace physics
         }
     }
 
-    physics::object_id PhysicsEngine::registerObject(
+    physics::object_id PhysicsSystem::registerObject(
         pool::NodeHandle nodeHandle,
         uint32_t entityIndex,
         bool update,
@@ -433,7 +433,7 @@ namespace physics
         return id;
     }
 
-    const Object* PhysicsEngine::getObject(physics::object_id id) const
+    const Object* PhysicsSystem::getObject(physics::object_id id) const
     {
         ASSERT_WT();
 
@@ -441,7 +441,7 @@ namespace physics
         return &m_objects[id];
     }
 
-    physics::height_map_id PhysicsEngine::registerHeightMap()
+    physics::height_map_id PhysicsSystem::registerHeightMap()
     {
         ASSERT_WT();
 
@@ -451,7 +451,7 @@ namespace physics
         return map.m_id;
     }
 
-    const HeightMap* PhysicsEngine::getHeightMap(physics::height_map_id id) const
+    const HeightMap* PhysicsSystem::getHeightMap(physics::height_map_id id) const
     {
         ASSERT_WT();
 
@@ -459,7 +459,7 @@ namespace physics
         return &m_heightMaps[id];
     }
 
-    const HeightMap* PhysicsEngine::getHeightMap(dHeightfieldDataID heighgtDataId) const
+    const HeightMap* PhysicsSystem::getHeightMap(dHeightfieldDataID heighgtDataId) const
     {
         ASSERT_WT();
 
@@ -469,7 +469,7 @@ namespace physics
         return &m_heightMaps[it->second];
     }
 
-    HeightMap* PhysicsEngine::modifyHeightMap(physics::height_map_id id)
+    HeightMap* PhysicsSystem::modifyHeightMap(physics::height_map_id id)
     {
         ASSERT_WT();
 
@@ -477,7 +477,7 @@ namespace physics
         return &m_heightMaps[id];
     }
 
-    void PhysicsEngine::registerGeom(
+    void PhysicsSystem::registerGeom(
         physics::Geom& geom,
         const glm::vec3& scale)
     {
@@ -490,7 +490,7 @@ namespace physics
             nullptr);
     }
 
-    std::pair<bool, float> PhysicsEngine::getWorldSurfaceLevel(
+    std::pair<bool, float> PhysicsSystem::getWorldSurfaceLevel(
         const glm::vec3& pos,
         const glm::vec3 dir,
         uint32_t collisionMask) const
@@ -512,7 +512,7 @@ namespace physics
         return { true, hits[0].pos.y };
     }
 
-    std::vector<std::pair<bool, float>> PhysicsEngine::getWorldSurfaceLevels(
+    std::vector<std::pair<bool, float>> PhysicsSystem::getWorldSurfaceLevels(
         std::span<glm::vec3> positions,
         const glm::vec3 dir,
         uint32_t collisionMask) const
@@ -547,7 +547,7 @@ namespace physics
         return result;
     }
 
-    void PhysicsEngine::generateObjectMeshes()
+    void PhysicsSystem::generateObjectMeshes()
     {
         debugCounter++;
         //if (debugCounter < 2) return;
@@ -559,7 +559,7 @@ namespace physics
         dbg.m_physicsMeshesWT.swap(meshes);
     }
 
-    std::vector<physics::RayHit> PhysicsEngine::rayCast(
+    std::vector<physics::RayHit> PhysicsSystem::rayCast(
         const glm::vec3& origin,
         const glm::vec3& dir,
         float distance,
@@ -625,7 +625,7 @@ namespace physics
         return hits;
     }
 
-    std::vector<physics::RayHit> PhysicsEngine::rayCastClosestToMultiple(
+    std::vector<physics::RayHit> PhysicsSystem::rayCastClosestToMultiple(
         const glm::vec3& origin,
         const std::vector<glm::vec3>& dirs,
         float distance,
@@ -700,7 +700,7 @@ namespace physics
         return result;
     }
 
-    std::vector<physics::RayHit> PhysicsEngine::rayCastClosestFromMultiple(
+    std::vector<physics::RayHit> PhysicsSystem::rayCastClosestFromMultiple(
         std::span<glm::vec3> origins,
         const glm::vec3& dir,
         float distance,

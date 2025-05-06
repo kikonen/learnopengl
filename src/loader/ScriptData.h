@@ -14,7 +14,7 @@ namespace loader
         std::string script;
     };
 
-    struct ScriptEngineData {
+    struct ScriptSystemData {
         bool enabled{ false };
         std::vector<ScriptData> scripts;
     };

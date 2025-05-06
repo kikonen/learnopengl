@@ -171,7 +171,7 @@
     <ClCompile Include="src\script\api\Command.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\script\ScriptEngine.cpp">
+    <ClCompile Include="src\script\ScriptSystem.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\script\CommandEngine.cpp">
@@ -270,7 +270,7 @@
     <ClCompile Include="src\terrain\TerrainGenerator.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\physics\PhysicsEngine.cpp">
+    <ClCompile Include="src\physics\PhysicsSystem.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\physics\Surface.cpp">
@@ -429,7 +429,7 @@
     <ClCompile Include="src\util\glm_util.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\audio\AudoEngine.cpp">
+    <ClCompile Include="src\audio\AudioSystem.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\audio\Sound.cpp">
@@ -1340,7 +1340,7 @@
     <ClInclude Include="src\script\api\MoveNode.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\script\ScriptEngine.h">
+    <ClInclude Include="src\script\ScriptSystem.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\script\CommandEngine.h">
@@ -1508,7 +1508,7 @@
     <ClInclude Include="src\material\TextureSpec.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\physics\PhysicsEngine.h">
+    <ClInclude Include="src\physics\PhysicsSystem.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\physics\Surface.h">
@@ -1718,7 +1718,7 @@
     <ClInclude Include="src\util\glm_util.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\audio\AudioEngine.h">
+    <ClInclude Include="src\audio\AudioSystem.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\audio\Source.h">
