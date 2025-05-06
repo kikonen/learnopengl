@@ -20,6 +20,7 @@ namespace nav
         Generator(std::shared_ptr<nav::RecastContainer> container);
         ~Generator();
 
+        void clear();
         void cleanup();
 
         void addInput(std::unique_ptr<nav::InputGeom> input);

@@ -18,6 +18,8 @@ namespace nav
         Resolver(std::shared_ptr<nav::RecastContainer> container);
         ~Resolver();
 
+        void clear();
+
         Path resolve(const Query& query);
 
     private:

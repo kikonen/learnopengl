@@ -31,6 +31,11 @@ namespace nav
 
     Generator::~Generator()
     {
+        clear();
+    }
+
+    void Generator::clear()
+    {
         cleanup();
     }
 

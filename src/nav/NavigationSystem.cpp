@@ -1,5 +1,7 @@
 #include "NavigationSystem.h"
 
+#include "util/thread.h"
+
 #include "RecastContainer.h"
 #include "Generator.h"
 #include "Resolver.h"
@@ -36,10 +38,17 @@ namespace nav
         m_resolver{ std::make_unique<Resolver>(m_container) }
     {}
 
-    NavigationSystem::~NavigationSystem() = default;
+    NavigationSystem::~NavigationSystem()
+    {
+        clear();
+    }
 
     void NavigationSystem::clear()
-    { }
+    {
+        m_resolver->clear();
+        m_generator->clear();
+        m_container->clear();
+    }
 
     void NavigationSystem::prepare()
     { }

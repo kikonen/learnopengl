@@ -173,7 +173,14 @@ namespace nav
         m_polyPickExt[2] = 2;
     }
 
-    Resolver::~Resolver() = default;
+    Resolver::~Resolver()
+    {
+        clear();
+    }
+
+    void Resolver::clear()
+    {
+    }
 
     Path Resolver::resolve(const Query& query)
     {

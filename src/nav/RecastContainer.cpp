@@ -13,6 +13,11 @@ namespace nav
 
     RecastContainer::~RecastContainer()
     {
+        clear();
+    }
+
+    void RecastContainer::clear()
+    {
         dtFreeNavMeshQuery(m_navQuery);
         dtFreeNavMesh(m_navMesh);
         dtFreeCrowd(m_crowd);
