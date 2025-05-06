@@ -1,14 +1,14 @@
 #include "SystemInit.h"
 
-#include "audio/AudioEngine.h"
+#include "audio/AudioSystem.h"
 
-#include "physics/PhysicsEngine.h"
+#include "physics/PhysicsSystem.h"
 
 #include "shader/FileEntryCache.h"
 #include "shader/ProgramRegistry.h"
 
 #include "script/CommandEngine.h"
-#include "script/ScriptEngine.h"
+#include "script/ScriptSystem.h"
 
 #include "particle/ParticleSystem.h"
 
@@ -43,8 +43,8 @@ void SystemInit::init() noexcept
     ImageRegistry::init();
     MaterialRegistry::init();
 
-    audio::AudioEngine::init();
-    physics::PhysicsEngine::init();
+    audio::AudioSystem::init();
+    physics::PhysicsSystem::init();
 
     nav::NavigationSystem::init();
 
@@ -60,7 +60,7 @@ void SystemInit::init() noexcept
     text::FontRegistry::init();
 
     script::CommandEngine::init();
-    script::ScriptEngine::init();
+    script::ScriptSystem::init();
 
     ProgramRegistry::init();
     ControllerRegistry::init();
@@ -75,8 +75,8 @@ void SystemInit::init() noexcept
 
 void SystemInit::release() noexcept
 {
-    audio::AudioEngine::release();
-    physics::PhysicsEngine::release();
+    audio::AudioSystem::release();
+    physics::PhysicsSystem::release();
 
     nav::NavigationSystem::release();
 
@@ -92,7 +92,7 @@ void SystemInit::release() noexcept
     text::FontRegistry::release();
 
     script::CommandEngine::release();
-    script::ScriptEngine::release();
+    script::ScriptSystem::release();
 
     ProgramRegistry::release();
     ControllerRegistry::release();

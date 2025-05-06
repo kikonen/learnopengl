@@ -1,4 +1,4 @@
-#include "AudioEngine.h"
+#include "AudioSystem.h"
 
 #include <unordered_map>
 
@@ -17,28 +17,28 @@
 
 namespace
 {
-    static audio::AudioEngine* s_engine{ nullptr };
+    static audio::AudioSystem* s_system{ nullptr };
 }
 
 namespace audio
 {
-    void AudioEngine::init() noexcept
+    void AudioSystem::init() noexcept
     {
-        assert(!s_engine);
-        s_engine = new AudioEngine();
+        assert(!s_system);
+        s_system = new AudioSystem();
     }
 
-    void AudioEngine::release() noexcept
+    void AudioSystem::release() noexcept
     {
-        auto* s = s_engine;
-        s_engine = nullptr;
+        auto* s = s_system;
+        s_system = nullptr;
         delete s;
     }
 
-    AudioEngine& AudioEngine::get() noexcept
+    AudioSystem& AudioSystem::get() noexcept
     {
-        assert(s_engine);
-        return *s_engine;
+        assert(s_system);
+        return *s_system;
     }
 }
 
@@ -46,16 +46,16 @@ namespace audio
 {
     struct Sound;
 
-    AudioEngine::AudioEngine()
+    AudioSystem::AudioSystem()
         : m_soundRegistry(std::make_unique<SoundRegistry>())
     {
     }
 
-    AudioEngine::~AudioEngine()
+    AudioSystem::~AudioSystem()
     {
     }
 
-    void AudioEngine::clear()
+    void AudioSystem::clear()
     {
         ASSERT_WT();
 
@@ -67,7 +67,7 @@ namespace audio
         m_soundRegistry->clear();
     }
 
-    void AudioEngine::shutdown()
+    void AudioSystem::shutdown()
     {
         ASSERT_WT();
 
@@ -86,7 +86,7 @@ namespace audio
         }
     }
 
-    void AudioEngine::prepare()
+    void AudioSystem::prepare()
     {
         ASSERT_WT();
 
@@ -122,7 +122,7 @@ namespace audio
         alListenerf(AL_GAIN, 0.f);
     }
 
-    void AudioEngine::setActiveListenerId(ki::node_id nodeId)
+    void AudioSystem::setActiveListenerId(ki::node_id nodeId)
     {
         m_activeListenerId = nodeId;
 
@@ -132,7 +132,7 @@ namespace audio
         }
     }
 
-    void AudioEngine::prepareSource(audio::Source& source)
+    void AudioSystem::prepareSource(audio::Source& source)
     {
         auto* sound = m_soundRegistry->getSound(source.m_soundId);
         if (!sound) return;
@@ -143,7 +143,7 @@ namespace audio
         source.prepare(sound);
     }
 
-    audio::sound_id AudioEngine::registerSound(std::string_view fullPath)
+    audio::sound_id AudioSystem::registerSound(std::string_view fullPath)
     {
         return m_soundRegistry->registerSound(fullPath);
     }

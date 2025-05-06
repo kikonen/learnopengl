@@ -1,6 +1,6 @@
 #include "LuaPhysics.h"
 
-#include "physics/PhysicsEngine.h"
+#include "physics/PhysicsSystem.h"
 
 
 namespace script
@@ -20,7 +20,7 @@ namespace script
         //    const auto endPos = ctx.unproject(screenPos, .8f);
         //    const auto dir = glm::normalize(endPos - startPos);
 
-        //    const auto& hits = physics::PhysicsEngine::get().rayCast(
+        //    const auto& hits = physics::PhysicsSystem::get().rayCast(
         //        startPos,
         //        dir,
         //        400.f,

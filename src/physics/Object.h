@@ -10,7 +10,7 @@
 class NodeRegistry;
 
 namespace physics {
-    class PhysicsEngine;
+    class PhysicsSystem;
 
     // How can I make my actor capsule(capped cylinder) stay upright ?
     // Manually reset the orientation with each frame, use an angular motor,

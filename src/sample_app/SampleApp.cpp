@@ -67,7 +67,7 @@
 #include "decal/DecalSystem.h"
 #include "decal/DecalRegistry.h"
 
-#include "physics/PhysicsEngine.h"
+#include "physics/PhysicsSystem.h"
 #include "physics/RayHit.h"
 #include "physics/physics_util.h"
 
@@ -522,7 +522,7 @@ void SampleApp::raycastPlayer(
         const auto* snapshot = player->getSnapshotRT();
         if (!snapshot) return;
 
-        const auto& hits = physics::PhysicsEngine::get().rayCast(
+        const auto& hits = physics::PhysicsSystem::get().rayCast(
             snapshot->getWorldPosition(),
             snapshot->getViewFront(),
             100.f,
@@ -620,7 +620,7 @@ void SampleApp::raycastPlayer(
             g_rayMarkers.push_back(cmdId);
         }
 
-        const auto& hits = physics::PhysicsEngine::get().rayCast(
+        const auto& hits = physics::PhysicsSystem::get().rayCast(
             startPos,
             dir,
             400.f,
@@ -649,7 +649,7 @@ void SampleApp::shoot(
         const auto endPos = ctx.unproject(screenPos, .8f);
         const auto dir = glm::normalize(endPos - startPos);
 
-        //const auto& hits = physics::PhysicsEngine::get().rayCast(
+        //const auto& hits = physics::PhysicsSystem::get().rayCast(
         //    startPos,
         //    dir,
         //    400.f,

@@ -21,10 +21,10 @@
 
 #include "engine/UpdateContext.h"
 
-#include "physics/PhysicsEngine.h"
+#include "physics/PhysicsSystem.h"
 
 #include "script/CommandEngine.h"
-#include "script/ScriptEngine.h"
+#include "script/ScriptSystem.h"
 
 #include "registry/Registry.h"
 #include "registry/ControllerRegistry.h"
@@ -99,8 +99,8 @@ void SceneUpdater::prepare()
 
                 auto handle = pool::TypeHandle::toHandle(data.target);
 
-                auto& scriptEngine = script::ScriptEngine::get();
-                scriptEngine.bindTypeScript(handle, data.id);
+                auto& scriptSystem = script::ScriptSystem::get();
+                scriptSystem.bindTypeScript(handle, data.id);
             });
 
         dispatcher->addListener(
@@ -111,8 +111,8 @@ void SceneUpdater::prepare()
                 auto handle = pool::NodeHandle::toHandle(data.target);
                 auto* node = handle.toNode();
 
-                auto& scriptEngine = script::ScriptEngine::get();
-                scriptEngine.bindNodeScript(node, data.id);
+                auto& scriptSystem = script::ScriptSystem::get();
+                scriptSystem.bindNodeScript(node, data.id);
             });
 
         dispatcher->addListener(
@@ -120,14 +120,14 @@ void SceneUpdater::prepare()
             [this](const event::Event& e) {
                 auto& data = e.body.script;
 
-                auto& scriptEngine = script::ScriptEngine::get();
+                auto& scriptSystem = script::ScriptSystem::get();
                 if (data.target) {
                     if (auto* node = pool::NodeHandle::toNode(data.target)) {
-                        scriptEngine.runNodeScript(node, data.id);
+                        scriptSystem.runNodeScript(node, data.id);
                     }
                 }
                 else {
-                    scriptEngine.runGlobalScript(data.id);
+                    scriptSystem.runGlobalScript(data.id);
                 }
             });
     }
@@ -140,7 +140,7 @@ void SceneUpdater::update(const UpdateContext& ctx)
     KI_TIMER("[loop]  ");
 
     auto& nodeRegistry = NodeRegistry::get();
-    auto& physicsEngine = physics::PhysicsEngine::get();
+    auto& physicsSystem = physics::PhysicsSystem::get();
 
     {
         KI_TIMER("event   ");
@@ -169,8 +169,8 @@ void SceneUpdater::update(const UpdateContext& ctx)
             }
             {
                 KI_TIMER("script");
-                auto& scriptEngine = script::ScriptEngine::get();
-                scriptEngine.update(ctx);
+                auto& scriptSystem = script::ScriptSystem::get();
+                scriptSystem.update(ctx);
             }
             {
                 KI_TIMER("node2   ");
@@ -183,11 +183,11 @@ void SceneUpdater::update(const UpdateContext& ctx)
             }
             {
                 KI_TIMER("physics0");
-                physicsEngine.updatePrepare(ctx);
+                physicsSystem.updatePrepare(ctx);
             }
             {
                 KI_TIMER("physics2");
-                physicsEngine.updateObjects(ctx);
+                physicsSystem.updateObjects(ctx);
             }
         }
     }
@@ -201,7 +201,7 @@ void SceneUpdater::update(const UpdateContext& ctx)
     }
 
     if (m_loaded) {
-        physicsEngine.setEnabled(true);
+        physicsSystem.setEnabled(true);
     }
 }
 
@@ -221,7 +221,7 @@ std::string SceneUpdater::getStats()
 
     const auto nodeCount = m_registry->m_nodeRegistry->getNodeCount();
     const auto decalCount = decal::DecalSystem::get().getActiveDecalCount();
-    const auto physicsCount = physics::PhysicsEngine::get().getObjectCount();
+    const auto physicsCount = physics::PhysicsSystem::get().getObjectCount();
 
     return fmt::format(
         "nodes={}, decals={}, physics={}, cmd_pending={}, cmd_blocked={}, cmd_active={}",

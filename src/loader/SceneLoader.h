@@ -34,7 +34,7 @@ namespace loader {
     struct RootData;
     struct SkyboxData;
     struct MaterialData;
-    struct ScriptEngineData;
+    struct ScriptSystemData;
     struct NodeRoot;
     struct NodeData;
     struct TextData;
@@ -238,7 +238,7 @@ namespace loader {
         std::unique_ptr<SkyboxData> m_skybox;
 
         std::unique_ptr<RootData> m_root;
-        std::unique_ptr<ScriptEngineData> m_scriptEngineData;
+        std::unique_ptr<ScriptSystemData> m_scriptSystemData;
 
         std::vector<NodeRoot> m_nodes;
 

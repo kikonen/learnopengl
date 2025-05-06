@@ -6,7 +6,7 @@
 
 namespace script
 {
-    class ScriptEngine;
+    class ScriptSystem;
 }
 
 namespace editor
@@ -46,7 +46,7 @@ namespace editor
         void execCommand(const std::string& script);
 
     private:
-        script::ScriptEngine* m_scriptEngine{ nullptr };
+        script::ScriptSystem* m_scriptSystem{ nullptr };
 
         ConsoleState m_state;
     };

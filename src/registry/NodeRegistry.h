@@ -29,7 +29,7 @@ class Registry;
 struct EntitySSBO;
 
 namespace physics {
-    class PhysicsEngine;
+    class PhysicsSystem;
 }
 
 namespace mesh
@@ -219,7 +219,7 @@ private:
         NodeState& state,
         const NodeState& parentState,
         const mesh::MeshType* type,
-        const physics::PhysicsEngine& physicsEngine);
+        const physics::PhysicsSystem& physicsSystem);
 
     void logDebugInfo(const std::string& err, uint32_t entityIndex) const;
 

@@ -26,18 +26,18 @@ namespace physics {
     struct RayHit;
     class MeshGenerator;
 
-    class PhysicsEngine {
+    class PhysicsSystem {
         friend class MeshGenerator;
 
     public:
         static void init() noexcept;
         static void release() noexcept;
-        static PhysicsEngine& get() noexcept;
+        static PhysicsSystem& get() noexcept;
 
-        PhysicsEngine();
-        PhysicsEngine& operator=(const PhysicsEngine&) = delete;
+        PhysicsSystem();
+        PhysicsSystem& operator=(const PhysicsSystem&) = delete;
 
-        ~PhysicsEngine();
+        ~PhysicsSystem();
 
         void clear(bool shutdown);
         void shutdown();

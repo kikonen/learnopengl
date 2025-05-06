@@ -14,7 +14,7 @@
 #include "script/CommandEngine.h"
 #include "script/CommandEngine_impl.h"
 #include "script/CommandEntry.h"
-#include "script/ScriptEngine.h"
+#include "script/ScriptSystem.h"
 
 #include "api/Cancel.h"
 #include "api/Wait.h"
@@ -360,7 +360,7 @@ namespace script
         uint32_t collisionMask = physics::mask(physics::Category::player);
 
         auto callback = [this, opt, lua_callback](const std::vector<physics::RayHit>& hits) {
-            auto& se = script::ScriptEngine::get();
+            auto& se = script::ScriptSystem::get();
             sol::table args = se.getLua().create_table();
 
             for (const auto& hit : hits) {

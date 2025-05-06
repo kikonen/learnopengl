@@ -1,4 +1,4 @@
-#include "ScriptEngine.h"
+#include "ScriptSystem.h"
 
 #include <map>
 
@@ -40,42 +40,42 @@ namespace
     const static std::string TABLE_CLASSES = "classes";
     const static std::string TABLE_STATES = "states";
 
-    static script::ScriptEngine* s_engine{ nullptr };
+    static script::ScriptSystem* s_system{ nullptr };
 }
 
 namespace script
 {
-    void ScriptEngine::init() noexcept
+    void ScriptSystem::init() noexcept
     {
-        assert(!s_engine);
-        s_engine = new ScriptEngine();
+        assert(!s_system);
+        s_system = new ScriptSystem();
     }
 
-    void ScriptEngine::release() noexcept
+    void ScriptSystem::release() noexcept
     {
-        auto* s = s_engine;
-        s_engine = nullptr;
+        auto* s = s_system;
+        s_system = nullptr;
         delete s;
     }
 
-    ScriptEngine& ScriptEngine::get() noexcept
+    ScriptSystem& ScriptSystem::get() noexcept
     {
-        assert(s_engine);
-        return *s_engine;
+        assert(s_system);
+        return *s_system;
     }
 }
 
 namespace script
 {
-    ScriptEngine::ScriptEngine()
+    ScriptSystem::ScriptSystem()
     {
     }
 
-    ScriptEngine::~ScriptEngine()
+    ScriptSystem::~ScriptSystem()
     {
     }
 
-    void ScriptEngine::clear()
+    void ScriptSystem::clear()
     {
         ASSERT_WT();
 
@@ -109,14 +109,14 @@ namespace script
         m_scripts.clear();
     }
 
-    void ScriptEngine::shutdown()
+    void ScriptSystem::shutdown()
     {
         ASSERT_WT();
 
         clear();
     }
 
-    void ScriptEngine::prepare(
+    void ScriptSystem::prepare(
         const PrepareContext& ctx,
         CommandEngine* commandEngine)
     {
@@ -169,7 +169,7 @@ namespace script
         lua[TABLE_STATES] = lua.create_table_with();
     }
 
-    void ScriptEngine::update(const UpdateContext& ctx)
+    void ScriptSystem::update(const UpdateContext& ctx)
     {
         invokeLuaFunction([this, &ctx]() {
             auto updater = getLua()["Updater"];
@@ -178,7 +178,7 @@ namespace script
             });
     }
 
-    void ScriptEngine::registerTypes()
+    void ScriptSystem::registerTypes()
     {
         // util - static utils
         auto& lua = getLua();
@@ -191,7 +191,7 @@ namespace script
         LuaNode::bind(lua);
     }
 
-    script::script_id ScriptEngine::registerScript(
+    script::script_id ScriptSystem::registerScript(
         script::ScriptFile scriptFile)
     {
         std::lock_guard lock(m_lock);
@@ -203,7 +203,7 @@ namespace script
         return scriptFile.m_id;
     }
 
-    void ScriptEngine::bindTypeScript(
+    void ScriptSystem::bindTypeScript(
         pool::TypeHandle handle,
         script::script_id scriptId)
     {
@@ -229,7 +229,7 @@ namespace script
         }
     }
 
-    void ScriptEngine::bindNodeScript(
+    void ScriptSystem::bindNodeScript(
         Node* node,
         script::script_id scriptId)
     {
@@ -248,7 +248,7 @@ namespace script
         createNodeState(node);
     }
 
-    void ScriptEngine::createNodeState(
+    void ScriptSystem::createNodeState(
         Node* node)
     {
         const auto id = node->getId();
@@ -270,7 +270,7 @@ states[{}] = classes[{}]:new())",
         nodeState["cmd"] = std::ref(cmdApi);
     }
 
-    bool ScriptEngine::hasScriptEntry(
+    bool ScriptSystem::hasScriptEntry(
         pool::TypeHandle handle,
         script::script_id scriptId)
     {
@@ -283,7 +283,7 @@ states[{}] = classes[{}]:new())",
         return scriptIt->second.m_valid;
     }
 
-    std::vector<script::script_id> ScriptEngine::getScriptEntryIds(
+    std::vector<script::script_id> ScriptSystem::getScriptEntryIds(
         pool::TypeHandle handle)
     {
         std::lock_guard lock(m_lock);
@@ -298,7 +298,7 @@ states[{}] = classes[{}]:new())",
         return scripts;
     }
 
-    script::ScriptEntry ScriptEngine::createScriptEntry(
+    script::ScriptEntry ScriptSystem::createScriptEntry(
         pool::TypeHandle handle,
         script::script_id scriptId)
     {
@@ -365,7 +365,7 @@ end)", fnName, scriptFile.m_source);
         return { true, ScriptEntryType::function, fnName };
     }
 
-    std::string ScriptEngine::getScriptSignature(
+    std::string ScriptSystem::getScriptSignature(
         pool::TypeHandle handle,
         script::script_id scriptId) const
     {
@@ -380,7 +380,7 @@ end)", fnName, scriptFile.m_source);
         return fmt::format("fn_global_{}", scriptId);
     }
 
-    bool ScriptEngine::unregisterScriptEntry(const script::ScriptEntry& scriptEntry)
+    bool ScriptSystem::unregisterScriptEntry(const script::ScriptEntry& scriptEntry)
     {
         auto& lua = getLua();
 
@@ -397,7 +397,7 @@ end)", fnName, scriptFile.m_source);
         return true;
     }
 
-    void ScriptEngine::runGlobalScript(
+    void ScriptSystem::runGlobalScript(
         script::script_id scriptId)
     {
         std::lock_guard lock(m_lock);
@@ -419,7 +419,7 @@ end)", fnName, scriptFile.m_source);
         }
     }
 
-    void ScriptEngine::runNodeScript(
+    void ScriptSystem::runNodeScript(
         Node* node,
         script::script_id scriptId)
     {
@@ -448,14 +448,14 @@ end)", fnName, scriptFile.m_source);
         }
     }
 
-    sol::protected_function_result ScriptEngine::execScript(
+    sol::protected_function_result ScriptSystem::execScript(
         const std::string& script)
     {
         std::lock_guard lock(m_lock);
         return invokeLuaScript(script);
     }
 
-    sol::protected_function_result ScriptEngine::execRepl(
+    sol::protected_function_result ScriptSystem::execRepl(
         const std::string& script)
     {
         std::lock_guard lock(m_lock);
@@ -472,7 +472,7 @@ end)", fnName, scriptFile.m_source);
         return result;
     }
 
-    bool ScriptEngine::hasFunction(
+    bool ScriptSystem::hasFunction(
         pool::NodeHandle handle,
         std::string_view name)
     {
@@ -484,7 +484,7 @@ end)", fnName, scriptFile.m_source);
         return fnPtr != sol::nullopt;
     }
 
-    void ScriptEngine::invokeNodeFunction(
+    void ScriptSystem::invokeNodeFunction(
         Node* node,
         bool self,
         const sol::function& fn,
@@ -498,7 +498,7 @@ end)", fnName, scriptFile.m_source);
             });
     }
 
-    void ScriptEngine::emitEvent(
+    void ScriptSystem::emitEvent(
         int listenerId,
         int type,
         const std::string& data)
@@ -512,7 +512,7 @@ end)", fnName, scriptFile.m_source);
             });
     }
 
-    sol::protected_function_result ScriptEngine::invokeLuaFunction(
+    sol::protected_function_result ScriptSystem::invokeLuaFunction(
         const std::function<sol::protected_function_result()>& fn)
     {
         std::string error;
@@ -537,7 +537,7 @@ end)", fnName, scriptFile.m_source);
     }
 
     // https://developercommunity.visualstudio.com/t/exception-block-is-optmized-away-causing-a-crash/253077
-    sol::protected_function_result ScriptEngine::invokeLuaScript(
+    sol::protected_function_result ScriptSystem::invokeLuaScript(
         const std::string& script)
     {
         std::string error;

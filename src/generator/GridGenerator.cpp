@@ -18,7 +18,7 @@
 #include "engine/PrepareContext.h"
 #include "engine/UpdateContext.h"
 
-#include "physics/PhysicsEngine.h"
+#include "physics/PhysicsSystem.h"
 #include "physics/physics_util.h"
 #include "physics/Geom.h"
 
@@ -55,7 +55,7 @@ void GridGenerator::updateWT(
     updateInstances(ctx, container);
 
     const auto hasPhysics = !m_geometries.empty();
-    auto& pe = physics::PhysicsEngine::get();
+    auto& physicsEngine = physics::PhysicsSystem::get();
 
     const auto& parentMatrix = containerState.getModelMatrix();
     for (int i = 0; i < m_transforms.size(); i++) {
@@ -111,7 +111,7 @@ void GridGenerator::prepareInstances(
         m_geometries.reserve(count);
     }
 
-    auto& pe = physics::PhysicsEngine::get();
+    auto& physicsEngine = physics::PhysicsSystem::get();
 
     for (int i = 0; i < count; i++) {
         auto& transform = m_transforms.emplace_back();
@@ -121,7 +121,7 @@ void GridGenerator::prepareInstances(
         {
             m_geometries.push_back(std::move(m_geometryTemplate));
             auto& geom = m_geometries[m_geometries.size() - 1];
-            pe.registerGeom(geom, glm::vec3{ m_scale });
+            physicsEngine.registerGeom(geom, glm::vec3{ m_scale });
         }
     }
 
@@ -255,8 +255,8 @@ void GridGenerator::updateBounds(
 {
     if (!m_staticBounds && !m_dynamicBounds) return;
 
-    auto& physicsEngine = physics::PhysicsEngine::get();
-    if (!physicsEngine.isEnabled()) return;
+    auto& physicsSystem = physics::PhysicsSystem::get();
+    if (!physicsSystem.isEnabled()) return;
 
     if (m_boundsSetupDone) return;
 
@@ -268,7 +268,7 @@ void GridGenerator::updateBounds(
         positions.push_back(transform.getWorldPosition());
     }
 
-    const auto& results = physicsEngine.getWorldSurfaceLevels(
+    const auto& results = physicsSystem.getWorldSurfaceLevels(
         positions,
         m_boundsDir,
         m_boundsMask);

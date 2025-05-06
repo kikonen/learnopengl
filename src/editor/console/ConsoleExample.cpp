@@ -9,7 +9,7 @@
 #include "util/log.h"
 
 #include "script/lua_binding.h"
-#include "script/ScriptEngine.h"
+#include "script/ScriptSystem.h"
 
 #include "render/RenderContext.h"
 #include "render/DebugContext.h"

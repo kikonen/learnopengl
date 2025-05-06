@@ -6,9 +6,9 @@
 
 #include "physics/physics_util.h"
 #include "physics/RayHit.h"
-#include "physics/PhysicsEngine.h"
+#include "physics/PhysicsSystem.h"
 
-#include "script/ScriptEngine.h"
+#include "script/ScriptSystem.h"
 
 #include "registry/Registry.h"
 
@@ -37,7 +37,7 @@ namespace script
         if (m_finished) {
             const auto& state = getNode()->getState();
 
-            const auto& hits = physics::PhysicsEngine::get().rayCastClosestToMultiple(
+            const auto& hits = physics::PhysicsSystem::get().rayCastClosestToMultiple(
                 state.getWorldPosition(),
                 m_dirs,
                 m_length,

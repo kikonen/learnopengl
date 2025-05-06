@@ -26,7 +26,7 @@
 
 #include "mesh/MeshSet.h"
 
-#include "physics/PhysicsEngine.h"
+#include "physics/PhysicsSystem.h"
 #include "physics/HeightMap.h"
 
 #include "engine/PrepareContext.h"
@@ -97,11 +97,11 @@ namespace terrain {
 
         m_heightMapTex = texture;
 
-        auto& pe = physics::PhysicsEngine::get();
-        auto heightMapId = pe.registerHeightMap();
+        auto& physicsEngine = physics::PhysicsSystem::get();
+        auto heightMapId = physicsEngine.registerHeightMap();
 
         {
-            auto* heightMap = pe.modifyHeightMap(heightMapId);
+            auto* heightMap = physicsEngine.modifyHeightMap(heightMapId);
             heightMap->m_origin = &container;
             heightMap->m_verticalRange = m_verticalRange;
             heightMap->m_horizontalScale = m_horizontalScale;

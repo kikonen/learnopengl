@@ -13,7 +13,7 @@
 
 namespace script
 {
-    class ScriptEngine;
+    class ScriptSystem;
 }
 
 namespace loader {
@@ -23,9 +23,9 @@ namespace loader {
         ScriptLoader(
             Context ctx);
 
-        void loadScriptEngine(
+        void loadScriptSystem(
             const loader::DocNode& node,
-            ScriptEngineData& data) const;
+            ScriptSystemData& data) const;
 
         void loadScripts(
             const loader::DocNode& node,
@@ -37,8 +37,8 @@ namespace loader {
             ScriptData& data,
             bool forceFile) const;
 
-        void createScriptEngine(
-            const ScriptEngineData& data);
+        void createScriptSystem(
+            const ScriptSystemData& data);
 
         std::vector<script::script_id> createScripts(
             const std::vector<ScriptData>& scripts) const;

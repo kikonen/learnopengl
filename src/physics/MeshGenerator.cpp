@@ -24,7 +24,7 @@
 #include "mesh/PrimitiveMesh.h"
 #include "mesh/MeshInstance.h"
 
-#include "PhysicsEngine.h"
+#include "PhysicsSystem.h"
 #include "ode_util.h"
 
 
@@ -76,7 +76,7 @@ namespace {
 }
 
 namespace physics {
-    MeshGenerator::MeshGenerator(const PhysicsEngine& engine)
+    MeshGenerator::MeshGenerator(const PhysicsSystem& engine)
         : m_engine{ engine}
     {}
 
