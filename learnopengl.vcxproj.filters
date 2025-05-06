@@ -1158,6 +1158,9 @@
     <ClCompile Include="src\nav\Path.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\nav\GeomCollection.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h">
@@ -2595,6 +2598,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\nav\BuildContext.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\nav\GeomCollection.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

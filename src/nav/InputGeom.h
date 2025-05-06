@@ -1,5 +1,7 @@
 #pragma once
 
+#include <glm/glm.hpp>
+
 namespace mesh
 {
     class Mesh;
@@ -13,12 +15,20 @@ namespace nav
         InputGeom(const mesh::Mesh* mesh);
         ~InputGeom();
 
+        InputGeom(const InputGeom& other) = delete;
+        InputGeom& operator=(InputGeom&& other) = delete;
+
+        void build();
+
+        const float* getVertices() const  { return m_vertices; }
+        int getVertexCount() const { return m_vertexCount; }
+        const int* getTris() const { return m_tris; }
+        int getTriCount() const { return m_triCount; }
+
         /// Method to return static mesh data.
-        const mesh::Mesh* getMesh() const { return m_mesh; }
-        const float* getMeshBoundsMin() const { return m_meshBMin; }
-        const float* getMeshBoundsMax() const { return m_meshBMax; }
-        const float* getNavMeshBoundsMin() const { return m_meshBMin; }
-        const float* getNavMeshBoundsMax() const { return m_meshBMax; }
+        //const mesh::Mesh* getMesh() const { return m_mesh; }
+        const glm::vec3& getMeshBoundsMin() const { return m_meshBMin; }
+        const glm::vec3& getMeshBoundsMax() const { return m_meshBMax; }
         //const rcChunkyTriMesh* getChunkyMesh() const { return m_chunkyMesh; }
         //const BuildSettings* getBuildSettings() const { return m_hasBuildSettings ? &m_buildSettings : 0; }
         bool raycastMesh(float* src, float* dst, float& tmin);
@@ -36,10 +46,17 @@ namespace nav
 
     private:
         const mesh::Mesh* m_mesh{ nullptr };
+        bool m_dirty{ true };
+
+        float* m_vertices{ nullptr };
+        int m_vertexCount{ 0 };
+        int* m_tris{ nullptr };
+        int m_triCount{ 0 };
 
         //rcChunkyTriMesh* m_chunkyMesh;
         //rcMeshLoaderObj* m_mesh;
-        float m_meshBMin[3], m_meshBMax[3];
+        glm::vec3 m_meshBMin{ 0.f };
+        glm::vec3 m_meshBMax{ 0.f };
         //BuildSettings m_buildSettings;
         //bool m_hasBuildSettings;
 
