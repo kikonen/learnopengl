@@ -24,6 +24,17 @@ void FollowCamera::updateRT(const UpdateContext& ctx, Node& node)
     const auto* snapshot = node.getSnapshotRT();
     if (!snapshot) return;
 
+    // Compute ideal position
+    const auto& idealPos = calculateCameraPos(*snapshot);
+
+    // TODO KI acel/vel logic is out of control
+    // - camera works jerkily
+    // - camera escapes to infinity if movement is "too fast"
+    if (true) {
+        snapToIdeal(*snapshot);
+        return;
+    }
+
     const auto dt = ctx.m_clock.elapsedSecs;
 
     //const auto& level = snapshot.getMatrixLevel();
@@ -32,9 +43,6 @@ void FollowCamera::updateRT(const UpdateContext& ctx, Node& node)
 
     // Compute dampening from spring constant
     const float dampening = 2.0f * std::sqrt(m_springConstant);
-
-    // Compute ideal position
-    const auto& idealPos = calculateCameraPos(*snapshot);
 
     // Compute acceleration of spring
     const auto diff = m_actualPos - idealPos;
