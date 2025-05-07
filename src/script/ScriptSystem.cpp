@@ -441,9 +441,13 @@ end)", fnName, scriptFile.m_source);
             KI_INFO_OUT(fmt::format("SCRIPT::RUN: function={} - {}", fnName, node->getName()));
 
             invokeLuaFunction([this, handle, &fnName]() {
-                sol::table nodeState = getLua()[TABLE_STATES][handle.toId()];
-                sol::protected_function fn(nodeState[fnName]);
-                return fn(nodeState);
+                sol::optional<sol::table> nodeState = getLua()[TABLE_STATES][handle.toId()];
+                if (nodeState) {
+                    sol::table t = nodeState.value();
+                    sol::protected_function fn(t[fnName]);
+                    return fn(nodeState);
+                }
+                return sol::protected_function_result{ getLua(), 0, 0, 0, sol::call_status::runtime };
             });
         }
     }
@@ -478,9 +482,10 @@ end)", fnName, scriptFile.m_source);
     {
         std::lock_guard lock(m_lock);
 
-        sol::table nodeState = getLua()[TABLE_STATES][handle.toId()];
+        sol::optional<sol::table> nodeState = getLua()[TABLE_STATES][handle.toId()];
+        if (!nodeState) return false;
 
-        sol::optional<sol::function> fnPtr = nodeState[name];
+        sol::optional<sol::function> fnPtr = nodeState.value()[name];
         return fnPtr != sol::nullopt;
     }
 
@@ -493,9 +498,12 @@ end)", fnName, scriptFile.m_source);
         std::lock_guard lock(m_lock);
 
         invokeLuaFunction([this, node, self, &fn, &args]() {
-            sol::table nodeState = getLua()[TABLE_STATES][node->getId()];
-            return self ? fn(nodeState, args) : fn(args);
-            });
+            sol::optional<sol::table> nodeState = getLua()[TABLE_STATES][node->getId()];
+            if (nodeState) {
+                return self ? fn(nodeState, args) : fn(args);
+            }
+            return sol::protected_function_result{ getLua(), 0, 0, 0, sol::call_status::runtime };
+        });
     }
 
     void ScriptSystem::emitEvent(
