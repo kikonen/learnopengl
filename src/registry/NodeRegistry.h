@@ -57,10 +57,13 @@ public:
         Registry* registry);
 
     void updateWT(const UpdateContext& ctx);
+    void postUpdateWT(const UpdateContext& ctx);
+
+    // @return first invalid index, -1 for no errors
+    int validateModelMatrices();
 
     void updateModelMatrices();
     void updateModelMatrices(const Node* node);
-    void postUpdateWT();
 
     void prepareUpdateRT(const UpdateContext& ctx);
     void updateRT(const UpdateContext& ctx);

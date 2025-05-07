@@ -68,15 +68,15 @@ void NodeState::updateModelMatrix(const NodeState& parent) noexcept
 {
     ASSERT_WT();
 
-    const float aspect = (float)m_aspectRatio.x / (float)m_aspectRatio.y;
-    const float aspectScaleX = m_scale.x / aspect;
-    const float aspectScaleY = m_scale.y;
-
     if (!m_dirty && parent.m_matrixLevel == m_parentMatrixLevel) return;
     {
         m_parentMatrixLevel = parent.m_matrixLevel;
         m_matrixLevel++;
     }
+
+    const float aspect = (float)m_aspectRatio.x / (float)m_aspectRatio.y;
+    const float aspectScaleX = m_scale.x / aspect;
+    const float aspectScaleY = m_scale.y;
 
     const auto hasPivot = m_pivot != ZERO_VEC;
 

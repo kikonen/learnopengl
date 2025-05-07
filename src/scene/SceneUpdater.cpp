@@ -141,6 +141,7 @@ void SceneUpdater::update(const UpdateContext& ctx)
 
     auto& nodeRegistry = NodeRegistry::get();
     auto& physicsSystem = physics::PhysicsSystem::get();
+    auto& scriptSystem = script::ScriptSystem::get();
 
     {
         KI_TIMER("event   ");
@@ -162,24 +163,24 @@ void SceneUpdater::update(const UpdateContext& ctx)
 
         if (m_loaded) {
             {
+                KI_TIMER("node2   ");
+                ControllerRegistry::get().updateWT(ctx);
+            }
+            {
                 KI_TIMER("node1   ");
                 nodeRegistry.updateWT(ctx);
-                nodeRegistry.updateModelMatrices();
-                nodeRegistry.snapshotWT();
+            }
+            {
+                auto nodeIndex = nodeRegistry.validateModelMatrices();
+                if (nodeIndex != -1) {
+                    KI_CRITICAL(fmt::format("UNSTABLE NODE_TREE: index={}", nodeIndex));
+                    nodeRegistry.updateModelMatrices();
+                }
             }
             {
                 KI_TIMER("script");
-                auto& scriptSystem = script::ScriptSystem::get();
                 scriptSystem.update(ctx);
-            }
-            {
-                KI_TIMER("node2   ");
-                ControllerRegistry::get().updateWT(ctx);
                 nodeRegistry.updateModelMatrices();
-            }
-            {
-                KI_TIMER("decal   ");
-                decal::DecalSystem::get().updateWT(ctx);
             }
             {
                 KI_TIMER("physics0");
@@ -189,13 +190,20 @@ void SceneUpdater::update(const UpdateContext& ctx)
                 KI_TIMER("physics2");
                 physicsSystem.updateObjects(ctx);
             }
+            {
+                nodeRegistry.updateModelMatrices();
+                nodeRegistry.postUpdateWT(ctx);
+                decal::DecalSystem::get().updateWT(ctx);
+            }
+        }
+         else {
+             nodeRegistry.updateModelMatrices();
         }
     }
 
     // NOTE KI sync to RT
     {
         KI_TIMER("node4   ");
-        nodeRegistry.updateModelMatrices();
         nodeRegistry.snapshotWT();
         nodeRegistry.snapshotPending();
     }
