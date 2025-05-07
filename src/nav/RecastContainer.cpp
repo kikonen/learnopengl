@@ -19,8 +19,13 @@ namespace nav
     void RecastContainer::clear()
     {
         dtFreeNavMeshQuery(m_navQuery);
+        m_navQuery = nullptr;
+
         dtFreeNavMesh(m_navMesh);
+        m_navMesh = nullptr;
+
         dtFreeCrowd(m_crowd);
+        m_crowd = nullptr;
     }
 
     void RecastContainer::cleanup()
