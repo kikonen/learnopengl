@@ -220,6 +220,12 @@ void NodeRegistry::updateWT(const UpdateContext& ctx)
             const auto& parentState = m_states[m_parentIndeces[i]];
             auto* generator = node->m_generator.get();
 
+            if (generator) {
+                generator->updateWT(ctx, *node);
+            }
+
+            state.updateModelMatrix(parentState);
+
             if (physicsSystem.isEnabled() &&
                 (!generator || !generator->isLightWeight()))
             {
@@ -227,41 +233,46 @@ void NodeRegistry::updateWT(const UpdateContext& ctx)
                 if (type->m_flags.dynamicBounds || type->m_flags.staticBounds)
                 {
                     updateBounds(ctx, state, parentState, type, physicsSystem);
-                }
-            }
-
-            state.updateModelMatrix(parentState);
-
-            if (generator) {
-                generator->updateWT(ctx, *node);
-            }
-
-            if (node->m_particleGenerator) {
-                node->m_particleGenerator->updateWT(ctx, *node);
-            }
-
-            if (node->m_audioListener) {
-                if (audio::AudioSystem::get().isActiveListener(node->getId())) {
-                    node->m_audioListener->updateActive(state);
-                }
-            }
-
-            if (node->m_audioSources) {
-                for (auto& src : *node->m_audioSources) {
-                    src.update(state);
+                    state.updateModelMatrix(parentState);
                 }
             }
         }
     }
+}
 
-    //{
-    //    snapshotWT(*m_registry->m_workerSnapshotRegistry);
-    //}
+void NodeRegistry::postUpdateWT(const UpdateContext& ctx)
+{
+    for (int i = m_rootIndex + 1; i < m_states.size(); i++) {
+        auto* node = m_cachedNodesWT[i];
+        if (!node) continue;
 
-    //{
-    //    std::lock_guard lock(m_lock);
-    //    m_nodeLevel++;
-    //}
+        auto& state = m_states[i];
+
+        if (node->m_particleGenerator) {
+            node->m_particleGenerator->updateWT(ctx, *node);
+        }
+
+        if (node->m_audioListener) {
+            if (audio::AudioSystem::get().isActiveListener(node->getId())) {
+                node->m_audioListener->updateActive(state);
+            }
+        }
+
+        if (node->m_audioSources) {
+            for (auto& src : *node->m_audioSources) {
+                src.update(state);
+            }
+        }
+    }
+}
+
+int NodeRegistry::validateModelMatrices()
+{
+    for (auto i = m_rootIndex + 1; i < m_states.size(); i++) {
+        const auto parentLevel = m_states[m_parentIndeces[i]].m_matrixLevel;
+        if (!m_states[i].valid(parentLevel)) return i;
+    }
+    return -1;
 }
 
 void NodeRegistry::updateModelMatrices()

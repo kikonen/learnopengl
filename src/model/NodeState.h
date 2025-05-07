@@ -81,6 +81,11 @@ public:
     ///////////////////////////////////////
     //
 public:
+    inline bool valid(ki::level_id parentMatrixLevel) const noexcept
+    {
+        return !m_dirty && parentMatrixLevel == m_parentMatrixLevel;
+    }
+
     void setBaseRotation(const glm::quat& rotation) noexcept
     {
         if (m_baseRotation != rotation) {
