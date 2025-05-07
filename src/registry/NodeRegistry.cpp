@@ -220,11 +220,12 @@ void NodeRegistry::updateWT(const UpdateContext& ctx)
             const auto& parentState = m_states[m_parentIndeces[i]];
             auto* generator = node->m_generator.get();
 
+            state.updateModelMatrix(parentState);
+
             if (generator) {
                 generator->updateWT(ctx, *node);
+                state.updateModelMatrix(parentState);
             }
-
-            state.updateModelMatrix(parentState);
 
             if (physicsSystem.isEnabled() &&
                 (!generator || !generator->isLightWeight()))

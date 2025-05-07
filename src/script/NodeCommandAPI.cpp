@@ -373,7 +373,7 @@ namespace script
                 //node = getNode();
 
                 se.invokeNodeFunction(
-                    node,
+                    m_handle.toNode(),
                     opt.self,
                     lua_callback,
                     args);
