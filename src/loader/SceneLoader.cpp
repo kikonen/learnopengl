@@ -540,6 +540,24 @@ namespace loader {
                     return pool::TypeHandle::NULL_HANDLE;
                 }
             }
+
+            int deferredCount = 0;
+            int forwardCount = 0;
+            int oitCount = 0;
+            for (const auto& lodMesh : type->getLodMeshes()) {
+                if (lodMesh.m_material->gbuffer) {
+                    deferredCount++;
+                    if (lodMesh.m_drawOptions.isBlend()) {
+                        oitCount++;
+                    }
+                }
+                else {
+                    forwardCount++;
+                }
+            }
+            type->m_flags.useDeferred |= deferredCount > 0;
+            type->m_flags.useForward |= forwardCount > 0;
+            type->m_flags.useOit |= oitCount > 0;
         }
 
         {
@@ -1181,6 +1199,10 @@ namespace loader {
         flags.mirror = container.getFlag("mirror", flags.mirror);
         flags.water = container.getFlag("water", flags.water);
         flags.cubeMap = container.getFlag("cube_map", flags.cubeMap);
+
+        flags.useDeferred = container.getFlag("use_deferred", flags.useDeferred);
+        flags.useForward = container.getFlag("use_forward", flags.useForward);
+        flags.useOit = container.getFlag("use_oit", flags.useOit);
 
         flags.noFrustum = container.getFlag("no_frustum", flags.noFrustum);
         flags.noShadow = container.getFlag("no_shadow", flags.noShadow);

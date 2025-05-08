@@ -31,7 +31,6 @@
 #include "model/Snapshot.h"
 #include "model/EntityFlags.h"
 
-
 #include "registry/Registry.h"
 
 #include "engine/PrepareContext.h"
@@ -260,6 +259,8 @@ namespace render {
                 for (const auto& lodMesh : *type->m_lodMeshes) {
                     const auto  programId = isValidLodMesh(i, dist2, lodMesh);
                     if (!programId) continue;
+
+                    Program* program = Program::get(programId);
 
                     CommandEntry* commandEntry{ nullptr };
                     {

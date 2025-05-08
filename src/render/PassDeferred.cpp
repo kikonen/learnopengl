@@ -160,7 +160,8 @@ namespace render
                 return lodMesh.m_drawOptions.m_gbuffer ? lodMesh.m_preDepthProgramId : (ki::program_id)0;
             },
             [&drawContext](const mesh::MeshType* type) {
-                return drawContext.typeSelector(type);
+                return type->m_flags.useDeferred &&
+                    drawContext.typeSelector(type);
             },
             drawContext.nodeSelector,
             drawContext.kindBits & render::KIND_SOLID);
@@ -189,7 +190,9 @@ namespace render
                 return lodMesh.m_drawOptions.m_gbuffer ? lodMesh.m_programId : (ki::program_id)0;
             },
             [&drawContext](const mesh::MeshType* type) {
-                return !type->m_flags.effect && drawContext.typeSelector(type);
+                return type->m_flags.useDeferred &&
+                    !type->m_flags.effect &&
+                    drawContext.typeSelector(type);
             },
             drawContext.nodeSelector,
             drawContext.kindBits);

@@ -140,7 +140,8 @@ namespace render
                 return m_oitProgram->m_id;
             },
             [&drawContext](const mesh::MeshType* type) {
-                return drawContext.typeSelector(type);
+                return type->m_flags.useOit &&
+                    drawContext.typeSelector(type);
             },
             drawContext.nodeSelector,
             drawContext.kindBits & render::KIND_BLEND);

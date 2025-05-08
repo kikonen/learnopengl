@@ -169,6 +169,8 @@ nodes:
         vert_range: [-62.54, 221.9]
         vert_range: [-4, 4]
         horiz_scale: 2
+    type_flags:
+      use_deferred: true
     physics:
       geom:
         type: height_field

@@ -57,6 +57,8 @@ nodes:
         tiles: [8, 0, 8]
         vert_range: [-62.54, 221.9]
         horiz_scale: 2
+    type_flags:
+      use_deferred: true
     physics:
       geom:
         type: height_field
@@ -150,9 +152,10 @@ nodes:
       z_count: 10
       x_step: 4
       z_step: -4
-    script: |
+    xscript: |
       cmd:animation_play(
         { name = "master:Idle" });
+    script: scripts/seq_skeleton_2
   - id: world_x_minus
     type: origo
     pos: [-1200, 0, 0]
