@@ -39,6 +39,7 @@ namespace
 {
     const static std::string TABLE_CLASSES = "classes";
     const static std::string TABLE_STATES = "states";
+    const static std::string TABLE_TMP = "tmp";
 
     static script::ScriptSystem* s_system{ nullptr };
 }
@@ -167,6 +168,7 @@ namespace script
 
         lua[TABLE_CLASSES] = lua.create_table_with();
         lua[TABLE_STATES] = lua.create_table_with();
+        lua[TABLE_TMP] = lua.create_table_with();
     }
 
     void ScriptSystem::update(const UpdateContext& ctx)

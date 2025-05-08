@@ -46,6 +46,7 @@
 #include "script/lua_util.h"
 
 namespace {
+    const static std::string TABLE_TMP = "tmp";
 }
 
 namespace script
@@ -360,8 +361,8 @@ namespace script
         uint32_t collisionMask = physics::mask(physics::Category::player);
 
         auto callback = [this, opt, lua_callback](const std::vector<physics::RayHit>& hits) {
-            auto& se = script::ScriptSystem::get();
-            sol::table args = se.getLua().create_table();
+            auto& scriptSystem = script::ScriptSystem::get();
+            sol::table args = scriptSystem.getLua()[TABLE_TMP];
 
             for (const auto& hit : hits) {
                 auto* node = hit.handle.toNode();
@@ -372,12 +373,13 @@ namespace script
                 //Node* node = nullptr;
                 //node = getNode();
 
-                se.invokeNodeFunction(
+                scriptSystem.invokeNodeFunction(
                     m_handle.toNode(),
                     opt.self,
                     lua_callback,
                     args);
             }
+            args["data"] = nullptr;
         };
 
         return m_commandEngine->addCommand(

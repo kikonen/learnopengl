@@ -118,11 +118,13 @@ void MirrorMapRenderer::prepareRT(
         m_reflectionDebugViewport->prepareRT();
     }
 
-    m_waterMapRenderer = std::make_unique<WaterMapRenderer>(fmt::format("{}_mirror", m_name), false, false, m_squareAspectRatio);
-    m_waterMapRenderer->setEnabled(assets.waterMapEnabled);
+    if (m_doubleBuffer) {
+        m_waterMapRenderer = std::make_unique<WaterMapRenderer>(fmt::format("{}_mirror", m_name), false, false, m_squareAspectRatio);
+        m_waterMapRenderer->setEnabled(assets.waterMapEnabled);
 
-    if (m_waterMapRenderer->isEnabled()) {
-        m_waterMapRenderer->prepareRT(ctx);
+        if (m_waterMapRenderer->isEnabled()) {
+            m_waterMapRenderer->prepareRT(ctx);
+        }
     }
 
     if (m_doubleBuffer) {
@@ -200,7 +202,9 @@ void MirrorMapRenderer::updateRT(const UpdateViewContext& parentCtx)
         m_nodeDraw->updateRT(localCtx, 1.f);
 
         // NOTE KI nested renderers scale down from current
-        m_waterMapRenderer->updateRT(localCtx);
+        if (m_waterMapRenderer) {
+            m_waterMapRenderer->updateRT(localCtx);
+        }
         if (m_mirrorMapRenderer) {
             m_mirrorMapRenderer->updateRT(localCtx);
         }
@@ -337,7 +341,7 @@ void MirrorMapRenderer::drawNodes(
     bool renderedMirror{ false };
 
     if (assets.mirrorRenderWater) {
-        if (m_waterMapRenderer->isEnabled()) {
+        if (m_waterMapRenderer && m_waterMapRenderer->isEnabled()) {
             // NOTE KI ignore mirror when not yet rendered
             m_waterMapRenderer->m_sourceNode = current;
             renderedWater = m_waterMapRenderer->render(ctx);
@@ -354,7 +358,7 @@ void MirrorMapRenderer::drawNodes(
         }
     }
 
-    if (m_waterMapRenderer->isEnabled() && renderedWater) {
+    if (m_waterMapRenderer && m_waterMapRenderer->isEnabled() && renderedWater) {
         m_waterMapRenderer->bindTexture(ctx.m_state);
     }
 

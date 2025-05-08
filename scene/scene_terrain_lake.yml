@@ -64,6 +64,8 @@ nodes:
         tiles: [8, 0, 8]
         vert_range: [-62.54, 221.9]
         horiz_scale: 2
+    type_flags:
+      use_deferred: true
   - name: Water surface - SINGLE
     mesh:
       path: plane

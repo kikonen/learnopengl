@@ -3,10 +3,9 @@ local Updater = {
 }
 
 function Updater:add_updater(fn)
-  printf("Updater:add_updater: %s\n", fn)
-
+  -- printf("Updater:add_updater: %s\n", fn)
   self.updaters[#self.updaters + 1] = fn
-  table_print(self)
+  -- table_print(self)
 end
 
 function Updater:update(dt)

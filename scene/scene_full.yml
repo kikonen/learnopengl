@@ -22,7 +22,7 @@ script:
   scripts:
     - path: lib/common
 nodes:
-  - prefab:
+  - xprefab:
       path: prefab/util/prefab_grid.yml
   - id: fps_counter
     prefab:
@@ -1006,6 +1006,8 @@ nodes:
         tiles: [8, 0, 8]
         vert_range: [-62.54, 221.9]
         horiz_scale: 2
+    type_flags:
+      use_deferred: true
     physics:
       geom:
         type: height_field

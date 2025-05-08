@@ -2,6 +2,7 @@
 
 #include "kigl/GLState.h"
 
+#include "mesh/MeshType.h"
 #include "mesh/LodMesh.h"
 
 #include "render/DebugContext.h"
@@ -71,7 +72,10 @@ namespace render
                     ? lodMesh.m_programId
                     : (ki::program_id)0;
             },
-            [&drawContext](const mesh::MeshType* type) { return drawContext.typeSelector(type); },
+            [&drawContext](const mesh::MeshType* type) {
+                return type->m_flags.useForward &&
+                    drawContext.typeSelector(type);
+            },
             drawContext.nodeSelector,
             // NOTE KI no blended
             drawContext.kindBits & ~render::KIND_BLEND);
