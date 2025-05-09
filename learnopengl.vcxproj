@@ -227,7 +227,7 @@
     <ClCompile Include="src\mesh\VaoMesh.cpp" />
     <ClCompile Include="src\mesh\vao\VertexTangentVBO.cpp" />
     <ClCompile Include="src\nav\Generator.cpp" />
-    <ClCompile Include="src\nav\GeomCollection.cpp" />
+    <ClCompile Include="src\nav\InputCollection.cpp" />
     <ClCompile Include="src\nav\InputGeam.cpp" />
     <ClCompile Include="src\nav\NavigationSystem.cpp" />
     <ClCompile Include="src\nav\Path.cpp" />
@@ -262,6 +262,7 @@
     <ClCompile Include="src\render\ScreenTri.cpp" />
     <ClCompile Include="src\script\api\EmitEvent.cpp" />
     <ClCompile Include="src\script\api\EmitEvent.h" />
+    <ClCompile Include="src\script\api\Navigate.cpp" />
     <ClCompile Include="src\script\api\ParticleEmit.cpp" />
     <ClCompile Include="src\script\api\ParticleStop.cpp" />
     <ClCompile Include="src\script\api\RayCast.cpp" />
@@ -274,6 +275,7 @@
     <ClCompile Include="src\script\lua_util.cpp" />
     <ClCompile Include="src\script\user_type\LuaCommand.cpp" />
     <ClCompile Include="src\script\user_type\LuaNode.cpp" />
+    <ClCompile Include="src\script\user_type\LuaPath.cpp" />
     <ClCompile Include="src\script\user_type\LuaPhysics.cpp" />
     <ClCompile Include="src\script\user_type\LuaRayHit.cpp" />
     <ClCompile Include="src\script\user_type\LuaUtil.cpp" />
@@ -607,7 +609,7 @@
     <ClInclude Include="src\nav\BuildContext.h" />
     <ClInclude Include="src\nav\BuildSettings.h" />
     <ClInclude Include="src\nav\Generator.h" />
-    <ClInclude Include="src\nav\GeomCollection.h" />
+    <ClInclude Include="src\nav\InputCollection.h" />
     <ClInclude Include="src\nav\InputGeom.h" />
     <ClInclude Include="src\nav\NavigationSystem.h" />
     <ClInclude Include="src\nav\PartitionType.h" />
@@ -649,6 +651,7 @@
     <ClInclude Include="src\render\PassSkybox.h" />
     <ClInclude Include="src\render\Pipeline.h" />
     <ClInclude Include="src\render\ScreenTri.h" />
+    <ClInclude Include="src\script\api\Navigate.h" />
     <ClInclude Include="src\script\api\ParticleEmit.h" />
     <ClInclude Include="src\script\api\ParticleStop.h" />
     <ClInclude Include="src\script\api\SelectNode.h" />
@@ -664,6 +667,7 @@
     <ClInclude Include="src\script\binding\bind_vec3.h" />
     <ClInclude Include="src\script\user_type\LuaCommand.h" />
     <ClInclude Include="src\script\user_type\LuaNode.h" />
+    <ClInclude Include="src\script\user_type\LuaPath.h" />
     <ClInclude Include="src\script\user_type\LuaPhysics.h" />
     <ClInclude Include="src\script\user_type\LuaRayHit.h" />
     <ClInclude Include="src\script\user_type\LuaUtil.h" />

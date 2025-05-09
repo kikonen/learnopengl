@@ -1158,7 +1158,13 @@
     <ClCompile Include="src\nav\Path.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\nav\GeomCollection.cpp">
+    <ClCompile Include="src\nav\InputCollection.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\script\api\Navigate.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\script\user_type\LuaPath.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -2600,7 +2606,13 @@
     <ClInclude Include="src\nav\BuildContext.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\nav\GeomCollection.h">
+    <ClInclude Include="src\nav\InputCollection.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\script\api\Navigate.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\script\user_type\LuaPath.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

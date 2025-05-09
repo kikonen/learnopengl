@@ -1215,6 +1215,8 @@ namespace loader {
             flags.dynamicBounds = container.getFlag("dynamic_bounds", flags.dynamicBounds);
             flags.physics = nodeData.physics.enabled;
         }
+
+        flags.navMesh = container.getFlag("nav_mesh", flags.navMesh);
     }
 
     void SceneLoader::assignMeshFlags(

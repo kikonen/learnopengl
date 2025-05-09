@@ -148,10 +148,12 @@ nodes:
       material:
         render_back: true
     scale: 100
+    type_flags:
+      nav_mesh: true
     physics:
       geom:
         collision: [world]
-  - id: brick_wall
+  - id: brick_wall_1
     mesh:
       vertex:
         type: box
@@ -169,6 +171,44 @@ nodes:
       flags:
         pre_depth: true
     pos: [-5, 1.5, 0]
+    xtype_flags:
+      nav_mesh: true
+    physics:
+      update: true
+      body:
+        type: box
+        kinematic: true
+        density: 0.1
+      geom:
+        type: box
+        category: [terrain]
+        collision: [npc, player, prop]
+        size: [5, 3, 0.2]
+    xscript: |
+      local wid = cmd:wait({ time=5 })
+      self.cmd:rotate(
+        { after=wid, time=10 * 100 },
+        vec3(0, 1, 0),
+        360 * 100)
+  - id: brick_wall_2
+    mesh:
+      path: texture_cube.obj
+      base_scale: [5, 3, 0.2]
+      material:
+        base: textures/Bricks007_1K-PNG
+        map_kd: Bricks007_1K_Color.png
+        map_normal: Bricks007_1K_NormalGL.png
+        map_mrao: Bricks007_1K_mrao
+        map_displacement: Bricks007_1K_displacement
+        parallax_depth: 0.02
+        tiling_x: 5
+        tiling_y: 3
+        program: g_tex
+      flags:
+        pre_depth: true
+    pos: [5, 1.5, 0]
+    xtype_flags:
+      nav_mesh: true
     physics:
       update: true
       body:
@@ -209,40 +249,6 @@ nodes:
         category: [prop, can_float]
         collision: [world]
         size: [1]
-  - id: brick_wall_2
-    mesh:
-      path: texture_cube.obj
-      base_scale: [5, 3, 0.2]
-      material:
-        base: textures/Bricks007_1K-PNG
-        map_kd: Bricks007_1K_Color.png
-        map_normal: Bricks007_1K_NormalGL.png
-        map_mrao: Bricks007_1K_mrao
-        map_displacement: Bricks007_1K_displacement
-        parallax_depth: 0.02
-        tiling_x: 5
-        tiling_y: 3
-        program: g_tex
-      flags:
-        pre_depth: true
-    pos: [5, 1.5, 0]
-    physics:
-      update: true
-      body:
-        type: box
-        kinematic: true
-        density: 0.1
-      geom:
-        type: box
-        category: [terrain]
-        collision: [npc, player, prop]
-        size: [5, 3, 0.2]
-    xscript: |
-      local wid = cmd:wait({ time=5 })
-      self.cmd:rotate(
-        { after=wid, time=10 * 100 },
-        vec3(0, 1, 0),
-        360 * 100)
   - id: ball_2_origo
     type: origo
     pos: [0, 4.5, 0]

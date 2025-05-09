@@ -5,26 +5,28 @@
 
 #include <glm/glm.hpp>
 
+#include "pool/NodeHandle.h"
+
 #include "InputGeom.h"
 
 namespace nav
 {
     class InputGeom;
 
-    class GeomCollection
+    class InputCollection
     {
     public:
-        GeomCollection();
-        ~GeomCollection();
+        InputCollection();
+        ~InputCollection();
 
-        void addInput(std::unique_ptr<nav::InputGeom> input);
+        void addNode(pool::NodeHandle nodeHandle);
 
-        const std::vector<std::unique_ptr<InputGeom>>& getInputs() const
+        const std::vector<std::unique_ptr<InputGeom>>& getGeometries() const
         {
-            return m_inputs;
+            return m_geometries;
         }
 
-        bool empty() const { return m_inputs.empty(); }
+        bool empty() const { return m_geometries.empty(); }
         bool dirty() const { return m_dirty; }
 
         void build();
@@ -36,12 +38,14 @@ namespace nav
 
     private:
         bool m_dirty{ true };
-        std::vector<std::unique_ptr<nav::InputGeom>> m_inputs;
+
+        std::vector<pool::NodeHandle> m_nodeHandles;
+
+        std::vector<std::unique_ptr<nav::InputGeom>> m_geometries;
 
         glm::vec3 m_navMeshBMin{ 0.f };
         glm::vec3 m_navMeshBMax{ 0.f };
 
-        int m_totalTriCount{ 0 };
         int m_maxTriCount{ 0 };
     };
 }
