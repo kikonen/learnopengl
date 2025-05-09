@@ -53,8 +53,9 @@ namespace nav
     void NavigationSystem::prepare()
     { }
 
-    void NavigationSystem::registerMesh(const mesh::Mesh* mesh)
+    void NavigationSystem::registerNode(pool::NodeHandle nodeHandle)
     {
+        m_generator->registerNode(nodeHandle);
         m_dirty = true;
     }
 

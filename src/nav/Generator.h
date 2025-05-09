@@ -5,7 +5,9 @@
 
 #include <recastnavigation/Recast.h>
 
-#include "GeomCollection.h"
+#include "pool/NodeHandle.h"
+
+#include "InputCollection.h"
 #include "BuildSettings.h"
 
 namespace nav
@@ -23,7 +25,7 @@ namespace nav
         void clear();
         void cleanup();
 
-        void addInput(std::unique_ptr<nav::InputGeom> input);
+        void registerNode(pool::NodeHandle nodeHandle);
 
         // Build must be done after registering all meshes
         bool build();
@@ -41,7 +43,7 @@ namespace nav
     private:
         std::shared_ptr<nav::RecastContainer> m_container;
 
-        nav::GeomCollection m_inputCollection;
+        nav::InputCollection m_inputCollection;
 
         rcConfig m_cfg{};
 

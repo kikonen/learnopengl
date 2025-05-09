@@ -91,7 +91,14 @@ namespace script
         int lua_ray_cast(
             const sol::table& lua_opt,
             const sol::table& lua_dirs,
-            const sol::function& callback) noexcept;
+            const sol::function& lua_callback) noexcept;
+
+        int lua_navigate(
+            const sol::table& lua_opt,
+            const glm::vec3& startPos,
+            const glm::vec3& endPos,
+            const int maxPath,
+            const sol::function& lua_callback) noexcept;
 
         int lua_invoke(
             const sol::table& lua_opt,

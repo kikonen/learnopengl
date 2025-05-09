@@ -33,6 +33,7 @@
 #include "user_type/LuaCommand.h"
 #include "user_type/LuaGlm.h"
 #include "user_type/LuaRayHit.h"
+#include "user_type/LuaPath.h"
 #include "user_type/LuaPhysics.h"
 
 namespace
@@ -189,6 +190,7 @@ namespace script
         LuaGlm::bind(lua);
         LuaPhysics::bind(lua);
         LuaRayHit::bind(lua);
+        LuaPath::bind(lua);
         LuaCommand::bind(lua);
         LuaNode::bind(lua);
     }

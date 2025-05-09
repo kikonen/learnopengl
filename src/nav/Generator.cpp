@@ -62,14 +62,16 @@ namespace nav
         m_container->cleanup();
     }
 
-    void Generator::addInput(std::unique_ptr<nav::InputGeom> input)
+    void Generator::registerNode(pool::NodeHandle nodeHandle)
     {
-        m_inputCollection.addInput(std::move(input));
+        m_inputCollection.addNode(nodeHandle);
     }
 
     // Build must be done after registering all meshes
     bool Generator::build()
     {
+        if (!m_inputCollection.dirty()) return false;
+        m_inputCollection.build();
         if (m_inputCollection.empty()) return false;
 
         auto* ctx = m_ctx.get();
@@ -149,12 +151,12 @@ namespace nav
         // Find triangles which are walkable based on their slope and rasterize them.
         // If your input data is multiple meshes, you can transform them here, calculate
         // the are type for each of the meshes and rasterize them.
-        for (auto& input : m_inputCollection.getInputs())
+        for (auto& geom : m_inputCollection.getGeometries())
         {
-            const float* verts = input->getVertices();
-            const int nverts = input->getVertexCount();
-            const int* tris = input->getTris();
-            const int ntris = input->getTriCount();
+            const float* verts = geom->getVertices();
+            const int nverts = geom->getVertexCount();
+            const int* tris = geom->getTris();
+            const int ntris = geom->getTriCount();
 
             memset(m_triareas, 0, ntris * sizeof(unsigned char));
 
@@ -314,27 +316,28 @@ namespace nav
             unsigned char* navData = 0;
             int navDataSize = 0;
 
-            //// Update poly flags from areas.
-            //for (int i = 0; i < m_pmesh->npolys; ++i)
-            //{
-            //    if (m_pmesh->areas[i] == RC_WALKABLE_AREA)
-            //        m_pmesh->areas[i] = SAMPLE_POLYAREA_GROUND;
+            // Update poly flags from areas.
+            for (int i = 0; i < m_pmesh->npolys; ++i)
+            {
+                m_pmesh->flags[i] = RC_WALKABLE_AREA;
+                //if (m_pmesh->areas[i] == RC_WALKABLE_AREA)
+                //    m_pmesh->areas[i] = SAMPLE_POLYAREA_GROUND;
 
-            //    if (m_pmesh->areas[i] == SAMPLE_POLYAREA_GROUND ||
-            //        m_pmesh->areas[i] == SAMPLE_POLYAREA_GRASS ||
-            //        m_pmesh->areas[i] == SAMPLE_POLYAREA_ROAD)
-            //    {
-            //        m_pmesh->flags[i] = SAMPLE_POLYFLAGS_WALK;
-            //    }
-            //    else if (m_pmesh->areas[i] == SAMPLE_POLYAREA_WATER)
-            //    {
-            //        m_pmesh->flags[i] = SAMPLE_POLYFLAGS_SWIM;
-            //    }
-            //    else if (m_pmesh->areas[i] == SAMPLE_POLYAREA_DOOR)
-            //    {
-            //        m_pmesh->flags[i] = SAMPLE_POLYFLAGS_WALK | SAMPLE_POLYFLAGS_DOOR;
-            //    }
-            //}
+                //if (m_pmesh->areas[i] == SAMPLE_POLYAREA_GROUND ||
+                //    m_pmesh->areas[i] == SAMPLE_POLYAREA_GRASS ||
+                //    m_pmesh->areas[i] == SAMPLE_POLYAREA_ROAD)
+                //{
+                //    m_pmesh->flags[i] = SAMPLE_POLYFLAGS_WALK;
+                //}
+                //else if (m_pmesh->areas[i] == SAMPLE_POLYAREA_WATER)
+                //{
+                //    m_pmesh->flags[i] = SAMPLE_POLYFLAGS_SWIM;
+                //}
+                //else if (m_pmesh->areas[i] == SAMPLE_POLYAREA_DOOR)
+                //{
+                //    m_pmesh->flags[i] = SAMPLE_POLYFLAGS_WALK | SAMPLE_POLYFLAGS_DOOR;
+                //}
+            }
 
             dtNavMeshCreateParams params;
             memset(&params, 0, sizeof(params));

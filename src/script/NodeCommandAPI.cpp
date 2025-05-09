@@ -11,6 +11,8 @@
 
 #include "physics/physics_util.h"
 
+#include "nav/Path.h"
+
 #include "script/CommandEngine.h"
 #include "script/CommandEngine_impl.h"
 #include "script/CommandEntry.h"
@@ -40,6 +42,9 @@
 #include "api/ParticleStop.h"
 
 #include "api/AnimationPlay.h"
+
+#include "api/RayCast.h"
+#include "api/Navigate.h"
 
 #include "api/EmitEvent.h"
 
@@ -360,7 +365,7 @@ namespace script
 
         uint32_t collisionMask = physics::mask(physics::Category::player);
 
-        auto callback = [this, opt, lua_callback](const std::vector<physics::RayHit>& hits) {
+        auto callback = [this, opt, lua_callback](int cid, const std::vector<physics::RayHit>& hits) {
             auto& scriptSystem = script::ScriptSystem::get();
             sol::table args = scriptSystem.getLua()[TABLE_TMP];
 
@@ -368,6 +373,7 @@ namespace script
                 auto* node = hit.handle.toNode();
                 if (!node) continue;
 
+                args["cid"] = cid;
                 args["data"] = hit;
 
                 //Node* node = nullptr;
@@ -379,6 +385,8 @@ namespace script
                     lua_callback,
                     args);
             }
+
+            args["cid"] = nullptr;
             args["data"] = nullptr;
         };
 
@@ -390,6 +398,42 @@ namespace script
                 400.f,
                 collisionMask,
                 callback});
+    }
+
+    int NodeCommandAPI::lua_navigate(
+        const sol::table& lua_opt,
+        const glm::vec3& startPos,
+        const glm::vec3& endPos,
+        const int maxPath,
+        const sol::function& lua_callback) noexcept
+    {
+        const auto opt = readOptions(lua_opt);
+
+        auto callback = [this, opt, lua_callback](int cid, const nav::Path& path) {
+            auto& scriptSystem = script::ScriptSystem::get();
+            sol::table args = scriptSystem.getLua()[TABLE_TMP];
+
+            args["cid"] = cid;
+            args["data"] = path;
+
+            scriptSystem.invokeNodeFunction(
+                m_handle.toNode(),
+                opt.self,
+                lua_callback,
+                args);
+
+            args["cid"] = nullptr;
+            args["data"] = nullptr;
+        };
+
+        return m_commandEngine->addCommand(
+            opt.afterId,
+            Navigate{
+                m_handle,
+                startPos,
+                endPos,
+                maxPath,
+                callback });
     }
 
     int NodeCommandAPI::lua_invoke(

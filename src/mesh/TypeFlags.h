@@ -36,5 +36,7 @@ namespace mesh {
         bool physics : 1 {false};
         bool staticBounds : 1 {false};
         bool dynamicBounds : 1 {false};
+
+        bool navMesh : 1 {false};
     };
 }

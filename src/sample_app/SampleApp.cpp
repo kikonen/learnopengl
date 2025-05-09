@@ -659,7 +659,7 @@ void SampleApp::shoot(
         //    player->toHandle(),
         //    true);
 
-        auto callback = [this](const std::vector<physics::RayHit>& hits) {
+        auto callback = [this](int cid, const std::vector<physics::RayHit>& hits) {
             shootCallback(hits);
         };
 

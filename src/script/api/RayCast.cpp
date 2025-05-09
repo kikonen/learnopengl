@@ -19,7 +19,7 @@ namespace script
         const std::vector<glm::vec3>& dirs,
         float length,
         const uint32_t collisionMask,
-        const std::function<void(const std::vector<physics::RayHit>&)>& callback) noexcept
+        const std::function<void(int cid, const std::vector<physics::RayHit>&)>& callback) noexcept
         : NodeCommand(handle, 0, false),
         m_dirs{ dirs },
         m_length{ length },
@@ -45,7 +45,7 @@ namespace script
                 m_handle);
 
             if (!hits.empty()) {
-                m_callback(hits);
+                m_callback(m_id, hits);
             }
         }
     }

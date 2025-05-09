@@ -6,8 +6,11 @@
 
 namespace nav
 {
-    InputGeom::InputGeom(const mesh::Mesh* mesh)
-        : m_mesh{ mesh }
+    InputGeom::InputGeom(
+        const glm::mat4& transform,
+        const mesh::Mesh* mesh)
+        : m_transform{ transform },
+        m_mesh{ mesh }
     {
     }
 
@@ -16,6 +19,7 @@ namespace nav
         delete m_tris;
     }
 
+    // @see https://recastnav.com/md_Docs_2__3__FAQ.html
     void InputGeom::build()
     {
         if (!m_dirty) return;
@@ -29,14 +33,14 @@ namespace nav
         m_vertexCount = m_mesh->getVertexCount();
         m_vertices = new float[m_vertexCount * 3];
 
-        m_triCount = m_mesh->getIndexCount();
-        m_tris = new int[m_triCount];
+        m_tris = new int[vaoMesh->m_indeces.size()];
+        m_triCount = vaoMesh->m_indeces.size() / 3;
 
         {
             int i = 0;
             for (auto& vertex : vaoMesh->m_vertices)
             {
-                const auto& pos = vertex.pos;
+                const auto& pos = m_transform * glm::vec4{ vertex.pos, 1.f };
                 m_vertices[i * 3 + 0] = pos.x;
                 m_vertices[i * 3 + 1] = pos.y;
                 m_vertices[i * 3 + 2] = pos.z;

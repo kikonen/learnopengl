@@ -1,10 +1,14 @@
 #include "Resolver.h"
 
+#include <fmt/format.h>
+
 #include <recastnavigation/DetourCommon.h>
 #include <recastnavigation/DetourNavMesh.h>
 #include <recastnavigation/DetourNavMeshQuery.h>
 #include <recastnavigation/DetourPathCorridor.h>
 
+#include "util/Log.h"
+#include "util/glm_format.h"
 
 #include "RecastContainer.h"
 #include "Query.h"
@@ -171,6 +175,10 @@ namespace nav
         m_polyPickExt[0] = 2;
         m_polyPickExt[1] = 4;
         m_polyPickExt[2] = 2;
+
+        m_filter.setIncludeFlags(RC_WALKABLE_AREA);
+        m_filter.setIncludeFlags(0xffff);
+        m_filter.setExcludeFlags(0);
     }
 
     Resolver::~Resolver()
@@ -192,12 +200,18 @@ namespace nav
         const float* startPos = &query.m_startPos[0];
         const float* endPos = &query.m_endPos[0];
 
-        navQuery->findNearestPoly(startPos, m_polyPickExt, &m_filter, &m_startRef, 0);
-        navQuery->findNearestPoly(endPos, m_polyPickExt, &m_filter, &m_endRef, 0);
+        navQuery->findNearestPoly(startPos, m_polyPickExt, &m_filter, &m_startRef, nullptr);
+        navQuery->findNearestPoly(endPos, m_polyPickExt, &m_filter, &m_endRef, nullptr);
 
         const int maxPolys = query.m_maxPath > 0 ? std::min(query.m_maxPath + 1, MAX_POLYS) : MAX_POLYS;
 
-        navQuery->findPath(m_startRef, m_endRef, startPos, endPos, &m_filter, m_polys, &m_polysCount, maxPolys);
+        int findRet = navQuery->findPath(m_startRef, m_endRef, startPos, endPos, &m_filter, m_polys, &m_polysCount, maxPolys);
+        if (findRet) {
+            KI_WARN_OUT(fmt::format(
+                "NAV: path_fail: startPos={}, endPos={}",
+                query.m_startPos, query.m_endPos));
+        }
+
         if (!m_polysCount) return {};
 
         {

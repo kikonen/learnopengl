@@ -8,8 +8,6 @@
 
 #include "NodeCommand.h"
 
-#include "audio/size.h"
-
 namespace script
 {
     class RayCast final : public NodeCommand
@@ -20,7 +18,7 @@ namespace script
             const std::vector<glm::vec3>& dirs,
             float length,
             const uint32_t collisionMask,
-            const std::function<void(const std::vector<physics::RayHit>&)>& callback) noexcept;
+            const std::function<void(int cid, const std::vector<physics::RayHit>&)>& callback) noexcept;
 
         virtual std::string getName() const noexcept override
         {
@@ -35,6 +33,6 @@ namespace script
         const uint32_t m_collisionMask;
         const float m_length;
 
-        const std::function<void(const std::vector<physics::RayHit>&)> m_callback;
+        const std::function<void(int cid, const std::vector<physics::RayHit>&)> m_callback;
     };
 }

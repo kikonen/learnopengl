@@ -12,7 +12,10 @@ namespace nav
     class InputGeom
     {
     public:
-        InputGeom(const mesh::Mesh* mesh);
+        InputGeom(
+            const glm::mat4& transform,
+            const mesh::Mesh* mesh);
+
         ~InputGeom();
 
         InputGeom(const InputGeom& other) = delete;
@@ -45,6 +48,7 @@ namespace nav
         ///@}
 
     private:
+        const glm::mat4 m_transform;
         const mesh::Mesh* m_mesh{ nullptr };
         bool m_dirty{ true };
 

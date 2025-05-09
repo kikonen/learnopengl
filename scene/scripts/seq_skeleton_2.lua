@@ -95,11 +95,20 @@ local function ray_caster()
 
   local rotate_cid = 0
   local move_cid = 0
+  local nav_cid = 0
   local attack_cid = 0
 
   local cast_cid = 0
   local ray_degrees = INITIAL_RAY_DEGREES
   local elapsed = 0
+
+  local function nav_callback(args)
+    print("NAV: PATH")
+    table_print(args)
+    for i = 0, args.data:len() - 1 do
+      printf("A: waypoint-%d: %s\n", i, args.data:waypoint(i))
+    end
+  end
 
   local function ray_cast_callback(args)
     if not args.data.is_hit then
@@ -118,8 +127,10 @@ local function ray_caster()
 
     printf("front: %s\n", node:get_front())
 
+    local nodePos = node:get_pos()
+    local targetPos = args.data.pos
     local n1 = node:get_front()
-    local n2 = args.data.pos - node:get_pos()
+    local n2 = targetPos - nodePos
     n1.y = 0
     n2.y = 0
     n1 = n1:normalize()
@@ -159,11 +170,18 @@ local function ray_caster()
 
     move_cid = cmd:move(
       { after=cancel_cid, time=5, relative=false },
-      args.data.pos)
+      targetPos)
 
     attack_cid = self:attack(cancel_cid)
 
     ray_degrees = INITIAL_RAY_DEGREES
+
+    nav_cid = cmd:navigate(
+      { after=cancel_cid, time=0 },
+      nodePos,
+      targetPos,
+      100,
+      nav_callback)
   end
 
   local function cast_update(dt)

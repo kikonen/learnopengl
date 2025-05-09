@@ -10,6 +10,8 @@
 
 #include "pool/NodeHandle.h"
 
+#include "mesh/MeshType.h"
+
 #include "util/Log.h"
 
 #include "event/Dispatcher.h"
@@ -22,6 +24,8 @@
 #include "engine/UpdateContext.h"
 
 #include "physics/PhysicsSystem.h"
+
+#include "nav/NavigationSystem.h"
 
 #include "script/CommandEngine.h"
 #include "script/ScriptSystem.h"
@@ -210,6 +214,7 @@ void SceneUpdater::update(const UpdateContext& ctx)
 
     if (m_loaded) {
         physicsSystem.setEnabled(true);
+        nav::NavigationSystem::get().build();
     }
 }
 
@@ -218,6 +223,9 @@ void SceneUpdater::handleNodeAdded(Node* node)
     if (!node) return;
 
     animation::AnimationSystem::get().handleNodeAdded(node);
+    if (node->getType()->m_flags.navMesh) {
+        nav::NavigationSystem::get().registerNode(node->toHandle());
+    }
 }
 
 std::string SceneUpdater::getStats()

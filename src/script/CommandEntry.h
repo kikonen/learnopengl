@@ -7,7 +7,6 @@
 #include "api/Command.h"
 
 #include "api/Cancel.h"
-#include "api/RayCast.h"
 #include "api/InvokeFunction.h"
 #include "api/Sync.h"
 #include "api/Wait.h"
@@ -32,6 +31,9 @@
 #include "api/ParticleStop.h"
 
 #include "api/AnimationPlay.h"
+
+#include "api/RayCast.h"
+#include "api/Navigate.h"
 
 #include "api/EmitEvent.h"
 
@@ -60,6 +62,7 @@ namespace script
         sizeof(script::SetTextNode),
         sizeof(script::SetVisibleNode),
         sizeof(script::RayCast),
+        sizeof(script::Navigate),
         sizeof(script::EmitEvent),
         });
 

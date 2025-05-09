@@ -4,10 +4,8 @@
 
 #include <glm/glm.hpp>
 
-namespace mesh
-{
-    class Mesh;
-}
+#include "pool/NodeHandle.h"
+
 
 namespace nav
 {
@@ -30,7 +28,7 @@ namespace nav
         void clear();
 
         void prepare();
-        void registerMesh(const mesh::Mesh* mesh);
+        void registerNode(pool::NodeHandle nodeHandle);
 
         // Build must be done after registering all meshes
         void build();
