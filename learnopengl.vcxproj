@@ -262,7 +262,8 @@
     <ClCompile Include="src\render\ScreenTri.cpp" />
     <ClCompile Include="src\script\api\EmitEvent.cpp" />
     <ClCompile Include="src\script\api\EmitEvent.h" />
-    <ClCompile Include="src\script\api\Navigate.cpp" />
+    <ClCompile Include="src\script\api\FindPath.cpp" />
+    <ClCompile Include="src\script\api\MovePathNode.cpp" />
     <ClCompile Include="src\script\api\ParticleEmit.cpp" />
     <ClCompile Include="src\script\api\ParticleStop.cpp" />
     <ClCompile Include="src\script\api\RayCast.cpp" />
@@ -651,7 +652,8 @@
     <ClInclude Include="src\render\PassSkybox.h" />
     <ClInclude Include="src\render\Pipeline.h" />
     <ClInclude Include="src\render\ScreenTri.h" />
-    <ClInclude Include="src\script\api\Navigate.h" />
+    <ClInclude Include="src\script\api\FindPath.h" />
+    <ClInclude Include="src\script\api\MovePathNode.h" />
     <ClInclude Include="src\script\api\ParticleEmit.h" />
     <ClInclude Include="src\script\api\ParticleStop.h" />
     <ClInclude Include="src\script\api\SelectNode.h" />

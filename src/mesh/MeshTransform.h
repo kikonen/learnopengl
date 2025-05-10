@@ -5,6 +5,7 @@
 
 namespace mesh {
     struct MeshTransform {
+        glm::mat4 m_transform{ 1.f };
         glm::quat m_rotation{ 1.f, 0.f, 0.f, 0.f };
         float m_x{ 0.f };
         float m_y{ 0.f };
@@ -13,7 +14,6 @@ namespace mesh {
 
         glm::vec4 m_volume{ 0.f };
         glm::vec4 m_worldPos{ 0.f, 0.f, 0.f, 1.f };
-        glm::mat4 m_transform{ 1.f };
 
         //glm::vec4 m_worldPos2{ 1.f };
         //glm::mat4 m_parentMatrix{ 1.f };
@@ -30,7 +30,12 @@ namespace mesh {
             m_z = pos.z;
         }
 
-        inline void setScale(const float scale)
+        inline float getScale() const noexcept
+        {
+            return m_scale;
+        }
+
+        inline void setScale(float scale) noexcept
         {
             m_scale = scale;
         }
@@ -58,6 +63,11 @@ namespace mesh {
         inline const glm::vec4& getVolume() const noexcept
         {
             return m_volume;
+        }
+
+        inline void setVolume(const glm::vec4& volume) noexcept
+        {
+            m_volume = volume;
         }
 
         inline glm::vec3 getWorldPosition() const noexcept

@@ -13,10 +13,10 @@ namespace nav
 
 namespace script
 {
-    class Navigate : public NodeCommand
+    class FindPath : public NodeCommand
     {
     public:
-        Navigate(
+        FindPath(
             pool::NodeHandle handle,
             const glm::vec3& startPos,
             const glm::vec3& endPos,
@@ -25,7 +25,7 @@ namespace script
 
         virtual std::string getName() const noexcept override
         {
-            return "navigate";
+            return "find_path";
         }
 
         virtual void execute(

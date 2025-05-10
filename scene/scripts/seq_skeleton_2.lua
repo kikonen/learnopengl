@@ -95,18 +95,38 @@ local function ray_caster()
 
   local rotate_cid = 0
   local move_cid = 0
-  local nav_cid = 0
+  local path_cid = 0
   local attack_cid = 0
 
   local cast_cid = 0
   local ray_degrees = INITIAL_RAY_DEGREES
-  local elapsed = 0
+  local elapsed = 60
 
-  local function nav_callback(args)
+  local function path_callback(args)
     print("NAV: PATH")
     table_print(args)
+
+    local node_front = node:get_front()
+    local node_pos = node:get_pos()
+
+    printf("front: %s\n", node_front)
+
+    local prev_pos = node_pos
+    local prev_cid = 0
+
     for i = 0, args.data:len() - 1 do
-      printf("A: waypoint-%d: %s\n", i, args.data:waypoint(i))
+      local next_pos = args.data:waypoint(i)
+      local rel_pos = next_pos - prev_pos
+
+      printf("A: waypoint-%d: %s, rel=%s\n", i, next_pos, rel_pos)
+
+      attack_cid = self:attack(prev_cid)
+
+      prev_cid = cmd:move(
+        { after=prev_cid, time=0.5, relative=true },
+        rel_pos)
+
+      prev_pos = next_pos
     end
   end
 
@@ -116,7 +136,7 @@ local function ray_caster()
       return
     end
 
-    if elapsed < 1 then
+    if elapsed < 60 then
       return
     end
 
@@ -124,6 +144,9 @@ local function ray_caster()
 
     print("RAY_HIT")
     table_print(args)
+
+    cmd:particle_emit(
+      { count=(10 + rnd(50)) * 100 })
 
     printf("front: %s\n", node:get_front())
 
@@ -156,9 +179,6 @@ local function ray_caster()
     printf("angle: %f\n", angle)
     printf("ray_degrees: %f\n", ray_degrees)
 
-    cmd:particle_emit(
-      { count=(10 + rnd(50)) * 100 })
-
     local cancel_cid = cmd:cancel(
       {},
       { rotate_cid, move_sid, attack_sid })
@@ -168,20 +188,21 @@ local function ray_caster()
       vec3(0, 1, 0),
       rot_degrees)
 
-    move_cid = cmd:move(
-      { after=cancel_cid, time=5, relative=false },
-      targetPos)
+    -- move_cid = cmd:move(
+    --   { after=cancel_cid, time=5, relative=false },
+    --   targetPos)
 
-    attack_cid = self:attack(cancel_cid)
+    -- attack_cid = self:attack(cancel_cid)
 
     ray_degrees = INITIAL_RAY_DEGREES
 
-    nav_cid = cmd:navigate(
+    path_cid = cmd:find_path(
       { after=cancel_cid, time=0 },
       nodePos,
       targetPos,
+      --nodePos + vec3(0, 0, -10),
       100,
-      nav_callback)
+      path_callback)
   end
 
   local function cast_update(dt)
@@ -190,7 +211,7 @@ local function ray_caster()
     local rot = util.axis_degrees_to_quat(vec3(0, 1, 0), ray_degrees)
     local dir = rot:to_mat4() * node:get_front()
 
-    ray_degrees = ray_degrees + dt * 3.5
+    ray_degrees = ray_degrees - dt * 3.5
 
     cast_cid = cmd:cancel(
       {},

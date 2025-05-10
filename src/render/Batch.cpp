@@ -260,7 +260,7 @@ namespace render {
                     const auto  programId = isValidLodMesh(i, dist2, lodMesh);
                     if (!programId) continue;
 
-                    Program* program = Program::get(programId);
+                    //Program* program = Program::get(programId);
 
                     CommandEntry* commandEntry{ nullptr };
                     {

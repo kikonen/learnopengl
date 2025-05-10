@@ -15,6 +15,7 @@ namespace script
 
         t["move"] = &NodeCommandAPI::lua_move;
         t["move_spline"] = &NodeCommandAPI::lua_move_spline;
+        t["move_path"] = &NodeCommandAPI::lua_move_path;
         t["rotate"] = & NodeCommandAPI::lua_rotate;
         t["scale"] = &NodeCommandAPI::lua_scale;
 
@@ -32,7 +33,7 @@ namespace script
         t["animation_play"] = & NodeCommandAPI::lua_animation_play;
 
         t["ray_cast"] = &NodeCommandAPI::lua_ray_cast;
-        t["navigate"] = &NodeCommandAPI::lua_navigate;
+        t["find_path"] = &NodeCommandAPI::lua_find_path;
 
         t["call"] = & NodeCommandAPI::lua_invoke;
         t["emit"] = & NodeCommandAPI::lua_emit;

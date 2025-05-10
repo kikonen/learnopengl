@@ -1,4 +1,4 @@
-#include "Navigate.h"
+#include "FindPath.h"
 
 #include "model/Node.h"
 
@@ -14,7 +14,7 @@
 
 namespace script
 {
-    Navigate::Navigate(
+    FindPath::FindPath(
         pool::NodeHandle handle,
         const glm::vec3& startPos,
         const glm::vec3& endPos,
@@ -28,7 +28,7 @@ namespace script
     {
     }
 
-    void Navigate::execute(
+    void FindPath::execute(
         const UpdateContext& ctx) noexcept
     {
         m_elapsedTime += ctx.m_clock.elapsedSecs;
