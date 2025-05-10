@@ -313,7 +313,7 @@ namespace nav
         // Only build the detour navmesh if we do not exceed the limit.
         if (m_cfg.maxVertsPerPoly <= DT_VERTS_PER_POLYGON)
         {
-            unsigned char* navData = 0;
+            unsigned char* navData = nullptr;
             int navDataSize = 0;
 
             // Update poly flags from areas.

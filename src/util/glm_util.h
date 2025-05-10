@@ -29,4 +29,9 @@ namespace util
 
     // Convert from clipspace to viewport
     glm::mat4 getViewportMatrix(const glm::vec2& size);
+
+    void minmax(
+        const glm::vec3& pos,
+        glm::vec3& min,
+        glm::vec3& max);
 }

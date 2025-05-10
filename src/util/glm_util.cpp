@@ -1,6 +1,7 @@
 #include "glm_util.h"
 
 #include <numbers>
+#include <algorithm>
 
 #include <glm/gtx/quaternion.hpp>
 
@@ -129,5 +130,19 @@ namespace util
             glm::vec4{ 0.0f, h2, 0.0f, 0.0f },
             glm::vec4{ 0.0f, 0.0f, 1.0f, 0.0f },
             glm::vec4{ w2 + 0, h2 + 0, 0.0f, 1.0f } };
+    }
+
+    void minmax(
+        const glm::vec3& pos,
+        glm::vec3& min,
+        glm::vec3& max)
+    {
+        min.x = std::min(min.x, pos.x);
+        min.y = std::min(min.y, pos.y);
+        min.z = std::min(min.z, pos.z);
+
+        max.x = std::max(max.x, pos.x);
+        max.y = std::max(max.y, pos.y);
+        max.z = std::max(max.z, pos.z);
     }
 }
