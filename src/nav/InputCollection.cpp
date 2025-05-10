@@ -1,5 +1,7 @@
 #include "InputCollection.h"
 
+#include "util/glm_util.h"
+
 #include "model/Node.h"
 
 #include "mesh/MeshType.h"
@@ -59,12 +61,11 @@ namespace nav
                 if (first) {
                     navMin = geomMin;
                     navMax = geomMax;
+                    first = false;
                 }
 
-                navMin = glm::min(navMin, geomMin);
-                navMax = glm::min(navMax, geomMax);
-
-                first = false;
+                util::minmax(geomMin, navMin, navMax);
+                util::minmax(geomMax, navMin, navMax);
             }
             m_navMeshBMin = navMin;
             m_navMeshBMax = navMax;
