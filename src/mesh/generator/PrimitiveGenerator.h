@@ -113,19 +113,27 @@ namespace mesh {
 
         static PrimitiveGenerator plane()
         {
+            // TODO KI 0.5 would better base size, but may existing assumptions
             return {
                 .type = PrimitiveType::plane,
                 .name = "<plane>",
-                .alias = "plane"
+                .alias = "plane",
+                //.size{ 0.5f, 0.5f, 0.5f },
+                // NOTE KI by default just one segement needed
+                .segments{ 1, 1, 1 }
             };
         }
 
         static PrimitiveGenerator quad()
         {
+            // TODO KI 0.5 would better base size, but may existing assumptions
             return {
                 .type = PrimitiveType::quad,
                 .name = "<quad>",
-                .alias = "quad"
+                .alias = "quad",
+                //.size{ 0.5f, 0.5f, 0.5f },
+                // NOTE KI by default just one segement needed
+                .segments{ 1, 1, 1 }
             };
         }
 

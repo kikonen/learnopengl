@@ -32,6 +32,11 @@ namespace {
          1.0f,  0.0f,  1.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f,
     };
 
+    const int PLANE_INDECES[] = {
+        0, 1, 2,
+        2, 1, 3
+    };
+
     const int QUAD_INDECES[] = {
         0, 1, 2,
         2, 1, 3
@@ -176,7 +181,7 @@ namespace {
             v.texCoord = glm::vec2{ row[offset + 0], row[offset + 1] };
         }
 
-        for (auto& index : QUAD_INDECES) {
+        for (auto& index : PLANE_INDECES) {
             indeces.push_back(index);
         }
 
