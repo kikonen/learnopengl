@@ -50,6 +50,9 @@ namespace script {
             else if (auto* src = dynamic_cast<MoveSplineNode*>(other_cmd)) {
                 m_cmd = assign(m_buffer, src);
             }
+            else if (auto* src = dynamic_cast<MovePathNode*>(other_cmd)) {
+                m_cmd = assign(m_buffer, src);
+            }
             else if (auto* src = dynamic_cast<RotateNode*>(other_cmd)) {
                 m_cmd = assign(m_buffer, src);
             }
@@ -74,7 +77,7 @@ namespace script {
             else if (auto* src = dynamic_cast<RayCast*>(other_cmd)) {
                 m_cmd = assign(m_buffer, src);
             }
-            else if (auto* src = dynamic_cast<Navigate*>(other_cmd)) {
+            else if (auto* src = dynamic_cast<FindPath*>(other_cmd)) {
                 m_cmd = assign(m_buffer, src);
             }
             else if (auto* src = dynamic_cast<EmitEvent*>(other_cmd)) {

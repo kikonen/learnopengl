@@ -48,6 +48,10 @@ namespace script
             const glm::vec3& p,
             const glm::vec3& pos) noexcept;
 
+        int lua_move_path(
+            const sol::table& lua_opt,
+            const glm::vec3& pos) noexcept;
+
         int lua_rotate(
             const sol::table& lua_opt,
             const glm::vec3& axis,
@@ -93,7 +97,7 @@ namespace script
             const sol::table& lua_dirs,
             const sol::function& lua_callback) noexcept;
 
-        int lua_navigate(
+        int lua_find_path(
             const sol::table& lua_opt,
             const glm::vec3& startPos,
             const glm::vec3& endPos,

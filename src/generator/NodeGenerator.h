@@ -4,7 +4,6 @@
 #include <functional>
 
 #include "model/NodeState.h"
-#include "model/InstancePhysics.h"
 
 #include "pool/NodeHandle.h"
 #include "pool/TypeHandle.h"
@@ -93,13 +92,12 @@ public:
 protected:
     bool m_lightWeight{ false };
 
-    uint32_t m_poolSize = 0;
+    uint32_t m_poolSize{ 0 };
 
     ki::level_id m_containerMatrixLevel{ 0 };
 
     glm::vec4 m_volume{ 0.f };
 
     std::vector<mesh::MeshTransform> m_transforms;
-    std::vector<InstancePhysics> m_physics;
     std::vector<pool::NodeHandle> m_nodes;
 };

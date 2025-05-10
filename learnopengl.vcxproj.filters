@@ -1161,10 +1161,13 @@
     <ClCompile Include="src\nav\InputCollection.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\script\api\Navigate.cpp">
+    <ClCompile Include="src\script\api\FindPath.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\script\user_type\LuaPath.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\script\api\MovePathNode.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -2609,10 +2612,13 @@
     <ClInclude Include="src\nav\InputCollection.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\script\api\Navigate.h">
+    <ClInclude Include="src\script\api\FindPath.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\script\user_type\LuaPath.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\script\api\MovePathNode.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

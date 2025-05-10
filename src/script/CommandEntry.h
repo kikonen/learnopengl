@@ -14,6 +14,7 @@
 #include "api/NodeCommand.h"
 #include "api/MoveNode.h"
 #include "api/MoveSplineNode.h"
+#include "api/MovePathNode.h"
 #include "api/ResumeNode.h"
 #include "api/RotateNode.h"
 #include "api/ScaleNode.h"
@@ -33,7 +34,7 @@
 #include "api/AnimationPlay.h"
 
 #include "api/RayCast.h"
-#include "api/Navigate.h"
+#include "api/FindPath.h"
 
 #include "api/EmitEvent.h"
 
@@ -54,6 +55,7 @@ namespace script
         sizeof(script::ParticleStop),
         sizeof(script::MoveNode),
         sizeof(script::MoveSplineNode),
+        sizeof(script::MovePathNode),
         sizeof(script::RotateNode),
         sizeof(script::ScaleNode),
         sizeof(script::ResumeNode),
@@ -62,7 +64,7 @@ namespace script
         sizeof(script::SetTextNode),
         sizeof(script::SetVisibleNode),
         sizeof(script::RayCast),
-        sizeof(script::Navigate),
+        sizeof(script::FindPath),
         sizeof(script::EmitEvent),
         });
 

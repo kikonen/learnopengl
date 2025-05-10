@@ -24,6 +24,7 @@
 
 #include "api/MoveNode.h"
 #include "api/MoveSplineNode.h"
+#include "api/MovePathNode.h"
 #include "api/RotateNode.h"
 #include "api/ScaleNode.h"
 #include "api/ResumeNode.h"
@@ -44,7 +45,7 @@
 #include "api/AnimationPlay.h"
 
 #include "api/RayCast.h"
-#include "api/Navigate.h"
+#include "api/FindPath.h"
 
 #include "api/EmitEvent.h"
 
@@ -158,6 +159,24 @@ namespace script
                 opt.duration,
                 opt.relative,
                 p,
+                pos
+            });
+    }
+
+    int NodeCommandAPI::lua_move_path(
+        const sol::table& lua_opt,
+        const glm::vec3& pos) noexcept
+    {
+        const auto opt = readOptions(lua_opt);
+
+        //KI_INFO_OUT(fmt::format("move: node={}, pos={}, opt={}", m_nodeId, pos, opt.str()));
+
+        return m_commandEngine->addCommand(
+            opt.afterId,
+            MovePathNode{
+                getHandle(opt.nodeId, m_handle),
+                opt.duration,
+                opt.relative,
                 pos
             });
     }
@@ -400,7 +419,7 @@ namespace script
                 callback});
     }
 
-    int NodeCommandAPI::lua_navigate(
+    int NodeCommandAPI::lua_find_path(
         const sol::table& lua_opt,
         const glm::vec3& startPos,
         const glm::vec3& endPos,
@@ -428,7 +447,7 @@ namespace script
 
         return m_commandEngine->addCommand(
             opt.afterId,
-            Navigate{
+            FindPath{
                 m_handle,
                 startPos,
                 endPos,

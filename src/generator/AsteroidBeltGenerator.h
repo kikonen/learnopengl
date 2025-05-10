@@ -2,6 +2,8 @@
 
 #include "NodeGenerator.h"
 
+#include "model/InstancePhysics.h"
+
 struct PrepareContext;
 
 class AsteroidBeltGenerator final : public NodeGenerator
@@ -43,5 +45,7 @@ private:
     const int m_updateStep;
 
     int m_updateIndex = 0;
+
+    std::vector<InstancePhysics> m_physics;
 };
 
