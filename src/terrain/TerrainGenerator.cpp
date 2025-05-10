@@ -252,38 +252,6 @@ namespace terrain {
         }
 
         auto typeHandle = createType(registry, container.m_typeHandle);
-        {
-            // TODO KI just generate primitive mesh
-            auto future = ModelRegistry::get().getMeshSet(
-                "",
-                m_modelsDir,
-                TERRAIN_QUAD_MESH_NAME,
-                false,
-                false);
-            const auto& meshSet = future.get();
-            //meshSet->setAABB(aabb);
-
-            {
-                m_material.tilingX = (float)m_worldTilesU;
-                m_material.tilingY = (float)m_worldTilesV;
-            }
-
-            {
-                auto* type = typeHandle.toType();
-
-                type->addMeshSet(*meshSet);
-
-                auto* lodMesh = type->modifyLodMesh(0);
-
-                //lodMesh->m_priority = containerType->m_priority;
-                lodMesh->setMaterial(&m_material);
-                lodMesh->registerMaterial();
-
-                lodMesh->m_flags.tessellation = true;
-                lodMesh->m_drawOptions.m_mode = backend::DrawOptions::Mode::patches;
-                lodMesh->m_drawOptions.m_patchVertices = 3;
-            }
-        }
 
         // NOTE KI dummy node needed to trigger instancing in container context
         {
@@ -359,6 +327,39 @@ namespace terrain {
         flags.invisible = false;
         flags.terrain = true;
         flags.contained = true;
+
+        {
+            // TODO KI just generate primitive mesh
+            auto future = ModelRegistry::get().getMeshSet(
+                "",
+                m_modelsDir,
+                TERRAIN_QUAD_MESH_NAME,
+                false,
+                false);
+            const auto& meshSet = future.get();
+            //meshSet->setAABB(aabb);
+
+            {
+                m_material.tilingX = (float)m_worldTilesU;
+                m_material.tilingY = (float)m_worldTilesV;
+            }
+
+            {
+                auto* type = typeHandle.toType();
+
+                type->addMeshSet(*meshSet);
+
+                auto* lodMesh = type->modifyLodMesh(0);
+
+                //lodMesh->m_priority = containerType->m_priority;
+                lodMesh->setMaterial(&m_material);
+                lodMesh->registerMaterial();
+
+                lodMesh->m_flags.tessellation = true;
+                lodMesh->m_drawOptions.m_mode = backend::DrawOptions::Mode::patches;
+                lodMesh->m_drawOptions.m_patchVertices = 3;
+            }
+        }
 
         return typeHandle;
     }
