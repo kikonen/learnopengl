@@ -668,7 +668,7 @@ void SampleApp::shoot(
             0,
             script::RayCast{
                 player->toHandle(),
-                std::vector<glm::vec3>{ dir },
+                dir,
                 400.f,
                 physics::mask(physics::Category::npc, physics::Category::prop, physics::Category::terrain),
                 callback

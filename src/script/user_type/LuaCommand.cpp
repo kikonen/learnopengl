@@ -10,6 +10,7 @@ namespace script
         sol::usertype<NodeCommandAPI> t = lua.new_usertype<NodeCommandAPI>("NodeCommand");
 
         t["cancel"] = &NodeCommandAPI::lua_cancel;
+        t["cancel_multiple"] = &NodeCommandAPI::lua_cancel_multiple;
         t["wait"] = &NodeCommandAPI::lua_wait;
         t["sync"] = &NodeCommandAPI::lua_sync;
 
@@ -33,6 +34,7 @@ namespace script
         t["animation_play"] = & NodeCommandAPI::lua_animation_play;
 
         t["ray_cast"] = &NodeCommandAPI::lua_ray_cast;
+        t["ray_cast_multiple"] = &NodeCommandAPI::lua_ray_cast_multiple;
         t["find_path"] = &NodeCommandAPI::lua_find_path;
 
         t["call"] = & NodeCommandAPI::lua_invoke;

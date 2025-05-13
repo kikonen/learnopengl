@@ -19,6 +19,7 @@
 #include "script/ScriptSystem.h"
 
 #include "api/Cancel.h"
+#include "api/CancelMultiple.h"
 #include "api/Wait.h"
 #include "api/Sync.h"
 
@@ -45,6 +46,7 @@
 #include "api/AnimationPlay.h"
 
 #include "api/RayCast.h"
+#include "api/RayCastMultiple.h"
 #include "api/FindPath.h"
 
 #include "api/EmitEvent.h"
@@ -73,6 +75,26 @@ namespace script
 
     int NodeCommandAPI::lua_cancel(
         const sol::table& lua_opt,
+        int lua_commandId) noexcept
+    {
+        const auto opt = readOptions(lua_opt);
+
+        //KI_INFO_OUT(fmt::format("wait: command={}, opt={}", commandId, opt.str()));
+
+        std::vector<script::command_id> commandIds;
+
+        script::command_id commandId = static_cast<script::command_id>(lua_commandId);
+
+        return m_commandEngine->addCommand(
+            opt.afterId,
+            Cancel{
+                opt.duration,
+                commandId
+            });
+    }
+
+    int NodeCommandAPI::lua_cancel_multiple(
+        const sol::table& lua_opt,
         const sol::table& lua_commandIds) noexcept
     {
         const auto opt = readOptions(lua_opt);
@@ -88,12 +110,11 @@ namespace script
 
         return m_commandEngine->addCommand(
             opt.afterId,
-            Cancel{
+            CancelMultiple{
                 opt.duration,
                 commandIds
             });
     }
-
     int NodeCommandAPI::lua_wait(
         const sol::table& lua_opt) noexcept
     {
@@ -370,6 +391,50 @@ namespace script
 
     int NodeCommandAPI::lua_ray_cast(
         const sol::table& lua_opt,
+        const glm::vec3& lua_dir,
+        const sol::function& lua_callback) noexcept
+    {
+        const auto opt = readOptions(lua_opt);
+
+        uint32_t collisionMask = physics::mask(physics::Category::player);
+
+        auto callback = [this, opt, lua_callback](int cid, const std::vector<physics::RayHit>& hits) {
+            auto& scriptSystem = script::ScriptSystem::get();
+            sol::table args = scriptSystem.getLua()[TABLE_TMP];
+
+            for (const auto& hit : hits) {
+                auto* node = hit.handle.toNode();
+                if (!node) continue;
+
+                args["cid"] = cid;
+                args["data"] = hit;
+
+                //Node* node = nullptr;
+                //node = getNode();
+
+                scriptSystem.invokeNodeFunction(
+                    m_handle.toNode(),
+                    opt.self,
+                    lua_callback,
+                    args);
+            }
+
+            args["cid"] = nullptr;
+            args["data"] = nullptr;
+        };
+
+        return m_commandEngine->addCommand(
+            opt.afterId,
+            RayCast{
+                m_handle,
+                lua_dir,
+                400.f,
+                collisionMask,
+                callback});
+    }
+
+    int NodeCommandAPI::lua_ray_cast_multiple(
+        const sol::table& lua_opt,
         const sol::table& lua_dirs,
         const sol::function& lua_callback) noexcept
     {
@@ -407,16 +472,16 @@ namespace script
 
             args["cid"] = nullptr;
             args["data"] = nullptr;
-        };
+            };
 
         return m_commandEngine->addCommand(
             opt.afterId,
-            RayCast{
+            RayCastMultiple{
                 m_handle,
                 dirs,
                 400.f,
                 collisionMask,
-                callback});
+                callback });
     }
 
     int NodeCommandAPI::lua_find_path(

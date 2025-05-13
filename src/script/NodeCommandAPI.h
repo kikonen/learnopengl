@@ -30,6 +30,10 @@ namespace script
     public:
         int lua_cancel(
             const sol::table& lua_opt,
+            int lua_commandId) noexcept;
+
+        int lua_cancel_multiple(
+            const sol::table& lua_opt,
             const sol::table& lua_commandIds) noexcept;
 
         int lua_wait(
@@ -93,6 +97,11 @@ namespace script
             const sol::table& lua_opt) noexcept;
 
         int lua_ray_cast(
+            const sol::table& lua_opt,
+            const glm::vec3& lua_dir,
+            const sol::function& lua_callback) noexcept;
+
+        int lua_ray_cast_multiple(
             const sol::table& lua_opt,
             const sol::table& lua_dirs,
             const sol::function& lua_callback) noexcept;

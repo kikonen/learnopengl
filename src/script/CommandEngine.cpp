@@ -155,7 +155,6 @@ namespace script
     void CommandEngine::addPending(
         const CommandHandle& handle) noexcept
     {
-        std::lock_guard lock{ m_pendingLock };
         m_pending.emplace_back(handle);
     }
 

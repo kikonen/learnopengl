@@ -5,22 +5,22 @@
 
 namespace script
 {
-    class Cancel final : public Command
+    class CancelMultiple final : public Command
     {
     public:
-        Cancel(
+        CancelMultiple(
             float duration,
-            script::command_id commandId) noexcept;
+            std::vector<script::command_id> commandIds) noexcept;
 
         virtual std::string getName() const noexcept override
         {
-            return "cancel";
+            return "cancel_multiple";
         }
 
         virtual void execute(
             const UpdateContext& ctx) noexcept override;
 
     private:
-        script::command_id m_commandId;
+        std::vector<script::command_id> m_commandIds;
     };
 }

@@ -7,6 +7,7 @@
 #include "api/Command.h"
 
 #include "api/Cancel.h"
+#include "api/CancelMultiple.h"
 #include "api/InvokeFunction.h"
 #include "api/Sync.h"
 #include "api/Wait.h"
@@ -34,6 +35,7 @@
 #include "api/AnimationPlay.h"
 
 #include "api/RayCast.h"
+#include "api/RayCastMultiple.h"
 #include "api/FindPath.h"
 
 #include "api/EmitEvent.h"
@@ -43,6 +45,7 @@ namespace script
 {
     constexpr size_t COMMAND_BUFFER_SIZE = std::max({
         sizeof(script::Cancel),
+        sizeof(script::CancelMultiple),
         sizeof(script::Sync),
         sizeof(script::Wait),
         sizeof(script::InvokeFunction),
@@ -64,6 +67,7 @@ namespace script
         sizeof(script::SetTextNode),
         sizeof(script::SetVisibleNode),
         sizeof(script::RayCast),
+        sizeof(script::RayCastMultiple),
         sizeof(script::FindPath),
         sizeof(script::EmitEvent),
         });

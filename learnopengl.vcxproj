@@ -260,6 +260,7 @@
     <ClCompile Include="src\render\PassDeferred.cpp" />
     <ClCompile Include="src\render\PassSkybox.cpp" />
     <ClCompile Include="src\render\ScreenTri.cpp" />
+    <ClCompile Include="src\script\api\CancelMultiple.cpp" />
     <ClCompile Include="src\script\api\EmitEvent.cpp" />
     <ClCompile Include="src\script\api\EmitEvent.h" />
     <ClCompile Include="src\script\api\FindPath.cpp" />
@@ -268,6 +269,7 @@
     <ClCompile Include="src\script\api\ParticleStop.cpp" />
     <ClCompile Include="src\script\api\RayCast.cpp" />
     <ClCompile Include="src\script\api\RayCast.h" />
+    <ClCompile Include="src\script\api\RayCastMultiple.cpp" />
     <ClCompile Include="src\script\api\SelectNode.cpp" />
     <ClCompile Include="src\script\api\SetVisibleNode.cpp" />
     <ClCompile Include="src\editor\console\ConsoleFrame.cpp" />
@@ -652,10 +654,12 @@
     <ClInclude Include="src\render\PassSkybox.h" />
     <ClInclude Include="src\render\Pipeline.h" />
     <ClInclude Include="src\render\ScreenTri.h" />
+    <ClInclude Include="src\script\api\CancelMultiple.h" />
     <ClInclude Include="src\script\api\FindPath.h" />
     <ClInclude Include="src\script\api\MovePathNode.h" />
     <ClInclude Include="src\script\api\ParticleEmit.h" />
     <ClInclude Include="src\script\api\ParticleStop.h" />
+    <ClInclude Include="src\script\api\RayCastMultiple.h" />
     <ClInclude Include="src\script\api\SelectNode.h" />
     <ClInclude Include="src\script\api\SetVisibleNode.h" />
     <ClInclude Include="src\editor\console\ConsoleFrame.h" />

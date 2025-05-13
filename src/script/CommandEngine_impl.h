@@ -18,6 +18,8 @@ namespace script {
         T&& cmd) noexcept
     {
         try {
+            std::lock_guard lock{ m_pendingLock };
+
             CommandHandle handle = CommandHandle::allocate(CommandHandle::nextId());
 
             {

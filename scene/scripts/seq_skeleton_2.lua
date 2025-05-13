@@ -101,6 +101,7 @@ local function ray_caster()
   local cast_cid = 0
   local ray_degrees = INITIAL_RAY_DEGREES
   local elapsed = 60
+  local cast_elapsed = 0
 
   local function path_callback(args)
     print("NAV: PATH")
@@ -179,9 +180,19 @@ local function ray_caster()
     printf("angle: %f\n", angle)
     printf("ray_degrees: %f\n", ray_degrees)
 
-    local cancel_cid = cmd:cancel(
+    local cancel_cid = 0
+
+    cancel_cid = cmd:cancel(
       {},
-      { rotate_cid, move_sid, attack_sid })
+      rotate_cid)
+
+    cancel_cid = cmd:cancel(
+      {},
+      move_sid)
+
+    cancel_cid = cmd:cancel(
+      {},
+      attack_sid)
 
     rotate_cid = cmd:rotate(
       { after=cancel_cid, time=1, relative=true },
@@ -207,19 +218,24 @@ local function ray_caster()
 
   local function cast_update(dt)
     elapsed = elapsed + dt
+    cast_elapsed = cast_elapsed + dt
+
+    -- NOTE KI avoid busy lopping in ray cast
+    if cast_elapsed < 1 then return end
 
     local rot = util.axis_degrees_to_quat(vec3(0, 1, 0), ray_degrees)
     local dir = rot:to_mat4() * node:get_front()
 
-    ray_degrees = ray_degrees - dt * 3.5
+    ray_degrees = ray_degrees - cast_elapsed * 3.5
+    cast_elapsed = 0
 
     cast_cid = cmd:cancel(
       {},
-      { cast_cid })
+      cast_cid)
 
     cast_cid = cmd:ray_cast(
       { after=cast_cid },
-      { dir },
+      dir,
       ray_cast_callback)
   end
 
