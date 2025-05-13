@@ -3,6 +3,8 @@
 #include <glm/glm.hpp>
 #include <glm/gtx/quaternion.hpp>
 
+#include "ki/size.h"
+
 namespace mesh {
     struct MeshTransform {
         glm::mat4 m_transform{ 1.f };
@@ -10,10 +12,12 @@ namespace mesh {
         float m_x{ 0.f };
         float m_y{ 0.f };
         float m_z{ 0.f };
-        float m_scale{ 1.f };
+        glm::vec3 m_scale{ 1.f };
 
         glm::vec4 m_volume{ 0.f };
         glm::vec4 m_worldPos{ 0.f, 0.f, 0.f, 1.f };
+
+        uint32_t m_data{ 0 };
 
         //glm::vec4 m_worldPos2{ 1.f };
         //glm::mat4 m_parentMatrix{ 1.f };
@@ -30,14 +34,19 @@ namespace mesh {
             m_z = pos.z;
         }
 
-        inline float getScale() const noexcept
+        inline const glm::vec3& getScale() const noexcept
         {
             return m_scale;
         }
 
-        inline void setScale(float scale) noexcept
+        inline void setScale(const glm::vec3& scale) noexcept
         {
             m_scale = scale;
+        }
+
+        inline void setScale(float scale) noexcept
+        {
+            m_scale = glm::vec3{ scale, scale, scale };
         }
 
         inline void adjustRotation(const glm::quat& adjust) noexcept
@@ -85,7 +94,7 @@ namespace mesh {
         {
             m_transform = glm::translate(glm::mat4{ 1.f }, getPosition()) *
                 glm::mat4{ m_rotation } *
-                glm::scale(glm::mat4{ 1.f }, glm::vec3{ m_scale });
+                glm::scale(glm::mat4{ 1.f }, m_scale);
 
             const auto& modelMatrix = parentMatrix * m_transform;
             {
@@ -96,7 +105,7 @@ namespace mesh {
             }
             {
                 m_volume = modelMatrix * glm::vec4{ volume.x, volume.y, volume.z, 1.f };
-                m_volume.w = volume.w * m_scale;
+                m_volume.w = volume.w * m_scale.x;
             }
 
             //m_parentMatrix = parentMatrix;

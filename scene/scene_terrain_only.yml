@@ -9,8 +9,9 @@ script:
 nodes:
   - id: player
     type: origo
-    pos: [0, 200, 100]
+    pos: [5, 4, 2]
     front: [0, 0, -1]
+    rot: [0, -135, 0]
     active: true
     camera:
       default: true
@@ -18,7 +19,7 @@ nodes:
       - type: pawn
       - type: camera_zoom
   - id: dir_light_{c}_{t}
-    pos: [0, 400, 500]
+    pos: [0, 40, 50]
     scale: 2.5
     type: origo
     program: g_light
@@ -31,32 +32,39 @@ nodes:
       diffuse: [0.9, 0.9, 0.7, 1.0]
       intensity: 30000
   - id: terrain_grass_v2
-    priority: 20
-    type: container
-    pos: [-1024, 0, -1024]
-    xxpos: [0, 0, 0]
-    flags:
-      pre_depth: true
-      xxno_shadow: true
-      tessellation: true
-      xxno_frustum: true
-    generator:
-      type: terrain
-      mode: grid
+    mesh:
+      path: quad_terrain
       material:
         prefab: materials/Terrain2
         texture_spec:
           wrap: GL_CLAMP_TO_EDGE
         xxline_mode: true
-        xxrender_back: true
+        xrender_back: true
         program: g_terrain
         depth_program: g_terrain_depth
+        xdefault_programs: true
+        tiling: 4
+      flags:
+        tessellation: true
+    priority: 20
+    xtype: terrain
+    xpos: [-1024, 0, -1024]
+    xxpos: [0, 0, 0]
+    generator:
+      type: terrain
+      mode: grid
       terrain:
         map_height: textures/terrain_2/terrain_2_height.png
       tiling:
         tile_size: 256
-        tiles: [8, 0, 8]
-        vert_range: [-62.54, 221.9]
+        tiles: [4, 0, 4]
+        xvert_range: [-62.54, 221.9]
+        vert_range: [-20, 100]
         horiz_scale: 2
     type_flags:
+      xpre_depth: true
+      xxno_shadow: true
+      xxno_frustum: true
       use_deferred: true
+      nav_mesh: true
+      no_frustum: true

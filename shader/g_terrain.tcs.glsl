@@ -26,6 +26,7 @@ in VS_OUT {
 
   flat uint materialIndex;
 
+  flat uint tileIndex;
   flat float tilingX;
   flat float rangeYmin;
   flat float rangeYmax;
@@ -54,6 +55,7 @@ out TCS_OUT {
 
   flat uint materialIndex;
 
+  flat uint tileIndex;
   flat float rangeYmin;
   flat float rangeYmax;
   flat uvec2 heightMapTex;
@@ -96,6 +98,7 @@ void main()
   tcs_out[gl_InvocationID].vertexPos = tcs_in[gl_InvocationID].vertexPos;
   tcs_out[gl_InvocationID].materialIndex = tcs_in[gl_InvocationID].materialIndex;
 
+  tcs_out[gl_InvocationID].tileIndex = tcs_in[gl_InvocationID].tileIndex;
   tcs_out[gl_InvocationID].rangeYmin = tcs_in[gl_InvocationID].rangeYmin;
   tcs_out[gl_InvocationID].rangeYmax = tcs_in[gl_InvocationID].rangeYmax;
   tcs_out[gl_InvocationID].heightMapTex = tcs_in[gl_InvocationID].heightMapTex;

@@ -1,5 +1,7 @@
 #pragma once
 
+#include <vector>
+
 #include <glm/glm.hpp>
 
 #include "NodeCommand.h"
@@ -13,7 +15,7 @@ namespace script
             pool::NodeHandle handle,
             float duration,
             bool relative,
-            const glm::vec3& position) noexcept;
+            const std::vector<glm::vec3>& path) noexcept;
 
         virtual std::string getName() const noexcept override
         {
@@ -27,8 +29,14 @@ namespace script
             const UpdateContext& ctx) noexcept override;
 
     private:
-        glm::vec3 m_position;
+        void executeLeg(
+            const UpdateContext& ctx,
+            int leg);
 
+    private:
+        const std::vector<glm::vec3> m_path;
+
+        int m_leg{ 0 };
         glm::vec3 m_end{ 0.f };
         glm::vec3 m_previous{ 0.f };
     };

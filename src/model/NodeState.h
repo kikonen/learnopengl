@@ -60,7 +60,6 @@ private:
 
 public:
     // NOTE KI static member fields are rather safe to access frmo anywhere
-    uint32_t m_tileIndex{ 0 };
     uint16_t m_boneBaseIndex{ 0 };
     uint16_t m_socketBaseIndex{ 0 };
 

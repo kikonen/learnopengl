@@ -478,7 +478,7 @@ void NodeRegistry::attachListeners()
             if (auto& data = e.blob->body.physics;
                 data.isValid() &&
                 !(node->m_generator &&
-                node->m_generator->isLightWeight()) )
+                node->m_generator->isLightWeightPhysics()) )
             {
                 auto& physicsEngine = physics::PhysicsSystem::get();
 

@@ -165,7 +165,7 @@ namespace script
 
     int NodeCommandAPI::lua_move_path(
         const sol::table& lua_opt,
-        const glm::vec3& pos) noexcept
+        const std::vector<glm::vec3>& path) noexcept
     {
         const auto opt = readOptions(lua_opt);
 
@@ -177,7 +177,7 @@ namespace script
                 getHandle(opt.nodeId, m_handle),
                 opt.duration,
                 opt.relative,
-                pos
+                path
             });
     }
 

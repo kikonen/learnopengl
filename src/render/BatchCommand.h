@@ -22,6 +22,7 @@ namespace render {
         uint32_t m_entityIndex;
         uint32_t m_materialIndex;
         int32_t m_socketIndex;
+        uint32_t m_data;
 
         InstanceEntry() {}
 
@@ -30,11 +31,13 @@ namespace render {
             float distance2,
             uint32_t entityIndex,
             uint32_t materialIndex,
-            int32_t socketIndex)
+            int32_t socketIndex,
+            uint32_t data)
             : m_distance2{ distance2 },
             m_entityIndex{ entityIndex },
             m_materialIndex{ materialIndex },
-            m_socketIndex{ socketIndex }
+            m_socketIndex{ socketIndex },
+            m_data{ data }
         {
             setTransform(transform);
         }

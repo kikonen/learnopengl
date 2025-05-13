@@ -50,7 +50,7 @@ namespace script
 
         int lua_move_path(
             const sol::table& lua_opt,
-            const glm::vec3& pos) noexcept;
+            const std::vector<glm::vec3>& path) noexcept;
 
         int lua_rotate(
             const sol::table& lua_opt,

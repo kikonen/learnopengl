@@ -14,10 +14,11 @@ namespace mesh {
         GLuint u_materialIndex;
         GLint u_socketIndex{ -1 };
         GLuint u_flags{ 0 };
+        GLuint u_data{ 0 };
 
-        //int pad2_1;
-        //int pad2_2;
-        //int pad2_3;
+        int pad2_1;
+        int pad2_2;
+        int pad2_3;
 
         // NOTE KI M-T matrix needed *ONLY* if non uniform scale
         inline void setTransform(

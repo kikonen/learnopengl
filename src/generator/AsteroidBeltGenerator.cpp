@@ -31,6 +31,7 @@ AsteroidBeltGenerator::AsteroidBeltGenerator(int asteroidCount)
     m_updateStep(3)
 {
     m_lightWeight = true;
+    m_lightWeightPhysics = true;
 }
 
 void AsteroidBeltGenerator::prepareWT(
