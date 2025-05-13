@@ -3,6 +3,7 @@
 #include <string>
 
 #include "kigl/GLVertexArray.h"
+#include "kigl/GLFence.h"
 
 #include "VertexPositionVBO.h"
 #include "VertexNormalVBO.h"
@@ -48,6 +49,11 @@ namespace mesh {
 
         virtual void updateRT();
 
+        kigl::GLFence& getFence()
+        {
+            return m_fence;
+        }
+
     protected:
         virtual void prepareVAO();
 
@@ -67,5 +73,7 @@ namespace mesh {
         bool m_prepared{ false };
 
         std::unique_ptr<kigl::GLVertexArray> m_vao;
+
+        kigl::GLFence m_fence;
     };
 }

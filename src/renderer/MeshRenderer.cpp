@@ -51,8 +51,12 @@ void MeshRenderer::drawObjects(
     //glGetIntegerv(GL_DRAW_FRAMEBUFFER_BINDING, &drawFboId);
     //glGetIntegerv(GL_READ_FRAMEBUFFER_BINDING, &readFboId);
 
+    m_dynamicVaoIndex = (m_dynamicVaoIndex + 1) % 2;
+
     auto* sharedVao = VaoRegistry::get().getSharedPrimitiveVao();
-    auto* dynamicVao = VaoRegistry::get().getDynamicPrimitiveVao();
+    auto* dynamicVao = VaoRegistry::get().getDynamicPrimitiveVao(m_dynamicVaoIndex);
+
+    //dynamicVao->getFence().waitFence(false);
     dynamicVao->clear();
 
     m_instances.clear();
@@ -84,10 +88,9 @@ void MeshRenderer::drawObjects(
 
     sharedVao->updateRT();
     dynamicVao->updateRT();
+    drawBuffer->sendInstanceIndeces(m_instances);
 
     targetBuffer->bind(ctx);
-
-    drawBuffer->sendInstanceIndeces(m_instances);
 
     ctx.m_state.setDepthFunc(GL_LESS);
     ctx.m_state.setDepthMask(GL_TRUE);
@@ -124,4 +127,6 @@ void MeshRenderer::drawObjects(
 
     ctx.m_state.setDepthFunc(ctx.m_depthFunc);
     ctx.m_state.setDepthMask(GL_TRUE);
+
+    //dynamicVao->getFence().setFence(false);
 }

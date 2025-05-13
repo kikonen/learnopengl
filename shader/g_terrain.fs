@@ -22,6 +22,7 @@ in TES_OUT {
   vec2 texCoord;
 
   flat uint materialIndex;
+  flat uint tileIndex;
 
 #ifdef USE_TBN
   mat3 tbn;
@@ -74,6 +75,10 @@ void main() {
 #endif
 
   vec4 texColor = material.diffuse;
+
+  if (fs_in.tileIndex % 2 == 0) {
+    texColor *= vec4(3.5, 0.7, 0.7, 1);
+  }
 
   o_fragColor = texColor.rgb;
   o_fragMRA = material.mra;

@@ -144,7 +144,8 @@ namespace render {
                 dist2,
                 entityIndex,
                 static_cast<uint32_t>(lodMesh.m_materialIndex),
-                lodMesh.m_socketIndex
+                lodMesh.m_socketIndex,
+                0
                 });
 
             m_pendingCount++;
@@ -304,7 +305,8 @@ namespace render {
                         dist2,
                         entityIndex,
                         static_cast<uint32_t>(lodMesh.m_materialIndex),
-                        lodMesh.m_socketIndex
+                        lodMesh.m_socketIndex,
+                        transforms[i].m_data
                         });
 
                     m_pendingCount++;
@@ -459,6 +461,8 @@ namespace render {
                         // => can draw different instances in same batch
                         //instance.u_shapeIndex = key.m_drawOptions.m_flags;
                         instance.u_flags = multiDrawKey.m_drawOptions.m_flags;
+
+                        instance.u_data = lodEntry.m_data;
                     }
                 }
             }

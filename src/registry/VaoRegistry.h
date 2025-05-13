@@ -7,6 +7,8 @@
 #include "util/util.h"
 #include "kigl/GLVertexArray.h"
 
+#include "mesh/vao/TexturedVAO.h"
+
 struct UpdateContext;
 
 namespace mesh {
@@ -54,9 +56,9 @@ public:
     // NOTE KI primitive VAO is "throwaway" render meshes
     // which are recalculated on every render cycle again
     // => mostly useful for debug thus
-    mesh::TexturedVAO* getDynamicPrimitiveVao()
+    mesh::TexturedVAO* getDynamicPrimitiveVao(int index)
     {
-        return m_dynamicPrimitiveVao.get();
+        return m_dynamicPrimitiveVaos[index].get();
     }
 
 private:
@@ -66,5 +68,5 @@ private:
     std::unique_ptr<mesh::SkinnedVAO> m_skinnedVao;
 
     std::unique_ptr<mesh::TexturedVAO> m_sharedPrimitiveVao;
-    std::unique_ptr<mesh::TexturedVAO> m_dynamicPrimitiveVao;
+    std::vector<std::unique_ptr<mesh::TexturedVAO>> m_dynamicPrimitiveVaos;
 };

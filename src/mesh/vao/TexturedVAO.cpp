@@ -27,7 +27,8 @@ namespace mesh {
         m_tangentVbo{ m_name + "_tangent_vbo", ATTR_TANGENT, VBO_TANGENT_BINDING },
         m_textureVbo{ m_name + "_texture_vbo", ATTR_TEX, VBO_TEXTURE_BINDING },
         m_vertexVbo{ m_name + "_vertex_vbo", VBO_VERTEX_BINDING },
-        m_indexEbo{ m_name + "_ebo" }
+        m_indexEbo{ m_name + "_ebo" },
+        m_fence{ m_name + "_fence" }
     {
         m_useSeparate = true;
     }

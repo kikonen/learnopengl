@@ -78,8 +78,6 @@ namespace terrain {
         size_t m_poolSizeU{ 0 };
         size_t m_poolSizeV{ 0 };
 
-        pool::NodeHandle m_nodeHandle{};
-
         std::vector<TerrainTileInfo> m_tileInfos;
     };
 }

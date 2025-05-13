@@ -37,6 +37,7 @@ out VS_OUT {
 
   flat uint materialIndex;
 
+  flat uint tileIndex;
   flat float tilingX;
   flat float rangeYmin;
   flat float rangeYmax;
@@ -70,7 +71,9 @@ void main() {
 
   const uint entityIndex = instance.u_entityIndex;
   entity = u_entities[entityIndex];
-  tile = u_terrainTiles[entity.u_tileIndex];
+
+  const uint tileIndex = instance.u_data;
+  tile = u_terrainTiles[tileIndex];
 
   #include var_entity_model_matrix.glsl
   #include var_entity_normal_matrix.glsl
@@ -92,6 +95,7 @@ void main() {
   vs_out.entityIndex = entityIndex;
   vs_out.instanceIndex = instanceIndex;
   vs_out.materialIndex = materialIndex;
+  vs_out.tileIndex = tileIndex;
 
   vs_out.rangeYmin = tile.u_rangeYmin;
   vs_out.rangeYmax = tile.u_rangeYmax;

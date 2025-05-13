@@ -46,19 +46,18 @@ namespace {
 }
 
 namespace terrain {
-
     TerrainGenerator::TerrainGenerator()
         : NodeGenerator()
     {
         m_material = Material::createMaterial(BasicMaterial::gold);
+        m_lightWeight = true;
+        m_lightWeightPhysics = false;
     }
 
     void TerrainGenerator::prepareWT(
         const PrepareContext& ctx,
         Node& container)
     {
-        container.m_visible = false;
-
         const auto& assets = ctx.m_assets;
 
         m_gridSize = assets.terrainGridSize;
@@ -120,10 +119,6 @@ namespace terrain {
         const auto& texturePath = m_material.resolveTexturePath(m_heightMapFile, false);
         KI_INFO(fmt::format("TERRAIN: height={}", texturePath));
 
-        //auto image = std::make_unique<Image>(imagePath, false);
-        //// NOTE KI don't flip, otherwise have to reverse offsets
-        //int res = image->load();
-
         {
             TextureSpec spec;
             spec.wrapS = GL_CLAMP_TO_EDGE;
@@ -140,11 +135,7 @@ namespace terrain {
 
             future.wait();
 
-            std::shared_ptr<ImageTexture> texture;
-            if (future.valid()) {
-                texture = future.get();
-            }
-            return texture;
+            return future.valid() ? future.get() : nullptr;
         }
     }
 
@@ -152,21 +143,26 @@ namespace terrain {
         const UpdateContext& ctx,
         const Node& container)
     {
-        return;
-
         const auto& containerState = container.getState();
 
-        const int step = m_worldTileSize;
+        //const int step = m_worldTileSize;
 
-        for (size_t idx = 0; idx < m_tileInfos.size(); idx++) {
-            const auto& info = m_tileInfos[idx];
+        //for (size_t idx = 0; idx < m_tileInfos.size(); idx++) {
+        //    const auto& info = m_tileInfos[idx];
 
-            const glm::vec3 pos{ step / 2 + info.m_tileU * step, 0, step / 2 + info.m_tileV * step };
+        //    const glm::vec3 pos{ step / 2 + info.m_tileU * step, 0, step / 2 + info.m_tileV * step };
 
-            auto* node = m_nodes[idx].toNode();
-            auto& state = node->modifyState();
+        //    auto* node = m_nodes[idx].toNode();
+        //    auto& state = node->modifyState();
 
-            state.setPosition(pos);
+        //    state.setPosition(pos);
+        //}
+
+        {
+            const auto& parentMatrix = containerState.getModelMatrix();
+            for (auto& transform : m_transforms) {
+                transform.updateTransform(parentMatrix, m_volume);
+            }
         }
     }
 
@@ -200,9 +196,6 @@ namespace terrain {
 
         const int tileCount = m_worldTilesU * m_worldTilesV;
 
-        std::vector<NodeState> states;
-        states.reserve(tileCount);
-
         m_tileInfos.reserve(tileCount);
 
         // Setup initial static values for entity
@@ -226,11 +219,8 @@ namespace terrain {
 
         const glm::vec4 tileVolume = aabb.getVolume();
         const int step = m_worldTileSize;
-        AABB minmax{ true };
 
-        const int worldSizeU = m_worldTileSize * m_worldTilesU;
-        const int worldSizeV = m_worldTileSize * m_worldTilesV;
-
+        m_transforms.reserve(tileCount);
         for (size_t idx = 0; idx < m_tileInfos.size(); idx++) {
             const auto& info = m_tileInfos[idx];
             const auto u = info.m_tileU;
@@ -238,72 +228,17 @@ namespace terrain {
             const glm::vec3 pos{ step / 2 + u * step, 0, step / 2 + v * step };
 
             {
-                auto& state = states.emplace_back();
-                state.setVolume(tileVolume);
-                state.setScale(scale);
-                state.m_tileIndex = info.m_registeredIndex;
+                auto& transform = m_transforms.emplace_back();
+                transform.setVolume(tileVolume);
+                transform.setScale(scale);
+                transform.m_data = info.m_registeredIndex;
 
                 const glm::vec3 pos{
                     step / 2 + info.m_tileU * step,
                     0,
                     step / 2 + info.m_tileV * step };
-                state.setPosition(pos);
+                transform.setPosition(pos);
             }
-        }
-
-        auto typeHandle = createType(registry, container.m_typeHandle);
-
-        // NOTE KI dummy node needed to trigger instancing in container context
-        {
-            minmax.updateVolume();
-            KI_INFO_OUT(fmt::format("TERRAIN: minmax={}", minmax.getVolume()));
-
-            auto nodeId = SID("<terrain_tiles>");
-            auto handle = pool::NodeHandle::allocate(nodeId);
-            auto* node = handle.toNode();
-            assert(node);
-
-            node->setName("<terrain_tiles>");
-            node->m_typeHandle = typeHandle;
-
-            node->modifyState().setVolume(minmax.getVolume());
-
-            m_nodeHandle = handle;
-        }
-
-        {
-            NodeState state{};
-            event::Event evt { event::Type::node_add };
-            evt.blob = std::make_unique<event::BlobData>();
-            evt.blob->body.state = state;
-            evt.body.node = {
-                .target = m_nodeHandle.toId(),
-                .parentId = container.getId(),
-            };
-            assert(evt.body.node.target > 1);
-            dispatcher->send(evt);
-        }
-
-        m_nodes.reserve(states.size());
-        for (int idx = 0; auto& state : states)
-        {
-            ki::node_id nodeId{ ki::StringID::nextID() };
-            auto handle = pool::NodeHandle::allocate(nodeId);
-            auto* node = handle.toNode();
-            node->setName(fmt::format("tile-{}", idx));
-            node->m_typeHandle = typeHandle;
-            m_nodes.push_back(handle);
-
-            event::Event evt { event::Type::node_add };
-            evt.blob = std::make_unique<event::BlobData>();
-            evt.blob->body.state = state;
-            evt.body.node = {
-                .target = handle.toId(),
-                .parentId = m_nodeHandle.toId(),
-            };
-            assert(evt.body.node.target > 1);
-            dispatcher->send(evt);
-            idx++;
         }
     }
 

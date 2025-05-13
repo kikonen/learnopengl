@@ -95,7 +95,9 @@ namespace backend {
 
         std::vector<backend::MultiDrawRange> m_drawRanges;
 
-        kigl::GLBuffer m_indexBuffer{ "instance_index" };
+        std::vector<kigl::GLBuffer> m_instanceBuffers;
+        std::vector<kigl::GLFence> m_instanceFences;
+        int m_instanceBufferIndex{ -1 };
 
         kigl::GLBuffer m_drawParameters{ "draw_parameters" };
         kigl::GLBuffer m_performanceCounters{ "draw_performance_counters" };

@@ -15,7 +15,6 @@ namespace {
 Snapshot::Snapshot(const NodeState& o)
     : m_matrixLevel{ o.m_matrixLevel },
     m_flags{ o.m_flags },
-    m_tileIndex{ o.m_tileIndex },
     m_boneBaseIndex{ o.m_boneBaseIndex },
     m_socketBaseIndex{ o.m_socketBaseIndex },
     m_volume{ o.m_volume.getVolume() },
@@ -34,7 +33,6 @@ Snapshot::Snapshot(const NodeState& o)
 Snapshot::Snapshot(const NodeState&& o)
     : m_matrixLevel{ o.m_matrixLevel },
     m_flags{ o.m_flags },
-    m_tileIndex{ o.m_tileIndex },
     m_boneBaseIndex{ o.m_boneBaseIndex },
     m_socketBaseIndex{ o.m_socketBaseIndex },
     m_worldPos{ o.m_worldPos },
@@ -58,7 +56,6 @@ void Snapshot::applyFrom(const NodeState& o) noexcept
 
     m_flags = o.m_flags;
 
-    m_tileIndex = o.m_tileIndex;
     m_boneBaseIndex = o.m_boneBaseIndex;
     m_socketBaseIndex = o.m_socketBaseIndex;
 
@@ -95,7 +92,6 @@ void Snapshot::updateEntity(
 
     entity.u_volume = m_volume;
 
-    entity.u_tileIndex = m_tileIndex;
     entity.u_boneBaseIndex = m_boneBaseIndex;
     entity.u_socketBaseIndex = m_socketBaseIndex;
 

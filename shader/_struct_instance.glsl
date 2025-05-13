@@ -8,4 +8,12 @@ struct Instance {
   uint u_materialIndex;
   int u_socketIndex;
   uint u_flags;
+
+  // case specific data
+  // - terrain: terrain tile index
+  uint u_data;
+
+  int pad2_1;
+  int pad2_2;
+  int pad2_3;
 };

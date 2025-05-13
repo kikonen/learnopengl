@@ -21,9 +21,10 @@ struct Entity {
   uint u_objectID;
   uint u_flags;
 
-  uint u_tileIndex;
+  // NOTE KI via instance "m_data" now
+  // uint u_tileIndex;
   uint u_boneBaseIndex;
   uint u_socketBaseIndex;
 
-  int pad1;
+  // int pad1;
 };

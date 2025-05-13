@@ -58,6 +58,11 @@ public:
         return m_lightWeight;
     }
 
+    inline bool isLightWeightPhysics() const noexcept
+    {
+        return m_lightWeightPhysics;
+    }
+
     virtual void prepareWT(
         const PrepareContext& ctx,
         Node& container) {}
@@ -91,6 +96,7 @@ public:
 
 protected:
     bool m_lightWeight{ false };
+    bool m_lightWeightPhysics{ false };
 
     uint32_t m_poolSize{ 0 };
 

@@ -120,9 +120,19 @@ namespace backend {
 
         m_drawRanges.resize(rangeCount);
 
-        //m_indexBuffer.createEmpty(INDEX_BLOCK_SIZE * sizeof(GLuint), GL_DYNAMIC_STORAGE_BIT);
-        m_indexBuffer.createEmpty(1 * sizeof(mesh::InstanceSSBO), GL_DYNAMIC_STORAGE_BIT);
-        m_indexBuffer.bindSSBO(SSBO_INSTANCE_INDECES);
+        {
+            m_instanceBuffers.emplace_back("draw_buffer_instance_0");
+            m_instanceBuffers.emplace_back("draw_buffer_instance_1");
+
+            m_instanceFences.emplace_back("draw_buffer_instance_fence_0");
+            m_instanceFences.emplace_back("draw_buffer_instance_fence_1");
+
+            for (auto& buffer : m_instanceBuffers) {
+                //buffer.createEmpty(INDEX_BLOCK_SIZE * sizeof(GLuint), GL_DYNAMIC_STORAGE_BIT);
+                buffer.createEmpty(1 * sizeof(mesh::InstanceSSBO), GL_DYNAMIC_STORAGE_BIT);
+
+            }
+        }
     }
 
     void DrawBuffer::bind()
@@ -291,27 +301,33 @@ namespace backend {
     void DrawBuffer::sendInstanceIndeces(
         std::span<mesh::InstanceSSBO> indeces)
     {
-        {
-            const size_t totalCount = indeces.size();
-            constexpr size_t sz = sizeof(mesh::InstanceSSBO);
+        m_instanceBufferIndex = (m_instanceBufferIndex + 1) % 2;
 
-            // NOTE KI *reallocate* SSBO if needed
-            if (m_indexBuffer.m_size < totalCount * sz) {
-                size_t blocks = (totalCount / INDEX_BLOCK_SIZE) + 2;
-                size_t bufferSize = blocks * INDEX_BLOCK_SIZE * sz;
-                m_indexBuffer.resizeBuffer(bufferSize);
-                m_indexBuffer.bindSSBO(SSBO_INSTANCE_INDECES);
-            }
+        auto& instanceBuffer = m_instanceBuffers[m_instanceBufferIndex];
+        auto& instanceBufferFence = m_instanceFences[m_instanceBufferIndex];
 
-            //m_indexBuffer.invalidateRange(
-            //    0 * sz,
-            //    totalCount * sz);
+        //instanceBufferFence.waitFence(false);
 
-            m_indexBuffer.update(
-                0 * sz,
-                totalCount * sz,
-                indeces.data());
+        const size_t totalCount = indeces.size();
+        constexpr size_t sz = sizeof(mesh::InstanceSSBO);
+
+        // NOTE KI *reallocate* SSBO if needed
+        if (instanceBuffer.m_size < totalCount * sz) {
+            size_t blocks = (totalCount / INDEX_BLOCK_SIZE) + 2;
+            size_t bufferSize = blocks * INDEX_BLOCK_SIZE * sz;
+            instanceBuffer.resizeBuffer(bufferSize);
         }
+
+        //m_indexBuffer.invalidateRange(
+        //    0 * sz,
+        //    totalCount * sz);
+
+        instanceBuffer.update(
+            0 * sz,
+            totalCount * sz,
+            indeces.data());
+
+        instanceBuffer.bindSSBO(SSBO_INSTANCE_INDECES);
     }
 
     void DrawBuffer::drawPending(bool drawCurrent)
@@ -354,6 +370,9 @@ namespace backend {
         };
 
         m_commands->processPending(handler, drawCurrent, true);
+
+        auto& instanceBufferFence = m_instanceFences[m_instanceBufferIndex];
+        //instanceBufferFence.setFence(false);
     }
 
     gl::PerformanceCounters DrawBuffer::getCounters(bool clear) const

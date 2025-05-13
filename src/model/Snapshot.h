@@ -42,7 +42,6 @@ public:
     //// NOTE KI static member fields rather safe to access directly
     //pool::NodeHandle m_handle;
 
-    uint32_t m_tileIndex{ 0 };
     uint16_t m_boneBaseIndex{ 0 };
     uint16_t m_socketBaseIndex{ 0 };
 
@@ -72,7 +71,6 @@ public:
 
         m_flags = o.m_flags;
 
-        m_tileIndex = o.m_tileIndex;
         m_boneBaseIndex = o.m_boneBaseIndex;
         m_socketBaseIndex = o.m_socketBaseIndex;
 
