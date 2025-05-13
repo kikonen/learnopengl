@@ -80,13 +80,13 @@ local function attack(src_wid)
     vec3(25 - rnd(100), 0, 25 - rnd(100)))
 
   wid = cmd:wait({ after=0, time=7 + rnd(5) })
-  cmd:cancel({ after=wid, time=0 }, { cid })
+  cmd:cancel({ after=wid, time=0 }, cid)
 
   cid = cmd:move(
     { after=cid, time=10 + rnd(5), relative=true },
     vec3(25 - rnd(100), 0, 25 - rnd(100)))
 
-  cmd:cancel({ after=0, time=0 }, { cid })
+  cmd:cancel({ after=0, time=0 }, cid)
 
   cid = cmd:animation_play(
     { after=cid, sid=randomAttack() } )

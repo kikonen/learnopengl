@@ -18,6 +18,7 @@ namespace script
     class CommandEngine final
     {
         friend class Cancel;
+        friend class CancelMultiple;
         friend class Sync;
 
     public:

@@ -74,9 +74,9 @@ namespace script {
 
         static CommandHandle allocate(script::command_id id) noexcept;
 
-        static CommandHandle toHandle(script::command_id id) noexcept;
+        //static CommandHandle toHandle(script::command_id id) noexcept;
 
-        static CommandEntry* toCommand(script::command_id id) noexcept;
+        //static CommandEntry* toCommand(script::command_id id) noexcept;
 
         static void clear() noexcept;
 

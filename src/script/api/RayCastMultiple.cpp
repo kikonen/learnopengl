@@ -1,4 +1,4 @@
-#include "RayCast.h"
+#include "RayCastMultiple.h"
 
 #include "model/Node.h"
 
@@ -14,21 +14,21 @@
 
 namespace script
 {
-    RayCast::RayCast(
+    RayCastMultiple::RayCastMultiple(
         pool::NodeHandle handle,
-        const glm::vec3& dir,
+        const std::vector<glm::vec3>& dirs,
         float length,
         const uint32_t collisionMask,
         const std::function<void(int cid, const std::vector<physics::RayHit>&)>& callback) noexcept
         : NodeCommand(handle, 0, false),
-        m_dir{ dir },
+        m_dirs{ dirs },
         m_length{ length },
         m_collisionMask{ collisionMask },
         m_callback{ callback }
     {
     }
 
-    void RayCast::execute(
+    void RayCastMultiple::execute(
         const UpdateContext& ctx) noexcept
     {
         m_elapsedTime += ctx.m_clock.elapsedSecs;
@@ -37,13 +37,12 @@ namespace script
         if (m_finished) {
             const auto& state = getNode()->getState();
 
-            const auto& hits = physics::PhysicsSystem::get().rayCast(
+            const auto& hits = physics::PhysicsSystem::get().rayCastClosestToMultiple(
                 state.getWorldPosition(),
-                m_dir,
+                m_dirs,
                 m_length,
                 m_collisionMask,
-                m_handle,
-                true);
+                m_handle);
 
             if (!hits.empty()) {
                 m_callback(m_id, hits);

@@ -17,6 +17,9 @@ namespace script {
             if (auto* src = dynamic_cast<Cancel*>(other_cmd)) {
                 m_cmd = assign(m_buffer, src);
             }
+            else if (auto* src = dynamic_cast<CancelMultiple*>(other_cmd)) {
+                m_cmd = assign(m_buffer, src);
+            }
             else if (auto* src = dynamic_cast<Sync*>(other_cmd)) {
                 m_cmd = assign(m_buffer, src);
             }
@@ -75,6 +78,9 @@ namespace script {
                 m_cmd = assign(m_buffer, src);
             }
             else if (auto* src = dynamic_cast<RayCast*>(other_cmd)) {
+                m_cmd = assign(m_buffer, src);
+            }
+            else if (auto* src = dynamic_cast<RayCastMultiple*>(other_cmd)) {
                 m_cmd = assign(m_buffer, src);
             }
             else if (auto* src = dynamic_cast<FindPath*>(other_cmd)) {

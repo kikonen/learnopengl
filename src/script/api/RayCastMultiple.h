@@ -10,26 +10,26 @@
 
 namespace script
 {
-    class RayCast final : public NodeCommand
+    class RayCastMultiple final : public NodeCommand
     {
     public:
-        RayCast(
+        RayCastMultiple(
             pool::NodeHandle handle,
-            const glm::vec3& dir,
+            const std::vector<glm::vec3>& dirs,
             float length,
             const uint32_t collisionMask,
             const std::function<void(int cid, const std::vector<physics::RayHit>&)>& callback) noexcept;
 
         virtual std::string getName() const noexcept override
         {
-            return "ray_cast";
+            return "ray_cast_multiple";
         }
 
         virtual void execute(
             const UpdateContext& ctx) noexcept override;
 
     private:
-        const glm::vec3 m_dir;
+        const std::vector<glm::vec3> m_dirs;
         const uint32_t m_collisionMask;
         const float m_length;
 

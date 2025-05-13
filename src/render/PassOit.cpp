@@ -55,8 +55,6 @@ namespace render
     {
         const auto& dbg = *ctx.m_dbg;
 
-        m_oitBuffer.clearAll();
-
         m_enabled = !(ctx.m_forceSolid) &&
             dbg.m_effectOitEnabled;
 
@@ -128,6 +126,7 @@ namespace render
             state.setBlendMode(2, { GL_ONE, GL_ZERO });
         }
 
+        m_oitBuffer.clearAll();
         m_oitBuffer.bind(ctx);
 
         // only "blend OIT" nodes
