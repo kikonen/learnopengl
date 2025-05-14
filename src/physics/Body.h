@@ -49,6 +49,7 @@ namespace physics {
         }
 
         void create(
+            physics::object_id objectId,
             dWorldID worldId,
             dSpaceID spaceId,
             const glm::vec3& scale);

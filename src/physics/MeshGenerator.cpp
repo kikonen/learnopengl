@@ -76,8 +76,8 @@ namespace {
 }
 
 namespace physics {
-    MeshGenerator::MeshGenerator(const PhysicsSystem& engine)
-        : m_engine{ engine}
+    MeshGenerator::MeshGenerator(const PhysicsSystem& physicsSystem)
+        : m_physicsSystem{ physicsSystem }
     {}
 
     void MeshGenerator::clear()
@@ -92,7 +92,7 @@ namespace physics {
         auto meshes = std::make_shared<std::vector<mesh::MeshInstance>>();
         meshes->reserve(m_engine.m_objects.size());
 
-        const auto spaceId = m_engine.m_spaceId;
+        const auto spaceId = m_physicsSystem.m_spaceId;
         auto geomCount = dSpaceGetNumGeoms(spaceId);
 
         for (int i = 0; i < geomCount; i++) {
@@ -193,7 +193,7 @@ namespace physics {
             }
             case physics::GeomType::height_field: {
                 auto heightDataId = dGeomHeightfieldGetHeightfieldData(geomId);
-                const auto* heightMap = m_engine.getHeightMap(heightDataId);
+                const auto* heightMap = m_physicsSystem.getHeightMap(heightDataId);
                 if (heightMap) {
                     //dxHeightfieldData& data = *dGeomHeightfieldGetHeightfieldData(geomId);
 

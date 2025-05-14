@@ -375,7 +375,7 @@ namespace physics
 
             if (node) {
                 auto entityIndex = m_entityIndeces[id];
-                obj.create(entityIndex, m_worldId, m_spaceId, nodeRegistry);
+                obj.create(id, entityIndex, m_worldId, m_spaceId, nodeRegistry);
 
                 m_bodyToObject.insert({ obj.m_body.physicId, id});
 
@@ -391,7 +391,7 @@ namespace physics
                 m_handleToId.insert({ m_nodeHandles[id], id });
             }
             else {
-                obj.create(0, m_worldId, m_spaceId, nodeRegistry);
+                obj.create(id, 0, m_worldId, m_spaceId, nodeRegistry);
             }
 
             prepared.insert({ id, true });
@@ -441,6 +441,14 @@ namespace physics
         return &m_objects[id];
     }
 
+    const pool::NodeHandle& PhysicsSystem::getNodeHandle(physics::object_id id) const
+    {
+        ASSERT_WT();
+
+        if (id < 1 || id > m_nodeHandles.size()) return pool::NodeHandle::NULL_HANDLE;
+        return m_nodeHandles[id];
+    }
+
     physics::height_map_id PhysicsSystem::registerHeightMap()
     {
         ASSERT_WT();
@@ -484,6 +492,7 @@ namespace physics
         ASSERT_WT();
 
         geom.create(
+            0,
             m_worldId,
             m_spaceId,
             scale,
@@ -555,7 +564,7 @@ namespace physics
 
         auto& dbg = render::DebugContext::modify();
 
-        auto meshes = m_meshGenerator->generateMeshes();
+        auto meshes = m_meshGenerator->generateMeshes(false);
         dbg.m_physicsMeshesWT.swap(meshes);
     }
 

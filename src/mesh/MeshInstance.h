@@ -78,5 +78,16 @@ namespace mesh {
             m_transformMatrixRow1 = row1;
             m_transformMatrixRow2 = row2;
         }
+
+        glm::mat4 getTransform() const noexcept
+        {
+            return glm::transpose(
+                glm::mat4 {
+                    m_transformMatrixRow0,
+                    m_transformMatrixRow1,
+                    m_transformMatrixRow1,
+                    glm::vec4{ 0, 0, 0, 1.f }
+                });
+        }
     };
 }

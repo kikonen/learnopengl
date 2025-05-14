@@ -47,6 +47,7 @@ namespace physics
     Object::~Object() = default;
 
     void Object::create(
+        physics::object_id objectId,
         uint32_t entityIndex,
         dWorldID worldId,
         dSpaceID spaceId,
@@ -62,8 +63,8 @@ namespace physics
         const auto& state = nodeRegistry.getState(entityIndex);
         scale = state.getScale();
 
-        m_body.create(worldId, spaceId, scale);
-        m_geom.create(worldId, spaceId, scale, m_body.physicId);
+        m_body.create(objectId, worldId, spaceId, scale);
+        m_geom.create(objectId, worldId, spaceId, scale, m_body.physicId);
     }
 
     bool Object::updateToPhysics(
