@@ -61,6 +61,7 @@ namespace physics {
             physics::Object object);
 
         const physics::Object* getObject(physics::object_id id) const;
+        const pool::NodeHandle& getNodeHandle(physics::object_id id) const;
 
         physics::height_map_id registerHeightMap();
         const HeightMap* getHeightMap(physics::height_map_id id) const;

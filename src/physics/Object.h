@@ -37,6 +37,7 @@ namespace physics {
         inline bool ready() const { return m_geom.physicId || m_body.physicId; }
 
         void create(
+            physics::object_id objectId,
             uint32_t entityIndex,
             dWorldID worldId,
             dSpaceID spaceId,
