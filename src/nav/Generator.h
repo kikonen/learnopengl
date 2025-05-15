@@ -10,6 +10,11 @@
 #include "InputCollection.h"
 #include "BuildSettings.h"
 
+namespace mesh
+{
+    struct MeshInstance;
+}
+
 namespace nav
 {
     class RecastContainer;
@@ -26,6 +31,8 @@ namespace nav
         void cleanup();
 
         void registerNode(pool::NodeHandle nodeHandle);
+
+        void registerMeshInstance(const mesh::MeshInstance& meshInstance);
 
         // Build must be done after registering all meshes
         bool build();

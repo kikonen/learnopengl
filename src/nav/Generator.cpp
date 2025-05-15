@@ -67,6 +67,11 @@ namespace nav
         m_inputCollection.addNode(nodeHandle);
     }
 
+    void Generator::registerMeshInstance(const mesh::MeshInstance& meshInstance)
+    {
+        m_inputCollection.addMeshInstance(meshInstance);
+    }
+
     // Build must be done after registering all meshes
     bool Generator::build()
     {

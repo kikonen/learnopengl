@@ -53,7 +53,7 @@ namespace nav
             m_regionMergeSize = 20;
             m_edgeMaxLen = 12.0f;
             m_edgeMaxError = 1.3f;
-            m_vertsPerPoly = 6.0f;
+            m_vertsPerPoly = 3.0f;
             m_detailSampleDist = 6.0f;
             m_detailSampleMaxError = 1.0f;
             m_partitionType = PartitionType::SAMPLE_PARTITION_WATERSHED;

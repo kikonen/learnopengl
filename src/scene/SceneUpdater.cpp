@@ -212,9 +212,11 @@ void SceneUpdater::update(const UpdateContext& ctx)
         nodeRegistry.snapshotPending();
     }
 
+    if (physicsSystem.isEnabled()) {
+        nav::NavigationSystem::get().build();
+    }
     if (m_loaded) {
         physicsSystem.setEnabled(true);
-        nav::NavigationSystem::get().build();
     }
 }
 

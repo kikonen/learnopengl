@@ -2,6 +2,9 @@
 
 #include "util/thread.h"
 
+#include "physics/MeshGenerator.h"
+#include "physics/PhysicsSystem.h"
+
 #include "RecastContainer.h"
 #include "Generator.h"
 #include "Resolver.h"
@@ -51,7 +54,8 @@ namespace nav
     }
 
     void NavigationSystem::prepare()
-    { }
+    {
+    }
 
     void NavigationSystem::registerNode(pool::NodeHandle nodeHandle)
     {
@@ -61,6 +65,15 @@ namespace nav
 
     void NavigationSystem::build()
     {
+        if (!m_physicsMeshes.get())
+        {
+            m_physicsMeshGenerator = std::make_unique<physics::MeshGenerator>(physics::PhysicsSystem::get());
+            m_physicsMeshes = m_physicsMeshGenerator->generateMeshes(true);
+            for (const auto& meshInstance : *m_physicsMeshes) {
+                m_generator->registerMeshInstance(meshInstance);
+            }
+        }
+
         m_generator->build();
         m_dirty = false;
     }

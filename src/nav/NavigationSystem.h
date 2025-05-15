@@ -1,11 +1,20 @@
 #pragma once
 
+#include <vector>
 #include <memory>
 
 #include <glm/glm.hpp>
 
 #include "pool/NodeHandle.h"
 
+namespace physics
+{
+    class MeshGenerator;
+}
+
+namespace mesh {
+    struct MeshInstance;
+}
 
 namespace nav
 {
@@ -41,5 +50,8 @@ namespace nav
         std::shared_ptr<nav::RecastContainer> m_container;
         std::unique_ptr<nav::Resolver> m_resolver;
         std::unique_ptr<nav::Generator> m_generator;
+
+        std::unique_ptr<physics::MeshGenerator> m_physicsMeshGenerator;
+        std::shared_ptr<std::vector<mesh::MeshInstance>> m_physicsMeshes;
     };
 }

@@ -465,8 +465,7 @@ namespace mesh
             processMeshBone(ctx, meshSet, modelMesh, meshIndex, mesh, mesh->mBones[boneIdx]);
         }
 
-        modelMesh.m_vertexCount = static_cast<uint32_t>(modelMesh.m_vertices.size());
-        modelMesh.m_indexCount = static_cast<uint32_t>(modelMesh.m_indeces.size());
+        modelMesh.setupVertexCounts();
     }
 
     void AssimpLoader::processMeshFace(
