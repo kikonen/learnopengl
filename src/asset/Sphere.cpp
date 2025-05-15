@@ -21,9 +21,9 @@ Sphere::Sphere(const glm::vec3& center, float radius) noexcept
 
 Sphere::Sphere(const glm::vec4& worldVolume) noexcept
     : m_center{ worldVolume },
-    m_radius{ worldVolume.a },
+    m_radius{ worldVolume.w },
     m_worldCenter { worldVolume },
-    m_worldRadius{ worldVolume.a }
+    m_worldRadius{ worldVolume.w }
 {}
 
 Sphere::~Sphere() noexcept = default;

@@ -979,26 +979,24 @@ nodes:
         category: [prop]
         collision: [npc]
         size: [1, 1, 1]
-  - id: terrain_grass
-    id: auto
-    priority: 20
-    type: container
-    pos: [-1200, -5.5, -900]
-    xxpos: [-1024, -5.5, -1024]
-    front: [0, 1, 0]
-    flags:
-      pre_depth: true
-      xxline_mode: true
-      tessellation: true
-    generator:
-      type: terrain
-      mode: grid
+  - id: terrain_grass_v2
+    mesh:
+      path: quad_terrain
       material:
         prefab: materials/Terrain2
         texture_spec:
           wrap: GL_CLAMP_TO_EDGE
         program: g_terrain
         depth_program: g_terrain_depth
+        tiling: 8
+      flags:
+        tessellation: true
+    priority: 20
+    pos: [-1200, -5.5, -900]
+    xxpos: [-1024, -5.5, -1024]
+    generator:
+      type: terrain
+      mode: grid
       terrain:
         map_height: textures/terrain_2/terrain_2_height.png
       tiling:
@@ -1007,7 +1005,9 @@ nodes:
         vert_range: [-62.54, 221.9]
         horiz_scale: 2
     type_flags:
+      pre_depth: true
       use_deferred: true
+      nav_mesh: true
     physics:
       geom:
         type: height_field

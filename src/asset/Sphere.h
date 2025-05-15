@@ -32,7 +32,7 @@ struct Sphere final
         volume.x = m_worldCenter.x;
         volume.y = m_worldCenter.y;
         volume.z = m_worldCenter.z;
-        volume.a = m_worldRadius;
+        volume.w = m_worldRadius;
     }
 
     inline const glm::vec3& getCenter() const noexcept {

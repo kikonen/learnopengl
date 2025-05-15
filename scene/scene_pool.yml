@@ -332,26 +332,23 @@ nodes:
       cmd:animation_play(
         { name = "master:Idle" });
     script: scripts/seq_skeleton_army
-  - id: terrain_grass
-    id: auto
-    priority: 20
-    type: container
-    pos: [-1024, 10, -1024]
-    flags:
-      pre_depth: true
-      xxno_shadow: true
-      tessellation: true
-      xxrender_back: true
-      xxno_frustum: true
-    generator:
-      type: terrain
-      mode: grid
+  - id: terrain_grass_v2
+    mesh:
+      path: quad_terrain
       material:
         prefab: materials/Terrain2
         texture_spec:
           wrap: GL_CLAMP_TO_EDGE
         program: g_terrain
         depth_program: g_terrain_depth
+        tiling: 8
+      flags:
+        tessellation: true
+    priority: 20
+    pos: [-1024, 10, -1024]
+    generator:
+      type: terrain
+      mode: grid
       terrain:
         map_height: textures/terrain_2/terrain_2_height.png
       tiling:
@@ -360,14 +357,15 @@ nodes:
         vert_range: [-32.54, 31.9]
         horiz_scale: 2
     type_flags:
+      pre_depth: true
       use_deferred: true
+      nav_mesh: true
     physics:
       geom:
         type: height_field
         category: [ground, terrain]
         collide: [can_terrain]
         size: [2048, 0, 2048]
-        xrotation: [0, 180, 0]
   - id: grass_{t}
     prefab:
       path: prefab/scenery/prefab_grass.yml
