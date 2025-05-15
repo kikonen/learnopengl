@@ -34,6 +34,12 @@ namespace mesh {
             return m_indeces.size();
         }
 
+        void setupVertexCounts()
+        {
+            m_vertexCount = static_cast<uint32_t>(m_vertices.size());
+            m_indexCount = static_cast<uint32_t>(m_indeces.size());
+        }
+
     public:
         std::vector<mesh::Vertex> m_vertices;
         std::vector<mesh::Index32> m_indeces;

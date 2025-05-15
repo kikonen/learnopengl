@@ -4,6 +4,7 @@
 
 #include "model/Node.h"
 
+#include "mesh/MeshInstance.h"
 #include "mesh/MeshType.h"
 #include "mesh/LodMesh.h"
 
@@ -12,6 +13,7 @@
 namespace nav
 {
     InputCollection::InputCollection()
+        : m_meshInstances{ std::make_unique<std::vector<mesh::MeshInstance>>() }
     { }
 
     InputCollection::~InputCollection()
@@ -21,6 +23,12 @@ namespace nav
     {
         m_dirty = true;
         m_nodeHandles.push_back(nodeHandle);
+    }
+
+    void InputCollection::addMeshInstance(const mesh::MeshInstance& meshInstance)
+    {
+        m_dirty = true;
+        m_meshInstances->push_back(meshInstance);
     }
 
     void InputCollection::build()
@@ -43,6 +51,13 @@ namespace nav
                     lodMesh.m_mesh);
                 m_geometries.push_back(std::move(geom));
             }
+        }
+
+        for (const auto& meshInstance : *m_meshInstances) {
+            auto geom = std::make_unique<nav::InputGeom>(
+                meshInstance.getTransform(),
+                meshInstance.m_mesh.get());
+            m_geometries.push_back(std::move(geom));
         }
 
         for (auto& geom : m_geometries) {

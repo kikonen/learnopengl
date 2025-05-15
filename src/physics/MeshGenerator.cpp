@@ -17,12 +17,15 @@
 
 #include "material/Material.h"
 
+#include "model/Node.h"
+
 #include "render/DebugContext.h"
 
 #include "mesh/generator/PrimitiveGenerator.h"
 #include "mesh/Mesh.h"
 #include "mesh/PrimitiveMesh.h"
 #include "mesh/MeshInstance.h"
+#include "mesh/MeshType.h"
 
 #include "PhysicsSystem.h"
 #include "ode_util.h"
@@ -85,24 +88,36 @@ namespace physics {
         m_cache.clear();
     }
 
-    std::shared_ptr<std::vector<mesh::MeshInstance>> MeshGenerator::generateMeshes()
+    std::shared_ptr<std::vector<mesh::MeshInstance>> MeshGenerator::generateMeshes(bool onlyNavMesh)
     {
         if (!render::DebugContext::get().m_physicsShowObjects) return nullptr;
 
-        auto meshes = std::make_shared<std::vector<mesh::MeshInstance>>();
-        meshes->reserve(m_engine.m_objects.size());
-
         const auto spaceId = m_physicsSystem.m_spaceId;
         auto geomCount = dSpaceGetNumGeoms(spaceId);
+
+        auto meshes = std::make_shared<std::vector<mesh::MeshInstance>>();
+        meshes->reserve(geomCount);
 
         for (int i = 0; i < geomCount; i++) {
             auto geomId = dSpaceGetGeom(spaceId, i);
             auto geomType = getGeomType(dGeomGetClass(geomId));
 
-            auto instance = generateMesh(geomType, geomId);
-            if (instance.m_mesh) {
-                instance.m_materialIndex = getMaterial(geomType).m_registeredIndex;
-                meshes->push_back(instance);
+            bool isNavMesh = false;
+            {
+                auto objectId = (physics::object_id)dGeomGetData(geomId);
+                const auto* node = m_physicsSystem.getNodeHandle(objectId).toNode();
+                if (node) {
+                    const auto* type = node->getType();
+                    isNavMesh = type->m_flags.navMesh;
+                }
+            }
+
+            if (!onlyNavMesh || isNavMesh) {
+                auto instance = generateMesh(geomType, geomId);
+                if (instance.m_mesh) {
+                    instance.m_materialIndex = getMaterial(geomType).m_registeredIndex;
+                    meshes->push_back(instance);
+                }
             }
         }
 
@@ -328,7 +343,9 @@ namespace physics {
 
         backend::DrawOptions drawOptions;
         if (mesh) {
-            const auto* primitiveMesh = dynamic_cast<mesh::PrimitiveMesh*>(mesh.get());
+            auto* primitiveMesh = dynamic_cast<mesh::PrimitiveMesh*>(mesh.get());
+
+            primitiveMesh->setupVertexCounts();
 
             drawOptions.m_mode = mesh->getDrawMode();
             drawOptions.m_type = backend::DrawOptions::Type::elements;

@@ -9,6 +9,11 @@
 
 #include "InputGeom.h"
 
+namespace mesh
+{
+    struct MeshInstance;
+}
+
 namespace nav
 {
     class InputGeom;
@@ -20,6 +25,7 @@ namespace nav
         ~InputCollection();
 
         void addNode(pool::NodeHandle nodeHandle);
+        void addMeshInstance(const mesh::MeshInstance& meshInstance);
 
         const std::vector<std::unique_ptr<InputGeom>>& getGeometries() const
         {
@@ -40,6 +46,7 @@ namespace nav
         bool m_dirty{ true };
 
         std::vector<pool::NodeHandle> m_nodeHandles;
+        std::unique_ptr<std::vector<mesh::MeshInstance>> m_meshInstances;
 
         std::vector<std::unique_ptr<nav::InputGeom>> m_geometries;
 
