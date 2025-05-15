@@ -188,11 +188,15 @@ namespace terrain {
             KI_INFO_OUT(fmt::format("TERRAIN_AABB: minY={}, maxY={}", vertMinAABB, vertMaxAABB));
         }
 
-        const AABB aabb{
-            glm::vec3{ -1.f, 1, -1.f },
-            glm::vec3{ 1.f, 1, 1.f },
-            false
-        };
+        {
+            AABB aabb{
+                glm::vec3{ -1.f, 1, -1.f },
+                glm::vec3{ 1.f, 1, 1.f },
+                false
+            };
+            aabb.updateVolume();
+            m_volume = aabb.getVolume();
+        }
 
         const int tileCount = m_worldTilesU * m_worldTilesV;
 
@@ -217,7 +221,6 @@ namespace terrain {
             }
         }
 
-        const glm::vec4 tileVolume = aabb.getVolume();
         const int step = m_worldTileSize;
 
         m_transforms.reserve(tileCount);
@@ -229,7 +232,6 @@ namespace terrain {
 
             {
                 auto& transform = m_transforms.emplace_back();
-                transform.setVolume(tileVolume);
                 transform.setScale(scale);
                 transform.m_data = info.m_registeredIndex;
 

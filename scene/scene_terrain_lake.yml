@@ -35,28 +35,28 @@ nodes:
       diffuse: [0.9, 0.9, 0.8, 1.0]
       intensity: 30000
     script_file: scripts/anim_lake_light
-  - name: Terrain grass v2
-    id: auto
+  - id: terrain_grass_v2
+    mesh:
+      path: quad_terrain
+      material:
+        prefab: materials/Terrain2
+        texture_spec:
+          wrap: GL_CLAMP_TO_EDGE
+        xxline_mode: true
+        xrender_back: true
+        program: g_terrain
+        depth_program: g_terrain_depth
+        xdefault_programs: true
+        tiling: 4
+      flags:
+        tessellation: true
     priority: 20
-    type: container
+    xtype: terrain
     pos: [-1024, 0, -1024]
     xxpos: [0, 0, 0]
-    flags:
-      pre_depth: true
-      xxno_shadow: true
-      tessellation: true
-      xxno_frustum: true
     generator:
       type: terrain
       mode: grid
-      material:
-        prefab: materials/Terrain2
-        xxline_mode: true
-        xxrender_back: true
-        texture_spec:
-          wrap: GL_CLAMP_TO_EDGE
-        program: g_terrain
-        depth_program: g_terrain_depth
       terrain:
         map_height: textures/terrain_2/terrain_2_height.png
       tiling:
@@ -65,7 +65,18 @@ nodes:
         vert_range: [-62.54, 221.9]
         horiz_scale: 2
     type_flags:
+      pre_depth: true
+      xxno_shadow: true
+      xxno_frustum: true
       use_deferred: true
+      nav_mesh: true
+    physics:
+      geom:
+        type: height_field
+        category: [terrain]
+        collision: [can_terrain]
+        size: [2048, 0, 2048]
+        xrotation: [0, 180, 0]
   - name: Water surface - SINGLE
     mesh:
       path: plane

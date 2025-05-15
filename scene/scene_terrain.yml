@@ -33,39 +33,6 @@ nodes:
       type: directional
       diffuse: [0.9, 0.9, 0.7, 1.0]
       intensity: 30000
-  - xid: terrain_grass
-    priority: 20
-    type: container
-    pos: [-1024, 0, -1024]
-    xxpos: [0, 0, 0]
-    flags:
-      pre_depth: true
-      tessellation: true
-    generator:
-      type: terrain
-      mode: grid
-      material:
-        prefab: materials/Terrain2
-        texture_spec:
-          wrap: GL_CLAMP_TO_EDGE
-        program: g_terrain
-        depth_program: g_terrain_depth
-      terrain:
-        map_height: textures/terrain_2/terrain_2_height.png
-      tiling:
-        tile_size: 256
-        tiles: [8, 0, 8]
-        vert_range: [-62.54, 221.9]
-        horiz_scale: 2
-    type_flags:
-      use_deferred: true
-    physics:
-      geom:
-        type: height_field
-        category: [terrain]
-        collision: [can_terrain]
-        size: [2048, 0, 2048]
-        xrotation: [0, 180, 0]
   - id: terrain_grass_v2
     mesh:
       path: quad_terrain
@@ -91,9 +58,9 @@ nodes:
         vert_range: [-62.54, 221.9]
         horiz_scale: 2
     type_flags:
+      pre_depth: true
       use_deferred: true
       nav_mesh: true
-      no_frustum: true
     physics:
       geom:
         type: height_field

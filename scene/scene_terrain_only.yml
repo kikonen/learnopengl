@@ -62,9 +62,8 @@ nodes:
         vert_range: [-20, 100]
         horiz_scale: 2
     type_flags:
-      xpre_depth: true
+      pre_depth: true
       xxno_shadow: true
       xxno_frustum: true
       use_deferred: true
       nav_mesh: true
-      no_frustum: true
