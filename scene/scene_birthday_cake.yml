@@ -1,0 +1,233 @@
+---
+skybox:
+  program: g_skybox
+  material: skybox/polyhaven/sepulchral_chapel_rotunda_4k.hdr
+script:
+  scripts:
+    - path: lib/common
+nodes:
+  - id: player
+    type: origo
+    pos: [13, 8, 0]
+    front: [0, 0, -1]
+    rot: [0, 90, 0]
+    active: true
+    audio:
+      listener:
+        xdefault: true
+    camera:
+      type: fps
+      pitch: -12
+      default: true
+    controllers:
+      - type: pawn
+      - type: camera_zoom
+  - id: dir_light_{c}_{t}
+    type: origo
+    mesh:
+      path: light
+      program: g_light
+    pos: [-15, 25, 25]
+    flags:
+      no_shadow: true
+    light:
+      type: directional
+      diffuse: [0.7, 0.7, 0.7, 1.0]
+      intensity: 30000
+  - id: origo
+    mesh:
+      path: water_ball
+      material:
+        kd: [0.0, 0.2, 0.8, 1.0]
+        mrao: [0.2, 0.1, 1.0]
+        program: g_tex
+      scale: 0.05
+    pos: [0.0, 0.0, 0.0]
+  - id: plate
+    mesh:
+      vertex:
+        type: disk
+        radius: 0.5
+      material:
+        prefab: materials/Metal008
+        tiling: 1
+      flags:
+        pre_depth: true
+      base_rot: [90, 0, 0]
+    flags:
+      no_shadow: true
+    scale: 20
+  - id: rotate_origo
+    type: origo
+    pos: [0, 2, 0]
+    script: |
+      cmd:rotate(
+        { time=10 * 100 },
+        vec3(0, 1, 0),
+        360 * 100)
+  - id: point_light_origo_1
+    type: origo
+    pos: [0.0, 6.0, 0.0]
+    script: |
+      cid = cmd:rotate(
+        { time=15 * 10, relative=true },
+        vec3(0.0, 1.0, 0.0),
+        20 * 360.0)
+    xscript_file: scripts/anim_rotate_light
+  - id: point_light_green_1
+    parent_id: point_light_origo_1
+    pos: [-7, 0, 0]
+    scale: 0.15
+    mesh:
+      path: light
+      material_modifier:
+        kd: [0.1, 0.8, 0.1, 1.0]
+      program: light
+    flags:
+      no_shadow: true
+    light:
+      type: point
+      linear: 0.35
+      quadratic: 0.44
+      target_id: ROOT
+      kd: [0.1, 0.8, 0.1, 1.0]
+      intensity: 1000
+  - id: point_light_yellow_1
+    parent_id: point_light_origo_1
+    pos: [7, 0, 0]
+    scale: 0.15
+    mesh:
+      path: light
+      material_modifier:
+        kd: [0.8, 0.8, 0.1, 1.0]
+      program: light
+    flags:
+      no_shadow: true
+    light:
+      type: point
+      linear: 0.35
+      quadratic: 0.44
+      target_id: ROOT
+      kd: [0.8, 0.8, 0.1, 1.0]
+      intensity: 1000
+  - id: point_light_red_1
+    parent_id: point_light_origo_1
+    pos: [0, 0, 7]
+    scale: 0.15
+    mesh:
+      path: light
+      material_modifier:
+        kd: [0.8, 0.1, 0.1, 1.0]
+      program: light
+    flags:
+      no_shadow: true
+    light:
+      type: point
+      linear: 0.35
+      quadratic: 0.44
+      target_id: ROOT
+      kd: [0.8, 0.1, 0.1, 1.0]
+      intensity: 1000
+  - id: point_light_blue_1
+    parent_id: point_light_origo_1
+    pos: [0, 0, -7]
+    scale: 0.15
+    mesh:
+      path: light
+      material_modifier:
+        kd: [0.1, 0.1, 0.8, 1.0]
+      program: light
+    flags:
+      no_shadow: true
+    light:
+      type: point
+      linear: 0.35
+      quadratic: 0.44
+      target_id: ROOT
+      kd: [0.1, 0.1, 0.8, 1.0]
+      intensity: 1000
+  - id: cake
+    parent: rotate_origo
+    mesh:
+      path: models/birthday_cake_3d_scan/model/model.dae
+      #path: models/birthday_cake_3d_scan/model/model.dae
+      program: g_tex
+      materials:
+        - name: material_0
+          base: textures
+          xkd: [0.2, 0.9, 0.2, 1]
+          map_kd: material_0_albedo.jpg
+          map_normal: material_0_normal.png
+          map_mrao: material_0_mrao
+          blend: true
+      base_scale: 0.01
+      base_rot: [-45, 0, 0]
+    pos: [1, 3, 0]
+    scale: 4
+    rot: [13, 0, 0]
+    xscript: |
+      cmd:rotate(
+        { time=50 * 100 },
+        vec3(0, 0, 1),
+        360 * 100)
+      cmd:rotate(
+        { time=30 * 100 },
+        vec3(1, 1, 0),
+        360 * 100)
+  - id: marilyn
+    parent: cake
+    mesh:
+      path: models/marilyn/marilyn.obj
+      program: g_tex
+      materials:
+        - name: material_0
+          map_kd: marilyn_material0000.jpg
+          render_back: true
+        - name: material_1
+          map_kd: marilyn_material0001.jpg
+          render_back: true
+        - name: material_2
+          map_kd: marilyn_material0002.jpg
+          render_back: true
+        - name: material_3
+          map_kd: marilyn_material0003.jpg
+          render_back: true
+      base_scale: 0.5
+      base_rot: [-90, 0, 0]
+    pos: [0, -0.18, 0]
+    scale: 1.2
+    particle:
+      seed: 1
+      gravity: [0, -0.81, 0]
+      lifetime: 20
+      lifetime_variation: 5
+      area_type: point
+      area_radius: 10
+      area_variation: 0.1
+      dir: [0, 1, 0]
+      dir_variation: 0.5
+      speed: 3
+      speed_variation: 2
+      size: 0.05
+      size_variation: 0.05
+      rate: 500
+      rate_variation: 50
+      sprite_base: 0
+      sprite_base_variation: 0
+      sprite_count: -1
+      sprite_speed: 10
+      sprite_speed_variation: 20
+      material:
+        name: particle_casting
+        kd: [1, 1, 1, 1]
+        map_kd: particles/bones_2_spritesheet.png
+        sprites: 29
+        sprites_x: 4
+        texture_spec:
+          wrap: GL_CLAMP_TO_EDGE
+    script: |
+      cmd:rotate(
+        { time=40 * 20 },
+        vec3(0, 1, 0),
+        -150 * 360)
+    script_file: scripts/seq_particle_generator
