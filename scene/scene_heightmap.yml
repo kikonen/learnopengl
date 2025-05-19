@@ -172,7 +172,7 @@ nodes:
     type_flags:
       pre_depth: true
       use_deferred: true
-      nav_mesh: true
+      nav_physics: true
     physics:
       geom:
         type: height_field
