@@ -65,17 +65,32 @@ namespace nav
 
     void NavigationSystem::build()
     {
-        if (!m_physicsMeshes.get())
-        {
-            m_physicsMeshGenerator = std::make_unique<physics::MeshGenerator>(physics::PhysicsSystem::get());
-            m_physicsMeshes = m_physicsMeshGenerator->generateMeshes(true);
+        setupPhysics();
+
+        m_generator->build();
+        m_dirty = false;
+    }
+
+    void NavigationSystem::setupPhysics()
+    {
+        auto* physicsSystem = &physics::PhysicsSystem::get();
+        if (!physicsSystem) return;
+
+        if (m_physicsLevel == physicsSystem->getLevel()) return;
+        m_physicsLevel = physicsSystem->getLevel();
+
+        m_generator->clearMeshInstances();
+
+        if (!m_physicsMeshGenerator) {
+            m_physicsMeshGenerator = std::make_unique<physics::MeshGenerator>(*physicsSystem);
+        }
+
+        m_physicsMeshes = m_physicsMeshGenerator->generateMeshes(true);
+        if (m_physicsMeshes.get()) {
             for (const auto& meshInstance : *m_physicsMeshes) {
                 m_generator->registerMeshInstance(meshInstance);
             }
         }
-
-        m_generator->build();
-        m_dirty = false;
     }
 
     Path NavigationSystem::findPath(const Query& query)

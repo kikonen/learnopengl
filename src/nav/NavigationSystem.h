@@ -45,6 +45,9 @@ namespace nav
         nav::Path findPath(const nav::Query& query);
 
     private:
+        void setupPhysics();
+
+    private:
         bool m_dirty{ true };
 
         std::shared_ptr<nav::RecastContainer> m_container;
@@ -53,5 +56,6 @@ namespace nav
 
         std::unique_ptr<physics::MeshGenerator> m_physicsMeshGenerator;
         std::shared_ptr<std::vector<mesh::MeshInstance>> m_physicsMeshes;
+        ki::level_id m_physicsLevel{ 0 };
     };
 }

@@ -85,7 +85,7 @@ namespace mesh {
                 glm::mat4 {
                     m_transformMatrixRow0,
                     m_transformMatrixRow1,
-                    m_transformMatrixRow1,
+                    m_transformMatrixRow2,
                     glm::vec4{ 0, 0, 0, 1.f }
                 });
         }

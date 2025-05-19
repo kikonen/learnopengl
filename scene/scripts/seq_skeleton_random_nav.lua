@@ -101,7 +101,7 @@ local function ray_caster()
   local cast_cid = 0
   local ray_degrees = INITIAL_RAY_DEGREES
   local elapsed = 60
-  local cast_elapsed = 0
+  local cast_elapsed = 10
 
   local function path_callback(args)
     print("NAV: PATH")
@@ -119,16 +119,20 @@ local function ray_caster()
       local next_pos = args.data:waypoint(i)
       local rel_pos = next_pos - prev_pos
 
-      printf("A: waypoint-%d: %s, rel=%s\n", i, next_pos, rel_pos)
+      --printf("A: waypoint-%d: %s, rel=%s\n", i, next_pos, rel_pos)
 
       attack_cid = self:attack(prev_cid)
 
       prev_cid = cmd:move(
-        { after=prev_cid, time=0.5, relative=true },
+        { after=prev_cid, time=0.25, relative=true },
         rel_pos)
 
       prev_pos = next_pos
     end
+
+    -- prev_cid = cmd:move_path(
+    --   { after=prev_cid, time=4, relative=false },
+    --   args.data.waypoints)
   end
 
   local function ray_cast_callback(args)
@@ -205,7 +209,7 @@ local function ray_caster()
 
     -- attack_cid = self:attack(cancel_cid)
 
-    ray_degrees = 0
+    ray_degrees = INITIAL_RAY_DEGREES
 
     path_cid = cmd:find_path(
       { after=cancel_cid, time=0 },
@@ -221,24 +225,34 @@ local function ray_caster()
     cast_elapsed = cast_elapsed + dt
 
     -- NOTE KI avoid busy lopping in ray cast
-    if cast_elapsed < 1 then return end
+    if cast_elapsed < 20 then return end
 
     ray_degrees = ray_degrees - cast_elapsed * 1
     cast_elapsed = 0
 
+    ray_degrees = rnd(360)
+
     local rot = util.axis_degrees_to_quat(vec3(0, 1, 0), ray_degrees)
     local dir = rot:to_mat4() * node:get_front()
-
-    printf("CAST: %s\n", dir)
 
     cast_cid = cmd:cancel(
       {},
       cast_cid)
 
-    cast_cid = cmd:ray_cast(
-      { after=cast_cid },
-      dir,
-      ray_cast_callback)
+    -- cast_cid = cmd:ray_cast(
+    --   { after=cast_cid },
+    --   dir,
+    --   ray_cast_callback)
+
+    local nodePos = node:get_pos()
+
+    path_cid = cmd:find_path(
+      { after=cancel_cid, time=0 },
+      nodePos,
+      nodePos + 20 * dir,
+      --nodePos + vec3(0, 0, -10),
+      100,
+      path_callback)
   end
 
   Updater:add_updater(cast_update)

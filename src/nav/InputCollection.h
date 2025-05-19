@@ -25,6 +25,8 @@ namespace nav
         ~InputCollection();
 
         void addNode(pool::NodeHandle nodeHandle);
+
+        void clearMeshInstances();
         void addMeshInstance(const mesh::MeshInstance& meshInstance);
 
         const std::vector<std::unique_ptr<InputGeom>>& getGeometries() const

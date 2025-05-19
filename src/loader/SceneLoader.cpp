@@ -1217,6 +1217,7 @@ namespace loader {
         }
 
         flags.navMesh = container.getFlag("nav_mesh", flags.navMesh);
+        flags.navPhysics = container.getFlag("nav_physics", flags.navPhysics);
     }
 
     void SceneLoader::assignMeshFlags(

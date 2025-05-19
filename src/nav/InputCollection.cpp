@@ -25,6 +25,14 @@ namespace nav
         m_nodeHandles.push_back(nodeHandle);
     }
 
+    void InputCollection::clearMeshInstances()
+    {
+        if (m_meshInstances->empty()) return;
+
+        m_dirty = true;
+        m_meshInstances->clear();
+    }
+
     void InputCollection::addMeshInstance(const mesh::MeshInstance& meshInstance)
     {
         m_dirty = true;
@@ -57,7 +65,7 @@ namespace nav
             auto geom = std::make_unique<nav::InputGeom>(
                 meshInstance.getTransform(),
                 meshInstance.m_mesh.get());
-            m_geometries.push_back(std::move(geom));
+                m_geometries.push_back(std::move(geom));
         }
 
         for (auto& geom : m_geometries) {
