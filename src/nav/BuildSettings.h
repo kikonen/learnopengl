@@ -43,18 +43,18 @@ namespace nav
 
         void reset()
         {
-            m_cellSize = 0.3f;
-            m_cellHeight = 0.2f;
+            m_cellSize = 1.0f;
+            m_cellHeight = 1.0f;
             m_agentHeight = 2.0f;
-            m_agentRadius = 0.6f;
-            m_agentMaxClimb = 0.9f;
+            m_agentRadius = 0.5f;
+            m_agentMaxClimb = 1.0f;
             m_agentMaxSlope = 45.0f;
             m_regionMinSize = 8;
             m_regionMergeSize = 20;
             m_edgeMaxLen = 12.0f;
             m_edgeMaxError = 1.3f;
-            m_vertsPerPoly = 3.0f;
-            m_detailSampleDist = 6.0f;
+            m_vertsPerPoly = 6.0f;
+            m_detailSampleDist = 10.0f;
             m_detailSampleMaxError = 1.0f;
             m_partitionType = PartitionType::SAMPLE_PARTITION_WATERSHED;
         }

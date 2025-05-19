@@ -67,6 +67,11 @@ namespace nav
         m_inputCollection.addNode(nodeHandle);
     }
 
+    void Generator::clearMeshInstances()
+    {
+        m_inputCollection.clearMeshInstances();
+    }
+
     void Generator::registerMeshInstance(const mesh::MeshInstance& meshInstance)
     {
         m_inputCollection.addMeshInstance(meshInstance);
@@ -119,8 +124,8 @@ namespace nav
         // Start the build process.
         ctx->startTimer(RC_TIMER_TOTAL);
 
-        ctx->log(RC_LOG_PROGRESS, "Building navigation:");
-        ctx->log(RC_LOG_PROGRESS, " - %d x %d cells", m_cfg.width, m_cfg.height);
+        ctx->log(RC_LOG_PROGRESS, "NAV: Building navigation:");
+        ctx->log(RC_LOG_PROGRESS, "NAV: - %d x %d cells", m_cfg.width, m_cfg.height);
 
         //
         // Step 2. Rasterize input polygon soup.
@@ -130,12 +135,12 @@ namespace nav
         m_solid = rcAllocHeightfield();
         if (!m_solid)
         {
-            ctx->log(RC_LOG_ERROR, "buildNavigation: Out of memory 'solid'.");
+            ctx->log(RC_LOG_ERROR, "NAV: buildNavigation: Out of memory 'solid'.");
             return false;
         }
         if (!rcCreateHeightfield(ctx, *m_solid, m_cfg.width, m_cfg.height, m_cfg.bmin, m_cfg.bmax, m_cfg.cs, m_cfg.ch))
         {
-            ctx->log(RC_LOG_ERROR, "buildNavigation: Could not create solid heightfield.");
+            ctx->log(RC_LOG_ERROR, "NAV: buildNavigation: Could not create solid heightfield.");
             return false;
         }
 
@@ -148,7 +153,7 @@ namespace nav
             m_triareas = new unsigned char[maxTriCount];
             if (!m_triareas)
             {
-                ctx->log(RC_LOG_ERROR, "buildNavigation: Out of memory 'm_triareas' (%d).", maxTriCount);
+                ctx->log(RC_LOG_ERROR, "NAV: buildNavigation: Out of memory 'm_triareas' (%d).", maxTriCount);
                 return false;
             }
         }
@@ -165,12 +170,12 @@ namespace nav
 
             memset(m_triareas, 0, ntris * sizeof(unsigned char));
 
-            ctx->log(RC_LOG_PROGRESS, " - %.1fK verts, %.1fK tris", nverts / 1000.0f, ntris / 1000.0f);
+            ctx->log(RC_LOG_PROGRESS, "NAV: - %.1fK verts, %.1fK tris", nverts / 1000.0f, ntris / 1000.0f);
 
             rcMarkWalkableTriangles(ctx, m_cfg.walkableSlopeAngle, verts, nverts, tris, ntris, m_triareas);
             if (!rcRasterizeTriangles(ctx, verts, nverts, tris, m_triareas, ntris, *m_solid, m_cfg.walkableClimb))
             {
-                ctx->log(RC_LOG_ERROR, "buildNavigation: Could not rasterize triangles.");
+                ctx->log(RC_LOG_ERROR, "NAV: buildNavigation: Could not rasterize triangles.");
                 return false;
             }
         }
@@ -205,12 +210,12 @@ namespace nav
         m_chf = rcAllocCompactHeightfield();
         if (!m_chf)
         {
-            ctx->log(RC_LOG_ERROR, "buildNavigation: Out of memory 'chf'.");
+            ctx->log(RC_LOG_ERROR, "NAV: buildNavigation: Out of memory 'chf'.");
             return false;
         }
         if (!rcBuildCompactHeightfield(ctx, m_cfg.walkableHeight, m_cfg.walkableClimb, *m_solid, *m_chf))
         {
-            ctx->log(RC_LOG_ERROR, "buildNavigation: Could not build compact data.");
+            ctx->log(RC_LOG_ERROR, "NAV: buildNavigation: Could not build compact data.");
             return false;
         }
 
@@ -223,7 +228,7 @@ namespace nav
         // Erode the walkable area by agent radius.
         if (!rcErodeWalkableArea(ctx, m_cfg.walkableRadius, *m_chf))
         {
-            ctx->log(RC_LOG_ERROR, "buildNavigation: Could not erode.");
+            ctx->log(RC_LOG_ERROR, "NAV: buildNavigation: Could not erode.");
             return false;
         }
 
@@ -236,14 +241,14 @@ namespace nav
             // Prepare for region partitioning, by calculating distance field along the walkable surface.
             if (!rcBuildDistanceField(ctx, *m_chf))
             {
-                ctx->log(RC_LOG_ERROR, "buildNavigation: Could not build distance field.");
+                ctx->log(RC_LOG_ERROR, "NAV: buildNavigation: Could not build distance field.");
                 return false;
             }
 
             // Partition the walkable surface into simple regions without holes.
             if (!rcBuildRegions(ctx, *m_chf, 0, m_cfg.minRegionArea, m_cfg.mergeRegionArea))
             {
-                ctx->log(RC_LOG_ERROR, "buildNavigation: Could not build watershed regions.");
+                ctx->log(RC_LOG_ERROR, "NAV: buildNavigation: Could not build watershed regions.");
                 return false;
             }
         }
@@ -256,12 +261,12 @@ namespace nav
         m_cset = rcAllocContourSet();
         if (!m_cset)
         {
-            ctx->log(RC_LOG_ERROR, "buildNavigation: Out of memory 'cset'.");
+            ctx->log(RC_LOG_ERROR, "NAV: buildNavigation: Out of memory 'cset'.");
             return false;
         }
         if (!rcBuildContours(ctx, *m_chf, m_cfg.maxSimplificationError, m_cfg.maxEdgeLen, *m_cset))
         {
-            ctx->log(RC_LOG_ERROR, "buildNavigation: Could not create contours.");
+            ctx->log(RC_LOG_ERROR, "NAV: buildNavigation: Could not create contours.");
             return false;
         }
 
@@ -273,12 +278,12 @@ namespace nav
         m_pmesh = rcAllocPolyMesh();
         if (!m_pmesh)
         {
-            ctx->log(RC_LOG_ERROR, "buildNavigation: Out of memory 'pmesh'.");
+            ctx->log(RC_LOG_ERROR, "NAV: buildNavigation: Out of memory 'pmesh'.");
             return false;
         }
         if (!rcBuildPolyMesh(ctx, *m_cset, m_cfg.maxVertsPerPoly, *m_pmesh))
         {
-            ctx->log(RC_LOG_ERROR, "buildNavigation: Could not triangulate contours.");
+            ctx->log(RC_LOG_ERROR, "NAV: buildNavigation: Could not triangulate contours.");
             return false;
         }
 
@@ -289,13 +294,13 @@ namespace nav
         m_dmesh = rcAllocPolyMeshDetail();
         if (!m_dmesh)
         {
-            ctx->log(RC_LOG_ERROR, "buildNavigation: Out of memory 'pmdtl'.");
+            ctx->log(RC_LOG_ERROR, "NAV: buildNavigation: Out of memory 'pmdtl'.");
             return false;
         }
 
         if (!rcBuildPolyMeshDetail(ctx, *m_pmesh, *m_chf, m_cfg.detailSampleDist, m_cfg.detailSampleMaxError, *m_dmesh))
         {
-            ctx->log(RC_LOG_ERROR, "buildNavigation: Could not build detail mesh.");
+            ctx->log(RC_LOG_ERROR, "NAV: buildNavigation: Could not build detail mesh.");
             return false;
         }
 
@@ -376,7 +381,7 @@ namespace nav
 
             if (!dtCreateNavMeshData(&params, &navData, &navDataSize))
             {
-                ctx->log(RC_LOG_ERROR, "Could not build Detour navmesh.");
+                ctx->log(RC_LOG_ERROR, "NAV: Could not build Detour navmesh.");
                 return false;
             }
 
@@ -384,7 +389,7 @@ namespace nav
             if (!m_container->m_navMesh)
             {
                 dtFree(navData);
-                ctx->log(RC_LOG_ERROR, "Could not create Detour navmesh");
+                ctx->log(RC_LOG_ERROR, "NAV: Could not create Detour navmesh");
                 return false;
             }
 
@@ -394,14 +399,14 @@ namespace nav
             if (dtStatusFailed(status))
             {
                 dtFree(navData);
-                ctx->log(RC_LOG_ERROR, "Could not init Detour navmesh");
+                ctx->log(RC_LOG_ERROR, "NAV: Could not init Detour navmesh");
                 return false;
             }
 
             status = m_container->m_navQuery->init(m_container->m_navMesh, 2048);
             if (dtStatusFailed(status))
             {
-                ctx->log(RC_LOG_ERROR, "Could not init Detour navmesh query");
+                ctx->log(RC_LOG_ERROR, "NAV: Could not init Detour navmesh query");
                 return false;
             }
         }
@@ -409,7 +414,7 @@ namespace nav
         ctx->stopTimer(RC_TIMER_TOTAL);
 
         // Show performance stats.
-        ctx->log(RC_LOG_PROGRESS, ">> Polymesh: %d vertices  %d polygons", m_pmesh->nverts, m_pmesh->npolys);
+        ctx->log(RC_LOG_PROGRESS, "NAV: >> Polymesh: %d vertices  %d polygons", m_pmesh->nverts, m_pmesh->npolys);
 
         return true;
     }

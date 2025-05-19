@@ -32,6 +32,7 @@ namespace nav
 
         void registerNode(pool::NodeHandle nodeHandle);
 
+        void clearMeshInstances();
         void registerMeshInstance(const mesh::MeshInstance& meshInstance);
 
         // Build must be done after registering all meshes

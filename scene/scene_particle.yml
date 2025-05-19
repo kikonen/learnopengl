@@ -65,14 +65,14 @@ nodes:
       body:
         kinematic: true
         type: capsule
-        density: 0.01
+        density: 0.02
         rot: [90, 0, 0]
         max_angular_velocity: 0
         force_axis: true
       geom:
         type: capsule
         category: [player]
-        size: [0.25, 1, 0]
+        size: [0.5, 1.5, 0]
     script: |
       cmd:audio_play(
         { sync=true, sid=util.sid("idle_1") })

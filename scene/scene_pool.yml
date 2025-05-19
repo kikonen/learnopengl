@@ -325,13 +325,18 @@ nodes:
       z_count: 1
       x_step: 10
       z_step: 0
+    type_flags:
+      dynamic_bounds: true
+      xstatic_bounds: true
     physics:
       enabled: true
       update: true
+      body:
+        kinematic: true
     xscript: |
       cmd:animation_play(
         { name = "master:Idle" });
-    script: scripts/seq_skeleton_army
+    script: scripts/seq_skeleton_random_nav
   - id: terrain_grass_v2
     mesh:
       path: quad_terrain
@@ -359,7 +364,7 @@ nodes:
     type_flags:
       pre_depth: true
       use_deferred: true
-      nav_mesh: true
+      nav_physics: true
     physics:
       geom:
         type: height_field

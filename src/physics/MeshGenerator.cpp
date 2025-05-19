@@ -90,8 +90,6 @@ namespace physics {
 
     std::shared_ptr<std::vector<mesh::MeshInstance>> MeshGenerator::generateMeshes(bool onlyNavMesh)
     {
-        if (!render::DebugContext::get().m_physicsShowObjects) return nullptr;
-
         const auto spaceId = m_physicsSystem.m_spaceId;
         auto geomCount = dSpaceGetNumGeoms(spaceId);
 
@@ -108,7 +106,7 @@ namespace physics {
                 const auto* node = m_physicsSystem.getNodeHandle(objectId).toNode();
                 if (node) {
                     const auto* type = node->getType();
-                    isNavMesh = type->m_flags.navMesh;
+                    isNavMesh = type->m_flags.navPhysics;
                 }
             }
 

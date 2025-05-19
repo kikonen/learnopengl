@@ -394,6 +394,8 @@ namespace physics
                 obj.create(id, 0, m_worldId, m_spaceId, nodeRegistry);
             }
 
+            m_level++;
+
             prepared.insert({ id, true });
         }
 
@@ -564,8 +566,13 @@ namespace physics
 
         auto& dbg = render::DebugContext::modify();
 
-        auto meshes = m_meshGenerator->generateMeshes(false);
-        dbg.m_physicsMeshesWT.swap(meshes);
+        if (dbg.m_physicsShowObjects) {
+            auto meshes = m_meshGenerator->generateMeshes(false);
+            dbg.m_physicsMeshesWT.swap(meshes);
+        }
+        else {
+            dbg.m_physicsMeshesWT.reset();
+        }
     }
 
     std::vector<physics::RayHit> PhysicsSystem::rayCast(

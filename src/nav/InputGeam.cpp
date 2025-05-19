@@ -4,6 +4,8 @@
 
 #include "mesh/VaoMesh.h"
 
+#include "util/glm_util.h"
+
 namespace nav
 {
     InputGeom::InputGeom(
@@ -36,15 +38,24 @@ namespace nav
         m_tris = new int[vaoMesh->m_indeces.size()];
         m_triCount = vaoMesh->m_indeces.size() / 3;
 
+        glm::vec3 meshBMin;
+        glm::vec3 meshBMax;
         {
             int i = 0;
             for (auto& vertex : vaoMesh->m_vertices)
             {
-                const auto& pos = m_transform * glm::vec4{ vertex.pos, 1.f };
+                const auto& pos = glm::vec3{ m_transform * glm::vec4{ vertex.pos, 1.f } };
+                if (i == 0) {
+                    meshBMin = pos;
+                    meshBMax = pos;
+                }
                 m_vertices[i * 3 + 0] = pos.x;
                 m_vertices[i * 3 + 1] = pos.y;
                 m_vertices[i * 3 + 2] = pos.z;
                 i++;
+
+                util::minmax(pos, meshBMin, meshBMax);
+                util::minmax(pos, meshBMin, meshBMax);
             }
         }
 

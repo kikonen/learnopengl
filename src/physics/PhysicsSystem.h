@@ -54,6 +54,11 @@ namespace physics {
             m_enabled = enabled;
         }
 
+        ki::level_id getLevel() const noexcept
+        {
+            return m_level;
+        }
+
         physics::object_id registerObject(
             pool::NodeHandle nodeHandle,
             uint32_t entityIndex,
@@ -144,6 +149,7 @@ namespace physics {
         std::vector<uint32_t> m_entityIndeces;
         std::vector<physics::Object> m_objects;
 
+        ki::level_id m_level{ 0 };
         std::vector<ki::level_id> m_matrixLevels;
         std::vector<physics::object_id> m_updateObjects;
 
