@@ -987,61 +987,71 @@ namespace {
 namespace mesh {
     std::unique_ptr<mesh::Mesh> PrimitiveGenerator::create() const
     {
-        switch (type) {
-        case PrimitiveType::points:
-            return createVertices(*this);
-        case PrimitiveType::lines:
-            return createVertices(*this);
-        case PrimitiveType::ray:
-            return create_ray(*this);
-        case PrimitiveType::bezier:
-            return create_bezier(*this);
-        case PrimitiveType::plane:
-            return create_plane(*this);
-        case PrimitiveType::quad:
-            return create_quad(*this);
-        case PrimitiveType::height_field:
-            return create_height_field(*this);
-        case PrimitiveType::plane_grid:
-            return create_plane_grid(*this);
-        case PrimitiveType::box:
-            return create_box(*this);
-        case PrimitiveType::rounded_box:
-            return create_rounded_box(*this);
-        case PrimitiveType::dodeca_hedron:
-            return create_dodeca_hedron(*this);
-        case PrimitiveType::icosa_hedron:
-            return create_icosa_hedron(*this);
-        case PrimitiveType::ico_sphere:
-            return create_ico_sphere(*this);
-        case PrimitiveType::sphere:
-            return create_sphere(*this);
-        case PrimitiveType::capsule:
-            return create_capsule(*this);
-        case PrimitiveType::cylinder:
-            return create_cylinder(*this);
-        case PrimitiveType::capped_cylinder:
-            return create_capped_cylinder(*this);
-        case PrimitiveType::cone:
-            return create_cone(*this);
-        case PrimitiveType::capped_cone:
-            return create_capped_cone(*this);
-        case PrimitiveType::spherical_cone:
-            return create_spherical_cone(*this);
-        case PrimitiveType::tube:
-            return create_tube(*this);
-        case PrimitiveType::capped_tube:
-            return create_capped_tube(*this);
-        case PrimitiveType::torus:
-            return create_torus(*this);
-        case PrimitiveType::torus_knot:
-            return create_torus_knot(*this);
-        case PrimitiveType::disk:
-            return create_disk(*this);
-        case PrimitiveType::spring:
-            return create_spring(*this);
+        auto buildMesh = [this]() {
+            switch (type) {
+            case PrimitiveType::points:
+                return createVertices(*this);
+            case PrimitiveType::lines:
+                return createVertices(*this);
+            case PrimitiveType::ray:
+                return create_ray(*this);
+            case PrimitiveType::bezier:
+                return create_bezier(*this);
+            case PrimitiveType::plane:
+                return create_plane(*this);
+            case PrimitiveType::quad:
+                return create_quad(*this);
+            case PrimitiveType::height_field:
+                return create_height_field(*this);
+            case PrimitiveType::plane_grid:
+                return create_plane_grid(*this);
+            case PrimitiveType::box:
+                return create_box(*this);
+            case PrimitiveType::rounded_box:
+                return create_rounded_box(*this);
+            case PrimitiveType::dodeca_hedron:
+                return create_dodeca_hedron(*this);
+            case PrimitiveType::icosa_hedron:
+                return create_icosa_hedron(*this);
+            case PrimitiveType::ico_sphere:
+                return create_ico_sphere(*this);
+            case PrimitiveType::sphere:
+                return create_sphere(*this);
+            case PrimitiveType::capsule:
+                return create_capsule(*this);
+            case PrimitiveType::cylinder:
+                return create_cylinder(*this);
+            case PrimitiveType::capped_cylinder:
+                return create_capped_cylinder(*this);
+            case PrimitiveType::cone:
+                return create_cone(*this);
+            case PrimitiveType::capped_cone:
+                return create_capped_cone(*this);
+            case PrimitiveType::spherical_cone:
+                return create_spherical_cone(*this);
+            case PrimitiveType::tube:
+                return create_tube(*this);
+            case PrimitiveType::capped_tube:
+                return create_capped_tube(*this);
+            case PrimitiveType::torus:
+                return create_torus(*this);
+            case PrimitiveType::torus_knot:
+                return create_torus_knot(*this);
+            case PrimitiveType::disk:
+                return create_disk(*this);
+            case PrimitiveType::spring:
+                return create_spring(*this);
+            }
+            return std::unique_ptr<mesh::Mesh>(nullptr);
+        };
+
+        auto mesh = buildMesh();
+
+        auto* primitiveMesh = dynamic_cast<mesh::PrimitiveMesh*>(mesh.get());
+        if (primitiveMesh) {
+            primitiveMesh->setupVertexCounts();
         }
 
-        return nullptr;
+        return std::move(mesh);
     }
 }
