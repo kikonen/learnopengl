@@ -75,9 +75,6 @@ void SystemInit::init() noexcept
 
 void SystemInit::release() noexcept
 {
-    audio::AudioSystem::release();
-    physics::PhysicsSystem::release();
-
     nav::NavigationSystem::release();
 
     particle::ParticleSystem::release();
@@ -102,9 +99,13 @@ void SystemInit::release() noexcept
     EntityRegistry::release();
     ViewportRegistry::release();
     ControllerRegistry::release();
+    FileEntryCache::release();
+
+    audio::AudioSystem::release();
+    physics::PhysicsSystem::release();
+
     SelectionRegistry::release();
     VaoRegistry::release();
     MaterialRegistry::release();
     ImageRegistry::release();
-    FileEntryCache::release();
 }
