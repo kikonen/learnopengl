@@ -509,17 +509,16 @@ namespace physics
 
         if (!isEnabled()) return { false, 0.f };
 
-        const auto& hits = rayCast(
+        const auto& hit = rayCastClosest(
             pos + glm::vec3{ 0.f, 500.f, 0.f },
             dir,
             1000.f,
             collisionMask,
-            pool::NodeHandle::NULL_HANDLE,
-            true);
+            pool::NodeHandle::NULL_HANDLE);
 
-        if (hits.empty()) return { false, 0.f };
+        if (!hit.isHit) return { false, 0.f };
 
-        return { true, hits[0].pos.y };
+        return { true, hit.pos.y };
     }
 
     std::vector<std::pair<bool, float>> PhysicsSystem::getWorldSurfaceLevels(
@@ -574,13 +573,12 @@ namespace physics
         }
     }
 
-    std::vector<physics::RayHit> PhysicsSystem::rayCast(
+    physics::RayHit PhysicsSystem::rayCastClosest(
         const glm::vec3& origin,
         const glm::vec3& dir,
         float distance,
         uint32_t collisionMask,
-        pool::NodeHandle fromNode,
-        bool onlyClosest) const
+        pool::NodeHandle fromNode) const
     {
         ASSERT_WT();
 
@@ -611,7 +609,7 @@ namespace physics
             hitData.sourceGeomId = sourceObject->m_geom.physicId;
         }
         hitData.rayGeomId = rayGeomId;
-        hitData.onlyClosest = onlyClosest;
+        hitData.onlyClosest = true;
 
         dGeomRaySet(rayGeomId, origin.x, origin.y, origin.z, dir.x, dir.y, dir.z);
         dGeomRaySetLength(rayGeomId, distance);
@@ -623,21 +621,23 @@ namespace physics
         dGeomSetCategoryBits(rayGeomId, util::as_integer(physics::Category::none));
         dGeomSetCollideBits(rayGeomId, util::as_integer(physics::Category::none));
 
-        std::vector<physics::RayHit> hits{};
-
-        for (const auto& geomHit : hitData.hits) {
+        if (!hitData.hits.empty())
+        {
+            const auto& geomHit = hitData.hits[0];
             dBodyID bodyId = dGeomGetBody(geomHit.geomId);
             const auto& it = m_bodyToObject.find(bodyId);
             if (it != m_bodyToObject.end()) {
-                hits.emplace_back(
+                return {
                     geomHit.pos,
                     geomHit.normal,
                     m_nodeHandles[it->second],
-                    geomHit.depth);
+                    geomHit.depth,
+                    true
+                };
             }
         }
 
-        return hits;
+        return {};
     }
 
     std::vector<physics::RayHit> PhysicsSystem::rayCastClosestToMultiple(

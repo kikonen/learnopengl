@@ -19,11 +19,13 @@ namespace script
         const glm::vec3& dir,
         float length,
         const uint32_t collisionMask,
-        const std::function<void(int cid, const std::vector<physics::RayHit>&)>& callback) noexcept
+        bool notifyMiss,
+        const std::function<void(int cid, const physics::RayHit&)>& callback) noexcept
         : NodeCommand(handle, 0, false),
         m_dir{ dir },
         m_length{ length },
         m_collisionMask{ collisionMask },
+        m_notifyMiss{ notifyMiss },
         m_callback{ callback }
     {
     }
@@ -37,16 +39,15 @@ namespace script
         if (m_finished) {
             const auto& state = getNode()->getState();
 
-            const auto& hits = physics::PhysicsSystem::get().rayCast(
+            const auto& hit = physics::PhysicsSystem::get().rayCastClosest(
                 state.getWorldPosition(),
                 m_dir,
                 m_length,
                 m_collisionMask,
-                m_handle,
-                true);
+                m_handle);
 
-            if (!hits.empty()) {
-                m_callback(m_id, hits);
+            if (hit.isHit || m_notifyMiss) {
+                m_callback(m_id, hit);
             }
         }
     }

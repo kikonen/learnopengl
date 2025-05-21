@@ -217,8 +217,6 @@ void LayerRenderer::fillHighlightMask(
 
     // draw entity data mask
     {
-        auto* program = m_selectionProgram;
-
         render::DrawContext drawContext{
             [](const mesh::MeshType* type) { return true; },
             [&selectionRegistry](const Node* node) {
@@ -231,8 +229,8 @@ void LayerRenderer::fillHighlightMask(
         render::CollectionRender collectionRender;
         collectionRender.drawProgram(
             ctx,
-            [this, &program](const mesh::LodMesh& lodMesh) {
-                auto* p = lodMesh.m_selectionProgramId ? Program::get(lodMesh.m_selectionProgramId) : program;
+            [this](const mesh::LodMesh& lodMesh) {
+                auto* p = lodMesh.m_selectionProgramId ? Program::get(lodMesh.m_selectionProgramId) : m_selectionProgram;
                 p->m_uniforms->u_stencilMode.set(STENCIL_MODE_SHIFT_NONE);
                 return p->m_id;
             },
@@ -278,8 +276,6 @@ void LayerRenderer::renderHighlight(
     // https://ameye.dev/notes/rendering-outlines/
     // NOTE KI using "shift mode" approach, based into "hell engine"
     for (const auto shift : SHIFTS) {
-        auto* program = m_selectionProgram;
-
         render::DrawContext drawContext{
             [](const mesh::MeshType* type) { return true; },
             [&selectionRegistry](const Node* node) {
@@ -292,8 +288,8 @@ void LayerRenderer::renderHighlight(
         render::CollectionRender collectionRender;
         collectionRender.drawProgram(
             ctx,
-            [this, &program, shift](const mesh::LodMesh& lodMesh) {
-                auto* p = lodMesh.m_selectionProgramId ? Program::get(lodMesh.m_selectionProgramId) : program;
+            [this, shift](const mesh::LodMesh& lodMesh) {
+                auto* p = lodMesh.m_selectionProgramId ? Program::get(lodMesh.m_selectionProgramId) : m_selectionProgram;
                 p->m_uniforms->u_stencilMode.set(shift);
                 return p->m_id;
             },

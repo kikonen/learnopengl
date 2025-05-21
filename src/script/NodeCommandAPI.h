@@ -99,6 +99,7 @@ namespace script
         int lua_ray_cast(
             const sol::table& lua_opt,
             const glm::vec3& lua_dir,
+            bool notifyMiss,
             const sol::function& lua_callback) noexcept;
 
         int lua_ray_cast_multiple(

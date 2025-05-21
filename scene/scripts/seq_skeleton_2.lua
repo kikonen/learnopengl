@@ -100,8 +100,8 @@ local function ray_caster()
 
   local cast_cid = 0
   local ray_degrees = INITIAL_RAY_DEGREES
-  local elapsed = 60
-  local cast_elapsed = 0
+  local elapsed = 5
+  local cast_elapsed = 1
 
   local function path_callback(args)
     print("NAV: PATH")
@@ -129,15 +129,22 @@ local function ray_caster()
 
       prev_pos = next_pos
     end
+
+    -- prev_cid = cmd:move_path(
+    --   { after=prev_cid, time=4, relative=false },
+    --   args.data.waypoints)
   end
 
   local function ray_cast_callback(args)
+    printf("ray_cast_callback: %s\n", table_format(args))
     if not args.data.is_hit then
       -- print("NO_HIT")
       return
     end
 
-    if elapsed < 60 then
+    printf("RAY_HIT: elapsed=%f\n", elapsed)
+
+    if elapsed < 5 then
       return
     end
 
@@ -188,11 +195,11 @@ local function ray_caster()
 
     cancel_cid = cmd:cancel(
       {},
-      move_sid)
+      move_cid)
 
     cancel_cid = cmd:cancel(
       {},
-      attack_sid)
+      attack_cid)
 
     rotate_cid = cmd:rotate(
       { after=cancel_cid, time=1, relative=true },
@@ -238,6 +245,7 @@ local function ray_caster()
     cast_cid = cmd:ray_cast(
       { after=cast_cid },
       dir,
+      false,
       ray_cast_callback)
   end
 

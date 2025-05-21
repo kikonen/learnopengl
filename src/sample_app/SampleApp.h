@@ -61,7 +61,7 @@ private:
         const InputState& lastInputState);
 
     void shootCallback(
-        const std::vector<physics::RayHit>& hits
+        const physics::RayHit& hit
     );
 
     void selectNode(

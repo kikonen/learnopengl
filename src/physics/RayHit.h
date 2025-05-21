@@ -19,6 +19,6 @@ namespace physics {
         glm::vec3 normal{ 0.f };
         pool::NodeHandle handle;
         float depth{ 0.f };
-        bool isHit { false };
+        bool isHit{ false };
     };
 }

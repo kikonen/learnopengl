@@ -92,13 +92,20 @@ namespace physics {
             return static_cast<uint32_t>(m_objects.size());
         }
 
-        std::vector<physics::RayHit> rayCast(
+        physics::RayHit rayCastClosest(
             const glm::vec3& origin,
             const glm::vec3& dir,
             float distance,
             uint32_t collisionMask,
-            pool::NodeHandle fromNode,
-            bool onlyClosest) const;
+            pool::NodeHandle fromNode) const;
+
+        //std::vector<physics::RayHit> rayCastWithLimit(
+        //    const glm::vec3& origin,
+        //    const glm::vec3& dir,
+        //    float distance,
+        //    uint32_t collisionMask,
+        //    pool::NodeHandle fromNode,
+        //    int maxHits) const;
 
         std::vector<physics::RayHit> rayCastClosestToMultiple(
             const glm::vec3& origin,
