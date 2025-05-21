@@ -213,6 +213,18 @@ namespace physics
 
     PhysicsSystem::~PhysicsSystem()
     {
+        if (m_spaceId) {
+            dSpaceDestroy(m_spaceId);
+        }
+        if (m_worldId) {
+            dWorldDestroy(m_worldId);
+        }
+        if (m_contactgroupId) {
+            dJointGroupDestroy(m_contactgroupId);
+        }
+        if (m_prepared) {
+            dCloseODE();
+        }
     }
 
     void PhysicsSystem::clear(bool shutdown)
@@ -236,19 +248,6 @@ namespace physics
         ASSERT_WT();
 
         clear(true);
-
-        if (m_spaceId) {
-            dSpaceDestroy(m_spaceId);
-        }
-        if (m_worldId) {
-            dWorldDestroy(m_worldId);
-        }
-        if (m_contactgroupId) {
-            dJointGroupDestroy(m_contactgroupId);
-        }
-        if (m_prepared) {
-            dCloseODE();
-        }
     }
 
     void PhysicsSystem::prepare(std::shared_ptr<std::atomic<bool>> alive)
