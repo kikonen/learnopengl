@@ -116,6 +116,7 @@ local function ray_caster()
     cid = cmd:ray_cast(
       { after=cid },
       dir,
+      false,
       ray_cast_hit)
 
     cid = cmd:wait({ after=cid, time=0.25 })

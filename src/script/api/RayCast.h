@@ -18,7 +18,8 @@ namespace script
             const glm::vec3& dir,
             float length,
             const uint32_t collisionMask,
-            const std::function<void(int cid, const std::vector<physics::RayHit>&)>& callback) noexcept;
+            bool notifyMiss,
+            const std::function<void(int cid, const physics::RayHit&)>& callback) noexcept;
 
         virtual std::string getName() const noexcept override
         {
@@ -32,7 +33,8 @@ namespace script
         const glm::vec3 m_dir;
         const uint32_t m_collisionMask;
         const float m_length;
+        const bool m_notifyMiss;
 
-        const std::function<void(int cid, const std::vector<physics::RayHit>&)> m_callback;
+        const std::function<void(int cid, const physics::RayHit&)> m_callback;
     };
 }

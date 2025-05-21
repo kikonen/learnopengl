@@ -392,32 +392,31 @@ namespace script
     int NodeCommandAPI::lua_ray_cast(
         const sol::table& lua_opt,
         const glm::vec3& lua_dir,
+        bool notifyMiss,
         const sol::function& lua_callback) noexcept
     {
         const auto opt = readOptions(lua_opt);
 
         uint32_t collisionMask = physics::mask(physics::Category::player);
 
-        auto callback = [this, opt, lua_callback](int cid, const std::vector<physics::RayHit>& hits) {
+        auto callback = [this, opt, lua_callback](int cid, const physics::RayHit& hit) {
             auto& scriptSystem = script::ScriptSystem::get();
             sol::table args = scriptSystem.getLua()[TABLE_TMP];
 
-            for (const auto& hit : hits) {
-                auto* node = hit.handle.toNode();
-                if (!node) continue;
+            auto* node = hit.handle.toNode();
+            if (!node) return;
 
-                args["cid"] = cid;
-                args["data"] = hit;
+            args["cid"] = cid;
+            args["data"] = hit;
 
-                //Node* node = nullptr;
-                //node = getNode();
+            //Node* node = nullptr;
+            //node = getNode();
 
-                scriptSystem.invokeNodeFunction(
-                    m_handle.toNode(),
-                    opt.self,
-                    lua_callback,
-                    args);
-            }
+            scriptSystem.invokeNodeFunction(
+                m_handle.toNode(),
+                opt.self,
+                lua_callback,
+                args);
 
             args["cid"] = nullptr;
             args["data"] = nullptr;
@@ -430,6 +429,7 @@ namespace script
                 lua_dir,
                 400.f,
                 collisionMask,
+                notifyMiss,
                 callback});
     }
 

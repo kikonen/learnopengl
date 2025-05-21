@@ -522,26 +522,22 @@ void SampleApp::raycastPlayer(
         const auto* snapshot = player->getSnapshotRT();
         if (!snapshot) return;
 
-        const auto& hits = physics::PhysicsSystem::get().rayCast(
+        const auto& hit = physics::PhysicsSystem::get().rayCastClosest(
             snapshot->getWorldPosition(),
             snapshot->getViewFront(),
             100.f,
             physics::mask(physics::Category::npc),
-            player->toHandle(),
-            true);
+            player->toHandle());
 
-        if (!hits.empty()) {
-            for (auto& hit : hits) {
-                auto* node = hit.handle.toNode();
-                if (!node) continue;
+        if (hit.isHit) {
+            auto* node = hit.handle.toNode();
 
-                KI_INFO_OUT(fmt::format(
-                    "PLAYER_HIT: node={}, pos={}, normal={}, depth={}",
-                    node ? node->getName() : "N/A",
-                    hit.pos,
-                    hit.normal,
-                    hit.depth));
-            }
+            KI_INFO_OUT(fmt::format(
+                "PLAYER_HIT: node={}, pos={}, normal={}, depth={}",
+                node ? node->getName() : "N/A",
+                hit.pos,
+                hit.normal,
+                hit.depth));
         }
     }
 
@@ -620,14 +616,13 @@ void SampleApp::raycastPlayer(
             g_rayMarkers.push_back(cmdId);
         }
 
-        const auto& hits = physics::PhysicsSystem::get().rayCast(
+        const auto& hit = physics::PhysicsSystem::get().rayCastClosest(
             startPos,
             dir,
             400.f,
             physics::mask(physics::Category::npc, physics::Category::prop),
             //physics::mask(physics::Category::all),
-            player->toHandle(),
-            true);
+            player->toHandle());
     }
 }
 
@@ -659,7 +654,7 @@ void SampleApp::shoot(
         //    player->toHandle(),
         //    true);
 
-        auto callback = [this](int cid, const std::vector<physics::RayHit>& hits) {
+        auto callback = [this](int cid, const physics::RayHit& hits) {
             shootCallback(hits);
         };
 
@@ -671,6 +666,7 @@ void SampleApp::shoot(
                 dir,
                 400.f,
                 physics::mask(physics::Category::npc, physics::Category::prop, physics::Category::terrain),
+                false,
                 callback
             });
 
@@ -680,7 +676,7 @@ void SampleApp::shoot(
 }
 
 void SampleApp::shootCallback(
-    const std::vector<physics::RayHit>& hits
+    const physics::RayHit& hit
 )
 {
     auto* player = m_currentScene->getActiveNode();
@@ -689,12 +685,10 @@ void SampleApp::shootCallback(
     {
         const auto& dbg = render::DebugContext::get();
 
-        if (!hits.empty() && g_hitElapsed >= HIT_RATE) {
+        if (hit.isHit && g_hitElapsed >= HIT_RATE) {
             g_hitElapsed -= HIT_RATE;
 
-            for (auto& hit : hits) {
-                if (!hit.isHit) continue;
-
+            {
                 auto* node = hit.handle.toNode();
                 KI_INFO_OUT(fmt::format(
                     "SCREEN_HIT: node={}, pos={}, normal={}, depth={}",

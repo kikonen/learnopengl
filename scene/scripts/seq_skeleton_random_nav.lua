@@ -242,6 +242,7 @@ local function ray_caster()
     -- cast_cid = cmd:ray_cast(
     --   { after=cast_cid },
     --   dir,
+    --   false,
     --   ray_cast_callback)
 
     local nodePos = node:get_pos()

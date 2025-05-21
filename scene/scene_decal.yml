@@ -376,7 +376,7 @@ nodes:
     xscript: |
       self.cmd:animation_play(
         { name = "master:Idle" });
-    script_file: scripts/seq_skeleton_2.lua
+    script_file: scripts/seq_skeleton_2
   - id: light
     parent: lamp_origo
     type: origo
