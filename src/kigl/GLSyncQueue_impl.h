@@ -16,15 +16,13 @@ namespace kigl {
         bool useMapped,
         bool useInvalidate,
         bool useFence,
-        bool useSingleFence,
-        bool useDebugFence)
+        bool useFenceDebug)
         : m_rangeCount{ rangeCount },
         m_entryCount{ entryCount },
         m_useMapped{ useMapped },
         m_useInvalidate{ useInvalidate },
         m_useFence{ useFence },
-        m_useSingleFence{ useSingleFence },
-        m_useDebugFence{ useDebugFence },
+        m_useFenceDebug{ useFenceDebug },
         m_entrySize{ sizeof(T) },
         m_name{ fmt::format("{}_sync_queue", name) },
         m_buffer{ m_name }
@@ -90,7 +88,7 @@ namespace kigl {
             // dynamic
             range.m_usedCount = 0;
 
-            if (m_useFence && (m_fences.empty() || !m_useSingleFence)) {
+            if (m_useFence) {
                 m_fences.emplace_back(fmt::format("fence_{}_{}", m_name, i));
             }
         }
@@ -99,7 +97,7 @@ namespace kigl {
     template <class T>
     bool GLSyncQueue<T>::send(const T& entry)
     {
-        waitFence(m_current);
+        waitFence();
 
         auto& range = m_ranges[m_current];
 
@@ -115,7 +113,7 @@ namespace kigl {
     template <class T>
     void GLSyncQueue<T>::set(int idx, const T& entry)
     {
-        waitFence(m_current);
+        waitFence();
 
         auto& range = m_ranges[m_current];
 
@@ -145,26 +143,17 @@ namespace kigl {
             //}
             m_buffer.update(range.m_baseOffset, range.getUsedLength(), m_data + range.m_baseOffset);
         }
-
-        setFence(m_current);
     }
 
     template <class T>
-    void GLSyncQueue<T>::processPending(
-        std::function<void(GLBufferRange&)> handle,
-        bool processCurrent,
-        bool clear)
+    void GLSyncQueue<T>::processCurrent(
+        std::function<void(GLBufferRange&)> handle)
     {
-        const size_t untilCount = processCurrent ? m_rangeCount : m_rangeCount - 1;
-
-        for (size_t i = 1; i <= untilCount; i++) {
-            size_t rangeIndex = (m_current + i) % m_rangeCount;
-            auto& range = m_ranges[rangeIndex];
-            if (range.empty()) continue;
-            if (rangeIndex == m_current) flush();
-            handle(range);
-            if (clear) range.clear();
-        }
+        auto& range = m_ranges[m_current];
+        if (range.empty()) return;
+        handle(range);
+        clear();
+        setFence();
     }
 
     template <class T>
@@ -192,27 +181,18 @@ namespace kigl {
     }
 
     template <class T>
-    void GLSyncQueue<T>::setFence(size_t index)
+    void GLSyncQueue<T>::setFence()
     {
         if (!m_useFence) return;
 
-        if (m_useSingleFence) {
-            if (index == m_ranges.size() - 1) {
-                m_fences[0].setFence(m_useDebugFence);
-            }
-        }
-        else {
-            m_fences[index].setFence(m_useDebugFence);
-        }
+        m_fences[m_current].setFence(m_useFenceDebug);
     }
 
     template <class T>
-    void GLSyncQueue<T>::waitFence(size_t index)
+    void GLSyncQueue<T>::waitFence()
     {
         if (!m_useFence) return;
 
-        if (index == 0 || !m_useSingleFence) {
-            m_fences[index].waitFence(m_useDebugFence);
-        }
+        m_fences[m_current].waitFence(m_useFenceDebug);
     }
 }

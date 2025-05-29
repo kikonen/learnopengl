@@ -73,12 +73,12 @@ void EntityRegistry::prepare()
     m_useMapped = assets.glUseMapped;
     m_useInvalidate = assets.glUseInvalidate;
     m_useFence = assets.glUseFence;
-    m_useDebugFence = assets.glUseDebugFence;
+    m_useFenceDebug = assets.glUseFenceDebug;
 
     m_useMapped = false;
     m_useInvalidate = true;
     m_useFence = false;
-    m_useDebugFence = false;
+    m_useFenceDebug = false;
 
     if (m_useMapped) {
         // https://stackoverflow.com/questions/44203387/does-gl-map-invalidate-range-bit-require-glinvalidatebuffersubdata
@@ -99,7 +99,7 @@ void EntityRegistry::updateRT(const UpdateContext& ctx)
     if (minDirty > maxDirty) return;
 
     if (m_useFence) {
-        m_fence.waitFence(m_useDebugFence);
+        m_fence.waitFence(m_useFenceDebug);
     }
 
     constexpr size_t sz = sizeof(EntitySSBO);
@@ -189,7 +189,7 @@ void EntityRegistry::postRT(const UpdateContext& ctx)
     // NOTE KI if there was no changes old fence is stil valid
     if (m_useFence) {
         if (!m_fence.isSet()) {
-            m_fence.setFence(m_useDebugFence);
+            m_fence.setFence(m_useFenceDebug);
         }
     }
 }

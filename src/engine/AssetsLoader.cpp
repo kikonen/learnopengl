@@ -161,12 +161,8 @@ void AssetsLoader::loadAssets(
                 data.glUseFence = readBool(v);
                 continue;
             }
-            if (k == "gl_use_single_fence") {
-                data.glUseSingleFence = readBool(v);
-                continue;
-            }
-            if (k == "gl_use_debug_fence") {
-                data.glUseDebugFence = readBool(v);
+            if (k == "gl_use_fence_debug") {
+                data.glUseFenceDebug = readBool(v);
                 continue;
             }
             if (k == "gl_use_finish") {

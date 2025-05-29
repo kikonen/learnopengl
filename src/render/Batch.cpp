@@ -352,8 +352,7 @@ namespace render {
             assets.glUseMapped,
             assets.glUseInvalidate,
             assets.glUseFence,
-            assets.glUseSingleFence,
-            assets.glUseDebugFence);
+            assets.glUseFenceDebug);
 
         m_draw->prepareRT(ctx, entryCount, bufferCount);
 

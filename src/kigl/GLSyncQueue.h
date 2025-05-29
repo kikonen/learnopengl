@@ -24,8 +24,7 @@ namespace kigl {
             bool useMapped,
             bool useInvalidate,
             bool useFence,
-            bool useSingleFence,
-            bool useDebugFence);
+            bool useFenceDebug);
 
         ~GLSyncQueue();
 
@@ -72,12 +71,10 @@ namespace kigl {
         void flush();
 
         //
-        // Process starting from oldest upto current
+        // Process current, clear and set fence
         //
-        void processPending(
-            std::function<void(GLBufferRange&)> handle,
-            bool processCurrent,
-            bool clear);
+        void processCurrent(
+            std::function<void(GLBufferRange&)> handle);
 
         //
         // Switch to next range
@@ -89,8 +86,8 @@ namespace kigl {
         void bindCurrentSSBO(GLuint ssbo, bool used, size_t count);
 
     private:
-        void setFence(size_t index);
-        void waitFence(size_t index);
+        void setFence();
+        void waitFence();
 
     public:
         std::string m_name;
@@ -103,8 +100,7 @@ namespace kigl {
         const bool m_useMapped;
         const bool m_useInvalidate;
         const bool m_useFence;
-        const bool m_useSingleFence;
-        const bool m_useDebugFence;
+        const bool m_useFenceDebug;
 
         bool m_debug{ false };
 

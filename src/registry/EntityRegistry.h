@@ -44,5 +44,5 @@ private:
     bool m_useMapped{ false };
     bool m_useInvalidate{ false };
     bool m_useFence{ false };
-    bool m_useDebugFence{ false };
+    bool m_useFenceDebug{ false };
 };

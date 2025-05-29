@@ -33,8 +33,7 @@ namespace backend {
             bool useMapped,
             bool useInvalidate,
             bool useFence,
-            bool useSingleFence,
-            bool useDebugFence);
+            bool useFenceDebug);
 
         void prepareRT(
             const PrepareContext& ctx,
@@ -78,8 +77,7 @@ namespace backend {
         const bool m_useMapped;
         const bool m_useInvalidate;
         const bool m_useFence;
-        const bool m_useSingleFence;
-        const bool m_useDebugFence;
+        const bool m_useFenceDebug;
 
         int m_batchCount = 0;
         int m_rangeCount = 0;
@@ -96,7 +94,6 @@ namespace backend {
         std::unique_ptr<GLCommandQueue> m_commands{ nullptr };
 
         std::vector<backend::MultiDrawRange> m_drawRanges;
-        std::vector<kigl::GLFence> m_drawFences;
 
         std::vector<kigl::GLBuffer> m_instanceBuffers;
         std::vector<kigl::GLFence> m_instanceFences;

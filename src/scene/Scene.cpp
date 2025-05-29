@@ -146,8 +146,7 @@ void Scene::prepareRT()
         false,
         assets.glUseInvalidate,
         assets.glUseFence,
-        assets.glUseSingleFence,
-        assets.glUseDebugFence,
+        assets.glUseFenceDebug,
         assets.batchDebug);
 
     PrepareContext ctx{ m_registry.get() };

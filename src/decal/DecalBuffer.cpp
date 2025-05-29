@@ -54,12 +54,12 @@ namespace decal {
         m_useMapped = assets.glUseMapped;
         m_useInvalidate = assets.glUseInvalidate;
         m_useFence = assets.glUseFence;
-        m_useDebugFence = assets.glUseDebugFence;
+        m_useFenceDebug = assets.glUseFenceDebug;
 
         m_useMapped = false;
         m_useInvalidate = true;
         m_useFence = false;
-        m_useDebugFence = false;
+        m_useFenceDebug = false;
 
         m_ssbo.createEmpty(1 * BLOCK_SIZE * sizeof(DecalSSBO), GL_DYNAMIC_STORAGE_BIT);
         m_ssbo.bindSSBO(SSBO_DECALS);
