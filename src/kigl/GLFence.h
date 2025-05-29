@@ -14,6 +14,7 @@ namespace kigl {
         bool isSet() const noexcept { return m_sync; }
 
         void setFence(bool debug);
+        void setFenceIfNotSet(bool debug);
 
         // https://www.cppstories.com/2015/01/persistent-mapped-buffers-in-opengl/
         void waitFence(bool debug);

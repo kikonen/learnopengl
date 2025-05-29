@@ -10,6 +10,7 @@
 #include "kigl/GLVertexArray.h"
 
 #include "kigl/GLSyncQueue.h"
+#include "kigl/GLFence.h"
 
 #include "gl/DrawIndirectCommand.h"
 #include "gl/PerformanceCounters.h"
@@ -59,7 +60,6 @@ namespace backend {
             const backend::gl::DrawIndirectCommand& cmd);
 
         void flush();
-        void drawPending(bool drawCurrent);
 
         gl::PerformanceCounters getCounters(bool clear) const;
 
@@ -68,6 +68,8 @@ namespace backend {
 
         void flushIfNotSameMultiDraw(
             const backend::MultiDrawRange& sendRange);
+
+        void drawPending(bool drawCurrent);
 
         void bindMultiDrawRange(
             const backend::MultiDrawRange& drawRange) const;
@@ -94,6 +96,7 @@ namespace backend {
         std::unique_ptr<GLCommandQueue> m_commands{ nullptr };
 
         std::vector<backend::MultiDrawRange> m_drawRanges;
+        std::vector<kigl::GLFence> m_drawFences;
 
         std::vector<kigl::GLBuffer> m_instanceBuffers;
         std::vector<kigl::GLFence> m_instanceFences;
