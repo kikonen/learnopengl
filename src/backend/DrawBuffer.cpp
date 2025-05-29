@@ -120,6 +120,12 @@ namespace backend {
 
         m_drawRanges.resize(rangeCount);
 
+
+        m_drawFences.reserve(rangeCount);
+        for (int i = 0; i < rangeCount; i++) {
+            m_drawFences.emplace_back(fmt::format("draw_buffer_ference_{}", i));
+        }
+
         {
             m_instanceBuffers.emplace_back("draw_buffer_instance_0");
             m_instanceBuffers.emplace_back("draw_buffer_instance_1");
@@ -211,11 +217,8 @@ namespace backend {
 
         m_drawCounter += drawCount;
 
-        const auto& next = m_commands->next();
-        if (!next.empty()) {
-            // NOTE KI trigger draw pending if out of buffers
-            drawPending(true);
-        }
+        drawPending(true);
+        m_commands->next();
     }
 
     void DrawBuffer::flushIfNotSameMultiDraw(
@@ -258,6 +261,7 @@ namespace backend {
             curr = sendRange;
         }
 
+        m_drawFences[cmdRange.m_index].waitFence(false);
         if (m_commands->send(cmd)) {
             flush();
         }
@@ -306,7 +310,7 @@ namespace backend {
         auto& instanceBuffer = m_instanceBuffers[m_instanceBufferIndex];
         auto& instanceBufferFence = m_instanceFences[m_instanceBufferIndex];
 
-        //instanceBufferFence.waitFence(false);
+        instanceBufferFence.waitFence(false);
 
         const size_t totalCount = indeces.size();
         constexpr size_t sz = sizeof(mesh::InstanceSSBO);
@@ -362,17 +366,13 @@ namespace backend {
             }
             count += drawCount;
 
-            // NOTE KI need to wait finishing of draw commands
-            // TODO KI *very* odd that fence was set but not waited anywhere
-            //if (m_useFence) {
-            //    cmdRange.setFence();
-            //}
+            m_drawFences[cmdRange.m_index].setFence(false);
         };
 
         m_commands->processPending(handler, drawCurrent, true);
 
         auto& instanceBufferFence = m_instanceFences[m_instanceBufferIndex];
-        //instanceBufferFence.setFence(false);
+        instanceBufferFence.setFenceIfNotSet(false);
     }
 
     gl::PerformanceCounters DrawBuffer::getCounters(bool clear) const

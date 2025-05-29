@@ -555,7 +555,7 @@ namespace render {
 
         {
             draw->flush();
-            draw->drawPending(false);
+            //draw->drawPending(false);
             clearBatches();
         }
 

@@ -11,9 +11,16 @@ namespace kigl {
         : m_name(name)
     {}
 
+
     void GLFence::setFence(bool debug)
     {
         waitFence(debug);
+        m_sync = glFenceSync(GL_SYNC_GPU_COMMANDS_COMPLETE, 0);
+    }
+
+    void GLFence::setFenceIfNotSet(bool debug)
+    {
+        if (isSet()) return;
         m_sync = glFenceSync(GL_SYNC_GPU_COMMANDS_COMPLETE, 0);
     }
 
