@@ -43,7 +43,12 @@ namespace animation
         m_useMapped = assets.glUseMapped;
         m_useInvalidate = assets.glUseInvalidate;
         m_useFence = assets.glUseFence;
-        m_useDebugFence = assets.glUseDebugFence;
+        m_useFenceDebug = assets.glUseFenceDebug;
+
+        m_useMapped = false;
+        m_useInvalidate = true;
+        m_useFence = false;
+        m_useFenceDebug = false;
 
         m_frameSkipCount = 1;
 

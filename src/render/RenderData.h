@@ -20,8 +20,7 @@ namespace render {
             bool useMapped,
             bool useInvalidate,
             bool useFence,
-            bool useSingleFence,
-            bool useDebugFence,
+            bool useFenceDebug,
             bool debug);
 
         void bind();

@@ -32,8 +32,7 @@ namespace render {
         bool useMapped,
         bool useInvalidate,
         bool useFence,
-        bool useSingleFence,
-        bool useDebugFence,
+        bool useFenceDebug,
         bool debug)
     {
         int bufferAlignment;
@@ -46,8 +45,7 @@ namespace render {
             useMapped,
             useInvalidate,
             useFence,
-            useSingleFence,
-            useDebugFence);
+            useFenceDebug);
 
         m_data = std::make_unique<kigl::GLSyncQueue<DataUBO>>(
             "data_ubo",
@@ -56,8 +54,7 @@ namespace render {
             useMapped,
             useInvalidate,
             useFence,
-            useSingleFence,
-            useDebugFence);
+            useFenceDebug);
 
         m_debug = std::make_unique<kigl::GLSyncQueue<DebugUBO>>(
             "debug_ubo",
@@ -66,8 +63,7 @@ namespace render {
             useMapped,
             useInvalidate,
             useFence,
-            useSingleFence,
-            useDebugFence);
+            useFenceDebug);
 
         m_bufferInfo = std::make_unique<kigl::GLSyncQueue<BufferInfoUBO>>(
             "buffer_info_ubo",
@@ -76,8 +72,7 @@ namespace render {
             useMapped,
             useInvalidate,
             useFence,
-            useSingleFence,
-            useDebugFence);
+            useFenceDebug);
 
         m_clipPlanes = std::make_unique<kigl::GLSyncQueue<ClipPlanesUBO>>(
             "cliplanes_ubo",
@@ -86,8 +81,7 @@ namespace render {
             useMapped,
             useInvalidate,
             useFence,
-            useSingleFence,
-            useDebugFence);
+            useFenceDebug);
 
         m_lights = std::make_unique<kigl::GLSyncQueue<LightsUBO>>(
             "lights_ubo",
@@ -96,8 +90,7 @@ namespace render {
             useMapped,
             useInvalidate,
             useFence,
-            useSingleFence,
-            useDebugFence);
+            useFenceDebug);
 
         m_matrices->prepare(bufferAlignment, debug);
         m_data->prepare(bufferAlignment, debug);

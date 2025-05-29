@@ -44,8 +44,7 @@ public:
     bool glUseMapped;
     bool glUseInvalidate;
     bool glUseFence;
-    bool glUseSingleFence;
-    bool glUseDebugFence;
+    bool glUseFenceDebug;
     bool glUseFinish;
 
     bool glslUseDebug;

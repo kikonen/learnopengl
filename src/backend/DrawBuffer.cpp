@@ -41,13 +41,11 @@ namespace backend {
         bool useMapped,
         bool useInvalidate,
         bool useFence,
-        bool useSingleFence,
-        bool useDebugFence)
+        bool useFenceDebug)
         : m_useMapped{ useMapped },
         m_useInvalidate{ useInvalidate },
         m_useFence(useFence),
-        m_useSingleFence(useSingleFence),
-        m_useDebugFence{ useDebugFence }
+        m_useFenceDebug{ useFenceDebug }
     {
     }
 
@@ -114,24 +112,19 @@ namespace backend {
             m_useMapped,
             m_useInvalidate,
             m_useFence,
-            m_useSingleFence,
-            m_useDebugFence);
+            m_useFenceDebug);
         m_commands->prepare(BUFFER_ALIGNMENT, assets.batchDebug);
 
         m_drawRanges.resize(rangeCount);
-
-
-        m_drawFences.reserve(rangeCount);
-        for (int i = 0; i < rangeCount; i++) {
-            m_drawFences.emplace_back(fmt::format("draw_buffer_ference_{}", i));
-        }
 
         {
             m_instanceBuffers.emplace_back("draw_buffer_instance_0");
             m_instanceBuffers.emplace_back("draw_buffer_instance_1");
 
-            m_instanceFences.emplace_back("draw_buffer_instance_fence_0");
-            m_instanceFences.emplace_back("draw_buffer_instance_fence_1");
+            if (m_useFence) {
+                m_instanceFences.emplace_back("draw_buffer_instance_fence_0");
+                m_instanceFences.emplace_back("draw_buffer_instance_fence_1");
+            }
 
             for (auto& buffer : m_instanceBuffers) {
                 //buffer.createEmpty(INDEX_BLOCK_SIZE * sizeof(GLuint), GL_DYNAMIC_STORAGE_BIT);
@@ -261,7 +254,6 @@ namespace backend {
             curr = sendRange;
         }
 
-        m_drawFences[cmdRange.m_index].waitFence(false);
         if (m_commands->send(cmd)) {
             flush();
         }
@@ -308,9 +300,11 @@ namespace backend {
         m_instanceBufferIndex = (m_instanceBufferIndex + 1) % 2;
 
         auto& instanceBuffer = m_instanceBuffers[m_instanceBufferIndex];
-        auto& instanceBufferFence = m_instanceFences[m_instanceBufferIndex];
 
-        instanceBufferFence.waitFence(false);
+        if (m_useFence) {
+            auto& instanceBufferFence = m_instanceFences[m_instanceBufferIndex];
+            instanceBufferFence.waitFence(false);
+        }
 
         const size_t totalCount = indeces.size();
         constexpr size_t sz = sizeof(mesh::InstanceSSBO);
@@ -365,14 +359,14 @@ namespace backend {
                     sizeof(backend::gl::DrawIndirectCommand));
             }
             count += drawCount;
-
-            m_drawFences[cmdRange.m_index].setFence(false);
         };
 
-        m_commands->processPending(handler, drawCurrent, true);
+        m_commands->processCurrent(handler);
 
-        auto& instanceBufferFence = m_instanceFences[m_instanceBufferIndex];
-        instanceBufferFence.setFenceIfNotSet(false);
+        if (m_useFence) {
+            auto& instanceBufferFence = m_instanceFences[m_instanceBufferIndex];
+            instanceBufferFence.setFenceIfNotSet(false);
+        }
     }
 
     gl::PerformanceCounters DrawBuffer::getCounters(bool clear) const

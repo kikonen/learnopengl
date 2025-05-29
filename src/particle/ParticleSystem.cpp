@@ -99,12 +99,12 @@ namespace particle {
         m_useMapped = assets.glUseMapped;
         m_useInvalidate = assets.glUseInvalidate;
         m_useFence = assets.glUseFence;
-        m_useDebugFence = assets.glUseDebugFence;
+        m_useFenceDebug = assets.glUseFenceDebug;
 
         m_useMapped = false;
         m_useInvalidate = true;
         m_useFence = false;
-        m_useDebugFence = false;
+        m_useFenceDebug = false;
 
         if (!isEnabled()) return;
 

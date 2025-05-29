@@ -48,8 +48,7 @@ Assets::Assets()
     glUseMapped = false;
     glUseInvalidate = true;
     glUseFence = false;
-    glUseSingleFence = false;
-    glUseDebugFence = false;
+    glUseFenceDebug = false;
     glUseFinish = false;
 
     glslUseDebug = false;
