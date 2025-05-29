@@ -139,7 +139,7 @@ namespace render {
     {
         m_matrices->set(0, data);
         m_matrices->flush();
-        m_matrices->bind(UBO_MATRICES, false, 1);
+        m_matrices->bindCurrentUBO(UBO_MATRICES, false, 1);
         m_matrices->next();
     }
 
@@ -147,7 +147,7 @@ namespace render {
     {
         m_data->set(0, data);
         m_data->flush();
-        m_data->bind(UBO_DATA, false, 1);
+        m_data->bindCurrentUBO(UBO_DATA, false, 1);
         m_data->next();
     }
 
@@ -155,7 +155,7 @@ namespace render {
     {
         m_debug->set(0, data);
         m_debug->flush();
-        m_debug->bind(UBO_DEBUG, false, 1);
+        m_debug->bindCurrentUBO(UBO_DEBUG, false, 1);
         m_debug->next();
     }
 
@@ -163,7 +163,7 @@ namespace render {
     {
         m_bufferInfo->set(0, data);
         m_bufferInfo->flush();
-        m_bufferInfo->bind(UBO_BUFFER_INFO, false, 1);
+        m_bufferInfo->bindCurrentUBO(UBO_BUFFER_INFO, false, 1);
         m_bufferInfo->next();
     }
 
@@ -171,7 +171,7 @@ namespace render {
     {
         m_clipPlanes->set(0, data);
         m_clipPlanes->flush();
-        m_clipPlanes->bind(UBO_CLIP_PLANES, false, 1);
+        m_clipPlanes->bindCurrentUBO(UBO_CLIP_PLANES, false, 1);
         m_clipPlanes->next();
     }
 
@@ -236,7 +236,7 @@ namespace render {
 
         m_lights->set(0, lightsUbo);
         m_lights->flush();
-        m_lights->bind(UBO_LIGHTS, false, 1);
+        m_lights->bindCurrentUBO(UBO_LIGHTS, false, 1);
         m_lights->next();
     }
 }

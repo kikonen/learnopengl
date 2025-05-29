@@ -176,15 +176,15 @@ namespace kigl {
     }
 
     template <class T>
-    void GLSyncQueue<T>::bind(GLuint ubo, bool used, size_t count)
+    void GLSyncQueue<T>::bindCurrentUBO(GLuint ubo, bool used, size_t count)
     {
         auto& range = m_ranges[m_current];
         count = used ? range.m_usedCount : count;
-        m_buffer.bindRange(ubo, range.m_baseOffset, range.getLengthFor(count));
+        m_buffer.bindUBORange(ubo, range.m_baseOffset, range.getLengthFor(count));
     }
 
     template <class T>
-    void GLSyncQueue<T>::bindSSBO(GLuint ssbo, bool used, size_t count)
+    void GLSyncQueue<T>::bindCurrentSSBO(GLuint ssbo, bool used, size_t count)
     {
         auto& range = m_ranges[m_current];
         count = used ? range.m_usedCount : count;

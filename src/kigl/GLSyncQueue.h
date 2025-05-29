@@ -85,8 +85,8 @@ namespace kigl {
         //
         GLBufferRange& next();
 
-        void bind(GLuint ubo, bool used, size_t count);
-        void bindSSBO(GLuint ssbo, bool used, size_t count);
+        void bindCurrentUBO(GLuint ubo, bool used, size_t count);
+        void bindCurrentSSBO(GLuint ssbo, bool used, size_t count);
 
     private:
         void setFence(size_t index);

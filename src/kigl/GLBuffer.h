@@ -112,11 +112,11 @@ namespace kigl {
             glGetNamedBufferSubData(m_id, offset, length, data);
         }
 
-        void bind(GLuint ubo) {
-            bindRange(ubo, 0, m_size);
+        void bindUBO(GLuint ubo) {
+            bindUBORange(ubo, 0, m_size);
         }
 
-        void bindRange(GLuint ubo, size_t offset, size_t length) {
+        void bindUBORange(GLuint ubo, size_t offset, size_t length) {
             bindBufferRange(GL_UNIFORM_BUFFER, ubo, offset, length);
         }
 
