@@ -18,15 +18,15 @@ Snapshot::Snapshot(const NodeState& o)
     m_boneBaseIndex{ o.m_boneBaseIndex },
     m_socketBaseIndex{ o.m_socketBaseIndex },
     m_volume{ o.m_volume.getVolume() },
-    m_worldPos{ o.m_worldPos },
-    m_rotation{ o.m_rotation },
+    //m_worldPos{ o.m_worldPos },
+    //m_rotation{ o.m_rotation },
     m_viewUp{ o.m_viewUp },
     m_viewFront{ o.m_viewFront },
     //m_viewRight{ o.m_viewRight },
     m_modelMatrix{ o.m_modelMatrix },
     m_modelScale{ o.m_modelScale }
 {
-    o.m_volume.updateVolume(o.m_matrixLevel, o.m_modelMatrix, o.m_worldPos, o.getWorldMaxScale());
+    o.m_volume.updateVolume(o.m_matrixLevel, o.m_modelMatrix, o.getWorldPosition(), o.getWorldMaxScale());
     o.m_volume.storeWorldVolume(m_volume);
 }
 
@@ -35,15 +35,15 @@ Snapshot::Snapshot(const NodeState&& o)
     m_flags{ o.m_flags },
     m_boneBaseIndex{ o.m_boneBaseIndex },
     m_socketBaseIndex{ o.m_socketBaseIndex },
-    m_worldPos{ o.m_worldPos },
-    m_rotation{ o.m_rotation },
+    //m_worldPos{ o.m_worldPos },
+    //m_rotation{ o.m_rotation },
     m_viewUp{ o.m_viewUp },
     m_viewFront{ o.m_viewFront },
     //m_viewRight{ o.m_viewRight },
     m_modelMatrix{ o.m_modelMatrix },
     m_modelScale{ o.m_modelScale }
 {
-    o.m_volume.updateVolume(o.m_matrixLevel, o.m_modelMatrix, o.m_worldPos, o.getWorldMaxScale());
+    o.m_volume.updateVolume(o.m_matrixLevel, o.m_modelMatrix, o.getWorldPosition(), o.getWorldMaxScale());
     o.m_volume.storeWorldVolume(m_volume);
 }
 
@@ -59,12 +59,12 @@ void Snapshot::applyFrom(const NodeState& o) noexcept
     m_boneBaseIndex = o.m_boneBaseIndex;
     m_socketBaseIndex = o.m_socketBaseIndex;
 
-    o.m_volume.updateVolume(o.m_matrixLevel, o.m_modelMatrix, o.m_worldPos, o.getWorldMaxScale());
+    o.m_volume.updateVolume(o.m_matrixLevel, o.m_modelMatrix, o.getWorldPosition(), o.getWorldMaxScale());
     o.m_volume.storeWorldVolume(m_volume);
 
-    m_worldPos = o.m_worldPos;
+    //m_worldPos = o.m_worldPos;
 
-    m_rotation = o.m_rotation;
+    //m_rotation = o.m_rotation;
 
     o.updateModelAxis();
     m_viewUp = o.m_viewUp;
@@ -78,10 +78,10 @@ void Snapshot::applyFrom(const NodeState& o) noexcept
     o.m_dirtyNormal = false;
 }
 
-glm::vec3 Snapshot::getDegreesRotation() const noexcept
-{
-    return util::quatToDegrees(m_rotation);
-}
+//glm::vec3 Snapshot::getDegreesRotation() const noexcept
+//{
+//    return util::quatToDegrees(m_rotation);
+//}
 
 void Snapshot::updateEntity(
     EntitySSBO& entity) const

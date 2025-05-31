@@ -27,10 +27,10 @@ struct Snapshot {
 private:
     glm::vec4 m_volume{ 0.f };
 
-    glm::vec3 m_worldPos{ 0.f };
+    //glm::vec3 m_worldPos{ 0.f };
 
-    // http://www.opengl-tutorial.org/intermediate-tutorials/tutorial-17-quaternions/
-    glm::quat m_rotation{ 1.f, 0.f, 0.f, 0.f };
+    //// http://www.opengl-tutorial.org/intermediate-tutorials/tutorial-17-quaternions/
+    //glm::quat m_rotation{ 1.f, 0.f, 0.f, 0.f };
 
     glm::vec3 m_viewUp{ 0.f };
     glm::vec3 m_viewFront{ 0.f };
@@ -76,16 +76,16 @@ public:
 
         m_volume = o.m_volume;
 
-        m_worldPos = o.m_worldPos;
+        //m_worldPos = o.m_worldPos;
 
-        m_rotation = o.m_rotation;
+        //m_rotation = o.m_rotation;
 
         m_viewUp = o.m_viewUp;
         m_viewFront = o.m_viewFront;
         m_modelMatrix = o.m_modelMatrix;
         //m_handle = o.m_handle;
 
-        m_modelScale = o.m_modelScale;
+        //m_modelScale = o.m_modelScale;
 
         o.m_dirty = false;
         o.m_dirtyNormal = false;
@@ -104,12 +104,12 @@ public:
         return m_volume;
     }
 
-    glm::vec3 getDegreesRotation() const noexcept;
+    //glm::vec3 getDegreesRotation() const noexcept;
 
-    inline const glm::quat& getRotation() const noexcept
-    {
-        return m_rotation;
-    }
+    //inline const glm::quat& getRotation() const noexcept
+    //{
+    //    return m_rotation;
+    //}
 
     inline const glm::vec3& getViewUp() const noexcept {
         return m_viewUp;
@@ -124,20 +124,21 @@ public:
         return glm::cross(m_viewFront, m_viewUp);
     }
 
-    inline const glm::vec3& getWorldPosition() const noexcept
+    inline glm::vec3 getWorldPosition() const noexcept
     {
-        return m_worldPos;
+        //return m_worldPos;
+        return m_modelMatrix[3];
     }
 
-    inline const glm::vec3& getWorldScale() const noexcept
-    {
-        return m_modelScale;
-    }
+    //inline const glm::vec3& getWorldScale() const noexcept
+    //{
+    //    return m_modelScale;
+    //}
 
-    inline float getWorldMaxScale() const noexcept
-    {
-        return std::max(std::max(m_modelScale.x, m_modelScale.y), m_modelScale.z);
-    }
+    //inline float getWorldMaxScale() const noexcept
+    //{
+    //    return std::max(std::max(m_modelScale.x, m_modelScale.y), m_modelScale.z);
+    //}
 
     inline ki::level_id getMatrixLevel() const noexcept {
         return m_matrixLevel;
