@@ -35,7 +35,7 @@ private:
     glm::vec3 m_pivot{ 0.f };
 
     glm::vec3 m_worldPivot{ 0.f };
-    glm::vec3 m_worldPos{ 0.f };
+    //glm::vec3 m_worldPos{ 0.f };
 
     // Base rotation for node
     glm::quat m_baseRotation{ 1.f, 0.f, 0.f, 0.f };
@@ -271,11 +271,12 @@ public:
         return m_worldPivot;
     }
 
-    inline const glm::vec3& getWorldPosition() const noexcept
+    inline glm::vec3 getWorldPosition() const noexcept
     {
         // TODO KI sync with physics
         //assert(!m_dirty);
-        return m_worldPos;
+        //return m_worldPos;
+        return m_modelMatrix[3];
     }
 
     inline const glm::vec3& getWorldScale() const noexcept

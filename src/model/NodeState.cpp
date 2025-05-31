@@ -51,12 +51,12 @@ void NodeState::updateRootMatrix() noexcept
     m_modelMatrix = s_translateMatrix * m_rotationMatrix * s_scaleMatrix;
     m_modelScale = m_scale;
 
-    {
-        const auto& wp = m_modelMatrix[3];
-        m_worldPos.x = wp.x;
-        m_worldPos.y = wp.y;
-        m_worldPos.z = wp.z;
-    }
+    //{
+    //    const auto& wp = m_modelMatrix[3];
+    //    m_worldPos.x = wp.x;
+    //    m_worldPos.y = wp.y;
+    //    m_worldPos.z = wp.z;
+    //}
 
     m_matrixLevel++;
 
@@ -132,12 +132,12 @@ void NodeState::updateModelMatrix(const NodeState& parent) noexcept
 
     m_modelRotation = parent.m_modelRotation * m_rotation * m_baseRotation;
 
-    {
-        const auto& wp = m_modelMatrix[3];
-        m_worldPos.x = wp.x;
-        m_worldPos.y = wp.y;
-        m_worldPos.z = wp.z;
-    }
+    //{
+    //    const auto& wp = m_modelMatrix[3];
+    //    m_worldPos.x = wp.x;
+    //    m_worldPos.y = wp.y;
+    //    m_worldPos.z = wp.z;
+    //}
 
     {
         m_worldPivot = m_modelMatrix * glm::vec4{ m_pivot, 1.f };
