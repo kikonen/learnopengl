@@ -167,7 +167,12 @@ namespace render
                     glDispatchCompute(groupX, groupY, 1);
                 }
                 else {
-                    glDispatchCompute(viewport.x, viewport.y, 1);
+                    // NOTE KI *MUST* match local_size in shader/screen_blur_final_pass.cs.glsl
+                    constexpr int CO_THREADS = 8;
+                    glDispatchCompute(
+                        viewport.x / CO_THREADS + (viewport.x % CO_THREADS != 0 ? 1 : 0),
+                        viewport.y / CO_THREADS + (viewport.x % CO_THREADS != 0 ? 1 : 0),
+                        1);
                 }
 
                 //glMemoryBarrier(GL_SHADER_IMAGE_ACCESS_BARRIER_BIT);
