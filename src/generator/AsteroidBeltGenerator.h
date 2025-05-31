@@ -45,6 +45,7 @@ private:
     const int m_updateStep;
 
     int m_updateIndex = 0;
+    int m_strideIndex = 0;
 
     std::vector<InstancePhysics> m_physics;
 };
