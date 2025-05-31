@@ -87,7 +87,7 @@ nodes:
     prefab:
       path: prefab/scenery/prefab_pine_tree.yml
     flags:
-      xstatic_bounds: true
+      static_bounds: true
     scale: 2
     generator:
       type: grid
@@ -108,3 +108,39 @@ nodes:
         tiling: 1000
     scale: 4000
     position: [0, 0, 0]
+  - xid: terrain_grass_v2
+    mesh:
+      path: quad_terrain
+      material:
+        prefab: materials/Terrain2
+        texture_spec:
+          wrap: GL_CLAMP_TO_EDGE
+        program: g_terrain
+        depth_program: g_terrain_depth
+        tiling: 8
+      flags:
+        tessellation: true
+    priority: 20
+    pos: [-1024, 0, -2048]
+    generator:
+      type: terrain
+      mode: grid
+      terrain:
+        map_height: textures/terrain_2/terrain_2_height.png
+      tiling:
+        tile_size: 256
+        tiles: [8, 0, 8]
+        vert_range: [-62.54, 221.9]
+        vert_range: [-15.54, 81.9]
+        horiz_scale: 2
+    type_flags:
+      pre_depth: true
+      use_deferred: true
+      xnav_physics: true
+    physics:
+      geom:
+        type: height_field
+        category: [terrain]
+        collision: [can_terrain]
+        size: [2048, 0, 2048]
+        xrotation: [0, 180, 0]
