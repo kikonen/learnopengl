@@ -22,13 +22,15 @@
 
 namespace {
     bool done = false;
+
+    constexpr int STRIDES = 3;
 }
 
 AsteroidBeltGenerator::AsteroidBeltGenerator(int asteroidCount)
     : m_asteroidCount(asteroidCount),
     m_radius(70.0),
     m_modifier(20.5f),
-    m_updateStep(3)
+    m_updateStep(1)
 {
     m_lightWeight = true;
     m_lightWeightPhysics = true;
@@ -54,17 +56,21 @@ void AsteroidBeltGenerator::updateWT(
     const bool needUpdate = (m_updateIndex % m_updateStep) == 0;
 
     if (needUpdate) {
+        m_updateIndex = 0;
         updateAsteroids(ctx, container, needUpdate);
     }
 
     if (parentChanged || needUpdate) {
         //auto& parentMatrix = container.getParent()->getState().getModelMatrix();
         const auto& parentMatrix = container.getState().getModelMatrix();
-        for (auto& transform : m_transforms) {
+        for (int i = 0;  auto& transform : m_transforms) {
+            if (!parentChanged && (i++ % STRIDES) != m_strideIndex) continue;
+            //if (m_strideIndex != 1) continue;
             transform.updateTransform(parentMatrix, m_volume);
         }
     }
 
+    m_strideIndex = (m_strideIndex + 1) % STRIDES;
     m_updateIndex++;
     m_containerMatrixLevel = containerLevel;
 }
@@ -173,6 +179,9 @@ void AsteroidBeltGenerator::rotateAsteroids(
 
     for (size_t i = 0; i < count; i++)
     {
+        if ((i % STRIDES) != m_strideIndex) continue;
+        //if (m_strideIndex != 1) continue;
+
         auto& asteroid = m_transforms[i];
         auto& physics = m_physics[i];
 
