@@ -1,6 +1,6 @@
 #version 460 core
 
-layout (local_size_x = 64, local_size_y = 1, local_size_z = 1) in;
+layout (local_size_x = 8, local_size_y = 8, local_size_z = 1) in;
 
 layout(location = UNIFORM_VIEWPORT) uniform vec2 u_viewport;
 
@@ -22,10 +22,11 @@ SET_FLOAT_PRECISION;
 void main()
 {
   ivec2 texel = ivec2(gl_GlobalInvocationID.xy);
+  // texel = ivec2(gl_LocalInvocationID.xy);
 
   // NOTE KI no processing outside of viewport
-  if (texel.x > u_viewport.x) return;
-  if (texel.y > u_viewport.y) return;
+  if (texel.x >= u_viewport.x) return;
+  if (texel.y >= u_viewport.y) return;
 
   vec2 uv = vec2(texel.x / u_viewport.x, texel.y / u_viewport.y);
 
@@ -39,4 +40,10 @@ void main()
 
   imageStore(u_destinationTex, texel, vec4(color, orig.a));
   // imageStore(u_destinationTex, texCoord, vec4(uv.x, 0, 0, 1));
+
+  // vec2 t = vec2(gl_GlobalInvocationID.xy);
+  // color = vec3(t.y / u_viewport.x / 8.0, t.y / u_viewport.y / 8.0, 0);
+  // imageStore(u_destinationTex, texel, vec4(color, 1.0));
+
+  // imageStore(u_destinationTex, texel, orig);
 }

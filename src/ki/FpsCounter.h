@@ -5,7 +5,7 @@
 #include <chrono>
 
 namespace ki {
-    constexpr size_t FPS_FRAMES = 10;
+    constexpr size_t FPS_FRAMES = 20;
 
     class FpsCounter {
     public:
