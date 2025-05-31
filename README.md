@@ -60,13 +60,22 @@ IRB.conf[:USE_AUTOCOMPLETE] = false
 ### prepare assets
 
 ```bash
+# all
+ruby script/encode_ktx.rb meta --src resources/assets --dry-run false --recursive true --target-size 20248
+
+# single
 ruby script/encode_ktx.rb meta --src resources/assets/textures/Metal022_1K-PNG --dry-run false --force true
 ```
 
 ### build assets
 
 ```bash
-ruby script/encode_ktx.rb ktx --src resources/assets/textures/Metal022_1K-PNG --dry-run false --target-size 2048 --force true
+# all
+ruby script/encode_ktx.rb build --src resources/assets --dry-run false --recursive true --target-size 2048 --encode --combine
+
+# single
+ruby script/encode_ktx.rb build --src resources/assets/textures/Metal022_1K-PNG --dry-run false --target-size 2048  --encode --combine --force true
+
 ```
 
 ## vcpkg-registry
