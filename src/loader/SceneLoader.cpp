@@ -781,7 +781,7 @@ namespace loader {
         }
         else if (nodeData.type == NodeType::text) {
             type->m_nodeType = NodeType::text;
-            auto mesh = std::make_unique<mesh::TextMesh>();
+            auto mesh = std::make_shared<mesh::TextMesh>();
 
             if (!mesh->getMaterial()) {
                 const auto& material = Material::createMaterial(BasicMaterial::yellow);
@@ -789,7 +789,7 @@ namespace loader {
             }
 
             mesh::LodMesh lodMesh;
-            lodMesh.setMesh(std::move(mesh), true);
+            lodMesh.setMesh(mesh);
             type->addLodMesh(std::move(lodMesh));
             meshCount++;
         }
@@ -873,14 +873,14 @@ namespace loader {
             auto mesh = m_loaders->m_vertexLoader.createMesh(meshData, meshData.vertexData, *m_loaders);
 
             mesh::LodMesh lodMesh;
-            lodMesh.setMesh(std::move(mesh), true);
+            lodMesh.setMesh(mesh);
             type->addLodMesh(std::move(lodMesh));
 
             meshCount++;
             break;
         }
         case MeshDataType::non_vao: {
-            auto mesh = std::make_unique<mesh::NonVaoMesh>(type->getName());
+            auto mesh = std::make_shared<mesh::NonVaoMesh>(type->getName());
 
             if (meshData.materials.empty()) {
                 const auto& material = Material::createMaterial(BasicMaterial::yellow);
@@ -891,7 +891,7 @@ namespace loader {
             }
 
             mesh::LodMesh lodMesh;
-            lodMesh.setMesh(std::move(mesh), true);
+            lodMesh.setMesh(mesh);
             type->addLodMesh(std::move(lodMesh));
 
             meshCount++;

@@ -72,13 +72,13 @@ namespace mesh {
         return aabb;
     }
 
-    mesh::Mesh* MeshSet::addMesh(std::unique_ptr<mesh::Mesh>&& mesh) noexcept
+    mesh::Mesh* MeshSet::addMesh(std::shared_ptr<mesh::Mesh>&& mesh) noexcept
     {
-        m_meshes.push_back(std::move(mesh));
+        m_meshes.push_back(mesh);
         return m_meshes[m_meshes.size() - 1].get();
     }
 
-    const std::vector<std::unique_ptr<mesh::Mesh>>& MeshSet::getMeshes() const noexcept
+    const std::vector<std::shared_ptr<mesh::Mesh>>& MeshSet::getMeshes() const noexcept
     {
         return m_meshes;
     }

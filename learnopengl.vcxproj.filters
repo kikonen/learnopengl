@@ -885,7 +885,7 @@
     <ClCompile Include="src\component\FpsCamera.h">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\component\FpsCamerra.cpp">
+    <ClCompile Include="src\component\FpsCamera.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\component\FollowCamera.cpp">

@@ -29,7 +29,7 @@ namespace mesh {
     LodMesh::LodMesh()
     {}
 
-    LodMesh::LodMesh(Mesh* mesh)
+    LodMesh::LodMesh(std::shared_ptr<Mesh> mesh)
     {
         setMesh(mesh);
     }
@@ -51,7 +51,6 @@ namespace mesh {
         m_material = std::move(o.m_material);
         m_materialIndex = o.m_materialIndex;
 
-        m_deleter = std::move(o.m_deleter);
         m_vaoId = o.m_vaoId;
 
         m_minDistance2 = o.m_minDistance2;
@@ -72,7 +71,6 @@ namespace mesh {
 
         m_flags = o.m_flags;
 
-        o.m_mesh = nullptr;
         o.m_material = nullptr;
     }
 
@@ -92,7 +90,6 @@ namespace mesh {
         m_material = std::move(o.m_material);
         m_materialIndex = o.m_materialIndex;
 
-        m_deleter = std::move(o.m_deleter);
         m_vaoId = o.m_vaoId;
 
         m_minDistance2 = o.m_minDistance2;
@@ -115,7 +112,6 @@ namespace mesh {
 
         m_flags = o.m_flags;
 
-        o.m_mesh = nullptr;
         o.m_material = nullptr;
 
         return *this;
@@ -210,14 +206,7 @@ namespace mesh {
     }
 
     void LodMesh::setMesh(
-        std::unique_ptr<Mesh> mesh,
-        bool umique) noexcept
-    {
-        setMesh(mesh.get());
-        m_deleter = std::move(mesh);
-    }
-
-    void LodMesh::setMesh(Mesh* mesh) noexcept
+        std::shared_ptr<Mesh> mesh) noexcept
     {
         m_mesh = mesh;
         if (!m_mesh) return;

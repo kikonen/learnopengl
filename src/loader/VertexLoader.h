@@ -31,13 +31,13 @@ namespace loader {
             const loader::DocNode& node,
             std::vector<int>& indeces) const;
 
-        std::unique_ptr<mesh::Mesh> createMesh(
+        std::shared_ptr<mesh::Mesh> createMesh(
             const MeshData& meshData,
             const VertexData& data,
             Loaders& loaders) const;
 
     private:
-        std::unique_ptr<mesh::Mesh> createMesh(
+        std::shared_ptr<mesh::Mesh> createMesh(
             std::string defaultName,
             const MeshData& meshData,
             const VertexData& data,

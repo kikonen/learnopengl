@@ -291,7 +291,7 @@
     <ClCompile Include="src\component\CameraComponent.cpp" />
     <ClCompile Include="src\component\FollowCamera.cpp" />
     <ClCompile Include="src\component\FpsCamera.h" />
-    <ClCompile Include="src\component\FpsCamerra.cpp" />
+    <ClCompile Include="src\component\FpsCamera.cpp" />
     <ClCompile Include="src\component\OrbitCamerra.cpp" />
     <ClCompile Include="src\component\Spline.cpp" />
     <ClCompile Include="src\component\SplineCamera.cpp" />

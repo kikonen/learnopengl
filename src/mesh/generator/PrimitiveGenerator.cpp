@@ -42,7 +42,7 @@ namespace {
         2, 1, 3
     };
 
-    std::unique_ptr<mesh::Mesh> createVertices(
+    std::shared_ptr<mesh::Mesh> createVertices(
         mesh::PrimitiveGenerator generator)
     {
         if (generator.vertices.empty() || generator.indeces.empty()) return nullptr;
@@ -69,7 +69,7 @@ namespace {
         return mesh;
     }
 
-    std::unique_ptr<mesh::Mesh> create_ray(
+    std::shared_ptr<mesh::Mesh> create_ray(
         mesh::PrimitiveGenerator generator)
     {
         if (generator.length == 0) return nullptr;
@@ -107,7 +107,7 @@ namespace {
         return mesh;
     }
 
-    std::unique_ptr<mesh::Mesh> create_bezier(
+    std::shared_ptr<mesh::Mesh> create_bezier(
         mesh::PrimitiveGenerator generator)
     {
         auto mesh = std::make_unique<mesh::PrimitiveMesh>(generator.name);
@@ -147,7 +147,7 @@ namespace {
         return mesh;
     }
 
-    std::unique_ptr<mesh::Mesh> create_plane(
+    std::shared_ptr<mesh::Mesh> create_plane(
         mesh::PrimitiveGenerator generator)
     {
         auto mesh = std::make_unique<mesh::PrimitiveMesh>(generator.name);
@@ -188,7 +188,7 @@ namespace {
         return mesh;
     }
 
-    std::unique_ptr<mesh::Mesh> create_quad(
+    std::shared_ptr<mesh::Mesh> create_quad(
         mesh::PrimitiveGenerator generator)
     {
         auto mesh = std::make_unique<mesh::PrimitiveMesh>(generator.name);
@@ -229,7 +229,7 @@ namespace {
         return mesh;
     }
 
-    std::unique_ptr<mesh::Mesh> create_height_field(
+    std::shared_ptr<mesh::Mesh> create_height_field(
         mesh::PrimitiveGenerator generator)
     {
         auto mesh = std::make_unique<mesh::PrimitiveMesh>(generator.name);
@@ -306,7 +306,7 @@ namespace {
         return mesh;
     }
 
-    std::unique_ptr<mesh::Mesh> create_plane_grid(
+    std::shared_ptr<mesh::Mesh> create_plane_grid(
         mesh::PrimitiveGenerator generator)
     {
         auto mesh = std::make_unique<mesh::PrimitiveMesh>(generator.name);
@@ -339,7 +339,7 @@ namespace {
         return mesh;
     }
 
-    std::unique_ptr<mesh::Mesh> create_box(
+    std::shared_ptr<mesh::Mesh> create_box(
         mesh::PrimitiveGenerator generator)
     {
         auto mesh = std::make_unique<mesh::PrimitiveMesh>(generator.name);
@@ -372,7 +372,7 @@ namespace {
         return mesh;
     }
 
-    std::unique_ptr<mesh::Mesh> create_rounded_box(
+    std::shared_ptr<mesh::Mesh> create_rounded_box(
         mesh::PrimitiveGenerator generator)
     {
         auto mesh = std::make_unique<mesh::PrimitiveMesh>(generator.name);
@@ -407,7 +407,7 @@ namespace {
         return mesh;
     }
 
-    std::unique_ptr<mesh::Mesh> create_dodeca_hedron(
+    std::shared_ptr<mesh::Mesh> create_dodeca_hedron(
         mesh::PrimitiveGenerator generator)
     {
         auto mesh = std::make_unique<mesh::PrimitiveMesh>(generator.name);
@@ -441,7 +441,7 @@ namespace {
         return mesh;
     }
 
-    std::unique_ptr<mesh::Mesh> create_icosa_hedron(
+    std::shared_ptr<mesh::Mesh> create_icosa_hedron(
         mesh::PrimitiveGenerator generator)
     {
         auto mesh = std::make_unique<mesh::PrimitiveMesh>(generator.name);
@@ -475,7 +475,7 @@ namespace {
         return mesh;
     }
 
-    std::unique_ptr<mesh::Mesh> create_ico_sphere(
+    std::shared_ptr<mesh::Mesh> create_ico_sphere(
         mesh::PrimitiveGenerator generator)
     {
         auto mesh = std::make_unique<mesh::PrimitiveMesh>(generator.name);
@@ -509,7 +509,7 @@ namespace {
         return mesh;
     }
 
-    std::unique_ptr<mesh::Mesh> create_sphere(
+    std::shared_ptr<mesh::Mesh> create_sphere(
         mesh::PrimitiveGenerator generator)
     {
         auto mesh = std::make_unique<mesh::PrimitiveMesh>(generator.name);
@@ -544,7 +544,7 @@ namespace {
         return mesh;
     }
 
-    std::unique_ptr<mesh::Mesh> create_capsule(
+    std::shared_ptr<mesh::Mesh> create_capsule(
         mesh::PrimitiveGenerator generator)
     {
         auto mesh = std::make_unique<mesh::PrimitiveMesh>(generator.name);
@@ -581,7 +581,7 @@ namespace {
         return mesh;
     }
 
-    std::unique_ptr<mesh::Mesh> create_cylinder(
+    std::shared_ptr<mesh::Mesh> create_cylinder(
         mesh::PrimitiveGenerator generator)
     {
         auto mesh = std::make_unique<mesh::PrimitiveMesh>(generator.name);
@@ -617,7 +617,7 @@ namespace {
         return mesh;
     }
 
-    std::unique_ptr<mesh::Mesh> create_capped_cylinder(
+    std::shared_ptr<mesh::Mesh> create_capped_cylinder(
         mesh::PrimitiveGenerator generator)
     {
         auto mesh = std::make_unique<mesh::PrimitiveMesh>(generator.name);
@@ -653,7 +653,7 @@ namespace {
         return mesh;
     }
 
-    std::unique_ptr<mesh::Mesh> create_cone(
+    std::shared_ptr<mesh::Mesh> create_cone(
         mesh::PrimitiveGenerator generator)
     {
         auto mesh = std::make_unique<mesh::PrimitiveMesh>(generator.name);
@@ -689,7 +689,7 @@ namespace {
         return mesh;
     }
 
-    std::unique_ptr<mesh::Mesh> create_capped_cone(
+    std::shared_ptr<mesh::Mesh> create_capped_cone(
         mesh::PrimitiveGenerator generator)
     {
         auto mesh = std::make_unique<mesh::PrimitiveMesh>(generator.name);
@@ -726,7 +726,7 @@ namespace {
         return mesh;
     }
 
-    std::unique_ptr<mesh::Mesh> create_spherical_cone(
+    std::shared_ptr<mesh::Mesh> create_spherical_cone(
         mesh::PrimitiveGenerator generator)
     {
         auto mesh = std::make_unique<mesh::PrimitiveMesh>(generator.name);
@@ -763,7 +763,7 @@ namespace {
         return mesh;
     }
 
-    std::unique_ptr<mesh::Mesh> create_tube(
+    std::shared_ptr<mesh::Mesh> create_tube(
         mesh::PrimitiveGenerator generator)
     {
         auto mesh = std::make_unique<mesh::PrimitiveMesh>(generator.name);
@@ -800,7 +800,7 @@ namespace {
         return mesh;
     }
 
-    std::unique_ptr<mesh::Mesh> create_capped_tube(
+    std::shared_ptr<mesh::Mesh> create_capped_tube(
         mesh::PrimitiveGenerator generator)
     {
         auto mesh = std::make_unique<mesh::PrimitiveMesh>(generator.name);
@@ -838,7 +838,7 @@ namespace {
         return mesh;
     }
 
-    std::unique_ptr<mesh::Mesh> create_torus(
+    std::shared_ptr<mesh::Mesh> create_torus(
         mesh::PrimitiveGenerator generator)
     {
         auto mesh = std::make_unique<mesh::PrimitiveMesh>(generator.name);
@@ -874,7 +874,7 @@ namespace {
         return mesh;
     }
 
-    std::unique_ptr<mesh::Mesh> create_torus_knot(
+    std::shared_ptr<mesh::Mesh> create_torus_knot(
         mesh::PrimitiveGenerator generator)
     {
         auto mesh = std::make_unique<mesh::PrimitiveMesh>(generator.name);
@@ -910,7 +910,7 @@ namespace {
         return mesh;
     }
 
-    std::unique_ptr<mesh::Mesh> create_disk(
+    std::shared_ptr<mesh::Mesh> create_disk(
         mesh::PrimitiveGenerator generator)
     {
         auto mesh = std::make_unique<mesh::PrimitiveMesh>(generator.name);
@@ -946,7 +946,7 @@ namespace {
         return mesh;
     }
 
-    std::unique_ptr<mesh::Mesh> create_spring(
+    std::shared_ptr<mesh::Mesh> create_spring(
         mesh::PrimitiveGenerator generator)
     {
         auto mesh = std::make_unique<mesh::PrimitiveMesh>(generator.name);
@@ -985,7 +985,7 @@ namespace {
 }
 
 namespace mesh {
-    std::unique_ptr<mesh::Mesh> PrimitiveGenerator::create() const
+    std::shared_ptr<mesh::Mesh> PrimitiveGenerator::create() const
     {
         auto buildMesh = [this]() {
             switch (type) {
@@ -1042,7 +1042,7 @@ namespace mesh {
             case PrimitiveType::spring:
                 return create_spring(*this);
             }
-            return std::unique_ptr<mesh::Mesh>(nullptr);
+            return std::shared_ptr<mesh::Mesh>(nullptr);
         };
 
         auto mesh = buildMesh();
@@ -1052,6 +1052,6 @@ namespace mesh {
             primitiveMesh->setupVertexCounts();
         }
 
-        return std::move(mesh);
+        return mesh;
     }
 }

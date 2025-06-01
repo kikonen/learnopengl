@@ -34,9 +34,9 @@ namespace mesh {
         bool isRigged() const noexcept;
 
         // Take ownership of mesh
-        mesh::Mesh* addMesh(std::unique_ptr<mesh::Mesh>&& mesh) noexcept;
+        mesh::Mesh* addMesh(std::shared_ptr<mesh::Mesh>&& mesh) noexcept;
 
-        const std::vector<std::unique_ptr<mesh::Mesh>>& getMeshes() const noexcept;
+        const std::vector<std::shared_ptr<mesh::Mesh>>& getMeshes() const noexcept;
 
         template<typename T>
         inline const T* getMesh(size_t index) const noexcept
@@ -63,6 +63,6 @@ namespace mesh {
         std::shared_ptr<animation::RigContainer> m_rig;
 
     private:
-        std::vector<std::unique_ptr<mesh::Mesh>> m_meshes;
+        std::vector<std::shared_ptr<mesh::Mesh>> m_meshes;
     };
 }
