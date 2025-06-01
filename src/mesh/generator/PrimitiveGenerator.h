@@ -544,6 +544,6 @@ namespace mesh {
             return none();
         }
 
-        std::unique_ptr<mesh::Mesh> create() const;
+        std::shared_ptr<mesh::Mesh> create() const;
     };
 }

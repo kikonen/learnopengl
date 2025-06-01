@@ -102,7 +102,7 @@ namespace mesh {
         }
 
         inline bool hasMesh() const noexcept {
-            return m_lodMeshes->empty() ? false : (*m_lodMeshes)[0].m_mesh;
+            return !m_lodMeshes->empty() && (*m_lodMeshes)[0].m_mesh.get();
         }
 
         template<typename T>

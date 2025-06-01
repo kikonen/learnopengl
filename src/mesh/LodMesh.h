@@ -35,7 +35,7 @@ namespace mesh {
     // TODO KI *REMOVE* "same VAO" req!
     struct LodMesh {
         LodMesh();
-        LodMesh(Mesh* mesh);
+        LodMesh(std::shared_ptr<Mesh> mesh);
         LodMesh(LodMesh& o) = delete;
         LodMesh(const LodMesh& o) = delete;
         LodMesh(LodMesh&& o) noexcept;
@@ -54,12 +54,10 @@ namespace mesh {
         template<typename T>
         inline T* getMesh() const noexcept
         {
-            return dynamic_cast<T*>(m_mesh);
+            return dynamic_cast<T*>(m_mesh.get());
         }
 
-        void setMesh(
-            std::unique_ptr<Mesh> mesh,
-            bool umique) noexcept;
+        void setMesh(std::shared_ptr<Mesh> mesh) noexcept;
 
         const Material* getMaterial() const noexcept;
         Material* modifyMaterial() noexcept;
@@ -83,13 +81,10 @@ namespace mesh {
         AABB calculateAABB() const noexcept;
 
     private:
-        void setMesh(Mesh* mesh) noexcept;
-
         void updateTransform();
 
     public:
-        Mesh* m_mesh{ nullptr };
-        std::unique_ptr<Mesh> m_deleter;
+        std::shared_ptr<Mesh> m_mesh;
 
         glm::vec3 m_scale{ 1.f };
         glm::vec3 m_baseScale{ 1.f };

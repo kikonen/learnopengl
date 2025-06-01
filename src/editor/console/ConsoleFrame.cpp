@@ -297,7 +297,7 @@ namespace editor
                 if (data->EventKey == ImGuiKey_UpArrow)
                 {
                     if (historyPos == -1) {
-                        historyPos = m_state.m_items.empty() ? -1 : m_state.m_items.size() - 1;
+                        historyPos = m_state.m_items.empty() ? -1 : static_cast<int>(m_state.m_items.size()) - 1;
                     }
                     else if (historyPos > 0) {
                         historyPos--;

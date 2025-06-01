@@ -14,11 +14,24 @@ namespace mesh {
         GLuint u_materialIndex;
         GLint u_socketIndex{ -1 };
         GLuint u_flags{ 0 };
+
         GLuint u_data{ 0 };
 
         int pad2_1;
         int pad2_2;
         int pad2_3;
+
+        inline void setMaterialIndex(GLuint materialIndex) {
+            u_materialIndex = materialIndex;
+        }
+
+        inline void setSocketIndex(GLushort socketIndex) {
+            u_socketIndex = socketIndex;
+        }
+
+        inline void setFlags(GLushort flags) {
+            u_flags = flags;
+        }
 
         // NOTE KI M-T matrix needed *ONLY* if non uniform scale
         inline void setTransform(

@@ -63,7 +63,7 @@ namespace mesh {
         uint16_t count = 0;
 
         for (auto& mesh : meshSet.getMeshes()) {
-            auto* lodMesh = addLodMesh({ mesh.get() });
+            auto* lodMesh = addLodMesh({ mesh });
             count++;
         }
 

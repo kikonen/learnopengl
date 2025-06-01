@@ -64,7 +64,7 @@ namespace nav
         for (const auto& meshInstance : *m_meshInstances) {
             auto geom = std::make_unique<nav::InputGeom>(
                 meshInstance.getTransform(),
-                meshInstance.m_mesh.get());
+                meshInstance.m_mesh);
                 m_geometries.push_back(std::move(geom));
         }
 

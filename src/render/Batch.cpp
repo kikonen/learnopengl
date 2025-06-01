@@ -453,13 +453,13 @@ namespace render {
                             lodEntry.u_transformMatrixRow0,
                             lodEntry.u_transformMatrixRow1,
                             lodEntry.u_transformMatrixRow2);
-                        instance.u_materialIndex = lodEntry.m_materialIndex;
-                        instance.u_socketIndex = lodEntry.m_socketIndex;
+                        instance.setMaterialIndex(lodEntry.m_materialIndex);
+                        instance.setSocketIndex(lodEntry.m_socketIndex);
 
                         // NOTE KI BatchKey does not take in account m_flags
                         // => can draw different instances in same batch
                         //instance.u_shapeIndex = key.m_drawOptions.m_flags;
-                        instance.u_flags = multiDrawKey.m_drawOptions.m_flags;
+                        instance.setFlags(multiDrawKey.m_drawOptions.m_flags);
 
                         instance.u_data = lodEntry.m_data;
                     }

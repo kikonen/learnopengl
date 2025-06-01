@@ -1,5 +1,7 @@
 #pragma once
 
+#include <memory>
+
 #include <glm/glm.hpp>
 
 namespace mesh
@@ -14,7 +16,7 @@ namespace nav
     public:
         InputGeom(
             const glm::mat4& transform,
-            const mesh::Mesh* mesh);
+            const std::shared_ptr<mesh::Mesh> mesh);
 
         ~InputGeom();
 
@@ -49,7 +51,7 @@ namespace nav
 
     private:
         const glm::mat4 m_transform;
-        const mesh::Mesh* m_mesh{ nullptr };
+        const std::shared_ptr<mesh::Mesh> m_mesh{ nullptr };
         bool m_dirty{ true };
 
         float* m_vertices{ nullptr };
