@@ -26,6 +26,6 @@ struct PivotPoint {
         PivotAlignment::origin
     };
 
-    glm::vec3 resolve(mesh::MeshType* type) const;
+    glm::vec3 resolve(const mesh::MeshType* type) const;
 };
 

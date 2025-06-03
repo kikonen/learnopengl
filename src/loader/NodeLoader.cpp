@@ -266,8 +266,8 @@ namespace loader {
             else if (k == "clone_position_offset") {
                 data.clonePositionOffset = readVec3(v);
             }
-            else if (k == "clone_mesh") {
-                data.cloneMesh = readBool(v);
+            else if (k == "share_type") {
+                data.shareType = readBool(v);
             }
             else if (k == "tile") {
                 data.tile = readVec3(v);

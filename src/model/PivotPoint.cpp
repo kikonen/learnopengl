@@ -3,7 +3,7 @@
 #include "mesh/MeshType.h"
 
 
-glm::vec3 PivotPoint::resolve(mesh::MeshType* type) const
+glm::vec3 PivotPoint::resolve(const mesh::MeshType* type) const
 {
     glm::vec3 pivot{ 0.f };
 

@@ -407,8 +407,6 @@ std::pair<int, int> NodeRegistry::updateEntity(const UpdateContext& ctx)
     int minDirty = INT32_MAX;
     int maxDirty = INT32_MIN;
 
-
-
     for (int i = 0; i < m_snapshotsRT.size(); i++) {
         auto* node = m_cachedNodesRT[i];
         const auto& snapshot = m_snapshotsRT[i];
@@ -588,13 +586,13 @@ void NodeRegistry::handleNodeAdded(Node* node)
     if (node->m_light) {
         Light* light = node->m_light.get();
 
-        if (light->m_directional) {
+        if (light->isDirectional()) {
             m_dirLightNodes.push_back(handle);
         }
-        else if (light->m_point) {
+        else if (light->isPoint()) {
             m_pointLightNodes.push_back(handle);
         }
-        else if (light->m_spot) {
+        else if (light->isSpot()) {
             m_spotLightNodes.push_back(handle);
         }
     }

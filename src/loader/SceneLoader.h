@@ -7,42 +7,46 @@
 #include <mutex>
 #include <atomic>
 
-#include "text/size.h"
+//#include "text/size.h"
 
 #include "BaseLoader.h"
 
 struct Material;
 class Registry;
 
+struct NodeFlags;
 struct NodeState;
 
-namespace text {
-}
+//namespace text {
+//}
 
 namespace pool {
     struct NodeHandle;
     struct TypeHandle;
 }
 
-namespace mesh {
-    class MeshSet;
-    class MeshType;
-    struct LodMesh;
-}
+//namespace mesh {
+//    struct TypeFlags;
+//    struct MeshFlags;
+//    class MeshSet;
+//    class MeshType;
+//    struct LodMesh;
+//}
 
 namespace loader {
+    class MeshTypeBuilder;
+
     struct RootData;
     struct SkyboxData;
-    struct MaterialData;
     struct ScriptSystemData;
     struct NodeRoot;
     struct NodeData;
-    struct TextData;
-    struct MeshData;
-    struct LodData;
-    struct AnimationData;
+    //struct TextData;
+    //struct MeshData;
+    //struct LodData;
+    //struct AnimationData;
     struct ResolvedNode;
-    struct MaterialData;
+    //struct MaterialData;
     struct DecalData;
     struct MaterialUpdaterData;
 
@@ -113,69 +117,9 @@ namespace loader {
             const glm::uvec3& tile,
             const glm::vec3& tilePositionOffset);
 
-        void assignTypeFlags(
-            const NodeData& nodeData,
-            pool::TypeHandle typeHandle);
-
-        void assignMeshFlags(
-            const FlagContainer& container,
-            mesh::LodMesh& lodMesh);
-
         void assignNodeFlags(
             const FlagContainer& container,
-            pool::NodeHandle nodeHandle);
-
-        const pool::TypeHandle createType(
-            const NodeData& nodeData,
-            const glm::uvec3& tile);
-
-        void resolveMaterials(
-            mesh::MeshType* type,
-            mesh::LodMesh& lodMesh,
-            const NodeData& nodeData,
-            const MeshData& meshData,
-            const LodData* lodData);
-
-        void resolveMeshes(
-            mesh::MeshType* type,
-            const NodeData& nodeData,
-            const glm::uvec3& tile);
-
-        void resolveMesh(
-            mesh::MeshType* type,
-            const NodeData& nodeData,
-            const MeshData& meshData,
-            const glm::uvec3& tile,
-            int index);
-
-        // @return count of meshes added
-        int resolveModelMesh(
-            mesh::MeshType* type,
-            const NodeData& nodeData,
-            const MeshData& meshData,
-            const glm::uvec3& tile,
-            int index);
-
-        void resolveLodMesh(
-            mesh::MeshType* type,
-            const NodeData& nodeData,
-            const MeshData& meshData,
-            mesh::LodMesh& lodMesh);
-
-        const LodData* resolveLod(
-            mesh::MeshType* type,
-            const NodeData& nodeData,
-            const MeshData& meshData,
-            mesh::LodMesh& lodMesh);
-
-        void resolveSockets(
-            const MeshData& meshData,
-            mesh::MeshSet& meshSet);
-
-        void loadAnimation(
-            const std::string& baseDir,
-            const AnimationData& data,
-            mesh::MeshSet& meshSet);
+            NodeFlags& flags);
 
         std::pair<pool::NodeHandle, NodeState> createNode(
             pool::TypeHandle typeHandle,
@@ -186,11 +130,6 @@ namespace loader {
             const glm::uvec3& tile,
             const glm::vec3& clonePositionOffset,
             const glm::vec3& tilePositionOffset);
-
-        void resolveAttachments(
-            pool::TypeHandle typeHandle,
-            pool::NodeHandle nodeHandle,
-            const NodeData& nodeData);
 
         void loadMeta(
             const loader::DocNode& node,
@@ -249,6 +188,8 @@ namespace loader {
         std::vector<DecalData> m_decals;
         std::vector<MaterialUpdaterData> m_materialUpdaters;
 
-        std::unique_ptr<Loaders> m_loaders;
+        std::shared_ptr<Loaders> m_loaders;
+
+        std::unique_ptr<MeshTypeBuilder> m_meshTypeBuilder;
     };
 }

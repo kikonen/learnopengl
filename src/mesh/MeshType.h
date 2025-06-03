@@ -141,27 +141,22 @@ namespace mesh {
     private:
         AABB calculateAABB() const noexcept;
 
-    public:
+    private:
         AABB m_aabb;
         std::unique_ptr<std::vector<LodMesh>> m_lodMeshes;
-
-
+        std::vector<script::script_id> m_scripts;
         std::unique_ptr<CustomMaterial> m_customMaterial{ nullptr };
 
+    public:
+        std::string m_name;
         pool::TypeHandle m_handle;
 
-        std::string m_name;
-
         TypeFlags m_flags;
-
         uint8_t m_layer{ 0 };
-
         NodeType m_nodeType{ NodeType::origo };
 
+    private:
         bool m_preparedWT : 1 {false};
         bool m_preparedRT : 1 {false};
-
-    private:
-        std::vector<script::script_id> m_scripts;
     };
 }

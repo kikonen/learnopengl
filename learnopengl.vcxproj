@@ -182,6 +182,7 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <Profile>true</Profile>
+      <UseDynamicDebugging>true</UseDynamicDebugging>
     </Link>
     <PreBuildEvent>
       <Command>del $(TargetDir)main.obj</Command>
@@ -216,6 +217,7 @@
     <ClCompile Include="src\event\actions.cpp" />
     <ClCompile Include="src\loader\DecalLoaderr.cpp" />
     <ClCompile Include="src\loader\MaterialUpdaterLoader.cpp" />
+    <ClCompile Include="src\loader\MeshTypeBuilder.cpp" />
     <ClCompile Include="src\loader\value\PhysicsCategoryValue.cpp" />
     <ClCompile Include="src\loader\value\PhysicsGeomValue.cpp" />
     <ClCompile Include="src\material\ColorTexture.cpp" />
@@ -224,6 +226,7 @@
     <ClCompile Include="src\material\ShaderMaterialUpdater.cpp" />
     <ClCompile Include="src\material\HdriTexture.cpp" />
     <ClCompile Include="src\material\MaterialUpdater.cpp" />
+    <ClCompile Include="src\mesh\PrimitiveRegistry.cpp" />
     <ClCompile Include="src\mesh\generator\TangentCalculator.cpp" />
     <ClCompile Include="src\mesh\NonVaoMesh.cpp" />
     <ClCompile Include="src\mesh\VaoMesh.cpp" />
@@ -590,6 +593,7 @@
     <ClInclude Include="src\animation\MetadataLoader.h" />
     <ClInclude Include="src\animation\SocketBuffer.h" />
     <ClInclude Include="src\animation\SocketRegistry.h" />
+    <ClInclude Include="src\component\LightType.h" />
     <ClInclude Include="src\decal\DecalBuffer.h" />
     <ClInclude Include="src\decal\DecalCollection.h" />
     <ClInclude Include="src\decal\DecalDefinition.h" />
@@ -603,11 +607,13 @@
     <ClInclude Include="src\loader\DecalLoader.h" />
     <ClInclude Include="src\loader\MaterialUpdaterData.h" />
     <ClInclude Include="src\loader\MaterialUpdaterLoader.h" />
+    <ClInclude Include="src\loader\MeshTypeBuilder.h" />
     <ClInclude Include="src\loader\value\PhysicsCategoryValue.h" />
     <ClInclude Include="src\loader\value\PhysicsGeomValue.h" />
     <ClInclude Include="src\material\FontAtlasMaterialUpdater.h" />
     <ClInclude Include="src\material\ShaderMaterialUpdater.h" />
     <ClInclude Include="src\material\MaterialUpdater.h" />
+    <ClInclude Include="src\mesh\PrimitiveRegistry.h" />
     <ClInclude Include="src\mesh\generator\TangentCalculator.h" />
     <ClInclude Include="src\mesh\vao\TangentEntry.h" />
     <ClInclude Include="src\mesh\vao\VertexTangentVBO.h" />

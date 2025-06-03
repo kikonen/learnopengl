@@ -125,13 +125,6 @@ void Node::prepareRT(
     }
 }
 
-bool Node::isEntity() const noexcept
-{
-    auto* type = m_typeHandle.toType();
-    return type->hasMesh() &&
-        !type->m_flags.invisible;
-}
-
 void Node::updateVAO(const RenderContext& ctx) noexcept
 {
     if (m_generator) {

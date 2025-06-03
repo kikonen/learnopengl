@@ -12,6 +12,8 @@
 #include "registry/Registry.h"
 #include "registry/NodeRegistry.h"
 
+Light::Light() = default;
+
 Light::~Light() = default;
 
 void Light::updateRT(const UpdateContext& ctx, Node& node) noexcept
@@ -30,7 +32,7 @@ void Light::updateRT(const UpdateContext& ctx, Node& node) noexcept
     }
 
     // NOTE KI for "directional" lights also target may change
-    if (m_spot || m_directional) {
+    if (hasTarget()) {
         if (!m_targetHandle) {
             m_targetHandle = pool::NodeHandle::toHandle(m_targetId);
         }
@@ -43,18 +45,11 @@ void Light::updateRT(const UpdateContext& ctx, Node& node) noexcept
 
         if (!targetNode) return;
 
-        //bool ready = snapshotRegistry.hasSnapshot(targetNode->m_snapshotIndex);
-        //if (!ready) {
-        //    KI_INFO(fmt::format("LIGHT: snapshot not_ready: target={}", targetNode->str()));
-        //    return;
-        //}
-
         const auto* targetSnapshot = targetNode->getSnapshotRT();
         if (!targetSnapshot) return;
 
         const bool targetChanged = m_targetMatrixLevel != targetSnapshot->getMatrixLevel();
-        const bool changed = targetChanged || nodeChanged;
-        if (!changed) return;
+        if (!(targetChanged || nodeChanged)) return;
 
         // worldTarget is relative to *ROOT*
         if (targetChanged) {
@@ -65,16 +60,14 @@ void Light::updateRT(const UpdateContext& ctx, Node& node) noexcept
         // => for spot light dir should be *NOT* calculated but set by initializer logic
         m_worldDir = glm::normalize(m_worldTargetPosition - m_worldPosition);
 
-        m_targetMatrixLevel = targetSnapshot->getMatrixLevel();
-    }
-    else {
-        const bool changed = nodeChanged;
-        if (!changed) return;
-    }
+        {
+            const float lightMax = std::fmaxf(std::fmaxf(m_diffuse.r, m_diffuse.g), m_diffuse.b);
+            m_radius =
+                (-m_linear + std::sqrtf(m_linear * m_linear - 4.f * m_quadratic *
+                (m_constant - (256.f / 5.f) * lightMax))) / (2.f * m_quadratic);
+        }
 
-    if (!m_directional) {
-        const float lightMax = std::fmaxf(std::fmaxf(diffuse.r, diffuse.g), diffuse.b);
-        radius = (-linear + std::sqrtf(linear * linear - 4.f * quadratic * (constant - (256.f / 5.f) * lightMax))) / (2.f * quadratic);
+        m_targetMatrixLevel = targetSnapshot->getMatrixLevel();
     }
 
     m_nodeMatrixLevel = snapshot->getMatrixLevel();
@@ -86,7 +79,7 @@ DirLightUBO Light::toDirLightUBO() const noexcept
         m_worldDir,
         //0,
 
-        glm::vec4(diffuse, intensity),
+        glm::vec4(m_diffuse, m_intensity),
     };
 }
 
@@ -96,12 +89,12 @@ PointLightUBO Light::toPointightUBO() const noexcept
         m_worldPosition,
         //0,
 
-        glm::vec4(diffuse, intensity),
+        glm::vec4(m_diffuse, m_intensity),
 
-        constant,
-        linear,
-        quadratic,
-        radius,
+        m_constant,
+        m_linear,
+        m_quadratic,
+        m_radius,
     };
 }
 
@@ -114,15 +107,15 @@ SpotLightUBO Light::toSpotLightUBO() const noexcept
         m_worldDir,
         //0,
 
-        glm::vec4(diffuse, intensity),
+        glm::vec4(m_diffuse, m_intensity),
 
-        constant,
-        linear,
-        quadratic,
+        m_constant,
+        m_linear,
+        m_quadratic,
 
-        cutoffAngle,
-        outerCutoffAngle,
-        radius,
+        m_cutoffAngle,
+        m_outerCutoffAngle,
+        m_radius,
 
         0,
         0,

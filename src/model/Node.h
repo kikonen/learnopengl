@@ -134,29 +134,12 @@ public:
         return NodeRegistry::get().updateModelMatrices(this);
     }
 
-    //inline const Snapshot* getSnapshotWT() const noexcept
-    //{
-    //    return NodeRegistry::get().getSnapshotWT(m_entityIndex);
-    //}
-
     inline const Snapshot* getSnapshotRT() const noexcept
     {
         return NodeRegistry::get().getSnapshotRT(m_entityIndex);
     }
 
     audio::Source* getAudioSource(audio::source_id) const;
-
-    //void updateModelMatrix() noexcept;
-
-    bool isEntity() const noexcept;
-
-    //inline int getCloneIndex() const noexcept {
-    //    return m_cloneIndex;
-    //}
-
-    //inline void setCloneIndex(int cloneIndex) {
-    //    m_cloneIndex = cloneIndex;
-    //}
 
     template<typename T>
     T* getGenerator()
@@ -185,8 +168,6 @@ public:
 
 private:
     pool::NodeHandle m_handle;
-
-    //int m_cloneIndex{ 0 };
 
 public:
     NodeFlags m_flags;

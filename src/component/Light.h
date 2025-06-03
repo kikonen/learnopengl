@@ -7,6 +7,8 @@
 #include "ki/size.h"
 #include "pool/NodeHandle.h"
 
+#include "LightType.h"
+
 struct UpdateContext;
 class Node;
 
@@ -14,8 +16,28 @@ class Node;
 class Light final
 {
 public:
-    Light() {};
+    Light();
     ~Light();
+
+    inline bool isDirectional() const noexcept
+    {
+        return m_type == LightType::directional;
+    }
+
+    inline bool isPoint() const noexcept
+    {
+        return m_type == LightType::point;
+    }
+
+    inline bool isSpot() const noexcept
+    {
+        return m_type == LightType::spot;
+    }
+
+    inline bool hasTarget() const noexcept
+    {
+        return m_type == LightType::directional || m_type == LightType::spot;
+    }
 
     void updateRT(const UpdateContext& ctx, Node& node) noexcept;
 
@@ -52,27 +74,27 @@ public:
     SpotLightUBO toSpotLightUBO() const noexcept;
 
 public:
-    bool m_enabled = false;
-    bool m_directional = false;
-    bool m_point = false;
-    bool m_spot = false;
+    glm::vec3 m_diffuse{ 0.5f, 0.5f, 0.5f };
 
     // http://wiki.ogre3d.org/tiki-index.php?page=-Point+Light+Attenuation
-    float constant = 1.f;
-    float linear = 0.14f;
-    float quadratic = 0.07f;
+    float m_constant = 1.f;
+    float m_linear = 0.14f;
+    float m_quadratic = 0.07f;
 
     // degrees
-    float cutoffAngle = 12.5f;
+    float m_cutoffAngle = 12.5f;
     // degrees
-    float outerCutoffAngle = 25.f;
+    float m_outerCutoffAngle = 25.f;
 
-    float radius = 1.f;
+    float m_intensity = 1.f;
 
-    float intensity = 1.f;
-    glm::vec3 diffuse{ 0.5f, 0.5f, 0.5f };
+    LightType m_type{ LightType::none };
+    bool m_enabled : 1 { false };
 
 private:
+    ki::level_id m_nodeMatrixLevel{ 0 };
+    ki::level_id m_targetMatrixLevel{ 0 };
+
     // dir = FROM pos to TARGET
     glm::vec3 m_worldDir{ 0.0f };
     glm::vec3 m_worldPosition{ 0.0f };
@@ -81,6 +103,5 @@ private:
     ki::node_id m_targetId;
     pool::NodeHandle m_targetHandle{};
 
-    ki::level_id m_nodeMatrixLevel{ 0 };
-    ki::level_id m_targetMatrixLevel{ 0 };
+    float m_radius = 1.f;
 };

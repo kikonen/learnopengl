@@ -111,7 +111,7 @@ nodes:
         { time=50 * 100 },
         vec3(0, 0, 1),
         360 * 100)
-    clone_mesh: false
+    share_type: false
     clones:
       - pos: [-5, 0, -5]
         mesh:

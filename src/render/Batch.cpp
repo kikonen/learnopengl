@@ -82,7 +82,7 @@ namespace render {
 
         auto dist2 = glm::distance2(snapshot.getWorldPosition(), ctx.m_camera->getWorldPosition());
 
-        for (const auto& lodMesh : *type->m_lodMeshes) {
+        for (const auto& lodMesh : type->getLodMeshes()) {
             if (lodMesh.m_minDistance2 > dist2) continue;
             if (lodMesh.m_maxDistance2 <= dist2) continue;
 
@@ -222,7 +222,7 @@ namespace render {
                 (int32_t& idx)
                 {
                     bool validMesh = false;
-                    for (const auto& lodMesh : *type->m_lodMeshes) {
+                    for (const auto& lodMesh : type->getLodMeshes()) {
                         validMesh = isValidLodMesh(idx, s_distances2[idx], lodMesh) != 0;
                         if (validMesh) break;
                     }
@@ -257,7 +257,7 @@ namespace render {
 
                 const auto dist2 = s_distances2[i];
 
-                for (const auto& lodMesh : *type->m_lodMeshes) {
+                for (const auto& lodMesh : type->getLodMeshes()) {
                     const auto  programId = isValidLodMesh(i, dist2, lodMesh);
                     if (!programId) continue;
 

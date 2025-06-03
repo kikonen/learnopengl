@@ -71,7 +71,7 @@ namespace loader {
         PivotPoint pivot;
 
         bool selected{ false };
-        bool cloneMesh{ true };
+        bool shareType{ true };
 
         Tiling tiling;
         glm::uvec3 tile{ 0 };

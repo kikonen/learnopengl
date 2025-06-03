@@ -3,7 +3,6 @@
 #include <string>
 #include <vector>
 #include <fstream>
-#include <string>
 #include <span>
 
 #include <fmt/format.h>
@@ -22,19 +21,19 @@
 
 #include "material/Material.h"
 
-#include "shader/Program.h"
-#include "shader/Shader.h"
-#include "shader/ProgramRegistry.h"
+//#include "shader/Program.h"
+//#include "shader/Shader.h"
+//#include "shader/ProgramRegistry.h"
 
-#include "mesh/mesh_util.h"
-
-#include "mesh/LodMesh.h"
+//#include "mesh/mesh_util.h"
+//
+//#include "mesh/LodMesh.h"
 #include "mesh/MeshType.h"
-
-#include "mesh/MeshSet.h"
-#include "mesh/ModelMesh.h"
-#include "mesh/TextMesh.h"
-#include "mesh/NonVaoMesh.h"
+//
+//#include "mesh/MeshSet.h"
+//#include "mesh/ModelMesh.h"
+//#include "mesh/TextMesh.h"
+//#include "mesh/NonVaoMesh.h"
 
 #include "component/Light.h"
 #include "component/CameraComponent.h"
@@ -44,17 +43,17 @@
 #include "model/Node.h"
 #include "model/NodeType.h"
 
-#include "animation/AnimationLoader.h"
-#include "animation/RigContainer.h"
-#include "animation/RigSocket.h"
+//#include "animation/AnimationLoader.h"
+//#include "animation/RigContainer.h"
+//#include "animation/RigSocket.h"
 
 #include "event/Dispatcher.h"
 
-#include "mesh/MeshType.h"
+//#include "mesh/MeshType.h"
 
 #include "registry/Registry.h"
 #include "registry/ModelRegistry.h"
-#include "registry/MeshTypeRegistry.h"
+//#include "registry/MeshTypeRegistry.h"
 
 #include <engine/AsyncLoader.h>
 
@@ -64,23 +63,22 @@
 #include "NodeRoot.h"
 #include "ResolvedNode.h"
 #include "DecalData.h"
+#include "ScriptData.h"
+
+#include "MeshTypeBuilder.h"
 
 #include "converter/YamlConverter.h"
 
 #include "loader/document.h"
 #include "loader_util.h"
 
-namespace {
-    const std::string QUAD_MESH_NAME{ "quad" };
-
-    const std::string ANY_MATERIAL{ "*" };
-}
 
 namespace loader {
     SceneLoader::SceneLoader(
         Context ctx)
         : BaseLoader(ctx),
         m_loaders{ std::make_unique<Loaders>(ctx) },
+        m_meshTypeBuilder{ std::make_unique<MeshTypeBuilder>(m_loaders) },
         m_meta{ std::make_unique<MetaData>() },
         m_root{ std::make_unique<RootData>() },
         m_skybox{ std::make_unique<SkyboxData>() },
@@ -357,6 +355,8 @@ namespace loader {
         }
     }
 
+    // TODO KI need to change node add logic to happen via commands
+    // => i.e. api which can be used also from Lua
     bool SceneLoader::resolveNode(
         const ki::node_id rootId,
         const NodeRoot& nodeRoot)
@@ -378,7 +378,7 @@ namespace loader {
                     for (auto& cloneData : nodeRoot.clones) {
                         if (!*m_ctx.m_alive) return;
                         typeHandle = resolveNodeClone(typeHandle, rootId, nodeRoot, cloneData, true, cloneIndex);
-                        if (!nodeRoot.base.cloneMesh) {
+                        if (!nodeRoot.base.shareType) {
                             typeHandle = pool::TypeHandle::NULL_HANDLE;
                         }
                         cloneIndex++;
@@ -445,7 +445,7 @@ namespace loader {
                         tile,
                         tilePositionOffset);
 
-                    if (!nodeRoot.base.cloneMesh)
+                    if (!nodeRoot.base.shareType)
                         typeHandle = pool::TypeHandle::NULL_HANDLE;
                 }
             }
@@ -472,9 +472,19 @@ namespace loader {
 
         // NOTE KI overriding material in clones is *NOT* supported"
         if (!typeHandle) {
-            typeHandle = createType(
-                nodeData,
-                tile);
+            const auto& repeat = nodeData.repeat;
+            const bool hasTile = repeat.xCount > 1 || repeat.yCount > 1 || repeat.zCount > 0;
+
+            std::string nameSuffix;
+            if (cloned || hasTile) {
+                nameSuffix = fmt::format(
+                    "{}{}",
+                    cloned ? fmt::format("clone_{}", cloneIndex) : "",
+                    hasTile ? fmt::format("tile_{}x{}x{}", tile.x, tile.y, tile.z) : ""
+                );
+            }
+
+            typeHandle = m_meshTypeBuilder->createType(nodeData, nameSuffix);
             if (!typeHandle) return typeHandle;
         }
 
@@ -511,514 +521,6 @@ namespace loader {
         return typeHandle;
     }
 
-    const pool::TypeHandle SceneLoader::createType(
-        const NodeData& nodeData,
-        const glm::uvec3& tile)
-    {
-        auto typeHandle = pool::TypeHandle::allocate();
-        auto* type = typeHandle.toType();
-
-        type->setName(nodeData.baseId.m_path.empty() ? nodeData.name : nodeData.baseId.m_path);
-        type->m_layer = nodeData.layer;
-
-        assignTypeFlags(nodeData, typeHandle);
-
-        if (nodeData.type == NodeType::origo) {
-            type->m_flags.invisible = true;
-            type->m_nodeType = NodeType::origo;
-        } else
-        {
-            resolveMeshes(type, nodeData, tile);
-
-            // NOTE KI container does not have mesh itself, but it can setup
-            // material & program for contained nodes
-            if (nodeData.type != NodeType::container) {
-                if (!type->hasMesh()) {
-                    KI_WARN(fmt::format(
-                        "SCENE_FILEIGNORE: NO_MESH id={} ({})",
-                        nodeData.baseId, nodeData.desc));
-                    return pool::TypeHandle::NULL_HANDLE;
-                }
-            }
-
-            int deferredCount = 0;
-            int forwardCount = 0;
-            int oitCount = 0;
-            for (const auto& lodMesh : type->getLodMeshes()) {
-                if (lodMesh.m_material->gbuffer) {
-                    deferredCount++;
-                    if (lodMesh.m_drawOptions.isBlend()) {
-                        oitCount++;
-                    }
-                }
-                else {
-                    forwardCount++;
-                }
-            }
-            type->m_flags.useDeferred |= deferredCount > 0;
-            type->m_flags.useForward |= forwardCount > 0;
-            type->m_flags.useOit |= oitCount > 0;
-        }
-
-        {
-            type->setCustomMaterial(
-                m_loaders->m_customMaterialLoader.createCustomMaterial(
-                    nodeData.customMaterial,
-                    *m_loaders));
-        }
-
-        {
-            const auto& scriptIds = m_loaders->m_scriptLoader.createScripts(
-                nodeData.scripts);
-
-            for (auto& scriptId : scriptIds) {
-                type->addScript(scriptId);
-            }
-
-            m_loaders->m_scriptLoader.bindTypeScripts(
-                type->toHandle(),
-                scriptIds);
-        }
-
-        return typeHandle;
-    }
-
-    void SceneLoader::resolveMaterials(
-        mesh::MeshType* type,
-        mesh::LodMesh& lodMesh,
-        const NodeData& nodeData,
-        const MeshData& meshData,
-        const LodData* lodData)
-    {
-        auto* lodMaterial = lodMesh.modifyMaterial();
-        if (!lodMaterial) return;
-
-        auto& material = *lodMaterial;
-
-        if (!material.inmutable)
-        {
-            auto& l = *m_loaders;
-
-            // ASSIGN - ANY
-            for (auto& materialData : meshData.materials) {
-                const auto& alias = materialData.aliasName;
-                const auto& name = materialData.materialName;
-
-                if (alias == ANY_MATERIAL)
-                {
-                    KI_INFO_OUT(fmt::format(
-                        "MAT_ASSIGN: model={}, mesh={}, material={}, name={}, alias={}",
-                        type->getName(),
-                        lodMesh.getMeshName(),
-                        material.m_name,
-                        name,
-                        alias));
-
-                    material.assign(materialData.material);
-                }
-            }
-
-            // ASSIGN - specific
-            for (auto& materialData : meshData.materials) {
-                const auto& alias = materialData.aliasName;
-                const auto& name = materialData.materialName;
-
-                if (name == material.m_name || alias == material.m_name)
-                {
-                    KI_INFO_OUT(fmt::format(
-                        "MAT_ASSIGN: model={}, mesh={}, material={}, name={}, alias={}",
-                        type->getName(),
-                        lodMesh.getMeshName(),
-                        material.m_name,
-                        name,
-                        alias));
-
-                    material.assign(materialData.material);
-                }
-            }
-
-            // NOTE KI settings from mesh to material *AFTER* assign, *BEFORE* modify
-            if (meshData.defaultPrograms) {
-                material.m_defaultPrograms = true;
-            }
-
-            {
-                for (const auto& srcIt : nodeData.programs) {
-                    const auto& dstIt = material.m_programNames.find(srcIt.first);
-                    if (dstIt == material.m_programNames.end()) {
-                        material.m_programNames[srcIt.first] = srcIt.second;
-                    }
-                }
-
-                for (const auto& srcIt : meshData.programs) {
-                    const auto& dstIt = material.m_programNames.find(srcIt.first);
-                    if (dstIt == material.m_programNames.end()) {
-                        material.m_programNames[srcIt.first] = srcIt.second;
-                    }
-                }
-            }
-
-            // MODIFY - BASE - ANY
-            for (auto& materialData : meshData.materialModifiers) {
-                const auto& alias = materialData.aliasName;
-                const auto& name = materialData.materialName;
-
-                if (alias == ANY_MATERIAL)
-                {
-                    KI_INFO_OUT(fmt::format(
-                        "MAT_MODIFY: model={}, mesh={}, material={}, name={}, alias={}",
-                        type->getName(),
-                        lodMesh.getMeshName(),
-                        material.m_name,
-                        name,
-                        alias));
-
-                    l.m_materialLoader.modifyMaterial(material, materialData);
-                }
-            }
-
-            // MODIFY - specific material
-            for (auto& materialData : meshData.materialModifiers) {
-                const auto& alias = materialData.aliasName;
-                const auto& name = materialData.materialName;
-
-                if (name == material.m_name || alias == material.m_name)
-                {
-                    KI_INFO_OUT(fmt::format(
-                        "MAT_MODIFY: model={}, mesh={}, material={}, name={}, alias={}",
-                        type->getName(),
-                        lodMesh.getMeshName(),
-                        material.m_name,
-                        name,
-                        alias));
-
-                    l.m_materialLoader.modifyMaterial(material, materialData);
-                }
-            }
-
-            // MODIFY - LOD
-            if (lodData) {
-                // MODIFY LOD - ANY
-                for (auto& materialData : lodData->materialModifiers) {
-                    const auto& alias = materialData.aliasName;
-                    const auto& name = materialData.materialName;
-
-                    if (alias == "*")
-                    {
-                        KI_INFO_OUT(fmt::format(
-                            "MAT_MODIFY: model={}, mesh={}, material={}, name={}, alias={}",
-                            type->getName(),
-                            lodMesh.getMeshName(),
-                            material.m_name,
-                            name,
-                            alias));
-
-                        l.m_materialLoader.modifyMaterial(material, materialData);
-                    }
-                }
-
-
-                // MODIFY LOD - specific material
-                for (auto& materialData : lodData->materialModifiers) {
-                    const auto& alias = materialData.aliasName;
-                    const auto& name = materialData.materialName;
-
-                    if (name == material.m_name || alias == material.m_name)
-                    {
-                        KI_INFO_OUT(fmt::format(
-                            "MAT_MODIFY: model={}, mesh={}, material={}, name={}, alias={}",
-                            type->getName(),
-                            lodMesh.getMeshName(),
-                            material.m_name,
-                            name,
-                            alias));
-
-                        l.m_materialLoader.modifyMaterial(material, materialData);
-                    }
-                }
-            }
-        }
-
-        m_loaders->m_materialLoader.resolveMaterial(lodMesh.m_flags, material);
-    }
-
-    void SceneLoader::resolveMeshes(
-        mesh::MeshType* type,
-        const NodeData& nodeData,
-        const glm::uvec3& tile)
-    {
-        uint16_t index = 0;
-        for (const auto& meshData : nodeData.meshes) {
-            if (!meshData.enabled) continue;
-            resolveMesh(type, nodeData, meshData, tile, index);
-            index++;
-        }
-
-        // NOTE KI ensure volume is containing all meshes
-        type->prepareVolume();
-    }
-
-    void SceneLoader::resolveMesh(
-        mesh::MeshType* type,
-        const NodeData& nodeData,
-        const MeshData& meshData,
-        const glm::uvec3& tile,
-        int index)
-    {
-        const auto& assets = Assets::get();
-
-        size_t startIndex = type->m_lodMeshes->size();
-        size_t meshCount = 0;
-
-        // NOTE KI materials MUST be resolved before loading mesh
-        if (nodeData.type == NodeType::model) {
-            type->m_nodeType = NodeType::model;
-            meshCount += resolveModelMesh(type, nodeData, meshData, tile, index);
-
-            KI_INFO(fmt::format(
-                "SCENE_FILE MESH: id={}, desc={}, type={}",
-                nodeData.baseId, nodeData.desc, type->str()));
-        }
-        else if (nodeData.type == NodeType::text) {
-            type->m_nodeType = NodeType::text;
-            auto mesh = std::make_shared<mesh::TextMesh>();
-
-            if (!mesh->getMaterial()) {
-                const auto& material = Material::createMaterial(BasicMaterial::yellow);
-                mesh->setMaterial(&material);
-            }
-
-            mesh::LodMesh lodMesh;
-            lodMesh.setMesh(mesh);
-            type->addLodMesh(std::move(lodMesh));
-            meshCount++;
-        }
-        else if (nodeData.type == NodeType::terrain) {
-            // NOTE KI handled via container + generator
-            type->m_nodeType = NodeType::terrain;
-            throw std::runtime_error("Terrain not supported currently");
-        }
-        else if (nodeData.type == NodeType::container) {
-            // NOTE KI generator takes care of actual work
-            type->m_nodeType = NodeType::container;
-            type->m_flags.invisible = true;
-        }
-        else {
-            // NOTE KI root/origo/unknown; don't render, just keep it in hierarchy
-            type->m_nodeType = NodeType::origo;
-            type->m_flags.invisible = true;
-        }
-
-        // Resolve materials for newly added meshes
-        if (meshCount > 0) {
-            const auto& span = std::span{ *type->m_lodMeshes.get() }.subspan(startIndex, meshCount);
-            for (auto& lodMesh : span) {
-                resolveLodMesh(type, nodeData, meshData, lodMesh);
-
-                auto* mesh = lodMesh.getMesh<mesh::Mesh>();
-                const auto rig = mesh ? mesh->getRigContainer() : nullptr;
-                if (rig) {
-                    rig->dump();
-                }
-            }
-        }
-    }
-
-    int SceneLoader::resolveModelMesh(
-        mesh::MeshType* type,
-        const NodeData& nodeData,
-        const MeshData& meshData,
-        const glm::uvec3& tile,
-        int index)
-    {
-        const auto& assets = Assets::get();
-        int meshCount = 0;
-
-        switch (meshData.type) {
-        case MeshDataType::mesh: {
-            auto future = ModelRegistry::get().getMeshSet(
-                meshData.id,
-                assets.modelsDir,
-                meshData.path,
-                meshData.smoothNormals,
-                meshData.forceNormals);
-
-            const auto& meshSet = future.get();
-
-            if (meshSet) {
-                resolveSockets(
-                    meshData,
-                    *meshSet
-                );
-
-                for (auto& animationData : meshData.animations) {
-                    loadAnimation(
-                        meshData.baseDir,
-                        animationData,
-                        *meshSet);
-                }
-
-                {
-                    KI_INFO_OUT(fmt::format(
-                        "\n=======================\n[MESH_SET SUMMARY: {}]\n{}\n=======================",
-                        meshSet->m_name,
-                        meshSet->getSummary()));
-                }
-
-                meshCount += type->addMeshSet(*meshSet);
-            }
-            break;
-        }
-        case MeshDataType::primitive: {
-            auto mesh = m_loaders->m_vertexLoader.createMesh(meshData, meshData.vertexData, *m_loaders);
-
-            mesh::LodMesh lodMesh;
-            lodMesh.setMesh(mesh);
-            type->addLodMesh(std::move(lodMesh));
-
-            meshCount++;
-            break;
-        }
-        case MeshDataType::non_vao: {
-            auto mesh = std::make_shared<mesh::NonVaoMesh>(type->getName());
-
-            if (meshData.materials.empty()) {
-                const auto& material = Material::createMaterial(BasicMaterial::yellow);
-                mesh->setMaterial(&material);
-            } else {
-                const auto* material = &meshData.materials[0].material;
-                mesh->setMaterial(material);
-            }
-
-            mesh::LodMesh lodMesh;
-            lodMesh.setMesh(mesh);
-            type->addLodMesh(std::move(lodMesh));
-
-            meshCount++;
-            break;
-        }
-        }
-
-        return meshCount;
-    }
-
-    void SceneLoader::resolveLodMesh(
-        mesh::MeshType* type,
-        const NodeData& nodeData,
-        const MeshData& meshData,
-        mesh::LodMesh& lodMesh)
-    {
-        lodMesh.m_scale = meshData.scale;
-        lodMesh.m_baseScale = meshData.baseScale;
-        lodMesh.m_baseRotation = util::degreesToQuat(meshData.baseRotation);
-
-        auto* lodData = resolveLod(type, nodeData, meshData, lodMesh);
-
-        assignMeshFlags(meshData.meshFlags, lodMesh);
-        if (lodData) {
-            assignMeshFlags(lodData->meshFlags, lodMesh);
-        }
-
-        resolveMaterials(type, lodMesh, nodeData, meshData, lodData);
-        lodMesh.setupDrawOptions();
-    }
-
-    const LodData* SceneLoader::resolveLod(
-        mesh::MeshType* type,
-        const NodeData& nodeData,
-        const MeshData& meshData,
-        mesh::LodMesh& lodMesh)
-    {
-        auto* mesh = lodMesh.getMesh<mesh::Mesh>();
-        if (!mesh) return nullptr;
-
-        lodMesh.m_priority = nodeData.priority;
-
-        const auto* lod = meshData.findLod(mesh->m_name);
-        if (!lod) {
-            // NOTE KI if lods defined then default to 0 mask
-            if (!meshData.lods.empty()) {
-                KI_WARN_OUT(fmt::format("SCENE: MISSING_LOD : mesh={}", mesh->m_name));
-                //lodMesh.m_levelMask = 0;
-            }
-            return nullptr;
-        }
-
-        lodMesh.m_minDistance2 = lod->minDistance * lod->minDistance;
-        lodMesh.m_maxDistance2 = lod->maxDistance * lod->maxDistance;
-        lodMesh.m_priority = lod->priority != 0 ? lod->priority : nodeData.priority;
-
-        return lod;
-    }
-
-    void SceneLoader::resolveSockets(
-        const MeshData& meshData,
-        mesh::MeshSet& meshSet)
-    {
-        if (!meshSet.m_rig) return;
-
-        auto& rig = *meshSet.m_rig;
-        for (const auto& socketData : meshData.sockets) {
-            if (!socketData.enabled) continue;
-
-            // TODO KI scale is in LodMesh level, but sockets in Mesh level
-            // => PROBLEM if same mesh is used for differently scaled LodMeshes
-            //glm::vec3 meshScale{ 0.01375f * 2.f };
-            auto meshScale = meshData.scale * meshData.baseScale;
-
-            animation::RigSocket socket{
-                socketData.name,
-                socketData.joint,
-                socketData.offset,
-                util::degreesToQuat(socketData.rotation),
-                socketData.scale,
-                meshScale
-            };
-
-            rig.registerSocket(socket);
-        }
-
-        rig.prepare();
-    }
-
-    void SceneLoader::loadAnimation(
-        const std::string& baseDir,
-        const AnimationData& data,
-        mesh::MeshSet& meshSet)
-    {
-        if (!meshSet.isRigged()) return;
-        if (!*m_ctx.m_alive) return;
-
-        const auto& assets = Assets::get();
-
-        animation::AnimationLoader loader{};
-
-        std::string filePath;
-        {
-            filePath = util::joinPathExt(
-                meshSet.m_rootDir,
-                baseDir,
-                data.path, "");
-        }
-
-        if (!util::fileExists(filePath)) {
-            filePath = util::joinPath(
-                meshSet.m_rootDir,
-                data.path);
-        }
-
-        try {
-            loader.loadAnimations(
-                *meshSet.m_rig,
-                data.name,
-                filePath);
-        }
-        catch (animation::AnimationNotFoundError ex) {
-            KI_CRITICAL(fmt::format("SCENE_ERROR: LOAD_ANIMATION - {}", ex.what()));
-            //throw std::current_exception();
-        }
-    }
-
     std::pair<pool::NodeHandle, NodeState> SceneLoader::createNode(
         pool::TypeHandle typeHandle,
         const ki::node_id rootId,
@@ -1030,7 +532,6 @@ namespace loader {
         const glm::vec3& tilePositionOffset)
     {
         auto& l = *m_loaders;
-        auto* type = typeHandle.toType();
 
         ki::node_id nodeId{ 0 };
         std::string resolvedSID;
@@ -1071,12 +572,14 @@ namespace loader {
         node->m_audioListener = l.m_audioLoader.createListener(nodeData.audio.listener);
         node->m_audioSources = l.m_audioLoader.createSources(nodeData.audio.sources);
 
-        assignNodeFlags(nodeData.nodeFlags, handle);
+        assignNodeFlags(nodeData.nodeFlags, node->m_flags);
 
         //node->setCloneIndex(cloneIndex);
         //node->setTile(tile);
 
         glm::vec3 pos = nodeData.position + clonePositionOffset + tilePositionOffset;
+
+        const auto* type = typeHandle.toType();
 
         NodeState state;
         state.setPosition(pos);
@@ -1110,157 +613,13 @@ namespace loader {
                 *m_loaders);
         }
 
-        resolveAttachments(typeHandle, handle, nodeData);
-
         return { handle, state };
-    }
-
-    void SceneLoader::resolveAttachments(
-        pool::TypeHandle typeHandle,
-        pool::NodeHandle nodeHandle,
-        const NodeData& nodeData)
-    {
-        if (nodeData.attachments.empty()) return;
-
-        auto* type = typeHandle.toType();
-        auto& lodMeshes = type->modifyLodMeshes();
-
-        auto rig = mesh::findRig(lodMeshes);
-        if (!rig) {
-            KI_INFO_OUT(fmt::format(
-                "SOCKET_BIND_ERROR: rig_missing - node={}",
-                nodeData.str()));
-            return;
-        }
-
-        for (const auto& attachment : nodeData.attachments) {
-            if (!attachment.enabled) continue;
-
-            mesh::LodMesh* lodMesh = mesh::findLodMesh(attachment.name, lodMeshes);
-            if (!lodMesh) {
-                const auto& names = mesh::getLodMeshNames(attachment.name, lodMeshes);
-                const auto& aliases = mesh::getLodMeshNames(attachment.name, lodMeshes);
-                KI_INFO_OUT(fmt::format(
-                    "SOCKET_BIND_ERROR: mesh_missing - node={}, rig={}, socket={}, mesh={}, mesh_names=[{}], mesh_aliases=[{}]",
-                    nodeData.str(),
-                    rig->m_name,
-                    attachment.socket,
-                    attachment.name,
-                    util::join(names, ", "),
-                    util::join(aliases, ", ")));
-                continue;
-            }
-
-            const auto* socket = rig->findSocket(attachment.socket);
-            if (!socket) {
-                const auto& names = rig->getSocketNames();
-                KI_INFO_OUT(fmt::format(
-                    "SOCKET_BIND_ERROR: socket_missing - node={}, rig={}, socket={}, mesh={}, socket_names=[{}]",
-                    nodeData.str(),
-                    rig->m_name,
-                    attachment.socket,
-                    attachment.name,
-                    util::join(names, ", ")));
-                continue;
-            }
-
-            lodMesh->m_socketIndex = socket->m_index;
-
-            KI_INFO_OUT(fmt::format(
-                "SOCKET_BIND_OK: node={}, rig={}, joint={}.{}, socket={}.{}, mesh={}",
-                nodeData.str(),
-                rig->m_name,
-                socket->m_jointIndex,
-                socket->m_jointName,
-                socket->m_index,
-                attachment.socket,
-                attachment.name));
-        }
-    }
-
-    void SceneLoader::assignTypeFlags(
-        const NodeData& nodeData,
-        pool::TypeHandle typeHandle)
-    {
-        auto* type = typeHandle.toType();
-
-        const auto& container = nodeData.typeFlags;
-        mesh::TypeFlags& flags = type->m_flags;
-
-        //////////////////////////////////////////////////////////
-        // LOD_MESH specific
-        // Rigged model
-
-        flags.effect = container.getFlag("effect", flags.effect);
-
-        //////////////////////////////////////////////////////////
-        // MESH_TYPE specific (aka. Node shared logic)
-
-        flags.mirror = container.getFlag("mirror", flags.mirror);
-        flags.water = container.getFlag("water", flags.water);
-        flags.cubeMap = container.getFlag("cube_map", flags.cubeMap);
-
-        flags.useDeferred = container.getFlag("use_deferred", flags.useDeferred);
-        flags.useForward = container.getFlag("use_forward", flags.useForward);
-        flags.useOit = container.getFlag("use_oit", flags.useOit);
-
-        flags.noFrustum = container.getFlag("no_frustum", flags.noFrustum);
-        flags.noShadow = container.getFlag("no_shadow", flags.noShadow);
-        flags.noSelect = container.getFlag("no_select", flags.noSelect);
-        flags.noReflect = container.getFlag("no_reflect", flags.noReflect);
-        flags.noRefract = container.getFlag("no_refract", flags.noRefract);
-
-        {
-            flags.staticBounds = container.getFlag("static_bounds", flags.staticBounds);
-            flags.dynamicBounds = container.getFlag("dynamic_bounds", flags.dynamicBounds);
-            flags.physics = nodeData.physics.enabled;
-        }
-
-        flags.navMesh = container.getFlag("nav_mesh", flags.navMesh);
-        flags.navPhysics = container.getFlag("nav_physics", flags.navPhysics);
-    }
-
-    void SceneLoader::assignMeshFlags(
-        const FlagContainer& container,
-        mesh::LodMesh& lodMesh)
-    {
-        auto& flags = lodMesh.m_flags;
-
-        flags.billboard = container.getFlag("billboard", flags.billboard);
-        flags.tessellation = container.getFlag("tessellation", flags.tessellation);
-
-        flags.preDepth = container.getFlag("pre_depth", flags.preDepth);
-
-        flags.noVolume = container.getFlag("no_volume", flags.noVolume);
-
-        {
-            flags.useBones = container.getFlag("use_bones", flags.useBones);
-
-            // NOTE KI bones are *required* if using animation
-            flags.useAnimation = container.getFlag("use_animation", flags.useAnimation);
-            if (flags.useAnimation) {
-                flags.useBones = true;
-            }
-
-            // NOTE KI no bones debug if no bones
-            flags.useBonesDebug = container.getFlag("use_bones_debug", flags.useBonesDebug);
-            if (!flags.useBones) {
-                flags.useBonesDebug = false;
-            }
-
-            flags.useSockets = container.getFlag("use_sockets", flags.useSockets);
-        }
-
-        flags.clip = container.getFlag("clip", flags.clip);
     }
 
     void SceneLoader::assignNodeFlags(
         const FlagContainer& container,
-        pool::NodeHandle nodeHandle)
+        NodeFlags& flags)
     {
-        auto* node = nodeHandle.toNode();
-
-        auto& flags = node->m_flags;
     }
 
     void SceneLoader::loadMeta(
