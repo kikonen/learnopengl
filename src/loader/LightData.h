@@ -6,16 +6,11 @@
 
 #include "BaseId.h"
 
+#include "component/LightType.h"
+
 class Light;
 
 namespace loader {
-    enum class LightType : std::underlying_type_t<std::byte> {
-        none,
-        directional,
-        point,
-        spot
-    };
-
     struct LightData {
         bool enabled{ false };
         LightType type{ LightType::none };

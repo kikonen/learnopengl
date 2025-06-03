@@ -97,26 +97,16 @@ namespace loader{
         auto [targetId, targetResolvedSID] = resolveId(data.targetBaseId, cloneIndex, tile, false);
         light->setTargetId(targetId);
 
-        light->linear = data.linear;
-        light->quadratic = data.quadratic;
+        light->m_linear = data.linear;
+        light->m_quadratic = data.quadratic;
 
-        light->cutoffAngle = data.cutoffAngle;
-        light->outerCutoffAngle = data.outerCutoffAngle;
+        light->m_cutoffAngle = data.cutoffAngle;
+        light->m_outerCutoffAngle = data.outerCutoffAngle;
 
-        light->diffuse = data.diffuse;
-        light->intensity = data.intensity;
+        light->m_diffuse = data.diffuse;
+        light->m_intensity = data.intensity;
 
-        switch (data.type) {
-        case LightType::directional:
-            light->m_directional = true;
-            break;
-        case LightType::point:
-            light->m_point = true;
-            break;
-        case LightType::spot:
-            light->m_spot = true;
-            break;
-        }
+        light->m_type = data.type;
 
         return light;
     }

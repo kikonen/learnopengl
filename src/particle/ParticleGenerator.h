@@ -33,7 +33,11 @@ namespace particle {
             m_material = material;
         }
 
-        Material& getMaterial() {
+        const Material& getMaterial() {
+            return m_material;
+        }
+
+        Material& modifyMaterial() {
             return m_material;
         }
 

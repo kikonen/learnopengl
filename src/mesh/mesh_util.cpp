@@ -19,7 +19,7 @@ namespace mesh{
     }
 
     std::shared_ptr<animation::RigContainer> findRig(
-        std::vector<mesh::LodMesh>& lodMeshes)
+        const std::vector<mesh::LodMesh>& lodMeshes)
     {
         const auto& it = std::find_if(
             lodMeshes.begin(),
@@ -37,7 +37,7 @@ namespace mesh{
 
     std::vector<std::string> getLodMeshNames(
         const std::string& meshName,
-        std::vector<mesh::LodMesh>& lodMeshes)
+        const std::vector<mesh::LodMesh>& lodMeshes)
     {
         std::vector<std::string> names;
 
@@ -49,7 +49,7 @@ namespace mesh{
 
     std::vector<std::string> getLodMeshAliases(
         const std::string& meshName,
-        std::vector<mesh::LodMesh>& lodMeshes)
+        const std::vector<mesh::LodMesh>& lodMeshes)
     {
         std::vector<std::string> aliases;
 

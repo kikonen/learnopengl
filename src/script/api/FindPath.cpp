@@ -47,7 +47,7 @@ namespace script
                 { 0, -1, 0 },
                 boundsMask);
 
-            float adjust = 0.25f;
+            float adjust = 0.f;
             auto startPos = glm::vec3{ m_startPos.x, m_startPos.y + adjust, m_startPos.z };
             auto endPos = glm::vec3{ m_endPos.x, level + adjust, m_endPos.z };
             nav::Query query{ startPos, endPos, m_maxPath };

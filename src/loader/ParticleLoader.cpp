@@ -191,7 +191,7 @@ namespace loader
 
         generator->setDefinition(df);
         generator->setMaterial(data.materialData.material);
-        generator->getMaterial().loadTextures();
+        generator->modifyMaterial().loadTextures();
 
         return generator;
     }

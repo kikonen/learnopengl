@@ -58,5 +58,5 @@ public:
     glm::vec4 m_volume{ 0.f };
     glm::vec3 m_min{ 0.f };
     glm::vec3 m_max{ 0.f };
-    bool m_quad{ false };
+    bool m_quad : 1 { false };
 };

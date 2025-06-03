@@ -40,7 +40,7 @@ namespace loader {
         bool baseScale{ false };
 
         bool selected{ false };
-        bool cloneMesh{ false };
+        bool shareType{ false };
 
         bool tiling{ false };
         bool tile{ false };

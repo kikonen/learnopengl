@@ -32,7 +32,7 @@ namespace loader {
 
         std::unique_ptr<NodeGenerator> createGenerator(
             const GeneratorData& data,
-            mesh::MeshType* type,
+            const mesh::MeshType* type,
             Loaders& loaders);
     };
 }

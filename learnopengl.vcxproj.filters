@@ -1167,6 +1167,9 @@
     <ClCompile Include="src\script\user_type\LuaPath.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\mesh\PrimitiveRegistry.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="src\script\api\MovePathNode.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -1174,6 +1177,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\script\api\CancelMultiple.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\loader\MeshTypeBuilder.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -2624,6 +2630,9 @@
     <ClInclude Include="src\script\user_type\LuaPath.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\mesh\PrimitiveRegistry.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="src\script\api\MovePathNode.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -2631,6 +2640,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\script\api\CancelMultiple.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\component\LightType.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\loader\MeshTypeBuilder.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
