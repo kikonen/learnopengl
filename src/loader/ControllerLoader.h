@@ -15,7 +15,7 @@ namespace loader {
     {
     public:
         ControllerLoader(
-            Context ctx);
+            std::shared_ptr<Context> ctx);
 
         void loadControllers(
             const loader::DocNode& node,

@@ -16,7 +16,7 @@ namespace loader {
     {
     public:
         MaterialLoader(
-            Context ctx);
+            std::shared_ptr<Context> ctx);
 
         void loadMaterialModifiers(
             const loader::DocNode& node,

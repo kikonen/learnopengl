@@ -17,7 +17,7 @@ namespace loader {
     {
     public:
         VertexLoader(
-            Context ctx);
+            std::shared_ptr<Context> ctx);
 
         void load(
             const loader::DocNode& node,

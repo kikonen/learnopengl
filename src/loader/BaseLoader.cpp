@@ -20,6 +20,7 @@
 
 #include "registry/Registry.h"
 
+#include "Context.h"
 #include "MaterialData.h"
 
 #include "loader/document.h"
@@ -33,7 +34,7 @@ namespace loader
     //static const float DEF_ALPHA = 1.0;
 
     BaseLoader::BaseLoader(
-        Context ctx)
+        std::shared_ptr<Context> ctx)
         : m_ctx(ctx)
     {
     }
@@ -48,11 +49,11 @@ namespace loader
 
     bool BaseLoader::fileExists(std::string_view filename) const
     {
-        return util::fileExists(m_ctx.m_dirName, filename);
+        return util::fileExists(m_ctx->m_dirName, filename);
     }
 
     std::string BaseLoader::readFile(std::string_view filename) const
     {
-        return util::readFile(m_ctx.m_dirName, filename);
+        return util::readFile(m_ctx->m_dirName, filename);
     }
 }

@@ -12,7 +12,7 @@ namespace loader {
     {
     public:
         CustomMaterialLoader(
-            Context ctx);
+            std::shared_ptr<Context> ctx);
 
         void loadCustomMaterial(
             const loader::DocNode& node,

@@ -17,40 +17,23 @@ class Registry;
 struct NodeFlags;
 struct NodeState;
 
-//namespace text {
-//}
-
 namespace pool {
     struct NodeHandle;
     struct TypeHandle;
 }
 
-//namespace mesh {
-//    struct TypeFlags;
-//    struct MeshFlags;
-//    class MeshSet;
-//    class MeshType;
-//    struct LodMesh;
-//}
-
 namespace loader {
-    class MeshTypeBuilder;
-
     struct RootData;
     struct SkyboxData;
     struct ScriptSystemData;
     struct NodeRoot;
     struct NodeData;
-    //struct TextData;
-    //struct MeshData;
-    //struct LodData;
-    //struct AnimationData;
     struct ResolvedNode;
-    //struct MaterialData;
     struct DecalData;
     struct MaterialUpdaterData;
 
-    struct FlagContainer;
+    class MeshTypeBuilder;
+    class NodeBuilder;
 
     struct MetaData {
         std::string name;
@@ -63,7 +46,7 @@ namespace loader {
     {
     public:
         SceneLoader(
-            Context ctx);
+            std::shared_ptr<Context> ctx);
 
         ~SceneLoader();
 
@@ -76,11 +59,11 @@ namespace loader {
 
         void load();
 
-    private:
         void loadedNode(
             const NodeRoot& nodeRoot,
             bool success);
 
+    private:
         void attach(
             const RootData& root);
 
@@ -91,45 +74,6 @@ namespace loader {
 
         void attachResolvedNode(
             const ResolvedNode& resolvedNode);
-
-        void addResolvedNode(
-            const ResolvedNode& resolvedNode);
-
-        bool resolveNode(
-            const ki::node_id rootId,
-            const NodeRoot& nodeRoot);
-
-        pool::TypeHandle resolveNodeClone(
-            pool::TypeHandle typeHandle,
-            const ki::node_id rootId,
-            const NodeRoot& nodeRoot,
-            const NodeData& nodeData,
-            bool cloned,
-            int cloneIndex);
-
-        pool::TypeHandle resolveNodeCloneRepeat(
-            pool::TypeHandle typeHandle,
-            const ki::node_id rootId,
-            const NodeRoot& nodeRoot,
-            const NodeData& nodeData,
-            bool cloned,
-            int cloneIndex,
-            const glm::uvec3& tile,
-            const glm::vec3& tilePositionOffset);
-
-        void assignNodeFlags(
-            const FlagContainer& container,
-            NodeFlags& flags);
-
-        std::pair<pool::NodeHandle, NodeState> createNode(
-            pool::TypeHandle typeHandle,
-            const ki::node_id rootId,
-            const NodeData& nodeData,
-            const bool cloned,
-            const int cloneIndex,
-            const glm::uvec3& tile,
-            const glm::vec3& clonePositionOffset,
-            const glm::vec3& tilePositionOffset);
 
         void loadMeta(
             const loader::DocNode& node,
@@ -181,8 +125,6 @@ namespace loader {
 
         std::vector<NodeRoot> m_nodes;
 
-        std::vector<ResolvedNode> m_resolvedNodes;
-
         std::unique_ptr<Material> m_defaultMaterial;
 
         std::vector<DecalData> m_decals;
@@ -190,6 +132,6 @@ namespace loader {
 
         std::shared_ptr<Loaders> m_loaders;
 
-        std::unique_ptr<MeshTypeBuilder> m_meshTypeBuilder;
+        std::unique_ptr<NodeBuilder> m_nodeBuilder;
     };
 }

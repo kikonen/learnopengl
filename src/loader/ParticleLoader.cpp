@@ -14,7 +14,7 @@
 namespace loader
 {
     ParticleLoader::ParticleLoader(
-        Context ctx)
+        std::shared_ptr<Context> ctx)
         : BaseLoader(ctx)
     {}
 

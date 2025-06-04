@@ -1182,6 +1182,9 @@
     <ClCompile Include="src\loader\MeshTypeBuilder.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\loader\NodeBuilder.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h">
@@ -2646,6 +2649,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\loader\MeshTypeBuilder.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\loader\NodeBuilder.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

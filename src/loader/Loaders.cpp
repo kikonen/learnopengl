@@ -1,7 +1,7 @@
 #include "Loaders.h"
 
 namespace loader {
-    Loaders::Loaders(Context ctx)
+    Loaders::Loaders(std::shared_ptr<Context> ctx)
       : m_rootLoader(ctx),
         m_scriptLoader(ctx),
         m_skyboxLoader(ctx),

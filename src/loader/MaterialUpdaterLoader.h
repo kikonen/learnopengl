@@ -13,7 +13,7 @@ namespace loader {
     {
     public:
         MaterialUpdaterLoader(
-            Context ctx);
+            std::shared_ptr<Context> ctx);
 
         void loadMaterialUpdaters(
             const loader::DocNode& node,

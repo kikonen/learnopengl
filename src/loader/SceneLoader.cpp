@@ -21,19 +21,7 @@
 
 #include "material/Material.h"
 
-//#include "shader/Program.h"
-//#include "shader/Shader.h"
-//#include "shader/ProgramRegistry.h"
-
-//#include "mesh/mesh_util.h"
-//
-//#include "mesh/LodMesh.h"
 #include "mesh/MeshType.h"
-//
-//#include "mesh/MeshSet.h"
-//#include "mesh/ModelMesh.h"
-//#include "mesh/TextMesh.h"
-//#include "mesh/NonVaoMesh.h"
 
 #include "component/Light.h"
 #include "component/CameraComponent.h"
@@ -43,29 +31,23 @@
 #include "model/Node.h"
 #include "model/NodeType.h"
 
-//#include "animation/AnimationLoader.h"
-//#include "animation/RigContainer.h"
-//#include "animation/RigSocket.h"
-
 #include "event/Dispatcher.h"
-
-//#include "mesh/MeshType.h"
 
 #include "registry/Registry.h"
 #include "registry/ModelRegistry.h"
-//#include "registry/MeshTypeRegistry.h"
 
 #include <engine/AsyncLoader.h>
 
 #include "DagSort.h"
 
+#include "Context.h"
 #include "Loaders.h"
 #include "NodeRoot.h"
 #include "ResolvedNode.h"
 #include "DecalData.h"
 #include "ScriptData.h"
 
-#include "MeshTypeBuilder.h"
+#include "NodeBuilder.h"
 
 #include "converter/YamlConverter.h"
 
@@ -75,10 +57,10 @@
 
 namespace loader {
     SceneLoader::SceneLoader(
-        Context ctx)
+        std::shared_ptr<Context> ctx)
         : BaseLoader(ctx),
-        m_loaders{ std::make_unique<Loaders>(ctx) },
-        m_meshTypeBuilder{ std::make_unique<MeshTypeBuilder>(m_loaders) },
+        m_loaders{ std::make_shared<Loaders>(ctx) },
+        m_nodeBuilder{ std::make_unique<NodeBuilder>(this, ctx, m_loaders) },
         m_meta{ std::make_unique<MetaData>() },
         m_root{ std::make_unique<RootData>() },
         m_skybox{ std::make_unique<SkyboxData>() },
@@ -90,7 +72,7 @@ namespace loader {
 
     SceneLoader::~SceneLoader()
     {
-        //KI_INFO(fmt::format("SCENE_FILE: delete - ctx={}", m_ctx.str()));
+        //KI_INFO(fmt::format("SCENE_FILE: delete - ctx={}", m_ctx->str()));
     }
 
     void SceneLoader::destroy()
@@ -113,19 +95,19 @@ namespace loader {
 
     void SceneLoader::load()
     {
-        if (!util::fileExists(m_ctx.m_fullPath)) {
-            throw std::runtime_error{ fmt::format("FILE_NOT_EXIST: {}", m_ctx.str()) };
+        if (!util::fileExists(m_ctx->m_fullPath)) {
+            throw std::runtime_error{ fmt::format("FILE_NOT_EXIST: {}", m_ctx->str()) };
         }
 
         std::lock_guard lock(m_ready_lock);
         m_runningCount++;
 
-        m_ctx.m_asyncLoader->addLoader(m_ctx.m_alive, [this]() {
+        m_ctx->m_asyncLoader->addLoader(m_ctx->m_alive, [this]() {
             try {
                 auto& l = *m_loaders;
 
                 YamlConverter converter;
-                auto doc = converter.load(m_ctx.m_fullPath);
+                auto doc = converter.load(m_ctx->m_fullPath);
 
                 loadMeta(doc.findNode("meta"), *m_meta);
 
@@ -187,9 +169,9 @@ namespace loader {
         // => should they should be fully attached in scene at this point
         // => worker will trigger event into UI thread after processing all updates
 
-        m_ctx.m_asyncLoader->addLoader(m_ctx.m_alive, [this]() {
+        m_ctx->m_asyncLoader->addLoader(m_ctx->m_alive, [this]() {
             try {
-                attachResolvedNodes(m_resolvedNodes);
+                attachResolvedNodes(m_nodeBuilder->getResolvedNodes());
                 notifySceneLoaded();
             }
             catch (const std::runtime_error& ex) {
@@ -242,7 +224,7 @@ namespace loader {
 
             m_pendingCount = 0;
             for (const auto& node : m_nodes) {
-                if (resolveNode(root.rootId, node)) {
+                if (m_nodeBuilder->resolveNode(root.rootId, node)) {
                     m_pendingCount++;
                     KI_INFO_OUT(fmt::format("START: node={}, pending={}", node.base.name, m_pendingCount));
                 }
@@ -261,7 +243,7 @@ namespace loader {
         auto sorted = sorter.sort(resolvedNodes);
 
         for (auto* resolved : sorted) {
-            if (!*m_ctx.m_alive) return;
+            if (!*m_ctx->m_alive) return;
             attachResolvedNode(*resolved);
         }
     }
@@ -343,283 +325,6 @@ namespace loader {
         //    };
         //    m_dispatcher->send(evt);
         //}
-
-    }
-
-    void SceneLoader::addResolvedNode(
-        const ResolvedNode& resolved)
-    {
-        {
-            std::lock_guard lock(m_ready_lock);
-            m_resolvedNodes.push_back(resolved);
-        }
-    }
-
-    // TODO KI need to change node add logic to happen via commands
-    // => i.e. api which can be used also from Lua
-    bool SceneLoader::resolveNode(
-        const ki::node_id rootId,
-        const NodeRoot& nodeRoot)
-    {
-        if (!nodeRoot.base.enabled) {
-            return false;
-        }
-
-        m_ctx.m_asyncLoader->addLoader(m_ctx.m_alive, [this, rootId, &nodeRoot]() {
-            try {
-                if (nodeRoot.clones.empty()) {
-                    pool::TypeHandle typeHandle{};
-                    resolveNodeClone(typeHandle, rootId, nodeRoot, nodeRoot.base, false, 0);
-                }
-                else {
-                    pool::TypeHandle typeHandle{};
-
-                    int cloneIndex = 0;
-                    for (auto& cloneData : nodeRoot.clones) {
-                        if (!*m_ctx.m_alive) return;
-                        typeHandle = resolveNodeClone(typeHandle, rootId, nodeRoot, cloneData, true, cloneIndex);
-                        if (!nodeRoot.base.shareType) {
-                            typeHandle = pool::TypeHandle::NULL_HANDLE;
-                        }
-                        cloneIndex++;
-                    }
-                }
-                loadedNode(nodeRoot, true);
-            }
-            catch (const std::runtime_error& ex) {
-                KI_CRITICAL(fmt::format("SCENE_ERROR: RESOLVE_NODE - {}", ex.what()));
-                loadedNode(nodeRoot, false);
-                throw ex;
-            }
-            catch (const std::string& ex) {
-                KI_CRITICAL(fmt::format("SCENE_ERROR: RESOLVE_NODE - {}", ex));
-                loadedNode(nodeRoot, false);
-                throw ex;
-            }
-            catch (const char* ex) {
-                KI_CRITICAL(fmt::format("SCENE_ERROR: RESOLVE_NODE - {}", ex));
-                loadedNode(nodeRoot, false);
-                throw ex;
-            }
-            catch (...) {
-                KI_CRITICAL(fmt::format("SCENE_ERROR: RESOLVE_NODE - {}", "UNKNOWN_ERROR"));
-                loadedNode(nodeRoot, false);
-                throw std::current_exception();
-            }
-        });
-
-        return true;
-    }
-
-    pool::TypeHandle SceneLoader::resolveNodeClone(
-        pool::TypeHandle typeHandle,
-        const ki::node_id rootId,
-        const NodeRoot& nodeRoot,
-        const NodeData& nodeData,
-        bool cloned,
-        int cloneIndex)
-    {
-        if (!*m_ctx.m_alive) return typeHandle;
-
-        if (!nodeData.enabled) {
-            return typeHandle;
-        }
-
-        const auto& repeat = nodeData.repeat;
-
-        for (auto z = 0; z < repeat.zCount; z++) {
-            for (auto y = 0; y < repeat.yCount; y++) {
-                for (auto x = 0; x < repeat.xCount; x++) {
-                    if (!*m_ctx.m_alive) return typeHandle;
-
-                    const glm::uvec3 tile = { x, y, z };
-                    const glm::vec3 tilePositionOffset{ x * repeat.xStep, y * repeat.yStep, z * repeat.zStep };
-
-                    typeHandle = resolveNodeCloneRepeat(
-                        typeHandle,
-                        rootId,
-                        nodeRoot,
-                        nodeData,
-                        cloned,
-                        cloneIndex,
-                        tile,
-                        tilePositionOffset);
-
-                    if (!nodeRoot.base.shareType)
-                        typeHandle = pool::TypeHandle::NULL_HANDLE;
-                }
-            }
-        }
-
-        return typeHandle;
-    }
-
-    pool::TypeHandle SceneLoader::resolveNodeCloneRepeat(
-        pool::TypeHandle typeHandle,
-        const ki::node_id rootId,
-        const NodeRoot& nodeRoot,
-        const NodeData& nodeData,
-        bool cloned,
-        int cloneIndex,
-        const glm::uvec3& tile,
-        const glm::vec3& tilePositionOffset)
-    {
-        if (!*m_ctx.m_alive) return typeHandle;
-
-        if (!nodeData.enabled) {
-            return typeHandle;
-        }
-
-        // NOTE KI overriding material in clones is *NOT* supported"
-        if (!typeHandle) {
-            const auto& repeat = nodeData.repeat;
-            const bool hasTile = repeat.xCount > 1 || repeat.yCount > 1 || repeat.zCount > 0;
-
-            std::string nameSuffix;
-            if (cloned || hasTile) {
-                nameSuffix = fmt::format(
-                    "{}{}",
-                    cloned ? fmt::format("clone_{}", cloneIndex) : "",
-                    hasTile ? fmt::format("tile_{}x{}x{}", tile.x, tile.y, tile.z) : ""
-                );
-            }
-
-            typeHandle = m_meshTypeBuilder->createType(nodeData, nameSuffix);
-            if (!typeHandle) return typeHandle;
-        }
-
-        if (!*m_ctx.m_alive) return typeHandle;
-
-        auto [handle, state] = createNode(
-            typeHandle, rootId, nodeData,
-            cloned, cloneIndex, tile,
-            nodeData.clonePositionOffset,
-            tilePositionOffset);
-
-        ki::node_id parentId;
-        if (nodeData.parentBaseId.empty()) {
-            parentId = rootId;
-        }
-        else {
-            auto [id, _] = resolveId(
-                nodeData.parentBaseId,
-                cloneIndex,
-                tile,
-                false);
-            parentId = id;
-        }
-
-        ResolvedNode resolved{
-            parentId,
-            handle,
-            nodeData,
-            state,
-        };
-
-        addResolvedNode(resolved);
-
-        return typeHandle;
-    }
-
-    std::pair<pool::NodeHandle, NodeState> SceneLoader::createNode(
-        pool::TypeHandle typeHandle,
-        const ki::node_id rootId,
-        const NodeData& nodeData,
-        const bool cloned,
-        const int cloneIndex,
-        const glm::uvec3& tile,
-        const glm::vec3& clonePositionOffset,
-        const glm::vec3& tilePositionOffset)
-    {
-        auto& l = *m_loaders;
-
-        ki::node_id nodeId{ 0 };
-        std::string resolvedSID;
-        {
-            if (!nodeData.baseId.empty()) {
-                auto [k, v] = resolveId(nodeData.baseId, cloneIndex, tile, false);
-                nodeId = k;
-                resolvedSID = v;
-            }
-
-            if (!nodeId) {
-                auto [k, v] = resolveId({ nodeData.name }, cloneIndex, tile, true);
-                nodeId = k;
-                resolvedSID = v;
-            }
-        }
-
-        auto handle = pool::NodeHandle::allocate(nodeId);
-        auto* node = handle.toNode();
-        assert(node);
-
-        node->setName(resolvedSID);
-        node->m_typeHandle = typeHandle;
-
-        {
-            ki::node_id ignoredBy{ 0 };
-            if (!nodeData.ignoredByBaseId.empty()) {
-                auto [id, _] = resolveId(
-                    nodeData.ignoredByBaseId,
-                    cloneIndex,
-                    tile,
-                    false);
-                ignoredBy = id;
-            }
-            node->m_ignoredBy = ignoredBy;
-        }
-
-        node->m_audioListener = l.m_audioLoader.createListener(nodeData.audio.listener);
-        node->m_audioSources = l.m_audioLoader.createSources(nodeData.audio.sources);
-
-        assignNodeFlags(nodeData.nodeFlags, node->m_flags);
-
-        //node->setCloneIndex(cloneIndex);
-        //node->setTile(tile);
-
-        glm::vec3 pos = nodeData.position + clonePositionOffset + tilePositionOffset;
-
-        const auto* type = typeHandle.toType();
-
-        NodeState state;
-        state.setPosition(pos);
-
-        state.setRotation(util::degreesToQuat(nodeData.rotation));
-        state.setScale(nodeData.scale);
-
-        state.setPivot(nodeData.pivot.resolve(type));
-
-        state.setFront(nodeData.front);
-
-        {
-            state.setBaseRotation(util::degreesToQuat(nodeData.baseRotation));
-            state.setVolume(type->getAABB().getVolume());
-        }
-
-        node->m_camera = l.m_cameraLoader.createCamera(nodeData.camera);
-        node->m_light = l.m_lightLoader.createLight(nodeData.light, cloneIndex, tile);
-        node->m_generator = l.m_generatorLoader.createGenerator(
-            nodeData.generator,
-            type,
-            *m_loaders);
-
-        node->m_particleGenerator = l.m_particleLoader.createParticle(
-            nodeData.particle);
-
-        if (type->m_nodeType == NodeType::text) {
-            node->m_generator = m_loaders->m_textLoader.createGenerator(
-                type,
-                nodeData.text,
-                *m_loaders);
-        }
-
-        return { handle, state };
-    }
-
-    void SceneLoader::assignNodeFlags(
-        const FlagContainer& container,
-        NodeFlags& flags)
-    {
     }
 
     void SceneLoader::loadMeta(

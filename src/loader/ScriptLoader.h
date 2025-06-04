@@ -21,7 +21,7 @@ namespace loader {
     {
     public:
         ScriptLoader(
-            Context ctx);
+            std::shared_ptr<Context> ctx);
 
         void loadScriptSystem(
             const loader::DocNode& node,

@@ -30,7 +30,7 @@ namespace {
 
 namespace loader {
     TextLoader::TextLoader(
-        Context ctx)
+        std::shared_ptr<Context> ctx)
         : BaseLoader(ctx)
     {
     }

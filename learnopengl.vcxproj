@@ -218,6 +218,7 @@
     <ClCompile Include="src\loader\DecalLoaderr.cpp" />
     <ClCompile Include="src\loader\MaterialUpdaterLoader.cpp" />
     <ClCompile Include="src\loader\MeshTypeBuilder.cpp" />
+    <ClCompile Include="src\loader\NodeBuilder.cpp" />
     <ClCompile Include="src\loader\value\PhysicsCategoryValue.cpp" />
     <ClCompile Include="src\loader\value\PhysicsGeomValue.cpp" />
     <ClCompile Include="src\material\ColorTexture.cpp" />
@@ -608,6 +609,7 @@
     <ClInclude Include="src\loader\MaterialUpdaterData.h" />
     <ClInclude Include="src\loader\MaterialUpdaterLoader.h" />
     <ClInclude Include="src\loader\MeshTypeBuilder.h" />
+    <ClInclude Include="src\loader\NodeBuilder.h" />
     <ClInclude Include="src\loader\value\PhysicsCategoryValue.h" />
     <ClInclude Include="src\loader\value\PhysicsGeomValue.h" />
     <ClInclude Include="src\material\FontAtlasMaterialUpdater.h" />

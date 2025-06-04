@@ -8,7 +8,7 @@ namespace loader {
     {
     public:
         RootLoader(
-            Context ctx);
+            std::shared_ptr<Context> ctx);
 
         void loadRoot(
             const loader::DocNode& node,

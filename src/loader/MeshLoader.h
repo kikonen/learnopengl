@@ -14,7 +14,7 @@ namespace loader {
     {
     public:
         MeshLoader(
-            Context ctx);
+            std::shared_ptr<Context> ctx);
 
         void loadMeshes(
             const loader::DocNode& node,

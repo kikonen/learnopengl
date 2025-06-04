@@ -24,7 +24,7 @@ namespace {
 
 namespace loader {
     PhysicsLoader::PhysicsLoader(
-        Context ctx)
+        std::shared_ptr<Context> ctx)
         : BaseLoader(ctx)
     {
     }

@@ -20,7 +20,7 @@
 
 namespace loader {
     MaterialUpdaterLoader::MaterialUpdaterLoader(
-        Context ctx)
+        std::shared_ptr<Context> ctx)
         : BaseLoader(ctx)
     {
     }

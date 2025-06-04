@@ -9,7 +9,7 @@ namespace loader {
     {
     public:
         SkyboxLoader(
-            Context ctx);
+            std::shared_ptr<Context> ctx);
 
         void loadSkybox(
             const loader::DocNode& node,
