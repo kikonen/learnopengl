@@ -16,7 +16,7 @@
 namespace loader
 {
     CameraLoader::CameraLoader(
-        Context ctx)
+        std::shared_ptr<Context> ctx)
         : BaseLoader(ctx)
     {
     }

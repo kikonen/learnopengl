@@ -10,7 +10,7 @@ namespace loader {
     {
     public:
         NodeLoader(
-            Context ctx);
+            std::shared_ptr<Context> ctx);
 
         void loadNodes(
             const loader::DocNode& node,

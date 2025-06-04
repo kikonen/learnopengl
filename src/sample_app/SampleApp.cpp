@@ -52,6 +52,7 @@
 #include "render/RenderContext.h"
 #include "render/NodeDraw.h"
 
+#include "loader/Context.h"
 #include "loader/SceneLoader.h"
 
 #include "scene/Scene.h"
@@ -819,19 +820,19 @@ std::shared_ptr<Scene> SampleApp::loadScene()
 
     {
         if (!assets.sceneFile.empty()) {
-            loader::Context ctx{
+            auto ctx = std::make_shared<loader::Context>(
                 m_alive,
                 m_asyncLoader,
                 assets.sceneDir,
-                assets.sceneFile,
-            };
+                assets.sceneFile
+            );
             std::unique_ptr<loader::SceneLoader> loader = std::make_unique<loader::SceneLoader>(ctx);
             m_loaders.push_back(std::move(loader));
         }
     }
 
     for (auto& loader : m_loaders) {
-        KI_INFO_OUT(fmt::format("LOAD_SCENE: {}", loader->m_ctx.str()));
+        KI_INFO_OUT(fmt::format("LOAD_SCENE: {}", loader->m_ctx->str()));
         loader->prepare(m_registry);
         loader->load();
     }

@@ -16,7 +16,7 @@ namespace loader {
     {
     public:
         AudioLoader(
-            Context ctx);
+            std::shared_ptr<Context> ctx);
 
         void loadAudio(
             const loader::DocNode& node,

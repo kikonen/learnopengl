@@ -21,6 +21,7 @@
 #include "registry/Registry.h"
 #include "registry/ModelRegistry.h"
 
+#include "Context.h"
 #include "Loaders.h"
 
 #include "loader/converter/YamlConverter.h"
@@ -40,7 +41,7 @@ namespace {
 
 namespace loader {
     NodeLoader::NodeLoader(
-        Context ctx)
+        std::shared_ptr<Context> ctx)
         : BaseLoader(ctx)
     {
     }
@@ -388,7 +389,7 @@ namespace loader {
             }
         }
 
-        const auto& fullPath = util::joinPath(m_ctx.m_dirName, path);
+        const auto& fullPath = util::joinPath(m_ctx->m_dirName, path);
 
         KI_INFO_OUT(fmt::format("node_prefab={}", fullPath));
 

@@ -8,7 +8,7 @@
 
 namespace loader {
     PrefabLoader::PrefabLoader(
-        Context ctx)
+        std::shared_ptr<Context> ctx)
         : BaseLoader(ctx)
     {}
 

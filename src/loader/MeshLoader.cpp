@@ -27,7 +27,7 @@
 
 namespace loader {
     MeshLoader::MeshLoader(
-        Context ctx)
+        std::shared_ptr<Context> ctx)
         : BaseLoader(ctx)
     {
     }

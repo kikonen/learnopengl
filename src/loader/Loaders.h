@@ -1,7 +1,5 @@
 #pragma once
 
-#include "Context.h"
-
 #include "BaseLoader.h"
 #include "RootLoader.h"
 #include "ScriptLoader.h"
@@ -29,7 +27,7 @@ class Registry;
 namespace loader {
     class Loaders {
     public:
-        Loaders(Context ctx);
+        Loaders(std::shared_ptr<Context> ctx);
 
         void prepare(
             std::shared_ptr<Registry> registry);

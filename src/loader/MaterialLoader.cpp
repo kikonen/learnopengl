@@ -21,6 +21,8 @@
 #include "Loaders.h"
 #include "loader_util.h"
 
+#include "Context.h"
+
 
 namespace {
     constexpr float DEF_ALPHA = 1.0f;
@@ -39,7 +41,7 @@ namespace {
 
 namespace loader {
     MaterialLoader::MaterialLoader(
-        Context ctx)
+        std::shared_ptr<Context> ctx)
         : BaseLoader(ctx)
     {
     }
@@ -435,11 +437,11 @@ namespace loader {
         std::string fullPath = path;
 
         if (!util::fileExists(fullPath)) {
-            fullPath = util::joinPath(m_ctx.m_assetsDir, path);
+            fullPath = util::joinPath(m_ctx->m_assetsDir, path);
         }
 
         if (!util::fileExists(fullPath)) {
-            fullPath = util::joinPath(m_ctx.m_dirName, path);
+            fullPath = util::joinPath(m_ctx->m_dirName, path);
         }
 
         KI_INFO_OUT(fmt::format("material_prefab={}", fullPath));
