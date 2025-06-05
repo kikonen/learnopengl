@@ -2294,7 +2294,7 @@
     <ClInclude Include="src\component\FollowCamera.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\loader\CameraType.h">
+    <ClInclude Include="src\component\CameraType.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\util\debug.h">
@@ -2652,6 +2652,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\loader\NodeBuilder.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\component\CameraDefinition.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\component\LightDefinition.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

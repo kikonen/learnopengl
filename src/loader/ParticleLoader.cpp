@@ -147,14 +147,13 @@ namespace loader
         }
     }
 
-    std::unique_ptr<particle::ParticleGenerator> ParticleLoader::createParticle(
+    std::unique_ptr<particle::ParticleDefinition> ParticleLoader::createDefinition(
         const ParticleData& data) const
     {
         if (!data.enabled) return nullptr;
 
-        auto generator = std::make_unique<particle::ParticleGenerator>();
-
-        particle::ParticleDefinition df;
+        auto definition = std::make_unique<particle::ParticleDefinition>();
+        auto& df = *definition;
 
         df.m_seed = data.seed;
         df.m_gravity = data.gravity;
@@ -189,10 +188,10 @@ namespace loader
         df.m_spriteSpeed = data.spriteSpeed;
         df.m_spriteSpeedVariation = data.spriteSpeedVariation;
 
-        generator->setDefinition(df);
-        generator->setMaterial(data.materialData.material);
-        generator->modifyMaterial().loadTextures();
+        df.m_material = std::make_shared<Material>();
+        *df.m_material = data.materialData.material;
+        df.m_material->loadTextures();
 
-        return generator;
+        return definition;
     }
 }

@@ -18,6 +18,11 @@
 #include "model/Snapshot.h"
 #include "model/EntityFlags.h"
 
+#include "component/CameraDefinition.h"
+#include "component/LightDefinition.h"
+
+#include "particle/ParticleDefinition.h"
+
 #include "registry/NodeRegistry.h"
 #include "registry/ModelRegistry.h"
 #include "registry/MeshTypeRegistry.h"
@@ -39,7 +44,10 @@ namespace mesh {
         m_preparedWT{ o.m_preparedWT },
         m_preparedRT{ o.m_preparedRT },
         m_lodMeshes{ std::move(o.m_lodMeshes) },
-        m_customMaterial{ std::move(o.m_customMaterial) }
+        m_customMaterial{ std::move(o.m_customMaterial) },
+        m_cameraDefinition{ std::move(o.m_cameraDefinition) },
+        m_lightDefinition{ std::move(o.m_lightDefinition) },
+        m_particleDefinition{ std::move(o.m_particleDefinition) }
     {
     }
 
@@ -93,6 +101,10 @@ namespace mesh {
             m_flags.anyAlpha |= opt.isAlpha();
             m_flags.anyBlend |= opt.isBlend();
             m_flags.anyAnimation |= lodMesh.m_flags.useAnimation;
+        }
+
+        if (m_particleDefinition) {
+            m_particleDefinition->m_material->registerMaterial();
         }
     }
 

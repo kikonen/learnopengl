@@ -14,9 +14,7 @@ namespace loader {
             const loader::DocNode& node,
             LightData& data) const;
 
-        std::unique_ptr<Light> createLight(
-            const LightData& data,
-            const int cloneIndex,
-            const glm::uvec3& tile);
+        std::unique_ptr<LightDefinition> createDefinition(
+            const LightData& data) const;
     };
 }

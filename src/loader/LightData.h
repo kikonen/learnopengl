@@ -8,7 +8,7 @@
 
 #include "component/LightType.h"
 
-class Light;
+struct LightDefinition;
 
 namespace loader {
     struct LightData {

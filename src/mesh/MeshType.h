@@ -31,6 +31,13 @@ namespace script {
     struct Script;
 }
 
+namespace particle {
+    struct ParticleDefinition;
+}
+
+struct CameraDefinition;
+struct LightDefinition;
+
 struct PrepareContext;
 
 struct Snapshot;
@@ -154,6 +161,10 @@ namespace mesh {
         TypeFlags m_flags;
         uint8_t m_layer{ 0 };
         NodeType m_nodeType{ NodeType::origo };
+
+        std::unique_ptr<CameraDefinition> m_cameraDefinition;
+        std::unique_ptr<LightDefinition> m_lightDefinition;
+        std::unique_ptr<particle::ParticleDefinition> m_particleDefinition;
 
     private:
         bool m_preparedWT : 1 {false};

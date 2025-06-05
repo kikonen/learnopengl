@@ -6,8 +6,6 @@
 
 #include "util/Random.h"
 
-#include "material/Material.h"
-
 #include "ParticleDefinition.h"
 
 struct PrepareContext;
@@ -28,18 +26,6 @@ namespace particle {
         void updateWT(
             const UpdateContext& ctx,
             Node& node);
-
-        void setMaterial(const Material& material) {
-            m_material = material;
-        }
-
-        const Material& getMaterial() {
-            return m_material;
-        }
-
-        Material& modifyMaterial() {
-            return m_material;
-        }
 
         void setDefinition(const ParticleDefinition& definition)
         {
@@ -63,8 +49,9 @@ namespace particle {
         }
 
     private:
-        Material m_material;
         ParticleDefinition m_definition;
+
+        int m_materialIndex{ -1 };
 
         float m_lastTs = -1;
 

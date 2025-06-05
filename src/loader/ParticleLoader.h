@@ -24,7 +24,7 @@ namespace loader {
             ParticleData& data,
             Loaders& loaders) const;
 
-        std::unique_ptr<particle::ParticleGenerator> createParticle(
+        std::unique_ptr<particle::ParticleDefinition> createDefinition(
             const ParticleData& data) const;
     };
 }

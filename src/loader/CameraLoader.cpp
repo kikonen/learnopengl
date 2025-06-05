@@ -5,10 +5,7 @@
 #include "util/glm_util.h"
 #include "util/util.h"
 
-#include "component/FpsCamera.h"
-#include "component/FollowCamera.h"
-#include "component/OrbitCamera.h"
-#include "component/SplineCamera.h"
+#include "component/CameraDefinition.h"
 
 #include "loader/document.h"
 #include "loader_util.h"
@@ -120,59 +117,39 @@ namespace loader
         }
     }
 
-    std::unique_ptr<CameraComponent> CameraLoader::createCamera(
+    std::unique_ptr<CameraDefinition> CameraLoader::createDefinition(
         const CameraData& data)
     {
         if (!data.enabled) return nullptr;
 
-        // NOTE only node cameras in scenefile for now
-        std::unique_ptr<CameraComponent> component;
+        auto definition = std::make_unique<CameraDefinition>();
+        auto& df = *definition;
 
-        switch (data.type) {
-        case CameraType::fps: {
-            auto c = std::make_unique<FpsCamera>();
-            c->setPitch(glm::radians(data.pitch));
-            c->setPitchSpeed(glm::radians(data.pitchSpeed));
-            component = std::move(c);
-            break;
-        }
-        case CameraType::follow: {
-            auto c = std::make_unique<FollowCamera>();
-            c->m_springConstant = data.springConstant;
-            c->m_distance = data.distance;
-            component = std::move(c);
-            break;
-        }
-        case CameraType::orbit: {
-            auto c = std::make_unique<OrbitCamera>();
-            c->m_offset = data.offset;
-            c->m_up = data.up;
-            c->m_pitchSpeed = glm::radians(data.pitchSpeed);
-            c->m_yawSpeed = glm::radians(data.yawSpeed);
-            component = std::move(c);
-            break;
-        }
-        case CameraType::spline: {
-            auto c = std::make_unique<SplineCamera>();
-            c->m_path = Spline{ data.path };
-            c->m_speed = data.speed;
-            component = std::move(c);
-            break;
-        }
-        }
+        df.m_type = data.type;
 
-        component->m_enabled = data.enabled;
-        component->m_default = data.isDefault;
+        df.m_default = data.isDefault;
 
-        {
-            auto& camera = component->getCamera();
-            if (data.orthogonal) {
-                camera.setViewport(data.viewport);
-            }
-            camera.setAxis(data.front, data.up);
-            camera.setFov(data.fov);
-        }
+        df.m_orthogonal = data.orthogonal;
+        df.m_viewport = data.viewport;
 
-        return component;
+        df.m_fov = data.fov;
+
+        df.m_front = data.front;
+        df.m_up = data.up;
+
+        df.m_offset = data.offset;
+
+        df.m_pitch = data.pitch;
+        df.m_pitchSpeed = data.pitchSpeed;
+        df.m_yawSpeed = data.yawSpeed;
+
+        df.m_distance = data.distance;
+
+        df.m_springConstant = data.springConstant;
+
+        df.m_path = data.path;
+        df.m_speed = data.speed;
+
+        return definition;
     }
 }

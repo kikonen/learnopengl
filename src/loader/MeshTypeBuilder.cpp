@@ -36,10 +36,10 @@
 #include "mesh/TextMesh.h"
 #include "mesh/NonVaoMesh.h"
 
-#include "component/Light.h"
-#include "component/CameraComponent.h"
+#include "component/CameraDefinition.h"
+#include "component/LightDefinition.h"
 
-#include "particle/ParticleGenerator.h"
+#include "particle/ParticleDefinition.h"
 
 #include "model/NodeType.h"
 
@@ -75,6 +75,8 @@ namespace loader
         const NodeData& nodeData,
         const std::string& nameSuffix)
     {
+        auto& l = *m_loaders;
+
         auto typeHandle = pool::TypeHandle::allocate();
         auto* type = typeHandle.toType();
 
@@ -147,6 +149,10 @@ namespace loader
         }
 
         resolveAttachments(type, nodeData);
+
+        type->m_cameraDefinition = l.m_cameraLoader.createDefinition(nodeData.camera);
+        type->m_lightDefinition = l.m_lightLoader.createDefinition(nodeData.light);
+        type->m_particleDefinition = l.m_particleLoader.createDefinition(nodeData.particle);
 
         return typeHandle;
     }
