@@ -8,8 +8,7 @@ script:
   scripts:
     - path: lib/common
 nodes:
-  - name: Player
-    id: player
+  - id: player
     type: origo
     pos: [0, 0, 0]
     front: [0, 0, -1]

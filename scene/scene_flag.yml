@@ -39,7 +39,7 @@ nodes:
     physics:
       geom:
         collision: [world]
-  - name: origo
+  - id: origo
     mesh:
       vertex:
         type: sphere
@@ -100,7 +100,7 @@ nodes:
           USE_FLAG_WAVE: 1
         updater_id: shader_toy_1
     pos: [1.08, 3.2, 0]
-  - name: flag_top
+  - id: flag_top
     mesh:
       vertex:
         type: sphere

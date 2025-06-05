@@ -29,7 +29,7 @@ nodes:
     audio:
       listener:
         default: true
-  - name: origo
+  - id: origo
     mesh:
       path: water_ball
       material_modifier:
@@ -68,7 +68,7 @@ nodes:
           source:
             name: select
             path: audio/Spring Wind Up_EF911B61_normal_mono.wav
-  - name: CowJump
+  - id: cow_jump
     mesh:
       path: cow
       material:

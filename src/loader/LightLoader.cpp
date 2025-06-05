@@ -94,7 +94,7 @@ namespace loader{
 
         light->m_enabled = true;
 
-        auto [targetId, targetResolvedSID] = resolveId(data.targetBaseId, cloneIndex, tile, false);
+        auto [targetId, targetResolvedSID] = resolveId(data.targetBaseId, cloneIndex, tile);
         light->setTargetId(targetId);
 
         light->m_linear = data.linear;

@@ -147,13 +147,13 @@ nodes:
     program: g_tex
     pos: [0, 5, 10]
     scale: 1
-  - name: Planet 1
+  - id: planet_1
     mesh:
       path: planet/planet.obj
     program: g_tex
     pos: [0, 0, 20]
     scale: 1
-  - name: Planet 2
+  - id: planet_2
     mesh:
       path: planet/planet.obj
       material_modifier:

@@ -33,7 +33,7 @@ nodes:
       type: directional
       diffuse: [0.7, 0.7, 0.7, 1.0]
       intensity: 30000
-  - name: origo
+  - id: origo
     mesh:
       path: water_ball
       material:

@@ -217,7 +217,7 @@ namespace mesh
             rigJoint.m_globalInvTransform = globalInvTransform;
 
             KI_INFO_OUT(fmt::format(
-                "ASSIMP: NODE mesh_set={}, node={}.{}, name={}, children={}, meshes={}\nT: {}\nG: {}\nI: {}",
+                "ASSIMP: NODE mesh_set={}, node={}.{}, name={}, children={}, meshes={}\nTRAN: {}\nGLOB: {}\nINVE: {}",
                 meshSet.m_name,
                 parentIndex,
                 jointIndex,

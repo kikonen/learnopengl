@@ -12,8 +12,7 @@ script:
 nodes:
   - xprefab:
       path: prefab/util/prefab_grid.yml
-  - id: fps_counter
-    prefab:
+  - prefab:
       path: prefab/util/prefab_fps_counter.yml
     #pos: [5.75, 5.25, 0.2]
     pos: [2, -2, -1]
@@ -104,7 +103,7 @@ nodes:
     script: |
       cmd:animation_play(
         { name="idle_aim:Unreal Take" } )
-  - name: origo
+  - id: origo
     mesh:
       path: water_ball
       material_modifier:
@@ -323,7 +322,7 @@ nodes:
       path: prefab/scenery/prefab_cobblestone_floor.yml
     scale: 100
     position: [0, -2, 0]
-  - id: palm_tree_forest_{c}_{t}
+  - id: palm_tree_forest_generator
     prefab:
       path: prefab/scenery/prefab_palm_tree.yml
     mesh:
@@ -351,7 +350,7 @@ nodes:
         collision: [world, player]
         rotation: [90, 0, 0]
         size: [0.75, 20, 0]
-  - id: grass_{t}
+  - id: grass_generator
     prefab:
       path: prefab/scenery/prefab_grass.yml
     mesh:
@@ -373,7 +372,7 @@ nodes:
         z_count: 21
         x_step: 10
         z_step: 10
-  - id: bush01_{t}
+  - id: bush01_generator
     prefab:
       path: prefab/scenery/prefab_bush01.yml
     mesh:
@@ -396,7 +395,7 @@ nodes:
         z_count: 21
         x_step: 10
         z_step: 10
-  - id: bush02_{t}
+  - id: bush02_generator
     prefab:
       path: prefab/scenery/prefab_bush02.yml
     mesh:
@@ -419,7 +418,7 @@ nodes:
         z_count: 21
         x_step: 10
         z_step: 10
-  - id: bush03_{t}
+  - id: bush03_generator
     prefab:
       path: prefab/scenery/prefab_bush03.yml
     mesh:
@@ -456,7 +455,7 @@ nodes:
       type: directional
       diffuse: [0.7, 0.7, 0.7, 1.0]
       intensity: 20000
-  - id: pine_tree_forest_2_{c}_{t}
+  - id: pine_tree_forest_2_generator
     prefab:
       path: prefab/scenery/prefab_pine_tree.yml
     mesh:
@@ -477,7 +476,7 @@ nodes:
         z_count: 11
         x_step: 20
         z_step: 20
-  - id: maple_tree_forest_2_{c}_{t}
+  - id: maple_tree_forest_2_generator
     prefab:
       path: prefab/scenery/prefab_maple_tree.yml
     mesh:
@@ -498,7 +497,7 @@ nodes:
         z_count: 11
         x_step: 20
         z_step: 20
-  - id: dandelion_{t}
+  - id: dandelion_generator
     prefab:
       path: prefab/scenery/prefab_SM_Desert_Dandelion_01e.yml
     mesh:
@@ -520,7 +519,7 @@ nodes:
         z_count: 11
         x_step: 20
         z_step: 20
-  - id: flower_{t}
+  - id: flower_generator
     prefab:
       path: prefab/scenery/prefab_SM_Flower_01c.yml
     mesh:
@@ -543,7 +542,7 @@ nodes:
         z_count: 11
         x_step: 20
         z_step: 20
-  - id: terrain_grass_v2
+  - id: terrain_grass_v2_generator
     mesh:
       path: quad_terrain
       material:

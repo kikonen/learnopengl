@@ -27,7 +27,7 @@ nodes:
     pos: [2, -2, -1]
     scale: 0.0025
     layer: ui
-  - xname: Cube map 1
+  - xid: cube_map_1
     type: origo
     pos: [0.0, 0.0, 0.0]
     flags:

@@ -209,10 +209,11 @@ namespace loader
         if (!*m_ctx->m_alive) return typeHandle;
 
         auto [handle, state] = createNode(
-            typeHandle, rootId, nodeData,
-            cloned, cloneIndex, tile,
-            nodeData.clonePositionOffset,
-            tilePositionOffset);
+            typeHandle,
+            nodeData,
+            cloneIndex,
+            tile,
+            nodeData.clonePositionOffset + tilePositionOffset);
 
         ki::node_id parentId;
         if (nodeData.parentBaseId.empty()) {
@@ -222,8 +223,7 @@ namespace loader
             auto [id, _] = resolveId(
                 nodeData.parentBaseId,
                 cloneIndex,
-                tile,
-                false);
+                tile);
             parentId = id;
         }
 
@@ -241,30 +241,23 @@ namespace loader
 
     std::pair<pool::NodeHandle, NodeState> NodeBuilder::createNode(
         pool::TypeHandle typeHandle,
-        const ki::node_id rootId,
         const NodeData& nodeData,
-        const bool cloned,
         const int cloneIndex,
         const glm::uvec3& tile,
-        const glm::vec3& clonePositionOffset,
-        const glm::vec3& tilePositionOffset)
+        const glm::vec3& positionOffset)
     {
         auto& l = *m_loaders;
 
         ki::node_id nodeId{ 0 };
         std::string resolvedSID;
         {
-            if (!nodeData.baseId.empty()) {
-                auto [k, v] = resolveId(nodeData.baseId, cloneIndex, tile, false);
-                nodeId = k;
-                resolvedSID = v;
+            if (nodeData.baseId.empty()) {
+                throw "ID missing";
             }
 
-            if (!nodeId) {
-                auto [k, v] = resolveId({ nodeData.name }, cloneIndex, tile, true);
-                nodeId = k;
-                resolvedSID = v;
-            }
+            auto [k, v] = resolveId(nodeData.baseId, cloneIndex, tile);
+            nodeId = k;
+            resolvedSID = v;
         }
 
         auto handle = pool::NodeHandle::allocate(nodeId);
@@ -280,8 +273,7 @@ namespace loader
                 auto [id, _] = resolveId(
                     nodeData.ignoredByBaseId,
                     cloneIndex,
-                    tile,
-                    false);
+                    tile);
                 ignoredBy = id;
             }
             node->m_ignoredBy = ignoredBy;
@@ -295,7 +287,7 @@ namespace loader
         //node->setCloneIndex(cloneIndex);
         //node->setTile(tile);
 
-        glm::vec3 pos = nodeData.position + clonePositionOffset + tilePositionOffset;
+        glm::vec3 pos = nodeData.position + positionOffset;
 
         const auto* type = typeHandle.toType();
 

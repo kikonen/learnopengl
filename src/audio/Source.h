@@ -15,6 +15,14 @@ namespace audio
 {
     struct Sound;
 
+    // AL_MIN_GAIN
+    // AL_MAX_GAIN
+    // AL_MAX_DISTANCE
+    // AL_ROLLOFF_FACTOR
+    // AL_REFERENCE_DISTANCE
+    // AL_CONE_OUTER_GAIN
+    // AL_CONE_INNER_ANGLE
+    // AL_CONE_OUTER_ANGL
     struct Source {
         Source() {}
         Source(Source& o) = delete;
@@ -40,8 +48,6 @@ namespace audio
         audio::source_id m_id{ 0 };
         audio::sound_id m_soundId{ 0 };
 
-        bool m_autoPlay{ false };
-
         float m_referenceDistance{ audio::REFERENCE_DISTANCE };
         float m_maxDistance{ audio::MAX_DISTANCE };
         float m_rolloffFactor{ audio::ROLLOFF_FACTOR };
@@ -53,17 +59,6 @@ namespace audio
 
         float m_pitch{ 1.f };
         float m_gain{ 1.f };
-
-        // AL_MIN_GAIN
-        // AL_MAX_GAIN
-
-        // AL_MAX_DISTANCE
-        // AL_ROLLOFF_FACTOR
-        // AL_REFERENCE_DISTANCE
-
-        // AL_CONE_OUTER_GAIN
-        // AL_CONE_INNER_ANGLE
-        // AL_CONE_OUTER_ANGL
 
         ALuint m_sourceId{ 0 };
 

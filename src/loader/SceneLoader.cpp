@@ -451,21 +451,18 @@ namespace loader {
             ki::node_id sid;
             std::string resolvedSID;
             {
+                // TODO KI
+                if (nodeData.baseId.empty()) {
+                    throw "ID missing";
+                }
+
+                bool automatic = nodeData.baseId.m_path == nodeRoot.base.baseId.m_path;
                 auto [k, v] = resolveId(
                     nodeData.baseId,
-                    cloneIndex, tile,
-                    nodeData.baseId.m_path == nodeRoot.base.baseId.m_path);
+                    cloneIndex,
+                    tile);
                 sid = k;
                 resolvedSID = v;
-
-                if (!sid) {
-                    auto [k, v] = resolveId(
-                        { nodeData.name },
-                        cloneIndex, tile,
-                        true);
-                    sid = k;
-                    resolvedSID = v;
-                }
             }
 
             if (const auto& it = collectedIds.find(sid); it != collectedIds.end()) {
@@ -483,8 +480,7 @@ namespace loader {
                 auto [sid, resolvedSID] = resolveId(
                     nodeData.parentBaseId,
                     cloneIndex,
-                    tile,
-                    false);
+                    tile);
 
                 // TODO KI validate missing
                 if (collectedIds.find(sid) == collectedIds.end()) {

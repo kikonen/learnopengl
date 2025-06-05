@@ -7,8 +7,7 @@ script:
   scripts:
     - path: lib/common
 nodes:
-  - name: Player
-    id: player
+  - id: player
     type: origo
     pos: [0, 1.5, 5]
     front: [0, 0, -1]
@@ -33,7 +32,7 @@ nodes:
       type: directional
       diffuse: [0.7, 0.7, 0.7, 1.0]
       intensity: 30000
-  - name: origo
+  - id: origo
     mesh:
       path: water_ball
       material:
@@ -43,7 +42,7 @@ nodes:
         program: g_tex
       scale: 0.05
     pos: [0.0, 0.0, 0.0]
-  - xname: Cube map
+  - xid: cube_map
     type: origo
     pos: [0, 5, 10]
     flags:

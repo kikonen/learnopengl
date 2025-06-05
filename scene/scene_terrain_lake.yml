@@ -77,7 +77,7 @@ nodes:
         collision: [can_terrain]
         size: [2048, 0, 2048]
         xrotation: [0, 180, 0]
-  - name: Water surface - SINGLE
+  - id: water_surface_single
     mesh:
       path: plane
       material:
@@ -94,7 +94,7 @@ nodes:
       no_shadow: true
       water: true
     script_file: scripts/anim_water
-  - name: Sea
+  - is: sea
     mesh:
       path: plane
       material:
@@ -110,7 +110,7 @@ nodes:
       no_shadow: true
       water: true
     script_file: scripts/anim_water
-  - name: Sea floor
+  - id: sea_floor
     mesh:
       path: quad
       material:

@@ -88,7 +88,7 @@ namespace loader {
     {
         if (!data.enabled) return nullptr;
 
-        auto [targetId, targetResolvedSID] = resolveId(data.targetBaseId, 0, {0, 0, 0}, false);
+        auto [targetId, targetResolvedSID] = resolveId(data.targetBaseId, 0, {0, 0, 0});
 
         switch (data.type) {
         case ControllerType::pawn: {

@@ -301,7 +301,7 @@ namespace animation {
             const RigSocket* socket = rigJoint.m_socketIndex >= 0 ? &m_sockets[rigJoint.m_socketIndex] : nullptr;
 
             const auto& line = fmt::format(
-                "J: [{}{}.{}, name={}{}{}{}]",
+                "JOIN: [{}{}.{}, name={}{}{}{}]",
                 rigJoint.m_boneRequired ? "+" : "-",
                 rigJoint.m_parentIndex,
                 rigJoint.m_index,
@@ -311,9 +311,9 @@ namespace animation {
                 socket ? fmt::format(", socket={}.{}", socket->m_index, socket->m_name) : "");
 
             const auto& line2 = rigJoint.m_transform == glm::mat4{ 1.f }
-                    ? "T: [ID]"
+                    ? "TRAN: [ID]"
                     : fmt::format(
-                        "T: {}",
+                        "TRAN: {}",
                         rigJoint.m_transform);
 
             appendLine(sb, rigJoint.m_level, line);
@@ -324,7 +324,7 @@ namespace animation {
 
                 for (const auto& mi : it->second) {
                     std::string meshLine = fmt::format(
-                        "M: [mesh={}, material={}, vertices={}, indeces={}]",
+                        "MATE: [mesh={}, material={}, vertices={}, indeces={}]",
                         mi.m_name, mi.m_material, mi.m_vertexCount, mi.m_indexCount);
 
                     appendLine(sb, rigJoint.m_level, meshLine);
@@ -349,7 +349,7 @@ namespace animation {
 
         for (const auto& anim : m_clipContainer.m_animations) {
             const auto& line = fmt::format(
-                "A: [{}, name={}] - duration={}, tps={}, clips={}, channels={}",
+                "ANIM: [{}, name={}] - duration={}, tps={}, clips={}, channels={}",
                 anim->m_index,
                 anim->m_uniqueName,
                 anim->m_duration,
@@ -361,7 +361,7 @@ namespace animation {
 
         for (const auto& clip : m_clipContainer.m_clips) {
             const auto& line = fmt::format(
-                "C: [{}, {}] - range=[{}, {}], duration={}, loop={}, anim={}.{}",
+                "CLIP: [{}, {}] - range=[{}, {}], duration={}, loop={}, anim={}.{}",
                 clip.m_index,
                 clip.m_name,
                 clip.m_firstFrame,
@@ -390,7 +390,7 @@ namespace animation {
 
         for (const auto& socket : m_sockets) {
             const auto& line = fmt::format(
-                "S: {}.{}, joint={}, offset={}, rot={}, scale={}, meshScale={}, jointIndex={}",
+                "SOCK: {}.{}, joint={}, offset={}, rot={}, scale={}, meshScale={}, jointIndex={}",
                 socket.m_index,
                 socket.m_name,
                 socket.m_jointName,

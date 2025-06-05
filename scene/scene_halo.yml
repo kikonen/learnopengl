@@ -39,7 +39,7 @@ nodes:
     physics:
       geom:
         collision: [world]
-  - name: origo
+  - id: origo
     mesh:
       vertex:
         type: sphere
