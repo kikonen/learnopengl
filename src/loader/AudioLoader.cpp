@@ -96,9 +96,6 @@ namespace loader
             if (k == "enabled") {
                 data.enabled = readBool(v);
             }
-            else if (k == "autoplay") {
-                data.isAutoPlay = readBool(v);
-            }
             else if (k == "name") {
                 data.name = readString(v);
             }
@@ -171,7 +168,6 @@ namespace loader
 
         source.m_id = SID(data.name);
         source.m_soundId = soundId;
-        source.m_autoPlay = data.isAutoPlay;
 
         source.m_referenceDistance = data.referenceDistance;
         source.m_maxDistance = data.maxDistance;

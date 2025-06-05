@@ -83,13 +83,10 @@ namespace loader {
 
         std::pair<pool::NodeHandle, NodeState> createNode(
             pool::TypeHandle typeHandle,
-            const ki::node_id rootId,
             const NodeData& nodeData,
-            const bool cloned,
             const int cloneIndex,
             const glm::uvec3& tile,
-            const glm::vec3& clonePositionOffset,
-            const glm::vec3& tilePositionOffset);
+            const glm::vec3& positionOffset);
 
     private:
         SceneLoader* const m_sceneLoader;

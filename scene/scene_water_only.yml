@@ -25,7 +25,7 @@ nodes:
     controllers:
       - type: pawn
       - type: camera_zoom
-  - name: Water surface
+  - id: water_surface
     mesh:
       path: plane
       material:
@@ -48,7 +48,7 @@ nodes:
       x_step: 60
       y_step: 0
       z_step: 60
-  - name: Pool floor
+  - id: pool_floor
     mesh:
       path: quad
       material:

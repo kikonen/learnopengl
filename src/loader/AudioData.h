@@ -16,7 +16,6 @@ namespace loader
 
     struct SourceData {
         bool enabled{ false };
-        bool isAutoPlay{ false };
 
         std::string name;
         std::string path;

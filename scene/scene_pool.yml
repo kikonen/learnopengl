@@ -21,7 +21,7 @@ nodes:
     pos: [2, -2, -1]
     scale: 0.0025
     layer: ui
-  - name: origo
+  - id: origo
     mesh:
       path: water_ball
       material_modifier:
@@ -29,7 +29,7 @@ nodes:
         program: g_tex
       scale: 0.5
     pos: [0.0, 10, 0.0]
-  - name: origo-2
+  - id: origo-2
     mesh:
       path: water_ball
       material_modifier:

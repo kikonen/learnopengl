@@ -20,7 +20,7 @@ nodes:
     controllers:
       - type: pawn
       - type: camera_zoom
-  - name: Mountains
+  - id: mountains
     mesh:
       path: texture_mountains
       material_modifier:

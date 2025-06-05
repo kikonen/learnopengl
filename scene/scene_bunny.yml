@@ -20,12 +20,12 @@ nodes:
     controllers:
       - type: pawn
       - type: camera_zoom
-  - name: Cube map 1
+  - id: cube_map_1
     type: origo
     pos: [0.0, 0.0, -10.0]
     flags:
       cube_map: true
-  - name: Bunny
+  - id: bunny
     mesh:
       path: bunny
       material_modifier:

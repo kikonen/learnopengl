@@ -32,7 +32,7 @@ nodes:
       type: directional
       diffuse: [0.7, 0.7, 0.7, 1.0]
       intensity: 30000
-  - xname: Cube map
+  - xid: cube_map
     type: origo
     pos: [0, 5, 10]
     flags:

@@ -14,7 +14,7 @@ script:
   scripts:
     - path: lib/common
 nodes:
-  - name: origo
+  - id: origo
     mesh:
       path: water_ball
       material:
@@ -142,7 +142,7 @@ nodes:
       type: directional
       diffuse: [0.7, 0.7, 0.7, 1.0]
       intensity: 20000
-  - name: Point light
+  - id: point_light
     mesh:
       path: light
       material_modifier:

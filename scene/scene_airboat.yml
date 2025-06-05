@@ -22,7 +22,7 @@ nodes:
       - type: camera_zoom
     camera:
       default: true
-  - xname: Other
+  - xid: other
     mesh:
       path: texture_cube
       material_modifier:

@@ -20,7 +20,7 @@ nodes:
     controllers:
       - type: pawn
       - type: camera_zoom
-  - name: Cube map 1
+  - id: cube_map_1
     type: origo
     pos: [0.0, 35.0, 0.0]
     flags:
@@ -39,7 +39,7 @@ nodes:
       type: directional
       diffuse: [0.9, 0.9, 0.8, 1.0]
       intensity: 50000
-  - name: Pool floor
+  - id: pool_floor
     mesh:
       path: quad
       material:
@@ -55,7 +55,7 @@ nodes:
     scale: 100
     flags:
       no_shadow: true
-  - name: Pool surface
+  - id: pool_surface
     mesh:
       path: plane
       material:
@@ -125,7 +125,7 @@ nodes:
           max_gain: 1
           loop: true
     script_file: scripts/anim_lucy
-  - name: Big mirror 2
+  - id: big_mirror_2
     mesh:
       path: quad
       material:

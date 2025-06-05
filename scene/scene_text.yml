@@ -207,7 +207,7 @@ nodes:
       program: g_tex
     pos: [0, 2, -7]
     scale: 1
-  - name: Cow
+  - id: cow
     prefab: prefab/creatures/prefab_cow.yml
     mesh:
       flags:

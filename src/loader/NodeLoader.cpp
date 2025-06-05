@@ -133,11 +133,6 @@ namespace loader {
             else if (k == "ignored_by") {
                 data.ignoredByBaseId = readId(v);
             }
-            else if (k == "xxname" || k == "xname") {
-				// NOTE quick disable logic
-                data.name = readString(v);
-                data.enabled = false;
-			}
             else if (k == "name") {
                 data.name = readString(v);
             }

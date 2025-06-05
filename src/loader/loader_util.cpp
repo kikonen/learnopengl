@@ -438,8 +438,7 @@ namespace loader {
     std::tuple<ki::node_id, std::string> resolveId(
         const BaseId& baseId,
         const int cloneIndex,
-        const glm::uvec3& tile,
-        bool automatic)
+        const glm::uvec3& tile)
     {
         const auto& assets = Assets::get();
 
@@ -447,7 +446,7 @@ namespace loader {
             return { 0, "" };
         }
 
-        std::string key = expandMacros(baseId.m_path, cloneIndex, tile, automatic);
+        std::string key = expandMacros(baseId.m_path, cloneIndex, tile);
 
         if (key == ROOT_ID) {
             return { assets.rootId, "<root>" };
@@ -463,8 +462,7 @@ namespace loader {
     std::string expandMacros(
         const std::string& str,
         const int cloneIndex,
-        const glm::uvec3& tile,
-        bool automatic)
+        const glm::uvec3& tile)
     {
         std::string out{ str };
 
@@ -504,16 +502,6 @@ namespace loader {
             if (pos != std::string::npos) {
                 handledTile = true;
                 out.replace(pos, 3, fmt::format("{}", tile.z));
-            }
-        }
-
-        if (automatic) {
-            if (!handledClone && cloneIndex > 0) {
-                out = fmt::format("{}_{}", out, cloneIndex);
-            }
-
-            if (!handledTile && (tile.x > 0 || tile.y > 0 || tile.z > 0)) {
-                out = fmt::format("{}_{}_{}_{}", out, tile.x, tile.y, tile.z);
             }
         }
 

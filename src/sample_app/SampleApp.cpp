@@ -75,7 +75,8 @@
 namespace {
     const glm::vec4 BLACK_COLOR{ 0.f };
 
-    ki::node_id fpsNodeId = SID("fps_counter");
+    ki::node_id fpsNodeId1 = SID("fps_counter");
+    ki::node_id fpsNodeId2 = SID("prefab_fps_counter");
 
     std::vector<script::command_id> g_rayMarkers;
 
@@ -435,7 +436,10 @@ void SampleApp::showFps(const ki::FpsCounter& fpsCounter)
 
     auto fpsText = fmt::format("{} fps", round(fpsCounter.getAvgFps()));
 
-    auto handle = pool::NodeHandle::toHandle(fpsNodeId);
+    auto handle = pool::NodeHandle::toHandle(fpsNodeId1);
+    if (!handle) {
+        handle = pool::NodeHandle::toHandle(fpsNodeId2);
+    }
 
     script::CommandEngine::get().addCommand(
         0,

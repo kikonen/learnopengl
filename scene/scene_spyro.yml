@@ -20,7 +20,7 @@ nodes:
     controllers:
       - type: pawn
       - type: camera_zoom
-  - name: Spyro
+  - id: spyro
     mesh:
       path: spyro2
       material_modifier:

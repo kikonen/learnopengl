@@ -34,7 +34,7 @@ nodes:
       type: directional
       diffuse: [0.9, 0.9, 0.7, 1.0]
       intensity: 30000
-  - name: Silver ball
+  - id: silver_ball
     mesh:
       path: water_ball
       material:
@@ -45,7 +45,7 @@ nodes:
       program: g_tex
     pos: [0, -1, 0]
     scale: 1.3
-  - name: Woodcube
+  - id: wood_cube
     mesh:
       path: texture_cube
       material:
@@ -81,12 +81,12 @@ nodes:
     script: |
       cmd:animation_play(
         { name = "master:Idle" });
-  - name: Cube map 1
+  - id: cube_map_1
     type: origo
     pos: [5.0, 3.0, 0.0]
     flags:
       cube_map: true
-  - name: Glass ball
+  - id: glass_ball
     mesh:
       path: glass_ball
       material_modifier:
@@ -96,7 +96,7 @@ nodes:
       program: g_tex
     pos: [5.0, 3.0, 0.0]
     scale: 1.3
-  - name: Brick wall
+  - id: brick_wall
     mesh:
       path: quad
       material:
@@ -110,7 +110,7 @@ nodes:
     repeat:
       x_count: 3
       x_step: 4
-  - name: Wood wall
+  - id: wood_wall
     mesh:
       path: quad
       material:
@@ -152,7 +152,7 @@ nodes:
     xphysics:
       geom:
         type: plane
-  - name: Big mirror 1
+  - id: big_mirror_1
     mesh:
       path: quad
       material:
@@ -171,7 +171,7 @@ nodes:
       mirror: true
       no_reflect: true
       no_refract: true
-  - name: Big mirror 2
+  - id: big_mirror_2
     mesh:
       path: quad
       material:

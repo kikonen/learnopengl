@@ -1,6 +1,6 @@
 ---
 prefab:
-  id: prepab_fps_counter
+  id: prefab_fps_counter
   type: text
   mesh:
     material:

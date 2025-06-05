@@ -50,7 +50,7 @@ nodes:
       type: directional
       diffuse: [0.7, 0.7, 0.7, 1.0]
       intensity: 20000
-  - name: Point light
+  - id: point_light
     mesh:
       path: light
       material_modifier:
@@ -66,11 +66,11 @@ nodes:
       quadratic: 0.07
       diffuse: [0.7, 0.7, 0.7, 1.0]
       intensity: 1000
-  - name: ball origo
+  - id: ball_origo
     type: origo
     id: origo
     pos: [0.0, 25.0, 0.0]
-  - name: Basic ball
+  - id: basic_ball
     parent_id: origo
     mesh:
       path: water_ball
@@ -82,7 +82,7 @@ nodes:
       program: g_tex
     pos: [0.0, 0.0, 0.0]
     scale: 1.3
-  - name: Gold ball
+  - id: gold_ball
     parent_id: origo
     mesh:
       path: water_ball
@@ -95,7 +95,7 @@ nodes:
       program: g_tex
     pos: [0.0, 0.0, 5.0]
     scale: 1.3
-  - name: Silver ball
+  - id: silver_ball
     parent_id: origo
     mesh:
       path: water_ball
@@ -111,7 +111,7 @@ nodes:
       program: g_tex
     pos: [0.0, 0.0, 10.0]
     scale: 1.3
-  - name: Bronze ball
+  - id: bronze_ball
     parent_id: origo
     mesh:
       path: water_ball
@@ -124,7 +124,7 @@ nodes:
       program: g_tex
     pos: [0.0, 0.0, 15.0]
     scale: 1.3
-  - name: Rusted iron ball
+  - id: rusted_iron_ball
     parent_id: origo
     mesh:
       path: water_ball
@@ -141,7 +141,7 @@ nodes:
       program: g_tex
     pos: [0.0, 0.0, 20.0]
     scale: 1.3
-  - name: Old gold ball
+  - id: old_gold_ball
     parent_id: origo
     mesh:
       path: water_ball
@@ -160,7 +160,7 @@ nodes:
       path: prefab/scenery/prefab_wooden_floor.yml
     scale: 100
     position: [0, 0, 0]
-  - name: Fence
+  - id: fence
     mesh:
       path: quad
       material:
