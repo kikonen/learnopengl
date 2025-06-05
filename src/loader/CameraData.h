@@ -4,7 +4,9 @@
 
 #include <glm/glm.hpp>
 
-#include "CameraType.h"
+#include "component/CameraType.h"
+
+struct CameraDefinition;
 
 namespace loader {
     struct CameraData {

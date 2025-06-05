@@ -22,8 +22,8 @@ namespace particle {
 
     void ParticleGenerator::prepareWT()
     {
-        m_material.registerMaterial();
         m_random = std::make_unique<util::Random>(m_definition.m_seed);
+        m_materialIndex = m_definition.m_material->m_registeredIndex;
     }
 
     void ParticleGenerator::updateWT(
@@ -61,7 +61,7 @@ namespace particle {
             Particle particle;
 
             {
-                particle.m_materialIndex = m_material.m_registeredIndex;
+                particle.m_materialIndex = m_materialIndex;
 
                 particle.m_gravity = df.m_gravity;
 

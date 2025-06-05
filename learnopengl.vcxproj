@@ -594,6 +594,8 @@
     <ClInclude Include="src\animation\MetadataLoader.h" />
     <ClInclude Include="src\animation\SocketBuffer.h" />
     <ClInclude Include="src\animation\SocketRegistry.h" />
+    <ClInclude Include="src\component\CameraDefinition.h" />
+    <ClInclude Include="src\component\LightDefinition.h" />
     <ClInclude Include="src\component\LightType.h" />
     <ClInclude Include="src\decal\DecalBuffer.h" />
     <ClInclude Include="src\decal\DecalCollection.h" />
@@ -702,7 +704,7 @@
     <ClInclude Include="src\event\Type.h" />
     <ClInclude Include="src\ki\sid_format.h" />
     <ClInclude Include="src\loader\AttachmentData.h" />
-    <ClInclude Include="src\loader\CameraType.h" />
+    <ClInclude Include="src\component\CameraType.h" />
     <ClInclude Include="src\loader\FlagContainer.h" />
     <ClInclude Include="src\loader\MeshData.h" />
     <ClInclude Include="src\loader\MeshLoader.h" />

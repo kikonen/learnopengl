@@ -306,15 +306,10 @@ namespace loader
             state.setVolume(type->getAABB().getVolume());
         }
 
-        node->m_camera = l.m_cameraLoader.createCamera(nodeData.camera);
-        node->m_light = l.m_lightLoader.createLight(nodeData.light, cloneIndex, tile);
         node->m_generator = l.m_generatorLoader.createGenerator(
             nodeData.generator,
             type,
             *m_loaders);
-
-        node->m_particleGenerator = l.m_particleLoader.createParticle(
-            nodeData.particle);
 
         if (type->m_nodeType == NodeType::text) {
             node->m_generator = m_loaders->m_textLoader.createGenerator(

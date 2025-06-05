@@ -2,7 +2,7 @@
 
 #include "util/util.h"
 
-#include "component/Light.h"
+#include "component/LightDefinition.h"
 
 #include "loader/document.h"
 #include "loader_util.h"
@@ -83,32 +83,29 @@ namespace loader{
         }
     }
 
-    std::unique_ptr<Light> LightLoader::createLight(
-        const LightData& data,
-        const int cloneIndex,
-        const glm::uvec3& tile)
+    std::unique_ptr<LightDefinition> LightLoader::createDefinition(
+        const LightData& data) const
     {
-        if (!data.enabled) return std::unique_ptr<Light>();
+        if (!data.enabled) return nullptr;
 
-        auto light = std::make_unique<Light>();
+        auto definition = std::make_unique<LightDefinition>();
+        auto& df = *definition;
 
-        light->m_enabled = true;
+        //auto [targetId, targetResolvedSID] = resolveId(data.targetBaseId, cloneIndex, tile);
+        //light->setTargetId(targetId);
 
-        auto [targetId, targetResolvedSID] = resolveId(data.targetBaseId, cloneIndex, tile);
-        light->setTargetId(targetId);
+        df.m_linear = data.linear;
+        df.m_quadratic = data.quadratic;
 
-        light->m_linear = data.linear;
-        light->m_quadratic = data.quadratic;
+        df.m_cutoffAngle = data.cutoffAngle;
+        df.m_outerCutoffAngle = data.outerCutoffAngle;
 
-        light->m_cutoffAngle = data.cutoffAngle;
-        light->m_outerCutoffAngle = data.outerCutoffAngle;
+        df.m_diffuse = data.diffuse;
+        df.m_intensity = data.intensity;
 
-        light->m_diffuse = data.diffuse;
-        light->m_intensity = data.intensity;
+        df.m_type = data.type;
 
-        light->m_type = data.type;
-
-        return light;
+        return definition;
     }
 
 }

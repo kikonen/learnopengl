@@ -20,9 +20,18 @@
 #include "mesh/LodMesh.h"
 #include "mesh/MeshType.h"
 
+#include "component/LightDefinition.h"
 #include "component/Light.h"
+
+#include "component/CameraDefinition.h"
 #include "component/CameraComponent.h"
 
+#include "component/FpsCamera.h"
+#include "component/FollowCamera.h"
+#include "component/OrbitCamera.h"
+#include "component/SplineCamera.h"
+
+#include "particle/ParticleDefinition.h"
 #include "particle/ParticleGenerator.h"
 
 #include "engine/PrepareContext.h"
@@ -63,6 +72,101 @@ namespace {
     const pool::NodeHandle NULL_HANDLE = pool::NodeHandle::NULL_HANDLE;
 
     static NodeRegistry* s_registry{ nullptr };
+
+
+    std::unique_ptr<CameraComponent> createCameraComponent(
+        mesh::MeshType* type)
+    {
+        if (!type->m_cameraDefinition) return nullptr;
+
+        const auto& data = *type->m_cameraDefinition;
+
+        // NOTE only node cameras in scenefile for now
+        std::unique_ptr<CameraComponent> component;
+
+        switch (data.m_type) {
+        case CameraType::fps: {
+            auto c = std::make_unique<FpsCamera>();
+            c->setPitch(glm::radians(data.m_pitch));
+            c->setPitchSpeed(glm::radians(data.m_pitchSpeed));
+            component = std::move(c);
+            break;
+        }
+        case CameraType::follow: {
+            auto c = std::make_unique<FollowCamera>();
+            c->m_springConstant = data.m_springConstant;
+            c->m_distance = data.m_distance;
+            component = std::move(c);
+            break;
+        }
+        case CameraType::orbit: {
+            auto c = std::make_unique<OrbitCamera>();
+            c->m_offset = data.m_offset;
+            c->m_up = data.m_up;
+            c->m_pitchSpeed = glm::radians(data.m_pitchSpeed);
+            c->m_yawSpeed = glm::radians(data.m_yawSpeed);
+            component = std::move(c);
+            break;
+        }
+        case CameraType::spline: {
+            auto c = std::make_unique<SplineCamera>();
+            c->m_path = Spline{ data.m_path };
+            c->m_speed = data.m_speed;
+            component = std::move(c);
+            break;
+        }
+        }
+
+        component->m_enabled = true;
+        component->m_default = data.m_default;
+
+        {
+            auto& camera = component->getCamera();
+            if (data.m_orthogonal) {
+                camera.setViewport(data.m_viewport);
+            }
+            camera.setAxis(data.m_front, data.m_up);
+            camera.setFov(data.m_fov);
+        }
+
+        return component;
+    }
+
+    std::unique_ptr<Light> createLight(
+        mesh::MeshType* type)
+    {
+        if (!type->m_lightDefinition) return nullptr;
+
+        const auto& data = *type->m_lightDefinition;
+
+        auto light = std::make_unique<Light>();
+
+        light->m_enabled = true;
+
+        //auto [targetId, targetResolvedSID] = resolveId(data.targetBaseId, cloneIndex, tile);
+        //light->setTargetId(targetId);
+
+        light->m_linear = data.m_linear;
+        light->m_quadratic = data.m_quadratic;
+
+        light->m_cutoffAngle = data.m_cutoffAngle;
+        light->m_outerCutoffAngle = data.m_outerCutoffAngle;
+
+        light->m_diffuse = data.m_diffuse;
+        light->m_intensity = data.m_intensity;
+
+        light->m_type = data.m_type;
+
+        return light;
+    }
+
+    std::unique_ptr<particle::ParticleGenerator> createParticleGenerator(mesh::MeshType* type)
+    {
+        if (!type->m_particleDefinition) return nullptr;
+        auto generator = std::make_unique<particle::ParticleGenerator>();
+        generator->setDefinition(*type->m_particleDefinition);
+        return generator;
+    }
 }
 
 void NodeRegistry::init() noexcept
@@ -652,6 +756,12 @@ void NodeRegistry::bindNode(
     auto* type = node->getType();
 
     node->m_entityIndex = static_cast<uint32_t>(m_handles.size());
+
+    {
+        node->m_camera = createCameraComponent(type);
+        node->m_light = createLight(type);
+        node->m_particleGenerator = createParticleGenerator(type);
+    }
 
     {
         std::lock_guard lock(m_snapshotLock);

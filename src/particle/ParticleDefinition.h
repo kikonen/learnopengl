@@ -4,10 +4,14 @@
 
 #include "util/Random.h"
 
+#include "material/Material.h"
+
 #include "AreaType.h"
 
 namespace particle {
     struct ParticleDefinition {
+        std::shared_ptr<Material> m_material;
+
         int m_seed{ 0 };
 
         glm::vec3 m_gravity{ 0.f };
