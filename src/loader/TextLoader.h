@@ -6,6 +6,7 @@
 
 #include "generator/NodeGenerator.h"
 
+struct TextDefinition;
 
 namespace mesh {
     class MeshType;
@@ -23,7 +24,7 @@ namespace loader {
             TextData& data,
             Loaders& loaders) const;
 
-        std::unique_ptr<NodeGenerator> createGenerator(
+        std::unique_ptr<TextDefinition> createDefinition(
             const mesh::MeshType* type,
             const TextData& data,
             Loaders& loaders);

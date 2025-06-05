@@ -40,6 +40,8 @@
 #include "event/Dispatcher.h"
 
 #include "generator/NodeGenerator.h"
+
+#include "generator/TextDefinition.h"
 #include "generator/TextGenerator.h"
 
 #include "audio/Listener.h"
@@ -165,6 +167,28 @@ namespace {
         if (!type->m_particleDefinition) return nullptr;
         auto generator = std::make_unique<particle::ParticleGenerator>();
         generator->setDefinition(*type->m_particleDefinition);
+        return generator;
+    }
+
+    std::unique_ptr<TextGenerator> createTextGenerator(
+        const mesh::MeshType* type)
+    {
+        if (!type->m_textDefinition) return nullptr;
+
+        const auto& data = *type->m_textDefinition;
+
+        const auto& assets = Assets::get();
+
+        auto generator = std::make_unique<TextGenerator>();
+
+        generator->setFontId(data.m_fontId);
+        generator->setText(data.m_text);
+        generator->setPivot(data.m_pivot);
+        generator->setAlignHorizontal(data.m_alignHorizontal);
+        generator->setAlignVertical(data.m_alignVertical);
+
+        generator->m_material = *data.m_material;
+
         return generator;
     }
 }
@@ -761,6 +785,9 @@ void NodeRegistry::bindNode(
         node->m_camera = createCameraComponent(type);
         node->m_light = createLight(type);
         node->m_particleGenerator = createParticleGenerator(type);
+        if (type->m_nodeType == NodeType::text) {
+            node->m_generator = createTextGenerator(type);
+        }
     }
 
     {

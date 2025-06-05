@@ -7,7 +7,8 @@
 #include "loader/document.h"
 #include "Loaders.h"
 
-#include "generator/TextGenerator.h"
+#include "generator/TextDefinition.h"
+
 #include "loader_util.h"
 
 namespace {
@@ -73,7 +74,7 @@ namespace loader {
         }
     }
 
-    std::unique_ptr<NodeGenerator> TextLoader::createGenerator(
+    std::unique_ptr<TextDefinition> TextLoader::createDefinition(
         const mesh::MeshType* type,
         const TextData& data,
         Loaders& loaders)
@@ -82,20 +83,24 @@ namespace loader {
 
         const auto& assets = Assets::get();
 
-        auto generator = std::make_unique<TextGenerator>();
+        auto definition = std::make_unique<TextDefinition>();
+        auto& df = *definition;
 
-        auto fontId = loaders.m_fontLoader.resolveFont(data.fontData);
-        generator->setFontId(fontId);
-        generator->setText(data.text);
-        generator->setPivot(data.pivot);
-        generator->setAlignHorizontal(data.alignHorizontal);
-        generator->setAlignVertical(data.alignVertical);
+        df.m_text = data.text;
+        df.m_pivot = data.pivot;
 
-        generator->m_material = data.materialData.material;
-        generator->m_material.loadTextures();
+        df.m_alignHorizontal = data.alignHorizontal;
+        df.m_alignVertical = data.alignVertical;
 
-        loaders.m_materialLoader.resolveProgram({}, generator->m_material);
+        df.m_material = std::make_shared<Material>();
 
-        return generator;
+        auto& material = *df.m_material;
+        material = data.materialData.material;
+        material.loadTextures();
+        loaders.m_materialLoader.resolveProgram({}, material);
+
+        df.m_fontId = loaders.m_fontLoader.resolveFont(data.fontData);
+
+        return definition;
     }
 }
