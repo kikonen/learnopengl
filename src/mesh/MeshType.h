@@ -37,6 +37,7 @@ namespace particle {
 
 struct CameraDefinition;
 struct LightDefinition;
+struct TextDefinition;
 
 struct PrepareContext;
 
@@ -165,6 +166,7 @@ namespace mesh {
         std::unique_ptr<CameraDefinition> m_cameraDefinition;
         std::unique_ptr<LightDefinition> m_lightDefinition;
         std::unique_ptr<particle::ParticleDefinition> m_particleDefinition;
+        std::unique_ptr<TextDefinition> m_textDefinition;
 
     private:
         bool m_preparedWT : 1 {false};

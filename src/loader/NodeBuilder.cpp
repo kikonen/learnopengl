@@ -311,13 +311,6 @@ namespace loader
             type,
             *m_loaders);
 
-        if (type->m_nodeType == NodeType::text) {
-            node->m_generator = m_loaders->m_textLoader.createGenerator(
-                type,
-                nodeData.text,
-                *m_loaders);
-        }
-
         return { handle, state };
     }
 

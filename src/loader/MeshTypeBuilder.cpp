@@ -39,6 +39,8 @@
 #include "component/CameraDefinition.h"
 #include "component/LightDefinition.h"
 
+#include "generator/TextDefinition.h"
+
 #include "particle/ParticleDefinition.h"
 
 #include "model/NodeType.h"
@@ -153,6 +155,13 @@ namespace loader
         type->m_cameraDefinition = l.m_cameraLoader.createDefinition(nodeData.camera);
         type->m_lightDefinition = l.m_lightLoader.createDefinition(nodeData.light);
         type->m_particleDefinition = l.m_particleLoader.createDefinition(nodeData.particle);
+
+        if (type->m_nodeType == NodeType::text) {
+            type->m_textDefinition = m_loaders->m_textLoader.createDefinition(
+                type,
+                nodeData.text,
+                *m_loaders);
+        }
 
         return typeHandle;
     }

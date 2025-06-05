@@ -2660,6 +2660,9 @@
     <ClInclude Include="src\component\LightDefinition.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\generator\TextDefinition.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="learnopengl.rc">
