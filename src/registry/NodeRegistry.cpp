@@ -785,7 +785,7 @@ void NodeRegistry::bindNode(
         node->m_camera = createCameraComponent(type);
         node->m_light = createLight(type);
         node->m_particleGenerator = createParticleGenerator(type);
-        if (type->m_nodeType == NodeType::text) {
+        if (type->m_flags.text) {
             node->m_generator = createTextGenerator(type);
         }
     }

@@ -253,7 +253,6 @@ namespace terrain {
 
         auto* type = typeHandle.toType();
         type->setName(containerType->getName());
-        type->m_nodeType = NodeType::terrain;
 
         if (const auto* layer = LayerInfo::findLayer(LAYER_MAIN); layer) {
             type->m_layer = layer->m_index;

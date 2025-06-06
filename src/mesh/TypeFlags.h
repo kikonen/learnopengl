@@ -12,6 +12,11 @@ namespace mesh {
         // NOTE KI container itself IS in hiearchy
         bool contained : 1 {false};
 
+        bool origo : 1 {false};
+        bool container : 1 {false};
+        bool model : 1 {false};
+        bool text : 1 {false};
+
         bool mirror : 1 {false};
         bool water : 1 {false};
         bool terrain : 1 {false};
