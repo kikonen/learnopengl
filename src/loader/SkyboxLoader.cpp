@@ -144,8 +144,6 @@ namespace loader {
             lodMesh->m_programId = ProgramRegistry::get().getProgram(data.programName);
         }
 
-        type->m_nodeType = NodeType::skybox;
-
         auto& flags = type->m_flags;
 
         flags.skybox = true;

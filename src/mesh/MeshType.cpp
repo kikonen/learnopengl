@@ -34,22 +34,26 @@ namespace {
 
 namespace mesh {
     MeshType::MeshType()
-        : m_lodMeshes{ std::make_unique<std::vector<LodMesh>>()}
+        : m_aabb{ std::make_unique<AABB>() },
+        m_name{ std::make_unique<std::string>() },
+        m_scripts{ std::make_unique<std::vector<script::script_id>>() }
     {}
 
     MeshType::MeshType(MeshType&& o) noexcept
         : m_handle{ o.m_handle },
-        m_name{ o.m_name },
-        m_nodeType{ o.m_nodeType },
+        m_aabb{ std::move(o.m_aabb) },
+        m_name{ std::move(o.m_name) },
         m_flags{ o.m_flags },
         m_layer{ o.m_layer },
         m_preparedWT{ o.m_preparedWT },
         m_preparedRT{ o.m_preparedRT },
         m_lodMeshes{ std::move(o.m_lodMeshes) },
+        m_scripts{ std::move(o.m_scripts) },
         m_customMaterial{ std::move(o.m_customMaterial) },
         m_cameraDefinition{ std::move(o.m_cameraDefinition) },
         m_lightDefinition{ std::move(o.m_lightDefinition) },
-        m_particleDefinition{ std::move(o.m_particleDefinition) }
+        m_particleDefinition{ std::move(o.m_particleDefinition) },
+        m_textDefinition{ std::move(o.m_textDefinition) }
     {
     }
 
@@ -64,7 +68,7 @@ namespace mesh {
 
         return fmt::format(
             "<NODE_TYPE: id={}, name={}, lod={}>",
-            m_handle.str(), m_name, lodMesh ? lodMesh->str() : "N/A");
+            m_handle.str(), *m_name, lodMesh ? lodMesh->str() : "N/A");
     }
 
     uint16_t MeshType::addMeshSet(
@@ -83,8 +87,8 @@ namespace mesh {
     LodMesh* MeshType::addLodMesh(
         LodMesh&& lodmesh)
     {
-        m_lodMeshes->push_back(std::move(lodmesh));
-        return &(*m_lodMeshes)[m_lodMeshes->size() - 1];
+        m_lodMeshes.push_back(std::move(lodmesh));
+        return &m_lodMeshes[m_lodMeshes.size() - 1];
     }
 
     void MeshType::prepareWT(
@@ -95,7 +99,7 @@ namespace mesh {
 
         if (!hasMesh()) return;
 
-        for (auto& lodMesh : *m_lodMeshes) {
+        for (auto& lodMesh : m_lodMeshes) {
             lodMesh.registerMaterial();
 
             const auto& opt = lodMesh.m_drawOptions;
@@ -116,7 +120,7 @@ namespace mesh {
         if (m_preparedRT) return;
         m_preparedRT = true;
 
-        for (auto& lodMesh : *m_lodMeshes) {
+        for (auto& lodMesh : m_lodMeshes) {
             lodMesh.prepareRT(ctx);
         }
 
@@ -146,16 +150,16 @@ namespace mesh {
     }
 
     void MeshType::prepareVolume() noexcept {
-        m_aabb = calculateAABB();
+        *m_aabb = calculateAABB();
     }
 
     AABB MeshType::calculateAABB() const noexcept
     {
-        if (m_lodMeshes->empty()) return {};
+        if (m_lodMeshes.empty()) return {};
 
         AABB aabb{ true };
 
-        for (auto& lodMesh : *m_lodMeshes) {
+        for (auto& lodMesh : m_lodMeshes) {
             if (lodMesh.m_flags.noVolume) continue;
             aabb.minmax(lodMesh.calculateAABB());
         }

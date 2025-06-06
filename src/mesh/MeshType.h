@@ -8,8 +8,6 @@
 
 #include "ki/limits.h"
 
-#include "model/NodeType.h"
-
 #include "pool/TypeHandle.h"
 
 #include "script/size.h"
@@ -78,9 +76,14 @@ namespace mesh {
         inline ki::type_id getId() const noexcept { return m_handle.m_id; }
         inline pool::TypeHandle toHandle() const noexcept { return m_handle; }
 
-        const std::string& getName() const noexcept { return m_name; }
-        void setName(std::string_view name) noexcept {
-            m_name = name;
+        const std::string& getName() const noexcept
+        {
+            return *m_name;
+        }
+
+        void setName(std::string_view name) noexcept
+        {
+            *m_name = name;
         }
 
         inline bool isReady() const noexcept { return m_preparedRT; }
@@ -94,23 +97,23 @@ namespace mesh {
         LodMesh* addLodMesh(LodMesh&& lodMesh);
 
         inline const LodMesh* getLodMesh(uint8_t lodIndex) const noexcept {
-            return m_lodMeshes->empty() ? nullptr : &(*m_lodMeshes)[lodIndex];
+            return m_lodMeshes.empty() ? nullptr : &m_lodMeshes[lodIndex];
         }
 
         inline const std::vector<LodMesh>& getLodMeshes() const noexcept {
-            return *m_lodMeshes;
+            return m_lodMeshes;
         }
 
         inline LodMesh* modifyLodMesh(uint8_t lodIndex) noexcept {
-            return m_lodMeshes->empty() ? nullptr : &(*m_lodMeshes)[lodIndex];
+            return m_lodMeshes.empty() ? nullptr : &m_lodMeshes[lodIndex];
         }
 
         inline std::vector<LodMesh>& modifyLodMeshes() noexcept {
-            return *m_lodMeshes;
+            return m_lodMeshes;
         }
 
         inline bool hasMesh() const noexcept {
-            return !m_lodMeshes->empty() && (*m_lodMeshes)[0].m_mesh.get();
+            return !m_lodMeshes.empty() && m_lodMeshes[0].m_mesh.get();
         }
 
         template<typename T>
@@ -132,41 +135,40 @@ namespace mesh {
 
         const AABB& getAABB() const noexcept
         {
-            return m_aabb;
+            return *m_aabb;
         }
 
         void prepareVolume() noexcept;
 
         void addScript(script::script_id id) {
-            m_scripts.push_back(id);
+            m_scripts->push_back(id);
         }
 
         const std::vector<script::script_id>& getScripts() const noexcept
         {
-            return m_scripts;
+            return *m_scripts;
         }
 
     private:
         AABB calculateAABB() const noexcept;
 
     private:
-        AABB m_aabb;
-        std::unique_ptr<std::vector<LodMesh>> m_lodMeshes;
-        std::vector<script::script_id> m_scripts;
+        std::vector<LodMesh> m_lodMeshes;
+        std::unique_ptr<std::string> m_name;
+        std::unique_ptr<AABB> m_aabb;
+        std::unique_ptr<std::vector<script::script_id>> m_scripts;
         std::unique_ptr<CustomMaterial> m_customMaterial{ nullptr };
 
     public:
-        std::string m_name;
         pool::TypeHandle m_handle;
+
+        std::unique_ptr<CameraDefinition> m_cameraDefinition{ nullptr };
+        std::unique_ptr<LightDefinition> m_lightDefinition{ nullptr };
+        std::unique_ptr<particle::ParticleDefinition> m_particleDefinition{ nullptr };
+        std::unique_ptr<TextDefinition> m_textDefinition{ nullptr };
 
         TypeFlags m_flags;
         uint8_t m_layer{ 0 };
-        NodeType m_nodeType{ NodeType::origo };
-
-        std::unique_ptr<CameraDefinition> m_cameraDefinition;
-        std::unique_ptr<LightDefinition> m_lightDefinition;
-        std::unique_ptr<particle::ParticleDefinition> m_particleDefinition;
-        std::unique_ptr<TextDefinition> m_textDefinition;
 
     private:
         bool m_preparedWT : 1 {false};

@@ -93,8 +93,8 @@ namespace loader
         assignTypeFlags(nodeData, type->m_flags);
 
         if (nodeData.type == NodeType::origo) {
+            type->m_flags.origo = true;
             type->m_flags.invisible = true;
-            type->m_nodeType = NodeType::origo;
         }
         else
         {
@@ -156,7 +156,7 @@ namespace loader
         type->m_lightDefinition = l.m_lightLoader.createDefinition(nodeData.light);
         type->m_particleDefinition = l.m_particleLoader.createDefinition(nodeData.particle);
 
-        if (type->m_nodeType == NodeType::text) {
+        if (type->m_flags.text) {
             type->m_textDefinition = m_loaders->m_textLoader.createDefinition(
                 type,
                 nodeData.text,
@@ -353,7 +353,7 @@ namespace loader
 
         // NOTE KI materials MUST be resolved before loading mesh
         if (nodeData.type == NodeType::model) {
-            type->m_nodeType = NodeType::model;
+            type->m_flags.model = true;
             meshCount += resolveModelMesh(type, nodeData, meshData, index);
 
             KI_INFO(fmt::format(
@@ -361,7 +361,7 @@ namespace loader
                 nodeData.baseId, nodeData.desc, type->str()));
         }
         else if (nodeData.type == NodeType::text) {
-            type->m_nodeType = NodeType::text;
+            type->m_flags.text = true;
             auto mesh = std::make_shared<mesh::TextMesh>();
 
             if (!mesh->getMaterial()) {
@@ -376,17 +376,17 @@ namespace loader
         }
         else if (nodeData.type == NodeType::terrain) {
             // NOTE KI handled via container + generator
-            type->m_nodeType = NodeType::terrain;
+            type->m_flags.terrain = true;
             throw std::runtime_error("Terrain not supported currently");
         }
         else if (nodeData.type == NodeType::container) {
             // NOTE KI generator takes care of actual work
-            type->m_nodeType = NodeType::container;
+            type->m_flags.container = true;
             type->m_flags.invisible = true;
         }
         else {
             // NOTE KI root/origo/unknown; don't render, just keep it in hierarchy
-            type->m_nodeType = NodeType::origo;
+            type->m_flags.origo = true;
             type->m_flags.invisible = true;
         }
 
