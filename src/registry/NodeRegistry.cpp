@@ -41,8 +41,11 @@
 
 #include "generator/NodeGenerator.h"
 
-#include "generator/TextDefinition.h"
+#include "component/TextDefinition.h"
 #include "generator/TextGenerator.h"
+
+#include "component/AudioSourceDefinition.h"
+#include "component/AudioListenerDefinition.h"
 
 #include "audio/Listener.h"
 #include "audio/Source.h"
@@ -190,6 +193,61 @@ namespace {
         generator->m_material = *data.m_material;
 
         return generator;
+    }
+
+    std::unique_ptr<audio::Listener> createAudioListener(
+        const mesh::MeshType* type)
+    {
+        if (!type->m_audioListenerDefinition) return nullptr;
+
+        const auto& data = *type->m_audioListenerDefinition;
+
+        std::unique_ptr<audio::Listener> listener = std::make_unique<audio::Listener>();
+
+        listener->m_gain = data.m_gain;
+
+        return listener;
+    }
+
+    void createAudioSource(
+        const AudioSourceDefinition& data,
+        audio::Source& source)
+    {
+        const auto& assets = Assets::get();
+
+        source.m_id = data.m_sourceId;
+        source.m_soundId = data.m_soundId;
+
+        source.m_referenceDistance = data.m_referenceDistance;
+        source.m_maxDistance = data.m_maxDistance;
+        source.m_rolloffFactor = data.m_rolloffFactor;
+
+        source.m_minGain = data.m_minGain;
+        source.m_maxGain = data.m_maxGain;
+
+        source.m_looping = data.m_looping;
+
+        source.m_pitch = data.m_pitch;
+        source.m_gain = data.m_gain;
+    }
+
+    std::unique_ptr<std::vector<audio::Source>> createAudioSources(
+        const mesh::MeshType* type)
+    {
+        if (!type->m_audioSourceDefinitions) return nullptr;
+
+        const auto& sources = *type->m_audioSourceDefinitions;
+
+        auto result = std::make_unique<std::vector<audio::Source>>();
+
+        for (const auto& data : sources) {
+            auto& src = result->emplace_back();
+            createAudioSource(data, src);
+            if (!src.m_soundId) {
+                result->pop_back();
+            }
+        }
+        return result->empty() ? nullptr : std::move(result);
     }
 }
 
@@ -382,7 +440,7 @@ void NodeRegistry::postUpdateWT(const UpdateContext& ctx)
         }
 
         if (node->m_audioListener) {
-            if (audio::AudioSystem::get().isActiveListener(node->getId())) {
+            if (node->m_handle == m_activeNode) {
                 node->m_audioListener->updateActive(state);
             }
         }
@@ -785,6 +843,9 @@ void NodeRegistry::bindNode(
         node->m_camera = createCameraComponent(type);
         node->m_light = createLight(type);
         node->m_particleGenerator = createParticleGenerator(type);
+        node->m_audioSources = createAudioSources(type);
+        node->m_audioListener = createAudioListener(type);
+        node->m_camera = createCameraComponent(type);
         if (type->m_flags.text) {
             node->m_generator = createTextGenerator(type);
         }
@@ -865,13 +926,6 @@ void NodeRegistry::setActiveNode(pool::NodeHandle handle)
     if (!node) return;
 
     m_activeNode = handle;
-
-    // NOTE KI active player is listener of audio
-    // (regardless what camera is active)
-    if (node->m_audioListener) {
-        auto& audioSystem = audio::AudioSystem::get();
-        audioSystem.setActiveListenerId(node->getId());
-    }
 }
 
 void NodeRegistry::setActiveCameraNode(pool::NodeHandle handle)
@@ -953,7 +1007,7 @@ void NodeRegistry::updateBounds(
         }
         const auto y = level - parentState.getWorldPosition().y;
         glm::vec3 newPos = state.getPosition();
-        newPos.y = y;
+        newPos.y = y + 0.75f - 0.35f;
         //KI_INFO(fmt::format("NODE_LEVEL: node={}, level={}", node.m_name, y));
         state.setPosition(newPos);
     }

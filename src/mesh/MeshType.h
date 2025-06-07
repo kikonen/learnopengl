@@ -36,6 +36,8 @@ namespace particle {
 struct CameraDefinition;
 struct LightDefinition;
 struct TextDefinition;
+struct AudioListenerDefinition;
+struct AudioSourceDefinition;
 
 struct PrepareContext;
 
@@ -166,6 +168,9 @@ namespace mesh {
         std::unique_ptr<LightDefinition> m_lightDefinition{ nullptr };
         std::unique_ptr<particle::ParticleDefinition> m_particleDefinition{ nullptr };
         std::unique_ptr<TextDefinition> m_textDefinition{ nullptr };
+
+        std::unique_ptr<AudioListenerDefinition> m_audioListenerDefinition;
+        std::unique_ptr<std::vector<AudioSourceDefinition>> m_audioSourceDefinitions;
 
         TypeFlags m_flags;
         uint8_t m_layer{ 0 };

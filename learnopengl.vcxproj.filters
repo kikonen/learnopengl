@@ -2660,7 +2660,13 @@
     <ClInclude Include="src\component\LightDefinition.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\generator\TextDefinition.h">
+    <ClInclude Include="src\component\TextDefinition.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\component\AudioSourceDefinition.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\component\AudioListenerDefinition.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

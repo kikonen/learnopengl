@@ -279,9 +279,6 @@ namespace loader
             node->m_ignoredBy = ignoredBy;
         }
 
-        node->m_audioListener = l.m_audioLoader.createListener(nodeData.audio.listener);
-        node->m_audioSources = l.m_audioLoader.createSources(nodeData.audio.sources);
-
         assignNodeFlags(nodeData.nodeFlags, node->m_flags);
 
         //node->setCloneIndex(cloneIndex);

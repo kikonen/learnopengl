@@ -20,8 +20,9 @@
 
 #include "component/CameraDefinition.h"
 #include "component/LightDefinition.h"
-
-#include "generator/TextDefinition.h"
+#include "component/AudioListenerDefinition.h"
+#include "component/AudioSourceDefinition.h"
+#include "component/TextDefinition.h"
 
 #include "particle/ParticleDefinition.h"
 

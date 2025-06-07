@@ -4,10 +4,10 @@
 
 #include "mesh/MeshFlags.h"
 
+#include "component/TextDefinition.h"
+
 #include "loader/document.h"
 #include "Loaders.h"
-
-#include "generator/TextDefinition.h"
 
 #include "loader_util.h"
 
