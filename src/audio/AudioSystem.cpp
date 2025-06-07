@@ -59,10 +59,6 @@ namespace audio
     {
         ASSERT_WT();
 
-        // TODO KI unregister sources and listeners
-
-        m_activeListenerId = 0;
-
         // NOTE KI MUST close buffers before closing context
         m_soundRegistry->clear();
     }
@@ -120,16 +116,6 @@ namespace audio
 
         // NOTE KI by default no gain in listener
         alListenerf(AL_GAIN, 0.f);
-    }
-
-    void AudioSystem::setActiveListenerId(ki::node_id nodeId)
-    {
-        m_activeListenerId = nodeId;
-
-        if (!nodeId) {
-            // NOTE KI silence audio if no listener; don't stop
-            alListenerf(AL_GAIN, 0.f);
-        }
     }
 
     void AudioSystem::prepareSource(audio::Source& source)

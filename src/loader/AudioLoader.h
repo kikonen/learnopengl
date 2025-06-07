@@ -6,7 +6,8 @@
 #include "audio/Source.h"
 #include "audio/Listener.h"
 
-#include "event/actions.h"
+#include "component/AudioListenerDefinition.h"
+#include "component/AudioSourceDefinition.h"
 
 #include "BaseLoader.h"
 #include "AudioData.h"
@@ -34,14 +35,17 @@ namespace loader {
             const loader::DocNode& node,
             SourceData& data) const;
 
-        std::unique_ptr<std::vector<audio::Source>> createSources(
+        std::unique_ptr<std::vector<AudioSourceDefinition>> createSourceDefinitions(
             const std::vector<SourceData>& sources);
 
-        void createSource(
+        void createSourceDefinition(
             const SourceData& data,
-            audio::Source& source);
+            AudioSourceDefinition& source);
 
-        std::unique_ptr<audio::Listener> createListener(
+        std::unique_ptr<AudioListenerDefinition> createListenerDefinition(
             const ListenerData& data);
+
+        std::unique_ptr<std::vector<audio::Source>> createSources(
+            const std::vector<SourceData>& sources);
     };
 }

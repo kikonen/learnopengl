@@ -14,6 +14,16 @@ namespace loader
         float gain{ 1.f };
     };
 
+    // AL_MIN_GAIN
+    // AL_MAX_GAIN
+
+    // AL_MAX_DISTANCE
+    // AL_ROLLOFF_FACTOR
+    // AL_REFERENCE_DISTANCE
+
+    // AL_CONE_OUTER_GAIN
+    // AL_CONE_INNER_ANGLE
+    // AL_CONE_OUTER_ANGL
     struct SourceData {
         bool enabled{ false };
 
@@ -31,17 +41,6 @@ namespace loader
 
         float pitch{ 1.f };
         float gain{ 1.f };
-
-        // AL_MIN_GAIN
-        // AL_MAX_GAIN
-
-        // AL_MAX_DISTANCE
-        // AL_ROLLOFF_FACTOR
-        // AL_REFERENCE_DISTANCE
-
-        // AL_CONE_OUTER_GAIN
-        // AL_CONE_INNER_ANGLE
-        // AL_CONE_OUTER_ANGL
     };
 
     struct AudioData {

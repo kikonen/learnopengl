@@ -12,9 +12,7 @@ namespace {
 namespace audio
 {
     Listener::Listener(Listener&& o) noexcept
-        : m_id{ o.m_id },
-        m_default( o.m_default ),
-        m_gain{ o.m_gain }
+        : m_gain{ o.m_gain }
     {}
 
     Listener::~Listener()
@@ -24,8 +22,6 @@ namespace audio
     {
         if (&o == this) return *this;
 
-        m_id = o.m_id;
-        m_default = o.m_default;
         m_gain = o.m_gain;
 
         return *this;

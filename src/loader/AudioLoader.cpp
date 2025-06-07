@@ -136,15 +136,14 @@ namespace loader
         }
     }
 
-    std::unique_ptr<std::vector<audio::Source>> AudioLoader::createSources(
+    std::unique_ptr<std::vector<AudioSourceDefinition>> AudioLoader::createSourceDefinitions(
         const std::vector<SourceData>& sources)
     {
-        std::unique_ptr<std::vector<audio::Source>> result =
-            std::make_unique<std::vector<audio::Source>>();
+        auto result = std::make_unique<std::vector<AudioSourceDefinition>>();
 
         for (const auto& data : sources) {
             auto& src = result->emplace_back();
-            createSource(data, src);
+            createSourceDefinition(data, src);
             if (!src.m_soundId) {
                 result->pop_back();
             }
@@ -152,9 +151,9 @@ namespace loader
         return result->empty() ? nullptr : std::move(result);
     }
 
-    void AudioLoader::createSource(
+    void AudioLoader::createSourceDefinition(
         const SourceData& data,
-        audio::Source& source)
+        AudioSourceDefinition& source)
     {
         const auto& assets = Assets::get();
 
@@ -166,7 +165,7 @@ namespace loader
             if (!soundId) return;
         }
 
-        source.m_id = SID(data.name);
+        source.m_sourceId = SID(data.name);
         source.m_soundId = soundId;
 
         source.m_referenceDistance = data.referenceDistance;
@@ -182,14 +181,13 @@ namespace loader
         source.m_gain = data.gain;
     }
 
-    std::unique_ptr<audio::Listener> AudioLoader::createListener(
+    std::unique_ptr<AudioListenerDefinition> AudioLoader::createListenerDefinition(
         const ListenerData& data)
     {
         if (!data.enabled) return nullptr;
 
-        std::unique_ptr<audio::Listener> listener = std::make_unique<audio::Listener>();
+        auto listener = std::make_unique<AudioListenerDefinition>();
 
-        listener->m_default = data.isDefault;
         listener->m_gain = data.gain;
 
         return listener;

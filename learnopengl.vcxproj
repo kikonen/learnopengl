@@ -594,6 +594,8 @@
     <ClInclude Include="src\animation\MetadataLoader.h" />
     <ClInclude Include="src\animation\SocketBuffer.h" />
     <ClInclude Include="src\animation\SocketRegistry.h" />
+    <ClInclude Include="src\component\AudioListenerDefinition.h" />
+    <ClInclude Include="src\component\AudioSourceDefinition.h" />
     <ClInclude Include="src\component\CameraDefinition.h" />
     <ClInclude Include="src\component\LightDefinition.h" />
     <ClInclude Include="src\component\LightType.h" />
@@ -606,7 +608,7 @@
     <ClInclude Include="src\engine\SystemInit.h" />
     <ClInclude Include="src\event\actions.h" />
     <ClInclude Include="src\generator\GeneratorMode.h" />
-    <ClInclude Include="src\generator\TextDefinition.h" />
+    <ClInclude Include="src\component\TextDefinition.h" />
     <ClInclude Include="src\loader\DecalData.h" />
     <ClInclude Include="src\loader\DecalLoader.h" />
     <ClInclude Include="src\loader\MaterialUpdaterData.h" />

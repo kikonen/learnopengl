@@ -46,18 +46,6 @@ namespace audio
             m_enabled = enabled;
         }
 
-        void setActiveListenerId(ki::node_id nodeId);
-
-        ki::node_id getActiveListenerId() const noexcept
-        {
-            return m_activeListenerId;
-        }
-
-        bool isActiveListener(ki::node_id nodeId) const noexcept
-        {
-            return m_activeListenerId == nodeId;
-        }
-
         void prepareSource(audio::Source& source);
 
         audio::sound_id registerSound(std::string_view fullPath);
@@ -68,8 +56,6 @@ namespace audio
 
         ALCdevice* m_device{ nullptr };
         ALCcontext* m_context{ nullptr };
-
-        ki::node_id m_activeListenerId{ 0 };
 
         std::unique_ptr<SoundRegistry> m_soundRegistry;
     };

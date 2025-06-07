@@ -38,8 +38,9 @@
 
 #include "component/CameraDefinition.h"
 #include "component/LightDefinition.h"
-
-#include "generator/TextDefinition.h"
+#include "component/AudioListenerDefinition.h"
+#include "component/AudioSourceDefinition.h"
+#include "component/TextDefinition.h"
 
 #include "particle/ParticleDefinition.h"
 
@@ -151,6 +152,9 @@ namespace loader
         }
 
         resolveAttachments(type, nodeData);
+
+        type->m_audioListenerDefinition = l.m_audioLoader.createListenerDefinition(nodeData.audio.listener);
+        type->m_audioSourceDefinitions = l.m_audioLoader.createSourceDefinitions(nodeData.audio.sources);
 
         type->m_cameraDefinition = l.m_cameraLoader.createDefinition(nodeData.camera);
         type->m_lightDefinition = l.m_lightLoader.createDefinition(nodeData.light);

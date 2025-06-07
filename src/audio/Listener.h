@@ -24,9 +24,6 @@ namespace audio
 
         void updateActive(const NodeState& state) const;
 
-        audio::listener_id m_id{ 0 };
-
-        bool m_default{ false };
         float m_gain{ 1.f };
     };
 }
