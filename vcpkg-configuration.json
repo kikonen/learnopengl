@@ -4,7 +4,7 @@
     "baseline": "c14d62387153eaa2d720113542dbde2e9754ee71",
     "repository": "https://github.com/microsoft/vcpkg"
   },
-  "registries": [
+  "#registries": [
     {
       "kind": "git",
       "repository": "https://github.com/kikonen/vcpkg-registry",
