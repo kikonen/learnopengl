@@ -2,6 +2,26 @@
 
 #include <fmt/format.h>
 
+namespace {
+    const inline std::string OPT_AFTER{ "after" };
+    const inline std::string OPT_TIME{ "time" };
+    const inline std::string OPT_RELATIVE{ "relative" };
+    const inline std::string OPT_SID{ "sid" };
+    const inline std::string OPT_INDEX{ "index" };
+    const inline std::string OPT_DURATION{ "duration" };
+    const inline std::string OPT_SPEED{ "speed" };
+    const inline std::string OPT_COUNT{ "count" };
+    const inline std::string OPT_LOOP{ "loop" };
+    const inline std::string OPT_SYNC{ "sync" };
+    const inline std::string OPT_OBJECT{ "object" };
+    const inline std::string OPT_NAME{ "name" };
+    const inline std::string OPT_NODE{ "node" };
+
+    const inline std::string OPT_LISTENER{ "listener" };
+    const inline std::string OPT_TYPE{ "type" };
+    const inline std::string OPT_DATA{ "data" };
+}
+
 namespace script {
     std::string CommandOptions::str() const noexcept
     {
@@ -22,43 +42,43 @@ namespace script {
         CommandOptions opt;
         lua_opt.for_each([&](sol::object const& key, sol::object const& value) {
             const auto& k = key.as<std::string>();
-            if (k == "after") {
+            if (k == OPT_AFTER) {
                 opt.afterId = value.as<script::command_id>();
             }
-            else if (k == "time") {
+            else if (k == OPT_TIME) {
                 opt.duration = value.as<float>();
             }
-            else if (k == "relative") {
+            else if (k == OPT_RELATIVE) {
                 opt.relative = value.as<bool>();
             }
-            else if (k == "sid") {
+            else if (k == OPT_SID) {
                 opt.sid = value.as<unsigned int>();
             }
-            else if (k == "index") {
+            else if (k == OPT_INDEX) {
                 opt.index = value.as<int>();
             }
-            else if (k == "duration") {
+            else if (k == OPT_DURATION) {
                 opt.duration = value.as<float>();
             }
-            else if (k == "speed") {
+            else if (k == OPT_SPEED) {
                 opt.speed = value.as<float>();
             }
-            else if (k == "count") {
+            else if (k == OPT_COUNT) {
                 opt.count = value.as<float>();
             }
-            else if (k == "loop") {
+            else if (k == OPT_LOOP) {
                 opt.repeat = value.as<bool>();
             }
-            else if (k == "sync") {
+            else if (k == OPT_SYNC) {
                 opt.sync = value.as<bool>();
             }
-            else if (k == "object") {
+            else if (k == OPT_OBJECT) {
                 opt.self = value.as<bool>();
             }
-            else if (k == "name") {
+            else if (k == OPT_NAME) {
                 opt.name = value.as<std::string>();
             }
-            else if (k == "node") {
+            else if (k == OPT_NODE) {
                 opt.nodeId = value.as<unsigned int>();
             }
             });
@@ -70,13 +90,13 @@ namespace script {
         CommandEvent ev;
         lua_opt.for_each([&](sol::object const& key, sol::object const& value) {
             const auto& k = key.as<std::string>();
-            if (k == "listener") {
+            if (k == OPT_LISTENER) {
                 ev.listenerId = value.as<int>();
             }
-            else if (k == "type") {
+            else if (k == OPT_TYPE) {
                 ev.type = value.as<int>();
             }
-            else if (k == "data") {
+            else if (k == OPT_DATA) {
                 ev.data = value.as<std::string>();
             }
             });
