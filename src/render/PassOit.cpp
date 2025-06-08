@@ -5,7 +5,7 @@
 #include "shader/Program.h"
 #include "shader/ProgramRegistry.h"
 
-#include "mesh/MeshType.h"
+#include "model/Node.h"
 
 #include "render/DebugContext.h"
 #include "render/RenderContext.h"
@@ -138,11 +138,10 @@ namespace render
                 if (lodMesh.m_oitProgramId) return lodMesh.m_oitProgramId;
                 return m_oitProgram->m_id;
             },
-            [&drawContext](const mesh::MeshType* type) {
-                return type->m_flags.useOit &&
-                    drawContext.typeSelector(type);
+            [&drawContext](const Node* node) {
+                return node->m_typeFlags.useOit &&
+                    drawContext.nodeSelector(node);
             },
-            drawContext.nodeSelector,
             drawContext.kindBits & render::KIND_BLEND);
 
         m_flushedCount = ctx.m_batch->flush(ctx);

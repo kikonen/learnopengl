@@ -12,8 +12,9 @@
 
 #include "component/Light.h"
 
+#include "model/Node.h"
+
 #include "mesh/LodMesh.h"
-#include "mesh/MeshType.h"
 
 #include "model/Node.h"
 #include "model/Viewport.h"
@@ -246,18 +247,13 @@ void ShadowCascade::drawNodes(
     const RenderContext& ctx)
 {
     // NOTE KI *NO* G-buffer in shadow
-    const auto typeFilter = [](const mesh::MeshType* type) {
-        // NOTE KI tessellation not suppported
-        return !type->m_flags.noShadow;
-    };
-
     const auto nodeFilter = [](const Node* node) {
-        return true;
+        // NOTE KI tessellation not suppported
+        return !node->m_typeFlags.noShadow;
     };
 
     {
         render::DrawContext drawContext{
-            typeFilter,
             nodeFilter,
             render::KIND_ALL
         };
@@ -270,7 +266,6 @@ void ShadowCascade::drawNodes(
                 if (lodMesh.m_shadowProgramId) return lodMesh.m_shadowProgramId;
                 return lodMesh.m_drawOptions.isAlpha() ? m_alphaShadowProgramId : m_solidShadowProgramId;
             },
-            drawContext.typeSelector,
             drawContext.nodeSelector,
             drawContext.kindBits);
     }

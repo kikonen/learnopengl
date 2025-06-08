@@ -9,7 +9,6 @@
 #include "model/Snapshot.h"
 
 #include "mesh/LodMesh.h"
-#include "mesh/MeshType.h"
 #include "mesh/TextMesh.h"
 #include "mesh/MeshTransform.h"
 
@@ -79,9 +78,7 @@ void TextGenerator::updateVAO(
     if (!m_dirty) return;
     m_dirty = false;
 
-    auto* type = container.m_typeHandle.toType();
-
-    auto* lodMesh = type->modifyLodMesh(0);
+    auto* lodMesh = container.modifyLodMesh(0);
     auto* mesh = lodMesh->getMesh<mesh::TextMesh>();
 
     mesh->clear();
@@ -132,7 +129,6 @@ void TextGenerator::updateVAO(
 
 void TextGenerator::bindBatch(
     const RenderContext& ctx,
-    mesh::MeshType* type,
     const std::function<ki::program_id (const mesh::LodMesh&)>& programSelector,
     uint8_t kindBits,
     render::Batch& batch,
@@ -143,7 +139,7 @@ void TextGenerator::bindBatch(
 
     batch.addSnapshot(
         ctx,
-        type,
+        &container,
         programSelector,
         kindBits,
         snapshot,

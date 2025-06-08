@@ -80,7 +80,7 @@ namespace pool {
         mesh::MeshType* toType() const noexcept;
         ki::type_id toId() const noexcept { return m_id; }
 
-        static TypeHandle allocate() noexcept;
+        static TypeHandle allocate(ki::type_id id) noexcept;
 
         static TypeHandle toHandle(ki::type_id id) noexcept;
 

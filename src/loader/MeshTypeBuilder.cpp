@@ -80,13 +80,13 @@ namespace loader
     {
         auto& l = *m_loaders;
 
-        auto typeHandle = pool::TypeHandle::allocate();
-        auto* type = typeHandle.toType();
-
-        std::string name = nodeData.baseId.m_path.empty() ? nodeData.name : nodeData.baseId.m_path;
+        std::string name = nodeData.baseId.m_path;
         if (!nameSuffix.empty()) {
             name = fmt::format("{}_{}", name, nameSuffix);
         }
+
+        auto typeHandle = pool::TypeHandle::allocate(SID(name));
+        auto* type = typeHandle.toType();
 
         type->setName(name);
         type->m_layer = nodeData.layer;

@@ -11,7 +11,6 @@ NodeGenerator::~NodeGenerator() = default;
 
 void NodeGenerator::bindBatch(
     const RenderContext& ctx,
-    mesh::MeshType* type,
     const std::function<ki::program_id (const mesh::LodMesh&)>& programSelector,
     uint8_t kindBits,
     render::Batch& batch,
@@ -20,7 +19,7 @@ void NodeGenerator::bindBatch(
 {
     batch.addSnapshotsInstanced(
         ctx,
-        type,
+        &container,
         programSelector,
         kindBits,
         snapshot,

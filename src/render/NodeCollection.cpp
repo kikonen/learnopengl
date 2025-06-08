@@ -2,9 +2,6 @@
 
 #include "model/Node.h"
 
-#include "mesh/MeshType.h"
-
-
 namespace render {
     //// https://stackoverflow.com/questions/5733254/how-can-i-create-my-own-comparator-for-a-map
     //struct MeshTypeComparator {
@@ -13,12 +10,12 @@ namespace render {
     //    }
     //};
 
-    bool MeshTypeKey::operator<(const MeshTypeKey& o) const {
-        const auto& a = m_typeHandle.toType();
-        const auto& b = o.m_typeHandle.toType();
+    //bool MeshTypeKey::operator<(const MeshTypeKey& o) const {
+    //    const auto& a = m_typeHandle.toType();
+    //    const auto& b = o.m_typeHandle.toType();
 
-        return a->m_handle.m_id < b->m_handle.m_id;
-    }
+    //    return a->m_handle.m_id < b->m_handle.m_id;
+    //}
 
     NodeCollection::NodeCollection() = default;
 
@@ -32,7 +29,7 @@ namespace render {
         m_solidNodes.clear();
         m_alphaNodes.clear();
         m_blendedNodes.clear();
-        m_invisibleNodes.clear();
+        //m_invisibleNodes.clear();
 
         m_waterNodes.clear();
         m_mirrorNodes.clear();
@@ -41,40 +38,37 @@ namespace render {
 
     void NodeCollection::handleNodeAdded(Node* node)
     {
-        auto* type = node->m_typeHandle.toType();
-
-        if (type->m_flags.invisible) {
+        if (node->m_typeFlags.invisible) {
             insertNode(&m_invisibleNodes, node);
         }
         else {
-            if (type->m_flags.anySolid) {
+            if (node->m_typeFlags.anySolid) {
                 insertNode(&m_solidNodes, node);
             }
-            if (type->m_flags.anyAlpha) {
+            if (node->m_typeFlags.anyAlpha) {
                 insertNode(&m_alphaNodes, node);
             }
-            if (type->m_flags.anyBlend) {
+            if (node->m_typeFlags.anyBlend) {
                 insertNode(&m_blendedNodes, node);
             }
         }
 
-        if (type->m_flags.water) {
+        if (node->m_typeFlags.water) {
             m_waterNodes.push_back(node->toHandle());
         }
-        if (type->m_flags.mirror) {
+        if (node->m_typeFlags.mirror) {
             m_mirrorNodes.push_back(node->toHandle());
         }
-        if (type->m_flags.cubeMap) {
+        if (node->m_typeFlags.cubeMap) {
             m_cubeMapNodes.push_back(node->toHandle());
         }
     }
 
     void NodeCollection::insertNode(
-        MeshTypeMap* map,
+        NodeVector* nodes,
         Node* node)
     {
-        auto& list = (*map)[node->m_typeHandle];
-        list.reserve(100);
-        list.push_back(node->toHandle());
+        nodes->reserve(100);
+        nodes->push_back(node->toHandle());
     }
 }

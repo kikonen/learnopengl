@@ -6,7 +6,6 @@
 #include "model/NodeState.h"
 
 #include "pool/NodeHandle.h"
-#include "pool/TypeHandle.h"
 
 #include "kigl/kigl.h"
 
@@ -77,7 +76,6 @@ public:
 
     virtual void bindBatch(
         const RenderContext& ctx,
-        mesh::MeshType* type,
         const std::function<ki::program_id (const mesh::LodMesh&)>& programSelector,
         uint8_t kindBits,
         render::Batch& batch,

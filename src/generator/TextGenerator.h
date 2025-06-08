@@ -44,7 +44,6 @@ public:
 
     virtual void bindBatch(
         const RenderContext& ctx,
-        mesh::MeshType* type,
         const std::function<ki::program_id (const mesh::LodMesh&)>& programSelector,
         uint8_t kindBits,
         render::Batch& batch,

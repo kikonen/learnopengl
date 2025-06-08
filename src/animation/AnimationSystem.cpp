@@ -17,7 +17,6 @@
 
 #include "model/Node.h"
 
-#include "mesh/MeshType.h"
 #include "mesh/ModelMesh.h"
 #include "mesh/PrimitiveMesh.h"
 
@@ -42,7 +41,6 @@ namespace {
     struct ActiveNode {
         animation::AnimationState& m_state;
         Node* m_node;
-        mesh::MeshType* m_type;
     };
 
     static animation::AnimationSystem* s_system{ nullptr };
@@ -273,8 +271,7 @@ namespace animation
             for (auto& state : m_states) {
                 auto* node = state.m_handle.toNode();
                 if (!node) continue;
-                auto* type = node->m_typeHandle.toType();
-                s_activeNodes.push_back({ state, node, type });
+                s_activeNodes.push_back({ state, node });
             }
         }
 
@@ -294,12 +291,12 @@ namespace animation
                         s_activeNodes.begin(),
                         s_activeNodes.end(),
                         [this, &ctx](auto& active) {
-                            animateNode(ctx, active.m_state, active.m_node, active.m_type);
+                            animateNode(ctx, active.m_state, active.m_node);
                         });
                 }
                 else {
                     for (auto& active : s_activeNodes) {
-                        animateNode(ctx, active.m_state, active.m_node, active.m_type);
+                        animateNode(ctx, active.m_state, active.m_node);
                     }
                 }
             }
@@ -312,8 +309,7 @@ namespace animation
     void AnimationSystem::animateNode(
         const UpdateContext& ctx,
         animation::AnimationState& state,
-        Node* node,
-        mesh::MeshType* type)
+        Node* node)
     {
         auto& dbg = render::DebugContext::modify();
 
@@ -338,7 +334,7 @@ namespace animation
                 return;
         }
 
-        for (const auto& lodMesh : type->getLodMeshes()) {
+        for (const auto& lodMesh : node->getLodMeshes()) {
             if (!lodMesh.m_flags.useAnimation) continue;
 
             auto* mesh = lodMesh.getMesh<mesh::VaoMesh>();
@@ -507,9 +503,7 @@ namespace animation
     {
         if (!m_enabled) return;
 
-        auto* type = node->m_typeHandle.toType();
-
-        if (!type->m_flags.anyAnimation) return;
+        if (!node->m_typeFlags.anyAnimation) return;
 
         std::lock_guard lock(m_pendingLock);
         m_pendingNodes.push_back(node->toHandle());

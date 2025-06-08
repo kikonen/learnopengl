@@ -4,11 +4,8 @@
 
 #include "kigl/GLState.h"
 
-#include "pool/TypeHandle.h"
-
 #include "mesh/Mesh.h"
 #include "mesh/LodMesh.h"
-#include "mesh/MeshType.h"
 
 #include "model/Node.h"
 
@@ -237,7 +234,6 @@ namespace render {
         collectionRender.drawProgram(
             ctx,
             programSelector,
-            drawContext.typeSelector,
             drawContext.nodeSelector,
             drawContext.kindBits);
     }

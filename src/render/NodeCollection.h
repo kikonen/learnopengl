@@ -13,21 +13,21 @@ namespace editor {
 }
 
 namespace render {
-    // https://stackoverflow.com/questions/5733254/how-can-i-create-my-own-comparator-for-a-map
-    struct MeshTypeKey {
-        // https://stackoverflow.com/questions/5733254/how-can-i-create-my-own-comparator-for-a-map
-        MeshTypeKey(pool::TypeHandle typeHandle)
-            : m_typeHandle(typeHandle)
-        {
-        }
+    //// https://stackoverflow.com/questions/5733254/how-can-i-create-my-own-comparator-for-a-map
+    //struct MeshTypeKey {
+    //    // https://stackoverflow.com/questions/5733254/how-can-i-create-my-own-comparator-for-a-map
+    //    MeshTypeKey(pool::TypeHandle typeHandle)
+    //        : m_typeHandle(typeHandle)
+    //    {
+    //    }
 
-        bool operator<(const MeshTypeKey& o) const;
+    //    bool operator<(const MeshTypeKey& o) const;
 
-        const pool::TypeHandle m_typeHandle;
-    };
+    //    const pool::TypeHandle m_typeHandle;
+    //};
 
     using NodeVector = std::vector<pool::NodeHandle>;
-    using MeshTypeMap = std::map<MeshTypeKey, NodeVector>;
+    //using MeshTypeMap = std::map<MeshTypeKey, NodeVector>;
 
 
     // Collection of nodes in *single* scene
@@ -48,18 +48,18 @@ namespace render {
 
     private:
         void insertNode(
-            MeshTypeMap* map,
+            NodeVector* nodes,
             Node* node);
 
     public:
         // NodeDraw
-        MeshTypeMap m_solidNodes;
+        NodeVector m_solidNodes;
         // NodeDraw
-        MeshTypeMap m_alphaNodes;
+        NodeVector m_alphaNodes;
         // NodeDraw
-        MeshTypeMap m_blendedNodes;
-        // OBSOLETTE
-        MeshTypeMap m_invisibleNodes;
+        NodeVector m_blendedNodes;
+        //// OBSOLETTE
+        NodeVector m_invisibleNodes;
 
         std::vector<pool::NodeHandle> m_waterNodes;
         std::vector<pool::NodeHandle> m_mirrorNodes;

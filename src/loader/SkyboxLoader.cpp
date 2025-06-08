@@ -124,9 +124,10 @@ namespace loader {
             return;
         }
 
-        auto typeHandle = pool::TypeHandle::allocate();
+        std::string name = "<skybox>";
+        auto typeHandle = pool::TypeHandle::allocate(SID(name));
         auto* type = typeHandle.toType();
-        type->setName("<skybox>");
+        type->setName(name);
 
         type->addMeshSet(*meshSet);
 
@@ -173,6 +174,8 @@ namespace loader {
 
         node->setName("<skybox>");
         node->m_typeHandle = typeHandle;
+        node->m_typeFlags = type->m_flags;
+        node->m_layer = type->m_layer;
 
         //util::sleep(1000);
 

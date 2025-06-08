@@ -8,8 +8,9 @@
 
 #include "engine/PrepareContext.h"
 
+#include "model/Node.h"
+
 #include "mesh/LodMesh.h"
-#include "mesh/MeshType.h"
 
 #include "render/RenderContext.h"
 #include "render/FrameBuffer.h"
@@ -54,10 +55,7 @@ void NormalRenderer::drawNodes(const RenderContext& ctx)
         ctx.m_state.setStencil({});
 
         render::DrawContext drawContext{
-            [](const mesh::MeshType* type) {
-                return !type->m_flags.noNormals;
-            },
-            [](const Node* node) { return true; },
+            [](const Node* node) { return !node->m_typeFlags.noNormals; },
             render::KIND_ALL
         };
 
@@ -68,7 +66,6 @@ void NormalRenderer::drawNodes(const RenderContext& ctx)
                 if (lodMesh.m_flags.tessellation) return (ki::program_id)0;
                 return lodMesh.m_normalProgramId ? lodMesh.m_normalProgramId : m_normalProgramId;
             },
-            drawContext.typeSelector,
             drawContext.nodeSelector,
             drawContext.kindBits);
     }

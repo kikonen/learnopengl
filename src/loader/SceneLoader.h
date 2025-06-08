@@ -7,15 +7,10 @@
 #include <mutex>
 #include <atomic>
 
-//#include "text/size.h"
-
 #include "BaseLoader.h"
 
 struct Material;
 class Registry;
-
-struct NodeFlags;
-struct NodeState;
 
 namespace pool {
     struct NodeHandle;

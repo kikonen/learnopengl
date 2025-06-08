@@ -256,7 +256,7 @@ namespace script
         Node* node)
     {
         const auto id = node->getId();
-        const auto typeId = node->getType()->getId();
+        const auto typeId = node->m_typeHandle.toId();
         std::string scriptlet = fmt::format(
 R"(-- {}
 states[{}] = classes[{}]:new())",

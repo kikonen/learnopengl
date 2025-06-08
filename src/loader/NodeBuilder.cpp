@@ -220,7 +220,7 @@ namespace loader
             parentId = rootId;
         }
         else {
-            auto [id, _] = resolveId(
+            auto [id, _] = resolveNodeId(
                 nodeData.parentBaseId,
                 cloneIndex,
                 tile);
@@ -248,6 +248,8 @@ namespace loader
     {
         auto& l = *m_loaders;
 
+        const auto* type = typeHandle.toType();
+
         ki::node_id nodeId{ 0 };
         std::string resolvedSID;
         {
@@ -255,7 +257,7 @@ namespace loader
                 throw "ID missing";
             }
 
-            auto [k, v] = resolveId(nodeData.baseId, cloneIndex, tile);
+            auto [k, v] = resolveNodeId(nodeData.baseId, cloneIndex, tile);
             nodeId = k;
             resolvedSID = v;
         }
@@ -265,12 +267,15 @@ namespace loader
         assert(node);
 
         node->setName(resolvedSID);
+
         node->m_typeHandle = typeHandle;
+        node->m_typeFlags = type->m_flags;
+        node->m_layer = type->m_layer;
 
         {
             ki::node_id ignoredBy{ 0 };
             if (!nodeData.ignoredByBaseId.empty()) {
-                auto [id, _] = resolveId(
+                auto [id, _] = resolveNodeId(
                     nodeData.ignoredByBaseId,
                     cloneIndex,
                     tile);
@@ -279,14 +284,10 @@ namespace loader
             node->m_ignoredBy = ignoredBy;
         }
 
-        assignNodeFlags(nodeData.nodeFlags, node->m_flags);
-
         //node->setCloneIndex(cloneIndex);
         //node->setTile(tile);
 
-        glm::vec3 pos = nodeData.position + positionOffset;
-
-        const auto* type = typeHandle.toType();
+        const glm::vec3 pos = nodeData.position + positionOffset;
 
         NodeState state;
         state.setPosition(pos);
@@ -300,7 +301,6 @@ namespace loader
 
         {
             state.setBaseRotation(util::degreesToQuat(nodeData.baseRotation));
-            state.setVolume(type->getAABB().getVolume());
         }
 
         node->m_generator = l.m_generatorLoader.createGenerator(
@@ -309,11 +309,5 @@ namespace loader
             *m_loaders);
 
         return { handle, state };
-    }
-
-    void NodeBuilder::assignNodeFlags(
-        const FlagContainer& container,
-        NodeFlags& flags)
-    {
     }
 }

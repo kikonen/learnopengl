@@ -435,7 +435,13 @@ namespace loader {
         return ratio[1] != 0 ? ratio[0] / ratio[1] : ratio[0];
     }
 
-    std::tuple<ki::node_id, std::string> resolveId(
+    std::tuple<ki::node_id, std::string> resolveNodeId(
+        const BaseId& baseId)
+    {
+        return resolveNodeId(baseId, 0, { 0, 0, 0 });
+    }
+
+    std::tuple<ki::node_id, std::string> resolveNodeId(
         const BaseId& baseId,
         const int cloneIndex,
         const glm::uvec3& tile)
@@ -449,14 +455,13 @@ namespace loader {
         std::string key = expandMacros(baseId.m_path, cloneIndex, tile);
 
         if (key == ROOT_ID) {
-            return { assets.rootId, "<root>" };
+            return { assets.rootId, SID_NAME(assets.rootId) };
         }
         else {
             auto nodeId = SID(key);
             KI_DEBUG(fmt::format("SID: sid={}, key={}", nodeId, key));
             return { nodeId, key };
         }
-
     }
 
     std::string expandMacros(

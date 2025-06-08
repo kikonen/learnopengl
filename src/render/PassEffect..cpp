@@ -5,7 +5,7 @@
 #include "shader/Program.h"
 #include "shader/ProgramRegistry.h"
 
-#include "mesh/MeshType.h"
+#include "model/Node.h"
 
 #include "render/DebugContext.h"
 #include "render/RenderContext.h"
@@ -71,13 +71,12 @@ namespace render
 
         collectionRender.drawBlendedImpl(
             ctx,
-            [&drawContext](const mesh::MeshType* type) {
+            [&drawContext](const Node* node) {
                 return
-                    type->m_flags.anyBlend &&
-                    type->m_flags.effect &&
-                    drawContext.typeSelector(type);
-            },
-            drawContext.nodeSelector);
+                    node->m_typeFlags.anyBlend &&
+                    node->m_typeFlags.effect &&
+                    drawContext.nodeSelector(node);
+            });
 
         ctx.m_batch->flush(ctx);
 

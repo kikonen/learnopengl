@@ -91,7 +91,7 @@ namespace loader{
         auto definition = std::make_unique<LightDefinition>();
         auto& df = *definition;
 
-        //auto [targetId, targetResolvedSID] = resolveId(data.targetBaseId, cloneIndex, tile);
+        //auto [targetId, targetResolvedSID] = resolveNodeId(data.targetBaseId, cloneIndex, tile);
         //light->setTargetId(targetId);
 
         df.m_linear = data.linear;

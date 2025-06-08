@@ -13,7 +13,7 @@
 #include "IdGenerator.h"
 
 namespace {
-    IdGenerator<ki::type_id> ID_GENERATOR;
+    //IdGenerator<ki::type_id> ID_GENERATOR;
 
     constexpr size_t MAX_POOL_SIZE{ 100000 };
 
@@ -52,9 +52,9 @@ namespace pool {
         return nullptr;
     }
 
-    TypeHandle TypeHandle::allocate() noexcept
+    TypeHandle TypeHandle::allocate(ki::type_id id) noexcept
     {
-        auto id = ID_GENERATOR.nextId();
+        //auto id = ID_GENERATOR.nextId();
 
         std::lock_guard lock(m_lock);
 

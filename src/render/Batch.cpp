@@ -22,7 +22,6 @@
 #include "backend/DrawBuffer.h"
 
 #include "mesh/LodMesh.h"
-#include "mesh/MeshType.h"
 #include "mesh/LodMesh.h"
 #include "mesh/InstanceFlags.h"
 #include "mesh/MeshTransform.h"
@@ -70,7 +69,7 @@ namespace render {
 
     void Batch::addSnapshot(
         const RenderContext& ctx,
-        const mesh::MeshType* type,
+        const Node* node,
         const std::function<ki::program_id (const mesh::LodMesh&)>& programSelector,
         uint8_t kindBits,
         const Snapshot& snapshot,
@@ -82,7 +81,7 @@ namespace render {
 
         auto dist2 = glm::distance2(snapshot.getWorldPosition(), ctx.m_camera->getWorldPosition());
 
-        for (const auto& lodMesh : type->getLodMeshes()) {
+        for (const auto& lodMesh : node->getLodMeshes()) {
             if (lodMesh.m_minDistance2 > dist2) continue;
             if (lodMesh.m_maxDistance2 <= dist2) continue;
 
@@ -152,21 +151,9 @@ namespace render {
         }
     }
 
-    //void Batch::addSnapshots(
-    //    const RenderContext& ctx,
-    //    mesh::MeshType* type,
-    //    std::span<const Snapshot> snapshots,
-    //    std::span<uint32_t> entityIndeces) noexcept
-    //{
-    //    uint32_t i = 0;
-    //    for (const auto& snapshot : snapshots) {
-    //        addSnapshot(ctx, type, snapshot, entityIndeces[i++]);
-    //    }
-    //}
-
     void Batch::addSnapshotsInstanced(
         const RenderContext& ctx,
-        const mesh::MeshType* type,
+        const Node* node,
         const std::function<ki::program_id (const mesh::LodMesh&)>& programSelector,
         uint8_t kindBits,
         const Snapshot& snapshot,
@@ -218,11 +205,11 @@ namespace render {
         if (useFrustum) {
             const auto& frustum = ctx.m_camera->getFrustum();
 
-            const auto& checkFrustum = [this, &type, &frustum, &transforms, &isValidLodMesh]
+            const auto& checkFrustum = [this, &node, &frustum, &transforms, &isValidLodMesh]
                 (int32_t& idx)
                 {
                     bool validMesh = false;
-                    for (const auto& lodMesh : type->getLodMeshes()) {
+                    for (const auto& lodMesh : node->getLodMeshes()) {
                         validMesh = isValidLodMesh(idx, s_distances2[idx], lodMesh) != 0;
                         if (validMesh) break;
                     }
@@ -257,7 +244,7 @@ namespace render {
 
                 const auto dist2 = s_distances2[i];
 
-                for (const auto& lodMesh : type->getLodMeshes()) {
+                for (const auto& lodMesh : node->getLodMeshes()) {
                     const auto  programId = isValidLodMesh(i, dist2, lodMesh);
                     if (!programId) continue;
 
@@ -374,15 +361,14 @@ namespace render {
 
     void Batch::draw(
         const RenderContext& ctx,
-        mesh::MeshType* type,
+        Node* node,
         const std::function<ki::program_id (const mesh::LodMesh&)>& programSelector,
-        uint8_t kindBits,
-        Node& node)
+        uint8_t kindBits)
     {
-        if (type->m_flags.invisible || !node.m_visible) return;
+        if (node->m_typeFlags.invisible || !node->m_visible) return;
 
-        node.updateVAO(ctx);
-        node.bindBatch(ctx, type, programSelector, kindBits, *this);
+        node->updateVAO(ctx);
+        node->bindBatch(ctx, programSelector, kindBits, *this);
     }
 
     bool Batch::isFlushed() const noexcept

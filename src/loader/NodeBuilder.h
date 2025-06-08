@@ -11,7 +11,6 @@
 
 #include "ki/size.h"
 
-struct NodeFlags;
 struct NodeState;
 
 namespace pool {
@@ -76,10 +75,6 @@ namespace loader {
             int cloneIndex,
             const glm::uvec3& tile,
             const glm::vec3& tilePositionOffset);
-
-        void assignNodeFlags(
-            const FlagContainer& container,
-            NodeFlags& flags);
 
         std::pair<pool::NodeHandle, NodeState> createNode(
             pool::TypeHandle typeHandle,

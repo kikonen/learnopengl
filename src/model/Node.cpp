@@ -81,9 +81,13 @@ void Node::prepareWT(
 
     auto* type = m_typeHandle.toType();
 
+    m_typeFlags = type->m_flags;
+    m_layer = type->m_layer;
+
     if (type->hasMesh()) {
         KI_DEBUG(fmt::format("ADD_ENTITY: {}", str()));
 
+        state.setVolume(type->getAABB().getVolume());
         {
             state.m_flags = type->resolveEntityFlags();
         }
@@ -115,8 +119,6 @@ void Node::prepareWT(
 void Node::prepareRT(
     const PrepareContext& ctx)
 {
-    auto* type = m_typeHandle.toType();
-
     const auto* snapshot = getSnapshotRT();
     if (!snapshot) return;
 
@@ -134,7 +136,6 @@ void Node::updateVAO(const RenderContext& ctx) noexcept
 
 void Node::bindBatch(
     const RenderContext& ctx,
-    mesh::MeshType* type,
     const std::function<ki::program_id (const mesh::LodMesh&)>& programSelector,
     uint8_t kindBits,
     render::Batch& batch) noexcept
@@ -145,7 +146,6 @@ void Node::bindBatch(
     if (m_generator && m_generator->isLightWeight()) {
         m_generator->bindBatch(
             ctx,
-            type,
             programSelector,
             kindBits,
             batch,
@@ -155,7 +155,7 @@ void Node::bindBatch(
     else {
         batch.addSnapshot(
             ctx,
-            type,
+            this,
             programSelector,
             kindBits,
             *snapshot,

@@ -24,6 +24,8 @@ namespace script
         std::string str() const noexcept;
 
         ki::node_id lua_get_id() const noexcept;
+
+        const std::string& lua_get_type_name() const noexcept;
         const std::string& lua_get_name() const noexcept;
 
         int lua_get_clone_index() const noexcept;

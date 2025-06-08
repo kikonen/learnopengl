@@ -9,7 +9,6 @@
 #include "animation/RigContainer.h"
 #include "animation/AnimationSystem.h"
 
-#include "mesh/MeshType.h"
 #include "mesh/Mesh.h"
 
 #include "engine/UpdateContext.h"
@@ -36,8 +35,7 @@ namespace script
     {
         NodeCommand::bind(ctx);
 
-        auto* type = getNode()->getType();
-        for (const auto& lodMesh : type->getLodMeshes()) {
+        for (const auto& lodMesh : getNode()->getLodMeshes()) {
             auto rig = lodMesh.getMesh<mesh::Mesh>()->getRigContainer().get();
             if (!rig) continue;
 

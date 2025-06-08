@@ -10,7 +10,6 @@
 #include "render/FrameBuffer.h"
 
 #include "model/Node.h"
-#include "mesh/MeshType.h"
 
 #include "registry/Registry.h"
 #include "registry/NodeRegistry.h"
@@ -61,12 +60,9 @@ namespace render
         auto* node = nodeRegistry.m_skybox.toNode();
         if (!node) return;
 
-        auto* type = node->m_typeHandle.toType();
+        if (node->m_layer != ctx.m_layer) return;
 
-        if (!type->isReady()) return;
-        if (type->m_layer != ctx.m_layer) return;
-
-        auto* lodMesh = type->getLodMesh(0);
+        auto* lodMesh = node->getLodMesh(0);
         auto* program = Program::get(lodMesh->m_programId);
 
         auto& state = ctx.m_state;

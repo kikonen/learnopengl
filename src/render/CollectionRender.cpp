@@ -4,8 +4,6 @@
 
 #include "model/Node.h"
 
-#include "mesh/MeshType.h"
-
 #include "render/DebugContext.h"
 #include "render/RenderContext.h"
 #include "render/FrameBuffer.h"
@@ -20,17 +18,15 @@ namespace render
     void CollectionRender::drawProgram(
         const RenderContext& ctx,
         const std::function<ki::program_id(const mesh::LodMesh&)>& programSelector,
-        const std::function<bool(const mesh::MeshType*)>& typeSelector,
         const std::function<bool(const Node*)>& nodeSelector,
         uint8_t kindBits)
     {
-        drawNodesImpl(ctx, programSelector, typeSelector, nodeSelector, kindBits);
+        drawNodesImpl(ctx, programSelector, nodeSelector, kindBits);
     }
 
     bool CollectionRender::drawNodesImpl(
         const RenderContext& ctx,
         const std::function<ki::program_id(const mesh::LodMesh&)>& programSelector,
-        const std::function<bool(const mesh::MeshType*)>& typeSelector,
         const std::function<bool(const Node*)>& nodeSelector,
         const uint8_t kindBits)
     {
@@ -39,26 +35,18 @@ namespace render
         auto& collection = *ctx.m_collection;
         auto& nodeRegistry = *ctx.m_registry->m_nodeRegistry;
 
-        auto renderTypes = [this, &ctx, &programSelector, &typeSelector, &nodeSelector, &rendered](
-            const MeshTypeMap& typeMap,
+        auto renderTypes = [this, &ctx, &programSelector, &nodeSelector, &rendered](
+            const NodeVector& nodes,
             unsigned int kind)
             {
-                for (const auto& it : typeMap) {
-                    auto* type = it.first.m_typeHandle.toType();
+                for (auto& handle : nodes) {
+                    auto* node = handle.toNode();
+                    if (!node) continue;
+                    if (node->m_layer != ctx.m_layer) continue;
+                    if (!nodeSelector(node)) continue;
 
-                    if (!type->isReady()) continue;
-                    if (type->m_layer != ctx.m_layer) continue;
-                    if (!typeSelector(type)) continue;
-
-                    auto& batch = ctx.m_batch;
-
-                    for (auto& handle : it.second) {
-                        auto* node = handle.toNode();
-                        if (!node || !nodeSelector(node)) continue;
-
-                        rendered = true;
-                        batch->draw(ctx, type, programSelector, kind, *node);
-                    }
+                    rendered = true;
+                    ctx.m_batch->draw(ctx, node, programSelector, kind);
                 }
             };
 
@@ -79,7 +67,6 @@ namespace render
 
     void CollectionRender::drawBlendedImpl(
         const RenderContext& ctx,
-        const std::function<bool(const mesh::MeshType*)>& typeSelector,
         const std::function<bool(const Node*)>& nodeSelector)
     {
         auto& collection = *ctx.m_collection;
@@ -90,24 +77,18 @@ namespace render
 
         // TODO KI discards nodes if *same* distance
         std::map<float, Node*> sorted;
-        for (const auto& map : collection.m_blendedNodes) {
-            auto* type = map.first.m_typeHandle.toType();
+        for (const auto& handle : collection.m_blendedNodes) {
+            auto* node = handle.toNode();
+            if (!node) continue;
+            if (node->m_layer != ctx.m_layer) continue;
+            if (!nodeSelector(node)) continue;
 
-            if (!type->isReady()) continue;
-            if (type->m_layer != ctx.m_layer) continue;
-            if (!typeSelector(type)) continue;
+            const auto* snapshot = node->getSnapshotRT();
+            if (!snapshot) continue;
 
-            for (const auto& handle : map.second) {
-                auto* node = handle.toNode();
-                if (!node || !nodeSelector(node)) continue;
-
-                const auto* snapshot = node->getSnapshotRT();
-                if (!snapshot) continue;
-
-                const auto& pos = snapshot->getWorldPosition();
-                const float dist2 = glm::distance2(eyePos, pos);
-                sorted[dist2] = node;
-            }
+            const auto& pos = snapshot->getWorldPosition();
+            const float dist2 = glm::distance2(eyePos, pos);
+            sorted[dist2] = node;
         }
 
         if (!sorted.empty()) {
@@ -120,15 +101,11 @@ namespace render
         // NOTE KI blending is *NOT* optimal program / nodetypw wise due to depth sorting
         // NOTE KI order = from furthest away to nearest
         for (std::map<float, Node*>::reverse_iterator it = sorted.rbegin(); it != sorted.rend(); ++it) {
-            auto* node = it->second;
-            auto* type = node->m_typeHandle.toType();
-
             ctx.m_batch->draw(
                 ctx,
-                type,
+                it->second,
                 [this](const mesh::LodMesh& lodMesh) { return lodMesh.m_programId; },
-                render::KIND_BLEND,
-                *node);
+                render::KIND_BLEND);
         }
 
         // TODO KI if no flush here then render order of blended nodes is incorrect

@@ -11,7 +11,6 @@
 #include "kigl/GLState.h"
 
 #include "mesh/LodMesh.h"
-#include "mesh/MeshType.h"
 
 #include "model/Node.h"
 
@@ -175,7 +174,6 @@ void LayerRenderer::render(
 
         {
             render::DrawContext drawContext{
-                [](const mesh::MeshType* type) { return true; },
                 [](const Node* node) { return true; },
                 render::KIND_ALL,
                 // NOTE KI nothing to clear; keep stencil, depth copied from gbuffer
@@ -218,7 +216,6 @@ void LayerRenderer::fillHighlightMask(
     // draw entity data mask
     {
         render::DrawContext drawContext{
-            [](const mesh::MeshType* type) { return true; },
             [&selectionRegistry](const Node* node) {
                 return selectionRegistry.isHighlighted(node->toHandle());
             },
@@ -234,7 +231,6 @@ void LayerRenderer::fillHighlightMask(
                 p->m_uniforms->u_stencilMode.set(STENCIL_MODE_SHIFT_NONE);
                 return p->m_id;
             },
-            drawContext.typeSelector,
             drawContext.nodeSelector,
             drawContext.kindBits);
     }
@@ -277,7 +273,6 @@ void LayerRenderer::renderHighlight(
     // NOTE KI using "shift mode" approach, based into "hell engine"
     for (const auto shift : SHIFTS) {
         render::DrawContext drawContext{
-            [](const mesh::MeshType* type) { return true; },
             [&selectionRegistry](const Node* node) {
                 return selectionRegistry.isHighlighted(node->toHandle());
             },
@@ -293,7 +288,6 @@ void LayerRenderer::renderHighlight(
                 p->m_uniforms->u_stencilMode.set(shift);
                 return p->m_id;
             },
-            drawContext.typeSelector,
             drawContext.nodeSelector,
             drawContext.kindBits);
         ctx.m_batch->flush(ctx);

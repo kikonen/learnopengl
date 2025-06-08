@@ -295,6 +295,9 @@ Assets::Assets()
     rootId = 1;
     skyboxId = 4;
 
+    ki::StringID::registerSystemId(rootId, "<root>");
+    ki::StringID::registerSystemId(skyboxId, "<skybox>");
+
     /////////////////////////
     // TEMPORARIES
 }

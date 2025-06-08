@@ -7,7 +7,7 @@
 #include "shader/Program.h"
 #include "shader/ProgramRegistry.h"
 
-#include "mesh/MeshType.h"
+#include "model/Node.h"
 
 #include "render/DebugContext.h"
 #include "render/RenderContext.h"
@@ -159,11 +159,10 @@ namespace render
                 if (!lodMesh.m_flags.preDepth) return (ki::program_id)0;
                 return lodMesh.m_drawOptions.m_gbuffer ? lodMesh.m_preDepthProgramId : (ki::program_id)0;
             },
-            [&drawContext](const mesh::MeshType* type) {
-                return type->m_flags.useDeferred &&
-                    drawContext.typeSelector(type);
+            [&drawContext](const Node* node) {
+                return node->m_typeFlags.useDeferred &&
+                    drawContext.nodeSelector(node);
             },
-            drawContext.nodeSelector,
             drawContext.kindBits & render::KIND_SOLID);
 
         //auto flushedCount = ctx.m_batch->flush(ctx);
@@ -189,12 +188,11 @@ namespace render
             [](const mesh::LodMesh& lodMesh) {
                 return lodMesh.m_drawOptions.m_gbuffer ? lodMesh.m_programId : (ki::program_id)0;
             },
-            [&drawContext](const mesh::MeshType* type) {
-                return type->m_flags.useDeferred &&
-                    !type->m_flags.effect &&
-                    drawContext.typeSelector(type);
+            [&drawContext](const Node* node) {
+                return node->m_typeFlags.useDeferred &&
+                    !node->m_typeFlags.effect &&
+                    drawContext.nodeSelector(node);
             },
-            drawContext.nodeSelector,
             drawContext.kindBits);
 
         ctx.m_batch->flush(ctx);

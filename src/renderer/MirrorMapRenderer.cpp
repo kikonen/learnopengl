@@ -8,7 +8,6 @@
 #include "pool/NodeHandle.h"
 
 #include "mesh/LodMesh.h"
-#include "mesh/MeshType.h"
 
 #include "model/Node.h"
 #include "model/Snapshot.h"
@@ -376,9 +375,9 @@ void MirrorMapRenderer::drawNodes(
         Node* sourceNode = m_sourceNode.toNode();
 
         render::DrawContext drawContext{
-            [](const mesh::MeshType* type) { return !type->m_flags.noReflect; },
             [current, sourceNode](const Node* node) {
-                return node != current &&
+                return !node->m_typeFlags.noReflect &&
+                    node != current &&
                     node != sourceNode &&
                     node->m_ignoredBy != current->getId();
             },

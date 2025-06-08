@@ -221,7 +221,7 @@ private:
         const UpdateContext& ctx,
         NodeState& state,
         const NodeState& parentState,
-        const mesh::MeshType* type,
+        const Node* node,
         const physics::PhysicsSystem& physicsSystem);
 
     void logDebugInfo(const std::string& err, uint32_t entityIndex) const;
