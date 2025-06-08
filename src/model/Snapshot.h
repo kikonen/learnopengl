@@ -85,7 +85,7 @@ public:
         m_modelMatrix = o.m_modelMatrix;
         //m_handle = o.m_handle;
 
-        //m_modelScale = o.m_modelScale;
+        m_modelScale = o.m_modelScale;
 
         o.m_dirty = false;
         o.m_dirtyNormal = false;
