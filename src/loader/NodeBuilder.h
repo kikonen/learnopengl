@@ -23,7 +23,7 @@ namespace loader {
     class Loaders;
     class SceneLoader;
 
-    class MeshTypeBuilder;
+    class NodeTypeBuilder;
 
     struct RootData;
     struct NodeRoot;
@@ -91,6 +91,6 @@ namespace loader {
 
         std::shared_ptr<Context> m_ctx;
         std::shared_ptr<Loaders> m_loaders;
-        std::unique_ptr<MeshTypeBuilder> m_meshTypeBuilder;
+        std::unique_ptr<NodeTypeBuilder> m_nodeTypeBuilder;
     };
 }

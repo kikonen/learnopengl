@@ -1,4 +1,4 @@
-#include "MeshTypeBuilder.h"
+#include "NodeTypeBuilder.h"
 
 #include <string>
 #include <vector>
@@ -29,12 +29,12 @@
 #include "mesh/mesh_util.h"
 
 #include "mesh/LodMesh.h"
-#include "mesh/MeshType.h"
-
 #include "mesh/MeshSet.h"
 #include "mesh/ModelMesh.h"
 #include "mesh/TextMesh.h"
 #include "mesh/NonVaoMesh.h"
+
+#include "model/NodeType.h"
 
 #include "component/CameraDefinition.h"
 #include "component/LightDefinition.h"
@@ -44,17 +44,13 @@
 
 #include "particle/ParticleDefinition.h"
 
-#include "model/NodeType.h"
-
 #include "animation/AnimationLoader.h"
 #include "animation/RigContainer.h"
 #include "animation/RigSocket.h"
 
-#include "mesh/MeshType.h"
-
 #include "registry/Registry.h"
 #include "registry/ModelRegistry.h"
-#include "registry/MeshTypeRegistry.h"
+#include "registry/NodeTypeRegistry.h"
 
 #include "Loaders.h"
 
@@ -68,13 +64,13 @@ namespace {
 
 namespace loader
 {
-    MeshTypeBuilder::MeshTypeBuilder(std::shared_ptr<Loaders> loaders)
+    NodeTypeBuilder::NodeTypeBuilder(std::shared_ptr<Loaders> loaders)
         : m_loaders{ loaders }
     { }
 
-    MeshTypeBuilder::~MeshTypeBuilder() = default;
+    NodeTypeBuilder::~NodeTypeBuilder() = default;
 
-    pool::TypeHandle MeshTypeBuilder::createType(
+    pool::TypeHandle NodeTypeBuilder::createType(
         const NodeData& nodeData,
         const std::string& nameSuffix)
     {
@@ -93,7 +89,7 @@ namespace loader
 
         assignTypeFlags(nodeData, type->m_flags);
 
-        if (nodeData.type == NodeType::origo) {
+        if (nodeData.type == NodeKind::origo) {
             type->m_flags.origo = true;
             type->m_flags.invisible = true;
         }
@@ -103,7 +99,7 @@ namespace loader
 
             // NOTE KI container does not have mesh itself, but it can setup
             // material & program for contained nodes
-            if (nodeData.type != NodeType::container) {
+            if (nodeData.type != NodeKind::container) {
                 if (!type->hasMesh()) {
                     KI_WARN(fmt::format(
                         "SCENE_FILEIGNORE: NO_MESH id={} ({})",
@@ -181,8 +177,8 @@ namespace loader
         return typeHandle;
     }
 
-    void MeshTypeBuilder::resolveMaterials(
-        mesh::MeshType* type,
+    void NodeTypeBuilder::resolveMaterials(
+        NodeType* type,
         mesh::LodMesh& lodMesh,
         const NodeData& nodeData,
         const MeshData& meshData,
@@ -340,8 +336,8 @@ namespace loader
         m_loaders->m_materialLoader.resolveMaterial(lodMesh.m_flags, material);
     }
 
-    void MeshTypeBuilder::resolveMeshes(
-        mesh::MeshType* type,
+    void NodeTypeBuilder::resolveMeshes(
+        NodeType* type,
         const NodeData& nodeData)
     {
         uint16_t index = 0;
@@ -355,8 +351,8 @@ namespace loader
         type->prepareVolume();
     }
 
-    void MeshTypeBuilder::resolveMesh(
-        mesh::MeshType* type,
+    void NodeTypeBuilder::resolveMesh(
+        NodeType* type,
         const NodeData& nodeData,
         const MeshData& meshData,
         int index)
@@ -367,7 +363,7 @@ namespace loader
         size_t meshCount = 0;
 
         // NOTE KI materials MUST be resolved before loading mesh
-        if (nodeData.type == NodeType::model) {
+        if (nodeData.type == NodeKind::model) {
             type->m_flags.model = true;
             meshCount += resolveModelMesh(type, nodeData, meshData, index);
 
@@ -375,7 +371,7 @@ namespace loader
                 "SCENE_FILE MESH: id={}, desc={}, type={}",
                 nodeData.baseId, nodeData.desc, type->str()));
         }
-        else if (nodeData.type == NodeType::text) {
+        else if (nodeData.type == NodeKind::text) {
             type->m_flags.text = true;
             auto mesh = std::make_shared<mesh::TextMesh>();
 
@@ -389,12 +385,12 @@ namespace loader
             type->addLodMesh(std::move(lodMesh));
             meshCount++;
         }
-        else if (nodeData.type == NodeType::terrain) {
+        else if (nodeData.type == NodeKind::terrain) {
             // NOTE KI handled via container + generator
             type->m_flags.terrain = true;
             throw std::runtime_error("Terrain not supported currently");
         }
-        else if (nodeData.type == NodeType::container) {
+        else if (nodeData.type == NodeKind::container) {
             // NOTE KI generator takes care of actual work
             type->m_flags.container = true;
             type->m_flags.invisible = true;
@@ -420,8 +416,8 @@ namespace loader
         }
     }
 
-    int MeshTypeBuilder::resolveModelMesh(
-        mesh::MeshType* type,
+    int NodeTypeBuilder::resolveModelMesh(
+        NodeType* type,
         const NodeData& nodeData,
         const MeshData& meshData,
         int index)
@@ -498,8 +494,8 @@ namespace loader
         return meshCount;
     }
 
-    void MeshTypeBuilder::resolveLodMesh(
-        mesh::MeshType* type,
+    void NodeTypeBuilder::resolveLodMesh(
+        NodeType* type,
         const NodeData& nodeData,
         const MeshData& meshData,
         mesh::LodMesh& lodMesh)
@@ -519,8 +515,8 @@ namespace loader
         lodMesh.setupDrawOptions();
     }
 
-    const LodData* MeshTypeBuilder::resolveLod(
-        mesh::MeshType* type,
+    const LodData* NodeTypeBuilder::resolveLod(
+        NodeType* type,
         const NodeData& nodeData,
         const MeshData& meshData,
         mesh::LodMesh& lodMesh)
@@ -547,7 +543,7 @@ namespace loader
         return lod;
     }
 
-    void MeshTypeBuilder::resolveSockets(
+    void NodeTypeBuilder::resolveSockets(
         const MeshData& meshData,
         mesh::MeshSet& meshSet)
     {
@@ -577,7 +573,7 @@ namespace loader
         rig.prepare();
     }
 
-    void MeshTypeBuilder::loadAnimation(
+    void NodeTypeBuilder::loadAnimation(
         const std::string& baseDir,
         const AnimationData& data,
         mesh::MeshSet& meshSet)
@@ -614,8 +610,8 @@ namespace loader
         }
     }
 
-    void MeshTypeBuilder::resolveAttachments(
-        mesh::MeshType* type,
+    void NodeTypeBuilder::resolveAttachments(
+        NodeType* type,
         const NodeData& nodeData)
     {
         if (nodeData.attachments.empty()) return;
@@ -675,9 +671,9 @@ namespace loader
         }
     }
 
-    void MeshTypeBuilder::assignTypeFlags(
+    void NodeTypeBuilder::assignTypeFlags(
         const NodeData& nodeData,
-        mesh::TypeFlags& flags)
+        TypeFlags& flags)
     {
         const auto& container = nodeData.typeFlags;
 
@@ -714,7 +710,7 @@ namespace loader
         flags.navPhysics = container.getFlag("nav_physics", flags.navPhysics);
     }
 
-    void MeshTypeBuilder::assignMeshFlags(
+    void NodeTypeBuilder::assignMeshFlags(
         const FlagContainer& container,
         mesh::MeshFlags& flags)
     {

@@ -27,7 +27,6 @@ namespace loader {
     struct DecalData;
     struct MaterialUpdaterData;
 
-    class MeshTypeBuilder;
     class NodeBuilder;
 
     struct MetaData {

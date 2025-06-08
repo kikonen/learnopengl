@@ -7,10 +7,7 @@
 #include <stdint.h>
 
 class Node;
-
-namespace mesh {
-    class MeshType;
-}
+class NodeType;
 
 namespace render
 {

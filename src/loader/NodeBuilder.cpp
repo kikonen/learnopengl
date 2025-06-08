@@ -19,8 +19,6 @@
 
 #include "asset/Assets.h"
 
-#include "mesh/MeshType.h"
-
 #include "component/Light.h"
 #include "component/CameraComponent.h"
 
@@ -41,7 +39,7 @@
 #include "ResolvedNode.h"
 
 #include "SceneLoader.h"
-#include "MeshTypeBuilder.h"
+#include "NodeTypeBuilder.h"
 
 #include "loader_util.h"
 
@@ -54,7 +52,7 @@ namespace loader
         : m_sceneLoader{ sceneLoader },
         m_ctx{ ctx },
         m_loaders{ loaders },
-        m_meshTypeBuilder{ std::make_unique<MeshTypeBuilder>(m_loaders) }
+        m_nodeTypeBuilder{ std::make_unique<NodeTypeBuilder>(m_loaders) }
     { }
 
     NodeBuilder::~NodeBuilder() = default;
@@ -202,7 +200,7 @@ namespace loader
                 );
             }
 
-            typeHandle = m_meshTypeBuilder->createType(nodeData, nameSuffix);
+            typeHandle = m_nodeTypeBuilder->createType(nodeData, nameSuffix);
             if (!typeHandle) return typeHandle;
         }
 

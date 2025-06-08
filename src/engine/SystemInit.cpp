@@ -27,9 +27,10 @@
 
 #include "nav/NavigationSystem.h"
 
+
+#include "registry/NodeTypeRegistry.h"
 #include "registry/NodeRegistry.h"
 #include "registry/ModelRegistry.h"
-#include "registry/MeshTypeRegistry.h"
 #include "registry/EntityRegistry.h"
 #include "registry/ViewportRegistry.h"
 #include "registry/ControllerRegistry.h"
@@ -65,7 +66,7 @@ void SystemInit::init() noexcept
     ProgramRegistry::init();
     ControllerRegistry::init();
     NodeRegistry::init();
-    MeshTypeRegistry::init();
+    NodeTypeRegistry::init();
     ModelRegistry::init();
     EntityRegistry::init();
     ViewportRegistry::init();
@@ -94,7 +95,7 @@ void SystemInit::release() noexcept
     ProgramRegistry::release();
     ControllerRegistry::release();
     NodeRegistry::release();
-    MeshTypeRegistry::release();
+    NodeTypeRegistry::release();
     ModelRegistry::release();
     EntityRegistry::release();
     ViewportRegistry::release();

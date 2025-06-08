@@ -75,7 +75,7 @@ namespace loader {
     }
 
     std::unique_ptr<TextDefinition> TextLoader::createDefinition(
-        const mesh::MeshType* type,
+        const NodeType* type,
         const TextData& data,
         Loaders& loaders)
     {

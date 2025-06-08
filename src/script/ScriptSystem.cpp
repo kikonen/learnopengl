@@ -24,9 +24,9 @@
 #include "script/ScriptEntry.h"
 
 #include "model/Node.h"
+#include "model/NodeType.h"
 
 #include "mesh/LodMesh.h"
-#include "mesh/MeshType.h"
 
 #include "user_type/LuaUtil.h"
 #include "user_type/LuaNode.h"

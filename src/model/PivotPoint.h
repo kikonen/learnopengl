@@ -13,9 +13,7 @@ enum class PivotAlignment : uint8_t {
     right
 };
 
-namespace mesh {
-    class MeshType;
-}
+class NodeType;
 
 struct PivotPoint {
     glm::vec3 m_offset{ 0.f };
@@ -26,6 +24,6 @@ struct PivotPoint {
         PivotAlignment::origin
     };
 
-    glm::vec3 resolve(const mesh::MeshType* type) const;
+    glm::vec3 resolve(const NodeType* type) const;
 };
 

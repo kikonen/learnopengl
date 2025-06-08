@@ -10,9 +10,9 @@ class RenderContext;
 
 class Program;
 class Node;
+class NodeType;
 
 namespace mesh {
-    class MeshType;
     struct LodMesh;
 }
 

@@ -11,13 +11,13 @@
 
 #include "shader/Shader.h"
 
-#include "model/NodeType.h"
 #include "model/PivotPoint.h"
 
 #include "BaseId.h"
 #include "BaseData.h"
 #include "FlagContainer.h"
 
+#include "NodeKind.h"
 #include "MaterialData.h"
 #include "CustomMaterialData.h"
 #include "CameraData.h"
@@ -38,7 +38,7 @@ namespace loader {
         bool enabled{ false };
         bool active{ false };
 
-        NodeType type{ NodeType::none };
+        NodeKind type{ NodeKind::none };
 
         BaseId baseId;
         BaseId parentBaseId;

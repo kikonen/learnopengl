@@ -18,9 +18,7 @@
 
 struct UpdateContext;
 
-namespace mesh {
-    class MeshType;
-}
+class NodeType;
 
 namespace physics {
     struct RayHit;

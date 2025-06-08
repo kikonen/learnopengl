@@ -25,8 +25,8 @@
 
 #include "mesh/LodMesh.h"
 #include "mesh/ModelMesh.h"
-#include "mesh/MeshType.h"
 
+#include "model/NodeType.h"
 #include "model/EntityFlags.h"
 
 #include "audio/Source.h"

@@ -16,9 +16,9 @@
 #include "shader/Program.h"
 
 #include "model/Node.h"
+#include "model/NodeType.h"
 
 #include "mesh/LodMesh.h"
-#include "mesh/MeshType.h"
 
 #include "component/LightDefinition.h"
 #include "component/Light.h"
@@ -61,7 +61,7 @@
 #include "EntitySSBO.h"
 
 #include "Registry.h"
-#include "MeshTypeRegistry.h"
+#include "NodeTypeRegistry.h"
 #include "EntityRegistry.h"
 #include "ModelRegistry.h"
 #include "ControllerRegistry.h"
@@ -80,7 +80,7 @@ namespace {
 
 
     std::unique_ptr<CameraComponent> createCameraComponent(
-        const mesh::MeshType* type)
+        const NodeType* type)
     {
         if (!type->m_cameraDefinition) return nullptr;
 
@@ -138,7 +138,7 @@ namespace {
     }
 
     std::unique_ptr<Light> createLight(
-        const mesh::MeshType* type)
+        const NodeType* type)
     {
         if (!type->m_lightDefinition) return nullptr;
 
@@ -166,7 +166,7 @@ namespace {
     }
 
     std::unique_ptr<particle::ParticleGenerator> createParticleGenerator(
-        const mesh::MeshType* type)
+        const NodeType* type)
     {
         if (!type->m_particleDefinition) return nullptr;
         auto generator = std::make_unique<particle::ParticleGenerator>();
@@ -175,7 +175,7 @@ namespace {
     }
 
     std::unique_ptr<TextGenerator> createTextGenerator(
-        const mesh::MeshType* type)
+        const NodeType* type)
     {
         if (!type->m_textDefinition) return nullptr;
 
@@ -197,7 +197,7 @@ namespace {
     }
 
     std::unique_ptr<audio::Listener> createAudioListener(
-        const mesh::MeshType* type)
+        const NodeType* type)
     {
         if (!type->m_audioListenerDefinition) return nullptr;
 
@@ -233,7 +233,7 @@ namespace {
     }
 
     std::unique_ptr<std::vector<audio::Source>> createAudioSources(
-        const mesh::MeshType* type)
+        const NodeType* type)
     {
         if (!type->m_audioSourceDefinitions) return nullptr;
 
@@ -740,7 +740,7 @@ void NodeRegistry::attachListeners()
     dispatcherView->addListener(
         event::Type::type_prepare_view,
         [this](const event::Event& e) {
-            auto& data = e.body.meshType;
+            auto& data = e.body.nodeType;
             auto* type = pool::TypeHandle::toType(data.target);
             if (!type) return;
             type->prepareRT({ m_registry });
@@ -877,7 +877,7 @@ void NodeRegistry::bindNode(
     // NOTE KI type must be prepared *before* node
     {
         event::Event evt { event::Type::type_prepare_view };
-        evt.body.meshType.target = node->m_typeHandle.toId();
+        evt.body.nodeType.target = node->m_typeHandle.toId();
         m_registry->m_dispatcherView->send(evt);
     }
 
@@ -978,7 +978,7 @@ void NodeRegistry::bindSkybox(
 
     {
         event::Event evt { event::Type::type_prepare_view };
-        evt.body.meshType.target = node->m_typeHandle.toId();
+        evt.body.nodeType.target = node->m_typeHandle.toId();
         m_registry->m_dispatcherView->send(evt);
     }
 }

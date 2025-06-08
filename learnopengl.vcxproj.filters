@@ -234,7 +234,7 @@
     <ClCompile Include="src\registry\ModelRegistry.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\registry\MeshTypeRegistry.cpp">
+    <ClCompile Include="src\registry\NodeTypeRegistry.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\backend\DrawBuffer.cpp">
@@ -504,7 +504,7 @@
     <ClCompile Include="src\mesh\Mesh.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\mesh\MeshType.cpp">
+    <ClCompile Include="src\model\NodeType.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\mesh\ModelLoader.cpp">
@@ -1179,7 +1179,7 @@
     <ClCompile Include="src\script\api\CancelMultiple.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\loader\MeshTypeBuilder.cpp">
+    <ClCompile Include="src\loader\NodeTypeBuilder.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\loader\NodeBuilder.cpp">
@@ -1439,7 +1439,7 @@
     <ClInclude Include="src\registry\ModelRegistry.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\registry\MeshTypeRegistry.h">
+    <ClInclude Include="src\registry\NodeTypeRegistry.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\render\BatchEntry.h">
@@ -1832,7 +1832,7 @@
     <ClInclude Include="src\mesh\Index.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\mesh\TypeFlags.h">
+    <ClInclude Include="src\model\TypeFlags.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\mesh\vao\PositionEntry.h">
@@ -1859,7 +1859,7 @@
     <ClInclude Include="src\mesh\vao\NormalEntry.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\model\NodeType.h">
+    <ClInclude Include="src\loader\NodeKind.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\text\FontHandle.h">
@@ -1871,7 +1871,7 @@
     <ClInclude Include="src\mesh\Mesh.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\mesh\MeshType.h">
+    <ClInclude Include="src\model\NodeType.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\mesh\ModelLoader.h">
@@ -2645,7 +2645,7 @@
     <ClInclude Include="src\component\LightType.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\loader\MeshTypeBuilder.h">
+    <ClInclude Include="src\loader\NodeTypeBuilder.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\loader\NodeBuilder.h">

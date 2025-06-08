@@ -1,9 +1,9 @@
 #include "PivotPoint.h"
 
-#include "mesh/MeshType.h"
+#include "model/NodeType.h"
 
 
-glm::vec3 PivotPoint::resolve(const mesh::MeshType* type) const
+glm::vec3 PivotPoint::resolve(const NodeType* type) const
 {
     glm::vec3 pivot{ 0.f };
 

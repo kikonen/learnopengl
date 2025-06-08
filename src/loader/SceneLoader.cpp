@@ -21,8 +21,6 @@
 
 #include "material/Material.h"
 
-#include "mesh/MeshType.h"
-
 #include "component/Light.h"
 #include "component/CameraComponent.h"
 

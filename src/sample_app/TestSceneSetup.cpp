@@ -12,14 +12,14 @@
 #include "ki/sid.h"
 
 #include "mesh/LodMesh.h"
-#include "mesh/MeshType.h"
 
 #include "model/Node.h"
+#include "model/NodeType.h"
 
 #include "event/Dispatcher.h"
 
 #include "registry/Registry.h"
-#include "registry/MeshTypeRegistry.h"
+#include "registry/NodeTypeRegistry.h"
 #include "registry/NodeRegistry.h"
 #include "registry/ModelRegistry.h"
 #include "registry/ViewportRegistry.h"

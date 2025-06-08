@@ -9,18 +9,18 @@
 class RenderContext;
 
 //
-// NOTE KI main purpsoe of this registry is to delete MeshType instances
+// NOTE KI main purpsoe of this registry is to delete NodeType instances
 //
-class MeshTypeRegistry {
+class NodeTypeRegistry {
 public:
     static void init() noexcept;
     static void release() noexcept;
-    static MeshTypeRegistry& get() noexcept;
+    static NodeTypeRegistry& get() noexcept;
 
-    MeshTypeRegistry();
-    MeshTypeRegistry& operator=(const MeshTypeRegistry&) = delete;
+    NodeTypeRegistry();
+    NodeTypeRegistry& operator=(const NodeTypeRegistry&) = delete;
 
-    ~MeshTypeRegistry();
+    ~NodeTypeRegistry();
 
     void clear();
 
