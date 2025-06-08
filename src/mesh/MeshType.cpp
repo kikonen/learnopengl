@@ -104,12 +104,6 @@ namespace mesh {
 
         for (auto& lodMesh : m_lodMeshes) {
             lodMesh.registerMaterial();
-
-            const auto& opt = lodMesh.m_drawOptions;
-            m_flags.anySolid |= opt.isSolid();
-            m_flags.anyAlpha |= opt.isAlpha();
-            m_flags.anyBlend |= opt.isBlend();
-            m_flags.anyAnimation |= lodMesh.m_flags.useAnimation;
         }
     }
 
