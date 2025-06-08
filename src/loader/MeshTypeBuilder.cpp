@@ -132,6 +132,17 @@ namespace loader
         }
 
         {
+            auto& flags = type->m_flags;
+            for (auto& lodMesh : type->getLodMeshes()) {
+                const auto& opt = lodMesh.m_drawOptions;
+                flags.anySolid |= opt.isSolid();
+                flags.anyAlpha |= opt.isAlpha();
+                flags.anyBlend |= opt.isBlend();
+                flags.anyAnimation |= lodMesh.m_flags.useAnimation;
+            }
+        }
+
+        {
             type->setCustomMaterial(
                 m_loaders->m_customMaterialLoader.createCustomMaterial(
                     nodeData.customMaterial,
