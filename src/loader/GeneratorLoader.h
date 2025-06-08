@@ -8,9 +8,7 @@
 
 class NodeGenerator;
 
-namespace mesh {
-    class MeshType;
-}
+class NodeType;
 
 namespace loader {
     class Loaders;
@@ -32,7 +30,7 @@ namespace loader {
 
         std::unique_ptr<NodeGenerator> createGenerator(
             const GeneratorData& data,
-            const mesh::MeshType* type,
+            const NodeType* type,
             Loaders& loaders);
     };
 }

@@ -15,9 +15,8 @@
 #include "audio/size.h"
 
 #include "model/NodeState.h"
-
-#include "mesh/MeshType.h"
-#include "mesh/TypeFlags.h"
+#include "model/NodeType.h"
+#include "model/TypeFlags.h"
 
 #include "registry/NodeRegistry.h"
 
@@ -85,7 +84,7 @@ public:
     inline ki::node_id getId() const noexcept { return m_handle.m_id; }
     inline pool::NodeHandle toHandle() const noexcept { return m_handle; }
 
-    inline mesh::MeshType* getType() const noexcept
+    inline NodeType* getType() const noexcept
     {
         return m_typeHandle.toType();
     }
@@ -182,7 +181,7 @@ public:
 
     ki::node_id m_ignoredBy{ 0 };
 
-    mesh::TypeFlags m_typeFlags;
+    TypeFlags m_typeFlags;
     uint8_t m_layer{ 0 };
 
 public:

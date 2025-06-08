@@ -6,9 +6,9 @@
 #include "material/Material.h"
 
 #include "model/Node.h"
+#include "model/NodeType.h"
 
 #include "mesh/LodMesh.h"
-#include "mesh/MeshType.h"
 #include "mesh/MeshFlags.h"
 
 #include "generator/GridGenerator.h"
@@ -168,7 +168,7 @@ namespace loader {
 
     std::unique_ptr<NodeGenerator> GeneratorLoader::createGenerator(
         const GeneratorData& data,
-        const mesh::MeshType* type,
+        const NodeType* type,
         Loaders& loaders)
     {
         if (!data.enabled) return nullptr;

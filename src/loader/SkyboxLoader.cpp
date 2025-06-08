@@ -7,19 +7,18 @@
 #include "pool/NodeHandle.h"
 
 #include "mesh/LodMesh.h"
-#include "mesh/MeshType.h"
-
 #include "mesh/MeshSet.h"
 
 #include "event/Dispatcher.h"
 
 #include "model/Node.h"
+#include "model/NodeType.h"
 
 #include "shader/ProgramRegistry.h"
 
 #include "registry/Registry.h"
 #include "registry/ModelRegistry.h"
-#include "registry/MeshTypeRegistry.h"
+#include "registry/NodeTypeRegistry.h"
 
 #include "scene/SkyboxMaterial.h"
 

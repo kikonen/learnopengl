@@ -219,7 +219,7 @@
     <ClCompile Include="src\event\actions.cpp" />
     <ClCompile Include="src\loader\DecalLoaderr.cpp" />
     <ClCompile Include="src\loader\MaterialUpdaterLoader.cpp" />
-    <ClCompile Include="src\loader\MeshTypeBuilder.cpp" />
+    <ClCompile Include="src\loader\NodeTypeBuilder.cpp" />
     <ClCompile Include="src\loader\NodeBuilder.cpp" />
     <ClCompile Include="src\loader\value\PhysicsCategoryValue.cpp" />
     <ClCompile Include="src\loader\value\PhysicsGeomValue.cpp" />
@@ -435,7 +435,7 @@
     <ClCompile Include="src\asset\OBB.cpp" />
     <ClCompile Include="src\registry\EntityRegistry.cpp" />
     <ClCompile Include="src\registry\ModelRegistry.cpp" />
-    <ClCompile Include="src\registry\MeshTypeRegistry.cpp" />
+    <ClCompile Include="src\registry\NodeTypeRegistry.cpp" />
     <ClCompile Include="src\registry\Registry.cpp" />
     <ClCompile Include="src\shader\ProgramRegistry.cpp" />
     <ClCompile Include="src\asset\FrustumNew.cpp" />
@@ -499,7 +499,7 @@
     <ClCompile Include="src\mesh\Mesh.cpp" />
     <ClCompile Include="src\render\Batch.cpp" />
     <ClCompile Include="src\renderer\Renderer.cpp" />
-    <ClCompile Include="src\mesh\MeshType.cpp" />
+    <ClCompile Include="src\model\NodeType.cpp" />
     <ClCompile Include="src\generator\AsteroidBeltGenerator.cpp" />
     <ClCompile Include="src\controller\NodeController.cpp" />
     <ClCompile Include="src\util\Perlin.cpp" />
@@ -615,7 +615,7 @@
     <ClInclude Include="src\loader\DecalLoader.h" />
     <ClInclude Include="src\loader\MaterialUpdaterData.h" />
     <ClInclude Include="src\loader\MaterialUpdaterLoader.h" />
-    <ClInclude Include="src\loader\MeshTypeBuilder.h" />
+    <ClInclude Include="src\loader\NodeTypeBuilder.h" />
     <ClInclude Include="src\loader\NodeBuilder.h" />
     <ClInclude Include="src\loader\value\PhysicsCategoryValue.h" />
     <ClInclude Include="src\loader\value\PhysicsGeomValue.h" />
@@ -814,7 +814,7 @@
     <ClInclude Include="src\mesh\Index.h" />
     <ClInclude Include="src\mesh\InstanceSSBO.h" />
     <ClInclude Include="src\mesh\LodMesh.h" />
-    <ClInclude Include="src\mesh\TypeFlags.h" />
+    <ClInclude Include="src\model\TypeFlags.h" />
     <ClInclude Include="src\mesh\vao\PositionEntry.h" />
     <ClInclude Include="src\mesh\vao\VertexPositionVBO.h" />
     <ClInclude Include="src\mesh\TextMesh.h" />
@@ -952,7 +952,7 @@
     <ClInclude Include="src\physics\PhysicsSystem.h" />
     <ClInclude Include="src\query\TimeElapsedQuery.h" />
     <ClInclude Include="src\registry\ControllerRegistry.h" />
-    <ClInclude Include="src\model\NodeType.h" />
+    <ClInclude Include="src\loader\NodeKind.h" />
     <ClInclude Include="src\registry\Registry.h" />
     <ClInclude Include="src\material\ImageRegistry.h" />
     <ClInclude Include="src\material\MaterialRegistry.h" />
@@ -965,7 +965,7 @@
     <ClInclude Include="src\registry\EntitySSBO.h" />
     <ClInclude Include="src\registry\EntityRegistry.h" />
     <ClInclude Include="src\registry\ModelRegistry.h" />
-    <ClInclude Include="src\registry\MeshTypeRegistry.h" />
+    <ClInclude Include="src\registry\NodeTypeRegistry.h" />
     <ClInclude Include="src\shader\ProgramRegistry.h" />
     <ClInclude Include="src\script\api\Cancel.h" />
     <ClInclude Include="src\script\api\Command.h" />
@@ -1030,7 +1030,7 @@
     <ClInclude Include="src\mesh\Mesh.h" />
     <ClInclude Include="src\render\Batch.h" />
     <ClInclude Include="src\renderer\Renderer.h" />
-    <ClInclude Include="src\mesh\MeshType.h" />
+    <ClInclude Include="src\model\NodeType.h" />
     <ClInclude Include="src\generator\AsteroidBeltGenerator.h" />
     <ClInclude Include="src\controller\NodeController.h" />
     <ClInclude Include="src\util\Perlin.h" />

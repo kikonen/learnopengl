@@ -107,7 +107,7 @@ namespace backend {
                 isBlend() == o.isBlend();
         }
 
-        // NOTE KI for MeshTypeKey
+        // NOTE KI for NodeTypeKey
         inline bool operator<(const DrawOptions& o) const noexcept {
             return std::tie(m_kindBits, m_renderBack, m_clip, m_lineMode, m_noDepth, m_reverseFrontFace, m_type, m_mode) <
                 std::tie(o.m_kindBits, o.m_renderBack, o.m_clip, o.m_lineMode, o.m_noDepth, o.m_reverseFrontFace, o.m_type, o.m_mode);

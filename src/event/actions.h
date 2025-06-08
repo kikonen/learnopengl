@@ -60,7 +60,7 @@ namespace event {
         ki::node_id parentId{ 0 };
     };
 
-    struct MeshTypeAction {
+    struct NodeTypeAction {
         ki::type_id target{ 0 };
     };
 

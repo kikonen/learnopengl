@@ -27,7 +27,7 @@
 #include "registry/EntityRegistry.h"
 #include "registry/ViewportRegistry.h"
 #include "registry/ControllerRegistry.h"
-#include "registry/MeshTypeRegistry.h"
+#include "registry/NodeTypeRegistry.h"
 
 #include "engine/PrepareContext.h"
 #include "engine/UpdateContext.h"
@@ -454,8 +454,8 @@ void Scene::bind(const RenderContext& ctx)
         m_shadowMapRenderer->bind(ctx);
     }
 
-    MeshTypeRegistry::get().updateMaterials(ctx);
-    MeshTypeRegistry::get().bindMaterials(ctx);
+    NodeTypeRegistry::get().updateMaterials(ctx);
+    NodeTypeRegistry::get().bindMaterials(ctx);
 
     m_renderData->bind();
 

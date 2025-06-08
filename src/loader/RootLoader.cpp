@@ -5,11 +5,9 @@
 #include "pool/NodeHandle.h"
 
 #include "model/Node.h"
+#include "model/NodeType.h"
 
 #include "event/Dispatcher.h"
-
-#include "mesh/LodMesh.h"
-#include "mesh/MeshType.h"
 
 #include "registry/Registry.h"
 

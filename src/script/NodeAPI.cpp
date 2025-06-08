@@ -2,7 +2,7 @@
 
 #include "model/Node.h"
 #include "model/NodeState.h"
-#include "mesh/MeshType.h"
+#include "model/NodeType.h"
 
 #include "registry/NodeRegistry.h"
 

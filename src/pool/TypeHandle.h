@@ -4,14 +4,12 @@
 
 #include "ki/size.h"
 
-namespace mesh {
-    class MeshType;
-}
+class NodeType;
 
 namespace pool {
     struct TypeHandle final
     {
-        friend class mesh::MeshType;
+        friend class NodeType;
 
     public:
         TypeHandle()
@@ -53,7 +51,7 @@ namespace pool {
             return *this;
         }
 
-        TypeHandle& operator=(const mesh::MeshType* type) noexcept;
+        TypeHandle& operator=(const NodeType* type) noexcept;
 
         bool operator==(const TypeHandle& o) const noexcept
         {
@@ -77,14 +75,14 @@ namespace pool {
             m_id = 0;
         }
 
-        mesh::MeshType* toType() const noexcept;
+        NodeType* toType() const noexcept;
         ki::type_id toId() const noexcept { return m_id; }
 
         static TypeHandle allocate(ki::type_id id) noexcept;
 
         static TypeHandle toHandle(ki::type_id id) noexcept;
 
-        static mesh::MeshType* toType(ki::type_id id) noexcept;
+        static NodeType* toType(ki::type_id id) noexcept;
 
         static void clear() noexcept;
 

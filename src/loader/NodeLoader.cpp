@@ -15,11 +15,7 @@
 
 #include "shader/Shader.h"
 
-#include "mesh/LodMesh.h"
-#include "mesh/MeshType.h"
-
 #include "registry/Registry.h"
-#include "registry/ModelRegistry.h"
 
 #include "Context.h"
 #include "Loaders.h"
@@ -102,19 +98,19 @@ namespace loader {
             else if (k == "type") {
                 std::string type = readString(v);
                 if (type == "origo") {
-                    data.type = NodeType::origo;
+                    data.type = NodeKind::origo;
                 }
                 else if (type == "container") {
-                    data.type = NodeType::container;
+                    data.type = NodeKind::container;
                 }
                 else if (type == "model") {
-                    data.type = NodeType::model;
+                    data.type = NodeKind::model;
                 }
                 else if (type == "text") {
-                    data.type = NodeType::text;
+                    data.type = NodeKind::text;
                 }
                 else if (type == "terrain") {
-                    data.type = NodeType::terrain;
+                    data.type = NodeKind::terrain;
                 }
                 else {
                     reportUnknown("node_type", k, v);
@@ -290,12 +286,12 @@ namespace loader {
             }
         }
 
-        if (data.type == NodeType::none) {
+        if (data.type == NodeKind::none) {
             if (!data.meshes.empty()) {
-                data.type = NodeType::model;
+                data.type = NodeKind::model;
             }
             if (data.text.enabled) {
-                data.type = NodeType::text;
+                data.type = NodeKind::text;
             }
         }
 
@@ -308,7 +304,7 @@ namespace loader {
             //    }
             //}
 
-            if (data.type == NodeType::none) {
+            if (data.type == NodeKind::none) {
                 auto msg = fmt::format("INVALID: type missing - id={}, name={}", data.baseId, data.name);
                 KI_INFO_OUT(msg);
                 //throw msg;
@@ -316,7 +312,7 @@ namespace loader {
             }
         }
 
-        if (data.type == NodeType::text) {
+        if (data.type == NodeKind::text) {
             for (auto& meshData : data.meshes) {
                 meshData.enabled = true;
             }

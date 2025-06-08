@@ -6,16 +6,16 @@
 #include "BaseLoader.h"
 
 struct Material;
+struct TypeFlags;
+class NodeType;
 
 namespace pool {
     struct TypeHandle;
 }
 
 namespace mesh {
-    struct TypeFlags;
     struct MeshFlags;
     class MeshSet;
-    class MeshType;
     struct LodMesh;
 }
 
@@ -36,11 +36,11 @@ namespace loader {
 
     struct FlagContainer;
 
-    class MeshTypeBuilder
+    class NodeTypeBuilder
     {
     public:
-        MeshTypeBuilder(std::shared_ptr<Loaders> loaders);
-        ~MeshTypeBuilder();
+        NodeTypeBuilder(std::shared_ptr<Loaders> loaders);
+        ~NodeTypeBuilder();
 
         pool::TypeHandle createType(
             const NodeData& nodeData,
@@ -48,37 +48,37 @@ namespace loader {
 
     private:
         void resolveMaterials(
-            mesh::MeshType* type,
+            NodeType* type,
             mesh::LodMesh& lodMesh,
             const NodeData& nodeData,
             const MeshData& meshData,
             const LodData* lodData);
 
         void resolveMeshes(
-            mesh::MeshType* type,
+            NodeType* type,
             const NodeData& nodeData);
 
         void resolveMesh(
-            mesh::MeshType* type,
+            NodeType* type,
             const NodeData& nodeData,
             const MeshData& meshData,
             int index);
 
         // @return count of meshes added
         int resolveModelMesh(
-            mesh::MeshType* type,
+            NodeType* type,
             const NodeData& nodeData,
             const MeshData& meshData,
             int index);
 
         void resolveLodMesh(
-            mesh::MeshType* type,
+            NodeType* type,
             const NodeData& nodeData,
             const MeshData& meshData,
             mesh::LodMesh& lodMesh);
 
         const LodData* resolveLod(
-            mesh::MeshType* type,
+            NodeType* type,
             const NodeData& nodeData,
             const MeshData& meshData,
             mesh::LodMesh& lodMesh);
@@ -93,12 +93,12 @@ namespace loader {
             mesh::MeshSet& meshSet);
 
         void resolveAttachments(
-            mesh::MeshType* type,
+            NodeType* type,
             const NodeData& nodeData);
 
         void assignTypeFlags(
             const NodeData& nodeData,
-            mesh::TypeFlags& flags);
+            TypeFlags& flags);
 
         void assignMeshFlags(
             const FlagContainer& container,

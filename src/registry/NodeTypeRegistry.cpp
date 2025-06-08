@@ -1,57 +1,58 @@
-#include "MeshTypeRegistry.h"
+#include "NodeTypeRegistry.h"
 
 #include "pool/TypeHandle.h"
 
 #include "mesh/LodMesh.h"
-#include "mesh/MeshType.h"
 
 #include "render/RenderContext.h"
 
 #include "material/CustomMaterial.h"
 
+#include "model/NodeType.h"
+
 namespace
 {
     thread_local std::exception_ptr lastException = nullptr;
 
-    static MeshTypeRegistry* s_registry{ nullptr };
+    static NodeTypeRegistry* s_registry{ nullptr };
 }
 
-void MeshTypeRegistry::init() noexcept
+void NodeTypeRegistry::init() noexcept
 {
     assert(!s_registry);
-    s_registry = new MeshTypeRegistry();
+    s_registry = new NodeTypeRegistry();
 }
 
-void MeshTypeRegistry::release() noexcept
+void NodeTypeRegistry::release() noexcept
 {
     auto* s = s_registry;
     s_registry = nullptr;
     delete s;
 }
 
-MeshTypeRegistry& MeshTypeRegistry::get() noexcept
+NodeTypeRegistry& NodeTypeRegistry::get() noexcept
 {
     assert(s_registry);
     return *s_registry;
 }
 
-MeshTypeRegistry::MeshTypeRegistry()
+NodeTypeRegistry::NodeTypeRegistry()
 {
     clear();
 }
 
-MeshTypeRegistry::~MeshTypeRegistry()
+NodeTypeRegistry::~NodeTypeRegistry()
 {
     clear();
 }
 
-void MeshTypeRegistry::clear()
+void NodeTypeRegistry::clear()
 {
     pool::TypeHandle::clear();
     m_customMaterialTypes.clear();
 }
 
-void MeshTypeRegistry::registerCustomMaterial(
+void NodeTypeRegistry::registerCustomMaterial(
     pool::TypeHandle typeHandle)
 {
     auto* type = typeHandle.toType();
@@ -60,14 +61,14 @@ void MeshTypeRegistry::registerCustomMaterial(
     m_customMaterialTypes.push_back(typeHandle);
 }
 
-void MeshTypeRegistry::updateMaterials(const RenderContext& ctx)
+void NodeTypeRegistry::updateMaterials(const RenderContext& ctx)
 {
     for (auto& typeHandle : m_customMaterialTypes) {
         typeHandle.toType()->m_customMaterial.get()->updateRT(ctx);
     }
 }
 
-void MeshTypeRegistry::bindMaterials(const RenderContext& ctx)
+void NodeTypeRegistry::bindMaterials(const RenderContext& ctx)
 {
     for (auto& typeHandle : m_customMaterialTypes) {
         typeHandle.toType()->m_customMaterial->bindTextures(ctx.m_state);

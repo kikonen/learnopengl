@@ -6,8 +6,7 @@
 
 #include "ki/size.h"
 
-#include "mesh/LodMesh.h"
-#include "mesh/MeshType.h"
+#include "model/NodeType.h"
 
 #include "Pool_impl.h"
 #include "IdGenerator.h"
@@ -18,7 +17,7 @@ namespace {
     constexpr size_t MAX_POOL_SIZE{ 100000 };
 
     std::mutex m_lock;
-    pool::Pool<mesh::MeshType> s_pool{ MAX_POOL_SIZE };
+    pool::Pool<NodeType> s_pool{ MAX_POOL_SIZE };
 
     std::unordered_map<ki::type_id, uint32_t> m_IdToIndex;
 }
@@ -26,7 +25,7 @@ namespace {
 namespace pool {
     TypeHandle TypeHandle::NULL_HANDLE{ 0, 0 };
 
-    TypeHandle& TypeHandle::operator=(const mesh::MeshType* type) noexcept
+    TypeHandle& TypeHandle::operator=(const NodeType* type) noexcept
     {
         if (type) {
             m_handleIndex = type->m_handle.m_handleIndex;
@@ -35,7 +34,7 @@ namespace pool {
         return *this;
     }
 
-    mesh::MeshType* TypeHandle::toType() const noexcept
+    NodeType* TypeHandle::toType() const noexcept
     {
         if (!m_handleIndex) return nullptr;
 
@@ -80,7 +79,7 @@ namespace pool {
         return { it->second, id };
     }
 
-    mesh::MeshType* TypeHandle::toType(ki::type_id id) noexcept
+    NodeType* TypeHandle::toType(ki::type_id id) noexcept
     {
         std::lock_guard lock(m_lock);
 

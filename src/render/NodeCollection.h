@@ -14,20 +14,20 @@ namespace editor {
 
 namespace render {
     //// https://stackoverflow.com/questions/5733254/how-can-i-create-my-own-comparator-for-a-map
-    //struct MeshTypeKey {
+    //struct NodeTypeKey {
     //    // https://stackoverflow.com/questions/5733254/how-can-i-create-my-own-comparator-for-a-map
-    //    MeshTypeKey(pool::TypeHandle typeHandle)
+    //    NodeTypeKey(pool::TypeHandle typeHandle)
     //        : m_typeHandle(typeHandle)
     //    {
     //    }
 
-    //    bool operator<(const MeshTypeKey& o) const;
+    //    bool operator<(const NodeTypeKey& o) const;
 
     //    const pool::TypeHandle m_typeHandle;
     //};
 
     using NodeVector = std::vector<pool::NodeHandle>;
-    //using MeshTypeMap = std::map<MeshTypeKey, NodeVector>;
+    //using NodeTypeMap = std::map<NodeTypeKey, NodeVector>;
 
 
     // Collection of nodes in *single* scene

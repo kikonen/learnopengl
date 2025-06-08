@@ -28,7 +28,7 @@ namespace event {
         std::unique_ptr<BlobData> blob;
         union Body {
             NodeAction node;
-            MeshTypeAction meshType;
+            NodeTypeAction nodeType;
             ControlAction control;
             AudioSourceAction audioSource;
             AudioListenerAction audioListener;

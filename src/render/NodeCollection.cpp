@@ -4,13 +4,13 @@
 
 namespace render {
     //// https://stackoverflow.com/questions/5733254/how-can-i-create-my-own-comparator-for-a-map
-    //struct MeshTypeComparator {
-    //    bool operator()(const mesh::MeshType* a, const mesh::MeshType* b) const {
+    //struct NodeTypeComparator {
+    //    bool operator()(const mesh::NodeType* a, const mesh::NodeType* b) const {
     //        return a->m_handle.m_id < b->m_handle.m_id;
     //    }
     //};
 
-    //bool MeshTypeKey::operator<(const MeshTypeKey& o) const {
+    //bool NodeTypeKey::operator<(const NodeTypeKey& o) const {
     //    const auto& a = m_typeHandle.toType();
     //    const auto& b = o.m_typeHandle.toType();
 

@@ -17,6 +17,7 @@
 #include "event/Dispatcher.h"
 
 #include "model/Node.h"
+#include "model/NodeType.h"
 
 #include "render/NodeDraw.h"
 #include "render/FrameBuffer.h"
@@ -24,7 +25,6 @@
 #include "animation/RigContainer.h"
 #include "animation/RigSocket.h"
 
-#include "mesh/MeshType.h"
 #include "mesh/LodMesh.h"
 #include "mesh/ModelMesh.h"
 
