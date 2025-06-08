@@ -9,6 +9,8 @@ namespace ki
 {
     struct StringID
     {
+        static void registerSystemId(ki::sid_t sid, const std::string& name) noexcept;
+
         static const std::string& getName(ki::sid_t sid) noexcept;
 
         ki::sid_t m_sid;

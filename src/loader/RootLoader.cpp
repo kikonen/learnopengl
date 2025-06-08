@@ -47,9 +47,10 @@ namespace loader
     {
         const auto& assets = Assets::get();
 
-        auto typeHandle = pool::TypeHandle::allocate();
+        std::string name = "<root>";
+        auto typeHandle = pool::TypeHandle::allocate(SID(name));
         auto* type = typeHandle.toType();
-        type->setName("<root>");
+        type->setName(name);
 
         auto& flags = type->m_flags;
         flags.invisible = true;
@@ -59,6 +60,8 @@ namespace loader
 
         node->setName("<root>");
         node->m_typeHandle = typeHandle;
+        node->m_typeFlags = type->m_flags;
+        node->m_layer = type->m_layer;
 
         {
             NodeState state{};

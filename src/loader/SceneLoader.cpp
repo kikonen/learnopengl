@@ -445,9 +445,6 @@ namespace loader {
         if (!nodeData.enabled) return;
 
         if (pass == 0) {
-            if (nodeData.name == "Linden tree forest - part 1")
-                int x = 0;
-
             ki::node_id sid;
             std::string resolvedSID;
             {
@@ -457,7 +454,7 @@ namespace loader {
                 }
 
                 bool automatic = nodeData.baseId.m_path == nodeRoot.base.baseId.m_path;
-                auto [k, v] = resolveId(
+                auto [k, v] = resolveNodeId(
                     nodeData.baseId,
                     cloneIndex,
                     tile);
@@ -477,7 +474,7 @@ namespace loader {
             // NOTE KI parentId can be *MISSING*
             // but it cannot be duplicate
             if (!nodeData.parentBaseId.empty()) {
-                auto [sid, resolvedSID] = resolveId(
+                auto [sid, resolvedSID] = resolveNodeId(
                     nodeData.parentBaseId,
                     cloneIndex,
                     tile);

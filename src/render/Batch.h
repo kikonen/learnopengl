@@ -15,7 +15,6 @@ namespace backend {
 }
 
 namespace mesh {
-    class MeshType;
     struct LodMesh;
     struct MeshTransform;
 }
@@ -49,22 +48,16 @@ namespace render {
 
         void addSnapshot(
             const RenderContext& ctx,
-            const mesh::MeshType* type,
+            const Node* node,
             const std::function<ki::program_id (const mesh::LodMesh&)>& programSelector,
             uint8_t kindBits,
             const Snapshot& snapshot,
             uint32_t entityIndex) noexcept;
 
-        //void addSnapshots(
-        //    const RenderContext& ctx,
-        //    mesh::MeshType* type,
-        //    std::span<const Snapshot> snapshots,
-        //    std::span<uint32_t> entityIndeces) noexcept;
-
         // NOTE KI lightweigtht "transform only" meshes
         void addSnapshotsInstanced(
             const RenderContext& ctx,
-            const mesh::MeshType* type,
+            const Node* node,
             const std::function<ki::program_id (const mesh::LodMesh&)>& programSelector,
             uint8_t kindBits,
             const Snapshot& snapshot,
@@ -83,10 +76,9 @@ namespace render {
 
         void draw(
             const RenderContext& ctx,
-            mesh::MeshType* type,
+            Node* node,
             const std::function<ki::program_id (const mesh::LodMesh&)>& programSelector,
-            uint8_t kindBits,
-            Node& node);
+            uint8_t kindBits);
 
         bool isFlushed() const noexcept;
 

@@ -80,7 +80,7 @@ namespace {
 
 
     std::unique_ptr<CameraComponent> createCameraComponent(
-        mesh::MeshType* type)
+        const mesh::MeshType* type)
     {
         if (!type->m_cameraDefinition) return nullptr;
 
@@ -138,7 +138,7 @@ namespace {
     }
 
     std::unique_ptr<Light> createLight(
-        mesh::MeshType* type)
+        const mesh::MeshType* type)
     {
         if (!type->m_lightDefinition) return nullptr;
 
@@ -148,7 +148,7 @@ namespace {
 
         light->m_enabled = true;
 
-        //auto [targetId, targetResolvedSID] = resolveId(data.targetBaseId, cloneIndex, tile);
+        //auto [targetId, targetResolvedSID] = resolveNodeId(data.targetBaseId, cloneIndex, tile);
         //light->setTargetId(targetId);
 
         light->m_linear = data.m_linear;
@@ -165,7 +165,8 @@ namespace {
         return light;
     }
 
-    std::unique_ptr<particle::ParticleGenerator> createParticleGenerator(mesh::MeshType* type)
+    std::unique_ptr<particle::ParticleGenerator> createParticleGenerator(
+        const mesh::MeshType* type)
     {
         if (!type->m_particleDefinition) return nullptr;
         auto generator = std::make_unique<particle::ParticleGenerator>();
@@ -416,10 +417,9 @@ void NodeRegistry::updateWT(const UpdateContext& ctx)
             if (physicsSystem.isEnabled() &&
                 (!generator || !generator->isLightWeight()))
             {
-                const auto* type = node->getType();
-                if (type->m_flags.dynamicBounds || type->m_flags.staticBounds)
+                if (node->m_typeFlags.dynamicBounds || node->m_typeFlags.staticBounds)
                 {
-                    updateBounds(ctx, state, parentState, type, physicsSystem);
+                    updateBounds(ctx, state, parentState, node, physicsSystem);
                     state.updateModelMatrix(parentState);
                 }
             }
@@ -752,7 +752,6 @@ void NodeRegistry::handleNodeAdded(Node* node)
     if (!node) return;
 
     auto handle = node->toHandle();
-    auto* type = node->m_typeHandle.toType();
 
     node->prepareRT({ m_registry });
 
@@ -812,7 +811,7 @@ void NodeRegistry::attachNode(
     type->prepareWT({ m_registry });
     node->prepareWT({ m_registry }, m_states[node->m_entityIndex]);
 
-    if (type->m_flags.skybox) {
+    if (node->m_typeFlags.skybox) {
         return bindSkybox(node->toHandle());
     }
 }
@@ -835,18 +834,18 @@ void NodeRegistry::bindNode(
 
     KI_INFO(fmt::format("BIND_NODE: {}", node->str()));
 
-    auto* type = node->getType();
-
     node->m_entityIndex = static_cast<uint32_t>(m_handles.size());
 
     {
+        const auto* type = node->getType();
+
         node->m_camera = createCameraComponent(type);
         node->m_light = createLight(type);
         node->m_particleGenerator = createParticleGenerator(type);
         node->m_audioSources = createAudioSources(type);
         node->m_audioListener = createAudioListener(type);
         node->m_camera = createCameraComponent(type);
-        if (type->m_flags.text) {
+        if (node->m_typeFlags.text) {
             node->m_generator = createTextGenerator(type);
         }
     }
@@ -988,7 +987,7 @@ void NodeRegistry::updateBounds(
     const UpdateContext& ctx,
     NodeState& state,
     const NodeState& parentState,
-    const mesh::MeshType* type,
+    const Node* node,
     const physics::PhysicsSystem& physicsSystem)
 {
     if (state.boundStaticDone) return;
@@ -1002,7 +1001,7 @@ void NodeRegistry::updateBounds(
         boundsMask);
 
     if (success) {
-        if (type->m_flags.staticBounds) {
+        if (node->m_typeFlags.staticBounds) {
             state.boundStaticDone = true;
         }
         const auto y = level - parentState.getWorldPosition().y;

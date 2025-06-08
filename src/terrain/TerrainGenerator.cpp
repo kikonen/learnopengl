@@ -21,7 +21,6 @@
 #include "model/Node.h"
 
 #include "mesh/LodMesh.h"
-#include "mesh/MeshType.h"
 #include "mesh/MeshTransform.h"
 
 #include "mesh/MeshSet.h"
@@ -244,59 +243,62 @@ namespace terrain {
         }
     }
 
-    pool::TypeHandle TerrainGenerator::createType(
-        Registry* registry,
-        pool::TypeHandle containerTypeHandle)
-    {
-        auto* containerType = containerTypeHandle.toType();
-        auto typeHandle = pool::TypeHandle::allocate();
+    //// NOTE KI DEPRECATED
+    //pool::TypeHandle TerrainGenerator::createType(
+    //    Registry* registry,
+    //    pool::TypeHandle containerTypeHandle)
+    //{
+    //    auto* containerType = containerTypeHandle.toType();
 
-        auto* type = typeHandle.toType();
-        type->setName(containerType->getName());
+    //    std::string name = fmt::format("terrain_{}", containerType->getName());
+    //    auto typeHandle = pool::TypeHandle::allocate(SID(name));
 
-        if (const auto* layer = LayerInfo::findLayer(LAYER_MAIN); layer) {
-            type->m_layer = layer->m_index;
-        }
+    //    auto* type = typeHandle.toType();
+    //    type->setName(name);
 
-        auto& flags = type->m_flags;
-        flags = containerType->m_flags;
-        flags.invisible = false;
-        flags.terrain = true;
-        flags.contained = true;
+    //    if (const auto* layer = LayerInfo::findLayer(LAYER_MAIN); layer) {
+    //        type->m_layer = layer->m_index;
+    //    }
 
-        {
-            // TODO KI just generate primitive mesh
-            auto future = ModelRegistry::get().getMeshSet(
-                "",
-                m_modelsDir,
-                TERRAIN_QUAD_MESH_NAME,
-                false,
-                false);
-            const auto& meshSet = future.get();
-            //meshSet->setAABB(aabb);
+    //    auto& flags = type->m_flags;
+    //    flags = containerType->m_flags;
+    //    flags.invisible = false;
+    //    flags.terrain = true;
+    //    flags.contained = true;
 
-            {
-                m_material.tilingX = (float)m_worldTilesU;
-                m_material.tilingY = (float)m_worldTilesV;
-            }
+    //    {
+    //        // TODO KI just generate primitive mesh
+    //        auto future = ModelRegistry::get().getMeshSet(
+    //            "",
+    //            m_modelsDir,
+    //            TERRAIN_QUAD_MESH_NAME,
+    //            false,
+    //            false);
+    //        const auto& meshSet = future.get();
+    //        //meshSet->setAABB(aabb);
 
-            {
-                auto* type = typeHandle.toType();
+    //        {
+    //            m_material.tilingX = (float)m_worldTilesU;
+    //            m_material.tilingY = (float)m_worldTilesV;
+    //        }
 
-                type->addMeshSet(*meshSet);
+    //        {
+    //            auto* type = typeHandle.toType();
 
-                auto* lodMesh = type->modifyLodMesh(0);
+    //            type->addMeshSet(*meshSet);
 
-                //lodMesh->m_priority = containerType->m_priority;
-                lodMesh->setMaterial(&m_material);
-                lodMesh->registerMaterial();
+    //            auto* lodMesh = type->modifyLodMesh(0);
 
-                lodMesh->m_flags.tessellation = true;
-                lodMesh->m_drawOptions.m_mode = backend::DrawOptions::Mode::patches;
-                lodMesh->m_drawOptions.m_patchVertices = 3;
-            }
-        }
+    //            //lodMesh->m_priority = containerType->m_priority;
+    //            lodMesh->setMaterial(&m_material);
+    //            lodMesh->registerMaterial();
 
-        return typeHandle;
-    }
+    //            lodMesh->m_flags.tessellation = true;
+    //            lodMesh->m_drawOptions.m_mode = backend::DrawOptions::Mode::patches;
+    //            lodMesh->m_drawOptions.m_patchVertices = 3;
+    //        }
+    //    }
+
+    //    return typeHandle;
+    //}
 }

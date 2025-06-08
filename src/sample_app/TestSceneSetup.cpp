@@ -57,9 +57,10 @@ void TestSceneSetup::setupEffectExplosion()
 
         const auto& assets = Assets::get();
 
-        auto typeHandle = pool::TypeHandle::allocate();
+        std::string name = "<effect>";
+        auto typeHandle = pool::TypeHandle::allocate(SID(name));
         auto* type = typeHandle.toType();
-        type->setName("<effect>");
+        type->setName(name);
 
         //type->m_program = program;
         //type->m_flags.renderBack = true;

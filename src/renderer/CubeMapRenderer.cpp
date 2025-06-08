@@ -10,7 +10,6 @@
 #include "pool/NodeHandle.h"
 
 #include "mesh/LodMesh.h"
-#include "mesh/MeshType.h"
 
 #include "model/Node.h"
 #include "model/Snapshot.h"
@@ -349,11 +348,11 @@ void CubeMapRenderer::drawNodes(
     targetBuffer->clear(ctx, GL_COLOR_BUFFER_BIT, debugColor);;
 
     render::DrawContext drawContext{
-        [](const mesh::MeshType* type) { return !type->m_flags.noReflect; },
         // NOTE KI skip drawing center node itself (can produce odd results)
         // => i.e. show garbage from old render round and such
         [&current](const Node* node) {
-            return node != current &&
+            return !node->m_typeFlags.noReflect &&
+                node != current &&
                 node->m_ignoredBy != current->getId();
         },
         render::KIND_ALL,

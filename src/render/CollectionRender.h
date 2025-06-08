@@ -24,20 +24,17 @@ namespace render
         void drawProgram(
             const RenderContext& ctx,
             const std::function<ki::program_id(const mesh::LodMesh&)>& programSelector,
-            const std::function<bool(const mesh::MeshType*)>& typeSelector,
             const std::function<bool(const Node*)>& nodeSelector,
             uint8_t kindBits);
 
         bool drawNodesImpl(
             const RenderContext& ctx,
             const std::function<ki::program_id(const mesh::LodMesh&)>& programSelector,
-            const std::function<bool(const mesh::MeshType*)>& typeSelector,
             const std::function<bool(const Node*)>& nodeSelector,
             uint8_t kindBits);
 
         void drawBlendedImpl(
             const RenderContext& ctx,
-            const std::function<bool(const mesh::MeshType*)>& typeSelector,
             const std::function<bool(const Node*)>& nodeSelector);
     };
 }

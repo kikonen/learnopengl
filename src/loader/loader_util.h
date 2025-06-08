@@ -57,7 +57,10 @@ namespace loader {
     glm::vec2 readRefractionRatio(const loader::DocNode& node);
     float convertRefractionRatio(const glm::vec2 ratio);
 
-    std::tuple<ki::node_id, std::string> resolveId(
+    std::tuple<ki::node_id, std::string> resolveNodeId(
+        const BaseId& baseId);
+
+    std::tuple<ki::node_id, std::string> resolveNodeId(
         const BaseId& baseId,
         const int cloneIndex,
         const glm::uvec3& tile);

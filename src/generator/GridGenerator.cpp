@@ -7,7 +7,6 @@
 
 #include "ki/sid.h"
 
-#include "mesh/MeshType.h"
 #include "mesh/Mesh.h"
 #include "mesh/MeshTransform.h"
 
@@ -87,11 +86,10 @@ void GridGenerator::prepareInstances(
     const PrepareContext& ctx,
     const Node& container)
 {
-    auto* type = container.m_typeHandle.toType();
     const auto& containerState = container.getState();
 
-    m_staticBounds = type->m_flags.staticBounds;
-    m_dynamicBounds = type->m_flags.dynamicBounds;
+    m_staticBounds = container.m_typeFlags.staticBounds;
+    m_dynamicBounds = container.m_typeFlags.dynamicBounds;
 
     m_volume = containerState.getVolume();
 

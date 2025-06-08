@@ -9,7 +9,6 @@
 #include "ki/sid.h"
 
 #include "mesh/LodMesh.h"
-#include "mesh/MeshType.h"
 #include "mesh/MeshTransform.h"
 
 #include "model/Node.h"

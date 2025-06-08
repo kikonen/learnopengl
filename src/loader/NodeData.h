@@ -57,7 +57,6 @@ namespace loader {
 
         std::unordered_map<MaterialProgramType, std::string> programs;
 
-        loader::FlagContainer nodeFlags;
         loader::FlagContainer typeFlags;
 
         glm::vec3 baseRotation{ 0.f };

@@ -12,7 +12,6 @@
 #include "pool/NodeHandle.h"
 
 #include "mesh/LodMesh.h"
-#include "mesh/MeshType.h"
 
 #include "model/Node.h"
 #include "model/Snapshot.h"
@@ -473,12 +472,10 @@ void WaterMapRenderer::drawNodes(
         Node* sourceNode = m_sourceNode.toNode();
 
         render::DrawContext drawContext{
-            [reflect](const mesh::MeshType* type) {
-                return !type->m_flags.water &&
-                    (reflect ? !type->m_flags.noReflect : !type->m_flags.noRefract);
-            },
-            [current, sourceNode](const Node* node) {
-                return node != current &&
+            [current, sourceNode, reflect](const Node* node) {
+                return !node->m_typeFlags.water &&
+                    (reflect ? !node->m_typeFlags.noReflect : !node->m_typeFlags.noRefract) &&
+                    node != current &&
                     node != sourceNode &&
                     node->m_ignoredBy != current->getId();
             },

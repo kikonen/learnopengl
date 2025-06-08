@@ -12,10 +12,6 @@ namespace pool {
     struct NodeHandle;
 }
 
-namespace mesh {
-    class MeshType;
-}
-
 struct UpdateContext;
 class RenderContext;
 class Node;
@@ -84,8 +80,7 @@ namespace animation {
         void animateNode(
             const UpdateContext& ctx,
             animation::AnimationState& state,
-            Node* node,
-            mesh::MeshType* type);
+            Node* node);
 
         void waitForPrepared();
         void prepareNodes();

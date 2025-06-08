@@ -179,13 +179,6 @@ namespace loader {
                     data.typeFlags.set(util::toLower(flagName), flagValue);
                 }
             }
-            else if (k == "node_flags") {
-                for (const auto& flagNode : v.getNodes()) {
-                    const auto& flagName = flagNode.getName();
-                    const auto& flagValue = readBool(flagNode.getNode());
-                    data.nodeFlags.set(util::toLower(flagName), flagValue);
-                }
-            }
             else if (k == "front") {
                 data.front = readVec3(v);
             }

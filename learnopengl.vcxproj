@@ -148,11 +148,13 @@
       <SupportJustMyCode>false</SupportJustMyCode>
       <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
       <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
+      <UseDynamicDebugging>false</UseDynamicDebugging>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
+      <UseDynamicDebugging>false</UseDynamicDebugging>
     </Link>
     <PreBuildEvent>
       <Command>del $(TargetDir)main.obj</Command>
@@ -746,7 +748,6 @@
     <ClInclude Include="src\mesh\vao\VertexEntry.h" />
     <ClInclude Include="src\mesh\vao\VertexVBO.h" />
     <ClInclude Include="src\animation\AnimationState.h" />
-    <ClInclude Include="src\model\NodeFlags.h" />
     <ClInclude Include="src\model\PivotPoint.h" />
     <ClInclude Include="src\model\PrimitiveNode.h" />
     <ClInclude Include="src\physics\Category.h" />

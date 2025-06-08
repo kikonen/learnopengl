@@ -10,6 +10,7 @@ namespace script
         sol::usertype<script::NodeAPI> t = lua.new_usertype<script::NodeAPI>("Node");
 
         t["get_id"] = &script::NodeAPI::lua_get_id;
+        t["get_type_name"] = &script::NodeAPI::lua_get_type_name;
         t["get_name"] = &script::NodeAPI::lua_get_name;
         t["get_clone_index"] = &script::NodeAPI::lua_get_clone_index;
         t["get_pos"] = &script::NodeAPI::lua_get_pos;

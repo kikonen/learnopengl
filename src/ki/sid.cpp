@@ -40,6 +40,13 @@ namespace {
 }
 
 namespace ki {
+    void StringID::registerSystemId(
+        ki::sid_t sid,
+        const std::string& name) noexcept
+    {
+        registerName(sid, name);
+    }
+
     const std::string& StringID::getName(ki::sid_t sid) noexcept
     {
         return findName(sid);

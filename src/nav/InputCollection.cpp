@@ -5,7 +5,6 @@
 #include "model/Node.h"
 
 #include "mesh/MeshInstance.h"
-#include "mesh/MeshType.h"
 #include "mesh/LodMesh.h"
 
 #include "InputGeom.h"
@@ -52,7 +51,7 @@ namespace nav
 
             const auto& state = node->getState();
 
-            for (const auto& lodMesh : node->getType()->getLodMeshes()) {
+            for (const auto& lodMesh : node->getLodMeshes()) {
                 auto geom = std::make_unique<nav::InputGeom>(
                     state.getModelMatrix() *
                     lodMesh.m_transform,

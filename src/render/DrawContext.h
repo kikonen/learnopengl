@@ -16,7 +16,6 @@ namespace render
 {
     struct DrawContext
     {
-        const std::function<bool(const mesh::MeshType*)>& typeSelector;
         const std::function<bool(const Node*)>& nodeSelector;
 
         // rnder::KIND_NONE

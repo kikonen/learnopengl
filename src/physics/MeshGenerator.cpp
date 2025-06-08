@@ -25,7 +25,6 @@
 #include "mesh/Mesh.h"
 #include "mesh/PrimitiveMesh.h"
 #include "mesh/MeshInstance.h"
-#include "mesh/MeshType.h"
 
 #include "PhysicsSystem.h"
 #include "ode_util.h"
@@ -105,8 +104,7 @@ namespace physics {
                 auto objectId = (physics::object_id)dGeomGetData(geomId);
                 const auto* node = m_physicsSystem.getNodeHandle(objectId).toNode();
                 if (node) {
-                    const auto* type = node->getType();
-                    isNavMesh = type->m_flags.navPhysics;
+                    isNavMesh = node->m_typeFlags.navPhysics;
                 }
             }
 

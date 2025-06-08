@@ -15,7 +15,9 @@
 #include "audio/size.h"
 
 #include "model/NodeState.h"
-#include "model/NodeFlags.h"
+
+#include "mesh/MeshType.h"
+#include "mesh/TypeFlags.h"
 
 #include "registry/NodeRegistry.h"
 
@@ -88,6 +90,20 @@ public:
         return m_typeHandle.toType();
     }
 
+    inline const std::vector<mesh::LodMesh>& getLodMeshes() const noexcept
+    {
+        return getType()->getLodMeshes();
+    }
+
+    inline const mesh::LodMesh* getLodMesh(uint8_t lodIndex) const noexcept {
+        return getType()->getLodMesh(lodIndex);
+    }
+
+    inline mesh::LodMesh* modifyLodMesh(uint8_t lodIndex) const noexcept
+    {
+        return getType()->modifyLodMesh(lodIndex);
+    }
+
     const std::string& getName() const noexcept { return m_name; }
     void setName(std::string_view name) noexcept {
         m_name = name;
@@ -104,7 +120,6 @@ public:
 
     void bindBatch(
         const RenderContext& ctx,
-        mesh::MeshType* type,
         const std::function<ki::program_id (const mesh::LodMesh&)>& programSelector,
         uint8_t kindBits,
         render::Batch& batch) noexcept;
@@ -148,6 +163,9 @@ public:
     }
 
 public:
+    std::string m_name;
+
+    pool::NodeHandle m_handle;
     pool::TypeHandle m_typeHandle{};
 
     std::unique_ptr<CameraComponent> m_camera{ nullptr };
@@ -156,22 +174,18 @@ public:
 
     std::unique_ptr<NodeGenerator> m_generator{ nullptr };
 
-    // Index of node in NodeRegistry
-    uint32_t m_entityIndex{ 0 };
-
     std::unique_ptr<audio::Listener> m_audioListener;
     std::unique_ptr<std::vector<audio::Source>> m_audioSources;
 
-    std::string m_name;
+    // Index of node in NodeRegistry
+    uint32_t m_entityIndex{ 0 };
 
     ki::node_id m_ignoredBy{ 0 };
 
-private:
-    pool::NodeHandle m_handle;
+    mesh::TypeFlags m_typeFlags;
+    uint8_t m_layer{ 0 };
 
 public:
-    NodeFlags m_flags;
-
     bool m_visible : 1 { true };
     bool m_preparedRT : 1 { false };
 };

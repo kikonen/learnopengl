@@ -12,7 +12,6 @@
 #include "mesh/generator/PrimitiveGenerator.h"
 #include "mesh/Mesh.h"
 #include "mesh/MeshInstance.h"
-#include "mesh/MeshType.h"
 
 #include "render/DebugContext.h"
 
@@ -61,8 +60,7 @@ void EnvironmentProbeRenderer::render(
     for (const auto* node : nodeRegistry.getCachedNodesRT()) {
         if (!node) continue;
 
-        auto* type = node->getType();
-        if (!type->m_flags.cubeMap) continue;
+        if (!node->m_typeFlags.cubeMap) continue;
 
         const auto* snapshot = nodeRegistry.getSnapshotRT(node->m_entityIndex);
 

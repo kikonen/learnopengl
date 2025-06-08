@@ -27,9 +27,14 @@ namespace script
         return m_handle.m_id;
     }
 
-    const std::string& NodeAPI::lua_get_name() const noexcept
+    const std::string& NodeAPI::lua_get_type_name() const noexcept
     {
         return m_handle.toNode()->getType()->getName();
+    }
+
+    const std::string& NodeAPI::lua_get_name() const noexcept
+    {
+        return m_handle.toNode()->getName();
     }
 
     int NodeAPI::lua_get_clone_index() const noexcept

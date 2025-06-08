@@ -11,8 +11,9 @@
 #include "engine/PrepareContext.h"
 #include "engine/UpdateViewContext.h"
 
+#include "model/Node.h"
+
 #include "mesh/LodMesh.h"
-#include "mesh/MeshType.h"
 
 #include "render/DebugContext.h"
 #include "render/Camera.h"
@@ -180,8 +181,7 @@ void ObjectIdRenderer::drawNodes(const RenderContext& parentCtx)
 
     {
         render::DrawContext drawContext{
-            [](const mesh::MeshType* type) { return !type->m_flags.noSelect; },
-            [](const Node* node) { return true; },
+            [](const Node* node) { return !node->m_typeFlags.noSelect; },
             render::KIND_ALL
         };
 
@@ -192,7 +192,6 @@ void ObjectIdRenderer::drawNodes(const RenderContext& parentCtx)
                 if (lodMesh.m_flags.tessellation) return (ki::program_id)nullptr;
                 return lodMesh.m_idProgramId ? lodMesh.m_idProgramId : m_idProgramId;
             },
-            drawContext.typeSelector,
             drawContext.nodeSelector,
             drawContext.kindBits);
     }

@@ -5,8 +5,6 @@
 #include "shader/Program.h"
 #include "shader/ProgramRegistry.h"
 
-#include "mesh/MeshType.h"
-
 #include "render/DebugContext.h"
 #include "render/RenderContext.h"
 #include "render/FrameBuffer.h"
