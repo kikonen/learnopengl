@@ -98,7 +98,9 @@ namespace mesh {
         if (m_preparedWT) return;
         m_preparedWT = true;
 
-        if (!hasMesh()) return;
+        if (m_particleDefinition) {
+            m_particleDefinition->m_material->registerMaterial();
+        }
 
         for (auto& lodMesh : m_lodMeshes) {
             lodMesh.registerMaterial();
@@ -108,10 +110,6 @@ namespace mesh {
             m_flags.anyAlpha |= opt.isAlpha();
             m_flags.anyBlend |= opt.isBlend();
             m_flags.anyAnimation |= lodMesh.m_flags.useAnimation;
-        }
-
-        if (m_particleDefinition) {
-            m_particleDefinition->m_material->registerMaterial();
         }
     }
 

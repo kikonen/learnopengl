@@ -191,7 +191,7 @@ namespace loader
         // NOTE KI overriding material in clones is *NOT* supported"
         if (!typeHandle) {
             const auto& repeat = nodeData.repeat;
-            const bool hasTile = repeat.xCount > 1 || repeat.yCount > 1 || repeat.zCount > 0;
+            const bool hasTile = repeat.xCount > 1 || repeat.yCount > 1 || repeat.zCount > 1;
 
             std::string nameSuffix;
             if (cloned || hasTile) {
