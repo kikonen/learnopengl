@@ -19,8 +19,8 @@
 #include "event/Dispatcher.h"
 
 #include "script/CommandEngine.h"
-#include "script/api/RotateNode.h"
-#include "script/api/MoveNode.h"
+#include "script/command/RotateNode.h"
+#include "script/command/MoveNode.h"
 
 #include "registry/Registry.h"
 #include "registry/NodeRegistry.h"

@@ -22,9 +22,12 @@ class Node;
 
 namespace script
 {
+    namespace api {
+        class NodeAPI;
+        class NodeCommandAPI;
+    }
+
     class CommandEngine;
-    class NodeAPI;
-    class NodeCommandAPI;
 
     struct ScriptFile;
     struct ScriptEntry;
@@ -127,8 +130,8 @@ namespace script
 
         sol::state m_lua;
 
-        std::unordered_map<pool::NodeHandle, std::unique_ptr<NodeAPI>> m_nodeApis;
-        std::unordered_map<pool::NodeHandle, std::unique_ptr<NodeCommandAPI>> m_nodeCommandApis;
+        std::unordered_map<pool::NodeHandle, std::unique_ptr<api::NodeAPI>> m_nodeApis;
+        std::unordered_map<pool::NodeHandle, std::unique_ptr<api::NodeCommandAPI>> m_nodeCommandApis;
 
         std::unordered_map<pool::TypeHandle, std::unordered_map<script::script_id, ScriptEntry>> m_scriptEntries;
 

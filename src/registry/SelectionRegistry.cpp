@@ -20,7 +20,7 @@
 #include "event/Dispatcher.h"
 
 #include "script/CommandEngine.h"
-#include "script/api/RotateNode.h"
+#include "script/command/RotateNode.h"
 
 #include "render/DebugContext.h"
 

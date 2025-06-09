@@ -2,8 +2,7 @@
 
 #include "physics/PhysicsSystem.h"
 
-
-namespace script
+namespace script::binding
 {
     // https://thephd.dev/sol3-feature-complete
     void LuaPhysics::bind(sol::state& lua)

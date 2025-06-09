@@ -4,7 +4,7 @@
 
 #include "script/lua_binding.h"
 
-namespace script
+namespace script::api
 {
     class UtilAPI {
     public:

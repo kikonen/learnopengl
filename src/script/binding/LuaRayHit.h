@@ -2,7 +2,7 @@
 
 #include "script/lua_binding.h"
 
-namespace script
+namespace script::binding
 {
     struct LuaRayHit {
         static void bind(sol::state& lua);

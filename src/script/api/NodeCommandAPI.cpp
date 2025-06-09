@@ -18,38 +18,38 @@
 #include "script/CommandEntry.h"
 #include "script/ScriptSystem.h"
 
-#include "api/Cancel.h"
-#include "api/CancelMultiple.h"
-#include "api/Wait.h"
-#include "api/Sync.h"
+#include "script/command/Cancel.h"
+#include "script/command/CancelMultiple.h"
+#include "script/command/Wait.h"
+#include "script/command/Sync.h"
 
-#include "api/MoveNode.h"
-#include "api/MoveSplineNode.h"
-#include "api/MovePathNode.h"
-#include "api/RotateNode.h"
-#include "api/ScaleNode.h"
-#include "api/ResumeNode.h"
-#include "api/StartNode.h"
-#include "api/SelectNode.h"
-#include "api/EmitEvent.h"
+#include "script/command/MoveNode.h"
+#include "script/command/MoveSplineNode.h"
+#include "script/command/MovePathNode.h"
+#include "script/command/RotateNode.h"
+#include "script/command/ScaleNode.h"
+#include "script/command/ResumeNode.h"
+#include "script/command/StartNode.h"
+#include "script/command/SelectNode.h"
+#include "script/command/EmitEvent.h"
 
-#include "api/SetTextNode.h"
-#include "api/SetVisibleNode.h"
+#include "script/command/SetTextNode.h"
+#include "script/command/SetVisibleNode.h"
 
-#include "api/AudioPlay.h"
-#include "api/AudioPause.h"
-#include "api/AudioStop.h"
+#include "script/command/AudioPlay.h"
+#include "script/command/AudioPause.h"
+#include "script/command/AudioStop.h"
 
-#include "api/ParticleEmit.h"
-#include "api/ParticleStop.h"
+#include "script/command/ParticleEmit.h"
+#include "script/command/ParticleStop.h"
 
-#include "api/AnimationPlay.h"
+#include "script/command/AnimationPlay.h"
 
-#include "api/RayCast.h"
-#include "api/RayCastMultiple.h"
-#include "api/FindPath.h"
+#include "script/command/RayCast.h"
+#include "script/command/RayCastMultiple.h"
+#include "script/command/FindPath.h"
 
-#include "api/EmitEvent.h"
+#include "script/command/EmitEvent.h"
 
 #include "script/lua_util.h"
 
@@ -57,7 +57,7 @@ namespace {
     const static std::string TABLE_TMP = "tmp";
 }
 
-namespace script
+namespace script::api
 {
     NodeCommandAPI::NodeCommandAPI(
         CommandEngine* const commandEngine,

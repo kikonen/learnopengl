@@ -6,7 +6,7 @@
 
 #include "registry/NodeRegistry.h"
 
-namespace script
+namespace script::api
 {
     NodeAPI::NodeAPI(
         pool::NodeHandle handle)

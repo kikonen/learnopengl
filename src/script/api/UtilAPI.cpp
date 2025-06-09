@@ -9,12 +9,12 @@
 #include "util/Log.h"
 #include "util/glm_format.h"
 
-#include "lua_util.h"
+#include "script/lua_util.h"
 
 namespace {
 }
 
-namespace script
+namespace script::api
 {
     //UtilAPI::UtilAPI() = default;
     //UtilAPI::~UtilAPI() = default;

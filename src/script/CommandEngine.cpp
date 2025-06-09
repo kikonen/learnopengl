@@ -7,25 +7,25 @@
 
 #include "pool/NodeHandle.h"
 
-#include "api/Cancel.h"
-#include "api/Wait.h"
-#include "api/Sync.h"
+#include "command/Cancel.h"
+#include "command/Wait.h"
+#include "command/Sync.h"
 
 #include "CommandEntry.h"
 
-#include "api/Command.h"
+#include "command/Command.h"
 
-#include "api/NodeCommand.h"
-#include "api/MoveNode.h"
-#include "api/MoveSplineNode.h"
-#include "api/RotateNode.h"
-#include "api/ScaleNode.h"
-#include "api/ResumeNode.h"
-#include "api/StartNode.h"
+#include "command/NodeCommand.h"
+#include "command/MoveNode.h"
+#include "command/MoveSplineNode.h"
+#include "command/RotateNode.h"
+#include "command/ScaleNode.h"
+#include "command/ResumeNode.h"
+#include "command/StartNode.h"
 
-#include "api/AudioPlay.h"
-#include "api/AudioPause.h"
-#include "api/AudioStop.h"
+#include "command/AudioPlay.h"
+#include "command/AudioPause.h"
+#include "command/AudioStop.h"
 
 #include "engine/UpdateContext.h"
 
