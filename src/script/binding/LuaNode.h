@@ -2,9 +2,9 @@
 
 #include "script/lua_binding.h"
 
-namespace script
+namespace script::binding
 {
-    struct LuaPath {
+    struct LuaNode {
         static void bind(sol::state& lua);
     };
 }

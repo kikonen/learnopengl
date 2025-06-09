@@ -12,7 +12,7 @@
 
 struct NodeState;
 
-namespace script
+namespace script::api
 {
     class NodeAPI final
     {

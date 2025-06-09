@@ -1,11 +1,13 @@
-#include "LuaCommand.h"
+#include "LuaNodeCommand.h"
 
-#include "script/NodeCommandAPI.h"
+#include "script/api/NodeCommandAPI.h"
 
-namespace script
+namespace script::binding
 {
+    using namespace script::api;
+
     // https://thephd.dev/sol3-feature-complete
-    void LuaCommand::bind(sol::state& lua)
+    void LuaNodeCommand::bind(sol::state& lua)
     {
         sol::usertype<NodeCommandAPI> t = lua.new_usertype<NodeCommandAPI>("NodeCommand");
 
@@ -42,7 +44,7 @@ namespace script
 
         t.set_function(
             "__tostring",
-            [](const script::NodeCommandAPI& v) {
+            [](const NodeCommandAPI& v) {
                 return v.str();
             }
         );

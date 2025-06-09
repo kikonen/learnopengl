@@ -11,10 +11,12 @@
 
 #include "script/lua_binding.h"
 
-namespace script
-{
+namespace script {
     class CommandEngine;
+}
 
+namespace script::api
+{
     // Wrapper for CommandEngine calls from script
     // => wrap reference to node so that no need to explicitly pass "id" from Lua
     class NodeCommandAPI final

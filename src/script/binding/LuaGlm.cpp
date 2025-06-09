@@ -472,6 +472,7 @@ namespace
         );
     }
 
+
     ///////////////////////////////////
     // API
     void bindGlm(sol::state& lua) {
@@ -555,7 +556,7 @@ namespace
     }
 }
 
-namespace script
+namespace script::binding
 {
     void LuaGlm::bind(sol::state& lua)
     {

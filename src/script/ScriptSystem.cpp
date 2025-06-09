@@ -17,9 +17,6 @@
 #include "engine/UpdateContext.h"
 
 #include "script/CommandEngine.h"
-#include "script/NodeAPI.h"
-#include "script/NodeCommandAPI.h"
-#include "script/UtilAPI.h"
 #include "script/ScriptFile.h"
 #include "script/ScriptEntry.h"
 
@@ -28,13 +25,17 @@
 
 #include "mesh/LodMesh.h"
 
-#include "user_type/LuaUtil.h"
-#include "user_type/LuaNode.h"
-#include "user_type/LuaCommand.h"
-#include "user_type/LuaGlm.h"
-#include "user_type/LuaRayHit.h"
-#include "user_type/LuaPath.h"
-#include "user_type/LuaPhysics.h"
+#include "script/api/NodeAPI.h"
+#include "script/api/NodeCommandAPI.h"
+#include "script/api/UtilAPI.h"
+
+#include "binding/LuaUtil.h"
+#include "binding/LuaPhysics.h"
+#include "binding/LuaNode.h"
+#include "binding/LuaNodeCommand.h"
+#include "binding/LuaGlm.h"
+#include "binding/LuaRayHit.h"
+#include "binding/LuaPath.h"
 
 namespace
 {
@@ -186,13 +187,13 @@ namespace script
         // util - static utils
         auto& lua = getLua();
 
-        LuaUtil::bind(lua);
-        LuaGlm::bind(lua);
-        LuaPhysics::bind(lua);
-        LuaRayHit::bind(lua);
-        LuaPath::bind(lua);
-        LuaCommand::bind(lua);
-        LuaNode::bind(lua);
+        binding::LuaUtil::bind(lua);
+        binding::LuaPhysics::bind(lua);
+        binding::LuaGlm::bind(lua);
+        binding::LuaRayHit::bind(lua);
+        binding::LuaPath::bind(lua);
+        binding::LuaNodeCommand::bind(lua);
+        binding::LuaNode::bind(lua);
     }
 
     script::script_id ScriptSystem::registerScript(
@@ -245,8 +246,8 @@ namespace script
         if (!hasScriptEntry(node->m_typeHandle, scriptId)) return;
 
         {
-            m_nodeApis.insert({ handle, std::make_unique<NodeAPI>(handle) });
-            m_nodeCommandApis.insert({ handle, std::make_unique<NodeCommandAPI>(m_commandEngine, handle) });
+            m_nodeApis.insert({ handle, std::make_unique<api::NodeAPI>(handle) });
+            m_nodeCommandApis.insert({ handle, std::make_unique<api::NodeCommandAPI>(m_commandEngine, handle) });
         }
 
         createNodeState(node);

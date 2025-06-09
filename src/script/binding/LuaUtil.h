@@ -4,7 +4,7 @@
 
 #include "script/lua_binding.h"
 
-namespace script
+namespace script::binding
 {
     struct LuaUtil {
         static void bind(sol::state& lua);

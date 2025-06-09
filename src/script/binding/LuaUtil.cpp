@@ -4,12 +4,14 @@
 
 #include "glm/gtc/quaternion.hpp"
 
-#include "script/UtilAPI.h"
+#include "script/api/UtilAPI.h"
 
 #include "util/glm_util.h"
 
-namespace script
+namespace script::binding
 {
+    using namespace script::api;
+
     // https://thephd.dev/sol3-feature-complete
     void LuaUtil::bind(sol::state& lua)
     {

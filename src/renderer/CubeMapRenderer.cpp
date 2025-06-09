@@ -15,7 +15,7 @@
 #include "model/Snapshot.h"
 
 #include "script/CommandEngine.h"
-#include "script/api/MoveNode.h"
+#include "script/command/MoveNode.h"
 
 #include "engine/PrepareContext.h"
 #include "engine/UpdateViewContext.h"

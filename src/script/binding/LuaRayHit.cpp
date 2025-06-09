@@ -6,7 +6,7 @@
 
 #include "physics/RayHit.h"
 
-namespace script
+namespace script::binding
 {
     // https://thephd.dev/sol3-feature-complete
     void LuaRayHit::bind(sol::state& lua)

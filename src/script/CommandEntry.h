@@ -4,41 +4,41 @@
 
 #include "script/size.h"
 
-#include "api/Command.h"
+#include "command/Command.h"
 
-#include "api/Cancel.h"
-#include "api/CancelMultiple.h"
-#include "api/InvokeFunction.h"
-#include "api/Sync.h"
-#include "api/Wait.h"
+#include "command/Cancel.h"
+#include "command/CancelMultiple.h"
+#include "command/InvokeFunction.h"
+#include "command/Sync.h"
+#include "command/Wait.h"
 
-#include "api/NodeCommand.h"
-#include "api/MoveNode.h"
-#include "api/MoveSplineNode.h"
-#include "api/MovePathNode.h"
-#include "api/ResumeNode.h"
-#include "api/RotateNode.h"
-#include "api/ScaleNode.h"
-#include "api/StartNode.h"
-#include "api/SelectNode.h"
+#include "command/NodeCommand.h"
+#include "command/MoveNode.h"
+#include "command/MoveSplineNode.h"
+#include "command/MovePathNode.h"
+#include "command/ResumeNode.h"
+#include "command/RotateNode.h"
+#include "command/ScaleNode.h"
+#include "command/StartNode.h"
+#include "command/SelectNode.h"
 
-#include "api/SetTextNode.h"
-#include "api/SetVisibleNode.h"
+#include "command/SetTextNode.h"
+#include "command/SetVisibleNode.h"
 
-#include "api/AudioPlay.h"
-#include "api/AudioPause.h"
-#include "api/AudioStop.h"
+#include "command/AudioPlay.h"
+#include "command/AudioPause.h"
+#include "command/AudioStop.h"
 
-#include "api/ParticleEmit.h"
-#include "api/ParticleStop.h"
+#include "command/ParticleEmit.h"
+#include "command/ParticleStop.h"
 
-#include "api/AnimationPlay.h"
+#include "command/AnimationPlay.h"
 
-#include "api/RayCast.h"
-#include "api/RayCastMultiple.h"
-#include "api/FindPath.h"
+#include "command/RayCast.h"
+#include "command/RayCastMultiple.h"
+#include "command/FindPath.h"
 
-#include "api/EmitEvent.h"
+#include "command/EmitEvent.h"
 
 struct UpdateContext;
 namespace script

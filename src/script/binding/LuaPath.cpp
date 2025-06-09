@@ -6,7 +6,7 @@
 
 #include "nav/Path.h"
 
-namespace script
+namespace script::binding
 {
     // https://thephd.dev/sol3-feature-complete
     void LuaPath::bind(sol::state& lua)
