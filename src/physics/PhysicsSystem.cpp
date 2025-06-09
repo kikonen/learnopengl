@@ -40,6 +40,8 @@ namespace {
 
     size_t debugCounter{ 0 };
 
+    std::shared_ptr<std::vector<mesh::MeshInstance>> NO_MESHES;
+
     dSurfaceParameters g_surfaceTemplate;
 
     // NOTE KI shared, only single thread does checking
@@ -563,12 +565,13 @@ namespace physics
 
         auto& dbg = render::DebugContext::modify();
 
+        // https://stackoverflow.com/questions/29541387/is-shared-ptr-swap-thread-safe
         if (dbg.m_physicsShowObjects) {
             auto meshes = m_meshGenerator->generateMeshes(false);
-            dbg.m_physicsMeshesWT.swap(meshes);
+            std::atomic_exchange(&dbg.m_physicsMeshesWT, meshes);
         }
         else {
-            dbg.m_physicsMeshesWT.reset();
+            std::atomic_exchange(&dbg.m_physicsMeshesWT, NO_MESHES);
         }
     }
 
