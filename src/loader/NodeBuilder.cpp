@@ -267,8 +267,6 @@ namespace loader
         node->setName(resolvedSID);
 
         node->m_typeHandle = typeHandle;
-        node->m_typeFlags = type->m_flags;
-        node->m_layer = type->m_layer;
 
         {
             ki::node_id ignoredBy{ 0 };
@@ -282,28 +280,15 @@ namespace loader
             node->m_ignoredBy = ignoredBy;
         }
 
-        //node->setCloneIndex(cloneIndex);
-        //node->setTile(tile);
-
         const glm::vec3 pos = nodeData.position + positionOffset;
 
         NodeState state;
         state.setPosition(pos);
-
         state.setRotation(util::degreesToQuat(nodeData.rotation));
         state.setScale(nodeData.scale);
 
-        state.setPivot(nodeData.pivot.resolve(type));
-
-        state.setFront(nodeData.front);
-
-        {
-            state.setBaseRotation(util::degreesToQuat(nodeData.baseRotation));
-        }
-
         node->m_generator = l.m_generatorLoader.createGenerator(
             nodeData.generator,
-            type,
             *m_loaders);
 
         return { handle, state };

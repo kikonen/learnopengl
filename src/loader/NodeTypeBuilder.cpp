@@ -40,6 +40,7 @@
 #include "component/LightDefinition.h"
 #include "component/AudioListenerDefinition.h"
 #include "component/AudioSourceDefinition.h"
+#include "component/PhysicsDefinition.h"
 #include "component/TextDefinition.h"
 
 #include "particle/ParticleDefinition.h"
@@ -86,6 +87,10 @@ namespace loader
 
         type->setName(name);
         type->m_layer = nodeData.layer;
+
+        type->m_pivotPoint = nodeData.pivot;
+        type->m_front = nodeData.front;
+        type->m_baseRotation =util::degreesToQuat(nodeData.baseRotation);
 
         assignTypeFlags(nodeData, type->m_flags);
 
@@ -160,12 +165,13 @@ namespace loader
 
         resolveAttachments(type, nodeData);
 
-        type->m_audioListenerDefinition = l.m_audioLoader.createListenerDefinition(nodeData.audio.listener);
-        type->m_audioSourceDefinitions = l.m_audioLoader.createSourceDefinitions(nodeData.audio.sources);
-
         type->m_cameraDefinition = l.m_cameraLoader.createDefinition(nodeData.camera);
         type->m_lightDefinition = l.m_lightLoader.createDefinition(nodeData.light);
         type->m_particleDefinition = l.m_particleLoader.createDefinition(nodeData.particle);
+        type->m_physicsDefinition = l.m_physicsLoader.createPhysicsDefinition(nodeData.physics);
+
+        type->m_audioListenerDefinition = l.m_audioLoader.createListenerDefinition(nodeData.audio.listener);
+        type->m_audioSourceDefinitions = l.m_audioLoader.createSourceDefinitions(nodeData.audio.sources);
 
         if (type->m_flags.text) {
             type->m_textDefinition = m_loaders->m_textLoader.createDefinition(

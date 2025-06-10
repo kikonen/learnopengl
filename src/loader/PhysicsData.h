@@ -28,6 +28,8 @@ namespace loader {
 
     // @see physics/Geom.h
     struct GeomData {
+        bool enabled{ false };
+
         glm::vec3 size{ 0.5f };
 
         glm::vec3 rotation{ 0.f };

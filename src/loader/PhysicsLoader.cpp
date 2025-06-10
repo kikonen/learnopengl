@@ -9,6 +9,8 @@
 #include "util/util.h"
 #include "util/glm_util.h"
 
+#include "component/PhysicsDefinition.h"
+
 #include "physics/physics_util.h"
 
 #include "event/Dispatcher.h"
@@ -140,5 +142,57 @@ namespace loader {
                 reportUnknown("body_entry", k, v);
             }
         }
+    }
+
+    std::unique_ptr<PhysicsDefinition> PhysicsLoader::createPhysicsDefinition(
+        const loader::PhysicsData& data)
+    {
+        if (!data.enabled) return nullptr;
+
+        auto definition = std::make_unique<PhysicsDefinition>();
+        auto& df = *definition;
+
+        df.m_update = data.update;
+
+        {
+            auto& bodyData = data.body;
+            auto& body = df.m_body;
+
+            body.m_size = bodyData.size;
+
+            body.m_baseRotation = util::degreesToQuat(bodyData.baseRotation);
+
+            body.m_linearVelocity = bodyData.linearVelocity;
+            body.m_angularVelocity = bodyData.angularVelocity;
+
+            body.m_axis = bodyData.axis;
+
+            body.m_maxAngulerVelocity = bodyData.maxAngulerVelocity;
+            body.m_density = bodyData.density;
+
+            body.m_type = bodyData.type;
+
+            body.m_forceAxis = bodyData.forceAxis;
+            body.m_kinematic = bodyData.kinematic;
+        }
+
+        {
+            auto& geomData = data.geom;
+            auto& geom = df.m_geom;
+
+            geom.m_size = geomData.size;
+
+            geom.m_rotation = util::degreesToQuat(geomData.rotation);
+            geom.m_offset = geomData.offset;
+
+            geom.m_categoryMask = geomData.categoryMask;
+            geom.m_collisionMask = geomData.collisionMask;
+
+            geom.m_type = geomData.type;
+
+            geom.m_placeable = geomData.placeable;
+        }
+
+        return definition;
     }
 }

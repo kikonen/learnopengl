@@ -268,6 +268,8 @@
     <ClCompile Include="src\render\PassDeferred.cpp" />
     <ClCompile Include="src\render\PassSkybox.cpp" />
     <ClCompile Include="src\render\ScreenTri.cpp" />
+    <ClCompile Include="src\script\api\SceneAPI.cpp" />
+    <ClCompile Include="src\script\binding\LuaScene.cpp" />
     <ClCompile Include="src\script\command\CancelMultiple.cpp" />
     <ClCompile Include="src\script\command\EmitEvent.cpp" />
     <ClCompile Include="src\script\command\EmitEvent.h" />
@@ -601,6 +603,7 @@
     <ClInclude Include="src\component\CameraDefinition.h" />
     <ClInclude Include="src\component\LightDefinition.h" />
     <ClInclude Include="src\component\LightType.h" />
+    <ClInclude Include="src\component\PhysicsDefinition.h" />
     <ClInclude Include="src\decal\DecalBuffer.h" />
     <ClInclude Include="src\decal\DecalCollection.h" />
     <ClInclude Include="src\decal\DecalDefinition.h" />
@@ -671,6 +674,8 @@
     <ClInclude Include="src\render\PassSkybox.h" />
     <ClInclude Include="src\render\Pipeline.h" />
     <ClInclude Include="src\render\ScreenTri.h" />
+    <ClInclude Include="src\script\api\SceneAPI.h" />
+    <ClInclude Include="src\script\binding\LuaScene.h" />
     <ClInclude Include="src\script\command\CancelMultiple.h" />
     <ClInclude Include="src\script\command\FindPath.h" />
     <ClInclude Include="src\script\command\MovePathNode.h" />

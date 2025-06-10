@@ -5,11 +5,10 @@
 #include <glm/glm.hpp>
 #include <glm/gtx/quaternion.hpp>
 
-#include "loader/PhysicsData.h"
-
 #include "Category.h"
-
 #include "size.h"
+
+struct GeomDefinition;
 
 namespace physics {
     struct Body;
@@ -48,7 +47,7 @@ namespace physics {
         Geom(Geom&& o) noexcept;
         ~Geom();
 
-        Geom* operator=(const loader::GeomData& o);
+        Geom* operator=(const GeomDefinition& o);
 
         bool isValid() const noexcept {
             return type != GeomType::none;

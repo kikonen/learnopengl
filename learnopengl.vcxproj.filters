@@ -1185,6 +1185,12 @@
     <ClCompile Include="src\loader\NodeBuilder.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\script\api\SceneAPI.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\script\binding\LuaScene.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h">
@@ -2661,6 +2667,15 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\component\AudioListenerDefinition.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\script\api\SceneAPI.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\script\binding\LuaScene.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\component\PhysicsDefinition.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

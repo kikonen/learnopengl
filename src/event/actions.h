@@ -15,7 +15,7 @@
 #include "audio/size.h"
 #include "audio/limits.h"
 
-#include "loader/PhysicsData.h"
+//#include "loader/PhysicsData.h"
 
 #include "script/size.h"
 
@@ -27,22 +27,8 @@ struct UpdateContext;
 class NodeController;
 
 namespace event {
-    struct PhysicsAttach {
-        loader::BodyData body;
-        loader::GeomData geom;
-        bool enabled{ false };
-        bool update{ false };
-
-        bool isValid() const noexcept {
-            return enabled &&
-                (body.type != physics::BodyType::none ||
-                geom.type != physics::GeomType::none);
-        }
-    };
-
     struct NodeAttach {
         NodeState state;
-        PhysicsAttach physics;
     };
 
     // Blobdata is for doing passing abnormally large event blobs

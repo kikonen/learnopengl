@@ -1,8 +1,12 @@
 #pragma once
 
+#include <memory>
+
 #include "NodeGenerator.h"
 
 #include "physics/Geom.h"
+
+struct GeomDefinition;
 
 //
 // Instance node entities based into grid
@@ -58,7 +62,7 @@ public:
     float m_yStep{ 0 };
     float m_zStep{ 0 };
 
-    physics::Geom m_geometryTemplate;
+    std::unique_ptr<GeomDefinition> m_geometryTemplate;
 
 private:
     bool m_boundsSetupDone{ false };

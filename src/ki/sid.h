@@ -62,6 +62,7 @@ namespace ki
         }
 
         static uint32_t nextID();
+        static uint32_t nextID(std::string_view base);
     };
 }
 

@@ -2,6 +2,8 @@
 
 #include "util/glm_util.h"
 
+#include "component/PhysicsDefinition.h"
+
 namespace {
     constexpr int DIR_X = 1;
     constexpr int DIR_Y = 2;
@@ -19,24 +21,24 @@ namespace physics {
         }
     }
 
-    Body* Body::operator=(const loader::BodyData& o)
+    Body* Body::operator=(const BodyDefinition& o)
     {
-        size = o.size;
+        size = o.m_size;
 
-        baseRotation = util::degreesToQuat(o.baseRotation);
+        baseRotation = o.m_baseRotation;
 
-        linearVelocity = o.linearVelocity;
-        angularVelocity = o.angularVelocity;
+        linearVelocity = o.m_linearVelocity;
+        angularVelocity = o.m_angularVelocity;
 
-        axis = o.axis;
-        maxAngulerVelocity = o.maxAngulerVelocity;
+        axis = o.m_axis;
+        maxAngulerVelocity = o.m_maxAngulerVelocity;
 
-        density = o.density;
+        density = o.m_density;
 
-        type = o.type;
+        type = o.m_type;
 
-        forceAxis = o.forceAxis;
-        kinematic = o.kinematic;
+        forceAxis = o.m_forceAxis;
+        kinematic = o.m_kinematic;
 
         return this;
     }

@@ -2,6 +2,8 @@
 
 #include "util/debug.h"
 
+#include "component/PhysicsDefinition.h"
+
 #include "Body.h"
 
 namespace physics {
@@ -33,15 +35,15 @@ namespace physics {
         }
     }
 
-    Geom* Geom::operator=(const loader::GeomData& o)
+    Geom* Geom::operator=(const GeomDefinition& o)
     {
-        size = o.size;
-        rotation = util::degreesToQuat(o.rotation);
-        offset = o.offset;
-        categoryMask = o.categoryMask;
-        collisionMask = o.collisionMask;
-        type = o.type;
-        placeable = o.placeable;
+        size = o.m_size;
+        rotation = o.m_rotation;
+        offset = o.m_offset;
+        categoryMask = o.m_categoryMask;
+        collisionMask = o.m_collisionMask;
+        type = o.m_type;
+        placeable = o.m_placeable;
 
         return this;
     }

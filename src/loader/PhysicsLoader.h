@@ -1,6 +1,7 @@
 #pragma once
 
 #include <vector>
+#include <memory>
 
 #include "ki/size.h"
 
@@ -12,6 +13,8 @@
 #include "BaseLoader.h"
 
 #include "PhysicsData.h"
+
+struct PhysicsDefinition;
 
 namespace loader {
     class PhysicsLoader : public BaseLoader
@@ -27,5 +30,8 @@ namespace loader {
         void loadBody(
             const loader::DocNode& node,
             loader::BodyData& data) const;
+
+        std::unique_ptr<PhysicsDefinition> createPhysicsDefinition(
+            const loader::PhysicsData& data);
     };
 }
