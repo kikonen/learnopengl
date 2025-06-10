@@ -17,6 +17,7 @@
 
 #include "model/Node.h"
 #include "model/NodeType.h"
+#include "model/CreateState.h"
 
 #include "mesh/LodMesh.h"
 
@@ -788,7 +789,7 @@ void NodeRegistry::handleNodeAdded(Node* node)
 void NodeRegistry::attachNode(
     const ki::node_id nodeId,
     ki::node_id parentId,
-    const NodeState& state) noexcept
+    const CreateState& state) noexcept
 {
     auto* node = pool::NodeHandle::toNode(nodeId);
 
@@ -859,7 +860,7 @@ void NodeRegistry::changeParent(
 
 void NodeRegistry::bindNode(
     const ki::node_id nodeId,
-    const NodeState& state)
+    const CreateState& createState)
 {
     Node* node = pool::NodeHandle::toNode(nodeId);
     if (!node) return;
@@ -886,6 +887,11 @@ void NodeRegistry::bindNode(
 
     {
         std::lock_guard lock(m_snapshotLock);
+
+        NodeState state;
+        state.setPosition(createState.m_position);
+        state.setScale(createState.m_scale);
+        state.setRotation(createState.m_rotation);
 
         m_handles.push_back(handle);
         m_parentIndeces.push_back(0);

@@ -237,7 +237,7 @@ namespace loader
         return typeHandle;
     }
 
-    std::pair<pool::NodeHandle, NodeState> NodeBuilder::createNode(
+    std::pair<pool::NodeHandle, CreateState> NodeBuilder::createNode(
         pool::TypeHandle typeHandle,
         const NodeData& nodeData,
         const int cloneIndex,
@@ -282,10 +282,10 @@ namespace loader
 
         const glm::vec3 pos = nodeData.position + positionOffset;
 
-        NodeState state;
-        state.setPosition(pos);
-        state.setRotation(util::degreesToQuat(nodeData.rotation));
-        state.setScale(nodeData.scale);
+        CreateState state;
+        state.m_position = pos;
+        state.m_scale = nodeData.scale;
+        state.m_rotation = util::degreesToQuat(nodeData.rotation);
 
         node->m_generator = l.m_generatorLoader.createGenerator(
             nodeData.generator,

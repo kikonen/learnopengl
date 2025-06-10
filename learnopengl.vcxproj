@@ -630,6 +630,7 @@
     <ClInclude Include="src\mesh\generator\TangentCalculator.h" />
     <ClInclude Include="src\mesh\vao\TangentEntry.h" />
     <ClInclude Include="src\mesh\vao\VertexTangentVBO.h" />
+    <ClInclude Include="src\model\CreateState.h" />
     <ClInclude Include="src\nav\BuildContext.h" />
     <ClInclude Include="src\nav\BuildSettings.h" />
     <ClInclude Include="src\nav\Generator.h" />
