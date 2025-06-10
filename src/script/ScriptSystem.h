@@ -25,6 +25,7 @@ namespace script
     namespace api {
         class NodeAPI;
         class NodeCommandAPI;
+        class SceneAPI;
     }
 
     class CommandEngine;
@@ -129,6 +130,8 @@ namespace script
         CommandEngine* m_commandEngine{ nullptr };
 
         sol::state m_lua;
+
+        std::unique_ptr<api::SceneAPI> m_sceneApi;
 
         std::unordered_map<pool::NodeHandle, std::unique_ptr<api::NodeAPI>> m_nodeApis;
         std::unordered_map<pool::NodeHandle, std::unique_ptr<api::NodeCommandAPI>> m_nodeCommandApis;
