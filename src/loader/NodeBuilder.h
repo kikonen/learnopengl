@@ -11,7 +11,7 @@
 
 #include "ki/size.h"
 
-struct NodeState;
+struct CreateState;
 
 namespace pool {
     struct NodeHandle;
@@ -76,7 +76,7 @@ namespace loader {
             const glm::uvec3& tile,
             const glm::vec3& tilePositionOffset);
 
-        std::pair<pool::NodeHandle, NodeState> createNode(
+        std::pair<pool::NodeHandle, CreateState> createNode(
             pool::TypeHandle typeHandle,
             const NodeData& nodeData,
             const int cloneIndex,

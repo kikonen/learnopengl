@@ -10,7 +10,7 @@
 
 #include "ki/size.h"
 
-#include "model/NodeState.h"
+#include "model/CreateState.h"
 
 #include "audio/size.h"
 #include "audio/limits.h"
@@ -23,7 +23,7 @@
 
 namespace event {
     struct NodeAttach {
-        NodeState state;
+        CreateState state;
     };
 
     // Blobdata is for doing passing abnormally large event blobs

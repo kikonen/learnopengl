@@ -6,7 +6,7 @@
 
 #include "pool/NodeHandle.h"
 
-#include "model/NodeState.h"
+#include "model/CreateState.h"
 
 #include "NodeData.h"
 
@@ -16,6 +16,6 @@ namespace loader {
         pool::NodeHandle handle;
         const NodeData& data;
 
-        NodeState state;
+        CreateState state;
     };
 }

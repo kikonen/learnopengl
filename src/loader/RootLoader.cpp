@@ -6,6 +6,7 @@
 
 #include "model/Node.h"
 #include "model/NodeType.h"
+#include "model/CreateState.h"
 
 #include "event/Dispatcher.h"
 
@@ -62,7 +63,7 @@ namespace loader
         node->m_layer = type->m_layer;
 
         {
-            NodeState state{};
+            CreateState state{};
             event::Event evt { event::Type::node_add };
             evt.blob = std::make_unique<event::BlobData>();
             evt.blob->body.state = state;

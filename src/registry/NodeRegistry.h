@@ -22,6 +22,7 @@
 
 struct Material;
 
+struct CreateState;
 struct UpdateContext;
 
 class Registry;
@@ -91,6 +92,11 @@ public:
     Node* getRootWT() const noexcept {
         return m_rootWT.toNode();
     }
+
+    void attachNode(
+        const ki::node_id nodeId,
+        ki::node_id parentId,
+        const CreateState& state) noexcept;
 
     void changeParent(
         const ki::node_id id,
@@ -199,14 +205,9 @@ private:
     void setActiveNode(pool::NodeHandle node);
     void setActiveCameraNode(pool::NodeHandle node);
 
-    void attachNode(
-        const ki::node_id nodeId,
-        ki::node_id parentId,
-        const NodeState& state) noexcept;
-
     void bindNode(
         const ki::node_id nodeId,
-        const NodeState& state);
+        const CreateState& state);
 
     bool bindParent(
         const ki::node_id nodeId,

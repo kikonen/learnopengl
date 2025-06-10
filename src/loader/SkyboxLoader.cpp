@@ -13,6 +13,7 @@
 
 #include "model/Node.h"
 #include "model/NodeType.h"
+#include "model/CreateState.h"
 
 #include "shader/ProgramRegistry.h"
 
@@ -179,7 +180,7 @@ namespace loader {
         //util::sleep(1000);
 
         {
-            NodeState state{};
+            CreateState state{};
             event::Event evt { event::Type::node_add };
             evt.blob = std::make_unique<event::BlobData>();
             evt.blob->body.state = state;
