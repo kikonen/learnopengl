@@ -2678,6 +2678,9 @@
     <ClInclude Include="src\component\PhysicsDefinition.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\component\ControllerDefinition.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="learnopengl.rc">

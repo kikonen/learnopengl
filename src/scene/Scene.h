@@ -89,10 +89,10 @@ public:
         LayerRenderer* layerRenderer);
 
     Node* getActiveNode() const;
-    const std::vector<NodeController*>* getActiveNodeControllers() const;
+    const std::vector<std::unique_ptr<NodeController>>* getActiveNodeControllers() const;
 
     Node* getActiveCameraNode() const;
-    const std::vector<NodeController*>* getActiveCameraControllers() const;
+    const std::vector<std::unique_ptr<NodeController>>* getActiveCameraControllers() const;
 
     ki::node_id getObjectID(const RenderContext& ctx, float posx, float posy);
 

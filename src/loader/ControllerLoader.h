@@ -8,7 +8,8 @@ namespace pool {
 }
 
 class Node;
-class NodeController;
+struct ControllerDefinition;
+//class NodeController;
 
 namespace loader {
     class ControllerLoader : public BaseLoader
@@ -25,8 +26,7 @@ namespace loader {
             const loader::DocNode& node,
             ControllerData& data) const;
 
-        NodeController* createController(
-            const ControllerData& data,
-            pool::NodeHandle node);
+        std::unique_ptr<ControllerDefinition> createControllerDefinition(
+            const ControllerData& data);
     };
 }

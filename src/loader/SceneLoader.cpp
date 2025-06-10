@@ -291,19 +291,6 @@ namespace loader {
             m_dispatcher->send(evt);
         }
 
-        for (auto& controllerData : nodeData.controllers) {
-            if (!controllerData.enabled) continue;
-
-            auto* controller = l.m_controllerLoader.createController(controllerData, handle);
-
-            event::Event evt { event::Type::controller_add };
-            evt.body.control = {
-                .target = handle.toId(),
-                .controller = controller
-            };
-            m_dispatcher->send(evt);
-        }
-
         // try anim event
         //if (!node.isRoot && !type->m_flags.water && !type->m_flags.tessellation && !type->m_flags.noShadow)
         //if (nodeData.desc == "Cow")

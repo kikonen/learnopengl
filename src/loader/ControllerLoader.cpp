@@ -5,9 +5,6 @@
 
 #include "model/Node.h"
 
-#include "controller/PawnController.h"
-#include "controller/CameraZoomController.h"
-
 #include "loader/document.h"
 #include "loader_util.h"
 
@@ -82,25 +79,24 @@ namespace loader {
         }
     }
 
-    NodeController* ControllerLoader::createController(
-        const ControllerData& data,
-        pool::NodeHandle handle)
+    std::unique_ptr<ControllerDefinition> ControllerLoader::createControllerDefinition(
+        const ControllerData& data)
     {
-        if (!data.enabled) return nullptr;
+        auto definition = std::make_unique<ControllerDefinition>();
+        auto& df = *definition;
 
         auto [targetId, targetResolvedSID] = resolveNodeId(data.targetBaseId);
 
-        switch (data.type) {
-        case ControllerType::pawn: {
-            auto* controller = new PawnController();
-            return controller;
-        }
-        case ControllerType::camera_zoom: {
-            auto* controller = new CameraZoomController();
-            return controller;
-        }
-        }
+        df.m_type = data.type;
 
-        return nullptr;
+        df.m_mode = data.mode;
+        df.m_speed = data.speed;
+
+        df.m_targetId = targetId;
+
+        df.m_direction = data.direction;
+        df.m_distance = data.distance;
+
+        return definition;
     }
 }

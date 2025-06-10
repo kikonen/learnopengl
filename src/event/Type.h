@@ -17,8 +17,6 @@ namespace event
         // NOTE KI allow camera to vary independent of active node
         camera_activate,
 
-        controller_add,
-
         audio_listener_activate,
 
         scene_loaded,
