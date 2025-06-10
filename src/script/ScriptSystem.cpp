@@ -28,9 +28,11 @@
 #include "script/api/NodeAPI.h"
 #include "script/api/NodeCommandAPI.h"
 #include "script/api/UtilAPI.h"
+#include "script/api/SceneAPI.h"
 
 #include "binding/LuaUtil.h"
 #include "binding/LuaPhysics.h"
+#include "binding/LuaScene.h"
 #include "binding/LuaNode.h"
 #include "binding/LuaNodeCommand.h"
 #include "binding/LuaGlm.h"
@@ -41,6 +43,7 @@ namespace
 {
     const static std::string TABLE_CLASSES = "classes";
     const static std::string TABLE_STATES = "states";
+    const static std::string TABLE_SCENE = "scene";
     const static std::string TABLE_TMP = "tmp";
 
     static script::ScriptSystem* s_system{ nullptr };
@@ -71,6 +74,7 @@ namespace script
 namespace script
 {
     ScriptSystem::ScriptSystem()
+        : m_sceneApi{ std::make_unique<api::SceneAPI>() }
     {
     }
 
@@ -171,6 +175,8 @@ namespace script
         lua[TABLE_CLASSES] = lua.create_table_with();
         lua[TABLE_STATES] = lua.create_table_with();
         lua[TABLE_TMP] = lua.create_table_with();
+
+        lua[TABLE_SCENE] = std::ref(m_sceneApi);
     }
 
     void ScriptSystem::update(const UpdateContext& ctx)
@@ -188,6 +194,7 @@ namespace script
         auto& lua = getLua();
 
         binding::LuaUtil::bind(lua);
+        binding::LuaScene::bind(lua);
         binding::LuaPhysics::bind(lua);
         binding::LuaGlm::bind(lua);
         binding::LuaRayHit::bind(lua);

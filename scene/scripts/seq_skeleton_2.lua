@@ -300,3 +300,13 @@ end
 
 Updater:add_updater(update)
 start()
+
+function create_new_skeleton()
+  local opt = {
+    type = "skeleton_army_{c}_{t}",
+    pos = vec3(0, 0.5, 2),
+    rot = vec3(0),
+    scale = vec3(1),
+  }
+  local node_id = scene:create_node(opt)
+end
