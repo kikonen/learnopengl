@@ -17,6 +17,8 @@
 #include "engine/PrepareContext.h"
 #include "engine/UpdateContext.h"
 
+#include "component/PhysicsDefinition.h"
+
 #include "physics/PhysicsSystem.h"
 #include "physics/physics_util.h"
 #include "physics/Geom.h"
@@ -104,9 +106,9 @@ void GridGenerator::prepareInstances(
         break;
     }
 
-    const auto hasPhysics = m_geometryTemplate.isValid();
     m_transforms.reserve(count);
-    if (hasPhysics) {
+
+    if (m_geometryTemplate) {
         m_geometries.reserve(count);
     }
 
@@ -117,9 +119,13 @@ void GridGenerator::prepareInstances(
         transform.setPosition(m_offset);
         transform.setScale(m_scale);
 
-        {
-            m_geometries.push_back(std::move(m_geometryTemplate));
+        if (m_geometryTemplate) {
+            physics::Object obj;
+            obj.m_geom = *m_geometryTemplate;
+
+            m_geometries.push_back(std::move(obj.m_geom));
             auto& geom = m_geometries[m_geometries.size() - 1];
+
             physicsEngine.registerGeom(geom, glm::vec3{ m_scale });
         }
     }

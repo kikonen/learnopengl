@@ -258,12 +258,6 @@ namespace loader {
             evt.blob = std::make_unique<event::BlobData>();
             evt.blob->body = {
                 .state = resolved.state,
-                .physics = {
-                    .body = nodeData.physics.body,
-                    .geom = nodeData.physics.geom,
-                    .enabled = nodeData.physics.enabled,
-                    .update = nodeData.physics.update
-                },
             };
             evt.body.node = {
                 .target = handle.toId(),

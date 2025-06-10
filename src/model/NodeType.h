@@ -15,6 +15,7 @@
 #include "mesh/LodMesh.h"
 
 #include "TypeFlags.h"
+#include "PivotPoint.h"
 
 namespace render {
     //struct NodeTypeKey;
@@ -35,6 +36,7 @@ struct LightDefinition;
 struct TextDefinition;
 struct AudioListenerDefinition;
 struct AudioSourceDefinition;
+struct PhysicsDefinition;
 
 struct PrepareContext;
 
@@ -165,10 +167,16 @@ public:
     std::unique_ptr<CameraDefinition> m_cameraDefinition{ nullptr };
     std::unique_ptr<LightDefinition> m_lightDefinition{ nullptr };
     std::unique_ptr<particle::ParticleDefinition> m_particleDefinition{ nullptr };
-    std::unique_ptr<TextDefinition> m_textDefinition{ nullptr };
+    std::unique_ptr<PhysicsDefinition> m_physicsDefinition;
 
     std::unique_ptr<AudioListenerDefinition> m_audioListenerDefinition;
     std::unique_ptr<std::vector<AudioSourceDefinition>> m_audioSourceDefinitions;
+
+    std::unique_ptr<TextDefinition> m_textDefinition{ nullptr };
+
+    glm::vec3 m_front{ 0.f, 0.f, 1.f };
+    glm::quat m_baseRotation{ 1.f, 0.f, 0.f, 0.f };
+    PivotPoint m_pivotPoint;
 
     TypeFlags m_flags;
     uint8_t m_layer{ 0 };

@@ -30,7 +30,6 @@ namespace loader {
 
         std::unique_ptr<NodeGenerator> createGenerator(
             const GeneratorData& data,
-            const NodeType* type,
             Loaders& loaders);
     };
 }

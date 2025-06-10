@@ -11,6 +11,8 @@
 #include "mesh/LodMesh.h"
 #include "mesh/MeshFlags.h"
 
+#include "component/PhysicsDefinition.h"
+
 #include "generator/GridGenerator.h"
 #include "generator/AsteroidBeltGenerator.h"
 #include "terrain/TerrainGenerator.h"
@@ -168,7 +170,6 @@ namespace loader {
 
     std::unique_ptr<NodeGenerator> GeneratorLoader::createGenerator(
         const GeneratorData& data,
-        const NodeType* type,
         Loaders& loaders)
     {
         if (!data.enabled) return nullptr;
@@ -231,7 +232,24 @@ namespace loader {
             generator->m_yStep = data.repeat.yStep;
             generator->m_zStep = data.repeat.zStep;
 
-            generator->m_geometryTemplate = data.geom;
+            if (data.geom.enabled)
+            {
+                auto& geomData = data.geom;
+                generator->m_geometryTemplate = std::make_unique<GeomDefinition>();
+                auto& geom = *generator->m_geometryTemplate;
+
+                geom.m_size = geomData.size;
+
+                geom.m_rotation = util::degreesToQuat(geomData.rotation);
+                geom.m_offset = geomData.offset;
+
+                geom.m_categoryMask = geomData.categoryMask;
+                geom.m_collisionMask = geomData.collisionMask;
+
+                geom.m_type = geomData.type;
+
+                geom.m_placeable = geomData.placeable;
+            }
 
             return generator;
         }

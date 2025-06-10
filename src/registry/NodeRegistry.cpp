@@ -47,6 +47,8 @@
 #include "component/AudioSourceDefinition.h"
 #include "component/AudioListenerDefinition.h"
 
+#include "component/PhysicsDefinition.h"
+
 #include "audio/Listener.h"
 #include "audio/Source.h"
 #include "audio/AudioSystem.h"
@@ -658,25 +660,6 @@ void NodeRegistry::attachListeners()
                 e.body.node.target,
                 e.body.node.parentId,
                 e.blob->body.state);
-
-            if (auto& data = e.blob->body.physics;
-                data.isValid() &&
-                !(node->m_generator &&
-                node->m_generator->isLightWeightPhysics()) )
-            {
-                auto& physicsEngine = physics::PhysicsSystem::get();
-
-                physics::Object obj;
-                obj.m_body = data.body;
-                obj.m_geom = data.geom;
-                physicsEngine.registerObject(handle, node->m_entityIndex, data.update, std::move(obj));
-            }
-
-            if (auto& sources = node->m_audioSources; sources) {
-                for (auto& src : *sources) {
-                    audio::AudioSystem::get().prepareSource(src);
-                }
-            }
         });
 
     dispatcher->addListener(
@@ -785,10 +768,15 @@ void NodeRegistry::handleNodeAdded(Node* node)
 
 void NodeRegistry::attachNode(
     const ki::node_id nodeId,
-    const ki::node_id parentId,
+    ki::node_id parentId,
     const NodeState& state) noexcept
 {
     auto* node = pool::NodeHandle::toNode(nodeId);
+
+    // NOTE KI special case allow 0 to refer to "ROOT"
+    if (!parentId) {
+        parentId = m_rootId;
+    }
 
     assert(node);
     assert(parentId || nodeId == m_rootId);
@@ -800,7 +788,7 @@ void NodeRegistry::attachNode(
 
     bindNode(nodeId, state);
 
-    // NOTE KI ignore nodes without parent
+    // NOTE KI ignore nodes with invalid parent
     if (!bindParent(nodeId, parentId)) {
         KI_WARN_OUT(fmt::format("IGNORE: MISSING parent - parentId={}, node={}", parentId, node->str()));
         return;
@@ -810,6 +798,25 @@ void NodeRegistry::attachNode(
 
     type->prepareWT({ m_registry });
     node->prepareWT({ m_registry }, m_states[node->m_entityIndex]);
+
+    if (type->m_physicsDefinition &&
+        !(node->m_generator &&
+        node->m_generator->isLightWeightPhysics()))
+    {
+        const auto& df = *type->m_physicsDefinition;
+        auto& physicsEngine = physics::PhysicsSystem::get();
+
+        physics::Object obj;
+        obj.m_body = df.m_body;
+        obj.m_geom = df.m_geom;
+        physicsEngine.registerObject(node->m_handle, node->m_entityIndex, df.m_update, std::move(obj));
+    }
+
+    if (auto& sources = node->m_audioSources; sources) {
+        for (auto& src : *sources) {
+            audio::AudioSystem::get().prepareSource(src);
+        }
+    }
 
     if (node->m_typeFlags.skybox) {
         return bindSkybox(node->toHandle());

@@ -73,4 +73,10 @@ namespace ki {
         StringID sid{ fmt::format("auto-{}", seqNext()) };
         return sid;
     }
+
+    uint32_t StringID::nextID(std::string_view base)
+    {
+        StringID sid{ fmt::format("auto-{}-{}", base, seqNext()) };
+        return sid;
+    }
 }

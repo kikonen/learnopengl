@@ -13,6 +13,8 @@ namespace loader {
         const loader::DocNode& node,
         loader::GeomData& data) const
     {
+        data.enabled = true;
+
         for (const auto& pair : node.getNodes()) {
             const std::string& k = pair.getName();
             const loader::DocNode& v = pair.getNode();

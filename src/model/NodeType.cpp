@@ -20,6 +20,7 @@
 #include "component/AudioListenerDefinition.h"
 #include "component/AudioSourceDefinition.h"
 #include "component/TextDefinition.h"
+#include "component/PhysicsDefinition.h"
 
 #include "particle/ParticleDefinition.h"
 

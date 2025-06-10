@@ -5,9 +5,9 @@
 #include <glm/glm.hpp>
 #include <glm/gtx/quaternion.hpp>
 
-#include "loader/PhysicsData.h"
-
 #include "size.h"
+
+struct BodyDefinition;
 
 namespace physics {
     struct Body {
@@ -42,7 +42,7 @@ namespace physics {
         bool kinematic : 1 { false };
 
         ~Body();
-        Body* operator=(const loader::BodyData& o);
+        Body* operator=(const BodyDefinition& o);
 
         bool isValid() const noexcept {
             return type != BodyType::none;
