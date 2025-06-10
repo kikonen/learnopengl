@@ -15,16 +15,11 @@
 #include "audio/size.h"
 #include "audio/limits.h"
 
-//#include "loader/PhysicsData.h"
-
 #include "script/size.h"
 
 #include "size.h"
 
 #include "Type.h"
-
-struct UpdateContext;
-class NodeController;
 
 namespace event {
     struct NodeAttach {
@@ -50,11 +45,6 @@ namespace event {
         ki::type_id target{ 0 };
     };
 
-    struct ControlAction {
-        ki::node_id target{ 0 };
-        NodeController* controller{ nullptr };
-    };
-
     struct AudioSourceAction {
         ki::node_id target{ 0 };
         audio::source_id id{ 0 };
@@ -62,16 +52,6 @@ namespace event {
 
     struct AudioListenerAction {
         ki::node_id target{ 0 };
-    };
-
-    struct CommandAction {
-        ki::node_id target{ 0 };
-
-        script::command_id after{ 0 };
-        float duration{ 0 };
-        bool relative{ true };
-        glm::vec3 data{ 0.f };
-        glm::vec3 data2{ 0.f };
     };
 
     struct ScriptAction {

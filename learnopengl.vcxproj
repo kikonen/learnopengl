@@ -601,6 +601,7 @@
     <ClInclude Include="src\component\AudioListenerDefinition.h" />
     <ClInclude Include="src\component\AudioSourceDefinition.h" />
     <ClInclude Include="src\component\CameraDefinition.h" />
+    <ClInclude Include="src\component\ControllerDefinition.h" />
     <ClInclude Include="src\component\LightDefinition.h" />
     <ClInclude Include="src\component\LightType.h" />
     <ClInclude Include="src\component\PhysicsDefinition.h" />

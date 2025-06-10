@@ -170,6 +170,20 @@ namespace loader
         type->m_particleDefinition = l.m_particleLoader.createDefinition(nodeData.particle);
         type->m_physicsDefinition = l.m_physicsLoader.createPhysicsDefinition(nodeData.physics);
 
+        if (!nodeData.controllers.empty()) {
+            type->m_controllerDefinitions = std::make_unique<std::vector<ControllerDefinition>>();
+            for (auto& controllerData : nodeData.controllers) {
+                auto df = l.m_controllerLoader.createControllerDefinition(controllerData);
+                if (!df) continue;
+
+                type->m_controllerDefinitions->push_back(*df);
+            }
+
+            if (type->m_controllerDefinitions->empty()) {
+                type->m_controllerDefinitions.reset();
+            }
+        }
+
         type->m_audioListenerDefinition = l.m_audioLoader.createListenerDefinition(nodeData.audio.listener);
         type->m_audioSourceDefinitions = l.m_audioLoader.createSourceDefinitions(nodeData.audio.sources);
 

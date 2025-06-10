@@ -53,12 +53,6 @@ void ControllerRegistry::clear()
 {
     ASSERT_WT();
 
-    for (auto& entry : m_controllers) {
-        for (auto* controller : entry.second) {
-            delete controller;
-        }
-    }
-
     m_controllers.clear();
 }
 
@@ -74,14 +68,6 @@ void ControllerRegistry::prepare(Registry* registry)
     ASSERT_WT();
 
     m_registry = registry;
-
-    registry->m_dispatcherWorker->addListener(
-        event::Type::controller_add,
-        [this](const event::Event& e) {
-            auto& action = e.body.control;
-            auto handle = pool::NodeHandle::toHandle(action.target);
-            addController(handle, action.controller);
-        });
 }
 
 void ControllerRegistry::updateWT(const UpdateContext& ctx)
@@ -91,7 +77,7 @@ void ControllerRegistry::updateWT(const UpdateContext& ctx)
         if (!node) continue;
 
         bool changed = false;
-        for (auto* controller : it.second) {
+        for (auto& controller : it.second) {
             changed |= controller->updateWT(ctx, *node);
         }
     }
@@ -99,7 +85,7 @@ void ControllerRegistry::updateWT(const UpdateContext& ctx)
 
 void ControllerRegistry::addController(
     pool::NodeHandle target,
-    NodeController* controller)
+    std::unique_ptr<NodeController> controller)
 {
     if (!controller) return;
 
@@ -117,11 +103,11 @@ void ControllerRegistry::addController(
         if (const auto& it = m_controllers.find(target);
             it == m_controllers.end())
         {
-            m_controllers.insert({ target, std::vector<NodeController*>{} });
+            m_controllers.insert({ target, std::vector<std::unique_ptr<NodeController>>{} });
         }
     }
 
     {
-        m_controllers.find(target)->second.emplace_back(controller);
+        m_controllers.find(target)->second.push_back(std::move(controller));
     }
 }

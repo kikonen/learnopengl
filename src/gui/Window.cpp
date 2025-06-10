@@ -456,14 +456,14 @@ void Window::processInput(const InputContext& ctx)
 
     {
         if (nodeControllers) {
-            for (auto* controller : *nodeControllers) {
+            for (auto& controller : *nodeControllers) {
                 controller->processInput(ctx);
             }
         }
     }
     {
         if (cameraControllers && cameraControllers != nodeControllers) {
-            for (auto* controller : *cameraControllers) {
+            for (auto& controller : *cameraControllers) {
                 controller->processInput(ctx);
             }
         }
@@ -515,14 +515,14 @@ void Window::onMouseWheel(float xoffset, float yoffset)
 
     {
         if (nodeControllers) {
-            for (auto* controller : *nodeControllers) {
+            for (auto& controller : *nodeControllers) {
                 controller->onMouseWheel(ctx, xoffset, yoffset);
             }
         }
     }
     {
         if (cameraControllers && cameraControllers != nodeControllers) {
-            for (auto* controller : *cameraControllers) {
+            for (auto& controller : *cameraControllers) {
                 controller->onMouseWheel(ctx, xoffset, yoffset);
             }
         }

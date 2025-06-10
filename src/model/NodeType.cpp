@@ -21,6 +21,7 @@
 #include "component/AudioSourceDefinition.h"
 #include "component/TextDefinition.h"
 #include "component/PhysicsDefinition.h"
+#include "component/ControllerDefinition.h"
 
 #include "particle/ParticleDefinition.h"
 

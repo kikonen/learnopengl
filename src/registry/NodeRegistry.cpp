@@ -48,6 +48,7 @@
 #include "component/AudioListenerDefinition.h"
 
 #include "component/PhysicsDefinition.h"
+#include "component/ControllerDefinition.h"
 
 #include "audio/Listener.h"
 #include "audio/Source.h"
@@ -55,6 +56,9 @@
 
 #include "physics/PhysicsSystem.h"
 #include "physics/physics_util.h"
+
+#include "controller/PawnController.h"
+#include "controller/CameraZoomController.h"
 
 #include "render/DebugContext.h"
 
@@ -251,6 +255,21 @@ namespace {
             }
         }
         return result->empty() ? nullptr : std::move(result);
+    }
+
+    std::unique_ptr<NodeController> createController(
+        ControllerDefinition& definition)
+    {
+        switch (definition.m_type) {
+        case ControllerType::pawn: {
+            return std::make_unique<PawnController>();
+        }
+        case ControllerType::camera_zoom: {
+            return std::make_unique<CameraZoomController>();
+        }
+        }
+
+        return nullptr;
     }
 }
 
@@ -815,6 +834,14 @@ void NodeRegistry::attachNode(
     if (auto& sources = node->m_audioSources; sources) {
         for (auto& src : *sources) {
             audio::AudioSystem::get().prepareSource(src);
+        }
+    }
+
+    if (type->m_controllerDefinitions) {
+        for (auto& definition : *type->m_controllerDefinitions) {
+            auto controller = createController(definition);
+            if (!controller) continue;
+            ControllerRegistry::get().addController(node->m_handle, std::move(controller));
         }
     }
 

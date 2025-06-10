@@ -4,15 +4,11 @@
 
 #include <glm/glm.hpp>
 
+#include "component/ControllerDefinition.h"
+
 #include "loader/BaseId.h"
 
 namespace loader {
-    enum class ControllerType : std::underlying_type_t<std::byte> {
-        none,
-        pawn,
-        camera_zoom,
-    };
-
     struct ControllerData {
         bool enabled{ false };
         ControllerType type{ ControllerType::none };

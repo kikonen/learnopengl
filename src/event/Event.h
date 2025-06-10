@@ -29,10 +29,8 @@ namespace event {
         union Body {
             NodeAction node;
             NodeTypeAction nodeType;
-            ControlAction control;
             AudioSourceAction audioSource;
             AudioListenerAction audioListener;
-            CommandAction command;
             ScriptAction script;
             SelectAction select;
         } body;
