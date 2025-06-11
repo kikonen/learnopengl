@@ -6,6 +6,8 @@ print("-------------")
 
 local rnd = math.random
 
+local need_create_node = false
+
 if not State.explode then
 (function()
   print("Register STATE")
@@ -296,6 +298,9 @@ end
 
 local function update(dt)
   -- printf("skeleton_update: dt=%f\n", dt or 0)
+  if need_create_node then
+    create_new_skeleton()
+  end
 end
 
 Updater:add_updater(update)
@@ -304,9 +309,13 @@ start()
 function create_new_skeleton()
   local opt = {
     type = "skeleton_army_{c}_{t}",
-    pos = vec3(0, 0.5, 2),
-    rot = vec3(0),
-    scale = vec3(1),
+    pos = vec3(rnd(10), 0.5, rnd(10)),
+    rot = vec3(0, rnd(360), 0),
+    scale = vec3(0.9 + rnd(0.2)),
   }
   local node_id = scene:create_node(opt)
+end
+
+function trigger_create_new_skeleton()
+  need_create_node = true
 end
