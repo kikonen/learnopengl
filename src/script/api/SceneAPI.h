@@ -12,6 +12,6 @@ namespace script::api
         ~SceneAPI();
 
         ki::node_id lua_create_node(
-            const sol::table& opt);
+            const sol::table& lua_opt);
     };
 }
