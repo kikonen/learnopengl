@@ -216,6 +216,7 @@ namespace script
     }
 
     void ScriptSystem::bindTypeScript(
+        bool global,
         pool::TypeHandle handle,
         script::script_id scriptId)
     {
@@ -234,7 +235,7 @@ namespace script
         }
 
         {
-            const auto& scriptEntry = createScriptEntry(handle, scriptId);
+            const auto& scriptEntry = createScriptEntry(global, handle, scriptId);
             if (scriptEntry.m_valid) {
                 it->second.insert({ scriptId, scriptEntry });
             }
@@ -242,7 +243,7 @@ namespace script
     }
 
     void ScriptSystem::bindNodeScript(
-        Node* node,
+        const Node* node,
         script::script_id scriptId)
     {
         std::lock_guard lock(m_lock);
@@ -261,7 +262,7 @@ namespace script
     }
 
     void ScriptSystem::createNodeState(
-        Node* node)
+        const Node* node)
     {
         const auto id = node->getId();
         const auto typeId = node->m_typeHandle.toId();
@@ -311,6 +312,7 @@ states[{}] = classes[{}]:new())",
     }
 
     script::ScriptEntry ScriptSystem::createScriptEntry(
+        bool global,
         pool::TypeHandle handle,
         script::script_id scriptId)
     {
@@ -339,7 +341,7 @@ states[{}] = classes[{}]:new())",
 //            break;
 //        }
 
-        if (handle) {
+        if (!global) {
             std::string classScriptlet = fmt::format(
             "classes[{}] = classes[{}] or Node:new({{ type_id={} }})",
             typeId, typeId, typeId);
@@ -410,11 +412,12 @@ end)", fnName, scriptFile.m_source);
     }
 
     void ScriptSystem::runGlobalScript(
+        const Node* node,
         script::script_id scriptId)
     {
         std::lock_guard lock(m_lock);
 
-        const auto& it = m_scriptEntries.find(pool::TypeHandle::NULL_HANDLE);
+        const auto& it = m_scriptEntries.find(node->m_typeHandle);
 
         if (it == m_scriptEntries.end()) return;
 
@@ -432,7 +435,7 @@ end)", fnName, scriptFile.m_source);
     }
 
     void ScriptSystem::runNodeScript(
-        Node* node,
+        const Node* node,
         script::script_id scriptId)
     {
         if (!node) return;
@@ -467,14 +470,14 @@ end)", fnName, scriptFile.m_source);
     sol::protected_function_result ScriptSystem::execScript(
         const std::string& script)
     {
-        std::lock_guard lock(m_lock);
+        //std::lock_guard lock(m_lock);
         return invokeLuaScript(script);
     }
 
     sol::protected_function_result ScriptSystem::execRepl(
         const std::string& script)
     {
-        std::lock_guard lock(m_lock);
+        //std::lock_guard lock(m_lock);
 
         auto result = invokeLuaScript(script);
         if (!result.valid()) {
@@ -492,7 +495,7 @@ end)", fnName, scriptFile.m_source);
         pool::NodeHandle handle,
         std::string_view name)
     {
-        std::lock_guard lock(m_lock);
+        //std::lock_guard lock(m_lock);
 
         sol::optional<sol::table> nodeState = getLua()[TABLE_STATES][handle.toId()];
         if (!nodeState) return false;
@@ -502,12 +505,12 @@ end)", fnName, scriptFile.m_source);
     }
 
     void ScriptSystem::invokeNodeFunction(
-        Node* node,
+        const Node* node,
         bool self,
         const sol::function& fn,
         const sol::table& args)
     {
-        std::lock_guard lock(m_lock);
+        //std::lock_guard lock(m_lock);
 
         invokeLuaFunction([this, node, self, &fn, &args]() {
             sol::optional<sol::table> nodeState = getLua()[TABLE_STATES][node->getId()];
@@ -523,7 +526,7 @@ end)", fnName, scriptFile.m_source);
         int type,
         const std::string& data)
     {
-        std::lock_guard lock(m_lock);
+        //std::lock_guard lock(m_lock);
 
         invokeLuaFunction([this, &type, &data, &listenerId]() {
             sol::table events = getLua()["events"];

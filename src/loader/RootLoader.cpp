@@ -15,6 +15,9 @@
 #include "loader/document.h"
 #include "loader_util.h"
 
+#include "Loaders.h"
+#include "ScriptData.h"
+
 namespace loader
 {
     RootLoader::RootLoader(
@@ -42,7 +45,9 @@ namespace loader
     }
 
     void RootLoader::attachRoot(
-        const RootData& data)
+        const RootData& data,
+        ScriptSystemData& scriptSystemData,
+        Loaders& loaders)
     {
         const auto& assets = Assets::get();
 
@@ -52,6 +57,7 @@ namespace loader
         type->setName(name);
 
         auto& flags = type->m_flags;
+        flags.root = true;
         flags.invisible = true;
 
         auto handle = pool::NodeHandle::allocate(assets.rootId);
@@ -61,6 +67,15 @@ namespace loader
         node->m_typeHandle = typeHandle;
         node->m_typeFlags = type->m_flags;
         node->m_layer = type->m_layer;
+
+        {
+            const auto& scriptIds = loaders.m_scriptLoader.createScripts(
+                scriptSystemData.scripts);
+
+            for (auto& scriptId : scriptIds) {
+                type->addScript(scriptId);
+            }
+        }
 
         {
             CreateState state{};

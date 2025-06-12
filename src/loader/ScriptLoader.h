@@ -37,21 +37,11 @@ namespace loader {
             ScriptData& data,
             bool forceFile) const;
 
-        void createScriptSystem(
-            const ScriptSystemData& data);
-
         std::vector<script::script_id> createScripts(
             const std::vector<ScriptData>& scripts) const;
 
         std::vector<script::script_id> createScript(
             const ScriptData& data) const;
-
-        void bindTypeScripts(
-            pool::TypeHandle handle,
-            const std::vector<script::script_id>& scriptIds) const;
-
-        void runGlobalScripts(
-            const std::vector<script::script_id>& scriptIds) const;
 
         std::string resolveScriptPath(const std::string& str) const;
     };

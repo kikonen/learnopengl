@@ -4,6 +4,8 @@
 #include "RootData.h"
 
 namespace loader {
+    struct ScriptSystemData;
+
     class RootLoader : public BaseLoader
     {
     public:
@@ -15,6 +17,8 @@ namespace loader {
             RootData& data) const;
 
         void attachRoot(
-            const RootData& data);
+            const RootData& data,
+            ScriptSystemData& scriptSystemData,
+            Loaders& loaders);
     };
 }

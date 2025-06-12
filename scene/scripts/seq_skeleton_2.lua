@@ -314,6 +314,7 @@ function create_new_skeleton()
     scale = vec3(0.9 + rnd(0.2)),
   }
   local node_id = scene:create_node(opt)
+  printf("created_node: %d\n", node_id)
 end
 
 function trigger_create_new_skeleton()

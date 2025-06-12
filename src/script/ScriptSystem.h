@@ -59,14 +59,15 @@ namespace script
             script::ScriptFile scriptFile);
 
         void bindTypeScript(
+            bool global,
             pool::TypeHandle handle,
             script::script_id scriptId);
 
         void createNodeState(
-            Node* node);
+            const Node* node);
 
         void bindNodeScript(
-            Node* node,
+            const Node* node,
             script::script_id scriptId);
 
         std::string getScriptSignature(
@@ -81,10 +82,11 @@ namespace script
             pool::TypeHandle handle);
 
         void runGlobalScript(
+            const Node* node,
             script::script_id scriptId);
 
         void runNodeScript(
-            Node* node,
+            const Node* node,
             script::script_id scriptId);
 
         bool hasFunction(
@@ -92,7 +94,7 @@ namespace script
             std::string_view name);
 
         void invokeNodeFunction(
-            Node* node,
+            const Node* node,
             bool self,
             const sol::function& fn,
             const sol::table& args);
@@ -118,6 +120,7 @@ namespace script
             const std::string& script);
 
         script::ScriptEntry createScriptEntry(
+            bool global,
             pool::TypeHandle handle,
             script::script_id scriptId);
 

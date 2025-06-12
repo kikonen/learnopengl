@@ -157,10 +157,6 @@ namespace loader
             for (auto& scriptId : scriptIds) {
                 type->addScript(scriptId);
             }
-
-            m_loaders->m_scriptLoader.bindTypeScripts(
-                type->toHandle(),
-                scriptIds);
         }
 
         resolveAttachments(type, nodeData);

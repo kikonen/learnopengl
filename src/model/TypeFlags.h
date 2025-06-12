@@ -11,6 +11,7 @@ struct TypeFlags {
     // NOTE KI container itself IS in hiearchy
     bool contained : 1 {false};
 
+    bool root : 1 {false};
     bool origo : 1 {false};
     bool container : 1 {false};
     bool model : 1 {false};

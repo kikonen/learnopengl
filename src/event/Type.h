@@ -17,13 +17,12 @@ namespace event
         // NOTE KI allow camera to vary independent of active node
         camera_activate,
 
-        audio_listener_activate,
-
         scene_loaded,
 
-        script_type_bind,
-        script_node_bind,
         script_run,
+
+        console_execute,
+        console_complete,
 
         app_shutdown,
     };

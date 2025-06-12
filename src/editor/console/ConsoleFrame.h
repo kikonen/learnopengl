@@ -9,8 +9,14 @@ namespace script
     class ScriptSystem;
 }
 
+namespace event {
+    class Dispatcher;
+}
+
 namespace editor
 {
+    class Executor;
+
     struct ScriptResult
     {
         bool m_success;
@@ -46,8 +52,10 @@ namespace editor
         void execCommand(const std::string& script);
 
     private:
-        script::ScriptSystem* m_scriptSystem{ nullptr };
-
         ConsoleState m_state;
+        std::unique_ptr<Executor> m_executor;
+
+        event::Dispatcher* m_dispatcherWorker{ nullptr };
+        event::Dispatcher* m_dispatcherView{ nullptr };
     };
 }

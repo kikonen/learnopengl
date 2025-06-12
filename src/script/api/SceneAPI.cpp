@@ -62,6 +62,10 @@ namespace script::api
         const auto typeId = SID(typeName);
         const auto* type = pool::TypeHandle::toType(typeId);
 
+        if (!type) {
+            return 0;
+        }
+
         const ki::node_id nodeId = ki::StringID::nextID(typeName);
 
         if (pool::NodeHandle::toHandle(nodeId)) {
