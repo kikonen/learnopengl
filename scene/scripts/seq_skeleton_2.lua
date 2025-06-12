@@ -306,15 +306,19 @@ end
 Updater:add_updater(update)
 start()
 
-function create_new_skeleton()
+function create_new_node(type)
   local opt = {
-    type = "skeleton_army_{c}_{t}",
+    type = type,
     pos = vec3(rnd(10), 0.5, rnd(10)),
     rot = vec3(0, rnd(360), 0),
     scale = vec3(0.9 + rnd(0.2)),
   }
   local node_id = scene:create_node(opt)
   printf("created_node: %d\n", node_id)
+end
+
+function create_new_skeleton()
+  create_new_node("skeleton_army_{c}_{t}")
 end
 
 function trigger_create_new_skeleton()
