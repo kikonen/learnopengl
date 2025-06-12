@@ -150,15 +150,6 @@ namespace loader {
         }
     }
 
-    void ScriptLoader::createScriptSystem(
-        const ScriptSystemData& data)
-    {
-        if (!data.enabled) return;
-        const auto& registeredIds = createScripts(data.scripts);
-        bindTypeScripts(pool::TypeHandle::NULL_HANDLE, registeredIds);
-        runGlobalScripts(registeredIds);
-    }
-
     std::vector<script::script_id> ScriptLoader::createScripts(
         const std::vector<ScriptData>& scripts) const
     {
@@ -204,37 +195,6 @@ namespace loader {
         }
 
         return registeredIds;
-    }
-
-    void ScriptLoader::bindTypeScripts(
-        pool::TypeHandle handle,
-        const std::vector<script::script_id>& scriptIds) const
-    {
-        const auto& assets = Assets::get();
-        if (!assets.useScript) return;
-
-        for (auto scriptId : scriptIds)
-        {
-            event::Event evt { event::Type::script_type_bind };
-            auto& body = evt.body.script = {
-                .target = handle.toId(),
-                .id = scriptId,
-            };
-            m_dispatcher->send(evt);
-        }
-    }
-
-    void ScriptLoader::runGlobalScripts(
-        const std::vector<script::script_id>& scriptIds) const
-    {
-        for (auto scriptId : scriptIds) {
-            event::Event evt { event::Type::script_run };
-            auto& body = evt.body.script = {
-                .target = 0,
-                .id = scriptId,
-            };
-            m_dispatcher->send(evt);
-        }
     }
 
     std::string ScriptLoader::resolveScriptPath(const std::string& str) const

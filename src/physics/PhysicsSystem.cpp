@@ -568,10 +568,11 @@ namespace physics
         // https://stackoverflow.com/questions/29541387/is-shared-ptr-swap-thread-safe
         if (dbg.m_physicsShowObjects) {
             auto meshes = m_meshGenerator->generateMeshes(false);
-            std::atomic_exchange(&dbg.m_physicsMeshesWT, meshes);
+            dbg.m_physicsMeshesWT.store(meshes);
         }
         else {
-            std::atomic_exchange(&dbg.m_physicsMeshesWT, NO_MESHES);
+            std::shared_ptr<std::vector<mesh::MeshInstance>> tmp;
+            dbg.m_physicsMeshesWT.store(tmp);
         }
     }
 

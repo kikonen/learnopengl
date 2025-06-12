@@ -537,8 +537,13 @@ void NodeRegistry::snapshotPending()
     snapshot(m_snapshotsWT, m_snapshotsPending);
 
     auto& dbg = render::DebugContext::modify();
-    dbg.m_physicsMeshesPending.swap(dbg.m_physicsMeshesWT);
-    dbg.m_physicsMeshesWT.reset();
+
+    {
+        dbg.m_physicsMeshesPending.exchange(dbg.m_physicsMeshesWT);
+
+        std::shared_ptr<std::vector<mesh::MeshInstance>> tmp;
+        dbg.m_physicsMeshesWT.store(tmp);
+    }
 }
 
 void NodeRegistry::snapshotRT()
@@ -551,9 +556,12 @@ void NodeRegistry::snapshotRT()
     m_dirtyEntities.resize(m_snapshotsRT.size());
 
     auto& dbg = render::DebugContext::modify();
-    if (dbg.m_physicsMeshesPending) {
-        dbg.m_physicsMeshesRT.swap(dbg.m_physicsMeshesPending);
-        dbg.m_physicsMeshesPending.reset();
+
+    if (dbg.m_physicsMeshesPending.load()) {
+        dbg.m_physicsMeshesRT.exchange(dbg.m_physicsMeshesPending);
+
+        std::shared_ptr<std::vector<mesh::MeshInstance>> tmp;
+        dbg.m_physicsMeshesPending.store(tmp);
     }
 }
 
@@ -697,13 +705,6 @@ void NodeRegistry::attachListeners()
             setActiveCameraNode(handle);
         });
 
-    //dispatcher->addListener(
-    //    event::Type::audio_listener_activate,
-    //    [this](const event::Event& e) {
-    //        auto& data = e.body.audioListener;
-    //        audio::AudioSystem::get().setActiveListener(data.target);
-    //    });
-
     if (assets.useScript) {
         dispatcher->addListener(
             event::Type::node_added,
@@ -711,28 +712,19 @@ void NodeRegistry::attachListeners()
                 auto& data = e.body.node;
                 auto handle = pool::NodeHandle::toHandle(data.target);
 
-                auto* node = handle.toNode();
+                const auto* node = handle.toNode();
                 if (!node) return;
 
-                auto* type = node->getType();
-
-                for (const auto& scriptId : type->getScripts()) {
-                    {
-                        event::Event evt{ event::Type::script_node_bind };
-                        auto& body = evt.body.script = {
-                            .target = handle.toId(),
-                            .id = scriptId,
-                        };
-                        m_registry->m_dispatcherWorker->send(evt);
-                    }
-                }
+                const auto* type = node->getType();
+                const auto nodeId = data.target;
 
                 for (const auto& scriptId : type->getScripts()) {
                     {
                         event::Event evt { event::Type::script_run };
                         auto& body = evt.body.script = {
-                            .target = data.target,
+                            .target = nodeId,
                             .id = scriptId,
+                            .global = nodeId == m_rootId
                         };
                         m_registry->m_dispatcherWorker->send(evt);
                     }

@@ -3,6 +3,7 @@
 #include <memory>
 #include <vector>
 #include <string>
+#include <atomic>
 
 #include <glm/glm.hpp>
 
@@ -138,9 +139,9 @@ namespace render {
         float m_physics_soft_erp{ 0.f };
         float m_physics_soft_cfm{ 0.f };
 
-        std::shared_ptr<std::vector<mesh::MeshInstance>> m_physicsMeshesWT;
-        std::shared_ptr<std::vector<mesh::MeshInstance>> m_physicsMeshesPending;
-        std::shared_ptr<std::vector<mesh::MeshInstance>> m_physicsMeshesRT;
+        std::atomic<std::shared_ptr<std::vector<mesh::MeshInstance>>> m_physicsMeshesWT;
+        std::atomic<std::shared_ptr<std::vector<mesh::MeshInstance>>> m_physicsMeshesPending;
+        std::atomic<std::shared_ptr<std::vector<mesh::MeshInstance>>> m_physicsMeshesRT;
 
         float getGBufferScale() const noexcept
         {

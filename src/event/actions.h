@@ -57,6 +57,7 @@ namespace event {
     struct ScriptAction {
         ki::node_id target{ 0 };
         script::script_id id{ 0 };
+        bool global{ false };
     };
 
     struct SelectAction {

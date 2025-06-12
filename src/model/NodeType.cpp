@@ -25,6 +25,8 @@
 
 #include "particle/ParticleDefinition.h"
 
+#include "script/ScriptSystem.h"
+
 #include "registry/NodeRegistry.h"
 #include "registry/ModelRegistry.h"
 #include "registry/NodeTypeRegistry.h"
@@ -102,6 +104,15 @@ void NodeType::prepareWT(
 
     for (auto& lodMesh : m_lodMeshes) {
         lodMesh.registerMaterial();
+    }
+
+    if (m_scripts) {
+        auto& scriptSystem = script::ScriptSystem::get();
+
+        for (auto scriptId : *m_scripts)
+        {
+            scriptSystem.bindTypeScript(m_flags.root, m_handle, scriptId);
+        }
     }
 }
 

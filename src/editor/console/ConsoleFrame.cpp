@@ -10,11 +10,17 @@
 #include "util/util.h"
 #include "util/log.h"
 
-#include "script/lua_binding.h"
-#include "script/ScriptSystem.h"
+#include "engine/PrepareContext.h"
+#include "engine/UpdateContext.h"
+
+#include "event/Dispatcher.h"
 
 #include "render/RenderContext.h"
 #include "render/DebugContext.h"
+
+#include "registry/Registry.h"
+
+#include "Executor.h"
 
 namespace {
     static int textEditCallbackStub(ImGuiInputTextCallbackData* data)
@@ -22,59 +28,13 @@ namespace {
         auto* console = static_cast<editor::ConsoleFrame*>(data->UserData);
         return console->textEditCallback(data);
     }
-
-    // https://developercommunity.visualstudio.com/t/exception-block-is-optmized-away-causing-a-crash/253077
-    static std::string convert(
-        const sol::protected_function_result& result)
-    {
-        std::string error;
-        try {
-            if (!result.valid()) {
-                sol::error err = result;
-                return err.what();
-            }
-
-            switch (result.get_type()) {
-            case sol::type::none:
-                return "";
-            case sol::type::lua_nil:
-                return "<nil>";
-            case sol::type::string:
-                return result.get<std::string>();
-            case sol::type::number:
-                return std::to_string(result.get<double>());
-            case sol::type::thread:
-                return "thread";
-            case sol::type::boolean:
-                return result.get<bool>() ? "true" : "false";
-            case sol::type::function:
-                return "function";
-            case sol::type::userdata:
-                return "userdata";
-            case sol::type::lightuserdata:
-                return "lightuserdata";
-            case sol::type::table:
-                return "table";
-            case sol::type::poly:
-                return "poly";
-            }
-
-            return fmt::format("type: {}", util::as_integer(result.get_type()));
-        }
-        catch (const std::exception& ex) {
-            error = ex.what();
-        }
-        catch (...) {
-            error = "UNKNOWN_ERROR";
-        }
-        return error;
-    }
 }
 
 namespace editor
 {
     ConsoleFrame::ConsoleFrame(Window& window)
-        : Frame{ window }
+        : Frame{ window },
+        m_executor{ std::make_unique<Executor>() }
     {
         m_state.clear();
     }
@@ -83,7 +43,32 @@ namespace editor
 
     void ConsoleFrame::prepare(const PrepareContext& ctx)
     {
-        m_scriptSystem = &script::ScriptSystem::get();
+        m_dispatcherWorker = ctx.m_registry->m_dispatcherWorker;
+        m_dispatcherView = ctx.m_registry->m_dispatcherView;
+
+        m_dispatcherWorker->addListener(
+            event::Type::console_execute,
+            [this](const event::Event& e) {
+                int count = m_executor->execute();
+
+                if (count > 0) {
+                    event::Event evt{ event::Type::console_complete };
+                    m_dispatcherView->send(evt);
+                }
+            });
+
+        m_dispatcherView->addListener(
+            event::Type::console_complete,
+            [this](const event::Event& e) {
+                const auto results = m_executor->getResults();
+                for (const auto result : results) {
+                    for (auto& item : m_state.m_items) {
+                        if (item.m_id == result.m_id) {
+                            item.m_result = result.m_result;
+                        }
+                    }
+                }
+            });
     }
 
     void ConsoleFrame::draw(const RenderContext& ctx)
@@ -275,9 +260,17 @@ namespace editor
         HistoryItem item;
         item.m_command = cmd;
 
-        const auto& result = m_scriptSystem->execRepl(cmd);
+        {
+            CommandItem cmdItem;
+            cmdItem.m_command = cmd;
+            item.m_id = m_executor->addCommand(cmdItem);
+        }
 
-        item.m_result = convert(result);
+        {
+            event::Event evt{ event::Type::console_execute };
+            m_dispatcherWorker->send(evt);
+        }
+
         m_state.addItem(item);
     }
 

@@ -204,9 +204,7 @@ namespace loader {
     {
         auto& l = *m_loaders;
 
-        l.m_rootLoader.attachRoot(root);
-        l.m_scriptLoader.createScriptSystem(*m_scriptSystemData);
-
+        l.m_rootLoader.attachRoot(root, *m_scriptSystemData, *m_loaders);
         l.m_skyboxLoader.attachSkybox(root.rootId, *m_skybox);
 
         l.m_materialUpdaterLoader.createMaterialUpdaters(

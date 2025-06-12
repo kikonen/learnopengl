@@ -32,6 +32,8 @@
 #include "audio/Source.h"
 #include "audio/Listener.h"
 
+#include "script/ScriptSystem.h"
+
 #include "registry/Registry.h"
 #include "registry/NodeRegistry.h"
 #include "registry/EntityRegistry.h"
@@ -119,6 +121,15 @@ void Node::prepareWT(
 
     if (m_particleGenerator) {
         m_particleGenerator->prepareWT();
+    }
+
+    if (!m_typeFlags.root) {
+        auto& scriptSystem = script::ScriptSystem::get();
+
+        for (auto scriptId : type->getScripts())
+        {
+            scriptSystem.bindNodeScript(this, scriptId);
+        }
     }
 }
 

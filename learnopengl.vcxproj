@@ -215,6 +215,7 @@
     <ClCompile Include="src\decal\DecalRegisry.cpp" />
     <ClCompile Include="src\editor\console\ConsoleExample.cpp" />
     <ClCompile Include="src\editor\console\ConsoleState.cpp" />
+    <ClCompile Include="src\editor\console\Executor.cpp" />
     <ClCompile Include="src\engine\SystemInit.cpp" />
     <ClCompile Include="src\event\actions.cpp" />
     <ClCompile Include="src\loader\DecalLoaderr.cpp" />
@@ -610,7 +611,10 @@
     <ClInclude Include="src\decal\DecalDefinition.h" />
     <ClInclude Include="src\decal\DecalRegistry.h" />
     <ClInclude Include="src\decal\DecalType.h" />
+    <ClInclude Include="src\editor\console\CommandItem.h" />
     <ClInclude Include="src\editor\console\ConsoleState.h" />
+    <ClInclude Include="src\editor\console\Executor.h" />
+    <ClInclude Include="src\editor\console\HistoryItem.h" />
     <ClInclude Include="src\engine\SystemInit.h" />
     <ClInclude Include="src\event\actions.h" />
     <ClInclude Include="src\generator\GeneratorMode.h" />

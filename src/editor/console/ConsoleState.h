@@ -3,13 +3,10 @@
 #include <string>
 #include <vector>
 
+#include "HistoryItem.h"
+
 namespace editor
 {
-    struct HistoryItem{
-        std::string m_command;
-        std::string m_result;
-    };
-
     struct ConsoleState
     {
         char m_inputBuffer[8192];
