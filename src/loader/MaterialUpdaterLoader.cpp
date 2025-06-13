@@ -12,7 +12,6 @@
 #include "material/MaterialUpdater.h"
 #include "material/ShaderMaterialUpdater.h"
 #include "material/FontAtlasMaterialUpdater.h"
-#include "material/MaterialRegistry.h"
 
 #include "loader/document.h"
 #include "Loaders.h"
@@ -80,16 +79,18 @@ namespace loader {
         }
     }
 
-    void MaterialUpdaterLoader::createMaterialUpdaters(
-        const std::vector<MaterialUpdaterData>& updaters,
+    std::vector<std::unique_ptr<MaterialUpdater>> MaterialUpdaterLoader::createMaterialUpdaters(
+        const std::vector<MaterialUpdaterData>& updatersData,
         Loaders& loaders)
     {
-        auto& mr = MaterialRegistry::get();
-        for (const auto& data : updaters) {
+        std::vector<std::unique_ptr<MaterialUpdater>> updaters;
+        for (const auto& data : updatersData) {
             auto updater = createMaterialUpdater(data, loaders);
             if (!updater) continue;
-            mr.addMaterialUpdater(std::move(updater));
+            updaters.push_back(std::move(updater));
         }
+
+        return updaters;
     }
 
     std::unique_ptr<MaterialUpdater> MaterialUpdaterLoader::createMaterialUpdater(
@@ -106,7 +107,6 @@ namespace loader {
             cm->m_material->loadTextures();
 
             loaders.m_materialLoader.resolveMaterial({}, *cm->m_material);
-            MaterialRegistry::get().registerMaterial(*cm->m_material);
 
             return cm;
         }
@@ -116,7 +116,6 @@ namespace loader {
             cm->setMaterial(&data.materialData.material);
 
             loaders.m_materialLoader.resolveMaterial({}, *cm->m_material);
-            MaterialRegistry::get().registerMaterial(*cm->m_material);
 
             return cm;
         }

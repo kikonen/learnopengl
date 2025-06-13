@@ -42,7 +42,7 @@ namespace decal {
         m_nameToIndex.insert({ 0, 0 });
     }
 
-    void DecalRegistry::addDecal(decal::DecalDefinition& df)
+    void DecalRegistry::addDecal(const decal::DecalDefinition& df)
     {
         std::lock_guard lock{ m_lock };
 

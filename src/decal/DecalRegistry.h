@@ -19,7 +19,7 @@ namespace decal
 
         void clear();
 
-        void addDecal(decal::DecalDefinition& df);
+        void addDecal(const decal::DecalDefinition& df);
 
         // @return decal with null id if not valid
         decal::DecalDefinition getDecal(const ki::StringID& name);

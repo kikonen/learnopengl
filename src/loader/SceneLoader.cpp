@@ -20,9 +20,13 @@
 #include "asset/Assets.h"
 
 #include "material/Material.h"
+#include "material/MaterialUpdater.h"
+#include "material/MaterialRegistry.h"
 
 #include "component/Light.h"
 #include "component/CameraComponent.h"
+
+#include "decal/DecalRegistry.h"
 
 #include "particle/ParticleGenerator.h"
 
@@ -207,13 +211,26 @@ namespace loader {
         l.m_rootLoader.attachRoot(root, *m_scriptSystemData, *m_loaders);
         l.m_skyboxLoader.attachSkybox(root.rootId, *m_skybox);
 
-        l.m_materialUpdaterLoader.createMaterialUpdaters(
-            m_materialUpdaters,
-            *m_loaders);
+        {
+            auto updaters = l.m_materialUpdaterLoader.createMaterialUpdaters(
+                m_materialUpdaters,
+                *m_loaders);
 
-        l.m_decalLoader.createDecals(
-            m_decals,
-            l);
+            auto& materialRegistry = MaterialRegistry::get();
+            for (auto&& updater : updaters) {
+                materialRegistry.addMaterialUpdater(std::move(updater));
+            }
+        }
+
+        {
+            const auto& decals = l.m_decalLoader.createDecals(
+                m_decals,
+                l);
+
+            for (const auto& decal : decals) {
+                decal::DecalRegistry::get().addDecal(decal);
+            }
+        }
 
         {
             std::lock_guard lock(m_ready_lock);
