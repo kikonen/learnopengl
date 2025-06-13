@@ -45,15 +45,6 @@ namespace event {
         ki::type_id target{ 0 };
     };
 
-    struct AudioSourceAction {
-        ki::node_id target{ 0 };
-        audio::source_id id{ 0 };
-    };
-
-    struct AudioListenerAction {
-        ki::node_id target{ 0 };
-    };
-
     struct ScriptAction {
         ki::node_id target{ 0 };
         script::script_id id{ 0 };

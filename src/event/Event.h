@@ -23,17 +23,15 @@ namespace event {
 
         ~Event();
 
-        Type type;
-
         std::unique_ptr<BlobData> blob;
         union Body {
             NodeAction node;
             NodeTypeAction nodeType;
-            AudioSourceAction audioSource;
-            AudioListenerAction audioListener;
             ScriptAction script;
             SelectAction select;
         } body;
+
+        Type type;
     };
 
     struct EventPolicies
