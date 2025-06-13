@@ -114,6 +114,8 @@ void MaterialRegistry::markDirty(ki::material_index registeredIndex)
 
 void MaterialRegistry::addMaterialUpdater(std::unique_ptr<MaterialUpdater> updater)
 {
+    registerMaterial(*updater->m_material);
+
     std::lock_guard lock(m_lock);
     m_updaters.insert({ updater->m_id, std::move(updater)});
 }

@@ -5,6 +5,11 @@
 #include "BaseLoader.h"
 #include "DecalData.h"
 
+namespace decal
+{
+    struct DecalDefinition;
+}
+
 namespace loader {
     class DecalLoader : public BaseLoader
     {
@@ -22,13 +27,12 @@ namespace loader {
             loader::DecalData& data,
             Loaders& loaders) const;
 
-        void createDecals(
+        std::vector<decal::DecalDefinition> createDecals(
             const std::vector<loader::DecalData>& decals,
             Loaders& loaders) const;
 
-        void createDecal(
+        decal::DecalDefinition createDecal(
             const loader::DecalData& data,
             Loaders& loaders) const;
-
     };
 }

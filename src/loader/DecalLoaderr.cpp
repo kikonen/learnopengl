@@ -2,7 +2,7 @@
 
 #include "util/util.h"
 
-#include "decal/DecalRegistry.h"
+#include "decal/DecalDefinition.h"
 
 #include "loader/document.h"
 #include "loader_util.h"
@@ -77,16 +77,18 @@ namespace loader {
         }
     }
 
-    void DecalLoader::createDecals(
-        const std::vector<loader::DecalData>& decals,
+    std::vector<decal::DecalDefinition> DecalLoader::createDecals(
+        const std::vector<loader::DecalData>& decalsData,
         Loaders& loaders) const
     {
-        for (const auto& data : decals) {
-            createDecal(data, loaders);
+        std::vector<decal::DecalDefinition> decals;
+        for (const auto& data : decalsData) {
+            decals.push_back(createDecal(data, loaders));
         }
+        return decals;
     }
 
-    void DecalLoader::createDecal(
+    decal::DecalDefinition DecalLoader::createDecal(
         const loader::DecalData& data,
         Loaders& loaders) const
     {
@@ -111,6 +113,6 @@ namespace loader {
 
         df.m_static = data.isStatic;
 
-        decal::DecalRegistry::get().addDecal(df);
+        return df;
     }
 }

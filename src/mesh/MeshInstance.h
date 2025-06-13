@@ -90,6 +90,4 @@ namespace mesh {
                 });
         }
     };
-
-    using MeshVector = std::shared_ptr<std::vector<mesh::MeshInstance>>;
 }
