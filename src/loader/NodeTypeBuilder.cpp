@@ -65,50 +65,48 @@ namespace {
 
 namespace loader
 {
-    NodeTypeBuilder::NodeTypeBuilder(std::shared_ptr<Loaders> loaders)
-        : m_loaders{ loaders }
+    NodeTypeBuilder::NodeTypeBuilder(
+        std::shared_ptr<Context> ctx, std::shared_ptr<Loaders> loaders)
+        : m_ctx{ ctx },
+        m_loaders{ loaders }
     { }
 
     NodeTypeBuilder::~NodeTypeBuilder() = default;
 
     pool::TypeHandle NodeTypeBuilder::createType(
-        const NodeData& nodeData,
-        const std::string& nameSuffix)
+        const NodeTypeData& typeData)
     {
         auto& l = *m_loaders;
 
-        std::string name = nodeData.baseId.m_path;
-        if (!nameSuffix.empty()) {
-            name = fmt::format("{}_{}", name, nameSuffix);
-        }
+        std::string name = typeData.baseId.m_path;
 
         auto typeHandle = pool::TypeHandle::allocate(SID(name));
         auto* type = typeHandle.toType();
 
         type->setName(name);
-        type->m_layer = nodeData.layer;
+        type->m_layer = typeData.layer;
 
-        type->m_pivotPoint = nodeData.pivot;
-        type->m_front = nodeData.front;
-        type->m_baseRotation =util::degreesToQuat(nodeData.baseRotation);
+        type->m_pivotPoint = typeData.pivot;
+        type->m_front = typeData.front;
+        type->m_baseRotation =util::degreesToQuat(typeData.baseRotation);
 
-        assignTypeFlags(nodeData, type->m_flags);
+        assignTypeFlags(typeData, type->m_flags);
 
-        if (nodeData.type == NodeKind::origo) {
+        if (typeData.type == NodeKind::origo) {
             type->m_flags.origo = true;
             type->m_flags.invisible = true;
         }
         else
         {
-            resolveMeshes(type, nodeData);
+            resolveMeshes(type, typeData);
 
             // NOTE KI container does not have mesh itself, but it can setup
             // material & program for contained nodes
-            if (nodeData.type != NodeKind::container) {
+            if (typeData.type != NodeKind::container) {
                 if (!type->hasMesh()) {
                     KI_WARN(fmt::format(
                         "SCENE_FILEIGNORE: NO_MESH id={} ({})",
-                        nodeData.baseId, nodeData.desc));
+                        typeData.baseId, typeData.desc));
                     return pool::TypeHandle::NULL_HANDLE;
                 }
             }
@@ -146,29 +144,29 @@ namespace loader
         {
             type->setCustomMaterial(
                 m_loaders->m_customMaterialLoader.createCustomMaterial(
-                    nodeData.customMaterial,
+                    typeData.customMaterial,
                     *m_loaders));
         }
 
         {
             const auto& scriptIds = m_loaders->m_scriptLoader.createScripts(
-                nodeData.scripts);
+                typeData.scripts);
 
             for (auto& scriptId : scriptIds) {
                 type->addScript(scriptId);
             }
         }
 
-        resolveAttachments(type, nodeData);
+        resolveAttachments(type, typeData);
 
-        type->m_cameraDefinition = l.m_cameraLoader.createDefinition(nodeData.camera);
-        type->m_lightDefinition = l.m_lightLoader.createDefinition(nodeData.light);
-        type->m_particleDefinition = l.m_particleLoader.createDefinition(nodeData.particle);
-        type->m_physicsDefinition = l.m_physicsLoader.createPhysicsDefinition(nodeData.physics);
+        type->m_cameraDefinition = l.m_cameraLoader.createDefinition(typeData.camera);
+        type->m_lightDefinition = l.m_lightLoader.createDefinition(typeData.light);
+        type->m_particleDefinition = l.m_particleLoader.createDefinition(typeData.particle);
+        type->m_physicsDefinition = l.m_physicsLoader.createPhysicsDefinition(typeData.physics);
 
-        if (!nodeData.controllers.empty()) {
+        if (!typeData.controllers.empty()) {
             type->m_controllerDefinitions = std::make_unique<std::vector<ControllerDefinition>>();
-            for (auto& controllerData : nodeData.controllers) {
+            for (auto& controllerData : typeData.controllers) {
                 auto df = l.m_controllerLoader.createControllerDefinition(controllerData);
                 if (!df) continue;
 
@@ -180,13 +178,13 @@ namespace loader
             }
         }
 
-        type->m_audioListenerDefinition = l.m_audioLoader.createListenerDefinition(nodeData.audio.listener);
-        type->m_audioSourceDefinitions = l.m_audioLoader.createSourceDefinitions(nodeData.audio.sources);
+        type->m_audioListenerDefinition = l.m_audioLoader.createListenerDefinition(typeData.audio.listener);
+        type->m_audioSourceDefinitions = l.m_audioLoader.createSourceDefinitions(typeData.audio.sources);
 
         if (type->m_flags.text) {
             type->m_textDefinition = m_loaders->m_textLoader.createDefinition(
                 type,
-                nodeData.text,
+                typeData.text,
                 *m_loaders);
         }
 
@@ -196,7 +194,7 @@ namespace loader
     void NodeTypeBuilder::resolveMaterials(
         NodeType* type,
         mesh::LodMesh& lodMesh,
-        const NodeData& nodeData,
+        const NodeTypeData& typeData,
         const MeshData& meshData,
         const LodData* lodData)
     {
@@ -253,7 +251,7 @@ namespace loader
             }
 
             {
-                for (const auto& srcIt : nodeData.programs) {
+                for (const auto& srcIt : typeData.programs) {
                     const auto& dstIt = material.m_programNames.find(srcIt.first);
                     if (dstIt == material.m_programNames.end()) {
                         material.m_programNames[srcIt.first] = srcIt.second;
@@ -354,12 +352,12 @@ namespace loader
 
     void NodeTypeBuilder::resolveMeshes(
         NodeType* type,
-        const NodeData& nodeData)
+        const NodeTypeData& typeData)
     {
         uint16_t index = 0;
-        for (const auto& meshData : nodeData.meshes) {
+        for (const auto& meshData : typeData.meshes) {
             if (!meshData.enabled) continue;
-            resolveMesh(type, nodeData, meshData, index);
+            resolveMesh(type, typeData, meshData, index);
             index++;
         }
 
@@ -369,7 +367,7 @@ namespace loader
 
     void NodeTypeBuilder::resolveMesh(
         NodeType* type,
-        const NodeData& nodeData,
+        const NodeTypeData& typeData,
         const MeshData& meshData,
         int index)
     {
@@ -379,15 +377,15 @@ namespace loader
         size_t meshCount = 0;
 
         // NOTE KI materials MUST be resolved before loading mesh
-        if (nodeData.type == NodeKind::model) {
+        if (typeData.type == NodeKind::model) {
             type->m_flags.model = true;
-            meshCount += resolveModelMesh(type, nodeData, meshData, index);
+            meshCount += resolveModelMesh(type, typeData, meshData, index);
 
             KI_INFO(fmt::format(
                 "SCENE_FILE MESH: id={}, desc={}, type={}",
-                nodeData.baseId, nodeData.desc, type->str()));
+                typeData.baseId, typeData.desc, type->str()));
         }
-        else if (nodeData.type == NodeKind::text) {
+        else if (typeData.type == NodeKind::text) {
             type->m_flags.text = true;
             auto mesh = std::make_shared<mesh::TextMesh>();
 
@@ -401,12 +399,12 @@ namespace loader
             type->addLodMesh(std::move(lodMesh));
             meshCount++;
         }
-        else if (nodeData.type == NodeKind::terrain) {
+        else if (typeData.type == NodeKind::terrain) {
             // NOTE KI handled via container + generator
             type->m_flags.terrain = true;
             throw std::runtime_error("Terrain not supported currently");
         }
-        else if (nodeData.type == NodeKind::container) {
+        else if (typeData.type == NodeKind::container) {
             // NOTE KI generator takes care of actual work
             type->m_flags.container = true;
             type->m_flags.invisible = true;
@@ -421,7 +419,7 @@ namespace loader
         if (meshCount > 0) {
             const auto& span = std::span{ type->modifyLodMeshes() }.subspan(startIndex, meshCount);
             for (auto& lodMesh : span) {
-                resolveLodMesh(type, nodeData, meshData, lodMesh);
+                resolveLodMesh(type, typeData, meshData, lodMesh);
 
                 auto* mesh = lodMesh.getMesh<mesh::Mesh>();
                 const auto rig = mesh ? mesh->getRigContainer() : nullptr;
@@ -434,7 +432,7 @@ namespace loader
 
     int NodeTypeBuilder::resolveModelMesh(
         NodeType* type,
-        const NodeData& nodeData,
+        const NodeTypeData& typeData,
         const MeshData& meshData,
         int index)
     {
@@ -512,7 +510,7 @@ namespace loader
 
     void NodeTypeBuilder::resolveLodMesh(
         NodeType* type,
-        const NodeData& nodeData,
+        const NodeTypeData& typeData,
         const MeshData& meshData,
         mesh::LodMesh& lodMesh)
     {
@@ -520,27 +518,27 @@ namespace loader
         lodMesh.m_baseScale = meshData.baseScale;
         lodMesh.m_baseRotation = util::degreesToQuat(meshData.baseRotation);
 
-        auto* lodData = resolveLod(type, nodeData, meshData, lodMesh);
+        auto* lodData = resolveLod(type, typeData, meshData, lodMesh);
 
         assignMeshFlags(meshData.meshFlags, lodMesh.m_flags);
         if (lodData) {
             assignMeshFlags(lodData->meshFlags, lodMesh.m_flags);
         }
 
-        resolveMaterials(type, lodMesh, nodeData, meshData, lodData);
+        resolveMaterials(type, lodMesh, typeData, meshData, lodData);
         lodMesh.setupDrawOptions();
     }
 
     const LodData* NodeTypeBuilder::resolveLod(
         NodeType* type,
-        const NodeData& nodeData,
+        const NodeTypeData& typeData,
         const MeshData& meshData,
         mesh::LodMesh& lodMesh)
     {
         auto* mesh = lodMesh.getMesh<mesh::Mesh>();
         if (!mesh) return nullptr;
 
-        lodMesh.m_priority = nodeData.priority;
+        lodMesh.m_priority = typeData.priority;
 
         const auto* lod = meshData.findLod(mesh->m_name);
         if (!lod) {
@@ -554,7 +552,7 @@ namespace loader
 
         lodMesh.m_minDistance2 = lod->minDistance * lod->minDistance;
         lodMesh.m_maxDistance2 = lod->maxDistance * lod->maxDistance;
-        lodMesh.m_priority = lod->priority != 0 ? lod->priority : nodeData.priority;
+        lodMesh.m_priority = lod->priority != 0 ? lod->priority : typeData.priority;
 
         return lod;
     }
@@ -628,9 +626,9 @@ namespace loader
 
     void NodeTypeBuilder::resolveAttachments(
         NodeType* type,
-        const NodeData& nodeData)
+        const NodeTypeData& typeData)
     {
-        if (nodeData.attachments.empty()) return;
+        if (typeData.attachments.empty()) return;
 
         auto& lodMeshes = type->modifyLodMeshes();
 
@@ -638,11 +636,11 @@ namespace loader
         if (!rig) {
             KI_INFO_OUT(fmt::format(
                 "SOCKET_BIND_ERROR: rig_missing - node={}",
-                nodeData.str()));
+                typeData.str()));
             return;
         }
 
-        for (const auto& attachment : nodeData.attachments) {
+        for (const auto& attachment : typeData.attachments) {
             if (!attachment.enabled) continue;
 
             mesh::LodMesh* lodMesh = mesh::findLodMesh(attachment.name, lodMeshes);
@@ -651,7 +649,7 @@ namespace loader
                 const auto& aliases = mesh::getLodMeshNames(attachment.name, lodMeshes);
                 KI_INFO_OUT(fmt::format(
                     "SOCKET_BIND_ERROR: mesh_missing - node={}, rig={}, socket={}, mesh={}, mesh_names=[{}], mesh_aliases=[{}]",
-                    nodeData.str(),
+                    typeData.str(),
                     rig->m_name,
                     attachment.socket,
                     attachment.name,
@@ -665,7 +663,7 @@ namespace loader
                 const auto& names = rig->getSocketNames();
                 KI_INFO_OUT(fmt::format(
                     "SOCKET_BIND_ERROR: socket_missing - node={}, rig={}, socket={}, mesh={}, socket_names=[{}]",
-                    nodeData.str(),
+                    typeData.str(),
                     rig->m_name,
                     attachment.socket,
                     attachment.name,
@@ -677,7 +675,7 @@ namespace loader
 
             KI_INFO_OUT(fmt::format(
                 "SOCKET_BIND_OK: node={}, rig={}, joint={}.{}, socket={}.{}, mesh={}",
-                nodeData.str(),
+                typeData.str(),
                 rig->m_name,
                 socket->m_jointIndex,
                 socket->m_jointName,
@@ -688,10 +686,10 @@ namespace loader
     }
 
     void NodeTypeBuilder::assignTypeFlags(
-        const NodeData& nodeData,
+        const NodeTypeData& typeData,
         TypeFlags& flags)
     {
-        const auto& container = nodeData.typeFlags;
+        const auto& container = typeData.typeFlags;
 
         //////////////////////////////////////////////////////////
         // LOD_MESH specific
@@ -719,7 +717,7 @@ namespace loader
         {
             flags.staticBounds = container.getFlag("static_bounds", flags.staticBounds);
             flags.dynamicBounds = container.getFlag("dynamic_bounds", flags.dynamicBounds);
-            flags.physics = nodeData.physics.enabled;
+            flags.physics = typeData.physics.enabled;
         }
 
         flags.navMesh = container.getFlag("nav_mesh", flags.navMesh);

@@ -311,6 +311,7 @@
     <ClCompile Include="src\engine\SystemInit.cpp" />
     <ClCompile Include="src\event\actions.cpp" />
     <ClCompile Include="src\loader\DecalLoaderr.cpp" />
+    <ClCompile Include="src\loader\NodeTypeLoader.cpp" />
     <ClCompile Include="src\loader\MaterialUpdaterLoader.cpp" />
     <ClCompile Include="src\loader\NodeTypeBuilder.cpp" />
     <ClCompile Include="src\loader\NodeBuilder.cpp" />
@@ -717,6 +718,8 @@
     <ClInclude Include="src\loader\MaterialUpdaterLoader.h" />
     <ClInclude Include="src\loader\NodeTypeBuilder.h" />
     <ClInclude Include="src\loader\NodeBuilder.h" />
+    <ClInclude Include="src\loader\NodeTypeData.h" />
+    <ClInclude Include="src\loader\NodeTypeLoader.h" />
     <ClInclude Include="src\loader\value\PhysicsCategoryValue.h" />
     <ClInclude Include="src\loader\value\PhysicsGeomValue.h" />
     <ClInclude Include="src\material\FontAtlasMaterialUpdater.h" />

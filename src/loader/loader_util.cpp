@@ -11,6 +11,8 @@
 
 #include "asset/Assets.h"
 
+#include "pool/TypeHandle.h"
+
 #include "util/Log.h"
 #include "util/util.h"
 #include "util/file.h"
@@ -522,6 +524,19 @@ namespace loader {
         return baseId;
     }
 
+    int readLayer(const loader::DocNode& node)
+    {
+        const auto& name = util::toLower(readString(node));
+        const auto* layer = LayerInfo::findLayer(name);
+        return layer ? layer->m_index : LAYER_NONE_INDEX;
+    }
+
+    const NodeType* findNodeType(
+        BaseId baseId)
+    {
+        auto typeId = SID(baseId.m_path);
+        return pool::TypeHandle::toType(typeId);
+    }
 
     const Material* findMaterial(
         std::string_view name,

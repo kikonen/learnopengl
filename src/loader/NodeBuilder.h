@@ -58,16 +58,14 @@ namespace loader {
             const ki::node_id rootId,
             const NodeRoot& nodeRoot);
 
-        pool::TypeHandle resolveNodeClone(
-            pool::TypeHandle typeHandle,
+        void resolveNodeClone(
             const ki::node_id rootId,
             const NodeRoot& nodeRoot,
             const NodeData& nodeData,
             bool cloned,
             int cloneIndex);
 
-        pool::TypeHandle resolveNodeCloneRepeat(
-            pool::TypeHandle typeHandle,
+        void resolveNodeCloneRepeat(
             const ki::node_id rootId,
             const NodeRoot& nodeRoot,
             const NodeData& nodeData,
@@ -77,7 +75,6 @@ namespace loader {
             const glm::vec3& tilePositionOffset);
 
         std::pair<pool::NodeHandle, CreateState> createNode(
-            pool::TypeHandle typeHandle,
             const NodeData& nodeData,
             const int cloneIndex,
             const glm::uvec3& tile,
@@ -91,6 +88,5 @@ namespace loader {
 
         std::shared_ptr<Context> m_ctx;
         std::shared_ptr<Loaders> m_loaders;
-        std::unique_ptr<NodeTypeBuilder> m_nodeTypeBuilder;
     };
 }

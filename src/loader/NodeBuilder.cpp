@@ -39,7 +39,6 @@
 #include "ResolvedNode.h"
 
 #include "SceneLoader.h"
-#include "NodeTypeBuilder.h"
 
 #include "loader_util.h"
 
@@ -51,8 +50,7 @@ namespace loader
         std::shared_ptr<Loaders> loaders)
         : m_sceneLoader{ sceneLoader },
         m_ctx{ ctx },
-        m_loaders{ loaders },
-        m_nodeTypeBuilder{ std::make_unique<NodeTypeBuilder>(m_loaders) }
+        m_loaders{ loaders }
     { }
 
     NodeBuilder::~NodeBuilder() = default;
@@ -85,18 +83,13 @@ namespace loader
             try {
                 if (nodeRoot.clones.empty()) {
                     pool::TypeHandle typeHandle{};
-                    resolveNodeClone(typeHandle, rootId, nodeRoot, nodeRoot.base, false, 0);
+                    resolveNodeClone(rootId, nodeRoot, nodeRoot.base, false, 0);
                 }
                 else {
-                    pool::TypeHandle typeHandle{};
-
                     int cloneIndex = 0;
                     for (auto& cloneData : nodeRoot.clones) {
                         if (!*m_ctx->m_alive) return;
-                        typeHandle = resolveNodeClone(typeHandle, rootId, nodeRoot, cloneData, true, cloneIndex);
-                        if (!nodeRoot.base.shareType) {
-                            typeHandle = pool::TypeHandle::NULL_HANDLE;
-                        }
+                        resolveNodeClone(rootId, nodeRoot, cloneData, true, cloneIndex);
                         cloneIndex++;
                     }
                 }
@@ -127,18 +120,17 @@ namespace loader
         return true;
     }
 
-    pool::TypeHandle NodeBuilder::resolveNodeClone(
-        pool::TypeHandle typeHandle,
+    void NodeBuilder::resolveNodeClone(
         const ki::node_id rootId,
         const NodeRoot& nodeRoot,
         const NodeData& nodeData,
         bool cloned,
         int cloneIndex)
     {
-        if (!*m_ctx->m_alive) return typeHandle;
+        if (!*m_ctx->m_alive) return;
 
         if (!nodeData.enabled) {
-            return typeHandle;
+            return;
         }
 
         const auto& repeat = nodeData.repeat;
@@ -146,13 +138,12 @@ namespace loader
         for (auto z = 0; z < repeat.zCount; z++) {
             for (auto y = 0; y < repeat.yCount; y++) {
                 for (auto x = 0; x < repeat.xCount; x++) {
-                    if (!*m_ctx->m_alive) return typeHandle;
+                    if (!*m_ctx->m_alive) return;
 
                     const glm::uvec3 tile = { x, y, z };
                     const glm::vec3 tilePositionOffset{ x * repeat.xStep, y * repeat.yStep, z * repeat.zStep };
 
-                    typeHandle = resolveNodeCloneRepeat(
-                        typeHandle,
+                    resolveNodeCloneRepeat(
                         rootId,
                         nodeRoot,
                         nodeData,
@@ -160,18 +151,12 @@ namespace loader
                         cloneIndex,
                         tile,
                         tilePositionOffset);
-
-                    if (!nodeRoot.base.shareType)
-                        typeHandle = pool::TypeHandle::NULL_HANDLE;
                 }
             }
         }
-
-        return typeHandle;
     }
 
-    pool::TypeHandle NodeBuilder::resolveNodeCloneRepeat(
-        pool::TypeHandle typeHandle,
+    void NodeBuilder::resolveNodeCloneRepeat(
         const ki::node_id rootId,
         const NodeRoot& nodeRoot,
         const NodeData& nodeData,
@@ -183,31 +168,12 @@ namespace loader
         //if (!*m_ctx->m_alive) return typeHandle;
 
         if (!nodeData.enabled) {
-            return typeHandle;
+            return;
         }
 
-        // NOTE KI overriding material in clones is *NOT* supported"
-        if (!typeHandle) {
-            const auto& repeat = nodeData.repeat;
-            const bool hasTile = repeat.xCount > 1 || repeat.yCount > 1 || repeat.zCount > 1;
-
-            std::string nameSuffix;
-            if (cloned || hasTile) {
-                nameSuffix = fmt::format(
-                    "{}{}",
-                    cloned ? fmt::format("clone_{}", cloneIndex) : "",
-                    hasTile ? fmt::format("tile_{}x{}x{}", tile.x, tile.y, tile.z) : ""
-                );
-            }
-
-            typeHandle = m_nodeTypeBuilder->createType(nodeData, nameSuffix);
-            if (!typeHandle) return typeHandle;
-        }
-
-        if (!*m_ctx->m_alive) return typeHandle;
+        if (!*m_ctx->m_alive) return;
 
         auto [handle, state] = createNode(
-            typeHandle,
             nodeData,
             cloneIndex,
             tile,
@@ -233,12 +199,9 @@ namespace loader
         };
 
         addResolvedNode(resolved);
-
-        return typeHandle;
     }
 
     std::pair<pool::NodeHandle, CreateState> NodeBuilder::createNode(
-        pool::TypeHandle typeHandle,
         const NodeData& nodeData,
         const int cloneIndex,
         const glm::uvec3& tile,
@@ -246,7 +209,10 @@ namespace loader
     {
         auto& l = *m_loaders;
 
-        const auto* type = typeHandle.toType();
+        const auto* type = findNodeType(nodeData.typeId);
+        if (!type) {
+            throw fmt::format("type missing: node={}, type={}", nodeData.str(), nodeData.typeId.str());
+        }
 
         ki::node_id nodeId{ 0 };
         std::string resolvedSID;
@@ -266,7 +232,7 @@ namespace loader
 
         node->setName(resolvedSID);
 
-        node->m_typeHandle = typeHandle;
+        node->m_typeHandle = type->toHandle();
 
         {
             ki::node_id ignoredBy{ 0 };

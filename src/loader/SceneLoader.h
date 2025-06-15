@@ -22,11 +22,13 @@ namespace loader {
     struct SkyboxData;
     struct ScriptSystemData;
     struct NodeRoot;
+    struct NodeTypeData;
     struct NodeData;
     struct ResolvedNode;
     struct DecalData;
     struct MaterialUpdaterData;
 
+    class NodeTypeBuilder;
     class NodeBuilder;
 
     struct MetaData {
@@ -117,6 +119,7 @@ namespace loader {
         std::unique_ptr<RootData> m_root;
         std::unique_ptr<ScriptSystemData> m_scriptSystemData;
 
+        std::vector<NodeTypeData> m_nodeTypes;
         std::vector<NodeRoot> m_nodes;
 
         std::unique_ptr<Material> m_defaultMaterial;
@@ -126,6 +129,7 @@ namespace loader {
 
         std::shared_ptr<Loaders> m_loaders;
 
+        std::unique_ptr<NodeTypeBuilder> m_nodeTypeBuilder;
         std::unique_ptr<NodeBuilder> m_nodeBuilder;
     };
 }

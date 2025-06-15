@@ -20,11 +20,11 @@ namespace mesh {
 }
 
 namespace loader {
+    struct NodeTypeData;
     struct RootData;
     struct MaterialData;
     struct ScriptSystemData;
     struct NodeRoot;
-    struct NodeData;
     struct TextData;
     struct MeshData;
     struct LodData;
@@ -39,47 +39,49 @@ namespace loader {
     class NodeTypeBuilder
     {
     public:
-        NodeTypeBuilder(std::shared_ptr<Loaders> loaders);
+        NodeTypeBuilder(
+            std::shared_ptr<Context> ctx,
+            std::shared_ptr<Loaders> loaders);
+
         ~NodeTypeBuilder();
 
         pool::TypeHandle createType(
-            const NodeData& nodeData,
-            const std::string& nameSuffix);
+            const NodeTypeData& typeData);
 
     private:
         void resolveMaterials(
             NodeType* type,
             mesh::LodMesh& lodMesh,
-            const NodeData& nodeData,
+            const NodeTypeData& typeData,
             const MeshData& meshData,
             const LodData* lodData);
 
         void resolveMeshes(
             NodeType* type,
-            const NodeData& nodeData);
+            const NodeTypeData& typeData);
 
         void resolveMesh(
             NodeType* type,
-            const NodeData& nodeData,
+            const NodeTypeData& typeData,
             const MeshData& meshData,
             int index);
 
         // @return count of meshes added
         int resolveModelMesh(
             NodeType* type,
-            const NodeData& nodeData,
+            const NodeTypeData& typeData,
             const MeshData& meshData,
             int index);
 
         void resolveLodMesh(
             NodeType* type,
-            const NodeData& nodeData,
+            const NodeTypeData& typeData,
             const MeshData& meshData,
             mesh::LodMesh& lodMesh);
 
         const LodData* resolveLod(
             NodeType* type,
-            const NodeData& nodeData,
+            const NodeTypeData& typeData,
             const MeshData& meshData,
             mesh::LodMesh& lodMesh);
 
@@ -94,10 +96,10 @@ namespace loader {
 
         void resolveAttachments(
             NodeType* type,
-            const NodeData& nodeData);
+            const NodeTypeData& typeData);
 
         void assignTypeFlags(
-            const NodeData& nodeData,
+            const NodeTypeData& typeData,
             TypeFlags& flags);
 
         void assignMeshFlags(
@@ -105,6 +107,7 @@ namespace loader {
             mesh::MeshFlags& flags);
 
     private:
+        std::shared_ptr<Context> m_ctx;
         std::shared_ptr<Loaders> m_loaders;
     };
 }

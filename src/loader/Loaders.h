@@ -17,6 +17,7 @@
 #include "DecalLoader.h"
 #include "PhysicsLoader.h"
 #include "PrefabLoader.h"
+#include "NodeTypeLoader.h"
 #include "NodeLoader.h"
 #include "MeshLoader.h"
 #include "TextLoader.h"
@@ -39,6 +40,7 @@ namespace loader {
 
         SkyboxLoader m_skyboxLoader;
 
+        NodeTypeLoader m_nodeTypeLoader;
         NodeLoader m_nodeLoader;
         MeshLoader m_meshLoader;
         TextLoader m_textLoader;

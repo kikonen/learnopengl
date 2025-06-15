@@ -15,9 +15,12 @@
 
 struct Material;
 
+class NodeType;
+
 namespace loader {
     const std::string ROOT_ID{ "ROOT" };
 
+    struct NodeTypeData;
     struct MaterialData;
 
     void loadRepeat(
@@ -71,6 +74,11 @@ namespace loader {
         const glm::uvec3& tile);
 
     BaseId readId(const loader::DocNode& node);
+
+    int readLayer(const loader::DocNode& node);
+
+    const NodeType* findNodeType(
+        BaseId baseId);
 
     const Material* findMaterial(
         std::string_view name,

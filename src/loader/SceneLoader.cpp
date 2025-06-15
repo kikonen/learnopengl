@@ -44,11 +44,13 @@
 
 #include "Context.h"
 #include "Loaders.h"
+#include "NodeTypeData.h"
 #include "NodeRoot.h"
 #include "ResolvedNode.h"
 #include "DecalData.h"
 #include "ScriptData.h"
 
+#include "NodeTypeBuilder.h"
 #include "NodeBuilder.h"
 
 #include "converter/YamlConverter.h"
@@ -62,6 +64,7 @@ namespace loader {
         std::shared_ptr<Context> ctx)
         : BaseLoader(ctx),
         m_loaders{ std::make_shared<Loaders>(ctx) },
+        m_nodeTypeBuilder{ std::make_unique<NodeTypeBuilder>(ctx, m_loaders) },
         m_nodeBuilder{ std::make_unique<NodeBuilder>(this, ctx, m_loaders) },
         m_meta{ std::make_unique<MetaData>() },
         m_root{ std::make_unique<RootData>() },
@@ -121,6 +124,11 @@ namespace loader {
                     doc.findNode("material_updaters"),
                     m_materialUpdaters,
                     *m_loaders);
+
+                l.m_nodeTypeLoader.loadNodeTypes(
+                    doc.findNode("types"),
+                    m_nodeTypes,
+                    l);
 
                 l.m_nodeLoader.loadNodes(
                     doc.findNode("nodes"),
@@ -233,6 +241,13 @@ namespace loader {
         }
 
         {
+            auto& materialRegistry = MaterialRegistry::get();
+            for (const auto& typeData : m_nodeTypes) {
+                m_nodeTypeBuilder->createType(typeData);
+            }
+        }
+
+        {
             std::lock_guard lock(m_ready_lock);
 
             m_pendingCount = 0;
@@ -298,13 +313,14 @@ namespace loader {
             m_dispatcher->send(evt);
         }
 
-        if (nodeData.camera.isDefault) {
-            event::Event evt { event::Type::camera_activate };
-            evt.body.node = {
-                .target = handle.toId(),
-            };
-            m_dispatcher->send(evt);
-        }
+        // TODO KI default camera logic
+        //if (nodeData.camera.isDefault) {
+        //    event::Event evt { event::Type::camera_activate };
+        //    evt.body.node = {
+        //        .target = handle.toId(),
+        //    };
+        //    m_dispatcher->send(evt);
+        //}
 
         // try anim event
         //if (!node.isRoot && !type->m_flags.water && !type->m_flags.tessellation && !type->m_flags.noShadow)

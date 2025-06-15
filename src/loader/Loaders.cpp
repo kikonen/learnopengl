@@ -17,6 +17,7 @@ namespace loader {
         m_particleLoader(ctx),
         m_decalLoader(ctx),
         m_physicsLoader(ctx),
+        m_nodeTypeLoader(ctx),
         m_nodeLoader(ctx),
         m_meshLoader(ctx),
         m_textLoader(ctx),
@@ -39,6 +40,7 @@ namespace loader {
         m_particleLoader.setRegistry(registry);
         m_decalLoader.setRegistry(registry);
         m_physicsLoader.setRegistry(registry);
+        m_nodeTypeLoader.setRegistry(registry);
         m_nodeLoader.setRegistry(registry);
         m_meshLoader.setRegistry(registry);
         m_textLoader.setRegistry(registry);

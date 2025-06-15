@@ -1,22 +1,19 @@
 ---
-name: Origo
-viewports:
+meta:
+  name: Decal
 skybox:
   material: skybox/polyhaven/wasteland_clouds_puresky_4k.hdr
 script:
   scripts:
     - path: lib/common
-nodes:
+types:
   - id: player
     type: origo
-    pos: [0, 1, 15]
     front: [0, 0, -1]
-    xrotation: [0, 180, 0]
-    active: true
     audio:
       listener:
         default: true
-      sources:
+      xsources:
         - name: idle_1
           path: audio/Wheeze 1_B2356390_normal.wav
           reference_distance: 0.1
@@ -82,62 +79,52 @@ nodes:
       printf("SID: %s\n", sid)
       self.cmd:audio_play(
         { sync=true, sid=sid })
-  - xid: player_fps_arms_v2_{c}_{t}
-    parent: player
+  - id: player_fps_arms_v2
     prefab:
       path: prefab/characters/prefab_fps_arms_v2.yml
     xmesh:
       material_modifier:
         map_kd: T_Hands_04_Albedo_06_2048.png
         xrender_back: true
-    pos: [0.1, -0.7, -0.0]
-    rotation: [-20, 20, 0]
-    scale: 0.25
     pivot:
       alignment: m
     layer: player
     script: |
       self.cmd:animation_play(
         { name="idle_aim:Unreal Take" } )
-  - id: dir_light_{c}_{t}
+  - id: dir_light
     mesh:
       path: light
       material_modifier:
         kd: [0.8, 0.8, 0.6, 1.0]
       program: g_light
-    pos: [-25, 25, 20]
-    scale: 2.5
     flags:
       no_shadow: true
     light:
       type: directional
       diffuse: [0.7, 0.7, 0.7, 1.0]
       intensity: 30000
-  - xid: wooden_floor
+  - id: wooden_floor
     prefab:
       path: prefab/scenery/prefab_wooden_floor.yml
-    scale: 100
     physics:
       geom:
         collision: [world]
-  - xid: concrete_floor
+  - id: concrete_floor
     prefab:
       path: prefab/scenery/prefab_rough_concrete_wall.yml
-    scale: 100
     physics:
       geom:
         collision: [world]
-  - xid: rock_forest_floor_1
+  - id: rock_forest_floor_1
     prefab:
       path: prefab/scenery/prefab_rock_forest_floor_1.yml
-    scale: 100
     physics:
       geom:
         collision: [world]
-  - xid: prefab_cobblestone_wall_1
+  - id: prefab_cobblestone_wall_1
     prefab:
       path: prefab/scenery/prefab_cobblestone_wall_1.yml
-    scale: 100
     physics:
       geom:
         collision: [world]
@@ -147,7 +134,6 @@ nodes:
     mesh:
       material:
         render_back: true
-    scale: 100
     type_flags:
       nav_mesh: true
     physics:
@@ -170,7 +156,6 @@ nodes:
         program: g_tex
       flags:
         pre_depth: true
-    pos: [-5, 1.5, 0]
     type_flags:
       nav_mesh: true
     physics:
@@ -206,7 +191,6 @@ nodes:
         program: g_tex
       flags:
         pre_depth: true
-    pos: [5, 1.5, 0]
     type_flags:
       nav_mesh: true
     physics:
@@ -238,7 +222,6 @@ nodes:
         map_mrao: Metal007_1K_mrao
         map_displacement: Metal007_1K_displacement
         program: g_tex
-    pos: [0, 2.5, 0]
     physics:
       body:
         type: sphere
@@ -251,10 +234,7 @@ nodes:
         size: [1]
   - id: ball_2_origo
     type: origo
-    pos: [0, 4.5, 0]
-    xpos: [0]
   - id: ball_2
-    parent: ball_2_origo
     mesh:
       vertex:
         type: sphere
@@ -290,11 +270,7 @@ nodes:
       no_shadow: true
   - id: lamp_origo
     type: origo
-    pos: [4, 3, 3]
-    xpos: [0, 4.5, 0]
-    xpos: [0]
   - id: lamp
-    parent: lamp_origo
     mesh:
       vertex:
         type: sphere
@@ -305,7 +281,6 @@ nodes:
     flags:
       no_shadow: true
   - id: lamp_halo
-    parent: lamp_origo
     mesh:
       vertex:
         type: box
@@ -320,13 +295,11 @@ nodes:
       effect: true
       no_select: true
       no_shadow: true
-  - id: skeleton_army_{c}_{t}
+  - id: skeleton_army
     prefab:
       path: prefab/creatures/prefab_skeleton_warrior.yml
     xflags:
       static_bounds: true
-    pos: [7, 1.5, 5]
-    rot: [0, -90, 0]
     audio:
       sources:
         - name: explode
@@ -368,17 +341,11 @@ nodes:
       update: true
       geom:
         collision: [world, player]
-    xrepeat:
-      x_count: 1
-      z_count: 2
-      x_step: 3
-      z_step: 3
     xscript: |
       self.cmd:animation_play(
         { name = "master:Idle" });
     script_file: scripts/seq_skeleton_2
   - id: light
-    parent: lamp_origo
     type: origo
     light:
       type: point
@@ -388,6 +355,83 @@ nodes:
       outer_cutoff_angle: 25.0
       diffuse: [0.2, 0.8, 0.2, 1.0]
       intensity: 200
+
+nodes:
+  - id: player
+    type: player
+    pos: [0, 1, 15]
+    xrotation: [0, 180, 0]
+    active: true
+    camera:
+      default: true
+  - xid: player_fpes_arms_v2
+    type: player_fpes_arms_v2
+    parent: player
+    pos: [0.1, -0.7, -0.0]
+    rotation: [-20, 20, 0]
+    scale: 0.25
+  - id: dir_light
+    type: dir_light
+    pos: [-25, 25, 20]
+    scale: 2.5
+  - xid: wooden_floor
+    type: wooden_floor
+    scale: 100
+  - xid: concrete_floor
+    type: concrete_floor
+    scale: 100
+  - xid: rock_forest_floor_1
+    type: rock_forest_floor_1
+    scale: 100
+  - xid: prefab_cobblestone_wall_1
+    type: prefab_cobblestone_wall_1
+    scale: 100
+  - id: prefab_diamond_plate_2
+    type: prefab_diamond_plate_2
+    scale: 100
+  - id: brick_wall_1
+    type: brick_wall_1
+    pos: [-5, 1.5, 0]
+  - id: brick_wall_2
+    type: brick_wall_2
+    pos: [5, 1.5, 0]
+  - id: ball
+    type: ball
+    pos: [0, 2.5, 0]
+  - id: ball_2_origo
+    type: ball_2_origo
+    pos: [0, 4.5, 0]
+    xpos: [0]
+  - id: ball_2
+    type: ball_2
+    parent: ball_2_origo
+  - id: ball_2_halo
+    type: ball_2_halo
+    parent: ball_2_origo
+  - id: lamp_origo
+    type: lamp_origo
+    pos: [4, 3, 3]
+    xpos: [0, 4.5, 0]
+    xpos: [0]
+  - id: lamp
+    type: lamp
+    parent: lamp_origo
+  - id: lamp_halo
+    type: lamp_halo
+    parent: lamp_origo
+  - id: skeleton_army_{c}_{t}
+    type: skeleton_army
+    pos: [7, 1.5, 5]
+    rot: [0, -90, 0]
+    xrepeat:
+      x_count: 1
+      z_count: 2
+      x_step: 3
+      z_step: 3
+  - id: light
+    type: light
+    parent: lamp_origo
+
 decals:
   - name: bullet_1
     lifetime: 120
