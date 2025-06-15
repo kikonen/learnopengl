@@ -458,13 +458,9 @@ namespace loader {
             ki::node_id sid;
             std::string resolvedSID;
             {
-                // TODO KI
-                if (nodeData.baseId.empty()) {
-                    throw "ID missing";
-                }
-
                 bool automatic = nodeData.baseId.m_path == nodeRoot.base.baseId.m_path;
                 auto [k, v] = resolveNodeId(
+                    nodeData.typeId,
                     nodeData.baseId,
                     cloneIndex,
                     tile);
@@ -485,6 +481,7 @@ namespace loader {
             // but it cannot be duplicate
             if (!nodeData.parentBaseId.empty()) {
                 auto [sid, resolvedSID] = resolveNodeId(
+                    nodeData.typeId,
                     nodeData.parentBaseId,
                     cloneIndex,
                     tile);

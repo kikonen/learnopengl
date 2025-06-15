@@ -185,6 +185,7 @@ namespace loader
         }
         else {
             auto [id, _] = resolveNodeId(
+                nodeData.typeId,
                 nodeData.parentBaseId,
                 cloneIndex,
                 tile);
@@ -217,11 +218,11 @@ namespace loader
         ki::node_id nodeId{ 0 };
         std::string resolvedSID;
         {
-            if (nodeData.baseId.empty()) {
-                throw "ID missing";
-            }
-
-            auto [k, v] = resolveNodeId(nodeData.baseId, cloneIndex, tile);
+            auto [k, v] = resolveNodeId(
+                nodeData.typeId,
+                nodeData.baseId,
+                cloneIndex,
+                tile);
             nodeId = k;
             resolvedSID = v;
         }
@@ -238,6 +239,7 @@ namespace loader
             ki::node_id ignoredBy{ 0 };
             if (!nodeData.ignoredByBaseId.empty()) {
                 auto [id, _] = resolveNodeId(
+                    nodeData.typeId,
                     nodeData.ignoredByBaseId,
                     cloneIndex,
                     tile);

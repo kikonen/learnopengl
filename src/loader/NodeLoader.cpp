@@ -75,6 +75,10 @@ namespace loader {
             else if (k == "type") {
                 data.typeId = readId(v);
             }
+            else if (k == "xtype") {
+                data.enabled = false;
+                data.typeId = readId(v);
+            }
             else if (k == "xid") {
                 data.baseId = readId(v);
                 data.enabled = false;

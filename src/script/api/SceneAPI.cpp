@@ -76,6 +76,7 @@ namespace script::api
         auto* node = handle.toNode();
 
         node->m_typeHandle = type->toHandle();
+        node->setName(ki::StringID::getName(nodeId));
 
         CreateState state{
             pos,

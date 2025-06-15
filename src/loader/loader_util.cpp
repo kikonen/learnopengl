@@ -11,6 +11,7 @@
 
 #include "asset/Assets.h"
 
+#include "pool/IdGenerator.h"
 #include "pool/TypeHandle.h"
 
 #include "util/Log.h"
@@ -24,6 +25,8 @@
 #include "loader/document.h"
 
 namespace {
+    IdGenerator<ki::type_id> ID_GENERATOR;
+
     const float DEF_ALPHA = 1.0;
 
     const std::string MACRO_STEP_CLONE{ "c" };
@@ -438,12 +441,14 @@ namespace loader {
     }
 
     std::tuple<ki::node_id, std::string> resolveNodeId(
+        const BaseId& typeId,
         const BaseId& baseId)
     {
-        return resolveNodeId(baseId, 0, { 0, 0, 0 });
+        return resolveNodeId(typeId, baseId, 0, { 0, 0, 0 });
     }
 
     std::tuple<ki::node_id, std::string> resolveNodeId(
+        const BaseId& typeId,
         const BaseId& baseId,
         const int cloneIndex,
         const glm::uvec3& tile)
@@ -451,7 +456,11 @@ namespace loader {
         const auto& assets = Assets::get();
 
         if (baseId.empty()) {
-            return { 0, "" };
+            const auto& typeName = SID_NAME(SID(typeId.m_path));
+            const auto& nodeName = fmt::format(
+                "<{}>-{}",
+                typeName, ID_GENERATOR.nextId());
+            return { SID(nodeName), nodeName };
         }
 
         std::string key = expandMacros(baseId.m_path, cloneIndex, tile);

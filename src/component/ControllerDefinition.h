@@ -18,7 +18,7 @@ struct ControllerDefinition {
     int m_mode{ 0 };
     float m_speed{ 0.f };
 
-    ki::node_id m_targetId{ 0 };
+    //ki::node_id m_targetId{ 0 };
 
     glm::vec3 m_direction{ 0.f, 0.f, 1.f };
     float m_distance{ 0.f };

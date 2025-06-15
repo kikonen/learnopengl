@@ -85,14 +85,15 @@ namespace loader {
         auto definition = std::make_unique<ControllerDefinition>();
         auto& df = *definition;
 
-        auto [targetId, targetResolvedSID] = resolveNodeId(data.targetBaseId);
+        //auto [targetId, targetResolvedSID] = resolveNodeId(
+        //    data.targetBaseId);
 
         df.m_type = data.type;
 
         df.m_mode = data.mode;
         df.m_speed = data.speed;
 
-        df.m_targetId = targetId;
+        //df.m_targetId = targetId;
 
         df.m_direction = data.direction;
         df.m_distance = data.distance;

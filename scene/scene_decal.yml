@@ -362,65 +362,48 @@ nodes:
     pos: [0, 1, 15]
     xrotation: [0, 180, 0]
     active: true
-    camera:
-      default: true
-  - xid: player_fpes_arms_v2
-    type: player_fpes_arms_v2
+  - xtype: player_fpes_arms_v2
     parent: player
     pos: [0.1, -0.7, -0.0]
     rotation: [-20, 20, 0]
     scale: 0.25
-  - id: dir_light
-    type: dir_light
+  - type: dir_light
     pos: [-25, 25, 20]
     scale: 2.5
-  - xid: wooden_floor
-    type: wooden_floor
+  - xtype: wooden_floor
     scale: 100
-  - xid: concrete_floor
-    type: concrete_floor
+  - xtype: concrete_floor
     scale: 100
-  - xid: rock_forest_floor_1
-    type: rock_forest_floor_1
+  - xtype: rock_forest_floor_1
     scale: 100
-  - xid: prefab_cobblestone_wall_1
-    type: prefab_cobblestone_wall_1
+  - xtype: prefab_cobblestone_wall_1
     scale: 100
-  - id: prefab_diamond_plate_2
-    type: prefab_diamond_plate_2
+  - type: prefab_diamond_plate_2
     scale: 100
-  - id: brick_wall_1
-    type: brick_wall_1
+  - type: brick_wall_1
     pos: [-5, 1.5, 0]
-  - id: brick_wall_2
-    type: brick_wall_2
+  - type: brick_wall_2
     pos: [5, 1.5, 0]
-  - id: ball
-    type: ball
+  - type: ball
     pos: [0, 2.5, 0]
   - id: ball_2_origo
     type: ball_2_origo
     pos: [0, 4.5, 0]
     xpos: [0]
-  - id: ball_2
-    type: ball_2
+  - type: ball_2
     parent: ball_2_origo
-  - id: ball_2_halo
-    type: ball_2_halo
+  - type: ball_2_halo
     parent: ball_2_origo
   - id: lamp_origo
     type: lamp_origo
     pos: [4, 3, 3]
     xpos: [0, 4.5, 0]
     xpos: [0]
-  - id: lamp
-    type: lamp
+  - type: lamp
     parent: lamp_origo
-  - id: lamp_halo
-    type: lamp_halo
+  - type: lamp_halo
     parent: lamp_origo
-  - id: skeleton_army_{c}_{t}
-    type: skeleton_army
+  - type: skeleton_army
     pos: [7, 1.5, 5]
     rot: [0, -90, 0]
     xrepeat:
@@ -428,8 +411,7 @@ nodes:
       z_count: 2
       x_step: 3
       z_step: 3
-  - id: light
-    type: light
+  - type: light
     parent: lamp_origo
 
 decals:
