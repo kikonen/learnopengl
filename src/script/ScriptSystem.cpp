@@ -183,6 +183,10 @@ namespace script
     {
         invokeLuaFunction([this, &ctx]() {
             auto updater = getLua()["Updater"];
+            if (!updater.valid()) {
+                return sol::protected_function_result{ getLua(), 0, 0, 0, sol::call_status::ok };
+            }
+
             sol::protected_function fn(updater["update"]);
             return fn(updater, ctx.m_clock.elapsedSecs);
             });
