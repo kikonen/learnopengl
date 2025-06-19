@@ -82,6 +82,10 @@ namespace loader {
     const NodeType* findNodeType(
         BaseId baseId);
 
+    const NodeTypeData* findNodeTypeData(
+        BaseId baseId,
+        const std::vector<NodeTypeData>& nodeTypes);
+
     const Material* findMaterial(
         std::string_view name,
         const std::vector<MaterialData>& materials);

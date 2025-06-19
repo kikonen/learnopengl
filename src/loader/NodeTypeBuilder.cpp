@@ -61,6 +61,21 @@ namespace {
     const std::string QUAD_MESH_NAME{ "quad" };
 
     const std::string ANY_MATERIAL{ "*" };
+
+    //void resolveNodeTypeData(
+    //    loader::NodeTypeData& typeData,
+    //    const loader::NodeTypeData& src,
+    //    const std::vector<loader::NodeTypeData>& nodeTypes)
+    //{
+    //    if (!src.parentId.empty()) {
+    //        const auto* parentType = findNodeTypeData(src.parentId, nodeTypes);
+    //        if (!parentType) {
+    //            throw fmt::format("NODE_TYPE: parent_missing: {}", src.parentId.str());
+    //        }
+    //        resolveNodeTypeData(typeData, *parentType, nodeTypes);
+    //    }
+    //    typeData.merge(src);
+    //}
 }
 
 namespace loader
@@ -73,12 +88,27 @@ namespace loader
 
     NodeTypeBuilder::~NodeTypeBuilder() = default;
 
+    void NodeTypeBuilder::createTypes(
+        const std::vector<NodeTypeData>& types)
+    {
+        for (const auto& typeData : types) {
+            //NodeTypeData resolvedData;
+            //resolveNodeTypeData(resolvedData, typeData, types);
+            //createType(resolvedData);
+            createType(typeData);
+        }
+    }
+
     pool::TypeHandle NodeTypeBuilder::createType(
         const NodeTypeData& typeData)
     {
         auto& l = *m_loaders;
 
         std::string name = typeData.baseId.m_path;
+
+        if (name.empty()) {
+            throw fmt::format("type_id missing: {}", typeData.str());
+        }
 
         auto typeHandle = pool::TypeHandle::allocate(SID(name));
         auto* type = typeHandle.toType();
@@ -88,6 +118,7 @@ namespace loader
 
         type->m_pivotPoint = typeData.pivot;
         type->m_front = typeData.front;
+        type->m_baseScale = typeData.baseScale;
         type->m_baseRotation =util::degreesToQuat(typeData.baseRotation);
 
         assignTypeFlags(typeData, type->m_flags);

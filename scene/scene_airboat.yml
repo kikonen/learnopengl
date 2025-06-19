@@ -1,5 +1,6 @@
 ---
-name: Origo
+meta:
+  name: Airboat
 skybox:
   program: g_skybox
   material: skybox/polyhaven/drakensberg_solitary_mountain_4k.hdr
@@ -8,12 +9,10 @@ root:
 script:
   scripts:
     - path: lib/common
-nodes:
+types:
   - id: player
     type: origo
-    pos: [0, 1, 15]
     front: [0, 0, -1]
-    active: true
     audio:
       listener:
         default: true
@@ -22,28 +21,23 @@ nodes:
       - type: camera_zoom
     camera:
       default: true
-  - xid: other
+  - id: other
     mesh:
       path: texture_cube
       material_modifier:
         tiling: 5
       program: g_tex
-    pos: [0.0, 0.0, -20.0]
-  - id: airboat_{t}_{c}
+  - id: airboat
     mesh:
       path: airboat_fixed_colors
       program: g_tex
-    clones:
-      - pos: [0.0, 0.0, 0.0]
-      - pos: [20.0, 00.0, 0.0]
-  - id: dir_light_{c}_{t}
+  - id: dir_light
     type: origo
-    pos: [0, 25, 25]
     light:
       type: directional
       diffuse: [0.9, 0.9, 0.7, 1.0]
       intensity: 40000
-  - id: giant_wooden_box_{t}_{c}
+  - id: giant_wooden_box
     mesh:
       path: quad
       material:
@@ -52,9 +46,23 @@ nodes:
         xreflection: 0.1
         render_back: true
       program: g_tex
-    clone_position_offset: [0, 60, 80]
     flags:
       no_shadow: true
+nodes:
+  - id: player
+    type: player
+    pos: [0, 1, 15]
+    active: true
+  - xtype: other
+    pos: [0.0, 0.0, -20.0]
+  - type: airboat
+    clones:
+      - pos: [0.0, 0.0, 0.0]
+      - pos: [20.0, 00.0, 0.0]
+  - type: dir_light
+    pos: [0, 25, 25]
+  - type: giant_wooden_box
+    clone_position_offset: [0, 60, 80]
     scale: 100
     clones:
       - pos: [0.0, 100.0, 0.0]

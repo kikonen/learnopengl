@@ -1194,6 +1194,12 @@
     <ClCompile Include="src\editor\console\Executor.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\loader\NodeTypeLoader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\loader\NodeTypeData.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h">
@@ -2694,6 +2700,15 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\editor\console\HistoryItem.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\loader\NodeTypeData.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\loader\NodeTypeLoader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\loader\Value.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

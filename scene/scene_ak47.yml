@@ -1,17 +1,16 @@
 ---
-name: Test
+meta:
+  name: Test
 skybox:
   program: g_skybox
   material: skybox/polyhaven/drakensberg_solitary_mountain_4k.hdr
 script:
   scripts:
     - path: lib/common
-nodes:
+types:
   - id: player
     type: origo
-    pos: [0, 3, 7]
     front: [0, 0, -1]
-    active: true
     audio:
       listener:
         default: true
@@ -20,9 +19,7 @@ nodes:
     controllers:
       - type: pawn
       - type: camera_zoom
-  - id: dir_light_{c}_{t}
-    pos: [0, 25, 40]
-    scale: 2.5
+  - id: dir_light
     mesh:
       path: light
       material_modifier:
@@ -37,55 +34,76 @@ nodes:
   - id: ground
     prefab:
       path: prefab/scenery/prefab_grass_ground_1.yml
-    scale: 100
-    position: [0, 0, 0]
-  - id: ak47_{c}_{t}
+  - id: ak47
     prefab:
       path: prefab/weapons/prefab_ak47.yml
-    pos: [0, 1, 0]
     xflags:
       static_bounds: true
       no_shadow: true
-    #scale: 5
-    share_type: false
-    clones:
-      - id: ak47_{t}
-        pos: [0, 1, 0]
-      - id: gold_ak47_{t}
-        pos: [0, 1.5, 0]
-        mesh:
-          material_modifier:
-            map_kd: T_KA47_Gold_ALB_2048.png
-  - id: automatic_rifle_{c}_{t}
+  - id: ak47_gold
+    prefab:
+      path: prefab/weapons/prefab_ak47.yml
+    mesh:
+      material_modifier:
+        map_kd: T_KA47_Gold_ALB_2048.png
+    xflags:
+      static_bounds: true
+      no_shadow: true
+  - id: automatic_rifle
     prefab:
       path: prefab/weapons/prefab_automatic_rifle_basic.yml
-    pos: [1, 1, 0]
     xflags:
       static_bounds: true
       no_shadow: true
+  - id: automatic_rifle_2
+    prefab:
+      path: prefab/weapons/prefab_automatic_rifle_basic.yml
+    xflags:
+      static_bounds: true
+      no_shadow: true
+    mesh:
+      material_modifier:
+        map_kd: T_Automatic_Rifle_01_Albedo_02_2048.png
+  - id: automatic_rifle_hands
+    prefab:
+      path: prefab/weapons/prefab_automatic_rifle_hands.yml
+    xflags:
+      static_bounds: true
+      no_shadow: true
+    script: |
+      cmd:animation_play(
+        { name="idle_aim:Unreal Take" } )
+
+nodes:
+  - id: player
+    type: player
+    pos: [0, 3, 7]
+    active: true
+  - type: dir_light
+    pos: [0, 25, 40]
+    scale: 2.5
+  - type: ground
+    scale: 100
+  - type: ak47
+    pos: [0, 1, 0]
     #scale: 5
-    share_type: false
+    clones:
+      - pos: [0, 1, 0]
+      - pos: [0, 1.5, 0]
+        type: ak47_gold
+  - type: automatic_rifle
+    pos: [1, 1, 0]
+    #scale: 5
     clones:
       - pos: [1, 1, 0]
       - pos: [1, 1.5, 0]
-        mesh:
-          material_modifier:
-            map_kd: T_Automatic_Rifle_01_Albedo_02_2048.png
-  - id: automatic_rifle_hands_{c}_{t}
-    prefab:
-      path: prefab/weapons/prefab_automatic_rifle_hands.yml
+        type: automatic_rifle_2
+  - type: automatic_rifle_hands
     pos: [2, 1, 0]
-    xflags:
-      static_bounds: true
-      no_shadow: true
     #scale: 5
-    share_type: false
     clones:
       - pos: [2, 1, 0]
       # - pos: [2, 1.5, 0]
       #   mesh:
       #     material_modifier:
       #       map_kd: T_Hands_04_Albedo_06_2048.png
-    script: |
-      cmd:animation_play(
-        { name="idle_aim:Unreal Take" } )

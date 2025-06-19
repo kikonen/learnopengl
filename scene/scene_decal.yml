@@ -7,6 +7,8 @@ script:
   scripts:
     - path: lib/common
 types:
+  - id: origo
+    type: origo
   - id: player
     type: origo
     front: [0, 0, -1]
@@ -232,8 +234,6 @@ types:
         category: [prop, can_float]
         collision: [world]
         size: [1]
-  - id: ball_2_origo
-    type: origo
   - id: ball_2
     mesh:
       vertex:
@@ -268,8 +268,6 @@ types:
       effect: true
       no_select: true
       no_shadow: true
-  - id: lamp_origo
-    type: origo
   - id: lamp
     mesh:
       vertex:
@@ -387,7 +385,7 @@ nodes:
   - type: ball
     pos: [0, 2.5, 0]
   - id: ball_2_origo
-    type: ball_2_origo
+    type: origo
     pos: [0, 4.5, 0]
     xpos: [0]
   - type: ball_2
@@ -395,7 +393,7 @@ nodes:
   - type: ball_2_halo
     parent: ball_2_origo
   - id: lamp_origo
-    type: lamp_origo
+    type: origo
     pos: [4, 3, 3]
     xpos: [0, 4.5, 0]
     xpos: [0]

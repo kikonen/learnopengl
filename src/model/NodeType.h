@@ -178,6 +178,7 @@ public:
 
     glm::vec3 m_front{ 0.f, 0.f, 1.f };
     glm::quat m_baseRotation{ 1.f, 0.f, 0.f, 0.f };
+    glm::vec3 m_baseScale{ 1.f };
     PivotPoint m_pivotPoint;
 
     TypeFlags m_flags;

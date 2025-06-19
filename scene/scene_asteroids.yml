@@ -6,12 +6,14 @@ skybox:
 script:
   scripts:
     - path: lib/common
-nodes:
+types:
+  - id: fps_counter
+    prefab:
+      path: prefab/util/prefab_fps_counter.yml
+    layer: ui
   - id: player
     type: origo
-    pos: [0, 0, 20]
     front: [0, 0, -1]
-    active: true
     audio:
       listener:
         default: true
@@ -20,29 +22,18 @@ nodes:
     controllers:
       - type: pawn
       - type: camera_zoom
-  - id: fps_counter
-    prefab:
-      path: prefab/util/prefab_fps_counter.yml
-    #pos: [5.75, 5.25, 0.2]
-    pos: [2, -2, -1]
-    scale: 0.0025
-    layer: ui
-  - xid: cube_map_1
+  - id: cube_map_1
     type: origo
-    pos: [0.0, 0.0, 0.0]
     flags:
       cube_map: true
   - id: planet_origo
     type: origo
-    pos: [0.0, 0.0, 0.0]
     script_file: scripts/anim_asteroids_roll
-  - xid: planet
-    parent_id: planet_origo
+  - id: planet_1
     mesh:
       path: planet/planet.obj
       scale: 2
       program: g_tex
-    pos: [0, 0, 0]
     particle:
       seed: 1
       gravity: [0, -0.81, 0]
@@ -72,8 +63,7 @@ nodes:
         texture_spec:
           wrap: GL_CLAMP_TO_EDGE
     script_file: scripts/seq_particle_generator
-  - id: planet
-    parent: planet_origo
+  - id: planet_2
     mesh:
       path: planets/planet.obj
       material:
@@ -117,7 +107,6 @@ nodes:
         vec3(0, 1, 0),
         360 * 30)
   - id: planet_cloud
-    parent: planet_origo
     mesh:
       path: planets/planet.obj
       material:
@@ -136,25 +125,50 @@ nodes:
         vec3(0, 1, 0),
         360 * 50)
   - id: asteroid_belt
-    parent_id: planet_origo
     prefab:
       path: prefab/scenery/prefab_asteroid.yml
-    pos: [0, 0, 0]
-    generator:
-      type: asteroid_belt
-      mode: random
-      count: 200000
-  - id: dir_light_{c}_{t}
+  - id: dir_light
     mesh:
       path: light
       material_modifier:
         kd: [0.8, 0.8, 0.6, 1.0]
       program: g_tex
-    pos: [0, 25, 40]
-    scale: 2.5
     flags:
       no_shadow: true
     light:
       type: directional
       diffuse: [0.9, 0.9, 0.7, 1.0]
       intensity: 50000
+
+nodes:
+  - type: player
+    id: player
+    pos: [0, 0, 20]
+    active: true
+  - type: fps_counter
+    id: fps_counter
+    #pos: [5.75, 5.25, 0.2]
+    pos: [2, -2, -1]
+    scale: 0.0025
+  - xtype: cube_map_1
+    pos: [0.0, 0.0, 0.0]
+  - type: planet_origo
+    id: planet_origo
+    pos: [0.0, 0.0, 0.0]
+  - xtype: planet_1
+    parent_id: planet_origo
+    pos: [0, 0, 0]
+  - type: planet_2
+    parent: planet_origo
+  - type: planet_cloud
+    parent: planet_origo
+  - type: asteroid_belt
+    parent_id: planet_origo
+    pos: [0, 0, 0]
+    generator:
+      type: asteroid_belt
+      mode: random
+      count: 200000
+  - type: dir_light
+    pos: [0, 25, 40]
+    scale: 2.5

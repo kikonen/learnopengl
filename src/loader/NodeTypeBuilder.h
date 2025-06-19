@@ -45,6 +45,9 @@ namespace loader {
 
         ~NodeTypeBuilder();
 
+        void createTypes(
+            const std::vector<NodeTypeData>& types);
+
         pool::TypeHandle createType(
             const NodeTypeData& typeData);
 

@@ -1,25 +1,22 @@
 ---
-name: Audio
+meta:
+  name: Audio
 skybox:
   program: g_skybox
   material: skybox/polyhaven/drakensberg_solitary_mountain_4k.hdr
 script:
   scripts:
     - path: lib/common
-nodes:
+types:
   - id: player
     mesh:
       path: water_ball
       material_modifier:
         tiling: 5
       program: g_tex
-    pos: [0, 2, 0.0]
     front: [0, 0, -1]
-    rot: [0, 45, 0]
-    scale: 0.5
     flags:
       allow_normals: false
-    active: true
     controllers:
       - type: pawn
     camera:
@@ -35,8 +32,6 @@ nodes:
       material_modifier:
         kd: [0.0, 0.2, 0.8, 1.0]
       program: g_tex
-    pos: [0.0, 0.0, 0.0]
-    scale: 1
     audio:
       source:
         name: select
@@ -44,40 +39,43 @@ nodes:
         reference_distance: 6
         xautoplay: true
         xlooping: true
-  - id: four_cubes_{t}_{c}
+  - id: four_cubes
     mesh:
       path: texture_cube_3
       program: g_tex
-    scale: 1
     base_rot: [-90, 0, 0]
     audio:
       source:
         name: select
         path: audio/Squeaking Toy Duck 2_DD868BE_normal_mono.wav
         reference_distance: 3
-    clones:
-      - pos: [-5.0, 2.0, -5.0]
-      - pos: [5.0, 2.0, -5.0]
-      - pos: [-5.0, 2.0, 5.0]
-        audio:
-          source:
-            name: select
-            path: audio/Spring Wind Up_EF911B61_normal_mono.wav
-      - pos: [5.0, 2.0, 5.0]
-        audio:
-          source:
-            name: select
-            path: audio/Spring Wind Up_EF911B61_normal_mono.wav
+  - id: four_cubes_2
+    mesh:
+      path: texture_cube_3
+      program: g_tex
+    base_rot: [-90, 0, 0]
+    audio:
+      source:
+        name: select
+        path: audio/Spring Wind Up_EF911B61_normal_mono.wav
+        reference_distance: 3
+  - id: four_cubes_3
+    mesh:
+      path: texture_cube_3
+      program: g_tex
+    base_rot: [-90, 0, 0]
+    audio:
+      source:
+        name: select
+        path: audio/Spring Wind Up_EF911B61_normal_mono.wav
+        reference_distance: 3
   - id: cow_jump
     mesh:
       path: cow
       material:
         prefab: materials/Plastic01.yml
       program: g_tex
-    pos: [0, 4, -10]
-    rot: [-45, 180, 0]
     base_rot: [0, -90, 0]
-    scale: 1.0
     audio:
       sources:
         - name: moo
@@ -92,5 +90,29 @@ nodes:
   - id: wooden_floor
     prefab:
       path: prefab/scenery/prefab_wooden_floor.yml
+
+nodes:
+  - type: player
+    id: player
+    pos: [0, 2, 0.0]
+    rot: [0, 45, 0]
+    scale: 0.5
+    active: true
+  - type: origo
+    pos: [0.0, 0.0, 0.0]
+    scale: 1
+  - type: four_cubes
+    scale: 1
+    clones:
+      - pos: [-5.0, 2.0, -5.0]
+      - pos: [5.0, 2.0, -5.0]
+      - pos: [-5.0, 2.0, 5.0]
+        type: four_cubes_2
+      - pos: [5.0, 2.0, 5.0]
+        type: four_cubes_3
+  - type: cow_jump
+    pos: [0, 4, -10]
+    rot: [-45, 180, 0]
+    scale: 1.0
+  - type: wooden_floor
     scale: 100
-    position: [0, 0, 0]

@@ -241,10 +241,7 @@ namespace loader {
         }
 
         {
-            auto& materialRegistry = MaterialRegistry::get();
-            for (const auto& typeData : m_nodeTypes) {
-                m_nodeTypeBuilder->createType(typeData);
-            }
+            m_nodeTypeBuilder->createTypes(m_nodeTypes);
         }
 
         {
@@ -474,6 +471,8 @@ namespace loader {
                 errorCount++;
             }
             collectedIds[sid] = resolvedSID;
+
+            KI_INFO_OUT("NODE_SID: " + resolvedSID);
         }
 
         if (pass == 1) {

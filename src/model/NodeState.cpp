@@ -43,13 +43,13 @@ void NodeState::updateRootMatrix() noexcept
         s_translateMatrix[3].y = m_position.y;
         s_translateMatrix[3].z = m_position.z;
 
-        s_scaleMatrix[0].x = m_scale.x;
-        s_scaleMatrix[1].y = m_scale.y;
-        s_scaleMatrix[2].z = m_scale.z;
+        s_scaleMatrix[0].x = m_scale.x * m_baseScale.x;
+        s_scaleMatrix[1].y = m_scale.y * m_baseScale.y;
+        s_scaleMatrix[2].z = m_scale.z * m_baseScale.z;
     }
 
     m_modelMatrix = s_translateMatrix * m_rotationMatrix * s_scaleMatrix;
-    m_modelScale = m_scale;
+    m_modelScale = m_scale * m_baseScale;
 
     //{
     //    const auto& wp = m_modelMatrix[3];
@@ -75,8 +75,8 @@ void NodeState::updateModelMatrix(const NodeState& parent) noexcept
     }
 
     const float aspect = (float)m_aspectRatio.x / (float)m_aspectRatio.y;
-    const float aspectScaleX = m_scale.x / aspect;
-    const float aspectScaleY = m_scale.y;
+    const float aspectScaleX = m_scale.x * m_baseScale.x / aspect;
+    const float aspectScaleY = m_scale.y * m_baseScale.y;
 
     const auto hasPivot = m_pivot != ZERO_VEC;
 
@@ -87,16 +87,16 @@ void NodeState::updateModelMatrix(const NodeState& parent) noexcept
 
         g_scaleMatrix[0].x = aspectScaleX;
         g_scaleMatrix[1].y = aspectScaleY;
-        g_scaleMatrix[2].z = m_scale.z;
+        g_scaleMatrix[2].z = m_scale.z * m_baseScale.z;
 
         if (hasPivot) {
             g_pivotMatrix[3].x = -m_pivot.x * aspectScaleX;
             g_pivotMatrix[3].y = -m_pivot.y * aspectScaleY;
-            g_pivotMatrix[3].z = -m_pivot.z * m_scale.z;
+            g_pivotMatrix[3].z = -m_pivot.z * m_scale.z * m_baseScale.z;
 
             g_invPivotMatrix[3].x = m_pivot.x * aspectScaleX;
             g_invPivotMatrix[3].y = m_pivot.y * aspectScaleY;
-            g_invPivotMatrix[3].z = m_pivot.z * m_scale.z;
+            g_invPivotMatrix[3].z = m_pivot.z * m_scale.z * m_baseScale.z;
         }
     }
 
@@ -115,7 +115,7 @@ void NodeState::updateModelMatrix(const NodeState& parent) noexcept
         //    g_translateMatrix *
         //    m_rotationMatrix *
         //    g_scaleMatrix;
-        glm::vec3 scale = m_scale;
+        glm::vec3 scale = m_scale * m_baseScale.z;
         scale.x = aspectScaleX;
         scale.y = aspectScaleY;
 

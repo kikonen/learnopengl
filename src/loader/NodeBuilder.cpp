@@ -227,6 +227,8 @@ namespace loader
             resolvedSID = v;
         }
 
+        KI_INFO_OUT("NODE_SID: " + resolvedSID);
+
         auto handle = pool::NodeHandle::allocate(nodeId);
         auto* node = handle.toNode();
         assert(node);

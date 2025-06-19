@@ -30,7 +30,9 @@ private:
     Sphere m_volume;
 
     glm::vec3 m_position{ 0.f };
+
     glm::vec3 m_scale{ 1.f };
+    glm::vec3 m_baseScale{ 1.f };
 
     glm::vec3 m_pivot{ 0.f };
 
@@ -148,6 +150,21 @@ public:
         if (adjust.x == 0 && adjust.y == 0 && adjust.z == 0) return;
         m_position += adjust;
         m_dirty = true;
+    }
+
+    inline void setBaseScale(const glm::vec3& scale) noexcept
+    {
+        assert(scale.x >= 0 && scale.y >= 0 && scale.z >= 0);
+
+        if (m_baseScale != scale)
+        {
+            m_baseScale.x = scale.x;
+            m_baseScale.y = scale.y;
+            m_baseScale.z = scale.z;
+
+            m_dirty = true;
+            m_dirtyNormal = true;
+        }
     }
 
     inline void setScale(float scale) noexcept

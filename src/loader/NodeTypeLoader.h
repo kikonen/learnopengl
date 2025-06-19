@@ -21,11 +21,13 @@ namespace loader {
         void loadNodeType(
             const loader::DocNode& node,
             NodeTypeData& nodeType,
+            const std::unordered_map<std::string, const loader::DocNode*>& idToType,
             Loaders& loaders) const;
 
         void loadPrefab(
             const loader::DocNode& node,
             NodeTypeData& data,
+            const std::unordered_map<std::string, const loader::DocNode*>& idToType,
             Loaders& loaders) const;
 
         void loadAttachments(

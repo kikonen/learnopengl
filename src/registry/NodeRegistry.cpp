@@ -878,12 +878,17 @@ void NodeRegistry::bindNode(
     }
 
     {
-        std::lock_guard lock(m_snapshotLock);
-
         NodeState state;
-        state.setPosition(createState.m_position);
-        state.setScale(createState.m_scale);
-        state.setRotation(createState.m_rotation);
+        {
+            const auto* type = node->getType();
+
+            state.setBaseScale(type->m_baseScale);
+            state.setPosition(createState.m_position);
+            state.setScale(createState.m_scale);
+            state.setRotation(createState.m_rotation);
+        }
+
+        std::lock_guard lock(m_snapshotLock);
 
         m_handles.push_back(handle);
         m_parentIndeces.push_back(0);

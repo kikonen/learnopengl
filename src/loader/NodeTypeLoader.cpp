@@ -4,6 +4,7 @@
 #include <vector>
 #include <algorithm>
 #include <string>
+#include <unordered_map>
 
 #include <fmt/format.h>
 
@@ -43,11 +44,22 @@ namespace loader {
         std::vector<NodeTypeData>& nodeTypes,
         Loaders& loaders) const
     {
+        std::unordered_map<std::string, const loader::DocNode*> idToType;
+
+        for (const auto& entry : node.getNodes()) {
+            const auto& node = entry.findNode("id");
+            if (node.isNull()) continue;
+
+            auto id = readId(node);
+            idToType.insert({ id.m_path, &entry });
+        }
+
         for (const auto& entry : node.getNodes()) {
             auto& data = nodeTypes.emplace_back();
             loadNodeType(
                 entry,
                 data,
+                idToType,
                 loaders);
         }
     }
@@ -55,6 +67,7 @@ namespace loader {
     void NodeTypeLoader::loadNodeType(
         const loader::DocNode& node,
         NodeTypeData& data,
+        const std::unordered_map<std::string, const loader::DocNode*>& idToType,
         Loaders& loaders) const
     {
         bool hasClones = false;
@@ -65,13 +78,28 @@ namespace loader {
             data.layer = layer->m_index;
         }
 
-        loadPrefab(node.findNode("prefab"), data, loaders);
+        {
+            const auto& baseValue = node.findNode("base");
+            if (!baseValue.isNull()) {
+                auto baseId = readId(baseValue);
+                const auto& it = idToType.find(baseId.m_path);
+                if (it == idToType.end()) {
+                    throw fmt::format("Missing base_type: {}", baseId.m_path);
+                }
+                loadNodeType(*it->second, data, idToType, loaders);
+            }
+        }
+
+        loadPrefab(node.findNode("prefab"), data, idToType, loaders);
 
         for (const auto& pair : node.getNodes()) {
             const std::string& k = pair.getName();
             const loader::DocNode& v = pair.getNode();
 
             if (k == "prefab") {
+                // NOTE KI loaded as "pre step"
+            }
+            else if (k == "base") {
                 // NOTE KI loaded as "pre step"
             }
             else if (k == "type") {
@@ -255,6 +283,7 @@ namespace loader {
     void NodeTypeLoader::loadPrefab(
         const loader::DocNode& node,
         NodeTypeData& data,
+        const std::unordered_map<std::string, const loader::DocNode*>& idToType,
         Loaders& loaders) const
     {
         if (node.isNull()) return;
@@ -303,9 +332,10 @@ namespace loader {
             if (k == "prefab") {
                 std::vector<NodeData> clones;
                loadNodeType(
-                    v,
-                    data,
-                    loaders);
+                   v,
+                   data,
+                   idToType,
+                   loaders);
             }
         }
     }

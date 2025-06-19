@@ -1,6 +1,6 @@
 ---
-name: Material balls
-viewports:
+meta:
+  name: Material balls
 skybox:
   xmaterial: skybox
   material: skybox/polyhaven/borghese_gardens_4k.hdr
@@ -8,12 +8,10 @@ skybox:
   xmaterial: skybox/polyhaven/drakensberg_solitary_mountain_4k.hdr
   xmaterial: skybox/polyhaven/gray_pier_4k.hdr
   xmaterial: skybox/polyhaven/wasteland_clouds_puresky_4k.hdr
-lights: {}
-cube_maps: {}
 script:
   scripts:
     - path: lib/common
-nodes:
+types:
   - id: origo
     mesh:
       path: water_ball
@@ -21,8 +19,6 @@ nodes:
         kd: [0.0, 0.2, 0.8, 1.0]
         mrao: [0.2, 0.1, 1.0]
       program: g_tex
-    pos: [0.0, 0.0, 0.0]
-    scale: 1
   - id: cap
     mesh:
       vertex:
@@ -38,9 +34,8 @@ nodes:
         blend: true
       base_scale: 0.25
       base_rot: [90, 0, 0]
-    pos: [0, 25, 40]
     front: [0, 0, -1]
-  - xid: player_fps
+  - id: player_fps
     mesh:
       vertex:
         type: capsule
@@ -55,9 +50,6 @@ nodes:
         blend: true
       base_scale: 0.25
       base_rot: [90, 0, 0]
-    pos: [1, 22, 40]
-    rotation: [0, 180, 0]
-    active: true
     camera:
       default: true
       type: fps
@@ -83,9 +75,6 @@ nodes:
   - id: player_3rd_person
     prefab:
       path: prefab/creatures/prefab_skeleton_warrior.yml
-    rotation: [0, 180, 0]
-    pos: [0, 21, 40]
-    active: true
     camera:
       type: follow
       distance: [5, 2.5, 10]
@@ -111,7 +100,6 @@ nodes:
   - id: skeleton_1
     prefab:
       path: prefab/creatures/prefab_skeleton.yml
-    pos: [5, 24, 28]
     script: |
       local sid = util.sid("master:Idle2")
       printf("LUA: SID=%d, id=%s", sid, "master:Idle2")
@@ -122,20 +110,17 @@ nodes:
   - id: skeleton_2
     prefab:
       path: prefab/creatures/prefab_skeleton.yml
-    pos: [3, 25, 25]
     script: |
       cmd:animation_play(
         { name = "master:Idle" });
     physics:
       enabled: true
-  - id: dir_light_{c}_{t}
+  - id: dir_light
     mesh:
       path: light
       material_modifier:
         kd: [0.8, 0.8, 0.6, 1.0]
       program: g_light
-    pos: [-25, 45, 0]
-    scale: 1.5
     flags:
       no_shadow: true
     light:
@@ -148,8 +133,6 @@ nodes:
       material_modifier:
         kd: [0.8, 0.8, 0.6, 1.0]
       program: g_light
-    pos: [10, 30, 25]
-    scale: 0.5
     flags:
       no_shadow: true
       no_select: true
@@ -161,9 +144,7 @@ nodes:
       intensity: 1000
   - id: ball_origo
     type: origo
-    pos: [0.0, 25.0, 0.0]
   - id: basic_ball
-    parent_id: ball_origo
     mesh:
       path: water_ball
       material:
@@ -171,8 +152,6 @@ nodes:
         xreflection: 0.05
         mrao: [0.2, 0.1, 1.0]
       program: g_tex
-    pos: [0.0, 0.0, 0.0]
-    scale: 1.3
     physics:
       body:
         type: sphere
@@ -181,7 +160,6 @@ nodes:
         type: sphere
         size: 1
   - id: gold_ball
-    parent_id: ball_origo
     mesh:
       path: water_ball
       material:
@@ -191,8 +169,6 @@ nodes:
         xreflection: 0.05
         xparallax_depth: 0.0
       program: g_tex
-    pos: [0.0, 0.0, 5.0]
-    scale: 1.3
     controller:
       type: pawn
     physics:
@@ -203,7 +179,6 @@ nodes:
         type: sphere
         size: 1
   - id: fence_cylinder
-    parent_id: ball_origo
     mesh:
       vertex:
         type: cylinder
@@ -218,9 +193,6 @@ nodes:
         xblend: true
         render_back: true
       program: g_tex
-    pos: [0.0, 0.0, 10.0]
-    rotation: [90, 0, 0]
-    scale: 1.3
     physics:
       body:
         type: cylinder
@@ -229,7 +201,6 @@ nodes:
         type: cylinder
         size: [1, 1, 0]
   - id: plastic_cylinder
-    parent_id: ball_origo
     mesh:
       vertex:
         type: capped_cylinder
@@ -241,9 +212,6 @@ nodes:
         xreflection: 0.05
         xparallax_depth: 0.01
       program: g_tex
-    pos: [0.0, 0.0, 15.0]
-    rotation: [45, 0, 0]
-    scale: 1.3
     physics:
       body:
         type: cylinder
@@ -252,7 +220,6 @@ nodes:
         type: cylinder
         size: [1, 1, 0]
   - id: rusted_iron_ball
-    parent_id: ball_origo
     mesh:
       path: water_ball
       material:
@@ -262,8 +229,6 @@ nodes:
         tiling: 3
         xparallax_depth: 0.0
       program: g_tex
-    pos: [-10.0, 0.0, 20.0]
-    scale: 1.3
     physics:
       body:
         type: sphere
@@ -272,7 +237,6 @@ nodes:
         type: sphere
         size: 1
   - id: old_gold_capsule
-    parent_id: ball_origo
     mesh:
       vertex:
         type: capsule
@@ -287,8 +251,6 @@ nodes:
         xparallax_depth: 0.0
         program: g_tex
         xblend: true
-    pos: [0.0, 0.0, 25.0]
-    scale: [1, 1, 1]
     base_rot: [90, 0, 0]
     physics:
       body:
@@ -300,27 +262,16 @@ nodes:
   - id: wooden_floor
     prefab:
       path: prefab/scenery/prefab_wooden_floor.yml
-    pos: [0.0, 20.0, 0.0]
-    rot: [0, 0, 5]
     physics:
       geom:
         type: plane
-    scale: 200
   - id: cube_origo
     type: origo
-    pos: [0.0, 30.0, 0.0]
-  - id: four_cubes_{t}_{c}
-    parent_id: cube_origo
+  - id: four_cubes
     mesh:
       path: texture_cube_3
       program: g_tex
-    scale: 1
     base_rot: [-90, 0, 0]
-    clones:
-      - pos: [10.0, 0, -10]
-      - pos: [10.0, 0, 10]
-      - pos: [-10.0, 0, -10]
-      - pos: [-10.0, 0, 10]
     physics:
       body:
         type: box
@@ -343,8 +294,6 @@ nodes:
         render_back: true
         program: g_tex
       base_rotation: [0, -90, 0]
-    pos: [-39.0, -15, 0]
-    scale: 80
     physics:
       body:
         type: box
@@ -352,117 +301,139 @@ nodes:
       geom:
         type: box
         size: [0.0001, 0.5, 0.5]
-  - id: world_x_minus
+  - id: world_plane
     xtype: origo
     mesh:
       path: plane
       material:
         prefab: materials/Fence007A.yml
-        kd: [0, 0.8, 0]
         tiling: 10
         alpha: true
       program: g_tex
-    scale: 100
+    base_scale: 100
     flags:
       no_shadow: true
       no_select: true
+    physics:
+      geom:
+        type: plane
+  - id: world_plane_x_minus
+    base: world_plane
+    mesh:
+      material_modifier:
+        kd: [0, 0.8, 0]
+  - id: world_plane_x_plus
+    base: world_plane
+    mesh:
+      material_modifier:
+        kd: [0.8, 0.8, 0]
+  - id: world_plane_y_minus
+    base: world_plane
+    mesh:
+      material_modifier:
+        kd: [0.8, 0, 0]
+  - id: world_plane_y_plus
+    base: world_plane
+    mesh:
+      material_modifier:
+        kd: [0.8, 0, 0.8]
+  - id: world_plane_z_minus
+    base: world_plane
+    mesh:
+      material_modifier:
+        kd: [0, 0, 0.8]
+  - id: world_plane_z_plus
+    base: world_plane
+    mesh:
+      material_modifier:
+        kd: [0, 0.8, 0.8]
+
+nodes:
+  - type: origo
+    pos: [0.0, 0.0, 0.0]
+    scale: 1
+  - type: cap
+    pos: [0, 25, 40]
+  - xtype: player_fps
+    pos: [1, 22, 40]
+    rotation: [0, 180, 0]
+    active: true
+  - type: player_3rd_person
+    rotation: [0, 180, 0]
+    pos: [0, 21, 40]
+    active: true
+  - type: skeleton_1
+    pos: [5, 24, 28]
+  - type: skeleton_2
+    pos: [3, 25, 25]
+  - type: dir_light
+    pos: [-25, 45, 0]
+    scale: 1.5
+  - type: point_light
+    pos: [10, 30, 25]
+    scale: 0.5
+  - type: ball_origo
+    id: ball_origo
+    pos: [0.0, 25.0, 0.0]
+  - type: basic_ball
+    parent_id: ball_origo
+    pos: [0.0, 0.0, 0.0]
+    scale: 1.3
+  - type: gold_ball
+    parent_id: ball_origo
+    pos: [0.0, 0.0, 5.0]
+    scale: 1.3
+  - type: fence_cylinder
+    parent_id: ball_origo
+    pos: [0.0, 0.0, 10.0]
+    rotation: [90, 0, 0]
+    scale: 1.3
+  - type: plastic_cylinder
+    parent_id: ball_origo
+    pos: [0.0, 0.0, 15.0]
+    rotation: [45, 0, 0]
+    scale: 1.3
+  - type: rusted_iron_ball
+    parent_id: ball_origo
+    pos: [-10.0, 0.0, 20.0]
+    scale: 1.3
+  - type: old_gold_capsule
+    parent_id: ball_origo
+    pos: [0.0, 0.0, 25.0]
+    scale: [1, 1, 1]
+  - type: wooden_floor
+    pos: [0.0, 20.0, 0.0]
+    rot: [0, 0, 5]
+    scale: 200
+  - type: cube_origo
+    id: cube_origo
+    pos: [0.0, 30.0, 0.0]
+  - type: four_cubes
+    parent_id: cube_origo
+    scale: 1
+    clones:
+      - pos: [10.0, 0, -10]
+      - pos: [10.0, 0, 10]
+      - pos: [-10.0, 0, -10]
+      - pos: [-10.0, 0, 10]
+  - type: fence
+    pos: [-39.0, -15, 0]
+    scale: 80
+  - type: world_plane_x_minus
     pos: [-101, 0, 0]
     rot: [0, 0, -90]
-    physics:
-      geom:
-        type: plane
-  - id: world_x_plus
-    xtype: origo
-    mesh:
-      path: plane
-      material:
-        prefab: materials/Fence007A.yml
-        kd: [0.8, 0.8, 0]
-        tiling: 10
-        alpha: true
-      program: g_tex
-    scale: 100
-    flags:
-      no_shadow: true
-      no_select: true
+  - type: world_plane_x_plus
     pos: [102, 0, 0]
     rot: [0, 0, 90]
-    physics:
-      geom:
-        type: plane
-  - id: world_y_minus
-    xtype: origo
-    mesh:
-      path: plane
-      material:
-        prefab: materials/Fence007A.yml
-        kd: [0.8, 0, 0]
-        tiling: 10
-        alpha: true
-      program: g_tex
-    scale: 100
-    flags:
-      no_shadow: true
-      no_select: true
+  - type: world_plane_y_minus
     pos: [0, -103, 0]
     rot: [0, 0, 0]
-    physics:
-      geom:
-        type: plane
-  - id: world_y_plus
-    xtype: origo
-    mesh:
-      path: plane
-      material:
-        prefab: materials/Fence007A.yml
-        kd: [0.8, 0, 0.8]
-        tiling: 10
-        alpha: true
-      program: g_tex
-    scale: 100
-    flags:
-      no_shadow: true
-      no_select: true
+  - type: world_plane_y_plus
     pos: [0, 104, 0]
     rot: [180, 0, 0]
-    physics:
-      geom:
-        type: plane
-  - id: world_z_minus
-    xtype: origo
-    mesh:
-      path: plane
-      material:
-        prefab: materials/Fence007A.yml
-        kd: [0, 0, 0.8]
-        tiling: 10
-        alpha: true
-      program: g_tex
-    scale: 100
-    flags:
-      no_shadow: true
-      no_select: true
+  - type: world_plane_z_minus
     pos: [0, 0, -105]
     rot: [90, 0, 0]
-    physics:
-      geom:
-        type: plane
-  - id: world_z_plus
-    xtype: origo
-    mesh:
-      path: plane
-      material:
-        prefab: materials/Fence007A.yml
-        kd: [0, 0.8, 0.8]
-        tiling: 10
-        alpha: true
-      program: g_tex
-    scale: 100
-    flags:
-      no_shadow: true
-      no_select: true
+  - type: world_plane_z_plus
     pos: [0, 0, 106]
     rot: [-90, 0, 0]
-    physics:
-      geom:
-        type: plane

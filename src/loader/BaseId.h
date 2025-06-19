@@ -21,6 +21,11 @@ namespace loader {
         bool empty() const {
             return m_path.empty();
         }
+
+        bool operator==(const BaseId& o) const noexcept
+        {
+            return m_path == o.m_path;
+        }
     };
 }
 

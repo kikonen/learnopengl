@@ -1,48 +1,40 @@
 ---
-name: Pool
-viewports:
+meta:
+  name: Pool
 skybox:
   material: skybox/polyhaven/wasteland_clouds_puresky_4k.hdr
   hdri: true
 prefab_dirs:
   - prefab
-lights: {}
-cube_maps: {}
 script:
   scripts:
     - path: lib/common
-nodes:
-  - prefab:
+types:
+  - id: grid
+    prefab:
       path: prefab/util/prefab_grid.yml
   - id: fps_counter
     prefab:
       path: prefab/util/prefab_fps_counter.yml
-    #pos: [5.75, 5.25, 0.2]
-    pos: [2, -2, -1]
-    scale: 0.0025
     layer: ui
   - id: origo
+    type: origo
     mesh:
       path: water_ball
       material_modifier:
         kd: [0.0, 0.2, 0.8, 1.0]
         program: g_tex
       scale: 0.5
-    pos: [0.0, 10, 0.0]
-  - id: origo-2
+  - id: origo_2
     mesh:
       path: water_ball
       material_modifier:
         kd: [0.0, 0.2, 0.8, 1.0]
         program: g_tex
       scale: 0.5
-    pos: [-30, 10, -40]
   - id: player
     type: origo
-    xxpos: [50, 30, 40]
-    pos: [0, 9.5, 10]
     front: [0, 0, -1]
-    active: true
     audio:
       listener:
         default: true
@@ -51,8 +43,7 @@ nodes:
     controllers:
       - type: pawn
       - type: camera_zoom
-  - id: dir_light_{c}_{t}
-    pos: [0, 45, 100]
+  - id: dir_light
     mesh:
       path: light
       material_modifier:
@@ -74,7 +65,6 @@ nodes:
       scale: 2.5
       flags:
         pre_depth: true
-    pos: [0, 12.5, -10]
     physics:
       update: true
       body:
@@ -87,9 +77,7 @@ nodes:
         collision: [world]
         size: [2.5]
   - id: cube_map_mirror_ball
-    parent_id: mirror_ball
     type: origo
-    #pos: [0, 30.5, -10]
     flags:
       cube_map: true
   - id: mirror_ball
@@ -99,7 +87,6 @@ nodes:
         reflection: 0.8
         program: g_tex
       scale: 5
-    pos: [7, 30.5, -10]
     physics:
       body:
         type: sphere
@@ -111,8 +98,6 @@ nodes:
         collision: [world]
         size: [5]
   - id: mirror_ball_halo
-    parent: mirror_ball
-    ignored_by: mirror_ball
     mesh:
       vertex:
         type: box
@@ -131,10 +116,7 @@ nodes:
       xno_reflect: true
   - id: big_mirror_2_origo
     type: origo
-    pos: [50, 20.5, -10]
-    rotation: [0.0, -60.0, 0.0]
   - id: big_mirror_2_front
-    parent: big_mirror_2_origo
     mesh:
       path: quad
       material:
@@ -149,8 +131,6 @@ nodes:
     flags:
       mirror: true
   - id: big_mirror_2_back
-    parent: big_mirror_2_origo
-    ignored_by: big_mirror_2_front
     mesh:
       path: quad
       material:
@@ -161,7 +141,7 @@ nodes:
       base_rotation: [0, 180, 0]
       flags:
         pre_depth: true
-  - id: pool_floor_{c}_{t}
+  - id: pool_floor
     mesh:
       path: plane
       material:
@@ -171,16 +151,8 @@ nodes:
       scale: 30
       flags:
         pre_depth: true
-    pos: [0.0, 3.2, -10.0]
     flags:
       no_shadow: true
-    repeat:
-      x_count: 2
-      y_count: 1
-      z_count: 2
-      x_step: 60
-      y_step: 0
-      z_step: 60
     physics:
       body:
         type: box
@@ -191,7 +163,7 @@ nodes:
         category: [terrain]
         collision: [can_terrain]
         size: [30, 0.01, 30]
-  - id: pool_surface_{c}_{t}
+  - id: pool_surface
     mesh:
       path: plane
       material:
@@ -202,17 +174,9 @@ nodes:
         render_back: true
         program: g_water
       scale: 30
-    pos: [0, 9.0, -10]
     flags:
       no_shadow: true
       water: true
-    repeat:
-      x_count: 2
-      y_count: 1
-      z_count: 2
-      x_step: 60
-      y_step: 0
-      z_step: 60
     physics:
       update: true
       body:
@@ -225,10 +189,8 @@ nodes:
         collision: [can_float]
         size: [30, 0.01, 30]
     script_file: scripts/anim_water
-  - id: pool_surface_2_particle_origin
-    parent_id: pool_surface_{c}_{t}
+  - id: pool_surface_particle_origin
     type: origo
-    pos: [0, 20, 0]
     particle:
       seed: 1
       gravity: [0, -0.81, 0]
@@ -260,7 +222,7 @@ nodes:
         texture_spec:
           wrap: GL_CLAMP_TO_EDGE
     script_file: scripts/seq_particle_generator
-  - id: pool_side_{t}_{c}
+  - id: pool_side
     mesh:
       path: pool_brick
       material_modifier:
@@ -275,15 +237,6 @@ nodes:
       flags:
         pre_depth: true
       program: g_tex
-    clones:
-      - pos: [-30.0, 4, 20]
-        scale: [0.3, 6, 60]
-      - pos: [90.0, 4, 20]
-        scale: [0.3, 6, 60]
-      - pos: [30.0, 4, 80]
-        scale: [60, 6, 0.3]
-      - pos: [30.0, 4, -40]
-        scale: [60, 6, 0.3]
     physics:
       body:
         type: box
@@ -294,7 +247,7 @@ nodes:
         category: [prop]
         collision: [npc]
         size: [1, 1, 1]
-  - id: maple_tree_forest_{c}_{t}
+  - id: maple_tree_forest
     prefab:
       path: prefab/scenery/prefab_maple_tree.yml
     mesh:
@@ -303,28 +256,11 @@ nodes:
           USE_TREE_WIND: 1
     flags:
       static_bounds: true
-    generator:
-      type: grid
-      mode: grid
-      offset: [-40.0, 4, 70]
-      scale: 2
-      repeat:
-        x_count: 1
-        z_count: 4
-        x_step: 20
-        z_step: -40
-  - id: skeleton_army_2_{t}
+  - id: skeleton_army_2
     prefab:
       path: prefab/creatures/prefab_skeleton.yml
     priority: -1
-    pos: [-20, 10.86, 80]
     base_rot: [0, 180, 0]
-    scale: 4
-    repeat:
-      x_count: 25
-      z_count: 1
-      x_step: 10
-      z_step: 0
     type_flags:
       dynamic_bounds: true
       xstatic_bounds: true
@@ -350,17 +286,6 @@ nodes:
       flags:
         tessellation: true
     priority: 20
-    pos: [-1024, 10, -1024]
-    generator:
-      type: terrain
-      mode: grid
-      terrain:
-        map_height: textures/terrain_2/terrain_2_height.png
-      tiling:
-        tile_size: 256
-        tiles: [8, 0, 8]
-        vert_range: [-32.54, 31.9]
-        horiz_scale: 2
     type_flags:
       pre_depth: true
       use_deferred: true
@@ -371,7 +296,7 @@ nodes:
         category: [ground, terrain]
         collide: [can_terrain]
         size: [2048, 0, 2048]
-  - id: grass_{t}
+  - id: grass
     prefab:
       path: prefab/scenery/prefab_grass.yml
     mesh:
@@ -382,20 +307,7 @@ nodes:
     flags:
       static_bounds: true
       no_shadow: true
-    generator:
-      type: grid
-      mode: random
-      offset: [-600.0, 0.0, 500.0]
-      scale: 3
-      bounds: [terrain]
-      seed: [4242, 1212, 3333]
-      count: 2000
-      repeat:
-        x_count: 100
-        z_count: 100
-        x_step: 12
-        z_step: -12
-  - id: grass_floating_{t}
+  - id: grass_floating
     prefab:
       path: prefab/scenery/prefab_grass.yml
     mesh:
@@ -406,20 +318,7 @@ nodes:
     flags:
       dynamic_bounds: true
       no_shadow: true
-    generator:
-      type: grid
-      mode: random
-      offset: [-30, 0, -40]
-      scale: 3
-      bounds: [water, terrain]
-      seed: [121214, 444413, 676712]
-      count: 100
-      repeat:
-        x_count: 3
-        z_count: 3
-        x_step: 60
-        z_step: 60
-  - id: grass_floating_2_{t}
+  - id: grass_floating_2
     prefab:
       path: prefab/scenery/prefab_grass.yml
     mesh:
@@ -430,19 +329,6 @@ nodes:
     flags:
       static_bounds: true
       no_shadow: true
-    generator:
-      type: grid
-      mode: random
-      offset: [100, 0, -40]
-      scale: 3
-      bounds: [water, terrain]
-      seed: [221214, 554413, 556712]
-      count: 100
-      repeat:
-        x_count: 3
-        z_count: 3
-        x_step: 60
-        z_step: 60
   - id: cube_2
     mesh:
       vertex:
@@ -456,8 +342,6 @@ nodes:
         map_displacement: Metal007_1K_displacement
         program: g_tex
       scale: 5
-    pos: [160, 42.5, 20]
-    rotation: [0, 0, 45]
     physics:
       body:
         type: sphere
@@ -467,7 +351,7 @@ nodes:
         category: [prop]
         collision: [world]
         size: [5]
-  - id: pool_floor_single_{c}_{t}
+  - id: pool_floor_single
     mesh:
       path: plane
       material:
@@ -478,7 +362,6 @@ nodes:
       flags:
         pre_depth: true
     priority: -10
-    pos: [160.0, 3.2, 20.0]
     flags:
       no_shadow: true
     physics:
@@ -503,7 +386,6 @@ nodes:
         program: g_water
       scale: 60
     priority: -5
-    pos: [160, 9.0, 20]
     flags:
       no_shadow: true
       water: true
@@ -519,7 +401,7 @@ nodes:
         collision: [can_float]
         size: [60, 0.01, 60]
     xxscript_file: scripts/cycle_water
-  - id: pool_side_single_{t}_{c}
+  - id: pool_side_single
     mesh:
       path: pool_brick
       material_modifier:
@@ -534,15 +416,6 @@ nodes:
         program: g_tex
       flags:
         pre_depth: true
-    clones:
-      - pos: [100.0, 4, 20]
-        scale: [0.3, 6, 60]
-      - pos: [220.0, 4, 20]
-        scale: [0.3, 6, 60]
-      - pos: [160.0, 4, 80]
-        scale: [60, 6, 0.3]
-      - pos: [160.0, 4, -40]
-        scale: [60, 6, 0.3]
     physics:
       body:
         type: box
@@ -553,7 +426,7 @@ nodes:
         category: [prop]
         collision: [npc]
         size: [1, 1, 1]
-  - id: palm_tree_forest_{c}_{t}
+  - id: palm_tree_forest
     prefab:
       path: prefab/scenery/prefab_palm_tree.yml
     mesh:
@@ -562,6 +435,167 @@ nodes:
           USE_TREE_WIND: 1
     flags:
       static_bounds: true
+
+nodes:
+  - type: grid
+  - type: fps_counter
+    #pos: [5.75, 5.25, 0.2]
+    pos: [2, -2, -1]
+    scale: 0.0025
+  - type: origo
+    pos: [0.0, 10, 0.0]
+  - type: origo_2
+    pos: [-30, 10, -40]
+  - type: player
+    xxpos: [50, 30, 40]
+    pos: [0, 9.5, 10]
+    active: true
+  - type: dir_light
+    pos: [0, 45, 100]
+  - type: cube_1
+    pos: [0, 12.5, -10]
+  - type: mirror_ball
+    id: mirror_ball
+    pos: [7, 30.5, -10]
+  - type: cube_map_mirror_ball
+    parent_id: mirror_ball
+    #pos: [0, 30.5, -10]
+  - type: mirror_ball_halo
+    parent: mirror_ball
+    ignored_by: mirror_ball
+  - type: big_mirror_2_origo
+    id: big_mirror_2_origo
+    pos: [50, 20.5, -10]
+    rotation: [0.0, -60.0, 0.0]
+  - type: big_mirror_2_front
+    id: big_mirror_2_front
+    parent: big_mirror_2_origo
+  - type: big_mirror_2_back
+    parent: big_mirror_2_origo
+    ignored_by: big_mirror_2_front
+  - type: pool_floor
+    pos: [0.0, 3.2, -10.0]
+    repeat:
+      x_count: 2
+      y_count: 1
+      z_count: 2
+      x_step: 60
+      y_step: 0
+      z_step: 60
+  - type: pool_surface
+    id: pool_surface_{c}_{t}
+    pos: [0, 9.0, -10]
+    repeat:
+      x_count: 2
+      y_count: 1
+      z_count: 2
+      x_step: 60
+      y_step: 0
+      z_step: 60
+  - type: pool_surface_particle_origin
+    # TODO KI parent_id?!?!
+    parent_id: pool_surface_0_0x0x0
+  - type: pool_side
+    clones:
+      - pos: [-30.0, 4, 20]
+        scale: [0.3, 6, 60]
+      - pos: [90.0, 4, 20]
+        scale: [0.3, 6, 60]
+      - pos: [30.0, 4, 80]
+        scale: [60, 6, 0.3]
+      - pos: [30.0, 4, -40]
+        scale: [60, 6, 0.3]
+  - type: maple_tree_forest
+    generator:
+      type: grid
+      mode: grid
+      offset: [-40.0, 4, 70]
+      scale: 2
+      repeat:
+        x_count: 1
+        z_count: 4
+        x_step: 20
+        z_step: -40
+  - type: skeleton_army_2
+    pos: [-20, 10.86, 80]
+    scale: 4
+    repeat:
+      x_count: 25
+      z_count: 1
+      x_step: 10
+      z_step: 0
+  - type: terrain_grass_v2
+    pos: [-1024, 10, -1024]
+    generator:
+      type: terrain
+      mode: grid
+      terrain:
+        map_height: textures/terrain_2/terrain_2_height.png
+      tiling:
+        tile_size: 256
+        tiles: [8, 0, 8]
+        vert_range: [-32.54, 31.9]
+        horiz_scale: 2
+  - type: grass
+    generator:
+      type: grid
+      mode: random
+      offset: [-600.0, 0.0, 500.0]
+      scale: 3
+      bounds: [terrain]
+      seed: [4242, 1212, 3333]
+      count: 2000
+      repeat:
+        x_count: 100
+        z_count: 100
+        x_step: 12
+        z_step: -12
+  - type: grass_floating
+    generator:
+      type: grid
+      mode: random
+      offset: [-30, 0, -40]
+      scale: 3
+      bounds: [water, terrain]
+      seed: [121214, 444413, 676712]
+      count: 100
+      repeat:
+        x_count: 3
+        z_count: 3
+        x_step: 60
+        z_step: 60
+  - type: grass_floating_2
+    generator:
+      type: grid
+      mode: random
+      offset: [100, 0, -40]
+      scale: 3
+      bounds: [water, terrain]
+      seed: [221214, 554413, 556712]
+      count: 100
+      repeat:
+        x_count: 3
+        z_count: 3
+        x_step: 60
+        z_step: 60
+  - type: cube_2
+    pos: [160, 42.5, 20]
+    rotation: [0, 0, 45]
+  - type: pool_floor_single
+    pos: [160.0, 3.2, 20.0]
+  - type: pool_surface_single
+    pos: [160, 9.0, 20]
+  - type: pool_side_single
+    clones:
+      - pos: [100.0, 4, 20]
+        scale: [0.3, 6, 60]
+      - pos: [220.0, 4, 20]
+        scale: [0.3, 6, 60]
+      - pos: [160.0, 4, 80]
+        scale: [60, 6, 0.3]
+      - pos: [160.0, 4, -40]
+        scale: [60, 6, 0.3]
+  - type: palm_tree_forest
     generator:
       type: grid
       mode: random

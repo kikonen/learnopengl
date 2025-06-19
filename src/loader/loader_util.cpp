@@ -24,6 +24,8 @@
 #include "loader/MaterialData.h"
 #include "loader/document.h"
 
+#include "NodeTypeData.h"
+
 namespace {
     IdGenerator<ki::type_id> ID_GENERATOR;
 
@@ -496,7 +498,7 @@ namespace loader {
             const auto pos = out.find("{t}");
             if (pos != std::string::npos) {
                 handledClone = true;
-                out.replace(pos, 3, fmt::format("{}_{}_{}", tile.x, tile.y, tile.z));
+                out.replace(pos, 3, fmt::format("{}x{}x{}", tile.x, tile.y, tile.z));
             }
         }
         {
@@ -545,6 +547,17 @@ namespace loader {
     {
         auto typeId = SID(baseId.m_path);
         return pool::TypeHandle::toType(typeId);
+    }
+
+    const NodeTypeData* findNodeTypeData(
+        BaseId baseId,
+        const std::vector<NodeTypeData>& nodeTypes)
+    {
+        const auto& it = std::find_if(
+            nodeTypes.cbegin(),
+            nodeTypes.cend(),
+            [&baseId](const auto& e) { return e.baseId == baseId; });
+        return it != nodeTypes.end() ? &(*it) : nullptr;
     }
 
     const Material* findMaterial(

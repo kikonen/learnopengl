@@ -50,7 +50,7 @@ namespace loader
         loader::FlagContainer typeFlags;
 
         glm::vec3 baseRotation{ 0.f };
-        glm::vec3 baseScale{ 0.f };
+        glm::vec3 baseScale{ 1.f };
 
         // NOTE KI default == positive Z dir
         glm::vec3 front{ 0.f, 0.f, 1.f };

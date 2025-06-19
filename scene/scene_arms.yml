@@ -1,12 +1,13 @@
 ---
-name: Origo
+meta:
+  name: Arms
 skybox:
   program: g_skybox
   material: skybox/polyhaven/drakensberg_solitary_mountain_4k.hdr
 script:
   scripts:
     - path: lib/common
-nodes:
+types:
   - id: player
     mesh:
       path: water_ball
@@ -16,9 +17,7 @@ nodes:
         mrao: [0.2, 0.1, 1.0]
         program: g_tex
       scale: 0.05
-    pos: [0, 1, 15]
     front: [0, 0, -1]
-    active: true
     audio:
       listener:
         xdefault: true
@@ -31,9 +30,7 @@ nodes:
       - type: camera_zoom
   - id: player_fps
     type: origo
-    pos: [0, 1, 15]
     front: [0, 0, -1]
-    xactive: true
     audio:
       listener:
         default: true
@@ -78,7 +75,6 @@ nodes:
         type: capsule
         size: [0.5, 2.5, 0]
   - id: player_fps_point
-    parent: player_fps
     mesh:
       path: water_ball
       material:
@@ -87,13 +83,11 @@ nodes:
         mrao: [0.2, 0.1, 1.0]
         program: g_tex
       scale: 0.03
-    pos: [0.0, 0.0, -0.1]
-  - id: dir_light_{c}_{t}
+  - id: dir_light
     type: origo
     mesh:
       path: light
       program: g_light
-    pos: [-15, 25, 25]
     flags:
       no_shadow: true
     light:
@@ -109,52 +103,40 @@ nodes:
         mrao: [0.2, 0.1, 1.0]
         program: g_tex
       scale: 0.05
-    pos: [0.0, 0.0, 0.0]
-  - xid: cube_map
+  - id: cube_map
     type: origo
-    pos: [0, 5, 10]
     flags:
       cube_map: true
   - id: wooden_floor
     prefab:
       path: prefab/scenery/prefab_cobblestone_floor.yml
-    scale: 100
-    position: [0, 0, 0]
-  - xid: player_fps_arms_{t}
-    parent: player_fps
+  - id: player_fps_arms
     prefab:
       path: prefab/characters/prefab_fps_arms.yml
-    pos: [-0.14, -1.59, -0.2]
     pivot:
       alignment: m
     layer: player
     script:
       path: scripts/fps_player
-  - id: player_fps_arms_v2_{c}_{t}
-    parent: player_fps
+  - id: player_fps_arms_v2
     prefab:
       path: prefab/characters/prefab_fps_arms_v2.yml
     xmesh:
       material_modifier:
         map_kd: T_Hands_04_Albedo_06_2048.png
         xrender_back: true
-    pos: [0.1, -0.7, -0.0]
-    rotation: [-20, 20, 0]
-    scale: 0.25
     pivot:
       alignment: m
     layer: player
     script: |
       cmd:animation_play(
         { name="idle_aim:Unreal Take" } )
-  - id: SM_JungleGym_01a_{c}_{t}
+  - id: SM_JungleGym_01a
     prefab:
       path: prefab/scenery/prefab_junglegym.yml
-    pos: [0, 0, 0]
   - id: weeping_angel
     prefab:
       path: prefab/creatures/prefab_weeping_angel.yml
-    pos: [0, 0.75, 0]
     particle:
       seed: 1
       xgravity: [0, -9.81, 0]
@@ -193,7 +175,6 @@ nodes:
           wrap: GL_CLAMP_TO_EDGE
     script_file: scripts/seq_particle_generator
   - id: weeping_angel_particle_origin
-    parent_id: weeping_angel
     mesh:
       vertex:
         type: ball
@@ -203,7 +184,6 @@ nodes:
         mrao: [0.2, 0.1, 1.0]
         programs: g_tex
       base_scale: 0.1
-    pos: [0, 20, 0]
     particle:
       seed: 1
       gravity: [0, -0.81, 0]
@@ -238,45 +218,69 @@ nodes:
         texture_spec:
           wrap: GL_CLAMP_TO_EDGE
     script_file: scripts/seq_particle_generator
-  - id: world_x_minus
+  - id: world_plane
     type: origo
+    physics:
+      geom:
+        type: plane
+
+nodes:
+  - type: player
+    id: player
+    pos: [0, 1, 15]
+    active: true
+  - type: player_fps
+    id: player_fps
+    pos: [0, 1, 15]
+    xactive: true
+  - type: player_fps_point
+    parent: player_fps
+    pos: [0.0, 0.0, -0.1]
+  - xtype: player_fps_arms
+    parent: player_fps
+    pos: [-0.14, -1.59, -0.2]
+  - type: player_fps_arms_v2
+    parent: player_fps
+    pos: [0.1, -0.7, -0.0]
+    rotation: [-20, 20, 0]
+    scale: 0.25
+  - type: dir_light
+    pos: [-15, 25, 25]
+  - type: origo
+    pos: [0.0, 0.0, 0.0]
+  - xtype: cube_map
+    pos: [0, 5, 10]
+  - type: wooden_floor
+    scale: 100
+  - type: SM_JungleGym_01a
+    pos: [0, 0, 0]
+  - type: weeping_angel
+    id: weeping_angel
+    pos: [0, 0.75, 0]
+  - type: weeping_angel_particle_origin
+    parent_id: weeping_angel
+    pos: [0, 20, 0]
+  - type: world_plane
+    id: world_x_minus
     pos: [-1200, 0, 0]
     rot: [0, 0, -90]
-    physics:
-      geom:
-        type: plane
-  - id: world_x_plus
-    type: origo
+  - type: world_plane
+    id: world_x_plus
     pos: [850, 0, 0]
     rot: [0, 0, 90]
-    physics:
-      geom:
-        type: plane
-  - id: world_y_minus
-    type: origo
+  - type: world_plane
+    id: world_y_minus
     pos: [0, -400, 0]
     rot: [0, 0, 0]
-    physics:
-      geom:
-        type: plane
-  - id: world_y_plus
-    type: origo
+  - type: world_plane
+    id: world_y_plus
     pos: [0, 400, 0]
     rot: [180, 0, 0]
-    physics:
-      geom:
-        type: plane
-  - id: world_z_minus
-    type: origo
+  - type: world_plane
+    id: world_z_minus
     pos: [0, 0, -900]
     rot: [90, 0, 0]
-    physics:
-      geom:
-        type: plane
-  - id: world_z_plus
-    type: origo
+  - type: world_plane
+    id: world_z_plus
     pos: [0, 0, 1150]
     rot: [-90, 0, 0]
-    physics:
-      geom:
-        type: plane
