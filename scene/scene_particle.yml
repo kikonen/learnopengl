@@ -1,5 +1,6 @@
 ---
-name: Player
+meta:
+  name: Particle forest
 skybox:
   program: g_skybox
   material: skybox/polyhaven/wasteland_clouds_puresky_4k.hdr
@@ -9,23 +10,19 @@ skybox:
 script:
   scripts:
     - path: lib/common
-nodes:
-  - xprefab:
+types:
+  - id: grid
+    prefab:
       path: prefab/util/prefab_grid.yml
-  - prefab:
+  - id: fps_counter
+    prefab:
       path: prefab/util/prefab_fps_counter.yml
-    #pos: [5.75, 5.25, 0.2]
-    pos: [2, -2, -1]
-    scale: 0.0025
     layer: ui
   - id: player_fps
     type: origo
-    pos: [0, 4, 0.0]
     front: [0, 0, -1]
-    rot: [0, 45, 0]
     flags:
       allow_normals: false
-    active: true
     audio:
       listener:
         default: true
@@ -75,28 +72,21 @@ nodes:
     script: |
       cmd:audio_play(
         { sync=true, sid=util.sid("idle_1") })
-  - xid: player_fps_arms_{c}_{t}
-    parent: player_fps
+  - id: player_fps_arms
     prefab:
       path: prefab/characters/prefab_fps_arms.yml
     #base_rotation: [0, 90, 180]
-    #pos: [-1.35, -1.6, -1.2]
-    pos: [-0.14, -1.59, -0.2]
     pivot:
       alignment: m
     layer: player
     script: scripts/fps_player
-  - id: player_fps_arms_v2_{c}_{t}
-    parent: player_fps
+  - id: player_fps_arms_v2
     prefab:
       path: prefab/characters/prefab_fps_arms_v2.yml
     mesh:
       material_modifier:
         map_kd: T_Hands_04_Albedo_06_2048.png
         xrender_back: true
-    pos: [0.1, -0.7, -0.0]
-    rotation: [-20, 20, 0]
-    scale: 0.25
     pivot:
       alignment: m
     layer: player
@@ -109,7 +99,6 @@ nodes:
       material_modifier:
         kd: [0.0, 0.2, 0.8, 1.0]
         program: g_tex
-    pos: [0.0, 0.0, 0.0]
     particle:
       seed: 1
       gravity: [0, -9.81, 0]
@@ -151,137 +140,11 @@ nodes:
         collision: [world, player, npc]
         size: [1]
     script_file: scripts/seq_particle_generator
-  - id: four_cubes_{t}_{c}
+  - id: four_cubes
     mesh:
       path: texture_cube_3
       program: g_tex
     base_rot: [-90, 0, 0]
-    share_type: false
-    clones:
-      - pos: [-5.0, 2.0, -5.0]
-        particle:
-          seed: 1
-          gravity: [0, -9.81, 0]
-          lifetime: 10
-          lifetime_variation: 5
-          area_type: box_line
-          area_radius: 1
-          area_size: [1, 0, 1]
-          area_variation: 0.1
-          dir: [0, 1, 0]
-          dir_variation: 0.5
-          speed: 20
-          speed_variation: 4
-          size: 0.1
-          size_variation: 0.1
-          rate: 5000
-          rate_variation: 50
-          sprite_base: 0
-          sprite_base_variation: 0
-          sprite_count: -1
-          sprite_speed: 10
-          sprite_speed_variation: 20
-          material:
-            name: particle_bones_1
-            kd: [1, 1, 1, 1]
-            map_kd: particles/bones_1_spritesheet.png
-            sprites: 28
-            sprites_x: 4
-            texture_spec:
-              wrap: GL_CLAMP_TO_EDGE
-      - pos: [5.0, 2.0, -5.0]
-        particle:
-          seed: 1
-          gravity: [0, -9.81, 0]
-          lifetime: 10
-          lifetime_variation: 5
-          area_type: box_line
-          area_radius: 1
-          area_size: [1, 0, 1]
-          area_variation: 0.1
-          dir: [0, 1, 0]
-          dir_variation: 0.5
-          speed: 20
-          speed_variation: 4
-          size: 0.1
-          size_variation: 0.1
-          rate: 5000
-          rate_variation: 50
-          sprite_base: 0
-          sprite_base_variation: 0
-          sprite_count: -1
-          sprite_speed: 10
-          sprite_speed_variation: 20
-          material:
-            name: particle_bones_2
-            kd: [1, 1, 1, 1]
-            map_kd: particles/bones_2_spritesheet.png
-            sprites: 29
-            sprites_x: 4
-            texture_spec:
-              wrap: GL_CLAMP_TO_EDGE
-      - pos: [-5.0, 2.0, 5.0]
-        particle:
-          seed: 1
-          gravity: [0, -9.81, 0]
-          lifetime: 10
-          lifetime_variation: 5
-          area_type: box_line
-          area_radius: 1
-          area_size: [1, 0, 1]
-          area_variation: 0.1
-          dir: [0, 1, 0]
-          dir_variation: 0.5
-          speed: 20
-          speed_variation: 4
-          size: 0.1
-          size_variation: 0.1
-          rate: 5000
-          rate_variation: 50
-          sprite_base: 0
-          sprite_base_variation: 0
-          sprite_count: -1
-          sprite_speed: 10
-          sprite_speed_variation: 20
-          material:
-            name: particle_bones_3
-            kd: [1, 1, 1, 1]
-            map_kd: particles/bones_3_spritesheet.png
-            sprites: 28
-            sprites_x: 5
-            texture_spec:
-              wrap: GL_CLAMP_TO_EDGE
-      - pos: [5.0, 2.0, 5.0]
-        particle:
-          seed: 1
-          #gravity: [0, -9.81, 0]
-          lifetime: 10
-          lifetime_variation: 5
-          area_type: box_line
-          area_radius: 1
-          area_size: [1, 1, 1]
-          area_variation: 0.1
-          dir: [0, 1, 0]
-          dir_variation: 0.5
-          speed: 0
-          speed_variation: 0
-          size: 0.1
-          size_variation: 0.1
-          rate: 1000
-          rate_variation: 50
-          sprite_base: 0
-          sprite_base_variation: 0
-          sprite_count: -1
-          sprite_speed: 10
-          sprite_speed_variation: 20
-          material:
-            name: particle_casting
-            kd: [1, 1, 1, 1]
-            map_kd: particles/4_casting_spritesheet.png
-            sprites: 73
-            sprites_x: 9
-            texture_spec:
-              wrap: GL_CLAMP_TO_EDGE
     physics:
       body:
         type: box
@@ -292,18 +155,138 @@ nodes:
         collision: [world, player, npc]
         size: [1]
     script_file: scripts/seq_particle_generator
-  - id: skeleton_army_{c}_{t}
+  - id: four_cubes_1
+    base: four_cubes
+    particle:
+      seed: 1
+      gravity: [0, -9.81, 0]
+      lifetime: 10
+      lifetime_variation: 5
+      area_type: box_line
+      area_radius: 1
+      area_size: [1, 0, 1]
+      area_variation: 0.1
+      dir: [0, 1, 0]
+      dir_variation: 0.5
+      speed: 20
+      speed_variation: 4
+      size: 0.1
+      size_variation: 0.1
+      rate: 5000
+      rate_variation: 50
+      sprite_base: 0
+      sprite_base_variation: 0
+      sprite_count: -1
+      sprite_speed: 10
+      sprite_speed_variation: 20
+      material:
+        name: particle_bones_1
+        kd: [1, 1, 1, 1]
+        map_kd: particles/bones_1_spritesheet.png
+        sprites: 28
+        sprites_x: 4
+        texture_spec:
+          wrap: GL_CLAMP_TO_EDGE
+  - id: four_cubes_2
+    base: four_cubes
+    particle:
+      seed: 1
+      gravity: [0, -9.81, 0]
+      lifetime: 10
+      lifetime_variation: 5
+      area_type: box_line
+      area_radius: 1
+      area_size: [1, 0, 1]
+      area_variation: 0.1
+      dir: [0, 1, 0]
+      dir_variation: 0.5
+      speed: 20
+      speed_variation: 4
+      size: 0.1
+      size_variation: 0.1
+      rate: 5000
+      rate_variation: 50
+      sprite_base: 0
+      sprite_base_variation: 0
+      sprite_count: -1
+      sprite_speed: 10
+      sprite_speed_variation: 20
+      material:
+        name: particle_bones_2
+        kd: [1, 1, 1, 1]
+        map_kd: particles/bones_2_spritesheet.png
+        sprites: 29
+        sprites_x: 4
+        texture_spec:
+          wrap: GL_CLAMP_TO_EDGE
+  - id: four_cubes_3
+    base: four_cubes
+    particle:
+      seed: 1
+      gravity: [0, -9.81, 0]
+      lifetime: 10
+      lifetime_variation: 5
+      area_type: box_line
+      area_radius: 1
+      area_size: [1, 0, 1]
+      area_variation: 0.1
+      dir: [0, 1, 0]
+      dir_variation: 0.5
+      speed: 20
+      speed_variation: 4
+      size: 0.1
+      size_variation: 0.1
+      rate: 5000
+      rate_variation: 50
+      sprite_base: 0
+      sprite_base_variation: 0
+      sprite_count: -1
+      sprite_speed: 10
+      sprite_speed_variation: 20
+      material:
+        name: particle_bones_3
+        kd: [1, 1, 1, 1]
+        map_kd: particles/bones_3_spritesheet.png
+        sprites: 28
+        sprites_x: 5
+        texture_spec:
+          wrap: GL_CLAMP_TO_EDGE
+  - id: four_cubes_4
+    base: four_cubes
+    particle:
+      seed: 1
+      #gravity: [0, -9.81, 0]
+      lifetime: 10
+      lifetime_variation: 5
+      area_type: box_line
+      area_radius: 1
+      area_size: [1, 1, 1]
+      area_variation: 0.1
+      dir: [0, 1, 0]
+      dir_variation: 0.5
+      speed: 0
+      speed_variation: 0
+      size: 0.1
+      size_variation: 0.1
+      rate: 1000
+      rate_variation: 50
+      sprite_base: 0
+      sprite_base_variation: 0
+      sprite_count: -1
+      sprite_speed: 10
+      sprite_speed_variation: 20
+      material:
+        name: particle_casting
+        kd: [1, 1, 1, 1]
+        map_kd: particles/4_casting_spritesheet.png
+        sprites: 73
+        sprites_x: 9
+        texture_spec:
+          wrap: GL_CLAMP_TO_EDGE
+  - id: skeleton_army
     prefab:
       path: prefab/creatures/prefab_skeleton_warrior.yml
     priority: 1
-    pos: [20, 0.2, 20]
-    rotation: [0, -90, 0]
-    scale: 3
-    repeat:
-      x_count: 2
-      z_count: 2
-      x_step: 7
-      z_step: -7
     flags:
       static_bounds: true
     physics:
@@ -312,17 +295,12 @@ nodes:
   - id: rock
     prefab:
       path: prefab/scenery/prefab_asteroid.yml
-    pos: [0, 2, -10]
-  - xid: wooden_floor
-    prefab:
-      path: prefab/scenery/prefab_wooden_floor.yml
-    position: [0, 0, 0]
-    scale: 100
   - id: wooden_floor
     prefab:
+      path: prefab/scenery/prefab_wooden_floor.yml
+  - id: cobblestone_floor
+    prefab:
       path: prefab/scenery/prefab_cobblestone_floor.yml
-    scale: 100
-    position: [0, -2, 0]
   - id: palm_tree_forest_generator
     prefab:
       path: prefab/scenery/prefab_palm_tree.yml
@@ -334,6 +312,178 @@ nodes:
       offset: [0, 17, 0.6]
     flags:
       static_bounds: true
+  - id: grass_generator
+    prefab:
+      path: prefab/scenery/prefab_grass.yml
+    mesh:
+      material_modifier:
+        shared_definitions:
+          USE_TREE_WIND: 1
+    priority: -20
+    flags:
+      static_bounds: true
+      no_shadow: true
+  - id: bush01_generator
+    prefab:
+      path: prefab/scenery/prefab_bush01.yml
+    mesh:
+      material_modifier:
+        shared_definitions:
+          USE_TREE_WIND: 1
+    priority: -20
+    flags:
+      static_bounds: true
+      no_shadow: true
+  - id: bush02_generator
+    prefab:
+      path: prefab/scenery/prefab_bush02.yml
+    mesh:
+      material_modifier:
+        shared_definitions:
+          USE_TREE_WIND: 1
+    priority: -20
+    flags:
+      static_bounds: true
+      no_shadow: true
+  - id: bush03_generator
+    prefab:
+      path: prefab/scenery/prefab_bush03.yml
+    mesh:
+      material_modifier:
+        shared_definitions:
+          USE_TREE_WIND: 1
+    priority: -20
+    flags:
+      static_bounds: true
+      no_shadow: true
+  - id: pine_tree_forest_2_generator
+    prefab:
+      path: prefab/scenery/prefab_pine_tree.yml
+    mesh:
+      material_modifier:
+        shared_definitions:
+          USE_TREE_WIND: 1
+    flags:
+      static_bounds: true
+  - id: maple_tree_forest_2_generator
+    prefab:
+      path: prefab/scenery/prefab_maple_tree.yml
+    mesh:
+      material_modifier:
+        shared_definitions:
+          USE_TREE_WIND: 1
+    flags:
+      static_bounds: true
+  - id: dandelion_generator
+    prefab:
+      path: prefab/scenery/prefab_SM_Desert_Dandelion_01e.yml
+    mesh:
+      material_modifier:
+        shared_definitions:
+          USE_TREE_WIND: 1
+    priority: -20
+    flags:
+      static_bounds: true
+      no_shadow: true
+  - id: flower_generator
+    prefab:
+      path: prefab/scenery/prefab_SM_Flower_01c.yml
+    mesh:
+      material_modifier:
+        shared_definitions:
+          USE_TREE_WIND: 1
+    priority: -20
+    flags:
+      static_bounds: true
+      no_shadow: true
+  - id: dir_light
+    mesh:
+      path: light
+      material_modifier:
+        kd: [0.8, 0.8, 0.6, 1.0]
+        program: g_light
+    flags:
+      no_shadow: true
+    light:
+      type: directional
+      diffuse: [0.7, 0.7, 0.7, 1.0]
+      intensity: 20000
+  - id: terrain_grass_v2_generator
+    mesh:
+      path: quad_terrain
+      material:
+        prefab: materials/Terrain2
+        texture_spec:
+          wrap: GL_CLAMP_TO_EDGE
+        program: g_terrain
+        depth_program: g_terrain_depth
+        tiling: 8
+      flags:
+        tessellation: true
+    priority: 20
+    type_flags:
+      pre_depth: true
+      use_deferred: true
+      nav_mesh: true
+    physics:
+      geom:
+        type: height_field
+        category: [ground, terrain]
+        collision: [can_terrain]
+        size: [2048, 0, 2048]
+        xrotation: [0, 180, 0]
+
+nodes:
+  - xtype: grid
+  - type: fps_counter
+    id: fps_counter
+    #pos: [5.75, 5.25, 0.2]
+    pos: [2, -2, -1]
+    scale: 0.0025
+  - type: player_fps
+    id: player_fps
+    pos: [0, 4, 0.0]
+    rot: [0, 45, 0]
+    active: true
+  - xtype: player_fps_arms
+    parent: player_fps
+    #pos: [-1.35, -1.6, -1.2]
+    pos: [-0.14, -1.59, -0.2]
+  - type: player_fps_arms_v2
+    parent: player_fps
+    pos: [0.1, -0.7, -0.0]
+    rotation: [-20, 20, 0]
+    scale: 0.25
+  - type: origo
+    pos: [0.0, 0.0, 0.0]
+  - type: four_cubes
+    clones:
+      - pos: [-5.0, 2.0, -5.0]
+        type: four_cubes_1
+      - pos: [5.0, 2.0, -5.0]
+        type: four_cubes_2
+      - pos: [-5.0, 2.0, 5.0]
+        type: four_cubes_3
+      - pos: [5.0, 2.0, 5.0]
+        type: four_cubes_4
+  - type: skeleton_army
+    pos: [20, 0.2, 20]
+    rotation: [0, -90, 0]
+    scale: 3
+    repeat:
+      x_count: 2
+      z_count: 2
+      x_step: 7
+      z_step: -7
+  - type: rock
+    pos: [0, 2, -10]
+  - xtype: wooden_floor
+    position: [0, 0, 0]
+    scale: 100
+  - type: cobblestone_floor
+    scale: 100
+    position: [0, -2, 0]
+  - type: palm_tree_forest_generator
     generator:
       type: grid
       mode: random
@@ -351,17 +501,7 @@ nodes:
         collision: [world, player]
         rotation: [90, 0, 0]
         size: [0.75, 20, 0]
-  - id: grass_generator
-    prefab:
-      path: prefab/scenery/prefab_grass.yml
-    mesh:
-      material_modifier:
-        shared_definitions:
-          USE_TREE_WIND: 1
-    priority: -20
-    flags:
-      static_bounds: true
-      no_shadow: true
+  - type: grass_generator
     generator:
       type: grid
       mode: random
@@ -373,17 +513,7 @@ nodes:
         z_count: 21
         x_step: 10
         z_step: 10
-  - id: bush01_generator
-    prefab:
-      path: prefab/scenery/prefab_bush01.yml
-    mesh:
-      material_modifier:
-        shared_definitions:
-          USE_TREE_WIND: 1
-    priority: -20
-    flags:
-      static_bounds: true
-      no_shadow: true
+  - type: bush01_generator
     generator:
       type: grid
       mode: random
@@ -396,17 +526,7 @@ nodes:
         z_count: 21
         x_step: 10
         z_step: 10
-  - id: bush02_generator
-    prefab:
-      path: prefab/scenery/prefab_bush02.yml
-    mesh:
-      material_modifier:
-        shared_definitions:
-          USE_TREE_WIND: 1
-    priority: -20
-    flags:
-      static_bounds: true
-      no_shadow: true
+  - type: bush02_generator
     generator:
       type: grid
       mode: random
@@ -419,17 +539,7 @@ nodes:
         z_count: 21
         x_step: 10
         z_step: 10
-  - id: bush03_generator
-    prefab:
-      path: prefab/scenery/prefab_bush03.yml
-    mesh:
-      material_modifier:
-        shared_definitions:
-          USE_TREE_WIND: 1
-    priority: -20
-    flags:
-      static_bounds: true
-      no_shadow: true
+  - type: bush03_generator
     generator:
       type: grid
       mode: random
@@ -442,29 +552,7 @@ nodes:
         z_count: 21
         x_step: 10
         z_step: 10
-  - id: dir_light_{c}_{t}
-    mesh:
-      path: light
-      material_modifier:
-        kd: [0.8, 0.8, 0.6, 1.0]
-        program: g_light
-    pos: [-25, 45, 0]
-    scale: 1.5
-    flags:
-      no_shadow: true
-    light:
-      type: directional
-      diffuse: [0.7, 0.7, 0.7, 1.0]
-      intensity: 20000
-  - id: pine_tree_forest_2_generator
-    prefab:
-      path: prefab/scenery/prefab_pine_tree.yml
-    mesh:
-      material_modifier:
-        shared_definitions:
-          USE_TREE_WIND: 1
-    flags:
-      static_bounds: true
+  - type: pine_tree_forest_2_generator
     generator:
       type: grid
       mode: random
@@ -477,15 +565,7 @@ nodes:
         z_count: 11
         x_step: 20
         z_step: 20
-  - id: maple_tree_forest_2_generator
-    prefab:
-      path: prefab/scenery/prefab_maple_tree.yml
-    mesh:
-      material_modifier:
-        shared_definitions:
-          USE_TREE_WIND: 1
-    flags:
-      static_bounds: true
+  - type: maple_tree_forest_2_generator
     generator:
       type: grid
       mode: random
@@ -498,17 +578,7 @@ nodes:
         z_count: 11
         x_step: 20
         z_step: 20
-  - id: dandelion_generator
-    prefab:
-      path: prefab/scenery/prefab_SM_Desert_Dandelion_01e.yml
-    mesh:
-      material_modifier:
-        shared_definitions:
-          USE_TREE_WIND: 1
-    priority: -20
-    flags:
-      static_bounds: true
-      no_shadow: true
+  - type: dandelion_generator
     generator:
       type: grid
       mode: random
@@ -520,17 +590,7 @@ nodes:
         z_count: 11
         x_step: 20
         z_step: 20
-  - id: flower_generator
-    prefab:
-      path: prefab/scenery/prefab_SM_Flower_01c.yml
-    mesh:
-      material_modifier:
-        shared_definitions:
-          USE_TREE_WIND: 1
-    priority: -20
-    flags:
-      static_bounds: true
-      no_shadow: true
+  - type: flower_generator
     #scale: 5
     generator:
       type: grid
@@ -543,19 +603,10 @@ nodes:
         z_count: 11
         x_step: 20
         z_step: 20
-  - id: terrain_grass_v2_generator
-    mesh:
-      path: quad_terrain
-      material:
-        prefab: materials/Terrain2
-        texture_spec:
-          wrap: GL_CLAMP_TO_EDGE
-        program: g_terrain
-        depth_program: g_terrain_depth
-        tiling: 8
-      flags:
-        tessellation: true
-    priority: 20
+  - type: dir_light
+    pos: [-25, 45, 0]
+    scale: 1.5
+  - type: terrain_grass_v2_generator
     pos: [-1024, 10, -1024]
     generator:
       type: terrain
@@ -567,17 +618,6 @@ nodes:
         tiles: [8, 0, 8]
         vert_range: [-32.54, 31.9]
         horiz_scale: 2
-    type_flags:
-      pre_depth: true
-      use_deferred: true
-      nav_mesh: true
-    physics:
-      geom:
-        type: height_field
-        category: [ground, terrain]
-        collision: [can_terrain]
-        size: [2048, 0, 2048]
-        xrotation: [0, 180, 0]
 
 decals:
   - name: bullet_1

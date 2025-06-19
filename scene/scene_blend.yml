@@ -4,12 +4,10 @@ skybox:
 script:
   scripts:
     - path: lib/common
-nodes:
+types:
   - id: player
     type: origo
-    pos: [0, 0, 0]
     front: [0, 0, -1]
-    active: true
     audio:
       listener:
         default: true
@@ -24,23 +22,19 @@ nodes:
       material_modifier:
         tiling: 5
       program: g_tex
-    pos: [0.0, 1.5, -14.0]
   - id: cube_forward
     mesh:
       path: texture_cube
       material_modifier:
         tiling: 5
       program: tex
-    pos: [0.0, -1.5, -14.0]
   - id: window_1
     prefab:
       path: prefab/props/prefab_door_01.yml
-    pos: [0.0, -1.0, -8.0]
   - id: window_2
     prefab:
       path: prefab/props/prefab_door_06.yml
-    pos: [0.5, -1.0, -10.0]
-  - id: blend_cube_{c}_{t}
+  - id: blend_cube
     mesh:
       path: rubik_cube_emission.obj
       material_modifiers:
@@ -51,15 +45,8 @@ nodes:
           map_ke: textures/emission/stay_alive_emission.png
       base_scale: 1
       program: g_tex
-    pos: [-4, 0, -6]
-    rotation: [0, 0, 180]
-    repeat:
-      x_count: 2
-      z_count: 2
-      x_step: 8
-      z_step: -8
     script_file: scripts/anim_rotate_object
-  - id: bezier_{c}_{t}
+  - id: bezier
     mesh:
       material:
         prefab: materials/Metal007.yml
@@ -82,8 +69,6 @@ nodes:
         xslices: 16
         xsegments: 4
         xrings: 4
-    scale: 1
-    pos: [2, 1.5, -10]
     script_file: scripts/anim_rotate_object
   - id: plasma_ball
     mesh:
@@ -95,8 +80,6 @@ nodes:
         program: ball_effect
         program_definitions:
           effect_plasma: 1
-    pos: [0, 4, -8]
-    scale: 2
     flags:
       effect: true
       no_select: true
@@ -123,17 +106,13 @@ nodes:
         size: 16
       align_horizontal: center
       align_vertical: center
-    pos: [0, 0.0, -9.0]
-    scale: 0.01
     xscript_file: scripts/anim_rotate_object
-  - id: dir_light_{c}_{t}
+  - id: dir_light
     mesh:
       path: light
       material_modifier:
         kd: [0.8, 0.8, 0.6, 1.0]
       program: g_light
-    pos: [0, 25, 40]
-    scale: 2.5
     flagss:
       no_shadow: true
     light:
@@ -143,5 +122,40 @@ nodes:
   - id: wooden_floor
     prefab:
       path: prefab/scenery/prefab_wooden_floor.yml
+
+nodes:
+  - type: player
+    pos: [0, 0, 0]
+    active: true
+  - type: cube_gbuffer
+    pos: [0.0, 1.5, -14.0]
+  - type: cube_forward
+    pos: [0.0, -1.5, -14.0]
+  - type: window_1
+    pos: [0.0, -1.0, -8.0]
+  - type: window_2
+    pos: [0.5, -1.0, -10.0]
+  - type: blend_cube
+    pos: [-4, 0, -6]
+    rotation: [0, 0, 180]
+    repeat:
+      x_count: 2
+      z_count: 2
+      x_step: 8
+      z_step: -8
+    script_file: scripts/anim_rotate_object
+  - type: bezier
+    scale: 1
+    pos: [2, 1.5, -10]
+  - type: plasma_ball
+    pos: [0, 4, -8]
+    scale: 2
+  - type: hello_world
+    pos: [0, 0.0, -9.0]
+    scale: 0.01
+  - type: dir_light
+    pos: [0, 25, 40]
+    scale: 2.5
+  - type: wooden_floor
     position: [0, -4, 0]
     scale: 100

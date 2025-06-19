@@ -21,48 +21,22 @@ root:
 script:
   scripts:
     - path: lib/common
-nodes:
-  - xprefab:
+types:
+  - id: grid
+    prefab:
       path: prefab/util/prefab_grid.yml
   - id: fps_counter
     prefab:
       path: prefab/util/prefab_fps_counter.yml
-    #pos: [5.75, 5.25, 0.2]
-    pos: [2, -2, -1]
     scale: 0.0025
     layer: ui
-  - id: zero_origo
-    type: origo
-    pos: [0.0, 0.0, 0.0]
-    script_file: scripts/seq_zero_origo
-  - id: zero
-    mesh:
-      path: ball_volume
-      material:
-        name: default_ball
-        kd: [0, 0.8, 0]
-      program: g_tex
-    pos: [0.0, 0.0, 0.0]
-    scale: 0.2
-  - id: moving_water_ball
-    parent_id: zero_origo
-    mesh:
-      path: water_ball
-      program: g_tex
-    pos: [0.0, 0.0, 0.0]
-    scale: 0.3
-    script_file: scripts/seq_zero
   - id: player
     type: origo
     xmesh:
       path: player
     mesh:
       program: g_tex
-    pos: [-10, 12, -20.0]
-    rotation: [0, 180, 0.0]
     front: [0, 0, -1]
-    scale: 0.8
-    active: true
     flags:
       allow_normals: false
     audio:
@@ -88,18 +62,27 @@ nodes:
         size: [0.25, 3, 0]
   - id: player_cube_map_1
     type: origo
-    parent_id: player
-    pos: [0, 0, 1]
     flags:
       cube_map: true
-  - id: light_dir_origo
-    parent_id: planet_origo
+  - id: zero_origo
     type: origo
-    pos: [0.0, 400.0, 0.0]
-    rotation: [0.0, 25.0, 0.0]
+    script_file: scripts/seq_zero_origo
+  - id: zero
+    mesh:
+      path: ball_volume
+      material:
+        name: default_ball
+        kd: [0, 0.8, 0]
+      program: g_tex
+  - id: moving_water_ball
+    mesh:
+      path: water_ball
+      program: g_tex
+    script_file: scripts/seq_zero
+  - id: light_dir_origo
+    type: origo
     script_file: scripts/anim_sun_light
   - id: sun_light
-    parent_id: light_dir_origo
     mesh:
       path: light
       material_modifier:
@@ -107,8 +90,6 @@ nodes:
         program: ball_effect
         program_definitions:
           effect_sun: 1
-    pos: [0, 0, 600]
-    scale: 20
     flags:
       effect: true
       no_shadow: true
@@ -117,80 +98,16 @@ nodes:
       target_id: dir_light_target
       diffuse: [0.4, 0.4, 0.4, 1.0]
       intensity: 20000
-  - id: moving_point_light_origo_{t}_{c}
-    parent_id: zero_origo
+  - id: moving_point_light_origo
     type: origo
-    pos: [0, 14, 0]
-    clones:
-      - pos: [-15.0, 14.0, -15.0]
-        id: light_1
-      - pos: [15.0, 14.0, -15.0]
-        id: light_2
-      - pos: [-15.0, 14.0, 15.0]
-        id: light_3
-      - pos: [15.0, 14.0, 15.0]
-        id: light_4
-      - pos: [-25.0, 10.0, -25.0]
-        id: light_5
-      - pos: [25.0, 10.0, -25.0]
-        id: light_6
-      - pos: [-25, 10.0, 25.0]
-        id: light_7
-      - pos: [25.0, 10.0, 25.0]
-        id: light_8
     script_file: scripts/anim_moving_point_light
-  - id: moving_point_light_{t}_{c}
+  - id: moving_point_light
     desc: "NOTE overriding material in clones is *NOT* supported"
-    parent_id: zero_origo
     mesh:
       path: light
       program: light
-    pos: [0, 0, 0]
-    scale: 0.5
     flags:
       no_shadow: true
-    share_type: false
-    clones:
-      - pos: [0.0, 0.0, 10.0]
-        parent_id: light_1
-      - pos: [0.0, 0.0, 10.0]
-        parent_id: light_2
-      - pos: [0.0, 0.0, 10.0]
-        parent_id: light_3
-      - pos: [0.0, 0.0, 10.0]
-        parent_id: light_4
-      - pos: [0.0, 0.0, 15.0]
-        parent_id: light_5
-        mesh:
-          material:
-            kd: [0.8, 0.0, 0.0, 1.0]
-        light:
-          diffuse: [0.9, 0.0, 0.0, 1.0]
-        enabled: true
-      - pos: [0.0, 0.0, 15.0]
-        parent_id: light_6
-        mesh:
-          material:
-            kd: [0.0, 0.9, 0.0, 1.0]
-        light:
-          diffuse: [0.0, 0.9, 0.0, 1.0]
-        enabled: true
-      - pos: [0.0, 0.0, 15.0]
-        parent_id: light_7
-        mesh:
-          material:
-            kd: [0.0, 0.0, 0.9, 1.0]
-        light:
-          diffuse: [0.0, 0.0, 0.9, 1.0]
-        enabled: true
-      - pos: [0.0, 0.0, 15.0]
-        parent_id: light_8
-        mesh:
-          material:
-            kd: [0.9, 0.0, 0.9, 1.0]
-        light:
-          diffuse: [0.9, 0.0, 0.9, 1.0]
-        enabled: true
     light:
       type: point
       linear: 0.09
@@ -198,8 +115,35 @@ nodes:
       target_id: ROOT
       diffuse: [0.8, 0.8, 0.8, 1.0]
       intensity: 1000
-  - id: moving_point_light_halo_{t}_{c}
-    parent_id: zero_origo
+  - id: moving_point_light_5
+    base: moving_point_light
+    mesh:
+      material:
+        kd: [0.8, 0.0, 0.0, 1.0]
+    light:
+      diffuse: [0.9, 0.0, 0.0, 1.0]
+  - id: moving_point_light_6
+    base: moving_point_light
+    mesh:
+      material:
+        kd: [0.0, 0.9, 0.0, 1.0]
+    light:
+      diffuse: [0.0, 0.9, 0.0, 1.0]
+  - id: moving_point_light_7
+    base: moving_point_light
+    mesh:
+      material:
+        kd: [0.0, 0.0, 0.9, 1.0]
+    light:
+      diffuse: [0.0, 0.0, 0.9, 1.0]
+  - id: moving_point_light_8
+    base: moving_point_light
+    mesh:
+      material:
+        kd: [0.9, 0.0, 0.9, 1.0]
+    light:
+      diffuse: [0.9, 0.0, 0.9, 1.0]
+  - id: moving_point_light_halo
     mesh:
       vertex:
         type: box
@@ -210,57 +154,37 @@ nodes:
         blend: true
         reverse_front_face: true
         no_depth: true
-    pos: [0, 0, 0]
     flags:
       effect: true
       no_select: true
       no_shadow: true
-    share_type: false
-    clones:
-      - pos: [0.0, 0.0, 10.0]
-        parent_id: light_1
-      - pos: [0.0, 0.0, 10.0]
-        parent_id: light_2
-      - pos: [0.0, 0.0, 10.0]
-        parent_id: light_3
-      - pos: [0.0, 0.0, 10.0]
-        parent_id: light_4
-      - pos: [0.0, 0.0, 15.0]
-        parent_id: light_5
-        mesh:
-          material_modifier:
-            kd: [0.8, 0.0, 0.0, 1.0]
-        enabled: true
-      - pos: [0.0, 0.0, 15.0]
-        parent_id: light_6
-        mesh:
-          material_modifier:
-            kd: [0.0, 0.9, 0.0, 1.0]
-        enabled: true
-      - pos: [0.0, 0.0, 15.0]
-        parent_id: light_7
-        mesh:
-          material_modifier:
-            kd: [0.0, 0.0, 0.9, 1.0]
-        enabled: true
-      - pos: [0.0, 0.0, 15.0]
-        parent_id: light_8
-        mesh:
-          material_modifier:
-            kd: [0.9, 0.0, 0.9, 1.0]
-        enabled: true
+  - id: moving_point_light_5_halo
+    base: moving_point_light_halo
+    mesh:
+      material_modifier:
+        kd: [0.8, 0.0, 0.0, 1.0]
+  - id: moving_point_light_6_halo
+    base: moving_point_light_halo
+    mesh:
+      material_modifier:
+        kd: [0.0, 0.9, 0.0, 1.0]
+  - id: moving_point_light_7_halo
+    base: moving_point_light_halo
+    mesh:
+      material_modifier:
+        kd: [0.0, 0.0, 0.9, 1.0]
+  - id: moving_point_light_8_halo
+    base: moving_point_light_halo
+    mesh:
+      material_modifier:
+        kd: [0.9, 0.0, 0.9, 1.0]
   - id: rock_light_origo
-    parent_id: rock_origo
     type: origo
-    pos: [0.0, 10.0, 0.0]
     script_file: scripts/anim_rock_light
   - id: rock_light
-    parent_id: rock_light_origo
     mesh:
       path: light
       program: g_tex
-    pos: [-10, 0, 0]
-    scale: 0.5
     flags:
       no_shadow: true
     light:
@@ -278,21 +202,17 @@ nodes:
         tiling_x: 2
         tiling_y: 2
       program: g_tex
-    pos: [0, 15, 0]
     script_file: scripts/anim_node_path
   - id: active_node_around_rock
-    parent_id: rock_origo
     mesh:
       path: texture_cube
       program: g_tex
-    pos: [0, -5, 0]
     script_file: scripts/anim_node_path
-  - xid: cube_map_1
+  - id: cube_map_1
     type: origo
-    pos: [0.0, 4.5, 0.0]
     flags:
       cube_map: true
-  - id: example_{t}
+  - id: example
     mesh:
       path: glass_ball
       material:
@@ -306,9 +226,6 @@ nodes:
         refraction: 0.05
         refraction_ratio: [1.0, 1.52]
       program: g_tex
-    pos: [-1.5, 5.0, -1.5]
-    rotation: [0.0, 0.0, 0.0]
-    scale: 1.0
     repeat:
       x_count: 2
       y_count: 1
@@ -319,38 +236,23 @@ nodes:
   - id: window_1
     prefab:
       path: prefab/props/prefab_door_01.yml
-    pos: [5.0, 10.0, -5.0]
-    scale: 2
   - id: door_1
     prefab:
       path: prefab/props/prefab_door_05.yml
-    pos: [-5.0, 10.0, -5.0]
-    scale: 2
   - id: window_1_1
     prefab:
       path: prefab/props/prefab_door_06.yml
-    pos: [5.0, 8.0, 0.0]
-    rotation: [0, -45.0, 0.0]
-    scale: 4
   - id: window_2
     prefab:
       path: prefab/props/prefab_door_01.yml
-    pos: [7.0, 14.0, -8.0]
-    scale: 2
-  - id: stained_windows_{t}
+  - id: stained_windows
     prefab:
       path: prefab/props/prefab_door_01.yml
-    pos: [-10.0, 20.0, 10.0]
-    scale: 2
-    repeat:
-      x_count: 10
-      x_step: 2
-  - xid: cube_map_brick_wood_wall
+  - id: cube_map_brick_wood_wall
     type: origo
-    pos: [-1.0, 13.5, 14.0]
     flags:
       cube_map: true
-  - id: brick_wall_{t}
+  - id: brick_wall
     mesh:
       path: quad
       material:
@@ -363,10 +265,6 @@ nodes:
       flags:
         pre_depth: true
       program: g_tex
-    pos: [-5.0, 13.5, 14.0]
-    repeat:
-      x_count: 3
-      x_step: 4
   - id: brick_wall_one
     mesh:
       path: quad
@@ -380,9 +278,7 @@ nodes:
       flags:
         pre_depth: true
       program: g_tex
-    pos: [5.0, 13.5, 14.0]
-    rotation: [0, 180, 0]
-  - id: wood_wall_{t}
+  - id: wood_wall
     mesh:
       path: quad
       material:
@@ -394,11 +290,7 @@ nodes:
       flags:
         pre_depth: true
       program: g_tex
-    pos: [-3.0, 13.5, 14.0]
-    repeat:
-      x_count: 2
-      x_step: 4
-  - id: wood_wall_upper_normal_{t}
+  - id: wood_wall_upper_normal
     mesh:
       path: quad
       material:
@@ -413,17 +305,10 @@ nodes:
       flags:
         pre_depth: true
       program: g_tex
-    pos: [-3.0, 15.5, 14.0]
-    repeat:
-      x_count: 2
-      x_step: 4
   - id: big_mirror_1_origo
     type: origo
-    pos: [-55.0, 25.0, 10.0]
-    rotation: [0.0, 45.0, 0.0]
     script_file: scripts/anim_mirror
   - id: big_mirror_1_front
-    parent: big_mirror_1_origo
     mesh:
       path: quad
       material:
@@ -439,8 +324,6 @@ nodes:
     flags:
       mirror: true
   - id: big_mirror_1_back
-    parent: big_mirror_1_origo
-    ignored_by: big_mirror_1_front
     mesh:
       path: quad
       material:
@@ -453,11 +336,8 @@ nodes:
         pre_depth: true
   - id: big_mirror_2_origo
     type: origo
-    pos: [55.0, 25.0, 10.0]
-    rotation: [0.0, 215.0, 0.0]
     script_file: scripts/anim_mirror
   - id: big_mirror_2_front
-    parent: big_mirror_2_origo
     mesh:
       path: quad
       material:
@@ -473,8 +353,6 @@ nodes:
     flags:
       mirror: true
   - id: big_mirror_2_back
-    parent: big_mirror_2_origo
-    ignored_by: big_mirror_2_front
     mesh:
       path: quad
       material:
@@ -485,7 +363,7 @@ nodes:
       base_rotation: [0, 180, 0]
       flags:
         pre_depth: true
-  - id: airboat_{t}_{c}
+  - id: airboat
     mesh:
       path: airboat_fixed_colors
       program: g_tex
@@ -499,31 +377,16 @@ nodes:
         category: [prop, can_float, can_terrain]
         collision: [prop, npc]
         size: [4, 2.5, 2]
-    clones:
-      - pos: [24.0, 11.0, 15.0]
-      - pos: [6.0, 19.0, 22.0]
-        scale: 0.5
-      - pos: [260.0, 5.0, -170.0]
-  - xid: spyro
+  - id: spyro
     mesh:
       path: spyro2
       program: g_tex
-    pos: [0.0, 15.0, 30.0]
     material_modifier:
       prefab: materials/Lava05
       tiling: 6
-    scale: 0.06
-  - id: wyvern_{t}
+  - id: wyvern
     prefab:
       path: prefab/creatures/prefab_wyvern.yml
-    pos: [0.0, 35.0, 30.0]
-    rotation: [0, 0, 0]
-    scale: 2
-    repeat:
-      x_count: 2
-      z_count: 2
-      x_step: 100
-      z_step: -100
     script: |
       local wid = cmd:wait({ time=2 })
       cmd:animation_play(
@@ -531,9 +394,6 @@ nodes:
   - id: backback
     prefab:
       path: prefab/props/prefab_backpack.yml
-    pos: [10.0, 10.0, 5.0]
-    scale: 1.5
-    enabled: false
   - id: bunny
     mesh:
       path: bunny
@@ -541,47 +401,31 @@ nodes:
         reflection: 0.7
         render_back: true
       program: g_tex
-    pos: [-15.0, 14.0, 5.0]
-    scale: 20.0
-    enabled: false
   - id: dragon
     mesh:
       path: dragon
       material_modifier:
         render_back: true
       program: g_tex
-    pos: [-15.0, 25.0, 0.0]
-    scale: 30.0
-    enabled: false
-  - xid: shuttle
+  - id: shuttle
     mesh:
       path: opengl_book/NasaShuttle/shuttle
       material_modifier:
         kd: [1, 1, 1, 1]
       program: g_tex
-    pos: [20.0, 40.0, -50.0]
-    scale: 20.0
   - id: cylon_ship
     prefab:
       path: prefab/vehicles/prefab_cylon_raider.yml
-    pos: [20.0, 40.0, -50.0]
-    rotation: [0, 180, 0]
   - id: sword_2
     mesh:
       path: sword2
       program: g_tex
-    pos: [0.0, 40.0, -50.0]
-    scale: 1.0
   - id: sword_excalibur
     mesh:
       path: sword2
       program: g_tex
-    rotation: [223, 28, 24]
-    pos: [250.0, 10.0, -190.0]
-    scale: 1.0
   - id: teapot
     desc: Dir light target (back needed due to gap in lid)
-    id: dir_light_target
     mesh:
       path: smooth_teapot
       material:
@@ -593,9 +437,6 @@ nodes:
         xrefraction_ratio: [1.0, 1.52]
         tiling: 6
       program: g_tex
-    pos: [-5.0, 25.0, -5.0]
-    scale: 1.0
-    selected: false
     particle:
       seed: 1
       gravity: [0, -0.81, 0]
@@ -626,15 +467,9 @@ nodes:
         texture_spec:
           wrap: GL_CLAMP_TO_EDGE
     script_file: scripts/seq_particle_generator
-  - id: cow_{t}_{c}
+  - id: cow
     prefab: prefab/creatures/prefab_cow.yml
-    rotation: [0, 180, 0]
-    scale: 0.8
-    selected: false
-    clones:
-      - pos: [5.0, 25.0, -5.0]
-      - pos: [5.0, 25.0, -15.0]
-  - xid: cow_fur
+  - id: cow_fur
     mesh:
       path: cow
       material:
@@ -647,34 +482,23 @@ nodes:
         layers_depth: 0.2
         alpha: true
       program: g_fur
-    pos: [5.0, 25.0, -5.0]
-    rotation: [0, 180, 0]
-    scale: 0.8
-  - xid: cow_2
+  - id: cow_2
     mesh:
       path: cow
       material:
         prefab: materials/Plastic01.yml
         xreflection: 0.1
       program: g_tex
-    pos: [5.0, 25.0, -15.0]
-    rotation: [0, 180, 0]
-    scale: 0.8
-    selected: false
   - id: ball
     mesh:
       path: texture_ball
       program: g_tex
-    pos: [0.0, 13.0, 0.0]
-    scale: 2.0
-  - xid: cube_map_2_common
+  - id: cube_map_2_common
     type: origo
-    pos: [0.0, 28.0, 8.0]
     flags:
       cube_map: true
-  - xid: cube_map_2_refract_ball
+  - id: cube_map_2_refract_ball
     type: origo
-    pos: [5.0, 25.0, 0.0]
     flags:
       cube_map: true
   - id: refract_ball
@@ -685,29 +509,22 @@ nodes:
         refraction: 0.85
         refraction_ratio: [1.0, 1.52]
       program: g_tex
-    pos: [5.0, 25.0, 0.0]
-    scale: 1.3
-  - xid: cube_map_2_refract_ball
+  - id: cube_map_2_refract_ball
     type: origo
-    pos: [-10.0, 25.0, 0.0]
     flags:
       cube_map: true
-  - id: rdReflect_ball
+  - id: reflect_ball
     mesh:
       path: glass_ball
       material_modifier:
         reflection: 0.8
       program: g_tex
-    pos: [-10.0, 25.0, 0.0]
-    scale: 1.3
   - id: water_ball
     mesh:
       path: water_ball
       material_modifier:
         xreflection: 0.3
       program: g_tex
-    pos: [5.0, 30.0, 0.0]
-    scale: 1.3
   - id: basic_ball
     mesh:
       path: water_ball
@@ -716,8 +533,6 @@ nodes:
         kd: [0.8, 0.8, 0.0, 1.0]
         mrao: [0.6, 0.3, 1]
       program: g_tex
-    pos: [5.0, 30.0, 5.0]
-    scale: 1.3
   - id: gold_ball
     mesh:
       path: water_ball
@@ -726,12 +541,8 @@ nodes:
         prefab: materials/Metal008.yml
         kd: [0.7516, 0.6065, 0.2265, 1.0]
       program: g_tex
-    pos: [5.0, 30.0, 10.0]
-    scale: 1.3
   - id: ball_origo
     type: origo
-    id: ball_origo
-    pos: [5.0, 30.0, 15.0]
   - id: silver_ball
     mesh:
       path: water_ball
@@ -740,8 +551,6 @@ nodes:
         kd: [0.5075, 0.5075, 0.5075, 1.0]
         mrao: [1, 0.3, 1]
       program: g_tex
-    pos: [5.0, 30.0, 15.0]
-    scale: 1.3
     physics:
       body:
         type: sphere
@@ -751,7 +560,6 @@ nodes:
         category: [prop, can_float, can_terrain]
         collision: [prop, npc]
   - id: bronze_ball
-    parent_id: ball_origo
     mesh:
       path: water_ball
       material:
@@ -759,10 +567,7 @@ nodes:
         kd: [0.7140, 0.4284, 0.1814, 1.0]
         mrao: [1, 0.3, 1]
       program: g_tex
-    pos: [0.0, 0.0, 5.0]
-    scale: 1.3
   - id: copper_ball
-    parent_id: ball_origo
     mesh:
       path: water_ball
       material:
@@ -771,10 +576,7 @@ nodes:
         kd: [0.800000, 0.800000, 0.800000]
         mrao: [1, 0.3, 1]
       program: g_tex
-    pos: [0.0, 0.0, 10.0]
-    scale: 1.3
   - id: plasma_ball
-    parent_id: cube-3
     mesh:
       vertex:
         type: box
@@ -785,7 +587,6 @@ nodes:
         blend: true
         reverse_front_face: true
         no_depth: true
-    pos: [0, 0, 0]
     flags:
       effect: true
       no_select: true
@@ -799,15 +600,12 @@ nodes:
       flags:
         pre_depth: true
       program: g_tex
-    pos: [5.0, 25.0, 5.0]
-    scale: 1
-  - id: four_cubes_{t}_{c}
+  - id: four_cubes
     mesh:
       path: texture_cube_3
       flags:
         pre_depth: true
       program: g_tex
-    scale: 1
     camera:
       fov: 80
     controllers:
@@ -845,16 +643,7 @@ nodes:
     script_files:
       - scripts/anim_four_cubes
       - scripts/seq_particle_generator
-    clones:
-      - pos: [-5.0, 20.0, -5.0]
-        id: cube-1
-      - pos: [5.0, 20.0, -5.0]
-        id: cube-2
-      - pos: [-5.0, 20.0, 5.0]
-        id: cube-3
-      - pos: [5.0, 20.0, 5.0]
-        id: cube-4
-  - id: blend_cubes_{t}_{c}
+  - id: blend_cubes
     mesh:
       path: rubik_cube.fbx
       lod:
@@ -866,22 +655,13 @@ nodes:
         program: g_tex
       base_scale: 0.01
     script_file: scripts/anim_four_cubes
-    clones:
-      - pos: [-5.0, 30.0, -5.0]
-      - pos: [5.0, 30.0, -5.0]
-      - pos: [-5.0, 30.0, 5.0]
-      - pos: [5.0, 30.0, 5.0]
   - id: wooden_matrix_cube
     mesh:
       path: texture_cube_4/texture_cube_4.obj
       flags:
         pre_depth: true
       program: g_tex
-    pos: [-5.0, 25.0, 5.0]
-    rotation: [0, 180, 0]
-    scale: 1
-    selected: false
-  - id: pool_surface_{t}
+  - id: pool_surface
     mesh:
       path: plane
       material:
@@ -894,17 +674,9 @@ nodes:
       scale: 30
       program: g_water
     priority: -5
-    pos: [0, 9.5, -10]
     flags:
       no_shadow: true
       water: true
-    repeat:
-      x_count: 2
-      y_count: 1
-      z_count: 2
-      x_step: 60
-      y_step: 0
-      z_step: 60
     physics:
       update: true
       body:
@@ -917,7 +689,7 @@ nodes:
         collision: [can_float]
         size: [30, 0.01, 30]
     script_file: scripts/anim_water
-  - id: pool_floor_{t}
+  - id: pool_floor
     mesh:
       path: plane
       material:
@@ -931,16 +703,8 @@ nodes:
         pre_depth: true
       program: g_tex
     priority: -10
-    pos: [0.0, 3.7, -10.0]
     flags:
       no_shadow: true
-    repeat:
-      x_count: 2
-      y_count: 1
-      z_count: 2
-      x_step: 60
-      y_step: 0
-      z_step: 60
     physics:
       body:
         type: box
@@ -951,7 +715,7 @@ nodes:
         category: [terrain]
         collision: [can_terrain]
         size: [30, 0.01, 30]
-  - id: pool_side_{t}_{c}
+  - id: pool_side
     mesh:
       path: pool_brick
       material_modifier:
@@ -960,15 +724,6 @@ nodes:
       flags:
         pre_depth: true
       program: g_tex
-    clones:
-      - pos: [-30.0, 4, 20]
-        scale: [0.3, 6, 60]
-      - pos: [90.0, 4, 20]
-        scale: [0.3, 6, 60]
-      - pos: [30.0, 4, 80]
-        scale: [60, 6, 0.3]
-      - pos: [30.0, 4, -40]
-        scale: [60, 6, 0.3]
     physics:
       body:
         type: box
@@ -992,18 +747,6 @@ nodes:
       flags:
         tessellation: true
     priority: 20
-    pos: [-1200, -5.5, -900]
-    xxpos: [-1024, -5.5, -1024]
-    generator:
-      type: terrain
-      mode: grid
-      terrain:
-        map_height: textures/terrain_2/terrain_2_height.png
-      tiling:
-        tile_size: 256
-        tiles: [8, 0, 8]
-        vert_range: [-62.54, 221.9]
-        horiz_scale: 2
     type_flags:
       pre_depth: true
       use_deferred: true
@@ -1014,7 +757,7 @@ nodes:
         category: [terrain]
         collision: [can_terrain]
         size: [2048, 0, 2048]
-  - id: grid_points_{t}
+  - id: grid_points
     mesh:
       path: glass_ball
       material:
@@ -1024,8 +767,6 @@ nodes:
       material_modifier:
         ke: [0, 0.2, 0]
       program: g_tex
-    pos: [-1024, 150, -1024]
-    scale: 5.0
     light:
       type: point
       linear: 0.014
@@ -1033,14 +774,7 @@ nodes:
       diffuse: [0.6, 1.2, 0.6, 1.0]
       intensity: 1000
       enabled: false
-    repeat:
-      x_count: 9
-      y_count: 1
-      z_count: 9
-      x_step: 256
-      y_step: 0
-      z_step: 256
-  - id: sea_surface_{t}
+  - id: sea_surface
     desc: TODO KI conflicting water reflect with pool
     priority: -20
     mesh:
@@ -1054,17 +788,9 @@ nodes:
         render_back: true
       scale: 128
       program: g_water
-    pos: [-1072, 0.0, -772]
     flags:
       no_shadow: true
       water: true
-    repeat:
-      x_count: 8
-      y_count: 1
-      z_count: 8
-      x_step: 256
-      y_step: 0
-      z_step: 256
     physics:
       body:
         type: box
@@ -1075,7 +801,7 @@ nodes:
         category: [water]
         collision: [can_float]
         size: [128, 0.01, 128]
-  - id: sea_floor_{t}
+  - id: sea_floor
     priority: -25
     mesh:
       path: plane
@@ -1087,17 +813,8 @@ nodes:
       flags:
         pre_depth: true
       program: g_tex
-    pos: [-1072, -70.0, -772]
-    scale: 128
     flags:
       no_shadow: true
-    repeat:
-      x_count: 8
-      y_count: 1
-      z_count: 8
-      x_step: 256
-      y_step: 0
-      z_step: 256
     physics:
       geom:
         type: plane
@@ -1105,9 +822,7 @@ nodes:
         collision: [can_terrain]
   - id: planet_origo
     type: origo
-    pos: [10.0, 150.0, 200.0]
-  - xid: planet
-    parent_id: planet_origo
+  - id: planet_old
     mesh:
       path: planet/planet.obj
       material_modifier:
@@ -1115,11 +830,8 @@ nodes:
       flags:
         pre_depth: true
       program: g_tex
-    pos: [0, 0, 0]
-    scale: 10
     script_file: scripts/anim_planet
   - id: planet
-    parent: planet_origo
     mesh:
       path: planets/planet.obj
       material:
@@ -1134,7 +846,6 @@ nodes:
         vec3(0, 1, 0),
         360 * 30)
   - id: planet_cloud
-    parent: planet_origo
     mesh:
       path: planets/planet.obj
       material:
@@ -1152,22 +863,17 @@ nodes:
         { time=40 * 100 },
         vec3(0, 1, 0),
         360 * 50)
-  - id: cylon_origo
-    parent: planet_origo
+  - id: cylon_group_origo
     type: origo
     script: |
       cmd:rotate(
         { time=60 * 100 },
         vec3(0, 1, 0),
         360 * 200)
-  - id: cylon_ship_{t}
-    parent: cylon_origo
+  - id: cylon_group
     prefab:
       path: prefab/vehicles/prefab_cylon_raider.yml
     priority: -20
-    scale: 0.125
-    rotation: [0, -90, 0]
-    position: [0, 5, 24]
     audio:
       sources:
         - name: fly
@@ -1205,26 +911,16 @@ nodes:
         sprites_x: 5
         texture_spec:
           wrap: GL_CLAMP_TO_EDGE
-    repeat:
-      x_count: 2
-      x_step: 6
-      y_step: 2
-      z_count: 2
-      z_step: 6
     script: |
       local fly_sid = util.sid("fly")
       cid = cmd:audio_play(
         { sid=fly_sid })
     script_file: scripts/seq_particle_generator
   - id: rock_origo
-    id: rock_origo
-    parent_id: planet_origo
     type: origo
-    pos: [0.0, -50.0, 0.0]
     flags:
       cube_map: true
   - id: rock
-    parent_id: rock_origo
     mesh:
       path: rock2/rock
       material_modifier:
@@ -1232,16 +928,10 @@ nodes:
         mrao: [0.5, 0.0, 1]
         tiling: 4
       program: g_tex
-    pos: [0.0, 0, 0.0]
-    scale: 1.5
   - id: asteroid_belt
     parent_id: planet_origo
     prefab:
       path: prefab/scenery/prefab_asteroid.yml
-    generator:
-      type: asteroid_belt
-      mode: random
-      count: 1000
   - id: scale_1
     mesh:
       path: quad
@@ -1253,8 +943,6 @@ nodes:
         xreflection: 0.02
         render_back: true
       program: g_tex
-    pos: [15, 11.5, 20.0]
-    enabled: false
   - id: scale_2
     mesh:
       path: quad
@@ -1268,9 +956,6 @@ nodes:
       flags:
         pre_depth: true
       program: g_tex
-    scale: 2
-    pos: [10, 11.5, 20.0]
-    enabled: false
   - id: scale_3
     mesh:
       path: quad
@@ -1284,10 +969,7 @@ nodes:
       flags:
         pre_depth: true
       program: g_tex
-    scale: 3
-    pos: [5, 11.5, 20.0]
-    enabled: false
-  - id: palm_tree_forest_{c}_{t}
+  - id: palm_tree_forest
     prefab:
       path: prefab/scenery/prefab_palm_tree.yml
     mesh:
@@ -1297,17 +979,7 @@ nodes:
     priority: -17
     flags:
       static_bounds: true
-    generator:
-      type: grid
-      mode: random
-      offset: [350, 10.0, 150.0]
-      seed: [424242, 121212, 333333]
-      repeat:
-        x_count: 40
-        z_count: 40
-        x_step: -25
-        z_step: 25
-  - xid: maple_tree_forest_{t}
+  - id: maple_tree_forest
     prefab:
       path: prefab/scenery/prefab_maple_tree.yml
     mesh:
@@ -1317,17 +989,7 @@ nodes:
     priority: -17
     flags:
       static_bounds: true
-    generator:
-      type: grid
-      mode: random
-      offset: [250, 10.0, 150.0]
-      seed: [424242, 121212, 333333]
-      repeat:
-        x_count: 40
-        z_count: 40
-        x_step: -20
-        z_step: 20
-  - id: grass_{t}_{c}
+  - id: grass
     prefab:
       path: prefab/scenery/prefab_grass.yml
     mesh:
@@ -1338,19 +1000,7 @@ nodes:
     flags:
       static_bounds: true
       no_shadow: true
-    generator:
-      type: grid
-      mode: random
-      offset: [400, 10.0, -400.0]
-      scale: 3
-      seed: [4242, 1212, 3333]
-      count: 1000
-      repeat:
-        x_count: 100
-        z_count: 150
-        x_step: -9
-        z_step: 9
-  - id: bush01_{t}
+  - id: bush01
     prefab:
       path: prefab/scenery/prefab_bush01.yml
     mesh:
@@ -1361,19 +1011,7 @@ nodes:
     flags:
       static_bounds: true
       no_shadow: true
-    generator:
-      type: grid
-      mode: random
-      offset: [-400, 0, -400]
-      scale: 3
-      seed: [12, 13, 14]
-      count: 100
-      repeat:
-        x_count: 21
-        z_count: 35
-        x_step: 40
-        z_step: 40
-  - id: bush02_{t}
+  - id: bush02
     prefab:
       path: prefab/scenery/prefab_bush02.yml
     mesh:
@@ -1384,19 +1022,7 @@ nodes:
     flags:
       static_bounds: true
       no_shadow: true
-    generator:
-      type: grid
-      mode: random
-      offset: [-400, 0, -400]
-      scale: 4
-      seed: [6116, 1188, 2299]
-      count: 50
-      repeat:
-        x_count: 21
-        z_count: 35
-        x_step: 40
-        z_step: 40
-  - id: bush03_{t}
+  - id: bush03
     prefab:
       path: prefab/scenery/prefab_bush03.yml
     mesh:
@@ -1407,30 +1033,10 @@ nodes:
     flags:
       static_bounds: true
       no_shadow: true
-    generator:
-      type: grid
-      mode: random
-      offset: [-300, 0, -300]
-      scale: 1.5
-      seed: [61236, 8855, 9934]
-      count: 600
-      repeat:
-        x_count: 21
-        z_count: 35
-        x_step: 40
-        z_step: 40
-  - id: skeleton_army_{c}_{t}
+  - id: skeleton_army
     prefab:
       path: prefab/creatures/prefab_skeleton_warrior.yml
     priority: -15
-    pos: [35, 11.5, 60.0]
-    scale: 3
-    rotation: [0, -180, 0]
-    repeat:
-      x_count: 10
-      z_count: 10
-      x_step: -10
-      z_step: 10
     type_flags:
       dynamic_bounds: true
       xstatic_bounds: true
@@ -1443,7 +1049,7 @@ nodes:
         category: [npc, can_terrain]
         collision: [prop, npc]
     script_file: scripts/seq_skeleton_random_nav
-  - xid: giant_wooden_box_{t}_{c}
+  - id: giant_wooden_box
     mesh:
       path: quad
       material:
@@ -1453,9 +1059,561 @@ nodes:
         xreflection: 0.1
         render_back: true
       program: g_tex
-    clone_position_offset: [0, 40, 0]
     flags:
       no_shadow: true
+    clones:
+      - pos: [0.0, 100.0, 0.0]
+        rot: [90, 0, 0]
+      - pos: [0.0, -100.0, .0]
+        rot: [270, 0, 0]
+      - pos: [100.0, 0.0, 0.0]
+        rot: [0, 270, 0]
+      - pos: [-100.0, 0.0, 0.0]
+        rot: [0, 90, 0]
+      - pos: [0.0, 0.0, 100.0]
+        rot: [0, 180, 0]
+      - pos: [0.0, 0.0, -100.0]
+        rot: [0, 0, 0]
+  - id: world_plane
+    type: origo
+    physics:
+      geom:
+        type: plane
+
+nodes:
+  - xtype: grid
+  - type: fps_counter
+    id: fps_counter
+    #pos: [5.75, 5.25, 0.2]
+    pos: [2, -2, -1]
+    scale: 0.0025
+  - type: zero_origo
+    id: zero_origo
+    pos: [0.0, 0.0, 0.0]
+  - type: zero
+    pos: [0.0, 0.0, 0.0]
+    scale: 0.2
+  - id: moving_water_ball
+    parent_id: zero_origo
+    pos: [0.0, 0.0, 0.0]
+    scale: 0.3
+  - type: player
+    id: player
+    pos: [-10, 12, -20.0]
+    rotation: [0, 180, 0.0]
+    scale: 0.8
+    active: true
+  - type: player_cube_map_1
+    parent_id: player
+    pos: [0, 0, 1]
+  - type: light_dir_origo
+    id: light_dir_origo
+    parent_id: planet_origo
+    pos: [0.0, 400.0, 0.0]
+    rotation: [0.0, 25.0, 0.0]
+  - type: sun_light
+    parent_id: light_dir_origo
+    pos: [0, 0, 600]
+    scale: 20
+  - type: moving_point_light_origo
+    id: moving_point_light_origo_{t}_{c}
+    parent_id: zero_origo
+    pos: [0, 14, 0]
+    clones:
+      - pos: [-15.0, 14.0, -15.0]
+        id: light_1
+      - pos: [15.0, 14.0, -15.0]
+        id: light_2
+      - pos: [-15.0, 14.0, 15.0]
+        id: light_3
+      - pos: [15.0, 14.0, 15.0]
+        id: light_4
+      - pos: [-25.0, 10.0, -25.0]
+        id: light_5
+      - pos: [25.0, 10.0, -25.0]
+        id: light_6
+      - pos: [-25, 10.0, 25.0]
+        id: light_7
+      - pos: [25.0, 10.0, 25.0]
+        id: light_8
+  - type: moving_point_light
+    parent_id: zero_origo
+    pos: [0, 0, 0]
+    scale: 0.5
+    clones:
+      - pos: [0.0, 0.0, 10.0]
+        parent_id: light_1
+      - pos: [0.0, 0.0, 10.0]
+        parent_id: light_2
+      - pos: [0.0, 0.0, 10.0]
+        parent_id: light_3
+      - pos: [0.0, 0.0, 10.0]
+        parent_id: light_4
+      - pos: [0.0, 0.0, 15.0]
+        type: moving_point_light_5
+        parent_id: light_5
+        enabled: true
+      - pos: [0.0, 0.0, 15.0]
+        type: moving_point_light_6
+        parent_id: light_6
+        enabled: true
+      - pos: [0.0, 0.0, 15.0]
+        type: moving_point_light_7
+        parent_id: light_7
+        enabled: true
+      - pos: [0.0, 0.0, 15.0]
+        type: moving_point_light_8
+        parent_id: light_8
+        enabled: true
+  - type: moving_point_light_halo
+    parent_id: zero_origo
+    pos: [0, 0, 0]
+    clones:
+      - pos: [0.0, 0.0, 10.0]
+        parent_id: light_1
+      - pos: [0.0, 0.0, 10.0]
+        parent_id: light_2
+      - pos: [0.0, 0.0, 10.0]
+        parent_id: light_3
+      - pos: [0.0, 0.0, 10.0]
+        parent_id: light_4
+      - pos: [0.0, 0.0, 15.0]
+        type: moving_point_light_5_halo
+        parent_id: light_5
+        enabled: true
+      - pos: [0.0, 0.0, 15.0]
+        type: moving_point_light_6_halo
+        parent_id: light_6
+        enabled: true
+      - pos: [0.0, 0.0, 15.0]
+        type: moving_point_light_7_halo
+        parent_id: light_7
+        enabled: true
+      - pos: [0.0, 0.0, 15.0]
+        type: moving_point_light_8_halo
+        parent_id: light_8
+        enabled: true
+  - type: rock_light_origo
+    id: rock_light_origo
+    parent_id: rock_origo
+    pos: [0.0, 10.0, 0.0]
+  - type: rock_light
+    parent_id: rock_light_origo
+    pos: [-10, 0, 0]
+    scale: 0.5
+  - type: active_node
+    parent_id: zero_origo
+    pos: [0, 15, 0]
+  - type: active_node_around_rock
+    parent_id: rock_origo
+    pos: [0, -5, 0]
+  - xtype: cube_map_1
+    pos: [0.0, 4.5, 0.0]
+  - type: example
+    pos: [-1.5, 5.0, -1.5]
+    rotation: [0.0, 0.0, 0.0]
+    scale: 1.0
+    repeat:
+      x_count: 2
+      y_count: 1
+      z_count: 2
+      x_step: 3
+      y_step: 0
+      z_step: 3
+  - type: window_1
+    pos: [5.0, 10.0, -5.0]
+    scale: 2
+  - type: door_1
+    pos: [-5.0, 10.0, -5.0]
+    scale: 2
+  - type: window_1_1
+    pos: [5.0, 8.0, 0.0]
+    rotation: [0, -45.0, 0.0]
+    scale: 4
+  - type: window_2
+    pos: [7.0, 14.0, -8.0]
+    scale: 2
+  - type: stained_windows
+    pos: [-10.0, 20.0, 10.0]
+    scale: 2
+    repeat:
+      x_count: 10
+      x_step: 2
+  - xtype: cube_map_brick_wood_wall
+    pos: [-1.0, 13.5, 14.0]
+  - type: brick_wall
+    pos: [-5.0, 13.5, 14.0]
+    repeat:
+      x_count: 3
+      x_step: 4
+  - type: brick_wall_one
+    pos: [5.0, 13.5, 14.0]
+    rotation: [0, 180, 0]
+  - type: wood_wall
+    pos: [-3.0, 13.5, 14.0]
+    repeat:
+      x_count: 2
+      x_step: 4
+  - type: wood_wall_upper_normal
+    pos: [-3.0, 15.5, 14.0]
+    repeat:
+      x_count: 2
+      x_step: 4
+  - type: big_mirror_1_origo
+    id: big_mirror_1_origo
+    pos: [-55.0, 25.0, 10.0]
+    rotation: [0.0, 45.0, 0.0]
+  - type: big_mirror_1_front
+    id: big_mirror_1_front
+    parent: big_mirror_1_origo
+  - type: big_mirror_1_back
+    parent: big_mirror_1_origo
+    ignored_by: big_mirror_1_front
+  - type: big_mirror_2_origo
+    id: big_mirror_2_origo
+    pos: [55.0, 25.0, 10.0]
+    rotation: [0.0, 215.0, 0.0]
+  - type: big_mirror_2_front
+    id: big_mirror_2_front
+    parent: big_mirror_2_origo
+  - id: big_mirror_2_back
+    parent: big_mirror_2_origo
+    ignored_by: big_mirror_2_front
+  - type: airboat
+    clones:
+      - pos: [24.0, 11.0, 15.0]
+      - pos: [6.0, 19.0, 22.0]
+        scale: 0.5
+      - pos: [260.0, 5.0, -170.0]
+  - xtype: spyro
+    pos: [0.0, 15.0, 30.0]
+    scale: 0.06
+  - type: wyvern
+    pos: [0.0, 35.0, 30.0]
+    rotation: [0, 0, 0]
+    scale: 2
+    repeat:
+      x_count: 2
+      z_count: 2
+      x_step: 100
+      z_step: -100
+  - type: backback
+    pos: [10.0, 10.0, 5.0]
+    scale: 1.5
+    enabled: false
+  - type: bunny
+    pos: [-15.0, 14.0, 5.0]
+    scale: 20.0
+    enabled: false
+  - type: dragon
+    pos: [-15.0, 25.0, 0.0]
+    scale: 30.0
+    enabled: false
+  - xtype: shuttle
+    pos: [20.0, 40.0, -50.0]
+    scale: 20.0
+  - type: cylon_ship
+    pos: [20.0, 40.0, -50.0]
+    rotation: [0, 180, 0]
+  - type: sword_2
+    pos: [0.0, 40.0, -50.0]
+    scale: 1.0
+  - type: sword_excalibur
+    rotation: [223, 28, 24]
+    pos: [250.0, 10.0, -190.0]
+    scale: 1.0
+  - type: teapot
+    id: dir_light_target
+    pos: [-5.0, 25.0, -5.0]
+    scale: 1.0
+    selected: false
+  - type: cow
+    rotation: [0, 180, 0]
+    scale: 0.8
+    selected: false
+    clones:
+      - pos: [5.0, 25.0, -5.0]
+      - pos: [5.0, 25.0, -15.0]
+  - xtype: cow_fur
+    pos: [5.0, 25.0, -5.0]
+    rotation: [0, 180, 0]
+    scale: 0.8
+  - xtype: cow_2
+    pos: [5.0, 25.0, -15.0]
+    rotation: [0, 180, 0]
+    scale: 0.8
+    selected: false
+  - type: ball
+    pos: [0.0, 13.0, 0.0]
+    scale: 2.0
+  - xtype: cube_map_2_common
+    pos: [0.0, 28.0, 8.0]
+  - xtype: cube_map_2_refract_ball
+    pos: [5.0, 25.0, 0.0]
+  - type: refract_ball
+    pos: [5.0, 25.0, 0.0]
+    scale: 1.3
+  - xtype: cube_map_2_refract_ball
+    pos: [-10.0, 25.0, 0.0]
+  - type: reflect_ball
+    pos: [-10.0, 25.0, 0.0]
+    scale: 1.3
+  - type: water_ball
+    pos: [5.0, 30.0, 0.0]
+    scale: 1.3
+  - type: basic_ball
+    pos: [5.0, 30.0, 5.0]
+    scale: 1.3
+  - type: gold_ball
+    pos: [5.0, 30.0, 10.0]
+    scale: 1.3
+  - type: ball_origo
+    id: ball_origo
+    pos: [5.0, 30.0, 15.0]
+  - type: silver_ball
+    pos: [5.0, 30.0, 15.0]
+    scale: 1.3
+  - id: bronze_ball
+    parent_id: ball_origo
+    pos: [0.0, 0.0, 5.0]
+    scale: 1.3
+  - id: copper_ball
+    parent_id: ball_origo
+    pos: [0.0, 0.0, 10.0]
+    scale: 1.3
+  - type: plasma_ball
+    parent_id: cube_3
+    pos: [0, 0, 0]
+  - type: brick_cube
+    pos: [5.0, 25.0, 5.0]
+    scale: 1
+  - type: four_cubes
+    scale: 1
+    clones:
+      - pos: [-5.0, 20.0, -5.0]
+        id: cube_1
+      - pos: [5.0, 20.0, -5.0]
+        id: cube_2
+      - pos: [-5.0, 20.0, 5.0]
+        id: cube_3
+      - pos: [5.0, 20.0, 5.0]
+        id: cube_4
+  - type: blend_cubes
+    clones:
+      - pos: [-5.0, 30.0, -5.0]
+      - pos: [5.0, 30.0, -5.0]
+      - pos: [-5.0, 30.0, 5.0]
+      - pos: [5.0, 30.0, 5.0]
+  - type: wooden_matrix_cube
+    pos: [-5.0, 25.0, 5.0]
+    rotation: [0, 180, 0]
+    scale: 1
+    selected: false
+  - type: pool_surface
+    pos: [0, 9.5, -10]
+    repeat:
+      x_count: 2
+      y_count: 1
+      z_count: 2
+      x_step: 60
+      y_step: 0
+      z_step: 60
+  - type: pool_floor
+    pos: [0.0, 3.7, -10.0]
+    repeat:
+      x_count: 2
+      y_count: 1
+      z_count: 2
+      x_step: 60
+      y_step: 0
+      z_step: 60
+  - type: pool_side
+    clones:
+      - pos: [-30.0, 4, 20]
+        scale: [0.3, 6, 60]
+      - pos: [90.0, 4, 20]
+        scale: [0.3, 6, 60]
+      - pos: [30.0, 4, 80]
+        scale: [60, 6, 0.3]
+      - pos: [30.0, 4, -40]
+        scale: [60, 6, 0.3]
+  - type: terrain_grass_v2
+    pos: [-1200, -5.5, -900]
+    xxpos: [-1024, -5.5, -1024]
+    generator:
+      type: terrain
+      mode: grid
+      terrain:
+        map_height: textures/terrain_2/terrain_2_height.png
+      tiling:
+        tile_size: 256
+        tiles: [8, 0, 8]
+        vert_range: [-62.54, 221.9]
+        horiz_scale: 2
+  - type: grid_points
+    pos: [-1024, 150, -1024]
+    scale: 5.0
+    repeat:
+      x_count: 9
+      y_count: 1
+      z_count: 9
+      x_step: 256
+      y_step: 0
+      z_step: 256
+  - type: sea_surface
+    pos: [-1072, 0.0, -772]
+    repeat:
+      x_count: 8
+      y_count: 1
+      z_count: 8
+      x_step: 256
+      y_step: 0
+      z_step: 256
+  - type: sea_floor
+    pos: [-1072, -70.0, -772]
+    scale: 128
+    repeat:
+      x_count: 8
+      y_count: 1
+      z_count: 8
+      x_step: 256
+      y_step: 0
+      z_step: 256
+  - type: planet_origo
+    id: planet_origo
+    pos: [10.0, 150.0, 200.0]
+  - xtype: planet_old
+    parent_id: planet_origo
+    pos: [0, 0, 0]
+    scale: 10
+  - type: planet
+    parent: planet_origo
+  - type: planet_cloud
+    parent: planet_origo
+  - type: cylon_group_origo
+    id: cylon_group_origo
+    parent: planet_origo
+  - type: cylon_group
+    parent: cylon_group_origo
+    scale: 0.125
+    rotation: [0, -90, 0]
+    position: [0, 5, 24]
+    repeat:
+      x_count: 2
+      x_step: 6
+      y_step: 2
+      z_count: 2
+      z_step: 6
+  - type: rock_origo
+    id: rock_origo
+    parent_id: planet_origo
+    pos: [0.0, -50.0, 0.0]
+  - type: rock
+    parent_id: rock_origo
+    pos: [0.0, 0, 0.0]
+    scale: 1.5
+  - type: asteroid_belt
+    parent_id: planet_origo
+    generator:
+      type: asteroid_belt
+      mode: random
+      count: 1000
+  - type: scale_1
+    pos: [15, 11.5, 20.0]
+    enabled: false
+  - type: scale_2
+    scale: 2
+    pos: [10, 11.5, 20.0]
+    enabled: false
+  - type: scale_3
+    scale: 3
+    pos: [5, 11.5, 20.0]
+    enabled: false
+  - type: palm_tree_forest
+    generator:
+      type: grid
+      mode: random
+      offset: [350, 10.0, 150.0]
+      seed: [424242, 121212, 333333]
+      repeat:
+        x_count: 40
+        z_count: 40
+        x_step: -25
+        z_step: 25
+  - xtype: maple_tree_forest
+    generator:
+      type: grid
+      mode: random
+      offset: [250, 10.0, 150.0]
+      seed: [424242, 121212, 333333]
+      repeat:
+        x_count: 40
+        z_count: 40
+        x_step: -20
+        z_step: 20
+  - type: grass
+    generator:
+      type: grid
+      mode: random
+      offset: [400, 10.0, -400.0]
+      scale: 3
+      seed: [4242, 1212, 3333]
+      count: 1000
+      repeat:
+        x_count: 100
+        z_count: 150
+        x_step: -9
+        z_step: 9
+  - type: bush01
+    generator:
+      type: grid
+      mode: random
+      offset: [-400, 0, -400]
+      scale: 3
+      seed: [12, 13, 14]
+      count: 100
+      repeat:
+        x_count: 21
+        z_count: 35
+        x_step: 40
+        z_step: 40
+  - type: bush02
+    generator:
+      type: grid
+      mode: random
+      offset: [-400, 0, -400]
+      scale: 4
+      seed: [6116, 1188, 2299]
+      count: 50
+      repeat:
+        x_count: 21
+        z_count: 35
+        x_step: 40
+        z_step: 40
+  - type: bush03
+    generator:
+      type: grid
+      mode: random
+      offset: [-300, 0, -300]
+      scale: 1.5
+      seed: [61236, 8855, 9934]
+      count: 600
+      repeat:
+        x_count: 21
+        z_count: 35
+        x_step: 40
+        z_step: 40
+  - type: skeleton_army
+    pos: [35, 11.5, 60.0]
+    scale: 3
+    rotation: [0, -180, 0]
+    repeat:
+      x_count: 10
+      z_count: 10
+      x_step: -10
+      z_step: 10
+  - xtype: giant_wooden_box
+    clone_position_offset: [0, 40, 0]
     scale: 100
     clones:
       - pos: [0.0, 100.0, 0.0]
@@ -1470,45 +1628,27 @@ nodes:
         rot: [0, 180, 0]
       - pos: [0.0, 0.0, -100.0]
         rot: [0, 0, 0]
-  - id: world_x_minus
-    type: origo
+  - type: world_plane
+    id: world_x_minus
     pos: [-1200, 0, 0]
     rot: [0, 0, -90]
-    physics:
-      geom:
-        type: plane
-  - id: world_x_plus
-    type: origo
+  - type: world_plane
+    id: world_x_plus
     pos: [850, 0, 0]
     rot: [0, 0, 90]
-    physics:
-      geom:
-        type: plane
-  - id: world_y_minus
-    type: origo
+  - type: world_plane
+    id: world_y_minus
     pos: [0, -400, 0]
     rot: [0, 0, 0]
-    physics:
-      geom:
-        type: plane
-  - xid: world_y_plus
-    type: origo
+  - xtype: world_plane
+    id: world_y_plus
     pos: [0, 400, 0]
     rot: [180, 0, 0]
-    physics:
-      geom:
-        type: plane
-  - id: world_z_minus
-    type: origo
+  - type: world_plane
+    id: world_z_minus
     pos: [0, 0, -900]
     rot: [90, 0, 0]
-    physics:
-      geom:
-        type: plane
-  - id: world_z_plus
-    type: origo
+  - type: world_plane
+    id: world_z_plus
     pos: [0, 0, 1150]
     rot: [-90, 0, 0]
-    physics:
-      geom:
-        type: plane
