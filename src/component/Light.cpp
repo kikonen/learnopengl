@@ -60,14 +60,14 @@ void Light::updateRT(const UpdateContext& ctx, Node& node) noexcept
         // => for spot light dir should be *NOT* calculated but set by initializer logic
         m_worldDir = glm::normalize(m_worldTargetPosition - m_worldPosition);
 
-        {
-            const float lightMax = std::fmaxf(std::fmaxf(m_diffuse.r, m_diffuse.g), m_diffuse.b);
-            m_radius =
-                (-m_linear + std::sqrtf(m_linear * m_linear - 4.f * m_quadratic *
-                (m_constant - (256.f / 5.f) * lightMax))) / (2.f * m_quadratic);
-        }
-
         m_targetMatrixLevel = targetSnapshot->getMatrixLevel();
+    }
+
+    {
+        const float lightMax = std::fmaxf(std::fmaxf(m_diffuse.r, m_diffuse.g), m_diffuse.b);
+        m_radius =
+            (-m_linear + std::sqrtf(m_linear * m_linear - 4.f * m_quadratic *
+                (m_constant - (256.f / 5.f) * lightMax))) / (2.f * m_quadratic);
     }
 
     m_nodeMatrixLevel = snapshot->getMatrixLevel();

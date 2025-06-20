@@ -1,17 +1,16 @@
 ---
-name: Light
+meta:
+  name: Light
 skybox:
   program: g_skybox
   material: skybox/polyhaven/drakensberg_solitary_mountain_4k.hdr
 script:
   scripts:
     - path: lib/common
-nodes:
+types:
   - id: player
     type: origo
-    pos: [0, 0, 10]
     front: [0, 0, -1]
-    active: true
     audio:
       listener:
         default: true
@@ -20,18 +19,12 @@ nodes:
     controllers:
       - type: pawn
       - type: camera_zoom
-  - name: light origo
-    id: 65ce67c8-3efe-4b04-aaf9-fe384152c547
-    parent_id: 11111111-1111-1111-1111-111111111111
+  - id: light_origo
     type: origo
-    pos: [0, 0, 0]
-  - name: light
-    parent_id: 65ce67c8-3efe-4b04-aaf9-fe384152c547
+  - id: light
     mesh:
       path: light
       program: g_light
-    pos: [0, 0, 0]
-    scale: 0.5
     flags:
       no_shadow: true
     light:
@@ -42,4 +35,21 @@ nodes:
       outer_cutoff_angle: 25.0
       target_pos: [0, 0, 0]
       diffuse: [0.8, 0.8, 0.7, 1.0]
-      intensity: 2a000
+      intensity: 2000
+  - id: wooden_floor
+    prefab:
+      path: prefab/scenery/prefab_wooden_floor.yml
+
+nodes:
+  - type: player
+    pos: [0, 2, 10]
+    active: true
+  - type: light_origo
+    id: light_origo
+    pos: [0, 2, 0]
+  - type: light
+    parent_id: light_origo
+    pos: [0, 0, 0]
+    scale: 0.5
+  - type: wooden_floor
+    scale: 100
