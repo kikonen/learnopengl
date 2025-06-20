@@ -1,17 +1,15 @@
 ---
-name: Origo
-viewports:
+meta:
+  name: Emission glow
 skybox:
   material: skybox/polyhaven/wasteland_clouds_puresky_4k.hdr
 script:
   scripts:
     - path: lib/common
-nodes:
+types:
   - id: player
     type: origo
-    pos: [0, 1, 15]
     front: [0, 0, -1]
-    active: true
     audio:
       listener:
         default: true
@@ -20,15 +18,12 @@ nodes:
     controllers:
       - type: pawn
       - type: camera_zoom
-  - id: dir_light_{c}_{t}
+  - id: dir_light
     mesh:
       path: light
       material_modifier:
         kd: [0.8, 0.8, 0.3, 1.0]
       program: g_light
-    xxpos: [0, 25, 25]
-    pos: [-25, 25, 0]
-    scale: 2.5
     flags:
       no_shadow: true
     light:
@@ -38,8 +33,7 @@ nodes:
   - id: wooden_floor
     prefab:
       path: prefab/scenery/prefab_wooden_floor.yml
-    scale: 100
-  - id: cube_1_{c}_{t}
+  - id: cube_1
     mesh:
       path: texture_cube_4/texture_cube_4.obj
       material_modifier:
@@ -50,9 +44,7 @@ nodes:
         #map_ke: textures/emission/glow_map_001_512.png
         map_ke: textures/emission/beware_emission.png
       program: g_tex
-    pos: [-4.0, 2.0, 0.0]
-    xrotation: [0, 90, 0]
-  - id: cube_2_{c}_{t}
+  - id: cube_2
     mesh:
       vertex:
         type: box
@@ -67,8 +59,7 @@ nodes:
         map_ke: textures/emission/stay_alive_emission.png
         xblend: true
       program: g_tex
-    pos: [0.0, 2.0, 0.0]
-  - id: blend_cube_{c}_{t}
+  - id: blend_cube
     mesh:
       path: rubik_cube_emission.obj
       material_modifiers:
@@ -83,5 +74,22 @@ nodes:
           render_back: true
       base_scale: 1
       program: g_tex
+
+nodes:
+  - type: player
+    pos: [0, 1, 15]
+    active: true
+  - typw: dir_light
+    xxpos: [0, 25, 25]
+    pos: [-25, 25, 0]
+    scale: 2.5
+  - type: wooden_floor
+    scale: 100
+  - type: cube_1
+    pos: [-4.0, 2.0, 0.0]
+    xrotation: [0, 90, 0]
+  - type: cube_2
+    pos: [0.0, 2.0, 0.0]
+  - type: blend_cube
     pos: [4.0, 2.0, 0.0]
     rotation: [0, 0, 180]

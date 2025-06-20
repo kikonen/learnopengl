@@ -1,16 +1,15 @@
 ---
-name: Forest
+meta:
+  name: Forest
 skybox:
   material: skybox/polyhaven/drakensberg_solitary_mountain_4k.hdr
 script:
   scripts:
     - path: lib/common
-nodes:
+types:
   - id: player
     type: origo
-    pos: [0, 10, 20]
     front: [0, 0, -1]
-    active: true
     audio:
       listener:
         default: true
@@ -19,21 +18,19 @@ nodes:
     controllers:
       - type: pawn
       - type: camera_zoom
-  - id: dir_light_{c}_{t}
+  - id: dir_light
     mesh:
       path: light
       material_modifier:
         kd: [0.8, 0.8, 0.6, 1.0]
       program: g_light
-    pos: [-10, 25, 40]
-    scale: 2.5
     flags:
       no_shadow: true
     light:
       type: directional
       diffuse: [0.9, 0.9, 0.7, 1.0]
       intensity: 30000
-  - id: palm_tree_forest_{c}_{t}
+  - id: palm_tree_forest
     prefab:
       path: prefab/scenery/prefab_palm_tree.yml
     mesh:
@@ -58,47 +55,16 @@ nodes:
             USE_TREE_WIND: 1
     flags:
       static_bounds: true
-    generator:
-      type: grid
-      mode: random
-      offset: [-1000, 10.0, 0.0]
-      seed: [23444242, 54351212, 4353333]
-      repeat:
-        x_count: 200
-        z_count: 200
-        x_step: 20
-        z_step: -20
-  - xid: maple_tree_forest_{c}_{t}
+  - id: maple_tree_forest
     prefab:
       path: prefab/scenery/prefab_maple_tree.yml
     flags:
       static_bounds: true
-    generator:
-      type: grid
-      mode: random
-      offset: [-250, 10.0, 0.0]
-      seed: [23444242, 54351212, 4353333]
-      repeat:
-        x_count: 50
-        z_count: 50
-        x_step: 20
-        z_step: -20
-  - xid: pine_tree_forest_{t}
+  - id: pine_tree_forest
     prefab:
       path: prefab/scenery/prefab_pine_tree.yml
     flags:
       static_bounds: true
-    scale: 2
-    generator:
-      type: grid
-      mode: random
-      offset: [-250, 0.0, 0.0]
-      seed: [23444242, 54351212, 4353333]
-      repeat:
-        x_count: 50
-        z_count: 50
-        x_step: 20
-        z_step: -20
   - id: wooden_floor
     prefab:
       path: prefab/scenery/prefab_wooden_floor.yml
@@ -106,9 +72,7 @@ nodes:
     mesh:
       material:
         tiling: 1000
-    scale: 4000
-    position: [0, 0, 0]
-  - xid: terrain_grass_v2
+  - id: terrain_grass_v2
     mesh:
       path: quad_terrain
       material:
@@ -121,6 +85,63 @@ nodes:
       flags:
         tessellation: true
     priority: 20
+    type_flags:
+      pre_depth: true
+      use_deferred: true
+      xnav_physics: true
+    physics:
+      geom:
+        type: height_field
+        category: [terrain]
+        collision: [can_terrain]
+        size: [2048, 0, 2048]
+        xrotation: [0, 180, 0]
+
+nodes:
+  - type: player
+    pos: [0, 10, 20]
+    active: true
+  - type: dir_light
+    pos: [-10, 25, 40]
+    scale: 2.5
+  - type: palm_tree_forest
+    generator:
+      type: grid
+      mode: random
+      offset: [-1000, 10.0, 0.0]
+      seed: [23444242, 54351212, 4353333]
+      repeat:
+        x_count: 200
+        z_count: 200
+        x_step: 20
+        z_step: -20
+  - xtype: maple_tree_forest
+    generator:
+      type: grid
+      mode: random
+      offset: [-250, 10.0, 0.0]
+      seed: [23444242, 54351212, 4353333]
+      repeat:
+        x_count: 50
+        z_count: 50
+        x_step: 20
+        z_step: -20
+  - xtype: pine_tree_forest
+    scale: 2
+    generator:
+      type: grid
+      mode: random
+      offset: [-250, 0.0, 0.0]
+      seed: [23444242, 54351212, 4353333]
+      repeat:
+        x_count: 50
+        z_count: 50
+        x_step: 20
+        z_step: -20
+  - type: wooden_floor
+    scale: 4000
+    position: [0, 0, 0]
+  - type: terrain_grass_v2
     pos: [-1024, 0, -2048]
     generator:
       type: terrain
@@ -133,14 +154,3 @@ nodes:
         vert_range: [-62.54, 221.9]
         vert_range: [-15.54, 81.9]
         horiz_scale: 2
-    type_flags:
-      pre_depth: true
-      use_deferred: true
-      xnav_physics: true
-    physics:
-      geom:
-        type: height_field
-        category: [terrain]
-        collision: [can_terrain]
-        size: [2048, 0, 2048]
-        xrotation: [0, 180, 0]

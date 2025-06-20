@@ -1,30 +1,25 @@
 ---
-name: Origo
-viewports:
+meta:
+  name: Flag
 skybox:
   material: skybox/polyhaven/wasteland_clouds_puresky_4k.hdr
 script:
   scripts:
     - path: lib/common
-nodes:
+types:
   - id: player
     type: origo
-    pos: [0, 1, 15]
-    rotation: [0, 180, 0]
-    active: true
     camera:
       default: true
     controllers:
       - type: pawn
       - type: camera_zoom
-  - id: dir_light_{c}_{t}
+  - id: dir_light
     mesh:
       path: light
       material_modifier:
         kd: [0.8, 0.8, 0.6, 1.0]
       program: g_light
-    pos: [-25, 25, 20]
-    scale: 2.5
     flags:
       no_shadow: true
     light:
@@ -34,8 +29,6 @@ nodes:
   - id: wooden_floor
     prefab:
       path: prefab/scenery/prefab_wooden_floor.yml
-    pos: [0, 0, 0]
-    scale: 100
     physics:
       geom:
         collision: [world]
@@ -50,17 +43,14 @@ nodes:
         program: g_tex
     flags:
       no_frustum: true
-    pos: [0.0, 0.0, 0.0]
   - id: flag_origo
     type: origo
-    pos: [0]
     script: |
       cmd:rotate(
         { time=60 * 10, relative=true },
         vec3(0, 1, 0),
         1 * 360 * 10)
   - id: flag
-    parent: flag_origo
     mesh:
       vertex:
         type: plane_grid
@@ -75,9 +65,7 @@ nodes:
         shared_definitions:
           USE_FLAG_WAVE: 1
           USE_TBN: 1
-    pos: [1.08, 3.2, 0]
   - xid: flag_2
-    parent: flag_origo
     mesh:
       vertex:
         type: plane_grid
@@ -99,7 +87,6 @@ nodes:
         selection_definitions:
           USE_FLAG_WAVE: 1
         updater_id: shader_toy_1
-    pos: [1.08, 3.2, 0]
   - id: flag_top
     mesh:
       vertex:
@@ -111,9 +98,7 @@ nodes:
         program: g_tex
     flags:
       no_frustum: true
-    pos: [0, 4, 0]
   - id: flag_pole
-    parent: flag_origo
     mesh:
       vertex:
         type: capped_cylinder
@@ -124,7 +109,35 @@ nodes:
         kd: [0.4, 0.4, 0.6]
         mrao: [0.2, 0.1, 1.0]
         program: g_tex
+
+nodes:
+  - type: player
+    pos: [0, 1, 15]
+    rotation: [0, 180, 0]
+    active: true
+  - type: dir_light
+    pos: [-25, 25, 20]
+    scale: 2.5
+  - type: wooden_floor
+    pos: [0, 0, 0]
+    scale: 100
+  - type: origo
+    pos: [0.0, 0.0, 0.0]
+  - type: flag_origo
+    id: flag_origo
+    pos: [0]
+  - type: flag
+    parent: flag_origo
+    pos: [1.08, 3.2, 0]
+  - xtype: flag_2
+    parent: flag_origo
+    pos: [1.08, 3.2, 0]
+  - type: flag_top
+    pos: [0, 4, 0]
+  - type: flag_pole
+    parent: flag_origo
     pos: [0, 2, 0]
+
 material_updaters:
 - id: shader_toy_1
   type: shader

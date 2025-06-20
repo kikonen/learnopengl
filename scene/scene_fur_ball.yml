@@ -1,6 +1,6 @@
 ---
-name: Origo
-viewports:
+meta:
+  name: Cows
 skybox:
   program: g_skybox
   xmaterial: skybox/polyhaven/circus_arena_4k.hdr
@@ -8,12 +8,10 @@ skybox:
 script:
   scripts:
     - path: lib/common
-nodes:
+types:
   - id: player
     type: origo
-    pos: [0, 0, 10]
     front: [0, 0, -1]
-    active: true
     audio:
       listener:
         default: true
@@ -22,12 +20,10 @@ nodes:
     controllers:
       - type: pawn
       - type: camera_zoom
-  - xid: stacked_base
+  - id: stacked_base
     mesh:
       path: cow
     priority: 1
-    pos: [0, 0, 0]
-    scale: 1.3
     program_stack:
       - material:
           name: fur_base
@@ -48,21 +44,14 @@ nodes:
           alpha: true
         program: g_fur
         layers: 10
-  - id: base_{c}_{t}
+  - id: base
     prefab: prefab/creatures/prefab_cow.yml
-    pos: [0, 0, 0]
-    scale: 1.0
     audio:
       source:
         path: audio/Cow_CE882860_normal_mono.wav
         gain: 1.0
     script_file: scripts/cow_audio
-    repeat:
-      x_count: 5
-      z_count: 5
-      x_step: 15
-      z_step: -15
-  - xid: fur
+  - id: fur
     mesh:
       path: cow
       xxpath: quad
@@ -76,21 +65,12 @@ nodes:
         layers_depth: 0.2
         xxalpha: true
       program: g_fur
-    pos: [0, 0, 0]
-    scale: 1.0
-    repeat:
-      x_count: 5
-      z_count: 5
-      x_step: 15
-      z_step: -15
-  - id: dir_light_{c}_{t}
+  - id: dir_light
     mesh:
       path: light
       material_modifier:
         kd: [0.8, 0.8, 0.6, 1.0]
       program: light
-    pos: [0, 25, 40]
-    scale: 2.5
     flags:
       no_shadow: true
     light:
@@ -99,12 +79,8 @@ nodes:
       intensity: 30000
   - id: point_light_origo_1
     type: origo
-    pos: [0.0, 4.0, 0.0]
     script_file: scripts/anim_rotate_light
   - id: point_light_green_1
-    parent_id: point_light_origo_1
-    pos: [-10, 0, 0]
-    scale: 0.5
     mesh:
       path: light
       material_modifier:
@@ -120,7 +96,6 @@ nodes:
       diffuse: [0.1, 0.8, 0.1, 1.0]
       intensity: 2000
   - id: point_light_green_1_halo
-    parent: point_light_origo_1
     mesh:
       vertex:
         type: box
@@ -131,29 +106,19 @@ nodes:
         blend: true
         reverse_front_face: true
         no_depth: true
-    pos: [-10, 0, 0]
     flags:
       effect: true
       no_select: true
       no_shadow: true
-  - id: "point_light_origo_quad_{x}_{z}"
+  - id: point_light_quad_origo
     type: origo
-    pos: [30.0, 4.0, -30.0]
     script_file: scripts/anim_rotate_light
-    repeat:
-      x_step: 20
-      z_step: 20
-      x_count: 2
-      z_count: 2
-  - id: point_light_quad_{c}_{t}
-    parent_id: "point_light_origo_quad_{x}_{z}"
+  - id: point_light_quad
     mesh:
       path: light
       material_modifier:
         kd: [0.1, 0.1, 0.9, 1.0]
       program: light
-    pos: [10, 0, 0]
-    scale: 0.5
     flags:
       no_shadow: true
     light:
@@ -164,13 +129,7 @@ nodes:
       target_id: ROOT
       diffuse: [0.1, 0.1, 0.9, 1.0]
       intensity: 3000
-    repeat:
-      x_step: 0
-      z_step: 0
-      x_count: 2
-      z_count: 2
-  - id: point_light_quad_halo_{c}_{t}
-    parent_id: "point_light_origo_quad_{x}_{z}"
+  - id: point_light_quad_halo
     mesh:
       vertex:
         type: box
@@ -181,11 +140,67 @@ nodes:
         blend: true
         reverse_front_face: true
         no_depth: true
-    pos: [10, 0, 0]
     flags:
       effect: true
       no_select: true
       no_shadow: true
+
+nodes:
+  - type: player
+    pos: [0, 0, 10]
+    active: true
+  - xtype: stacked_base
+    pos: [0, 0, 0]
+    scale: 1.3
+  - type: base
+    pos: [0, 0, 0]
+    scale: 1.0
+    repeat:
+      x_count: 5
+      z_count: 5
+      x_step: 15
+      z_step: -15
+  - xtype: fur
+    pos: [0, 0, 0]
+    scale: 1.0
+    repeat:
+      x_count: 5
+      z_count: 5
+      x_step: 15
+      z_step: -15
+  - type: dir_light
+    pos: [0, 25, 40]
+    scale: 2.5
+  - type: point_light_origo_1
+    id: point_light_origo_1
+    pos: [0.0, 4.0, 0.0]
+  - type: point_light_green_1
+    parent_id: point_light_origo_1
+    pos: [-10, 0, 0]
+    scale: 0.5
+  - type: point_light_green_1_halo
+    parent: point_light_origo_1
+    pos: [-10, 0, 0]
+  - type: point_light_quad_origo
+    id: "point_light_quad_origo_{x}_{z}"
+    pos: [30.0, 4.0, -30.0]
+    repeat:
+      x_step: 20
+      z_step: 20
+      x_count: 2
+      z_count: 2
+  - id: point_light_quad_{c}_{t}
+    parent_id: "point_light_quad_origo_{x}_{z}"
+    pos: [10, 0, 0]
+    scale: 0.5
+    repeat:
+      x_step: 0
+      z_step: 0
+      x_count: 2
+      z_count: 2
+  - type: point_light_quad_halo
+    parent_id: "point_light_quad_origo_{x}_{z}"
+    pos: [10, 0, 0]
     repeat:
       x_step: 0
       z_step: 0
