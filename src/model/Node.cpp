@@ -123,9 +123,15 @@ void Node::prepareWT(
         m_particleGenerator->prepareWT();
     }
 
-    if (!m_typeFlags.root) {
-        auto& scriptSystem = script::ScriptSystem::get();
+    auto& scriptSystem = script::ScriptSystem::get();
 
+    if (m_typeFlags.root) {
+        for (auto scriptId : type->getScripts())
+        {
+            scriptSystem.runGlobalScript(this, scriptId);
+        }
+    }
+    else {
         for (auto scriptId : type->getScripts())
         {
             scriptSystem.bindNodeScript(this, scriptId);

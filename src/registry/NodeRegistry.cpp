@@ -718,13 +718,17 @@ void NodeRegistry::attachListeners()
                 const auto* type = node->getType();
                 const auto nodeId = data.target;
 
+                auto& scriptSystem = script::ScriptSystem::get();
+
                 for (const auto& scriptId : type->getScripts()) {
+                    if (nodeId == m_rootId) {
+                        //scriptSystem.runGlobalScript(node, scriptId);
+                    } else
                     {
                         event::Event evt { event::Type::script_run };
                         auto& body = evt.body.script = {
                             .target = nodeId,
                             .id = scriptId,
-                            .global = nodeId == m_rootId
                         };
                         m_registry->m_dispatcherWorker->send(evt);
                     }
