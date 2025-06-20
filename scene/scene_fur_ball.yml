@@ -92,7 +92,7 @@ types:
       type: point
       linear: 0.35
       quadratic: 0.44
-      target_id: ROOT
+      #target_id: ROOT
       diffuse: [0.1, 0.8, 0.1, 1.0]
       intensity: 2000
   - id: point_light_green_1_halo
@@ -189,7 +189,7 @@ nodes:
       z_step: 20
       x_count: 2
       z_count: 2
-  - id: point_light_quad_{c}_{t}
+  - type: point_light_quad
     parent_id: "point_light_quad_origo_{x}_{z}"
     pos: [10, 0, 0]
     scale: 0.5
