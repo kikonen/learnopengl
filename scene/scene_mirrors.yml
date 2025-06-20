@@ -1,17 +1,16 @@
 ---
-name: Mirrors
+meta:
+  name: Mirrors
 skybox:
   program: g_skybox
   material: skybox/polyhaven/drakensberg_solitary_mountain_4k.hdr
 script:
   scripts:
     - path: lib/common
-nodes:
+types:
   - id: player
     type: origo
-    pos: [0, 0, 5]
     front: [0, 0, -1]
-    active: true
     audio:
       listener:
         default: true
@@ -20,16 +19,14 @@ nodes:
     controllers:
       - type: pawn
       - type: camera_zoom
-  - id: dir_light_{c}_{t}
-    pos: [0, 25, 40]
-    scale: 2.5
+  - id: dir_light
     mesh:
       path: light
       program: g_light
+      material_modifier:
+        kd: [0.8, 0.8, 0.6, 1.0]
     flags:
       no_shadow: true
-    material_modifier:
-      kd: [0.8, 0.8, 0.6, 1.0]
     light:
       type: directional
       diffuse: [0.9, 0.9, 0.7, 1.0]
@@ -43,8 +40,6 @@ nodes:
       material_modifier:
         reflection: 0.05
       program: g_tex
-    pos: [0, -1, 0]
-    scale: 1.3
   - id: wood_cube
     mesh:
       path: texture_cube
@@ -53,29 +48,13 @@ nodes:
         map_kd: textures/wood_1024.png
         reflection: 0.4
       program: g_tex
-    pos: [5.0, 5.0, -5.0]
-    scale: 1
-  - id: four_cubes_{t}_{c}
+  - id: four_cubes
     mesh:
       path: texture_cube_3
       program: g_tex
-    scale: 1
-    clones:
-      - pos: [-5.0, 0.0, -5.0]
-      - pos: [5.0, 0.0, -5.0]
-      - pos: [-5.0, 0.0, 5.0]
-      - pos: [5.0, 0.0, 5.0]
-  - id: skeleton_army_2_{t}
+  - id: skeleton_army_2
     prefab:
       path: prefab/creatures/prefab_skeleton_warrior.yml
-    pos: [15, 6.5, -20.0]
-    rotation: [0, -180, 0]
-    scale: 2
-    repeat:
-      x_count: 5
-      z_count: 20
-      x_step: -6
-      z_step: 3
     physics:
       enabled: false
     script: |
@@ -83,7 +62,6 @@ nodes:
         { name = "master:Idle" });
   - id: cube_map_1
     type: origo
-    pos: [5.0, 3.0, 0.0]
     flags:
       cube_map: true
   - id: glass_ball
@@ -94,22 +72,19 @@ nodes:
         refraction: 0.05
         refraction_ratio: [1.0, 1.52]
       program: g_tex
-    pos: [5.0, 3.0, 0.0]
-    scale: 1.3
   - id: brick_wall
     mesh:
       path: quad
       material:
         name: brickwall
-        map_kd: textures/brickwall_1024_color.png
-        map_normal: textures/brickwall_1024_normal.png
+        base: textures/brickwall_1024
+        map_kd: brickwall_1024_color.png
+        map_normal: brickwall_1024_normal.png
+        map_displacement: brickwall_1024_displacement
         reflection: 0.2
+        parallax: 0.07
         render_back: true
       program: g_tex
-    pos: [-5.0, 8.5, -14.0]
-    repeat:
-      x_count: 3
-      x_step: 4
   - id: wood_wall
     mesh:
       path: quad
@@ -119,11 +94,7 @@ nodes:
         reflection: 0.4
         render_back: true
       program: g_tex
-    pos: [-3.0, 8.5, -14.0]
-    repeat:
-      x_count: 2
-      x_step: 4
-  - id: giant_wooden_box_{t}_{c}
+  - id: giant_wooden_box
     mesh:
       path: quad
       material:
@@ -132,23 +103,8 @@ nodes:
         reflection: 0.1
         render_back: true
       program: g_tex
-    clone_position_offset: [0, 40, 0]
     flags:
       no_shadow: true
-    scale: 100
-    clones:
-      - pos: [0.0, 100.0, 0.0]
-        rot: [90, 0, 0]
-      - pos: [0.0, -100.0, .0]
-        rot: [270, 0, 0]
-      - pos: [100.0, 0.0, 0.0]
-        rot: [0, 270, 0]
-      - pos: [-100.0, 0.0, 0.0]
-        rot: [0, 90, 0]
-      - pos: [0.0, 0.0, 100.0]
-        rot: [0, 180, 0]
-      - pos: [0.0, 0.0, -100.0]
-        rot: [0, 0, 0]
     xphysics:
       geom:
         type: plane
@@ -163,9 +119,6 @@ nodes:
         refraction_ratio: [1.0, 1.52]
         render_back: true
       program: g_mirror
-    pos: [-40.0, 10.0, -10.0]
-    rotation: [0.0, 45.0, 0.0]
-    scale: 15.0
     front: [0, 0, 1]
     flags:
       mirror: true
@@ -182,11 +135,77 @@ nodes:
         refraction_ratio: [1.0, 1.52]
         render_back: true
       program: g_mirror
-    pos: [40.0, 10.0, -10.0]
-    rotation: [0.0, 270.0, 0.0]
-    scale: 15.0
     front: [0, 0, 1]
     flags:
       mirror: true
       no_reflect: true
       no_refract: true
+
+nodes:
+  - type: player
+    pos: [0, 0, 5]
+    active: true
+  - type: dir_light
+    pos: [10, 25, 40]
+    scale: 2.5
+  - type: silver_ball
+    pos: [0, -1, 0]
+    scale: 1.3
+  - type: wood_cube
+    pos: [5.0, 5.0, -5.0]
+    scale: 1
+  - type: four_cubes
+    scale: 1
+    clones:
+      - pos: [-5.0, 0.0, -5.0]
+      - pos: [5.0, 0.0, -5.0]
+      - pos: [-5.0, 0.0, 5.0]
+      - pos: [5.0, 0.0, 5.0]
+  - type: skeleton_army_2
+    pos: [15, 6.5, -20.0]
+    rotation: [0, -180, 0]
+    scale: 2
+    repeat:
+      x_count: 5
+      z_count: 20
+      x_step: -6
+      z_step: 3
+  - type: cube_map_1
+    pos: [5.0, 3.0, 0.0]
+  - type: glass_ball
+    pos: [5.0, 3.0, 0.0]
+    scale: 1.3
+  - type: brick_wall
+    pos: [-5.0, 8.5, -14.0]
+    repeat:
+      x_count: 3
+      x_step: 4
+  - type: wood_wall
+    pos: [-3.0, 8.5, -14.0]
+    repeat:
+      x_count: 2
+      x_step: 4
+  - type: giant_wooden_box
+    clone_position_offset: [0, 40, 0]
+    scale: 100
+    clones:
+      - pos: [0.0, 100.0, 0.0]
+        rot: [90, 0, 0]
+      - pos: [0.0, -100.0, .0]
+        rot: [270, 0, 0]
+      - pos: [100.0, 0.0, 0.0]
+        rot: [0, 270, 0]
+      - pos: [-100.0, 0.0, 0.0]
+        rot: [0, 90, 0]
+      - pos: [0.0, 0.0, 100.0]
+        rot: [0, 180, 0]
+      - pos: [0.0, 0.0, -100.0]
+        rot: [0, 0, 0]
+  - type: big_mirror_1
+    pos: [-40.0, 10.0, -10.0]
+    rotation: [0.0, 45.0, 0.0]
+    scale: 15.0
+  - type: big_mirror_2
+    pos: [40.0, 10.0, -10.0]
+    rotation: [0.0, 270.0, 0.0]
+    scale: 15.0

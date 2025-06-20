@@ -1,5 +1,6 @@
 ---
-name: Test
+meta:
+  name: Test
 skybox:
   program: g_skybox
   #material: skybox/polyhaven/drakensberg_solitary_mountain_4k.hdr
@@ -8,12 +9,10 @@ skybox:
 script:
   scripts:
     - path: lib/common
-nodes:
+types:
   - id: player
     type: origo
-    pos: [-2, 3, 20]
     front: [0, 0, -1]
-    active: true
     audio:
       listener:
         default: true
@@ -30,7 +29,6 @@ nodes:
       material:
         kd: [0.8, 0.8, 0.6, 1.0]
         program: g_light
-    pos: [0, 25, 40]
     flags:
       no_shadow: true
     light:
@@ -40,32 +38,24 @@ nodes:
   - xid: ground
     prefab:
       path: prefab/scenery/prefab_grass_ground_1.yml
-    scale: 100
-    position: [0, 0, 0]
   - id: planet_origo
     type: origo
-    pos: [0, 25, -25]
     xscript: |
       cmd:rotate(
         { time=60 * 100 },
         vec3(0, 1, 0),
         360 * 40)
   - id: cylon_origo
-    parent: planet_origo
     type: origo
     xscript: |
       cmd:rotate(
         { time=60 * 100 },
         vec3(0, 1, 0),
         360 * 50)
-  - id: cylon_ship_{t}
-    parent: cylon_origo
+  - id: cylon_ship
     prefab:
       path: prefab/vehicles/prefab_cylon_raider.yml
     priority: -20
-    scale: 0.125
-    rotation: [0, -90, 0]
-    position: [0, 1, 13]
     audio:
       sources:
         - name: fly
@@ -73,12 +63,6 @@ nodes:
           reference_distance: 20
           gain: 1
           loop: true
-    repeat:
-      x_count: 2
-      x_step: 6
-      y_step: 2
-      z_count: 2
-      z_step: 6
     xscript: |
       local fly_sid = util.sid("fly")
       cid = cmd:audio_play(
@@ -88,7 +72,6 @@ nodes:
         vec3(1, 0, 0),
         360 * 30)
   - id: planet
-    parent: planet_origo
     mesh:
       xvertex:
         type: ico_sphere
@@ -105,7 +88,6 @@ nodes:
       default_programs: true
       base_scale: 10
   - id: planet_cloud
-    parent: planet_origo
     mesh:
       path: planets/planet.obj
       xmaterial:
@@ -129,3 +111,34 @@ nodes:
         { time=40 * 100 },
         vec3(0, 1, 0),
         360 * 50)
+
+nodes:
+  - type: player
+    pos: [-2, 3, 20]
+    active: true
+  - type: dir_light
+    pos: [0, 25, 40]
+  - xtype: ground
+    scale: 100
+    position: [0, 0, 0]
+  - type: planet_origo
+    id: planet_origo
+    pos: [0, 25, -25]
+  - type: cylon_origo
+    id: cylon_origo
+    parent: planet_origo
+  - type: cylon_ship
+    parent: cylon_origo
+    scale: 0.125
+    rotation: [0, -90, 0]
+    position: [0, 1, 13]
+    repeat:
+      x_count: 2
+      x_step: 6
+      y_step: 2
+      z_count: 2
+      z_step: 6
+  - type: planet
+    parent: planet_origo
+  - type: planet_cloud
+    parent: planet_origo

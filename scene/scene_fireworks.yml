@@ -5,12 +5,10 @@ skybox:
 script:
   scripts:
     - path: lib/common
-nodes:
+types:
   - id: player
     type: origo
-    pos: [0, 1, 30]
     front: [0, 0.25, -1]
-    active: true
     audio:
       listener:
         default: true
@@ -20,12 +18,11 @@ nodes:
     controllers:
       - type: pawn
       - type: camera_zoom
-  - id: dir_light_{c}_{t}
+  - id: dir_light
     type: origo
     mesh:
       path: light
       program: g_light
-    pos: [-15, 25, 25]
     flags:
       no_shadow: true
     light:
@@ -41,22 +38,17 @@ nodes:
         mrao: [0.2, 0.1, 1.0]
         program: g_tex
       scale: 0.05
-    pos: [0.0, 0.0, 0.0]
-  - id: wooden_floor
+  - id: cobblestone_floor
     prefab:
       path: prefab/scenery/prefab_cobblestone_floor.yml
-    scale: 100
-    position: [0, 0, 0]
   - id: rocket_origo
     type: origo
-    pos: [0, 2, 0]
     script: |
       cmd:rotate(
         { time=10 * 100 },
         vec3(0, 1, 0),
         360 * 100)
-  - id: rocket_{c}_{t}
-    parent: rocket_origo
+  - id: rocket
     mesh:
       vertex:
         type: sphere
@@ -64,7 +56,6 @@ nodes:
       material:
         kd: [1.8, 0.3, 0.4, 1]
         program: g_tex
-    pos: [5, 0, 0]
     audio:
       sources:
         - name: shoot
@@ -111,65 +102,71 @@ nodes:
         { time=50 * 100 },
         vec3(0, 0, 1),
         360 * 100)
-    share_type: false
-    clones:
-      - pos: [-5, 0, -5]
-        mesh:
-         material:
-           kd: [1.8, 0.3, 0.4, 1]
-        particle:
-          material:
-            kd: [1.8, 0.3, 0.4, 1]
-      - pos: [-5, 0,  5]
-        mesh:
-          material:
-            kd: [1.8, 1.8, 0.3, 1]
-        particle:
-          material:
-            kd: [1.8, 1.8, 0.3, 1]
-      - pos: [ 5, 0, -5]
-        mesh:
-          material:
-            kd: [0.3, 1.8, 0.4, 1]
-        particle:
-          material:
-            kd: [0.3, 1.8, 0.4, 1]
-      - pos: [ 5, 0,  5]
-        mesh:
-          material:
-            kd: [0.4, 0.3, 1.8, 1]
-        particle:
-          material:
-            kd: [0.4, 0.3, 1.8, 1]
-      - pos: [-10, 0, -10]
-        mesh:
-          material:
-            kd: [1.8, 1.8, 0.3, 1]
-        particle:
-          material:
-            kd: [1.8, 1.8, 0.3, 1]
-      - pos: [-10, 0,  10]
-        mesh:
-         material:
-           kd: [1.8, 0.3, 0.4, 1]
-        particle:
-          material:
-            kd: [1.8, 0.3, 0.4, 1]
-      - pos: [ 10, 0, -10]
-        mesh:
-          material:
-            kd: [0.4, 0.3, 1.8, 1]
-        particle:
-          material:
-            kd: [0.4, 0.3, 1.8, 1]
-      - pos: [ 10, 0,  10]
-        mesh:
-          material:
-            kd: [0.3, 1.8, 0.4, 1]
-        particle:
-          material:
-            kd: [0.3, 1.8, 0.4, 1]
     script_file: scripts/seq_firework
+  - id: rocket_1
+    base: rocket
+    mesh:
+     material:
+       kd: [1.8, 0.3, 0.4, 1]
+    particle:
+      material:
+        kd: [1.8, 0.3, 0.4, 1]
+  - id: rocket_2
+    base: rocket
+    mesh:
+      material:
+        kd: [1.8, 1.8, 0.3, 1]
+    particle:
+      material:
+        kd: [1.8, 1.8, 0.3, 1]
+  - id: rocket_3
+    base: rocket
+    mesh:
+      material:
+        kd: [0.3, 1.8, 0.4, 1]
+    particle:
+      material:
+        kd: [0.3, 1.8, 0.4, 1]
+  - id: rocket_4
+    base: rocket
+    mesh:
+      material:
+        kd: [0.4, 0.3, 1.8, 1]
+    particle:
+      material:
+        kd: [0.4, 0.3, 1.8, 1]
+  - id: rocket_5
+    base: rocket
+    mesh:
+      material:
+        kd: [1.8, 1.8, 0.3, 1]
+    particle:
+      material:
+        kd: [1.8, 1.8, 0.3, 1]
+  - id: rocket_6
+    base: rocket
+    mesh:
+     material:
+       kd: [1.8, 0.3, 0.4, 1]
+    particle:
+      material:
+        kd: [1.8, 0.3, 0.4, 1]
+  - id: rocket_7
+    base: rocket
+    mesh:
+      material:
+        kd: [0.4, 0.3, 1.8, 1]
+    particle:
+      material:
+        kd: [0.4, 0.3, 1.8, 1]
+  - id: rocket_8
+    base: rocket
+    mesh:
+      material:
+        kd: [0.3, 1.8, 0.4, 1]
+    particle:
+      material:
+        kd: [0.3, 1.8, 0.4, 1]
   - id: rocket_message
     type: text
     mesh:
@@ -195,6 +192,42 @@ nodes:
       text: ""
       align_horizontal: center
       align_vertical: center
+    script_file: scripts/seq_firework_message
+
+nodes:
+  - type: player
+    pos: [0, 1, 30]
+    active: true
+  - type: dir_light
+    pos: [-15, 25, 25]
+  - type: origo
+    pos: [0.0, 0.0, 0.0]
+  - type: cobblestone_floor
+    position: [0, 0, 0]
+    scale: 100
+  - type: rocket_origo
+    id: rocket_origo
+    pos: [0, 2, 0]
+  - type: rocket
+    parent: rocket_origo
+    pos: [5, 0, 0]
+    clones:
+      - pos: [-5, 0, -5]
+        type: rocket_1
+      - pos: [-5, 0,  5]
+        type: rocket_2
+      - pos: [ 5, 0, -5]
+        type: rocket_3
+      - pos: [ 5, 0,  5]
+        type: rocket_4
+      - pos: [-10, 0, -10]
+        type: rocket_5
+      - pos: [-10, 0,  10]
+        type: rocket_6
+      - pos: [ 10, 0, -10]
+        type: rocket_7
+      - pos: [ 10, 0,  10]
+        type: rocket_8
+  - type: rocket_message
     pos: [0.0, 15.0, 0.0]
     scale: 0.015
-    script_file: scripts/seq_firework_message

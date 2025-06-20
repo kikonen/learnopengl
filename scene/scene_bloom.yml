@@ -1,18 +1,16 @@
 ---
-name: Origo
-viewports:
+meta:
+  name: Bloom
 skybox:
   program: g_skybox
   material: skybox/polyhaven/wasteland_clouds_puresky_4k.hdr
 script:
   scripts:
     - path: lib/common
-nodes:
+types:
   - id: player
     type: origo
-    pos: [0, 1, 15]
     front: [0, 0, -1]
-    active: true
     audio:
       listener:
         default: true
@@ -21,40 +19,26 @@ nodes:
     controllers:
       - type: pawn
       - type: camera_zoom
-  - id: other_{c}_{t}
+  - id: other
     mesh:
       path: texture_cube_4/texture_cube_4.obj
-    program: g_tex
-    pos: [0.0, 2.0, 0.0]
-    rotation: [0, 90, 0]
-    repeat:
-      z_count: 20
-      z_step: -10
-  - id: stained_windows_{c}_{t}
+      program: g_tex
+  - id: stained_windows
     prefab:
       path: prefab/props/prefab_door_01.yml
-    pos: [10, 5, -10]
-    rotation: [0, 90, 0]
-    scale: 2
-    repeat:
-      z_count: 10
-      z_step: 2
-  - id: dir_light_{c}_{t}
+  - id: dir_light
     mesh:
       path: light
       material_modifier:
         kd: [0.8, 0.8, 0.3, 1.0]
-    xxpos: [0, 25, 25]
-    pos: [-25, 25, 0]
-    scale: 2.5
-    program: g_light
+        program: g_light
     flags:
       no_shadow: true
     light:
       type: directional
       diffuse: [0.7, 0.7, 0.7, 1.0]
       intensity: 50000
-  - id: maple_tree_forest_{c}_{t}
+  - id: maple_tree_forest
     prefab:
       path: prefab/scenery/prefab_maple_tree.yml
     mesh:
@@ -78,16 +62,9 @@ nodes:
           selection_definitions:
             USE_TREE_WIND: 1
     priority: 1
-    pos: [20, 0.0, 0]
-    rotation: [0, 279, 0]
     flags:
       static_bounds: true
-    repeat:
-      x_count: 2
-      z_count: 2
-      x_step: 20
-      z_step: -20
-  - id: skeleton_army_grid_2_{t}
+  - id: skeleton_army_grid_2
     prefab:
       path: prefab/creatures/prefab_skeleton_warrior.yml
     mesh:
@@ -102,41 +79,20 @@ nodes:
         id_program: object_id
         selection_program: selection
     priority: 1
-    pos: [20, 0.5, 20]
-    rotation: [0, 45, 0]
-    rotation: [0, -90, 0]
-    scale: 3
-    xgenerator:
-      type: grid
-      mode: grid
-    repeat:
-      x_count: 2
-      z_count: 2
-      x_step: 10
-      z_step: -10
     script: |
       cmd:animation_play(
         { name = "master:SwingNormal" });
-  - id: skeleton_army_2_{t}
+  - id: skeleton_army_2
     prefab:
       path: prefab/creatures/prefab_skeleton.yml
     priority: 1
-    pos: [20, 0.0, 50]
-    rotation: [0, -90, 0]
-    scale: 3
     physics:
       enabled: true
-    repeat:
-      x_count: 2
-      z_count: 2
-      x_step: 10
-      z_step: -10
     script: |
       cmd:animation_play(
         { name = "master:Idle" });
   - id: cube_map_mirror_ball
     type: origo
-    parent_id: mirror_ball
     flags:
       cube_map: true
   - id: mirror_ball
@@ -144,27 +100,19 @@ nodes:
       path: glass_ball
       material_modifier:
         reflection: 0.8
-    program: g_tex
-    pos: [0, 5, 10]
-    scale: 1
+        program: g_tex
   - id: planet_1
     mesh:
       path: planet/planet.obj
-    program: g_tex
-    pos: [0, 0, 20]
-    scale: 1
+      program: g_tex
   - id: planet_2
     mesh:
       path: planet/planet.obj
       material_modifier:
         map_normal: mars_normal.png
-    program: g_tex
-    pos: [0, 3.5, 30]
-    scale: 1
+        program: g_tex
   - id: cube_map_wood_wall
-    parent_id: wood_wall
     type: origo
-    pos: [0, 0, 0.5]
     flags:
       cube_map: true
   - id: wood_wall
@@ -176,15 +124,85 @@ nodes:
         map_kd: textures/wood_1024.png
         reflection: 0.4
         render_back: true
-    program: g_tex
+        program: g_tex
+  - id: wooden_floor
+    prefab:
+      path: prefab/scenery/prefab_wooden_floor.yml
+
+nodes:
+  - type: player
+    pos: [0, 1, 15]
+    active: true
+  - type: other
+    pos: [0.0, 2.0, 0.0]
+    rotation: [0, 90, 0]
+    repeat:
+      z_count: 20
+      z_step: -10
+  - type: stained_windows
+    pos: [10, 5, -10]
+    rotation: [0, 90, 0]
+    scale: 2
+    repeat:
+      z_count: 10
+      z_step: 2
+  - type: dir_light
+    xxpos: [0, 25, 25]
+    pos: [-25, 25, 0]
+    scale: 2.5
+  - type: maple_tree_forest
+    pos: [20, 0.0, 0]
+    rotation: [0, 279, 0]
+    repeat:
+      x_count: 2
+      z_count: 2
+      x_step: 20
+      z_step: -20
+  - type: skeleton_army_grid_2
+    pos: [20, 0.5, 20]
+    xrotation: [0, 45, 0]
+    rotation: [0, -90, 0]
+    scale: 3
+    xgenerator:
+      type: grid
+      mode: grid
+    repeat:
+      x_count: 2
+      z_count: 2
+      x_step: 10
+      z_step: -10
+  - type: skeleton_army_2
+    pos: [20, 0.0, 50]
+    rotation: [0, -90, 0]
+    scale: 3
+    repeat:
+      x_count: 2
+      z_count: 2
+      x_step: 10
+      z_step: -10
+  - type: cube_map_mirror_ball
+    parent_id: mirror_ball
+  - type: mirror_ball
+    id: mirror_ball
+    pos: [0, 5, 10]
+    scale: 1
+  - type: planet_1
+    pos: [0, 0, 20]
+    scale: 1
+  - type: planet_2
+    pos: [0, 3.5, 30]
+    scale: 1
+  - type: cube_map_wood_wall
+    parent_id: wood_wall
+    pos: [0, 0, 0.5]
+  - type: wood_wall
+    id: wood_wall
     pos: [20.0, 2.5, 0.0]
     scale: 2.5
     rotation: [0, 270, 0]
     repeat:
       x_count: 1
       x_step: 1
-  - id: wooden_floor
-    prefab:
-      path: prefab/scenery/prefab_wooden_floor.yml
+  - type: wooden_floor
     scale: 100
     position: [0, 0, 0]
