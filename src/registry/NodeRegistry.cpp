@@ -870,6 +870,9 @@ void NodeRegistry::bindNode(
     {
         const auto* type = node->getType();
 
+        node->m_typeFlags = type->m_flags;
+        node->m_layer = type->m_layer;
+
         node->m_camera = createCameraComponent(type);
         node->m_light = createLight(type);
         node->m_particleGenerator = createParticleGenerator(type);

@@ -83,9 +83,6 @@ void Node::prepareWT(
 
     auto* type = m_typeHandle.toType();
 
-    m_typeFlags = type->m_flags;
-    m_layer = type->m_layer;
-
     // TODO KI need to set these to *NodeType* in loader
     // => apply from there in NodeRegistry
     state.setPivot(type->m_pivotPoint.resolve(type));

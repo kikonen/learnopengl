@@ -15,6 +15,7 @@
 
 namespace {
     const inline std::string OPT_TYPE{ "type" };
+    const inline std::string OPT_ID{ "id" };
     const inline std::string OPT_PARENT{ "parent" };
     const inline std::string OPT_POS{ "pos" };
     const inline std::string OPT_ROT{ "rot" };
@@ -35,6 +36,7 @@ namespace script::api
         auto& nodeRegistry = NodeRegistry::get();
 
         std::string typeName;
+        std::string id;
         ki::node_id parentId = 0;
         auto pos = glm::vec3(0);
         auto rot = glm::vec3(0);
@@ -44,6 +46,9 @@ namespace script::api
             const auto& k = key.as<std::string>();
             if (k == OPT_TYPE) {
                 typeName = value.as<std::string>();
+            }
+            else if (k == OPT_ID) {
+                id = value.as<std::string>();
             }
             else if (k == OPT_PARENT) {
                 parentId = value.as<unsigned int>();
@@ -62,15 +67,18 @@ namespace script::api
         const auto typeId = SID(typeName);
         const auto* type = pool::TypeHandle::toType(typeId);
 
-        if (!type) {
-            return 0;
+        if (!type) return 0;
+
+        ki::node_id nodeId;
+        if (id.empty()) {
+            nodeId = ki::StringID::nextID(typeName);
+        } 
+        else {
+            nodeId = SID(id);
         }
 
-        const ki::node_id nodeId = ki::StringID::nextID(typeName);
-
-        if (pool::NodeHandle::toHandle(nodeId)) {
-            return 0;
-        }
+        // NOTE KI cannot allow duplicate id
+        if (pool::NodeHandle::toHandle(nodeId)) return 0;
 
         const auto handle = pool::NodeHandle::allocate(nodeId);
         auto* node = handle.toNode();

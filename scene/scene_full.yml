@@ -28,7 +28,7 @@ types:
   - id: fps_counter
     prefab:
       path: prefab/util/prefab_fps_counter.yml
-    scale: 0.0025
+    base_scale: 0.0025
     layer: ui
   - id: player
     type: origo
@@ -493,6 +493,11 @@ types:
     mesh:
       path: texture_ball
       program: g_tex
+      material_modifier:
+        alpha: true
+        blend: true
+        render_back: true
+        kd: [1, 1, 1, 0.7]
   - id: cube_map_2_common
     type: origo
     flags:
@@ -1086,7 +1091,6 @@ nodes:
     id: fps_counter
     #pos: [5.75, 5.25, 0.2]
     pos: [2, -2, -1]
-    scale: 0.0025
   - type: zero_origo
     id: zero_origo
     pos: [0.0, 0.0, 0.0]

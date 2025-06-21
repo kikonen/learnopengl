@@ -9,6 +9,11 @@ script:
 types:
   - id: origo
     type: origo
+  - id: fps_counter
+    prefab:
+      path: prefab/util/prefab_fps_counter.yml
+    base_scale: 0.0025
+    layer: ui
   - id: player
     type: origo
     front: [0, 0, -1]
@@ -355,6 +360,9 @@ types:
       intensity: 200
 
 nodes:
+  - xtype: fps_counter
+    id: fps_counter
+    pos: [2, -2, -1]
   - id: player
     type: player
     pos: [0, 1, 15]

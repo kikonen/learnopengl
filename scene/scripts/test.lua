@@ -22,3 +22,9 @@ for i=0,10 do
   create_new_node("brick_wall_1")
   create_new_node("skeleton_army")
 end
+
+for _, state in pairs(states) do
+ if state.emit_particles then
+   state:emit_particles()
+ end
+end
