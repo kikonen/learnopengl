@@ -120,19 +120,19 @@ nodes:
       type: grid
       mode: random
       offset: [-250, 10.0, 0.0]
-      seed: [23444242, 54351212, 4353333]
+      seed: [23474242, 54311212, 4363333]
       repeat:
         x_count: 50
         z_count: 50
         x_step: 20
         z_step: -20
   - xtype: pine_tree_forest
-    scale: 2
     generator:
       type: grid
       mode: random
       offset: [-250, 0.0, 0.0]
-      seed: [23444242, 54351212, 4353333]
+      scale: 2
+      seed: [23344242, 52351212, 4353335]
       repeat:
         x_count: 50
         z_count: 50
