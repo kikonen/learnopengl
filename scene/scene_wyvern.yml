@@ -1,17 +1,16 @@
 ---
-name: Spyro
+meta:
+  name: Wyvern
 skybox:
   program: g_skybox
   material: skybox/polyhaven/drakensberg_solitary_mountain_4k.hdr
 script:
   scripts:
     - path: lib/common
-nodes:
+types:
   - id: player
     type: origo
-    pos: [0, 5, 25]
     front: [0, 0, -1]
-    active: true
     audio:
       listener:
         default: true
@@ -20,9 +19,14 @@ nodes:
     controllers:
       - type: pawn
       - type: camera_zoom
-  - id: wyvern_{t}
+  - id: wyvern
     prefab:
       path: prefab/creatures/prefab_wyvern.yml
+
+nodes:
+  - type: player
+    pos: [0, 5, 25]
+  - type: wyvern
     pos: [0.0, 0, 0]
     scale: 2
     xrepeat:

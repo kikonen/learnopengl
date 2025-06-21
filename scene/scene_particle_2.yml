@@ -1,17 +1,16 @@
 ---
-name: Origo
+meta:
+  name: Particle 2
 skybox:
   program: g_skybox
   material: skybox/polyhaven/drakensberg_solitary_mountain_4k.hdr
 script:
   scripts:
     - path: lib/common
-nodes:
+types:
   - id: player
     type: origo
-    pos: [0, 1, 15]
     front: [0, 0, -1]
-    active: true
     audio:
       listener:
         xdefault: true
@@ -21,12 +20,11 @@ nodes:
     controllers:
       - type: pawn
       - type: camera_zoom
-  - id: dir_light_{c}_{t}
+  - id: dir_light
     type: origo
     mesh:
       path: light
       program: g_light
-    pos: [-15, 25, 25]
     flags:
       no_shadow: true
     light:
@@ -42,28 +40,21 @@ nodes:
         mrao: [0.2, 0.1, 1.0]
         program: g_tex
       scale: 0.05
-    pos: [0.0, 0.0, 0.0]
   - id: wooden_floor
     prefab:
       path: prefab/scenery/prefab_cobblestone_floor.yml
-    scale: 100
-    position: [0, 0, 0]
   - id: particle_cube_origo
     type: origo
-    pos: [0, 2, 0]
     script: |
       cmd:rotate(
         { time=10 * 100 },
         vec3(0, 1, 0),
         360 * 100)
   - id: particle_cube
-    parent: particle_cube_origo
     mesh:
       path: texture_cube_3
       program: g_tex
       base_rot: [-90, 0, 0]
-    rot: [0, 45, 0]
-    pos: [5, 0, 0]
     particle:
       seed: 1
       #gravity: [0, -9.81, 0]
@@ -101,3 +92,22 @@ nodes:
         vec3(0, 0, 1),
         360 * 100)
     script_file: scripts/seq_particle_generator
+
+nodes:
+  - type: player
+    pos: [0, 1, 15]
+    active: true
+  - type: dir_light
+    pos: [-15, 25, 25]
+  - type: origo
+    pos: [0.0, 0.0, 0.0]
+  - type: wooden_floor
+    scale: 100
+    position: [0, 0, 0]
+  - type: particle_cube_origo
+    id: particle_cube_origo
+    pos: [0, 2, 0]
+  - type: particle_cube
+    parent: particle_cube_origo
+    rot: [0, 45, 0]
+    pos: [5, 0, 0]

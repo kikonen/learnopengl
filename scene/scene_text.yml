@@ -1,12 +1,18 @@
 ---
-name: Test
+meta:
+  name: Text
 skybox:
   xmaterial: skybox/polyhaven/wasteland_clouds_puresky_4k.hdr
   material: skybox/polyhaven/borghese_gardens_4k.hdr
 script:
   scripts:
     - path: lib/common
-nodes:
+types:
+  - id: fps_counter
+    prefab:
+      path: prefab/util/prefab_fps_counter.yml
+    base_scale: 0.0025
+    layer: ui
   - id: ui_origo
     mesh:
       vertex:
@@ -16,7 +22,6 @@ nodes:
         kd: [1, 1, 0, 1]
         #prefab: materials/Plastic01.yml
         program: g_tex
-    pos: [0, 0, -2]
     layer: ui
   - id: player
     mesh:
@@ -24,12 +29,9 @@ nodes:
       material_modifier:
         tiling: 5
       program: g_tex
-    pos: [2.5, 2, 3]
     front: [0, 0, -1]
-    scale: 0.1
     flags:
       allow_normals: false
-    active: true
     camera:
       default: true
     controllers:
@@ -38,13 +40,6 @@ nodes:
     audio:
       listener:
         default: true
-  - id: fps_counter
-    prefab:
-      path: prefab/util/prefab_fps_counter.yml
-    #pos: [5.75, 5.25, 0.2]
-    pos: [2, -2, -1]
-    scale: 0.0025
-    layer: ui
   - id: font_atlas
     mesh:
       path: quad
@@ -59,8 +54,6 @@ nodes:
       default_programs: false
       program: font_atlas_demo
       shadow_program: font_atlas_demo
-    pos: [4.0, 2.0, 0.2]
-    #pos: [1.5, 0.5, -4]
     flags:
       xeffect: true
     #layer: ui
@@ -78,7 +71,6 @@ nodes:
         prefab: materials/Plastic01.yml
         tiling: 1
         program: g_tex
-    pos: [0.0, 4.0, -3.0]
   - id: hello_world
     type: text
     mesh:
@@ -112,8 +104,6 @@ nodes:
       pivot: [0, 0]
       align_horizontal: center
       align_vertical: center
-    pos: [0.0, 4.0, -3.0]
-    scale: 0.01
     flags:
       xeffect: true
     script_file: scripts/seq_hello_text
@@ -148,16 +138,12 @@ nodes:
       text: Look at ME
       align_horizontal: center
       align_vertical: center
-    pos: [2, 5, -8.5]
-    scale: 0.01
   - id: directional_light
     mesh:
       path: light
       material_modifier:
         kd: [0.8, 0.8, 0.6, 1.0]
       program: g_light
-    pos: [-15, 25, 40]
-    scale: 2.5
     flags:
       no_shadow: true
     light:
@@ -179,8 +165,6 @@ nodes:
       program: g_tex
     flags:
       no_shadow: true
-    pos: [-1, 2.5, -3.001]
-    scale: 0.5
   - id: wooden_floor
     mesh:
       path: plane
@@ -193,10 +177,8 @@ nodes:
       program: g_tex
     flags:
       no_shadow: true
-    scale: 100
   - id: cube_map_mirror_ball
     type: origo
-    pos: [0, 2, -7]
     flags:
       cube_map: true
   - id: mirror_ball
@@ -205,15 +187,51 @@ nodes:
       material_modifier:
         reflection: 0.8
       program: g_tex
-    pos: [0, 2, -7]
-    scale: 1
   - id: cow
     prefab: prefab/creatures/prefab_cow.yml
     mesh:
       flags:
         billboard: true
+
+nodes:
+  - type: fps_counter
+    id: fps_counter
+    pos: [2, -2, -1]
+  - type: ui_origo
+    pos: [0, 0, -2]
+    layer: ui
+  - type: player
+    pos: [2.5, 2, 3]
+    scale: 0.1
+    active: true
+  - type: font_atlas
+    pos: [4.0, 2.0, 0.2]
+    #pos: [1.5, 0.5, -4]
+  - type: hello_world_origo
+    pos: [0.0, 4.0, -3.0]
+  - type: hello_world
+    pos: [0.0, 4.0, -3.0]
+    scale: 0.01
+  - type: another_text
+    pos: [2, 5, -8.5]
+    scale: 0.01
+  - type: directional_light
+    pos: [-15, 25, 40]
+    scale: 2.5
+  - type: wooden_wall
+    pos: [-1, 2.5, -3.001]
+    scale: 0.5
+  - type: wooden_floor
+    scale: 100
+  - type: cube_map_mirror_ball
+    pos: [0, 2, -7]
+  - type: mirror_ball
+    pos: [0, 2, -7]
+    scale: 1
+  - type: cow
     pos: [-5.0, 4.0, -5.0]
     scale: 0.8
+
 material_updaters:
 - id: font_atlas_1
   type: font_atlas

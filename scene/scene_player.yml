@@ -1,44 +1,35 @@
 ---
-name: Player
+meta:
+  name: Player
 skybox:
   program: g_skybox
   material: skybox/polyhaven/drakensberg_solitary_mountain_4k.hdr
 script:
   scripts:
     - path: lib/common
-nodes:
+types:
   - id: player
     mesh:
       path: water_ball
       material_modifier:
         tiling: 5
       program: g_tex
-    pos: [0, 2, 0.0]
     front: [0, 0, -1]
-    rot: [0, 45, 0]
-    scale: 1.0
     flags:
       allow_normals: false
-    active: true
     audio:
       listener:
         default: true
     camera:
       default: true
-    controller:
+    controllers:
       - type: pawn
       - type: camera_zoom
-  - id: four_cubes_{t}_{c}
+  - id: four_cubes
     mesh:
       path: texture_cube_3
       program: g_tex
-    scale: 1
     base_rot: [-90, 0, 0]
-    clones:
-      - pos: [-5.0, 2.0, -5.0]
-      - pos: [5.0, 2.0, -5.0]
-      - pos: [-5.0, 2.0, 5.0]
-      - pos: [5.0, 2.0, 5.0]
   - id: wooden_floor
     mesh:
       path: plane
@@ -50,18 +41,34 @@ nodes:
       program: g_tex
     flags:
       no_shadow: true
-    scale: 100
-  - id: dir_light_{c}_{t}
+  - id: dir_light
     mesh:
       path: light
       material_modifier:
         kd: [0.8, 0.8, 0.6, 1.0]
       program: g_light
-    pos: [-25, 45, 0]
-    scale: 1.5
     flags:
       no_shadow: true
     light:
       type: directional
       diffuse: [0.7, 0.7, 0.7, 1.0]
       intensity: 20000
+
+nodes:
+  - type: player
+    pos: [0, 2, 0.0]
+    rot: [0, 45, 0]
+    scale: 1.0
+    active: true
+  - type: four_cubes
+    scale: 1
+    clones:
+      - pos: [-5.0, 2.0, -5.0]
+      - pos: [5.0, 2.0, -5.0]
+      - pos: [-5.0, 2.0, 5.0]
+      - pos: [5.0, 2.0, 5.0]
+  - type: wooden_floor
+    scale: 100
+  - type: dir_light
+    pos: [-25, 45, 0]
+    scale: 1.5

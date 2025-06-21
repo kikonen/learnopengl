@@ -1,17 +1,16 @@
 ---
-name: Test
+meta:
+  name: Primitive
 skybox:
   xmaterial: skybox/polyhaven/wasteland_clouds_puresky_4k.hdr
   material: skybox/polyhaven/borghese_gardens_4k.hdr
 script:
   scripts:
     - path: lib/common
-nodes:
+types:
   - id: player
     type: origo
-    pos: [2.5, 2, 3]
     front: [0, 0, -1]
-    active: true
     audio:
       listener:
         default: true
@@ -26,8 +25,6 @@ nodes:
       material_modifier:
         kd: [0.8, 0.8, 0.6, 1.0]
       program: g_light
-    pos: [-15, 25, 40]
-    scale: 2.5
     flags:
       no_shadow: true
     light:
@@ -38,13 +35,9 @@ nodes:
   - id: wooden_floor
     prefab:
       path: prefab/scenery/prefab_wooden_floor.yml
-    position: [0, 0, 0]
-    scale: 100
-  - xid: wooden_floor
+  - id: cobblestone_floor
     prefab:
       path: prefab/scenery/prefab_cobblestone_floor.yml
-    scale: 100
-    position: [0, 0, 0]
   - id: lines
     mesh:
       material:
@@ -62,8 +55,6 @@ nodes:
       flags:
         render_back: true
       program: g_tex
-    scale: 1
-    pos: [0, 2, 0]
     script: scripts/anim_lucy
   - id: points
     mesh:
@@ -83,10 +74,8 @@ nodes:
       flags:
         render_back: true
       program: g_tex
-    scale: 1
-    pos: [3, 2, 0]
     xscript: scripts/anim_lucy
-  - id: primitive-1
+  - id: primitive_1
     mesh:
       material:
         prefab: materials/Metal007.yml
@@ -100,9 +89,7 @@ nodes:
         xradius: 0.25
         xslices: 16
         xsegments: 32
-    scale: 1
-    pos: [2, 2, -20]
-  - id: primitive-2
+  - id: primitive_2
     mesh:
       material:
         prefab: materials/Metal007.yml
@@ -123,5 +110,30 @@ nodes:
         xslices: 16
         xsegments: 4
         xrings: 4
+
+nodes:
+  - type: player
+    pos: [2.5, 2, 3]
+    active: true
+  - type: directional_light
+    pos: [-15, 25, 40]
+    scale: 2.5
+  - type: wooden_floor
+    position: [0, 0, 0]
+    scale: 100
+  - xtype: cobblestone_floor
+    scale: 100
+    position: [0, 0, 0]
+  - type: lines
+    scale: 1
+    pos: [0, 2, 0]
+    script: scripts/anim_lucy
+  - type: points
+    scale: 1
+    pos: [3, 2, 0]
+  - type: primitive_1
+    scale: 1
+    pos: [2, 2, -20]
+  - type: primitive_2
     scale: 1
     pos: [3, 2, -20]

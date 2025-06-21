@@ -1,19 +1,19 @@
 ---
-name: Terrain
+meta:
+  name: Terrain
 viewports:
 skybox:
   material: skybox/polyhaven/wasteland_clouds_puresky_4k.hdr
 script:
   scripts:
     - path: lib/common
-nodes:
-  - prefab:
+types:
+  - id: grid
+    prefab:
       path: prefab/util/prefab_grid.yml
   - id: player
     type: origo
-    pos: [0, 200, 100]
     front: [0, 0, -1]
-    active: true
     camera:
       default: true
     controllers:
@@ -38,8 +38,6 @@ nodes:
       material_modifier:
         kd: [0.8, 0.8, 0.6, 1.0]
       program: g_light
-    pos: [0, 400, 500]
-    scale: 2.5
     flags:
       no_shadow: true
     light:
@@ -59,18 +57,6 @@ nodes:
       flags:
         tessellation: true
     priority: 20
-    pos: [-1024, 0, -1024]
-    generator:
-      type: terrain
-      mode: grid
-      terrain:
-        map_height: textures/terrain_2/terrain_2_height.png
-      tiling:
-        tile_size: 256
-        tiles: [8, 0, 8]
-        vert_range: [-62.54, 221.9]
-        xvert_range: [25.54, 71.9]
-        horiz_scale: 2
     type_flags:
       pre_depth: true
       use_deferred: true
@@ -86,16 +72,6 @@ nodes:
     mesh:
       path: glass_ball
       program: g_tex
-    pos: [-1024, 150, -1024]
-    xxpos: [0, 150, 0]
-    scale: 5.0
-    repeat:
-      x_count: 9
-      y_count: 1
-      z_count: 9
-      x_step: 256
-      y_step: 0
-      z_step: 256
   - id: sea_surface
     mesh:
       path: plane
@@ -108,8 +84,6 @@ nodes:
         render_back: true
       program: g_water
     priority: -20
-    pos: [0, 30.0, 0]
-    scale: [1024, 1, 1024]
     flags:
       no_shadow: true
       water: true
@@ -133,19 +107,91 @@ nodes:
         render_back: true
       program: g_tex
     priority: -225
-    pos: [0, -70, 0]
-    scale: 1024
     flags:
       no_shadow: true
     physics:
       geom:
         type: plane
-  - id: palm_tree_forest_{t}
+  - id: palm_tree_forest
     prefab:
       path: prefab/scenery/prefab_palm_tree.yml
     priority: 1
     flags:
       static_bounds: true
+  - id: skeleton_army_2
+    prefab:
+      path: prefab/creatures/prefab_skeleton.yml
+    priority: 1
+    type_flags:
+      dynamic_bounds: true
+      xstatic_bounds: true
+    physics:
+      enabled: true
+      update: true
+      body:
+        kinematic: true
+    xscript: |
+      cmd:animation_play(
+        { name = "master:Idle" });
+    script: scripts/seq_skeleton_random_nav
+    xscript: scripts/seq_skeleton_2
+  - id: world_plane
+    type: origo
+    physics:
+      geom:
+        type: plane
+  - id: world_x_minus
+    base: world_plane
+  - id: world_x_plus
+    base: world_plane
+  - id: world_y_minus
+    base: world_plane
+  - xid: world_y_plus
+    base: world_plane
+  - id: world_z_minus
+    base: world_plane
+  - id: world_z_plus
+    base: world_plane
+
+nodes:
+  - type: grid
+  - type: player
+    pos: [0, 200, 100]
+    active: true
+  - type: directional_light
+    pos: [0, 400, 500]
+    scale: 2.5
+  - type: terrain_grass_v2
+    pos: [-1024, 0, -1024]
+    generator:
+      type: terrain
+      mode: grid
+      terrain:
+        map_height: textures/terrain_2/terrain_2_height.png
+      tiling:
+        tile_size: 256
+        tiles: [8, 0, 8]
+        vert_range: [-62.54, 221.9]
+        xvert_range: [25.54, 71.9]
+        horiz_scale: 2
+  - type: grid_points
+    pos: [-1024, 150, -1024]
+    xxpos: [0, 150, 0]
+    scale: 5.0
+    repeat:
+      x_count: 9
+      y_count: 1
+      z_count: 9
+      x_step: 256
+      y_step: 0
+      z_step: 256
+  - type: sea_surface
+    pos: [0, 30.0, 0]
+    scale: [1024, 1, 1024]
+  - type: sea_floor
+    pos: [0, -70, 0]
+    scale: 1024
+  - type: palm_tree_forest
     generator:
       type: grid
       mode: random
@@ -156,68 +202,28 @@ nodes:
         z_count: 20
         x_step: -20
         z_step: 20
-  - id: skeleton_army_2_{t}
-    prefab:
-      path: prefab/creatures/prefab_skeleton.yml
-    priority: 1
+  - type: skeleton_army_2
     pos: [0, 100.5, 0.0]
-    type_flags:
-      dynamic_bounds: true
-      xstatic_bounds: true
-    physics:
-      enabled: true
-      update: true
-      body:
-        kinematic: true
     repeat:
       x_count: 10
       z_count: 10
       x_step: 4
       z_step: -4
-    xscript: |
-      cmd:animation_play(
-        { name = "master:Idle" });
-    script: scripts/seq_skeleton_random_nav
-    xscript: scripts/seq_skeleton_2
-  - id: world_x_minus
-    type: origo
+  - type: world_x_minus
     pos: [-1200, 0, 0]
     rot: [0, 0, -90]
-    physics:
-      geom:
-        type: plane
-  - id: world_x_plus
-    type: origo
+  - type: world_x_plus
     pos: [850, 0, 0]
     rot: [0, 0, 90]
-    physics:
-      geom:
-        type: plane
-  - id: world_y_minus
-    type: origo
+  - type: world_y_minus
     pos: [0, -400, 0]
     rot: [0, 0, 0]
-    physics:
-      geom:
-        type: plane
-  - xid: world_y_plus
-    type: origo
+  - xtype: world_y_plus
     pos: [0, 400, 0]
     rot: [180, 0, 0]
-    physics:
-      geom:
-        type: plane
-  - id: world_z_minus
-    type: origo
+  - type: world_z_minus
     pos: [0, 0, -900]
     rot: [90, 0, 0]
-    physics:
-      geom:
-        type: plane
-  - id: world_z_plus
-    type: origo
+  - type: world_z_plus
     pos: [0, 0, 1150]
     rot: [-90, 0, 0]
-    physics:
-      geom:
-        type: plane

@@ -1,29 +1,45 @@
 ---
-name: Test
+meta:
+  name: Pool side
 skybox:
   program: g_skybox
   material: skybox/polyhaven/drakensberg_solitary_mountain_4k.hdr
 script:
   scripts:
     - path: lib/common
-nodes:
+types:
   - id: player
     type: origo
-    pos: [0, 8, 30]
     front: [0, 0, -1]
-    active: true
     camera:
       default: true
     controllers:
       - type: pawn
       - type: camera_zoom
-  - id: pool_side_{t}_{c}
+  - id: pool_side
     mesh:
       path: pool_brick
       material_modifier:
         tiling_x: 30
         tiling_y: 2
         program: g_tex
+    physics:
+      update: true
+      body:
+        type: box
+        kinematic: true
+        density: 0.5
+      geom:
+        type: box
+        category: [prop]
+        collision: [npc]
+        size: [1, 1, 1]
+
+nodes:
+  - type: player
+    pos: [0, 8, 30]
+    active: true
+  - type: pool_side
     clones:
       - pos: [0.0, 0, -40]
         scale: [60, 6, 0.5]
@@ -36,14 +52,3 @@ nodes:
         scale: [60, 6, 0.3]
       - pos: [-30.0, 4, 40]
         scale: [60, 6, 0.3]
-    physics:
-      update: true
-      body:
-        type: box
-        kinematic: true
-        density: 0.5
-      geom:
-        type: box
-        category: [prop]
-        collision: [npc]
-        size: [1, 1, 1]

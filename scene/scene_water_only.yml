@@ -1,22 +1,20 @@
 ---
-name: Water only
+meta:
+  name: Water only
 skybox:
   program: g_skybox
   material: skybox/polyhaven/drakensberg_solitary_mountain_4k.hdr
 script:
   scripts:
     - path: lib/common
-nodes:
+types:
   - id: player
     type: origo
     xmesh:
       program: g_tex
-    pos: [0, 5, 5]
     front: [0, 0, -1]
-    scale: 0.8
     flags:
       allow_normals: false
-    active: true
     audio:
       listener:
         default: true
@@ -36,18 +34,9 @@ nodes:
         tiling: 2
         render_back: true
       program: g_water
-    pos: [-30, 0, -30]
-    scale: 30
     flags:
       no_shadow: true
       water: true
-    repeat:
-      x_count: 2
-      y_count: 1
-      z_count: 2
-      x_step: 60
-      y_step: 0
-      z_step: 60
   - id: pool_floor
     mesh:
       path: quad
@@ -56,11 +45,28 @@ nodes:
         map_kd: textures/tiles_1024_color.png
         tiling: 8
       program: g_tex
+    flags:
+      no_shadow: true
+
+nodes:
+  - type: player
+    pos: [0, 5, 5]
+    scale: 0.8
+    active: true
+  - type: water_surface
+    pos: [-30, 0, -30]
+    scale: 30
+    repeat:
+      x_count: 2
+      y_count: 1
+      z_count: 2
+      x_step: 60
+      y_step: 0
+      z_step: 60
+  - type: pool_floor
     pos: [-30, -4, -30]
     rotation: [270.0, 0.0, 0.0]
     scale: 30
-    flags:
-      no_shadow: true
     repeat:
       x_count: 2
       y_count: 1
