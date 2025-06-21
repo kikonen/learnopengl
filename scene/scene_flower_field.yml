@@ -1,17 +1,16 @@
 ---
-name: Test
+meta:
+  name: Flower field
 skybox:
   program: g_skybox
   material: skybox/polyhaven/drakensberg_solitary_mountain_4k.hdr
 script:
   scripts:
     - path: lib/common
-nodes:
+types:
   - id: player
     type: origo
-    pos: [0, 3, 7]
     front: [0, 0, -1]
-    active: true
     audio:
       listener:
         default: true
@@ -20,9 +19,7 @@ nodes:
     controllers:
       - type: pawn
       - type: camera_zoom
-  - id: dir_light_{c}_{t}
-    pos: [0, 25, 40]
-    scale: 2.5
+  - id: dir_light
     mesh:
       path: light
       material_modifier:
@@ -37,9 +34,7 @@ nodes:
   - id: ground
     prefab:
       path: prefab/scenery/prefab_grass_ground_1.yml
-    scale: 100
-    position: [0, 0, 0]
-  - id: dandelion_{t}
+  - id: dandelion
     prefab:
       path: prefab/scenery/prefab_SM_Desert_Dandelion_01e.yml
     mesh:
@@ -50,6 +45,29 @@ nodes:
     flags:
       static_bounds: true
       no_shadow: true
+  - id: flower
+    prefab:
+      path: prefab/scenery/prefab_SM_Flower_01c.yml
+    mesh:
+      material_modifier:
+        shared_definitions:
+          USE_TREE_WIND: 1
+    priority: -20
+    flags:
+      static_bounds: true
+      no_shadow: true
+
+nodes:
+  - type: player
+    pos: [0, 3, 7]
+    active: true
+  - type: dir_light
+    pos: [0, 25, 40]
+    scale: 2.5
+  - type: ground
+    position: [0, 0, 0]
+    scale: 100
+  - type: dandelion
     generator:
       type: grid
       mode: random
@@ -61,17 +79,7 @@ nodes:
         z_count: 10
         x_step: 20
         z_step: 20
-  - id: flower_{t}
-    prefab:
-      path: prefab/scenery/prefab_SM_Flower_01c.yml
-    mesh:
-      material_modifier:
-        shared_definitions:
-          USE_TREE_WIND: 1
-    priority: -20
-    flags:
-      static_bounds: true
-      no_shadow: true
+  - type: flower
     #scale: 5
     generator:
       type: grid
