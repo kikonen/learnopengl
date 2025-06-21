@@ -7,6 +7,14 @@ script:
   scripts:
     - path: lib/common
 types:
+  - id: grid
+    prefab:
+      path: prefab/util/prefab_grid.yml
+  - id: fps_counter
+    prefab:
+      path: prefab/util/prefab_fps_counter.yml
+    base_scale: 0.0025
+    layer: ui
   - id: player
     type: origo
     front: [0, 0, -1]
@@ -18,6 +26,31 @@ types:
     controllers:
       - type: pawn
       - type: camera_zoom
+  - id: player_3rd_person
+    prefab:
+      path: prefab/creatures/prefab_skeleton_warrior.yml
+    camera:
+      type: follow
+      distance: [5, 2.5, 10]
+      default: true
+    controllers:
+      - type: pawn
+      - type: camera_zoom
+    audio:
+      listener:
+        default: true
+    physics:
+      enabled: true
+      update: true
+      body:
+        xkinematic: true
+        density: 0.01
+      geom:
+        category: [player]
+    script: |
+      local wid = cmd:wait({ time=2 })
+      cmd:animation_play(
+        { after=wid, name = "master:Walk02" });
   - id: dir_light
     mesh:
       path: light
@@ -98,8 +131,16 @@ types:
         xrotation: [0, 180, 0]
 
 nodes:
-  - type: player
+  - type: grid
+  - type: fps_counter
+    id: fps_counter
+    pos: [2, -2, -1]
+  - xtype: player
     pos: [0, 10, 20]
+    active: true
+  - type: player_3rd_person
+    rotation: [0, 180, 0]
+    pos: [0, 30, -40]
     active: true
   - type: dir_light
     pos: [-10, 25, 40]
