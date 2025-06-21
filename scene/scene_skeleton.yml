@@ -6,12 +6,10 @@ skybox:
 script:
   scripts:
     - path: lib/common
-nodes:
+types:
   - id: player
     type: origo
-    pos: [0, 1.5, 5]
     front: [0, 0, -1]
-    active: true
     audio:
       listener:
         default: true
@@ -20,12 +18,11 @@ nodes:
     controllers:
       - type: pawn
       - type: camera_zoom
-  - id: dir_light_{c}_{t}
+  - id: dir_light
     type: origo
     mesh:
       path: light
       program: g_light
-    pos: [-15, 25, 25]
     flags:
       no_shadow: true
     light:
@@ -41,38 +38,26 @@ nodes:
         mrao: [0.2, 0.1, 1.0]
         program: g_tex
       scale: 0.05
-    pos: [0.0, 0.0, 0.0]
-  - xid: cube_map
+  - id: cube_map
     type: origo
-    pos: [0, 5, 10]
     flags:
       cube_map: true
   - id: wooden_floor
     prefab:
       path: prefab/scenery/prefab_wooden_floor.yml
-    scale: 100
-    xrot: [0, 0, 5]
     physics:
       update: true
     script: scripts/seq_shaky_ground
-  - id: skeleton_army_{c}_{t}
+  - id: skeleton_army
     prefab:
       path: prefab/creatures/prefab_skeleton_warrior.yml
-    pos: [0, 0.5, 0]
-    #rotation: [0, -90, 0]
-    scale: 1
-    xrepeat:
-      x_count: 2
-      z_count: 2
-      x_step: 10
-      z_step: -10
     script: scripts/seq_skeleton
     physics:
       update: true
     xscript: |
       cmd:animation_play(
         { name = "master:SwingNormal" });
-  - id: helmet_{t}
+  - id: helmet
     meshes:
       - name: helmet
         path: fbx\creatures\skeleton_knight\Helmet.fbx
@@ -86,22 +71,13 @@ nodes:
         scale: 0.001
         program: g_tex
         shadow_program: shadow
-    pos: [-0.2, 1.9, 0]
-    scale: 1
-  - id: object_{c}_{t}
+  - id: object
     mesh:
       path: texture_cube_4/texture_cube_4.obj
       material_modifier:
         program: g_tex
         shadow_program: shadow
       base_scale: 0.5
-    pos: [0.0, 0.5, 0.0]
-    rotation: [0, 0, 0]
-    clone_position_offset: [2, 0, 0]
-    clones:
-      - pos: [0.0, 0.5, 0.0]
-      - pos: [0.5, 1.5, 0.0]
-      - pos: [0, 2.5, 0.0]
     physics:
       body:
         type: box
@@ -109,3 +85,37 @@ nodes:
       geom:
         type: box
         size: [0.5]
+
+nodes:
+  - type: player
+    pos: [0, 1.5, 5]
+    active: true
+  - type: dir_light
+    pos: [-15, 25, 25]
+  - type: origo
+    pos: [0.0, 0.0, 0.0]
+  - xtype: cube_map
+    pos: [0, 5, 10]
+  - type: wooden_floor
+    scale: 100
+    xrot: [0, 0, 5]
+  - type: skeleton_army
+    pos: [0, 0.5, 0]
+    #rotation: [0, -90, 0]
+    scale: 1
+    xrepeat:
+      x_count: 2
+      z_count: 2
+      x_step: 10
+      z_step: -10
+  - type: helmet
+    pos: [-0.2, 1.9, 0]
+    scale: 1
+  - type: object
+    pos: [0.0, 0.5, 0.0]
+    rotation: [0, 0, 0]
+    clone_position_offset: [2, 0, 0]
+    clones:
+      - pos: [0.0, 0.5, 0.0]
+      - pos: [0.5, 1.5, 0.0]
+      - pos: [0, 2.5, 0.0]

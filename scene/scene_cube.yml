@@ -1,16 +1,14 @@
 ---
-name: Origo
+meta:
+  name: Cube
 skybox:
   material: skybox/polyhaven/drakensberg_solitary_mountain_4k.hdr
 script:
   scripts:
     - path: lib/common
-nodes:
+types:
   - id: player_fps
     type: origo
-    pos: [1, 1, 5]
-    active: true
-    rotation: [0, 180, 0]
     camera:
       default: true
       type: fps
@@ -20,7 +18,7 @@ nodes:
     audio:
       listener:
         default: true
-  - id: cube_1_{t}
+  - id: cube_1
     mesh:
       vertex:
         type: box
@@ -38,8 +36,6 @@ nodes:
         program_definitions:
           APPLY_TOY: 1
         updater_id: shader_toy_2
-    xrot: [45, 45, 0]
-    pos: [1, 9.001, 1]
     physics:
       xupdate: true
       body:
@@ -51,14 +47,7 @@ nodes:
       geom:
         type: box
         size: [1]
-    xrepeat:
-      x_count: 5
-      y_count: 5
-      z_count: 5
-      x_step: 4
-      y_step: 6
-      z_step: 4
-  - id: cube_2_{t}
+  - id: cube_2
     mesh:
       vertex:
         type: box
@@ -75,8 +64,6 @@ nodes:
         program_definitions:
           APPLY_TOY: 1
         updater_id: shader_toy_1
-    xrot: [10, 0, 10]
-    pos: [1, 6.001, 1]
     physics:
       xupdate: true
       body:
@@ -88,14 +75,7 @@ nodes:
       geom:
         type: box
         size: [1]
-    xrepeat:
-      x_count: 5
-      y_count: 5
-      z_count: 5
-      x_step: 4
-      y_step: 6
-      z_step: 4
-  - id: quad_{t}
+  - id: quad
     mesh:
       vertex:
         type: sphere
@@ -114,7 +94,6 @@ nodes:
           APPLY_TOY: 1
         updater_id: shader_toy_2
       base_rot: [0, 0, 0]
-    pos: [1, 3.001, 1]
     physics:
       xupdate: true
       body:
@@ -126,19 +105,11 @@ nodes:
       geom:
         type: sphere
         size: [1, 2, 0.01]
-    xrepeat:
-      x_count: 5
-      y_count: 2
-      z_count: 5
-      x_step: 4
-      y_step: 20
-      z_step: 4
-  - id: dir_light_{c}_{t}
+  - id: dir_light
     type: origo
     mesh:
       path: light
       program: g_light
-    pos: [-15, 25, 25]
     flags:
       no_shadow: true
     light:
@@ -154,20 +125,60 @@ nodes:
         mrao: [0.2, 0.1, 1.0]
         program: g_tex
       scale: 0.05
-    pos: [0.0, 0.0, 0.0]
   - id: wooden_floor
     prefab:
       path: prefab/scenery/prefab_wooden_floor.yml
     mesh:
       material:
         render_back: true
-    pos: [0.0, 0.0, 0.0]
     physics:
       geom:
         type: plane
         category: [terrain]
         collision: [can_terrain]
+
+nodes:
+  - type: player_fps
+    pos: [1, 1, 5]
+    active: true
+    rotation: [0, 180, 0]
+  - type: cube_1
+    xrot: [45, 45, 0]
+    pos: [1, 9.001, 1]
+    xrepeat:
+      x_count: 5
+      y_count: 5
+      z_count: 5
+      x_step: 4
+      y_step: 6
+      z_step: 4
+  - type: cube_2
+    xrot: [10, 0, 10]
+    pos: [1, 6.001, 1]
+    xrepeat:
+      x_count: 5
+      y_count: 5
+      z_count: 5
+      x_step: 4
+      y_step: 6
+      z_step: 4
+  - type: quad
+    pos: [1, 3.001, 1]
+    xrepeat:
+      x_count: 5
+      y_count: 2
+      z_count: 5
+      x_step: 4
+      y_step: 20
+      z_step: 4
+  - type: dir_light
+    pos: [-15, 25, 25]
+  - type: origo
+    pos: [0.0, 0.0, 0.0]
+  - type: wooden_floor
+    pos: [0.0, 0.0, 0.0]
     scale: 200
+
 material_updaters:
 - id: shader_toy_1
   type: shader

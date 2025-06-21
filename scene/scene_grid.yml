@@ -1,16 +1,14 @@
 ---
-name: Origo
+meta:
+  name: Grid
 skybox:
   material: skybox/polyhaven/drakensberg_solitary_mountain_4k.hdr
 script:
   scripts:
     - path: lib/common
-nodes:
+types:
   - id: player_fps
     type: origo
-    pos: [0, 0.25, 1]
-    active: true
-    rotation: [0, 180, 0]
     camera:
       default: true
       type: fps
@@ -20,12 +18,11 @@ nodes:
     audio:
       listener:
         default: true
-  - id: dir_light_{c}_{t}
+  - id: dir_light
     type: origo
     mesh:
       path: light
       program: g_light
-    pos: [-15, 25, 25]
     flags:
       no_shadow: true
     light:
@@ -50,7 +47,6 @@ nodes:
       xscale: 0.05
     flags:
       no_frustum: true
-    pos: [0.0, 0.0, 0.0]
   - id: grid
     mesh:
       type: non_vao
@@ -66,4 +62,15 @@ nodes:
       no_refract: true
       effect: true
     priority: -100
+
+nodes:
+  - type: player_fps
+    pos: [0, 0.25, 1]
+    active: true
+    rotation: [0, 180, 0]
+  - type: dir_light
+    pos: [-15, 25, 25]
+  - type: origo
+    pos: [0.0, 0.0, 0.0]
+  - id: grid
     scale: 100

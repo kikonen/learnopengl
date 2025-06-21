@@ -1,16 +1,15 @@
 ---
-name: Dragon
+meta:
+  name: Dragon
 skybox:
   material: skybox/polyhaven/drakensberg_solitary_mountain_4k.hdr
 script:
   scripts:
     - path: lib/common
-nodes:
+types:
   - id: player
     type: origo
-    pos: [0, 0, 0]
     front: [0, 0, -1]
-    active: true
     audio:
       listener:
         default: true
@@ -19,30 +18,38 @@ nodes:
     controllers:
       - type: pawn
       - type: camera_zoom
-  - name: Cube map 1
+  - id: cube_map_1
     type: origo
-    pos: [0.0, 3.0, 0.0]
     flags:
       cube_map: true
-  - id: dir_light_{c}_{t}
+  - id: dir_light
     mesh:
       path: light
       material_modifier:
         kd: [0.8, 0.8, 0.6, 1.0]
       program: g_light
-    pos: [0, 25, 40]
-    scale: 2.5
     flags:
       no_shadow: true
     light:
       type: directional
       diffuse: [0.9, 0.9, 0.7, 1.0]
       intensity: 30000
-  - name: Dragon
+  - id: dragon
     mesh:
       path: dragon
       program: g_tex
-    pos: [0.0, 0.0, -10.0]
-    scale: 30.0
     flags:
       render_back: true
+
+nodes:
+  - type: player
+    pos: [0, 0, 0]
+    active: true
+  - type: cube_map_1
+    pos: [0.0, 3.0, 0.0]
+  - type: dir_light
+    pos: [0, 25, 40]
+    scale: 2.5
+  - type: dragon
+    pos: [0.0, 0.0, -10.0]
+    scale: 30.0

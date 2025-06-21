@@ -6,10 +6,9 @@ skybox:
 script:
   scripts:
     - path: lib/common
-nodes:
+types:
   - id: player
     type: origo
-    pos: [0, 1, 5]
     front: [0, 0, -1]
     active: true
     audio:
@@ -20,34 +19,28 @@ nodes:
     controllers:
       - type: pawn
       - type: camera_zoom
-  - id: dir_light_{c}_{t}
+  - id: dir_light
     type: origo
     mesh:
       path: light
       program: g_light
-    pos: [-15, 25, 25]
     flags:
       no_shadow: true
     light:
       type: directional
       diffuse: [0.7, 0.7, 0.7, 1.0]
       intensity: 30000
-  - xid: cube_map
+  - id: cube_map
     type: origo
-    pos: [0, 5, 10]
     flags:
       cube_map: true
   - id: wooden_floor
     prefab:
       path: prefab/scenery/prefab_wooden_floor.yml
-    scale: 100
-    position: [0, 0, 0]
-  - xid: cobblestone_floor
+  - id: cobblestone_floor
     prefab:
       path: prefab/scenery/prefab_cobblestone_floor.yml
-    scale: 100
-    position: [0, 0, 0]
-  - id: object_{c}_{t}
+  - id: object
     prefab:
       #path: prefab/characters/prefab_scavenger.yml
       #path: prefab/props/prefab_backpack.yml
@@ -74,13 +67,7 @@ nodes:
         kd: [0.160, 0.578, 0.168, 1.0]
         xreflection: 0.4
       base_scale: 0.2
-    pos: [0.0, 1.0, 0.0]
-    rotation: [0, 0, 0]
-    scale: 1
-    xclones:
-      - pos: [0.0, 1.0, 0.0]
-      - pos: [0.5, 2.0, 0.0]
-  - xid: fence
+  - id: fence
     mesh:
       vertex:
         type: quad
@@ -93,9 +80,6 @@ nodes:
         #alpha: true
         #blend: true
         render_back: true
-    #rotation: [0, -90, 0]
-    pos: [0, 1, 0]
-    scale: 2
     physics:
       body:
         type: box
@@ -103,3 +87,29 @@ nodes:
       geom:
         type: box
         size: [0.5, 0.5, 0.0001]
+
+nodes:
+  - type: player
+    pos: [0, 1, 5]
+    active: true
+  - id: dir_light
+    pos: [-15, 25, 25]
+  - xtype: cube_map
+    pos: [0, 5, 10]
+  - type: wooden_floor
+    scale: 100
+    position: [0, 0, 0]
+  - xtype: cobblestone_floor
+    scale: 100
+    position: [0, 0, 0]
+  - type: object
+    pos: [0.0, 1.0, 0.0]
+    rotation: [0, 0, 0]
+    scale: 1
+    xclones:
+      - pos: [0.0, 1.0, 0.0]
+      - pos: [0.5, 2.0, 0.0]
+  - xtype: fence
+    #rotation: [0, -90, 0]
+    pos: [0, 1, 0]
+    scale: 2

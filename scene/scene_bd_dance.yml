@@ -1,24 +1,22 @@
 ---
-name: Test
+meta:
+  name: BD dance
 skybox:
   xmaterial: skybox/polyhaven/wasteland_clouds_puresky_4k.hdr
   material: skybox/polyhaven/borghese_gardens_4k.hdr
 script:
   scripts:
     - path: lib/common
-nodes:
+types:
   - id: player
     mesh:
       path: water_ball
       material_modifier:
         tiling: 5
       program: g_tex
-    pos: [2.5, 4, 10]
     front: [0, 0, -1]
-    scale: 0.1
     flags:
       allow_normals: false
-    active: true
     camera:
       default: true
     controllers:
@@ -54,8 +52,6 @@ nodes:
       text: . . .
       align_horizontal: center
       align_vertical: center
-    pos: [0.0, 6.0, -3.0]
-    scale: 0.01
     flags:
       xeffect: true
     script_file: scripts/seq_bd_text
@@ -85,16 +81,12 @@ nodes:
       text: from KI
       align_horizontal: center
       align_vertical: center
-    pos: [0, 4, -8]
-    scale: 0.01
   - id: directional_light
     mesh:
       path: light
       material_modifier:
         kd: [0.8, 0.8, 0.6, 1.0]
       program: g_light
-    pos: [-15, 25, 40]
-    scale: 2.5
     flags:
       no_shadow: true
     light:
@@ -105,13 +97,11 @@ nodes:
   - id: wooden_floor
     prefab:
       path: prefab/scenery/prefab_wooden_floor.yml
-    scale: 100
     physics:
       geom:
         collision: [world]
   - id: cube_map_mirror_ball
     type: origo
-    pos: [0, 2, -7]
     flags:
       cube_map: true
   - id: mirror_ball
@@ -120,8 +110,6 @@ nodes:
       material_modifier:
         reflection: 0.8
       program: g_tex
-    pos: [0, 2, -7]
-    scale: 1
   - id: cow
     mesh:
       path: cow
@@ -130,20 +118,43 @@ nodes:
       material:
         prefab: materials/Plastic01.yml
       program: g_tex
-    pos: [-5.0, 4.0, -5.0]
-    scale: 0.8
-    xflags:
-  - id: skeleton_army_2_{t}
+  - id: skeleton_army_2
     prefab:
       path: prefab/creatures/prefab_skeleton.yml
     priority: 1
-    pos: [-10, 0.2, -8]
-    scale: 2
     physics:
       enabled: true
+    script_file: scripts/seq_skeleton_dance
+
+nodes:
+  - type: player
+    pos: [2.5, 4, 10]
+    scale: 0.1
+    active: true
+  - type: hello_world
+    pos: [0.0, 6.0, -3.0]
+    scale: 0.01
+  - type: another_text
+    pos: [0, 4, -8]
+    scale: 0.01
+  - type: directional_light
+    pos: [-15, 25, 40]
+    scale: 2.5
+  - type: wooden_floor
+    scale: 100
+  - type: cube_map_mirror_ball
+    pos: [0, 2, -7]
+  - type: mirror_ball
+    pos: [0, 2, -7]
+    scale: 1
+  - type: cow
+    pos: [-5.0, 4.0, -5.0]
+    scale: 0.8
+  - type: skeleton_army_2
+    pos: [-10, 0.2, -8]
+    scale: 2
     repeat:
       x_count: 10
       z_count: 10
       x_step: 3
       z_step: -3
-    script_file: scripts/seq_skeleton_dance

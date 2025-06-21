@@ -1,17 +1,16 @@
 ---
-name: One
+meta:
+  name: One
 skybox:
   program: g_skybox
   material: skybox/polyhaven/drakensberg_solitary_mountain_4k.hdr
 script:
   scripts:
     - path: lib/common
-nodes:
+types:
   - id: player
     type: origo
-    pos: [0, 30, 0]
     front: [0, 0, -1]
-    active: true
     audio:
       listener:
         default: true
@@ -29,5 +28,11 @@ nodes:
         alpha: true
         render_back: true
       program: g_tex
+
+nodes:
+  - type: player
+    pos: [0, 30, 0]
+    active: true
+  - type: mountains
     pos: [0.0, 0.0, 0.0]
     scale: 1.0

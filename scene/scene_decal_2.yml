@@ -1,37 +1,32 @@
 ---
-name: Origo
-viewports:
+meta:
+  name: Decal 2
 skybox:
   material: skybox/polyhaven/wasteland_clouds_puresky_4k.hdr
 script:
   scripts:
     - path: lib/common
-nodes:
+types:
   - id: player
     type: origo
-    pos: [0, 1, 3]
-    rotation: [0, 180, 0]
-    active: true
     camera:
       default: true
     controllers:
       - type: pawn
       - type: camera_zoom
-  - id: dir_light_{c}_{t}
+  - id: dir_light
     mesh:
       path: light
       material_modifier:
         kd: [0.8, 0.8, 0.6, 1.0]
       program: g_light
-    pos: [-25, 25, 20]
-    scale: 2.5
     flags:
       no_shadow: true
     light:
       type: directional
       diffuse: [0.7, 0.7, 0.7, 1.0]
       intensity: 30000
-  - id: brick_wall_{c}_{t}
+  - id: brick_wall
     mesh:
       vertex:
         type: box
@@ -48,7 +43,6 @@ nodes:
         program: g_tex
       flags:
         pre_depth: true
-    pos: [0]
     physics:
       update: true
       body:
@@ -58,10 +52,21 @@ nodes:
       geom:
         type: box
         size: [0.5]
-    xshare_type: false
+
+nodes:
+  - type: player
+    pos: [0, 1, 3]
+    rotation: [0, 180, 0]
+    active: true
+  - type: dir_light
+    pos: [-25, 25, 20]
+    scale: 2.5
+  - type: brick_wall
+    pos: [0]
     clones:
       - pos: [0, 0, 0]
       - pos: [-1, 0, -1]
+
 decals:
   - name: bullet_1
     lifetime: 120

@@ -1,5 +1,6 @@
 ---
-name: Skybox
+meta:
+  name: Skybox
 skybox:
   program: g_skybox
   xmaterial: skybox
@@ -10,9 +11,7 @@ script:
 nodes:
   - id: player
     type: origo
-    pos: [0, 0, 0]
     front: [0, 0, -1]
-    active: true
     audio:
       listener:
         default: true
@@ -21,3 +20,8 @@ nodes:
     controllers:
       - type: pawn
       - type: camera_zoom
+
+nodes:
+  - type: player
+    pos: [0, 0, 0]
+    active: true

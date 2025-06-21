@@ -5,12 +5,10 @@ skybox:
 script:
   scripts:
     - path: lib/common
-nodes:
+types:
   - id: player
     type: origo
-    pos: [0, 4, 20]
     front: [0, 0, -1]
-    active: true
     audio:
       listener:
         xdefault: true
@@ -20,12 +18,11 @@ nodes:
     controllers:
       - type: pawn
       - type: camera_zoom
-  - id: dir_light_{c}_{t}
+  - id: dir_light
     type: origo
     mesh:
       path: light
       program: g_light
-    pos: [-15, 25, 25]
     flags:
       no_shadow: true
     light:
@@ -40,40 +37,31 @@ nodes:
         mrao: [0.2, 0.1, 1.0]
         program: g_tex
       scale: 0.05
-    pos: [0.0, 0.0, 0.0]
   - id: wooden_floor
     prefab:
       path: prefab/scenery/prefab_cobblestone_floor.yml
-    scale: 100
-    position: [0, 0, 0]
   - id: particle_cube_origo_3
     type: origo
-    pos: [0, 3, 0]
     script: |
       cmd:rotate(
         { time=40 * 100 },
         vec3(1, 1, 0),
         360 * 100)
   - id: particle_cube_origo_2
-    parent: particle_cube_origo_3
     type: origo
-    pos: [0, 0, 1]
     xscript: |
       cmd:rotate(
         { time=20 * 100 },
         vec3(0, 1, 0),
         -360 * 100)
   - id: particle_cube_origo
-    parent: particle_cube_origo_2
     type: origo
-    pos: [1, 0, 0]
     script: |
       cmd:rotate(
         { time=10 * 100 },
         vec3(0, 1, 0),
         360 * 100)
   - id: particle_tree
-    parent: particle_cube_origo
     mesh:
       path: christmas_card/christmas_tree.fbx
       program: g_tex
@@ -88,7 +76,6 @@ nodes:
           kd: [0.9, 0.9, 0.9, 1]
           blend: true
       base_scale: 0.01
-    pos: [5, 2, 0]
     xcamera:
       type: orbit
       default: true
@@ -102,9 +89,7 @@ nodes:
         vec3(1, 1, 0),
         360 * 100)
   - id: particle_tree_particle_generator_1
-    parent: particle_tree
     type: origo
-    pos: [0, 3, 0]
     particle:
       seed: 1
       #gravity: [0, -9.81, 0]
@@ -137,9 +122,7 @@ nodes:
           wrap: GL_CLAMP_TO_EDGE
     script_file: scripts/seq_particle_generator
   - id: particle_tree_particle_generator_2
-    parent: particle_tree
     type: origo
-    pos: [0, 0, 0]
     particle:
       seed: 1
       #gravity: [0, -9.81, 0]
@@ -172,9 +155,7 @@ nodes:
           wrap: GL_CLAMP_TO_EDGE
     script_file: scripts/seq_particle_generator
   - id: particle_tree_particle_generator_3
-    parent: particle_tree
     type: origo
-    pos: [0, 1.5, 0]
     particle:
       seed: 1
       #gravity: [0, -9.81, 0]
@@ -237,8 +218,6 @@ nodes:
       text: . . .
       align_horizontal: center
       align_vertical: center
-    pos: [0.0, 8.0, 0.0]
-    scale: 0.015
     flags:
       xeffect: true
     script_file: scripts/seq_merry_christmas_text
@@ -251,4 +230,45 @@ nodes:
         prefab: materials/Plastic01.yml
         tiling: 1
         program: g_tex
+
+nodes:
+  - type: player
+    pos: [0, 4, 20]
+    active: true
+  - type: dir_light
+    pos: [-15, 25, 25]
+  - type: origo
+    pos: [0.0, 0.0, 0.0]
+  - type: wooden_floor
+    scale: 100
+    position: [0, 0, 0]
+  - type: particle_cube_origo_3
+    id: particle_cube_origo_3
+    pos: [0, 3, 0]
+  - type: particle_cube_origo_2
+    id: particle_cube_origo_2
+    parent: particle_cube_origo_3
+    pos: [0, 0, 1]
+  - type: particle_cube_origo
+    id: particle_cube_origo
+    parent: particle_cube_origo_2
+    pos: [1, 0, 0]
+  - type: particle_tree
+    id: particle_tree
+    parent: particle_cube_origo
+    pos: [5, 2, 0]
+  - type: particle_tree_particle_generator_1
+    parent: particle_tree
+    pos: [0, 3, 0]
+    script_file: scripts/seq_particle_generator
+  - type: particle_tree_particle_generator_2
+    parent: particle_tree
+    pos: [0, 0, 0]
+  - type: particle_tree_particle_generator_3
+    parent: particle_tree
+    pos: [0, 1.5, 0]
+  - type: merry_christmas
+    pos: [0.0, 8.0, 0.0]
+    scale: 0.015
+  - type: merry_christmas_origo
     pos: [0.0, 8.0, 0.0]

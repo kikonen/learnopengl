@@ -1,17 +1,16 @@
 ---
-name: Spyro
+meta:
+  name: Spyro
 skybox:
   program: g_skybox
   material: skybox/polyhaven/drakensberg_solitary_mountain_4k.hdr
 script:
   scripts:
     - path: lib/common
-nodes:
+types:
   - id: player
     type: origo
-    pos: [0, 0, 0]
     front: [0, 0, -1]
-    active: true
     audio:
       listener:
         default: true
@@ -27,5 +26,11 @@ nodes:
         prefab: materials/Lava05
         tiling: 6
       program: g_tex
+
+nodes:
+  - type: player
+    pos: [0, 0, 0]
+    active: true
+  - type: spyro
     pos: [0.0, 0.0, -30.0]
     scale: 0.06
