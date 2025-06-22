@@ -10,6 +10,9 @@
 
 #include "component/GeneratorDefinition.h"
 
+#include "Repeat.h"
+#include "TerrainTiling.h"
+
 #include "PhysicsData.h"
 #include "TerrainData.h"
 #include "MaterialData.h"
@@ -29,8 +32,8 @@ namespace loader {
 
         glm::uvec3 seed{ 0 };
 
+        TerrainTiling tiling;
         Repeat repeat;
-        Tiling tiling;
 
         TerrainData terrainData;
 

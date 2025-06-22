@@ -8,4 +8,7 @@ struct CreateState
     glm::vec3 m_position{ 0.f };
     glm::vec3 m_scale{ 1.f };
     glm::quat m_rotation{ 1.f, 0.f, 0.f, 0.f };
+
+    float m_tilingX{ 1.f };
+    float m_tilingY{ 1.f };
 };

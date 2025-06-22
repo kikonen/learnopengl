@@ -9,7 +9,7 @@
 #include "generator/GeneratorMode.h"
 
 #include "loader/Repeat.h"
-#include "loader/Tiling.h"
+#include "loader/TerrainTiling.h"
 
 #include "PhysicsDefinition.h"
 
@@ -43,7 +43,7 @@ struct GeneratorDefinition {
     glm::uvec3 m_seed{ 0 };
 
     loader::Repeat m_repeat;
-    loader::Tiling m_tiling;
+    loader::TerrainTiling m_tiling;
 
     std::string m_heightMap;
 

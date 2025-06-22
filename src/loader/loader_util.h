@@ -11,7 +11,9 @@
 #include "BaseData.h"
 
 #include "BaseId.h"
-#include "BaseData.h"
+
+#include "Repeat.h"
+#include "TerrainTiling.h"
 
 struct Material;
 
@@ -27,9 +29,9 @@ namespace loader {
         const loader::DocNode& node,
         Repeat& data);
 
-    void loadTiling(
+    void loadTerrainTiling(
         const loader::DocNode& node,
-        Tiling& data);
+        TerrainTiling& data);
 
     const std::string& readString(const loader::DocNode& node);
     bool readBool(const loader::DocNode& node);

@@ -256,6 +256,8 @@ namespace loader
         state.m_position = pos;
         state.m_scale = nodeData.scale;
         state.m_rotation = util::degreesToQuat(nodeData.rotation);
+        state.m_tilingX = nodeData.tilingX;
+        state.m_tilingY = nodeData.tilingY;
 
         return { handle, state };
     }

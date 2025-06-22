@@ -104,8 +104,8 @@ void main() {
   {
     float x = tile.u_tileX;
     float y = tile.u_tileY;
-    float tilingX = u_materials[materialIndex].tilingX;
-    float tilingY = u_materials[materialIndex].tilingY;
+    float tilingX = u_materials[materialIndex].tilingX * entity.tilingX;
+    float tilingY = u_materials[materialIndex].tilingY * entity.tilingY;
     float sizeX = 1.0 / tilingX;
     float sizeY = 1.0 / tilingY;
 

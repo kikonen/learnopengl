@@ -9,6 +9,7 @@
 
 #include "BaseId.h"
 #include "BaseData.h"
+#include "Repeat.h"
 
 namespace loader {
     struct NodeData {
@@ -31,12 +32,13 @@ namespace loader {
         bool selected{ false };
         bool shareType{ true };
 
-        Tiling tiling;
-        glm::uvec3 tile{ 0 };
-
         glm::vec3 clonePositionOffset{ 0.f };
 
         Repeat repeat;
+
+        // material tiling
+        float tilingX{ 1.f };
+        float tilingY{ 1.f };
 
         const std::string& str() const noexcept
         {

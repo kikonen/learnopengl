@@ -60,8 +60,10 @@ struct EntitySSBO {
     GLuint u_boneBaseIndex{ 0 };
     GLuint u_socketBaseIndex{ 0 };
 
-    int pad2_1;
-    int pad2_2;
+    // material tiling
+    float u_tilingX;
+    float u_tilingY;
+
     //int pad2_3;
 
     // NOTE KI M-T matrix needed *ONLY* if non uniform scale

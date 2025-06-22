@@ -26,5 +26,7 @@ struct Entity {
   uint u_boneBaseIndex;
   uint u_socketBaseIndex;
 
-  // int pad1;
+  // material tiling
+  float tilingX;
+  float tilingY;
 };

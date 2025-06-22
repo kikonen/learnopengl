@@ -56,8 +56,8 @@ void main() {
   vs_out.layers = u_materials[materialIndex].layers;
   vs_out.layersDepth = u_materials[materialIndex].layersDepth;
 
-  vs_out.texCoord.x = a_texCoord.x * u_materials[materialIndex].tilingX;
-  vs_out.texCoord.y = a_texCoord.y * u_materials[materialIndex].tilingY;
+  vs_out.texCoord.x = a_texCoord.x * u_materials[materialIndex].tilingX * entity.tilingX;
+  vs_out.texCoord.y = a_texCoord.y * u_materials[materialIndex].tilingY * entity.tilingY;
 
   // NOTE KI pointless to normalize vs side
   vs_out.normal = DECODE_A_NORMAL(a_normal);//normalMatrix * DECODE_A_NORMAL(a_normal);

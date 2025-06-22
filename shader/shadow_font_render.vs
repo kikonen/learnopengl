@@ -66,8 +66,8 @@ void main()
 
   vs_out.materialIndex = materialIndex;
 
-  vs_out.texCoord.x = a_texCoord.x * u_materials[materialIndex].tilingX;
-  vs_out.texCoord.y = a_texCoord.y * u_materials[materialIndex].tilingY;
+  vs_out.texCoord.x = a_texCoord.x * u_materials[materialIndex].tilingX * entity.tilingX;
+  vs_out.texCoord.y = a_texCoord.y * u_materials[materialIndex].tilingY * entity.tilingY;
 
   vs_out.atlasCoord = a_atlasCoord;
   vs_out.atlasHandle = entity.u_fontHandle;

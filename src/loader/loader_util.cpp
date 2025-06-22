@@ -24,6 +24,7 @@
 #include "loader/MaterialData.h"
 #include "loader/document.h"
 
+#include "TerrainTiling.h"
 #include "NodeTypeData.h"
 
 namespace {
@@ -39,9 +40,9 @@ namespace {
 }
 
 namespace loader {
-    void loadTiling(
+    void loadTerrainTiling(
         const loader::DocNode& node,
-        Tiling& data)
+        TerrainTiling& data)
     {
         for (const auto& pair : node.getNodes()) {
             const std::string& k = pair.getName();

@@ -4,7 +4,7 @@
 
 namespace loader
 {
-    struct Tiling {
+    struct TerrainTiling {
         int tile_size{ 100 };
         glm::uvec3 tiles{ 1 };
         float height_scale{ 32 };

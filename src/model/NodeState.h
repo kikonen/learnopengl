@@ -61,6 +61,9 @@ private:
     glm::uvec2 m_aspectRatio{ 1 };
 
 public:
+    float m_tilingX{ 1.f };
+    float m_tilingY{ 1.f };
+
     // NOTE KI static member fields are rather safe to access frmo anywhere
     uint16_t m_boneBaseIndex{ 0 };
     uint16_t m_socketBaseIndex{ 0 };

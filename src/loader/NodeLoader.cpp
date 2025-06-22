@@ -114,7 +114,15 @@ namespace loader {
                 loadRepeat(v, data.repeat);
             }
             else if (k == "tiling") {
-                loadTiling(v, data.tiling);
+                float tiling = readFractional(v);
+                data.tilingX = tiling;
+                data.tilingY = tiling;
+            }
+            else if (k == "tiling_x") {
+                data.tilingX = readFractional(v);
+            }
+            else if (k == "tiling_y") {
+                data.tilingY = readFractional(v);
             }
             else if (k == "selected") {
                 data.selected = readBool(v);
@@ -128,9 +136,6 @@ namespace loader {
             }
             else if (k == "clone_position_offset") {
                 data.clonePositionOffset = readVec3(v);
-            }
-            else if (k == "tile") {
-                data.tile = readVec3(v);
             }
             else if (k == "clones") {
                 if (recurse)

@@ -627,6 +627,7 @@ std::pair<int, int> NodeRegistry::updateEntity(const UpdateContext& ctx)
 
     for (int i = 0; i < m_snapshotsRT.size(); i++) {
         auto* node = m_cachedNodesRT[i];
+        const auto& state = m_states[i];
         const auto& snapshot = m_snapshotsRT[i];
 
         if (!snapshot.m_dirty) continue;
@@ -641,6 +642,9 @@ std::pair<int, int> NodeRegistry::updateEntity(const UpdateContext& ctx)
                 entity.u_fontHandle = textGenerator->getAtlasTextureHandle();
             }
         }
+
+        entity.u_tilingX = state.m_tilingX;
+        entity.u_tilingY = state.m_tilingY;
 
         snapshot.updateEntity(entity);
         snapshot.m_dirty = false;
@@ -896,6 +900,8 @@ void NodeRegistry::bindNode(
             state.setPosition(createState.m_position);
             state.setScale(createState.m_scale);
             state.setRotation(createState.m_rotation);
+            state.m_tilingX = createState.m_tilingX;
+            state.m_tilingY = createState.m_tilingY;
         }
 
         std::lock_guard lock(m_snapshotLock);

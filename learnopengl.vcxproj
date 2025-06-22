@@ -724,7 +724,7 @@
     <ClInclude Include="src\loader\NodeTypeData.h" />
     <ClInclude Include="src\loader\NodeTypeLoader.h" />
     <ClInclude Include="src\loader\Repeat.h" />
-    <ClInclude Include="src\loader\Tiling.h" />
+    <ClInclude Include="src\loader\TerrainTiling.h" />
     <ClInclude Include="src\loader\Value.h" />
     <ClInclude Include="src\loader\value\PhysicsCategoryValue.h" />
     <ClInclude Include="src\loader\value\PhysicsGeomValue.h" />

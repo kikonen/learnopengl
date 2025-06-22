@@ -1,0 +1,191 @@
+---
+meta:
+  name: Pool
+skybox:
+  material: skybox/polyhaven/wasteland_clouds_puresky_4k.hdr
+  hdri: true
+prefab_dirs:
+  - prefab
+script:
+  scripts:
+    - path: lib/common
+types:
+  - id: water_ball
+    mesh:
+      path: water_ball
+      material_modifier:
+        kd: [0.0, 0.2, 0.8, 1.0]
+        program: g_tex
+      scale: 0.5
+  - id: player
+    type: origo
+    front: [0, 0, -1]
+    audio:
+      listener:
+        default: true
+    camera:
+      default: true
+    controllers:
+      - type: pawn
+      - type: camera_zoom
+  - id: dir_light
+    mesh:
+      path: light
+      material_modifier:
+        kd: [0.8, 0.8, 0.6, 1.0]
+        program: g_tex
+      scale: 2.5
+    flags:
+      no_shadow: true
+    light:
+      type: directional
+      diffuse: [0.9, 0.9, 0.7, 1.0]
+      intensity: 30000
+  - id: pool_origo
+    type: origo
+  - id: pool_floor
+    mesh:
+      path: plane
+      material:
+        prefab: materials/Tiles074
+        tiling: 1
+        render_back: true
+      scale: 0.5
+      flags:
+        pre_depth: true
+    flags:
+      no_shadow: true
+  - id: pool_surface
+    mesh:
+      path: plane
+      material:
+        kd: [0.55, 0.55, 0.95, 1.0]
+        map_normal: textures/water_surface_512_normal.png
+        map_dudv: textures/waterDUDV_512.png
+        tiling: 1
+        render_back: true
+        program: g_water
+      scale: 0.5
+    flags:
+      no_shadow: true
+      water: true
+    script_file: scripts/anim_water
+  - id: pool_side
+    mesh:
+      path: pool_brick
+      material_modifier:
+        base: textures/Planks 09 [8K]
+        map_kd: Planks09_col_2048.png
+        map_normal: Planks09_nrm_2048.png
+        map_mrao: Planks09_mrao
+        map_displacement: Planks09_displacement
+        mrao: [1.0, 0.0, 1]
+        tiling_x: 30
+        tiling_y: 4
+      flags:
+        pre_depth: true
+      program: g_tex
+  - id: pool_floor_single
+    mesh:
+      path: plane
+      material:
+        prefab: materials/Tiles074
+        tiling: 8
+        render_back: true
+      scale: 60
+      flags:
+        pre_depth: true
+    priority: -10
+    flags:
+      no_shadow: true
+  - id: pool_surface_single
+    mesh:
+      path: plane
+      material:
+        kd: [0.55, 0.55, 0.95, 1.0]
+        map_normal: textures/water_surface_512_normal.png
+        map_dudv: textures/waterDUDV_512.png
+        tiling: 2
+        render_back: true
+        program: g_water
+      scale: 60
+    priority: -5
+    flags:
+      no_shadow: true
+      water: true
+  - id: pool_side_single
+    mesh:
+      path: pool_brick
+      material_modifier:
+        base: textures/Planks 09 [8K]
+        map_kd: Planks09_col_2048.png
+        map_normal: Planks09_nrm_2048.png
+        map_mrao: Planks09_mrao
+        map_displacement: Planks09_displacement
+        mrao: [1.0, 0.0, 1]
+        tiling_x: 30
+        tiling_y: 4
+        program: g_tex
+      flags:
+        pre_depth: true
+
+nodes:
+  - type: player
+    pos: [0, 9.5, 10]
+    active: true
+  - type: dir_light
+    pos: [0, 45, 100]
+  - type: water_ball
+    parent_id: pool_origo
+    scale: 1
+    xclones:
+      - pos: [0.0, 0, 0.0]
+  - type: pool_origo
+    id: pool_origo
+    pos: [0.0, 3.2, -10.0]
+  - type: pool_floor
+    parent_id: pool_origo
+    pos: [0, 0, 0]
+    scale: 5
+    tiling: 5
+    repeat:
+      x_count: 2
+      y_count: 1
+      z_count: 2
+      x_step: 10
+      y_step: 0
+      z_step: 10
+  - type: pool_surface
+    id: pool_surface_{c}_{t}
+    pos: [0, 9.0, -10]
+    repeat:
+      x_count: 2
+      y_count: 1
+      z_count: 2
+      x_step: 2
+      y_step: 0
+      z_step: 2
+  - type: pool_side
+    clones:
+      - pos: [-30.0, 4, 20]
+        scale: [0.3, 6, 60]
+      - pos: [90.0, 4, 20]
+        scale: [0.3, 6, 60]
+      - pos: [30.0, 4, 80]
+        scale: [60, 6, 0.3]
+      - pos: [30.0, 4, -40]
+        scale: [60, 6, 0.3]
+  - xtype: pool_floor_single
+    pos: [160.0, 3.2, 20.0]
+  - xtype: pool_surface_single
+    pos: [160, 9.0, 20]
+  - xtype: pool_side_single
+    clones:
+      - pos: [100.0, 4, 20]
+        scale: [0.3, 6, 60]
+      - pos: [220.0, 4, 20]
+        scale: [0.3, 6, 60]
+      - pos: [160.0, 4, 80]
+        scale: [60, 6, 0.3]
+      - pos: [160.0, 4, -40]
+        scale: [60, 6, 0.3]

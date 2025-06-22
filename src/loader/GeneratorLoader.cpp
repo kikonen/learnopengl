@@ -120,7 +120,7 @@ namespace loader {
                 loadRepeat(v, data.repeat);
             }
             else if (k == "tiling") {
-                loadTiling(v, data.tiling);
+                loadTerrainTiling(v, data.tiling);
             }
             else if (k == "bounds_dir") {
                 data.boundsDir = readVec3(v);
