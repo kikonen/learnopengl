@@ -163,9 +163,6 @@ nodes:
     xrotation: [0, 45, 0]
     rotation: [0, -90, 0]
     scale: 3
-    xgenerator:
-      type: grid
-      mode: grid
     repeat:
       x_count: 2
       z_count: 2

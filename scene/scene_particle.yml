@@ -313,6 +313,23 @@ types:
       offset: [0, 17, 0.6]
     flags:
       static_bounds: true
+    generator:
+      type: grid
+      mode: random
+      offset: [-100, 0, -100]
+      scale: 0.5
+      seed: [23444242, 54351212, 4353333]
+      repeat:
+        x_count: 11
+        z_count: 11
+        x_step: 20
+        z_step: 20
+      geom:
+        type: cylinder
+        category: [scenery]
+        collision: [world, player]
+        rotation: [90, 0, 0]
+        size: [0.75, 20, 0]
   - id: grass_generator
     prefab:
       path: prefab/scenery/prefab_grass.yml
@@ -324,6 +341,17 @@ types:
     flags:
       static_bounds: true
       no_shadow: true
+    generator:
+      type: grid
+      mode: random
+      offset: [-100, 0, -100]
+      seed: [4242, 1212, 3333]
+      count: 400
+      repeat:
+        x_count: 21
+        z_count: 21
+        x_step: 10
+        z_step: 10
   - id: bush01_generator
     prefab:
       path: prefab/scenery/prefab_bush01.yml
@@ -335,6 +363,18 @@ types:
     flags:
       static_bounds: true
       no_shadow: true
+    generator:
+      type: grid
+      mode: random
+      offset: [-100, 0, -100]
+      scale: 3
+      seed: [12, 13, 14]
+      count: 30
+      repeat:
+        x_count: 21
+        z_count: 21
+        x_step: 10
+        z_step: 10
   - id: bush02_generator
     prefab:
       path: prefab/scenery/prefab_bush02.yml
@@ -346,6 +386,18 @@ types:
     flags:
       static_bounds: true
       no_shadow: true
+    generator:
+      type: grid
+      mode: random
+      offset: [-100, 0, -100]
+      scale: 4
+      seed: [6116, 1188, 2299]
+      count: 15
+      repeat:
+        x_count: 21
+        z_count: 21
+        x_step: 10
+        z_step: 10
   - id: bush03_generator
     prefab:
       path: prefab/scenery/prefab_bush03.yml
@@ -357,6 +409,18 @@ types:
     flags:
       static_bounds: true
       no_shadow: true
+    generator:
+      type: grid
+      mode: random
+      offset: [-100, 0, -100]
+      scale: 1.5
+      seed: [61236, 8855, 9934]
+      count: 200
+      repeat:
+        x_count: 21
+        z_count: 21
+        x_step: 10
+        z_step: 10
   - id: pine_tree_forest_2_generator
     prefab:
       path: prefab/scenery/prefab_pine_tree.yml
@@ -366,6 +430,18 @@ types:
           USE_TREE_WIND: 1
     flags:
       static_bounds: true
+    generator:
+      type: grid
+      mode: random
+      offset: [-100, 0, -100]
+      scale: 1
+      seed: [23434242, 54341212, 4354333]
+      count: 50
+      repeat:
+        x_count: 11
+        z_count: 11
+        x_step: 20
+        z_step: 20
   - id: maple_tree_forest_2_generator
     prefab:
       path: prefab/scenery/prefab_maple_tree.yml
@@ -375,6 +451,18 @@ types:
           USE_TREE_WIND: 1
     flags:
       static_bounds: true
+    generator:
+      type: grid
+      mode: random
+      offset: [-100, 0, -100]
+      scale: 1
+      seed: [244314242, 54444212, 4354123]
+      count: 50
+      repeat:
+        x_count: 11
+        z_count: 11
+        x_step: 20
+        z_step: 20
   - id: dandelion_generator
     prefab:
       path: prefab/scenery/prefab_SM_Desert_Dandelion_01e.yml
@@ -386,6 +474,17 @@ types:
     flags:
       static_bounds: true
       no_shadow: true
+    generator:
+      type: grid
+      mode: random
+      offset: [-100, 0, -100]
+      seed: [12, 13, 14]
+      count: 500
+      repeat:
+        x_count: 11
+        z_count: 11
+        x_step: 20
+        z_step: 20
   - id: flower_generator
     prefab:
       path: prefab/scenery/prefab_SM_Flower_01c.yml
@@ -397,6 +496,18 @@ types:
     flags:
       static_bounds: true
       no_shadow: true
+    generator:
+      type: grid
+      mode: random
+      offset: [-100, 0, -100]
+      #scale: 5
+      seed: [45, 67, 99]
+      count: 500
+      repeat:
+        x_count: 11
+        z_count: 11
+        x_step: 20
+        z_step: 20
   - id: dir_light
     mesh:
       path: light
@@ -426,6 +537,16 @@ types:
       pre_depth: true
       use_deferred: true
       nav_mesh: true
+    generator:
+      type: terrain
+      mode: grid
+      terrain:
+        map_height: textures/terrain_2/terrain_2_height.png
+      tiling:
+        tile_size: 256
+        tiles: [8, 0, 8]
+        vert_range: [-32.54, 31.9]
+        horiz_scale: 2
     physics:
       geom:
         type: height_field
@@ -484,140 +605,19 @@ nodes:
     scale: 100
     position: [0, -2, 0]
   - type: palm_tree_forest_generator
-    generator:
-      type: grid
-      mode: random
-      offset: [-100, 0, -100]
-      scale: 0.5
-      seed: [23444242, 54351212, 4353333]
-      repeat:
-        x_count: 11
-        z_count: 11
-        x_step: 20
-        z_step: 20
-      geom:
-        type: cylinder
-        category: [scenery]
-        collision: [world, player]
-        rotation: [90, 0, 0]
-        size: [0.75, 20, 0]
   - type: grass_generator
-    generator:
-      type: grid
-      mode: random
-      offset: [-100, 0, -100]
-      seed: [4242, 1212, 3333]
-      count: 400
-      repeat:
-        x_count: 21
-        z_count: 21
-        x_step: 10
-        z_step: 10
   - type: bush01_generator
-    generator:
-      type: grid
-      mode: random
-      offset: [-100, 0, -100]
-      scale: 3
-      seed: [12, 13, 14]
-      count: 30
-      repeat:
-        x_count: 21
-        z_count: 21
-        x_step: 10
-        z_step: 10
   - type: bush02_generator
-    generator:
-      type: grid
-      mode: random
-      offset: [-100, 0, -100]
-      scale: 4
-      seed: [6116, 1188, 2299]
-      count: 15
-      repeat:
-        x_count: 21
-        z_count: 21
-        x_step: 10
-        z_step: 10
   - type: bush03_generator
-    generator:
-      type: grid
-      mode: random
-      offset: [-100, 0, -100]
-      scale: 1.5
-      seed: [61236, 8855, 9934]
-      count: 200
-      repeat:
-        x_count: 21
-        z_count: 21
-        x_step: 10
-        z_step: 10
   - type: pine_tree_forest_2_generator
-    generator:
-      type: grid
-      mode: random
-      offset: [-100, 0, -100]
-      scale: 1
-      seed: [23434242, 54341212, 4354333]
-      count: 50
-      repeat:
-        x_count: 11
-        z_count: 11
-        x_step: 20
-        z_step: 20
   - type: maple_tree_forest_2_generator
-    generator:
-      type: grid
-      mode: random
-      offset: [-100, 0, -100]
-      scale: 1
-      seed: [244314242, 54444212, 4354123]
-      count: 50
-      repeat:
-        x_count: 11
-        z_count: 11
-        x_step: 20
-        z_step: 20
   - type: dandelion_generator
-    generator:
-      type: grid
-      mode: random
-      offset: [-100, 0, -100]
-      seed: [12, 13, 14]
-      count: 500
-      repeat:
-        x_count: 11
-        z_count: 11
-        x_step: 20
-        z_step: 20
   - type: flower_generator
-    #scale: 5
-    generator:
-      type: grid
-      mode: random
-      offset: [-100, 0, -100]
-      seed: [45, 67, 99]
-      count: 500
-      repeat:
-        x_count: 11
-        z_count: 11
-        x_step: 20
-        z_step: 20
   - type: dir_light
     pos: [-25, 45, 0]
     scale: 1.5
   - type: terrain_grass_v2_generator
     pos: [-1024, 10, -1024]
-    generator:
-      type: terrain
-      mode: grid
-      terrain:
-        map_height: textures/terrain_2/terrain_2_height.png
-      tiling:
-        tile_size: 256
-        tiles: [8, 0, 8]
-        vert_range: [-32.54, 31.9]
-        horiz_scale: 2
 
 decals:
   - name: bullet_1

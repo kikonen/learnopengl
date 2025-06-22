@@ -32,6 +32,8 @@
 #include "component/OrbitCamera.h"
 #include "component/SplineCamera.h"
 
+#include "component/GeneratorDefinition.h"
+
 #include "particle/ParticleDefinition.h"
 #include "particle/ParticleGenerator.h"
 
@@ -876,6 +878,7 @@ void NodeRegistry::bindNode(
         node->m_camera = createCameraComponent(type);
         node->m_light = createLight(type);
         node->m_particleGenerator = createParticleGenerator(type);
+        node->m_generator = GeneratorDefinition::createGenerator(type);
         node->m_audioSources = createAudioSources(type);
         node->m_audioListener = createAudioListener(type);
         node->m_camera = createCameraComponent(type);

@@ -54,6 +54,16 @@ types:
       xxno_frustum: true
       use_deferred: true
       nav_mesh: true
+    generator:
+      type: terrain
+      mode: grid
+      terrain:
+        map_height: textures/terrain_2/terrain_2_height.png
+      tiling:
+        tile_size: 256
+        tiles: [8, 0, 8]
+        vert_range: [-62.54, 221.9]
+        horiz_scale: 2
     physics:
       geom:
         type: height_field
@@ -112,16 +122,6 @@ nodes:
   - type: terrain_grass_v2
     pos: [-1024, 0, -1024]
     xxpos: [0, 0, 0]
-    generator:
-      type: terrain
-      mode: grid
-      terrain:
-        map_height: textures/terrain_2/terrain_2_height.png
-      tiling:
-        tile_size: 256
-        tiles: [8, 0, 8]
-        vert_range: [-62.54, 221.9]
-        horiz_scale: 2
   - type: water_surface_single
     pos: [-50, 14.5, -20]
     scale: 70

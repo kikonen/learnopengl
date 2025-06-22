@@ -256,6 +256,16 @@ types:
           USE_TREE_WIND: 1
     flags:
       static_bounds: true
+    generator:
+      type: grid
+      mode: grid
+      offset: [-40.0, 4, 70]
+      scale: 2
+      repeat:
+        x_count: 1
+        z_count: 4
+        x_step: 20
+        z_step: -40
   - id: skeleton_army_2
     prefab:
       path: prefab/creatures/prefab_skeleton.yml
@@ -290,6 +300,16 @@ types:
       pre_depth: true
       use_deferred: true
       nav_physics: true
+    generator:
+      type: terrain
+      mode: grid
+      terrain:
+        map_height: textures/terrain_2/terrain_2_height.png
+      tiling:
+        tile_size: 256
+        tiles: [8, 0, 8]
+        vert_range: [-32.54, 31.9]
+        horiz_scale: 2
     physics:
       geom:
         type: height_field
@@ -307,6 +327,19 @@ types:
     flags:
       static_bounds: true
       no_shadow: true
+    generator:
+      type: grid
+      mode: random
+      offset: [-600.0, 0.0, 500.0]
+      scale: 3
+      bounds: [terrain]
+      seed: [4242, 1212, 3333]
+      count: 2000
+      repeat:
+        x_count: 100
+        z_count: 100
+        x_step: 12
+        z_step: -12
   - id: grass_floating
     prefab:
       path: prefab/scenery/prefab_grass.yml
@@ -318,6 +351,19 @@ types:
     flags:
       dynamic_bounds: true
       no_shadow: true
+    generator:
+      type: grid
+      mode: random
+      offset: [-30, 0, -40]
+      scale: 3
+      bounds: [water, terrain]
+      seed: [121214, 444413, 676712]
+      count: 100
+      repeat:
+        x_count: 3
+        z_count: 3
+        x_step: 60
+        z_step: 60
   - id: grass_floating_2
     prefab:
       path: prefab/scenery/prefab_grass.yml
@@ -329,6 +375,19 @@ types:
     flags:
       static_bounds: true
       no_shadow: true
+    generator:
+      type: grid
+      mode: random
+      offset: [100, 0, -40]
+      scale: 3
+      bounds: [water, terrain]
+      seed: [221214, 554413, 556712]
+      count: 100
+      repeat:
+        x_count: 3
+        z_count: 3
+        x_step: 60
+        z_step: 60
   - id: cube_2
     mesh:
       vertex:
@@ -435,6 +494,17 @@ types:
           USE_TREE_WIND: 1
     flags:
       static_bounds: true
+    generator:
+      type: grid
+      mode: random
+      offset: [-400, 0, -400]
+      scale: 1.5
+      bounds: [ground]
+      repeat:
+        x_count: 20
+        z_count: 20
+        x_step: 40
+        z_step: 40
 
 nodes:
   - type: grid
@@ -506,16 +576,6 @@ nodes:
       - pos: [30.0, 4, -40]
         scale: [60, 6, 0.3]
   - type: maple_tree_forest
-    generator:
-      type: grid
-      mode: grid
-      offset: [-40.0, 4, 70]
-      scale: 2
-      repeat:
-        x_count: 1
-        z_count: 4
-        x_step: 20
-        z_step: -40
   - type: skeleton_army_2
     pos: [-20, 10.86, 80]
     scale: 4
@@ -526,58 +586,9 @@ nodes:
       z_step: 0
   - type: terrain_grass_v2
     pos: [-1024, 10, -1024]
-    generator:
-      type: terrain
-      mode: grid
-      terrain:
-        map_height: textures/terrain_2/terrain_2_height.png
-      tiling:
-        tile_size: 256
-        tiles: [8, 0, 8]
-        vert_range: [-32.54, 31.9]
-        horiz_scale: 2
   - type: grass
-    generator:
-      type: grid
-      mode: random
-      offset: [-600.0, 0.0, 500.0]
-      scale: 3
-      bounds: [terrain]
-      seed: [4242, 1212, 3333]
-      count: 2000
-      repeat:
-        x_count: 100
-        z_count: 100
-        x_step: 12
-        z_step: -12
   - type: grass_floating
-    generator:
-      type: grid
-      mode: random
-      offset: [-30, 0, -40]
-      scale: 3
-      bounds: [water, terrain]
-      seed: [121214, 444413, 676712]
-      count: 100
-      repeat:
-        x_count: 3
-        z_count: 3
-        x_step: 60
-        z_step: 60
   - type: grass_floating_2
-    generator:
-      type: grid
-      mode: random
-      offset: [100, 0, -40]
-      scale: 3
-      bounds: [water, terrain]
-      seed: [221214, 554413, 556712]
-      count: 100
-      repeat:
-        x_count: 3
-        z_count: 3
-        x_step: 60
-        z_step: 60
   - type: cube_2
     pos: [160, 42.5, 20]
     rotation: [0, 0, 45]
@@ -596,14 +607,3 @@ nodes:
       - pos: [160.0, 4, -40]
         scale: [60, 6, 0.3]
   - type: palm_tree_forest
-    generator:
-      type: grid
-      mode: random
-      offset: [-400, 0, -400]
-      scale: 1.5
-      bounds: [ground]
-      repeat:
-        x_count: 20
-        z_count: 20
-        x_step: 40
-        z_step: 40

@@ -756,6 +756,16 @@ types:
       pre_depth: true
       use_deferred: true
       nav_physics: true
+    generator:
+      type: terrain
+      mode: grid
+      terrain:
+        map_height: textures/terrain_2/terrain_2_height.png
+      tiling:
+        tile_size: 256
+        tiles: [8, 0, 8]
+        vert_range: [-62.54, 221.9]
+        horiz_scale: 2
     physics:
       geom:
         type: height_field
@@ -937,6 +947,10 @@ types:
     parent_id: planet_origo
     prefab:
       path: prefab/scenery/prefab_asteroid.yml
+    generator:
+      type: asteroid_belt
+      mode: random
+      count: 1000
   - id: scale_1
     mesh:
       path: quad
@@ -984,6 +998,16 @@ types:
     priority: -17
     flags:
       static_bounds: true
+    generator:
+      type: grid
+      mode: random
+      offset: [350, 10.0, 150.0]
+      seed: [424242, 121212, 333333]
+      repeat:
+        x_count: 40
+        z_count: 40
+        x_step: -25
+        z_step: 25
   - id: maple_tree_forest
     prefab:
       path: prefab/scenery/prefab_maple_tree.yml
@@ -994,6 +1018,16 @@ types:
     priority: -17
     flags:
       static_bounds: true
+    generator:
+      type: grid
+      mode: random
+      offset: [250, 10.0, 150.0]
+      seed: [424242, 121212, 333333]
+      repeat:
+        x_count: 40
+        z_count: 40
+        x_step: -20
+        z_step: 20
   - id: grass
     prefab:
       path: prefab/scenery/prefab_grass.yml
@@ -1005,6 +1039,18 @@ types:
     flags:
       static_bounds: true
       no_shadow: true
+    generator:
+      type: grid
+      mode: random
+      offset: [400, 10.0, -400.0]
+      scale: 3
+      seed: [4242, 1212, 3333]
+      count: 1000
+      repeat:
+        x_count: 100
+        z_count: 150
+        x_step: -9
+        z_step: 9
   - id: bush01
     prefab:
       path: prefab/scenery/prefab_bush01.yml
@@ -1016,6 +1062,18 @@ types:
     flags:
       static_bounds: true
       no_shadow: true
+    generator:
+      type: grid
+      mode: random
+      offset: [-400, 0, -400]
+      scale: 3
+      seed: [12, 13, 14]
+      count: 100
+      repeat:
+        x_count: 21
+        z_count: 35
+        x_step: 40
+        z_step: 40
   - id: bush02
     prefab:
       path: prefab/scenery/prefab_bush02.yml
@@ -1027,6 +1085,18 @@ types:
     flags:
       static_bounds: true
       no_shadow: true
+    generator:
+      type: grid
+      mode: random
+      offset: [-400, 0, -400]
+      scale: 4
+      seed: [6116, 1188, 2299]
+      count: 50
+      repeat:
+        x_count: 21
+        z_count: 35
+        x_step: 40
+        z_step: 40
   - id: bush03
     prefab:
       path: prefab/scenery/prefab_bush03.yml
@@ -1038,6 +1108,18 @@ types:
     flags:
       static_bounds: true
       no_shadow: true
+    generator:
+      type: grid
+      mode: random
+      offset: [-300, 0, -300]
+      scale: 1.5
+      seed: [61236, 8855, 9934]
+      count: 600
+      repeat:
+        x_count: 21
+        z_count: 35
+        x_step: 40
+        z_step: 40
   - id: skeleton_army
     prefab:
       path: prefab/creatures/prefab_skeleton_warrior.yml
@@ -1444,16 +1526,6 @@ nodes:
   - type: terrain_grass_v2
     pos: [-1200, -5.5, -900]
     xxpos: [-1024, -5.5, -1024]
-    generator:
-      type: terrain
-      mode: grid
-      terrain:
-        map_height: textures/terrain_2/terrain_2_height.png
-      tiling:
-        tile_size: 256
-        tiles: [8, 0, 8]
-        vert_range: [-62.54, 221.9]
-        horiz_scale: 2
   - type: grid_points
     pos: [-1024, 150, -1024]
     scale: 5.0
@@ -1518,10 +1590,6 @@ nodes:
     scale: 1.5
   - type: asteroid_belt
     parent_id: planet_origo
-    generator:
-      type: asteroid_belt
-      mode: random
-      count: 1000
   - type: scale_1
     pos: [15, 11.5, 20.0]
     enabled: false
@@ -1534,79 +1602,11 @@ nodes:
     pos: [5, 11.5, 20.0]
     enabled: false
   - type: palm_tree_forest
-    generator:
-      type: grid
-      mode: random
-      offset: [350, 10.0, 150.0]
-      seed: [424242, 121212, 333333]
-      repeat:
-        x_count: 40
-        z_count: 40
-        x_step: -25
-        z_step: 25
   - xtype: maple_tree_forest
-    generator:
-      type: grid
-      mode: random
-      offset: [250, 10.0, 150.0]
-      seed: [424242, 121212, 333333]
-      repeat:
-        x_count: 40
-        z_count: 40
-        x_step: -20
-        z_step: 20
   - type: grass
-    generator:
-      type: grid
-      mode: random
-      offset: [400, 10.0, -400.0]
-      scale: 3
-      seed: [4242, 1212, 3333]
-      count: 1000
-      repeat:
-        x_count: 100
-        z_count: 150
-        x_step: -9
-        z_step: 9
   - type: bush01
-    generator:
-      type: grid
-      mode: random
-      offset: [-400, 0, -400]
-      scale: 3
-      seed: [12, 13, 14]
-      count: 100
-      repeat:
-        x_count: 21
-        z_count: 35
-        x_step: 40
-        z_step: 40
   - type: bush02
-    generator:
-      type: grid
-      mode: random
-      offset: [-400, 0, -400]
-      scale: 4
-      seed: [6116, 1188, 2299]
-      count: 50
-      repeat:
-        x_count: 21
-        z_count: 35
-        x_step: 40
-        z_step: 40
   - type: bush03
-    generator:
-      type: grid
-      mode: random
-      offset: [-300, 0, -300]
-      scale: 1.5
-      seed: [61236, 8855, 9934]
-      count: 600
-      repeat:
-        x_count: 21
-        z_count: 35
-        x_step: 40
-        z_step: 40
   - type: skeleton_army
     pos: [35, 11.5, 60.0]
     scale: 3

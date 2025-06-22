@@ -1200,6 +1200,9 @@
     <ClCompile Include="src\loader\NodeTypeData.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\component\GeneratorDefinition.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h">
@@ -2709,6 +2712,15 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\loader\Value.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\component\GeneratorDefinition.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\loader\Repeat.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\loader\Tiling.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

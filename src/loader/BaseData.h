@@ -2,23 +2,9 @@
 
 #include <glm/glm.hpp>
 
+#include "Repeat.h"
+#include "Tiling.h"
+
 namespace loader
 {
-    struct Repeat {
-        int xCount{ 1 };
-        int yCount{ 1 };
-        int zCount{ 1 };
-
-        float xStep{ 0.f };
-        float yStep{ 0.f };
-        float zStep{ 0.f };
-    };
-
-    struct Tiling {
-        int tile_size{ 100 };
-        glm::uvec3 tiles{ 1 };
-        float height_scale{ 32 };
-        float horizontal_scale{ 1 };
-        glm::vec2 vertical_range{ 0, 32 };
-    };
 }

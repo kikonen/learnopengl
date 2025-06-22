@@ -45,6 +45,18 @@ types:
     flags:
       static_bounds: true
       no_shadow: true
+    generator:
+      type: grid
+      mode: random
+      offset: [-100, 0, -100]
+      #scale: 5
+      seed: [12, 13, 14]
+      count: 2000
+      repeat:
+        x_count: 10
+        z_count: 10
+        x_step: 20
+        z_step: 20
   - id: flower
     prefab:
       path: prefab/scenery/prefab_SM_Flower_01c.yml
@@ -56,6 +68,18 @@ types:
     flags:
       static_bounds: true
       no_shadow: true
+    generator:
+      type: grid
+      mode: random
+      offset: [-100, 0, -100]
+      #scale: 5
+      seed: [45, 67, 99]
+      count: 2000
+      repeat:
+        x_count: 10
+        z_count: 10
+        x_step: 20
+        z_step: 20
 
 nodes:
   - type: player
@@ -68,27 +92,4 @@ nodes:
     position: [0, 0, 0]
     scale: 100
   - type: dandelion
-    generator:
-      type: grid
-      mode: random
-      offset: [-100, 0, -100]
-      seed: [12, 13, 14]
-      count: 2000
-      repeat:
-        x_count: 10
-        z_count: 10
-        x_step: 20
-        z_step: 20
   - type: flower
-    #scale: 5
-    generator:
-      type: grid
-      mode: random
-      offset: [-100, 0, -100]
-      seed: [45, 67, 99]
-      count: 2000
-      repeat:
-        x_count: 10
-        z_count: 10
-        x_step: 20
-        z_step: 20

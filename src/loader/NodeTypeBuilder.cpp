@@ -195,6 +195,10 @@ namespace loader
         type->m_particleDefinition = l.m_particleLoader.createDefinition(typeData.particle);
         type->m_physicsDefinition = l.m_physicsLoader.createPhysicsDefinition(typeData.physics);
 
+        type->m_generatorDefinition = l.m_generatorLoader.createGeneratorDefinition(
+            typeData.generator,
+            *m_loaders);
+
         if (!typeData.controllers.empty()) {
             type->m_controllerDefinitions = std::make_unique<std::vector<ControllerDefinition>>();
             for (auto& controllerData : typeData.controllers) {

@@ -116,9 +116,6 @@ namespace loader {
             else if (k == "tiling") {
                 loadTiling(v, data.tiling);
             }
-            else if (k == "generator") {
-                loaders.m_generatorLoader.loadGenerator(v, data.generator, loaders);
-            }
             else if (k == "selected") {
                 data.selected = readBool(v);
             }

@@ -257,10 +257,6 @@ namespace loader
         state.m_scale = nodeData.scale;
         state.m_rotation = util::degreesToQuat(nodeData.rotation);
 
-        node->m_generator = l.m_generatorLoader.createGenerator(
-            nodeData.generator,
-            *m_loaders);
-
         return { handle, state };
     }
 }

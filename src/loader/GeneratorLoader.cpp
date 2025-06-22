@@ -11,14 +11,11 @@
 #include "mesh/LodMesh.h"
 #include "mesh/MeshFlags.h"
 
-#include "component/PhysicsDefinition.h"
-
-#include "generator/GridGenerator.h"
-#include "generator/AsteroidBeltGenerator.h"
-#include "terrain/TerrainGenerator.h"
-
 #include "physics/Category.h"
 #include "physics/physics_util.h"
+
+#include "component/PhysicsDefinition.h"
+#include "component/GeneratorDefinition.h"
 
 #include "loader/document.h"
 #include "loader_util.h"
@@ -168,7 +165,7 @@ namespace loader {
         }
     }
 
-    std::unique_ptr<NodeGenerator> GeneratorLoader::createGenerator(
+    std::unique_ptr<GeneratorDefinition> GeneratorLoader::createGeneratorDefinition(
         const GeneratorData& data,
         Loaders& loaders)
     {
@@ -176,86 +173,55 @@ namespace loader {
 
         const auto& assets = Assets::get();
 
-        switch (data.type) {
-        case GeneratorType::terrain: {
-            auto generator{ std::make_unique<terrain::TerrainGenerator>() };
+        auto definition = std::make_unique<GeneratorDefinition>();
+        auto& df = *definition;
 
-            const auto& terrainData = data.terrainData;
-            const auto& tiling = data.tiling;
+        df.m_type = data.type;
 
-            generator->m_mode = data.mode;
-            generator->m_offset = data.offset;
-            generator->m_scale = data.scale;
+        df.m_count = data.count;
+        df.m_radius = data.radius;
 
-            generator->m_modelsDir = assets.modelsDir;
-            generator->m_worldTileSize = tiling.tile_size;
-            generator->m_worldTilesU = tiling.tiles.x;
-            generator->m_worldTilesV = tiling.tiles.z;
-            generator->m_heightMapFile = terrainData.map_height;
-            generator->m_verticalRange = tiling.vertical_range;
-            generator->m_horizontalScale = tiling.horizontal_scale;
+        df.m_mode = data.mode;
 
-            generator->m_material = data.materialData.material;
-            generator->m_material.loadTextures();
+        df.m_offset = data.offset;
+        df.m_scale = data.scale;
 
-            loaders.m_materialLoader.resolveMaterial({}, generator->m_material);
+        df.m_seed = data.seed;
 
-            return generator;
-        }
-        case GeneratorType::asteroid_belt: {
-            auto generator{ std::make_unique<AsteroidBeltGenerator>(data.count) };
+        df.m_repeat = data.repeat;
+        df.m_tiling = data.tiling;
 
-            generator->m_mode = data.mode;
-            generator->m_offset = data.offset;
-            generator->m_scale = data.scale;
+        df.m_heightMap = data.terrainData.map_height;
 
-            return generator;
-        }
-        case GeneratorType::grid: {
-            auto generator{ std::make_unique<GridGenerator>() };
+        {
+            auto& geomData = data.geom;
+            auto& geom = df.m_geom;
 
-            generator->m_mode = data.mode;
-            generator->m_offset = data.offset;
-            generator->m_scale = data.scale;
+            geom.m_enabled = data.enabled;
 
-            generator->m_seed = data.seed;
+            geom.m_size = geomData.size;
 
-            generator->m_boundsDir = glm::normalize(data.boundsDir);
-            generator->m_boundsMask = data.boundsMask;
+            geom.m_rotation = util::degreesToQuat(geomData.rotation);
+            geom.m_offset = geomData.offset;
 
-            generator->m_count = data.count;
-            generator->m_xCount = data.repeat.xCount;
-            generator->m_yCount = data.repeat.yCount;
-            generator->m_zCount = data.repeat.zCount;
+            geom.m_categoryMask = geomData.categoryMask;
+            geom.m_collisionMask = geomData.collisionMask;
 
-            generator->m_xStep = data.repeat.xStep;
-            generator->m_yStep = data.repeat.yStep;
-            generator->m_zStep = data.repeat.zStep;
+            geom.m_type = geomData.type;
 
-            if (data.geom.enabled)
-            {
-                auto& geomData = data.geom;
-                generator->m_geometryTemplate = std::make_unique<GeomDefinition>();
-                auto& geom = *generator->m_geometryTemplate;
-
-                geom.m_size = geomData.size;
-
-                geom.m_rotation = util::degreesToQuat(geomData.rotation);
-                geom.m_offset = geomData.offset;
-
-                geom.m_categoryMask = geomData.categoryMask;
-                geom.m_collisionMask = geomData.collisionMask;
-
-                geom.m_type = geomData.type;
-
-                geom.m_placeable = geomData.placeable;
-            }
-
-            return generator;
-        }
+            geom.m_placeable = geomData.placeable;
         }
 
-        return nullptr;
+        df.m_boundsDir = data.boundsDir;
+        df.m_boundsMask = data.boundsMask;
+
+        {
+            df.m_material = std::make_unique<Material>();
+            *df.m_material = data.materialData.material;
+            loaders.m_materialLoader.resolveMaterial({}, *df.m_material);
+            df.m_material->loadTextures();
+        }
+
+        return definition;
     }
-
 }

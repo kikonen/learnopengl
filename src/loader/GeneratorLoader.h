@@ -7,8 +7,8 @@
 #include "MaterialData.h"
 
 class NodeGenerator;
-
 class NodeType;
+struct GeneratorDefinition;
 
 namespace loader {
     class Loaders;
@@ -28,7 +28,7 @@ namespace loader {
             const loader::DocNode& node,
             TerrainData& data) const;
 
-        std::unique_ptr<NodeGenerator> createGenerator(
+        std::unique_ptr<GeneratorDefinition> createGeneratorDefinition(
             const GeneratorData& data,
             Loaders& loaders);
     };

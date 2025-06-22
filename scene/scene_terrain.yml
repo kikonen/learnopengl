@@ -61,6 +61,17 @@ types:
       pre_depth: true
       use_deferred: true
       nav_physics: true
+    generator:
+      type: terrain
+      mode: grid
+      terrain:
+        map_height: textures/terrain_2/terrain_2_height.png
+      tiling:
+        tile_size: 256
+        tiles: [8, 0, 8]
+        vert_range: [-62.54, 221.9]
+        xvert_range: [25.54, 71.9]
+        horiz_scale: 2
     physics:
       geom:
         type: height_field
@@ -118,6 +129,16 @@ types:
     priority: 1
     flags:
       static_bounds: true
+    generator:
+      type: grid
+      mode: random
+      offset: [150, 15.0, 150.0]
+      seed: [424242, 121212, 333333]
+      repeat:
+        x_count: 20
+        z_count: 20
+        x_step: -20
+        z_step: 20
   - id: skeleton_army_2
     prefab:
       path: prefab/creatures/prefab_skeleton.yml
@@ -163,17 +184,6 @@ nodes:
     scale: 2.5
   - type: terrain_grass_v2
     pos: [-1024, 0, -1024]
-    generator:
-      type: terrain
-      mode: grid
-      terrain:
-        map_height: textures/terrain_2/terrain_2_height.png
-      tiling:
-        tile_size: 256
-        tiles: [8, 0, 8]
-        vert_range: [-62.54, 221.9]
-        xvert_range: [25.54, 71.9]
-        horiz_scale: 2
   - type: grid_points
     pos: [-1024, 150, -1024]
     xxpos: [0, 150, 0]
@@ -192,16 +202,6 @@ nodes:
     pos: [0, -70, 0]
     scale: 1024
   - type: palm_tree_forest
-    generator:
-      type: grid
-      mode: random
-      offset: [150, 15.0, 150.0]
-      seed: [424242, 121212, 333333]
-      repeat:
-        x_count: 20
-        z_count: 20
-        x_step: -20
-        z_step: 20
   - type: skeleton_army_2
     pos: [0, 100.5, 0.0]
     repeat:

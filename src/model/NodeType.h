@@ -38,6 +38,7 @@ struct AudioListenerDefinition;
 struct AudioSourceDefinition;
 struct PhysicsDefinition;
 struct ControllerDefinition;
+struct GeneratorDefinition;
 
 struct PrepareContext;
 
@@ -169,6 +170,8 @@ public:
     std::unique_ptr<LightDefinition> m_lightDefinition{ nullptr };
     std::unique_ptr<particle::ParticleDefinition> m_particleDefinition{ nullptr };
     std::unique_ptr<PhysicsDefinition> m_physicsDefinition;
+    std::unique_ptr<GeneratorDefinition> m_generatorDefinition;
+
     std::unique_ptr<std::vector<ControllerDefinition>> m_controllerDefinitions;
 
     std::unique_ptr<AudioListenerDefinition> m_audioListenerDefinition;

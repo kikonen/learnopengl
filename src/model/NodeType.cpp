@@ -22,6 +22,7 @@
 #include "component/TextDefinition.h"
 #include "component/PhysicsDefinition.h"
 #include "component/ControllerDefinition.h"
+#include "component/GeneratorDefinition.h"
 
 #include "particle/ParticleDefinition.h"
 
@@ -52,6 +53,8 @@ NodeType::NodeType(NodeType&& o) noexcept
     m_scripts{ std::move(o.m_scripts) },
     m_customMaterial{ std::move(o.m_customMaterial) },
     m_cameraDefinition{ std::move(o.m_cameraDefinition) },
+    m_generatorDefinition{ std::move(o.m_generatorDefinition) },
+    m_controllerDefinitions{ std::move(o.m_controllerDefinitions) },
     m_lightDefinition{ std::move(o.m_lightDefinition) },
     m_particleDefinition{ std::move(o.m_particleDefinition) },
     m_textDefinition{ std::move(o.m_textDefinition) }

@@ -8,22 +8,13 @@
 
 #include "generator/GeneratorMode.h"
 
+#include "component/GeneratorDefinition.h"
+
 #include "PhysicsData.h"
 #include "TerrainData.h"
 #include "MaterialData.h"
 
-class Node;
-class NodeGenerator;
-
 namespace loader {
-    enum class GeneratorType : std::underlying_type_t<std::byte> {
-        none,
-        grid,
-        terrain,
-        asteroid_belt,
-        text,
-    };
-
     struct GeneratorData {
         bool enabled{ false };
         GeneratorType type{ GeneratorType::none };

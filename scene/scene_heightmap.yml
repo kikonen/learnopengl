@@ -137,6 +137,17 @@ types:
       pre_depth: true
       use_deferred: true
       nav_physics: true
+    generator:
+      type: terrain
+      mode: grid
+      terrain:
+        map_height: textures/terrain_2/terrain_2_height.png
+      tiling:
+        tile_size: 64
+        tiles: [1, 0, 1]
+        vert_range: [-62.54, 221.9]
+        vert_range: [-4, 4]
+        horiz_scale: 2
     physics:
       geom:
         type: height_field
@@ -182,14 +193,3 @@ nodes:
     priority: 20
     xpos: [-1024, 0, -1024]
     pos: [-32, 0, -32]
-    generator:
-      type: terrain
-      mode: grid
-      terrain:
-        map_height: textures/terrain_2/terrain_2_height.png
-      tiling:
-        tile_size: 64
-        tiles: [1, 0, 1]
-        vert_range: [-62.54, 221.9]
-        vert_range: [-4, 4]
-        horiz_scale: 2

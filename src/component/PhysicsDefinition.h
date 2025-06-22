@@ -28,6 +28,8 @@ struct BodyDefinition {
 
 // @see physics/Geom.h
 struct GeomDefinition {
+    bool m_enabled{ false };
+
     glm::vec3 m_size{ 0.5f };
 
     glm::quat m_rotation{ 1.f, 0.f, 0.f, 0.f };

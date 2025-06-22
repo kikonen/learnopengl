@@ -10,8 +10,6 @@
 #include "BaseId.h"
 #include "BaseData.h"
 
-#include "GeneratorData.h"
-
 namespace loader {
     struct NodeData {
         bool enabled{ false };
@@ -39,8 +37,6 @@ namespace loader {
         glm::vec3 clonePositionOffset{ 0.f };
 
         Repeat repeat;
-
-        GeneratorData generator;
 
         const std::string& str() const noexcept
         {

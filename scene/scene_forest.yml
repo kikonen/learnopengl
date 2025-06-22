@@ -88,16 +88,47 @@ types:
             USE_TREE_WIND: 1
     flags:
       static_bounds: true
+    generator:
+      type: grid
+      mode: random
+      offset: [-1000, 10.0, 0.0]
+      seed: [23444242, 54351212, 4353333]
+      repeat:
+        x_count: 200
+        z_count: 200
+        x_step: 20
+        z_step: -20
   - id: maple_tree_forest
     prefab:
       path: prefab/scenery/prefab_maple_tree.yml
     flags:
       static_bounds: true
+    generator:
+      type: grid
+      mode: random
+      offset: [-250, 10.0, 0.0]
+      seed: [23474242, 54311212, 4363333]
+      repeat:
+        x_count: 50
+        z_count: 50
+        x_step: 20
+        z_step: -20
   - id: pine_tree_forest
     prefab:
       path: prefab/scenery/prefab_pine_tree.yml
     flags:
       static_bounds: true
+    generator:
+      type: grid
+      mode: random
+      offset: [-250, 0.0, 0.0]
+      scale: 2
+      seed: [23344242, 52351212, 4353335]
+      repeat:
+        x_count: 50
+        z_count: 50
+        x_step: 20
+        z_step: -20
   - id: dandelion
     prefab:
       path: prefab/scenery/prefab_SM_Desert_Dandelion_01e.yml
@@ -109,6 +140,18 @@ types:
     flags:
       static_bounds: true
       no_shadow: true
+    generator:
+      type: grid
+      mode: random
+      offset: [-250, 0.0, 0.0]
+      scale: 1.5
+      seed: [12, 13, 14]
+      count: 10000
+      repeat:
+        x_count: 50
+        z_count: 50
+        x_step: 20
+        z_step: -20
   - id: flower
     prefab:
       path: prefab/scenery/prefab_SM_Flower_01c.yml
@@ -120,6 +163,18 @@ types:
     flags:
       static_bounds: true
       no_shadow: true
+    generator:
+      type: grid
+      mode: random
+      offset: [-250, 0.0, 0.0]
+      scale: 1.5
+      seed: [45, 67, 99]
+      count: 5000
+      repeat:
+        x_count: 50
+        z_count: 50
+        x_step: 20
+        z_step: -20
   - id: wooden_floor
     prefab:
       path: prefab/scenery/prefab_wooden_floor.yml
@@ -144,6 +199,17 @@ types:
       pre_depth: true
       use_deferred: true
       xnav_physics: true
+    generator:
+      type: terrain
+      mode: grid
+      terrain:
+        map_height: textures/terrain_2/terrain_2_height.png
+      tiling:
+        tile_size: 256
+        tiles: [8, 0, 8]
+        vert_range: [-62.54, 221.9]
+        vert_range: [-15.54, 81.9]
+        horiz_scale: 2
     physics:
       geom:
         type: height_field
@@ -168,78 +234,12 @@ nodes:
     pos: [-10, 25, 40]
     scale: 2.5
   - type: palm_tree_forest
-    generator:
-      type: grid
-      mode: random
-      offset: [-1000, 10.0, 0.0]
-      seed: [23444242, 54351212, 4353333]
-      repeat:
-        x_count: 200
-        z_count: 200
-        x_step: 20
-        z_step: -20
   - type: maple_tree_forest
-    generator:
-      type: grid
-      mode: random
-      offset: [-250, 10.0, 0.0]
-      seed: [23474242, 54311212, 4363333]
-      repeat:
-        x_count: 50
-        z_count: 50
-        x_step: 20
-        z_step: -20
   - type: pine_tree_forest
-    generator:
-      type: grid
-      mode: random
-      offset: [-250, 0.0, 0.0]
-      scale: 2
-      seed: [23344242, 52351212, 4353335]
-      repeat:
-        x_count: 50
-        z_count: 50
-        x_step: 20
-        z_step: -20
   - xtype: dandelion
-    generator:
-      type: grid
-      mode: random
-      offset: [-250, 0.0, 0.0]
-      scale: 1.5
-      seed: [12, 13, 14]
-      count: 10000
-      repeat:
-        x_count: 50
-        z_count: 50
-        x_step: 20
-        z_step: -20
   - xtype: flower
-    generator:
-      type: grid
-      mode: random
-      offset: [-250, 0.0, 0.0]
-      scale: 1.5
-      seed: [45, 67, 99]
-      count: 5000
-      repeat:
-        x_count: 50
-        z_count: 50
-        x_step: 20
-        z_step: -20
   - type: wooden_floor
     scale: 4000
     position: [0, 0, 0]
   - type: terrain_grass_v2
     pos: [-1024, 0, -2048]
-    generator:
-      type: terrain
-      mode: grid
-      terrain:
-        map_height: textures/terrain_2/terrain_2_height.png
-      tiling:
-        tile_size: 256
-        tiles: [8, 0, 8]
-        vert_range: [-62.54, 221.9]
-        vert_range: [-15.54, 81.9]
-        horiz_scale: 2

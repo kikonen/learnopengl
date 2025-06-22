@@ -127,6 +127,10 @@ types:
   - id: asteroid_belt
     prefab:
       path: prefab/scenery/prefab_asteroid.yml
+    generator:
+      type: asteroid_belt
+      mode: random
+      count: 200000
   - id: dir_light
     mesh:
       path: light
@@ -165,10 +169,6 @@ nodes:
   - type: asteroid_belt
     parent_id: planet_origo
     pos: [0, 0, 0]
-    generator:
-      type: asteroid_belt
-      mode: random
-      count: 200000
   - type: dir_light
     pos: [0, 25, 40]
     scale: 2.5

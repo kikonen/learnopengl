@@ -174,13 +174,6 @@ types:
         type: plane
         rot: [0, 0, 0]
     script: scripts/seq_shaky_ground.lua
-  - id: palm_tree_forest
-    prefab:
-      path: prefab/scenery/prefab_palm_tree.yml
-    pivot:
-      offset: [0, 17, 0.6]
-    flags:
-      dynamic_bounds: true
   - id: skeleton_2
     prefab:
       path: prefab/creatures/prefab_skeleton.yml
@@ -193,12 +186,54 @@ types:
     script: |
       cmd:animation_play(
         { name = "master:Idle2" });
+  - id: palm_tree_forest
+    prefab:
+      path: prefab/scenery/prefab_palm_tree.yml
+    pivot:
+      offset: [0, 17, 0.6]
+    flags:
+      dynamic_bounds: true
+    generator:
+      type: grid
+      mode: grid
+      offset: [-10, 0, -10]
+      scale: 0.5
+      seed: [23444242, 54351212, 4353333]
+      repeat:
+        x_count: 2
+        z_count: 2
+        x_step: 20
+        z_step: 20
+      geom:
+        type: cylinder
+        category: [scenery]
+        collision: [world, player]
+        rotation: [90, 0, 0]
+        size: [0.75, 21, 0]
   - id: palm_tree_forest_2
     prefab:
       xpath: prefab/scenery/prefab_palm_tree.yml
       path: prefab/scenery/prefab_pine_tree.yml
     flags:
       dynamic_bounds: true
+    generator:
+      type: grid
+      mode: random
+      offset: [-20, 0, -20]
+      scale: 0.25
+      seed: [23444242, 54351212, 4353333]
+      count: 100
+      repeat:
+        x_count: 2
+        z_count: 2
+        x_step: 40
+        z_step: 40
+      geom:
+        type: cylinder
+        category: [scenery]
+        collision: [world, player]
+        rotation: [90, 0, 0]
+        size: [0.75, 17, 0]
   - id: palm_tree_forest_3
     prefab:
       path: prefab/scenery/prefab_palm_tree.yml
@@ -221,6 +256,16 @@ types:
       pre_depth: true
       use_deferred: true
       nav_mesh: true
+    generator:
+      type: terrain
+      mode: grid
+      terrain:
+        map_height: textures/terrain_2/terrain_2_height.png
+      tiling:
+        tile_size: 256
+        tiles: [8, 0, 8]
+        vert_range: [-32.54, 31.9]
+        horiz_scale: 2
     physics:
       geom:
         type: height_field
@@ -257,45 +302,10 @@ nodes:
     pos: [0.0, 0.0, 0.0]
     scale: 200
   - type: palm_tree_forest
-    generator:
-      type: grid
-      mode: grid
-      offset: [-10, 0, -10]
-      scale: 0.5
-      seed: [23444242, 54351212, 4353333]
-      repeat:
-        x_count: 2
-        z_count: 2
-        x_step: 20
-        z_step: 20
-      geom:
-        type: cylinder
-        category: [scenery]
-        collision: [world, player]
-        rotation: [90, 0, 0]
-        size: [0.75, 21, 0]
   - xtype: skeleton_2
     pos: [2, 2, 0]
     scale: 1
   - type: palm_tree_forest_2
-    generator:
-      type: grid
-      mode: random
-      offset: [-20, 0, -20]
-      scale: 0.25
-      seed: [23444242, 54351212, 4353333]
-      count: 100
-      repeat:
-        x_count: 2
-        z_count: 2
-        x_step: 40
-        z_step: 40
-      geom:
-        type: cylinder
-        category: [scenery]
-        collision: [world, player]
-        rotation: [90, 0, 0]
-        size: [0.75, 17, 0]
   - type: palm_tree_forest_3
     scale: 0.5
     pos: [-5, 5.0, -5]
@@ -306,13 +316,3 @@ nodes:
       z_step: 10
   - type: terrain_grass_v2
     pos: [-1024, 15, -1024]
-    generator:
-      type: terrain
-      mode: grid
-      terrain:
-        map_height: textures/terrain_2/terrain_2_height.png
-      tiling:
-        tile_size: 256
-        tiles: [8, 0, 8]
-        vert_range: [-32.54, 31.9]
-        horiz_scale: 2
