@@ -35,7 +35,7 @@
 
 #include "Context.h"
 #include "Loaders.h"
-#include "NodeRoot.h"
+#include "NodeData.h"
 #include "ResolvedNode.h"
 
 #include "SceneLoader.h"
@@ -56,10 +56,10 @@ namespace loader
     NodeBuilder::~NodeBuilder() = default;
 
     void NodeBuilder::loadedNode(
-        const NodeRoot& nodeRoot,
+        const NodeData& nodeData,
         bool success)
     {
-        m_sceneLoader->loadedNode(nodeRoot, success);
+        m_sceneLoader->loadedNode(nodeData, success);
     }
 
     void NodeBuilder::addResolvedNode(
@@ -72,47 +72,36 @@ namespace loader
     // TODO KI need to change node add logic to happen via commands
     // => i.e. api which can be used also from Lua
     bool NodeBuilder::resolveNode(
-        const ki::node_id rootId,
-        const NodeRoot& nodeRoot)
+        const ki::node_id ownerId,
+        const NodeData& baseData)
     {
-        if (!nodeRoot.base.enabled) {
+        if (!baseData.enabled) {
             return false;
         }
 
-        m_ctx->m_asyncLoader->addLoader(m_ctx->m_alive, [this, rootId, &nodeRoot]() {
+        m_ctx->m_asyncLoader->addLoader(m_ctx->m_alive, [this, ownerId, &baseData]() {
             try {
-                if (nodeRoot.clones.empty()) {
-                    pool::TypeHandle typeHandle{};
-                    resolveNodeClone(rootId, nodeRoot, nodeRoot.base, false, 0);
-                }
-                else {
-                    int cloneIndex = 0;
-                    for (auto& cloneData : nodeRoot.clones) {
-                        if (!*m_ctx->m_alive) return;
-                        resolveNodeClone(rootId, nodeRoot, cloneData, true, cloneIndex);
-                        cloneIndex++;
-                    }
-                }
-                loadedNode(nodeRoot, true);
+                resolveNode(ownerId, baseData, true);
+                loadedNode(baseData, true);
             }
             catch (const std::runtime_error& ex) {
                 KI_CRITICAL(fmt::format("SCENE_ERROR: RESOLVE_NODE - {}", ex.what()));
-                loadedNode(nodeRoot, false);
+                loadedNode(baseData, false);
                 throw ex;
             }
             catch (const std::string& ex) {
                 KI_CRITICAL(fmt::format("SCENE_ERROR: RESOLVE_NODE - {}", ex));
-                loadedNode(nodeRoot, false);
+                loadedNode(baseData, false);
                 throw ex;
             }
             catch (const char* ex) {
                 KI_CRITICAL(fmt::format("SCENE_ERROR: RESOLVE_NODE - {}", ex));
-                loadedNode(nodeRoot, false);
+                loadedNode(baseData, false);
                 throw ex;
             }
             catch (...) {
                 KI_CRITICAL(fmt::format("SCENE_ERROR: RESOLVE_NODE - {}", "UNKNOWN_ERROR"));
-                loadedNode(nodeRoot, false);
+                loadedNode(baseData, false);
                 throw std::current_exception();
             }
             });
@@ -120,20 +109,37 @@ namespace loader
         return true;
     }
 
+    void NodeBuilder::resolveNode(
+        const ki::node_id ownerId,
+        const NodeData& baseData,
+        bool root)
+    {
+        if (!baseData.clones) {
+            resolveNodeClone(ownerId, baseData, false, 0);
+        }
+        else {
+            int cloneIndex = 0;
+            for (auto& cloneData : *baseData.clones) {
+                if (!*m_ctx->m_alive) return;
+                resolveNodeClone(ownerId, cloneData, true, cloneIndex);
+                cloneIndex++;
+            }
+        }
+    }
+
     void NodeBuilder::resolveNodeClone(
-        const ki::node_id rootId,
-        const NodeRoot& nodeRoot,
-        const NodeData& nodeData,
+        const ki::node_id ownerId,
+        const NodeData& cloneData,
         bool cloned,
         int cloneIndex)
     {
         if (!*m_ctx->m_alive) return;
 
-        if (!nodeData.enabled) {
+        if (!cloneData.enabled) {
             return;
         }
 
-        const auto& repeat = nodeData.repeat;
+        const auto& repeat = cloneData.repeat;
 
         for (auto z = 0; z < repeat.zCount; z++) {
             for (auto y = 0; y < repeat.yCount; y++) {
@@ -141,12 +147,14 @@ namespace loader
                     if (!*m_ctx->m_alive) return;
 
                     const glm::uvec3 tile = { x, y, z };
-                    const glm::vec3 tilePositionOffset{ x * repeat.xStep, y * repeat.yStep, z * repeat.zStep };
+                    const glm::vec3 tilePositionOffset{
+                        x * repeat.xStep,
+                        y * repeat.yStep,
+                        z * repeat.zStep };
 
                     resolveNodeCloneRepeat(
-                        rootId,
-                        nodeRoot,
-                        nodeData,
+                        ownerId,
+                        cloneData,
                         cloned,
                         cloneIndex,
                         tile,
@@ -157,9 +165,8 @@ namespace loader
     }
 
     void NodeBuilder::resolveNodeCloneRepeat(
-        const ki::node_id rootId,
-        const NodeRoot& nodeRoot,
-        const NodeData& nodeData,
+        const ki::node_id ownerId,
+        const NodeData& cloneData,
         bool cloned,
         int cloneIndex,
         const glm::uvec3& tile,
@@ -167,26 +174,26 @@ namespace loader
     {
         //if (!*m_ctx->m_alive) return typeHandle;
 
-        if (!nodeData.enabled) {
+        if (!cloneData.enabled) {
             return;
         }
 
         if (!*m_ctx->m_alive) return;
 
         auto [handle, state] = createNode(
-            nodeData,
+            cloneData,
             cloneIndex,
             tile,
-            nodeData.clonePositionOffset + tilePositionOffset);
+            cloneData.clonePositionOffset + tilePositionOffset);
 
         ki::node_id parentId;
-        if (nodeData.parentBaseId.empty()) {
-            parentId = rootId;
+        if (cloneData.parentBaseId.empty()) {
+            parentId = ownerId;
         }
         else {
             auto [id, _] = resolveNodeId(
-                nodeData.typeId,
-                nodeData.parentBaseId,
+                cloneData.typeId,
+                cloneData.parentBaseId,
                 cloneIndex,
                 tile);
             parentId = id;
@@ -195,11 +202,20 @@ namespace loader
         ResolvedNode resolved{
             parentId,
             handle,
-            nodeData,
+            cloneData,
             state,
         };
 
         addResolvedNode(resolved);
+
+        if (cloneData.children) {
+            for (const auto& childData : *cloneData.children) {
+                resolveNode(
+                    handle.toId(),
+                    childData,
+                    false);
+            }
+        }
     }
 
     std::pair<pool::NodeHandle, CreateState> NodeBuilder::createNode(

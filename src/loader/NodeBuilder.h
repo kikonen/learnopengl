@@ -26,7 +26,6 @@ namespace loader {
     class NodeTypeBuilder;
 
     struct RootData;
-    struct NodeRoot;
     struct NodeData;
     struct ResolvedNode;
 
@@ -42,7 +41,7 @@ namespace loader {
         ~NodeBuilder();
 
         void loadedNode(
-            const NodeRoot& nodeRoot,
+            const NodeData& baseData,
             bool success);
 
         std::vector<ResolvedNode>& getResolvedNodes()
@@ -55,19 +54,24 @@ namespace loader {
             const ResolvedNode& resolved);
 
         bool resolveNode(
-            const ki::node_id rootId,
-            const NodeRoot& nodeRoot);
+            const ki::node_id ownerId,
+            const NodeData& baseData);
+
+    private:
+
+        void resolveNode(
+            const ki::node_id ownerId,
+            const NodeData& baseData,
+            bool root);
 
         void resolveNodeClone(
-            const ki::node_id rootId,
-            const NodeRoot& nodeRoot,
+            const ki::node_id ownerId,
             const NodeData& nodeData,
             bool cloned,
             int cloneIndex);
 
         void resolveNodeCloneRepeat(
-            const ki::node_id rootId,
-            const NodeRoot& nodeRoot,
+            const ki::node_id ownerId,
             const NodeData& nodeData,
             bool cloned,
             int cloneIndex,

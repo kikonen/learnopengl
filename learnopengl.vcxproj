@@ -997,7 +997,6 @@
     <ClInclude Include="src\loader\ControllerLoader.h" />
     <ClInclude Include="src\loader\CustomMaterialData.h" />
     <ClInclude Include="src\loader\CustomMaterialLoader.h" />
-    <ClInclude Include="src\loader\NodeRoot.h" />
     <ClInclude Include="src\loader\NodeLoader.h" />
     <ClInclude Include="src\loader\GeneratorData.h" />
     <ClInclude Include="src\loader\GeneratorLoader.h" />

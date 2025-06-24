@@ -21,7 +21,6 @@ namespace loader {
     struct RootData;
     struct SkyboxData;
     struct ScriptSystemData;
-    struct NodeRoot;
     struct NodeTypeData;
     struct NodeData;
     struct ResolvedNode;
@@ -56,7 +55,7 @@ namespace loader {
         void load();
 
         void loadedNode(
-            const NodeRoot& nodeRoot,
+            const NodeData& nodeData,
             bool success);
 
     private:
@@ -80,15 +79,15 @@ namespace loader {
 
         void validateNode(
             const ki::node_id rootId,
-            const NodeRoot& nodeRoot,
+            const NodeData& node,
             int pass,
             int& errorCount,
             std::map<ki::node_id, std::string>& collectedIds);
 
         void validateNodeClone(
             const ki::node_id rootId,
-            const NodeRoot& nodeRoot,
-            const NodeData& nodeData,
+            const NodeData& baseData,
+            const NodeData& cloneData,
             bool cloned,
             int cloneIndex,
             int pass,
@@ -97,8 +96,8 @@ namespace loader {
 
         void validateNodeCloneRepeat(
             const ki::node_id rootId,
-            const NodeRoot& nodeRoot,
-            const NodeData& nodeData,
+            const NodeData& baseData,
+            const NodeData& cloneData,
             bool cloned,
             int cloneIndex,
             const glm::uvec3& tile,
@@ -120,7 +119,7 @@ namespace loader {
         std::unique_ptr<ScriptSystemData> m_scriptSystemData;
 
         std::vector<NodeTypeData> m_nodeTypes;
-        std::vector<NodeRoot> m_nodes;
+        std::vector<NodeData> m_nodes;
 
         std::unique_ptr<Material> m_defaultMaterial;
 

@@ -20,6 +20,8 @@
 #include "loader/document.h"
 #include "loader_util.h"
 
+#include "NodeData.h"
+
 namespace loader {
     NodeLoader::NodeLoader(
         std::shared_ptr<Context> ctx)
@@ -29,27 +31,26 @@ namespace loader {
 
     void NodeLoader::loadNodes(
         const loader::DocNode& node,
-        std::vector<NodeRoot>& nodes,
+        std::vector<NodeData>& nodes,
         Loaders& loaders) const
     {
         for (const auto& entry : node.getNodes()) {
-            auto& nodeRoot = nodes.emplace_back();
+            auto& nodeData = nodes.emplace_back();
             loadNode(
                 entry,
-                nodeRoot,
+                nodeData,
                 loaders);
         }
     }
 
     void NodeLoader::loadNode(
         const loader::DocNode& node,
-        NodeRoot& nodeRoot,
+        NodeData& nodeData,
         Loaders& loaders) const
     {
         loadNodeClone(
             node,
-            nodeRoot.base,
-            nodeRoot.clones,
+            nodeData,
             true,
             loaders);
     }
@@ -57,20 +58,20 @@ namespace loader {
     void NodeLoader::loadNodeClone(
         const loader::DocNode& node,
         NodeData& data,
-        std::vector<NodeData>& clones,
         bool recurse,
         Loaders& loaders) const
     {
-        bool hasClones = false;
-
         data.enabled = true;
 
         for (const auto& pair : node.getNodes()) {
             const std::string& k = pair.getName();
             const loader::DocNode& v = pair.getNode();
 
-            if (k == "prefab") {
-                // NOTE KI loaded as "pre step"
+            if (k == "children") {
+                // NOTE KI loaded as "post step"
+            }
+            else if (k == "clones") {
+                // NOTE KI loaded as "post step"
             }
             else if (k == "type") {
                 data.typeId = readId(v);
@@ -137,33 +138,42 @@ namespace loader {
             else if (k == "clone_position_offset") {
                 data.clonePositionOffset = readVec3(v);
             }
-            else if (k == "clones") {
-                if (recurse)
-                    hasClones = true;
-            }
             else {
                 reportUnknown("node_entry", k, v);
             }
         }
 
-        if (hasClones) {
-            for (const auto& pair : node.getNodes()) {
-                const std::string& k = pair.getName();
-                const loader::DocNode& v = pair.getNode();
+        {
+            const auto& childrenNode = node.findNode("children");
+            if (!childrenNode.isNull()) {
+                data.children = std::make_shared<std::vector<NodeData>>();
 
-                if (k == "clones") {
-                    for (const auto& node : v.getNodes()) {
-                        // NOTE KI intialize with current data
-                        NodeData clone = data;
-                        std::vector<NodeData> dummy{};
-                        loadNodeClone(
-                            node,
-                            clone,
-                            dummy,
-                            false,
-                            loaders);
-                        clones.push_back(clone);
-                    }
+                for (const auto& entry : childrenNode.getNodes()) {
+                    auto& child = data.children->emplace_back();
+                    loadNode(
+                        entry,
+                        child,
+                        loaders);
+                }
+            }
+        }
+
+        {
+            const auto& clonesNode = node.findNode("clones");
+
+            if (!clonesNode.isNull()) {
+                data.clones = std::make_shared<std::vector<NodeData>>();
+
+                for (const auto& node : clonesNode.getNodes()) {
+                    // NOTE KI intialize with current data
+                    NodeData clone = data;
+
+                    loadNodeClone(
+                        node,
+                        clone,
+                        false,
+                        loaders);
+                    data.clones->push_back(clone);
                 }
             }
         }

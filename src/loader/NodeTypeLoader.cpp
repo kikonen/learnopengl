@@ -79,9 +79,9 @@ namespace loader {
         }
 
         {
-            const auto& baseValue = node.findNode("base");
-            if (!baseValue.isNull()) {
-                auto baseId = readId(baseValue);
+            const auto& baseNode = node.findNode("base");
+            if (!baseNode.isNull()) {
+                auto baseId = readId(baseNode);
                 const auto& it = idToType.find(baseId.m_path);
                 if (it == idToType.end()) {
                     throw fmt::format("Missing base_type: {}", baseId.m_path);

@@ -41,8 +41,13 @@ types:
       type: directional
       diffuse: [0.9, 0.9, 0.7, 1.0]
       intensity: 30000
-  - id: pool_origo
+  - id: pool_composite
     type: origo
+    xscript: |
+      cmd:rotate(
+      { time=60 * 10},
+      vec3(0.0, 1.0, 0.0),
+      360.0 * 10)
   - id: pool_floor
     mesh:
       path: plane
@@ -135,46 +140,50 @@ nodes:
     active: true
   - type: dir_light
     pos: [0, 45, 100]
-  - type: water_ball
-    parent_id: pool_origo
-    scale: 1
-    xclones:
-      - pos: [0.0, 0, 0.0]
-  - type: pool_origo
-    id: pool_origo
-    pos: [0.0, 3.2, -10.0]
-  - type: pool_floor
-    parent_id: pool_origo
-    pos: [0, 0, 0]
-    scale: 5
-    tiling: 5
-    repeat:
-      x_count: 2
-      y_count: 1
-      z_count: 2
-      x_step: 10
-      y_step: 0
-      z_step: 10
-  - type: pool_surface
-    id: pool_surface_{c}_{t}
-    pos: [0, 9.0, -10]
-    repeat:
-      x_count: 2
-      y_count: 1
-      z_count: 2
-      x_step: 2
-      y_step: 0
-      z_step: 2
-  - type: pool_side
-    clones:
-      - pos: [-30.0, 4, 20]
-        scale: [0.3, 6, 60]
-      - pos: [90.0, 4, 20]
-        scale: [0.3, 6, 60]
-      - pos: [30.0, 4, 80]
-        scale: [60, 6, 0.3]
-      - pos: [30.0, 4, -40]
-        scale: [60, 6, 0.3]
+  - type: pool_composite
+    id: pool_composite
+    pos: [0.0, 2, -10.0]
+    children:
+      - type: water_ball
+        scale: 1
+        clones:
+          - pos: [0.0, 0, 0.0]
+          - pos: [0.0, 3.2, 0.0]
+      - type: pool_floor
+        scale: 5
+        tiling: 5
+        clone_position_offset: [-2.5, 0, -2.5]
+        repeat:
+          x_count: 2
+          z_count: 2
+          x_step: 5
+          z_step: 5
+      - type: pool_surface
+        pos: [0, 3.2, 0]
+        scale: 5
+        tiling: 5
+        clone_position_offset: [-2.5, 0, -2.5]
+        repeat:
+          x_count: 2
+          z_count: 2
+          x_step: 5
+          z_step: 5
+      - type: pool_side
+        rot: [0, 0, 0]
+        scale: [0.1, 1.8, 5]
+        tiling_x: 1
+        tiling_y: 2
+        clones:
+          - pos: [-5.1, 1.8, 0]
+          - pos: [5.1, 1.8, 0]
+      - type: pool_side
+        rot: [0, 90, 0]
+        scale: [0.1, 1.8, 5.2]
+        tiling_x: 1
+        tiling_y: 2
+        clones:
+          - pos: [0, 1.8, -5.1]
+          - pos: [0, 1.8, 5.1]
   - xtype: pool_floor_single
     pos: [160.0, 3.2, 20.0]
   - xtype: pool_surface_single

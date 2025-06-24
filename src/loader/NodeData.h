@@ -4,6 +4,7 @@
 #include <vector>
 #include <map>
 #include <set>
+#include <memory>
 
 #include <glm/glm.hpp>
 
@@ -39,6 +40,9 @@ namespace loader {
         // material tiling
         float tilingX{ 1.f };
         float tilingY{ 1.f };
+
+        std::shared_ptr<std::vector<NodeData>> clones;
+        std::shared_ptr<std::vector<NodeData>> children;
 
         const std::string& str() const noexcept
         {

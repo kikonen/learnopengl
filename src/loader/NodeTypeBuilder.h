@@ -24,7 +24,6 @@ namespace loader {
     struct RootData;
     struct MaterialData;
     struct ScriptSystemData;
-    struct NodeRoot;
     struct TextData;
     struct MeshData;
     struct LodData;

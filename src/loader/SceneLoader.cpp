@@ -45,7 +45,7 @@
 #include "Context.h"
 #include "Loaders.h"
 #include "NodeTypeData.h"
-#include "NodeRoot.h"
+#include "NodeData.h"
 #include "ResolvedNode.h"
 #include "DecalData.h"
 #include "ScriptData.h"
@@ -162,7 +162,7 @@ namespace loader {
     }
 
     void SceneLoader::loadedNode(
-        const NodeRoot& nodeRoot,
+        const NodeData& nodeData,
         bool success)
     {
         std::lock_guard lock(m_ready_lock);
@@ -171,7 +171,7 @@ namespace loader {
 
         KI_INFO_OUT(fmt::format(
             "LOADED: node={}, success={}, pending={}",
-            nodeRoot.base.name, success, m_pendingCount));
+            nodeData.name, success, m_pendingCount));
 
         if (m_pendingCount > 0) return;
 
@@ -251,7 +251,7 @@ namespace loader {
             for (const auto& node : m_nodes) {
                 if (m_nodeBuilder->resolveNode(root.rootId, node)) {
                     m_pendingCount++;
-                    KI_INFO_OUT(fmt::format("START: node={}, pending={}", node.base.name, m_pendingCount));
+                    KI_INFO_OUT(fmt::format("START: node={}, pending={}", node.name, m_pendingCount));
                 }
             }
 
@@ -384,18 +384,18 @@ namespace loader {
 
     void SceneLoader::validateNode(
         const ki::node_id rootId,
-        const NodeRoot& nodeRoot,
+        const NodeData& baseData,
         int pass,
         int& errorCount,
         std::map<ki::node_id, std::string>& collectedIds)
     {
-        if (nodeRoot.clones.empty()) {
-            validateNodeClone(rootId, nodeRoot, nodeRoot.base, false, 0, pass, errorCount, collectedIds);
+        if (!baseData.clones) {
+            validateNodeClone(rootId, baseData, baseData, false, 0, pass, errorCount, collectedIds);
         }
         else {
             int cloneIndex = 0;
-            for (auto& cloneData : nodeRoot.clones) {
-                validateNodeClone(rootId, nodeRoot, cloneData, true, cloneIndex, pass, errorCount, collectedIds);
+            for (auto& cloneData : *baseData.clones) {
+                validateNodeClone(rootId, baseData, cloneData, true, cloneIndex, pass, errorCount, collectedIds);
                 cloneIndex++;
             }
         }
@@ -403,17 +403,17 @@ namespace loader {
 
     void SceneLoader::validateNodeClone(
         const ki::node_id rootId,
-        const NodeRoot& nodeRoot,
-        const NodeData& nodeData,
+        const NodeData& baseData,
+        const NodeData& cloneData,
         bool cloned,
         int cloneIndex,
         int pass,
         int& errorCount,
         std::map<ki::node_id, std::string>& collectedIds)
     {
-        if (!nodeData.enabled) return;
+        if (!cloneData.enabled) return;
 
-        const auto& repeat = nodeData.repeat;
+        const auto& repeat = cloneData.repeat;
 
         for (auto z = 0; z < repeat.zCount; z++) {
             for (auto y = 0; y < repeat.yCount; y++) {
@@ -423,8 +423,8 @@ namespace loader {
 
                     validateNodeCloneRepeat(
                         rootId,
-                        nodeRoot,
-                        nodeData,
+                        baseData,
+                        cloneData,
                         cloned,
                         cloneIndex,
                         tile,
@@ -439,8 +439,8 @@ namespace loader {
 
     void SceneLoader::validateNodeCloneRepeat(
         const ki::node_id rootId,
-        const NodeRoot& nodeRoot,
-        const NodeData& nodeData,
+        const NodeData& baseData,
+        const NodeData& cloneData,
         bool cloned,
         int cloneIndex,
         const glm::uvec3& tile,
@@ -449,16 +449,16 @@ namespace loader {
         int& errorCount,
         std::map<ki::node_id, std::string>& collectedIds)
     {
-        if (!nodeData.enabled) return;
+        if (!cloneData.enabled) return;
 
         if (pass == 0) {
             ki::node_id sid;
             std::string resolvedSID;
             {
-                bool automatic = nodeData.baseId.m_path == nodeRoot.base.baseId.m_path;
+                bool automatic = cloneData.baseId.m_path == baseData.baseId.m_path;
                 auto [k, v] = resolveNodeId(
-                    nodeData.typeId,
-                    nodeData.baseId,
+                    cloneData.typeId,
+                    cloneData.baseId,
                     cloneIndex,
                     tile);
                 sid = k;
@@ -478,10 +478,10 @@ namespace loader {
         if (pass == 1) {
             // NOTE KI parentId can be *MISSING*
             // but it cannot be duplicate
-            if (!nodeData.parentBaseId.empty()) {
+            if (!cloneData.parentBaseId.empty()) {
                 auto [sid, resolvedSID] = resolveNodeId(
-                    nodeData.typeId,
-                    nodeData.parentBaseId,
+                    cloneData.typeId,
+                    cloneData.parentBaseId,
                     cloneIndex,
                     tile);
 
