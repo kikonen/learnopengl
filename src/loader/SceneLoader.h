@@ -120,6 +120,7 @@ namespace loader {
 
         std::vector<NodeTypeData> m_nodeTypes;
         std::vector<NodeData> m_nodes;
+        std::vector<NodeData> m_composites;
 
         std::unique_ptr<Material> m_defaultMaterial;
 

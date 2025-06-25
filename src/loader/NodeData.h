@@ -22,6 +22,7 @@ namespace loader {
         BaseId ignoredByBaseId;
 
         BaseId typeId;
+        BaseId compositeId;
 
         std::string name;
         std::string desc;
@@ -29,9 +30,6 @@ namespace loader {
         glm::vec3 position{ 0.f };
         glm::vec3 rotation{ 0.f };
         glm::vec3 scale{ 1.f };
-
-        bool selected{ false };
-        bool shareType{ true };
 
         glm::vec3 clonePositionOffset{ 0.f };
 

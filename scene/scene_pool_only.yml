@@ -134,15 +134,9 @@ types:
       flags:
         pre_depth: true
 
-nodes:
-  - type: player
-    pos: [0, 9.5, 10]
-    active: true
-  - type: dir_light
-    pos: [0, 45, 100]
+composites:
   - type: pool_composite
     id: pool_composite
-    pos: [0.0, 2, -10.0]
     children:
       - type: water_ball
         scale: 1
@@ -184,6 +178,17 @@ nodes:
         clones:
           - pos: [0, 1.8, -5.1]
           - pos: [0, 1.8, 5.1]
+
+nodes:
+  - type: player
+    pos: [0, 9.5, 10]
+    active: true
+  - type: dir_light
+    pos: [0, 45, 100]
+  - composite: pool_composite
+    id: pool
+    pos: [0.0, 2, -10.0]
+    scale: [2, 1, 0.5]
   - xtype: pool_floor_single
     pos: [160.0, 3.2, 20.0]
   - xtype: pool_surface_single

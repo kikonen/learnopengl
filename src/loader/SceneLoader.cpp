@@ -131,6 +131,11 @@ namespace loader {
                     l);
 
                 l.m_nodeLoader.loadNodes(
+                    doc.findNode("composites"),
+                    m_composites,
+                    l);
+
+                l.m_nodeLoader.loadNodes(
                     doc.findNode("nodes"),
                     m_nodes,
                     l);
@@ -249,7 +254,7 @@ namespace loader {
 
             m_pendingCount = 0;
             for (const auto& node : m_nodes) {
-                if (m_nodeBuilder->resolveNode(root.rootId, node)) {
+                if (m_nodeBuilder->resolveNode(root.rootId, node, m_composites)) {
                     m_pendingCount++;
                     KI_INFO_OUT(fmt::format("START: node={}, pending={}", node.name, m_pendingCount));
                 }
@@ -296,14 +301,6 @@ namespace loader {
 
         if (nodeData.active) {
             event::Event evt { event::Type::node_activate };
-            evt.body.node = {
-                .target = handle.toId(),
-            };
-            m_dispatcher->send(evt);
-        }
-
-        if (nodeData.selected) {
-            event::Event evt { event::Type::node_select };
             evt.body.node = {
                 .target = handle.toId(),
             };

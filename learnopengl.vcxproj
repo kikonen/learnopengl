@@ -844,7 +844,6 @@
     <ClInclude Include="src\loader\converter\YamlConverter.h" />
     <ClInclude Include="src\loader\document.h" />
     <ClInclude Include="src\loader\NodeData.h" />
-    <ClInclude Include="src\loader\NodeField.h" />
     <ClInclude Include="src\loader\Flags.h" />
     <ClInclude Include="src\loader\Loaders.h" />
     <ClInclude Include="src\loader\MaterialReference.h" />

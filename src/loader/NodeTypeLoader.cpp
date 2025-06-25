@@ -107,6 +107,9 @@ namespace loader {
                 if (type == "origo") {
                     data.type = NodeKind::origo;
                 }
+                else if (type == "composite") {
+                    data.type = NodeKind::composite;
+                }
                 else if (type == "container") {
                     data.type = NodeKind::container;
                 }

@@ -80,6 +80,9 @@ namespace loader {
                 data.enabled = false;
                 data.typeId = readId(v);
             }
+            else if (k == "composite") {
+                data.compositeId = readId(v);
+            }
             else if (k == "xid") {
                 data.baseId = readId(v);
                 data.enabled = false;
@@ -124,9 +127,6 @@ namespace loader {
             }
             else if (k == "tiling_y") {
                 data.tilingY = readFractional(v);
-            }
-            else if (k == "selected") {
-                data.selected = readBool(v);
             }
             else if (k == "enabled") {
                 data.enabled = readBool(v);
