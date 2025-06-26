@@ -35,6 +35,7 @@
 #include "mesh/NonVaoMesh.h"
 
 #include "model/NodeType.h"
+#include "model/CompositeDefinition.h"
 
 #include "component/CameraDefinition.h"
 #include "component/LightDefinition.h"
@@ -57,6 +58,8 @@
 
 #include "loader_util.h"
 
+#include "CompositeData.h"
+
 namespace {
     const std::string QUAD_MESH_NAME{ "quad" };
 
@@ -76,6 +79,17 @@ namespace {
     //    }
     //    typeData.merge(src);
     //}
+
+    const loader::CompositeData* findComposite(
+        loader::BaseId compositeId,
+        const std::vector<loader::CompositeData>& composites)
+    {
+        const auto& it = std::find_if(
+            composites.cbegin(),
+            composites.cend(),
+            [&compositeId](const auto& e) { return e.baseId == compositeId; });
+        return it != composites.end() ? &(*it) : nullptr;
+    }
 }
 
 namespace loader
@@ -89,18 +103,20 @@ namespace loader
     NodeTypeBuilder::~NodeTypeBuilder() = default;
 
     void NodeTypeBuilder::createTypes(
-        const std::vector<NodeTypeData>& types)
+        const std::vector<NodeTypeData>& types,
+        const std::vector<CompositeData>& composites)
     {
         for (const auto& typeData : types) {
             //NodeTypeData resolvedData;
             //resolveNodeTypeData(resolvedData, typeData, types);
             //createType(resolvedData);
-            createType(typeData);
+            createType(typeData, composites);
         }
     }
 
     pool::TypeHandle NodeTypeBuilder::createType(
-        const NodeTypeData& typeData)
+        const NodeTypeData& typeData,
+        const std::vector<CompositeData>& composites)
     {
         auto& l = *m_loaders;
 
@@ -125,6 +141,10 @@ namespace loader
 
         if (typeData.type == NodeKind::origo) {
             type->m_flags.origo = true;
+            type->m_flags.invisible = true;
+        }
+        else if (typeData.type == NodeKind::composite) {
+            type->m_flags.composite = true;
             type->m_flags.invisible = true;
         }
         else
@@ -221,6 +241,18 @@ namespace loader
                 type,
                 typeData.text,
                 *m_loaders);
+        }
+
+        if (!typeData.compositeId.empty()) {
+            const auto* composite = findComposite(typeData.compositeId, composites);
+
+            if (!composite) {
+                throw fmt::format("composite missing: type={}, type={}",
+                    typeData.str(), typeData.compositeId.str());
+            }
+
+            type->m_compositeDefinition = l.m_compositeLoader.createCompositeDefinition(
+                *composite);
         }
 
         return typeHandle;

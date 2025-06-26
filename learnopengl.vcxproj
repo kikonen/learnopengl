@@ -311,6 +311,8 @@
     <ClCompile Include="src\editor\console\Executor.cpp" />
     <ClCompile Include="src\engine\SystemInit.cpp" />
     <ClCompile Include="src\event\actions.cpp" />
+    <ClCompile Include="src\loader\CompositeLoader.cpp" />
+    <ClCompile Include="src\loader\CompositeLoader.h" />
     <ClCompile Include="src\loader\DecalLoaderr.cpp" />
     <ClCompile Include="src\loader\NodeTypeData.cpp" />
     <ClCompile Include="src\loader\NodeTypeLoader.cpp" />
@@ -715,6 +717,7 @@
     <ClInclude Include="src\event\actions.h" />
     <ClInclude Include="src\generator\GeneratorMode.h" />
     <ClInclude Include="src\component\TextDefinition.h" />
+    <ClInclude Include="src\loader\CompositeData.h" />
     <ClInclude Include="src\loader\DecalData.h" />
     <ClInclude Include="src\loader\DecalLoader.h" />
     <ClInclude Include="src\loader\MaterialUpdaterData.h" />
@@ -735,7 +738,10 @@
     <ClInclude Include="src\mesh\generator\TangentCalculator.h" />
     <ClInclude Include="src\mesh\vao\TangentEntry.h" />
     <ClInclude Include="src\mesh\vao\VertexTangentVBO.h" />
+    <ClInclude Include="src\model\CompositeDefinition.h" />
     <ClInclude Include="src\model\CreateState.h" />
+    <ClInclude Include="src\model\NodeDefinition.h" />
+    <ClInclude Include="src\model\NodeRepeat.h" />
     <ClInclude Include="src\nav\BuildContext.h" />
     <ClInclude Include="src\nav\BuildSettings.h" />
     <ClInclude Include="src\nav\Generator.h" />

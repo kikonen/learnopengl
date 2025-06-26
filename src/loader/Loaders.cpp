@@ -19,6 +19,7 @@ namespace loader {
         m_physicsLoader(ctx),
         m_nodeTypeLoader(ctx),
         m_nodeLoader(ctx),
+        m_compositeLoader(ctx),
         m_meshLoader(ctx),
         m_textLoader(ctx),
         m_vertexLoader(ctx),
@@ -42,6 +43,7 @@ namespace loader {
         m_physicsLoader.setRegistry(registry);
         m_nodeTypeLoader.setRegistry(registry);
         m_nodeLoader.setRegistry(registry);
+        m_compositeLoader.setRegistry(registry);
         m_meshLoader.setRegistry(registry);
         m_textLoader.setRegistry(registry);
         m_vertexLoader.setRegistry(registry);

@@ -133,6 +133,9 @@ namespace loader {
             else if (k == "id") {
                 data.baseId = readId(v);
             }
+            else if (k == "composite") {
+                data.compositeId = readId(v);
+            }
             else if (k == "name") {
                 data.name = readString(v);
             }

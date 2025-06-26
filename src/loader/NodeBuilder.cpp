@@ -42,20 +42,6 @@
 
 #include "loader_util.h"
 
-namespace
-{
-    const loader::NodeData* findComposite(
-        loader::BaseId compositeId,
-        const std::vector<loader::NodeData>& composites)
-    {
-        const auto& it = std::find_if(
-            composites.cbegin(),
-            composites.cend(),
-            [&compositeId](const auto& e) { return e.baseId == compositeId; });
-        return it != composites.end() ? &(*it) : nullptr;
-    }
-}
-
 namespace loader
 {
     NodeBuilder::NodeBuilder(
@@ -87,16 +73,15 @@ namespace loader
     // => i.e. api which can be used also from Lua
     bool NodeBuilder::resolveNode(
         const ki::node_id ownerId,
-        const NodeData& baseData,
-        const std::vector<NodeData>& composites)
+        const NodeData& baseData)
     {
         if (!baseData.enabled) {
             return false;
         }
 
-        m_ctx->m_asyncLoader->addLoader(m_ctx->m_alive, [this, ownerId, &baseData, &composites]() {
+        m_ctx->m_asyncLoader->addLoader(m_ctx->m_alive, [this, ownerId, &baseData]() {
             try {
-                resolveNode(ownerId, baseData, composites, true);
+                resolveNode(ownerId, baseData, true);
                 loadedNode(baseData, true);
             }
             catch (const std::runtime_error& ex) {
@@ -127,30 +112,16 @@ namespace loader
     void NodeBuilder::resolveNode(
         const ki::node_id ownerId,
         const NodeData& baseData,
-        const std::vector<NodeData>& composites,
         bool root)
     {
-        const NodeData* actualNodeData = &baseData;
-
-        {
-            if (!baseData.compositeId.empty()) {
-                actualNodeData = findComposite(baseData.compositeId, composites);
-            }
-
-            if (!actualNodeData) {
-                throw fmt::format("composite missing: node={}, type={}",
-                    baseData.str(), baseData.compositeId.str());
-            }
-        }
-
-        if (!actualNodeData->clones) {
-            resolveNodeClone(ownerId, *actualNodeData, composites, false, 0);
+        if (!baseData.clones) {
+            resolveNodeClone(ownerId, baseData, false, 0);
         }
         else {
             int cloneIndex = 0;
-            for (auto& cloneData : *actualNodeData->clones) {
+            for (const auto& cloneData : *baseData.clones) {
                 if (!*m_ctx->m_alive) return;
-                resolveNodeClone(ownerId, cloneData, composites, true, cloneIndex);
+                resolveNodeClone(ownerId, cloneData, true, cloneIndex);
                 cloneIndex++;
             }
         }
@@ -159,7 +130,6 @@ namespace loader
     void NodeBuilder::resolveNodeClone(
         const ki::node_id ownerId,
         const NodeData& cloneData,
-        const std::vector<NodeData>& composites,
         bool cloned,
         int cloneIndex)
     {
@@ -185,7 +155,6 @@ namespace loader
                     resolveNodeCloneRepeat(
                         ownerId,
                         cloneData,
-                        composites,
                         cloned,
                         cloneIndex,
                         tile,
@@ -198,7 +167,6 @@ namespace loader
     void NodeBuilder::resolveNodeCloneRepeat(
         const ki::node_id ownerId,
         const NodeData& cloneData,
-        const std::vector<NodeData>& composites,
         bool cloned,
         int cloneIndex,
         const glm::uvec3& tile,
@@ -245,7 +213,6 @@ namespace loader
                 resolveNode(
                     handle.toId(),
                     childData,
-                    composites,
                     false);
             }
         }

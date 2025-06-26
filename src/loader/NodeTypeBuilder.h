@@ -21,7 +21,7 @@ namespace mesh {
 
 namespace loader {
     struct NodeTypeData;
-    struct RootData;
+    struct CompositeData;
     struct MaterialData;
     struct ScriptSystemData;
     struct TextData;
@@ -45,10 +45,12 @@ namespace loader {
         ~NodeTypeBuilder();
 
         void createTypes(
-            const std::vector<NodeTypeData>& types);
+            const std::vector<NodeTypeData>& types,
+            const std::vector<CompositeData>& composites);
 
         pool::TypeHandle createType(
-            const NodeTypeData& typeData);
+            const NodeTypeData& typeData,
+            const std::vector<CompositeData>& composites);
 
     private:
         void resolveMaterials(

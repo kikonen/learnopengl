@@ -80,9 +80,6 @@ namespace loader {
                 data.enabled = false;
                 data.typeId = readId(v);
             }
-            else if (k == "composite") {
-                data.compositeId = readId(v);
-            }
             else if (k == "xid") {
                 data.baseId = readId(v);
                 data.enabled = false;

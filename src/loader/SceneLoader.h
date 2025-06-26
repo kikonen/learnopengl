@@ -23,6 +23,7 @@ namespace loader {
     struct ScriptSystemData;
     struct NodeTypeData;
     struct NodeData;
+    struct CompositeData;
     struct ResolvedNode;
     struct DecalData;
     struct MaterialUpdaterData;
@@ -120,7 +121,7 @@ namespace loader {
 
         std::vector<NodeTypeData> m_nodeTypes;
         std::vector<NodeData> m_nodes;
-        std::vector<NodeData> m_composites;
+        std::vector<CompositeData> m_composites;
 
         std::unique_ptr<Material> m_defaultMaterial;
 

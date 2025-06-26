@@ -34,6 +34,7 @@
 
 #include "model/Snapshot.h"
 #include "model/EntityFlags.h"
+#include "model/CompositeDefinition.h"
 
 NodeType::NodeType()
     : m_aabb{ std::make_unique<AABB>() },
@@ -57,7 +58,8 @@ NodeType::NodeType(NodeType&& o) noexcept
     m_controllerDefinitions{ std::move(o.m_controllerDefinitions) },
     m_lightDefinition{ std::move(o.m_lightDefinition) },
     m_particleDefinition{ std::move(o.m_particleDefinition) },
-    m_textDefinition{ std::move(o.m_textDefinition) }
+    m_textDefinition{ std::move(o.m_textDefinition) },
+    m_compositeDefinition{ std::move(o.m_compositeDefinition) }
 {
 }
 

@@ -33,6 +33,7 @@ namespace loader
 
         BaseId baseId;
         BaseId parentId;
+        BaseId compositeId;
 
         std::string name;
         std::string desc;

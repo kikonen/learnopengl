@@ -2,8 +2,6 @@
 
 #include <string>
 #include <vector>
-#include <map>
-#include <set>
 #include <memory>
 
 #include <glm/glm.hpp>
@@ -22,7 +20,6 @@ namespace loader {
         BaseId ignoredByBaseId;
 
         BaseId typeId;
-        BaseId compositeId;
 
         std::string name;
         std::string desc;

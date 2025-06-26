@@ -55,28 +55,24 @@ namespace loader {
 
         bool resolveNode(
             const ki::node_id ownerId,
-            const NodeData& baseData,
-            const std::vector<NodeData>& composites);
+            const NodeData& baseData);
 
     private:
 
         void resolveNode(
             const ki::node_id ownerId,
             const NodeData& baseData,
-            const std::vector<NodeData>& composites,
             bool root);
 
         void resolveNodeClone(
             const ki::node_id ownerId,
             const NodeData& nodeData,
-            const std::vector<NodeData>& composites,
             bool cloned,
             int cloneIndex);
 
         void resolveNodeCloneRepeat(
             const ki::node_id ownerId,
             const NodeData& nodeData,
-            const std::vector<NodeData>& composites,
             bool cloned,
             int cloneIndex,
             const glm::uvec3& tile,

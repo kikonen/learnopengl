@@ -39,6 +39,7 @@ struct AudioSourceDefinition;
 struct PhysicsDefinition;
 struct ControllerDefinition;
 struct GeneratorDefinition;
+struct CompositeDefinition;
 
 struct PrepareContext;
 
@@ -178,6 +179,7 @@ public:
     std::unique_ptr<std::vector<AudioSourceDefinition>> m_audioSourceDefinitions;
 
     std::unique_ptr<TextDefinition> m_textDefinition{ nullptr };
+    std::unique_ptr<CompositeDefinition> m_compositeDefinition{ nullptr };
 
     glm::vec3 m_front{ 0.f, 0.f, 1.f };
     glm::quat m_baseRotation{ 1.f, 0.f, 0.f, 0.f };

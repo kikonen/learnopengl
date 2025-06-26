@@ -41,8 +41,9 @@ types:
       type: directional
       diffuse: [0.9, 0.9, 0.7, 1.0]
       intensity: 30000
-  - id: pool_composite
-    type: origo
+  - id: pool
+    type: composite
+    composite: pool_composite
     xscript: |
       cmd:rotate(
       { time=60 * 10},
@@ -135,9 +136,8 @@ types:
         pre_depth: true
 
 composites:
-  - type: pool_composite
-    id: pool_composite
-    children:
+  - id: pool_composite
+    nodes:
       - type: water_ball
         scale: 1
         clones:
@@ -185,7 +185,7 @@ nodes:
     active: true
   - type: dir_light
     pos: [0, 45, 100]
-  - composite: pool_composite
+  - type: pool
     id: pool
     pos: [0.0, 2, -10.0]
     scale: [2, 1, 0.5]

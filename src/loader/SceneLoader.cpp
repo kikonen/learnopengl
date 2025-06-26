@@ -46,6 +46,7 @@
 #include "Loaders.h"
 #include "NodeTypeData.h"
 #include "NodeData.h"
+#include "CompositeData.h"
 #include "ResolvedNode.h"
 #include "DecalData.h"
 #include "ScriptData.h"
@@ -130,7 +131,7 @@ namespace loader {
                     m_nodeTypes,
                     l);
 
-                l.m_nodeLoader.loadNodes(
+                l.m_compositeLoader.loadComposites(
                     doc.findNode("composites"),
                     m_composites,
                     l);
@@ -246,7 +247,7 @@ namespace loader {
         }
 
         {
-            m_nodeTypeBuilder->createTypes(m_nodeTypes);
+            m_nodeTypeBuilder->createTypes(m_nodeTypes, m_composites);
         }
 
         {
@@ -254,7 +255,7 @@ namespace loader {
 
             m_pendingCount = 0;
             for (const auto& node : m_nodes) {
-                if (m_nodeBuilder->resolveNode(root.rootId, node, m_composites)) {
+                if (m_nodeBuilder->resolveNode(root.rootId, node)) {
                     m_pendingCount++;
                     KI_INFO_OUT(fmt::format("START: node={}, pending={}", node.name, m_pendingCount));
                 }

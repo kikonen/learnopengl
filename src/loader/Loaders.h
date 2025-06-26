@@ -19,6 +19,7 @@
 #include "PrefabLoader.h"
 #include "NodeTypeLoader.h"
 #include "NodeLoader.h"
+#include "CompositeLoader.h"
 #include "MeshLoader.h"
 #include "TextLoader.h"
 #include "VertexLoader.h"
@@ -42,6 +43,8 @@ namespace loader {
 
         NodeTypeLoader m_nodeTypeLoader;
         NodeLoader m_nodeLoader;
+        CompositeLoader m_compositeLoader;
+
         MeshLoader m_meshLoader;
         TextLoader m_textLoader;
 
