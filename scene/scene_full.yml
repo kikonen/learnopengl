@@ -108,6 +108,7 @@ types:
     mesh:
       path: light
       program: light
+    base_scale: 0.5
     flags:
       no_shadow: true
     light:
@@ -1152,14 +1153,64 @@ nodes:
     #pos: [5.75, 5.25, 0.2]
     pos: [2, -2, -1]
   - type: zero_origo
-    id: zero_origo
     pos: [0.0, 0.0, 0.0]
     children:
       - type: active_node
         pos: [0, 15, 0]
-      - id: moving_water_ball
+      - type: moving_water_ball
         pos: [0.0, 0.0, 0.0]
         scale: 0.3
+      - type: moving_point_light_origo
+        pos: [0, 14, 0]
+        clones:
+          - pos: [-15.0, 14.0, -15.0]
+            children:
+              - type: moving_point_light
+                pos: [0.0, 0.0, 10.0]
+              - type: moving_point_light_halo
+                pos: [0.0, 0.0, 10.0]
+          - pos: [15.0, 14.0, -15.0]
+            children:
+              - type: moving_point_light
+                pos: [0.0, 0.0, 10.0]
+              - type: moving_point_light_halo
+                pos: [0.0, 0.0, 10.0]
+          - pos: [-15.0, 14.0, 15.0]
+            children:
+              - type: moving_point_light
+                pos: [0.0, 0.0, 10.0]
+              - type: moving_point_light_halo
+                pos: [0.0, 0.0, 10.0]
+          - pos: [15.0, 14.0, 15.0]
+            children:
+              - type: moving_point_light
+                pos: [0.0, 0.0, 10.0]
+              - type: moving_point_light_halo
+                pos: [0.0, 0.0, 10.0]
+          - pos: [-25.0, 10.0, -25.0]
+            children:
+              - type: moving_point_light_5
+                pos: [0.0, 0.0, 15.0]
+              - type: moving_point_light_5_halo
+                pos: [0.0, 0.0, 15.0]
+          - pos: [25.0, 10.0, -25.0]
+            children:
+              - type: moving_point_light_6
+                pos: [0.0, 0.0, 15.0]
+              - type: moving_point_light_6_halo
+                pos: [0.0, 0.0, 15.0]
+          - pos: [-25, 10.0, 25.0]
+            children:
+              - type: moving_point_light_7
+                pos: [0.0, 0.0, 15.0]
+              - type: moving_point_light_7_halo
+                pos: [0.0, 0.0, 15.0]
+          - pos: [25.0, 10.0, 25.0]
+            children:
+              - type: moving_point_light_8
+                pos: [0.0, 0.0, 15.0]
+              - type: moving_point_light_8_halo
+                pos: [0.0, 0.0, 15.0]
   - type: zero
     pos: [0.0, 0.0, 0.0]
     scale: 0.2
@@ -1171,84 +1222,6 @@ nodes:
     children:
       - type: cube_map
         pos: [0, 0, 1]
-  - type: moving_point_light_origo
-    id: moving_point_light_origo_{t}_{c}
-    parent_id: zero_origo
-    pos: [0, 14, 0]
-    clones:
-      - pos: [-15.0, 14.0, -15.0]
-        id: light_1
-      - pos: [15.0, 14.0, -15.0]
-        id: light_2
-      - pos: [-15.0, 14.0, 15.0]
-        id: light_3
-      - pos: [15.0, 14.0, 15.0]
-        id: light_4
-      - pos: [-25.0, 10.0, -25.0]
-        id: light_5
-      - pos: [25.0, 10.0, -25.0]
-        id: light_6
-      - pos: [-25, 10.0, 25.0]
-        id: light_7
-      - pos: [25.0, 10.0, 25.0]
-        id: light_8
-  - type: moving_point_light
-    parent_id: zero_origo
-    pos: [0, 0, 0]
-    scale: 0.5
-    clones:
-      - pos: [0.0, 0.0, 10.0]
-        parent_id: light_1
-      - pos: [0.0, 0.0, 10.0]
-        parent_id: light_2
-      - pos: [0.0, 0.0, 10.0]
-        parent_id: light_3
-      - pos: [0.0, 0.0, 10.0]
-        parent_id: light_4
-      - pos: [0.0, 0.0, 15.0]
-        type: moving_point_light_5
-        parent_id: light_5
-        enabled: true
-      - pos: [0.0, 0.0, 15.0]
-        type: moving_point_light_6
-        parent_id: light_6
-        enabled: true
-      - pos: [0.0, 0.0, 15.0]
-        type: moving_point_light_7
-        parent_id: light_7
-        enabled: true
-      - pos: [0.0, 0.0, 15.0]
-        type: moving_point_light_8
-        parent_id: light_8
-        enabled: true
-  - type: moving_point_light_halo
-    parent_id: zero_origo
-    pos: [0, 0, 0]
-    clones:
-      - pos: [0.0, 0.0, 10.0]
-        parent_id: light_1
-      - pos: [0.0, 0.0, 10.0]
-        parent_id: light_2
-      - pos: [0.0, 0.0, 10.0]
-        parent_id: light_3
-      - pos: [0.0, 0.0, 10.0]
-        parent_id: light_4
-      - pos: [0.0, 0.0, 15.0]
-        type: moving_point_light_5_halo
-        parent_id: light_5
-        enabled: true
-      - pos: [0.0, 0.0, 15.0]
-        type: moving_point_light_6_halo
-        parent_id: light_6
-        enabled: true
-      - pos: [0.0, 0.0, 15.0]
-        type: moving_point_light_7_halo
-        parent_id: light_7
-        enabled: true
-      - pos: [0.0, 0.0, 15.0]
-        type: moving_point_light_8_halo
-        parent_id: light_8
-        enabled: true
   - xtype: cube_map
     pos: [0.0, 4.5, 0.0]
   - type: example
@@ -1314,8 +1287,7 @@ nodes:
     rotation: [0.0, 215.0, 0.0]
     children:
       - type: big_mirror_2_front
-        id: big_mirror_2_front
-      - id: big_mirror_2_back
+      - type: big_mirror_2_back
         ignored_by: big_mirror_2_front
   - type: airboat
     clones:
@@ -1409,10 +1381,10 @@ nodes:
     id: ball_origo
     pos: [5.0, 30.0, 15.0]
     children:
-      - id: bronze_ball
+      - type: bronze_ball
         pos: [0.0, 0.0, 5.0]
         scale: 1.3
-      - id: copper_ball
+      - type: copper_ball
         pos: [0.0, 0.0, 10.0]
         scale: 1.3
   - type: silver_ball

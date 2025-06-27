@@ -80,31 +80,9 @@ namespace loader
         }
 
         m_ctx->m_asyncLoader->addLoader(m_ctx->m_alive, [this, ownerId, &baseData]() {
-            try {
-                resolveNode(ownerId, baseData, true);
-                loadedNode(baseData, true);
-            }
-            catch (const std::runtime_error& ex) {
-                KI_CRITICAL(fmt::format("SCENE_ERROR: RESOLVE_NODE - {}", ex.what()));
-                loadedNode(baseData, false);
-                throw ex;
-            }
-            catch (const std::string& ex) {
-                KI_CRITICAL(fmt::format("SCENE_ERROR: RESOLVE_NODE - {}", ex));
-                loadedNode(baseData, false);
-                throw ex;
-            }
-            catch (const char* ex) {
-                KI_CRITICAL(fmt::format("SCENE_ERROR: RESOLVE_NODE - {}", ex));
-                loadedNode(baseData, false);
-                throw ex;
-            }
-            catch (...) {
-                KI_CRITICAL(fmt::format("SCENE_ERROR: RESOLVE_NODE - {}", "UNKNOWN_ERROR"));
-                loadedNode(baseData, false);
-                throw std::current_exception();
-            }
-            });
+            resolveNode(ownerId, baseData, true);
+            loadedNode(baseData, true);
+        });
 
         return true;
     }
@@ -114,16 +92,30 @@ namespace loader
         const NodeData& baseData,
         bool root)
     {
-        if (!baseData.clones) {
-            resolveNodeClone(ownerId, baseData, false, 0);
-        }
-        else {
-            int cloneIndex = 0;
-            for (const auto& cloneData : *baseData.clones) {
-                if (!*m_ctx->m_alive) return;
-                resolveNodeClone(ownerId, cloneData, true, cloneIndex);
-                cloneIndex++;
+        try {
+            if (!baseData.clones) {
+                resolveNodeClone(ownerId, baseData, false, 0);
             }
+            else {
+                int cloneIndex = 0;
+                for (const auto& cloneData : *baseData.clones) {
+                    if (!*m_ctx->m_alive) return;
+                    resolveNodeClone(ownerId, cloneData, true, cloneIndex);
+                    cloneIndex++;
+                }
+            }
+        }
+        catch (const std::runtime_error& ex) {
+            KI_CRITICAL(fmt::format("SCENE_ERROR: RESOLVE_NODE - {}", ex.what()));
+        }
+        catch (const std::string& ex) {
+            KI_CRITICAL(fmt::format("SCENE_ERROR: RESOLVE_NODE - {}", ex));
+        }
+        catch (const char* ex) {
+            KI_CRITICAL(fmt::format("SCENE_ERROR: RESOLVE_NODE - {}", ex));
+        }
+        catch (...) {
+            KI_CRITICAL(fmt::format("SCENE_ERROR: RESOLVE_NODE - {}", "UNKNOWN_ERROR"));
         }
     }
 
