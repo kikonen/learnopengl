@@ -45,11 +45,10 @@ nodes:
     pos: [0, 2, 10]
     active: true
   - type: light_origo
-    id: light_origo
     pos: [0, 2, 0]
-  - type: light
-    parent_id: light_origo
-    pos: [0, 0, 0]
-    scale: 0.5
+    children:
+      - type: light
+        pos: [0, 0, 0]
+        scale: 0.5
   - type: wooden_floor
     scale: 100

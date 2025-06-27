@@ -119,6 +119,7 @@ types:
       material_modifier:
         kd: [0.1, 0.1, 0.9, 1.0]
       program: light
+    base_scale: 0.5
     flags:
       no_shadow: true
     light:
@@ -172,37 +173,38 @@ nodes:
     pos: [0, 25, 40]
     scale: 2.5
   - type: point_light_origo_1
-    id: point_light_origo_1
     pos: [0.0, 4.0, 0.0]
-  - type: point_light_green_1
-    parent_id: point_light_origo_1
-    pos: [-10, 0, 0]
-    scale: 0.5
-  - type: point_light_green_1_halo
-    parent: point_light_origo_1
-    pos: [-10, 0, 0]
+    children:
+      - type: point_light_green_1
+        pos: [-10, 0, 0]
+        scale: 0.5
+      - type: point_light_green_1_halo
+        pos: [-10, 0, 0]
   - type: point_light_quad_origo
-    id: "point_light_quad_origo_{x}_{z}"
     pos: [30.0, 4.0, -30.0]
-    repeat:
-      x_step: 20
-      z_step: 20
-      x_count: 2
-      z_count: 2
-  - type: point_light_quad
-    parent_id: "point_light_quad_origo_{x}_{z}"
-    pos: [10, 0, 0]
-    scale: 0.5
-    repeat:
-      x_step: 0
-      z_step: 0
-      x_count: 2
-      z_count: 2
-  - type: point_light_quad_halo
-    parent_id: "point_light_quad_origo_{x}_{z}"
-    pos: [10, 0, 0]
-    repeat:
-      x_step: 0
-      z_step: 0
-      x_count: 2
-      z_count: 2
+    clone_position_offset: [30.0, 4.0, -30.0]
+    clones:
+      - pos: [-10, 0, -10]
+        children:
+          - type: point_light_quad
+            pos: [10, 0, 0]
+          - type: point_light_quad_halo
+            pos: [10, 0, 0]
+      - pos: [ 10, 0, -10]
+        children:
+          - type: point_light_quad
+            pos: [10, 0, 0]
+          - type: point_light_quad_halo
+            pos: [10, 0, 0]
+      - pos: [-10, 0,  10]
+        children:
+          - type: point_light_quad
+            pos: [10, 0, 0]
+          - type: point_light_quad_halo
+            pos: [10, 0, 0]
+      - pos: [ 10, 0,  10]
+        children:
+          - type: point_light_quad
+            pos: [10, 0, 0]
+          - type: point_light_quad_halo
+            pos: [10, 0, 0]

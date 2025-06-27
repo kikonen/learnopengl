@@ -8,6 +8,10 @@ script:
   scripts:
     - path: lib/common
 types:
+  - id: cube_map
+    type: origo
+    flags:
+      cube_map: true
   - id: player
     type: origo
     front: [0, 0, -1]
@@ -91,10 +95,6 @@ types:
     script: |
       cmd:animation_play(
         { name = "master:Idle" });
-  - id: cube_map_mirror_ball
-    type: origo
-    flags:
-      cube_map: true
   - id: mirror_ball
     mesh:
       path: glass_ball
@@ -111,10 +111,6 @@ types:
       material_modifier:
         map_normal: mars_normal.png
         program: g_tex
-  - id: cube_map_wood_wall
-    type: origo
-    flags:
-      cube_map: true
   - id: wood_wall
     mesh:
       path: quad
@@ -177,29 +173,27 @@ nodes:
       z_count: 2
       x_step: 10
       z_step: -10
-  - type: cube_map_mirror_ball
-    parent_id: mirror_ball
   - type: mirror_ball
-    id: mirror_ball
     pos: [0, 5, 10]
     scale: 1
+    children:
+      - type: cube_map
   - type: planet_1
     pos: [0, 0, 20]
     scale: 1
   - type: planet_2
     pos: [0, 3.5, 30]
     scale: 1
-  - type: cube_map_wood_wall
-    parent_id: wood_wall
-    pos: [0, 0, 0.5]
   - type: wood_wall
-    id: wood_wall
     pos: [20.0, 2.5, 0.0]
     scale: 2.5
     rotation: [0, 270, 0]
     repeat:
       x_count: 1
       x_step: 1
+    children:
+      - type: cube_map
+        pos: [0, 0, 0.5]
   - type: wooden_floor
     scale: 100
     position: [0, 0, 0]

@@ -63,7 +63,7 @@ types:
     camera:
       default: true
       type: fps
-      xpitch: -16
+      pitch: -12
     controllers:
       - type: pawn
       - type: camera_zoom
@@ -258,7 +258,6 @@ types:
         collision: [none]
         size: [1]
   - id: ball_2_halo
-    parent: ball_2_origo
     mesh:
       vertex:
         type: box
@@ -368,11 +367,11 @@ nodes:
     pos: [0, 1, 15]
     xrotation: [0, 180, 0]
     active: true
-  - xtype: player_fpes_arms_v2
-    parent: player
-    pos: [0.1, -0.7, -0.0]
-    rotation: [-20, 20, 0]
-    scale: 0.25
+    children:
+      - type: player_fps_arms_v2
+        pos: [0.1, -0.7, -0.0]
+        rotation: [-20, 20, 0]
+        scale: 0.25
   - type: dir_light
     pos: [-25, 25, 20]
     scale: 2.5
@@ -392,33 +391,33 @@ nodes:
     pos: [5, 1.5, 0]
   - type: ball
     pos: [0, 2.5, 0]
-  - id: ball_2_origo
-    type: origo
+  - type: origo
+    id: ball_2_origo
     pos: [0, 4.5, 0]
     xpos: [0]
-  - type: ball_2
-    parent: ball_2_origo
-  - type: ball_2_halo
-    parent: ball_2_origo
-  - id: lamp_origo
-    type: origo
+    children:
+      - type: ball_2
+      - type: ball_2_halo
+  - type: origo
+    id: lamp_origo
     pos: [4, 3, 3]
     xpos: [0, 4.5, 0]
     xpos: [0]
-  - type: lamp
-    parent: lamp_origo
-  - type: lamp_halo
-    parent: lamp_origo
+    children:
+      - type: light
+      - type: lamp
+      - type: lamp_halo
   - type: skeleton_army
     pos: [7, 1.5, 5]
     rot: [0, -90, 0]
-    xrepeat:
+    repeat:
       x_count: 1
       z_count: 2
       x_step: 3
       z_step: 3
-  - type: light
-    parent: lamp_origo
+    xchildren:
+      - type: lamp_halo
+        pos: [0, 1, 0]
 
 decals:
   - name: bullet_1

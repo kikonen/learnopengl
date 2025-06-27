@@ -13,19 +13,18 @@ types:
   - id: grid
     prefab:
       path: prefab/util/prefab_grid.yml
+  - id: origo
+    type: origo
+  - id: cube_map
+    type: origo
+    flags:
+      cube_map: true
   - id: fps_counter
     prefab:
       path: prefab/util/prefab_fps_counter.yml
     layer: ui
-  - id: origo
+  - id: origo_marker
     type: origo
-    mesh:
-      path: water_ball
-      material_modifier:
-        kd: [0.0, 0.2, 0.8, 1.0]
-        program: g_tex
-      scale: 0.5
-  - id: origo_2
     mesh:
       path: water_ball
       material_modifier:
@@ -76,10 +75,6 @@ types:
         category: [prop, can_float]
         collision: [world]
         size: [2.5]
-  - id: cube_map_mirror_ball
-    type: origo
-    flags:
-      cube_map: true
   - id: mirror_ball
     mesh:
       path: glass_ball
@@ -114,8 +109,6 @@ types:
       no_select: true
       no_shadow: true
       xno_reflect: true
-  - id: big_mirror_2_origo
-    type: origo
   - id: big_mirror_2_front
     mesh:
       path: quad
@@ -512,9 +505,9 @@ nodes:
     #pos: [5.75, 5.25, 0.2]
     pos: [2, -2, -1]
     scale: 0.0025
-  - type: origo
+  - type: origo_marker
     pos: [0.0, 10, 0.0]
-  - type: origo_2
+  - type: origo_marker
     pos: [-30, 10, -40]
   - type: player
     xxpos: [50, 30, 40]
@@ -527,22 +520,19 @@ nodes:
   - type: mirror_ball
     id: mirror_ball
     pos: [7, 30.5, -10]
-  - type: cube_map_mirror_ball
-    parent_id: mirror_ball
-    #pos: [0, 30.5, -10]
-  - type: mirror_ball_halo
-    parent: mirror_ball
-    ignored_by: mirror_ball
-  - type: big_mirror_2_origo
-    id: big_mirror_2_origo
+    children:
+      - type: cube_map
+        #pos: [0, 30.5, -10]
+      - type: mirror_ball_halo
+        ignored_by: mirror_ball
+  - type: origo
     pos: [50, 20.5, -10]
     rotation: [0.0, -60.0, 0.0]
-  - type: big_mirror_2_front
-    id: big_mirror_2_front
-    parent: big_mirror_2_origo
-  - type: big_mirror_2_back
-    parent: big_mirror_2_origo
-    ignored_by: big_mirror_2_front
+    children:
+      - type: big_mirror_2_front
+        id: big_mirror_2_front
+      - type: big_mirror_2_back
+        ignored_by: big_mirror_2_front
   - type: pool_floor
     pos: [0.0, 3.2, -10.0]
     repeat:
@@ -564,7 +554,7 @@ nodes:
       z_step: 60
   - type: pool_surface_particle_origin
     # TODO KI parent_id?!?!
-    parent_id: pool_surface_0_0x0x0
+    parent: pool_surface_0_0x0x0
   - type: pool_side
     clones:
       - pos: [-30.0, 4, 20]

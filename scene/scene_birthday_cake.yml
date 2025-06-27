@@ -30,7 +30,7 @@ types:
       type: directional
       diffuse: [0.7, 0.7, 0.7, 1.0]
       intensity: 30000
-  - id: origo
+  - id: origo_marker
     mesh:
       path: water_ball
       material:
@@ -212,39 +212,33 @@ nodes:
     active: true
   - type: dir_light
     pos: [-15, 25, 25]
-  - type: origo
+  - type: origo_marker
     pos: [0.0, 0.0, 0.0]
   - type: plate
     scale: 20
   - type: rotate_origo
-    id: rotate_origo
     pos: [0, 2, 0]
+    children:
+      - type: cake
+        pos: [1, 3, 0]
+        scale: 4
+        rot: [13, 0, 0]
+        children:
+          - type: marilyn
+            pos: [0, -0.18, 0]
+            scale: 1.2
   - type: point_light_origo_1
-    id: point_light_origo_1
     pos: [0.0, 6.0, 0.0]
-  - type: point_light_green_1
-    parent_id: point_light_origo_1
-    pos: [-7, 0, 0]
-    scale: 0.15
-  - type: point_light_yellow_1
-    parent_id: point_light_origo_1
-    pos: [7, 0, 0]
-    scale: 0.15
-  - type: point_light_red_1
-    parent_id: point_light_origo_1
-    pos: [0, 0, 7]
-    scale: 0.15
-  - type: point_light_blue_1
-    parent_id: point_light_origo_1
-    pos: [0, 0, -7]
-    scale: 0.15
-  - type: cake
-    id: cake
-    parent: rotate_origo
-    pos: [1, 3, 0]
-    scale: 4
-    rot: [13, 0, 0]
-  - type: marilyn
-    parent: cake
-    pos: [0, -0.18, 0]
-    scale: 1.2
+    children:
+      - type: point_light_green_1
+        pos: [-7, 0, 0]
+        scale: 0.15
+      - type: point_light_yellow_1
+        pos: [7, 0, 0]
+        scale: 0.15
+      - type: point_light_red_1
+        pos: [0, 0, 7]
+        scale: 0.15
+      - type: point_light_blue_1
+        pos: [0, 0, -7]
+        scale: 0.15

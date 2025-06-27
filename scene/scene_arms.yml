@@ -24,6 +24,7 @@ types:
     camera:
       type: fps
       xdistance: [2, 1, 5]
+      pitch: -12
       default: true
     controllers:
       - type: pawn
@@ -228,22 +229,19 @@ nodes:
   - type: player
     id: player
     pos: [0, 1, 15]
-    active: true
-  - type: player_fps
-    id: player_fps
-    pos: [0, 1, 15]
     xactive: true
-  - type: player_fps_point
-    parent: player_fps
-    pos: [0.0, 0.0, -0.1]
-  - xtype: player_fps_arms
-    parent: player_fps
-    pos: [-0.14, -1.59, -0.2]
-  - type: player_fps_arms_v2
-    parent: player_fps
-    pos: [0.1, -0.7, -0.0]
-    rotation: [-20, 20, 0]
-    scale: 0.25
+  - type: player_fps
+    pos: [0, 1, 15]
+    active: true
+    children:
+      - type: player_fps_point
+        pos: [0.0, 0.0, -0.1]
+      - xtype: player_fps_arms
+        pos: [-0.14, -1.59, -0.2]
+      - type: player_fps_arms_v2
+        pos: [0.1, -0.7, -0.0]
+        rotation: [-20, 20, 0]
+        scale: 0.25
   - type: dir_light
     pos: [-15, 25, 25]
   - type: origo
@@ -255,11 +253,10 @@ nodes:
   - type: SM_JungleGym_01a
     pos: [0, 0, 0]
   - type: weeping_angel
-    id: weeping_angel
     pos: [0, 0.75, 0]
-  - type: weeping_angel_particle_origin
-    parent_id: weeping_angel
-    pos: [0, 20, 0]
+    children:
+      - type: weeping_angel_particle_origin
+        pos: [0, 20, 0]
   - type: world_plane
     id: world_x_minus
     pos: [-1200, 0, 0]

@@ -7,6 +7,10 @@ script:
   scripts:
     - path: lib/common
 types:
+  - id: cube_map
+    type: origo
+    flags:
+      cube_map: true
   - id: fps_counter
     prefab:
       path: prefab/util/prefab_fps_counter.yml
@@ -22,10 +26,6 @@ types:
     controllers:
       - type: pawn
       - type: camera_zoom
-  - id: cube_map_1
-    type: origo
-    flags:
-      cube_map: true
   - id: planet_origo
     type: origo
     script_file: scripts/anim_asteroids_roll
@@ -154,21 +154,18 @@ nodes:
     #pos: [5.75, 5.25, 0.2]
     pos: [2, -2, -1]
     scale: 0.0025
-  - xtype: cube_map_1
+  - xtype: cube_map
     pos: [0.0, 0.0, 0.0]
   - type: planet_origo
     id: planet_origo
     pos: [0.0, 0.0, 0.0]
-  - xtype: planet_1
-    parent_id: planet_origo
-    pos: [0, 0, 0]
-  - type: planet_2
-    parent: planet_origo
-  - type: planet_cloud
-    parent: planet_origo
-  - type: asteroid_belt
-    parent_id: planet_origo
-    pos: [0, 0, 0]
+    children:
+      - xtype: planet_1
+        pos: [0, 0, 0]
+      - type: planet_2
+      - type: planet_cloud
+      - type: asteroid_belt
+        pos: [0, 0, 0]
   - type: dir_light
     pos: [0, 25, 40]
     scale: 2.5
