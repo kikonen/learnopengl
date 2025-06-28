@@ -197,7 +197,7 @@ types:
       dir_variation: 0.5
       speed: 5
       speed_variation: 2
-      size: 0.2
+      size: 0.11
       size_variation: 0.1
       rate: 10000
       rate_variation: 50
@@ -543,7 +543,6 @@ nodes:
       y_step: 0
       z_step: 60
   - type: pool_surface
-    id: pool_surface_{c}_{t}
     pos: [0, 9.0, -10]
     repeat:
       x_count: 2
@@ -552,9 +551,9 @@ nodes:
       x_step: 60
       y_step: 0
       z_step: 60
-  - type: pool_surface_particle_origin
-    # TODO KI parent_id?!?!
-    parent: pool_surface_0_0x0x0
+    children:
+      - type: pool_surface_particle_origin
+        pos: [0, 10, 0]
   - type: pool_side
     clones:
       - pos: [-30.0, 4, 20]
