@@ -115,7 +115,6 @@ types:
       type: point
       linear: 0.09
       quadratic: 0.032
-      target_id: ROOT
       diffuse: [0.8, 0.8, 0.8, 1.0]
       intensity: 1000
   - id: moving_point_light_5
@@ -194,7 +193,6 @@ types:
       type: point
       linear: 0.09
       quadratic: 0.032
-      target_id: ROOT
       diffuse: [0.8, 0.8, 0.8, 1.0]
       intensity: 1000
   - id: active_node
@@ -302,7 +300,7 @@ types:
   - id: big_mirror_1_origo
     type: origo
     script_file: scripts/anim_mirror
-  - id: big_mirror_1_front
+  - id: big_mirror_front
     mesh:
       path: quad
       material:
@@ -317,7 +315,7 @@ types:
         pre_depth: true
     flags:
       mirror: true
-  - id: big_mirror_1_back
+  - id: big_mirror_back
     mesh:
       path: quad
       material:
@@ -331,32 +329,6 @@ types:
   - id: big_mirror_2_origo
     type: origo
     script_file: scripts/anim_mirror
-  - id: big_mirror_2_front
-    mesh:
-      path: quad
-      material:
-        kd: [0.800000, 0.800000, 0.800000, 1.0]
-        map_kd: textures/Marble White_VH_512.PNG
-        reflection: 0.5
-        refraction: 0.05
-        refraction_ratio: [1.0, 1.52]
-        program: g_mirror
-      base_scale: 15.0
-      flags:
-        pre_depth: true
-    flags:
-      mirror: true
-  - id: big_mirror_2_back
-    mesh:
-      path: quad
-      material:
-        kd: [0.800000, 0.800000, 1.800000, 1.0]
-        map_kd: textures/Marble White_VH_512.PNG
-        program: g_tex
-      base_scale: 15.0
-      base_rotation: [0, 180, 0]
-      flags:
-        pre_depth: true
   - id: airboat
     mesh:
       path: airboat_fixed_colors
@@ -1278,17 +1250,18 @@ nodes:
     pos: [-55.0, 25.0, 10.0]
     rotation: [0.0, 45.0, 0.0]
     children:
-      - type: big_mirror_1_front
-        id: big_mirror_1_front
-      - type: big_mirror_1_back
-        ignored_by: big_mirror_1_front
+      - type: big_mirror_front
+        id: big_mirror_front_1
+      - type: big_mirror_back
+        ignored_by: big_mirror_front_1
   - type: big_mirror_2_origo
     pos: [55.0, 25.0, 10.0]
     rotation: [0.0, 215.0, 0.0]
     children:
-      - type: big_mirror_2_front
-      - type: big_mirror_2_back
-        ignored_by: big_mirror_2_front
+      - type: big_mirror_front
+        id: big_mirror_front_2
+      - type: big_mirror_back
+        ignored_by: big_mirror_front_2
   - type: airboat
     clones:
       - pos: [24.0, 11.0, 15.0]

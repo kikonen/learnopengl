@@ -92,7 +92,6 @@ types:
       type: point
       linear: 0.35
       quadratic: 0.44
-      #target_id: ROOT
       diffuse: [0.1, 0.8, 0.1, 1.0]
       intensity: 2000
   - id: point_light_green_1_halo
@@ -126,8 +125,6 @@ types:
       type: point
       linear: 0.35
       quadratic: 0.44
-      xtarget_id: "point-light-origo-quad-{x}-{z}"
-      target_id: ROOT
       diffuse: [0.1, 0.1, 0.9, 1.0]
       intensity: 3000
   - id: point_light_quad_halo

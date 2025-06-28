@@ -1,30 +1,25 @@
 ---
-name: Origo
-viewports:
+meta:
+  name: Shaft
 skybox:
   material: skybox/polyhaven/wasteland_clouds_puresky_4k.hdr
 script:
   scripts:
     - path: lib/common
-nodes:
+types:
   - id: player
     type: origo
-    pos: [0, 1, 15]
-    rotation: [0, 180, 0]
-    active: true
     camera:
       default: true
     controllers:
       - type: pawn
       - type: camera_zoom
-  - id: dir_light_{c}_{t}
+  - id: dir_light
     mesh:
       path: light
       material_modifier:
         kd: [0.8, 0.8, 0.6, 1.0]
       program: g_light
-    pos: [-25, 25, 20]
-    scale: 2.5
     flags:
       no_shadow: true
     light:
@@ -34,12 +29,10 @@ nodes:
   - id: wooden_floor
     prefab:
       path: prefab/scenery/prefab_wooden_floor.yml
-    pos: [0, -2, 0]
-    scale: 100
     physics:
       geom:
         collision: [world]
-  - id: origo
+  - id: origo_marker
     mesh:
       vertex:
         type: sphere
@@ -51,14 +44,9 @@ nodes:
         program: g_tex
     flags:
       no_frustum: true
-    pos: [0.0, 0.0, 0.0]
   - id: lamp_origo
     type: origo
-    xpos: [4, 3, 3]
-    pos: [1, 0, 0]
-    xpos: [0]
   - id: lamp
-    parent: lamp_origo
     mesh:
       vertex:
         type: sphere
@@ -68,7 +56,6 @@ nodes:
     flags:
       no_shadow: true
   - id: lamp_halo
-    parent: lamp_origo
     mesh:
       vertex:
         type: box
@@ -84,7 +71,6 @@ nodes:
       no_select: true
       no_shadow: true
   - id: light
-    parent: lamp_origo
     type: origo
     light:
       type: point
@@ -94,9 +80,35 @@ nodes:
       outer_cutoff_angle: 25.0
       diffuse: [0.2, 0.8, 0.2, 1.0]
       intensity: 200
-  - id: four_cubes_{t}_{c}
-    parent: lamp_origo
+  - id: four_cubes
     mesh:
       path: texture_cube_3
       scale: 0.25
       program: g_tex
+
+nodes:
+  - type: player
+    pos: [0, 1, 15]
+    rotation: [0, 180, 0]
+    active: true
+  - type: dir_light
+    pos: [-25, 25, 20]
+    scale: 2.5
+  - type: wooden_floor
+    pos: [0, -2, 0]
+    scale: 100
+  - type: origo_marker
+    pos: [0.0, 0.0, 0.0]
+  - type: lamp_origo
+    xpos: [4, 3, 3]
+    pos: [1, 0, 0]
+    xpos: [0]
+    children:
+     - type: lamp
+     - type: lamp_halo
+     - type: light
+     - type: four_cubes
+       mesh:
+         path: texture_cube_3
+         scale: 0.25
+         program: g_tex

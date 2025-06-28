@@ -164,12 +164,7 @@ namespace loader
         const glm::uvec3& tile,
         const glm::vec3& tilePositionOffset)
     {
-        //if (!*m_ctx->m_alive) return typeHandle;
-
-        if (!cloneData.enabled) {
-            return;
-        }
-
+        if (!cloneData.enabled) return;
         if (!*m_ctx->m_alive) return;
 
         auto [handle, state] = createNode(

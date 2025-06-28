@@ -1,19 +1,18 @@
 ---
-name: Origo
+meta:
+  name: Wireframe
 skybox:
   program: g_skybox
   material: skybox/polyhaven/drakensberg_solitary_mountain_4k.hdr
 script:
   scripts:
     - path: lib/common
-nodes:
-  - prefab:
+types:
+  - id: grid
+    prefab:
       path: prefab/util/prefab_grid.yml
   - id: player_fps
     type: origo
-    pos: [1, 1, 5]
-    active: true
-    rotation: [0, 180, 0]
     camera:
       default: true
       type: fps
@@ -23,19 +22,18 @@ nodes:
     audio:
       listener:
         default: true
-  - id: dir_light_{c}_{t}
+  - id: dir_light
     type: origo
     mesh:
       path: light
       program: g_light
-    pos: [-15, 25, 25]
     flags:
       no_shadow: true
     light:
       type: directional
       diffuse: [0.7, 0.7, 0.7, 1.0]
       intensity: 30000
-  - id: origo
+  - id: origo_marker
     mesh:
       path: water_ball
       material:
@@ -45,22 +43,19 @@ nodes:
         # alpha: true
         program: g_tex
       scale: 0.05
-    pos: [0.0, 0.0, 0.0]
-  - xid: wooden_floor
+  - id: wooden_floor
     prefab:
       path: prefab/scenery/prefab_wooden_floor.yml
     mesh:
       material:
         render_back: true
         # alpha: true
-    pos: [0.0, 0.0, 0.0]
     physics:
       geom:
         type: plane
         category: [terrain]
         collision: [can_terrain]
-    scale: 200
-  - xid: cube_1_{t}
+  - id: cube_1
     prefab:
       path: prefab/creatures/prefab_lion.yml
     script: |
@@ -91,7 +86,7 @@ nodes:
           USE_GS: 1
           USE_WIREFRAME: 1
     pos: [1, 1, 1]
-  - id: cube_1_{t}
+  - id: cube_2
     mesh:
       path: smooth_teapot
       xvertex:
@@ -108,4 +103,21 @@ nodes:
         # alpha: true
         # render_back: true
         xline_mode: true
+
+nodes:
+  - type: grid
+  - type: player_fps
+    pos: [1, 1, 5]
+    active: true
+    rotation: [0, 180, 0]
+  - type: dir_light
+    pos: [-15, 25, 25]
+  - type: origo_marker
+    pos: [0.0, 0.0, 0.0]
+  - xtype: wooden_floor
+    pos: [0.0, 0.0, 0.0]
+    scale: 200
+  - xtype: cube_1
+    pos: [1, 1, 1]
+  - type: cube_2
     pos: [1, 1, 1]

@@ -8,6 +8,12 @@ script:
   scripts:
     - path: lib/common
 types:
+  - id: origo
+    type: origo
+  - id: cube_map
+    type: origo
+    flags:
+      cube_map: true
   - id: player
     type: origo
     front: [0, 0, -1]
@@ -60,10 +66,6 @@ types:
     script: |
       cmd:animation_play(
         { name = "master:Idle" });
-  - id: cube_map_1
-    type: origo
-    flags:
-      cube_map: true
   - id: glass_ball
     mesh:
       path: glass_ball
@@ -108,7 +110,7 @@ types:
     xphysics:
       geom:
         type: plane
-  - id: big_mirror_1
+  - id: big_mirror_front
     mesh:
       path: quad
       material:
@@ -117,29 +119,22 @@ types:
         reflection: 0.9
         refraction: 0.1
         refraction_ratio: [1.0, 1.52]
-        render_back: true
-      program: g_mirror
+        program: g_mirror
     front: [0, 0, 1]
     flags:
       mirror: true
       no_reflect: true
       no_refract: true
-  - id: big_mirror_2
+  - id: big_mirror_back
     mesh:
       path: quad
       material:
-        name: mirror
+        kd: [0.800000, 1.800000, 0.800000, 1.0]
         map_kd: textures/Marble White_VH_512.PNG
-        reflection: 0.9
-        refraction: 0.1
-        refraction_ratio: [1.0, 1.52]
-        render_back: true
-      program: g_mirror
-    front: [0, 0, 1]
-    flags:
-      mirror: true
-      no_reflect: true
-      no_refract: true
+        program: g_tex
+      base_rotation: [0, 180, 0]
+      flags:
+        pre_depth: true
 
 nodes:
   - type: player
@@ -170,7 +165,7 @@ nodes:
       z_count: 20
       x_step: -6
       z_step: 3
-  - type: cube_map_1
+  - type: cube_map
     pos: [5.0, 3.0, 0.0]
   - type: glass_ball
     pos: [5.0, 3.0, 0.0]
@@ -201,11 +196,21 @@ nodes:
         rot: [0, 180, 0]
       - pos: [0.0, 0.0, -100.0]
         rot: [0, 0, 0]
-  - type: big_mirror_1
+  - type: origo
     pos: [-40.0, 10.0, -10.0]
     rotation: [0.0, 45.0, 0.0]
     scale: 15.0
-  - type: big_mirror_2
+    children:
+      - type: big_mirror_front
+        alias: mirror_front
+      - type: big_mirror_back
+        ignored_by: mirror_front
+  - type: origo
     pos: [40.0, 10.0, -10.0]
     rotation: [0.0, 270.0, 0.0]
     scale: 15.0
+    children:
+      - type: big_mirror_front
+        alias: mirror_front
+      - type: big_mirror_back
+        ignored_by: mirror_front

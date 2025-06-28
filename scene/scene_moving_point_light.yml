@@ -48,7 +48,6 @@ types:
       type: point
       linear: 0.09
       quadratic: 0.032
-      target_id: ROOT
       diffuse: [0.8, 0.8, 0.8, 1.0]
       intensity: 1000
   - id: moving_point_light_5

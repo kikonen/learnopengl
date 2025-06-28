@@ -78,7 +78,6 @@ types:
       type: point
       linear: 0.35
       quadratic: 0.44
-      target_id: ROOT
       kd: [0.1, 0.8, 0.1, 1.0]
       intensity: 1000
   - id: point_light_yellow_1
@@ -93,7 +92,6 @@ types:
       type: point
       linear: 0.35
       quadratic: 0.44
-      target_id: ROOT
       kd: [0.8, 0.8, 0.1, 1.0]
       intensity: 1000
   - id: point_light_red_1
@@ -108,7 +106,6 @@ types:
       type: point
       linear: 0.35
       quadratic: 0.44
-      target_id: ROOT
       kd: [0.8, 0.1, 0.1, 1.0]
       intensity: 1000
   - id: point_light_blue_1
@@ -123,7 +120,6 @@ types:
       type: point
       linear: 0.35
       quadratic: 0.44
-      target_id: ROOT
       kd: [0.1, 0.1, 0.8, 1.0]
       intensity: 1000
   - id: cake

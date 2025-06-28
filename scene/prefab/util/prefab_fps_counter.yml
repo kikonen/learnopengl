@@ -30,4 +30,4 @@ prefab:
   flags:
     no_shadow: true
     no_frustum: true
-  scale: 0.01
+  base_scale: 0.01

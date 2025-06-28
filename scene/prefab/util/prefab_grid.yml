@@ -1,6 +1,6 @@
 ---
 prefab:
-  id: grid_{c}_{t}
+  id: grid
   mesh:
     type: non_vao
     material:
@@ -16,4 +16,4 @@ prefab:
     no_select: true
     effect: true
   priority: -100
-  scale: 100
+  base_scale: 100

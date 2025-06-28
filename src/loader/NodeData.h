@@ -15,11 +15,11 @@ namespace loader {
         bool enabled{ false };
         bool active{ false };
 
+        BaseId typeId;
+
         BaseId baseId;
         BaseId parentBaseId;
         BaseId ignoredByBaseId;
-
-        BaseId typeId;
 
         std::string name;
         std::string desc;
