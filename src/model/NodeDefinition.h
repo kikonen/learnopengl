@@ -14,6 +14,7 @@
 struct NodeDefinition
 {
     std::string m_baseId;
+    std::string m_aliasBaseId;
 
     ki::type_id m_typeId;
 

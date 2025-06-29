@@ -42,6 +42,20 @@
 
 #include "loader_util.h"
 
+namespace
+{
+    const ki::node_id* findAlias(
+        loader::BaseId aliasId,
+        std::vector<std::pair<std::string, ki::node_id>>& aliases)
+    {
+        const auto& it = std::find_if(
+            aliases.cbegin(),
+            aliases.cend(),
+            [&aliasId](const auto& e) { return e.first == aliasId.m_path; });
+        return it != aliases.end() ? &(*it).second : nullptr;
+    }
+}
+
 namespace loader
 {
     NodeBuilder::NodeBuilder(
@@ -80,7 +94,8 @@ namespace loader
         }
 
         m_ctx->m_asyncLoader->addLoader(m_ctx->m_alive, [this, ownerId, &baseData]() {
-            resolveNode(ownerId, baseData, true);
+            std::vector<std::pair<std::string, ki::node_id>> aliases;
+            resolveNode(ownerId, baseData, aliases, true);
             loadedNode(baseData, true);
         });
 
@@ -90,17 +105,18 @@ namespace loader
     void NodeBuilder::resolveNode(
         const ki::node_id ownerId,
         const NodeData& baseData,
+        std::vector<std::pair<std::string, ki::node_id>>& aliases,
         bool root)
     {
         try {
             if (!baseData.clones) {
-                resolveNodeClone(ownerId, baseData, false, 0);
+                resolveNodeClone(ownerId, baseData, aliases, false, 0);
             }
             else {
                 int cloneIndex = 0;
                 for (const auto& cloneData : *baseData.clones) {
                     if (!*m_ctx->m_alive) return;
-                    resolveNodeClone(ownerId, cloneData, true, cloneIndex);
+                    resolveNodeClone(ownerId, cloneData, aliases, true, cloneIndex);
                     cloneIndex++;
                 }
             }
@@ -122,6 +138,7 @@ namespace loader
     void NodeBuilder::resolveNodeClone(
         const ki::node_id ownerId,
         const NodeData& cloneData,
+        std::vector<std::pair<std::string, ki::node_id>>& aliases,
         bool cloned,
         int cloneIndex)
     {
@@ -147,6 +164,7 @@ namespace loader
                     resolveNodeCloneRepeat(
                         ownerId,
                         cloneData,
+                        aliases,
                         cloned,
                         cloneIndex,
                         tile,
@@ -159,6 +177,7 @@ namespace loader
     void NodeBuilder::resolveNodeCloneRepeat(
         const ki::node_id ownerId,
         const NodeData& cloneData,
+        std::vector<std::pair<std::string, ki::node_id>>& aliases,
         bool cloned,
         int cloneIndex,
         const glm::uvec3& tile,
@@ -169,6 +188,7 @@ namespace loader
 
         auto [handle, state] = createNode(
             cloneData,
+            aliases,
             cloneIndex,
             tile,
             cloneData.clonePositionOffset + tilePositionOffset);
@@ -186,6 +206,13 @@ namespace loader
             parentId = id;
         }
 
+        if (!cloneData.aliasBaseId.empty())
+        {
+            std::string key = expandMacros(cloneData.aliasBaseId.m_path, cloneIndex, tile);
+
+            aliases.push_back({ key, handle.toId()});
+        }
+
         ResolvedNode resolved{
             parentId,
             handle,
@@ -200,6 +227,7 @@ namespace loader
                 resolveNode(
                     handle.toId(),
                     childData,
+                    aliases,
                     false);
             }
         }
@@ -207,6 +235,7 @@ namespace loader
 
     std::pair<pool::NodeHandle, CreateState> NodeBuilder::createNode(
         const NodeData& nodeData,
+        std::vector<std::pair<std::string, ki::node_id>>& aliases,
         const int cloneIndex,
         const glm::uvec3& tile,
         const glm::vec3& positionOffset)
@@ -240,17 +269,13 @@ namespace loader
 
         node->m_typeHandle = type->toHandle();
 
+        if (!nodeData.ignoredByBaseId.empty())
         {
-            ki::node_id ignoredBy{ 0 };
-            if (!nodeData.ignoredByBaseId.empty()) {
-                auto [id, _] = resolveNodeId(
-                    nodeData.typeId,
-                    nodeData.ignoredByBaseId,
-                    cloneIndex,
-                    tile);
-                ignoredBy = id;
+            auto* ignoredBy = findAlias(nodeData.ignoredByBaseId, aliases);
+            if (!ignoredBy) {
+                throw fmt::format("ignored_by missing: node={}, ignored_by={}", nodeData.str(), nodeData.ignoredByBaseId.str());
             }
-            node->m_ignoredBy = ignoredBy;
+            node->m_ignoredBy = *ignoredBy;
         }
 
         const glm::vec3 pos = nodeData.position + positionOffset;

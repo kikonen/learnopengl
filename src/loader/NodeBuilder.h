@@ -62,17 +62,20 @@ namespace loader {
         void resolveNode(
             const ki::node_id ownerId,
             const NodeData& baseData,
+            std::vector<std::pair<std::string, ki::node_id>>& aliases,
             bool root);
 
         void resolveNodeClone(
             const ki::node_id ownerId,
             const NodeData& nodeData,
+            std::vector<std::pair<std::string, ki::node_id>>& aliases,
             bool cloned,
             int cloneIndex);
 
         void resolveNodeCloneRepeat(
             const ki::node_id ownerId,
             const NodeData& nodeData,
+            std::vector<std::pair<std::string, ki::node_id>>& aliases,
             bool cloned,
             int cloneIndex,
             const glm::uvec3& tile,
@@ -80,6 +83,7 @@ namespace loader {
 
         std::pair<pool::NodeHandle, CreateState> createNode(
             const NodeData& nodeData,
+            std::vector<std::pair<std::string, ki::node_id>>& aliases,
             const int cloneIndex,
             const glm::uvec3& tile,
             const glm::vec3& positionOffset);

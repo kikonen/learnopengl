@@ -102,6 +102,7 @@ namespace loader {
         auto& df = definition;
 
         df.m_baseId = nodeData.baseId.m_path;
+        df.m_aliasBaseId = nodeData.aliasBaseId.m_path;
         df.m_typeId = 0;
 
         df.m_position = nodeData.position;

@@ -87,6 +87,9 @@ namespace loader {
             else if (k == "id") {
                 data.baseId = readId(v);
             }
+            else if (k == "alias") {
+                data.aliasBaseId = readId(v);
+            }
             else if (k == "parent_id" || k == "parent") {
                 data.parentBaseId = readId(v);
             }

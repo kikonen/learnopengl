@@ -518,7 +518,7 @@ nodes:
   - type: cube_1
     pos: [0, 12.5, -10]
   - type: mirror_ball
-    id: mirror_ball
+    alias: mirror_ball
     pos: [7, 30.5, -10]
     children:
       - type: cube_map
@@ -530,9 +530,9 @@ nodes:
     rotation: [0.0, -60.0, 0.0]
     children:
       - type: big_mirror_2_front
-        id: big_mirror_2_front
+        alias: mirror_front
       - type: big_mirror_2_back
-        ignored_by: big_mirror_2_front
+        ignored_by: mirror_front
   - type: pool_floor
     pos: [0.0, 3.2, -10.0]
     repeat:

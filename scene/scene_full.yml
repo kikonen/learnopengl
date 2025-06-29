@@ -1251,17 +1251,17 @@ nodes:
     rotation: [0.0, 45.0, 0.0]
     children:
       - type: big_mirror_front
-        id: big_mirror_front_1
+        alias: mirror_front
       - type: big_mirror_back
-        ignored_by: big_mirror_front_1
+        ignored_by: mirror_front
   - type: big_mirror_2_origo
     pos: [55.0, 25.0, 10.0]
     rotation: [0.0, 215.0, 0.0]
     children:
       - type: big_mirror_front
-        id: big_mirror_front_2
+        alias: mirror_front
       - type: big_mirror_back
-        ignored_by: big_mirror_front_2
+        ignored_by: mirror_front
   - type: airboat
     clones:
       - pos: [24.0, 11.0, 15.0]

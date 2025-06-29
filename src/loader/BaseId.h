@@ -26,6 +26,11 @@ namespace loader {
         {
             return m_path == o.m_path;
         }
+
+        //operator const std::string&() const noexcept
+        //{
+        //    return m_path;
+        //}
     };
 }
 

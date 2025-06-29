@@ -21,6 +21,8 @@ namespace loader {
         BaseId parentBaseId;
         BaseId ignoredByBaseId;
 
+        BaseId aliasBaseId;
+
         std::string name;
         std::string desc;
 
