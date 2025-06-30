@@ -34,7 +34,6 @@
 #include <engine/AsyncLoader.h>
 
 #include "Context.h"
-#include "Loaders.h"
 #include "NodeData.h"
 #include "ResolvedNode.h"
 
@@ -59,12 +58,8 @@ namespace
 namespace loader
 {
     NodeBuilder::NodeBuilder(
-        SceneLoader* sceneLoader,
-        std::shared_ptr<Context> ctx,
-        std::shared_ptr<Loaders> loaders)
-        : m_sceneLoader{ sceneLoader },
-        m_ctx{ ctx },
-        m_loaders{ loaders }
+        SceneLoader* sceneLoader)
+        : m_sceneLoader{ sceneLoader }
     { }
 
     NodeBuilder::~NodeBuilder() = default;
@@ -87,13 +82,14 @@ namespace loader
     // => i.e. api which can be used also from Lua
     bool NodeBuilder::resolveNode(
         const ki::node_id ownerId,
-        const NodeData& baseData)
+        const NodeData& baseData,
+        std::shared_ptr<Context> ctx)
     {
         if (!baseData.enabled) {
             return false;
         }
 
-        m_ctx->m_asyncLoader->addLoader(m_ctx->m_alive, [this, ownerId, &baseData]() {
+        ctx->m_asyncLoader->addLoader(ctx->m_alive, [this, ownerId, &baseData]() {
             std::vector<std::pair<std::string, ki::node_id>> aliases;
             resolveNode(ownerId, baseData, aliases, true);
             loadedNode(baseData, true);
@@ -110,14 +106,11 @@ namespace loader
     {
         try {
             if (!baseData.clones) {
-                resolveNodeClone(ownerId, baseData, aliases, false, 0);
+                resolveNodeClone(ownerId, baseData, aliases);
             }
             else {
-                int cloneIndex = 0;
                 for (const auto& cloneData : *baseData.clones) {
-                    if (!*m_ctx->m_alive) return;
-                    resolveNodeClone(ownerId, cloneData, aliases, true, cloneIndex);
-                    cloneIndex++;
+                    resolveNodeClone(ownerId, cloneData, aliases);
                 }
             }
         }
@@ -138,12 +131,8 @@ namespace loader
     void NodeBuilder::resolveNodeClone(
         const ki::node_id ownerId,
         const NodeData& cloneData,
-        std::vector<std::pair<std::string, ki::node_id>>& aliases,
-        bool cloned,
-        int cloneIndex)
+        std::vector<std::pair<std::string, ki::node_id>>& aliases)
     {
-        if (!*m_ctx->m_alive) return;
-
         if (!cloneData.enabled) {
             return;
         }
@@ -153,9 +142,6 @@ namespace loader
         for (auto z = 0; z < repeat.zCount; z++) {
             for (auto y = 0; y < repeat.yCount; y++) {
                 for (auto x = 0; x < repeat.xCount; x++) {
-                    if (!*m_ctx->m_alive) return;
-
-                    const glm::uvec3 tile = { x, y, z };
                     const glm::vec3 tilePositionOffset{
                         x * repeat.xStep,
                         y * repeat.yStep,
@@ -165,9 +151,6 @@ namespace loader
                         ownerId,
                         cloneData,
                         aliases,
-                        cloned,
-                        cloneIndex,
-                        tile,
                         tilePositionOffset);
                 }
             }
@@ -178,19 +161,13 @@ namespace loader
         const ki::node_id ownerId,
         const NodeData& cloneData,
         std::vector<std::pair<std::string, ki::node_id>>& aliases,
-        bool cloned,
-        int cloneIndex,
-        const glm::uvec3& tile,
         const glm::vec3& tilePositionOffset)
     {
         if (!cloneData.enabled) return;
-        if (!*m_ctx->m_alive) return;
 
         auto [handle, state] = createNode(
             cloneData,
             aliases,
-            cloneIndex,
-            tile,
             cloneData.clonePositionOffset + tilePositionOffset);
 
         ki::node_id parentId;
@@ -200,15 +177,13 @@ namespace loader
         else {
             auto [id, _] = resolveNodeId(
                 cloneData.typeId,
-                cloneData.parentBaseId,
-                cloneIndex,
-                tile);
+                cloneData.parentBaseId);
             parentId = id;
         }
 
         if (!cloneData.aliasBaseId.empty())
         {
-            std::string key = expandMacros(cloneData.aliasBaseId.m_path, cloneIndex, tile);
+            std::string key = expandMacros(cloneData.aliasBaseId.m_path, 0, { 0, 0, 0 });
 
             aliases.push_back({ key, handle.toId()});
         }
@@ -236,12 +211,8 @@ namespace loader
     std::pair<pool::NodeHandle, CreateState> NodeBuilder::createNode(
         const NodeData& nodeData,
         std::vector<std::pair<std::string, ki::node_id>>& aliases,
-        const int cloneIndex,
-        const glm::uvec3& tile,
         const glm::vec3& positionOffset)
     {
-        auto& l = *m_loaders;
-
         const auto* type = findNodeType(nodeData.typeId);
         if (!type) {
             throw fmt::format("type missing: node={}, type={}", nodeData.str(), nodeData.typeId.str());
@@ -252,9 +223,7 @@ namespace loader
         {
             auto [k, v] = resolveNodeId(
                 nodeData.typeId,
-                nodeData.baseId,
-                cloneIndex,
-                tile);
+                nodeData.baseId);
             nodeId = k;
             resolvedSID = v;
         }

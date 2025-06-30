@@ -447,15 +447,6 @@ namespace loader {
         const BaseId& typeId,
         const BaseId& baseId)
     {
-        return resolveNodeId(typeId, baseId, 0, { 0, 0, 0 });
-    }
-
-    std::tuple<ki::node_id, std::string> resolveNodeId(
-        const BaseId& typeId,
-        const BaseId& baseId,
-        const int cloneIndex,
-        const glm::uvec3& tile)
-    {
         const auto& assets = Assets::get();
 
         if (baseId.empty()) {
@@ -466,7 +457,7 @@ namespace loader {
             return { SID(nodeName), nodeName };
         }
 
-        std::string key = expandMacros(baseId.m_path, cloneIndex, tile);
+        const std::string& key = baseId.m_path;
 
         if (key == ROOT_ID) {
             return { assets.rootId, SID_NAME(assets.rootId) };

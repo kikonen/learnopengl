@@ -66,7 +66,7 @@ namespace loader {
         : BaseLoader(ctx),
         m_loaders{ std::make_shared<Loaders>(ctx) },
         m_nodeTypeBuilder{ std::make_unique<NodeTypeBuilder>(ctx, m_loaders) },
-        m_nodeBuilder{ std::make_unique<NodeBuilder>(this, ctx, m_loaders) },
+        m_nodeBuilder{ std::make_unique<NodeBuilder>(this) },
         m_meta{ std::make_unique<MetaData>() },
         m_root{ std::make_unique<RootData>() },
         m_skybox{ std::make_unique<SkyboxData>() },
@@ -255,7 +255,7 @@ namespace loader {
 
             m_pendingCount = 0;
             for (const auto& node : m_nodes) {
-                if (m_nodeBuilder->resolveNode(root.rootId, node)) {
+                if (m_nodeBuilder->resolveNode(root.rootId, node, m_ctx)) {
                     m_pendingCount++;
                     KI_INFO_OUT(fmt::format("START: node={}, pending={}", node.name, m_pendingCount));
                 }
@@ -388,13 +388,11 @@ namespace loader {
         std::map<ki::node_id, std::string>& collectedIds)
     {
         if (!baseData.clones) {
-            validateNodeClone(rootId, baseData, baseData, false, 0, pass, errorCount, collectedIds);
+            validateNodeClone(rootId, baseData, baseData, false, pass, errorCount, collectedIds);
         }
         else {
-            int cloneIndex = 0;
             for (auto& cloneData : *baseData.clones) {
-                validateNodeClone(rootId, baseData, cloneData, true, cloneIndex, pass, errorCount, collectedIds);
-                cloneIndex++;
+                validateNodeClone(rootId, baseData, cloneData, true, pass, errorCount, collectedIds);
             }
         }
     }
@@ -404,7 +402,6 @@ namespace loader {
         const NodeData& baseData,
         const NodeData& cloneData,
         bool cloned,
-        int cloneIndex,
         int pass,
         int& errorCount,
         std::map<ki::node_id, std::string>& collectedIds)
@@ -424,7 +421,6 @@ namespace loader {
                         baseData,
                         cloneData,
                         cloned,
-                        cloneIndex,
                         tile,
                         tilePositionOffset,
                         pass,
@@ -440,7 +436,6 @@ namespace loader {
         const NodeData& baseData,
         const NodeData& cloneData,
         bool cloned,
-        int cloneIndex,
         const glm::uvec3& tile,
         const glm::vec3& tilePositionOffset,
         int pass,
@@ -456,9 +451,7 @@ namespace loader {
                 bool automatic = cloneData.baseId.m_path == baseData.baseId.m_path;
                 auto [k, v] = resolveNodeId(
                     cloneData.typeId,
-                    cloneData.baseId,
-                    cloneIndex,
-                    tile);
+                    cloneData.baseId);
                 sid = k;
                 resolvedSID = v;
             }
@@ -479,9 +472,7 @@ namespace loader {
             if (!cloneData.parentBaseId.empty()) {
                 auto [sid, resolvedSID] = resolveNodeId(
                     cloneData.typeId,
-                    cloneData.parentBaseId,
-                    cloneIndex,
-                    tile);
+                    cloneData.parentBaseId);
 
                 // TODO KI validate missing
                 if (collectedIds.find(sid) == collectedIds.end()) {

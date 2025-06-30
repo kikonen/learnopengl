@@ -2,10 +2,8 @@
 
 #include <string>
 #include <vector>
-#include <map>
-#include <unordered_map>
+#include <memory>
 #include <mutex>
-#include <atomic>
 
 #include <glm/glm.hpp>
 
@@ -19,24 +17,15 @@ namespace pool {
 }
 
 namespace loader {
-    struct Context;
-    class Loaders;
     class SceneLoader;
-
-    class NodeTypeBuilder;
-
-    struct RootData;
+    struct Context;
     struct NodeData;
     struct ResolvedNode;
-
-    struct FlagContainer;
 
     class NodeBuilder {
     public:
         NodeBuilder(
-            SceneLoader* sceneLoader,
-            std::shared_ptr<Context> ctx,
-            std::shared_ptr<Loaders> loaders);
+            SceneLoader* sceneLoader);
 
         ~NodeBuilder();
 
@@ -55,7 +44,8 @@ namespace loader {
 
         bool resolveNode(
             const ki::node_id ownerId,
-            const NodeData& baseData);
+            const NodeData& baseData,
+            std::shared_ptr<Context> ctx);
 
     private:
 
@@ -68,24 +58,17 @@ namespace loader {
         void resolveNodeClone(
             const ki::node_id ownerId,
             const NodeData& nodeData,
-            std::vector<std::pair<std::string, ki::node_id>>& aliases,
-            bool cloned,
-            int cloneIndex);
+            std::vector<std::pair<std::string, ki::node_id>>& aliases);
 
         void resolveNodeCloneRepeat(
             const ki::node_id ownerId,
             const NodeData& nodeData,
             std::vector<std::pair<std::string, ki::node_id>>& aliases,
-            bool cloned,
-            int cloneIndex,
-            const glm::uvec3& tile,
             const glm::vec3& tilePositionOffset);
 
         std::pair<pool::NodeHandle, CreateState> createNode(
             const NodeData& nodeData,
             std::vector<std::pair<std::string, ki::node_id>>& aliases,
-            const int cloneIndex,
-            const glm::uvec3& tile,
             const glm::vec3& positionOffset);
 
     private:
@@ -93,8 +76,5 @@ namespace loader {
 
         std::mutex m_resolvedNodesLock{};
         std::vector<ResolvedNode> m_resolvedNodes;
-
-        std::shared_ptr<Context> m_ctx;
-        std::shared_ptr<Loaders> m_loaders;
     };
 }

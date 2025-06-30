@@ -90,7 +90,6 @@ namespace loader {
             const NodeData& baseData,
             const NodeData& cloneData,
             bool cloned,
-            int cloneIndex,
             int pass,
             int& errorCount,
             std::map<ki::node_id, std::string>& collectedIds);
@@ -100,7 +99,6 @@ namespace loader {
             const NodeData& baseData,
             const NodeData& cloneData,
             bool cloned,
-            int cloneIndex,
             const glm::uvec3& tile,
             const glm::vec3& tilePositionOffset,
             int pass,

@@ -318,7 +318,7 @@ function create_new_node(type)
 end
 
 function create_new_skeleton()
-  create_new_node("skeleton_army_{c}_{t}")
+  create_new_node("skeleton_army")
 end
 
 function trigger_create_new_skeleton()

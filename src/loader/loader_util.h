@@ -66,12 +66,6 @@ namespace loader {
         const BaseId& typeId,
         const BaseId& baseId);
 
-    std::tuple<ki::node_id, std::string> resolveNodeId(
-        const BaseId& typeId,
-        const BaseId& baseId,
-        const int cloneIndex,
-        const glm::uvec3& tile);
-
     std::string expandMacros(
         const std::string& str,
         const int cloneIndex,
