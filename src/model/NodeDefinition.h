@@ -13,8 +13,11 @@
 // For defining composite types
 struct NodeDefinition
 {
-    std::string m_baseId;
-    std::string m_aliasBaseId;
+    bool m_enabled;
+
+    std::string m_id;
+    std::string m_aliasId;
+    std::string m_ignoredById;
 
     ki::type_id m_typeId;
 

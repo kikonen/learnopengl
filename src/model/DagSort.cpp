@@ -5,6 +5,8 @@
 
 #include "ki/size.h"
 
+#include "ResolvedNode.h"
+
 namespace {
     enum class Color {
         white,
@@ -14,7 +16,7 @@ namespace {
 
     struct DagNode {
         ki::node_id id;
-        loader::ResolvedNode* resolved;
+        ResolvedNode* resolved;
 
         DagNode* previous{ nullptr };
         int depth{ 0 };
@@ -25,7 +27,7 @@ namespace {
     };
 
     void createNodes(
-        std::vector<loader::ResolvedNode>& resolvedEntities,
+        std::vector<ResolvedNode>& resolvedEntities,
         std::vector<DagNode>& nodes)
     {
         nodes.reserve(resolvedEntities.size());
@@ -95,22 +97,20 @@ namespace {
     }
 }
 
-namespace loader {
-    std::vector<ResolvedNode*> DagSort::sort(std::vector<ResolvedNode>& resolvedEntities)
-    {
-        std::vector<DagNode> nodes;
-        std::vector<DagNode*> stack;
+std::vector<ResolvedNode*> DagSort::sort(std::vector<ResolvedNode>& resolvedEntities)
+{
+    std::vector<DagNode> nodes;
+    std::vector<DagNode*> stack;
 
-        createNodes(resolvedEntities, nodes);
-        dfs(nodes, stack);
+    createNodes(resolvedEntities, nodes);
+    dfs(nodes, stack);
 
-        std::reverse(stack.begin(), stack.end());
+    std::reverse(stack.begin(), stack.end());
 
-        std::vector<ResolvedNode*> result;
-        for (auto* node : stack) {
-            result.push_back(node->resolved);
-        }
-
-        return result;
+    std::vector<ResolvedNode*> result;
+    for (auto* node : stack) {
+        result.push_back(node->resolved);
     }
+
+    return result;
 }

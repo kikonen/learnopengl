@@ -332,6 +332,7 @@
     <ClCompile Include="src\mesh\NonVaoMesh.cpp" />
     <ClCompile Include="src\mesh\VaoMesh.cpp" />
     <ClCompile Include="src\mesh\vao\VertexTangentVBO.cpp" />
+    <ClCompile Include="src\model\CompositeBuilder.cpp" />
     <ClCompile Include="src\nav\Generator.cpp" />
     <ClCompile Include="src\nav\InputCollection.cpp" />
     <ClCompile Include="src\nav\InputGeam.cpp" />
@@ -413,7 +414,7 @@
     <ClCompile Include="src\loader\converter\DocNode.cpp" />
     <ClCompile Include="src\loader\converter\DocNodeData.cpp" />
     <ClCompile Include="src\loader\converter\YamlConverter.cpp" />
-    <ClCompile Include="src\loader\DagSort.cpp" />
+    <ClCompile Include="src\model\DagSort.cpp" />
     <ClCompile Include="src\loader\FontLoader.cpp" />
     <ClCompile Include="src\loader\Loaders.cpp" />
     <ClCompile Include="src\loader\loader_util.cpp" />
@@ -738,10 +739,12 @@
     <ClInclude Include="src\mesh\generator\TangentCalculator.h" />
     <ClInclude Include="src\mesh\vao\TangentEntry.h" />
     <ClInclude Include="src\mesh\vao\VertexTangentVBO.h" />
+    <ClInclude Include="src\model\CompositeBuilder.h" />
     <ClInclude Include="src\model\CompositeDefinition.h" />
     <ClInclude Include="src\model\CreateState.h" />
     <ClInclude Include="src\model\NodeDefinition.h" />
     <ClInclude Include="src\model\NodeRepeat.h" />
+    <ClInclude Include="src\model\ResolvedNode.h" />
     <ClInclude Include="src\nav\BuildContext.h" />
     <ClInclude Include="src\nav\BuildSettings.h" />
     <ClInclude Include="src\nav\Generator.h" />
@@ -901,13 +904,12 @@
     <ClInclude Include="src\ki\FpsCounter.h" />
     <ClInclude Include="src\ki\sid.h" />
     <ClInclude Include="src\loader\AnimationData.h" />
-    <ClInclude Include="src\loader\DagSort.h" />
+    <ClInclude Include="src\model\DagSort.h" />
     <ClInclude Include="src\loader\FontData.h" />
     <ClInclude Include="src\loader\FontLoader.h" />
     <ClInclude Include="src\loader\LodData.h" />
     <ClInclude Include="src\loader\ParticleData.h" />
     <ClInclude Include="src\loader\ParticleLoader.h" />
-    <ClInclude Include="src\loader\ResolvedNode.h" />
     <ClInclude Include="src\loader\TerrainData.h" />
     <ClInclude Include="src\loader\TextData.h" />
     <ClInclude Include="src\animation\RigJoint.h" />
@@ -1166,6 +1168,7 @@
     <ClInclude Include="src\component\Light.h" />
     <ClInclude Include="src\render\Camera.h" />
     <ClInclude Include="src\util\Random.h" />
+    <ClInclude Include="src\util\sid_format.h" />
     <ClInclude Include="src\util\thread.h" />
     <ClInclude Include="src\util\utf8_util.h" />
     <ClInclude Include="src\util\util.h" />

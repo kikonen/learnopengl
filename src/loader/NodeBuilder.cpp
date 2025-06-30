@@ -35,7 +35,8 @@
 
 #include "Context.h"
 #include "NodeData.h"
-#include "ResolvedNode.h"
+
+#include "model/ResolvedNode.h"
 
 #include "SceneLoader.h"
 
@@ -191,7 +192,7 @@ namespace loader
         ResolvedNode resolved{
             parentId,
             handle,
-            cloneData,
+            cloneData.active,
             state,
         };
 

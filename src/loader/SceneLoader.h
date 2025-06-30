@@ -10,6 +10,7 @@
 #include "BaseLoader.h"
 
 struct Material;
+struct ResolvedNode;
 class Registry;
 
 namespace pool {
@@ -24,7 +25,6 @@ namespace loader {
     struct NodeTypeData;
     struct NodeData;
     struct CompositeData;
-    struct ResolvedNode;
     struct DecalData;
     struct MaterialUpdaterData;
 

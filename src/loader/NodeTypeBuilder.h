@@ -28,7 +28,6 @@ namespace loader {
     struct MeshData;
     struct LodData;
     struct AnimationData;
-    struct ResolvedNode;
     struct MaterialData;
     struct DecalData;
     struct MaterialUpdaterData;

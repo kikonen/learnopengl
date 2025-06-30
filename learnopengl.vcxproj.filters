@@ -552,7 +552,7 @@
     <ClCompile Include="src\loader\BaseId.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\loader\DagSort.cpp">
+    <ClCompile Include="src\model\DagSort.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\ki\FpsCounter.cpp">
@@ -1203,6 +1203,15 @@
     <ClCompile Include="src\component\GeneratorDefinition.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\loader\CompositeLoader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\loader\CompositeLoader.h">
+      <Filter>Header Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\model\CompositeBuilder.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h">
@@ -1733,9 +1742,6 @@
     <ClInclude Include="src\loader\BaseData.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\loader\NodeRoot.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\loader\ControllerData.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -1964,10 +1970,7 @@
     <ClInclude Include="src\ki\sid.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\loader\ResolvedNode.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\loader\DagSort.h">
+    <ClInclude Include="src\model\DagSort.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\ki\FpsCounter.h">
@@ -2133,9 +2136,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\loader\NodeData.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\loader\NodeField.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\loader\converter\DocNode.h">
@@ -2720,7 +2720,28 @@
     <ClInclude Include="src\loader\Repeat.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\loader\Tiling.h">
+    <ClInclude Include="src\loader\CompositeData.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\loader\TerrainTiling.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\model\CompositeDefinition.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\model\NodeDefinition.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\model\NodeRepeat.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\model\CompositeBuilder.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\model\ResolvedNode.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\util\sid_format.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

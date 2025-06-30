@@ -10,6 +10,7 @@
 #include "ki/size.h"
 
 struct CreateState;
+struct ResolvedNode;
 
 namespace pool {
     struct NodeHandle;
@@ -20,7 +21,6 @@ namespace loader {
     class SceneLoader;
     struct Context;
     struct NodeData;
-    struct ResolvedNode;
 
     class NodeBuilder {
     public:

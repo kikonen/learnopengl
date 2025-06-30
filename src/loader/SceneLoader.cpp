@@ -32,6 +32,7 @@
 
 #include "model/Node.h"
 #include "model/NodeType.h"
+#include "model/ResolvedNode.h"
 
 #include "event/Dispatcher.h"
 
@@ -40,14 +41,14 @@
 
 #include <engine/AsyncLoader.h>
 
-#include "DagSort.h"
+#include "model/ResolvedNode.h"
+#include "model/DagSort.h"
 
 #include "Context.h"
 #include "Loaders.h"
 #include "NodeTypeData.h"
 #include "NodeData.h"
 #include "CompositeData.h"
-#include "ResolvedNode.h"
 #include "DecalData.h"
 #include "ScriptData.h"
 
@@ -282,9 +283,7 @@ namespace loader {
     void SceneLoader::attachResolvedNode(
         const ResolvedNode& resolved)
     {
-        auto& l = *m_loaders;
         auto& handle = resolved.handle;
-        auto& nodeData = resolved.data;
 
         {
             event::Event evt { event::Type::node_add };
@@ -300,7 +299,7 @@ namespace loader {
             m_dispatcher->send(evt);
         }
 
-        if (nodeData.active) {
+        if (resolved.active) {
             event::Event evt { event::Type::node_activate };
             evt.body.node = {
                 .target = handle.toId(),
