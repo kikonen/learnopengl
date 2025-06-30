@@ -110,6 +110,9 @@ types:
     xphysics:
       geom:
         type: plane
+  - id: big_mirror
+    type: composite
+    composite: big_mirror_composite
   - id: big_mirror_front
     mesh:
       path: quad
@@ -135,6 +138,14 @@ types:
       base_rotation: [0, 180, 0]
       flags:
         pre_depth: true
+
+composites:
+  - id: big_mirror_composite
+    nodes:
+      - type: big_mirror_front
+        alias: mirror_front
+      - type: big_mirror_back
+        ignored_by: mirror_front
 
 nodes:
   - type: player
@@ -196,21 +207,11 @@ nodes:
         rot: [0, 180, 0]
       - pos: [0.0, 0.0, -100.0]
         rot: [0, 0, 0]
-  - type: origo
+  - type: big_mirror
     pos: [-40.0, 10.0, -10.0]
     rotation: [0.0, 45.0, 0.0]
     scale: 15.0
-    children:
-      - type: big_mirror_front
-        alias: mirror_front
-      - type: big_mirror_back
-        ignored_by: mirror_front
-  - type: origo
+  - type: big_mirror
     pos: [40.0, 10.0, -10.0]
     rotation: [0.0, 270.0, 0.0]
     scale: 15.0
-    children:
-      - type: big_mirror_front
-        alias: mirror_front
-      - type: big_mirror_back
-        ignored_by: mirror_front

@@ -125,7 +125,8 @@ ki::node_id CompositeBuilder::build(
     }
 
     if (type->m_compositeDefinition) {
-        build(nodeId, *type->m_compositeDefinition);
+        std::vector<std::pair<std::string, ki::node_id>> aliases;
+        build(nodeId, *type->m_compositeDefinition, aliases);
     }
 
     return nodeId;
@@ -133,11 +134,13 @@ ki::node_id CompositeBuilder::build(
 
 bool CompositeBuilder::build(
     const ki::node_id parentId,
-    const CompositeDefinition& compositeData)
+    const CompositeDefinition& compositeData,
+    std::vector<std::pair<std::string, ki::node_id>> aliases)
 {
-    if (!compositeData.m_nodes) return false;
-
-    std::vector<std::pair<std::string, ki::node_id>> aliases;
+    if (!compositeData.m_nodes) {
+        KI_WARN_OUT(fmt::format("IGNORE: COMPOSITE_NO_NODES - composite={} parentId={}", compositeData.m_id, parentId));
+        return false;
+    }
 
     for (const auto& nodeData : *compositeData.m_nodes) {
         buildNode(parentId, nodeData, aliases, true);

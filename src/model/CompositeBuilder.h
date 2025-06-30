@@ -39,7 +39,8 @@ public:
 
     bool build(
         const ki::node_id parentId,
-        const CompositeDefinition& baseData);
+        const CompositeDefinition& baseData,
+        std::vector<std::pair<std::string, ki::node_id>> aliases);
 
     void attach();
 

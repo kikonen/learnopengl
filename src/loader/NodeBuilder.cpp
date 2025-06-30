@@ -260,7 +260,7 @@ namespace loader
 
         if (type->m_compositeDefinition) {
             CompositeBuilder builder{ NodeRegistry::get() };
-            if (builder.build(nodeId, *type->m_compositeDefinition)) {
+            if (builder.build(nodeId, *type->m_compositeDefinition, aliases)) {
                 for (auto& resolvedNode : builder.getResolvedNodes()) {
                     addResolvedNode(resolvedNode);
                 }
