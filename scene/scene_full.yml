@@ -297,9 +297,9 @@ types:
       flags:
         pre_depth: true
       program: g_tex
-  - id: big_mirror_1_origo
-    type: origo
-    script_file: scripts/anim_mirror
+  - id: big_mirror
+    type: composite
+    composite: big_mirror_composite
   - id: big_mirror_front
     mesh:
       path: quad
@@ -326,8 +326,11 @@ types:
       base_rotation: [0, 180, 0]
       flags:
         pre_depth: true
+  - id: big_mirror_1_origo
+    base: big_mirror
+    script_file: scripts/anim_mirror
   - id: big_mirror_2_origo
-    type: origo
+    base: big_mirror
     script_file: scripts/anim_mirror
   - id: airboat
     mesh:
@@ -1118,6 +1121,14 @@ types:
       geom:
         type: plane
 
+composites:
+  - id: big_mirror_composite
+    nodes:
+      - type: big_mirror_front
+        alias: mirror_front
+      - type: big_mirror_back
+        ignored_by: mirror_front
+
 nodes:
   - xtype: grid
   - type: fps_counter
@@ -1249,19 +1260,9 @@ nodes:
   - type: big_mirror_1_origo
     pos: [-55.0, 25.0, 10.0]
     rotation: [0.0, 45.0, 0.0]
-    children:
-      - type: big_mirror_front
-        alias: mirror_front
-      - type: big_mirror_back
-        ignored_by: mirror_front
   - type: big_mirror_2_origo
     pos: [55.0, 25.0, 10.0]
     rotation: [0.0, 215.0, 0.0]
-    children:
-      - type: big_mirror_front
-        alias: mirror_front
-      - type: big_mirror_back
-        ignored_by: mirror_front
   - type: airboat
     clones:
       - pos: [24.0, 11.0, 15.0]
