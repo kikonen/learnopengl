@@ -30,6 +30,7 @@
 #include "model/ResolvedNode.h"
 #include "model/CompositeDefinition.h"
 #include "model/NodeDefinition.h"
+#include "model/DagSort.h"
 
 #include "registry/Registry.h"
 #include "registry/NodeRegistry.h"
@@ -98,17 +99,64 @@ void CompositeBuilder::addResolvedNode(
     m_resolvedNodes.push_back(resolved);
 }
 
-// TODO KI need to change node add logic to happen via commands
-// => i.e. api which can be used also from Lua
+ki::node_id CompositeBuilder::build(
+    const ki::node_id parentId,
+    const NodeType* type,
+    const CreateState& state)
+{
+    ki::node_id nodeId{ ki::StringID::nextID(type->getName()) };
+
+    // NOTE KI cannot allow duplicate id
+    if (pool::NodeHandle::toHandle(nodeId)) return 0;
+
+    {
+        const auto handle = pool::NodeHandle::allocate(nodeId);
+        auto* node = handle.toNode();
+
+        node->m_typeHandle = type->toHandle();
+        node->setName(ki::StringID::getName(nodeId));
+
+        addResolvedNode({
+            parentId,
+            node->m_handle,
+            false,
+            state
+        });
+    }
+
+    if (type->m_compositeDefinition) {
+        build(nodeId, *type->m_compositeDefinition);
+    }
+
+    return nodeId;
+}
+
 bool CompositeBuilder::build(
     const ki::node_id parentId,
     const CompositeDefinition& compositeData)
 {
+    if (!compositeData.m_nodes) return false;
+
     std::vector<std::pair<std::string, ki::node_id>> aliases;
-    NodeDefinition baseData;
-    buildNode(parentId, baseData, aliases, true);
+
+    for (const auto& nodeData : *compositeData.m_nodes) {
+        buildNode(parentId, nodeData, aliases, true);
+    }
 
     return true;
+}
+
+void CompositeBuilder::attach()
+{
+    DagSort sorter;
+    auto sorted = sorter.sort(m_resolvedNodes);
+
+    for (auto* resolved : sorted) {
+        m_nodeRegistry.attachNode(
+            resolved->handle.toId(),
+            resolved->parentId,
+            resolved->state);
+    }
 }
 
 void CompositeBuilder::buildNode(

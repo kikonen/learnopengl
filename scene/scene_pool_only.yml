@@ -134,6 +134,9 @@ types:
         program: g_tex
       flags:
         pre_depth: true
+  - id: wooden_floor
+    prefab:
+      path: prefab/scenery/prefab_wooden_floor.yml
 
 composites:
   - id: pool_composite
@@ -203,3 +206,5 @@ nodes:
         scale: [60, 6, 0.3]
       - pos: [160.0, 4, -40]
         scale: [60, 6, 0.3]
+  - type: wooden_floor
+    scale: 200

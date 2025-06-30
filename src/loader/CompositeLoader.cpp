@@ -104,7 +104,7 @@ namespace loader {
         df.m_enabled = nodeData.enabled;
         df.m_id = nodeData.baseId.m_path;
         df.m_aliasId = nodeData.aliasBaseId.m_path;
-        df.m_typeId = 0;
+        df.m_typeId = SID(nodeData.typeId.m_path);
 
         df.m_position = nodeData.position;
         df.m_rotation = nodeData.rotation;

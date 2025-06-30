@@ -97,7 +97,8 @@ namespace {
     }
 }
 
-std::vector<ResolvedNode*> DagSort::sort(std::vector<ResolvedNode>& resolvedEntities)
+std::vector<ResolvedNode*> DagSort::sort(
+    std::vector<ResolvedNode>& resolvedEntities)
 {
     std::vector<DagNode> nodes;
     std::vector<DagNode*> stack;

@@ -10,16 +10,50 @@
 #include "model/Node.h"
 #include "model/NodeType.h"
 #include "model/CreateState.h"
+#include "model/CompositeBuilder.h"
 
 #include "registry/NodeRegistry.h"
 
 namespace {
     const inline std::string OPT_TYPE{ "type" };
-    const inline std::string OPT_ID{ "id" };
     const inline std::string OPT_PARENT{ "parent" };
     const inline std::string OPT_POS{ "pos" };
     const inline std::string OPT_ROT{ "rot" };
     const inline std::string OPT_SCALE{ "scale" };
+
+    struct CreateOptions {
+        std::string typeName;
+        ki::node_id parentId{ 0 };
+        glm::vec3 pos{ 0.f };
+        glm::vec3 rot{ 0.f };
+        glm::vec3 scale{ 1.f };
+    };
+
+    CreateOptions readCreateOptions(const sol::table& lua_opt)
+    {
+        CreateOptions opt;
+
+        lua_opt.for_each([&](sol::object const& key, sol::object const& value) {
+            const auto& k = key.as<std::string>();
+            if (k == OPT_TYPE) {
+                opt.typeName = value.as<std::string>();
+            }
+            else if (k == OPT_PARENT) {
+                opt.parentId = value.as<unsigned int>();
+            }
+            else if (k == OPT_POS) {
+                opt.pos = value.as<glm::vec3>();
+            }
+            else if (k == OPT_ROT) {
+                opt.rot = value.as<glm::vec3>();
+            }
+            else if (k == OPT_SCALE) {
+                opt.scale = value.as<glm::vec3>();
+            }
+        });
+
+        return opt;
+    }
 }
 
 namespace script::api
@@ -33,68 +67,25 @@ namespace script::api
     ki::node_id SceneAPI::lua_create_node(
         const sol::table& lua_opt)
     {
-        auto& nodeRegistry = NodeRegistry::get();
+        const CreateOptions& opt = readCreateOptions(lua_opt);
 
-        std::string typeName;
-        std::string id;
-        ki::node_id parentId = 0;
-        auto pos = glm::vec3(0);
-        auto rot = glm::vec3(0);
-        auto scale = glm::vec3(1.f);
-
-        lua_opt.for_each([&](sol::object const& key, sol::object const& value) {
-            const auto& k = key.as<std::string>();
-            if (k == OPT_TYPE) {
-                typeName = value.as<std::string>();
-            }
-            else if (k == OPT_ID) {
-                id = value.as<std::string>();
-            }
-            else if (k == OPT_PARENT) {
-                parentId = value.as<unsigned int>();
-            }
-            else if (k == OPT_POS) {
-                pos = value.as<glm::vec3>();
-            }
-            else if (k == OPT_ROT) {
-                rot = value.as<glm::vec3>();
-            }
-            else if (k == OPT_SCALE) {
-                scale = value.as<glm::vec3>();
-            }
-            });
-
-        const auto typeId = SID(typeName);
+        const auto typeId = SID(opt.typeName);
         const auto* type = pool::TypeHandle::toType(typeId);
-
         if (!type) return 0;
 
         ki::node_id nodeId;
-        if (id.empty()) {
-            nodeId = ki::StringID::nextID(typeName);
-        } 
-        else {
-            nodeId = SID(id);
+        {
+            CompositeBuilder builder{ NodeRegistry::get() };
+            CreateState state{
+                opt.pos,
+                opt.scale,
+                util::degreesToQuat(opt.rot) };
+
+            nodeId = builder.build(opt.parentId, type, state);
+            if (nodeId) {
+                builder.attach();
+            }
         }
-
-        // NOTE KI cannot allow duplicate id
-        if (pool::NodeHandle::toHandle(nodeId)) return 0;
-
-        const auto handle = pool::NodeHandle::allocate(nodeId);
-        auto* node = handle.toNode();
-
-        node->m_typeHandle = type->toHandle();
-        node->setName(ki::StringID::getName(nodeId));
-
-        CreateState state{
-            pos,
-            scale,
-            util::degreesToQuat(rot) };
-
-        nodeRegistry.attachNode(
-            nodeId,
-            parentId,
-            state);
 
         return nodeId;
     }

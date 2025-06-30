@@ -8,6 +8,7 @@
 
 #include "ki/size.h"
 
+class NodeType;
 class NodeRegistry;
 struct CreateState;
 struct CompositeDefinition;
@@ -26,19 +27,26 @@ public:
 
     ~CompositeBuilder();
 
-    std::vector<ResolvedNode>& getResolvedNodes()
+    const std::vector<ResolvedNode>& getResolvedNodes() const noexcept
     {
         return m_resolvedNodes;
     }
 
-    void addResolvedNode(
-        const ResolvedNode& resolved);
+    ki::node_id build(
+        const ki::node_id parentId,
+        const NodeType* type,
+        const CreateState& state);
 
     bool build(
         const ki::node_id parentId,
         const CompositeDefinition& baseData);
 
+    void attach();
+
 private:
+    void addResolvedNode(
+        const ResolvedNode& resolved);
+
     void buildNode(
         const ki::node_id parentId,
         const NodeDefinition& baseData,

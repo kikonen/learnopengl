@@ -23,3 +23,14 @@ function trace(label, levels, ...)
   printf("%s\n", debug.traceback())
   printf("[END: %s]\n", label)
 end
+
+function run(script)
+  local path = 'scene/scripts/' .. script .. '.lua'
+  printf("run: %s\n", path)
+  local fn = loadfile(path)
+  if fn then
+    fn()
+  else
+    printf("FAILED: %s\n", path)
+  end
+end
