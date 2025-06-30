@@ -36,6 +36,7 @@
 #include "Context.h"
 #include "NodeData.h"
 
+#include "model/CompositeBuilder.h"
 #include "model/ResolvedNode.h"
 
 #include "SceneLoader.h"
@@ -256,6 +257,15 @@ namespace loader
         state.m_rotation = util::degreesToQuat(nodeData.rotation);
         state.m_tilingX = nodeData.tilingX;
         state.m_tilingY = nodeData.tilingY;
+
+        if (type->m_compositeDefinition) {
+            CompositeBuilder builder{ NodeRegistry::get() };
+            if (builder.build(nodeId, *type->m_compositeDefinition)) {
+                for (auto& resolvedNode : builder.getResolvedNodes()) {
+                    addResolvedNode(resolvedNode);
+                }
+            }
+        }
 
         return { handle, state };
     }

@@ -189,9 +189,18 @@ nodes:
   - type: dir_light
     pos: [0, 45, 100]
   - type: pool
-    id: pool
-    pos: [0.0, 2, -10.0]
-    scale: [2, 1, 0.5]
+    clones:
+      - pos: [0.0, 2, -10.0]
+        scale: [2, 1, 0.5]
+      - pos: [0.0, 2, -16.0]
+        scale: [2, 1, 0.5]
+  - type: pool
+    clone_position_offset: [10, 0.01, 0]
+    repeat:
+      x_count: 2
+      z_count: 2
+      x_step: 11
+      z_step: 11
   - xtype: pool_floor_single
     pos: [160.0, 3.2, 20.0]
   - xtype: pool_surface_single
