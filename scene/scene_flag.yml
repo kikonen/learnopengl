@@ -7,6 +7,17 @@ script:
   scripts:
     - path: lib/common
 types:
+  - id: origo_marker
+    mesh:
+      vertex:
+        type: sphere
+        radius: 0.1
+      material:
+        kd: [0.0, 0.2, 0.8, 1.0]
+        mrao: [0.2, 0.1, 1.0]
+        program: g_tex
+    flags:
+      no_frustum: true
   - id: player
     type: origo
     camera:
@@ -32,19 +43,9 @@ types:
     physics:
       geom:
         collision: [world]
-  - id: origo
-    mesh:
-      vertex:
-        type: sphere
-        radius: 0.1
-      material:
-        kd: [0.0, 0.2, 0.8, 1.0]
-        mrao: [0.2, 0.1, 1.0]
-        program: g_tex
-    flags:
-      no_frustum: true
-  - id: flag_origo
-    type: origo
+  - id: flag_stand
+    type: composite
+    composite: flag_stand_composite
     script: |
       cmd:rotate(
         { time=60 * 10, relative=true },
@@ -110,6 +111,18 @@ types:
         mrao: [0.2, 0.1, 1.0]
         program: g_tex
 
+composites:
+  - id: flag_stand_composite
+    nodes:
+      - type: flag
+        pos: [1.08, 3.2, 0]
+      - xtype: flag_2
+        pos: [1.08, 3.2, 0]
+      - type: flag_pole
+        pos: [0, 2, 0]
+      - type: flag_top
+        pos: [0, 4, 0]
+
 nodes:
   - type: player
     pos: [0, 1, 15]
@@ -121,22 +134,10 @@ nodes:
   - type: wooden_floor
     pos: [0, 0, 0]
     scale: 100
-  - type: origo
+  - type: origo_marker
     pos: [0.0, 0.0, 0.0]
-  - type: flag_origo
-    id: flag_origo
+  - type: flag_stand
     pos: [0]
-  - type: flag
-    parent: flag_origo
-    pos: [1.08, 3.2, 0]
-  - xtype: flag_2
-    parent: flag_origo
-    pos: [1.08, 3.2, 0]
-  - type: flag_top
-    pos: [0, 4, 0]
-  - type: flag_pole
-    parent: flag_origo
-    pos: [0, 2, 0]
 
 material_updaters:
 - id: shader_toy_1

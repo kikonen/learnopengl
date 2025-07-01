@@ -30,7 +30,8 @@ types:
       - type: pawn
       - type: camera_zoom
   - id: player_fps
-    type: origo
+    type: composite
+    composite: player_fps_composite
     front: [0, 0, -1]
     audio:
       listener:
@@ -225,15 +226,9 @@ types:
       geom:
         type: plane
 
-nodes:
-  - type: player
-    id: player
-    pos: [0, 1, 15]
-    xactive: true
-  - type: player_fps
-    pos: [0, 1, 15]
-    active: true
-    children:
+composites:
+  - id: player_fps_composite
+    nodes:
       - type: player_fps_point
         pos: [0.0, 0.0, -0.1]
       - xtype: player_fps_arms
@@ -242,6 +237,15 @@ nodes:
         pos: [0.1, -0.7, -0.0]
         rotation: [-20, 20, 0]
         scale: 0.25
+
+nodes:
+  - type: player
+    id: player
+    pos: [0, 1, 15]
+    xactive: true
+  - type: player_fps
+    pos: [0, 1, 15]
+    active: true
   - type: dir_light
     pos: [-15, 25, 25]
   - type: origo
