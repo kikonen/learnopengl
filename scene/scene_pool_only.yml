@@ -149,7 +149,7 @@ composites:
       - type: pool_floor
         scale: 5
         tiling: 5
-        clone_position_offset: [-2.5, 0, -2.5]
+        clone_position_offset: [-2.5, 0.01, -2.5]
         repeat:
           x_count: 2
           z_count: 2
@@ -195,7 +195,7 @@ nodes:
       - pos: [0.0, 2, -16.0]
         scale: [2, 1, 0.5]
   - type: pool
-    clone_position_offset: [10, 0.01, 0]
+    clone_position_offset: [10, 0, 0]
     repeat:
       x_count: 2
       z_count: 2

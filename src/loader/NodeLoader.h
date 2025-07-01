@@ -4,6 +4,8 @@
 
 #include "BaseLoader.h"
 
+struct NodeDefinition;
+
 namespace loader {
     struct NodeData;
 
@@ -28,5 +30,14 @@ namespace loader {
             NodeData& nodeData,
             bool recurse,
             Loaders& loaders) const;
+
+        void createNodeDefinitions(
+            const std::vector<NodeData>& nodes,
+            std::vector<NodeDefinition>& definitions);
+
+        void createNodeDefinition(
+            const NodeData& node,
+            NodeDefinition& definition,
+            bool recurse);
     };
 }

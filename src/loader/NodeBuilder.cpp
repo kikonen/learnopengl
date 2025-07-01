@@ -33,6 +33,7 @@
 
 #include <engine/AsyncLoader.h>
 
+#include "Loaders.h"
 #include "Context.h"
 #include "NodeData.h"
 
@@ -101,18 +102,18 @@ namespace loader
     }
 
     void NodeBuilder::resolveNode(
-        const ki::node_id ownerId,
+        const ki::node_id parentId,
         const NodeData& baseData,
         std::vector<std::pair<std::string, ki::node_id>>& aliases,
         bool root)
     {
         try {
             if (!baseData.clones) {
-                resolveNodeClone(ownerId, baseData, aliases);
+                resolveNodeClone(parentId, baseData, aliases);
             }
             else {
                 for (const auto& cloneData : *baseData.clones) {
-                    resolveNodeClone(ownerId, cloneData, aliases);
+                    resolveNodeClone(parentId, cloneData, aliases);
                 }
             }
         }
@@ -131,7 +132,7 @@ namespace loader
     }
 
     void NodeBuilder::resolveNodeClone(
-        const ki::node_id ownerId,
+        const ki::node_id parentId,
         const NodeData& cloneData,
         std::vector<std::pair<std::string, ki::node_id>>& aliases)
     {
@@ -150,7 +151,7 @@ namespace loader
                         z * repeat.zStep };
 
                     resolveNodeCloneRepeat(
-                        ownerId,
+                        parentId,
                         cloneData,
                         aliases,
                         tilePositionOffset);
@@ -160,7 +161,7 @@ namespace loader
     }
 
     void NodeBuilder::resolveNodeCloneRepeat(
-        const ki::node_id ownerId,
+        const ki::node_id defaultParentId,
         const NodeData& cloneData,
         std::vector<std::pair<std::string, ki::node_id>>& aliases,
         const glm::vec3& tilePositionOffset)
@@ -174,7 +175,7 @@ namespace loader
 
         ki::node_id parentId;
         if (cloneData.parentBaseId.empty()) {
-            parentId = ownerId;
+            parentId = defaultParentId;
         }
         else {
             auto [id, _] = resolveNodeId(

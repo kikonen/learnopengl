@@ -252,7 +252,8 @@ namespace loader
             }
 
             type->m_compositeDefinition = l.m_compositeLoader.createCompositeDefinition(
-                *composite);
+                *composite,
+                *m_loaders);
         }
 
         return typeHandle;

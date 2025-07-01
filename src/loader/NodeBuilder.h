@@ -43,25 +43,25 @@ namespace loader {
             const ResolvedNode& resolved);
 
         bool resolveNode(
-            const ki::node_id ownerId,
+            const ki::node_id parentId,
             const NodeData& baseData,
             std::shared_ptr<Context> ctx);
 
     private:
 
         void resolveNode(
-            const ki::node_id ownerId,
+            const ki::node_id parentId,
             const NodeData& baseData,
             std::vector<std::pair<std::string, ki::node_id>>& aliases,
             bool root);
 
         void resolveNodeClone(
-            const ki::node_id ownerId,
+            const ki::node_id parentId,
             const NodeData& nodeData,
             std::vector<std::pair<std::string, ki::node_id>>& aliases);
 
         void resolveNodeCloneRepeat(
-            const ki::node_id ownerId,
+            const ki::node_id defaultParentId,
             const NodeData& nodeData,
             std::vector<std::pair<std::string, ki::node_id>>& aliases,
             const glm::vec3& tilePositionOffset);

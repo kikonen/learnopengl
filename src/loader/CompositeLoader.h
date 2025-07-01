@@ -8,6 +8,8 @@ struct CompositeDefinition;
 struct NodeDefinition;
 
 namespace loader {
+    class Loaders;
+
     struct CompositeData;
     struct NodeData;
 
@@ -28,16 +30,7 @@ namespace loader {
             Loaders& loaders) const;
 
         std::unique_ptr<CompositeDefinition> createCompositeDefinition(
-            const CompositeData& compositeData);
-
-    private:
-        void createNodeDefinitions(
-            const std::vector<NodeData>& nodes,
-            std::vector<NodeDefinition>& definitions);
-
-        void createNodeDefinition(
-            const NodeData& node,
-            NodeDefinition& definition,
-            bool recurse);
+            const CompositeData& compositeData,
+            Loaders& loaders);
     };
 }
