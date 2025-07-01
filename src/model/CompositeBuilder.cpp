@@ -242,7 +242,7 @@ void CompositeBuilder::buildNodeCloneRepeat(
     ResolvedNode resolved{
         parentId,
         handle,
-        false,
+        cloneData.m_active,
         state,
     };
 

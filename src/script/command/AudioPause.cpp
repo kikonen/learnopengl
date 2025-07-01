@@ -15,16 +15,16 @@ namespace script
 {
     AudioPause::AudioPause(
         pool::NodeHandle handle,
-        audio::source_id id) noexcept
+        audio::source_id audioSid) noexcept
         : NodeCommand(handle, 0, false),
-        m_id(id)
+        m_audioSid{ audioSid }
     {
     }
 
     void AudioPause::execute(
         const UpdateContext& ctx) noexcept
     {
-        auto* source = getNode()->getAudioSource(m_id);
+        auto* source = getNode()->getAudioSource(m_audioSid);
 
         if (source) {
             source->pause();

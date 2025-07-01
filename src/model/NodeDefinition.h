@@ -28,6 +28,8 @@ struct NodeDefinition
     // material tiling
     glm::vec2 m_tiling{ 1.f };
 
+    bool m_active{ false };
+
     NodeRepeat m_repeat;
     glm::vec3 m_clonePositionOffset{ 0.f };
 

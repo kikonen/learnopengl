@@ -20,7 +20,8 @@ types:
     base_scale: 0.0025
     layer: ui
   - id: player_fps
-    type: origo
+    type: composite
+    composite: player_fps_composite
     front: [0, 0, -1]
     flags:
       allow_normals: false
@@ -36,13 +37,13 @@ types:
         - name: walk_2
           path: audio/Steps On Solid Floor_2B9D1307_normal.wav
           reference_distance: 0.1
-          gain: 1.0
+          gain: 0.5
           pitch: 1.6
           loop: true
         - name: run_2
           path: audio/Steps On Solid Floor_2B9D1307_normal.wav
           reference_distance: 0.1
-          gain: 1.0
+          gain: 0.5
           pitch: 2.8
           loop: true
         - name: turn_1
@@ -290,6 +291,12 @@ types:
     priority: 1
     flags:
       static_bounds: true
+    audio:
+      sources:
+        - name: explode
+          path: audio/explosions/explode_rocket.wav
+          reference_distance: 10
+          gain: 0.8
     physics:
       update: true
     script: scripts/seq_skeleton_2
@@ -555,18 +562,9 @@ types:
         size: [2048, 0, 2048]
         xrotation: [0, 180, 0]
 
-nodes:
-  - xtype: grid
-  - type: fps_counter
-    id: fps_counter
-    #pos: [5.75, 5.25, 0.2]
-    pos: [2, -2, -1]
-  - type: player_fps
-    id: player_fps
-    pos: [0, 4, 0.0]
-    rot: [0, 45, 0]
-    active: true
-    children:
+composites:
+  - id: player_fps_composite
+    nodes:
       - xtype: player_fps_arms
         #pos: [-1.35, -1.6, -1.2]
         pos: [-0.14, -1.59, -0.2]
@@ -574,6 +572,17 @@ nodes:
         pos: [0.1, -0.7, -0.0]
         rotation: [-20, 20, 0]
         scale: 0.25
+
+nodes:
+  - xtype: grid
+  - type: fps_counter
+    id: fps_counter
+    #pos: [5.75, 5.25, 0.2]
+    pos: [2, -2, -1]
+  - type: player_fps
+    pos: [0, 4, 0.0]
+    rot: [0, 45, 0]
+    active: true
   - type: origo
     pos: [0.0, 0.0, 0.0]
   - type: four_cubes

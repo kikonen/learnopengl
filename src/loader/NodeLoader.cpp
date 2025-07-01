@@ -211,6 +211,8 @@ namespace loader {
 
         df.m_tiling = { nodeData.tilingX, nodeData.tilingY };
 
+        df.m_active = nodeData.active;
+
         {
             const auto& src = nodeData.repeat;
             auto& dst = df.m_repeat;

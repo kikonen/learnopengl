@@ -14,7 +14,7 @@ namespace script
         // @param sync wait until audio stopped before finishing this command
         AudioPlay(
             pool::NodeHandle handle,
-            audio::source_id id,
+            audio::source_id audioSid,
             bool sync) noexcept;
 
         virtual std::string getName() const noexcept override
@@ -26,7 +26,7 @@ namespace script
             const UpdateContext& ctx) noexcept override;
 
     private:
-        audio::source_id m_id;
+        audio::source_id m_audioSid;
         bool m_sync;
 
         bool m_started{ false };

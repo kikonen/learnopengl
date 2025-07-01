@@ -30,28 +30,28 @@ types:
           xpath: audio/Steps On Solid Floor_2B9D1307_normal.wav
           path: audio/fab/Footstep_Metal_Boots_Walk_combined.wav
           reference_distance: 0.1
-          gain: 1.0
+          gain: 0.5
           pitch: 1.8
           loop: true
         - name: run_1
           xpath: audio/Steps On Solid Floor_2B9D1307_normal.wav
           path: audio/fab/Footstep_Metal_Boots_Run_combined.wav
           reference_distance: 0.1
-          gain: 1.0
+          gain: 0.5
           pitch: 3.8
           loop: true
         - name: walk_2
           xpath: audio/metal-footsteps-14727.wav
           path: audio/fab/Footstep_Metal_Boots_Walk_combined.wav
           reference_distance: 0.1
-          gain: 1.0
+          gain: 0.5
           pitch: 1.8
           loop: true
         - name: run_2
           xpath: audio/metal-footsteps-14727.wav
           path: audio/fab/Footstep_Metal_Boots_Run_combined.wav
           reference_distance: 0.1
-          gain: 1.0
+          gain: 0.5
           pitch: 3.8
           loop: true
         - name: turn_1

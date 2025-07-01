@@ -19,10 +19,10 @@ namespace script
 {
     AudioPlay::AudioPlay(
         pool::NodeHandle handle,
-        audio::source_id id,
+        audio::source_id audioSid,
         bool sync) noexcept
         : NodeCommand(handle, 0, false),
-        m_id(id),
+        m_audioSid{ audioSid },
         m_sync(sync)
     {
     }
@@ -30,7 +30,7 @@ namespace script
     void AudioPlay::execute(
         const UpdateContext& ctx) noexcept
     {
-        audio::Source* source = source = getNode()->getAudioSource(m_id);
+        audio::Source* source = source = getNode()->getAudioSource(m_audioSid);
 
         if (!m_started) {
             if (source) {
@@ -43,7 +43,7 @@ namespace script
             auto* node = getNode();
             KI_WARN_OUT(fmt::format(
                 "CMD: missing_audio: node={}, sid={}, name={}",
-                getNode()->getName(), m_id, SID_NAME(m_id)));
+                getNode()->getName(), m_audioSid, SID_NAME(m_audioSid)));
         }
 
         m_finished = source && m_sync ? !source->isPlaying() : true;
