@@ -19,6 +19,7 @@ namespace pool {
 
 namespace loader {
     class SceneLoader;
+    class Loaders;
     struct Context;
     struct NodeData;
 
@@ -45,7 +46,8 @@ namespace loader {
         bool resolveNode(
             const ki::node_id parentId,
             const NodeData& baseData,
-            std::shared_ptr<Context> ctx);
+            std::shared_ptr<Context> ctx,
+            const Loaders& loaders);
 
     private:
 

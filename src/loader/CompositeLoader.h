@@ -31,6 +31,6 @@ namespace loader {
 
         std::unique_ptr<CompositeDefinition> createCompositeDefinition(
             const CompositeData& compositeData,
-            Loaders& loaders);
+            Loaders& loaders) const;
     };
 }

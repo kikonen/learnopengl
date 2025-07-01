@@ -33,11 +33,12 @@ namespace loader {
 
         void createNodeDefinitions(
             const std::vector<NodeData>& nodes,
-            std::vector<NodeDefinition>& definitions);
+            std::vector<NodeDefinition>& definitions,
+            bool recurse) const;
 
         void createNodeDefinition(
             const NodeData& node,
             NodeDefinition& definition,
-            bool recurse);
+            bool recurse) const; 
     };
 }

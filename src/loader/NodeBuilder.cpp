@@ -41,6 +41,7 @@
 #include "model/ResolvedNode.h"
 
 #include "SceneLoader.h"
+#include "Loaders.h"
 
 #include "loader_util.h"
 
@@ -86,7 +87,8 @@ namespace loader
     bool NodeBuilder::resolveNode(
         const ki::node_id ownerId,
         const NodeData& baseData,
-        std::shared_ptr<Context> ctx)
+        std::shared_ptr<Context> ctx,
+        const Loaders& loaders)
     {
         if (!baseData.enabled) {
             return false;

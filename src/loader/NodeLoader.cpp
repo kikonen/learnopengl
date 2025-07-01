@@ -183,18 +183,19 @@ namespace loader {
 
     void NodeLoader::createNodeDefinitions(
         const std::vector<NodeData>& nodes,
-        std::vector<NodeDefinition>& definitions)
+        std::vector<NodeDefinition>& definitions,
+        bool recurse) const
     {
         for (const auto& nodeData : nodes) {
             auto& definition = definitions.emplace_back();
-            createNodeDefinition(nodeData, definition, true);
+            createNodeDefinition(nodeData, definition, recurse);
         }
     }
 
     void NodeLoader::createNodeDefinition(
         const NodeData& nodeData,
         NodeDefinition& definition,
-        bool recurse)
+        bool recurse) const
     {
         auto& df = definition;
 
@@ -227,20 +228,12 @@ namespace loader {
 
         if (nodeData.clones && recurse) {
             df.m_clones = std::make_shared<std::vector<NodeDefinition>>();
-
-            for (const auto& cloneData : *nodeData.clones) {
-                auto& cloneDefinition = df.m_clones->emplace_back();
-                createNodeDefinition(cloneData, cloneDefinition, false);
-            }
+            createNodeDefinitions(*nodeData.clones, *df.m_clones, false);
         }
 
         if (nodeData.children) {
             df.m_children = std::make_shared<std::vector<NodeDefinition>>();
-
-            for (const auto& childData : *nodeData.children) {
-                auto& cloneDefinition = df.m_children->emplace_back();
-                createNodeDefinition(childData, cloneDefinition, true);
-            }
+            createNodeDefinitions(*nodeData.children, *df.m_children, true);
         }
     }
 }
