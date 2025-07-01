@@ -34,10 +34,6 @@ vec3 calculateDirLightPbr(
   const vec3 toLight = -light.worldDir.xyz;
   const float dist = 100.0;
 
-  // calculate shadow
-  const vec4 shadowPos = u_shadowMatrix[shadowIndex] * vec4(worldPos, 1.0);
-  const float shadow = calcShadow(u_shadowMap[shadowIndex], shadowPos);
-
   const vec3 N = normal;
   const vec3 V = viewDir;
 
@@ -89,6 +85,11 @@ vec3 calculateDirLightPbr(
     Lo += (kD * albedo / PI + specular) * radiance * NdotL;
   }
 
+  // calculate shadow
+  const vec4 shadowPos = u_shadowMatrix[shadowIndex] * vec4(worldPos, 1.0);
+  const float shadow = calcShadow(u_shadowMap[shadowIndex], shadowPos);
+
+  //return normal;
   //Lo = vec3(1, 0, 0);
   return shadow * Lo;
 }

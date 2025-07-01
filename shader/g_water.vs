@@ -82,6 +82,8 @@ void main() {
     const vec3 bitangent = cross(normal, tangent);
 
     vs_out.tbn = mat3(tangent, bitangent, normal);
+  } else {
+    vs_out.tbn = mat3(1);
   }
 #endif
 }

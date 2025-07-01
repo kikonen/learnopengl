@@ -87,6 +87,7 @@ namespace kigl {
 
     // NOTE KI assumes [0, 1] range for unsigned and [-1, 1] for signed
     // => decided by caller side
+    // https://stackoverflow.com/questions/35961057/how-to-pack-normals-into-gl-int-2-10-10-10-rev
     inline int SCALE_VEC10 = (1 << 9) - 1;
     struct VEC10
     {

@@ -28,6 +28,9 @@ in TCS_OUT {
   flat uint materialIndex;
 
   flat uint tileIndex;
+  flat uint tileX;
+  flat uint tileY;
+
   flat float rangeYmin;
   flat float rangeYmax;
   flat uvec2 heightMapTex;
@@ -51,6 +54,8 @@ out TES_OUT {
 
   flat uint materialIndex;
   flat uint tileIndex;
+  flat uint tileX;
+  flat uint tileY;
 
 #ifdef USE_TBN
   mat3 tbn;
@@ -130,7 +135,10 @@ void main()
   tes_out.normal = normal;
   tes_out.texCoord = texCoord;
   tes_out.materialIndex = tes_in[0].materialIndex;
+
   tes_out.tileIndex = tes_in[0].tileIndex;
+  tes_out.tileX = tes_in[0].tileX;
+  tes_out.tileY = tes_in[0].tileY;
 
 #ifdef USE_TBN
   tes_out.tbn = tes_in[0].tbn;

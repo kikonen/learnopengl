@@ -40,7 +40,7 @@ namespace mesh {
 
                 // Tangent attr
                 //glVertexArrayAttribFormat(vao, m_attr, 3, GL_UNSIGNED_SHORT, GL_TRUE, offsetof(NormalEntry, u_normal));
-                glVertexArrayAttribFormat(vao, m_attr, 4, GL_INT_2_10_10_10_REV, GL_FALSE, offsetof(TangentEntry, u_tangent));
+                glVertexArrayAttribFormat(vao, m_attr, 4, GL_INT_2_10_10_10_REV, GL_TRUE, offsetof(TangentEntry, u_tangent));
 
                 glVertexArrayAttribBinding(vao, m_attr, m_binding);
 

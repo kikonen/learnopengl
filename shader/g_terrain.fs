@@ -23,6 +23,8 @@ in TES_OUT {
 
   flat uint materialIndex;
   flat uint tileIndex;
+  flat uint tileX;
+  flat uint tileY;
 
 #ifdef USE_TBN
   mat3 tbn;
@@ -76,7 +78,7 @@ void main() {
 
   vec4 texColor = material.diffuse;
 
-  if (fs_in.tileIndex % 2 == 0) {
+  if ((fs_in.tileX + fs_in.tileY) % 2 == 0) {
     texColor *= vec4(3.5, 0.7, 0.7, 1);
   }
 
@@ -86,4 +88,6 @@ void main() {
 
   //o_fragPosition = fs_in.worldPos;
   #include encode_gbuffer_normal.glsl
+
+  o_fragViewZ = fs_in.viewPos.z - u_nearPlane;
 }

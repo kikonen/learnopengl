@@ -142,6 +142,8 @@ void main() {
     vs_out.viewTangentPos  = invTBN * u_cameraPos;
     vs_out.tangentPos  = invTBN * worldPos.xyz;
 #endif
+  } else {
+    vs_out.tbn = mat3(1);
   }
 #endif
 }

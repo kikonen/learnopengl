@@ -39,7 +39,7 @@ namespace mesh {
 
                 // normal attr
                 //glVertexArrayAttribFormat(vao, m_attr, 3, GL_UNSIGNED_SHORT, GL_TRUE, offsetof(NormalEntry, u_normal));
-                glVertexArrayAttribFormat(vao, m_attr, 4, GL_INT_2_10_10_10_REV, GL_FALSE, offsetof(NormalEntry, u_normal));
+                glVertexArrayAttribFormat(vao, m_attr, 4, GL_INT_2_10_10_10_REV, GL_TRUE, offsetof(NormalEntry, u_normal));
 
                 glVertexArrayAttribBinding(vao, m_attr, m_binding);
 

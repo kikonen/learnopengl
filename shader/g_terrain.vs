@@ -38,6 +38,9 @@ out VS_OUT {
   flat uint materialIndex;
 
   flat uint tileIndex;
+  flat uint tileX;
+  flat uint tileY;
+
   flat float tilingX;
   flat float rangeYmin;
   flat float rangeYmax;
@@ -84,7 +87,7 @@ void main() {
   vec4 worldPos;
   vec3 normal = DECODE_A_NORMAL(a_normal);
 #ifdef USE_TBN
-  vec3 tangent;
+  vec3 tangent = DECODE_A_TANGENT(a_tangent);
 #endif
 
   worldPos = modelMatrix * pos;
@@ -96,6 +99,9 @@ void main() {
   vs_out.instanceIndex = instanceIndex;
   vs_out.materialIndex = materialIndex;
   vs_out.tileIndex = tileIndex;
+  vs_out.tileX = tile.u_tileX;
+  vs_out.tileY = tile.u_tileY;
+
 
   vs_out.rangeYmin = tile.u_rangeYmin;
   vs_out.rangeYmax = tile.u_rangeYmax;
@@ -143,6 +149,8 @@ void main() {
     vs_out.viewTangentPos  = invTBN * u_cameraPos;
     vs_out.tangentPos  = invTBN * worldPos.xyz;
 #endif
+  } else {
+    vs_out.tbn = mat3(1);
   }
 #endif
 }
