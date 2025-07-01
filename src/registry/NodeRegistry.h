@@ -71,7 +71,6 @@ public:
     // @return [min-dirty, max-dirty]
     std::pair<int, int> updateEntity(const UpdateContext& ctx);
 
-    void snapshotWT();
     void snapshotPending();
     void snapshotRT();
 
@@ -242,7 +241,6 @@ private:
     std::vector<pool::NodeHandle> m_handles;
     std::vector<uint32_t> m_parentIndeces;
     std::vector<NodeState> m_states;
-    std::vector<Snapshot> m_snapshotsWT;
     std::vector<Snapshot> m_snapshotsPending;
     std::vector<Snapshot> m_snapshotsRT;
     std::vector<EntitySSBO> m_entities;

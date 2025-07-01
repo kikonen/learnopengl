@@ -340,7 +340,6 @@ void NodeRegistry::clear()
     m_handles.clear();
     m_parentIndeces.clear();
     m_states.clear();
-    m_snapshotsWT.clear();
     m_snapshotsPending.clear();
     m_snapshotsRT.clear();
     m_entities.clear();
@@ -513,34 +512,28 @@ void NodeRegistry::updateModelMatrices(const Node* node)
     m_states[index].updateModelMatrix(m_states[m_parentIndeces[index]]);
 }
 
-void NodeRegistry::snapshotWT()
-{
-    //std::lock_guard lock(m_snapshotLock);
-
-    const auto sz = m_states.size();
-    const auto forceAfter = m_snapshotsWT.size() - 1;
-
-    m_snapshotsWT.resize(sz);
-
-    for (int i = 0; i < sz; i++) {
-        const auto& state = m_states[i];
-        assert(!state.m_dirty);
-
-        if (i >= forceAfter || state.m_dirtySnapshot) {
-            m_snapshotsWT[i].applyFrom(state);
-        }
-    }
-}
-
 void NodeRegistry::snapshotPending()
 {
     std::lock_guard lock(m_snapshotLock);
 
-    snapshot(m_snapshotsWT, m_snapshotsPending);
+    {
+        const auto sz = m_states.size();
+        const auto forceAfter = m_snapshotsPending.size() - 1;
 
-    auto& dbg = render::DebugContext::modify();
+        m_snapshotsPending.resize(sz);
+
+        for (int i = 0; i < sz; i++) {
+            const auto& state = m_states[i];
+            assert(!state.m_dirty);
+
+            if (i >= forceAfter || state.m_dirtySnapshot) {
+                m_snapshotsPending[i].applyFrom(state);
+            }
+        }
+    }
 
     {
+        auto& dbg = render::DebugContext::modify();
         dbg.m_physicsMeshesPending.exchange(dbg.m_physicsMeshesWT);
 
         std::shared_ptr<std::vector<mesh::MeshInstance>> tmp;
