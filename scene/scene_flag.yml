@@ -51,6 +51,14 @@ types:
         { time=60 * 10, relative=true },
         vec3(0, 1, 0),
         1 * 360 * 10)
+  - id: flag_stand_2
+    type: composite
+    composite: flag_stand_2_composite
+    script: |
+      cmd:rotate(
+        { time=60 * 10, relative=true },
+        vec3(0, 1, 0),
+        1 * 360 * 10)
   - id: flag
     mesh:
       vertex:
@@ -66,7 +74,7 @@ types:
         shared_definitions:
           USE_FLAG_WAVE: 1
           USE_TBN: 1
-  - xid: flag_2
+  - id: flag_2
     mesh:
       vertex:
         type: plane_grid
@@ -116,7 +124,14 @@ composites:
     nodes:
       - type: flag
         pos: [1.08, 3.2, 0]
-      - xtype: flag_2
+      - type: flag_pole
+        pos: [0, 2, 0]
+      - type: flag_top
+        pos: [0, 4, 0]
+
+  - id: flag_stand_2_composite
+    nodes:
+      - type: flag_2
         pos: [1.08, 3.2, 0]
       - type: flag_pole
         pos: [0, 2, 0]
@@ -138,6 +153,8 @@ nodes:
     pos: [0.0, 0.0, 0.0]
   - type: flag_stand
     pos: [0]
+  - type: flag_stand_2
+    pos: [3, 0, 0]
 
 material_updaters:
 - id: shader_toy_1

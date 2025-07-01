@@ -1,4 +1,4 @@
-#ifdef __FRAGMENT_SHADER__
+#ifdef _FRAGMENT_SHADER_
 
 void OIT_DISCARD(float alpha)
 {

@@ -261,7 +261,7 @@ void ShaderSource::appendDefines(
 {
     const auto& dbg = render::DebugContext::get();
 
-    lines.push_back(fmt::format("#define __{}__ 1", getTypeName(shaderType)));
+    lines.push_back(fmt::format("#define _{}_ 1", getTypeName(shaderType)));
 
     for (const auto& [key, value] : program.getDefines()) {
         lines.push_back(fmt::format("#define {} {}", key, value));

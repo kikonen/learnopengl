@@ -22,7 +22,7 @@ void mod_flag_wave(
   normal =  normalMatrix * normal;
 
 #ifdef USE_TBN
-  normal = normalMatrix * tangent;
+  tangent = normalMatrix * tangent;
 #endif
 }
 
