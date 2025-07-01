@@ -31,6 +31,21 @@ function sample()
   end
 end
 
-sample()
+function cylon_armada()
+  for i=0,10 do
+    local opt = {
+      type = "cylon_group",
+      pos = vec3(rnd(1000), 100 + rnd(500), 200 + rnd(500)),
+      rot = vec3(0, rnd(360), 0),
+      scale = vec3(0.01 + rnd(0.01)),
+    }
+    local node_id = scene:create_node(opt)
+    printf("created_node: %d\n", node_id)
+  end
+end
+
+-- sample()
+-- cylon_armada()
 create_new_node("water_ball")
 create_new_node("pool")
+create_new_node("cylon_group")
