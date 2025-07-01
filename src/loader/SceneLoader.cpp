@@ -256,7 +256,7 @@ namespace loader {
 
             m_pendingCount = 0;
             for (const auto& node : m_nodes) {
-                if (m_nodeBuilder->resolveNode(root.rootId, node, m_ctx, *m_loaders)) {
+                if (m_nodeBuilder->resolveNode(root.rootId, node, m_ctx, m_loaders)) {
                     m_pendingCount++;
                     KI_INFO_OUT(fmt::format("START: node={}, pending={}", node.name, m_pendingCount));
                 }

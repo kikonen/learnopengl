@@ -42,17 +42,17 @@ public:
         const CompositeDefinition& baseData,
         std::vector<std::pair<std::string, ki::node_id>> aliases);
 
-    void attach();
-
-private:
-    void addResolvedNode(
-        const ResolvedNode& resolved);
-
     void buildNode(
         const ki::node_id parentId,
         const NodeDefinition& baseData,
         std::vector<std::pair<std::string, ki::node_id>>& aliases,
         bool root);
+
+    void attach();
+
+private:
+    void addResolvedNode(
+        const ResolvedNode& resolved);
 
     void buildNodeClone(
         const ki::node_id parentId,

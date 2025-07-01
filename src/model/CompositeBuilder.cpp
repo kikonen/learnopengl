@@ -179,16 +179,16 @@ void CompositeBuilder::buildNode(
         }
     }
     catch (const std::runtime_error& ex) {
-        KI_CRITICAL(fmt::format("SCENE_ERROR: RESOLVE_NODE - {}", ex.what()));
+        KI_CRITICAL(fmt::format("COMPOSITE_ERROR: RESOLVE_NODE - {}", ex.what()));
     }
     catch (const std::string& ex) {
-        KI_CRITICAL(fmt::format("SCENE_ERROR: RESOLVE_NODE - {}", ex));
+        KI_CRITICAL(fmt::format("COMPOSITE_ERROR: RESOLVE_NODE - {}", ex));
     }
     catch (const char* ex) {
-        KI_CRITICAL(fmt::format("SCENE_ERROR: RESOLVE_NODE - {}", ex));
+        KI_CRITICAL(fmt::format("COMPOSITE_ERROR: RESOLVE_NODE - {}", ex));
     }
     catch (...) {
-        KI_CRITICAL(fmt::format("SCENE_ERROR: RESOLVE_NODE - {}", "UNKNOWN_ERROR"));
+        KI_CRITICAL(fmt::format("COMPOSITE_ERROR: RESOLVE_NODE - {}", "UNKNOWN_ERROR"));
     }
 }
 
@@ -300,6 +300,15 @@ std::pair<pool::NodeHandle, CreateState> CompositeBuilder::createNode(
     state.m_rotation = util::degreesToQuat(nodeData.m_rotation);
     state.m_tilingX = nodeData.m_tiling.x;
     state.m_tilingY = nodeData.m_tiling.y;
+
+    if (type->m_compositeDefinition) {
+        CompositeBuilder builder{ NodeRegistry::get() };
+        if (builder.build(nodeId, *type->m_compositeDefinition, aliases)) {
+            for (auto& resolvedNode : builder.getResolvedNodes()) {
+                addResolvedNode(resolvedNode);
+            }
+        }
+    }
 
     return { handle, state };
 }

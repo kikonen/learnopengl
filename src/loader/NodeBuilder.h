@@ -47,31 +47,7 @@ namespace loader {
             const ki::node_id parentId,
             const NodeData& baseData,
             std::shared_ptr<Context> ctx,
-            const Loaders& loaders);
-
-    private:
-
-        void resolveNode(
-            const ki::node_id parentId,
-            const NodeData& baseData,
-            std::vector<std::pair<std::string, ki::node_id>>& aliases,
-            bool root);
-
-        void resolveNodeClone(
-            const ki::node_id parentId,
-            const NodeData& nodeData,
-            std::vector<std::pair<std::string, ki::node_id>>& aliases);
-
-        void resolveNodeCloneRepeat(
-            const ki::node_id defaultParentId,
-            const NodeData& nodeData,
-            std::vector<std::pair<std::string, ki::node_id>>& aliases,
-            const glm::vec3& tilePositionOffset);
-
-        std::pair<pool::NodeHandle, CreateState> createNode(
-            const NodeData& nodeData,
-            std::vector<std::pair<std::string, ki::node_id>>& aliases,
-            const glm::vec3& positionOffset);
+            std::shared_ptr<Loaders> loaders);
 
     private:
         SceneLoader* const m_sceneLoader;
