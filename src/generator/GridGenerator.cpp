@@ -57,7 +57,7 @@ void GridGenerator::updateWT(
     updateInstances(ctx, container);
 
     const auto hasPhysics = !m_geometries.empty();
-    auto& physicsEngine = physics::PhysicsSystem::get();
+    //auto& physicsSystem = physics::PhysicsSystem::get();
 
     const auto& parentMatrix = containerState.getModelMatrix();
     for (int i = 0; i < m_transforms.size(); i++) {
@@ -112,7 +112,7 @@ void GridGenerator::prepareInstances(
         m_geometries.reserve(count);
     }
 
-    auto& physicsEngine = physics::PhysicsSystem::get();
+    auto& physicsSystem = physics::PhysicsSystem::get();
 
     for (int i = 0; i < count; i++) {
         auto& transform = m_transforms.emplace_back();
@@ -126,7 +126,7 @@ void GridGenerator::prepareInstances(
             m_geometries.push_back(std::move(obj.m_geom));
             auto& geom = m_geometries[m_geometries.size() - 1];
 
-            physicsEngine.registerGeom(geom, glm::vec3{ m_scale });
+            physicsSystem.registerGeom(geom, glm::vec3{ m_scale });
         }
     }
 

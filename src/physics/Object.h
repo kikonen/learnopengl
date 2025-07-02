@@ -32,7 +32,10 @@ namespace physics {
     struct Object {
         Object();
         Object(Object&& b) noexcept;
+
         ~Object();
+
+        Object& operator=(Object&& o);
 
         inline bool ready() const { return m_geom.physicId || m_body.physicId; }
 
@@ -52,8 +55,8 @@ namespace physics {
             uint32_t entityIndex,
             NodeRegistry& nodeRegistry) const;
 
+    public:
         Body m_body{};
         Geom m_geom{};
-
     };
 }

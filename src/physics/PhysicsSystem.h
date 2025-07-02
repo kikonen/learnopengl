@@ -148,14 +148,20 @@ namespace physics {
         size_t m_invokeCount{ 0 };
         size_t m_stepCount{ 0 };
 
+        // INDEX = pending index
         std::vector<physics::object_id> m_pending;
 
+        // INDEX = objectId
         std::vector<pool::NodeHandle> m_nodeHandles;
+        // INDEX = objectId
         std::vector<uint32_t> m_entityIndeces;
+        // INDEX = objectId
         std::vector<physics::Object> m_objects;
 
         ki::level_id m_level{ 0 };
+        // INDEX = objectId
         std::vector<ki::level_id> m_matrixLevels;
+        // INDEX = objectId
         std::vector<physics::object_id> m_updateObjects;
 
         physics::object_id m_rayId{ 0 };

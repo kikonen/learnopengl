@@ -14,6 +14,26 @@ namespace {
 }
 
 namespace physics {
+    Body::Body() {}
+
+    Body::Body(Body&& o) noexcept
+        : size{ o.size },
+        baseRotation{ o.baseRotation },
+        invBaseRotation{ o.invBaseRotation },
+        linearVelocity{ o.linearVelocity },
+        angularVelocity{ o.angularVelocity },
+        axis{ o.axis },
+        maxAngulerVelocity{ o.maxAngulerVelocity },
+        density { o.density },
+        physicId{ o.physicId },
+        type{ o.type },
+        forceAxis{ o.forceAxis },
+        kinematic{ o.kinematic }
+    {
+        // NOTE KI o is moved now
+        o.physicId = nullptr;
+    }
+
     Body::~Body()
     {
         if (physicId) {
@@ -21,7 +41,28 @@ namespace physics {
         }
     }
 
-    Body* Body::operator=(const BodyDefinition& o)
+    Body& Body::operator=(Body&& o)
+    {
+        size = o.size;
+        baseRotation = o.baseRotation;
+        invBaseRotation = o.invBaseRotation;
+        linearVelocity = o.linearVelocity;
+        angularVelocity = o.angularVelocity;
+        axis = o.axis;
+        maxAngulerVelocity = o.maxAngulerVelocity;
+        density = o.density;
+        physicId = o.physicId;
+        type = o.type;
+        forceAxis = o.forceAxis;
+        kinematic = o.kinematic;
+
+        // NOTE KI o is moved now
+        o.physicId = nullptr;
+
+        return *this;
+    }
+
+    Body& Body::operator=(const BodyDefinition& o)
     {
         size = o.m_size;
 
@@ -40,7 +81,15 @@ namespace physics {
         forceAxis = o.m_forceAxis;
         kinematic = o.m_kinematic;
 
-        return this;
+        return *this;
+    }
+
+    void Body::release()
+    {
+        if (physicId) {
+            dBodyDestroy(physicId);
+            physicId = nullptr;
+        }
     }
 
     void Body::create(

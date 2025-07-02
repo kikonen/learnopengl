@@ -21,6 +21,7 @@ namespace physics {
         type{ o.type },
         placeable{ o.placeable }
     {
+        // NOTE KI o is moved now
         o.physicId = nullptr;
         o.heightDataId = nullptr;
     }
@@ -35,7 +36,39 @@ namespace physics {
         }
     }
 
-    Geom* Geom::operator=(const GeomDefinition& o)
+    void Geom::release()
+    {
+        if (physicId) {
+            dGeomDestroy(physicId);
+            physicId = nullptr;
+        }
+        if (heightDataId) {
+            dGeomHeightfieldDataDestroy(heightDataId);
+            heightDataId = nullptr;
+        }
+    }
+
+    Geom& Geom::operator=(Geom&& o)
+    {
+        size = o.size;
+        rotation = o.rotation;
+        offset = o.offset;
+        physicId = o.physicId;
+        heightDataId = o.heightDataId;
+        categoryMask = o.categoryMask;
+        collisionMask = o.collisionMask;
+        materialId = o.materialId;
+        type = o.type;
+        placeable = o.placeable;
+
+        // NOTE KI o is moved now
+        o.physicId = nullptr;
+        o.heightDataId = nullptr;
+
+        return *this;
+    }
+
+    Geom& Geom::operator=(const GeomDefinition& o)
     {
         size = o.m_size;
         rotation = o.m_rotation;
@@ -45,7 +78,7 @@ namespace physics {
         type = o.m_type;
         placeable = o.m_placeable;
 
-        return this;
+        return *this;
     }
 
     void Geom::create(

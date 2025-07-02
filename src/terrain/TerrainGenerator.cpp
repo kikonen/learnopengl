@@ -95,11 +95,11 @@ namespace terrain {
 
         m_heightMapTex = texture;
 
-        auto& physicsEngine = physics::PhysicsSystem::get();
-        auto heightMapId = physicsEngine.registerHeightMap();
+        auto& physicsSystem = physics::PhysicsSystem::get();
+        auto heightMapId = physicsSystem.registerHeightMap();
 
         {
-            auto* heightMap = physicsEngine.modifyHeightMap(heightMapId);
+            auto* heightMap = physicsSystem.modifyHeightMap(heightMapId);
             heightMap->m_origin = &container;
             heightMap->m_verticalRange = m_verticalRange;
             heightMap->m_horizontalScale = m_horizontalScale;

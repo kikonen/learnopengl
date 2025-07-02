@@ -14,44 +14,18 @@ namespace physics {
     struct Body;
 
     struct Geom {
-        // NOTE KI *SCALED* using scale of node
-        // box:
-        // - size == vec3 (half size of cube)
-        // sphere:
-        // - size.x == radius
-        // capsule/cylinder:
-        // - size.x == radius
-        // - size.y == length (Half of the length between centers of the caps along the z-axis.)
-        glm::vec3 size{ 0.5f };
-
-        glm::quat rotation{ 1.f, 0.f, 0.f, 0.f };
-        glm::vec3 offset{ 0.f };
-
-        //glm::vec4 plane{ 0.f, 1.f, 0.f, 0.f };
-
-        mutable dGeomID physicId{ nullptr };
-        mutable dHeightfieldDataID heightDataId{ nullptr };
-
-        uint32_t categoryMask{ UINT_MAX };
-        uint32_t collisionMask{ UINT_MAX };
-
-        // dContactXX flags for geom
-        // TODO KI define "PhysicsMaterial" and refer to it from geom
-        physics::material_id materialId{ 0 };
-
-        physics::GeomType type{ physics::GeomType::none };
-
-        bool placeable : 1 { true };
-
         Geom();
         Geom(Geom&& o) noexcept;
         ~Geom();
 
-        Geom* operator=(const GeomDefinition& o);
+        Geom& operator=(Geom&& o);
+        Geom& operator=(const GeomDefinition& o);
 
         bool isValid() const noexcept {
             return type != GeomType::none;
         }
+
+        void release();
 
         void create(
             physics::object_id objectId,
@@ -110,5 +84,35 @@ namespace physics {
                 static_cast<float>(dquat[2]),
                 static_cast<float>(dquat[3]) };
         }
+
+    public:
+        // NOTE KI *SCALED* using scale of node
+        // box:
+        // - size == vec3 (half size of cube)
+        // sphere:
+        // - size.x == radius
+        // capsule/cylinder:
+        // - size.x == radius
+        // - size.y == length (Half of the length between centers of the caps along the z-axis.)
+        glm::vec3 size{ 0.5f };
+
+        glm::quat rotation{ 1.f, 0.f, 0.f, 0.f };
+        glm::vec3 offset{ 0.f };
+
+        //glm::vec4 plane{ 0.f, 1.f, 0.f, 0.f };
+
+        mutable dGeomID physicId{ nullptr };
+        mutable dHeightfieldDataID heightDataId{ nullptr };
+
+        uint32_t categoryMask{ UINT_MAX };
+        uint32_t collisionMask{ UINT_MAX };
+
+        // dContactXX flags for geom
+        // TODO KI define "PhysicsMaterial" and refer to it from geom
+        physics::material_id materialId{ 0 };
+
+        physics::GeomType type{ physics::GeomType::none };
+
+        bool placeable : 1 { true };
     };
 }

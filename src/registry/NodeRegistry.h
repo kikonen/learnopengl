@@ -238,15 +238,24 @@ private:
     bool m_rootPreparedRT{ false };
 
     // Entries matched by index
+    // INDEX = entityIndex
     std::vector<pool::NodeHandle> m_handles;
+    // INDEX = entityIndex
     std::vector<uint32_t> m_parentIndeces;
+    // INDEX = entityIndex
     std::vector<NodeState> m_states;
+    // INDEX = entityIndex
     std::vector<Snapshot> m_snapshotsPending;
+    // INDEX = entityIndex
     std::vector<Snapshot> m_snapshotsRT;
+    // INDEX = entityIndex
     std::vector<EntitySSBO> m_entities;
+    // INDEX = entityIndex
     std::vector<bool> m_dirtyEntities;
 
+    // INDEX = entityIndex
     std::vector<Node*> m_cachedNodesWT;
+    // INDEX = entityIndex
     std::vector<Node*> m_cachedNodesRT;
 
     ki::level_id m_nodeLevel{ 0 };
