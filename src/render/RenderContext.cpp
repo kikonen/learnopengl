@@ -132,13 +132,21 @@ RenderContext::RenderContext(
     if (m_parent) {
         m_shadow = m_parent->m_shadow;
 
+        m_layer = parent->m_layer;
+
+        m_shadow = parent->m_shadow;
+        m_useLight = parent->m_useLight;
+        m_useParticles = parent->m_useParticles;
+        m_useDecals = parent->m_useDecals;
+        m_useEmission = parent->m_useEmission;
+        m_useFog = parent->m_useFog;
+        m_useBloom = parent->m_useBloom;
+        m_useScreenspaceEffects = parent->m_useScreenspaceEffects;
+
         m_forceSolid = m_parent->m_forceSolid;
         m_forceLineMode = m_parent->m_forceLineMode;
 
         m_allowDrawDebug = m_parent->m_allowDrawDebug;
-
-        m_useParticles = parent->m_useParticles;
-        m_layer = parent->m_layer;
     }
 
     m_camera->setupProjection(
@@ -146,38 +154,51 @@ RenderContext::RenderContext(
         m_nearPlane,
         m_farPlane);
 
-    m_matricesUBO.u_view = m_camera->getView();
-    m_matricesUBO.u_invView = glm::inverse(m_matricesUBO.u_view);
+    prepareUBOs();
+}
 
-    m_matricesUBO.u_projection = m_camera->getProjection();
-    m_matricesUBO.u_invProjection = glm::inverse(m_matricesUBO.u_projection);
+RenderContext::~RenderContext()
+{
+}
 
-    m_matricesUBO.u_projected = m_camera->getProjected();
-
-    m_matricesUBO.u_mainProjected = m_parent ? m_parent->m_camera->getProjected() : m_camera->getProjected();
-
-    m_matricesUBO.u_viewportMatrix = util::getViewportMatrix(m_parent ? m_parent->m_resolution : m_resolution);
+void RenderContext::prepareUBOs()
+{
+    //KI_INFO_OUT(fmt::format("ts: {}", m_data.u_time));
+    auto* mainCamera = getMainCamera();
+    const render::DebugContext* const dbg = m_dbg;
+    auto& assets = m_assets;
+    auto& selectionRegistry = *m_registry->m_selectionRegistry;
 
     {
-        // https://www.rioki.org/2013/03/07/glsl-skybox.html
-        // NOTE KI remove translation from the view matrix for skybox
-        glm::mat4 m = m_matricesUBO.u_view;
-        m[3][0] = 0.f;
-        m[3][1] = 0.f;
-        m[3][2] = 0.f;
+        m_matricesUBO.u_view = m_camera->getView();
+        m_matricesUBO.u_invView = glm::inverse(m_matricesUBO.u_view);
 
-        m_matricesUBO.u_viewSkybox = glm::inverse(m) * glm::inverse(m_matricesUBO.u_projection);
+        m_matricesUBO.u_projection = m_camera->getProjection();
+        m_matricesUBO.u_invProjection = glm::inverse(m_matricesUBO.u_projection);
 
-        const auto& planes = m_camera->getFrustumPlanes();
-        std::copy(
-            std::begin(planes),
-            std::end(planes),
-            std::begin(m_matricesUBO.u_frustumPlanes));
+        m_matricesUBO.u_projected = m_camera->getProjected();
+
+        m_matricesUBO.u_mainProjected = m_parent ? m_parent->m_camera->getProjected() : m_camera->getProjected();
+
+        m_matricesUBO.u_viewportMatrix = util::getViewportMatrix(m_parent ? m_parent->m_resolution : m_resolution);
+
+        {
+            // https://www.rioki.org/2013/03/07/glsl-skybox.html
+            // NOTE KI remove translation from the view matrix for skybox
+            glm::mat4 m = m_matricesUBO.u_view;
+            m[3][0] = 0.f;
+            m[3][1] = 0.f;
+            m[3][2] = 0.f;
+
+            m_matricesUBO.u_viewSkybox = glm::inverse(m) * glm::inverse(m_matricesUBO.u_projection);
+
+            const auto& planes = m_camera->getFrustumPlanes();
+            std::copy(
+                std::begin(planes),
+                std::end(planes),
+                std::begin(m_matricesUBO.u_frustumPlanes));
+        }
     }
-
-    auto* mainCamera = getMainCamera();
-
-    auto& selectionRegistry = *m_registry->m_selectionRegistry;
 
     m_dataUBO = {
         m_camera->getWorldPosition(),
@@ -232,28 +253,28 @@ RenderContext::RenderContext(
         0, // shadowCount
     };
 
-    if (m_dbg) {
+    if (dbg) {
         float parallaxDepth = -1.f;
-        if (!m_dbg->m_parallaxEnabled) {
+        if (!dbg->m_parallaxEnabled) {
             parallaxDepth = 0;
         }
-        else if (m_dbg->m_parallaxDebugEnabled) {
-            parallaxDepth = m_dbg->m_parallaxDebugDepth;
+        else if (dbg->m_parallaxDebugEnabled) {
+            parallaxDepth = dbg->m_parallaxDebugDepth;
         }
 
         m_debugUBO = {
-            m_dbg->m_wireframeLineColor,
-            m_dbg->m_wireframeOnly,
-            m_dbg->m_wireframeLineWidth,
+            dbg->m_wireframeLineColor,
+            dbg->m_wireframeOnly,
+            dbg->m_wireframeLineWidth,
 
-            m_dbg->m_entityId,
-            m_dbg->m_animationBoneIndex,
-            m_dbg->m_animationDebugBoneWeight,
+            dbg->m_entityId,
+            dbg->m_animationBoneIndex,
+            dbg->m_animationDebugBoneWeight,
 
-            m_dbg->m_lightEnabled,
-            m_dbg->m_normalMapEnabled,
+            m_useLight && dbg->m_lightEnabled,
+            m_useLight && dbg->m_normalMapEnabled,
             parallaxDepth,
-            m_dbg->m_parallaxMethod,
+            dbg->m_parallaxMethod,
         };
     }
     else {
@@ -271,13 +292,7 @@ RenderContext::RenderContext(
         };
     }
 
-    //KI_INFO_OUT(fmt::format("ts: {}", m_data.u_time));
-
     m_clipPlanes.u_clipCount = 0;
-}
-
-RenderContext::~RenderContext()
-{
 }
 
 void RenderContext::bindDefaults() const
@@ -300,6 +315,7 @@ void RenderContext::updateUBOs() const
     // https://stackoverflow.com/questions/49798189/glbuffersubdata-offsets-for-structs
     updateMatricesUBO();
     updateDataUBO();
+    updateDebugUBO();
     updateClipPlanesUBO();
     updateLightsUBO();
 }
@@ -314,7 +330,6 @@ void RenderContext::updateDataUBO() const
 {
     validateRender("update_data_ubo");
     m_renderData->updateData(m_dataUBO);
-    m_renderData->updateDebug(m_debugUBO);
 }
 
 void RenderContext::updateDebugUBO() const

@@ -384,9 +384,7 @@ bool WaterMapRenderer::render(
             localCtx.m_clipPlanes.u_clipCount = 1;
         }
 
-        localCtx.updateMatricesUBO();
-        localCtx.updateDataUBO();
-        localCtx.updateClipPlanesUBO();
+        localCtx.updateUBOs();
 
         drawNodes(localCtx, reflectionBuffer.get(), closest, true);
     }
@@ -433,16 +431,12 @@ bool WaterMapRenderer::render(
             localCtx.m_clipPlanes.u_clipCount = 1;
         }
 
-        localCtx.updateMatricesUBO();
-        localCtx.updateDataUBO();
-        localCtx.updateClipPlanesUBO();
+        localCtx.updateUBOs();
 
         drawNodes(localCtx, refractionBuffer.get(), closest, false);
     }
 
-    parentCtx.updateMatricesUBO();
-    parentCtx.updateDataUBO();
-    parentCtx.updateClipPlanesUBO();
+    parentCtx.updateUBOs();
 
     state.setEnabled(GL_CLIP_DISTANCE0, false);
 

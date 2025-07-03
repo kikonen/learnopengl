@@ -559,23 +559,24 @@ void Scene::drawUi(const RenderContext& parentCtx)
         parentCtx.m_dbg);
 
     localCtx.m_layer = layer->m_index;
+    //localCtx.m_useLight = false;
     localCtx.m_useParticles = false;
     localCtx.m_useDecals = false;
     localCtx.m_useFog = false;
     localCtx.m_useEmission = false;
     localCtx.m_useBloom = false;
+    localCtx.m_forceLineMode = false;
     //localCtx.m_useScreenspaceEffects = false;
 
     localCtx.copyShadowFrom(parentCtx);
 
-    localCtx.updateMatricesUBO();
-    localCtx.updateDataUBO();
+    localCtx.prepareUBOs();
+    localCtx.updateUBOs();
     localCtx.bindDefaults();
 
     drawScene(localCtx, m_uiRenderer.get());
 
-    parentCtx.updateMatricesUBO();
-    parentCtx.updateDataUBO();
+    parentCtx.updateUBOs();
     parentCtx.bindDefaults();
 }
 
@@ -656,13 +657,11 @@ void Scene::drawRear(const RenderContext& parentCtx)
 
     localCtx.copyShadowFrom(parentCtx);
 
-    localCtx.updateMatricesUBO();
-    localCtx.updateDataUBO();
+    localCtx.updateUBOs();
 
     drawScene(localCtx, m_rearRenderer.get());
 
-    parentCtx.updateMatricesUBO();
-    parentCtx.updateDataUBO();
+    parentCtx.updateUBOs();
 }
 
 void Scene::drawViewports(const RenderContext& ctx)

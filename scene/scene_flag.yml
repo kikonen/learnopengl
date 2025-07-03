@@ -7,6 +7,21 @@ script:
   scripts:
     - path: lib/common
 types:
+  - id: fps_counter
+    prefab:
+      path: prefab/util/prefab_fps_counter.yml
+    base_scale: 0.025
+    layer: ui
+  - id: ui_origo
+    mesh:
+      vertex:
+        type: sphere
+        radius: 0.05
+      material:
+        kd: [1, 1, 0, 1]
+        #prefab: materials/Plastic01.yml
+        program: g_tex
+    layer: ui
   - id: origo_marker
     mesh:
       vertex:
@@ -139,6 +154,12 @@ composites:
         pos: [0, 4, 0]
 
 nodes:
+  - type: fps_counter
+    id: fps_counter
+    pos: [2, -2, -1]
+  - type: ui_origo
+    pos: [0, 0, -2]
+    layer: ui
   - type: player
     pos: [0, 1, 15]
     rotation: [0, 180, 0]

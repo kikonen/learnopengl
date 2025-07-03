@@ -261,8 +261,7 @@ bool CubeMapRenderer::render(
 
         localCtx.copyShadowFrom(parentCtx);
 
-        localCtx.updateMatricesUBO();
-        localCtx.updateDataUBO();
+        localCtx.updateUBOs();
 
         auto targetBuffer = m_curr->asFrameBuffer(face);
         drawNodes(localCtx, &targetBuffer, centerNode, debugColor);
@@ -274,8 +273,7 @@ bool CubeMapRenderer::render(
     //m_curr->unbind(mainCtx);
     m_prev.swap(m_curr);
 
-    parentCtx.updateMatricesUBO();
-    parentCtx.updateDataUBO();
+    parentCtx.updateUBOs();
 
     if (m_curr->m_rendered) {
         m_curr->m_updateFace = (m_curr->m_updateFace + 1) % 6;

@@ -310,8 +310,7 @@ bool MirrorMapRenderer::render(
         ////clip.enabled = true;
         //clip.plane = glm::vec4(planePos, 0);
 
-        localCtx.updateMatricesUBO();
-        localCtx.updateDataUBO();
+        localCtx.updateUBOs();
 
         bindTexture(localCtx.m_state);
         drawNodes(localCtx, reflectionBuffer.get(), closest);
@@ -319,8 +318,7 @@ bool MirrorMapRenderer::render(
         //ctx.updateClipPlanesUBO();
     }
 
-    parentCtx.updateMatricesUBO();
-    parentCtx.updateDataUBO();
+    parentCtx.updateUBOs();
 
     m_prevIndex = m_currIndex;
     m_currIndex = (m_currIndex + 1) % m_bufferCount;
