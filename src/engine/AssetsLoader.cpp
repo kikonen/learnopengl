@@ -257,20 +257,20 @@ void AssetsLoader::loadAssets(
                 data.placeholderTexture = readString(v);
                 continue;
             }
-            if (k == "use_imgui") {
-                data.useImGui = readBool(v);
+            if (k == "use_editor") {
+                data.useEditor = readBool(v);
                 continue;
             }
-            if (k == "imgui_demo") {
-                data.imGuiDemo = readBool(v);
+            if (k == "editor_imgui_demo") {
+                data.editorImGuiDemo = readBool(v);
                 continue;
             }
-            if (k == "imgui_font_size") {
-                data.imGuiFontSize = readFloat(v);
+            if (k == "editor_font_size") {
+                data.editorFontSize = readFloat(v);
                 continue;
             }
-            if (k == "imgui_font_path") {
-                data.imGuiFontPath = readString(v);
+            if (k == "editor_font_path") {
+                data.editorFontPath = readString(v);
                 continue;
             }
             if (k == "use_script") {

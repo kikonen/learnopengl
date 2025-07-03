@@ -47,10 +47,10 @@ void FrameInit::prepare(const PrepareContext& ctx)
 {
     const auto& assets = Assets::get();
 
-    m_fontSize = assets.imGuiFontSize;
+    m_fontSize = assets.editorFontSize;
     m_fontPath = util::joinPath(
         assets.assetsDir,
-        assets.imGuiFontPath);
+        assets.editorFontPath);
 
     ImGuiIO& io = ImGui::GetIO(); (void)io;
 

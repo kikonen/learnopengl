@@ -85,7 +85,7 @@ namespace editor {
 
         ctx.m_state.bindFrameBuffer(0, false);
 
-        if (assets.imGuiDemo|| getState().m_showImguiDemo) {
+        if (assets.editorImGuiDemo|| getState().m_showImguiDemo) {
             ImGui::ShowDemoWindow();
         }
 

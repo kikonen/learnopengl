@@ -217,7 +217,7 @@ int SampleApp::onSetup()
 
     //state.setEnabled(GL_MULTISAMPLE, false);
 
-    if (assets.useImGui) {
+    if (assets.useEditor) {
         m_editorFrameInit = std::make_shared<FrameInit>(m_window);
         m_editorFrame = std::make_unique<editor::EditorFrame>(m_window);
 
@@ -330,7 +330,7 @@ int SampleApp::onRender(const ki::RenderClock& clock)
         // => ensure "sane" start state for each loop
         state.setClearColor(BLACK_COLOR);
 
-        if (assets.useImGui) {
+        if (assets.useEditor) {
             m_editorFrame->bind(ctx);
             state.invalidateAll();
         }
@@ -340,7 +340,7 @@ int SampleApp::onRender(const ki::RenderClock& clock)
         scene->unbind(ctx);
     }
 
-    if (assets.useImGui) {
+    if (assets.useEditor) {
         m_editorFrame->draw(ctx, scene, m_dbg);
     }
 
@@ -363,14 +363,14 @@ int SampleApp::onRender(const ki::RenderClock& clock)
             }
         }
 
-        if (assets.useImGui) {
+        if (assets.useEditor) {
             m_editorFrame->processInputs(ctx, scene, input, inputState, m_lastInputState);
         }
 
         m_lastInputState = inputState;
     }
 
-    if (assets.useImGui) {
+    if (assets.useEditor) {
         m_editorFrame->render(ctx);
     }
 
