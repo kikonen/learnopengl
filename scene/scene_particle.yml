@@ -577,7 +577,6 @@ nodes:
   - xtype: grid
   - type: fps_counter
     id: fps_counter
-    #pos: [5.75, 5.25, 0.2]
     pos: [2, -2, -1]
   - type: player_fps
     pos: [0, 4, 0.0]

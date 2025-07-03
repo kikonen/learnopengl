@@ -517,10 +517,12 @@ void Scene::draw(const RenderContext& ctx)
     // NOTE KI skip main render if special update cycle
     //if (!wasCubeMap) // && renderCount <= 2)
     {
-        drawUi(ctx);
+        // NOTE KI shadow map render causes first draw here to produce garbage
+        // => was visible in UI fps_counter, which was first
         drawPlayer(ctx);
         drawMain(ctx);
         drawRear(ctx);
+        drawUi(ctx);
     }
     drawViewports(ctx);
 }

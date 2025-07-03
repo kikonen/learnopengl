@@ -14,6 +14,7 @@ types:
   - id: fps_counter
     prefab:
       path: prefab/util/prefab_fps_counter.yml
+    base_scale: 0.0025
     layer: ui
   - id: player
     type: origo
@@ -153,7 +154,6 @@ nodes:
     id: fps_counter
     #pos: [5.75, 5.25, 0.2]
     pos: [2, -2, -1]
-    scale: 0.0025
   - xtype: cube_map
     pos: [0.0, 0.0, 0.0]
   - type: planet_origo
