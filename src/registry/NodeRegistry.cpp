@@ -276,6 +276,19 @@ namespace {
 
         return nullptr;
     }
+
+    void removeHandle(
+        const pool::NodeHandle& nodeHandle,
+        std::vector<pool::NodeHandle>& handles)
+    {
+        const auto& it = std::remove_if(
+            handles.begin(),
+            handles.end(),
+            [&nodeHandle](auto& handle) {
+                return handle == nodeHandle;
+            });
+        handles.erase(it, handles.end());
+    }
 }
 
 void NodeRegistry::init() noexcept
@@ -953,6 +966,26 @@ void NodeRegistry::detachNode(
     }
 
     const auto* type = node->m_typeHandle.toType();
+
+    {
+        if (node->m_camera) {
+            removeHandle(nodeHandle, m_cameraNodes);
+        }
+
+        if (node->m_light) {
+            Light* light = node->m_light.get();
+
+            if (light->isDirectional()) {
+                removeHandle(nodeHandle, m_dirLightNodes);
+            }
+            else if (light->isPoint()) {
+                removeHandle(nodeHandle, m_pointLightNodes);
+            }
+            else if (light->isSpot()) {
+                removeHandle(nodeHandle, m_spotLightNodes);
+            }
+        }
+    }
 
     if (node->m_physicsObjectId)
     {

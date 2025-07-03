@@ -44,8 +44,15 @@ function cylon_armada()
   end
 end
 
+function delete_test()
+  local sid = util.sid("<dir_light>-2")
+  scene:delete_node(sid)
+end
+
 -- sample()
 -- cylon_armada()
 create_new_node("water_ball")
 create_new_node("pool")
 create_new_node("cylon_group")
+
+-- delete_test()
