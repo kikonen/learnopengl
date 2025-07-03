@@ -342,10 +342,13 @@ void Scene::updateRT(const UpdateContext& ctx)
     const auto& assets = ctx.m_assets;
     const auto& dbg = ctx.m_dbg;
 
-    NodeRegistry::get().prepareUpdateRT(ctx);
-
     // NOTE KI race condition with program prepare and event processing
+    // NOTE KI also rece with snapshot and event processing
+    // => doing programs before snapshot reduce scope
+    //    but DOES NOT remove it
     ProgramRegistry::get().updateRT(ctx);
+
+    NodeRegistry::get().prepareUpdateRT(ctx);
 
     m_registry->m_dispatcherView->dispatchEvents();
 
