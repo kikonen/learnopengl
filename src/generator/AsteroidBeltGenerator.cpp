@@ -1,6 +1,7 @@
 #include "AsteroidBeltGenerator.h"
 
 #include <algorithm>
+#include <execution>
 #include <fmt/format.h>
 
 #include <glm/gtc/quaternion.hpp>
@@ -62,11 +63,18 @@ void AsteroidBeltGenerator::updateWT(
     if (parentChanged || needUpdate) {
         //auto& parentMatrix = container.getParent()->getState().getModelMatrix();
         const auto& parentMatrix = container.getState().getModelMatrix();
-        for (int i = 0;  auto& transform : m_transforms) {
-            if (!parentChanged && (i++ % STRIDES) != m_strideIndex) continue;
+
+        auto fn = [this, &parentMatrix, parentChanged](auto& idx) {
+            if (!parentChanged && (idx++ % STRIDES) != m_strideIndex) return;
             //if (m_strideIndex != 1) continue;
-            transform.updateTransform(parentMatrix, m_volume);
-        }
+            m_transforms[idx].updateTransform(parentMatrix, m_volume);
+        };
+
+        std::for_each(
+            std::execution::par_unseq,
+            m_indeces.begin(),
+            m_indeces.end(),
+            fn);
     }
 
     m_strideIndex = (m_strideIndex + 1) % STRIDES;
@@ -96,8 +104,8 @@ void AsteroidBeltGenerator::createAsteroids(
     for (size_t i = 0; i < m_asteroidCount; i++)
     {
         m_physics.emplace_back();
-
-        auto& asteroid = m_transforms.emplace_back();
+        m_transforms.emplace_back();
+        m_indeces.push_back(static_cast<uint32_t>(i));
     }
 
     initAsteroids(ctx, container, m_transforms);
@@ -174,15 +182,13 @@ void AsteroidBeltGenerator::rotateAsteroids(
     const Node& container)
 {
     const float elapsed = ctx.m_clock.elapsedSecs;
-    const size_t count = m_transforms.size();
 
-    for (size_t i = 0; i < count; i++)
-    {
-        if ((i % STRIDES) != m_strideIndex) continue;
-        //if (m_strideIndex != 1) continue;
+    auto fn = [this, elapsed](auto& idx) {
+        if ((idx % STRIDES) != m_strideIndex) return;
+        //if (m_strideIndex != 1) return;
 
-        auto& asteroid = m_transforms[i];
-        auto& physics = m_physics[i];
+        auto& asteroid = m_transforms[idx];
+        auto& physics = m_physics[idx];
 
         {
             float angle = physics.m_velocity * elapsed;
@@ -195,5 +201,11 @@ void AsteroidBeltGenerator::rotateAsteroids(
             auto rot = util::axisRadiansToQuat(physics.m_axis, physics.m_angularRotation * elapsed);
             asteroid.adjustRotation(rot);
         }
-    }
+    };
+
+    std::for_each(
+        std::execution::par_unseq,
+        m_indeces.begin(),
+        m_indeces.end(),
+        fn);
 }
