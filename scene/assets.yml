@@ -48,10 +48,10 @@ assets:
   placeholder_texture_always: false
   placeholder_texture: textures/tiles_1024_color.png
 
-  use_imgui: true
-  #imgui_demo: false
-  imgui_font_size: 18
-  imgui_font_path: fonts/Vera.ttf
+  use_editor: true
+  editor_font_size: 18
+  editor_font_path: fonts/Vera.ttf
+  #editor_imgui_demo: false
 
   use_script: true
 
