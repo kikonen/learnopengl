@@ -1,8 +1,6 @@
 #pragma once
 
-#include <glm/glm.hpp>
-
-#include "ki/size.h"
+#include "editor/tool/ToolState.h"
 
 #include "pool/NodeHandle.h"
 
@@ -17,7 +15,7 @@ namespace mesh {
 }
 
 namespace editor {
-    struct NodeEditState {
+    struct NodeEditToolState : public ToolState {
         pool::NodeHandle m_selectedNode;
 
         mesh::Mesh* m_selectedMesh{ nullptr };

@@ -1,8 +1,8 @@
 #pragma once
 
-#include "Tool.h"
+#include "editor/tool/Tool.h"
 
-#include "NodeEditState.h"
+#include "NodeEditToolState.h"
 
 namespace editor
 {
@@ -14,6 +14,7 @@ namespace editor
 
         void draw(
             const RenderContext& ctx,
+            Scene* scene,
             render::DebugContext& dbg) override;
 
         void processInputs(
@@ -60,6 +61,6 @@ namespace editor
             render::DebugContext& dbg);
 
     private:
-        NodeEditState m_state;
+        NodeEditToolState m_state;
     };
 }

@@ -15,17 +15,19 @@ namespace render {
     class NodeDraw;
 }
 
+namespace editor {
+    class EditorFrame;
+    class ViewportTool;
+}
+
 class Node;
 class Viewport;
 class WaterMapRenderer;
 
-namespace editor {
-    class EditorFrame;
-}
-
 class MirrorMapRenderer final : public Renderer
 {
     friend class editor::EditorFrame;
+    friend class editor::ViewportTool;
 
 public:
     MirrorMapRenderer(

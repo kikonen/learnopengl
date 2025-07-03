@@ -8,7 +8,13 @@
 
 
 namespace editor {
+    class StatusTool;
+    class CameraTool;
     class NodeEditTool;
+    class ViewportTool;
+    class DebugTool;
+    class OptionsTool;
+
     class ConsoleFrame;
 
     class EditorFrame : public Frame
@@ -26,7 +32,10 @@ namespace editor {
             const InputState& inputState,
             const InputState& lastInputState) override;
 
-        void draw(const RenderContext& ctx) override;
+        void draw(
+            const RenderContext& ctx,
+            Scene* scene,
+            render::DebugContext& dbg) override;
 
         EditorState& getState()
         {
@@ -36,40 +45,19 @@ namespace editor {
     private:
         void renderMenuBar(
             const RenderContext& ctx,
-            render::DebugContext& dbg);
-
-        void renderStatus(
-            const RenderContext& ctx,
-            render::DebugContext& dbg);
-
-        void renderCameraDebug(
-            const RenderContext& ctx,
-            render::DebugContext& dbg);
-
-        void renderBufferDebug(
-            const RenderContext& ctx,
-            render::DebugContext& dbg);
-
-        void renderPhysicsDebug(
-            const RenderContext& ctx,
-            render::DebugContext& dbg);
-
-        void renderEffectDebug(
-            const RenderContext& ctx,
-            render::DebugContext& dbg);
-
-        void renderLayersDebug(
-            const RenderContext& ctx,
-            render::DebugContext& dbg);
-
-        void renderMiscDebug(
-            const RenderContext& ctx,
+            Scene* scene,
             render::DebugContext& dbg);
 
     private:
         EditorState m_state;
 
-        std::unique_ptr<ConsoleFrame> m_consoleFrame;
+        std::unique_ptr<StatusTool> m_statusTool;
+        std::unique_ptr<CameraTool> m_cameraTool;
         std::unique_ptr<NodeEditTool> m_nodeEditTool;
+        std::unique_ptr<ViewportTool> m_viewportTool;
+        std::unique_ptr<DebugTool> m_debugTool;
+        std::unique_ptr<OptionsTool> m_optionsTool;
+
+        std::unique_ptr<ConsoleFrame> m_consoleFrame;
     };
 }

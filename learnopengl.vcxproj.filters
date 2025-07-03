@@ -1212,10 +1212,25 @@
     <ClCompile Include="src\model\CompositeBuilder.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\editor\tool\NodeEditTool.cpp">
+    <ClCompile Include="src\editor\tool\node\NodeEditTool.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\editor\tool\Tool.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\editor\tool\viewport\ViewportTool.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\editor\tool\camera\CameraTool.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\editor\tool\options\OptionsTool.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\editor\tool\debug\DebugTool.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\editor\tool\status\StatusTool.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -2753,13 +2768,46 @@
     <ClInclude Include="src\ki\error.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\editor\tool\NodeEditTool.h">
+    <ClInclude Include="src\editor\tool\node\NodeEditTool.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\editor\tool\Tool.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\editor\tool\NodeEditState.h">
+    <ClInclude Include="src\editor\tool\node\NodeEditToolState.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\editor\tool\viewport\ViewportTool.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\editor\tool\viewport\ViewportToolState.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\editor\tool\camera\CameraTool.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\editor\tool\camera\CameraToolState.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\editor\tool\ToolState.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\editor\tool\options\OptionsTool.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\editor\tool\options\OptionsToolState.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\editor\tool\debug\DebugTool.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\editor\tool\debug\DebugToolState.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\editor\tool\status\StatusTool.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\editor\tool\status\StatusToolState.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

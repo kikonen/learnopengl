@@ -48,11 +48,18 @@ class ObjectIdRenderer;
 
 namespace editor {
     class EditorFrame;
+    class CameraTool;
+    class NodeEditTool;
+    class ViewportTool;
 }
 
 class Scene final
 {
     friend class editor::EditorFrame;
+    friend class editor::CameraTool;
+    friend class editor::NodeEditTool;
+    friend class editor::ViewportTool;
+
 public:
     Scene(
         std::shared_ptr<Registry> registry,

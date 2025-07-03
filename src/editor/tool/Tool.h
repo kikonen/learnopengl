@@ -20,8 +20,14 @@ namespace editor
         Tool(EditorFrame& editor);
         virtual ~Tool();
 
+        virtual void drawMenu(
+            const RenderContext& ctx,
+            Scene* scene,
+            render::DebugContext& dbg) {}
+
         virtual void draw(
             const RenderContext& ctx,
+            Scene* scene,
             render::DebugContext& dbg) {}
 
         virtual void processInputs(

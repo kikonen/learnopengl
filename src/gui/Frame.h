@@ -35,7 +35,10 @@ public:
         const InputState& inputState,
         const InputState& lastInputState) { }
 
-    virtual void draw(const RenderContext& ctx) = 0;
+    virtual void draw(
+        const RenderContext& ctx,
+        Scene* scene,
+        render::DebugContext& dbg) = 0;
 
     virtual void render(const RenderContext& ctx);
 

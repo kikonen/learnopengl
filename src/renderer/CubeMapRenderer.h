@@ -25,11 +25,13 @@ class MirrorMapRenderer;
 
 namespace editor {
     class EditorFrame;
+    class ViewportTool;
 }
 
 class CubeMapRenderer final : public Renderer
 {
     friend class editor::EditorFrame;
+    friend class editor::ViewportTool;
 
 public:
     CubeMapRenderer(bool useFrameStep)

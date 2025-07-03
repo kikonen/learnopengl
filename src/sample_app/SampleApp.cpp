@@ -341,7 +341,7 @@ int SampleApp::onRender(const ki::RenderClock& clock)
     }
 
     if (assets.useImGui) {
-        m_editorFrame->draw(ctx);
+        m_editorFrame->draw(ctx, scene, m_dbg);
     }
 
     {

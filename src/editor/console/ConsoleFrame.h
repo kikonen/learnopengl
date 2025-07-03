@@ -40,7 +40,10 @@ namespace editor
 
         void prepare(const PrepareContext& ctx) override;
 
-        void draw(const RenderContext& ctx) override;
+        void draw(
+            const RenderContext& ctx,
+            Scene* scene,
+            render::DebugContext& dbg) override;
 
         int textEditCallback(ImGuiInputTextCallbackData* data);
 

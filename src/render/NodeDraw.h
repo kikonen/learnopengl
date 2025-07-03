@@ -15,6 +15,7 @@ class Program;
 
 namespace editor {
     class EditorFrame;
+    class ViewportTool;
 }
 
 namespace mesh {
@@ -46,6 +47,7 @@ namespace render {
 
     class NodeDraw final {
         friend class editor::EditorFrame;
+        friend class editor::ViewportTool;
 
     public:
         NodeDraw();

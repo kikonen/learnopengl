@@ -71,10 +71,12 @@ namespace editor
             });
     }
 
-    void ConsoleFrame::draw(const RenderContext& ctx)
+    void ConsoleFrame::draw(
+        const RenderContext& ctx,
+        Scene* scene,
+        render::DebugContext& dbg)
     {
         const auto& assets = ctx.m_assets;
-        auto& dbg = render::DebugContext::modify();
 
         //ImGuiIO& io = ImGui::GetIO();
         //io.ConfigFlags |= 0 |

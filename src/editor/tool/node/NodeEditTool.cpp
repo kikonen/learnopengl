@@ -68,6 +68,7 @@ namespace editor
 
     void NodeEditTool::draw(
         const RenderContext& ctx,
+        Scene* scene,
         render::DebugContext& dbg)
     {
         if (ImGui::CollapsingHeader("Node"))
