@@ -1,5 +1,7 @@
 #pragma once
 
+#include <memory>
+
 #include <imgui.h>
 #include <imgui_impl_glfw.h>
 #include <imgui_impl_opengl3.h>
@@ -9,6 +11,10 @@
 class RenderContext;
 struct PrepareContext;
 
+class Scene;
+class Input;
+struct InputState;
+
 namespace render {
     struct DebugContext;
 }
@@ -16,14 +22,27 @@ namespace render {
 class Frame
 {
 public:
-    Frame(Window& window);
+    Frame(std::shared_ptr<Window> window);
     virtual ~Frame();
 
     virtual void prepare(const PrepareContext& ctx);
     virtual void bind(const RenderContext& ctx);
+
+    virtual void processInputs(
+        const RenderContext& ctx,
+        Scene* scene,
+        const Input& input,
+        const InputState& inputState,
+        const InputState& lastInputState) { }
+
     virtual void draw(const RenderContext& ctx) = 0;
 
     virtual void render(const RenderContext& ctx);
+
+    Window& getWindow()
+    {
+        return *m_window;
+    }
 
 protected:
     void trackImGuiState(
@@ -32,6 +51,6 @@ protected:
 protected:
     bool m_prepared = false;
 
-    Window& m_window;
+    std::shared_ptr<Window> m_window;
 };
 

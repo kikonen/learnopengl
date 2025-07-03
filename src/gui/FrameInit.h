@@ -1,5 +1,7 @@
 #pragma once
 
+#include <memory>
+
 #include "Window.h"
 
 struct PrepareContext;
@@ -7,13 +9,13 @@ struct PrepareContext;
 class FrameInit
 {
 public:
-    FrameInit(Window& window);
+    FrameInit(std::shared_ptr<Window> window);
     ~FrameInit();
 
     void prepare(const PrepareContext& ctx);
 
 private:
-    Window& m_window;
+    std::shared_ptr<Window> m_window;
 
     float m_fontSize;
     std::string m_fontPath;

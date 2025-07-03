@@ -309,6 +309,8 @@
     <ClCompile Include="src\editor\console\ConsoleExample.cpp" />
     <ClCompile Include="src\editor\console\ConsoleState.cpp" />
     <ClCompile Include="src\editor\console\Executor.cpp" />
+    <ClCompile Include="src\editor\tool\NodeEditTool.cpp" />
+    <ClCompile Include="src\editor\tool\Tool.cpp" />
     <ClCompile Include="src\engine\SystemInit.cpp" />
     <ClCompile Include="src\event\actions.cpp" />
     <ClCompile Include="src\loader\CompositeLoader.cpp" />
@@ -714,6 +716,9 @@
     <ClInclude Include="src\editor\console\ConsoleState.h" />
     <ClInclude Include="src\editor\console\Executor.h" />
     <ClInclude Include="src\editor\console\HistoryItem.h" />
+    <ClInclude Include="src\editor\tool\NodeEditState.h" />
+    <ClInclude Include="src\editor\tool\NodeEditTool.h" />
+    <ClInclude Include="src\editor\tool\Tool.h" />
     <ClInclude Include="src\engine\SystemInit.h" />
     <ClInclude Include="src\event\actions.h" />
     <ClInclude Include="src\generator\GeneratorMode.h" />

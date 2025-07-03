@@ -218,13 +218,13 @@ int SampleApp::onSetup()
     //state.setEnabled(GL_MULTISAMPLE, false);
 
     if (assets.useImGui) {
-        m_editorInit = std::make_unique<FrameInit>(*m_window);
-        m_editor = std::make_unique<editor::EditorFrame>(*m_window);
+        m_editorFrameInit = std::make_shared<FrameInit>(m_window);
+        m_editorFrame = std::make_unique<editor::EditorFrame>(m_window);
 
         PrepareContext ctx{ m_registry.get()};
 
-        m_editorInit->prepare(ctx);
-        m_editor->prepare(ctx);
+        m_editorFrameInit->prepare(ctx);
+        m_editorFrame->prepare(ctx);
     }
 
     return 0;
@@ -237,7 +237,7 @@ int SampleApp::onUpdate(const ki::RenderClock& clock) {
     {
         UpdateContext ctx(
             clock,
-            m_currentScene->m_registry.get());
+            scene->m_registry.get());
 
         scene->updateRT(ctx);
     }
@@ -258,7 +258,7 @@ int SampleApp::onPost(const ki::RenderClock& clock) {
     {
         UpdateContext ctx(
             clock,
-            m_currentScene->m_registry.get());
+            scene->m_registry.get());
 
         scene->postRT(ctx);
     }
@@ -284,7 +284,7 @@ int SampleApp::onRender(const ki::RenderClock& clock)
     {
         UpdateViewContext ctx(
             clock,
-            m_currentScene->m_registry.get(),
+            scene->m_registry.get(),
             size.x,
             size.y,
             &m_dbg);
@@ -296,11 +296,11 @@ int SampleApp::onRender(const ki::RenderClock& clock)
         "TOP",
         nullptr,
         clock,
-        m_currentScene->m_registry.get(),
-        m_currentScene->getCollection(),
-        m_currentScene->m_renderData.get(),
-        //m_currentScene->m_nodeDraw.get(),
-        m_currentScene->m_batch.get(),
+        scene->m_registry.get(),
+        scene->getCollection(),
+        scene->m_renderData.get(),
+        //scene->m_nodeDraw.get(),
+        scene->m_batch.get(),
         &cameraNode->m_camera->getCamera(),
         assets.nearPlane,
         assets.farPlane,
@@ -331,7 +331,7 @@ int SampleApp::onRender(const ki::RenderClock& clock)
         state.setClearColor(BLACK_COLOR);
 
         if (assets.useImGui) {
-            m_editor->bind(ctx);
+            m_editorFrame->bind(ctx);
             state.invalidateAll();
         }
 
@@ -340,46 +340,38 @@ int SampleApp::onRender(const ki::RenderClock& clock)
         scene->unbind(ctx);
     }
 
+    if (assets.useImGui) {
+        m_editorFrame->draw(ctx);
+    }
+
     {
-        const auto* input = window->m_input.get();
-        InputState state{
-            input->isModifierDown(Modifier::CONTROL),
-            input->isModifierDown(Modifier::SHIFT),
-            input->isModifierDown(Modifier::ALT),
+        const auto& input = *window->m_input;
+        InputState inputState{
+            input.isModifierDown(Modifier::CONTROL),
+            input.isModifierDown(Modifier::SHIFT),
+            input.isModifierDown(Modifier::ALT),
             glfwGetMouseButton(window->m_glfwWindow, GLFW_MOUSE_BUTTON_LEFT) != 0,
             glfwGetMouseButton(window->m_glfwWindow, GLFW_MOUSE_BUTTON_RIGHT) != 0,
         };
 
-
-        if (state.mouseLeft != m_lastInputState.mouseLeft &&
-            state.mouseLeft == GLFW_PRESS &&
-            input->allowMouse())
+        if (inputState.mouseRight == GLFW_PRESS &&
+            input.allowMouse())
         {
-            if (state.ctrl)
+            if (inputState.ctrl)
             {
-                selectNode(ctx, scene, state, m_lastInputState);
-            }
-            //else if (state.shift)
-            //{
-            //    shoot(ctx, scene, state, m_lastInputState);
-            //}
-        }
-
-        if (state.mouseRight == GLFW_PRESS &&
-            input->allowMouse())
-        {
-            if (state.ctrl)
-            {
-                shoot(ctx, scene, state, m_lastInputState);
+                shoot(ctx, scene, input, inputState, m_lastInputState);
             }
         }
 
-        m_lastInputState = state;
+        if (assets.useImGui) {
+            m_editorFrame->processInputs(ctx, scene, input, inputState, m_lastInputState);
+        }
+
+        m_lastInputState = inputState;
     }
 
     if (assets.useImGui) {
-        m_editor->draw(ctx);
-        m_editor->render(ctx);
+        m_editorFrame->render(ctx);
     }
 
     frustumDebug(ctx, clock);
@@ -518,10 +510,11 @@ void SampleApp::onDestroy()
 void SampleApp::raycastPlayer(
     const RenderContext& ctx,
     Scene* scene,
+    const Input& input,
     const InputState& inputState,
     const InputState& lastInputState)
 {
-    auto* player = m_currentScene->getActiveNode();
+    auto* player = scene->getActiveNode();
     if (!player) return;
 
     {
@@ -548,7 +541,7 @@ void SampleApp::raycastPlayer(
     }
 
     {
-        glm::vec2 screenPos{ m_window->m_input->mouseX, m_window->m_input->mouseY };
+        glm::vec2 screenPos{ input.mouseX, input.mouseY };
 
         const auto startPos = ctx.unproject(screenPos, .01f);
         const auto endPos = ctx.unproject(screenPos, .8f);
@@ -635,16 +628,17 @@ void SampleApp::raycastPlayer(
 void SampleApp::shoot(
     const RenderContext& ctx,
     Scene* scene,
+    const Input& input,
     const InputState& inputState,
     const InputState& lastInputState)
 {
-    auto* player = m_currentScene->getActiveNode();
+    auto* player = scene->getActiveNode();
     if (!player) return;
 
     {
         const auto& dbg = render::DebugContext::get();
 
-        glm::vec2 screenPos{ m_window->m_input->mouseX, m_window->m_input->mouseY };
+        glm::vec2 screenPos{ input.mouseX, input.mouseY };
 
         const auto startPos = ctx.unproject(screenPos, .01f);
         const auto endPos = ctx.unproject(screenPos, .8f);
@@ -719,96 +713,6 @@ void SampleApp::shootCallback(
             }
         }
     }
-}
-
-void SampleApp::selectNode(
-    const RenderContext& ctx,
-    Scene* scene,
-    const InputState& inputState,
-    const InputState& lastInputState)
-{
-    const auto& assets = ctx.m_assets;
-    auto& nodeRegistry = *ctx.m_registry->m_nodeRegistry;
-    auto& selectionRegistry = *ctx.m_registry->m_selectionRegistry;
-    auto& commandEngine = script::CommandEngine::get();
-
-    auto& dbg = render::DebugContext::modify();
-
-    const bool selectMode = inputState.ctrl;
-
-    ki::node_id nodeId = scene->getObjectID(ctx, m_window->m_input->mouseX, m_window->m_input->mouseY);
-    auto* node = pool::NodeHandle::toNode(nodeId);
-
-    if (selectMode) {
-        // deselect
-        if (node) {
-            const auto& handle = node->toHandle();
-
-            if (selectionRegistry.isSelected(handle)) {
-                commandEngine.addCommand(
-                    0,
-                    script::SelectNode{
-                        handle,
-                        false,
-                        false
-                    });
-
-                commandEngine.addCommand(
-                    0,
-                    script::AudioPause{
-                        handle,
-                        SID("select")
-                    });
-
-                m_editor->getState().m_selectedNode = 0;
-                return;
-            }
-            else {
-                commandEngine.addCommand(
-                    0,
-                    script::SelectNode{
-                        handle,
-                        true,
-                        inputState.shift
-                    });
-
-                commandEngine.addCommand(
-                    0,
-                    script::AudioPlay{
-                        handle,
-                        SID("select"),
-                        false
-                    });
-
-                m_editor->getState().m_selectedNode = handle;
-            }
-        }
-        else {
-            selectionRegistry.clearSelection();
-            m_editor->getState().m_selectedNode = 0;
-        }
-    }
-
-    //else if (playerMode) {
-    //    if (node && inputState.ctrl) {
-    //        auto exists = ControllerRegistry::get().hasController(node);
-    //        if (exists) {
-    //            event::Event evt { event::Type::node_activate };
-    //            evt.body.node.target = node->getId();
-    //            ctx.m_registry->m_dispatcherWorker->send(evt);
-    //        }
-
-    //        node = nullptr;
-    //    }
-    //}
-    //else if (cameraMode) {
-    //    // NOTE KI null == default camera
-    //    event::Event evt { event::Type::camera_activate };
-    //    evt.body.node.target = node->getId();
-    //    ctx.m_registry->m_dispatcherWorker->send(evt);
-
-    //    node = nullptr;
-    //}
 }
 
 Assets SampleApp::loadAssets()

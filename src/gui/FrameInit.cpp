@@ -11,7 +11,7 @@
 
 #include "engine/Engine.h"
 
-FrameInit::FrameInit(Window& window)
+FrameInit::FrameInit(std::shared_ptr<Window> window)
     : m_window(window),
     m_fontSize{ 18 },
     m_fontPath{ "fonts/Vera.ttf" }
@@ -30,7 +30,7 @@ FrameInit::FrameInit(Window& window)
         io.ConfigDebugHighlightIdConflicts = true;
     }
     // Setup Platform/Renderer bindings
-    ImGui_ImplGlfw_InitForOpenGL(window.m_glfwWindow, true);
+    ImGui_ImplGlfw_InitForOpenGL(m_window->m_glfwWindow, true);
     ImGui_ImplOpenGL3_Init(assets.glsl_version_str.c_str());
     // Setup Dear ImGui style
     ImGui::StyleColorsClassic();

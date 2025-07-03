@@ -2,7 +2,7 @@
 
 #include "render/RenderContext.h"
 
-Frame::Frame(Window& window)
+Frame::Frame(std::shared_ptr<Window> window)
     : m_window(window)
 {
 }
@@ -35,12 +35,14 @@ void Frame::render(const RenderContext& ctx)
 void Frame::trackImGuiState(
     render::DebugContext& dbg)
 {
-    m_window.m_input->imGuiHasKeyboard =
+    auto& input = *m_window->m_input;
+
+    input.imGuiHasKeyboard =
         ImGui::IsAnyItemActive() ||
         ImGui::IsAnyItemFocused() ||
         ImGui::IsPopupOpen(nullptr, ImGuiPopupFlags_AnyPopup);
 
-    m_window.m_input->imGuiHasMouse =
+    input.imGuiHasMouse =
         ImGui::IsWindowHovered(ImGuiHoveredFlags_AnyWindow) ||
         ImGui::IsAnyItemHovered() ||
         ImGui::IsPopupOpen(nullptr, ImGuiPopupFlags_AnyPopup);

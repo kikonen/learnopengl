@@ -1212,6 +1212,12 @@
     <ClCompile Include="src\model\CompositeBuilder.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\editor\tool\NodeEditTool.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\editor\tool\Tool.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h">
@@ -2745,6 +2751,15 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\ki\error.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\editor\tool\NodeEditTool.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\editor\tool\Tool.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\editor\tool\NodeEditState.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

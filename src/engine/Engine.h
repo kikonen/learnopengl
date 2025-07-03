@@ -77,7 +77,7 @@ public:
     std::shared_ptr<ParticleUpdater> m_particleUpdater;
     std::shared_ptr<AnimationUpdater> m_animationUpdater;
 
-    std::unique_ptr<Window> m_window;
+    std::shared_ptr<Window> m_window;
 
     render::DebugContext& m_dbg;
 

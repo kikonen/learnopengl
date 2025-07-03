@@ -51,12 +51,14 @@ private:
     void raycastPlayer(
         const RenderContext& ctx,
         Scene* scene,
+        const Input& input,
         const InputState& inputState,
         const InputState& lastInputState);
 
     void shoot(
         const RenderContext& ctx,
         Scene* scene,
+        const Input& input,
         const InputState& inputState,
         const InputState& lastInputState);
 
@@ -64,18 +66,12 @@ private:
         const physics::RayHit& hit
     );
 
-    void selectNode(
-        const RenderContext& ctx,
-        Scene* scene,
-        const InputState& inputState,
-        const InputState& lastInputState);
-
     Assets loadAssets();
     std::shared_ptr<Scene> loadScene();
 
 private:
-    std::unique_ptr<editor::EditorFrame> m_editor;
-    std::unique_ptr<FrameInit> m_editorInit;
+    std::shared_ptr<FrameInit> m_editorFrameInit;
+    std::shared_ptr<editor::EditorFrame> m_editorFrame;
 
     std::vector<std::unique_ptr<loader::SceneLoader>> m_loaders;
     std::unique_ptr<TestSceneSetup> m_testSetup;

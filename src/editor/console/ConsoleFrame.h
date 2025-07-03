@@ -35,7 +35,7 @@ namespace editor
 
     class ConsoleFrame : public Frame {
     public:
-        ConsoleFrame(Window& window);
+        ConsoleFrame(std::shared_ptr<Window> window);
         ~ConsoleFrame();
 
         void prepare(const PrepareContext& ctx) override;

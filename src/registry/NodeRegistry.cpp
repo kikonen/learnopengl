@@ -705,6 +705,13 @@ void NodeRegistry::attachListeners()
         });
 
     dispatcher->addListener(
+        event::Type::node_remove,
+        [this](const event::Event& e) {
+            detachNode(
+                pool::NodeHandle::toHandle(e.body.node.target));
+        });
+
+    dispatcher->addListener(
         event::Type::node_activate,
         [this](const event::Event& e) {
             setActiveNode(pool::NodeHandle::toHandle(e.body.node.target));
