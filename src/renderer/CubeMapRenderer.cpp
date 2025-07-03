@@ -259,7 +259,7 @@ bool CubeMapRenderer::render(
 
         bindTexture(localCtx.m_state);
 
-        localCtx.copyShadowFrom(parentCtx);
+        localCtx.copyShadowMatrixFrom(parentCtx);
 
         localCtx.updateUBOs();
 

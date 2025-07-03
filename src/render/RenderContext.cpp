@@ -146,6 +146,7 @@ RenderContext::RenderContext(
         m_forceSolid = m_parent->m_forceSolid;
         m_forceLineMode = m_parent->m_forceLineMode;
 
+        m_allowLineMode = m_parent->m_allowLineMode;
         m_allowDrawDebug = m_parent->m_allowDrawDebug;
     }
 
@@ -198,6 +199,10 @@ void RenderContext::prepareUBOs()
                 std::end(planes),
                 std::begin(m_matricesUBO.u_frustumPlanes));
         }
+
+        if (m_parent) {
+            copyShadowMatrixFrom(*m_parent);
+        }
     }
 
     m_dataUBO = {
@@ -235,7 +240,7 @@ void RenderContext::prepareUBOs()
         assets.environmentMapEnabled,
 
         dbg->m_shadowVisual,
-        dbg->m_forceLineMode,
+        m_allowLineMode && dbg->m_forceLineMode,
 
         dbg->m_fogStart,
         dbg->m_fogEnd,
@@ -362,7 +367,7 @@ void RenderContext::validateRender(std::string_view label) const
     //}
 }
 
-void RenderContext::copyShadowFrom(const RenderContext& b)
+void RenderContext::copyShadowMatrixFrom(const RenderContext& b)
 {
     std::copy(
         std::begin(b.m_matricesUBO.u_shadow),

@@ -473,7 +473,7 @@ namespace render {
         backend::gl::DrawIndirectCommand indirect{};
 
         const bool forceSolid = ctx.m_forceSolid;
-        const bool forceLineMode = ctx.m_forceLineMode;
+        const bool forceLineMode = ctx.m_forceLineMode && ctx.m_allowLineMode;
 
         for (const auto& multiDraw : m_pending) {
             if (multiDraw.empty()) continue;

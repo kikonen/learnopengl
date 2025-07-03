@@ -304,7 +304,7 @@ bool MirrorMapRenderer::render(
         localCtx.m_useEmission = false;
         localCtx.m_useBloom = false;
 
-        localCtx.copyShadowFrom(parentCtx);
+        localCtx.copyShadowMatrixFrom(parentCtx);
 
         //ClipPlaneUBO& clip = localCtx.m_clipPlanes.clipping[0];
         ////clip.enabled = true;

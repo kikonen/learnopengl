@@ -566,9 +566,10 @@ void Scene::drawUi(const RenderContext& parentCtx)
     localCtx.m_useEmission = false;
     localCtx.m_useBloom = false;
     localCtx.m_forceLineMode = false;
+    localCtx.m_allowLineMode = false;
     //localCtx.m_useScreenspaceEffects = false;
 
-    localCtx.copyShadowFrom(parentCtx);
+    localCtx.copyShadowMatrixFrom(parentCtx);
 
     localCtx.prepareUBOs();
     localCtx.updateUBOs();
@@ -600,7 +601,7 @@ void Scene::drawPlayer(const RenderContext& parentCtx)
     localCtx.m_useBloom = false;
     //localCtx.m_useScreenspaceEffects = false;
 
-    localCtx.copyShadowFrom(parentCtx);
+    localCtx.copyShadowMatrixFrom(parentCtx);
 
     drawScene(localCtx, m_playerRenderer.get());
 }
@@ -618,7 +619,7 @@ void Scene::drawMain(const RenderContext& parentCtx)
         m_mainRenderer->m_buffer->m_spec.height);
 
     localCtx.m_layer = layer->m_index;
-    localCtx.copyShadowFrom(parentCtx);
+    localCtx.copyShadowMatrixFrom(parentCtx);
 
     localCtx.m_allowDrawDebug = true;
     drawScene(localCtx, m_mainRenderer.get());
@@ -655,7 +656,7 @@ void Scene::drawRear(const RenderContext& parentCtx)
 
     localCtx.m_layer = 0; // LayerInfo::LAYER_MAIN;
 
-    localCtx.copyShadowFrom(parentCtx);
+    localCtx.copyShadowMatrixFrom(parentCtx);
 
     localCtx.updateUBOs();
 

@@ -233,7 +233,7 @@ void ShadowCascade::render(
     localCtx.m_shadow = true;
     localCtx.m_forceSolid = true;
 
-    localCtx.copyShadowFrom(parentCtx);
+    //localCtx.copyShadowMatrixFrom(parentCtx);
     localCtx.updateMatricesUBO();
     localCtx.updateDataUBO();
 

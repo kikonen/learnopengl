@@ -93,7 +93,7 @@ public:
     // Ensure context is in sane state for start rendering
     void validateRender(std::string_view label) const;
 
-    void copyShadowFrom(const RenderContext& b);
+    void copyShadowMatrixFrom(const RenderContext& b);
 
     bool setForceSolid(bool flag) const {
         bool old = m_forceSolid;
@@ -182,5 +182,6 @@ public:
     mutable bool m_forceSolid : 1{ false };
     mutable bool m_forceLineMode : 1{ false };
 
+    mutable bool m_allowLineMode : 1{ true };
     mutable bool m_allowDrawDebug : 1{ false };
 };
