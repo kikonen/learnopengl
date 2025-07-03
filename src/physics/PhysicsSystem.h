@@ -63,6 +63,9 @@ namespace physics {
             bool update,
             physics::Object object);
 
+        void unregisterObject(
+            physics::object_id objectId);
+
         const physics::Object* getObject(physics::object_id id) const;
         const pool::NodeHandle& getNodeHandle(physics::object_id id) const;
 
@@ -150,6 +153,10 @@ namespace physics {
 
         // INDEX = pending index
         std::vector<physics::object_id> m_pending;
+
+        // Free deleted slots
+        // => reuse slots after RT is synced with WT
+        std::vector<physics::object_id> m_freeIndeces;
 
         // INDEX = objectId
         std::vector<pool::NodeHandle> m_nodeHandles;

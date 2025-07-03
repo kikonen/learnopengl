@@ -78,9 +78,18 @@ public:
         std::vector<Snapshot>& src,
         std::vector<Snapshot>& dst);
 
+    std::vector<Node*>& getCachedNodesWT();
+
+    const std::vector<Node*> getCachedNodesRT() const noexcept
+    {
+        return m_cachedNodesRT;
+    }
+
     void attachListeners();
 
     void handleNodeAdded(Node* node);
+
+    void notifyPendingChanges();
 
     // @return root if root is prepared for RT
     Node* getRootRT() const noexcept {
@@ -93,13 +102,16 @@ public:
     }
 
     void attachNode(
-        const ki::node_id nodeId,
+        const pool::NodeHandle nodeHandle,
         ki::node_id parentId,
         const CreateState& state) noexcept;
 
+    void detachNode(
+        const pool::NodeHandle nodeHandle) noexcept;
+
     void changeParent(
-        const ki::node_id id,
-        const ki::node_id parentId) noexcept;
+        const pool::NodeHandle nodeHandle,
+        ki::node_id parentId) noexcept;
 
     inline Node* getActiveNode() const noexcept { return m_activeNode.toNode(); }
     inline Node* getActiveCameraNode() const noexcept { return m_activeCameraNode.toNode(); }
@@ -107,11 +119,6 @@ public:
     uint32_t getNodeCount() const noexcept
     {
         return static_cast<uint32_t>(m_handles.size());
-    }
-
-    const std::vector<Node*> getCachedNodesRT() const noexcept
-    {
-        return m_cachedNodesRT;
     }
 
     pool::NodeHandle getNextCameraNode(
@@ -197,25 +204,30 @@ public:
         return m_dirtyEntities;
     }
 
-    void cacheNodesWT();
-    void cacheNodesRT();
-
 private:
     void setActiveNode(pool::NodeHandle node);
     void setActiveCameraNode(pool::NodeHandle node);
 
     void bindNode(
-        const ki::node_id nodeId,
+        const pool::NodeHandle nodeHandle,
         const CreateState& state);
 
+    void unbindNode(
+        const pool::NodeHandle nodeHandle);
+
     bool bindParent(
-        const ki::node_id nodeId,
-        const ki::node_id parentId);
+        const pool::NodeHandle nodeHandle,
+        ki::node_id parentId);
+
+    bool unbindParent(
+        const pool::NodeHandle nodeHandle);
 
     void bindSkybox(
         pool::NodeHandle handle) noexcept;
 
-    void cacheNodes(std::vector<Node*>& cache);
+    void cacheNodes(
+        std::vector<Node*>& cache,
+        ki::level_id& cacheLevel);
 
     void updateBounds(
         const UpdateContext& ctx,
@@ -230,12 +242,22 @@ public:
     pool::NodeHandle m_skybox{};
 
 private:
-    ki::node_id m_rootId{ 0 };
+    ki::node_id m_rootId{};
+    pool::NodeHandle m_rootHandle{};
 
     pool::NodeHandle m_rootWT{};
     pool::NodeHandle m_rootRT{};
     uint32_t m_rootIndex{ 0 };
     bool m_rootPreparedRT{ false };
+
+    // Free deleted slots
+    // => reuse slots after RT is synced with WT
+    std::vector<uint32_t> m_freeIndeces;
+
+    // Delete node after RT is synced with WT
+    std::vector<pool::NodeHandle> m_pendingDeleted;
+
+    std::vector<pool::NodeHandle> m_pendingAdded;
 
     // Entries matched by index
     // INDEX = entityIndex
@@ -259,7 +281,8 @@ private:
     std::vector<Node*> m_cachedNodesRT;
 
     ki::level_id m_nodeLevel{ 0 };
-    ki::level_id m_cachedNodeLevel{ 0 };
+    ki::level_id m_cachedNodeLevelWT{ 0 };
+    ki::level_id m_cachedNodeLevelRT{ 0 };
 
     Registry* m_registry{ nullptr };
 

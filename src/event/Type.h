@@ -9,6 +9,10 @@ namespace event
 
         node_add,
         node_added,
+
+        node_remove,
+        node_removed,
+
         node_select,
         node_activate,
 

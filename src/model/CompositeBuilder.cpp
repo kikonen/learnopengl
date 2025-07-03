@@ -156,7 +156,7 @@ void CompositeBuilder::attach()
 
     for (auto* resolved : sorted) {
         m_nodeRegistry.attachNode(
-            resolved->handle.toId(),
+            resolved->handle,
             resolved->parentId,
             resolved->state);
     }

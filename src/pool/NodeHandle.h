@@ -61,7 +61,11 @@ namespace pool {
 
         bool present() const noexcept { return m_handleIndex > 0; }
         bool isNull() const noexcept { return m_handleIndex == 0;  }
-        operator int() const { return m_handleIndex; }
+
+        // NOTE KI more useful to default to ki::node_id
+        operator int() const {
+            return m_id;
+        }
 
         inline std::string str() const noexcept
         {

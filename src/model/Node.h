@@ -18,6 +18,8 @@
 #include "model/NodeType.h"
 #include "model/TypeFlags.h"
 
+#include "physics/size.h"
+
 #include "registry/NodeRegistry.h"
 
 namespace backend {
@@ -180,6 +182,8 @@ public:
     uint32_t m_entityIndex{ 0 };
 
     ki::node_id m_ignoredBy{ 0 };
+
+    physics::object_id m_physicsObjectId{ 0 };
 
     TypeFlags m_typeFlags;
     uint8_t m_layer{ 0 };

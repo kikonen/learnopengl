@@ -82,14 +82,6 @@ void SceneUpdater::prepare()
         [this](const event::Event& e) {
             auto* node = pool::NodeHandle::toNode(e.body.node.target);
             this->handleNodeAdded(node);
-
-            {
-                event::Event evt { event::Type::node_added };
-                evt.body.node = {
-                    .target = e.body.node.target,
-                };
-                m_registry->m_dispatcherView->send(evt);
-            }
         });
 
     if (assets.useScript)
@@ -187,6 +179,7 @@ void SceneUpdater::update(const UpdateContext& ctx)
     {
         KI_TIMER("node4   ");
         nodeRegistry.snapshotPending();
+        nodeRegistry.notifyPendingChanges();
     }
 
     if (physicsSystem.isEnabled()) {

@@ -321,6 +321,7 @@ namespace physics
 
         bool updatedPhysics = false;
         for (const auto id : m_updateObjects) {
+            if (!id) continue;
             auto& obj = m_objects[id];
             updatedPhysics |= obj.updateToPhysics(m_entityIndeces[id], m_matrixLevels[id], nodeRegistry);
         }
@@ -423,17 +424,47 @@ namespace physics
 
         auto id = static_cast<physics::object_id>(m_objects.size());
 
+        m_objects.push_back(std::move(src));
+
         m_nodeHandles.push_back(nodeHandle);
         m_entityIndeces.push_back(entityIndex);
-        m_objects.push_back(std::move(src));
-        m_pending.push_back(id);
         m_matrixLevels.push_back(0);
-        if (update) {
-            m_updateObjects.push_back(id);
-        }
+        m_updateObjects.push_back(update ? id : 0);
+
+        m_pending.push_back(id);
 
         return id;
     }
+
+     void PhysicsSystem::unregisterObject(
+         physics::object_id objectId)
+    {
+         if (objectId < 1 || objectId > m_objects.size()) return;
+
+         const auto objectIndex = objectId;
+
+         // delete physics objects via overriding by empty data
+         m_objects[objectIndex] = std::move(physics::Object{});
+
+         m_nodeHandles[objectIndex] = pool::NodeHandle::NULL_HANDLE;
+         m_entityIndeces[objectIndex] = 0;
+         m_matrixLevels[objectIndex] = 0;
+         m_updateObjects[objectIndex] = 0;
+
+         m_freeIndeces.push_back(objectIndex);
+
+         // Discard possible stale references
+         {
+             // https://stackoverflow.com/questions/22729906/stdremove-if-not-working-properly
+             const auto& it = std::remove_if(
+                 m_pending.begin(),
+                 m_pending.end(),
+                 [objectId](auto& id) {
+                     return id == objectId;
+                 });
+             m_pending.erase(it, m_pending.end());
+         }
+     }
 
     const Object* PhysicsSystem::getObject(physics::object_id id) const
     {

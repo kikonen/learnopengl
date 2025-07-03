@@ -89,4 +89,16 @@ namespace script::api
 
         return nodeId;
     }
+
+    bool SceneAPI::lua_delete_node(
+        ki::node_id nodeId)
+    {
+        auto handle = pool::NodeHandle::toHandle(nodeId);
+        if (!handle) return false;
+
+        auto& nodeRegistry = NodeRegistry::get();
+        nodeRegistry.detachNode(handle);
+
+        return true;
+    }
 }

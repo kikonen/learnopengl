@@ -81,6 +81,8 @@ namespace {
     constexpr int NULL_INDEX = 0;
     constexpr int ID_INDEX = 1;
 
+    constexpr int INITIAL_SIZE = 10000;
+
     const ki::program_id NULL_PROGRAM_ID = 0;
 
     const pool::NodeHandle NULL_HANDLE = pool::NodeHandle::NULL_HANDLE;
@@ -349,7 +351,8 @@ void NodeRegistry::clear()
     m_cachedNodesRT.clear();
 
     m_nodeLevel = 0;
-    m_cachedNodeLevel = 0;
+    m_cachedNodeLevelWT = 0;
+    m_cachedNodeLevelRT = 0;
 
     m_cameraNodes.clear();
 
@@ -359,6 +362,23 @@ void NodeRegistry::clear()
 
     m_activeNode.reset();
     m_activeCameraNode.reset();
+
+    {
+        m_handles.reserve(INITIAL_SIZE);
+        m_parentIndeces.reserve(INITIAL_SIZE);
+        m_states.reserve(INITIAL_SIZE);
+        m_snapshotsPending.reserve(INITIAL_SIZE);
+        m_snapshotsRT.reserve(INITIAL_SIZE);
+        m_entities.reserve(INITIAL_SIZE);
+        m_dirtyEntities.reserve(INITIAL_SIZE);
+
+        m_cachedNodesWT.reserve(INITIAL_SIZE);
+        m_cachedNodesRT.reserve(INITIAL_SIZE);
+
+        m_freeIndeces.reserve(INITIAL_SIZE);
+        m_pendingAdded.reserve(INITIAL_SIZE);
+        m_pendingDeleted.reserve(INITIAL_SIZE);
+    }
 
     // NOTE KI keep NULL and IDENTITY as separate since
     // logic *can* (and thus *will*) accidentally modify null state
@@ -399,10 +419,7 @@ void NodeRegistry::prepare(
 
 void NodeRegistry::updateWT(const UpdateContext& ctx)
 {
-    if (m_cachedNodeLevel != m_nodeLevel) {
-        cacheNodes(m_cachedNodesWT);
-        m_cachedNodeLevel = m_nodeLevel;
-    }
+    auto& cachedNodes = getCachedNodesWT();
 
     {
         auto& physicsSystem = physics::PhysicsSystem::get();
@@ -423,7 +440,7 @@ void NodeRegistry::updateWT(const UpdateContext& ctx)
         //std::lock_guard lock(m_lock);
         // NOTE KI nodes are in DAG order
         for (int i = m_rootIndex + 1; i < m_states.size(); i++) {
-            auto* node = m_cachedNodesWT[i];
+            auto* node = cachedNodes[i];
             if (!node) continue;
 
             auto& state = m_states[i];
@@ -452,8 +469,10 @@ void NodeRegistry::updateWT(const UpdateContext& ctx)
 
 void NodeRegistry::postUpdateWT(const UpdateContext& ctx)
 {
+    auto& cachedNodes = getCachedNodesWT();
+
     for (int i = m_rootIndex + 1; i < m_states.size(); i++) {
-        auto* node = m_cachedNodesWT[i];
+        auto* node = cachedNodes[i];
         if (!node) continue;
 
         auto& state = m_states[i];
@@ -546,6 +565,7 @@ void NodeRegistry::snapshotRT()
     std::lock_guard lock(m_snapshotLock);
 
     snapshot(m_snapshotsPending, m_snapshotsRT);
+    cacheNodes(m_cachedNodesRT, m_cachedNodeLevelRT);
 
     m_entities.resize(m_snapshotsRT.size());
     m_dirtyEntities.resize(m_snapshotsRT.size());
@@ -577,10 +597,15 @@ void NodeRegistry::snapshot(
     }
 }
 
+std::vector<Node*>& NodeRegistry::getCachedNodesWT()
+{
+    cacheNodes(m_cachedNodesWT, m_cachedNodeLevelWT);
+    return m_cachedNodesWT;
+}
+
 void NodeRegistry::prepareUpdateRT(const UpdateContext& ctx)
 {
     snapshotRT();
-    cacheNodesRT();
 }
 
 void NodeRegistry::updateRT(const UpdateContext& ctx)
@@ -650,19 +675,13 @@ std::pair<int, int> NodeRegistry::updateEntity(const UpdateContext& ctx)
     return { minDirty, maxDirty };
 }
 
-void NodeRegistry::cacheNodesWT()
+void NodeRegistry::cacheNodes(
+    std::vector<Node*>& cache,
+    ki::level_id& cacheLevel)
 {
-    cacheNodes(m_cachedNodesWT);
-}
+    if (cacheLevel == m_nodeLevel) return;
+    cacheLevel = m_nodeLevel;
 
-void NodeRegistry::cacheNodesRT()
-{
-    std::lock_guard lock(m_snapshotLock);
-    cacheNodes(m_cachedNodesRT);
-}
-
-void NodeRegistry::cacheNodes(std::vector<Node*>& cache)
-{
     cache.resize(m_handles.size());
     for (size_t i = 0; i < m_handles.size(); i++) {
         cache[i] = m_handles[i].toNode();
@@ -679,13 +698,9 @@ void NodeRegistry::attachListeners()
     dispatcher->addListener(
         event::Type::node_add,
         [this](const event::Event& e) {
-            auto handle = pool::NodeHandle::toHandle(e.body.node.target);
-            auto* node = handle.toNode();
-            if (!node) return;
-
             attachNode(
-                e.body.node.target,
-                e.body.node.parentId,
+                pool::NodeHandle::toHandle(e.body.node.target),
+                pool::NodeHandle::toHandle(e.body.node.parentId),
                 e.blob->body.state);
         });
 
@@ -709,9 +724,9 @@ void NodeRegistry::attachListeners()
             event::Type::node_added,
             [this](const event::Event& e) {
                 auto& data = e.body.node;
-                auto handle = pool::NodeHandle::toHandle(data.target);
+                auto nodeHandle = pool::NodeHandle::toHandle(data.target);
 
-                const auto* node = handle.toNode();
+                const auto* node = nodeHandle.toNode();
                 if (!node) return;
 
                 const auto* type = node->getType();
@@ -720,7 +735,7 @@ void NodeRegistry::attachListeners()
                 auto& scriptSystem = script::ScriptSystem::get();
 
                 for (const auto& scriptId : type->getScripts()) {
-                    if (nodeId == m_rootId) {
+                    if (nodeHandle == m_rootHandle) {
                         //scriptSystem.runGlobalScript(node, scriptId);
                     } else
                     {
@@ -781,12 +796,65 @@ void NodeRegistry::handleNodeAdded(Node* node)
     }
 }
 
+void NodeRegistry::notifyPendingChanges()
+{
+    // NOTE KI ensure related snapshots are visible in RT
+    // => otherwise IOOBE will trigger
+    //m_registry->m_pendingSnapshotRegistry->copyFrom(
+    //    m_registry->m_workerSnapshotRegistry,
+    //    node->m_snapshotIndex, 1);
+
+    for (auto& nodeHandle : m_pendingAdded) {
+        auto* node = nodeHandle.toNode();
+        if (!node) continue;
+
+        {
+            event::Event evt{ event::Type::node_added };
+            evt.body.node.target = nodeHandle;
+            m_registry->m_dispatcherWorker->send(evt);
+        }
+
+        // NOTE KI type must be prepared *before* node
+        {
+            event::Event evt{ event::Type::type_prepare_view };
+            evt.body.nodeType.target = node->m_typeHandle.toId();
+            m_registry->m_dispatcherView->send(evt);
+        }
+
+        {
+            event::Event evt{ event::Type::node_added };
+            evt.body.node.target = nodeHandle;
+            m_registry->m_dispatcherView->send(evt);
+        }
+
+        if (node->m_typeFlags.skybox)
+        {
+            event::Event evt{ event::Type::type_prepare_view };
+            evt.body.nodeType.target = node->m_typeHandle.toId();
+            m_registry->m_dispatcherView->send(evt);
+        }
+    }
+
+    m_pendingAdded.clear();
+}
+
 void NodeRegistry::attachNode(
-    const ki::node_id nodeId,
+    const pool::NodeHandle nodeHandle,
     ki::node_id parentId,
     const CreateState& state) noexcept
 {
-    auto* node = pool::NodeHandle::toNode(nodeId);
+    auto* node = nodeHandle.toNode();
+
+    if (!node) {
+        KI_WARN_OUT(fmt::format(
+            "NODE_REGISTRY: IGNORE: missing node - node={}, parent={}",
+            (int)nodeHandle, parentId));
+        return;
+    }
+
+    if (nodeHandle.toId() == m_rootId) {
+        m_rootHandle = nodeHandle;
+    }
 
     // NOTE KI special case allow 0 to refer to "ROOT"
     if (!parentId) {
@@ -794,18 +862,20 @@ void NodeRegistry::attachNode(
     }
 
     assert(node);
-    assert(parentId || nodeId == m_rootId);
+    assert(parentId || nodeHandle == m_rootHandle);
 
     // NOTE KI id != index
     //if (nodeId != m_rootId) {
     //    assert(parentId >= m_rootIndex);
     //}
 
-    bindNode(nodeId, state);
+    bindNode(nodeHandle, state);
 
     // NOTE KI ignore nodes with invalid parent
-    if (!bindParent(nodeId, parentId)) {
-        KI_WARN_OUT(fmt::format("IGNORE: MISSING parent - parentId={}, node={}", parentId, node->str()));
+    if (!bindParent(nodeHandle, parentId)) {
+        KI_WARN_OUT(fmt::format(
+            "IGNORE: MISSING parent - parentId={}, node={}",
+            parentId, node->str()));
         return;
     }
 
@@ -819,12 +889,18 @@ void NodeRegistry::attachNode(
         node->m_generator->isLightWeightPhysics()))
     {
         const auto& df = *type->m_physicsDefinition;
-        auto& physicsEngine = physics::PhysicsSystem::get();
-
         physics::Object obj;
-        obj.m_body = df.m_body;
-        obj.m_geom = df.m_geom;
-        physicsEngine.registerObject(node->m_handle, node->m_entityIndex, df.m_update, std::move(obj));
+        {
+            obj.m_body = df.m_body;
+            obj.m_geom = df.m_geom;
+        }
+
+        auto& physicsSystem = physics::PhysicsSystem::get();
+        node->m_physicsObjectId = physicsSystem.registerObject(
+            node->m_handle,
+            node->m_entityIndex,
+            df.m_update,
+            std::move(obj));
     }
 
     if (auto& sources = node->m_audioSources; sources) {
@@ -842,25 +918,59 @@ void NodeRegistry::attachNode(
     }
 
     if (node->m_typeFlags.skybox) {
-        return bindSkybox(node->toHandle());
+        bindSkybox(node->toHandle());
     }
+
+    m_pendingAdded.push_back(nodeHandle);
+}
+
+void NodeRegistry::detachNode(
+    const pool::NodeHandle nodeHandle) noexcept
+{
+    if (nodeHandle == m_rootHandle) return;
+
+    auto* node = nodeHandle.toNode();
+
+    if (!node) {
+        KI_WARN_OUT(fmt::format(
+            "NODE_REGISTRY: IGNORE: missing node - node={}",
+            (int)nodeHandle));
+        return;
+    }
+
+    if (!unbindParent(nodeHandle)) {
+        KI_WARN_OUT(fmt::format(
+            "ERROR: parent unbind failed - node={}",
+            node->str()));
+        return;
+    }
+
+    const auto* type = node->m_typeHandle.toType();
+
+    if (node->m_physicsObjectId)
+    {
+        auto& physicsSystem = physics::PhysicsSystem::get();
+        physicsSystem.unregisterObject(nodeHandle);
+    }
+
+    unbindNode(nodeHandle);
+
+    node->prepareWT({ m_registry }, m_states[node->m_entityIndex]);
 }
 
 void NodeRegistry::changeParent(
-    const ki::node_id nodeId,
-    const ki::node_id parentId) noexcept
+    const pool::NodeHandle nodeHandle,
+    ki::node_id parentId) noexcept
 {
-    bindParent(nodeId, parentId);
+    bindParent(nodeHandle, parentId);
 }
 
 void NodeRegistry::bindNode(
-    const ki::node_id nodeId,
+    const pool::NodeHandle nodeHandle,
     const CreateState& createState)
 {
-    Node* node = pool::NodeHandle::toNode(nodeId);
+    Node* node = nodeHandle.toNode();
     if (!node) return;
-
-    pool::NodeHandle handle = node->toHandle();
 
     KI_INFO(fmt::format("BIND_NODE: {}", node->str()));
 
@@ -899,52 +1009,79 @@ void NodeRegistry::bindNode(
 
         std::lock_guard lock(m_snapshotLock);
 
-        m_handles.push_back(handle);
+        m_handles.push_back(nodeHandle);
         m_parentIndeces.push_back(0);
         m_states.push_back(state);
-    }
 
-    {
         m_nodeLevel++;
 
-        if (nodeId == m_rootId) {
+        if (nodeHandle == m_rootHandle) {
             assert(!m_rootWT);
-            m_rootWT = handle;
+            m_rootWT = nodeHandle;
             m_rootIndex = node->m_entityIndex;
         }
-    }
-
-    // NOTE KI ensure related snapshots are visible in RT
-    // => otherwise IOOBE will trigger
-    //m_registry->m_pendingSnapshotRegistry->copyFrom(
-    //    m_registry->m_workerSnapshotRegistry,
-    //    node->m_snapshotIndex, 1);
-
-    // NOTE KI type must be prepared *before* node
-    {
-        event::Event evt { event::Type::type_prepare_view };
-        evt.body.nodeType.target = node->m_typeHandle.toId();
-        m_registry->m_dispatcherView->send(evt);
-    }
-
-    {
-        event::Event evt { event::Type::node_added };
-        evt.body.node.target = nodeId;
-        m_registry->m_dispatcherWorker->send(evt);
     }
 
     KI_INFO(fmt::format("ATTACH_NODE: node={}", node->str()));
 }
 
+void NodeRegistry::unbindNode(
+    const pool::NodeHandle nodeHandle)
+{
+    Node* node = nodeHandle.toNode();
+    if (!node) return;
+
+    KI_INFO(fmt::format("UNBIND_NODE: {}", node->str()));
+
+    // TODO KI controllers, etc.?!?
+    //{
+    //    const auto* type = node->getType();
+
+    //    node->m_camera = createCameraComponent(type);
+    //    node->m_light = createLight(type);
+    //    node->m_particleGenerator = createParticleGenerator(type);
+    //    node->m_generator = GeneratorDefinition::createGenerator(type);
+    //    node->m_audioSources = createAudioSources(type);
+    //    node->m_audioListener = createAudioListener(type);
+    //    node->m_camera = createCameraComponent(type);
+    //    if (node->m_typeFlags.text) {
+    //        node->m_generator = createTextGenerator(type);
+    //    }
+    //}
+
+    {
+        std::lock_guard lock(m_snapshotLock);
+
+        const auto entityIndex = node->m_entityIndex;
+
+        m_handles[entityIndex] = pool::NodeHandle::NULL_HANDLE;
+        m_parentIndeces[entityIndex] = 0;
+        m_states[entityIndex] = {};
+        m_snapshotsPending[entityIndex] = {};
+        m_snapshotsRT[entityIndex] = {};
+        m_entities[entityIndex] = {};
+        m_dirtyEntities[entityIndex] = false;
+        m_cachedNodesWT[entityIndex] = nullptr;
+        m_cachedNodesRT[entityIndex] = nullptr;
+
+        m_nodeLevel++;
+    }
+
+    m_freeIndeces.push_back(node->m_entityIndex);
+    m_pendingDeleted.push_back(nodeHandle);
+}
+
 bool NodeRegistry::bindParent(
-    const ki::node_id nodeId,
-    const ki::node_id parentId)
+    const pool::NodeHandle nodeHandle,
+    ki::node_id parentId)
 {
     // NOTE KI everything else, except root requires parent
-    if (nodeId == m_rootId) return true;
+    if (nodeHandle == m_rootHandle) return true;
 
-    auto* node = pool::NodeHandle::toNode(nodeId);
-    auto* parent = pool::NodeHandle::toNode(parentId);
+    auto parentHandle = pool::NodeHandle::toHandle(parentId);
+
+    auto* node = nodeHandle.toNode();
+    auto* parent = parentHandle.toNode();
 
     if (!node || !parent) return false;
 
@@ -953,7 +1090,29 @@ bool NodeRegistry::bindParent(
 
     m_parentIndeces[node->m_entityIndex] = parent->m_entityIndex;
 
-    KI_INFO(fmt::format("BIND_PARENT: parent={}, child={}", parentId, nodeId));
+    KI_INFO(fmt::format(
+        "BIND_PARENT: parent={}, child={}",
+        (int)parentHandle, (int)nodeHandle));
+
+    return true;
+}
+
+bool NodeRegistry::unbindParent(
+    const pool::NodeHandle nodeHandle)
+{
+    if (nodeHandle == m_rootHandle) return true;
+
+    auto* node = nodeHandle.toNode();
+    if (!node) return false;
+
+    auto parentIndex = m_parentIndeces[node->m_entityIndex];
+    auto parentHandle = m_handles[parentIndex];
+
+    m_parentIndeces[node->m_entityIndex] = 0;
+
+    KI_INFO(fmt::format(
+        "UNBIND_PARENT: parent={}, child={}",
+        (int)parentHandle, (int)nodeHandle));
 
     return true;
 }
@@ -1021,12 +1180,6 @@ void NodeRegistry::bindSkybox(
     node->prepareWT({ m_registry }, m_states[node->m_entityIndex]);
 
     m_skybox = handle;
-
-    {
-        event::Event evt { event::Type::type_prepare_view };
-        evt.body.nodeType.target = node->m_typeHandle.toId();
-        m_registry->m_dispatcherView->send(evt);
-    }
 }
 
 void NodeRegistry::updateBounds(
