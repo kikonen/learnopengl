@@ -309,6 +309,8 @@ types:
   - id: cobblestone_floor
     prefab:
       path: prefab/scenery/prefab_cobblestone_floor.yml
+    type_flags:
+      nav_physics: true
   - id: palm_tree_forest_generator
     prefab:
       path: prefab/scenery/prefab_palm_tree.yml
@@ -543,7 +545,7 @@ types:
     type_flags:
       pre_depth: true
       use_deferred: true
-      nav_mesh: true
+      nav_physics: true
     generator:
       type: terrain
       mode: grid

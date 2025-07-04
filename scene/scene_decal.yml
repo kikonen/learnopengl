@@ -359,7 +359,7 @@ types:
       intensity: 200
 
 nodes:
-  - xtype: fps_counter
+  - type: fps_counter
     id: fps_counter
     pos: [2, -2, -1]
   - id: player
