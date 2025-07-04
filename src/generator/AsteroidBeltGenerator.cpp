@@ -64,16 +64,16 @@ void AsteroidBeltGenerator::updateWT(
         //auto& parentMatrix = container.getParent()->getState().getModelMatrix();
         const auto& parentMatrix = container.getState().getModelMatrix();
 
-        auto fn = [this, &parentMatrix, parentChanged](auto& idx) {
-            if (!parentChanged && (idx++ % STRIDES) != m_strideIndex) return;
+        auto fn = [this, &parentMatrix, parentChanged](const auto idx) {
+            if (!parentChanged && (idx % STRIDES) != m_strideIndex) return;
             //if (m_strideIndex != 1) continue;
             m_transforms[idx].updateTransform(parentMatrix, m_volume);
         };
 
         std::for_each(
             std::execution::par_unseq,
-            m_indeces.begin(),
-            m_indeces.end(),
+            m_indeces.cbegin(),
+            m_indeces.cend(),
             fn);
     }
 
@@ -100,6 +100,10 @@ void AsteroidBeltGenerator::createAsteroids(
         const auto& containerState = container.getState();
         m_volume = containerState.getVolume();
     }
+
+    m_physics.reserve(m_asteroidCount);
+    m_transforms.reserve(m_asteroidCount);
+    m_indeces.reserve(m_asteroidCount);
 
     for (size_t i = 0; i < m_asteroidCount; i++)
     {
@@ -183,7 +187,7 @@ void AsteroidBeltGenerator::rotateAsteroids(
 {
     const float elapsed = ctx.m_clock.elapsedSecs;
 
-    auto fn = [this, elapsed](auto& idx) {
+    auto fn = [this, elapsed](const auto idx) {
         if ((idx % STRIDES) != m_strideIndex) return;
         //if (m_strideIndex != 1) return;
 
@@ -205,7 +209,7 @@ void AsteroidBeltGenerator::rotateAsteroids(
 
     std::for_each(
         std::execution::par_unseq,
-        m_indeces.begin(),
-        m_indeces.end(),
+        m_indeces.cbegin(),
+        m_indeces.cend(),
         fn);
 }
