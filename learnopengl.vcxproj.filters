@@ -1236,6 +1236,9 @@
     <ClCompile Include="src\nav\NavigationMeshBuilder.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\editor\tool\node_type\NodeTypeTool.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h">
@@ -2814,6 +2817,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\nav\NavigationMeshBuilder.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\editor\tool\node_type\NodeTypeToolState.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\editor\tool\node_type\NodeTypeTool.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -10,6 +10,7 @@
 namespace editor {
     class StatusTool;
     class CameraTool;
+    class NodeTypeTool;
     class NodeEditTool;
     class ViewportTool;
     class DebugTool;
@@ -53,6 +54,7 @@ namespace editor {
 
         std::unique_ptr<StatusTool> m_statusTool;
         std::unique_ptr<CameraTool> m_cameraTool;
+        std::unique_ptr<NodeTypeTool> m_nodeTypeTool;
         std::unique_ptr<NodeEditTool> m_nodeEditTool;
         std::unique_ptr<ViewportTool> m_viewportTool;
         std::unique_ptr<DebugTool> m_debugTool;

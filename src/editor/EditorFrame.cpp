@@ -26,6 +26,7 @@
 
 #include "tool/status/StatusTool.h"
 #include "tool/camera/CameraTool.h"
+#include "tool/node_type/NodeTypeTool.h"
 #include "tool/node/NodeEditTool.h"
 #include "tool/viewport/ViewportTool.h"
 #include "tool/debug/DebugTool.h"
@@ -40,6 +41,7 @@ namespace editor {
         : Frame(window),
         m_statusTool{ std::make_unique<StatusTool>(*this) },
         m_cameraTool{ std::make_unique<CameraTool>(*this) },
+        m_nodeTypeTool{ std::make_unique<NodeTypeTool>(*this) },
         m_nodeEditTool{ std::make_unique<NodeEditTool>(*this) },
         m_viewportTool{ std::make_unique<ViewportTool>(*this) },
         m_debugTool{ std::make_unique<DebugTool>(*this) },
@@ -70,6 +72,7 @@ namespace editor {
     {
         m_statusTool->processInputs(ctx, scene, input, inputState, lastInputState);
         m_cameraTool->processInputs(ctx, scene, input, inputState, lastInputState);
+        m_nodeTypeTool->processInputs(ctx, scene, input, inputState, lastInputState);
         m_nodeEditTool->processInputs(ctx, scene, input, inputState, lastInputState);
         m_viewportTool->processInputs(ctx, scene, input, inputState, lastInputState);
         m_debugTool->processInputs(ctx, scene, input, inputState, lastInputState);
@@ -121,6 +124,7 @@ namespace editor {
         {
             m_statusTool->draw(ctx, scene, dbg);
             m_cameraTool->draw(ctx, scene, dbg);
+            m_nodeTypeTool->draw(ctx, scene, dbg);
             m_nodeEditTool->draw(ctx, scene, dbg);
             m_viewportTool->draw(ctx, scene, dbg);
             m_debugTool->draw(ctx, scene, dbg);
@@ -161,6 +165,7 @@ namespace editor {
             {
                 m_statusTool->drawMenu(ctx, scene, dbg);
                 m_cameraTool->drawMenu(ctx, scene, dbg);
+                m_nodeTypeTool->drawMenu(ctx, scene, dbg);
                 m_nodeEditTool->drawMenu(ctx, scene, dbg);
                 m_viewportTool->drawMenu(ctx, scene, dbg);
                 m_debugTool->drawMenu(ctx, scene, dbg);
