@@ -450,6 +450,8 @@ namespace loader {
         const auto& assets = Assets::get();
 
         if (baseId.empty()) {
+            if (typeId.empty()) return {};
+
             const auto& typeName = SID_NAME(SID(typeId.m_path));
             const auto& nodeName = fmt::format(
                 "<{}>-{}",

@@ -11,7 +11,7 @@
 struct LightDefinition {
     LightType m_type{ LightType::none };
 
-    ki::sid_t m_targetId{ 0 };
+    ki::node_id m_targetId{ 0 };
 
     float m_linear{ 0.f };
     float m_quadratic{ 0.f };

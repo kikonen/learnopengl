@@ -159,8 +159,7 @@ namespace {
 
         light->m_enabled = true;
 
-        //auto [targetId, targetResolvedSID] = resolveNodeId(data.targetBaseId, cloneIndex, tile);
-        //light->setTargetId(targetId);
+        light->setTargetId(data.m_targetId);
 
         light->m_linear = data.m_linear;
         light->m_quadratic = data.m_quadratic;

@@ -102,7 +102,7 @@ private:
     glm::vec3 m_worldPosition{ 0.0f };
     glm::vec3 m_worldTargetPosition{ 0.0f };
 
-    ki::node_id m_targetId;
+    ki::node_id m_targetId{ 0 };
     pool::NodeHandle m_targetHandle{};
 
     float m_radius = 1.f;

@@ -41,7 +41,11 @@ void Light::updateRT(
         auto* targetNode = m_targetHandle.toNode();
 
         if (!targetNode) {
-            KI_WARN(fmt::format("´LIGHT: MISSING TARGET: {}", m_targetId));
+            KI_WARN(fmt::format(
+                "LIGHT: MISSING TARGET: {}-{}",
+                m_targetId,
+                SID_NAME(m_targetId)));
+
             targetNode = nodeRegistry.getRootRT();
         }
 
