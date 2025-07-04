@@ -19,7 +19,7 @@ namespace {
     std::mutex m_lock;
     pool::Pool<Node> s_pool{ MAX_POOL_SIZE };
 
-    std::unordered_map<ki::node_id, uint32_t> m_IdToIndex;
+    std::unordered_map<ki::node_id, uint32_t> s_IdToIndex;
 }
 
 namespace pool {
@@ -82,6 +82,20 @@ namespace pool {
         handles.push_back(*this);
     }
 
+    void NodeHandle::release() const
+    {
+        auto* entry = s_pool.getEntry(m_handleIndex);
+        if (!entry) return;
+
+        if (entry->m_data.m_handle.m_id && entry->m_data.m_handle.m_id == m_id) {
+            s_pool.release(m_handleIndex);
+            s_IdToIndex.erase(m_id);
+
+            entry->m_data.m_handle.m_id = 0;
+            entry->m_data.m_handle.m_handleIndex = 0;
+        }
+    }
+
     NodeHandle NodeHandle::allocate(ki::node_id id) noexcept
     {
         if (!id) return NULL_HANDLE;
@@ -96,7 +110,7 @@ namespace pool {
         NodeHandle handle{ handleIndex, id };
         entry->m_data.m_handle = handle;
 
-        m_IdToIndex.insert({ id, handleIndex });
+        s_IdToIndex.insert({ id, handleIndex });
 
         return handle;
     }
@@ -105,8 +119,8 @@ namespace pool {
     {
         std::lock_guard lock(m_lock);
 
-        const auto& it = m_IdToIndex.find(id);
-        if (it == m_IdToIndex.end()) return {};
+        const auto& it = s_IdToIndex.find(id);
+        if (it == s_IdToIndex.end()) return {};
         return { it->second, id };
     }
 
@@ -114,8 +128,8 @@ namespace pool {
     {
         std::lock_guard lock(m_lock);
 
-        const auto& it = m_IdToIndex.find(id);
-        if (it == m_IdToIndex.end()) return nullptr;
+        const auto& it = s_IdToIndex.find(id);
+        if (it == s_IdToIndex.end()) return nullptr;
         NodeHandle handle{ it->second, id };
         return handle.toNode();
     }

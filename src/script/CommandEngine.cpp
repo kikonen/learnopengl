@@ -7,25 +7,7 @@
 
 #include "pool/NodeHandle.h"
 
-#include "command/Cancel.h"
-#include "command/Wait.h"
-#include "command/Sync.h"
-
 #include "CommandEntry.h"
-
-#include "command/Command.h"
-
-#include "command/NodeCommand.h"
-#include "command/MoveNode.h"
-#include "command/MoveSplineNode.h"
-#include "command/RotateNode.h"
-#include "command/ScaleNode.h"
-#include "command/ResumeNode.h"
-#include "command/StartNode.h"
-
-#include "command/AudioPlay.h"
-#include "command/AudioPause.h"
-#include "command/AudioStop.h"
 
 #include "engine/UpdateContext.h"
 

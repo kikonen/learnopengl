@@ -13,6 +13,9 @@ namespace event
         node_remove,
         node_removed,
 
+        // NOTE KI final cleanup (WT => RT)
+        node_dispose,
+
         node_select,
         node_activate,
 

@@ -363,7 +363,7 @@ void NodeRegistry::clear()
 
         m_freeIndeces.reserve(INITIAL_SIZE);
         m_pendingAdded.reserve(INITIAL_SIZE);
-        m_pendingDeleted.reserve(INITIAL_SIZE);
+        m_pendingRemoved.reserve(INITIAL_SIZE);
     }
 
     // NOTE KI keep NULL and IDENTITY as separate since
@@ -677,6 +677,13 @@ void NodeRegistry::attachListeners()
         });
 
     dispatcher->addListener(
+        event::Type::node_dispose,
+        [this](const event::Event& e) {
+            disposeNode(
+                pool::NodeHandle::toHandle(e.body.node.target));
+        });
+
+    dispatcher->addListener(
         event::Type::node_activate,
         [this](const event::Event& e) {
             setActiveNode(pool::NodeHandle::toHandle(e.body.node.target));
@@ -790,6 +797,35 @@ void NodeRegistry::notifyPendingChanges()
     }
 
     m_pendingAdded.clear();
+
+    for (auto& nodeHandle : m_pendingRemoved) {
+        auto* node = nodeHandle.toNode();
+        if (!node) continue;
+
+        {
+            event::Event evt{ event::Type::node_select };
+            evt.body.select = {
+                .target = nodeHandle.toId(),
+                .select = false,
+                .append = true
+            };
+            m_registry->m_dispatcherView->send(evt);
+        }
+
+        {
+            event::Event evt{ event::Type::node_removed };
+            evt.body.node.target = nodeHandle;
+            m_registry->m_dispatcherWorker->send(evt);
+        }
+
+        {
+            event::Event evt{ event::Type::node_removed };
+            evt.body.node.target = nodeHandle;
+            m_registry->m_dispatcherView->send(evt);
+        }
+    }
+
+    m_pendingRemoved.clear();
 }
 
 void NodeRegistry::attachNode(
@@ -909,7 +945,32 @@ void NodeRegistry::detachNode(
 
     unbindNode(nodeHandle);
 
-    node->prepareWT({ m_registry }, m_states[node->m_entityIndex]);
+    //node->unprepareWT({ m_registry }, m_states[node->m_entityIndex]);
+}
+
+void NodeRegistry::disposeNode(
+    const pool::NodeHandle nodeHandle) noexcept
+{
+    uint32_t entityIndex = 0;
+    {
+        auto* node = nodeHandle.toNode();
+        if (!node) return;
+
+        entityIndex = entityIndex = node->m_entityIndex;
+    }
+
+    nodeHandle.release();
+
+    {
+        auto* node = nodeHandle.toNode();
+        if (node) {
+            KI_CRITICAL(fmt::format("NODE: failed to release: handle={}", nodeHandle.str()));
+            return;
+        }
+    }
+
+    // NOTE KI after dispose slot can be re-used
+    m_freeIndeces.push_back(entityIndex);
 }
 
 void NodeRegistry::changeParent(
@@ -1021,8 +1082,7 @@ void NodeRegistry::unbindNode(
         m_nodeLevel++;
     }
 
-    m_freeIndeces.push_back(node->m_entityIndex);
-    m_pendingDeleted.push_back(nodeHandle);
+    m_pendingRemoved.push_back(nodeHandle);
 }
 
 bool NodeRegistry::bindParent(

@@ -109,6 +109,9 @@ public:
     void detachNode(
         const pool::NodeHandle nodeHandle) noexcept;
 
+    void disposeNode(
+        const pool::NodeHandle nodeHandle) noexcept;
+
     void changeParent(
         const pool::NodeHandle nodeHandle,
         ki::node_id parentId) noexcept;
@@ -235,7 +238,7 @@ private:
     std::vector<uint32_t> m_freeIndeces;
 
     // Delete node after RT is synced with WT
-    std::vector<pool::NodeHandle> m_pendingDeleted;
+    std::vector<pool::NodeHandle> m_pendingRemoved;
 
     std::vector<pool::NodeHandle> m_pendingAdded;
 

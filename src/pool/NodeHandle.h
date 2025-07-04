@@ -78,6 +78,8 @@ namespace pool {
             m_id = 0;
         }
 
+        void release() const;
+
         Node* toNode() const noexcept;
         ki::node_id toId() const noexcept { return m_id; }
         int toIndex() const noexcept { return m_handleIndex; }

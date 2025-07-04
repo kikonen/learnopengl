@@ -65,6 +65,8 @@ Node& Node::operator=(Node&& o) noexcept
 Node::~Node()
 {
     KI_INFO(fmt::format("NODE: delete - {}", str()));
+    m_handle.m_id = 0;
+    m_handle.m_handleIndex = 0;
 }
 
 std::string Node::str() const noexcept

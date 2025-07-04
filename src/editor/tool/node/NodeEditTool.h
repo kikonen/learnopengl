@@ -61,6 +61,15 @@ namespace editor
             render::DebugContext& dbg);
 
     private:
+        void onSelectNode(
+            const RenderContext& ctx,
+            pool::NodeHandle nodeHandle);
+
+        void onDeleteNode(
+            const RenderContext& ctx,
+            pool::NodeHandle nodeHandle);
+
+    private:
         NodeEditToolState m_state;
     };
 }

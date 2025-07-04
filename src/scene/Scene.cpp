@@ -143,6 +143,20 @@ void Scene::prepareRT()
         });
 
     dispatcherView->addListener(
+        event::Type::node_removed,
+        [this](const event::Event& e) {
+            auto* node = pool::NodeHandle::toNode(e.body.node.target);
+            this->handleNodeRemoved(node);
+
+            // NOTE KI tell WT that RT has diposed node
+            event::Event evt{ event::Type::node_dispose };
+            auto& body = evt.body.node = {
+                .target = e.body.node.target,
+            };
+            m_registry->m_dispatcherWorker->send(evt);
+        });
+
+    dispatcherView->addListener(
         event::Type::camera_activate,
         [this](const event::Event& e) {
             auto& data = e.body.node;

@@ -84,6 +84,13 @@ void SceneUpdater::prepare()
             this->handleNodeAdded(node);
         });
 
+    dispatcher->addListener(
+        event::Type::node_removed,
+        [this](const event::Event& e) {
+            auto* node = pool::NodeHandle::toNode(e.body.node.target);
+            this->handleNodeRemoved(node);
+        });
+
     if (assets.useScript)
     {
         dispatcher->addListener(

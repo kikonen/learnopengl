@@ -120,8 +120,11 @@ namespace editor
                 const auto* name = node->getName().c_str();
 
                 ImGui::PushID((void*)node);
-                if (ImGui::Selectable(name, node == currNode))
-                    m_state.m_selectedNode = node->toHandle();
+
+                if (ImGui::Selectable(name, node == currNode)) {
+                    onSelectNode(ctx, node->toHandle());
+                }
+
                 ImGui::PopID();
             }
 
@@ -166,6 +169,11 @@ namespace editor
             if (ImGui::InputFloat3("Node scale", glm::value_ptr(scale))) {
                 state.setScale(scale);
             }
+        }
+
+        if (ImGui::Button("Delete node"))
+        {
+            onDeleteNode(ctx, m_state.m_selectedNode);
         }
     }
 
@@ -520,5 +528,35 @@ namespace editor
 
         //    node = nullptr;
         //}
+    }
+
+    void NodeEditTool::onSelectNode(
+        const RenderContext& ctx,
+        pool::NodeHandle nodeHandle)
+    {
+        m_state.m_selectedNode = nodeHandle;
+
+        auto& commandEngine = script::CommandEngine::get();
+        commandEngine.addCommand(
+            0,
+            script::SelectNode{
+                m_state.m_selectedNode,
+                true,
+                false
+            });
+    }
+
+    void NodeEditTool::onDeleteNode(
+        const RenderContext& ctx,
+        pool::NodeHandle nodeHandle)
+    {
+        auto* node = m_state.m_selectedNode.toNode();
+        if (!node) return;
+
+        event::Event evt{ event::Type::node_remove };
+        auto& body = evt.body.node = {
+            .target = m_state.m_selectedNode.toId(),
+        };
+        ctx.m_registry->m_dispatcherWorker->send(evt);
     }
 }

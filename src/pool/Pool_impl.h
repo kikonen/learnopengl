@@ -81,8 +81,10 @@ namespace pool {
         if (!m_pool) return;
 
         // TODO KI release memory properly
+        // https://stackoverflow.com/questions/13210757/how-to-call-destructor-of-type-in-template
         auto& entry = m_pool[index];
-        entry.~Entry<T>();
+        entry.~Entry();
+
         entry.m_nextFree = m_nextFree;
         m_nextFree = index;
     }
