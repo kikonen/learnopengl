@@ -8,6 +8,8 @@
 
 class Node;
 
+struct UpdateContext;
+
 namespace editor {
     class EditorFrame;
 }
@@ -44,12 +46,43 @@ namespace render {
 
         void clear();
 
+        void updateRT(const UpdateContext& ctx);
+
+        inline Node* getActiveCameraNode() const noexcept
+        {
+            return m_activeCameraNode.toNode();
+        }
+
+        void setActiveCameraNode(pool::NodeHandle node);
+
+        pool::NodeHandle getNextCameraNode(
+            pool::NodeHandle srcNode,
+            int offset) const noexcept;
+
+        pool::NodeHandle findDefaultCameraNode() const;
+
+        const pool::NodeHandle& getDirLightNode() const noexcept
+        {
+            return m_dirLightNodes.empty() ? pool::NodeHandle::NULL_HANDLE : m_dirLightNodes[0];
+        }
+
+        const std::vector<pool::NodeHandle>& getPointLightNodes() const noexcept
+        {
+            return m_pointLightNodes;
+        }
+
+        const std::vector<pool::NodeHandle>& getSpotLightNodes() const noexcept
+        {
+            return m_spotLightNodes;
+        }
+
         void handleNodeAdded(Node* node);
+        void handleNodeRemoved(Node* node);
 
     private:
         void insertNode(
             NodeVector* nodes,
-            Node* node);
+            pool::NodeHandle nodeHandle);
 
     public:
         // NodeDraw
@@ -64,5 +97,15 @@ namespace render {
         std::vector<pool::NodeHandle> m_waterNodes;
         std::vector<pool::NodeHandle> m_mirrorNodes;
         std::vector<pool::NodeHandle> m_cubeMapNodes;
+
+        //std::vector<NodeComponent<CameraComponent>> m_cameraComponents;
+
+        pool::NodeHandle m_activeCameraNode{};
+        std::vector<pool::NodeHandle> m_cameraNodes;
+
+        std::vector<pool::NodeHandle> m_dirLightNodes;
+        std::vector<pool::NodeHandle> m_pointLightNodes;
+        std::vector<pool::NodeHandle> m_spotLightNodes;
+
     };
 }

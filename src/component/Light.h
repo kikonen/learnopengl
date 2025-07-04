@@ -39,7 +39,9 @@ public:
         return m_type == LightType::directional || m_type == LightType::spot;
     }
 
-    void updateRT(const UpdateContext& ctx, Node& node) noexcept;
+    void updateRT(
+        const UpdateContext& ctx,
+        const Node& node) noexcept;
 
     void markDirty() noexcept
     {

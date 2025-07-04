@@ -200,6 +200,16 @@ void SceneUpdater::handleNodeAdded(Node* node)
     }
 }
 
+void SceneUpdater::handleNodeRemoved(Node* node)
+{
+    if (!node) return;
+
+    animation::AnimationSystem::get().handleNodeRemoved(node);
+    if (node->m_typeFlags.navMesh) {
+        nav::NavigationSystem::get().unregisterNode(node->toHandle());
+    }
+}
+
 std::string SceneUpdater::getStats()
 {
     auto& commandEngine = script::CommandEngine::get();

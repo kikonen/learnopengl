@@ -27,6 +27,7 @@
 #include "render/Batch.h"
 #include "render/CollectionRender.h"
 #include "render/DrawContext.h"
+#include "render/NodeCollection.h"
 
 #include "registry/Registry.h"
 #include "registry/NodeRegistry.h"
@@ -123,7 +124,7 @@ void ShadowCascade::bind(const RenderContext& ctx)
 {
     auto& nodeRegistry = *ctx.m_registry->m_nodeRegistry;
 
-    auto* node = nodeRegistry.getDirLightNode().toNode();
+    auto* node = ctx.m_collection->getDirLightNode().toNode();
     if (!node) return;
 
     {

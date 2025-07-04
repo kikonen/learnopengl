@@ -38,7 +38,9 @@ namespace nav
         void clear();
 
         void prepare();
+
         void registerNode(pool::NodeHandle nodeHandle);
+        void unregisterNode(pool::NodeHandle nodeHandle);
 
         // Build must be done after registering all meshes
         void build();

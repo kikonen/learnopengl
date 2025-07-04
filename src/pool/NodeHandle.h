@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include <vector>
 
 #include "ki/size.h"
 
@@ -80,6 +81,13 @@ namespace pool {
         Node* toNode() const noexcept;
         ki::node_id toId() const noexcept { return m_id; }
         int toIndex() const noexcept { return m_handleIndex; }
+
+        // @return true if found
+        bool removeFrom(
+            std::vector<pool::NodeHandle>& handles) const;
+
+        void addTo(
+            std::vector<pool::NodeHandle>& handles) const;
 
         static NodeHandle allocate(ki::node_id id) noexcept;
 

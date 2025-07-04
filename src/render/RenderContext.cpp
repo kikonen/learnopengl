@@ -352,7 +352,7 @@ void RenderContext::updateClipPlanesUBO() const
 void RenderContext::updateLightsUBO() const
 {
     validateRender("update_lights_ubo");
-    m_renderData->updateLights(m_registry);
+    m_renderData->updateLights(m_collection);
 }
 
 void RenderContext::validateRender(std::string_view label) const

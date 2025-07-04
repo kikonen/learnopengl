@@ -22,6 +22,7 @@
 #include "render/FrameBuffer.h"
 
 #include "render/RenderContext.h"
+#include "render/NodeCollection.h"
 
 #include "controller/PawnController.h"
 #include "controller/CameraZoomController.h"
@@ -106,7 +107,7 @@ namespace editor
         // Camera
         {
 
-            const auto* currNode = nr.getActiveCameraNode();
+            const auto* currNode = ctx.m_collection->getActiveCameraNode();
             if (ImGui::BeginCombo("Camera selector", currNode ? currNode->getName().c_str() : nullptr)) {
                 for (const auto& [nodeHandle, controllers] : cr.getControllers()) {
                     const PawnController* nodeController = nullptr;
@@ -125,7 +126,7 @@ namespace editor
                         if (ImGui::Selectable(name, node == currNode)) {
                             event::Event evt{ event::Type::camera_activate };
                             evt.body.node.target = node->getId();
-                            ctx.m_registry->m_dispatcherWorker->send(evt);
+                            ctx.m_registry->m_dispatcherView->send(evt);
                         }
                         ImGui::PopID();
                     }

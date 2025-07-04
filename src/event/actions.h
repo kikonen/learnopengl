@@ -21,6 +21,10 @@
 
 #include "Type.h"
 
+namespace pool {
+    struct NodeHandle;
+}
+
 namespace event {
     struct NodeAttach {
         CreateState state;
@@ -39,6 +43,7 @@ namespace event {
     struct NodeAction {
         ki::node_id target{ 0 };
         ki::node_id parentId{ 0 };
+        int offset{ 0 };
     };
 
     struct NodeTypeAction {

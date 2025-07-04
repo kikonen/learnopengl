@@ -313,7 +313,7 @@ namespace loader {
         //    evt.body.node = {
         //        .target = handle.toId(),
         //    };
-        //    m_dispatcher->send(evt);
+        //    m_dispatcherView->send(evt);
         //}
 
         // try anim event

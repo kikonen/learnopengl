@@ -8,6 +8,7 @@
 #include "render/RenderContext.h"
 #include "render/FrameBuffer.h"
 #include "render/Batch.h"
+#include "render/Camera.h"
 #include "render/NodeCollection.h"
 
 #include "registry/Registry.h"

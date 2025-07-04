@@ -12,6 +12,8 @@ struct ClipPlanesUBO;
 struct LightsUBO;
 
 namespace render {
+    class NodeCollection;
+
     class RenderData {
     public:
         RenderData();
@@ -31,7 +33,7 @@ namespace render {
         void updateDebug(const DebugUBO& data);
         void updateBufferInfo(const BufferInfoUBO& data);
         void updateClipPlanes(const ClipPlanesUBO& data);
-        void updateLights(Registry* registry);
+        void updateLights(NodeCollection* collection);
 
     public:
 

@@ -20,4 +20,5 @@ public:
 
 private:
     void handleNodeAdded(Node* node);
+    void handleNodeRemoved(Node* node);
 };

@@ -18,6 +18,8 @@
 #include "registry/Registry.h"
 #include "registry/NodeRegistry.h"
 
+#include "NodeCollection.h"
+
 namespace {
     constexpr int RENDER_DATA_BUFFER_COUNT = 32;
 }
@@ -168,12 +170,12 @@ namespace render {
         m_clipPlanes->next();
     }
 
-    void RenderData::updateLights(Registry* registry)
+    void RenderData::updateLights(NodeCollection* collection)
     {
         LightsUBO& lightsUbo = *m_lightsUbo;
 
         {
-            auto& handle = registry->m_nodeRegistry->getDirLightNode();
+            auto& handle = collection->getDirLightNode();
             auto* node = handle.toNode();
 
             if (node && node->m_light->m_enabled) {
@@ -187,7 +189,7 @@ namespace render {
 
         {
             int count = 0;
-            auto& handles = registry->m_nodeRegistry->getPointLightNodes();
+            auto& handles = collection->getPointLightNodes();
             for (auto& handle : handles) {
                 auto* node = handle.toNode();
                 if (!node) continue;
@@ -208,7 +210,7 @@ namespace render {
 
         {
             int count = 0;
-            const auto& handles = registry->m_nodeRegistry->getSpotLightNodes();
+            const auto& handles = collection->getSpotLightNodes();
             for (auto& handle : handles) {
                 auto* node = handle.toNode();
                 if (!node) continue;

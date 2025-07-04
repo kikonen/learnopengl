@@ -68,6 +68,12 @@ namespace nav
         m_inputCollection.addNode(nodeHandle);
     }
 
+    void Generator::unregisterNode(pool::NodeHandle nodeHandle)
+    {
+        std::lock_guard lock{ m_lock };
+        m_inputCollection.removeNode(nodeHandle);
+    }
+
     void Generator::clearMeshInstances()
     {
         std::lock_guard lock{ m_lock };

@@ -32,6 +32,7 @@ namespace nav
         void cleanup();
 
         void registerNode(pool::NodeHandle nodeHandle);
+        void unregisterNode(pool::NodeHandle nodeHandle);
 
         void clearMeshInstances();
         void registerMeshInstance(const mesh::MeshInstance& meshInstance);

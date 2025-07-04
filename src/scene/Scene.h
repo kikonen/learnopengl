@@ -76,6 +76,7 @@ public:
     void updateViewRT(const UpdateViewContext& ctx);
 
     void handleNodeAdded(Node* node);
+    void handleNodeRemoved(Node* node);
 
     void bind(const RenderContext& ctx);
     void unbind(const RenderContext& ctx);

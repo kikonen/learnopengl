@@ -27,6 +27,7 @@ namespace nav
         void prepareBuild(InputCollection& o);
 
         void addNode(pool::NodeHandle nodeHandle);
+        void removeNode(pool::NodeHandle nodeHandle);
 
         void clearMeshInstances();
         void addMeshInstance(const mesh::MeshInstance& meshInstance);

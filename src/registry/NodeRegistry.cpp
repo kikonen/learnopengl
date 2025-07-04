@@ -276,19 +276,6 @@ namespace {
 
         return nullptr;
     }
-
-    void removeHandle(
-        const pool::NodeHandle& nodeHandle,
-        std::vector<pool::NodeHandle>& handles)
-    {
-        const auto& it = std::remove_if(
-            handles.begin(),
-            handles.end(),
-            [&nodeHandle](auto& handle) {
-                return handle == nodeHandle;
-            });
-        handles.erase(it, handles.end());
-    }
 }
 
 void NodeRegistry::init() noexcept
@@ -321,12 +308,6 @@ NodeRegistry::~NodeRegistry()
 
     {
         m_activeNode.reset();
-        m_activeCameraNode.reset();
-        m_cameraNodes.clear();
-
-        m_dirLightNodes.clear();
-        m_pointLightNodes.clear();
-        m_spotLightNodes.clear();
 
         m_rootRT.reset();;
         m_rootWT.reset();;
@@ -367,14 +348,7 @@ void NodeRegistry::clear()
     m_cachedNodeLevelWT = 0;
     m_cachedNodeLevelRT = 0;
 
-    m_cameraNodes.clear();
-
-    m_dirLightNodes.clear();
-    m_pointLightNodes.clear();
-    m_spotLightNodes.clear();
-
     m_activeNode.reset();
-    m_activeCameraNode.reset();
 
     {
         m_handles.reserve(INITIAL_SIZE);
@@ -627,27 +601,6 @@ void NodeRegistry::updateRT(const UpdateContext& ctx)
 
     auto* root = getRootRT();
     m_rootPreparedRT = root && root->m_preparedRT;
-
-    for (auto& handle : m_cameraNodes) {
-        auto* node = handle.toNode();
-        if (!node) continue;
-        node->m_camera->updateRT(ctx, *node);
-    }
-    for (auto& handle : m_pointLightNodes) {
-        auto* node = handle.toNode();
-        if (!node) continue;
-        node->m_light->updateRT(ctx, *node);
-    }
-    for (auto& handle : m_spotLightNodes) {
-        auto* node = handle.toNode();
-        if (!node) continue;
-        node->m_light->updateRT(ctx, *node);
-    }
-    for (auto& handle : m_dirLightNodes) {
-        auto* node = handle.toNode();
-        if (!node) continue;
-        node->m_light->updateRT(ctx, *node);
-    }
 }
 
 std::pair<int, int> NodeRegistry::updateEntity(const UpdateContext& ctx)
@@ -730,15 +683,6 @@ void NodeRegistry::attachListeners()
             setActiveNode(pool::NodeHandle::toHandle(e.body.node.target));
         });
 
-    dispatcher->addListener(
-        event::Type::camera_activate,
-        [this](const event::Event& e) {
-            auto& data = e.body.node;
-            auto handle = pool::NodeHandle::toHandle(data.target);
-            if (!handle) handle = findDefaultCameraNode();
-            setActiveCameraNode(handle);
-        });
-
     if (assets.useScript) {
         dispatcher->addListener(
             event::Type::node_added,
@@ -784,7 +728,7 @@ void NodeRegistry::handleNodeAdded(Node* node)
 {
     if (!node) return;
 
-    auto handle = node->toHandle();
+    auto nodeHandle = node->toHandle();
 
     node->prepareRT({ m_registry });
 
@@ -793,26 +737,17 @@ void NodeRegistry::handleNodeAdded(Node* node)
         node->m_generator->prepareRT(ctx, *node);
     }
     node->m_preparedRT = true;
+}
 
-    if (node->m_camera) {
-        m_cameraNodes.push_back(handle);
-        if (!m_activeCameraNode && node->m_camera->isDefault()) {
-            setActiveCameraNode(handle);
-        }
-    }
+void NodeRegistry::handleNodeRemoved(Node* node)
+{
+    if (!node) return;
 
-    if (node->m_light) {
-        Light* light = node->m_light.get();
+    auto nodeHandle = node->toHandle();
 
-        if (light->isDirectional()) {
-            m_dirLightNodes.push_back(handle);
-        }
-        else if (light->isPoint()) {
-            m_pointLightNodes.push_back(handle);
-        }
-        else if (light->isSpot()) {
-            m_spotLightNodes.push_back(handle);
-        }
+    if (node->m_generator) {
+        //const PrepareContext ctx{ m_registry };
+        //node->m_generator->unprepareRT(ctx, *node);
     }
 }
 
@@ -966,26 +901,6 @@ void NodeRegistry::detachNode(
     }
 
     const auto* type = node->m_typeHandle.toType();
-
-    {
-        if (node->m_camera) {
-            removeHandle(nodeHandle, m_cameraNodes);
-        }
-
-        if (node->m_light) {
-            Light* light = node->m_light.get();
-
-            if (light->isDirectional()) {
-                removeHandle(nodeHandle, m_dirLightNodes);
-            }
-            else if (light->isPoint()) {
-                removeHandle(nodeHandle, m_pointLightNodes);
-            }
-            else if (light->isSpot()) {
-                removeHandle(nodeHandle, m_spotLightNodes);
-            }
-        }
-    }
 
     if (node->m_physicsObjectId)
     {
@@ -1170,42 +1085,6 @@ void NodeRegistry::setActiveNode(pool::NodeHandle handle)
     if (!node) return;
 
     m_activeNode = handle;
-}
-
-void NodeRegistry::setActiveCameraNode(pool::NodeHandle handle)
-{
-    auto* node = handle.toNode();
-    if (!node) return;
-    if (!node->m_camera) return;
-
-    m_activeCameraNode = handle;
-}
-
-pool::NodeHandle NodeRegistry::getNextCameraNode(
-    pool::NodeHandle srcNode,
-    int offset) const noexcept
-{
-    int index = 0;
-    int size = static_cast<int>(m_cameraNodes.size());
-    for (int i = 0; i < size; i++) {
-        if (m_cameraNodes[i] == srcNode) {
-            index = std::max(0, (i + offset) % size);
-            break;
-        }
-    }
-    return m_cameraNodes[index];
-}
-
-pool::NodeHandle NodeRegistry::findDefaultCameraNode() const
-{
-    const auto& it = std::find_if(
-        m_cameraNodes.begin(),
-        m_cameraNodes.end(),
-        [](pool::NodeHandle handle) {
-            auto* node = handle.toNode();
-            return node && node->m_camera->isDefault();
-        });
-    return it != m_cameraNodes.end() ? *it : NULL_HANDLE;
 }
 
 void NodeRegistry::bindSkybox(

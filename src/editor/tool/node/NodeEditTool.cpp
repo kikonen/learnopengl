@@ -516,7 +516,7 @@ namespace editor
         //    // NOTE KI null == default camera
         //    event::Event evt { event::Type::camera_activate };
         //    evt.body.node.target = node->getId();
-        //    ctx.m_registry->m_dispatcherWorker->send(evt);
+        //    ctx.m_registry->m_dispatcherView->send(evt);
 
         //    node = nullptr;
         //}

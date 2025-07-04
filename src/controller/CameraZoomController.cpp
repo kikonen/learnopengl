@@ -88,12 +88,10 @@ void CameraZoomController::processInput(
 
         if (offset != 0) {
             m_cameraSwitchDown = true;
-            auto nextCamera = NodeRegistry::get().getNextCameraNode(m_nodeHandle, offset);
-
             // NOTE KI null == default camera
-            event::Event evt { event::Type::camera_activate };
-            evt.body.node.target = nextCamera;
-            m_registry->m_dispatcherWorker->send(evt);
+            event::Event evt { event::Type::camera_activate_next };
+            evt.body.node.target = m_nodeHandle;
+            m_registry->m_dispatcherView->send(evt);
         }
     } else {
         if (input->isModifierDown(Modifier::SHIFT)) {

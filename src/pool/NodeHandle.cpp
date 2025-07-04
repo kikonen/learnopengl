@@ -51,6 +51,37 @@ namespace pool {
         return nullptr;
     }
 
+    bool NodeHandle::removeFrom(
+        std::vector<pool::NodeHandle>& handles) const
+    {
+        //const auto& it = std::remove_if(
+        //    handles.begin(),
+        //    handles.end(),
+        //    [this](auto& handle) {
+        //        return handle == *this;
+        //    });
+        //handles.erase(it, handles.end());
+
+        const auto sz = handles.size();
+        for (int i = 0; i < sz; i++) {
+            if (handles[i] == *this) {
+                if (i < sz - 1) {
+                    handles[i] = handles[sz - 1];
+                }
+                handles.resize(sz - 1);
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    void NodeHandle::addTo(
+        std::vector<pool::NodeHandle>& handles) const
+    {
+        handles.push_back(*this);
+    }
+
     NodeHandle NodeHandle::allocate(ki::node_id id) noexcept
     {
         if (!id) return NULL_HANDLE;

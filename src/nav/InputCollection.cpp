@@ -39,6 +39,13 @@ namespace nav
         m_nodeHandles.push_back(nodeHandle);
     }
 
+    void InputCollection::removeNode(pool::NodeHandle nodeHandle)
+    {
+        if (nodeHandle.removeFrom(m_nodeHandles)) {
+            m_dirty = true;
+        }
+    }
+
     void InputCollection::clearMeshInstances()
     {
         if (m_meshInstances->empty()) return;

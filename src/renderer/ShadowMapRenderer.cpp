@@ -17,9 +17,9 @@
 #include "render/FrameBuffer.h"
 #include "render/RenderContext.h"
 #include "render/DebugContext.h"
+#include "render/NodeCollection.h"
 
 #include "registry/Registry.h"
-#include "registry/NodeRegistry.h"
 
 #include "renderer/ShadowCascade.h"
 
@@ -102,9 +102,7 @@ void ShadowMapRenderer::bind(const RenderContext& ctx)
     // NOTE KI no shadows if no light
     if (!dbg.m_lightEnabled) return;
 
-    auto& nodeRegistry = *ctx.m_registry->m_nodeRegistry;
-
-    auto* node = nodeRegistry.getDirLightNode().toNode();
+    auto* node = ctx.m_collection->getDirLightNode().toNode();
     if (!node) return;
 
     for (auto& cascade : m_cascades) {
@@ -144,9 +142,7 @@ bool ShadowMapRenderer::render(
     // NOTE KI no shadows if no light
     if (!dbg.m_lightEnabled) return false;
 
-    auto& nodeRegistry = *ctx.m_registry->m_nodeRegistry;
-
-    auto* node = nodeRegistry.getDirLightNode().toNode();
+    auto* node = ctx.m_collection->getDirLightNode().toNode();
     if (!node) return false;
 
     const auto& assets = ctx.m_assets;

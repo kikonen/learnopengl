@@ -508,4 +508,17 @@ namespace animation
         std::lock_guard lock(m_pendingLock);
         m_pendingNodes.push_back(node->toHandle());
     }
+
+    void AnimationSystem::handleNodeRemoved(Node* node)
+    {
+        if (!m_enabled) return;
+        if (!node->m_typeFlags.anyAnimation) return;
+
+        auto nodeHandle = node->toHandle();
+
+        std::lock_guard lock(m_pendingLock);
+
+        nodeHandle.removeFrom(m_pendingNodes);
+        m_nodeToState.erase(nodeHandle);
+    }
 }

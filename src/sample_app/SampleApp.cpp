@@ -39,6 +39,7 @@
 #include "mesh/LodMesh.h"
 
 #include "model/NodeType.h"
+#include "component/CameraComponent.h"
 
 #include "registry/NodeRegistry.h"
 #include "registry/SelectionRegistry.h"

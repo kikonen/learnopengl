@@ -65,6 +65,11 @@ namespace nav
         m_generator->registerNode(nodeHandle);
     }
 
+    void NavigationSystem::unregisterNode(pool::NodeHandle nodeHandle)
+    {
+        m_generator->unregisterNode(nodeHandle);
+    }
+
     void NavigationSystem::build()
     {
         setupPhysics();

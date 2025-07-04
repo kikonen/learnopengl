@@ -74,6 +74,7 @@ namespace animation {
         void updateRT(const UpdateContext& ctx);
 
         void handleNodeAdded(Node* node);
+        void handleNodeRemoved(Node* node);
 
     private:
         // @return true if bone palette was updated

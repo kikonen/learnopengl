@@ -142,6 +142,23 @@ void Scene::prepareRT()
             this->handleNodeAdded(node);
         });
 
+    dispatcherView->addListener(
+        event::Type::camera_activate,
+        [this](const event::Event& e) {
+            auto& data = e.body.node;
+            auto nodeHandle = pool::NodeHandle::toHandle(data.target);
+            m_collection->setActiveCameraNode(nodeHandle);
+        });
+
+    dispatcherView->addListener(
+        event::Type::camera_activate_next,
+        [this](const event::Event& e) {
+            auto& data = e.body.node;
+            auto nodeHandle = pool::NodeHandle::toHandle(data.target);
+            auto nextCamera = m_collection->getNextCameraNode(nodeHandle, data.offset);
+            m_collection->setActiveCameraNode(nextCamera);
+        });
+
     m_renderData->prepare(
         false,
         assets.glUseInvalidate,
@@ -352,8 +369,8 @@ void Scene::updateRT(const UpdateContext& ctx)
 
     m_registry->m_dispatcherView->dispatchEvents();
 
+    m_collection->updateRT(ctx);
     m_registry->updateRT(ctx);
-
     m_renderData->update();
 
     m_batch->updateRT(ctx);
@@ -449,6 +466,14 @@ void Scene::handleNodeAdded(Node* node)
 
     NodeRegistry::get().handleNodeAdded(node);
     m_collection->handleNodeAdded(node);
+}
+
+void Scene::handleNodeRemoved(Node* node)
+{
+    if (!node) return;
+
+    NodeRegistry::get().handleNodeRemoved(node);
+    m_collection->handleNodeRemoved(node);
 }
 
 void Scene::bind(const RenderContext& ctx)
@@ -711,7 +736,7 @@ const std::vector<std::unique_ptr<NodeController>>* Scene::getActiveNodeControll
 
 Node* Scene::getActiveCameraNode() const
 {
-    return NodeRegistry::get().getActiveCameraNode();
+    return m_collection->getActiveCameraNode();
 }
 
 const std::vector<std::unique_ptr<NodeController>>* Scene::getActiveCameraControllers() const
