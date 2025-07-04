@@ -27,7 +27,10 @@ namespace script
 
         m_finished = m_elapsedTime >= m_duration;
         if (m_finished) {
-            script::ScriptSystem::get().invokeNodeFunction(getNode(), m_self, m_fn, m_args);
+            auto* node = getNode();
+            if (!node) return;
+
+            script::ScriptSystem::get().invokeNodeFunction(node, m_self, m_fn, m_args);
         }
     }
 }

@@ -37,7 +37,10 @@ namespace script
 
         m_finished = m_elapsedTime >= m_duration;
         if (m_finished) {
-            const auto& state = getNode()->getState();
+            auto* node = getNode();
+            if (!node) return;
+
+            const auto& state = node->getState();
 
             const auto& hit = physics::PhysicsSystem::get().rayCastClosest(
                 state.getWorldPosition(),

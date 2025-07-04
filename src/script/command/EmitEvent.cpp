@@ -27,6 +27,9 @@ namespace script
 
         m_finished = m_elapsedTime >= m_duration;
         if (m_finished) {
+            auto* node = getNode();
+            if (!node) return;
+
             script::ScriptSystem::get().emitEvent(m_listenerId, m_type, m_data);
         }
     }

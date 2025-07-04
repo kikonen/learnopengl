@@ -24,8 +24,13 @@ namespace script
         virtual void bind(const UpdateContext& ctx) noexcept;
 
     protected:
-        inline Node* getNode() const noexcept {
-            return m_handle.toNode();
+        inline Node* getNode() noexcept
+        {
+            auto* node = m_handle.toNode();
+            if (!node) {
+                m_finished = true;
+            }
+            return node;
         }
 
     public:

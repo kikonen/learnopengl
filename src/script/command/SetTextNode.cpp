@@ -18,7 +18,10 @@ namespace script
     void SetTextNode::execute(
         const UpdateContext& ctx) noexcept
     {
-        auto* generator = getNode()->getGenerator<TextGenerator>();
+        auto* node = getNode();
+        if (!node) return;
+
+        auto* generator = node->getGenerator<TextGenerator>();
         if (generator) {
             generator->setText(m_text);
         }

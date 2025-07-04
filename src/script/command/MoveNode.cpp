@@ -21,7 +21,10 @@ namespace script
 
         m_end = m_position;
         if (!m_relative) {
-            const auto& nodePosition = getNode()->getState().getPosition();
+            auto* node = getNode();
+            if (!node) return;
+
+            const auto& nodePosition = node->getState().getPosition();
             m_end -= nodePosition;
         }
     }
@@ -50,6 +53,8 @@ namespace script
         auto adjust = position - m_previous;
 
         auto* node = getNode();
+        if (!node) return;
+
         node->modifyState().adjustPosition(adjust);
         node->updateModelMatrix();
 

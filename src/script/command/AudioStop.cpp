@@ -29,7 +29,10 @@ namespace script
     void AudioStop::execute(
         const UpdateContext& ctx) noexcept
     {
-        auto* source = getNode()->getAudioSource(m_audioSid);
+        auto* node = getNode();
+        if (!node) return;
+
+        auto* source = node->getAudioSource(m_audioSid);
 
         if (source) {
             source->stop();
@@ -38,7 +41,7 @@ namespace script
         if (!source) {
             KI_WARN_OUT(fmt::format(
                 "CMD: missing_audio: node={}, sid={}, name={}",
-                getNode()->getName(), m_audioSid, SID_NAME(m_audioSid)));
+                node->getName(), m_audioSid, SID_NAME(m_audioSid)));
         }
 
         m_finished = true;

@@ -38,6 +38,9 @@ namespace script
 
         m_finished = m_elapsedTime >= m_duration;
         if (m_finished) {
+            auto* node = getNode();
+            if (!node) return;
+
             //const auto& state = getNode()->getState();
 
             auto& physicsSystem = physics::PhysicsSystem::get();

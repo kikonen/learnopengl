@@ -24,7 +24,10 @@ namespace script
     void AudioPause::execute(
         const UpdateContext& ctx) noexcept
     {
-        auto* source = getNode()->getAudioSource(m_audioSid);
+        auto* node = getNode();
+        if (!node) return;
+
+        auto* source = node->getAudioSource(m_audioSid);
 
         if (source) {
             source->pause();

@@ -22,7 +22,10 @@ namespace script
 
         m_end = m_scale;
         if (!m_relative) {
-            m_end -= getNode()->getState().getScale();
+            auto* node = getNode();
+            if (!node) return;
+
+            m_end -= node->getState().getScale();
         }
     }
 
@@ -50,6 +53,8 @@ namespace script
         auto adjust = scale - m_previous;
 
         auto* node = getNode();
+        if (!node) return;
+
         node->modifyState().adjustPosition(adjust);
         node->updateModelMatrix();
 

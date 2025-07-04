@@ -21,7 +21,10 @@ namespace script
     void ParticleStop::execute(
         const UpdateContext& ctx) noexcept
     {
-        auto* generator = getNode()->m_particleGenerator.get();
+        auto* node = getNode();
+        if (!node) return;
+
+        auto* generator = node->m_particleGenerator.get();
 
         if (!m_started) {
             if (generator) {

@@ -30,7 +30,10 @@ namespace script
     void AudioPlay::execute(
         const UpdateContext& ctx) noexcept
     {
-        audio::Source* source = source = getNode()->getAudioSource(m_audioSid);
+        auto* node = getNode();
+        if (!node) return;
+
+        audio::Source* source = source = node->getAudioSource(m_audioSid);
 
         if (!m_started) {
             if (source) {
@@ -40,10 +43,9 @@ namespace script
         }
 
         if (!source) {
-            auto* node = getNode();
             KI_WARN_OUT(fmt::format(
                 "CMD: missing_audio: node={}, sid={}, name={}",
-                getNode()->getName(), m_audioSid, SID_NAME(m_audioSid)));
+                node->getName(), m_audioSid, SID_NAME(m_audioSid)));
         }
 
         m_finished = source && m_sync ? !source->isPlaying() : true;

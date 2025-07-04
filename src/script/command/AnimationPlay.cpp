@@ -35,7 +35,10 @@ namespace script
     {
         NodeCommand::bind(ctx);
 
-        for (const auto& lodMesh : getNode()->getLodMeshes()) {
+        auto* node = getNode();
+        if (!node) return;
+
+        for (const auto& lodMesh : node->getLodMeshes()) {
             auto rig = lodMesh.getMesh<mesh::Mesh>()->getRigContainer().get();
             if (!rig) continue;
 

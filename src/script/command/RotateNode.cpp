@@ -39,9 +39,12 @@ namespace script
     {
         NodeCommand::bind(ctx);
 
+        auto* node = getNode();
+        if (!node) return;
+
         // NOTE KI relative means now "relative to axis of node"
         if (m_relative) {
-            const auto& currRot = getNode()->getState().getRotation();
+            const auto& currRot = node->getState().getRotation();
             m_relativeAxis = glm::mat3(currRot) * m_axis;
         }
         else {
@@ -59,6 +62,8 @@ namespace script
         // i.e. allow multiple concurrent rotations
         {
             auto* node = getNode();
+            if (!node) return;
+
             auto& state = node->modifyState();
 
             const auto& currRot = state.getRotation();

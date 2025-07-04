@@ -17,7 +17,10 @@ namespace script
     void SetVisibleNode::execute(
         const UpdateContext& ctx) noexcept
     {
-        getNode()->m_visible = m_visible;
+        auto* node = getNode();
+        if (!node) return;
+
+        node->m_visible = m_visible;
         m_finished = true;
     }
 }
