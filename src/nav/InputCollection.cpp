@@ -16,7 +16,22 @@ namespace nav
     { }
 
     InputCollection::~InputCollection()
-    { }
+    {
+    }
+
+    void InputCollection::prepareBuild(InputCollection& o)
+    {
+        m_dirty = o.m_dirty;
+        m_nodeHandles = o.m_nodeHandles;
+        m_meshInstances = std::make_unique<std::vector<mesh::MeshInstance>>(*o.m_meshInstances);
+
+        m_geometries.clear();
+        m_navMeshBMin = glm::vec3{ 0.f };
+        m_navMeshBMax = glm::vec3{ 0.f };
+        m_maxTriCount = 0;
+
+        o.m_dirty = false;
+    }
 
     void InputCollection::addNode(pool::NodeHandle nodeHandle)
     {

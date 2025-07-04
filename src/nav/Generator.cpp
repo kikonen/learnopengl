@@ -64,25 +64,36 @@ namespace nav
 
     void Generator::registerNode(pool::NodeHandle nodeHandle)
     {
+        std::lock_guard lock{ m_lock };
         m_inputCollection.addNode(nodeHandle);
     }
 
     void Generator::clearMeshInstances()
     {
+        std::lock_guard lock{ m_lock };
         m_inputCollection.clearMeshInstances();
     }
 
     void Generator::registerMeshInstance(const mesh::MeshInstance& meshInstance)
     {
+        std::lock_guard lock{ m_lock };
         m_inputCollection.addMeshInstance(meshInstance);
     }
 
     // Build must be done after registering all meshes
     bool Generator::build()
     {
-        if (!m_inputCollection.dirty()) return false;
-        m_inputCollection.build();
-        if (m_inputCollection.empty()) return false;
+        auto* buildCollection = &m_buildCollection;
+
+        {
+            std::lock_guard lock{ m_lock };
+            if (!m_inputCollection.dirty()) return false;
+
+            buildCollection->prepareBuild(m_inputCollection);
+        }
+
+        buildCollection->build();
+        if (buildCollection->empty()) return false;
 
         auto* ctx = m_ctx.get();
 
@@ -112,8 +123,8 @@ namespace nav
             // Set the area where the navigation will be build.
             // Here the bounds of the input mesh are used, but the
             // area could be specified by an user defined box, etc.
-            rcVcopy(m_cfg.bmin, glm::value_ptr(m_inputCollection.getNavMeshBoundsMin()));
-            rcVcopy(m_cfg.bmax, glm::value_ptr(m_inputCollection.getNavMeshBoundsMax()));
+            rcVcopy(m_cfg.bmin, glm::value_ptr(buildCollection->getNavMeshBoundsMin()));
+            rcVcopy(m_cfg.bmax, glm::value_ptr(buildCollection->getNavMeshBoundsMax()));
 
             rcCalcGridSize(m_cfg.bmin, m_cfg.bmax, m_cfg.cs, &m_cfg.width, &m_cfg.height);
         }
@@ -148,7 +159,7 @@ namespace nav
         // If you have multiple meshes you need to process, allocate
         // and array which can hold the max number of triangles you need to process.
         {
-            int maxTriCount = m_inputCollection.getMaxTriCount();
+            int maxTriCount = buildCollection->getMaxTriCount();
             delete[] m_triareas;
             m_triareas = new unsigned char[maxTriCount];
             if (!m_triareas)
@@ -161,7 +172,7 @@ namespace nav
         // Find triangles which are walkable based on their slope and rasterize them.
         // If your input data is multiple meshes, you can transform them here, calculate
         // the are type for each of the meshes and rasterize them.
-        for (auto& geom : m_inputCollection.getGeometries())
+        for (auto& geom : buildCollection->getGeometries())
         {
             const float* verts = geom->getVertices();
             const int nverts = geom->getVertexCount();
@@ -416,6 +427,7 @@ namespace nav
         // Show performance stats.
         ctx->log(RC_LOG_PROGRESS, "NAV: >> Polymesh: %d vertices  %d polygons", m_pmesh->nverts, m_pmesh->npolys);
 
+        m_ready = true;
         return true;
     }
 }

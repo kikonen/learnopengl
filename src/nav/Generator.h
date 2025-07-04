@@ -2,6 +2,7 @@
 
 #include <vector>
 #include <memory>
+#include <mutex>
 
 #include <recastnavigation/Recast.h>
 
@@ -38,6 +39,16 @@ namespace nav
         // Build must be done after registering all meshes
         bool build();
 
+        bool isReady() const
+        {
+            return m_ready;
+        }
+
+        bool isDirtyCollection() const
+        {
+            return m_inputCollection.dirty();
+        }
+
     public:
         BuildSettings m_settings;
         std::unique_ptr<BuildContext> m_ctx;
@@ -51,7 +62,11 @@ namespace nav
     private:
         std::shared_ptr<nav::RecastContainer> m_container;
 
+        std::mutex m_lock;
         nav::InputCollection m_inputCollection;
+        nav::InputCollection m_buildCollection;
+
+        bool m_ready{ false };
 
         rcConfig m_cfg{};
 

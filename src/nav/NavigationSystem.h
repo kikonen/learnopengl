@@ -19,6 +19,7 @@ namespace mesh {
 namespace nav
 {
     class RecastContainer;
+    class NavigationMeshBuilder;
     class Generator;
     class Resolver;
     struct Query;
@@ -48,11 +49,11 @@ namespace nav
         void setupPhysics();
 
     private:
-        bool m_dirty{ true };
-
         std::shared_ptr<nav::RecastContainer> m_container;
         std::unique_ptr<nav::Resolver> m_resolver;
-        std::unique_ptr<nav::Generator> m_generator;
+
+        std::shared_ptr<nav::Generator> m_generator;
+        std::unique_ptr<nav::NavigationMeshBuilder> m_builder;
 
         std::unique_ptr<physics::MeshGenerator> m_physicsMeshGenerator;
         std::shared_ptr<std::vector<mesh::MeshInstance>> m_physicsMeshes;

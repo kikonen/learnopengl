@@ -9,6 +9,7 @@
 #include "Generator.h"
 #include "Resolver.h"
 #include "Path.h"
+#include "NavigationMeshBuilder.h"
 
 namespace {
     static nav::NavigationSystem* s_system{ nullptr };
@@ -37,8 +38,9 @@ namespace nav
 
     NavigationSystem::NavigationSystem()
         : m_container{ std::make_shared<RecastContainer>() },
-        m_generator{ std::make_unique<Generator>(m_container) },
-        m_resolver{ std::make_unique<Resolver>(m_container) }
+        m_generator{ std::make_shared<Generator>(m_container) },
+        m_resolver{ std::make_unique<Resolver>(m_container) },
+        m_builder{ std::make_unique<NavigationMeshBuilder>(m_generator) }
     {}
 
     NavigationSystem::~NavigationSystem()
@@ -51,6 +53,7 @@ namespace nav
         m_resolver->clear();
         m_generator->clear();
         m_container->clear();
+        m_builder->stop();
     }
 
     void NavigationSystem::prepare()
@@ -60,15 +63,14 @@ namespace nav
     void NavigationSystem::registerNode(pool::NodeHandle nodeHandle)
     {
         m_generator->registerNode(nodeHandle);
-        m_dirty = true;
     }
 
     void NavigationSystem::build()
     {
         setupPhysics();
-
-        m_generator->build();
-        m_dirty = false;
+        if (m_generator->isDirtyCollection()) {
+            m_builder->start();
+        }
     }
 
     void NavigationSystem::setupPhysics()
@@ -95,6 +97,9 @@ namespace nav
 
     Path NavigationSystem::findPath(const Query& query)
     {
+        if (m_builder->isRunning()) return {};
+        if (!m_generator->isReady()) return {};
+
         return m_resolver->resolve(query);
     }
 }

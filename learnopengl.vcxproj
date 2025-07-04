@@ -343,6 +343,7 @@
     <ClCompile Include="src\nav\Generator.cpp" />
     <ClCompile Include="src\nav\InputCollection.cpp" />
     <ClCompile Include="src\nav\InputGeam.cpp" />
+    <ClCompile Include="src\nav\NavigationMeshBuilder.cpp" />
     <ClCompile Include="src\nav\NavigationSystem.cpp" />
     <ClCompile Include="src\nav\Path.cpp" />
     <ClCompile Include="src\nav\RecastContainer.cpp" />
@@ -772,6 +773,7 @@
     <ClInclude Include="src\nav\Generator.h" />
     <ClInclude Include="src\nav\InputCollection.h" />
     <ClInclude Include="src\nav\InputGeom.h" />
+    <ClInclude Include="src\nav\NavigationMeshBuilder.h" />
     <ClInclude Include="src\nav\NavigationSystem.h" />
     <ClInclude Include="src\nav\PartitionType.h" />
     <ClInclude Include="src\nav\Path.h" />

@@ -24,6 +24,8 @@ namespace nav
         InputCollection();
         ~InputCollection();
 
+        void prepareBuild(InputCollection& o);
+
         void addNode(pool::NodeHandle nodeHandle);
 
         void clearMeshInstances();
