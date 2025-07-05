@@ -15,7 +15,7 @@ namespace physics {
         Body(Body&& o) noexcept;
         ~Body();
 
-        Body& operator=(Body&& o);
+        Body& operator=(Body&& o) noexcept;
         Body& operator=(const BodyDefinition& o);
 
         bool isValid() const noexcept {

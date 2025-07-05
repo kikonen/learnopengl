@@ -942,7 +942,7 @@ void NodeRegistry::detachNode(
     if (node->m_physicsObjectId)
     {
         auto& physicsSystem = physics::PhysicsSystem::get();
-        physicsSystem.unregisterObject(nodeHandle);
+        physicsSystem.unregisterObject(node->m_physicsObjectId);
     }
 
     unbindNode(nodeHandle);

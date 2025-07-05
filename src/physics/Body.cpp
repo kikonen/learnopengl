@@ -36,13 +36,13 @@ namespace physics {
 
     Body::~Body()
     {
-        if (physicId) {
-            dBodyDestroy(physicId);
-        }
+        release();
     }
 
-    Body& Body::operator=(Body&& o)
+    Body& Body::operator=(Body&& o) noexcept
     {
+        release();
+
         size = o.size;
         baseRotation = o.baseRotation;
         invBaseRotation = o.invBaseRotation;
@@ -64,6 +64,8 @@ namespace physics {
 
     Body& Body::operator=(const BodyDefinition& o)
     {
+        release();
+
         size = o.m_size;
 
         baseRotation = o.m_baseRotation;

@@ -28,28 +28,13 @@ namespace physics {
 
     Geom::~Geom()
     {
-        if (physicId) {
-            dGeomDestroy(physicId);
-        }
-        if (heightDataId) {
-            dGeomHeightfieldDataDestroy(heightDataId);
-        }
+        release();
     }
 
-    void Geom::release()
+    Geom& Geom::operator=(Geom&& o) noexcept
     {
-        if (physicId) {
-            dGeomDestroy(physicId);
-            physicId = nullptr;
-        }
-        if (heightDataId) {
-            dGeomHeightfieldDataDestroy(heightDataId);
-            heightDataId = nullptr;
-        }
-    }
+        release();
 
-    Geom& Geom::operator=(Geom&& o)
-    {
         size = o.size;
         rotation = o.rotation;
         offset = o.offset;
@@ -70,6 +55,8 @@ namespace physics {
 
     Geom& Geom::operator=(const GeomDefinition& o)
     {
+        release();
+
         size = o.m_size;
         rotation = o.m_rotation;
         offset = o.m_offset;
@@ -79,6 +66,18 @@ namespace physics {
         placeable = o.m_placeable;
 
         return *this;
+    }
+
+    void Geom::release()
+    {
+        if (physicId) {
+            dGeomDestroy(physicId);
+            physicId = nullptr;
+        }
+        if (heightDataId) {
+            dGeomHeightfieldDataDestroy(heightDataId);
+            heightDataId = nullptr;
+        }
     }
 
     void Geom::create(

@@ -18,7 +18,7 @@ namespace physics {
         Geom(Geom&& o) noexcept;
         ~Geom();
 
-        Geom& operator=(Geom&& o);
+        Geom& operator=(Geom&& o) noexcept;
         Geom& operator=(const GeomDefinition& o);
 
         bool isValid() const noexcept {
