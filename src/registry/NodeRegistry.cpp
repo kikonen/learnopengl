@@ -1005,7 +1005,19 @@ void NodeRegistry::bindNode(
 
     KI_INFO(fmt::format("BIND_NODE: {}", node->str()));
 
-    node->m_entityIndex = static_cast<uint32_t>(m_handles.size());
+    uint32_t entityIndex;
+    bool reuse = false;
+
+    // NOTE KI reuse slots (after dispose)
+    if (!m_freeIndeces.empty()) {
+        entityIndex = m_freeIndeces[m_freeIndeces.size() - 1];
+        m_freeIndeces.pop_back();
+        reuse = true;
+    }
+    else {
+        entityIndex = static_cast<uint32_t>(m_handles.size());
+    }
+    node->m_entityIndex = entityIndex;
 
     {
         const auto* type = node->getType();
@@ -1040,9 +1052,15 @@ void NodeRegistry::bindNode(
 
         std::lock_guard lock(m_snapshotLock);
 
-        m_handles.push_back(nodeHandle);
-        m_parentIndeces.push_back(0);
-        m_states.push_back(state);
+        if (!reuse) {
+            m_handles.resize(entityIndex + 1);
+            m_parentIndeces.resize(entityIndex + 1);
+            m_states.resize(entityIndex + 1);
+        }
+
+        m_handles[entityIndex] = nodeHandle;
+        m_parentIndeces[entityIndex] = 0;
+        m_states[entityIndex] = state;
 
         m_nodeLevel++;
 
