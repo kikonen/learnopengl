@@ -426,6 +426,9 @@ void NodeRegistry::updateWT(const UpdateContext& ctx)
         //std::lock_guard lock(m_lock);
         // NOTE KI nodes are in DAG order
         for (int i = m_rootIndex + 1; i < m_states.size(); i++) {
+            // NOTE KI skip free slot
+            if (m_parentIndeces[i] == 0) continue;
+
             auto* node = cachedNodes[i];
             if (!node) continue;
 
@@ -458,6 +461,9 @@ void NodeRegistry::postUpdateWT(const UpdateContext& ctx)
     auto& cachedNodes = getCachedNodesWT();
 
     for (int i = m_rootIndex + 1; i < m_states.size(); i++) {
+        // NOTE KI skip free slot
+        if (m_parentIndeces[i] == 0) continue;
+
         auto* node = cachedNodes[i];
         if (!node) continue;
 
@@ -484,6 +490,9 @@ void NodeRegistry::postUpdateWT(const UpdateContext& ctx)
 int NodeRegistry::validateModelMatrices()
 {
     for (auto i = m_rootIndex + 1; i < m_states.size(); i++) {
+        // NOTE KI skip free slot
+        if (m_parentIndeces[i] == 0) continue;
+
         const auto parentLevel = m_states[m_parentIndeces[i]].m_matrixLevel;
         if (!m_states[i].valid(parentLevel)) return i;
     }
@@ -506,7 +515,9 @@ void NodeRegistry::updateModelMatrices()
     }
 
     for (auto i = m_rootIndex + 1; i < m_states.size(); i++) {
-        assert(m_parentIndeces[i] >= m_rootIndex);
+        // NOTE KI skip free slot
+        if (m_parentIndeces[i] == 0) continue;
+
         m_states[i].updateModelMatrix(m_states[m_parentIndeces[i]]);
     }
 }
@@ -1076,9 +1087,21 @@ void NodeRegistry::unbindNode(
 
         m_handles[entityIndex] = pool::NodeHandle::NULL_HANDLE;
         m_parentIndeces[entityIndex] = 0;
-        m_states[entityIndex] = {};
-        m_snapshotsPending[entityIndex] = {};
-        m_snapshotsRT[entityIndex] = {};
+        {
+            m_states[entityIndex] = {};
+            auto& state = m_states[entityIndex];
+            state.m_dirty = false;
+        }
+        {
+            m_snapshotsPending[entityIndex] = {};
+            auto& snapshot = m_snapshotsPending[entityIndex];
+            snapshot.m_dirty = false;
+        }
+        {
+            m_snapshotsRT[entityIndex] = {};
+            auto& snapshot = m_snapshotsRT[entityIndex];
+            snapshot.m_dirty = false;
+        }
         m_entities[entityIndex] = {};
         m_dirtyEntities[entityIndex] = false;
         m_cachedNodesWT[entityIndex] = nullptr;
