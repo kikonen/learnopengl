@@ -202,8 +202,8 @@ namespace animation
 
     void AnimationSystem::unregisterInstance(
         const animation::RigContainer& rig,
-        uint16_t boneBaseIndex,
-        uint16_t socketBaseIndex)
+        uint32_t boneBaseIndex,
+        uint32_t socketBaseIndex)
     {
         std::lock_guard lock(m_pendingLock);
 

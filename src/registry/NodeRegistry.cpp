@@ -626,6 +626,9 @@ std::pair<int, int> NodeRegistry::updateEntity(const UpdateContext& ctx)
             }
         }
 
+        entity.u_boneBaseIndex = state.m_boneBaseIndex;
+        entity.u_socketBaseIndex = state.m_socketBaseIndex;
+
         entity.u_tilingX = state.m_tilingX;
         entity.u_tilingY = state.m_tilingY;
 

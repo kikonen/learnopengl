@@ -42,8 +42,8 @@ public:
     //// NOTE KI static member fields rather safe to access directly
     //pool::NodeHandle m_handle;
 
-    uint16_t m_boneBaseIndex{ 0 };
-    uint16_t m_socketBaseIndex{ 0 };
+    //uint32_t m_boneBaseIndex{ 0 };
+    //uint32_t m_socketBaseIndex{ 0 };
 
     ki::size_t_entity_flags m_flags{ 0 }; // 1 * 4 = 4
 
@@ -71,8 +71,8 @@ public:
 
         m_flags = o.m_flags;
 
-        m_boneBaseIndex = o.m_boneBaseIndex;
-        m_socketBaseIndex = o.m_socketBaseIndex;
+        //m_boneBaseIndex = o.m_boneBaseIndex;
+        //m_socketBaseIndex = o.m_socketBaseIndex;
 
         m_volume = o.m_volume;
 

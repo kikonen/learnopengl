@@ -65,8 +65,8 @@ public:
     float m_tilingY{ 1.f };
 
     // NOTE KI static member fields are rather safe to access frmo anywhere
-    uint16_t m_boneBaseIndex{ 0 };
-    uint16_t m_socketBaseIndex{ 0 };
+    uint32_t m_boneBaseIndex{ 0 };
+    uint32_t m_socketBaseIndex{ 0 };
 
     ki::size_t_entity_flags m_flags{ 0 }; // 1 * 4 = 4
 

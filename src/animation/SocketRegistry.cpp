@@ -5,6 +5,7 @@
 #include "asset/Assets.h"
 
 namespace {
+    constexpr int INITIAL_SIZE = 10000;
 }
 
 namespace animation
@@ -26,6 +27,11 @@ namespace animation
 
         m_snapshot.clear();
         m_dirtySnapshot.clear();
+
+        m_transforms.reserve(INITIAL_SIZE);
+        m_dirtyTransform.reserve(INITIAL_SIZE);
+        m_snapshot.reserve(INITIAL_SIZE);
+        m_dirtySnapshot.reserve(INITIAL_SIZE);
 
         // NOTE KI null entry
         addInstance(1);
@@ -57,8 +63,16 @@ namespace animation
         {
             std::lock_guard lock(m_lock);
 
-            index = m_transforms.size();
-            m_transforms.resize(m_transforms.size() + count);
+            auto it = m_freeSlots.find(count);
+            if (it != m_freeSlots.end() && !it->second.empty()) {
+                index = it->second[it->second.size() - 1];
+                it->second.pop_back();
+            }
+            else {
+                index = m_transforms.size();
+                m_transforms.resize(m_transforms.size() + count);
+            }
+
             for (int i = 0; i < count; i++) {
                 m_transforms[index + i] = glm::mat4{ 1.f };
             }
@@ -69,8 +83,21 @@ namespace animation
         return static_cast<uint32_t>(index);
     }
 
-    void SocketRegistry::removeInstance(uint32_t index, size_t count)
+    void SocketRegistry::removeInstance(
+        uint32_t index,
+        size_t count)
     {
+        ASSERT_WT();
+
+        std::lock_guard lock(m_lock);
+
+        auto it = m_freeSlots.find(count);
+        if (it == m_freeSlots.end()) {
+            m_freeSlots[count] = std::vector<uint32_t>{ index };
+        }
+        else {
+            it->second.push_back(index);
+        }
     }
 
     std::span<glm::mat4> SocketRegistry::modifyRange(

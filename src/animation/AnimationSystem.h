@@ -50,8 +50,8 @@ namespace animation {
 
         void unregisterInstance(
             const animation::RigContainer& rig,
-            uint16_t boneBaseIndex,
-            uint16_t socketBaseIndex);
+            uint32_t boneBaseIndex,
+            uint32_t socketBaseIndex);
 
         animation::AnimationState* getState(
             pool::NodeHandle handle);
