@@ -5,7 +5,7 @@ local cmd = self.cmd
 
 local moo_sid = util.sid("moo")
 
-local function animation()
+local function animation(self)
   local listener_id
   local wid = 0
   local cid = 0
@@ -26,7 +26,7 @@ local function animation()
       { type=Event.SCRIPT_RESUME, listener=listener_id})
   end
 
-  listener_id = events:listen(animation_listener, {Event.SCRIPT_RESUME})
+  listener_id = self:listen(animation_listener, {Event.SCRIPT_RESUME})
 
   cmd:emit(
     {},
@@ -34,4 +34,4 @@ local function animation()
 end
 
 print("cow say")
-animation()
+animation(self)

@@ -17,17 +17,10 @@ end
 function Node:destroy(o)
   printf("destroy node: %d\n", self.id)
 
-  -- NOTE KI "local cmd" is backward compatibility trick in ScriptSystem
   states[self.id] = nil
   states[self.cmd] = nil
   states[self.node] = nil
 
-  if self.updater_ids then
-    for _, updater_id in ipairs(self.updater_ids) do
-      Updater:remove_updater(updater_id)
-    end
-    self.updater_ids = nil
-  end
   self.updaters = nil
 
   if self.listener_ids then
@@ -36,7 +29,6 @@ function Node:destroy(o)
     end
     self.listener_ids = nil
   end
-  self.listeners = nil
 end
 
 function Node:class()
@@ -44,9 +36,20 @@ function Node:class()
 end
 
 function Node:add_updater(fn)
-  -- printf("NODE: %d: Add updater: %s\n", self.id, fn)
+  -- debug("NODE: %d: Add updater: %s\n", self.id, fn)
   self.updaters = self.updaters or {}
   self.updaters[#self.updaters + 1] = fn
+end
+
+function Node:listen(fn, types)
+  listener_id = events:listen(fn, types)
+
+  debug("NODE: %d: listen: listener=%d, fn=%s, types={%s}\n", self.id, listener_id, fn, table_format(types))
+
+  self.listener_ids = self.listener_ids or {}
+  self.listener_ids[#self.listener_ids + 1] = listener_id
+
+  return listener_id
 end
 
 -- function Node:ditto()

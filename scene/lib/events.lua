@@ -38,7 +38,7 @@ function EventQueue:listen(listener, event_types)
 end
 
 function EventQueue:unlisten(listener_id)
-  -- printf("EVENT::UNLISTEN: listener=%d\n", listener_id)
+  printf("EVENT::UNLISTEN: listener=%d\n", listener_id)
 
   table.remove(self.listeners, listener_id)
 

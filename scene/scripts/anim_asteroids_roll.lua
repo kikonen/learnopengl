@@ -1,7 +1,7 @@
 local node = self.node
 local cmd = self.cmd
 
-local function animation_x()
+local function animation_x(self)
   local listener_id = nil
   local orig_pos = node:get_pos()
   local wid = 0
@@ -22,14 +22,14 @@ local function animation_x()
       { type=Event.SCRIPT_RESUME, listener=listener_id})
   end
 
-  listener_id = events:listen(animation_listener, {Event.SCRIPT_RESUME})
+  listener_id = self:listen(animation_listener, {Event.SCRIPT_RESUME})
 
   cmd:emit(
     {},
     { type=Event.SCRIPT_RESUME, listener=listener_id})
 end
 
-local function animation_y()
+local function animation_y(self)
   local listener_id = nil
   local orig_pos = node:get_pos()
   local wid = 0
@@ -50,14 +50,14 @@ local function animation_y()
       { type=Event.SCRIPT_RESUME, listener=listener_id})
   end
 
-  listener_id = events:listen(animation_listener, {Event.SCRIPT_RESUME})
+  listener_id = self:listen(animation_listener, {Event.SCRIPT_RESUME})
 
   cmd:emit(
     {},
     { type=Event.SCRIPT_RESUME, listener=listener_id})
 end
 
-local function animation_z()
+local function animation_z(self)
   local listener_id = nil
   local orig_pos = node:get_pos()
   local wid = 0
@@ -78,13 +78,13 @@ local function animation_z()
       { type=Event.SCRIPT_RESUME, listener=listener_id})
   end
 
-  listener_id = events:listen(animation_listener, {Event.SCRIPT_RESUME})
+  listener_id = self:listen(animation_listener, {Event.SCRIPT_RESUME})
 
   cmd:emit(
     {},
     { type=Event.SCRIPT_RESUME, listener=listener_id})
 end
 
-animation_x()
-animation_y()
-animation_z()
+animation_x(self)
+animation_y(self)
+animation_z(self)

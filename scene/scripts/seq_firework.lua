@@ -9,7 +9,7 @@ local shoot_sid = util.sid("shoot")
 local explode_sid = util.sid("explode")
 -- local text_node_sid = util.sid("rocket_message")
 
-local function animation()
+local function animation(self)
   local listener_id
   local cid = 0
   local cid2 = 0
@@ -84,7 +84,7 @@ local function animation()
       { type=Event.SCRIPT_RESUME, listener=listener_id})
   end
 
-  listener_id = events:listen(animation_listener, {Event.SCRIPT_RESUME})
+  listener_id = self:listen(animation_listener, {Event.SCRIPT_RESUME})
 
   cid = cmd:wait(
     { after=cid, time=8 + rnd(5) })
@@ -94,4 +94,4 @@ local function animation()
     { type=Event.SCRIPT_RESUME, listener=listener_id})
 end
 
--- animation()
+animation(self)

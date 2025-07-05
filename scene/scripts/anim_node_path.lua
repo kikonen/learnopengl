@@ -5,7 +5,7 @@ local cmd = self.cmd
 
 local rnd = math.random
 
-local function animation_translate()
+local function animation_translate(self)
   local listener_id = nil
   local orig_pos = node:get_pos()
   local wid = 0
@@ -40,14 +40,14 @@ local function animation_translate()
       { type=Event.SCRIPT_RESUME, listener=listener_id})
   end
 
-  listener_id = events:listen(animation_listener, {Event.SCRIPT_RESUME})
+  listener_id = self:listen(animation_listener, {Event.SCRIPT_RESUME})
 
   cmd:emit(
     {},
     { type=Event.SCRIPT_RESUME, listener=listener_id})
 end
 
-local function animation_rotate()
+local function animation_rotate(self)
   local listener_id = nil
   local orig_pos = node:get_pos()
   local wid = 0
@@ -86,14 +86,14 @@ local function animation_rotate()
       { type=Event.SCRIPT_RESUME, listener=listener_id})
   end
 
-  listener_id = events:listen(animation_listener, {Event.SCRIPT_RESUME})
+  listener_id = self:listen(animation_listener, {Event.SCRIPT_RESUME})
 
   cmd:emit(
     {},
     { type=Event.SCRIPT_RESUME, listener=listener_id})
 end
 
-local function animation_scale()
+local function animation_scale(self)
   local listener_id = nil
   local orig_pos = node:get_pos()
   local wid = 0
@@ -121,13 +121,13 @@ local function animation_scale()
       { type=Event.SCRIPT_RESUME, listener=listener_id})
   end
 
-  listener_id = events:listen(animation_listener, {Event.SCRIPT_RESUME})
+  listener_id = self:listen(animation_listener, {Event.SCRIPT_RESUME})
 
   cmd:emit(
     {},
     { type=Event.SCRIPT_RESUME, listener=listener_id})
 end
 
-animation_translate()
-animation_rotate()
-animation_scale()
+animation_translate(self)
+animation_rotate(self)
+animation_scale(self)

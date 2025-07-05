@@ -6,7 +6,7 @@ local cmd = self.cmd
 local clone_index = node:get_clone_index()
 local orig_pos = node:get_pos()
 
-local function animation_move()
+local function animation_move(self)
   local listener_id = nil
   local wid = 0
   local cid = 0
@@ -32,14 +32,14 @@ local function animation_move()
     dir = -1 * dir
   end
 
-  listener_id = events:listen(animation_listener, {Event.SCRIPT_RESUME})
+  listener_id = self:listen(animation_listener, {Event.SCRIPT_RESUME})
 
   cmd:emit(
     {},
     { type=Event.SCRIPT_RESUME, listener=listener_id})
 end
 
-local function animation_rotate()
+local function animation_rotate(self)
   local listener_id = nil
   local wid = 0
   local cid = 0
@@ -67,12 +67,12 @@ local function animation_rotate()
     dir = -1 * dir
   end
 
-  listener_id = events:listen(animation_listener, {Event.SCRIPT_RESUME})
+  listener_id = self:listen(animation_listener, {Event.SCRIPT_RESUME})
 
   cmd:emit(
     {},
     { type=Event.SCRIPT_RESUME, listener=listener_id})
 end
 
-animation_move()
-animation_rotate()
+animation_move(self)
+animation_rotate(self)

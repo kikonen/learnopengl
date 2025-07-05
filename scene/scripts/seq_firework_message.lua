@@ -17,7 +17,7 @@ local TEXTS = {
   ""
 }
 
-local function animation()
+local function animation(self)
   local listener_id
   local wid = 0
   local cid = 0
@@ -49,7 +49,7 @@ local function animation()
     idx = (idx + 1) % #TEXTS
   end
 
-  listener_id = events:listen(animation_listener, {Event.SCRIPT_RESUME})
+  listener_id = self:listen(animation_listener, {Event.SCRIPT_RESUME})
 
   cid = cmd:set_visible(
     { after=wid },
@@ -66,4 +66,4 @@ local function animation()
     { type=Event.SCRIPT_RESUME, listener=listener_id})
 end
 
---animation()
+animation(self)

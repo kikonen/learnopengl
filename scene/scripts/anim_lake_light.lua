@@ -3,7 +3,7 @@ local cmd = self.cmd
 
 --printf("START: name=%s, clone=%d\n", node:get_name(), node:get_clone_index())
 
-local function animation()
+local function animation(self)
   local listener_id = nil
   local orig_pos = node:get_pos()
   local wid = 0
@@ -28,11 +28,11 @@ local function animation()
     dir = -dir
   end
 
-  listener_id = events:listen(animation_listener, {Event.SCRIPT_RESUME})
+  listener_id = self:listen(animation_listener, {Event.SCRIPT_RESUME})
 
   cmd:emit(
     {},
     { type=Event.SCRIPT_RESUME, listener=listener_id})
 end
 
-animation()
+animation(self)

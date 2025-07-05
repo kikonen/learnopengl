@@ -3,7 +3,7 @@ local cmd = self.cmd
 
 --printf("START: name=%s, clone=%d\n", node:get_name(), node:get_clone_index())
 
-local function animation_rotate()
+local function animation_rotate(self)
   local listener_id = nil
   local orig_pos = nil
   local wid = 0
@@ -40,14 +40,14 @@ local function animation_rotate()
     dir = -dir
   end
 
-  listener_id = events:listen(animation_listener, {Event.SCRIPT_RESUME})
+  listener_id = self:listen(animation_listener, {Event.SCRIPT_RESUME})
 
   cmd:emit(
     {},
     { type=Event.SCRIPT_RESUME, listener=listener_id})
 end
 
-local function animation_scale()
+local function animation_scale(self)
   local listener_id = nil
   local orig_pos = nil
   local wid = 0
@@ -73,12 +73,12 @@ local function animation_scale()
     dir = -dir
   end
 
-  listener_id = events:listen(animation_listener, {Event.SCRIPT_RESUME})
+  listener_id = self:listen(animation_listener, {Event.SCRIPT_RESUME})
 
   cmd:emit(
     {},
     { type=Event.SCRIPT_RESUME, listener=listener_id})
 end
 
-animation_scale()
-animation_rotate()
+animation_scale(self)
+animation_rotate(self)

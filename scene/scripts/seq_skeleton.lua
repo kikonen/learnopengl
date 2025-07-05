@@ -133,7 +133,7 @@ local function ray_caster()
     ray_cast)
 end
 
-local function animation()
+local function animation(self)
   -- local listener_id
   local idx = 0
   local wid = 0
@@ -213,7 +213,7 @@ local function animation()
     idx = idx + 1
   end
 
-  -- listener_id = events:listen(animation_listener, {Event.SCRIPT_RESUME})
+  -- listener_id = self:listen(animation_listener, {Event.SCRIPT_RESUME})
 
   -- cmd:emit(
   --   {},
@@ -224,7 +224,7 @@ local function animation()
     animation_listener)
 end
 
-local function event_test()
+local function event_test(self)
   local listener_id
 
   local function test_listener(e)
@@ -245,6 +245,6 @@ local function event_test()
   events:unlisten(listener_id)
 end
 
-event_test()
-animation()
-ray_caster()
+event_test(self)
+animation(self)
+ray_caster(self)
