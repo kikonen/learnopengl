@@ -1,5 +1,23 @@
 local rnd = math.random
 
+function create_new_skeleton()
+  create_new_node("skeleton_army")
+end
+
+function trigger_create_new_skeleton()
+  need_create_node = true
+end
+
+function create_new_fps_counter()
+  local opt = {
+    type = "fps_counter",
+    id = "fps_counter",
+    pos = vec3(2, -2, -1)
+  }
+  local node_id = scene:create_node(opt)
+  printf("created_fps_coutner: %d\n", node_id)
+end
+
 function create_new_node(type)
   local opt = {
     type = type,
@@ -54,5 +72,6 @@ end
 create_new_node("water_ball")
 create_new_node("pool")
 create_new_node("cylon_group")
+-- create_new_fps_counter()
 
 -- delete_test()

@@ -311,6 +311,8 @@ node->getName(), id, typeId);
             node->getId(), node->getId());
 
         execScript(scriptlet);
+
+        execScript("Updater:refresh()");
     }
 
     bool ScriptSystem::hasScriptEntry(
@@ -373,7 +375,7 @@ node->getName(), id, typeId);
 
         if (!global) {
             std::string classScriptlet = fmt::format(
-            "classes[{}] = classes[{}] or Node:new({{ type_id={} }})",
+            "classes[{}] = classes[{}] or Node:new_class({{ type_id={} }})",
             typeId, typeId, typeId);
 
             std::string inlineScriptlet;
@@ -494,6 +496,8 @@ end)", fnName, scriptFile.m_source);
                 }
                 return sol::protected_function_result{ getLua(), 0, 0, 0, sol::call_status::runtime };
             });
+
+            execScript("Updater:refresh()");
         }
     }
 

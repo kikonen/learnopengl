@@ -1,5 +1,9 @@
 print("LUA: MODULE util")
 
+function debug(...)
+  io.write(string.format(...))
+end
+
 function printf(...)
   io.write(string.format(...))
 end

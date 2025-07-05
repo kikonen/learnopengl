@@ -1,8 +1,4 @@
---printf("START: name=%s, clone=%d\n", node:get_name(), node:get_clone_index())
-
-print("-------------")
-table_print(self)
-print("-------------")
+--debug("START: name=%s, clone=%d\n", node:get_name(), node:get_clone_index())
 
 local rnd = math.random
 
@@ -20,7 +16,7 @@ if not State.explode then
 
   local EXPLODE_SID = util.sid("explode")
 
-  printf("LUA: SID=%d, SID_NAME=%s\n", ANIM_SWING_QUICK, util.sid_name(ANIM_SWING_QUICK))
+  debug("LUA: SID=%d, SID_NAME=%s\n", ANIM_SWING_QUICK, util.sid_name(ANIM_SWING_QUICK))
 
   function State:explode()
     explode_cid = self.cmd:audio_play(
@@ -82,6 +78,10 @@ if not State.explode then
 
     return cid
   end
+
+  print("-------------")
+  table_print(self)
+  print("-------------")
 end)()
 else
   print("Register STATE: ALREADY_DONE")
@@ -89,7 +89,7 @@ end
 
 local INITIAL_RAY_DEGREES = 50 - rnd(100)
 
-local function ray_caster()
+local function ray_caster(self)
   local node = self.node
   local cmd = self.cmd
 
@@ -110,7 +110,7 @@ local function ray_caster()
     local node_front = node:get_front()
     local node_pos = node:get_pos()
 
-    printf("front: %s\n", node_front)
+    debug("front: %s\n", node_front)
 
     local prev_pos = node_pos
     local prev_cid = 0
@@ -119,7 +119,7 @@ local function ray_caster()
       local next_pos = args.data:waypoint(i)
       local rel_pos = next_pos - prev_pos
 
-      --printf("A: waypoint-%d: %s, rel=%s\n", i, next_pos, rel_pos)
+      --debug("A: waypoint-%d: %s, rel=%s\n", i, next_pos, rel_pos)
 
       attack_cid = self:attack(prev_cid)
 
@@ -153,7 +153,7 @@ local function ray_caster()
     cmd:particle_emit(
       { count=(10 + rnd(50)) * 100 })
 
-    printf("front: %s\n", node:get_front())
+    debug("front: %s\n", node:get_front())
 
     local nodePos = node:get_pos()
     local targetPos = args.data.pos
@@ -167,9 +167,9 @@ local function ray_caster()
     local cosine = glm.dot(n1, n2)
     local angle = glm.degrees(math.acos(cosine))
 
-    printf("n1: %s\n", n1)
-    printf("n2: %s\n", n2)
-    printf("cosine: %f\n", cosine)
+    debug("n1: %s\n", n1)
+    debug("n2: %s\n", n2)
+    debug("cosine: %f\n", cosine)
 
     if cosine < 0 then
       angle = angle - 180
@@ -180,9 +180,9 @@ local function ray_caster()
       n2)
     -- local rot = util.axis_degrees_to_quat(vec3(0, 1, 0), rot_degrees)
 
-    printf("rotate: %f\n", rot_degrees)
-    printf("angle: %f\n", angle)
-    printf("ray_degrees: %f\n", ray_degrees)
+    debug("rotate: %f\n", rot_degrees)
+    debug("angle: %f\n", angle)
+    debug("ray_degrees: %f\n", ray_degrees)
 
     local cancel_cid = 0
 
@@ -256,10 +256,10 @@ local function ray_caster()
       path_callback)
   end
 
-  Updater:add_updater(cast_update)
+  self:add_updater(cast_update)
 end
 
-local function animation()
+local function animation(self)
   local node = self.node
   local cmd = self.cmd
 
@@ -296,14 +296,14 @@ local function animation()
     animation_listener)
 end
 
-local function start()
-  animation()
-  ray_caster()
+local function start(self)
+  animation(self)
+  ray_caster(self)
 end
 
 local function update(dt)
-  -- printf("skeleton_update: dt=%f\n", dt or 0)
+  -- debug("skeleton_update: dt=%f\n", dt or 0)
 end
 
-Updater:add_updater(update)
-start()
+self:add_updater(update)
+start(self)

@@ -1,16 +1,10 @@
 --printf("START: name=%s, clone=%d\n", node:get_name(), node:get_clone_index())
 
-print("-------------")
-table_print(self)
-print("-------------")
-
 local rnd = math.random
-
-local need_create_node = false
 
 if not State.explode then
 (function()
-  print("Register STATE")
+  debug("Register STATE")
 
   local ANIM_IDLE = util.sid("master:Idle")
   local ANIM_IDLE_2 = util.sid("master:Idle2")
@@ -22,7 +16,7 @@ if not State.explode then
 
   local EXPLODE_SID = util.sid("explode")
 
-  printf("LUA: SID=%d, SID_NAME=%s\n", ANIM_SWING_QUICK, util.sid_name(ANIM_SWING_QUICK))
+  debug("LUA: SID=%d, SID_NAME=%s\n", ANIM_SWING_QUICK, util.sid_name(ANIM_SWING_QUICK))
 
   function State:explode()
     explode_cid = self.cmd:audio_play(
@@ -84,6 +78,10 @@ if not State.explode then
 
     return cid
   end
+
+  print("-------------")
+  table_print(self)
+  print("-------------")
 end)()
 else
   print("Register STATE: ALREADY_DONE")
@@ -91,7 +89,7 @@ end
 
 local INITIAL_RAY_DEGREES = 50 - rnd(100)
 
-local function ray_caster()
+local function ray_caster(self)
   local node = self.node
   local cmd = self.cmd
 
@@ -112,7 +110,7 @@ local function ray_caster()
     local node_front = node:get_front()
     local node_pos = node:get_pos()
 
-    printf("front: %s\n", node_front)
+    debug("front: %s\n", node_front)
 
     local prev_pos = node_pos
     local prev_cid = 0
@@ -121,7 +119,7 @@ local function ray_caster()
       local next_pos = args.data:waypoint(i)
       local rel_pos = next_pos - prev_pos
 
-      printf("A: waypoint-%d: %s, rel=%s\n", i, next_pos, rel_pos)
+      debug("A: waypoint-%d: %s, rel=%s\n", i, next_pos, rel_pos)
 
       attack_cid = self:attack(prev_cid)
 
@@ -138,13 +136,13 @@ local function ray_caster()
   end
 
   local function ray_cast_callback(args)
-    printf("ray_cast_callback: %s\n", table_format(args))
+    debug("ray_cast_callback: %s\n", table_format(args))
     if not args.data.is_hit then
       -- print("NO_HIT")
       return
     end
 
-    printf("RAY_HIT: elapsed=%f\n", elapsed)
+    debug("RAY_HIT: elapsed=%f\n", elapsed)
 
     if elapsed < 5 then
       return
@@ -158,7 +156,7 @@ local function ray_caster()
     cmd:particle_emit(
       { count=(10 + rnd(50)) * 100 })
 
-    printf("front: %s\n", node:get_front())
+    debug("front: %s\n", node:get_front())
 
     local nodePos = node:get_pos()
     local targetPos = args.data.pos
@@ -172,9 +170,9 @@ local function ray_caster()
     local cosine = glm.dot(n1, n2)
     local angle = glm.degrees(math.acos(cosine))
 
-    printf("n1: %s\n", n1)
-    printf("n2: %s\n", n2)
-    printf("cosine: %f\n", cosine)
+    debug("n1: %s\n", n1)
+    debug("n2: %s\n", n2)
+    debug("cosine: %f\n", cosine)
 
     if cosine < 0 then
       angle = angle - 180
@@ -185,9 +183,9 @@ local function ray_caster()
       n2)
     -- local rot = util.axis_degrees_to_quat(vec3(0, 1, 0), rot_degrees)
 
-    printf("rotate: %f\n", rot_degrees)
-    printf("angle: %f\n", angle)
-    printf("ray_degrees: %f\n", ray_degrees)
+    debug("rotate: %f\n", rot_degrees)
+    debug("angle: %f\n", angle)
+    debug("ray_degrees: %f\n", ray_degrees)
 
     local cancel_cid = 0
 
@@ -238,7 +236,7 @@ local function ray_caster()
     local rot = util.axis_degrees_to_quat(vec3(0, 1, 0), ray_degrees)
     local dir = rot:to_mat4() * node:get_front()
 
-    printf("CAST: %s\n", dir)
+    debug("CAST: %s\n", dir)
 
     cast_cid = cmd:cancel(
       {},
@@ -251,10 +249,10 @@ local function ray_caster()
       ray_cast_callback)
   end
 
-  Updater:add_updater(cast_update)
+  self:add_updater(cast_update)
 end
 
-local function animation()
+local function animation(self)
   local node = self.node
   local cmd = self.cmd
 
@@ -291,48 +289,9 @@ local function animation()
     animation_listener)
 end
 
-local function start()
-  animation()
-  ray_caster()
+local function start(self)
+  animation(self)
+  ray_caster(self)
 end
 
-local function update(dt)
-  -- printf("skeleton_update: dt=%f\n", dt or 0)
-  if need_create_node then
-    create_new_skeleton()
-  end
-end
-
-Updater:add_updater(update)
-start()
-
-function create_new_node(type)
-  local opt = {
-    type = type,
-    pos = vec3(rnd(10), 0.5, rnd(10)),
-    rot = vec3(0, rnd(360), 0),
-    scale = vec3(0.9 + rnd(0.2)),
-  }
-  local node_id = scene:create_node(opt)
-  printf("created_node: %d\n", node_id)
-end
-
-function create_new_skeleton()
-  create_new_node("skeleton_army")
-end
-
-function trigger_create_new_skeleton()
-  need_create_node = true
-end
-
-function create_new_fps_counter()
-  local opt = {
-    type = "fps_counter",
-    id = "fps_counter",
-    pos = vec3(2, -2, -1)
-  }
-  local node_id = scene:create_node(opt)
-  printf("created_fps_coutner: %d\n", node_id)
-end
-
-create_new_fps_counter()
+start(self)
