@@ -45,13 +45,13 @@ namespace {
 namespace editor
 {
     DebugTool::DebugTool(EditorFrame& editor)
-        : Tool{ editor }
+        : Tool{ editor, "Debug" }
     {
     }
 
     DebugTool::~DebugTool() = default;
 
-    void DebugTool::draw(
+    void DebugTool::drawImpl(
         const RenderContext& ctx,
         Scene* scene,
         render::DebugContext& dbg)

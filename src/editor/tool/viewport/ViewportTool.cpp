@@ -40,13 +40,13 @@
 namespace editor
 {
     ViewportTool::ViewportTool(EditorFrame& editor)
-        : Tool{ editor }
+        : Tool{ editor, "Viewport" }
     {
     }
 
     ViewportTool::~ViewportTool() = default;
 
-    void ViewportTool::draw(
+    void ViewportTool::drawImpl(
         const RenderContext& ctx,
         Scene* scene,
         render::DebugContext& dbg)

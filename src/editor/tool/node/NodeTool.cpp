@@ -1,4 +1,4 @@
-#include "NodeEditTool.h"
+#include "NodeTool.h"
 
 #include <math.h>
 
@@ -24,8 +24,10 @@
 #include "script/command/AudioPlay.h"
 #include "script/command/AudioPause.h"
 
-#include "model/Node.h"
 #include "model/NodeType.h"
+#include "model/Node.h"
+#include "model/CreateState.h"
+#include "model/CompositeBuilder.h"
 
 #include "render/NodeDraw.h"
 #include "render/FrameBuffer.h"
@@ -60,13 +62,13 @@ namespace {
 
 namespace editor
 {
-    NodeEditTool::NodeEditTool(EditorFrame& editor)
-        : Tool{ editor}
+    NodeTool::NodeTool(EditorFrame& editor)
+        : Tool{ editor, "Node" }
     { }
 
-    NodeEditTool::~NodeEditTool() = default;
+    NodeTool::~NodeTool() = default;
 
-    void NodeEditTool::prepare(const PrepareContext& ctx)
+    void NodeTool::prepare(const PrepareContext& ctx)
     {
         auto* dispatcherView = ctx.m_registry->m_dispatcherView;
 
@@ -82,14 +84,14 @@ namespace editor
             });
     }
 
-    void NodeEditTool::draw(
+    void NodeTool::drawImpl(
         const RenderContext& ctx,
         Scene* scene,
         render::DebugContext& dbg)
     {
         if (ImGui::CollapsingHeader("Node"))
         {
-            renderNodeEdit(ctx, dbg);
+            renderNode(ctx, dbg);
         }
 
         if (ImGui::CollapsingHeader("Animation"))
@@ -98,7 +100,7 @@ namespace editor
         }
     }
 
-    void NodeEditTool::renderNodeEdit(
+    void NodeTool::renderNode(
         const RenderContext& ctx,
         render::DebugContext& dbg)
     {
@@ -121,7 +123,7 @@ namespace editor
         }
     }
 
-    void NodeEditTool::renderNodeSelector(
+    void NodeTool::renderNodeSelector(
         const RenderContext& ctx,
         render::DebugContext& dbg)
     {
@@ -148,7 +150,7 @@ namespace editor
         }
     }
 
-    void NodeEditTool::renderNodeProperties(
+    void NodeTool::renderNodeProperties(
         const RenderContext& ctx,
         render::DebugContext& dbg)
     {
@@ -160,7 +162,7 @@ namespace editor
         {
             glm::vec3 pos = state.getPosition();
             // , "%.3f", ImGuiInputTextFlags_EnterReturnsTrue
-            if (ImGui::InputFloat3("Node position", glm::value_ptr(pos))) {
+            if (ImGui::InputFloat3("Position", glm::value_ptr(pos))) {
                 state.setPosition(pos);
             }
         }
@@ -168,7 +170,7 @@ namespace editor
         {
             glm::vec3 rot = state.getDegreesRotation();
             // , "%.3f", ImGuiInputTextFlags_EnterReturnsTrue
-            if (ImGui::InputFloat3("Node rotation", glm::value_ptr(rot))) {
+            if (ImGui::InputFloat3("Rotation", glm::value_ptr(rot))) {
                 state.setDegreesRotation(rot);
 
                 auto quat = util::degreesToQuat(rot);
@@ -182,18 +184,25 @@ namespace editor
 
         {
             glm::vec3 scale = state.getScale();
-            if (ImGui::InputFloat3("Node scale", glm::value_ptr(scale))) {
+            if (ImGui::InputFloat3("Scale", glm::value_ptr(scale))) {
                 state.setScale(scale);
             }
         }
 
-        if (ImGui::Button("Delete node"))
+        if (ImGui::Button("Delete"))
         {
             onDeleteNode(ctx, m_state.m_selectedNode);
         }
+
+        ImGui::SameLine();
+
+        if (ImGui::Button("Clone"))
+        {
+            onCloneNode(ctx, m_state.m_selectedNode);
+        }
     }
 
-    void NodeEditTool::renderTypeProperties(
+    void NodeTool::renderTypeProperties(
         const RenderContext& ctx,
         render::DebugContext& dbg)
     {
@@ -227,7 +236,7 @@ namespace editor
         }
     }
 
-    void NodeEditTool::renderRigProperties(
+    void NodeTool::renderRigProperties(
         const RenderContext& ctx,
         render::DebugContext& dbg)
     {
@@ -336,7 +345,7 @@ namespace editor
         }
     }
 
-    void NodeEditTool::renderNodeDebug(
+    void NodeTool::renderNodeDebug(
         const RenderContext& ctx,
         render::DebugContext& dbg)
     {
@@ -382,7 +391,7 @@ namespace editor
         }
     }
 
-    void NodeEditTool::renderAnimationDebug(
+    void NodeTool::renderAnimationDebug(
         const RenderContext& ctx,
         render::DebugContext& dbg)
     {
@@ -427,7 +436,7 @@ namespace editor
         }
     }
 
-    void NodeEditTool::processInputs(
+    void NodeTool::processInputs(
         const RenderContext& ctx,
         Scene* scene,
         const Input& input,
@@ -449,7 +458,7 @@ namespace editor
         }
     }
 
-    void NodeEditTool::handleSelectNode(
+    void NodeTool::handleSelectNode(
         const RenderContext& ctx,
         Scene* scene,
         const Input& input,
@@ -546,7 +555,7 @@ namespace editor
         //}
     }
 
-    void NodeEditTool::onSelectNode(
+    void NodeTool::onSelectNode(
         const RenderContext& ctx,
         pool::NodeHandle nodeHandle)
     {
@@ -562,7 +571,7 @@ namespace editor
             });
     }
 
-    void NodeEditTool::onDeleteNode(
+    void NodeTool::onDeleteNode(
         const RenderContext& ctx,
         pool::NodeHandle nodeHandle)
     {
@@ -575,4 +584,43 @@ namespace editor
         };
         ctx.m_registry->m_dispatcherWorker->send(evt);
     }
+
+    void NodeTool::onCloneNode(
+        const RenderContext& ctx,
+        pool::NodeHandle nodeHandle)
+    {
+        auto* node = m_state.m_selectedNode.toNode();
+        if (!node) return;
+
+        const auto& state = node->getState();
+        const auto* type = node->getType();
+
+        {
+            ki::node_id parentId{ node->getParentHandle().toId() };
+            glm::vec3 pos{ state.getPosition() };
+            glm::quat quat{ state.getRotation() };
+            glm::vec3 scale{ state.getScale() };
+
+            CreateState state{
+                pos,
+                scale,
+                quat };
+
+            CompositeBuilder builder{ NodeRegistry::get() };
+            if (builder.build(parentId, type, state)) {
+                auto rootHandle = builder.asyncAttach(ctx.m_registry);
+
+                auto& commandEngine = script::CommandEngine::get();
+                commandEngine.addCommand(
+                    0,
+                    script::SelectNode{
+                        rootHandle,
+                        true,
+                        false
+                    });
+            }
+        }
+
+    }
+
 }

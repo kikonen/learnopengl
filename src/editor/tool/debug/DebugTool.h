@@ -12,7 +12,7 @@ namespace editor
         DebugTool(EditorFrame& editor);
         ~DebugTool() override;
 
-        void draw(
+        void drawImpl(
             const RenderContext& ctx,
             Scene* scene,
             render::DebugContext& dbg) override;

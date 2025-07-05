@@ -309,9 +309,10 @@
     <ClCompile Include="src\editor\console\ConsoleExample.cpp" />
     <ClCompile Include="src\editor\console\ConsoleState.cpp" />
     <ClCompile Include="src\editor\console\Executor.cpp" />
+    <ClCompile Include="src\editor\editor_util.cpp" />
     <ClCompile Include="src\editor\tool\camera\CameraTool.cpp" />
     <ClCompile Include="src\editor\tool\debug\DebugTool.cpp" />
-    <ClCompile Include="src\editor\tool\node\NodeEditTool.cpp" />
+    <ClCompile Include="src\editor\tool\node\NodeTool.cpp" />
     <ClCompile Include="src\editor\tool\node_type\NodeTypeTool.cpp" />
     <ClCompile Include="src\editor\tool\options\OptionsTool.cpp" />
     <ClCompile Include="src\editor\tool\status\StatusTool.cpp" />
@@ -723,12 +724,13 @@
     <ClInclude Include="src\editor\console\ConsoleState.h" />
     <ClInclude Include="src\editor\console\Executor.h" />
     <ClInclude Include="src\editor\console\HistoryItem.h" />
+    <ClInclude Include="src\editor\editor_util.h" />
     <ClInclude Include="src\editor\tool\camera\CameraTool.h" />
     <ClInclude Include="src\editor\tool\camera\CameraToolState.h" />
     <ClInclude Include="src\editor\tool\debug\DebugTool.h" />
     <ClInclude Include="src\editor\tool\debug\DebugToolState.h" />
-    <ClInclude Include="src\editor\tool\node\NodeEditToolState.h" />
-    <ClInclude Include="src\editor\tool\node\NodeEditTool.h" />
+    <ClInclude Include="src\editor\tool\node\NodeToolState.h" />
+    <ClInclude Include="src\editor\tool\node\NodeTool.h" />
     <ClInclude Include="src\editor\tool\node_type\NodeTypeTool.h" />
     <ClInclude Include="src\editor\tool\node_type\NodeTypeToolState.h" />
     <ClInclude Include="src\editor\tool\options\OptionsTool.h" />

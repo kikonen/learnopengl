@@ -12,7 +12,7 @@ namespace editor
         ViewportTool(EditorFrame& editor);
         ~ViewportTool() override;
 
-        void draw(
+        void drawImpl(
             const RenderContext& ctx,
             Scene* scene,
             render::DebugContext& dbg) override;

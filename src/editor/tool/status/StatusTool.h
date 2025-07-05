@@ -12,7 +12,7 @@ namespace editor
         StatusTool(EditorFrame& editor);
         ~StatusTool() override;
 
-        void draw(
+        void drawImpl(
             const RenderContext& ctx,
             Scene* scene,
             render::DebugContext& dbg) override;

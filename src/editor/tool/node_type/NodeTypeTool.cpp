@@ -54,7 +54,7 @@ namespace {
 namespace editor
 {
     NodeTypeTool::NodeTypeTool(EditorFrame& editor)
-        : Tool{ editor }
+        : Tool{ editor, "NodeType" }
     {
     }
 
@@ -69,7 +69,7 @@ namespace editor
     {
     }
 
-    void NodeTypeTool::draw(
+    void NodeTypeTool::drawImpl(
         const RenderContext& ctx,
         Scene* scene,
         render::DebugContext& dbg)
@@ -147,7 +147,7 @@ namespace editor
         {
             glm::vec3 rot = util::quatToDegrees(type->m_baseRotation);
             // , "%.3f", ImGuiInputTextFlags_EnterReturnsTrue
-            if (ImGui::InputFloat3("Type base rotation", glm::value_ptr(rot))) {
+            if (ImGui::InputFloat3("Base rotation", glm::value_ptr(rot))) {
                 type->m_baseRotation = util::degreesToQuat(rot);
 
                 auto quat = util::degreesToQuat(rot);
@@ -161,12 +161,12 @@ namespace editor
 
         {
             glm::vec3 scale = type->m_baseScale;
-            if (ImGui::InputFloat3("Type base scale", glm::value_ptr(scale))) {
+            if (ImGui::InputFloat3("Base scale", glm::value_ptr(scale))) {
                 type->m_baseScale = scale;
             }
         }
 
-        if (ImGui::Button("Create node"))
+        if (ImGui::Button("Create"))
         {
             onCreateNode(ctx, m_state.m_selectedType);
         }

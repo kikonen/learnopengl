@@ -2,19 +2,19 @@
 
 #include "editor/tool/Tool.h"
 
-#include "NodeEditToolState.h"
+#include "NodeToolState.h"
 
 namespace editor
 {
-    class NodeEditTool : public Tool
+    class NodeTool : public Tool
     {
     public:
-        NodeEditTool(EditorFrame& editor);
-        ~NodeEditTool() override;
+        NodeTool(EditorFrame& editor);
+        ~NodeTool() override;
 
         void prepare(const PrepareContext& ctx) override;
 
-        void draw(
+        void drawImpl(
             const RenderContext& ctx,
             Scene* scene,
             render::DebugContext& dbg) override;
@@ -34,7 +34,7 @@ namespace editor
             const InputState& inputState,
             const InputState& lastInputState);
 
-        void renderNodeEdit(
+        void renderNode(
             const RenderContext& ctx,
             render::DebugContext& dbg);
 
@@ -71,7 +71,11 @@ namespace editor
             const RenderContext& ctx,
             pool::NodeHandle nodeHandle);
 
+        void onCloneNode(
+            const RenderContext& ctx,
+            pool::NodeHandle nodeHandle);
+
     private:
-        NodeEditToolState m_state;
+        NodeToolState m_state;
     };
 }

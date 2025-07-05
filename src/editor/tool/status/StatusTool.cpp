@@ -34,13 +34,13 @@ class PawnController;
 namespace editor
 {
     StatusTool::StatusTool(EditorFrame& editor)
-        : Tool{ editor }
+        : Tool{ editor, "Status" }
     {
     }
 
     StatusTool::~StatusTool() = default;
 
-    void StatusTool::draw(
+    void StatusTool::drawImpl(
         const RenderContext& ctx,
         Scene* scene,
         render::DebugContext& dbg)

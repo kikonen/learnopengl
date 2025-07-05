@@ -12,12 +12,12 @@ namespace editor
         OptionsTool(EditorFrame& editor);
         ~OptionsTool() override;
 
-        void drawMenu(
+        void drawMenuImpl(
             const RenderContext& ctx,
             Scene* scene,
             render::DebugContext& dbg) override;
 
-        void draw(
+        void drawImpl(
             const RenderContext& ctx,
             Scene* scene,
             render::DebugContext& dbg) override;
@@ -30,7 +30,7 @@ namespace editor
             const InputState& lastInputState) override;
 
     protected:
-        void renderMiscDebug(
+        void renderOptions(
             const RenderContext& ctx,
             render::DebugContext& dbg);
 

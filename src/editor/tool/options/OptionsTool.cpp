@@ -35,13 +35,13 @@ class PawnController;
 namespace editor
 {
     OptionsTool::OptionsTool(EditorFrame& editor)
-        : Tool{ editor }
+        : Tool{ editor, "Options" }
     {
     }
 
     OptionsTool::~OptionsTool() = default;
 
-    void OptionsTool::drawMenu(
+    void OptionsTool::drawMenuImpl(
         const RenderContext& ctx,
         Scene* scene,
         render::DebugContext& dbg)
@@ -53,14 +53,14 @@ namespace editor
         }
     }
 
-    void OptionsTool::draw(
+    void OptionsTool::drawImpl(
         const RenderContext& ctx,
         Scene* scene,
         render::DebugContext& dbg)
     {
         if (ImGui::CollapsingHeader("Options"))
         {
-            renderMiscDebug(ctx, dbg);
+            renderOptions(ctx, dbg);
         }
     }
 
@@ -74,7 +74,7 @@ namespace editor
     }
 
 
-    void OptionsTool::renderMiscDebug(
+    void OptionsTool::renderOptions(
         const RenderContext& ctx,
         render::DebugContext& dbg)
     {

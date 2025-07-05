@@ -39,22 +39,21 @@ class PawnController;
 namespace editor
 {
     CameraTool::CameraTool(EditorFrame& editor)
-        : Tool{ editor }
+        : Tool{ editor, "Camera" }
     {
     }
 
     CameraTool::~CameraTool() = default;
 
-    void CameraTool::draw(
+    void CameraTool::drawImpl(
         const RenderContext& ctx,
         Scene* scene,
         render::DebugContext& dbg)
     {
         if (ImGui::CollapsingHeader("Camera"))
         {
-            renderCameraDebug(ctx, dbg);
+            renderCamera(ctx, dbg);
         }
-
     }
 
     void CameraTool::processInputs(
@@ -66,7 +65,7 @@ namespace editor
     {
     }
 
-    void CameraTool::renderCameraDebug(
+    void CameraTool::renderCamera(
         const RenderContext& ctx,
         render::DebugContext& dbg)
     {
