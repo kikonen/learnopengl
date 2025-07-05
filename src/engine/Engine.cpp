@@ -25,6 +25,8 @@
 
 #include "shader/ProgramRegistry.h"
 
+#include "scene/Scene.h"
+
 #include "gui/Window.h"
 
 #include "SystemInit.h"
@@ -250,7 +252,9 @@ void Engine::showFps(const ki::FpsCounter& fpsCounter)
 {
     auto& assets = Assets::modify();
 
-    auto summary = fpsCounter.formatSummary(m_title.c_str());
+    std::string title = m_currentScene ? m_currentScene->m_name : "OpenGL";
+
+    auto summary = fpsCounter.formatSummary(title.c_str());
     m_window->setTitle(summary);
 
     //if (m_window->isFullScreen() && !assets.glVendorNvidia) {

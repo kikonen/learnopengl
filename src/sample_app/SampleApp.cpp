@@ -730,6 +730,8 @@ std::shared_ptr<Scene> SampleApp::loadScene()
 
     {
         if (!assets.sceneFile.empty()) {
+            scene->m_name = assets.sceneFile;
+
             auto ctx = std::make_shared<loader::Context>(
                 m_alive,
                 m_asyncLoader,

@@ -123,6 +123,8 @@ public:
     std::unique_ptr<render::Batch> m_batch;
     //std::unique_ptr<render::NodeDraw> m_nodeDraw;
 
+    std::string m_name;
+
 protected:
 
 private:
