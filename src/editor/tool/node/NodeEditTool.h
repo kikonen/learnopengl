@@ -12,6 +12,8 @@ namespace editor
         NodeEditTool(EditorFrame& editor);
         ~NodeEditTool() override;
 
+        void prepare(const PrepareContext& ctx) override;
+
         void draw(
             const RenderContext& ctx,
             Scene* scene,

@@ -283,7 +283,7 @@ namespace loader {
     void SceneLoader::attachResolvedNode(
         const ResolvedNode& resolved)
     {
-        auto& handle = resolved.handle;
+        auto& nodeHandle = resolved.handle;
 
         {
             event::Event evt { event::Type::node_add };
@@ -292,7 +292,7 @@ namespace loader {
                 .state = resolved.state,
             };
             evt.body.node = {
-                .target = handle.toId(),
+                .target = nodeHandle.toId(),
                 .parentId = resolved.parentId,
             };
             assert(evt.body.node.target > 1);
@@ -302,7 +302,7 @@ namespace loader {
         if (resolved.active) {
             event::Event evt { event::Type::node_activate };
             evt.body.node = {
-                .target = handle.toId(),
+                .target = nodeHandle.toId(),
             };
             m_dispatcher->send(evt);
         }

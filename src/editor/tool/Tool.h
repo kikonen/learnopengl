@@ -1,6 +1,7 @@
 #pragma once
 
 class RenderContext;
+struct PrepareContext;
 class Scene;
 class Input;
 struct InputState;
@@ -19,6 +20,8 @@ namespace editor
     public:
         Tool(EditorFrame& editor);
         virtual ~Tool();
+
+        virtual void prepare(const PrepareContext& ctx) {}
 
         virtual void drawMenu(
             const RenderContext& ctx,

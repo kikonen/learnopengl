@@ -8,6 +8,7 @@
 
 #include "util/util.h"
 #include "util/file.h"
+#include "util/thread.h"
 #include "util/sid_format.h"
 #include "util/glm_format.h"
 #include "util/glm_util.h"
@@ -19,6 +20,9 @@
 #include "pool/TypeHandle.h"
 
 #include "asset/Assets.h"
+
+#include "event/Event.h"
+#include "event/Dispatcher.h"
 
 #include "component/Light.h"
 #include "component/CameraComponent.h"
@@ -104,7 +108,8 @@ ki::node_id CompositeBuilder::build(
     const NodeType* type,
     const CreateState& state)
 {
-    ki::node_id nodeId{ ki::StringID::nextID(type->getName()) };
+    ki::node_id nodeId{ ki::StringID::nextID(
+        fmt::format("<{}>", type->getName()))};
 
     // NOTE KI cannot allow duplicate id
     if (pool::NodeHandle::toHandle(nodeId)) return 0;
@@ -149,8 +154,10 @@ bool CompositeBuilder::build(
     return true;
 }
 
-void CompositeBuilder::attach()
+pool::NodeHandle CompositeBuilder::attach()
 {
+    ASSERT_WT();
+
     DagSort sorter;
     auto sorted = sorter.sort(m_resolvedNodes);
 
@@ -160,6 +167,43 @@ void CompositeBuilder::attach()
             resolved->parentId,
             resolved->state);
     }
+
+    return sorted[0]->handle;
+}
+
+pool::NodeHandle CompositeBuilder::asyncAttach(Registry* registry)
+{
+    DagSort sorter;
+    auto sorted = sorter.sort(m_resolvedNodes);
+
+    for (auto* resolved : sorted) {
+        asyncAttach(*resolved, registry);
+    }
+
+    return sorted[0]->handle;
+}
+
+pool::NodeHandle CompositeBuilder::asyncAttach(
+    const ResolvedNode& resolved,
+    Registry* registry)
+{
+    auto& nodeHandle = resolved.handle;
+
+    {
+        event::Event evt{ event::Type::node_add };
+        evt.blob = std::make_unique<event::BlobData>();
+        evt.blob->body = {
+            .state = resolved.state,
+        };
+        evt.body.node = {
+            .target = nodeHandle.toId(),
+            .parentId = resolved.parentId,
+        };
+        assert(evt.body.node.target > 1);
+        registry->m_dispatcherWorker->send(evt);
+    }
+
+    return nodeHandle;
 }
 
 void CompositeBuilder::buildNode(

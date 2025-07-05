@@ -1,5 +1,7 @@
 #include "NodeTypeRegistry.h"
 
+#include "util/thread.h"
+
 #include "pool/TypeHandle.h"
 
 #include "mesh/LodMesh.h"
@@ -52,9 +54,29 @@ void NodeTypeRegistry::clear()
     m_customMaterialTypes.clear();
 }
 
+void NodeTypeRegistry::registerType(
+    pool::TypeHandle typeHandle)
+{
+    std::lock_guard lock{ m_lock };
+
+    m_types.push_back(typeHandle);
+}
+
+std::vector<pool::TypeHandle> NodeTypeRegistry::getTypeHandles() const
+{
+    std::vector<pool::TypeHandle> types;
+    {
+        std::lock_guard lock{ m_lock };
+        types = m_types;
+    }
+    return types;
+}
+
 void NodeTypeRegistry::registerCustomMaterial(
     pool::TypeHandle typeHandle)
 {
+    ASSERT_RT();
+
     auto* type = typeHandle.toType();
     assert(type->m_customMaterial);
 

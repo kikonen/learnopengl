@@ -24,6 +24,11 @@ public:
 
     void clear();
 
+    void registerType(
+        pool::TypeHandle typeHandle);
+
+    std::vector<pool::TypeHandle> getTypeHandles() const;
+
     void registerCustomMaterial(
         pool::TypeHandle typeHandle);
 
@@ -33,6 +38,8 @@ public:
 
 private:
     mutable std::mutex m_lock{};
+
+    std::vector<pool::TypeHandle> m_types;
 
     std::vector<pool::TypeHandle> m_customMaterialTypes;
 };

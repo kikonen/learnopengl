@@ -95,18 +95,20 @@ void SelectionRegistry::attachListeners()
         event::Type::node_select,
         [this](const event::Event& e) {
             const auto& data = e.body.select;
-            if (auto handle = pool::NodeHandle::toHandle(data.target)) {
+            if (auto nodeHandle  = pool::NodeHandle::toHandle(data.target)) {
                 if (data.select) {
-                    selectNode(handle, data.append);
+                    selectNode(nodeHandle, data.append);
                 }
                 else {
-                    deselectNode(handle);
+                    deselectNode(nodeHandle);
                 }
             }
         });
 }
 
-void SelectionRegistry::selectNode(pool::NodeHandle handle, bool append)
+void SelectionRegistry::selectNode(
+    pool::NodeHandle nodeHandle,
+    bool append)
 {
     const auto& dbg = render::DebugContext::get();
 
@@ -114,12 +116,12 @@ void SelectionRegistry::selectNode(pool::NodeHandle handle, bool append)
         m_selected.clear();
     }
 
-    if (!handle) return;
-    if (isSelected(handle)) return;
+    if (!nodeHandle) return;
+    if (isSelected(nodeHandle)) return;
 
-    m_selected.push_back(handle);
+    m_selected.push_back(nodeHandle);
 
-    KI_INFO(fmt::format("selected: {}", handle.str()));
+    KI_INFO(fmt::format("selected: {}", nodeHandle.str()));
 
     // NOTE KI fancy test/debug
     if (dbg.m_selectionAxis != glm::vec3{ 0.f }) {
@@ -127,7 +129,7 @@ void SelectionRegistry::selectNode(pool::NodeHandle handle, bool append)
         commandEngine.addCommand(
             0,
             script::RotateNode{
-                handle,
+                nodeHandle,
                 5,
                 true,
                 dbg.m_selectionAxis,
@@ -136,10 +138,10 @@ void SelectionRegistry::selectNode(pool::NodeHandle handle, bool append)
     }
 }
 
-void SelectionRegistry::deselectNode(pool::NodeHandle handle)
+void SelectionRegistry::deselectNode(pool::NodeHandle nodeHandle)
 {
-    if (!handle) return;
-    auto it = std::remove(m_selected.begin(), m_selected.end(), handle);
+    if (!nodeHandle) return;
+    auto it = std::remove(m_selected.begin(), m_selected.end(), nodeHandle);
     m_selected.erase(it, m_selected.end());
 }
 
@@ -148,16 +150,20 @@ void SelectionRegistry::clearSelection()
     m_selected.clear();
 }
 
-void SelectionRegistry::tagNode(pool::NodeHandle handle, uint8_t tag)
+void SelectionRegistry::tagNode(
+    pool::NodeHandle nodeHandle,
+    uint8_t tag)
 {
-    if (!handle) return;
-    m_tagged.push_back(handle);
+    if (!nodeHandle) return;
+    m_tagged.push_back(nodeHandle);
 }
 
-void SelectionRegistry::untagNode(pool::NodeHandle handle, uint8_t tag)
+void SelectionRegistry::untagNode(
+    pool::NodeHandle nodeHandle,
+    uint8_t tag)
 {
-    if (!handle) return;
-    const auto& it = std::remove(m_tagged.begin(), m_tagged.end(), handle);
+    if (!nodeHandle) return;
+    const auto& it = std::remove(m_tagged.begin(), m_tagged.end(), nodeHandle);
     m_tagged.erase(it, m_tagged.end());
 }
 
@@ -176,9 +182,10 @@ void SelectionRegistry::setSelectionMaterial(const Material& material)
     *m_selectionMaterial = material;
 }
 
-int SelectionRegistry::getHighlightIndex(pool::NodeHandle handle) const noexcept
+int SelectionRegistry::getHighlightIndex(
+    pool::NodeHandle nodeHandle) const noexcept
 {
-    if (isSelected(handle)) return m_selectionMaterialIndex;
-    if (isTagged(handle)) return m_tagMaterialIndex;
+    if (isSelected(nodeHandle)) return m_selectionMaterialIndex;
+    if (isTagged(nodeHandle)) return m_tagMaterialIndex;
     return 0;
 }

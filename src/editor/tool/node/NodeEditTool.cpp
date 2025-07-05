@@ -66,6 +66,22 @@ namespace editor
 
     NodeEditTool::~NodeEditTool() = default;
 
+    void NodeEditTool::prepare(const PrepareContext& ctx)
+    {
+        auto* dispatcherView = ctx.m_registry->m_dispatcherView;
+
+        dispatcherView->addListener(
+            event::Type::node_select,
+            [this](const event::Event& e) {
+                const auto& data = e.body.select;
+                if (auto nodeHandle = pool::NodeHandle::toHandle(data.target)) {
+                    if (data.select) {
+                        m_state.m_selectedNode = nodeHandle;
+                    }
+                }
+            });
+    }
+
     void NodeEditTool::draw(
         const RenderContext& ctx,
         Scene* scene,

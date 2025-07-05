@@ -31,7 +31,7 @@ namespace nav
             [this]() mutable {
                 try {
                     m_running = true;
-                    util::markWorkerThread();
+                    util::markOtherThread();
 
                     while (m_requestCount > 0)
                     {

@@ -24,12 +24,12 @@ public:
 
     void attachListeners();
 
-    void selectNode(pool::NodeHandle handle, bool append);
-    void deselectNode(pool::NodeHandle handle);
+    void selectNode(pool::NodeHandle nodeHandle, bool append);
+    void deselectNode(pool::NodeHandle nodeHandle);
     void clearSelection();
 
-    void tagNode(pool::NodeHandle handle, uint8_t tag);
-    void untagNode(pool::NodeHandle handle, uint8_t tag);
+    void tagNode(pool::NodeHandle nodeHandle, uint8_t tag);
+    void untagNode(pool::NodeHandle nodeHandle, uint8_t tag);
     void clearTagged();
 
     size_t getTaggedCount() const noexcept
@@ -42,20 +42,20 @@ public:
         return m_selected.size();
     }
 
-    inline bool isSelected(const pool::NodeHandle handle) const noexcept
+    inline bool isSelected(const pool::NodeHandle nodeHandle) const noexcept
     {
-        return std::find(m_selected.begin(), m_selected.end(), handle) != m_selected.end();
+        return std::find(m_selected.begin(), m_selected.end(), nodeHandle) != m_selected.end();
     }
 
-    inline bool isTagged(const pool::NodeHandle handle) const noexcept
+    inline bool isTagged(const pool::NodeHandle nodeHandle) const noexcept
     {
-        return std::find(m_tagged.begin(), m_tagged.end(), handle) != m_tagged.end();
+        return std::find(m_tagged.begin(), m_tagged.end(), nodeHandle) != m_tagged.end();
     }
 
-    inline bool isHighlighted(const pool::NodeHandle handle) const noexcept
+    inline bool isHighlighted(const pool::NodeHandle nodeHandle) const noexcept
     {
-        const auto& it1 = std::find(m_tagged.begin(), m_tagged.end(), handle);
-        const auto& it2 = std::find(m_selected.begin(), m_selected.end(), handle);
+        const auto& it1 = std::find(m_tagged.begin(), m_tagged.end(), nodeHandle);
+        const auto& it2 = std::find(m_selected.begin(), m_selected.end(), nodeHandle);
 
         return it1 != m_tagged.begin() || it2 != m_selected.end();
     }
@@ -84,7 +84,7 @@ public:
     }
 
     // @return -1 if no highlight color
-    int getHighlightIndex(pool::NodeHandle handle) const noexcept;
+    int getHighlightIndex(pool::NodeHandle nodeHandle) const noexcept;
 
 private:
     Registry* m_registry{ nullptr };

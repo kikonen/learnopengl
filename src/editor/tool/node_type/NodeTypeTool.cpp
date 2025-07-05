@@ -20,9 +20,15 @@
 #include "event/Dispatcher.h"
 
 #include "model/NodeType.h"
+#include "model/Node.h"
+#include "model/CreateState.h"
+#include "model/CompositeBuilder.h"
 
 #include "render/NodeDraw.h"
 #include "render/FrameBuffer.h"
+
+#include "script/CommandEngine.h"
+#include "script/command/SelectNode.h"
 
 #include "animation/RigContainer.h"
 #include "animation/RigSocket.h"
@@ -34,7 +40,7 @@
 
 #include "scene/Scene.h"
 
-#include "registry/NodeRegistry.h"
+#include "registry/NodeTypeRegistry.h"
 #include "registry/ControllerRegistry.h"
 #include "registry/SelectionRegistry.h"
 
@@ -48,8 +54,9 @@ namespace {
 namespace editor
 {
     NodeTypeTool::NodeTypeTool(EditorFrame& editor)
-        : Tool{ editor}
-    { }
+        : Tool{ editor }
+    {
+    }
 
     NodeTypeTool::~NodeTypeTool() = default;
 
@@ -59,7 +66,8 @@ namespace editor
         const Input& input,
         const InputState& inputState,
         const InputState& lastInputState)
-    { }
+    {
+    }
 
     void NodeTypeTool::draw(
         const RenderContext& ctx,
@@ -103,14 +111,15 @@ namespace editor
         const RenderContext& ctx,
         render::DebugContext& dbg)
     {
-        const auto& nr = NodeRegistry::get();
+        const auto& typeRegistry = NodeTypeRegistry::get();
 
-        std::vector<NodeType*> types;
+        const auto& typeHandles = typeRegistry.getTypeHandles();
 
         const auto currType = m_state.m_selectedType.toType();
         if (ImGui::BeginCombo("Type selector", currType ? currType->getName().c_str() : nullptr)) {
-            for (const auto* type : types)
+            for (const auto typeHandle : typeHandles)
             {
+                const auto* type = typeHandle.toType();
                 if (!type) continue;
 
                 const auto* name = type->getName().c_str();
@@ -132,7 +141,7 @@ namespace editor
         const RenderContext& ctx,
         render::DebugContext& dbg)
     {
-        auto* type= m_state.m_selectedType.toType();
+        auto* type = m_state.m_selectedType.toType();
         if (!type) return;
 
         {
@@ -157,10 +166,10 @@ namespace editor
             }
         }
 
-        //if (ImGui::Button("Delete node"))
-        //{
-        //    onDeleteNode(ctx, m_state.m_selectedNode);
-        //}
+        if (ImGui::Button("Create node"))
+        {
+            onCreateNode(ctx, m_state.m_selectedType);
+        }
     }
 
     void NodeTypeTool::onSelectType(
@@ -177,5 +186,38 @@ namespace editor
         //        true,
         //        false
         //    });
+    }
+
+    void NodeTypeTool::onCreateNode(
+        const RenderContext& ctx,
+        pool::TypeHandle typeHandle)
+    {
+        const auto* type = typeHandle.toType();
+
+        {
+            ki::node_id parentId{ 0 };
+            glm::vec3 pos{ 0.f };
+            glm::vec3 rot{ 0.f };
+            glm::vec3 scale{ 1.f };
+
+            CreateState state{
+                pos,
+                scale,
+                util::degreesToQuat(rot) };
+
+            CompositeBuilder builder{ NodeRegistry::get() };
+            if (builder.build(parentId, type, state)) {
+                auto rootHandle = builder.asyncAttach(ctx.m_registry);
+
+                auto& commandEngine = script::CommandEngine::get();
+                commandEngine.addCommand(
+                    0,
+                    script::SelectNode{
+                        rootHandle,
+                        true,
+                        false
+                    });
+            }
+        }
     }
 }

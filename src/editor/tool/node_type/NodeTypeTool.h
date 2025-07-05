@@ -42,6 +42,10 @@ namespace editor
             const RenderContext& ctx,
             pool::TypeHandle TypeHandle);
 
+        void onCreateNode(
+            const RenderContext& ctx,
+            pool::TypeHandle TypeHandle);
+
     private:
         NodeTypeToolState m_state;
     };

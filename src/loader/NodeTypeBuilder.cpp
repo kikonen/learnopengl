@@ -129,6 +129,8 @@ namespace loader
         auto typeHandle = pool::TypeHandle::allocate(SID(name));
         auto* type = typeHandle.toType();
 
+        NodeTypeRegistry::get().registerType(typeHandle);
+
         type->setName(name);
         type->m_layer = typeData.layer;
 

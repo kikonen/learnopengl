@@ -8,8 +8,11 @@
 
 #include "ki/size.h"
 
-class NodeType;
+
+class Registry;
 class NodeRegistry;
+
+class NodeType;
 struct CreateState;
 struct CompositeDefinition;
 struct NodeDefinition;
@@ -48,7 +51,11 @@ public:
         std::vector<std::pair<std::string, ki::node_id>>& aliases,
         bool root);
 
-    void attach();
+    pool::NodeHandle attach();
+    pool::NodeHandle asyncAttach(Registry* registry);
+    pool::NodeHandle asyncAttach(
+        const ResolvedNode& resolved,
+        Registry* registry);
 
 private:
     void addResolvedNode(

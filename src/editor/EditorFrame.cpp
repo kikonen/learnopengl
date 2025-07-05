@@ -60,6 +60,14 @@ namespace editor {
 
         m_consoleFrame->prepare(ctx);
 
+        m_statusTool->prepare(ctx);
+        m_cameraTool->prepare(ctx);
+        m_nodeTypeTool->prepare(ctx);
+        m_nodeEditTool->prepare(ctx);
+        m_viewportTool->prepare(ctx);
+        m_debugTool->prepare(ctx);
+        m_optionsTool->prepare(ctx);
+
         //m_state.m_showConsole = true;
     }
 
