@@ -28,7 +28,7 @@ namespace animation
         m_dirtySnapshot.clear();
 
         // NOTE KI null entry
-        reserveInstance(1);
+        addInstance(1);
     }
 
     void SocketRegistry::shutdown()
@@ -47,7 +47,7 @@ namespace animation
         clear();
     }
 
-    uint32_t SocketRegistry::reserveInstance(size_t count)
+    uint32_t SocketRegistry::addInstance(size_t count)
     {
         ASSERT_WT();
 
@@ -67,6 +67,10 @@ namespace animation
         }
 
         return static_cast<uint32_t>(index);
+    }
+
+    void SocketRegistry::removeInstance(uint32_t index, size_t count)
+    {
     }
 
     std::span<glm::mat4> SocketRegistry::modifyRange(

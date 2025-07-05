@@ -85,7 +85,7 @@ void TextGenerator::updateVAO(
 
     m_draw->render(
         m_fontId,
-        "X", //m_text,
+        m_text,
         m_pivot,
         m_alignHorizontal,
         m_alignVertical,

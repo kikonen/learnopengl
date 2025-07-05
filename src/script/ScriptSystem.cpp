@@ -221,77 +221,103 @@ namespace script
 
     void ScriptSystem::bindTypeScript(
         bool global,
-        pool::TypeHandle handle,
+        pool::TypeHandle typeHandle,
         script::script_id scriptId)
     {
         std::lock_guard lock(m_lock);
 
         {
-            const auto& signature = getScriptSignature(handle, scriptId);
+            const auto& signature = getScriptSignature(typeHandle, scriptId);
             if (signature.empty()) return;
         }
 
-        auto it = m_scriptEntries.find(handle);
+        auto it = m_scriptEntries.find(typeHandle);
         if (it == m_scriptEntries.end()) {
             std::unordered_map<script::script_id, script::ScriptEntry> scriptMap;
-            m_scriptEntries.insert({ handle, scriptMap });
-            it = m_scriptEntries.find(handle);
+            m_scriptEntries.insert({ typeHandle, scriptMap });
+            it = m_scriptEntries.find(typeHandle);
         }
 
         {
-            const auto& scriptEntry = createScriptEntry(global, handle, scriptId);
+            const auto& scriptEntry = createScriptEntry(global, typeHandle, scriptId);
             if (scriptEntry.m_valid) {
                 it->second.insert({ scriptId, scriptEntry });
             }
         }
     }
 
-    void ScriptSystem::bindNodeScript(
-        const Node* node,
-        script::script_id scriptId)
+    void ScriptSystem::bindNode(
+        const Node* node)
     {
         std::lock_guard lock(m_lock);
 
-        const auto& handle = node->toHandle();
-        if (handle.isNull()) return;
-
-        if (!hasScriptEntry(node->m_typeHandle, scriptId)) return;
+        auto nodeHandle = node->toHandle();
 
         {
-            m_nodeApis.insert({ handle, std::make_unique<api::NodeAPI>(handle) });
-            m_nodeCommandApis.insert({ handle, std::make_unique<api::NodeCommandAPI>(m_commandEngine, handle) });
+            m_nodeApis.insert({ nodeHandle, std::make_unique<api::NodeAPI>(nodeHandle) });
+            m_nodeCommandApis.insert({ nodeHandle, std::make_unique<api::NodeCommandAPI>(m_commandEngine, nodeHandle) });
         }
 
         createNodeState(node);
+    }
+
+    void ScriptSystem::unbindNode(
+        const Node* node)
+    {
+        std::lock_guard lock(m_lock);
+
+        auto nodeHandle = node->toHandle();
+
+        {
+            m_nodeApis.erase(nodeHandle);
+            m_nodeCommandApis.erase(nodeHandle);
+        }
+
+        deleteNodeState(node);
     }
 
     void ScriptSystem::createNodeState(
         const Node* node)
     {
         const auto id = node->getId();
-        const auto typeId = node->m_typeHandle.toId();
-        std::string scriptlet = fmt::format(
-R"(-- {}
+        {
+            const auto typeId = node->m_typeHandle.toId();
+            std::string scriptlet = fmt::format(
+                R"(-- {}
 states[{}] = classes[{}]:new())",
-            node->getName(), id, typeId);
-        auto result = invokeLuaScript(scriptlet);
-        if (!result.valid()) return;
+node->getName(), id, typeId);
 
-        const auto handle = node->toHandle();
-        auto* nodeApi = m_nodeApis.find(handle)->second.get();
-        auto* cmdApi = m_nodeCommandApis.find(handle)->second.get();
+            auto result = invokeLuaScript(scriptlet);
+            if (!result.valid()) return;
+        }
 
-        sol::table nodeState = getLua()[TABLE_STATES][handle.toId()];
-        nodeState["id"] = node->getId();
-        nodeState["node"] = std::ref(nodeApi);
-        nodeState["cmd"] = std::ref(cmdApi);
+        {
+            const auto nodeHandle = node->toHandle();
+            auto* nodeApi = m_nodeApis.find(nodeHandle)->second.get();
+            auto* cmdApi = m_nodeCommandApis.find(nodeHandle)->second.get();
+
+            sol::table nodeState = getLua()[TABLE_STATES][nodeHandle.toId()];
+            nodeState["id"] = node->getId();
+            nodeState["cmd"] = std::ref(cmdApi);
+            nodeState["node"] = std::ref(nodeApi);
+        }
+    }
+
+    void ScriptSystem::deleteNodeState(
+        const Node* node)
+    {
+        auto scriptlet = fmt::format(
+            "if states[{}] then states[{}]:destroy() end",
+            node->getId(), node->getId());
+
+        execScript(scriptlet);
     }
 
     bool ScriptSystem::hasScriptEntry(
-        pool::TypeHandle handle,
+        pool::TypeHandle typeHandle,
         script::script_id scriptId)
     {
-        const auto& typeIt = m_scriptEntries.find(handle);
+        const auto& typeIt = m_scriptEntries.find(typeHandle);
         if (typeIt == m_scriptEntries.end()) return false;
 
         const auto& scriptMap = typeIt->second;
@@ -301,11 +327,11 @@ states[{}] = classes[{}]:new())",
     }
 
     std::vector<script::script_id> ScriptSystem::getScriptEntryIds(
-        pool::TypeHandle handle)
+        pool::TypeHandle typeHandle)
     {
         std::lock_guard lock(m_lock);
 
-        const auto& it = m_scriptEntries.find(handle);
+        const auto& it = m_scriptEntries.find(typeHandle);
         if (it == m_scriptEntries.end()) return {};
 
         std::vector<script::script_id> scripts;
@@ -317,14 +343,14 @@ states[{}] = classes[{}]:new())",
 
     script::ScriptEntry ScriptSystem::createScriptEntry(
         bool global,
-        pool::TypeHandle handle,
+        pool::TypeHandle typeHandle,
         script::script_id scriptId)
     {
-        const auto typeId = handle.toId();
-        auto* type = handle.toType();
+        const auto typeId = typeHandle.toId();
+        auto* type = typeHandle.toType();
 
         // NOTE KI unique wrapperFn for node
-        const std::string& fnName = getScriptSignature(handle, scriptId);
+        const std::string& fnName = getScriptSignature(typeHandle, scriptId);
         if (fnName.empty()) return {};
 
         const auto it = m_scripts.find(scriptId);
@@ -384,14 +410,14 @@ end)", fnName, scriptFile.m_source);
     }
 
     std::string ScriptSystem::getScriptSignature(
-        pool::TypeHandle handle,
+        pool::TypeHandle typeHandle,
         script::script_id scriptId) const
     {
         const auto it = m_scripts.find(scriptId);
         if (it == m_scripts.end()) return "";
 
-        if (handle) {
-            return fmt::format("fn_{}_{}_{}", handle.toId(), handle.toIndex(), scriptId);
+        if (typeHandle) {
+            return fmt::format("fn_{}_{}_{}", typeHandle.toId(), typeHandle.toIndex(), scriptId);
         }
 
         // NOTE KI global scriplet
@@ -446,7 +472,7 @@ end)", fnName, scriptFile.m_source);
 
         std::lock_guard lock(m_lock);
 
-        const auto& handle = node->toHandle();
+        const auto& nodeHandle = node->toHandle();
         const auto& it = m_scriptEntries.find(node->m_typeHandle);
 
         if (it == m_scriptEntries.end()) return;
@@ -459,8 +485,8 @@ end)", fnName, scriptFile.m_source);
 
             KI_INFO_OUT(fmt::format("SCRIPT::RUN: function={} - {}", fnName, node->getName()));
 
-            invokeLuaFunction([this, handle, &fnName]() {
-                sol::optional<sol::table> nodeState = getLua()[TABLE_STATES][handle.toId()];
+            invokeLuaFunction([this, nodeHandle, &fnName]() {
+                sol::optional<sol::table> nodeState = getLua()[TABLE_STATES][nodeHandle.toId()];
                 if (nodeState) {
                     sol::table t = nodeState.value();
                     sol::protected_function fn(t[fnName]);
@@ -496,12 +522,12 @@ end)", fnName, scriptFile.m_source);
     }
 
     bool ScriptSystem::hasFunction(
-        pool::NodeHandle handle,
+        pool::NodeHandle nodeHandle,
         std::string_view name)
     {
         //std::lock_guard lock(m_lock);
 
-        sol::optional<sol::table> nodeState = getLua()[TABLE_STATES][handle.toId()];
+        sol::optional<sol::table> nodeState = getLua()[TABLE_STATES][nodeHandle.toId()];
         if (!nodeState) return false;
 
         sol::optional<sol::function> fnPtr = nodeState.value()[name];

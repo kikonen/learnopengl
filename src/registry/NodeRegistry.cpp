@@ -935,6 +935,8 @@ void NodeRegistry::detachNode(
         return;
     }
 
+    node->unprepareWT({ m_registry }, m_states[node->m_entityIndex]);
+
     const auto* type = node->m_typeHandle.toType();
 
     if (node->m_physicsObjectId)

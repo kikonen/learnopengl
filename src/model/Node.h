@@ -114,6 +114,10 @@ public:
         const PrepareContext& ctx,
         NodeState& state);
 
+    void unprepareWT(
+        const PrepareContext& ctx,
+        NodeState& state);
+
     void prepareRT(
         const PrepareContext& ctx);
 

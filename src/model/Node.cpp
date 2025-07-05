@@ -131,9 +131,45 @@ void Node::prepareWT(
         }
     }
     else {
-        for (auto scriptId : type->getScripts())
-        {
-            scriptSystem.bindNodeScript(this, scriptId);
+        if (!type->getScripts().empty()) {
+            scriptSystem.bindNode(this);
+        }
+    }
+}
+
+void Node::unprepareWT(
+    const PrepareContext& ctx,
+    NodeState& state)
+{
+    auto* type = m_typeHandle.toType();
+
+    {
+        const auto rig = mesh::findRig(type->modifyLodMeshes());
+
+        if (rig) {
+            animation::AnimationSystem::get().unregisterInstance(
+                *rig,
+                state.m_boneBaseIndex,
+                state.m_socketBaseIndex);
+        }
+    }
+
+    //if (m_generator) {
+    //    m_generator->unprepareWT(ctx, *this);
+    //}
+
+    //if (m_particleGenerator) {
+    //    m_particleGenerator->unprepareWT();
+    //}
+
+    auto& scriptSystem = script::ScriptSystem::get();
+
+    if (m_typeFlags.root) {
+        // TODO KI not possible "unrun" global scripts
+    }
+    else {
+        if (!type->getScripts().empty()) {
+            scriptSystem.unbindNode(this);
         }
     }
 }

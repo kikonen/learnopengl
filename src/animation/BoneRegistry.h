@@ -31,7 +31,8 @@ namespace animation {
     protected:
         // Register node instance specific rig
         // @return instance index into bone transform buffer
-        uint32_t reserveInstance(size_t count);
+        uint32_t addInstance(size_t count);
+        void removeInstance(uint32_t index, size_t count);
 
         std::span<glm::mat4> modifyRange(
             uint32_t start,

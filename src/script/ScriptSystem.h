@@ -60,26 +60,25 @@ namespace script
 
         void bindTypeScript(
             bool global,
-            pool::TypeHandle handle,
+            pool::TypeHandle typeHandle,
             script::script_id scriptId);
 
-        void createNodeState(
+        void bindNode(
             const Node* node);
 
-        void bindNodeScript(
-            const Node* node,
-            script::script_id scriptId);
+        void unbindNode(
+            const Node* node);
 
         std::string getScriptSignature(
-            pool::TypeHandle handle,
+            pool::TypeHandle typeHandle,
             script::script_id scriptId) const;
 
         bool hasScriptEntry(
-            pool::TypeHandle handle,
+            pool::TypeHandle typeHandle,
             script::script_id scriptId);
 
         std::vector<script::script_id> getScriptEntryIds(
-            pool::TypeHandle handle);
+            pool::TypeHandle typeHandle);
 
         void runGlobalScript(
             const Node* node,
@@ -90,7 +89,7 @@ namespace script
             script::script_id scriptId);
 
         bool hasFunction(
-            pool::NodeHandle handle,
+            pool::NodeHandle nodeHandle,
             std::string_view name);
 
         void invokeNodeFunction(
@@ -113,6 +112,12 @@ namespace script
         inline sol::state& getLua() noexcept{ return m_lua; }
 
     private:
+        void createNodeState(
+            const Node* node);
+
+        void deleteNodeState(
+            const Node* node);
+
         sol::protected_function_result invokeLuaFunction(
             const std::function<sol::protected_function_result()>& fn);
 
@@ -121,7 +126,7 @@ namespace script
 
         script::ScriptEntry createScriptEntry(
             bool global,
-            pool::TypeHandle handle,
+            pool::TypeHandle typeHandle,
             script::script_id scriptId);
 
         // @return true if unregister was done

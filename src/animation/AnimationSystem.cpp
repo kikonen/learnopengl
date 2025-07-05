@@ -141,15 +141,16 @@ namespace animation
         clearRT();
     }
 
-    std::pair<uint32_t, uint32_t> AnimationSystem::registerInstance(const animation::RigContainer& rig)
+    std::pair<uint32_t, uint32_t> AnimationSystem::registerInstance(
+        const animation::RigContainer& rig)
     {
         std::lock_guard lock(m_pendingLock);
 
         auto& boneRegistry = *m_boneRegistry;
         auto& socketRegistry = *m_socketRegistry;
 
-        uint32_t boneBaseIndex = boneRegistry.reserveInstance(rig.m_boneContainer.size());
-        uint32_t socketBaseIndex = socketRegistry.reserveInstance(rig.m_sockets.size());
+        uint32_t boneBaseIndex = boneRegistry.addInstance(rig.m_boneContainer.size());
+        uint32_t socketBaseIndex = socketRegistry.addInstance(rig.m_sockets.size());
 
         // Initialize bones
         if (false) {
@@ -197,6 +198,20 @@ namespace animation
         }
 
         return { boneBaseIndex, socketBaseIndex };
+    }
+
+    void AnimationSystem::unregisterInstance(
+        const animation::RigContainer& rig,
+        uint16_t boneBaseIndex,
+        uint16_t socketBaseIndex)
+    {
+        std::lock_guard lock(m_pendingLock);
+
+        auto& boneRegistry = *m_boneRegistry;
+        auto& socketRegistry = *m_socketRegistry;
+
+        boneRegistry.removeInstance(boneBaseIndex, rig.m_boneContainer.size());
+        socketRegistry.removeInstance(socketBaseIndex, rig.m_sockets.size());
     }
 
     animation::AnimationState* AnimationSystem::getState(

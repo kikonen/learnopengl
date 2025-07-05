@@ -28,7 +28,7 @@ namespace animation
         m_dirtySnapshot.clear();
 
         // NOTE KI null entry
-        reserveInstance(1);
+        addInstance(1);
     }
 
     void BoneRegistry::shutdown()
@@ -45,7 +45,7 @@ namespace animation
         clear();
     }
 
-    uint32_t BoneRegistry::reserveInstance(size_t count)
+    uint32_t BoneRegistry::addInstance(size_t count)
     {
         if (count == 0) return 0;
 
@@ -64,6 +64,9 @@ namespace animation
 
         return static_cast<uint32_t>(index);
     }
+
+    void BoneRegistry::removeInstance(uint32_t index, size_t count)
+    { }
 
     std::span<glm::mat4> BoneRegistry::modifyRange(
         uint32_t start,

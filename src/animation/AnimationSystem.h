@@ -48,6 +48,11 @@ namespace animation {
         // @return instance index into bone transform buffer
         std::pair<uint32_t, uint32_t> registerInstance(const animation::RigContainer& rig);
 
+        void unregisterInstance(
+            const animation::RigContainer& rig,
+            uint16_t boneBaseIndex,
+            uint16_t socketBaseIndex);
+
         animation::AnimationState* getState(
             pool::NodeHandle handle);
 

@@ -7,6 +7,18 @@ function Node:new(o)
   return o
 end
 
+function Node:destroy(o)
+  printf("destroy node: %d\n", self.id)
+
+  states[self.id] = nil
+
+  -- TODO KI how to find updater?!?
+  Updater:remove_updater(self)
+
+  -- TODO KI how to find listener_id?!?
+  events:unlisten(self.listener_id)
+end
+
 function Node:class()
   return getmetatable(self)
 end
