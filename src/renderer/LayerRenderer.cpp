@@ -216,8 +216,13 @@ void LayerRenderer::fillHighlightMask(
     // draw entity data mask
     {
         render::DrawContext drawContext{
-            [&selectionRegistry](const Node* node) {
-                return selectionRegistry.isHighlighted(node->toHandle());
+            [&selectionRegistry, &assets](const Node* node) {
+                bool accept = assets.showTagged || assets.showSelection;
+                if (assets.showTagged)
+                    accept &= selectionRegistry.isTagged(node->toHandle());
+                if (assets.showSelection)
+                    accept &= selectionRegistry.isSelected(node->toHandle());
+                return accept;
             },
             render::KIND_ALL,
             0
@@ -273,8 +278,13 @@ void LayerRenderer::renderHighlight(
     // NOTE KI using "shift mode" approach, based into "hell engine"
     for (const auto shift : SHIFTS) {
         render::DrawContext drawContext{
-            [&selectionRegistry](const Node* node) {
-                return selectionRegistry.isHighlighted(node->toHandle());
+            [&selectionRegistry, &assets](const Node* node) {
+                bool accept = assets.showTagged || assets.showSelection;
+                if (assets.showTagged)
+                    accept &= selectionRegistry.isTagged(node->toHandle());
+                if (assets.showSelection)
+                    accept &= selectionRegistry.isSelected(node->toHandle());
+                return accept;
             },
             render::KIND_ALL
         };

@@ -57,7 +57,7 @@ public:
         const auto& it1 = std::find(m_tagged.begin(), m_tagged.end(), nodeHandle);
         const auto& it2 = std::find(m_selected.begin(), m_selected.end(), nodeHandle);
 
-        return it1 != m_tagged.begin() || it2 != m_selected.end();
+        return it1 != m_tagged.end() || it2 != m_selected.end();
     }
 
     const Material& getSelectionMaterial() const noexcept;
