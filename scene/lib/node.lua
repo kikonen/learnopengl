@@ -15,7 +15,7 @@ function Node:new(o)
 end
 
 function Node:destroy(o)
-  printf("destroy node: %d\n", self.id)
+  debug("destroy node: %d\n", self.id)
 
   states[self.id] = nil
   states[self.cmd] = nil
@@ -25,7 +25,7 @@ function Node:destroy(o)
 
   if self.listener_ids then
     for _, listener_id in ipairs(self.listener_ids) do
-      events:unlisten(self.listener_id)
+      events:unlisten(listener_id)
     end
     self.listener_ids = nil
   end
