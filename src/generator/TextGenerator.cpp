@@ -45,6 +45,19 @@ void TextGenerator::prepareRT(
     const PrepareContext& ctx,
     Node& container)
 {
+    m_mesh = std::make_shared<mesh::TextMesh>();
+    m_mesh->prepareVAO();
+
+    {
+        auto& lodMesh = m_lodMeshes.emplace_back();
+        lodMesh.setMesh(m_mesh);
+
+        auto* src = container.modifyLodMesh(0);
+        lodMesh.setMaterial(src->getMaterial());
+        lodMesh.m_drawOptions = src->m_drawOptions;
+        lodMesh.prepareRT(ctx);
+    }
+
     m_draw = std::make_unique<text::TextDraw>();
     m_draw->prepareRT(ctx);
 }
@@ -78,8 +91,8 @@ void TextGenerator::updateVAO(
     if (!m_dirty) return;
     m_dirty = false;
 
-    auto* lodMesh = container.modifyLodMesh(0);
-    auto* mesh = lodMesh->getMesh<mesh::TextMesh>();
+    auto& lodMesh = m_lodMeshes[0];
+    auto* mesh = lodMesh.getMesh<mesh::TextMesh>();
 
     mesh->clear();
 
@@ -107,7 +120,7 @@ void TextGenerator::updateVAO(
         mesh->m_vboIndex,
         mesh->m_atlasCoords);
 
-    lodMesh->m_indexCount = mesh->getIndexCount();
+    lodMesh.m_indexCount = mesh->getIndexCount();
 
     // TODO KI threading violation
     container.modifyState().setVolume(m_aabb.getVolume());

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include <vector>
 
 #include "material/Material.h"
 #include "asset/AABB.h"
@@ -14,6 +15,7 @@
 
 namespace mesh {
     class TextMesh;
+    struct LodMesh;
 }
 
 namespace text {
@@ -50,6 +52,11 @@ public:
         render::Batch& batch,
         const Node& container,
         const Snapshot& snapshot) override;
+
+    virtual const std::vector<mesh::LodMesh>* getLodMeshes(const Node& container) const
+    {
+        return &m_lodMeshes;
+    }
 
     text::font_id getFontId() const noexcept { return m_fontId; }
 
@@ -102,6 +109,8 @@ private:
 
     AABB m_aabb;
 
+    std::shared_ptr<mesh::TextMesh> m_mesh;
+    std::vector<mesh::LodMesh> m_lodMeshes;
     std::unique_ptr<text::TextDraw> m_draw;
 
     text::font_id m_fontId{ 0 };

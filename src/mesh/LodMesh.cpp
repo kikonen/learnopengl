@@ -154,6 +154,8 @@ namespace mesh {
         }
         *m_material = *src;
 
+        m_materialIndex = m_material->m_registeredIndex;
+
         setupDrawOptions();
     }
 

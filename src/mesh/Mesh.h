@@ -124,11 +124,6 @@ namespace mesh {
         }
 
     public:
-        const ki::mesh_id m_id;
-
-        const std::string m_name;
-        std::string m_alias;
-
         // NOTE KI absolute index into VBO
         uint32_t m_vboIndex{ 0 };
 
@@ -141,14 +136,17 @@ namespace mesh {
         // index entries stored starting from m_eboIndex
         uint32_t m_indexCount{ 0 };
 
+        const ki::mesh_id m_id;
+
+        bool m_preparedVAO : 1 { false };
+
+        const std::string m_name;
+        std::string m_alias;
+
         glm::mat4 m_rigTransform{ 1.f };
 
     protected:
-        bool m_preparedVAO{ false };
-
         std::unique_ptr<Material> m_material;
-
-    private:
         std::unique_ptr<Volume> m_volume;
     };
 }

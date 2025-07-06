@@ -87,6 +87,11 @@ public:
         const RenderContext& ctx,
         const Node& container) {}
 
+    virtual const std::vector<mesh::LodMesh>* getLodMeshes(const Node& container) const
+    {
+        return nullptr;
+    }
+
 public:
     GeneratorMode m_mode{ GeneratorMode::none };
 

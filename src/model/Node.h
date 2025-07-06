@@ -18,6 +18,8 @@
 #include "model/NodeType.h"
 #include "model/TypeFlags.h"
 
+#include "generator/NodeGenerator.h"
+
 #include "physics/size.h"
 
 #include "registry/NodeRegistry.h"
@@ -93,7 +95,8 @@ public:
 
     inline const std::vector<mesh::LodMesh>& getLodMeshes() const noexcept
     {
-        return getType()->getLodMeshes();
+        auto lodMeshes = m_generator ? m_generator->getLodMeshes(*this) : nullptr;
+        return lodMeshes ? *lodMeshes : getType()->getLodMeshes();
     }
 
     inline const mesh::LodMesh* getLodMesh(uint8_t lodIndex) const noexcept {
