@@ -16,13 +16,15 @@
 
 namespace {
     const inline std::string OPT_TYPE{ "type" };
+    const inline std::string OPT_NODE{ "node" };
     const inline std::string OPT_PARENT{ "parent" };
     const inline std::string OPT_POS{ "pos" };
     const inline std::string OPT_ROT{ "rot" };
     const inline std::string OPT_SCALE{ "scale" };
 
     struct CreateOptions {
-        std::string typeName;
+        ki::type_id typeId;
+        ki::node_id nodeId;
         ki::node_id parentId{ 0 };
         glm::vec3 pos{ 0.f };
         glm::vec3 rot{ 0.f };
@@ -36,7 +38,10 @@ namespace {
         lua_opt.for_each([&](sol::object const& key, sol::object const& value) {
             const auto& k = key.as<std::string>();
             if (k == OPT_TYPE) {
-                opt.typeName = value.as<std::string>();
+                opt.typeId = value.as<unsigned int>();
+            }
+            else if (k == OPT_NODE) {
+                opt.nodeId = value.as<unsigned int>();
             }
             else if (k == OPT_PARENT) {
                 opt.parentId = value.as<unsigned int>();
@@ -69,7 +74,7 @@ namespace script::api
     {
         const CreateOptions& opt = readCreateOptions(lua_opt);
 
-        const auto typeId = SID(opt.typeName);
+        const auto typeId = opt.typeId;
         const auto* type = pool::TypeHandle::toType(typeId);
         if (!type) return 0;
 
@@ -84,6 +89,38 @@ namespace script::api
             nodeId = builder.build(opt.parentId, type, state);
             if (nodeId) {
                 builder.attach();
+            }
+        }
+
+        return nodeId;
+    }
+
+    ki::node_id SceneAPI::lua_clone_node(
+        const sol::table& lua_opt)
+    {
+        const CreateOptions& opt = readCreateOptions(lua_opt);
+
+        const auto nodeId = opt.nodeId;
+        const auto* node = pool::NodeHandle::toNode(nodeId);
+        if (!node) return 0;
+
+        const auto& state = node->getState();
+        const auto* type = node->getType();
+
+        {
+            ki::node_id parentId{ node->getParentHandle().toId() };
+            glm::vec3 pos{ state.getPosition() };
+            glm::quat quat{ state.getRotation() };
+            glm::vec3 scale{ state.getScale() };
+
+            CreateState state{
+                pos,
+                scale,
+                quat };
+
+            CompositeBuilder builder{ NodeRegistry::get() };
+            if (builder.build(parentId, type, state)) {
+                auto rootHandle = builder.attach();
             }
         }
 

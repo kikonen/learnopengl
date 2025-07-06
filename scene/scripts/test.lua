@@ -10,7 +10,7 @@ end
 
 function create_new_fps_counter()
   local opt = {
-    type = "fps_counter",
+    type = util.sid("fps_counter"),
     id = "fps_counter",
     pos = vec3(2, -2, -1)
   }
@@ -20,7 +20,7 @@ end
 
 function create_new_node(type)
   local opt = {
-    type = type,
+    type = util.sid(type),
     pos = vec3(rnd(50), 1 + rnd(50), rnd(50)),
     rot = vec3(0, rnd(360), 0),
     scale = vec3(0.25 + rnd(1)),
@@ -52,7 +52,7 @@ end
 function cylon_armada()
   for i=0,10 do
     local opt = {
-      type = "cylon_group",
+      type = util.sid("cylon_group"),
       pos = vec3(rnd(1000), 100 + rnd(500), 200 + rnd(500)),
       rot = vec3(0, rnd(360), 0),
       scale = vec3(0.01 + rnd(0.01)),
@@ -63,7 +63,7 @@ function cylon_armada()
 end
 
 function delete_test()
-  local sid = util.sid("<dir_light>-2")
+  local sid = util.sid("<flag>-9")
   scene:delete_node(sid)
 end
 
@@ -72,6 +72,8 @@ end
 create_new_node("water_ball")
 create_new_node("pool")
 create_new_node("cylon_group")
+
 -- create_new_fps_counter()
+-- create_new_node("flag_stand")
 
 -- delete_test()
