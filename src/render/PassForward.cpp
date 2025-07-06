@@ -73,6 +73,7 @@ namespace render
                     ? lodMesh.m_programId
                     : (ki::program_id)0;
             },
+            [](ki::program_id programId) {},
             [&drawContext](const Node* node) {
                 return node->m_typeFlags.useForward &&
                     drawContext.nodeSelector(node);

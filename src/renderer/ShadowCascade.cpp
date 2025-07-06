@@ -267,6 +267,7 @@ void ShadowCascade::drawNodes(
                 if (lodMesh.m_shadowProgramId) return lodMesh.m_shadowProgramId;
                 return lodMesh.m_drawOptions.isAlpha() ? m_alphaShadowProgramId : m_solidShadowProgramId;
             },
+            [](ki::program_id programId) {},
             drawContext.nodeSelector,
             drawContext.kindBits);
     }

@@ -942,6 +942,8 @@ void NodeRegistry::detachNode(
         return;
     }
 
+    node->m_alive = false;
+
     if (!unbindParent(nodeHandle)) {
         KI_WARN_OUT(fmt::format(
             "ERROR: parent unbind failed - node={}",

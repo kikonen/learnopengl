@@ -195,6 +195,7 @@ void Node::updateVAO(const RenderContext& ctx) noexcept
 void Node::bindBatch(
     const RenderContext& ctx,
     const std::function<ki::program_id (const mesh::LodMesh&)>& programSelector,
+    const std::function<void(ki::program_id)>& programPrepare,
     uint8_t kindBits,
     render::Batch& batch) noexcept
 {
@@ -205,6 +206,7 @@ void Node::bindBatch(
         m_generator->bindBatch(
             ctx,
             programSelector,
+            programPrepare,
             kindBits,
             batch,
             *this,
@@ -215,6 +217,7 @@ void Node::bindBatch(
             ctx,
             this,
             programSelector,
+            programPrepare,
             kindBits,
             *snapshot,
             m_entityIndex);

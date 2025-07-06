@@ -232,9 +232,11 @@ void LayerRenderer::fillHighlightMask(
         collectionRender.drawProgram(
             ctx,
             [this](const mesh::LodMesh& lodMesh) {
-                auto* p = lodMesh.m_selectionProgramId ? Program::get(lodMesh.m_selectionProgramId) : m_selectionProgram;
-                p->m_uniforms->u_stencilMode.set(STENCIL_MODE_SHIFT_NONE);
-                return p->m_id;
+                return lodMesh.m_selectionProgramId ? lodMesh.m_selectionProgramId : m_selectionProgram->m_id;
+            },
+            [this](ki::program_id programId) {
+                auto* program = Program::get(programId);
+                program->m_uniforms->u_stencilMode.set(STENCIL_MODE_SHIFT_NONE);
             },
             drawContext.nodeSelector,
             drawContext.kindBits);
@@ -294,9 +296,11 @@ void LayerRenderer::renderHighlight(
         collectionRender.drawProgram(
             ctx,
             [this, shift](const mesh::LodMesh& lodMesh) {
-                auto* p = lodMesh.m_selectionProgramId ? Program::get(lodMesh.m_selectionProgramId) : m_selectionProgram;
-                p->m_uniforms->u_stencilMode.set(shift);
-                return p->m_id;
+                return lodMesh.m_selectionProgramId ? lodMesh.m_selectionProgramId : m_selectionProgram->m_id;
+            },
+            [this, shift](ki::program_id programId) {
+                auto* program = Program::get(programId);
+                program->m_uniforms->u_stencilMode.set(shift);
             },
             drawContext.nodeSelector,
             drawContext.kindBits);

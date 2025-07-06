@@ -159,6 +159,7 @@ namespace render
                 if (!lodMesh.m_flags.preDepth) return (ki::program_id)0;
                 return lodMesh.m_drawOptions.m_gbuffer ? lodMesh.m_preDepthProgramId : (ki::program_id)0;
             },
+            [](ki::program_id programId) {},
             [&drawContext](const Node* node) {
                 return node->m_typeFlags.useDeferred &&
                     drawContext.nodeSelector(node);
@@ -188,6 +189,7 @@ namespace render
             [](const mesh::LodMesh& lodMesh) {
                 return lodMesh.m_drawOptions.m_gbuffer ? lodMesh.m_programId : (ki::program_id)0;
             },
+            [](ki::program_id programId) {},
             [&drawContext](const Node* node) {
                 return node->m_typeFlags.useDeferred &&
                     !node->m_typeFlags.effect &&

@@ -19,15 +19,17 @@ namespace render
     void CollectionRender::drawProgram(
         const RenderContext& ctx,
         const std::function<ki::program_id(const mesh::LodMesh&)>& programSelector,
+        const std::function<void(ki::program_id)>& programPrepare,
         const std::function<bool(const Node*)>& nodeSelector,
         uint8_t kindBits)
     {
-        drawNodesImpl(ctx, programSelector, nodeSelector, kindBits);
+        drawNodesImpl(ctx, programSelector, programPrepare, nodeSelector, kindBits);
     }
 
     bool CollectionRender::drawNodesImpl(
         const RenderContext& ctx,
         const std::function<ki::program_id(const mesh::LodMesh&)>& programSelector,
+        const std::function<void(ki::program_id)>& programPrepare,
         const std::function<bool(const Node*)>& nodeSelector,
         const uint8_t kindBits)
     {
@@ -36,18 +38,19 @@ namespace render
         auto& collection = *ctx.m_collection;
         auto& nodeRegistry = *ctx.m_registry->m_nodeRegistry;
 
-        auto renderTypes = [this, &ctx, &programSelector, &nodeSelector, &rendered](
+        auto renderTypes = [this, &ctx, &programSelector, &programPrepare, &nodeSelector, &rendered](
             const NodeVector& nodes,
             unsigned int kind)
             {
                 for (auto& handle : nodes) {
                     auto* node = handle.toNode();
                     if (!node) continue;
+                    if (!node->m_alive) continue;
                     if (node->m_layer != ctx.m_layer) continue;
                     if (!nodeSelector(node)) continue;
 
                     rendered = true;
-                    ctx.m_batch->draw(ctx, node, programSelector, kind);
+                    ctx.m_batch->draw(ctx, node, programSelector, programPrepare, kind);
                 }
             };
 
@@ -81,6 +84,7 @@ namespace render
         for (const auto& handle : collection.m_blendedNodes) {
             auto* node = handle.toNode();
             if (!node) continue;
+            if (!node->m_alive) continue;
             if (node->m_layer != ctx.m_layer) continue;
             if (!nodeSelector(node)) continue;
 
@@ -106,6 +110,7 @@ namespace render
                 ctx,
                 it->second,
                 [this](const mesh::LodMesh& lodMesh) { return lodMesh.m_programId; },
+                [](ki::program_id) {},
                 render::KIND_BLEND);
         }
 

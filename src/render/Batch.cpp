@@ -71,6 +71,7 @@ namespace render {
         const RenderContext& ctx,
         const Node* node,
         const std::function<ki::program_id (const mesh::LodMesh&)>& programSelector,
+        const std::function<void(ki::program_id)>& programPrepare,
         uint8_t kindBits,
         const Snapshot& snapshot,
         uint32_t entityIndex) noexcept
@@ -91,6 +92,8 @@ namespace render {
 
             auto programId = programSelector(lodMesh);
             if (!programId) continue;
+
+            programPrepare(programId);
 
             if (!frustumChecked) {
                 const auto& frustum = ctx.m_camera->getFrustum();
@@ -155,6 +158,7 @@ namespace render {
         const RenderContext& ctx,
         const Node* node,
         const std::function<ki::program_id (const mesh::LodMesh&)>& programSelector,
+        const std::function<void(ki::program_id)>& programPrepare,
         uint8_t kindBits,
         const Snapshot& snapshot,
         std::span<const mesh::MeshTransform> transforms,
@@ -249,7 +253,7 @@ namespace render {
                     const auto  programId = isValidLodMesh(i, dist2, lodMesh);
                     if (!programId) continue;
 
-                    //Program* program = Program::get(programId);
+                    programPrepare(programId);
 
                     CommandEntry* commandEntry{ nullptr };
                     {
@@ -364,12 +368,13 @@ namespace render {
         const RenderContext& ctx,
         Node* node,
         const std::function<ki::program_id (const mesh::LodMesh&)>& programSelector,
+        const std::function<void(ki::program_id)>& programPrepare,
         uint8_t kindBits)
     {
-        if (node->m_typeFlags.invisible || !node->m_visible) return;
+        if (node->m_typeFlags.invisible || !node->m_visible || !node->m_alive) return;
 
         node->updateVAO(ctx);
-        node->bindBatch(ctx, programSelector, kindBits, *this);
+        node->bindBatch(ctx, programSelector, programPrepare, kindBits, *this);
     }
 
     bool Batch::isFlushed() const noexcept

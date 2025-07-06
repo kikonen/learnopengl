@@ -138,6 +138,7 @@ namespace render
                 if (lodMesh.m_oitProgramId) return lodMesh.m_oitProgramId;
                 return m_oitProgram->m_id;
             },
+            [](ki::program_id programId) {},
             [&drawContext](const Node* node) {
                 return node->m_typeFlags.useOit &&
                     drawContext.nodeSelector(node);

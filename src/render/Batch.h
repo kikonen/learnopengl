@@ -50,6 +50,7 @@ namespace render {
             const RenderContext& ctx,
             const Node* node,
             const std::function<ki::program_id (const mesh::LodMesh&)>& programSelector,
+            const std::function<void(ki::program_id)>& programPrepare,
             uint8_t kindBits,
             const Snapshot& snapshot,
             uint32_t entityIndex) noexcept;
@@ -59,6 +60,7 @@ namespace render {
             const RenderContext& ctx,
             const Node* node,
             const std::function<ki::program_id (const mesh::LodMesh&)>& programSelector,
+            const std::function<void(ki::program_id)>& programPrepare,
             uint8_t kindBits,
             const Snapshot& snapshot,
             std::span<const mesh::MeshTransform> transforms,
@@ -78,6 +80,7 @@ namespace render {
             const RenderContext& ctx,
             Node* node,
             const std::function<ki::program_id (const mesh::LodMesh&)>& programSelector,
+            const std::function<void(ki::program_id)>& programPrepare,
             uint8_t kindBits);
 
         bool isFlushed() const noexcept;

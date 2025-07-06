@@ -66,7 +66,9 @@ namespace render {
         void drawProgram(
             const RenderContext& ctx,
             const DrawContext& drawContext,
-            const std::function<ki::program_id(const mesh::LodMesh&)>& programSelector);
+            const std::function<ki::program_id(const mesh::LodMesh&)>& programSelector,
+            const std::function<void(ki::program_id)>& programPrepare
+            );
 
     private:
         void passCleanup(

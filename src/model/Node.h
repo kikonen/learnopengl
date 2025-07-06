@@ -126,6 +126,7 @@ public:
     void bindBatch(
         const RenderContext& ctx,
         const std::function<ki::program_id (const mesh::LodMesh&)>& programSelector,
+        const std::function<void(ki::program_id)>& programPrepare,
         uint8_t kindBits,
         render::Batch& batch) noexcept;
 
@@ -193,6 +194,7 @@ public:
     uint8_t m_layer{ 0 };
 
 public:
+    bool m_alive : 1 { true };
     bool m_visible : 1 { true };
     bool m_preparedRT : 1 { false };
 };

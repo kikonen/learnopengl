@@ -192,6 +192,7 @@ void ObjectIdRenderer::drawNodes(const RenderContext& parentCtx)
                 if (lodMesh.m_flags.tessellation) return (ki::program_id)nullptr;
                 return lodMesh.m_idProgramId ? lodMesh.m_idProgramId : m_idProgramId;
             },
+            [](ki::program_id programId) {},
             drawContext.nodeSelector,
             drawContext.kindBits);
     }

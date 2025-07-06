@@ -66,6 +66,7 @@ void NormalRenderer::drawNodes(const RenderContext& ctx)
                 if (lodMesh.m_flags.tessellation) return (ki::program_id)0;
                 return lodMesh.m_normalProgramId ? lodMesh.m_normalProgramId : m_normalProgramId;
             },
+            [](ki::program_id programId) {},
             drawContext.nodeSelector,
             drawContext.kindBits);
     }
