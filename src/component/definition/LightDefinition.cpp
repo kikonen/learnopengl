@@ -2,7 +2,7 @@
 
 #include "model/NodeType.h"
 
-#include "component/LightDefinition.h"
+#include "component/definition/LightDefinition.h"
 #include "component/Light.h"
 
 std::unique_ptr<Light> LightDefinition::createLight(

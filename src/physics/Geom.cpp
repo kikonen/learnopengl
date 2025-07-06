@@ -2,7 +2,7 @@
 
 #include "util/debug.h"
 
-#include "component/PhysicsDefinition.h"
+#include "component/definition/PhysicsDefinition.h"
 
 #include "Body.h"
 

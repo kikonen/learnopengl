@@ -2,7 +2,7 @@
 
 #include "util/glm_util.h"
 
-#include "component/PhysicsDefinition.h"
+#include "component/definition/PhysicsDefinition.h"
 
 namespace {
     constexpr int DIR_X = 1;

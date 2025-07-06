@@ -11,7 +11,7 @@
 #include "physics/Category.h"
 #include "physics/physics_util.h"
 
-#include "component/GeneratorDefinition.h"
+#include "component/definition/GeneratorDefinition.h"
 
 std::unique_ptr<NodeGenerator> GeneratorDefinition::createGenerator(
     const NodeType* type)
