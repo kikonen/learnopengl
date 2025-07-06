@@ -80,25 +80,31 @@ namespace util
         //    });
     }
 
+    // https://stackoverflow.com/questions/15873996/converting-a-direction-vector-to-a-quaternion-rotation
+    // https://stackoverflow.com/questions/1171849/finding-quaternion-representing-the-rotation-from-one-vector-to-another/1171995#1171995
     // https://forums.unrealengine.com/t/rotation-from-normal/11543/3
-    glm::quat normalToRotation(
+    glm::quat normalToQuat(
         const glm::vec3& normal,
         const glm::vec3& up)
     {
-        const float thetaCos = glm::dot(up, normal);
+        const auto& n = glm::normalize(normal);
+        const auto& u = glm::normalize(up);
+
+        const float thetaCos = glm::dot(u, n);
 
         // Identity rotation if exactly same dir (avoid NaN in acosf)
-        if (thetaCos == 1.f) return glm::quat{ 1.f, 0.f, 0.f, 0.f };
+        if (thetaCos >= 0.99999f) return glm::quat{ 1.f, 0.f, 0.f, 0.f };
 
         // 180 rotation exactly opposite dir (avoid NaN in acosf)
-        //if (thetaCos == -1.f) {
-        //    return util::axisRadiansToQuat(normal, 0.f);
-        //}
+        if (thetaCos <= -0.99999f) {
+            return util::axisRadiansToQuat(normal, 0.f);
+        }
 
-        const auto axis = glm::normalize(glm::cross(up, normal));
-        const float theta = acosf(thetaCos);
+        // https://stackoverflow.com/questions/1171849/finding-quaternion-representing-the-rotation-from-one-vector-to-another/1171995#1171995
+        const auto a = glm::cross(u, n);
+        auto w = 1.f + sqrt(thetaCos);
 
-        return util::axisRadiansToQuat(axis, theta);
+        return glm::normalize(glm::quat{ w, a.x, a.y, a.z });
     }
 
     // This will transform the vector and renormalize the w component

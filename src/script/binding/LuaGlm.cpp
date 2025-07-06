@@ -458,6 +458,22 @@ namespace
             ));
 
         t.set_function(
+            "to_degrees",
+            sol::overload(
+                [](const glm::quat& q) {
+                    return glm::degrees(glm::eulerAngles(q));
+                }
+            ));
+
+        t.set_function(
+            "to_radians",
+            sol::overload(
+                [](const glm::quat& q) {
+                    return glm::eulerAngles(q);
+                }
+            ));
+
+        t.set_function(
             "str",
             [](const glm::quat& q) {
                 return fmt::format("{}", q);

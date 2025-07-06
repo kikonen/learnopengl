@@ -233,10 +233,15 @@ local function ray_caster(self)
     ray_degrees = ray_degrees - cast_elapsed * 1
     cast_elapsed = 0
 
-    local rot = util.axis_degrees_to_quat(vec3(0, 1, 0), ray_degrees)
-    local dir = rot:to_mat4() * node:get_front()
+    local rot_quat = util.axis_degrees_to_quat(vec3(0, 1, 0), ray_degrees)
+    local rot_degrees = rot_quat:to_degrees()
 
-    debug("CAST: %s\n", dir)
+    local dir = (rot_quat:to_mat4() * node:get_front()):normalize()
+    -- local dir_quat = util.normal_to_quat(dir, vec3(0, 1, 0))
+    -- local dir_degrees = dir_quat:to_degrees()
+
+    debug("CAST[%d] rot=%s, dir=%s\n",
+      self.id, rot_degrees, dir)
 
     cast_cid = cmd:cancel(
       {},

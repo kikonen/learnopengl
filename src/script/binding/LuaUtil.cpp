@@ -127,7 +127,14 @@ namespace script::binding
                 }
             ));
 
-        //glm::quat normalToRotation(const glm::vec3 & normal, const glm::vec3 & up);
+        t.set_function(
+            "normal_to_quat",
+            sol::overload(
+                [](const glm::vec3& normal, const glm::vec3& up) {
+                    return util::normalToQuat(normal, up);
+                }
+            ));
+
 
     }
 }

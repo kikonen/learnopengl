@@ -178,7 +178,7 @@ namespace physics {
                 glm::vec3 normal{ plane };
                 float dist = plane.w;
 
-                rot = util::normalToRotation(normal, glm::vec3{0, 1.f, 0});
+                rot = util::normalToQuat(normal, glm::vec3{0, 1.f, 0});
 
                 //glm::vec3 degrees = util::quatToDegrees(rot);
                 //KI_INFO_OUT(fmt::format(
