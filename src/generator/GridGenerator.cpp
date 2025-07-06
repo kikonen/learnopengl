@@ -53,6 +53,10 @@ void GridGenerator::updateWT(
     // NOTE KI cannot skip for dynamic bounds, physics is assumed to be changing
     if (m_boundsSetupDone && m_staticBounds && m_containerMatrixLevel == containerLevel) return;
 
+    if (m_containerMatrixLevel != containerLevel) {
+        m_boundsSetupDone = false;
+    }
+
     updateBounds(ctx, container);
     updateInstances(ctx, container);
 
@@ -267,9 +271,11 @@ void GridGenerator::updateBounds(
 
     const auto& containerState = container.getState();
     const auto& containerPos = containerState.getWorldPosition();
+    const auto& parentMatrix = containerState.getModelMatrix();
 
     std::vector<glm::vec3> positions;
     for (auto& transform : m_transforms) {
+        transform.updateTransform(parentMatrix, m_volume);
         positions.push_back(transform.getWorldPosition());
     }
 
