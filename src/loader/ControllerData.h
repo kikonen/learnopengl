@@ -4,7 +4,7 @@
 
 #include <glm/glm.hpp>
 
-#include "component/ControllerDefinition.h"
+#include "component/definition/ControllerDefinition.h"
 
 #include "loader/BaseId.h"
 

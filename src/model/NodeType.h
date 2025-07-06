@@ -27,19 +27,16 @@ namespace script {
     struct Script;
 }
 
-namespace particle {
-    struct ParticleDefinition;
-}
-
-struct CameraDefinition;
+struct CameraComponentDefinition;
 struct LightDefinition;
-struct TextDefinition;
+struct TextGeneratorDefinition;
 struct AudioListenerDefinition;
 struct AudioSourceDefinition;
 struct PhysicsDefinition;
 struct ControllerDefinition;
 struct GeneratorDefinition;
 struct CompositeDefinition;
+struct ParticleGeneratorDefinition;
 
 struct PrepareContext;
 
@@ -167,9 +164,9 @@ private:
 public:
     pool::TypeHandle m_handle;
 
-    std::unique_ptr<CameraDefinition> m_cameraDefinition{ nullptr };
+    std::unique_ptr<CameraComponentDefinition> m_cameraComponentDefinition{ nullptr };
     std::unique_ptr<LightDefinition> m_lightDefinition{ nullptr };
-    std::unique_ptr<particle::ParticleDefinition> m_particleDefinition{ nullptr };
+    std::unique_ptr<ParticleGeneratorDefinition> m_particleGeneratorDefinition{ nullptr };
     std::unique_ptr<PhysicsDefinition> m_physicsDefinition;
     std::unique_ptr<GeneratorDefinition> m_generatorDefinition;
 
@@ -178,7 +175,7 @@ public:
     std::unique_ptr<AudioListenerDefinition> m_audioListenerDefinition;
     std::unique_ptr<std::vector<AudioSourceDefinition>> m_audioSourceDefinitions;
 
-    std::unique_ptr<TextDefinition> m_textDefinition{ nullptr };
+    std::unique_ptr<TextGeneratorDefinition> m_textGeneratorDefinition{ nullptr };
     std::unique_ptr<CompositeDefinition> m_compositeDefinition{ nullptr };
 
     glm::vec3 m_front{ 0.f, 0.f, 1.f };

@@ -3,7 +3,7 @@
 #include "BaseLoader.h"
 #include "CameraData.h"
 
-struct  CameraDefinition;
+struct CameraComponentDefinition;
 
 namespace loader {
     class CameraLoader : public BaseLoader
@@ -20,7 +20,7 @@ namespace loader {
             const loader::DocNode& node,
             std::vector<glm::vec3>& path) const;
 
-        std::unique_ptr<CameraDefinition> createDefinition(
+        std::unique_ptr<CameraComponentDefinition> createDefinition(
             const CameraData& data);
 
     };

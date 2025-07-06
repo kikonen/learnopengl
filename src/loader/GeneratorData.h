@@ -8,7 +8,7 @@
 
 #include "generator/GeneratorMode.h"
 
-#include "component/GeneratorDefinition.h"
+#include "component/definition/GeneratorDefinition.h"
 
 #include "Repeat.h"
 #include "TerrainTiling.h"

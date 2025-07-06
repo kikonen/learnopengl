@@ -37,14 +37,13 @@
 #include "model/NodeType.h"
 #include "model/CompositeDefinition.h"
 
-#include "component/CameraDefinition.h"
-#include "component/LightDefinition.h"
-#include "component/AudioListenerDefinition.h"
-#include "component/AudioSourceDefinition.h"
-#include "component/PhysicsDefinition.h"
-#include "component/TextDefinition.h"
-
-#include "particle/ParticleDefinition.h"
+#include "component/definition/CameraComponentDefinition.h"
+#include "component/definition/LightDefinition.h"
+#include "component/definition/AudioListenerDefinition.h"
+#include "component/definition/AudioSourceDefinition.h"
+#include "component/definition/PhysicsDefinition.h"
+#include "component/definition/TextGeneratorDefinition.h"
+#include "component/definition/ParticleGeneratorDefinition.h"
 
 #include "animation/AnimationLoader.h"
 #include "animation/RigContainer.h"
@@ -212,9 +211,9 @@ namespace loader
 
         resolveAttachments(type, typeData);
 
-        type->m_cameraDefinition = l.m_cameraLoader.createDefinition(typeData.camera);
+        type->m_cameraComponentDefinition = l.m_cameraLoader.createDefinition(typeData.camera);
         type->m_lightDefinition = l.m_lightLoader.createDefinition(typeData.light);
-        type->m_particleDefinition = l.m_particleLoader.createDefinition(typeData.particle);
+        type->m_particleGeneratorDefinition = l.m_particleLoader.createDefinition(typeData.particle);
         type->m_physicsDefinition = l.m_physicsLoader.createPhysicsDefinition(typeData.physics);
 
         type->m_generatorDefinition = l.m_generatorLoader.createGeneratorDefinition(
@@ -239,7 +238,7 @@ namespace loader
         type->m_audioSourceDefinitions = l.m_audioLoader.createSourceDefinitions(typeData.audio.sources);
 
         if (type->m_flags.text) {
-            type->m_textDefinition = m_loaders->m_textLoader.createDefinition(
+            type->m_textGeneratorDefinition = m_loaders->m_textLoader.createDefinition(
                 type,
                 typeData.text,
                 *m_loaders);

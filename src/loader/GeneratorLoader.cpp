@@ -14,8 +14,8 @@
 #include "physics/Category.h"
 #include "physics/physics_util.h"
 
-#include "component/PhysicsDefinition.h"
-#include "component/GeneratorDefinition.h"
+#include "component/definition/PhysicsDefinition.h"
+#include "component/definition/GeneratorDefinition.h"
 
 #include "loader/document.h"
 #include "loader_util.h"

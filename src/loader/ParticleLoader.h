@@ -5,13 +5,10 @@
 #include "BaseLoader.h"
 #include "ParticleData.h"
 
-namespace particle {
-    class ParticleGenerator;
-}
+struct ParticleGeneratorDefinition;
 
 namespace loader {
     class Loaders;
-    struct MAterialData;
 
     class ParticleLoader : public BaseLoader
     {
@@ -24,7 +21,7 @@ namespace loader {
             ParticleData& data,
             Loaders& loaders) const;
 
-        std::unique_ptr<particle::ParticleDefinition> createDefinition(
+        std::unique_ptr<ParticleGeneratorDefinition> createDefinition(
             const ParticleData& data) const;
     };
 }

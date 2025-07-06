@@ -1200,7 +1200,7 @@
     <ClCompile Include="src\loader\NodeTypeData.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\component\GeneratorDefinition.cpp">
+    <ClCompile Include="src\component\definition\GeneratorDefinition.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\loader\CompositeLoader.cpp">
@@ -1210,9 +1210,6 @@
       <Filter>Header Files</Filter>
     </ClCompile>
     <ClCompile Include="src\model\CompositeBuilder.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\editor\tool\node\NodeEditTool.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\editor\tool\Tool.cpp">
@@ -1237,6 +1234,33 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\editor\tool\node_type\NodeTypeTool.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\editor\editor_util.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\editor\tool\node\NodeTool.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\component\definition\CameraComponentDefinition.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\component\definition\LightDefinition.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\component\definition\ParticleGeneratorDefinition.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\component\definition\ControllerDefinition.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\component\definition\TextGeneratorDefinition.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\component\definition\AudioSourceDefinition.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\component\definition\AudioListenerDefinition.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -2693,19 +2717,19 @@
     <ClInclude Include="src\loader\NodeBuilder.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\component\CameraDefinition.h">
+    <ClInclude Include="src\component\definition\CameraComponentDefinition.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\component\LightDefinition.h">
+    <ClInclude Include="src\component\definition\LightDefinition.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\component\TextDefinition.h">
+    <ClInclude Include="src\component\definition\TextGeneratorDefinition.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\component\AudioSourceDefinition.h">
+    <ClInclude Include="src\component\definition\AudioSourceDefinition.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\component\AudioListenerDefinition.h">
+    <ClInclude Include="src\component\definition\AudioListenerDefinition.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\script\api\SceneAPI.h">
@@ -2714,10 +2738,10 @@
     <ClInclude Include="src\script\binding\LuaScene.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\component\PhysicsDefinition.h">
+    <ClInclude Include="src\component\definition\PhysicsDefinition.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\component\ControllerDefinition.h">
+    <ClInclude Include="src\component\definition\ControllerDefinition.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\model\CreateState.h">
@@ -2741,7 +2765,7 @@
     <ClInclude Include="src\loader\Value.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\component\GeneratorDefinition.h">
+    <ClInclude Include="src\component\definition\GeneratorDefinition.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\loader\Repeat.h">
@@ -2774,13 +2798,7 @@
     <ClInclude Include="src\ki\error.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\editor\tool\node\NodeEditTool.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\editor\tool\Tool.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\editor\tool\node\NodeEditToolState.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\editor\tool\viewport\ViewportTool.h">
@@ -2823,6 +2841,18 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\editor\tool\node_type\NodeTypeTool.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\editor\editor_util.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\editor\tool\node\NodeToolState.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\editor\tool\node\NodeTool.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\component\definition\ParticleGeneratorDefinition.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

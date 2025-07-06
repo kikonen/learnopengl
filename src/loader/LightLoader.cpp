@@ -2,7 +2,7 @@
 
 #include "util/util.h"
 
-#include "component/LightDefinition.h"
+#include "component/definition/LightDefinition.h"
 
 #include "loader/document.h"
 #include "loader_util.h"
@@ -107,5 +107,4 @@ namespace loader{
 
         return definition;
     }
-
 }

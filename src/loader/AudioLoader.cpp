@@ -16,6 +16,9 @@
 #include "loader/document.h"
 #include "loader_util.h"
 
+#include "component/definition/AudioSourceDefinition.h"
+#include "component/definition/AudioListenerDefinition.h"
+
 namespace loader
 {
     AudioLoader::AudioLoader(

@@ -15,16 +15,17 @@
 
 #include "engine/PrepareContext.h"
 
-#include "component/CameraDefinition.h"
-#include "component/LightDefinition.h"
-#include "component/AudioListenerDefinition.h"
-#include "component/AudioSourceDefinition.h"
-#include "component/TextDefinition.h"
-#include "component/PhysicsDefinition.h"
-#include "component/ControllerDefinition.h"
-#include "component/GeneratorDefinition.h"
+#include "component/definition/CameraComponentDefinition.h"
+#include "component/definition/LightDefinition.h"
+#include "component/definition/AudioListenerDefinition.h"
+#include "component/definition/AudioSourceDefinition.h"
+#include "component/definition/TextGeneratorDefinition.h"
+#include "component/definition/PhysicsDefinition.h"
+#include "component/definition/ControllerDefinition.h"
+#include "component/definition/GeneratorDefinition.h"
+#include "component/definition/ParticleGeneratorDefinition.h"
 
-#include "particle/ParticleDefinition.h"
+#include "material/Material.h"
 
 #include "script/ScriptSystem.h"
 
@@ -53,12 +54,12 @@ NodeType::NodeType(NodeType&& o) noexcept
     m_lodMeshes{ std::move(o.m_lodMeshes) },
     m_scripts{ std::move(o.m_scripts) },
     m_customMaterial{ std::move(o.m_customMaterial) },
-    m_cameraDefinition{ std::move(o.m_cameraDefinition) },
+    m_cameraComponentDefinition{ std::move(o.m_cameraComponentDefinition) },
     m_generatorDefinition{ std::move(o.m_generatorDefinition) },
     m_controllerDefinitions{ std::move(o.m_controllerDefinitions) },
     m_lightDefinition{ std::move(o.m_lightDefinition) },
-    m_particleDefinition{ std::move(o.m_particleDefinition) },
-    m_textDefinition{ std::move(o.m_textDefinition) },
+    m_particleGeneratorDefinition{ std::move(o.m_particleGeneratorDefinition) },
+    m_textGeneratorDefinition{ std::move(o.m_textGeneratorDefinition) },
     m_compositeDefinition{ std::move(o.m_compositeDefinition) }
 {
 }
@@ -103,8 +104,8 @@ void NodeType::prepareWT(
     if (m_preparedWT) return;
     m_preparedWT = true;
 
-    if (m_particleDefinition) {
-        m_particleDefinition->m_material->registerMaterial();
+    if (m_particleGeneratorDefinition) {
+        m_particleGeneratorDefinition->m_data.m_material->registerMaterial();
     }
 
     for (auto& lodMesh : m_lodMeshes) {

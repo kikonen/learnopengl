@@ -2,6 +2,8 @@
 
 #include <numbers>
 
+#include "model/NodeType.h"
+
 namespace {
     const float FULL_CIRCLE_RADIANS = std::numbers::pi_v<float> * 2.f;
 }

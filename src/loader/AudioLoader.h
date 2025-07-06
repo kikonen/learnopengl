@@ -6,11 +6,11 @@
 #include "audio/Source.h"
 #include "audio/Listener.h"
 
-#include "component/AudioListenerDefinition.h"
-#include "component/AudioSourceDefinition.h"
-
 #include "BaseLoader.h"
 #include "AudioData.h"
+
+struct AudioListenerDefinition;
+struct AudioSourceDefinition;
 
 namespace loader {
     class AudioLoader : public BaseLoader

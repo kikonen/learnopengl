@@ -2,12 +2,16 @@
 
 #include <vector>
 #include <array>
+#include <memory>
 
 #include <glm/glm.hpp>
 
-#include "CameraType.h"
+#include "component/CameraType.h"
 
-struct CameraDefinition {
+class NodeType;
+class CameraComponent;
+
+struct CameraComponentDefinition {
     CameraType m_type{ CameraType::fps };
 
     bool m_default{ false };
@@ -34,4 +38,7 @@ struct CameraDefinition {
 
     std::vector<glm::vec3> m_path;
     float m_speed{ 0.f };
+
+    static std::unique_ptr<CameraComponent> createCameraComponent(
+        const NodeType* type);
 };

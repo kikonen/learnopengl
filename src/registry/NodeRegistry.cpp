@@ -21,20 +21,16 @@
 
 #include "mesh/LodMesh.h"
 
-#include "component/LightDefinition.h"
-#include "component/Light.h"
+#include "component/definition/LightDefinition.h"
+#include "component/definition/CameraComponentDefinition.h"
+#include "component/definition/ParticleGeneratorDefinition.h"
+#include "component/definition/GeneratorDefinition.h"
+#include "component/definition/TextGeneratorDefinition.h"
+#include "component/definition/AudioSourceDefinition.h"
+#include "component/definition/AudioListenerDefinition.h"
+#include "component/definition/PhysicsDefinition.h"
+#include "component/definition/ControllerDefinition.h"
 
-#include "component/CameraDefinition.h"
-#include "component/CameraComponent.h"
-
-#include "component/FpsCamera.h"
-#include "component/FollowCamera.h"
-#include "component/OrbitCamera.h"
-#include "component/SplineCamera.h"
-
-#include "component/GeneratorDefinition.h"
-
-#include "particle/ParticleDefinition.h"
 #include "particle/ParticleGenerator.h"
 
 #include "engine/PrepareContext.h"
@@ -44,15 +40,6 @@
 
 #include "generator/NodeGenerator.h"
 
-#include "component/TextDefinition.h"
-#include "generator/TextGenerator.h"
-
-#include "component/AudioSourceDefinition.h"
-#include "component/AudioListenerDefinition.h"
-
-#include "component/PhysicsDefinition.h"
-#include "component/ControllerDefinition.h"
-
 #include "audio/Listener.h"
 #include "audio/Source.h"
 #include "audio/AudioSystem.h"
@@ -60,8 +47,12 @@
 #include "physics/PhysicsSystem.h"
 #include "physics/physics_util.h"
 
-#include "controller/PawnController.h"
-#include "controller/CameraZoomController.h"
+#include "component/Light.h"
+#include "component/CameraComponent.h"
+
+#include "controller/NodeController.h"
+
+#include "generator/TextGenerator.h"
 
 #include "render/DebugContext.h"
 
@@ -88,193 +79,6 @@ namespace {
     const pool::NodeHandle NULL_HANDLE = pool::NodeHandle::NULL_HANDLE;
 
     static NodeRegistry* s_registry{ nullptr };
-
-
-    std::unique_ptr<CameraComponent> createCameraComponent(
-        const NodeType* type)
-    {
-        if (!type->m_cameraDefinition) return nullptr;
-
-        const auto& data = *type->m_cameraDefinition;
-
-        // NOTE only node cameras in scenefile for now
-        std::unique_ptr<CameraComponent> component;
-
-        switch (data.m_type) {
-        case CameraType::fps: {
-            auto c = std::make_unique<FpsCamera>();
-            c->setPitch(glm::radians(data.m_pitch));
-            c->setPitchSpeed(glm::radians(data.m_pitchSpeed));
-            component = std::move(c);
-            break;
-        }
-        case CameraType::follow: {
-            auto c = std::make_unique<FollowCamera>();
-            c->m_springConstant = data.m_springConstant;
-            c->m_distance = data.m_distance;
-            component = std::move(c);
-            break;
-        }
-        case CameraType::orbit: {
-            auto c = std::make_unique<OrbitCamera>();
-            c->m_offset = data.m_offset;
-            c->m_up = data.m_up;
-            c->m_pitchSpeed = glm::radians(data.m_pitchSpeed);
-            c->m_yawSpeed = glm::radians(data.m_yawSpeed);
-            component = std::move(c);
-            break;
-        }
-        case CameraType::spline: {
-            auto c = std::make_unique<SplineCamera>();
-            c->m_path = Spline{ data.m_path };
-            c->m_speed = data.m_speed;
-            component = std::move(c);
-            break;
-        }
-        }
-
-        component->m_enabled = true;
-        component->m_default = data.m_default;
-
-        {
-            auto& camera = component->getCamera();
-            if (data.m_orthogonal) {
-                camera.setViewport(data.m_viewport);
-            }
-            camera.setAxis(data.m_front, data.m_up);
-            camera.setFov(data.m_fov);
-        }
-
-        return component;
-    }
-
-    std::unique_ptr<Light> createLight(
-        const NodeType* type)
-    {
-        if (!type->m_lightDefinition) return nullptr;
-
-        const auto& data = *type->m_lightDefinition;
-
-        auto light = std::make_unique<Light>();
-
-        light->m_enabled = true;
-
-        light->setTargetId(data.m_targetId);
-
-        light->m_linear = data.m_linear;
-        light->m_quadratic = data.m_quadratic;
-
-        light->m_cutoffAngle = data.m_cutoffAngle;
-        light->m_outerCutoffAngle = data.m_outerCutoffAngle;
-
-        light->m_diffuse = data.m_diffuse;
-        light->m_intensity = data.m_intensity;
-
-        light->m_type = data.m_type;
-
-        return light;
-    }
-
-    std::unique_ptr<particle::ParticleGenerator> createParticleGenerator(
-        const NodeType* type)
-    {
-        if (!type->m_particleDefinition) return nullptr;
-        auto generator = std::make_unique<particle::ParticleGenerator>();
-        generator->setDefinition(*type->m_particleDefinition);
-        return generator;
-    }
-
-    std::unique_ptr<TextGenerator> createTextGenerator(
-        const NodeType* type)
-    {
-        if (!type->m_textDefinition) return nullptr;
-
-        const auto& data = *type->m_textDefinition;
-
-        const auto& assets = Assets::get();
-
-        auto generator = std::make_unique<TextGenerator>();
-
-        generator->setFontId(data.m_fontId);
-        generator->setText(data.m_text);
-        generator->setPivot(data.m_pivot);
-        generator->setAlignHorizontal(data.m_alignHorizontal);
-        generator->setAlignVertical(data.m_alignVertical);
-
-        generator->m_material = *data.m_material;
-
-        return generator;
-    }
-
-    std::unique_ptr<audio::Listener> createAudioListener(
-        const NodeType* type)
-    {
-        if (!type->m_audioListenerDefinition) return nullptr;
-
-        const auto& data = *type->m_audioListenerDefinition;
-
-        std::unique_ptr<audio::Listener> listener = std::make_unique<audio::Listener>();
-
-        listener->m_gain = data.m_gain;
-
-        return listener;
-    }
-
-    void createAudioSource(
-        const AudioSourceDefinition& data,
-        audio::Source& source)
-    {
-        const auto& assets = Assets::get();
-
-        source.m_id = data.m_sourceId;
-        source.m_soundId = data.m_soundId;
-
-        source.m_referenceDistance = data.m_referenceDistance;
-        source.m_maxDistance = data.m_maxDistance;
-        source.m_rolloffFactor = data.m_rolloffFactor;
-
-        source.m_minGain = data.m_minGain;
-        source.m_maxGain = data.m_maxGain;
-
-        source.m_looping = data.m_looping;
-
-        source.m_pitch = data.m_pitch;
-        source.m_gain = data.m_gain;
-    }
-
-    std::unique_ptr<std::vector<audio::Source>> createAudioSources(
-        const NodeType* type)
-    {
-        if (!type->m_audioSourceDefinitions) return nullptr;
-
-        const auto& sources = *type->m_audioSourceDefinitions;
-
-        auto result = std::make_unique<std::vector<audio::Source>>();
-
-        for (const auto& data : sources) {
-            auto& src = result->emplace_back();
-            createAudioSource(data, src);
-            if (!src.m_soundId) {
-                result->pop_back();
-            }
-        }
-        return result->empty() ? nullptr : std::move(result);
-    }
-
-    std::unique_ptr<NodeController> createController(
-        ControllerDefinition& definition)
-    {
-        switch (definition.m_type) {
-        case ControllerType::pawn: {
-            return std::make_unique<PawnController>();
-        }
-        case ControllerType::camera_zoom: {
-            return std::make_unique<CameraZoomController>();
-        }
-        }
-
-        return nullptr;
-    }
 }
 
 void NodeRegistry::init() noexcept
@@ -915,7 +719,7 @@ void NodeRegistry::attachNode(
 
     if (type->m_controllerDefinitions) {
         for (auto& definition : *type->m_controllerDefinitions) {
-            auto controller = createController(definition);
+            auto controller = ControllerDefinition::createController(definition);
             if (!controller) continue;
             ControllerRegistry::get().addController(node->m_handle, std::move(controller));
         }
@@ -1027,15 +831,14 @@ void NodeRegistry::bindNode(
         node->m_typeFlags = type->m_flags;
         node->m_layer = type->m_layer;
 
-        node->m_camera = createCameraComponent(type);
-        node->m_light = createLight(type);
-        node->m_particleGenerator = createParticleGenerator(type);
+        node->m_camera = CameraComponentDefinition::createCameraComponent(type);
+        node->m_light = LightDefinition::createLight(type);
+        node->m_particleGenerator = ParticleGeneratorDefinition::createParticleGenerator(type);
         node->m_generator = GeneratorDefinition::createGenerator(type);
-        node->m_audioSources = createAudioSources(type);
-        node->m_audioListener = createAudioListener(type);
-        node->m_camera = createCameraComponent(type);
+        node->m_audioSources = AudioSourceDefinition::createAudioSources(type);
+        node->m_audioListener = AudioListenerDefinition::createAudioListener(type);
         if (node->m_typeFlags.text) {
-            node->m_generator = createTextGenerator(type);
+            node->m_generator = TextGeneratorDefinition::createTextGenerator(type);
         }
     }
 

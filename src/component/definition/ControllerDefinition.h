@@ -1,10 +1,14 @@
 #pragma once
 
+#include <memory>
 #include <type_traits>
 
 #include <glm/glm.hpp>
 
 #include "ki/size.h"
+
+class NodeController;
+class NodeType;
 
 enum class ControllerType : std::underlying_type_t<std::byte> {
     none,
@@ -22,4 +26,7 @@ struct ControllerDefinition {
 
     glm::vec3 m_direction{ 0.f, 0.f, 1.f };
     float m_distance{ 0.f };
+
+    static std::unique_ptr<NodeController> createController(
+        ControllerDefinition& definition);
 };

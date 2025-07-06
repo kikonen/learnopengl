@@ -9,7 +9,7 @@
 #include "util/util.h"
 #include "util/glm_util.h"
 
-#include "component/PhysicsDefinition.h"
+#include "component/definition/PhysicsDefinition.h"
 
 #include "physics/physics_util.h"
 

@@ -8,7 +8,11 @@
 
 #include "AreaType.h"
 
+class NodeType;
+
 namespace particle {
+    class ParticleGenerator;
+
     struct ParticleDefinition {
         std::shared_ptr<Material> m_material;
 
@@ -54,5 +58,8 @@ namespace particle {
         float randomSize(const util::Random& rnd) const;
         float randomSpriteIndex(const util::Random& rnd) const;
         float randomSpriteSpeed(const util::Random& rnd) const;
-     };
+
+        static std::unique_ptr<particle::ParticleGenerator> createParticleGenerator(
+            const NodeType* type);
+    };
 }

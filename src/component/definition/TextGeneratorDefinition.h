@@ -10,7 +10,10 @@
 
 struct Material;
 
-struct TextDefinition {
+class NodeType;
+class TextGenerator;
+
+struct TextGeneratorDefinition {
     std::string m_text;
 
     glm::vec2 m_pivot{ 0.f };
@@ -20,4 +23,7 @@ struct TextDefinition {
     std::shared_ptr<Material> m_material;
 
     text::font_id m_fontId;
+
+    static std::unique_ptr<TextGenerator> createTextGenerator(
+        const NodeType* type);
 };

@@ -6,7 +6,7 @@
 
 #include "generator/NodeGenerator.h"
 
-struct TextDefinition;
+struct TextGeneratorDefinition;
 class NodeType;
 
 namespace loader {
@@ -21,7 +21,7 @@ namespace loader {
             TextData& data,
             Loaders& loaders) const;
 
-        std::unique_ptr<TextDefinition> createDefinition(
+        std::unique_ptr<TextGeneratorDefinition> createDefinition(
             const NodeType* type,
             const TextData& data,
             Loaders& loaders);

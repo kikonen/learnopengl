@@ -5,7 +5,7 @@
 #include "util/glm_util.h"
 #include "util/util.h"
 
-#include "component/CameraDefinition.h"
+#include "component/definition/CameraComponentDefinition.h"
 
 #include "loader/document.h"
 #include "loader_util.h"
@@ -117,12 +117,12 @@ namespace loader
         }
     }
 
-    std::unique_ptr<CameraDefinition> CameraLoader::createDefinition(
+    std::unique_ptr<CameraComponentDefinition> CameraLoader::createDefinition(
         const CameraData& data)
     {
         if (!data.enabled) return nullptr;
 
-        auto definition = std::make_unique<CameraDefinition>();
+        auto definition = std::make_unique<CameraComponentDefinition>();
         auto& df = *definition;
 
         df.m_type = data.type;

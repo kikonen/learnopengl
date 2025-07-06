@@ -4,7 +4,7 @@
 
 #include "material/Material.h"
 
-#include "particle/ParticleGenerator.h"
+#include "component/definition/ParticleGeneratorDefinition.h"
 
 #include "loader/document.h"
 #include "loader_util.h"
@@ -147,13 +147,13 @@ namespace loader
         }
     }
 
-    std::unique_ptr<particle::ParticleDefinition> ParticleLoader::createDefinition(
+    std::unique_ptr<ParticleGeneratorDefinition> ParticleLoader::createDefinition(
         const ParticleData& data) const
     {
         if (!data.enabled) return nullptr;
 
-        auto definition = std::make_unique<particle::ParticleDefinition>();
-        auto& df = *definition;
+        auto definition = std::make_unique<ParticleGeneratorDefinition>();
+        auto& df = definition->m_data;
 
         df.m_seed = data.seed;
         df.m_gravity = data.gravity;

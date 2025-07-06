@@ -1,7 +1,17 @@
 #pragma once
 
+#include <memory>
+#include <vector>
+
 #include "audio/limits.h"
 #include "audio/size.h"
+
+namespace audio
+{
+    struct Source;
+}
+
+class NodeType;
 
 // AL_MIN_GAIN
 // AL_MAX_GAIN
@@ -27,4 +37,12 @@ struct AudioSourceDefinition
     audio::sound_id m_soundId{ 0 };
 
     bool m_looping{ false };
+
+    static std::unique_ptr<std::vector<audio::Source>> createAudioSources(
+        const NodeType* type);
+
+    static void createAudioSource(
+        const AudioSourceDefinition& data,
+        audio::Source& source);
 };
+

@@ -6,7 +6,7 @@
 
 #include "component/CameraType.h"
 
-struct CameraDefinition;
+struct CameraComponentDefinition;
 
 namespace loader {
     struct CameraData {

@@ -17,7 +17,7 @@
 #include "engine/PrepareContext.h"
 #include "engine/UpdateContext.h"
 
-#include "component/PhysicsDefinition.h"
+#include "component/definition/PhysicsDefinition.h"
 
 #include "physics/PhysicsSystem.h"
 #include "physics/physics_util.h"

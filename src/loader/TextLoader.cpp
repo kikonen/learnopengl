@@ -4,7 +4,7 @@
 
 #include "mesh/MeshFlags.h"
 
-#include "component/TextDefinition.h"
+#include "component/definition/TextGeneratorDefinition.h"
 
 #include "loader/document.h"
 #include "Loaders.h"
@@ -74,7 +74,7 @@ namespace loader {
         }
     }
 
-    std::unique_ptr<TextDefinition> TextLoader::createDefinition(
+    std::unique_ptr<TextGeneratorDefinition> TextLoader::createDefinition(
         const NodeType* type,
         const TextData& data,
         Loaders& loaders)
@@ -83,7 +83,7 @@ namespace loader {
 
         const auto& assets = Assets::get();
 
-        auto definition = std::make_unique<TextDefinition>();
+        auto definition = std::make_unique<TextGeneratorDefinition>();
         auto& df = *definition;
 
         df.m_text = data.text;
