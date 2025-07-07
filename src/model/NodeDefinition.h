@@ -16,6 +16,7 @@ struct NodeDefinition
     bool m_enabled;
 
     std::string m_id;
+    std::string m_parentId;
     std::string m_aliasId;
     std::string m_ignoredById;
 

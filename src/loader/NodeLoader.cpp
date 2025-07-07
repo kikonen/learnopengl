@@ -201,6 +201,7 @@ namespace loader {
 
         df.m_enabled = nodeData.enabled;
         df.m_id = nodeData.baseId.m_path;
+        df.m_parentId = nodeData.parentBaseId.m_path;
         df.m_aliasId = nodeData.aliasBaseId.m_path;
         df.m_typeId = SID(nodeData.typeId.m_path);
         df.m_ignoredById = nodeData.ignoredByBaseId.m_path;

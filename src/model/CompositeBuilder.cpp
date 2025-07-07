@@ -266,7 +266,7 @@ void CompositeBuilder::buildNodeClone(
 }
 
 void CompositeBuilder::buildNodeCloneRepeat(
-    const ki::node_id parentId,
+    const ki::node_id defaultParentId,
     const NodeDefinition& cloneData,
     std::vector<std::pair<std::string, ki::node_id>>& aliases,
     const glm::vec3& tilePositionOffset)
@@ -277,6 +277,17 @@ void CompositeBuilder::buildNodeCloneRepeat(
         cloneData,
         aliases,
         cloneData.m_clonePositionOffset + tilePositionOffset);
+
+    ki::node_id parentId = defaultParentId;
+    if (cloneData.m_parentId.empty()) {
+        parentId = defaultParentId;
+    }
+    else {
+        auto [id, _] = resolveNodeId(
+            cloneData.m_typeId,
+            cloneData.m_parentId);
+        parentId = id;
+    }
 
     if (!cloneData.m_aliasId.empty())
     {
