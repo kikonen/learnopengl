@@ -18,21 +18,63 @@ namespace loader
         : BaseLoader(ctx)
     {}
 
+    void ParticleLoader::loadParticles(
+        const loader::DocNode& node,
+        std::vector<ParticleData>& particles,
+        Loaders& loaders) const
+    {
+        std::unordered_map<std::string, const loader::DocNode*> idToParticle;
+
+        for (const auto& entry : node.getNodes()) {
+            const auto& node = entry.findNode("id");
+            if (node.isNull()) continue;
+
+            auto id = readId(node);
+            idToParticle.insert({ id.m_path, &entry });
+        }
+
+        for (const auto& entry : node.getNodes()) {
+            auto& data = particles.emplace_back();
+            loadParticle(
+                entry,
+                data,
+                idToParticle,
+                loaders);
+        }
+    }
+
     void ParticleLoader::loadParticle(
         const loader::DocNode& node,
         ParticleData& data,
+        const std::unordered_map<std::string, const loader::DocNode*>& idToParticle,
         Loaders& loaders) const
     {
+        {
+            const auto& baseNode = node.findNode("base");
+            if (!baseNode.isNull()) {
+                auto baseId = readId(baseNode);
+                const auto& it = idToParticle.find(baseId.m_path);
+                if (it == idToParticle.end()) {
+                    throw fmt::format("Missing base_particle: {}", baseId.m_path);
+                }
+                loadParticle(*it->second, data, idToParticle, loaders);
+            }
+        }
+
         for (const auto& pair : node.getNodes()) {
             const std::string& k = pair.getName();
             const loader::DocNode& v = pair.getNode();
 
-            if (k == "xname" || k == "xxname" || k == "xenabled" || k == "xxenabled") {
+            if (k == "base") {
+                // NOTE KI loaded as "pre step"
+            }
+            else if (k == "id") {
+                data.baseId = readId(v);
+            }
+            else if (k == "xid") {
+                data.baseId = readId(v);
                 data.explicitEnabled = true;
                 data.enabled = false;
-            }
-            else if (k == "name") {
-                data.name = readString(v);
             }
             else if (k == "enabled") {
                 data.explicitEnabled = true;

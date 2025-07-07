@@ -4,6 +4,8 @@
 
 #include <glm/glm.hpp>
 
+#include "BaseId.h"
+
 #include "particle/AreaType.h"
 #include "particle/ParticleDefinition.h"
 #include "MaterialData.h"
@@ -13,7 +15,7 @@ namespace loader {
         bool explicitEnabled{ false };
         bool enabled{ false };
 
-        std::string name;
+        BaseId baseId;
 
         int seed{ 0 };
 

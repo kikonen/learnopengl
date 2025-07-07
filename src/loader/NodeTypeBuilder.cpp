@@ -58,6 +58,7 @@
 #include "loader_util.h"
 
 #include "CompositeData.h"
+#include "ParticleData.h"
 
 namespace {
     const std::string QUAD_MESH_NAME{ "quad" };
@@ -89,6 +90,17 @@ namespace {
             [&compositeId](const auto& e) { return e.baseId == compositeId; });
         return it != composites.end() ? &(*it) : nullptr;
     }
+
+    const loader::ParticleData* findParticle(
+        loader::BaseId particleId,
+        const std::vector<loader::ParticleData>& particles)
+    {
+        const auto& it = std::find_if(
+            particles.cbegin(),
+            particles.cend(),
+            [&particleId](const auto& e) { return e.baseId == particleId; });
+        return it != particles.end() ? &(*it) : nullptr;
+    }
 }
 
 namespace loader
@@ -103,19 +115,21 @@ namespace loader
 
     void NodeTypeBuilder::createTypes(
         const std::vector<NodeTypeData>& types,
-        const std::vector<CompositeData>& composites)
+        const std::vector<CompositeData>& composites,
+        const std::vector<ParticleData>& particles)
     {
         for (const auto& typeData : types) {
             //NodeTypeData resolvedData;
             //resolveNodeTypeData(resolvedData, typeData, types);
             //createType(resolvedData);
-            createType(typeData, composites);
+            createType(typeData, composites, particles);
         }
     }
 
     pool::TypeHandle NodeTypeBuilder::createType(
         const NodeTypeData& typeData,
-        const std::vector<CompositeData>& composites)
+        const std::vector<CompositeData>& composites,
+        const std::vector<ParticleData>& particles)
     {
         auto& l = *m_loaders;
 
@@ -213,7 +227,18 @@ namespace loader
 
         type->m_cameraComponentDefinition = l.m_cameraLoader.createDefinition(typeData.camera);
         type->m_lightDefinition = l.m_lightLoader.createDefinition(typeData.light);
-        type->m_particleGeneratorDefinition = l.m_particleLoader.createDefinition(typeData.particle);
+
+        if (!typeData.particleId.empty()) {
+            auto* particleData = findParticle(typeData.particleId, particles);
+
+            if (!particleData) {
+                throw fmt::format("particle missing: type={}, type={}",
+                    typeData.str(), typeData.particleId.str());
+            }
+
+            type->m_particleGeneratorDefinition = l.m_particleLoader.createDefinition(*particleData);
+        }
+
         type->m_physicsDefinition = l.m_physicsLoader.createPhysicsDefinition(typeData.physics);
 
         type->m_generatorDefinition = l.m_generatorLoader.createGeneratorDefinition(

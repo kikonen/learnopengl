@@ -137,6 +137,11 @@ namespace loader {
                     m_composites,
                     l);
 
+                l.m_particleLoader.loadParticles(
+                    doc.findNode("particles"),
+                    m_particles,
+                    l);
+
                 l.m_nodeLoader.loadNodes(
                     doc.findNode("nodes"),
                     m_nodes,
@@ -248,7 +253,10 @@ namespace loader {
         }
 
         {
-            m_nodeTypeBuilder->createTypes(m_nodeTypes, m_composites);
+            m_nodeTypeBuilder->createTypes(
+                m_nodeTypes,
+                m_composites,
+                m_particles);
         }
 
         {

@@ -31,6 +31,14 @@ end
 
 print("loaded")
 
+function emit_particles()
+  for _, state in pairs(states) do
+    if state.emit_particles then
+      state:emit_particles()
+    end
+  end
+end
+
 function sample()
   for i=0,10 do
     create_new_node("mirror_ball")
@@ -42,11 +50,7 @@ function sample()
     create_new_node("skeleton_army")
   end
 
-  for _, state in pairs(states) do
-    if state.emit_particles then
-      state:emit_particles()
-    end
-  end
+  emit_particles()
 end
 
 function cylon_armada()
@@ -77,3 +81,5 @@ create_new_node("cylon_group")
 -- create_new_node("flag_stand")
 
 -- delete_test()
+
+  emit_particles()

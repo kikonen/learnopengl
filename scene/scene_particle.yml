@@ -101,37 +101,7 @@ types:
       material_modifier:
         kd: [0.0, 0.2, 0.8, 1.0]
         program: g_tex
-    particle:
-      seed: 1
-      gravity: [0, -9.81, 0]
-      lifetime: 10
-      lifetime_variation: 5
-      area_type: disc_line
-      area_radius: 1
-      area_size: [1, 0, 1]
-      area_variation: 0.1
-      dir: [0, 1, 0]
-      dir_variation: 0.2
-      speed: 20
-      speed_variation: 4
-      size: 0.1
-      size_variation: 0.1
-      rate: 5000
-      rate_variation: 50
-      sprite_base: 0
-      sprite_base_variation: 0
-      sprite_count: -1
-      sprite_speed: 10
-      sprite_speed_variation: 20
-      material:
-        name: particle_firespin
-        kd: [1, 1, 1, 1]
-        xkd: [0.5, 1.5, 0.2, 0.2]
-        map_kd: particles/7_firespin_spritesheet.png
-        sprites: 61
-        sprites_x: 8
-        texture_spec:
-          wrap: GL_CLAMP_TO_EDGE
+    particle: origo_marker
     physics:
       body:
         type: sphere
@@ -159,132 +129,16 @@ types:
     script_file: scripts/seq_particle_generator
   - id: four_cubes_1
     base: four_cubes
-    particle:
-      seed: 1
-      gravity: [0, -9.81, 0]
-      lifetime: 10
-      lifetime_variation: 5
-      area_type: box_line
-      area_radius: 1
-      area_size: [1, 0, 1]
-      area_variation: 0.1
-      dir: [0, 1, 0]
-      dir_variation: 0.5
-      speed: 20
-      speed_variation: 4
-      size: 0.1
-      size_variation: 0.1
-      rate: 5000
-      rate_variation: 50
-      sprite_base: 0
-      sprite_base_variation: 0
-      sprite_count: -1
-      sprite_speed: 10
-      sprite_speed_variation: 20
-      material:
-        name: particle_bones_1
-        kd: [1, 1, 1, 1]
-        map_kd: particles/bones_1_spritesheet.png
-        sprites: 28
-        sprites_x: 4
-        texture_spec:
-          wrap: GL_CLAMP_TO_EDGE
+    particle: four_cubes_1
   - id: four_cubes_2
     base: four_cubes
-    particle:
-      seed: 1
-      gravity: [0, -9.81, 0]
-      lifetime: 10
-      lifetime_variation: 5
-      area_type: box_line
-      area_radius: 1
-      area_size: [1, 0, 1]
-      area_variation: 0.1
-      dir: [0, 1, 0]
-      dir_variation: 0.5
-      speed: 20
-      speed_variation: 4
-      size: 0.1
-      size_variation: 0.1
-      rate: 5000
-      rate_variation: 50
-      sprite_base: 0
-      sprite_base_variation: 0
-      sprite_count: -1
-      sprite_speed: 10
-      sprite_speed_variation: 20
-      material:
-        name: particle_bones_2
-        kd: [1, 1, 1, 1]
-        map_kd: particles/bones_2_spritesheet.png
-        sprites: 29
-        sprites_x: 4
-        texture_spec:
-          wrap: GL_CLAMP_TO_EDGE
+    particle: four_cubes_2
   - id: four_cubes_3
     base: four_cubes
-    particle:
-      seed: 1
-      gravity: [0, -9.81, 0]
-      lifetime: 10
-      lifetime_variation: 5
-      area_type: box_line
-      area_radius: 1
-      area_size: [1, 0, 1]
-      area_variation: 0.1
-      dir: [0, 1, 0]
-      dir_variation: 0.5
-      speed: 20
-      speed_variation: 4
-      size: 0.1
-      size_variation: 0.1
-      rate: 5000
-      rate_variation: 50
-      sprite_base: 0
-      sprite_base_variation: 0
-      sprite_count: -1
-      sprite_speed: 10
-      sprite_speed_variation: 20
-      material:
-        name: particle_bones_3
-        kd: [1, 1, 1, 1]
-        map_kd: particles/bones_3_spritesheet.png
-        sprites: 28
-        sprites_x: 5
-        texture_spec:
-          wrap: GL_CLAMP_TO_EDGE
+    particle: four_cubes_3
   - id: four_cubes_4
     base: four_cubes
-    particle:
-      seed: 1
-      #gravity: [0, -9.81, 0]
-      lifetime: 10
-      lifetime_variation: 5
-      area_type: box_line
-      area_radius: 1
-      area_size: [1, 1, 1]
-      area_variation: 0.1
-      dir: [0, 1, 0]
-      dir_variation: 0.5
-      speed: 0
-      speed_variation: 0
-      size: 0.1
-      size_variation: 0.1
-      rate: 1000
-      rate_variation: 50
-      sprite_base: 0
-      sprite_base_variation: 0
-      sprite_count: -1
-      sprite_speed: 10
-      sprite_speed_variation: 20
-      material:
-        name: particle_casting
-        kd: [1, 1, 1, 1]
-        map_kd: particles/4_casting_spritesheet.png
-        sprites: 73
-        sprites_x: 9
-        texture_spec:
-          wrap: GL_CLAMP_TO_EDGE
+    particle: four_cubes_4
   - id: skeleton_army
     prefab:
       path: prefab/creatures/prefab_skeleton_warrior.yml
@@ -627,6 +481,163 @@ nodes:
     scale: 1.5
   - type: terrain_grass_v2_generator
     pos: [-1024, 10, -1024]
+
+particles:
+  - id: origo_marker
+    seed: 1
+    gravity: [0, -9.81, 0]
+    lifetime: 10
+    lifetime_variation: 5
+    area_type: disc_line
+    area_radius: 1
+    area_size: [1, 0, 1]
+    area_variation: 0.1
+    dir: [0, 1, 0]
+    dir_variation: 0.2
+    speed: 20
+    speed_variation: 4
+    size: 0.1
+    size_variation: 0.1
+    rate: 5000
+    rate_variation: 50
+    sprite_base: 0
+    sprite_base_variation: 0
+    sprite_count: -1
+    sprite_speed: 10
+    sprite_speed_variation: 20
+    material:
+      name: particle_firespin
+      kd: [1, 1, 1, 1]
+      xkd: [0.5, 1.5, 0.2, 0.2]
+      map_kd: particles/7_firespin_spritesheet.png
+      sprites: 61
+      sprites_x: 8
+      texture_spec:
+        wrap: GL_CLAMP_TO_EDGE
+
+  - id: four_cubes_1
+    seed: 1
+    gravity: [0, -9.81, 0]
+    lifetime: 10
+    lifetime_variation: 5
+    area_type: box_line
+    area_radius: 1
+    area_size: [1, 0, 1]
+    area_variation: 0.1
+    dir: [0, 1, 0]
+    dir_variation: 0.5
+    speed: 20
+    speed_variation: 4
+    size: 0.1
+    size_variation: 0.1
+    rate: 5000
+    rate_variation: 50
+    sprite_base: 0
+    sprite_base_variation: 0
+    sprite_count: -1
+    sprite_speed: 10
+    sprite_speed_variation: 20
+    material:
+      name: particle_bones_1
+      kd: [1, 1, 1, 1]
+      map_kd: particles/bones_1_spritesheet.png
+      sprites: 28
+      sprites_x: 4
+      texture_spec:
+        wrap: GL_CLAMP_TO_EDGE
+
+  - id: four_cubes_2
+    seed: 1
+    gravity: [0, -9.81, 0]
+    lifetime: 10
+    lifetime_variation: 5
+    area_type: box_line
+    area_radius: 1
+    area_size: [1, 0, 1]
+    area_variation: 0.1
+    dir: [0, 1, 0]
+    dir_variation: 0.5
+    speed: 20
+    speed_variation: 4
+    size: 0.1
+    size_variation: 0.1
+    rate: 5000
+    rate_variation: 50
+    sprite_base: 0
+    sprite_base_variation: 0
+    sprite_count: -1
+    sprite_speed: 10
+    sprite_speed_variation: 20
+    material:
+      name: particle_bones_2
+      kd: [1, 1, 1, 1]
+      map_kd: particles/bones_2_spritesheet.png
+      sprites: 29
+      sprites_x: 4
+      texture_spec:
+        wrap: GL_CLAMP_TO_EDGE
+
+  - id: four_cubes_3
+    seed: 1
+    gravity: [0, -9.81, 0]
+    lifetime: 10
+    lifetime_variation: 5
+    area_type: box_line
+    area_radius: 1
+    area_size: [1, 0, 1]
+    area_variation: 0.1
+    dir: [0, 1, 0]
+    dir_variation: 0.5
+    speed: 20
+    speed_variation: 4
+    size: 0.1
+    size_variation: 0.1
+    rate: 5000
+    rate_variation: 50
+    sprite_base: 0
+    sprite_base_variation: 0
+    sprite_count: -1
+    sprite_speed: 10
+    sprite_speed_variation: 20
+    material:
+      name: particle_bones_3
+      kd: [1, 1, 1, 1]
+      map_kd: particles/bones_3_spritesheet.png
+      sprites: 28
+      sprites_x: 5
+      texture_spec:
+        wrap: GL_CLAMP_TO_EDGE
+
+  - id: four_cubes_4
+    seed: 1
+    #gravity: [0, -9.81, 0]
+    lifetime: 10
+    lifetime_variation: 5
+    area_type: box_line
+    area_radius: 1
+    area_size: [1, 1, 1]
+    area_variation: 0.1
+    dir: [0, 1, 0]
+    dir_variation: 0.5
+    speed: 0
+    speed_variation: 0
+    size: 0.1
+    size_variation: 0.1
+    rate: 1000
+    rate_variation: 50
+    sprite_base: 0
+    sprite_base_variation: 0
+    sprite_count: -1
+    sprite_speed: 10
+    sprite_speed_variation: 20
+    material:
+      name: particle_casting
+      kd: [1, 1, 1, 1]
+      map_kd: particles/4_casting_spritesheet.png
+      sprites: 73
+      sprites_x: 9
+      texture_spec:
+        wrap: GL_CLAMP_TO_EDGE
 
 decals:
   - name: bullet_1

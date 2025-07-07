@@ -22,7 +22,6 @@
 #include "TextData.h"
 #include "MaterialData.h"
 #include "CustomMaterialData.h"
-#include "ParticleData.h"
 
 namespace loader
 {
@@ -68,7 +67,7 @@ namespace loader
         LightData light;
         AudioData audio;
         TextData text;
-        ParticleData particle;
+        BaseId particleId;
 
         GeneratorData generator;
 

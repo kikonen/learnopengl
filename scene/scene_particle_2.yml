@@ -55,37 +55,7 @@ types:
       path: texture_cube_3
       program: g_tex
       base_rot: [-90, 0, 0]
-    particle:
-      seed: 1
-      #gravity: [0, -9.81, 0]
-      lifetime: 3
-      lifetime_variation: 3
-      area_type: box_line
-      area_radius: 1
-      area_size: [1, 1, 0]
-      area_variation: 0.1
-      area_offset: [0, 0, 1]
-      dir: [0, 1, 0]
-      dir_variation: 0.5
-      speed: 0
-      speed_variation: 0
-      size: 0.1
-      size_variation: 0.1
-      rate: 20000
-      rate_variation: 50
-      sprite_base: 0
-      sprite_base_variation: 0
-      sprite_count: -1
-      sprite_speed: 10
-      sprite_speed_variation: 20
-      material:
-        name: particle_casting
-        kd: [1, 1, 1, 1]
-        map_kd: particles/4_casting_spritesheet.png
-        sprites: 73
-        sprites_x: 9
-        texture_spec:
-          wrap: GL_CLAMP_TO_EDGE
+    particle: particle_cube
     script: |
       cmd:rotate(
         { time=50 * 100 },
@@ -111,3 +81,36 @@ nodes:
     parent: particle_cube_origo
     rot: [0, 45, 0]
     pos: [5, 0, 0]
+
+particles:
+  - id: particle_cube
+    seed: 1
+    #gravity: [0, -9.81, 0]
+    lifetime: 3
+    lifetime_variation: 3
+    area_type: box_line
+    area_radius: 1
+    area_size: [1, 1, 0]
+    area_variation: 0.1
+    area_offset: [0, 0, 1]
+    dir: [0, 1, 0]
+    dir_variation: 0.5
+    speed: 0
+    speed_variation: 0
+    size: 0.1
+    size_variation: 0.1
+    rate: 20000
+    rate_variation: 50
+    sprite_base: 0
+    sprite_base_variation: 0
+    sprite_count: -1
+    sprite_speed: 10
+    sprite_speed_variation: 20
+    material:
+      name: particle_casting
+      kd: [1, 1, 1, 1]
+      map_kd: particles/4_casting_spritesheet.png
+      sprites: 73
+      sprites_x: 9
+      texture_spec:
+        wrap: GL_CLAMP_TO_EDGE

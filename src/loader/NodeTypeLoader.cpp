@@ -228,7 +228,7 @@ namespace loader {
                 loaders.m_generatorLoader.loadGenerator(v, data.generator, loaders);
             }
             else if (k == "particle") {
-                loaders.m_particleLoader.loadParticle(v, data.particle, loaders);
+                data.particleId = readId(v);
             }
             else if (k == "enabled") {
                 data.enabled = readBool(v);

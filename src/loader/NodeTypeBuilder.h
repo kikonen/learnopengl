@@ -31,6 +31,7 @@ namespace loader {
     struct MaterialData;
     struct DecalData;
     struct MaterialUpdaterData;
+    struct ParticleData;
 
     struct FlagContainer;
 
@@ -45,11 +46,13 @@ namespace loader {
 
         void createTypes(
             const std::vector<NodeTypeData>& types,
-            const std::vector<CompositeData>& composites);
+            const std::vector<CompositeData>& composites,
+            const std::vector<ParticleData>& particles);
 
         pool::TypeHandle createType(
             const NodeTypeData& typeData,
-            const std::vector<CompositeData>& composites);
+            const std::vector<CompositeData>& composites,
+            const std::vector<ParticleData>& particles);
 
     private:
         void resolveMaterials(

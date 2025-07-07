@@ -26,6 +26,7 @@ namespace loader {
     struct NodeData;
     struct CompositeData;
     struct DecalData;
+    struct ParticleData;
     struct MaterialUpdaterData;
 
     class NodeTypeBuilder;
@@ -123,6 +124,7 @@ namespace loader {
 
         std::unique_ptr<Material> m_defaultMaterial;
 
+        std::vector<ParticleData> m_particles;
         std::vector<DecalData> m_decals;
         std::vector<MaterialUpdaterData> m_materialUpdaters;
 
