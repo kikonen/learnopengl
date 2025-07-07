@@ -8,6 +8,10 @@ script:
   scripts:
     - path: lib/common
 types:
+  - id: cube_map
+    type: origo
+    flags:
+      cube_map: true
   - id: player
     type: origo
     front: [0, 0, -1]
@@ -19,10 +23,6 @@ types:
     controllers:
       - type: pawn
       - type: camera_zoom
-  - id: cube_map_1
-    type: origo
-    flags:
-      cube_map: true
   - id: bunny
     mesh:
       path: bunny
@@ -52,7 +52,7 @@ nodes:
   - type: player
     pos: [0, 0, 0]
     active: true
-  - type: cube_map_1
+  - type: cube_map
     pos: [0.0, 0.0, -10.0]
   - type: bunny
     pos: [0.0, 0.0, -10.0]

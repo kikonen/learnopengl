@@ -12,7 +12,7 @@ script:
   scripts:
     - path: lib/common
 types:
-  - id: origo
+  - id: origo_marker
     mesh:
       path: water_ball
       material:
@@ -349,7 +349,7 @@ types:
         kd: [0, 0.8, 0.8]
 
 nodes:
-  - type: origo
+  - type: origo_marker
     pos: [0.0, 0.0, 0.0]
     scale: 1
   - type: cap

@@ -26,7 +26,7 @@ types:
     audio:
       listener:
         default: true
-  - id: origo
+  - id: origo_marker
     mesh:
       path: water_ball
       material_modifier:
@@ -98,7 +98,7 @@ nodes:
     rot: [0, 45, 0]
     scale: 0.5
     active: true
-  - type: origo
+  - type: origo_marker
     pos: [0.0, 0.0, 0.0]
     scale: 1
   - type: four_cubes

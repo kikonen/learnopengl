@@ -95,7 +95,7 @@ types:
     script: |
       cmd:animation_play(
         { name="idle_aim:Unreal Take" } )
-  - id: origo
+  - id: origo_marker
     mesh:
       path: water_ball
       material_modifier:
@@ -584,7 +584,7 @@ nodes:
     pos: [0, 4, 0.0]
     rot: [0, 45, 0]
     active: true
-  - type: origo
+  - type: origo_marker
     pos: [0.0, 0.0, 0.0]
   - type: four_cubes
     clones:

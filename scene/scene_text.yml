@@ -8,6 +8,10 @@ script:
   scripts:
     - path: lib/common
 types:
+  - id: cube_map
+    type: origo
+    flags:
+      cube_map: true
   - id: fps_counter
     prefab:
       path: prefab/util/prefab_fps_counter.yml
@@ -177,10 +181,6 @@ types:
       program: g_tex
     flags:
       no_shadow: true
-  - id: cube_map_mirror_ball
-    type: origo
-    flags:
-      cube_map: true
   - id: mirror_ball
     mesh:
       path: glass_ball
@@ -223,7 +223,7 @@ nodes:
     scale: 0.5
   - type: wooden_floor
     scale: 100
-  - type: cube_map_mirror_ball
+  - type: cube_map
     pos: [0, 2, -7]
   - type: mirror_ball
     pos: [0, 2, -7]

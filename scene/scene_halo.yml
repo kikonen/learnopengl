@@ -32,7 +32,7 @@ types:
     physics:
       geom:
         collision: [world]
-  - id: origo
+  - id: origo_marker
     mesh:
       vertex:
         type: sphere
@@ -97,7 +97,7 @@ nodes:
   - type: wooden_floor
     pos: [0, -2, 0]
     scale: 100
-  - type: origo
+  - type: origo_marker
     pos: [0.0, 0.0, 0.0]
   - type: lamp_origo
     id: lamp_origo

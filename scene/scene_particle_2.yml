@@ -31,7 +31,7 @@ types:
       type: directional
       diffuse: [0.7, 0.7, 0.7, 1.0]
       intensity: 30000
-  - id: origo
+  - id: origo_marker
     mesh:
       path: water_ball
       material:
@@ -99,7 +99,7 @@ nodes:
     active: true
   - type: dir_light
     pos: [-15, 25, 25]
-  - type: origo
+  - type: origo_marker
     pos: [0.0, 0.0, 0.0]
   - type: wooden_floor
     scale: 100

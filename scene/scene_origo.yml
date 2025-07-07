@@ -8,6 +8,10 @@ script:
   scripts:
     - path: lib/common
 types:
+  - id: cube_map
+    type: origo
+    flags:
+      cube_map: true
   - id: player
     type: origo
     mesh:
@@ -71,10 +75,6 @@ types:
       base_scale: 0.05
       program: g_tex
       shadow_program: shadow
-  - id: cube_map_1
-    type: origo
-    flags:
-      cube_map: true
   - id: glass_ball
     mesh:
       path: glass_ball
@@ -162,7 +162,7 @@ nodes:
       z_count: 50
       x_step: -6
       z_step: 4
-  - type: cube_map_1
+  - type: cube_map
     pos: [0.0, 3.0, 0.0]
   - type: glass_ball
     pos: [5.0, 3.0, 0.0]

@@ -7,6 +7,10 @@ script:
   scripts:
     - path: lib/common
 types:
+  - id: cube_map
+    type: origo
+    flags:
+      cube_map: true
   - id: player
     type: origo
     front: [0, 0, -1]
@@ -38,10 +42,6 @@ types:
       type: directional
       diffuse: [0.7, 0.7, 0.7, 1.0]
       intensity: 30000
-  - id: cube_map_mirror_ball
-    type: origo
-    flags:
-      cube_map: true
   - id: planet_1
     mesh:
       path: planet/planet.obj
@@ -52,10 +52,6 @@ types:
       material_modifier:
         map_normal: mars_normal.png
       program: g_tex
-  - id: cube_map_wood_wall
-    type: origo
-    flags:
-      cube_map: true
   - id: toybox
     mesh:
       path: quad
@@ -156,7 +152,7 @@ nodes:
     xxpos: [0, 25, 25]
     pos: [-25, 25, 0]
     scale: 2.5
-  - type: cube_map_mirror_ball
+  - type: cube_map
     pos: [0, 5, 10]
   - type: planet_1
     pos: [0, 0, 20]
@@ -164,7 +160,7 @@ nodes:
   - type: planet_2
     pos: [0, 3.5, 30]
     scale: 1
-  - type: cube_map_wood_wall
+  - type: cube_map
     pos: [35.0, 2.5, 5.0]
   - type: toybox
     pos: [20.0, 2.5, -5.0]
