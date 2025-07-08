@@ -383,7 +383,9 @@
     <ClCompile Include="src\render\PassParticle.cpp" />
     <ClCompile Include="src\render\PassDeferred.cpp" />
     <ClCompile Include="src\render\PassSkybox.cpp" />
+    <ClCompile Include="src\render\PassSsao.cpp" />
     <ClCompile Include="src\render\ScreenTri.cpp" />
+    <ClCompile Include="src\render\SSaoBuffer.cpp" />
     <ClCompile Include="src\script\api\SceneAPI.cpp" />
     <ClCompile Include="src\script\binding\LuaScene.cpp" />
     <ClCompile Include="src\script\command\CancelMultiple.cpp" />
@@ -825,8 +827,10 @@
     <ClInclude Include="src\render\PassParticle.h" />
     <ClInclude Include="src\render\PassDeferred.h" />
     <ClInclude Include="src\render\PassSkybox.h" />
+    <ClInclude Include="src\render\PassSsao.h" />
     <ClInclude Include="src\render\Pipeline.h" />
     <ClInclude Include="src\render\ScreenTri.h" />
+    <ClInclude Include="src\render\SSaoBuffer.h" />
     <ClInclude Include="src\script\api\SceneAPI.h" />
     <ClInclude Include="src\script\binding\LuaScene.h" />
     <ClInclude Include="src\script\command\CancelMultiple.h" />

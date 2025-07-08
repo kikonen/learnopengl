@@ -12,6 +12,7 @@ namespace render
         bool m_effect : 1 { true };
         bool m_fog : 1 { true };
         bool m_oit : 1 { true };
+        bool m_ssao : 1 { true };
         bool m_emission : 1 { true };
         bool m_bloom : 1 { true };
         bool m_skybox : 1 { true };

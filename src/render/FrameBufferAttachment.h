@@ -147,6 +147,8 @@ namespace render {
 
         static FrameBufferAttachment getOITAccumulatorTexture(GLenum attachment);
         static FrameBufferAttachment getOITRevealTexture(GLenum attachment);
+
+        static FrameBufferAttachment getSsaoTexture(GLenum attachment);
     };
 
     struct FrameBufferSpecification {

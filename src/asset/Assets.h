@@ -279,6 +279,7 @@ public:
     float effectBloomThreshold;
 
     bool effectOitEnabled;
+    bool effectSsaoEnabled;
     bool effectEmissionEnabled;
     bool effectFogEnabled;
 

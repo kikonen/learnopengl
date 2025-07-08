@@ -26,6 +26,7 @@
 #include "render/PassEffect.h"
 #include "render/PassFog.h"
 #include "render/PassOit.h"
+#include "render/PassSsao.h"
 #include "render/PassBloom.h"
 #include "render/PassSkybox.h"
 #include "render/PassDebug.h"
@@ -47,6 +48,7 @@ namespace render {
     NodeDraw::NodeDraw()
         : m_passDeferred{ std::make_unique<render::PassDeferred>()},
         m_passOit{ std::make_unique<render::PassOit>() },
+        m_passSsao{ std::make_unique<render::PassSsao>() },
         m_passForward{ std::make_unique<render::PassForward>() },
         m_passDecal{ std::make_unique<render::PassDecal>() },
         m_passParticle{ std::make_unique<render::PassParticle>() },
@@ -76,6 +78,7 @@ namespace render {
 
         if (m_pipeline.m_deferred) m_passDeferred->prepare(ctx);
         if (m_pipeline.m_oit) m_passOit->prepare(ctx);
+        if (m_pipeline.m_ssao) m_passSsao->prepare(ctx);
         if (m_pipeline.m_forward) m_passForward->prepare(ctx);
         if (m_pipeline.m_decal) m_passDecal->prepare(ctx);
         if (m_pipeline.m_particle) m_passParticle->prepare(ctx);
@@ -99,6 +102,7 @@ namespace render {
     {
         if (m_pipeline.m_deferred) m_passDeferred->updateRT(ctx, bufferScale);
         if (m_pipeline.m_oit) m_passOit->updateRT(ctx, m_passDeferred.get(), bufferScale);
+        if (m_pipeline.m_ssao) m_passSsao->updateRT(ctx, bufferScale);
         if (m_pipeline.m_forward) m_passForward->updateRT(ctx, bufferScale);
         if (m_pipeline.m_decal) m_passDecal->updateRT(ctx, bufferScale);
         if (m_pipeline.m_particle) m_passParticle->updateRT(ctx, bufferScale);
@@ -131,12 +135,12 @@ namespace render {
         {
             if (m_pipeline.m_deferred) m_passDeferred->initRender(ctx);
             if (m_pipeline.m_oit) m_passOit->initRender(ctx);
+            if (m_pipeline.m_ssao) m_passSsao->initRender(ctx);
             if (m_pipeline.m_forward) m_passForward->initRender(ctx);
             if (m_pipeline.m_decal) m_passDecal->initRender(ctx);
             if (m_pipeline.m_particle) m_passParticle->initRender(ctx);
             if (m_pipeline.m_effect) m_passEffect->initRender(ctx);
             if (m_pipeline.m_fog) m_passFog->initRender(ctx);
-            if (m_pipeline.m_oit) m_passOit->initRender(ctx);
             if (m_pipeline.m_bloom) m_passBloom->initRender(ctx);
             if (m_pipeline.m_skybox) m_passSkybox->initRender(ctx);
             if (m_pipeline.m_debug) m_passDebug->initRender(ctx);
@@ -156,6 +160,8 @@ namespace render {
                 passContext = m_passDeferred->render(ctx, drawContext, passContext);
             if (m_pipeline.m_decal)
                 passContext = m_passDecal->render(ctx, drawContext, passContext);
+            if (m_pipeline.m_ssao)
+                passContext = m_passSsao->render(ctx, drawContext, passContext);
             if (m_pipeline.m_deferred)
                 passContext = m_passDeferred->combine(ctx, drawContext, passContext);
 
@@ -219,6 +225,7 @@ namespace render {
         //if (m_pipeline.m_effeect) m_passEffect->cleanup(ctx);
         //if (m_pipeline.m_fog) m_passFog->cleanup(ctx);
         if (m_pipeline.m_decal) m_passOit->cleanup(ctx);
+        if (m_pipeline.m_decal) m_passSsao->cleanup(ctx);
         //if (m_pipeline.m_bloom) m_passBloom->cleanup(ctx);
         //if (m_pipeline.m_skybox) m_passSkybox->cleanup(ctx);
         //if (m_pipeline.m_debug) m_passDebug->cleanup(ctx);

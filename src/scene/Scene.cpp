@@ -605,6 +605,7 @@ void Scene::drawUi(const RenderContext& parentCtx)
     localCtx.m_useDecals = false;
     localCtx.m_useFog = false;
     localCtx.m_useEmission = false;
+    localCtx.m_useSsao = false;
     localCtx.m_useBloom = false;
     localCtx.m_forceLineMode = false;
     localCtx.m_allowLineMode = false;

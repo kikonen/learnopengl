@@ -23,6 +23,8 @@ in VS_OUT {
 
 LAYOUT_G_BUFFER_SAMPLERS;
 
+layout(binding = UNIT_SSAO_BLUR) uniform sampler2D u_ssaoBlurTex;
+
 layout(binding = UNIT_IRRADIANCE_MAP) uniform samplerCube u_irradianceMap;
 layout(binding = UNIT_PREFILTER_MAP) uniform samplerCube u_prefilterMap;
 layout(binding = UNIT_BRDF_LUT) uniform sampler2D u_brdfLut;
@@ -99,6 +101,8 @@ void main()
     material.emission = textureLod(g_emission, texCoord, 0).rgb;
     material.diffuse.a = 1.0;
     material.mra = textureLod(g_mra, texCoord, 0).rgb;
+
+    material.ssao = texture(u_ssaoBlurTex, texCoord).r;
   }
 
   vec4 color;

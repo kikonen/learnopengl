@@ -282,6 +282,7 @@ Assets::Assets()
     effectBloomThreshold = 3.0;
 
     effectOitEnabled = true;
+    effectSsaoEnabled = true;
     effectEmissionEnabled = true;
     effectFogEnabled = true;
 

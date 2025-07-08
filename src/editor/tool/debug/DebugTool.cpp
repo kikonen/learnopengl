@@ -123,6 +123,7 @@ namespace editor
 
             ImGui::Checkbox("Prepass depth enabled", &dbg.m_prepassDepthEnabled);
             ImGui::Checkbox("OIT enabled", &dbg.m_effectOitEnabled);
+            ImGui::Checkbox("SSAO enabled", &dbg.m_effectSsaoEnabled);
             ImGui::Checkbox("Emission enabled", &dbg.m_effectEmissionEnabled);
             ImGui::Checkbox("Particle enabled", &dbg.m_particleEnabled);
         }

@@ -36,6 +36,7 @@ namespace render {
     class PassEffect;
     class PassFog;
     class PassOit;
+    class PassSsao;
     class PassBloom;
     class PassSkybox;
     class PassDebug;
@@ -87,6 +88,7 @@ namespace render {
         std::unique_ptr<render::PassEffect> m_passEffect;
         std::unique_ptr<render::PassFog> m_passFog;
         std::unique_ptr<render::PassOit> m_passOit;
+        std::unique_ptr<render::PassSsao> m_passSsao;
         std::unique_ptr<render::PassBloom> m_passBloom;
         std::unique_ptr<render::PassSkybox> m_passSkybox;
         std::unique_ptr<render::PassDebug> m_passDebug;

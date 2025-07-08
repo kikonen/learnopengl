@@ -124,6 +124,9 @@ inline constexpr int UNIT_EFFECT_ALBEDO = 58;
 inline constexpr int UNIT_EFFECT_BRIGHT = 59;
 inline constexpr int UNIT_EFFECT_WORK = 60;
 
+inline constexpr int UNIT_SSAO = 61;
+inline constexpr int UNIT_SSAO_BLUR = 62;
+
 // https://registry.khronos.org/OpenGL-Refpages/gl4/html/glActiveTexture.xhtml
 inline constexpr int UNIT_WATER_NOISE = 64;
 inline constexpr int UNIT_WATER_REFLECTION = 65;

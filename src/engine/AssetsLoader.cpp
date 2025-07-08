@@ -837,6 +837,10 @@ void AssetsLoader::loadAssets(
                 data.effectOitEnabled = readBool(v);
                 continue;
             }
+            if (k == "effect_ssao_enabled") {
+                data.effectSsaoEnabled = readBool(v);
+                continue;
+            }
             if (k == "effect_emission_enabled") {
                 data.effectEmissionEnabled = readBool(v);
                 continue;

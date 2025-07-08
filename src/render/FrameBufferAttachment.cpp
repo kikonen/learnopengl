@@ -645,4 +645,23 @@ namespace render {
 
         return spec;
     }
+
+    FrameBufferAttachment FrameBufferAttachment::getSsaoTexture(GLenum attachment)
+    {
+        FrameBufferAttachment spec;
+        spec.type = FrameBufferAttachmentType::texture;
+        spec.internalFormat = GL_R16F;
+        spec.minFilter = GL_NEAREST;
+        spec.magFilter = GL_NEAREST;
+        spec.attachment = attachment;
+        spec.useDrawBuffer = true;
+
+        spec.clearColor = { 1.f, 1.f, 1.f, 1.f };
+        spec.borderColor = { 1.f, 1.f, 1.f, 1.f };
+
+        spec.clearMask = GL_COLOR_BUFFER_BIT;
+        spec.name = "ssao_R16F";
+
+        return spec;
+    }
 }

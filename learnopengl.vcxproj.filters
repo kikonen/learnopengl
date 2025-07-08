@@ -1263,6 +1263,12 @@
     <ClCompile Include="src\component\definition\AudioListenerDefinition.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\render\PassSsao.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\render\SSaoBuffer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h">
@@ -2853,6 +2859,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\component\definition\ParticleGeneratorDefinition.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\render\PassSsao.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\render\SSaoBuffer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

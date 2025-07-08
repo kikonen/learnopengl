@@ -167,6 +167,7 @@ int SampleApp::onInit()
 
         dbg.m_prepassDepthEnabled = assets.prepassDepthEnabled;
         dbg.m_effectOitEnabled = assets.effectOitEnabled;
+        dbg.m_effectSsaoEnabled = assets.effectSsaoEnabled;
         dbg.m_effectEmissionEnabled = assets.effectEmissionEnabled;
         dbg.m_effectFogEnabled = assets.effectFogEnabled;
 
