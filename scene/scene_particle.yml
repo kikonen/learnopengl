@@ -473,6 +473,12 @@ nodes:
   - type: bush02_generator
   - type: bush03_generator
   - type: pine_tree_forest_2_generator
+    xclone_position_offset: [-800, 0, -800]
+    xrepeat:
+      x_step: 200
+      z_step: 200
+      x_count: 8
+      z_count: 8
   - type: maple_tree_forest_2_generator
   - type: dandelion_generator
   - type: flower_generator
