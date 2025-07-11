@@ -49,7 +49,10 @@ vec4 calculateLightPbr(
     const vec3 albedo = material.diffuse.rgb;
     const float metallic = material.mra.r;
     const float roughness = material.mra.g;
-    const float ao = material.mra.b;
+    float ao = material.mra.b;
+    if (Debug.u_ssaoEnabled) {
+       ao = material.ssao;
+    }
 
     // calculate reflectance at normal incidence; if dia-electric (like plastic) use F0
     // of 0.04 and if it's a metal, use the albedo color as F0 (metallic workflow)

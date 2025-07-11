@@ -249,6 +249,7 @@ assets:
   effect_bloom_threshold: 5.0
 
   effect_oit_enabled: true
+  effect_ssao_enabled: true
   effect_emission_enabled: true
   effect_fog_enabled: true
 

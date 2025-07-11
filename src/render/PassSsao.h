@@ -2,6 +2,8 @@
 
 #include "Pass.h"
 
+#include "Kigl/GLTextureHandle.h"
+
 #include "SsaoBuffer.h"
 
 namespace render {
@@ -33,5 +35,7 @@ namespace render {
         Program* m_ssaoBlurProgram{ nullptr };
 
         SsaoBuffer m_ssaoBuffer;
+
+        kigl::GLTextureHandle m_noiseTex;
     };
 }

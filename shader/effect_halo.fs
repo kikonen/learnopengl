@@ -33,7 +33,8 @@ in VS_OUT {
   vec3 cameraObjectFront;
 } fs_in;
 
-LAYOUT_G_BUFFER_SAMPLERS;
+layout(binding = UNIT_G_VIEW_POSITION) uniform sampler2D g_viewPosition;
+// layout(binding = UNIT_G_VIEW_Z) uniform sampler2D g_viewZ;
 
 layout (location = 0) out vec4 o_fragColor;
 
@@ -85,7 +86,8 @@ float calculateHaloBrightness(
     // vec3 viewPos  = viewW.xyz / viewW.w;
     // d = viewPos.z;
 
-    d = -textureLod(g_viewZ, pixCoord, 0).x;
+    d = -textureLod(g_viewPosition, pixCoord, 0).z;
+    // d = -textureLod(g_viewZ, pixCoord, 0).x;
   }
   float t0 = 1.0 + (d) / dot(cameraObjectFront, vdir);
   if (d == 0) {
@@ -148,7 +150,8 @@ void main() {
     //   color.rgb = vec3(1, 0, 0);
     // }
 
-    float d = textureLod(g_viewZ, pixCoord, 0).x;
+    // float d = textureLod(g_viewZ, pixCoord, 0).x;
+    float d = textureLod(g_viewPosition, pixCoord, 0).z;
     color.rgb = vec3(-d / u_farPlane);
 
     color.rgb = -fs_in.cameraObjectFront;

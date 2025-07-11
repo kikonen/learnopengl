@@ -487,6 +487,14 @@ void Program::setFloat(std::string_view name, float value) noexcept
     }
 }
 
+void Program::setVec3(std::string_view name, glm::vec3 value) noexcept
+{
+    GLint vi = getUniformLoc(name);
+    if (vi != -1) {
+        glProgramUniform3fv(m_programId, vi, 1, glm::value_ptr(value));
+    }
+}
+
 void Program::setMat4(std::string_view name, const glm::mat4& value) noexcept
 {
     GLint vi = getUniformLoc(name);
@@ -494,3 +502,13 @@ void Program::setMat4(std::string_view name, const glm::mat4& value) noexcept
         glProgramUniformMatrix4fv(m_programId, vi, 1, GL_FALSE, glm::value_ptr(value));
     }
 }
+
+void Program::setVec3Array(
+    std::string_view name,
+    const std::vector<glm::vec3>& value) noexcept
+{
+    for (unsigned int i = 0; i < 64; ++i) {
+        setVec3(fmt::format("{}[{}]", name, i), value[i]);
+    }
+}
+

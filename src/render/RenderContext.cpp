@@ -278,6 +278,9 @@ void RenderContext::prepareUBOs()
 
             m_useLight && dbg->m_lightEnabled,
             m_useLight && dbg->m_normalMapEnabled,
+
+            dbg->m_effectSsaoEnabled,
+
             parallaxDepth,
             dbg->m_parallaxMethod,
         };
@@ -292,7 +295,8 @@ void RenderContext::prepareUBOs()
             false,
             true, // light
             true,
-            0.f,
+            true, // SSAO
+            0.f,  // parallax
             0,
         };
     }

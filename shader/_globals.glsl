@@ -82,37 +82,38 @@
 
 #define UNIT_0 0
 
-#define UNIT_CHANNEL_0 40
-#define UNIT_CHANNEL_1 41
-#define UNIT_CHANNEL_2 42
-#define UNIT_CHANNEL_3 43
-#define UNIT_CHANNEL_4 44
-#define UNIT_CHANNEL_5 45
+#define UNIT_CHANNEL_0 10
+#define UNIT_CHANNEL_1 11
+#define UNIT_CHANNEL_2 12
+#define UNIT_CHANNEL_3 13
+#define UNIT_CHANNEL_4 14
+#define UNIT_CHANNEL_5 15
 
-#define UNIT_SOURCE 46
-#define UNIT_DESTINATION 47
+#define UNIT_SOURCE 21
+#define UNIT_DESTINATION 22
 
-#define UNIT_HDR_TEXTURE 49
+#define UNIT_HDR_TEXTURE 23
 
-#define UNIT_G_ALBEDO 50
-//#define UNIT_G_SPECULAR 51
-#define UNIT_G_EMISSION 52
-//#define UNIT_G_POSITION 53
-#define UNIT_G_MRA 53
-#define UNIT_G_NORMAL 54
-#define UNIT_G_DEPTH 55
-#define UNIT_G_VIEW_Z 51
-#define UNIT_G_DEPTH_COPY 61
+#define UNIT_G_ALBEDO 30
+//#define UNIT_G_SPECULAR 31
+#define UNIT_G_EMISSION 32
+#define UNIT_G_NORMAL 33
+#define UNIT_G_MRA 34
+#define UNIT_G_VIEW_POSITION 35
+#define UNIT_G_VIEW_Z 36
+#define UNIT_G_DEPTH 37
+#define UNIT_G_DEPTH_COPY 38
 
-#define UNIT_OIT_ACCUMULATOR 56
-#define UNIT_OIT_REVEAL 57
+#define UNIT_OIT_ACCUMULATOR 40
+#define UNIT_OIT_REVEAL 41
 
-#define UNIT_EFFECT_ALBEDO 58
-#define UNIT_EFFECT_BRIGHT 59
-#define UNIT_EFFECT_WORK 60
+#define UNIT_EFFECT_ALBEDO 42
+#define UNIT_EFFECT_BRIGHT 43
+#define UNIT_EFFECT_WORK 44
 
-#define UNIT_SSAO 61
-#define UNIT_SSAO_BLUR 62
+#define UNIT_SSAO 46
+#define UNIT_SSAO_BLUR 47
+#define UNIT_NOISE 48
 
 #define UNIT_WATER_NOISE 64
 #define UNIT_WATER_REFLECTION 65
@@ -179,19 +180,20 @@
  layout (location = 1) out vec3 o_fragEmission;\
  layout (location = 2) out vec3 o_fragNormal;\
  layout (location = 3) out vec3 o_fragMRA;\
- layout (location = 4) out float o_fragViewZ;
+ layout (location = 4) out vec3 o_viewPosition;
+ // layout (location = 5) out float o_fragViewZ;
 // layout (location = 1) out vec4 o_fragSpecular;\
 // layout (location = 3) out vec3 o_fragPosition;\
 
 #define LAYOUT_G_BUFFER_SAMPLERS\
  layout(binding = UNIT_G_ALBEDO) uniform sampler2D g_albedo;\
+ layout(binding = UNIT_G_EMISSION) uniform sampler2D g_emission;\
  layout(binding = UNIT_G_NORMAL) uniform sampler2D g_normal;\
  layout(binding = UNIT_G_DEPTH) uniform sampler2D g_depth;\
- layout(binding = UNIT_G_VIEW_Z) uniform sampler2D g_viewZ;\
  layout(binding = UNIT_G_MRA) uniform sampler2D g_mra;\
- layout(binding = UNIT_G_EMISSION) uniform sampler2D g_emission;		\
+ layout(binding = UNIT_G_VIEW_POSITION) uniform sampler2D g_viewPosition;
+ // layout(binding = UNIT_G_VIEW_Z) uniform sampler2D g_viewZ;\
 // layout(binding = UNIT_G_SPECULAR) uniform sampler2D g_specular;\
-// layout(binding = UNIT_G_POSITION) uniform sampler2D g_position;\
 
 #define LAYOUT_OIT_OUT\
  layout (location = 0) out vec4 o_accum;\

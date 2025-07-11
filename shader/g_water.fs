@@ -151,6 +151,7 @@ void main() {
   o_fragMRA = material.mra;
   o_fragEmission = material.emission;
 
-  //o_fragPosition = fs_in.worldPos;
   #include encode_gbuffer_normal.glsl
+  #include encode_gbuffer_view_position.glsl
+  #include encode_gbuffer_view_z.glsl
 }

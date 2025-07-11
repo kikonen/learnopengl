@@ -75,7 +75,7 @@ void main()
   vec3 worldPos;
   vec3 viewPos;
   float depth;
-  {
+  if (false) {
     // NOTE KI pixCoord == texCoord in fullscreen quad
     const vec2 pixCoord = texCoord;
     depth = textureLod(g_depth, pixCoord, 0).x;
@@ -87,6 +87,10 @@ void main()
       1.0);
     vec4 viewW  = u_invProjectionMatrix * clip;
     viewPos  = viewW.xyz / viewW.w;
+    worldPos = (u_invViewMatrix * vec4(viewPos, 1)).xyz;
+  }
+  if (true) {
+    viewPos = texture(g_viewPosition, texCoord).xyz;
     worldPos = (u_invViewMatrix * vec4(viewPos, 1)).xyz;
   }
 
@@ -125,14 +129,19 @@ void main()
     }
   }
 
+  // color.rgb = vec3(material.ssao);
+
   if (false)
   {
     // float dp = textureLod(g_depth, texCoord, 0).x;
     // float depth = linearizeDepth(dp);
     // dp = 1.0 - (dp - 0.99) * 100.0;
 
-    float z = textureLod(g_viewZ, texCoord, 0).x;
-    float dp = -textureLod(g_viewZ, texCoord, 0).x;
+    // float z = textureLod(g_viewZ, texCoord, 0).x;
+    // float dp = -textureLod(g_viewZ, texCoord, 0).x;
+    float z = textureLod(g_viewPosition, texCoord, 0).z;
+    float dp = -textureLod(g_viewPosition, texCoord, 0).z;
+
     dp /= u_farPlane;
     dp = 1.0 - dp;
 

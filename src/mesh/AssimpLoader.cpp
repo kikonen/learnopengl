@@ -434,7 +434,7 @@ namespace mesh
             mesh->mNumBones));
 
         for (size_t vertexIndex = 0; vertexIndex < mesh->mNumVertices; vertexIndex++) {
-            glm::vec2 texCoord;
+            glm::vec2 texCoord{ 0.f };
 
             if (mesh->HasTextureCoords(0))
             {

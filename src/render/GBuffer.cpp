@@ -51,7 +51,8 @@ namespace render {
                         //FrameBufferAttachment::getGBufferPosition(GL_COLOR_ATTACHMENT3),
                         FrameBufferAttachment::getGBufferNormal(ATT_NORMAL_ENUM),
                         FrameBufferAttachment::getGBufferMRA(ATT_MRAO_ENUM),
-                        FrameBufferAttachment::getGBufferViewZ(ATT_VIEW_Z_ENUM),
+                        FrameBufferAttachment::getGBufferPosition(ATT_VIEW_POSITION_ENUM),
+                        //FrameBufferAttachment::getGBufferViewZ(ATT_VIEW_Z_ENUM),
                         // depth needed
                         FrameBufferAttachment::getDepthStencilTexture(),
                     }
@@ -90,7 +91,8 @@ namespace render {
         //m_buffer->bindTexture(state, ATT_POSITION_INDEX, UNIT_G_POSITION);
         m_buffer->bindTexture(state, ATT_NORMAL_INDEX, UNIT_G_NORMAL);
         m_buffer->bindTexture(state, ATT_MRAO_INDEX, UNIT_G_MRAO);
-        m_buffer->bindTexture(state, ATT_VIEW_Z_INDEX, UNIT_G_VIEW_Z);
+        m_buffer->bindTexture(state, ATT_VIEW_POSITION_INDEX, UNIT_G_VIEW_POSITION);
+        //m_buffer->bindTexture(state, ATT_VIEW_Z_INDEX, UNIT_G_VIEW_Z);
         m_buffer->bindTexture(state, ATT_DEPTH_INDEX, UNIT_G_DEPTH);
 
         if (m_depthCopyEnabled && m_depthTexture) {
@@ -104,9 +106,10 @@ namespace render {
         //m_buffer->unbindTexture(state, UNIT_G_SPECULAR);
         m_buffer->unbindTexture(state, UNIT_G_EMISSION);
         //m_buffer->unbindTexture(state, UNIT_G_POSITION);
-        m_buffer->unbindTexture(state, UNIT_G_MRAO);
         m_buffer->unbindTexture(state, UNIT_G_NORMAL);
-        m_buffer->unbindTexture(state, UNIT_G_VIEW_Z);
+        m_buffer->unbindTexture(state, UNIT_G_MRAO);
+        m_buffer->unbindTexture(state, UNIT_G_VIEW_POSITION);
+        //m_buffer->unbindTexture(state, UNIT_G_VIEW_Z);
         m_buffer->unbindTexture(state, UNIT_G_DEPTH);
 
         if (m_depthCopyEnabled && m_depthTexture) {

@@ -68,7 +68,8 @@ float CalculateShaftBrightness(
   float normalizer;
 
   // Read z0 from the structure buffer, calculate t0, and clamp to [t0,1].
-  const float depth = -textureLod(g_viewZ, pixCoord, 0).x;
+  // const float depth = -textureLod(g_viewZ, pixCoord, 0).x;
+  const float depth = -textureLod(g_viewPosition, pixCoord, 0).z;
 
   const float t0 = 1.0 + depth / dot(cameraObjectFront, vdir);
   t1 = clamp(t1, t0, 1.0);
@@ -183,7 +184,8 @@ void main() {
     //   color.rgb = vec3(1, 0, 0);
     // }
 
-    float d = textureLod(g_viewZ, pixCoord, 0).x;
+    // float d = textureLod(g_viewZ, pixCoord, 0).x;
+    float d = textureLod(g_viewPosition, pixCoord, 0).z;
     color.rgb = vec3(-d / u_farPlane);
 
     color.rgb = -fs_in.cameraObjectFront;

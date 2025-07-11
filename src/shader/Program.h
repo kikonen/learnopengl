@@ -76,7 +76,11 @@ public:
 
     void setInt(std::string_view name, int value) noexcept;
     void setFloat(std::string_view name, float value) noexcept;
+    void setVec3(std::string_view name, glm::vec3 value) noexcept;
     void setMat4(std::string_view name, const glm::mat4& value) noexcept;
+    void setVec3Array(
+        std::string_view name,
+        const std::vector<glm::vec3>& value) noexcept;
 
     operator int() const { return m_programId; }
 

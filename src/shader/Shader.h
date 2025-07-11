@@ -95,37 +95,38 @@ inline constexpr int VBO_BONE_BINDING = 6;
 
 inline constexpr int UNIT_0 = 0;
 
-inline constexpr int UNIT_CHANNEL_0 = 40;
-inline constexpr int UNIT_CHANNEL_1 = 41;
-inline constexpr int UNIT_CHANNEL_2 = 42;
-inline constexpr int UNIT_CHANNEL_3 = 43;
-inline constexpr int UNIT_CHANNEL_4 = 44;
-inline constexpr int UNIT_CHANNEL_5 = 45;
+inline constexpr int UNIT_CHANNEL_0 = 10;
+inline constexpr int UNIT_CHANNEL_1 = 11;
+inline constexpr int UNIT_CHANNEL_2 = 12;
+inline constexpr int UNIT_CHANNEL_3 = 13;
+inline constexpr int UNIT_CHANNEL_4 = 14;
+inline constexpr int UNIT_CHANNEL_5 = 15;
 
-inline constexpr int UNIT_SOURCE = 46;
-inline constexpr int UNIT_DESTINATION = 47;
+inline constexpr int UNIT_SOURCE = 21;
+inline constexpr int UNIT_DESTINATION = 22;
 
-inline constexpr int UNIT_HDR_TEXTURE = 49;
+inline constexpr int UNIT_HDR_TEXTURE = 23;
 
-inline constexpr int UNIT_G_ALBEDO = 50;
-//inline constexpr int UNIT_G_SPECULAR = 51;
-inline constexpr int UNIT_G_EMISSION = 52;
-//inline constexpr int UNIT_G_POSITION = 53;
-inline constexpr int UNIT_G_MRAO = 53;
-inline constexpr int UNIT_G_NORMAL = 54;
-inline constexpr int UNIT_G_DEPTH = 55;
-inline constexpr int UNIT_G_VIEW_Z = 51;
-inline constexpr int UNIT_G_DEPTH_COPY = 61;
+inline constexpr int UNIT_G_ALBEDO = 30;
+//inline constexpr int UNIT_G_SPECULAR = 31;
+inline constexpr int UNIT_G_EMISSION = 32;
+inline constexpr int UNIT_G_NORMAL = 33;
+inline constexpr int UNIT_G_MRAO = 34;
+inline constexpr int UNIT_G_VIEW_POSITION = 35;
+inline constexpr int UNIT_G_VIEW_Z = 36;
+inline constexpr int UNIT_G_DEPTH = 37;
+inline constexpr int UNIT_G_DEPTH_COPY = 38;
 
-inline constexpr int UNIT_OIT_ACCUMULATOR = 56;
-inline constexpr int UNIT_OIT_REVEAL = 57;
+inline constexpr int UNIT_OIT_ACCUMULATOR = 40;
+inline constexpr int UNIT_OIT_REVEAL = 41;
 
-inline constexpr int UNIT_EFFECT_ALBEDO = 58;
-inline constexpr int UNIT_EFFECT_BRIGHT = 59;
-inline constexpr int UNIT_EFFECT_WORK = 60;
+inline constexpr int UNIT_EFFECT_ALBEDO = 42;
+inline constexpr int UNIT_EFFECT_BRIGHT = 43;
+inline constexpr int UNIT_EFFECT_WORK = 44;
 
-inline constexpr int UNIT_SSAO = 61;
-inline constexpr int UNIT_SSAO_BLUR = 62;
+inline constexpr int UNIT_SSAO = 46;
+inline constexpr int UNIT_SSAO_BLUR = 47;
+inline constexpr int UNIT_NOISE = 48;
 
 // https://registry.khronos.org/OpenGL-Refpages/gl4/html/glActiveTexture.xhtml
 inline constexpr int UNIT_WATER_NOISE = 64;

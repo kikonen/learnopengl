@@ -1,0 +1,101 @@
+---
+meta:
+  name: Buddha
+skybox:
+  program: g_skybox
+  material: skybox/polyhaven/drakensberg_solitary_mountain_4k.hdr
+script:
+  scripts:
+    - path: lib/common
+types:
+  - id: player
+    type: origo
+    front: [0, 0, -1]
+    active: true
+    audio:
+      listener:
+        default: true
+    camera:
+      default: true
+    controllers:
+      - type: pawn
+      - type: camera_zoom
+  - id: dir_light
+    type: origo
+    mesh:
+      path: light
+      program: g_light
+    flags:
+      no_shadow: true
+    light:
+      type: directional
+      diffuse: [0.7, 0.7, 0.7, 1.0]
+      intensity: 50000
+  - id: cube_map
+    type: origo
+    flags:
+      cube_map: true
+  - id: wooden_floor
+    prefab:
+      path: prefab/scenery/prefab_wooden_floor.yml
+  - id: cobblestone_floor
+    prefab:
+      path: prefab/scenery/prefab_cobblestone_floor.yml
+  - id: buddha_1
+    mesh:
+      path: models/happy/happy
+      material:
+        Xkd: [0.8075, 0.8075, 0.1075, 1.0]
+        default_programs: true
+      smooth_normals: true
+      force_normals: true
+      scale: 4
+  - id: buddha_2
+    mesh:
+      path: models/wooden_buddha/scene.gltf
+      material:
+        base: models/wooden_buddha/textures
+        Xkd: [0.8075, 0.8075, 0.1075, 1.0]
+        map_kd: material_0_baseColor.jpeg
+        default_programs: true
+      base_rot: [0, 180, 0]
+      smooth_normals: true
+      force_normals: true
+      xscale: 0.5
+
+  - id: backpack
+    mesh:
+      path: backpack/backpack
+      material:
+        Xkd: [0.8075, 0.8075, 0.1075, 1.0]
+        default_programs: true
+      smooth_normals: true
+      force_normals: true
+      base_scale: 0.5
+
+nodes:
+  - type: player
+    pos: [0, 1, 5]
+    active: true
+  - type: dir_light
+    pos: [-15, 25, 25]
+  - xtype: cube_map
+    pos: [0, 5, 10]
+  - type: wooden_floor
+    scale: 100
+    position: [0, 0, 0]
+  - xtype: cobblestone_floor
+    scale: 100
+    position: [0, 0, 0]
+  - type: buddha_1
+    pos: [0.0, -0.5, 0.0]
+    rotation: [0, 0, 0]
+    scale: 2
+  - type: buddha_2
+    pos: [2.0, 0.0, 0.0]
+    rotation: [0, 0, 0]
+    scale: 1
+  - type: backpack
+    pos: [-2.0, 0, 0.0]
+    rot: [90, 180, 0]
+    scale: 0.5
