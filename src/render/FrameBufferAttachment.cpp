@@ -420,7 +420,8 @@ namespace render {
         FrameBufferAttachment spec;
         spec.type = FrameBufferAttachmentType::texture;
         // NOTE KI GL_RGB16F is *NOT* enough precision; causes very block light/shadows
-        spec.internalFormat = GL_RGB16F;
+        // - also vertical black stripes appering in mirror
+        spec.internalFormat = GL_RGB32F;
         spec.attachment = attachment;
         spec.useDrawBuffer = true;
         spec.clearMask = GL_COLOR_BUFFER_BIT;
