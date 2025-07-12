@@ -85,7 +85,11 @@ namespace render {
 
         bool m_prepassDepthEnabled{ false };
         bool m_effectOitEnabled{ true };
+
         bool m_effectSsaoEnabled{ true };
+        bool m_effectSsaoBaseColorEnabled{ false };
+        glm::vec3 m_effectSsaoBaseColor{ 0.8f };
+
         bool m_effectEmissionEnabled{ true };
         bool m_effectFogEnabled{ true };
 

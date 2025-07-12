@@ -20,12 +20,14 @@ struct DebugUBO {
     int u_normalMapEnabled; // bool as 4 bytes
 
     int u_ssaoEnabled; // bool as 4 bytes
+    glm::vec3 u_ssaoBaseColor; // vec3 as 4 floats
+    int u_ssaoBaseColorEnabled; // bool as 4 bytes
 
     float u_parallaxDepth;
     int u_parallaxMethod;
 
     int pad1;
-    int pad2;
-    int pad3;
+    //int pad2;
+    //int pad3;
 };
 #pragma pack(pop)

@@ -12,6 +12,9 @@
 
 #include "util/util.h"
 
+#include "assets_loader_util.h"
+
+using namespace assets;
 
 namespace {
     const inline std::string ROOT_DIR{ "{{root_dir}}" };
@@ -490,7 +493,7 @@ void AssetsLoader::loadAssets(
         }
         {
             if (k == "fog_color") {
-                data.fogColor = readVec4(v);
+                data.fogColor = readRGBA(v);
                 continue;
             }
             if (k == "fog_start") {
@@ -841,6 +844,15 @@ void AssetsLoader::loadAssets(
                 data.effectSsaoEnabled = readBool(v);
                 continue;
             }
+            if (k == "effect_ssao_base_color_enabled") {
+                data.effectSsaoBaseColorEnabled = readBool(v);
+                continue;
+            }
+            if (k == "effect_ssao_base_color") {
+                data.effectSsaoBaseColor = readRGB(v);
+                continue;
+            }
+
             if (k == "effect_emission_enabled") {
                 data.effectEmissionEnabled = readBool(v);
                 continue;
@@ -917,112 +929,6 @@ void AssetsLoader::loadLayer(
     }
 }
 
-std::string AssetsLoader::readString(const YAML::Node& node) const
-{
-    return node.as<std::string>();
-}
-
-bool AssetsLoader::readBool(const YAML::Node& node) const
-{
-    if (!util::isBool(node.as<std::string>())) {
-        KI_WARN(fmt::format("invalid bool={}", renderNode(node)));
-        return false;
-    }
-
-    return node.as<bool>();
-}
-
-int AssetsLoader::readInt(const YAML::Node& node) const
-{
-    if (!util::isInt(node.as<std::string>())) {
-        KI_WARN(fmt::format("invalid int={}", renderNode(node)));
-        return 0;
-    }
-
-    return node.as<int>();
-}
-
-float AssetsLoader::readFloat(const YAML::Node& node) const
-{
-    if (!util::isFloat(node.as<std::string>())) {
-        KI_WARN(fmt::format("invalid float={}", renderNode(node)));
-        return 0.f;
-    }
-
-    return node.as<float>();
-}
-
-std::vector<int> AssetsLoader::readIntVector(const YAML::Node& node, int reserve) const
-{
-    std::vector<int> a;
-    a.reserve(reserve);
-
-    for (const auto& e : node) {
-        a.push_back(readInt(e));
-    }
-
-    return a;
-}
-
-std::vector<float> AssetsLoader::readFloatVector(const YAML::Node& node, int reserve) const
-{
-    std::vector<float> a;
-    a.reserve(reserve);
-
-    for (const auto& e : node) {
-        a.push_back(readFloat(e));
-    }
-
-    return a;
-}
-
-glm::uvec2 AssetsLoader::readUVec2(const YAML::Node& node) const
-{
-    const auto& a = readIntVector(node, 2);
-    return glm::uvec2{ a[0], a[1] };
-}
-
-glm::uvec3 AssetsLoader::readUVec3(const YAML::Node& node) const
-{
-    const auto& a = readIntVector(node, 3);
-    return glm::uvec3{ a[0], a[1], a[2] };
-}
-
-glm::vec2 AssetsLoader::readVec2(const YAML::Node& node) const
-{
-    const auto& a = readFloatVector(node, 2);
-    return glm::vec2{ a[0], a[1] };
-}
-
-glm::vec3 AssetsLoader::readVec3(const YAML::Node& node) const
-{
-    const auto& a = readFloatVector(node, 3);
-    return glm::vec3{ a[0], a[1], a[2] };
-}
-
-glm::vec4 AssetsLoader::readVec4(const YAML::Node& node) const
-{
-    const auto& a = readFloatVector(node, 4);
-    return glm::vec4{ a[0], a[1], a[2], a[3] };
-}
-
-glm::vec2 AssetsLoader::readScale2(const YAML::Node& node) const
-{
-    std::vector<float> a;
-
-    if (node.IsSequence()) {
-        auto a = readFloatVector(node, 2);
-
-        while (a.size() < 2) {
-            a.push_back(1.0);
-        }
-        return glm::vec2{ a[0], a[1] };
-    }
-
-    auto scale = readFloat(node);
-    return glm::vec3{ scale };
-}
-
 ViewportEffect AssetsLoader::readViewportEffect(
     const std::string& key,
     const YAML::Node& node) const
@@ -1053,21 +959,4 @@ ViewportEffect AssetsLoader::readViewportEffect(
     reportUnknown("viewport_effect", key, node);
 
     return ViewportEffect::none;
-}
-
-void AssetsLoader::reportUnknown(
-    std::string_view scope,
-    std::string_view k,
-    const YAML::Node& v) const
-{
-    std::string prefix = k.starts_with("xx") ? "DISABLED" : "UNKNOWN";
-    KI_WARN_OUT(fmt::format("{} {}: {}={}", prefix, scope, k, renderNode(v)));
-}
-
-std::string AssetsLoader::renderNode(
-    const YAML::Node& v) const
-{
-    std::stringstream ss;
-    ss << v;
-    return ss.str();
 }

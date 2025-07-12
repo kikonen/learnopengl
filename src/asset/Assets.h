@@ -279,7 +279,11 @@ public:
     float effectBloomThreshold;
 
     bool effectOitEnabled;
+
     bool effectSsaoEnabled;
+    bool effectSsaoBaseColorEnabled;
+    glm::vec3 effectSsaoBaseColor;
+
     bool effectEmissionEnabled;
     bool effectFogEnabled;
 

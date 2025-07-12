@@ -46,12 +46,19 @@ vec4 calculateLightPbr(
   // ambient lighting (we now use IBL as the ambient term)
   vec3 ambient = vec3(0.0);
   if (true) {
-    const vec3 albedo = material.diffuse.rgb;
-    const float metallic = material.mra.r;
-    const float roughness = material.mra.g;
+    vec3 albedo = material.diffuse.rgb;
+    float metallic = material.mra.r;
+    float roughness = material.mra.g;
     float ao = material.mra.b;
+
+    if (Debug.u_ssaoBaseColorEnabled) {
+      albedo = Debug.u_ssaoBaseColor.rgb;
+      metallic = 0;
+      roughness = 0;
+      ao = 1;
+    }
     if (Debug.u_ssaoEnabled) {
-       ao = min(material.ssao, ao);
+      ao = min(material.ssao, ao);
     }
 
     // calculate reflectance at normal incidence; if dia-electric (like plastic) use F0

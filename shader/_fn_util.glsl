@@ -105,3 +105,9 @@ float linearizeDepth2(float d, float near, float far)
   float z = 2.0 * d - 1.0;
   return 2.0 * near * far / (far + near - z * (far - near));
 }
+
+#ifdef _UNIFORM_DATA_GLSL
+float linearizeDepth3(float depth) {
+  return linearizeDepth(depth, u_nearPlane, u_farPlane);
+}
+#endif

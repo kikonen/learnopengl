@@ -56,34 +56,17 @@ const vec4 CASCADE_COLORS[MAX_SHADOW_MAP_COUNT_ABS] =
           vec4(0.2, 0.0, 0.2, 0.0)
           );
 
-float linearizeDepth(float depth) {
-  return linearizeDepth(depth, u_nearPlane, u_farPlane);
-}
-
 void main()
 {
   #include screen_tri_tex_coord.glsl
 
-  // https://mynameismjp.wordpress.com/2010/09/05/position-from-depth-3/
-  // https://ahbejarano.gitbook.io/lwjglgamedev/chapter-19
   vec3 worldPos;
   vec3 viewPos;
-  float depth;
-  if (false) {
-    // NOTE KI pixCoord == texCoord in fullscreen quad
-    const vec2 pixCoord = texCoord;
-    depth = textureLod(g_depth, pixCoord, 0).x;
-
-    const vec4 clip = vec4(
-      pixCoord.x * 2.0 - 1.0,
-      pixCoord.y * 2.0 - 1.0,
-      depth * 2.0 - 1.0,
-      1.0);
-    vec4 viewW  = u_invProjectionMatrix * clip;
-    viewPos  = viewW.xyz / viewW.w;
-    worldPos = (u_invViewMatrix * vec4(viewPos, 1)).xyz;
-  }
   if (true) {
+    viewPos = getViewPosFromGBuffer(texCoord);
+    worldPos = getWorldPosFromViewPos(viewPos);
+  }
+  if (false) {
     viewPos = texture(g_viewPosition, texCoord).xyz;
     worldPos = (u_invViewMatrix * vec4(viewPos, 1)).xyz;
   }

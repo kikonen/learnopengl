@@ -280,6 +280,8 @@ void RenderContext::prepareUBOs()
             m_useLight && dbg->m_normalMapEnabled,
 
             dbg->m_effectSsaoEnabled,
+            dbg->m_effectSsaoBaseColor,
+            dbg->m_effectSsaoBaseColorEnabled,
 
             parallaxDepth,
             dbg->m_parallaxMethod,
@@ -287,7 +289,7 @@ void RenderContext::prepareUBOs()
     }
     else {
         m_debugUBO = {
-            {0.f, 0.f, 0.f},
+            { 0.f, 0.f, 0.f },
             false,
             0.f,
             0, // entity
@@ -296,6 +298,8 @@ void RenderContext::prepareUBOs()
             true, // light
             true,
             true, // SSAO
+            { 0.f, 0.f, 0.f },
+            false,
             0.f,  // parallax
             0,
         };

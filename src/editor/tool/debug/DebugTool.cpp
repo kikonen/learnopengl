@@ -123,7 +123,6 @@ namespace editor
 
             ImGui::Checkbox("Prepass depth enabled", &dbg.m_prepassDepthEnabled);
             ImGui::Checkbox("OIT enabled", &dbg.m_effectOitEnabled);
-            ImGui::Checkbox("SSAO enabled", &dbg.m_effectSsaoEnabled);
             ImGui::Checkbox("Emission enabled", &dbg.m_effectEmissionEnabled);
             ImGui::Checkbox("Particle enabled", &dbg.m_particleEnabled);
         }
@@ -185,6 +184,15 @@ namespace editor
 
             ImGui::Checkbox("Bloom enabled", &dbg.m_effectBloomEnabled);
             ImGui::InputFloat("Bloom threshold", &dbg.m_effectBloomThreshold, 0.01f, 0.1f);
+        }
+
+        {
+            ImGui::Spacing();
+            ImGui::SeparatorText("SSAO");
+            ImGui::Spacing();
+            ImGui::Checkbox("SSAO enabled", &dbg.m_effectSsaoEnabled);
+            ImGui::Checkbox("SSAO baseColor enabled", &dbg.m_effectSsaoBaseColorEnabled);
+            ImGui::ColorEdit3("SSAO baseColor", glm::value_ptr(dbg.m_effectSsaoBaseColor));
         }
 
         {

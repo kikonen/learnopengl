@@ -23,7 +23,7 @@ const vec2 u_noiseScale = vec2(u_bufferResolution.x / 4.0, u_bufferResolution.y 
 
 layout(binding = UNIT_G_NORMAL) uniform sampler2D g_normal;
 layout(binding = UNIT_G_VIEW_POSITION) uniform sampler2D g_viewPosition;
-// layout(binding = UNIT_G_DEPTH) uniform sampler2D g_depth;
+layout(binding = UNIT_G_DEPTH) uniform sampler2D g_depth;
 // layout(binding = UNIT_G_VIEW_Z) uniform sampler2D g_viewZ;
 
 layout(binding = UNIT_NOISE) uniform sampler2D u_noiseTex;

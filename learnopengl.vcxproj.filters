@@ -1269,6 +1269,9 @@
     <ClCompile Include="src\render\SSaoBuffer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\engine\asssets_loader_util.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h">
@@ -2865,6 +2868,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\render\SSaoBuffer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\engine\assets_loader_util.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

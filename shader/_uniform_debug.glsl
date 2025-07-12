@@ -12,11 +12,13 @@ layout(std140, binding = UBO_DEBUG) uniform DebugUBO {
   bool u_normalMapEnabled;
 
   bool u_ssaoEnabled;
+  vec4 u_ssaoBaseColor;
+  bool u_ssaoBaseColorEnabled;
 
   float u_parallaxDepth;
   int u_parallaxMethod;
 
   int pad1;
-  int pad2;
+  // int pad2;
   // int pad3;
 } Debug;

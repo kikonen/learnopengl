@@ -282,7 +282,11 @@ Assets::Assets()
     effectBloomThreshold = 3.0;
 
     effectOitEnabled = true;
+
     effectSsaoEnabled = true;
+    effectSsaoBaseColorEnabled = false;
+    effectSsaoBaseColor = glm::vec3{ 0.9f };
+
     effectEmissionEnabled = true;
     effectFogEnabled = true;
 
