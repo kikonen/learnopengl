@@ -182,9 +182,9 @@
  layout (location = 0) out vec3 o_fragColor;\
  layout (location = 1) out vec3 o_fragEmission;\
  layout (location = 2) out vec3 o_fragNormal;\
- layout (location = 3) out vec3 o_fragMRA;\
- layout (location = 4) out vec3 o_viewPosition;
- // layout (location = 5) out float o_fragViewZ;
+ layout (location = 3) out vec3 o_fragMRA;
+// layout (location = 4) out vec3 o_viewPosition;
+// layout (location = 5) out float o_fragViewZ;
 // layout (location = 1) out vec4 o_fragSpecular;\
 // layout (location = 3) out vec3 o_fragPosition;\
 
@@ -193,9 +193,9 @@
  layout(binding = UNIT_G_EMISSION) uniform sampler2D g_emission;\
  layout(binding = UNIT_G_NORMAL) uniform sampler2D g_normal;\
  layout(binding = UNIT_G_DEPTH) uniform sampler2D g_depth;\
- layout(binding = UNIT_G_MRA) uniform sampler2D g_mra;\
- layout(binding = UNIT_G_VIEW_POSITION) uniform sampler2D g_viewPosition;
- // layout(binding = UNIT_G_VIEW_Z) uniform sampler2D g_viewZ;\
+ layout(binding = UNIT_G_MRA) uniform sampler2D g_mra;
+// layout(binding = UNIT_G_VIEW_POSITION) uniform sampler2D g_viewPosition;
+// layout(binding = UNIT_G_VIEW_Z) uniform sampler2D g_viewZ;\
 // layout(binding = UNIT_G_SPECULAR) uniform sampler2D g_specular;\
 
 #define LAYOUT_OIT_OUT\

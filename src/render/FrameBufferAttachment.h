@@ -58,7 +58,7 @@ namespace render {
 
         bool useMibMap = false;
 
-        int drawBufferIndex = -1;
+        int activeDrawBufferIndex = -1;
         unsigned int textureID = 0;
         unsigned int rbo = 0;
 
@@ -70,7 +70,7 @@ namespace render {
         std::string name;
 
         FrameBufferAttachment();
-        ~FrameBufferAttachment();
+            ~FrameBufferAttachment();
 
         void create(
             std::string_view name,

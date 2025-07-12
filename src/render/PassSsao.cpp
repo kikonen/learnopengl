@@ -16,6 +16,7 @@
 namespace {
     const std::string SHADER_SSAO_PASS{ "screen_ssao_pass" };
     const std::string SHADER_SSAO_BLUR_PASS{ "screen_ssao_blur_pass" };
+    const std::string U_SAMPLES{ "u_samples" };
 
     std::vector<glm::vec3> s_kernelValues;
     std::vector<glm::vec3> s_noiseValues;
@@ -108,14 +109,15 @@ namespace render
             m_noiseTex.create("ssao_noise_tex", GL_TEXTURE_2D, w, h);
             int texId = m_noiseTex;
 
-            glTextureStorage2D(texId, 1, GL_RGBA32F, w, h);
-            glTextureSubImage2D(texId, 0, 0, 0, w, h, GL_RGB, GL_FLOAT, getNoiseValues().data());
-
             glTextureParameteri(texId, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
             glTextureParameteri(texId, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
             glTextureParameteri(texId, GL_TEXTURE_WRAP_S, GL_REPEAT);
             glTextureParameteri(texId, GL_TEXTURE_WRAP_T, GL_REPEAT);
+
+            glTextureStorage2D(texId, 1, GL_RGBA16F, w, h);
+            glTextureSubImage2D(texId, 0, 0, 0, w, h, GL_RGB, GL_FLOAT, getNoiseValues().data());
+            glGenerateTextureMipmap(texId);
         }
 
         m_ssaoBuffer.prepare();
@@ -145,8 +147,6 @@ namespace render
         m_enabled = !(ctx.m_forceSolid || !ctx.m_useScreenspaceEffects) &&
             ctx.m_useSsao &&
             dbg.m_effectSsaoEnabled;
-
-        m_ssaoBuffer.clearAll();
     }
 
     PassContext PassSsao::render(
@@ -167,15 +167,17 @@ namespace render
 
         m_ssaoBuffer.bind(ctx);
 
-        m_ssaoProgram->setVec3Array("u_samples", getKernelValues());
+        m_ssaoProgram->setVec3Array(U_SAMPLES, getKernelValues());
         m_ssaoProgram->bind();
         m_ssaoBuffer.m_buffer->setDrawBuffer(SsaoBuffer::ATT_SSAO_INDEX);
+        m_ssaoBuffer.m_buffer->clearAttachment(SsaoBuffer::ATT_SSAO_INDEX);
         m_noiseTex.bindTexture(UNIT_NOISE);
         m_screenTri.draw();
 
         m_ssaoBlurProgram->bind();
         m_ssaoBuffer.bindSsaoTexture(state);
         m_ssaoBuffer.m_buffer->setDrawBuffer(SsaoBuffer::ATT_SSAO_BLUR_INDEX);
+        m_ssaoBuffer.m_buffer->clearAttachment(SsaoBuffer::ATT_SSAO_BLUR_INDEX);
         m_screenTri.draw();
 
         m_ssaoBuffer.bindSsaoBlurTexture(state);

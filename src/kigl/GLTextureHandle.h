@@ -35,7 +35,7 @@ namespace kigl {
             }
         }
 
-        bool valid() { return m_textureID > 0; }
+        bool valid() const noexcept { return m_textureID > 0; }
 
         void create(
             std::string_view name,

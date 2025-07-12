@@ -17,10 +17,6 @@ namespace render {
     class FrameBuffer
     {
     public:
-        static const int RESET_DRAW_ALL = -2;
-        static const int RESET_DRAW_ACTIVE = -1;
-
-    public:
         FrameBuffer(
             std::string_view name,
             const FrameBufferSpecification& spec);
@@ -31,11 +27,9 @@ namespace render {
 
         virtual void prepare();
 
-        // @param activeCount
-        // FrameBuffer::RESET_DRAW_ACTIVE keep current active count
-        // FrameBuffer::RESET_DRAW_ALL reset to default all buffers
-        void resetDrawBuffers(int activeCount);
-
+        void resetDrawBuffers();
+        void activateDrawBuffers();
+        void removeDrawBuffers();
         void setDrawBuffer(int attachmentIndex);
 
         virtual void bind(const RenderContext& ctx);
@@ -97,8 +91,8 @@ namespace render {
 
         void invalidateAll();
 
-        size_t getDrawBufferCount() const noexcept {
-            return m_drawBuffers.size();
+        size_t getActiveDrawBufferCount() const noexcept {
+            return m_activeDrawBuffers.size();
         }
 
         FrameBufferAttachment* getDepthAttachment();
@@ -127,8 +121,8 @@ namespace render {
     protected:
         bool m_prepared = false;
 
-        int m_activeDrawBuffers{ -1 };
-        std::vector<GLenum> m_drawBuffers;
+        std::vector<GLenum> m_activeDrawBuffers;
+        std::vector<GLenum> m_saveDrawBuffers;
         std::vector<GLenum> m_attached;
 
         BufferInfoUBO m_bufferInfo;

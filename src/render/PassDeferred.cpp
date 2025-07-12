@@ -85,7 +85,7 @@ namespace render
 
         state.setStencil({});
 
-        m_gBuffer.m_buffer->resetDrawBuffers(FrameBuffer::RESET_DRAW_ALL);
+        m_gBuffer.m_buffer->resetDrawBuffers();
         m_gBuffer.clearAll();
 
         m_buffer->clearAll();
@@ -148,7 +148,7 @@ namespace render
         const RenderContext& ctx,
         const DrawContext& drawContext)
     {
-        m_gBuffer.m_buffer->resetDrawBuffers(0);
+        m_gBuffer.m_buffer->removeDrawBuffers();
         m_gBuffer.bind(ctx);
 
         // NOTE KI only *solid* render in pre-pass
@@ -178,7 +178,7 @@ namespace render
     {
         auto& state = ctx.m_state;
 
-        m_gBuffer.m_buffer->resetDrawBuffers(FrameBuffer::RESET_DRAW_ALL);
+        m_gBuffer.m_buffer->resetDrawBuffers();
         m_gBuffer.bind(ctx);
 
         state.setStencil(kigl::GLStencilMode::fill(STENCIL_SOLID | STENCIL_FOG));

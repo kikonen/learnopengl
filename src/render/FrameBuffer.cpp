@@ -103,12 +103,6 @@ namespace render {
 
         for (auto& att : m_spec.attachments) {
             if (att.type == FrameBufferAttachmentType::shared) {
-                // NOTE KI drawBuffer index *can* be different between fbos
-                if (att.useDrawBuffer) {
-                    att.drawBufferIndex = static_cast<int>(m_drawBuffers.size());
-                    m_drawBuffers.push_back(att.attachment);
-                }
-
                 if (att.shared->type == FrameBufferAttachmentType::texture) {
                     glNamedFramebufferTexture(m_fbo, att.attachment, att.textureID, 0);
                 }
@@ -124,18 +118,9 @@ namespace render {
             }
             else if (att.type == FrameBufferAttachmentType::draw_buffer) {
                 // NOTE KI draw_buffer, "non attached" texture handled externally
-                if (att.useDrawBuffer) {
-                    att.drawBufferIndex = static_cast<int>(m_drawBuffers.size());
-                    m_drawBuffers.push_back(att.attachment);
-                }
             }
             else if (att.type == FrameBufferAttachmentType::texture) {
                 glNamedFramebufferTexture(m_fbo, att.attachment, att.textureID, 0);
-
-                if (att.useDrawBuffer) {
-                    att.drawBufferIndex = static_cast<int>(m_drawBuffers.size());
-                    m_drawBuffers.push_back(att.attachment);
-                }
             }
             else if (att.type == FrameBufferAttachmentType::rbo) {
                 glNamedFramebufferRenderbuffer(m_fbo, att.attachment, GL_RENDERBUFFER, att.rbo);
@@ -166,7 +151,7 @@ namespace render {
             glNamedFramebufferDrawBuffer(m_fbo, GL_NONE);
             glNamedFramebufferReadBuffer(m_fbo, GL_NONE);
 
-            resetDrawBuffers(FrameBuffer::RESET_DRAW_ALL);
+            resetDrawBuffers();
             //if (m_drawBuffers.size() > 0) {
             //    glNamedFramebufferDrawBuffers(m_fbo, m_drawBuffers.size(), m_drawBuffers.data());
             //}
@@ -186,29 +171,54 @@ namespace render {
         clearAll();
     }
 
-    void FrameBuffer::resetDrawBuffers(int activeCount)
+    void FrameBuffer::resetDrawBuffers()
     {
-        if (activeCount == FrameBuffer::RESET_DRAW_ACTIVE) activeCount = m_activeDrawBuffers;
-        if (activeCount < 0) activeCount = static_cast<int>(m_drawBuffers.size());
-        if (activeCount > m_drawBuffers.size()) activeCount = static_cast<int>(m_drawBuffers.size());
+        m_activeDrawBuffers.reserve(m_spec.attachments.size());
 
-        if (m_activeDrawBuffers != activeCount) {
-            m_activeDrawBuffers = activeCount;
-            if (activeCount > 0) {
-                glNamedFramebufferDrawBuffers(m_fbo, activeCount, m_drawBuffers.data());
+        m_activeDrawBuffers.clear();
+        for (auto& att : m_spec.attachments) {
+            if (att.useDrawBuffer) {
+                m_activeDrawBuffers.push_back(att.attachment);
+                att.activeDrawBufferIndex = static_cast<int>(m_activeDrawBuffers.size() - 1);
             }
             else {
-                glNamedFramebufferDrawBuffer(m_fbo, GL_NONE);
+                att.activeDrawBufferIndex = -1;
             }
         }
+
+        activateDrawBuffers();
+    }
+
+    void FrameBuffer::activateDrawBuffers()
+    {
+        if (!m_activeDrawBuffers.empty()) {
+            glNamedFramebufferDrawBuffers(m_fbo, static_cast<int>(m_activeDrawBuffers.size()), m_activeDrawBuffers.data());
+        }
+        else {
+            glNamedFramebufferDrawBuffer(m_fbo, GL_NONE);
+        }
+    }
+
+    void FrameBuffer::removeDrawBuffers()
+    {
+        m_activeDrawBuffers.clear();
+        activateDrawBuffers();
     }
 
     void FrameBuffer::setDrawBuffer(int attachmentIndex)
     {
-        GLenum drawBuffers[] = {
-            m_spec.attachments[attachmentIndex].attachment
-        };
-        glNamedFramebufferDrawBuffers(m_fbo, 1, drawBuffers);
+        m_activeDrawBuffers.clear();
+        for (auto& att : m_spec.attachments) {
+            att.activeDrawBufferIndex = -1;
+        }
+
+        {
+            auto& att = m_spec.attachments[attachmentIndex];
+            m_activeDrawBuffers.push_back(att.attachment);
+            att.activeDrawBufferIndex = 0;
+        }
+
+        activateDrawBuffers();
     }
 
     void FrameBuffer::bind(const RenderContext& ctx)
@@ -294,6 +304,8 @@ namespace render {
         const glm::vec2& size,
         GLenum filter) const noexcept
     {
+        target->m_saveDrawBuffers = target->m_activeDrawBuffers;
+
         const float srcW = static_cast<float>(m_spec.width);
         const float srcH = static_cast<float>(m_spec.height);
 
@@ -336,7 +348,8 @@ namespace render {
 
         if (mask & GL_COLOR_BUFFER_BIT) {
             // NOTE KI MUST reset draw buffer state (keep current active count)
-            target->resetDrawBuffers(FrameBuffer::RESET_DRAW_ACTIVE);
+            target->m_activeDrawBuffers = target->m_saveDrawBuffers;
+            target->resetDrawBuffers();
         }
     }
 

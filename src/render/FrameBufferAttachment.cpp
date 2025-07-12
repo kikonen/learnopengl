@@ -141,18 +141,18 @@ namespace render {
         case ClearType::NONE:
             break;
         case ClearType::FLOAT:
-            if (drawBufferIndex >= 0) {
-                glClearNamedFramebufferfv(fbo, GL_COLOR, drawBufferIndex, glm::value_ptr(clearColor));
+            if (activeDrawBufferIndex >= 0) {
+                glClearNamedFramebufferfv(fbo, GL_COLOR, activeDrawBufferIndex, glm::value_ptr(clearColor));
             }
             break;
         case ClearType::INT:
-            if (drawBufferIndex >= 0) {
-                glClearNamedFramebufferiv(fbo, GL_COLOR, drawBufferIndex, glm::value_ptr(glm::ivec4(clearColor)));
+            if (activeDrawBufferIndex >= 0) {
+                glClearNamedFramebufferiv(fbo, GL_COLOR, activeDrawBufferIndex, glm::value_ptr(glm::ivec4(clearColor)));
             }
             break;
         case ClearType::UNSIGNED_INT:
-            if (drawBufferIndex >= 0) {
-                glClearNamedFramebufferuiv(fbo, GL_COLOR, drawBufferIndex, glm::value_ptr(glm::uvec4(clearColor)));
+            if (activeDrawBufferIndex >= 0) {
+                glClearNamedFramebufferuiv(fbo, GL_COLOR, activeDrawBufferIndex, glm::value_ptr(glm::uvec4(clearColor)));
             }
             break;
         case ClearType::DEPTH:

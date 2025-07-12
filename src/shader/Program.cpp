@@ -187,7 +187,7 @@ ki::program_id Program::prepareRT()
     return m_id;
 }
 
-GLint Program::getUniformLoc(std::string_view name)
+GLint Program::getUniformLoc(const std::string& name)
 {
     const auto& e = m_uniformLocations.find(name);
     if (e != m_uniformLocations.end()) {
@@ -205,7 +205,7 @@ GLint Program::getUniformLoc(std::string_view name)
     return vi;
 }
 
-GLint Program::getUniformSubroutineLoc(std::string_view name, GLenum shaderType)
+GLint Program::getUniformSubroutineLoc(const std::string& name, GLenum shaderType)
 {
     auto& map = m_subroutineLocations[shaderType];
     const auto& e = map.find(name);
@@ -225,7 +225,7 @@ GLint Program::getUniformSubroutineLoc(std::string_view name, GLenum shaderType)
     return vi;
 }
 
-GLint Program::getSubroutineIndex(std::string_view name, GLenum shaderType)
+GLint Program::getSubroutineIndex(const std::string& name, GLenum shaderType)
 {
     auto& map = m_subroutineIndeces[shaderType];
     const auto& e = map.find(name);
@@ -471,7 +471,7 @@ void Program::validateUBO(
     }
 }
 
-void Program::setInt(std::string_view name, int value) noexcept
+void Program::setInt(const std::string& name, int value) noexcept
 {
     GLint vi = getUniformLoc(name);
     if (vi != -1) {
@@ -479,7 +479,7 @@ void Program::setInt(std::string_view name, int value) noexcept
     }
 }
 
-void Program::setFloat(std::string_view name, float value) noexcept
+void Program::setFloat(const std::string& name, float value) noexcept
 {
     GLint vi = getUniformLoc(name);
     if (vi != -1) {
@@ -487,7 +487,7 @@ void Program::setFloat(std::string_view name, float value) noexcept
     }
 }
 
-void Program::setVec3(std::string_view name, glm::vec3 value) noexcept
+void Program::setVec3(const std::string& name, glm::vec3 value) noexcept
 {
     GLint vi = getUniformLoc(name);
     if (vi != -1) {
@@ -495,7 +495,7 @@ void Program::setVec3(std::string_view name, glm::vec3 value) noexcept
     }
 }
 
-void Program::setMat4(std::string_view name, const glm::mat4& value) noexcept
+void Program::setMat4(const std::string& name, const glm::mat4& value) noexcept
 {
     GLint vi = getUniformLoc(name);
     if (vi != -1) {
@@ -504,7 +504,7 @@ void Program::setMat4(std::string_view name, const glm::mat4& value) noexcept
 }
 
 void Program::setVec3Array(
-    std::string_view name,
+    const std::string& name,
     const std::vector<glm::vec3>& value) noexcept
 {
     for (unsigned int i = 0; i < 64; ++i) {

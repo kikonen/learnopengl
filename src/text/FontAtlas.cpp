@@ -43,6 +43,7 @@ namespace text
     FontAtlas& FontAtlas::operator=(FontAtlas&& o) noexcept
     {
         m_id = o.m_id;
+        m_prepared = o.m_prepared;
         m_name = o.m_name;
         m_fontPath = o.m_fontPath;
         m_fontSize = o.m_fontSize;
@@ -57,6 +58,7 @@ namespace text
 
     FontAtlas::FontAtlas(FontAtlas&& o) noexcept
         : m_id{ o.m_id },
+        m_prepared{ o.m_prepared },
         m_name{ o.m_name },
         m_fontPath{ o.m_fontPath },
         m_fontSize{ o.m_fontSize},

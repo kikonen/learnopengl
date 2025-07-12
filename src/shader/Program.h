@@ -74,12 +74,12 @@ public:
 
     int prepared() noexcept { return m_prepared; }
 
-    void setInt(std::string_view name, int value) noexcept;
-    void setFloat(std::string_view name, float value) noexcept;
-    void setVec3(std::string_view name, glm::vec3 value) noexcept;
-    void setMat4(std::string_view name, const glm::mat4& value) noexcept;
+    void setInt(const std::string& name, int value) noexcept;
+    void setFloat(const std::string& name, float value) noexcept;
+    void setVec3(const std::string& name, glm::vec3 value) noexcept;
+    void setMat4(const std::string& name, const glm::mat4& value) noexcept;
     void setVec3Array(
-        std::string_view name,
+        const std::string& name,
         const std::vector<glm::vec3>& value) noexcept;
 
     operator int() const { return m_programId; }
@@ -114,9 +114,9 @@ private:
     //void prepareTextureUniform();
     //void prepareTextureUniforms();
 
-    GLint getUniformLoc(std::string_view name);
-    GLint getUniformSubroutineLoc(std::string_view name, GLenum shadertype);
-    GLint getSubroutineIndex(std::string_view name, GLenum shadertype);
+    GLint getUniformLoc(const std::string& name);
+    GLint getUniformSubroutineLoc(const std::string& name, GLenum shadertype);
+    GLint getSubroutineIndex(const std::string& name, GLenum shadertype);
 
 public:
     const ki::program_id m_id;
