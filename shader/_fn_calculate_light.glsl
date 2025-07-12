@@ -51,7 +51,7 @@ vec4 calculateLightPbr(
     const float roughness = material.mra.g;
     float ao = material.mra.b;
     if (Debug.u_ssaoEnabled) {
-       ao = material.ssao;
+       ao = min(material.ssao, ao);
     }
 
     // calculate reflectance at normal incidence; if dia-electric (like plastic) use F0
