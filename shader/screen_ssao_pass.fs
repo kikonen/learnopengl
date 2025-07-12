@@ -22,7 +22,7 @@ uniform vec3 u_samples[64];
 const vec2 u_noiseScale = vec2(u_bufferResolution.x / 4.0, u_bufferResolution.y / 4.0);
 
 layout(binding = UNIT_G_NORMAL) uniform sampler2D g_normal;
-layout(binding = UNIT_G_VIEW_POSITION) uniform sampler2D g_viewPosition;
+// layout(binding = UNIT_G_VIEW_POSITION) uniform sampler2D g_viewPosition;
 layout(binding = UNIT_G_DEPTH) uniform sampler2D g_depth;
 // layout(binding = UNIT_G_VIEW_Z) uniform sampler2D g_viewZ;
 
@@ -38,49 +38,18 @@ SET_FLOAT_PRECISION;
 
 #include fn_gbuffer_decode.glsl
 
-// vec3 getViewPos1(const vec2 texCoord)
-// {
-//   return texture(g_viewZ, texCoord);
-// }
-
-// vec3 getViewPos2(const vec2 texCoord)
-// {
-//   // https://mynameismjp.wordpress.com/2010/09/05/position-from-depth-3/
-//   // https://ahbejarano.gitbook.io/lwjglgamedev/chapter-19
-//   vec3 viewPos;
-//   {
-//     // NOTE KI pixCoord == texCoord in fullscreen quad
-//     float depth = texture(g_depth, texCoord).x;
-
-//     const vec4 clip = vec4(
-//       texCoord.x * 2.0 - 1.0,
-//       texCoord.y * 2.0 - 1.0,
-//       depth * 2.0 - 1.0,
-//       1.0);
-//     vec4 viewW  = u_invProjectionMatrix * clip;
-//     viewPos  = viewW.xyz / viewW.w;
-//   }
-
-//   return viewPos;
-// }
-
-vec3 getViewPos(const vec2 texCoord)
-{
-  return texture(g_viewPosition, texCoord).xyz;
-}
-
 float calculateSsao(
   const vec3 normal,
   const vec2 texCoord)
 {
   // get input for SSAO algorithm
-  vec3 viewPos = getViewPos(texCoord);
-  vec3 randomVec = normalize(texture(u_noiseTex, texCoord * u_noiseScale).xyz);
+  const vec3 viewPos = getViewPosFromGBuffer(texCoord);
+  const vec3 randomVec = normalize(texture(u_noiseTex, texCoord * u_noiseScale).xyz);
 
   // create TBN change-of-basis matrix: from tangent-space to view-space
-  vec3 tangent = normalize(randomVec - normal * dot(randomVec, normal));
-  vec3 bitangent = cross(normal, tangent);
-  mat3 TBN = mat3(tangent, bitangent, normal);
+  const vec3 tangent = normalize(randomVec - normal * dot(randomVec, normal));
+  const vec3 bitangent = cross(normal, tangent);
+  const mat3 TBN = mat3(tangent, bitangent, normal);
 
   // iterate over the sample kernel and calculate occlusion factor
   float occlusion = 0.0;
@@ -105,7 +74,7 @@ float calculateSsao(
 
     // get sample depth
     // get depth value of kernel sample
-    float sampleDepth = getViewPos(offset.xy).z;
+    float sampleDepth = getViewPosFromGBuffer(offset.xy).z;
 
     // range check & accumulate
     float rangeCheck = smoothstep(0.0, 1.0, radius / abs(viewPos.z - sampleDepth));

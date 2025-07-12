@@ -50,6 +50,8 @@ vec3 decodeGNormalKtx(in vec2 texCoord)
 // https://ahbejarano.gitbook.io/lwjglgamedev/chapter-19
 vec3 getViewPosFromGBuffer(const vec2 texCoord)
 {
+  // return textureLod(g_viewPosition, texCoord, 0);
+
   // NOTE KI pixCoord == texCoord in fullscreen quad
   const float depth = textureLod(g_depth, texCoord, 0).x;
 

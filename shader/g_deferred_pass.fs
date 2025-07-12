@@ -66,10 +66,10 @@ void main()
     viewPos = getViewPosFromGBuffer(texCoord);
     worldPos = getWorldPosFromViewPos(viewPos);
   }
-  if (false) {
-    viewPos = texture(g_viewPosition, texCoord).xyz;
-    worldPos = (u_invViewMatrix * vec4(viewPos, 1)).xyz;
-  }
+  // if (false) {
+  //   viewPos = texture(g_viewPosition, texCoord).xyz;
+  //   worldPos = (u_invViewMatrix * vec4(viewPos, 1)).xyz;
+  // }
 
   #include var_gbuffer_normal.glsl
 
@@ -110,14 +110,15 @@ void main()
 
   if (false)
   {
-    // float dp = textureLod(g_depth, texCoord, 0).x;
+    float z = 0;
+    float dp = 0;
+
+    // dp = textureLod(g_depth, texCoord, 0).x;
     // float depth = linearizeDepth(dp);
     // dp = 1.0 - (dp - 0.99) * 100.0;
 
-    // float z = textureLod(g_viewZ, texCoord, 0).x;
-    // float dp = -textureLod(g_viewZ, texCoord, 0).x;
-    float z = textureLod(g_viewPosition, texCoord, 0).z;
-    float dp = -textureLod(g_viewPosition, texCoord, 0).z;
+    // z = textureLod(g_viewPosition, texCoord, 0).z;
+    // dp = -textureLod(g_viewPosition, texCoord, 0).z;
 
     dp /= u_farPlane;
     dp = 1.0 - dp;
