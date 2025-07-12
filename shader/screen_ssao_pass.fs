@@ -74,10 +74,8 @@ float calculateSsao(
   const vec2 texCoord)
 {
   // get input for SSAO algorithm
-  vec3 fragPos = getViewPos(texCoord);
+  vec3 viewPos = getViewPos(texCoord);
   vec3 randomVec = normalize(texture(u_noiseTex, texCoord * u_noiseScale).xyz);
-
-  // return fragPos.x;
 
   // create TBN change-of-basis matrix: from tangent-space to view-space
   vec3 tangent = normalize(randomVec - normal * dot(randomVec, normal));
@@ -91,7 +89,7 @@ float calculateSsao(
     // get sample position
     // from tangent to view-space
     vec3 samplePos = TBN * u_samples[i];
-    samplePos = fragPos + samplePos * radius;
+    samplePos = viewPos + samplePos * radius;
 
     // project sample position (to sample texture) (to get position on screen/texture)
     vec4 offset = vec4(samplePos, 1.0);
@@ -110,7 +108,7 @@ float calculateSsao(
     float sampleDepth = getViewPos(offset.xy).z;
 
     // range check & accumulate
-    float rangeCheck = smoothstep(0.0, 1.0, radius / abs(fragPos.z - sampleDepth));
+    float rangeCheck = smoothstep(0.0, 1.0, radius / abs(viewPos.z - sampleDepth));
     occlusion += (sampleDepth >= samplePos.z + bias ? 1.0 : 0.0) * rangeCheck;
   }
   occlusion = 1.0 - (occlusion / kernelSize);

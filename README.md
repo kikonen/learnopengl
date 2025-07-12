@@ -189,6 +189,13 @@ https://github.com/ilmola/generator
   + https://github.khronos.org/KTX-Software/ktxtools/toktx.html
   + https://github.com/snowkit/ktx-format
 
+## Screen space ambient occlusion (SSAO)
+- https://learnopengl.com/Advanced-Lighting/SSAO
+- https://alextardif.com/SSAO.html
+- https://john-chapman-graphics.blogspot.com/2013/01/ssao-tutorial.html
+- https://docs.nvidia.com/gameworks/content/gameworkslibrary/visualfx/hbao/product.html
+- https://github.com/NVIDIAGameWorks/HBAOPlus
+
 **ktx albedo**
 ```bash
 ktxinfo.exe Planks09_col_2048.ktx
