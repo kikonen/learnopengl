@@ -168,6 +168,9 @@
 //#define SET_FLOAT_PRECISION
 #define SET_FLOAT_PRECISION precision mediump float;
 
+#define SCREEN_TRI_VERTEX_OUT 1
+#undef SCREEN_TRI_VERTEX_OUT
+
 #define MIN_CLAMP_COL_VALUE 0.0
 #define MAX_CLAMP_COL_VALUE 10000.0
 #define clamp_color(color)\

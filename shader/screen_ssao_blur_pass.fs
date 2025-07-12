@@ -7,9 +7,7 @@
 // => for *stencil test
 layout(early_fragment_tests) in;
 
-in VS_OUT {
-  vec2 texCoord;
-} fs_in;
+#include screen_tri_vertex_out.glsl
 
 layout(binding = UNIT_SSAO) uniform sampler2D u_ssaoTex;
 
@@ -23,7 +21,7 @@ SET_FLOAT_PRECISION;
 
 void main()
 {
-  const vec2 texCoord = fs_in.texCoord;
+  #include screen_tri_tex_coord.glsl
 
   const vec2 texelSize = 1.0 / vec2(textureSize(u_ssaoTex, 0));
   float result = 0.0;

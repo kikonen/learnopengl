@@ -9,10 +9,7 @@
 // => for *stencil test
 layout(early_fragment_tests) in;
 
-in VS_OUT {
-  vec2 texCoord;
-} fs_in;
-
+#include screen_tri_vertex_out.glsl
 
 // parameters (you'd probably want to use them as uniforms to more easily tweak the effect)
 int kernelSize = 64;
@@ -123,8 +120,7 @@ float calculateSsao(
 
 void main()
 {
-  //const vec2 texCoord = gl_FragCoord.xy / u_bufferResolution;
-  const vec2 texCoord = fs_in.texCoord;
+  #include screen_tri_tex_coord.glsl
 
   #include var_gbuffer_normal.glsl
 

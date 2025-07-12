@@ -3,9 +3,7 @@
 #include uniform_matrices.glsl
 #include uniform_data.glsl
 
-in VS_OUT {
-  vec2 texCoord;
-} fs_in;
+#include screen_tri_vertex_out.glsl
 
 layout(binding = UNIT_SOURCE) uniform sampler2D u_sourceTex;
 layout(binding = UNIT_G_EMISSION) uniform sampler2D g_emission;		\
@@ -20,7 +18,7 @@ SET_FLOAT_PRECISION;
 
 void main()
 {
-  const vec2 texCoord = fs_in.texCoord;
+  #include screen_tri_tex_coord.glsl
 
   vec4 color = textureLod(u_sourceTex, texCoord, 0);
   vec3 emission = textureLod(g_emission, texCoord, 0).rgb;

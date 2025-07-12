@@ -2,9 +2,7 @@
 
 #include uniform_data.glsl
 
-in VS_OUT {
-  vec2 texCoord;
-} fs_in;
+#include screen_tri_vertex_out.glsl
 
 layout(binding = UNIT_EFFECT_ALBEDO) uniform sampler2D effect_albedo;
 
@@ -18,8 +16,7 @@ SET_FLOAT_PRECISION;
 
 void main()
 {
-  //const vec2 texCoord = gl_FragCoord.xy / u_bufferResolution;
-  const vec2 texCoord = fs_in.texCoord;
+  #include screen_tri_tex_coord.glsl
 
   vec3 hdrColor = texture(effect_albedo, texCoord).rgb;
 

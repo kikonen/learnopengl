@@ -2,7 +2,6 @@
 
 #include uniform_matrices.glsl
 #include uniform_data.glsl
-//#include uniform_buffer_info.glsl
 
 // https://www.khronos.org/opengl/wiki/Early_Fragment_Test
 // https://www.gamedev.net/forums/topic/700517-performance-question-alpha-texture-vs-frag-shader-discard/5397906/
@@ -10,9 +9,7 @@
 // => disables "discard" logic
 //layout(early_fragment_tests) in;
 
-in VS_OUT {
-  vec2 texCoord;
-} fs_in;
+#include screen_tri_vertex_out.glsl
 
 layout(binding = UNIT_G_EMISSION) uniform sampler2D g_emission;
 layout(binding = UNIT_G_DEPTH) uniform sampler2D g_depth;
@@ -72,8 +69,7 @@ vec4 calculateEmission(vec2 texCoord)
 
 void main()
 {
-  //const vec2 texCoord = gl_FragCoord.xy / u_bufferResolution;
-  const vec2 texCoord = fs_in.texCoord;
+  #include screen_tri_tex_coord.glsl
 
   vec4 color = calculateEmission(texCoord);
 

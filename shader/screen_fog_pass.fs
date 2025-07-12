@@ -2,15 +2,12 @@
 
 #include uniform_matrices.glsl
 #include uniform_data.glsl
-//#include uniform_buffer_info.glsl
 
 // NOTE KI depth is *not* used
 // => for *stencil test
 layout(early_fragment_tests) in;
 
-in VS_OUT {
-  vec2 texCoord;
-} fs_in;
+#include screen_tri_vertex_out.glsl
 
 layout(binding = UNIT_G_DEPTH) uniform sampler2D g_depth;
 
@@ -36,8 +33,7 @@ vec4 calculateFog(
 
 void main()
 {
-  //const vec2 texCoord = gl_FragCoord.xy / u_bufferResolution;
-  const vec2 texCoord = fs_in.texCoord;
+  #include screen_tri_tex_coord.glsl
 
   // https://ahbejarano.gitbook.io/lwjglgamedev/chapter-19
   vec3 viewPos;

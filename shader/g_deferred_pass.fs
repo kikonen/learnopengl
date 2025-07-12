@@ -17,9 +17,7 @@
 // https://www.gamedev.net/forums/topic/700517-performance-question-alpha-texture-vs-frag-shader-discard/5397906/
 layout(early_fragment_tests) in;
 
-in VS_OUT {
-  vec2 texCoord;
-} fs_in;
+#include screen_tri_vertex_out.glsl
 
 LAYOUT_G_BUFFER_SAMPLERS;
 
@@ -64,11 +62,7 @@ float linearizeDepth(float depth) {
 
 void main()
 {
-  //const vec2 texCoord = gl_FragCoord.xy / u_bufferResolution;
-  vec2 texCoord = fs_in.texCoord;
-
-  // const vec2 pixCoord = gl_FragCoord.xy / u_bufferResolution;
-  // texCoord = pixCoord;
+  #include screen_tri_tex_coord.glsl
 
   // https://mynameismjp.wordpress.com/2010/09/05/position-from-depth-3/
   // https://ahbejarano.gitbook.io/lwjglgamedev/chapter-19

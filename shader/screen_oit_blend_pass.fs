@@ -8,9 +8,7 @@
 // => for *stencil test
 layout(early_fragment_tests) in;
 
-in VS_OUT {
-  vec2 texCoord;
-} fs_in;
+#include screen_tri_vertex_out.glsl
 
 LAYOUT_OIT_SAMPLERS;
 
@@ -33,8 +31,7 @@ float max3(vec3 v)
 
 void main()
 {
-  //const vec2 texCoord = gl_FragCoord.xy / u_bufferResolution;
-  const vec2 texCoord = fs_in.texCoord;
+  #include screen_tri_tex_coord.glsl
 
   float revealage = textureLod(oit_reveal, texCoord, 0).r;
 
