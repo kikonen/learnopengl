@@ -113,13 +113,14 @@ namespace render {
 
         GLuint m_fbo = 0;
         bool m_forceBind{ false };
-        bool m_hasStencil{ false };
-        bool m_hasDepth{ false };
 
         int m_clearMask = 0;
 
     protected:
         bool m_prepared = false;
+
+        bool m_hasStencil{ false };
+        int m_depthIndex{ -1 };
 
         std::vector<GLenum> m_activeDrawBuffers;
         std::vector<GLenum> m_saveDrawBuffers;

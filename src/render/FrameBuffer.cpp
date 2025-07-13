@@ -108,12 +108,21 @@ namespace render {
                 }
                 else if (att.shared->type == FrameBufferAttachmentType::rbo) {
                     glNamedFramebufferRenderbuffer(m_fbo, att.attachment, GL_RENDERBUFFER, att.rbo);
+
+                    m_depthIndex = att.index;
+                    m_hasStencil = att.attachment == GL_DEPTH_STENCIL_ATTACHMENT;
                 }
                 else if (att.shared->type == FrameBufferAttachmentType::depth_texture) {
                     glNamedFramebufferTexture(m_fbo, att.attachment, att.textureID, 0);
+
+                    m_depthIndex = att.index;
+                    m_hasStencil = att.attachment == GL_DEPTH_STENCIL_ATTACHMENT;
                 }
                 else if (att.shared->type == FrameBufferAttachmentType::depth_stencil_texture) {
                     glNamedFramebufferTexture(m_fbo, att.attachment, att.textureID, 0);
+
+                    m_depthIndex = att.index;
+                    m_hasStencil = att.attachment == GL_DEPTH_STENCIL_ATTACHMENT;
                 }
             }
             else if (att.type == FrameBufferAttachmentType::draw_buffer) {
@@ -125,37 +134,28 @@ namespace render {
             else if (att.type == FrameBufferAttachmentType::rbo) {
                 glNamedFramebufferRenderbuffer(m_fbo, att.attachment, GL_RENDERBUFFER, att.rbo);
 
-                m_hasDepth = true;
+                m_depthIndex = att.index;
                 m_hasStencil = att.attachment == GL_DEPTH_STENCIL_ATTACHMENT;
             }
             else if (att.type == FrameBufferAttachmentType::depth_texture) {
                 glNamedFramebufferTexture(m_fbo, att.attachment, att.textureID, 0);
 
-                m_hasDepth = true;
+                m_depthIndex = att.index;
                 m_hasStencil = att.attachment == GL_DEPTH_STENCIL_ATTACHMENT;
             }
             else if (att.type == FrameBufferAttachmentType::depth_stencil_texture) {
                 glNamedFramebufferTexture(m_fbo, att.attachment, att.textureID, 0);
 
-                m_hasDepth = true;
+                m_depthIndex = att.index;
                 m_hasStencil = att.attachment == GL_DEPTH_STENCIL_ATTACHMENT;
             }
             else if (att.type == FrameBufferAttachmentType::shadow) {
                 glNamedFramebufferTexture(m_fbo, att.attachment, att.textureID, 0);
 
-                m_hasDepth = true;
+                m_depthIndex = att.index;
             }
         }
 
-        {
-            glNamedFramebufferDrawBuffer(m_fbo, GL_NONE);
-            glNamedFramebufferReadBuffer(m_fbo, GL_NONE);
-
-            resetDrawBuffers();
-            //if (m_drawBuffers.size() > 0) {
-            //    glNamedFramebufferDrawBuffers(m_fbo, m_drawBuffers.size(), m_drawBuffers.data());
-            //}
-        }
 
         if (m_checkComplete) {
             GLenum status = glCheckNamedFramebufferStatus(m_fbo, GL_FRAMEBUFFER);
@@ -168,7 +168,11 @@ namespace render {
             }
         }
 
-        clearAll();
+        {
+            glNamedFramebufferReadBuffer(m_fbo, GL_NONE);
+            resetDrawBuffers();
+            clearAll();
+        }
     }
 
     void FrameBuffer::resetDrawBuffers()
@@ -400,7 +404,7 @@ namespace render {
 
         // NOTE KI if no attachments cannot know
         if (hasAttachments) {
-            if (!m_hasDepth) {
+            if (m_depthIndex >= 0) {
                 clearMask &= ~GL_DEPTH_BUFFER_BIT;
             }
             if (!m_hasStencil) {
@@ -459,11 +463,6 @@ namespace render {
 
     FrameBufferAttachment* FrameBuffer::getDepthAttachment()
     {
-        for (auto& att : m_spec.attachments) {
-            if (att.attachment == GL_DEPTH_ATTACHMENT || att.attachment == GL_DEPTH_STENCIL_ATTACHMENT) {
-                return &att;
-            }
-        }
-        return nullptr;
+        return m_depthIndex >= 0 ? &m_spec.attachments[m_depthIndex] : nullptr;
     }
 }
