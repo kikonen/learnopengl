@@ -208,7 +208,7 @@ void WaterMapRenderer::updateReflectionView(const UpdateViewContext& ctx)
         m_reflectionHeight = h;
     }
 
-    m_reflectionBuffers.clear();
+    //m_reflectionBuffers.clear();
 
     auto albedo = render::FrameBufferAttachment::getTextureRGBHdr();
     albedo.minFilter = GL_LINEAR;
@@ -262,7 +262,7 @@ void WaterMapRenderer::updateRefractionView(const UpdateViewContext& ctx)
         m_refractionHeight = h;
     }
 
-    m_refractionBuffers.clear();
+    //m_refractionBuffers.clear();
 
     auto albedo = render::FrameBufferAttachment::getTextureRGBHdr();
     albedo.minFilter = GL_LINEAR;
@@ -459,8 +459,8 @@ void WaterMapRenderer::drawNodes(
 
     ctx.updateClipPlanesUBO();
 
-    const glm::vec4 debugColor(0.9f, 0.3f, 0.3f, 0.0f);
-    targetBuffer->clear(ctx, GL_COLOR_BUFFER_BIT, debugColor);
+    //const glm::vec4 debugColor(0.9f, 0.3f, 0.3f, 0.0f);
+    //targetBuffer->clear(ctx, GL_COLOR_BUFFER_BIT, debugColor);
 
     {
         Node* sourceNode = m_sourceNode.toNode();
