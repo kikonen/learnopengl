@@ -363,8 +363,8 @@ void MirrorMapRenderer::drawNodes(
         m_mirrorMapRenderer->bindTexture(ctx.m_state);
     }
 
-    const glm::vec4 debugColor{ 0.9f, 0.0f, 0.9f, 0.0f };
-    targetBuffer->clear(ctx, GL_COLOR_BUFFER_BIT, debugColor);
+    //const glm::vec4 debugColor{ 0.9f, 0.0f, 0.9f, 0.0f };
+    //targetBuffer->clear(ctx, GL_COLOR_BUFFER_BIT, debugColor);
 
 
     //ctx.updateClipPlanesUBO();

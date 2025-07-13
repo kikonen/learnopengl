@@ -343,7 +343,7 @@ void CubeMapRenderer::drawNodes(
 
     // TODO KI to match special logic in CubeMapBuffer
     targetBuffer->bindFace();
-    targetBuffer->clear(ctx, GL_COLOR_BUFFER_BIT, debugColor);;
+    //targetBuffer->clear(ctx, GL_COLOR_BUFFER_BIT, debugColor);;
 
     render::DrawContext drawContext{
         // NOTE KI skip drawing center node itself (can produce odd results)
