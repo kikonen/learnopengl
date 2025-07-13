@@ -83,8 +83,6 @@ namespace render
         auto& state = ctx.m_state;
         const auto& dbg = *ctx.m_dbg;
 
-        state.setStencil({});
-
         m_gBuffer.m_buffer->resetDrawBuffers();
         m_gBuffer.clearAll();
 

@@ -188,6 +188,16 @@ namespace editor
 
         {
             ImGui::Spacing();
+            ImGui::SeparatorText("Skybox");
+            ImGui::Spacing();
+
+            ImGui::Checkbox("Skybox enabled", &dbg.m_skyboxEnabled);
+            ImGui::Checkbox("Skybox color enabled", &dbg.m_skyboxColorEnabled);
+            ImGui::ColorEdit3("Skybox color", glm::value_ptr(dbg.m_skyboxColor));
+        }
+
+        {
+            ImGui::Spacing();
             ImGui::SeparatorText("SSAO");
             ImGui::Spacing();
             ImGui::Checkbox("SSAO enabled", &dbg.m_effectSsaoEnabled);

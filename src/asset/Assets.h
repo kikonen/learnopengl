@@ -258,6 +258,8 @@ public:
     float cubeMapFarPlane;
 
     bool skyboxEnabled;
+    bool skyboxColorEnabled;
+    glm::vec3 skyboxColor;
     int skyboxSize;
 
     bool environmentMapEnabled;

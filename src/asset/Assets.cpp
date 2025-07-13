@@ -263,6 +263,8 @@ Assets::Assets()
     cubeMapRenderFrameStep = 2;
 
     skyboxEnabled = true;
+    skyboxColorEnabled = false;
+    skyboxColor = { 0.f, 0.f, 0.f };
     skyboxSize = 1024;
 
     environmentMapEnabled = true;

@@ -269,6 +269,9 @@ void RenderContext::prepareUBOs()
 
         m_debugUBO = {
             dbg->m_wireframeLineColor,
+            dbg->m_skyboxColor,
+            dbg->m_effectSsaoBaseColor,
+
             dbg->m_wireframeOnly,
             dbg->m_wireframeLineWidth,
 
@@ -279,8 +282,9 @@ void RenderContext::prepareUBOs()
             m_useLight && dbg->m_lightEnabled,
             m_useLight && dbg->m_normalMapEnabled,
 
+            dbg->m_skyboxColorEnabled,
+
             dbg->m_effectSsaoEnabled,
-            dbg->m_effectSsaoBaseColor,
             dbg->m_effectSsaoBaseColorEnabled,
 
             parallaxDepth,
@@ -289,19 +293,21 @@ void RenderContext::prepareUBOs()
     }
     else {
         m_debugUBO = {
-            { 0.f, 0.f, 0.f },
-            false,
-            0.f,
-            0, // entity
-            0,
-            false,
-            true, // light
-            true,
-            true, // SSAO
-            { 0.f, 0.f, 0.f },
-            false,
-            0.f,  // parallax
-            0,
+            { 0.f, 0.f, 0.f }, // Fog color,
+            { 0.f, 0.f, 0.f }, // skybox color,
+            { 0.f, 0.f, 0.f }, // SSAO color,
+            false, // wireframe only
+            0.f,   // wireframe line width
+            0,     // entityId
+            0,     // animation boneIndex
+            false, // animation boneDebug
+            true,  // light
+            true,  // normal map
+            false, // skybox color
+            true,  // SSAO
+            false, // SSAO color
+            0.f,   // parallax depth
+            0,     // parallax method
         };
     }
 

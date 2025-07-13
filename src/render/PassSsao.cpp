@@ -134,6 +134,8 @@ namespace render
 
     void PassSsao::cleanup(const RenderContext& ctx)
     {
+        if (!m_enabled) return;
+
         m_ssaoBuffer.invalidateAll();
     }
 
@@ -141,8 +143,6 @@ namespace render
     {
         auto& state = ctx.m_state;
         const auto& dbg = *ctx.m_dbg;
-
-        state.setStencil({});
 
         m_enabled = !(ctx.m_forceSolid || !ctx.m_useScreenspaceEffects) &&
             ctx.m_useSsao &&

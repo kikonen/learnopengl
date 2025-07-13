@@ -40,6 +40,10 @@ namespace render {
 
         bool m_lightEnabled{ true };
 
+        bool m_skyboxEnabled{ true };
+        bool m_skyboxColorEnabled{ false };
+        glm::vec3 m_skyboxColor{ 0.f };
+
         bool m_cubeMapEnabled{ true };
 
         glm::vec3 m_selectionAxis{ 0.f };

@@ -117,6 +117,10 @@ int SampleApp::onInit()
 
         dbg.m_lightEnabled = assets.lightEnabled;
 
+        dbg.m_skyboxEnabled = assets.skyboxEnabled;
+        dbg.m_skyboxColorEnabled = assets.skyboxColorEnabled;
+        dbg.m_skyboxColor = assets.skyboxColor;
+
         dbg.m_cubeMapEnabled = assets.cubeMapEnabled;
 
         dbg.m_showVolume = assets.showVolume;

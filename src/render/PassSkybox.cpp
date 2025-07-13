@@ -37,7 +37,10 @@ namespace render
 
     void PassSkybox::initRender(const RenderContext& ctx)
     {
-        m_enabled = true;
+        auto& state = ctx.m_state;
+        const auto& dbg = *ctx.m_dbg;
+
+        m_enabled = dbg.m_skyboxEnabled;
     }
 
     PassContext PassSkybox::render(

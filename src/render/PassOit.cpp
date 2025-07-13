@@ -48,6 +48,8 @@ namespace render
 
     void PassOit::cleanup(const RenderContext& ctx)
     {
+        if (!m_enabled) return;
+
         m_oitBuffer.invalidateAll();
     }
 

@@ -770,6 +770,14 @@ void AssetsLoader::loadAssets(
                 data.skyboxEnabled = readBool(v);
                 continue;
             }
+            if (k == "skybox_color_enabled") {
+                data.skyboxColorEnabled = readBool(v);
+                continue;
+            }
+            if (k == "skybox_color") {
+                data.skyboxColor = readRGB(v);
+                continue;
+            }
             if (k == "skybox_size") {
                 data.skyboxSize = readInt(v);
                 continue;
