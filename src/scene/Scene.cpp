@@ -76,8 +76,8 @@ Scene::Scene(
 
         m_viewportRenderer = std::make_unique<ViewportRenderer>(true);
 
-        m_waterMapRenderer = std::make_unique<WaterMapRenderer>("main", true, true, false);
-        m_mirrorMapRenderer = std::make_unique<MirrorMapRenderer>("main", true, true, false);
+        m_waterMapRenderer = std::make_unique<WaterMapRenderer>("water", true, true, false);
+        m_mirrorMapRenderer = std::make_unique<MirrorMapRenderer>("mirror", true, true, false);
         m_cubeMapRenderer = std::make_unique<CubeMapRenderer>(true);
         m_shadowMapRenderer = std::make_unique<ShadowMapRenderer>(true);
 

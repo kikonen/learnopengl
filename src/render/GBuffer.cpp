@@ -15,11 +15,19 @@ namespace {
 }
 
 namespace render {
+    GBuffer::GBuffer()
+    {}
+
+    GBuffer::~GBuffer() = default;
+
     void GBuffer::prepare()
     {
     }
 
-    void GBuffer::updateRT(const UpdateViewContext& ctx, float bufferScale)
+    void GBuffer::updateRT(
+        const UpdateViewContext& ctx,
+        const std::string& namePrefix,
+        float bufferScale)
     {
         const auto& assets = ctx.m_assets;
         auto& dbg = render::DebugContext::get();
@@ -40,7 +48,7 @@ namespace render {
         {
             // NOTE KI alpha NOT needed
             auto buffer = new FrameBuffer(
-                "gbuffer",
+                fmt::format("{}_gbuffer", namePrefix),
                 {
                     w, h,
                     {

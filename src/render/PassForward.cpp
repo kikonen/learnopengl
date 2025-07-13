@@ -25,7 +25,10 @@ namespace render
     {
     }
 
-    void PassForward::updateRT(const UpdateViewContext& ctx, float bufferScale)
+    void PassForward::updateRT(
+        const UpdateViewContext& ctx,
+        const std::string& namePrefix,
+        float bufferScale)
     {
         if (!updateSize(ctx, bufferScale)) return;
     }

@@ -31,7 +31,10 @@ namespace render
         m_physicsRenderer->prepareRT(ctx);
     }
 
-    void PassDebugPhysics::updateRT(const UpdateViewContext& ctx, float bufferScale)
+    void PassDebugPhysics::updateRT(
+        const UpdateViewContext& ctx,
+        const std::string& namePrefix,
+        float bufferScale)
     {
         if (!updateSize(ctx, bufferScale)) return;
     }

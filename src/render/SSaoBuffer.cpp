@@ -21,6 +21,7 @@ namespace render {
 
     void SsaoBuffer::updateRT(
         const UpdateViewContext& ctx,
+        const std::string& namePrefix,
         float bufferScale)
     {
         const auto& assets = ctx.m_assets;
@@ -42,7 +43,7 @@ namespace render {
         {
             // NOTE KI alpha NOT needed
             auto buffer = new FrameBuffer(
-                "ssao_buffer",
+                fmt::format("{}_ssao_buffer", namePrefix),
                 {
                     w, h,
                     {

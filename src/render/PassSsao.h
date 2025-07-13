@@ -18,6 +18,7 @@ namespace render {
 
         void updateRT(
             const UpdateViewContext& ctx,
+            const std::string& namePrefix,
             float bufferScale);
 
         void cleanup(const RenderContext& ctx);

@@ -29,7 +29,8 @@ namespace render
 
     PassDeferred::~PassDeferred() = default;
 
-    void PassDeferred::prepare(const PrepareContext& ctx)
+    void PassDeferred::prepare(
+        const PrepareContext& ctx)
     {
         const auto& assets = ctx.m_assets;
 
@@ -49,16 +50,19 @@ namespace render
         }
     }
 
-    void PassDeferred::updateRT(const UpdateViewContext& ctx, float bufferScale)
+    void PassDeferred::updateRT(
+        const UpdateViewContext& ctx,
+        const std::string& namePrefix,
+        float bufferScale)
     {
         if (!updateSize(ctx, bufferScale)) return;
 
-        m_gBuffer.updateRT(ctx, bufferScale);
+        m_gBuffer.updateRT(ctx, namePrefix, bufferScale);
 
         // NOTE KI this is start of all whole chain (i.e. after GBuffer pass)
         {
             auto buffer = new FrameBuffer(
-                m_name,
+                fmt::format("{}_{}", namePrefix, m_name),
                 {
                     m_width, m_height,
                     {

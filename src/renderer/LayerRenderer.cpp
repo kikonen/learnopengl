@@ -45,7 +45,7 @@ void LayerRenderer::prepareRT(
     const auto& assets = ctx.m_assets;
 
     {
-        m_nodeDraw = std::make_unique<render::NodeDraw>();
+        m_nodeDraw = std::make_unique<render::NodeDraw>(m_name);
 
         auto& pipeline = m_nodeDraw->m_pipeline;
         //pipeline.m_particle = false;

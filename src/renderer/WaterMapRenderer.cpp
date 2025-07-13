@@ -60,7 +60,7 @@ void WaterMapRenderer::prepareRT(
     const auto& assets = ctx.m_assets;
 
     {
-        m_nodeDraw = std::make_unique<render::NodeDraw>();
+        m_nodeDraw = std::make_unique<render::NodeDraw>(m_name);
 
         auto& pipeline = m_nodeDraw->m_pipeline;
         pipeline.m_particle = false;
@@ -208,7 +208,7 @@ void WaterMapRenderer::updateReflectionView(const UpdateViewContext& ctx)
         m_reflectionHeight = h;
     }
 
-    //m_reflectionBuffers.clear();
+    m_reflectionBuffers.clear();
 
     auto albedo = render::FrameBufferAttachment::getTextureRGBHdr();
     albedo.minFilter = GL_LINEAR;
@@ -226,7 +226,7 @@ void WaterMapRenderer::updateReflectionView(const UpdateViewContext& ctx)
             };
 
             m_reflectionBuffers.push_back(std::make_unique<render::FrameBuffer>(
-                fmt::format("{}_water_reflect_{}", m_name, i),
+                fmt::format("{}_reflect_{}", m_name, i),
                 spec));
         }
     }
@@ -262,7 +262,7 @@ void WaterMapRenderer::updateRefractionView(const UpdateViewContext& ctx)
         m_refractionHeight = h;
     }
 
-    //m_refractionBuffers.clear();
+    m_refractionBuffers.clear();
 
     auto albedo = render::FrameBufferAttachment::getTextureRGBHdr();
     albedo.minFilter = GL_LINEAR;
@@ -280,7 +280,7 @@ void WaterMapRenderer::updateRefractionView(const UpdateViewContext& ctx)
             };
 
             m_refractionBuffers.push_back(std::make_unique<render::FrameBuffer>(
-                fmt::format("{}_water_refract_{}", m_name, i),
+                fmt::format("{}_refract_{}", m_name, i),
                 spec));
         }
     }
@@ -461,6 +461,7 @@ void WaterMapRenderer::drawNodes(
 
     //const glm::vec4 debugColor(0.9f, 0.3f, 0.3f, 0.0f);
     //targetBuffer->clear(ctx, GL_COLOR_BUFFER_BIT, debugColor);
+    targetBuffer->clearAll();
 
     {
         Node* sourceNode = m_sourceNode.toNode();

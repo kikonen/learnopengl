@@ -43,11 +43,14 @@ namespace render
         m_blurBuffer.prepare();
     }
 
-    void PassBloom::updateRT(const UpdateViewContext& ctx, float bufferScale)
+    void PassBloom::updateRT(
+        const UpdateViewContext& ctx,
+        const std::string& namePrefix,
+        float bufferScale)
     {
         if (!updateSize(ctx, bufferScale)) return;
 
-        m_blurBuffer.updateRT(ctx, bufferScale);
+        m_blurBuffer.updateRT(ctx, namePrefix, bufferScale);
     }
 
     void PassBloom::initRender(const RenderContext& ctx)

@@ -31,7 +31,10 @@ namespace render
         m_volumeRenderer->prepareRT(ctx);
     }
 
-    void PassDebugVolume::updateRT(const UpdateViewContext& ctx, float bufferScale)
+    void PassDebugVolume::updateRT(
+        const UpdateViewContext& ctx,
+        const std::string& namePrefix,
+        float bufferScale)
     {
         if (!updateSize(ctx, bufferScale)) return;
     }

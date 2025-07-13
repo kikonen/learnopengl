@@ -30,12 +30,15 @@ namespace render {
         static const int ATT_DEPTH_INDEX = 4;
 
     public:
-        GBuffer() {}
-        ~GBuffer() {}
+        GBuffer();
+        ~GBuffer();
 
         void prepare();
 
-        void updateRT(const UpdateViewContext& ctx, float bufferScale);
+        void updateRT(
+            const UpdateViewContext& ctx,
+            const std::string& namePrefix,
+            float bufferScale);
 
         void bind(const RenderContext& ctx);
 

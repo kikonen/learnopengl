@@ -103,7 +103,7 @@ void CubeMapRenderer::prepareRT(
     const auto& assets = ctx.m_assets;
 
     {
-        m_nodeDraw = std::make_unique<render::NodeDraw>();
+        m_nodeDraw = std::make_unique<render::NodeDraw>(m_name);
 
         auto& pipeline = m_nodeDraw->m_pipeline;
         pipeline.m_particle = false;
@@ -343,7 +343,9 @@ void CubeMapRenderer::drawNodes(
 
     // TODO KI to match special logic in CubeMapBuffer
     targetBuffer->bindFace();
+
     //targetBuffer->clear(ctx, GL_COLOR_BUFFER_BIT, debugColor);;
+    targetBuffer->clearAll();
 
     render::DrawContext drawContext{
         // NOTE KI skip drawing center node itself (can produce odd results)

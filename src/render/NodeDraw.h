@@ -51,7 +51,7 @@ namespace render {
         friend class editor::ViewportTool;
 
     public:
-        NodeDraw();
+        NodeDraw(const std::string& namePrefix);
         ~NodeDraw();
 
         void prepareRT(
@@ -79,6 +79,8 @@ namespace render {
         Pipeline m_pipeline;
 
     private:
+        const std::string& m_namePrefix;
+
         query::TimeElapsedQuery m_timeElapsedQuery;
 
         std::unique_ptr<render::PassDeferred> m_passDeferred;

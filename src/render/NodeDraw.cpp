@@ -45,8 +45,9 @@ namespace {
 }
 
 namespace render {
-    NodeDraw::NodeDraw()
-        : m_passDeferred{ std::make_unique<render::PassDeferred>()},
+    NodeDraw::NodeDraw(const std::string& namePrefix)
+        : m_namePrefix{ namePrefix },
+        m_passDeferred{ std::make_unique<render::PassDeferred>() },
         m_passOit{ std::make_unique<render::PassOit>() },
         m_passSsao{ std::make_unique<render::PassSsao>() },
         m_passForward{ std::make_unique<render::PassForward>() },
@@ -100,22 +101,22 @@ namespace render {
 
     void NodeDraw::updateRT(const UpdateViewContext& ctx, float bufferScale)
     {
-        if (m_pipeline.m_deferred) m_passDeferred->updateRT(ctx, bufferScale);
-        if (m_pipeline.m_oit) m_passOit->updateRT(ctx, m_passDeferred.get(), bufferScale);
-        if (m_pipeline.m_ssao) m_passSsao->updateRT(ctx, bufferScale);
-        if (m_pipeline.m_forward) m_passForward->updateRT(ctx, bufferScale);
-        if (m_pipeline.m_decal) m_passDecal->updateRT(ctx, bufferScale);
-        if (m_pipeline.m_particle) m_passParticle->updateRT(ctx, bufferScale);
-        if (m_pipeline.m_effect) m_passEffect->updateRT(ctx, bufferScale);
-        if (m_pipeline.m_fog) m_passFog->updateRT(ctx, bufferScale);
-        if (m_pipeline.m_bloom) m_passBloom->updateRT(ctx, bufferScale);
-        if (m_pipeline.m_skybox) m_passSkybox->updateRT(ctx, bufferScale);
-        if (m_pipeline.m_debug) m_passDebug->updateRT(ctx, bufferScale);
-        if (m_pipeline.m_debugPhysics) m_passDebugPhysics->updateRT(ctx, bufferScale);
-        if (m_pipeline.m_debugVolume) m_passDebugVolume->updateRT(ctx, bufferScale);
-        if (m_pipeline.m_debugEnvironmentProbe) m_passDebugEnvironmentProbe->updateRT(ctx, bufferScale);
-        if (m_pipeline.m_debugNormal) m_passDebugNormal->updateRT(ctx, bufferScale);
-        if (m_pipeline.m_copy) m_passCopy->updateRT(ctx, bufferScale);
+        if (m_pipeline.m_deferred) m_passDeferred->updateRT(ctx, m_namePrefix, bufferScale);
+        if (m_pipeline.m_oit) m_passOit->updateRT(ctx, m_passDeferred.get(), m_namePrefix, bufferScale);
+        if (m_pipeline.m_ssao) m_passSsao->updateRT(ctx, m_namePrefix, bufferScale);
+        if (m_pipeline.m_forward) m_passForward->updateRT(ctx, m_namePrefix, bufferScale);
+        if (m_pipeline.m_decal) m_passDecal->updateRT(ctx, m_namePrefix, bufferScale);
+        if (m_pipeline.m_particle) m_passParticle->updateRT(ctx, m_namePrefix, bufferScale);
+        if (m_pipeline.m_effect) m_passEffect->updateRT(ctx, m_namePrefix, bufferScale);
+        if (m_pipeline.m_fog) m_passFog->updateRT(ctx, m_namePrefix, bufferScale);
+        if (m_pipeline.m_bloom) m_passBloom->updateRT(ctx, m_namePrefix, bufferScale);
+        if (m_pipeline.m_skybox) m_passSkybox->updateRT(ctx, m_namePrefix, bufferScale);
+        if (m_pipeline.m_debug) m_passDebug->updateRT(ctx, m_namePrefix, bufferScale);
+        if (m_pipeline.m_debugPhysics) m_passDebugPhysics->updateRT(ctx, m_namePrefix, bufferScale);
+        if (m_pipeline.m_debugVolume) m_passDebugVolume->updateRT(ctx, m_namePrefix, bufferScale);
+        if (m_pipeline.m_debugEnvironmentProbe) m_passDebugEnvironmentProbe->updateRT(ctx, m_namePrefix, bufferScale);
+        if (m_pipeline.m_debugNormal) m_passDebugNormal->updateRT(ctx, m_namePrefix, bufferScale);
+        if (m_pipeline.m_copy) m_passCopy->updateRT(ctx, m_namePrefix, bufferScale);
     }
 
     void NodeDraw::drawNodes(

@@ -125,11 +125,12 @@ namespace render
 
     void PassSsao::updateRT(
         const UpdateViewContext& ctx,
+        const std::string& namePrefix,
         float bufferScale)
     {
         if (!updateSize(ctx, bufferScale)) return;
 
-        m_ssaoBuffer.updateRT(ctx, bufferScale);
+        m_ssaoBuffer.updateRT(ctx, namePrefix, bufferScale);
     }
 
     void PassSsao::cleanup(const RenderContext& ctx)

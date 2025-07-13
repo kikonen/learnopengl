@@ -31,7 +31,10 @@ namespace render
         m_environmentProbeRenderer->prepareRT(ctx);
     }
 
-    void PassDebugEnvironmentProbe::updateRT(const UpdateViewContext& ctx, float bufferScale)
+    void PassDebugEnvironmentProbe::updateRT(
+        const UpdateViewContext& ctx,
+        const std::string& namePrefix,
+        float bufferScale)
     {
         if (!updateSize(ctx, bufferScale)) return;
     }

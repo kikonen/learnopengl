@@ -31,7 +31,10 @@ namespace render
 
         void prepare();
 
-        void updateRT(const UpdateViewContext& ctx, float bufferScale);
+        void updateRT(
+            const UpdateViewContext& ctx,
+            const std::string& namePrefix,
+            float bufferScale);
 
         void bind(
             const RenderContext& ctx,

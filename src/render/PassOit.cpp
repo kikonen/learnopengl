@@ -39,11 +39,12 @@ namespace render
     void PassOit::updateRT(
         const UpdateViewContext& ctx,
         PassDeferred* passDeferred,
+        const std::string& namePrefix,
         float bufferScale)
     {
         if (!updateSize(ctx, bufferScale)) return;
 
-        m_oitBuffer.updateRT(ctx, passDeferred->getGBuffer(), bufferScale);
+        m_oitBuffer.updateRT(ctx, passDeferred->getGBuffer(), namePrefix, bufferScale);
     }
 
     void PassOit::cleanup(const RenderContext& ctx)

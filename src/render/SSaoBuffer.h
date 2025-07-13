@@ -1,5 +1,6 @@
 #pragma once
 
+#include <string>
 #include <memory>
 
 namespace kigl {
@@ -25,6 +26,7 @@ namespace render {
 
         void updateRT(
             const UpdateViewContext& ctx,
+            const std::string& namePrefix,
             float bufferScale);
 
         void bind(const RenderContext& ctx);

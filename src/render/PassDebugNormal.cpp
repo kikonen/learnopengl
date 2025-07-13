@@ -32,7 +32,10 @@ namespace render
         m_normalRenderer->setEnabled(true);
     }
 
-    void PassDebugNormal::updateRT(const UpdateViewContext& ctx, float bufferScale)
+    void PassDebugNormal::updateRT(
+        const UpdateViewContext& ctx,
+        const std::string& namePrefix,
+        float bufferScale)
     {
         if (!updateSize(ctx, bufferScale)) return;
     }

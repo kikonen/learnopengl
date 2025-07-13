@@ -2,6 +2,8 @@
 
 #include "asset/Assets.h"
 
+#include <fmt/format.h>
+
 #include "shader/Shader.h"
 
 #include "engine/UpdateViewContext.h"
@@ -19,6 +21,7 @@ namespace render {
     void OITBuffer::updateRT(
         const UpdateViewContext& ctx,
         GBuffer* gBuffer,
+        const std::string& namePrefix,
         float bufferScale)
     {
         const auto& assets = ctx.m_assets;
@@ -40,7 +43,7 @@ namespace render {
         {
             // NOTE KI alpha NOT needed
             auto buffer = new FrameBuffer(
-                "oit_buffer",
+                fmt::format("{}_oit_buffer", namePrefix),
                 {
                     w, h,
                     {

@@ -61,7 +61,7 @@ void MirrorMapRenderer::prepareRT(
     Renderer::prepareRT(ctx);
 
     {
-        m_nodeDraw = std::make_unique<render::NodeDraw>();
+        m_nodeDraw = std::make_unique<render::NodeDraw>(m_name);
 
         auto& pipeline = m_nodeDraw->m_pipeline;
         pipeline.m_particle = false;
@@ -182,7 +182,7 @@ void MirrorMapRenderer::updateRT(const UpdateViewContext& parentCtx)
             };
 
             m_reflectionBuffers.push_back(std::make_unique<render::FrameBuffer>(
-                fmt::format("{}_mirror_reflect_{}", m_name, i),
+                fmt::format("{}_reflect_{}", m_name, i),
                 spec));
         }
     }
@@ -365,7 +365,7 @@ void MirrorMapRenderer::drawNodes(
 
     //const glm::vec4 debugColor{ 0.9f, 0.0f, 0.9f, 0.0f };
     //targetBuffer->clear(ctx, GL_COLOR_BUFFER_BIT, debugColor);
-
+    targetBuffer->clearAll();
 
     //ctx.updateClipPlanesUBO();
     //kigl::GLState::get().setEnabled(GL_CLIP_DISTANCE0, true);

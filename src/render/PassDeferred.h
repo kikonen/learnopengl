@@ -16,9 +16,13 @@ namespace render {
         PassDeferred();
         ~PassDeferred();
 
-        void prepare(const PrepareContext& ctx);
+        void prepare(
+            const PrepareContext& ctx);
 
-        void updateRT(const UpdateViewContext& ctx, float bufferScale);
+        void updateRT(
+            const UpdateViewContext& ctx,
+            const std::string& namePrefix,
+            float bufferScale);
 
         void cleanup(const RenderContext& ctx);
 

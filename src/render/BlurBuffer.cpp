@@ -22,7 +22,10 @@ namespace render {
     {
     }
 
-    void BlurBuffer::updateRT(const UpdateViewContext& ctx, float bufferScale)
+    void BlurBuffer::updateRT(
+        const UpdateViewContext& ctx,
+        const std::string& namePrefix,
+        float bufferScale)
     {
         const auto& assets = ctx.m_assets;
         auto& dbg = render::DebugContext::get();
@@ -56,7 +59,7 @@ namespace render {
             if (currH < 1) currH = 1;
 
             auto fb = new FrameBuffer(
-                fmt::format("blur_buffer_{}", i),
+                fmt::format("{}_blur_buffer_{}", namePrefix, i),
                 {
                     w, h,
                     {

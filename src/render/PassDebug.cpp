@@ -27,7 +27,10 @@ namespace render
     {
     }
 
-    void PassDebug::updateRT(const UpdateViewContext& ctx, float bufferScale)
+    void PassDebug::updateRT(
+        const UpdateViewContext& ctx,
+        const std::string& namePrefix,
+        float bufferScale)
     {
         if (!updateSize(ctx, bufferScale)) return;
     }

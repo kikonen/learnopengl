@@ -29,7 +29,10 @@ namespace render
         m_particleRenderer->prepareRT(ctx);
     }
 
-    void PassParticle::updateRT(const UpdateViewContext& ctx, float bufferScale)
+    void PassParticle::updateRT(
+        const UpdateViewContext& ctx,
+        const std::string& namePrefix,
+        float bufferScale)
     {
         if (!updateSize(ctx, bufferScale)) return;
     }
