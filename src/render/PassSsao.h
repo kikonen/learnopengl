@@ -31,12 +31,13 @@ namespace render {
             const DrawContext& drawContext,
             const PassContext& src);
 
+        static const std::vector<glm::vec3>& getKernel();
+
     protected:
         Program* m_ssaoProgram{ nullptr };
         Program* m_ssaoBlurProgram{ nullptr };
 
         SsaoBuffer m_ssaoBuffer;
 
-        kigl::GLTextureHandle m_noiseTex;
     };
 }

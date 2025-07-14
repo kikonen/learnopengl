@@ -86,28 +86,22 @@ namespace {
         }
         return s_noiseValues;
     }
-
 }
 
-namespace render
-{
-    PassSsao::PassSsao()
-        : Pass("PassSsao")
-    {
-    }
+namespace noise {
+    struct NoiseTexture {
+        int m_usageCount{ 0 };
+        bool m_prepared{ false };
+        kigl::GLTextureHandle m_tex;
 
-    PassSsao::~PassSsao() = default;
+        void prepare() {
+            if (m_prepared) return;
+            m_prepared = true;
 
-    void PassSsao::prepare(const PrepareContext& ctx)
-    {
-        m_ssaoProgram = Program::get(ProgramRegistry::get().getProgram(SHADER_SSAO_PASS));
-        m_ssaoBlurProgram = Program::get(ProgramRegistry::get().getProgram(SHADER_SSAO_BLUR_PASS));
-
-        {
             constexpr int w = 4;
             constexpr int h = 4;
-            m_noiseTex.create("ssao_noise_tex", GL_TEXTURE_2D, w, h);
-            int texId = m_noiseTex;
+            m_tex.create("ssao_noise_tex", GL_TEXTURE_2D, w, h);
+            int texId = m_tex;
 
             glTextureParameteri(texId, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
             glTextureParameteri(texId, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
@@ -119,6 +113,52 @@ namespace render
             glTextureSubImage2D(texId, 0, 0, 0, w, h, GL_RGB, GL_FLOAT, getNoiseValues().data());
             glGenerateTextureMipmap(texId);
         }
+    };
+
+    std::unique_ptr<NoiseTexture> m_noiseTex;
+
+    void reserveNoiseTexture() {
+        if (!m_noiseTex) {
+            m_noiseTex = std::make_unique<NoiseTexture>();
+            m_noiseTex->prepare();
+        }
+        m_noiseTex->m_usageCount++;
+    }
+
+    void releaseNoiseTexture() {
+        if (m_noiseTex) {
+            m_noiseTex->m_usageCount--;
+            if (m_noiseTex->m_usageCount <= 0) {
+                m_noiseTex = nullptr;
+            }
+        }
+    }
+
+    NoiseTexture* getNoiseTexture()
+    {
+        return m_noiseTex.get();
+    }
+}
+
+namespace render
+{
+    PassSsao::PassSsao()
+        : Pass("PassSsao")
+    {
+        noise::reserveNoiseTexture();
+    }
+
+    PassSsao::~PassSsao()
+    {
+        noise::releaseNoiseTexture();
+    }
+
+    void PassSsao::prepare(const PrepareContext& ctx)
+    {
+        m_ssaoProgram = Program::get(ProgramRegistry::get().getProgram(SHADER_SSAO_PASS));
+        m_ssaoBlurProgram = Program::get(ProgramRegistry::get().getProgram(SHADER_SSAO_BLUR_PASS));
+
+        noise::getNoiseTexture()->prepare();
 
         m_ssaoBuffer.prepare();
     }
@@ -168,11 +208,11 @@ namespace render
 
         m_ssaoBuffer.bind(ctx);
 
-        m_ssaoProgram->setVec3Array(U_SAMPLES, getKernelValues());
+        //m_ssaoProgram->setVec3Array(U_SAMPLES, getKernelValues());
         m_ssaoProgram->bind();
         m_ssaoBuffer.m_buffer->setDrawBuffer(SsaoBuffer::ATT_SSAO_INDEX);
         m_ssaoBuffer.m_buffer->clearAttachment(SsaoBuffer::ATT_SSAO_INDEX);
-        m_noiseTex.bindTexture(UNIT_NOISE);
+        noise::getNoiseTexture()->m_tex.bindTexture(UNIT_NOISE);
         m_screenTri.draw();
 
         m_ssaoBlurProgram->bind();
@@ -186,5 +226,9 @@ namespace render
         stopScreenPass(ctx);
 
         return src;
+    }
+
+    const std::vector<glm::vec3>& PassSsao::getKernel() {
+        return getKernelValues();
     }
 }

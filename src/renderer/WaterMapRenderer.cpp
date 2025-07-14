@@ -366,6 +366,7 @@ bool WaterMapRenderer::render(
             reflectionBuffer->m_spec.width,
             reflectionBuffer->m_spec.height);
 
+        localCtx.m_useSsao = false;
         localCtx.m_useParticles = false;
         localCtx.m_useDecals = false;
         localCtx.m_useFog = false;
@@ -411,6 +412,7 @@ bool WaterMapRenderer::render(
             refractionBuffer->m_spec.width,
             refractionBuffer->m_spec.height);
 
+        localCtx.m_useSsao = false;
         localCtx.m_useParticles = false;
         localCtx.m_useDecals = false;
         localCtx.m_useFog = false;

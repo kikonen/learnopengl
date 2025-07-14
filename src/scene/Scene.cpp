@@ -42,6 +42,7 @@
 #include "render/RenderData.h"
 #include "render/NodeDraw.h"
 #include "render/NodeCollection.h"
+#include "render/PassSsao.h"
 
 #include "renderer/LayerRenderer.h"
 #include "renderer/ViewportRenderer.h"
@@ -796,6 +797,10 @@ void Scene::prepareUBOs(const RenderContext& ctx)
         // NOTE KI u_shadowPlanes not initialized
         0, // shadowCount
     };
+
+    for (int i = 0; auto& v : render::PassSsao::getKernel()) {
+        m_dataUBO.u_ssaoSamples[i++] = v;
+    }
 
     if (dbg) {
         float parallaxDepth = -1.f;

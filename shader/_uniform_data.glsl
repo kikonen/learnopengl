@@ -28,6 +28,8 @@ layout(std140, binding = UBO_DATA) uniform Data {
   int u_frame;
   int u_shadowCount;
 
+  vec3 u_ssaoSamples[64];
+
   float u_shadowCascade_0;
   float u_shadowCascade_1;
   float u_shadowCascade_2;

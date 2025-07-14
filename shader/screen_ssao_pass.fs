@@ -17,8 +17,6 @@ int kernelSize = 64;
 float radius = 0.5;
 float bias = 0.025;
 
-uniform vec3 u_samples[64];
-
 // tile noise texture over screen based on screen dimensions divided by noise size
 const vec2 u_noiseScale = vec2(u_bufferResolution.x / 4.0, u_bufferResolution.y / 4.0);
 
@@ -58,7 +56,7 @@ float calculateSsao(
   {
     // get sample position
     // from tangent to view-space
-    vec3 samplePos = TBN * u_samples[i];
+    vec3 samplePos = TBN * u_ssaoSamples[i];
     samplePos = viewPos + samplePos * radius;
 
     // project sample position (to sample texture) (to get position on screen/texture)

@@ -251,6 +251,7 @@ bool CubeMapRenderer::render(
             m_farPlane,
             m_curr->m_size, m_curr->m_size);
 
+        localCtx.m_useSsao = false;
         localCtx.m_useParticles = false;
         localCtx.m_useDecals = false;
         localCtx.m_useFog = false;
