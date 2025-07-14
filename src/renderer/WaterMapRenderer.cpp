@@ -372,16 +372,14 @@ bool WaterMapRenderer::render(
         localCtx.m_useEmission = false;
         localCtx.m_useBloom = false;
 
-        localCtx.copyShadowMatrixFrom(parentCtx);
-
         {
-            ClipPlaneUBO& clip = localCtx.m_clipPlanes.u_clipping[0];
+            ClipPlaneUBO& clip = localCtx.m_clipPlanesUBO.u_clipping[0];
 
             glm::vec3 normal = glm::vec3(0, (sdist > 0 ? 1 : -1), 0);
             float dist = (sdist > 0 ? -1 : 1) * planePos.y;
 
             clip.u_plane = glm::vec4(normal, dist);
-            localCtx.m_clipPlanes.u_clipCount = 1;
+            localCtx.m_clipPlanesUBO.u_clipCount = 1;
         }
 
         localCtx.updateUBOs();
@@ -418,25 +416,21 @@ bool WaterMapRenderer::render(
         localCtx.m_useEmission = false;
         localCtx.m_useBloom = false;
 
-        localCtx.copyShadowMatrixFrom(parentCtx);
-
         {
-            ClipPlaneUBO& clip = localCtx.m_clipPlanes.u_clipping[0];
+            ClipPlaneUBO& clip = localCtx.m_clipPlanesUBO.u_clipping[0];
 
             glm::vec3 normal = glm::vec3(0, (sdist > 0 ? -1 : 1), 0);
             float dist = (sdist > 0 ? 1 : -1) * planePos.y;
 
             clip.u_plane = glm::vec4(normal, dist);
 
-            localCtx.m_clipPlanes.u_clipCount = 1;
+            localCtx.m_clipPlanesUBO.u_clipCount = 1;
         }
 
         localCtx.updateUBOs();
 
         drawNodes(localCtx, refractionBuffer.get(), closest, false);
     }
-
-    parentCtx.updateUBOs();
 
     state.setEnabled(GL_CLIP_DISTANCE0, false);
 
@@ -456,8 +450,6 @@ void WaterMapRenderer::drawNodes(
 {
     // NOTE KI flush before touching clip distance
     ctx.validateRender("water-nodes");
-
-    ctx.updateClipPlanesUBO();
 
     //const glm::vec4 debugColor(0.9f, 0.3f, 0.3f, 0.0f);
     //targetBuffer->clear(ctx, GL_COLOR_BUFFER_BIT, debugColor);

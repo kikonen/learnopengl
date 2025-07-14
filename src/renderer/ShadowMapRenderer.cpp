@@ -7,6 +7,7 @@
 #include "shader/Shader.h"
 #include "shader/Uniform.h"
 #include "shader/ProgramRegistry.h"
+#include "shader/DataUBO.h"
 
 #include "kigl/GLState.h"
 
@@ -95,7 +96,9 @@ void ShadowMapRenderer::prepareRT(
     }
 }
 
-void ShadowMapRenderer::bind(const RenderContext& ctx)
+void ShadowMapRenderer::bind(
+    const RenderContext& ctx,
+    DataUBO& dataUbo)
 {
     const auto& dbg = *ctx.m_dbg;
 
@@ -111,15 +114,17 @@ void ShadowMapRenderer::bind(const RenderContext& ctx)
 
     const auto size = m_planes.size() - 1;
 
-    auto& ubo = ctx.m_dataUBO;
-    ubo.u_shadowCount = static_cast<int>(size);
+    {
+        auto& ubo = dataUbo;
+        ubo.u_shadowCount = static_cast<int>(size);
 
-    // NOTE KI plane defines range for cascade, u_shadowCascade_n tracks
-    // *END* of cascade range (thus plane[0] is ignored here)
-    ubo.u_shadowCascade_0 = size >= 1 ? m_planes[1] : 0;
-    ubo.u_shadowCascade_1 = size >= 2 ? m_planes[2] : 0;
-    ubo.u_shadowCascade_2 = size >= 3 ? m_planes[3] : 0;
-    ubo.u_shadowCascade_3 = size >= 4 ? m_planes[4] : 0;
+        // NOTE KI plane defines range for cascade, u_shadowCascade_n tracks
+        // *END* of cascade range (thus plane[0] is ignored here)
+        ubo.u_shadowCascade_0 = size >= 1 ? m_planes[1] : 0;
+        ubo.u_shadowCascade_1 = size >= 2 ? m_planes[2] : 0;
+        ubo.u_shadowCascade_2 = size >= 3 ? m_planes[3] : 0;
+        ubo.u_shadowCascade_3 = size >= 4 ? m_planes[4] : 0;
+    }
 }
 
 void ShadowMapRenderer::bindTexture(kigl::GLState& state)
@@ -168,9 +173,6 @@ bool ShadowMapRenderer::render(
         m_activeCascade = (m_activeCascade + 1) % m_cascades.size();
         m_rotateElapsedSecs = 0.f;
     }
-
-    ctx.updateMatricesUBO();
-    ctx.updateDataUBO();
 
     m_rendered = true;
 

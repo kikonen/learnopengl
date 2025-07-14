@@ -8,6 +8,7 @@
 
 #include texture_plane.glsl
 #include uniform_matrices.glsl
+#include uniform_camera.glsl
 #include uniform_data.glsl
 
 out VS_OUT {

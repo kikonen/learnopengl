@@ -17,10 +17,12 @@
 
 #include "UBO.h"
 #include "MatricesUBO.h"
+#include "CameraUBO.h"
 #include "DataUBO.h"
 #include "BufferInfoUBO.h"
 #include "ClipPlaneUBO.h"
-#include "LightUBO.h"
+#include "LightsUBO.h"
+#include "DebugUBO.h"
 #include "ProgramBind.h"
 #include "Shader.h"
 #include "Uniform.h"
@@ -423,7 +425,9 @@ void Program::initProgram(int programId) const
 
     // NOTE KI set UBOs only once for program
     validateUBO(programId, "Matrices", UBO_MATRICES, sizeof(MatricesUBO));
+    validateUBO(programId, "Camera", UBO_CAMERA, sizeof(CameraUBO));
     validateUBO(programId, "Data", UBO_DATA, sizeof(DataUBO));
+    validateUBO(programId, "Debug", UBO_DEBUG, sizeof(DebugUBO));
     validateUBO(programId, "BufferInfo", UBO_BUFFER_INFO, sizeof(BufferInfoUBO));
     validateUBO(programId, "Lights", UBO_LIGHTS, sizeof(LightsUBO));
     //validateUBO("Materials", UBO_MATERIALS, sizeof(MaterialsUBO));

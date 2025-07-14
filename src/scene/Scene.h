@@ -10,6 +10,9 @@
 
 #include "backend/gl/PerformanceCounters.h"
 
+#include "shader/DebugUBO.h"
+#include "shader/DataUBO.h"
+
 
 namespace event {
     class Dispatcher;
@@ -84,15 +87,15 @@ public:
     backend::gl::PerformanceCounters getCounters(bool clear) const;
     backend::gl::PerformanceCounters getCountersLocal(bool clear) const;
 
-    void draw(const RenderContext& ctx);
+    void render(const RenderContext& ctx);
 
-    void drawUi(const RenderContext& ctx);
-    void drawPlayer(const RenderContext& ctx);
-    void drawMain(const RenderContext& ctx);
-    void drawRear(const RenderContext& ctx);
-    void drawViewports(const RenderContext& ctx);
+    void renderUi(const RenderContext& ctx);
+    void renderPlayer(const RenderContext& ctx);
+    void renderMain(const RenderContext& ctx);
+    void renderRear(const RenderContext& ctx);
+    void renderViewports(const RenderContext& ctx);
 
-    void drawScene(
+    void renderScene(
         const RenderContext& ctx,
         LayerRenderer* layerRenderer);
 
@@ -108,6 +111,12 @@ public:
     {
         return m_collection.get();
     }
+
+    void prepareUBOs(const RenderContext& ctx);
+    void updateUBOs() const;
+    void updateDataUBO() const;
+    void updateDebugUBO() const;
+    void updateLightsUBO() const;
 
 public:
     std::shared_ptr<Viewport> m_uiViewport{ nullptr };
@@ -129,10 +138,12 @@ protected:
 
 private:
     bool m_loaded{ false };
+    std::shared_ptr<std::atomic<bool>> m_alive;
 
     std::unique_ptr<render::NodeCollection> m_collection;
 
-    std::shared_ptr<std::atomic<bool>> m_alive;
+    DataUBO m_dataUBO;
+    DebugUBO m_debugUBO;
 
     std::unique_ptr<LayerRenderer> m_uiRenderer{ nullptr };
     std::unique_ptr<LayerRenderer> m_playerRenderer{ nullptr };

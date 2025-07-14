@@ -304,8 +304,6 @@ bool MirrorMapRenderer::render(
         localCtx.m_useEmission = false;
         localCtx.m_useBloom = false;
 
-        localCtx.copyShadowMatrixFrom(parentCtx);
-
         //ClipPlaneUBO& clip = localCtx.m_clipPlanes.clipping[0];
         ////clip.enabled = true;
         //clip.plane = glm::vec4(planePos, 0);
@@ -317,8 +315,6 @@ bool MirrorMapRenderer::render(
 
         //ctx.updateClipPlanesUBO();
     }
-
-    parentCtx.updateUBOs();
 
     m_prevIndex = m_currIndex;
     m_currIndex = (m_currIndex + 1) % m_bufferCount;

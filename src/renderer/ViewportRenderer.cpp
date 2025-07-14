@@ -94,14 +94,12 @@ void ViewportRenderer::render(
     const RenderContext& parentCtx,
     render::FrameBuffer* destinationBuffer)
 {
-    RenderContext ctx(parentCtx);
-    ctx.m_forceLineMode = false;
-    ctx.bindDefaults();
+    RenderContext localCtx(parentCtx);
+    localCtx.m_forceLineMode = false;
+    localCtx.bindDefaults();
 
-    drawViewports(ctx);
-    blitWindow(ctx, destinationBuffer);
-
-    parentCtx.bindDefaults();
+    drawViewports(localCtx);
+    blitWindow(localCtx, destinationBuffer);
 }
 
 void ViewportRenderer::drawViewports(

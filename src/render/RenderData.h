@@ -1,10 +1,13 @@
 #pragma once
 
-#include "kigl/GLSyncQueue.h"
+#include "kigl/GLBuffer.h"
+
+#include "shader/LightsUBO.h"
 
 class Registry;
 
 struct MatricesUBO;
+struct CameraUBO;
 struct DataUBO;
 struct DebugUBO;
 struct BufferInfoUBO;
@@ -25,26 +28,23 @@ namespace render {
             bool useFenceDebug,
             bool debug);
 
-        void bind();
-        void update();
-
         void updateMatrices(const MatricesUBO& data);
+        void updateCamera(const CameraUBO& data);
         void updateData(const DataUBO& data);
         void updateDebug(const DebugUBO& data);
         void updateBufferInfo(const BufferInfoUBO& data);
         void updateClipPlanes(const ClipPlanesUBO& data);
         void updateLights(NodeCollection* collection);
 
-    public:
-
     private:
-        std::unique_ptr<LightsUBO> m_lightsUbo;
+        LightsUBO m_lightsUBO;
 
-        std::unique_ptr<kigl::GLSyncQueue<MatricesUBO>> m_matrices;
-        std::unique_ptr<kigl::GLSyncQueue<DataUBO>> m_data;
-        std::unique_ptr<kigl::GLSyncQueue<DebugUBO>> m_debug;
-        std::unique_ptr<kigl::GLSyncQueue<BufferInfoUBO>> m_bufferInfo;
-        std::unique_ptr<kigl::GLSyncQueue<ClipPlanesUBO>> m_clipPlanes;
-        std::unique_ptr<kigl::GLSyncQueue<LightsUBO>> m_lights;
+        kigl::GLBuffer m_matricesBuffer;
+        kigl::GLBuffer m_cameraBuffer;
+        kigl::GLBuffer m_dataBuffer;
+        kigl::GLBuffer m_debugBuffer;
+        kigl::GLBuffer m_bufferInfoBuffer;
+        kigl::GLBuffer m_clipPlanesBuffer;
+        kigl::GLBuffer m_lightsBuffer;
     };
 }

@@ -8,8 +8,9 @@
 #include ssbo_socket_transforms.glsl
 
 #include uniform_matrices.glsl
-#include uniform_buffer_info.glsl
+#include uniform_camera.glsl
 #include uniform_data.glsl
+#include uniform_buffer_info.glsl
 
 layout (location = ATTR_POS) in vec3 a_pos;
 layout (location = ATTR_FONT_ATLAS_TEX) in vec2 a_atlasCoord;

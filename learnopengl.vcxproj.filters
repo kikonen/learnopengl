@@ -1565,7 +1565,7 @@
     <ClInclude Include="src\render\RenderData.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\shader\LightUBO.h">
+    <ClInclude Include="src\shader\LightsUBO.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\shader\DataUBO.h">
@@ -2871,6 +2871,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\engine\assets_loader_util.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\shader\CameraUBO.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

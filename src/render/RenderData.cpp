@@ -2,15 +2,14 @@
 
 #include "shader/UBO.h"
 #include "shader/MatricesUBO.h"
+#include "shader/CameraUBO.h"
 #include "shader/DataUBO.h"
 #include "shader/DebugUBO.h"
 #include "shader/BufferInfoUBO.h"
 #include "shader/ClipPlaneUBO.h"
-#include "shader/LightUBO.h"
+#include "shader/LightsUBO.h"
 
 #include "material/ImageTexture.h"
-
-#include "kigl/GLSyncQueue_impl.h"
 
 #include "model/Node.h"
 #include "component/Light.h"
@@ -26,8 +25,14 @@ namespace {
 
 namespace render {
     RenderData::RenderData()
+        : m_matricesBuffer{ "matrices_ubo" },
+        m_cameraBuffer{ "camera_ubo" },
+        m_dataBuffer{ "data_ubo" },
+        m_debugBuffer{ "debug_ubo" },
+        m_bufferInfoBuffer{ "buffer_info_ubo" },
+        m_clipPlanesBuffer{ "clip_planes_ubo" },
+        m_lightsBuffer{ "lights_ubo" }
     {
-        m_lightsUbo = std::make_unique<LightsUBO>();
     }
 
     void RenderData::prepare(
@@ -40,139 +45,73 @@ namespace render {
         int bufferAlignment;
         glGetIntegerv(GL_UNIFORM_BUFFER_OFFSET_ALIGNMENT, &bufferAlignment);
 
-        m_matrices = std::make_unique<kigl::GLSyncQueue<MatricesUBO>>(
-            "matrices_ubo",
-            1,
-            RENDER_DATA_BUFFER_COUNT,
-            useMapped,
-            useInvalidate,
-            useFence,
-            useFenceDebug);
+        m_matricesBuffer.create();
+        m_matricesBuffer.initEmpty(sizeof(MatricesUBO), GL_DYNAMIC_STORAGE_BIT);
 
-        m_data = std::make_unique<kigl::GLSyncQueue<DataUBO>>(
-            "data_ubo",
-            1,
-            RENDER_DATA_BUFFER_COUNT,
-            useMapped,
-            useInvalidate,
-            useFence,
-            useFenceDebug);
+        m_cameraBuffer.create();
+        m_cameraBuffer.initEmpty(sizeof(CameraUBO), GL_DYNAMIC_STORAGE_BIT);
 
-        m_debug = std::make_unique<kigl::GLSyncQueue<DebugUBO>>(
-            "debug_ubo",
-            1,
-            RENDER_DATA_BUFFER_COUNT,
-            useMapped,
-            useInvalidate,
-            useFence,
-            useFenceDebug);
+        m_dataBuffer.create();
+        m_dataBuffer.initEmpty(sizeof(DataUBO), GL_DYNAMIC_STORAGE_BIT);
 
-        m_bufferInfo = std::make_unique<kigl::GLSyncQueue<BufferInfoUBO>>(
-            "buffer_info_ubo",
-            1,
-            RENDER_DATA_BUFFER_COUNT,
-            useMapped,
-            useInvalidate,
-            useFence,
-            useFenceDebug);
+        m_debugBuffer.create();
+        m_debugBuffer.initEmpty(sizeof(DebugUBO), GL_DYNAMIC_STORAGE_BIT);
 
-        m_clipPlanes = std::make_unique<kigl::GLSyncQueue<ClipPlanesUBO>>(
-            "cliplanes_ubo",
-            1,
-            RENDER_DATA_BUFFER_COUNT,
-            useMapped,
-            useInvalidate,
-            useFence,
-            useFenceDebug);
+        m_bufferInfoBuffer.create();
+        m_bufferInfoBuffer.initEmpty(sizeof(BufferInfoUBO), GL_DYNAMIC_STORAGE_BIT);
 
-        m_lights = std::make_unique<kigl::GLSyncQueue<LightsUBO>>(
-            "lights_ubo",
-            1,
-            RENDER_DATA_BUFFER_COUNT,
-            useMapped,
-            useInvalidate,
-            useFence,
-            useFenceDebug);
+        m_clipPlanesBuffer.create();
+        m_clipPlanesBuffer.initEmpty(sizeof(ClipPlanesUBO), GL_DYNAMIC_STORAGE_BIT);
 
-        m_matrices->prepare(bufferAlignment, debug);
-        m_data->prepare(bufferAlignment, debug);
-        m_debug->prepare(bufferAlignment, debug);
-        m_bufferInfo->prepare(bufferAlignment, debug);
-        m_clipPlanes->prepare(bufferAlignment, debug);
-        m_lights->prepare(bufferAlignment, debug);
-
-        // NOTE KI m_textures *NOT* needede any longer
-        // => 64bit index stored directly in material
-        // Textures
-        // OpenGL Superbible, 7th Edition, page 552
-        // https://sites.google.com/site/john87connor/indirect-rendering/2-a-using-bindless-textures
-        // https://www.khronos.org/opengl/wiki/Bindless_Texture
-        // https://www.geeks3d.com/20140704/tutorial-introduction-to-opengl-4-3-shader-storage-buffers-objects-ssbo-demo/        //glGenBuffers(1, &ssbo);
-        //m_textures.prepare(1, false);
-    }
-
-    void RenderData::bind()
-    {
-        //MatricesUBO& ubo = m_matrices.data();
-
-        //m_matrices.bind(UBO_MATRICES, false, 1);
-        //m_data.bind(UBO_DATA, false, 1);
-        //m_bufferInfo.bind(UBO_BUFFER_INFO, false, 1);
-        //m_clipPlanes.bind(UBO_CLIP_PLANES, false, 1);
-        //m_lights.bind(UBO_LIGHTS, false, 1);
-
-        //m_textures.m_buffer.bind(UBO_TEXTURES);
-    }
-
-    void RenderData::update()
-    {
-        //updateImageTextures();
-        //updateChannelTextures();
+        m_lightsBuffer.create();
+        m_lightsBuffer.initEmpty(sizeof(LightsUBO), GL_DYNAMIC_STORAGE_BIT);
     }
 
     void RenderData::updateMatrices(const MatricesUBO& data)
     {
-        m_matrices->set(0, data);
-        m_matrices->flush();
-        m_matrices->bindCurrentUBO(UBO_MATRICES, false, 1);
-        m_matrices->next();
+        constexpr auto sz = sizeof(MatricesUBO);
+        m_matricesBuffer.update(0, sz, &data);
+        m_matricesBuffer.bindUBORange(UBO_MATRICES, 0, sz);
+    }
+
+    void RenderData::updateCamera(const CameraUBO& data)
+    {
+        constexpr auto sz = sizeof(CameraUBO);
+        m_cameraBuffer.update(0, sz, &data);
+        m_cameraBuffer.bindUBORange(UBO_CAMERA, 0, sz);
     }
 
     void RenderData::updateData(const DataUBO& data)
     {
-        m_data->set(0, data);
-        m_data->flush();
-        m_data->bindCurrentUBO(UBO_DATA, false, 1);
-        m_data->next();
+        constexpr auto sz = sizeof(DataUBO);
+        m_dataBuffer.update(0, sz, &data);
+        m_dataBuffer.bindUBORange(UBO_DATA, 0, sz);
     }
 
     void RenderData::updateDebug(const DebugUBO& data)
     {
-        m_debug->set(0, data);
-        m_debug->flush();
-        m_debug->bindCurrentUBO(UBO_DEBUG, false, 1);
-        m_debug->next();
+        constexpr auto sz = sizeof(DebugUBO);
+        m_debugBuffer.update(0, sz, &data);
+        m_debugBuffer.bindUBORange(UBO_DEBUG, 0, sz);
     }
 
     void RenderData::updateBufferInfo(const BufferInfoUBO& data)
     {
-        m_bufferInfo->set(0, data);
-        m_bufferInfo->flush();
-        m_bufferInfo->bindCurrentUBO(UBO_BUFFER_INFO, false, 1);
-        m_bufferInfo->next();
+        constexpr auto sz = sizeof(BufferInfoUBO);
+        m_bufferInfoBuffer.update(0, sz, &data);
+        m_bufferInfoBuffer.bindUBORange(UBO_BUFFER_INFO, 0, sz);
     }
 
     void RenderData::updateClipPlanes(const ClipPlanesUBO& data)
     {
-        m_clipPlanes->set(0, data);
-        m_clipPlanes->flush();
-        m_clipPlanes->bindCurrentUBO(UBO_CLIP_PLANES, false, 1);
-        m_clipPlanes->next();
+        constexpr auto sz = sizeof(ClipPlanesUBO);
+        m_clipPlanesBuffer.update(0, sz, &data);
+        m_clipPlanesBuffer.bindUBORange(UBO_CLIP_PLANES, 0, sz);
     }
 
     void RenderData::updateLights(NodeCollection* collection)
     {
-        LightsUBO& lightsUbo = *m_lightsUbo;
+        auto & lightsUbo = m_lightsUBO;
 
         {
             auto& handle = collection->getDirLightNode();
@@ -229,9 +168,8 @@ namespace render {
             }
         }
 
-        m_lights->set(0, lightsUbo);
-        m_lights->flush();
-        m_lights->bindCurrentUBO(UBO_LIGHTS, false, 1);
-        m_lights->next();
+        constexpr auto sz = sizeof(LightsUBO);
+        m_lightsBuffer.update(0, sz, &m_lightsUBO);
+        m_lightsBuffer.bindUBORange(UBO_LIGHTS, 0, sz);
     }
 }

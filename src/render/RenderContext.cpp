@@ -16,10 +16,8 @@
 
 
 #include "registry/Registry.h"
-#include "registry/SelectionRegistry.h"
 
 #include "render/Camera.h"
-//#include "render/NodeDraw.h"
 #include "render/RenderData.h"
 #include "render/FrameBuffer.h"
 #include "render/Batch.h"
@@ -168,7 +166,6 @@ void RenderContext::prepareUBOs()
     auto* mainCamera = getMainCamera();
     const render::DebugContext* const dbg = m_dbg;
     auto& assets = m_assets;
-    auto& selectionRegistry = *m_registry->m_selectionRegistry;
 
     {
         m_matricesUBO.u_view = m_camera->getView();
@@ -205,7 +202,7 @@ void RenderContext::prepareUBOs()
         }
     }
 
-    m_dataUBO = {
+    m_cameraUBO = {
         m_camera->getWorldPosition(),
         //0,
         m_camera->getViewFront(),
@@ -223,95 +220,17 @@ void RenderContext::prepareUBOs()
         mainCamera->getViewRight(),
         //0,
 
-        dbg->m_fogColor,
-        // NOTE KI keep original screen resolution across the board
-        // => current buffer resolution is separately in bufferInfo UBO
-        //m_parent ? m_parent->m_resolution : m_resolution,
-
-        selectionRegistry.getSelectionMaterialIndex(),
-        selectionRegistry.getTagMaterialIndex(),
-
         m_camera->getNearPlane(),
         m_camera->getFarPlane(),
-
-        dbg->m_cubeMapEnabled,
-        assets.skyboxEnabled,
-
-        assets.environmentMapEnabled,
-
-        dbg->m_shadowVisual,
-        m_allowLineMode && dbg->m_forceLineMode,
-
-        dbg->m_fogStart,
-        dbg->m_fogEnd,
-        dbg->m_fogDensity,
-
-        dbg->m_effectBloomThreshold,
-
-        dbg->m_gammaCorrect,
-        dbg->m_hdrExposure,
-
-        static_cast<float>(m_clock.ts),
-        static_cast<int>(m_clock.frameCount),
-
-        // NOTE KI u_shadowPlanes not initialized
-        0, // shadowCount
     };
 
-    if (dbg) {
-        float parallaxDepth = -1.f;
-        if (!dbg->m_parallaxEnabled) {
-            parallaxDepth = 0;
-        }
-        else if (dbg->m_parallaxDebugEnabled) {
-            parallaxDepth = dbg->m_parallaxDebugDepth;
-        }
-
-        m_debugUBO = {
-            dbg->m_wireframeLineColor,
-            dbg->m_skyboxColor,
-            dbg->m_effectSsaoBaseColor,
-
-            dbg->m_wireframeOnly,
-            dbg->m_wireframeLineWidth,
-
-            dbg->m_entityId,
-            dbg->m_animationBoneIndex,
-            dbg->m_animationDebugBoneWeight,
-
-            m_useLight && dbg->m_lightEnabled,
-            m_useLight && dbg->m_normalMapEnabled,
-
-            dbg->m_skyboxColorEnabled,
-
-            dbg->m_effectSsaoEnabled,
-            dbg->m_effectSsaoBaseColorEnabled,
-
-            parallaxDepth,
-            dbg->m_parallaxMethod,
-        };
+    // NOTE KI keep clipping
+    if (m_parent) {
+        m_clipPlanesUBO = m_parent->m_clipPlanesUBO;
     }
     else {
-        m_debugUBO = {
-            { 0.f, 0.f, 0.f }, // Fog color,
-            { 0.f, 0.f, 0.f }, // skybox color,
-            { 0.f, 0.f, 0.f }, // SSAO color,
-            false, // wireframe only
-            0.f,   // wireframe line width
-            0,     // entityId
-            0,     // animation boneIndex
-            false, // animation boneDebug
-            true,  // light
-            true,  // normal map
-            false, // skybox color
-            true,  // SSAO
-            false, // SSAO color
-            0.f,   // parallax depth
-            0,     // parallax method
-        };
+        m_clipPlanesUBO.u_clipCount = 0;
     }
-
-    m_clipPlanes.u_clipCount = 0;
 }
 
 void RenderContext::bindDefaults() const
@@ -333,10 +252,8 @@ void RenderContext::updateUBOs() const
 {
     // https://stackoverflow.com/questions/49798189/glbuffersubdata-offsets-for-structs
     updateMatricesUBO();
-    updateDataUBO();
-    updateDebugUBO();
+    updateCameraUBO();
     updateClipPlanesUBO();
-    updateLightsUBO();
 }
 
 void RenderContext::updateMatricesUBO() const
@@ -345,28 +262,18 @@ void RenderContext::updateMatricesUBO() const
     m_renderData->updateMatrices(m_matricesUBO);
 }
 
-void RenderContext::updateDataUBO() const
+void RenderContext::updateCameraUBO() const
 {
-    validateRender("update_data_ubo");
-    m_renderData->updateData(m_dataUBO);
-}
-
-void RenderContext::updateDebugUBO() const
-{
-    validateRender("update_debug_ubo");
-    m_renderData->updateDebug(m_debugUBO);
+    validateRender("update_camera_ubo");
+    m_renderData->updateCamera(m_cameraUBO);
 }
 
 void RenderContext::updateClipPlanesUBO() const
 {
     validateRender("update_clip_planes_ubo");
-    m_renderData->updateClipPlanes(m_clipPlanes);
-}
-
-void RenderContext::updateLightsUBO() const
-{
-    validateRender("update_lights_ubo");
-    m_renderData->updateLights(m_collection);
+    if (true || m_clipPlanesUBO.u_clipCount > 0) {
+        m_renderData->updateClipPlanes(m_clipPlanesUBO);
+    }
 }
 
 void RenderContext::validateRender(std::string_view label) const

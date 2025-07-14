@@ -346,7 +346,7 @@ int SampleApp::onRender(const ki::RenderClock& clock)
         }
 
         scene->bind(ctx);
-        scene->draw(ctx);
+        scene->render(ctx);
         scene->unbind(ctx);
     }
 

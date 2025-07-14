@@ -10,7 +10,7 @@
 #include "asset/DynamicCubeMap.h"
 
 #include "shader/Shader.h"
-#include "shader/LightUBO.h"
+#include "shader/LightsUBO.h"
 
 #include "model/Viewport.h"
 
@@ -23,6 +23,7 @@
 #include "material/MaterialRegistry.h"
 
 #include "registry/Registry.h"
+#include "registry/SelectionRegistry.h"
 #include "registry/NodeRegistry.h"
 #include "registry/EntityRegistry.h"
 #include "registry/ViewportRegistry.h"
@@ -35,11 +36,11 @@
 
 #include "render/Camera.h"
 #include "render/DebugContext.h"
-#include "render/NodeDraw.h"
 #include "render/Batch.h"
 #include "render/RenderContext.h"
 #include "render/WindowBuffer.h"
 #include "render/RenderData.h"
+#include "render/NodeDraw.h"
 #include "render/NodeCollection.h"
 
 #include "renderer/LayerRenderer.h"
@@ -385,7 +386,6 @@ void Scene::updateRT(const UpdateContext& ctx)
 
     m_collection->updateRT(ctx);
     m_registry->updateRT(ctx);
-    m_renderData->update();
 
     m_batch->updateRT(ctx);
 }
@@ -492,19 +492,16 @@ void Scene::handleNodeRemoved(Node* node)
 
 void Scene::bind(const RenderContext& ctx)
 {
+    prepareUBOs(ctx);
+
     if (m_shadowMapRenderer->isEnabled()) {
-        m_shadowMapRenderer->bind(ctx);
+        m_shadowMapRenderer->bind(ctx, m_dataUBO);
     }
 
     NodeTypeRegistry::get().updateMaterials(ctx);
     NodeTypeRegistry::get().bindMaterials(ctx);
 
-    m_renderData->bind();
-
-    ctx.m_dataUBO.u_cubeMapExist = m_cubeMapRenderer->isEnabled() && m_cubeMapRenderer->isRendered();
-
-    ctx.bindDefaults();
-    ctx.updateUBOs();
+    m_dataUBO.u_cubeMapExist = m_cubeMapRenderer->isEnabled() && m_cubeMapRenderer->isRendered();
 
     m_batch->bind();
 }
@@ -524,7 +521,7 @@ backend::gl::PerformanceCounters Scene::getCountersLocal(bool clear) const
     return m_batch->getCountersLocal(clear);
 }
 
-void Scene::draw(const RenderContext& ctx)
+void Scene::render(const RenderContext& ctx)
 {
     const auto& assets = ctx.m_assets;
     auto& state = ctx.m_state;
@@ -536,10 +533,15 @@ void Scene::draw(const RenderContext& ctx)
 
     MaterialRegistry::get().renderMaterials(ctx);
 
+    updateUBOs();
+
     if (m_shadowMapRenderer->render(ctx)) {
         renderCount++;
         m_shadowMapRenderer->bindTexture(ctx.m_state);
     }
+
+    // NOTE KI update shadowmap UBO
+    updateDataUBO();
 
     state.setEnabled(GL_TEXTURE_CUBE_MAP_SEAMLESS, assets.cubeMapSeamless);
 
@@ -553,20 +555,32 @@ void Scene::draw(const RenderContext& ctx)
     if (!wasCubeMap && m_mirrorMapRenderer->render(ctx))
         renderCount++;
 
+    {
+        if (m_cubeMapRenderer->isEnabled()) {
+            m_cubeMapRenderer->bindTexture(ctx.m_state);
+        }
+        if (m_waterMapRenderer->isEnabled()) {
+            m_waterMapRenderer->bindTexture(ctx.m_state);
+        }
+        if (m_mirrorMapRenderer->isEnabled()) {
+            m_mirrorMapRenderer->bindTexture(ctx.m_state);
+        }
+    }
+
     // NOTE KI skip main render if special update cycle
     //if (!wasCubeMap) // && renderCount <= 2)
     {
-        // NOTE KI shadow map render causes first draw here to produce garbage
+        // NOTE KI shadow map render causes first render here to produce garbage
         // => was visible in UI fps_counter, which was first
-        drawPlayer(ctx);
-        drawMain(ctx);
-        drawRear(ctx);
-        drawUi(ctx);
+        renderPlayer(ctx);
+        renderMain(ctx);
+        renderRear(ctx);
+        renderUi(ctx);
     }
-    drawViewports(ctx);
+    renderViewports(ctx);
 }
 
-void Scene::drawUi(const RenderContext& parentCtx)
+void Scene::renderUi(const RenderContext& parentCtx)
 {
     const auto* layer = LayerInfo::findLayer(LAYER_UI);
     if (!layer || !layer->m_enabled) return;
@@ -613,17 +627,10 @@ void Scene::drawUi(const RenderContext& parentCtx)
 
     localCtx.copyShadowMatrixFrom(parentCtx);
 
-    localCtx.prepareUBOs();
-    localCtx.updateUBOs();
-    localCtx.bindDefaults();
-
-    drawScene(localCtx, m_uiRenderer.get());
-
-    parentCtx.updateUBOs();
-    parentCtx.bindDefaults();
+    renderScene(localCtx, m_uiRenderer.get());
 }
 
-void Scene::drawPlayer(const RenderContext& parentCtx)
+void Scene::renderPlayer(const RenderContext& parentCtx)
 {
     const auto* layer = LayerInfo::findLayer(LAYER_PLAYER);
     if (!layer || !layer->m_enabled) return;
@@ -643,12 +650,10 @@ void Scene::drawPlayer(const RenderContext& parentCtx)
     localCtx.m_useBloom = false;
     //localCtx.m_useScreenspaceEffects = false;
 
-    localCtx.copyShadowMatrixFrom(parentCtx);
-
-    drawScene(localCtx, m_playerRenderer.get());
+    renderScene(localCtx, m_playerRenderer.get());
 }
 
-void Scene::drawMain(const RenderContext& parentCtx)
+void Scene::renderMain(const RenderContext& parentCtx)
 {
     const auto* layer = LayerInfo::findLayer(LAYER_MAIN);
     if (!layer || !layer->m_enabled) return;
@@ -661,14 +666,13 @@ void Scene::drawMain(const RenderContext& parentCtx)
         m_mainRenderer->m_buffer->m_spec.height);
 
     localCtx.m_layer = layer->m_index;
-    localCtx.copyShadowMatrixFrom(parentCtx);
 
     localCtx.m_allowDrawDebug = true;
-    drawScene(localCtx, m_mainRenderer.get());
+    renderScene(localCtx, m_mainRenderer.get());
 }
 
 // "back mirror" viewport
-void Scene::drawRear(const RenderContext& parentCtx)
+void Scene::renderRear(const RenderContext& parentCtx)
 {
     const auto* layer = LayerInfo::findLayer(LAYER_REAR);
     if (!layer || !layer->m_enabled) return;
@@ -698,43 +702,26 @@ void Scene::drawRear(const RenderContext& parentCtx)
 
     localCtx.m_layer = 0; // LayerInfo::LAYER_MAIN;
 
-    localCtx.copyShadowMatrixFrom(parentCtx);
-
-    localCtx.updateUBOs();
-
-    drawScene(localCtx, m_rearRenderer.get());
-
-    parentCtx.updateUBOs();
+    renderScene(localCtx, m_rearRenderer.get());
 }
 
-void Scene::drawViewports(const RenderContext& ctx)
+void Scene::renderViewports(const RenderContext& ctx)
 {
     if (m_viewportRenderer->isEnabled()) {
         m_viewportRenderer->render(ctx, m_windowBuffer.get());
     }
 }
 
-void Scene::drawScene(
+void Scene::renderScene(
     const RenderContext& ctx,
     LayerRenderer* layerRenderer)
 {
-    const auto& assets = ctx.m_assets;
+    if (layerRenderer->isEnabled()) {
+        ctx.updateUBOs();
+        ctx.bindDefaults();
 
-    if (m_cubeMapRenderer->isEnabled()) {
-        m_cubeMapRenderer->bindTexture(ctx.m_state);
-    }
-    if (m_waterMapRenderer->isEnabled()) {
-        m_waterMapRenderer->bindTexture(ctx.m_state);
-    }
-    if (m_mirrorMapRenderer->isEnabled()) {
-        m_mirrorMapRenderer->bindTexture(ctx.m_state);
-    }
-
-    {
         auto* fb = layerRenderer->m_buffer.get();
-        if (layerRenderer->isEnabled()) {
-            layerRenderer->render(ctx, fb);
-        }
+        layerRenderer->render(ctx, fb);
     }
 }
 
@@ -767,4 +754,121 @@ ki::node_id Scene::getObjectID(const RenderContext& ctx, float screenPosX, float
         return m_objectIdRenderer->getObjectId(ctx, screenPosX, screenPosY, m_mainViewport.get());
     }
     return 0;
+}
+
+void Scene::prepareUBOs(const RenderContext& ctx)
+{
+    //KI_INFO_OUT(fmt::format("ts: {}", m_data.u_time));
+    const render::DebugContext* const dbg = ctx.m_dbg;
+    auto& assets = ctx.m_assets;
+    auto& selectionRegistry = *m_registry->m_selectionRegistry;
+
+    m_dataUBO = {
+        dbg->m_fogColor,
+        // NOTE KI keep original screen resolution across the board
+        // => current buffer resolution is separately in bufferInfo UBO
+        //m_parent ? m_parent->m_resolution : m_resolution,
+
+        selectionRegistry.getSelectionMaterialIndex(),
+        selectionRegistry.getTagMaterialIndex(),
+
+        dbg->m_cubeMapEnabled,
+        assets.skyboxEnabled,
+
+        assets.environmentMapEnabled,
+
+        dbg->m_shadowVisual,
+        dbg->m_forceLineMode,
+
+        dbg->m_fogStart,
+        dbg->m_fogEnd,
+        dbg->m_fogDensity,
+
+        dbg->m_effectBloomThreshold,
+
+        dbg->m_gammaCorrect,
+        dbg->m_hdrExposure,
+
+        static_cast<float>(ctx.m_clock.ts),
+        static_cast<int>(ctx.m_clock.frameCount),
+
+        // NOTE KI u_shadowPlanes not initialized
+        0, // shadowCount
+    };
+
+    if (dbg) {
+        float parallaxDepth = -1.f;
+        if (!dbg->m_parallaxEnabled) {
+            parallaxDepth = 0;
+        }
+        else if (dbg->m_parallaxDebugEnabled) {
+            parallaxDepth = dbg->m_parallaxDebugDepth;
+        }
+
+        m_debugUBO = {
+            dbg->m_wireframeLineColor,
+            dbg->m_skyboxColor,
+            dbg->m_effectSsaoBaseColor,
+
+            dbg->m_wireframeOnly,
+            dbg->m_wireframeLineWidth,
+
+            dbg->m_entityId,
+            dbg->m_animationBoneIndex,
+            dbg->m_animationDebugBoneWeight,
+
+            dbg->m_lightEnabled,
+            dbg->m_normalMapEnabled,
+
+            dbg->m_skyboxColorEnabled,
+
+            dbg->m_effectSsaoEnabled,
+            dbg->m_effectSsaoBaseColorEnabled,
+
+            parallaxDepth,
+            dbg->m_parallaxMethod,
+        };
+    }
+    else {
+        m_debugUBO = {
+            { 0.f, 0.f, 0.f }, // Fog color,
+            { 0.f, 0.f, 0.f }, // skybox color,
+            { 0.f, 0.f, 0.f }, // SSAO color,
+            false, // wireframe only
+            0.f,   // wireframe line width
+            0,     // entityId
+            0,     // animation boneIndex
+            false, // animation boneDebug
+            true,  // light
+            true,  // normal map
+            false, // skybox color
+            true,  // SSAO
+            false, // SSAO color
+            0.f,   // parallax depth
+            0,     // parallax method
+        };
+    }
+}
+
+void Scene::updateUBOs() const
+{
+    // https://stackoverflow.com/questions/49798189/glbuffersubdata-offsets-for-structs
+    updateDataUBO();
+    updateDebugUBO();
+    updateLightsUBO();
+}
+
+void Scene::updateDataUBO() const
+{
+    m_renderData->updateData(m_dataUBO);
+}
+
+void Scene::updateDebugUBO() const
+{
+    m_renderData->updateDebug(m_debugUBO);
+}
+
+void Scene::updateLightsUBO() const
+{
+    m_renderData->updateLights(m_collection.get());
 }

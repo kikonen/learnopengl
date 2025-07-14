@@ -15,6 +15,7 @@ namespace render {
 
 class ShadowCascade;
 class Viewport;
+struct DataUBO;
 
 class ShadowMapRenderer final : public Renderer
 {
@@ -30,7 +31,9 @@ public:
 
     void bindTexture(kigl::GLState& state);
 
-    void bind(const RenderContext& ctx);
+    void bind(
+        const RenderContext& ctx,
+        DataUBO& dataUbo);
 
     bool render(
         const RenderContext& ctx);

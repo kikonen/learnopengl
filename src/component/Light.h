@@ -2,7 +2,7 @@
 
 #include <glm/glm.hpp>
 
-#include "shader/LightUBO.h"
+#include "shader/LightsUBO.h"
 
 #include "ki/size.h"
 #include "pool/NodeHandle.h"

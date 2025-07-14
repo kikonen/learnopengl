@@ -5,9 +5,8 @@
 #include "asset/LayerInfo.h"
 
 #include "shader/MatricesUBO.h"
-#include "shader/DataUBO.h"
+#include "shader/CameraUBO.h"
 #include "shader/ClipPlaneUBO.h"
-#include "shader/DebugUBO.h"
 
 #include "kigl/kigl.h"
 
@@ -85,10 +84,8 @@ public:
 
     void updateUBOs() const;
     void updateMatricesUBO() const;
-    void updateDataUBO() const;
-    void updateDebugUBO() const;
+    void updateCameraUBO() const;
     void updateClipPlanesUBO() const;
-    void updateLightsUBO() const;
 
     // Ensure context is in sane state for start rendering
     void validateRender(std::string_view label) const;
@@ -143,7 +140,6 @@ public:
 
     render::NodeCollection* const m_collection;
     render::RenderData* const m_renderData;
-    //render::NodeDraw* const m_nodeDraw;
     render::Batch* const m_batch;
 
     GLenum m_depthFunc;
@@ -162,10 +158,9 @@ public:
     render::Camera* const m_camera;
 
     mutable MatricesUBO m_matricesUBO;
-    mutable DataUBO m_dataUBO;
-    mutable DebugUBO m_debugUBO;
+    mutable CameraUBO m_cameraUBO;
 
-    mutable ClipPlanesUBO m_clipPlanes;
+    mutable ClipPlanesUBO m_clipPlanesUBO;
 
     uint8_t m_layer{ LAYER_NONE_INDEX };
 

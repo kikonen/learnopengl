@@ -3,6 +3,7 @@
 #include struct_material.glsl
 #include struct_resolved_material.glsl
 
+#include uniform_camera.glsl
 #include uniform_data.glsl
 #include ssbo_materials.glsl
 

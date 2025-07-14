@@ -259,8 +259,6 @@ bool CubeMapRenderer::render(
 
         bindTexture(localCtx.m_state);
 
-        localCtx.copyShadowMatrixFrom(parentCtx);
-
         localCtx.updateUBOs();
 
         auto targetBuffer = m_curr->asFrameBuffer(face);
@@ -272,8 +270,6 @@ bool CubeMapRenderer::render(
 
     //m_curr->unbind(mainCtx);
     m_prev.swap(m_curr);
-
-    parentCtx.updateUBOs();
 
     if (m_curr->m_rendered) {
         m_curr->m_updateFace = (m_curr->m_updateFace + 1) % 6;

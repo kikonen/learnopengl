@@ -24,6 +24,7 @@ layout (location = ATTR_TEX) in vec2 a_texCoord;
 #endif
 
 #include uniform_matrices.glsl
+#include uniform_camera.glsl
 #include uniform_data.glsl
 
 #ifdef USE_ALPHA

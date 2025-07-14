@@ -10,6 +10,7 @@ layout(vertices=3) out;
 #include ssbo_socket_transforms.glsl
 
 #include uniform_matrices.glsl
+#include uniform_camera.glsl
 #include uniform_data.glsl
 
 in VS_OUT {

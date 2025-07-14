@@ -197,19 +197,19 @@ void LayerRenderer::fillHighlightMask(
     const RenderContext& parentCtx,
     render::FrameBuffer* targetBuffer)
 {
-    RenderContext ctx{ "local", &parentCtx };
-    ctx.m_forceSolid = true;
+    RenderContext localCtx{ "local", &parentCtx };
+    localCtx.m_forceSolid = true;
 
-    const auto& assets = ctx.m_assets;
+    const auto& assets = localCtx.m_assets;
 
     if (!assets.showHighlight) return;
     if (m_taggedCount == 0 && m_selectedCount == 0) return;
 
-    auto& selectionRegistry = *ctx.m_registry->m_selectionRegistry;
+    auto& selectionRegistry = *localCtx.m_registry->m_selectionRegistry;
 
-    auto& state = ctx.m_state;
+    auto& state = localCtx.m_state;
 
-    targetBuffer->bind(ctx);
+    targetBuffer->bind(localCtx);
 
     state.setStencil(kigl::GLStencilMode::fill(STENCIL_HIGHLIGHT));
 
@@ -230,7 +230,7 @@ void LayerRenderer::fillHighlightMask(
 
         render::CollectionRender collectionRender;
         collectionRender.drawProgram(
-            ctx,
+            localCtx,
             [this](const mesh::LodMesh& lodMesh) {
                 return lodMesh.m_selectionProgramId ? lodMesh.m_selectionProgramId : m_selectionProgram->m_id;
             },
@@ -241,7 +241,7 @@ void LayerRenderer::fillHighlightMask(
             drawContext.nodeSelector,
             drawContext.kindBits);
     }
-    ctx.m_batch->flush(ctx);
+    localCtx.m_batch->flush(localCtx);
 }
 
 // Render highlight over stencil masked nodes
@@ -249,19 +249,19 @@ void LayerRenderer::renderHighlight(
     const RenderContext& parentCtx,
     render::FrameBuffer* targetBuffer)
 {
-    RenderContext ctx{ "local", &parentCtx };
-    ctx.m_forceSolid = true;
+    RenderContext localCtx{ "local", &parentCtx };
+    localCtx.m_forceSolid = true;
 
-    const auto& assets = ctx.m_assets;
+    const auto& assets = localCtx.m_assets;
 
     if (!assets.showHighlight) return;
     if (m_taggedCount == 0 && m_selectedCount == 0) return;
 
-    auto& state = ctx.m_state;
+    auto& state = localCtx.m_state;
 
-    auto& selectionRegistry = *ctx.m_registry->m_selectionRegistry;
+    auto& selectionRegistry = *localCtx.m_registry->m_selectionRegistry;
 
-    targetBuffer->bind(ctx);
+    targetBuffer->bind(localCtx);
 
     state.setEnabled(GL_DEPTH_TEST, false);
     state.setStencil(kigl::GLStencilMode::except(STENCIL_HIGHLIGHT));
@@ -294,7 +294,7 @@ void LayerRenderer::renderHighlight(
         // draw all selected nodes with stencil
         render::CollectionRender collectionRender;
         collectionRender.drawProgram(
-            ctx,
+            localCtx,
             [this, shift](const mesh::LodMesh& lodMesh) {
                 return lodMesh.m_selectionProgramId ? lodMesh.m_selectionProgramId : m_selectionProgram->m_id;
             },
@@ -304,7 +304,7 @@ void LayerRenderer::renderHighlight(
             },
             drawContext.nodeSelector,
             drawContext.kindBits);
-        ctx.m_batch->flush(ctx);
+        localCtx.m_batch->flush(localCtx);
     }
 
     state.setEnabled(GL_DEPTH_TEST, true);

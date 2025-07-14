@@ -857,6 +857,7 @@
     <ClInclude Include="src\script\binding\LuaPhysics.h" />
     <ClInclude Include="src\script\binding\LuaRayHit.h" />
     <ClInclude Include="src\script\binding\LuaUtil.h" />
+    <ClInclude Include="src\shader\CameraUBO.h" />
     <ClInclude Include="src\shader\DebugUBO.h" />
     <ClInclude Include="src\material\MaterialFlags.h" />
     <ClInclude Include="src\material\TextureType.h" />
@@ -1070,7 +1071,7 @@
     <ClInclude Include="src\asset\FrustumNew.h" />
     <ClInclude Include="src\shader\DataUBO.h" />
     <ClInclude Include="src\mesh\vao\IndexEntry.h" />
-    <ClInclude Include="src\shader\LightUBO.h" />
+    <ClInclude Include="src\shader\LightsUBO.h" />
     <ClInclude Include="src\material\MaterialSSBO.h" />
     <ClInclude Include="src\shader\MatricesUBO.h" />
     <ClInclude Include="src\mesh\vao\TexturedVAO.h" />

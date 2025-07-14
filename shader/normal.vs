@@ -14,6 +14,7 @@ layout (location = ATTR_TANGENT) in vec3 a_tangent;
 #include ssbo_socket_transforms.glsl
 
 #include uniform_matrices.glsl
+#include uniform_camera.glsl
 #include uniform_data.glsl
 
 out VS_OUT {

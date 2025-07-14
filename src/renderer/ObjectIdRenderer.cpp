@@ -168,14 +168,14 @@ void ObjectIdRenderer::render(
 
 void ObjectIdRenderer::drawNodes(const RenderContext& parentCtx)
 {
-    RenderContext ctx{ "local", &parentCtx };
-    ctx.m_forceSolid = true;
+    RenderContext localCtx{ "local", &parentCtx };
+    localCtx.m_forceSolid = true;
 
-    auto& state = ctx.m_state;
+    auto& state = localCtx.m_state;
 
     state.setEnabled(GL_DEPTH_TEST, true);
 
-    ctx.bindDefaults();
+    localCtx.bindDefaults();
 
     m_idBuffer->clearAll();
 
@@ -187,7 +187,7 @@ void ObjectIdRenderer::drawNodes(const RenderContext& parentCtx)
 
         render::CollectionRender collectionRender;
         collectionRender.drawProgram(
-            ctx,
+            localCtx,
             [this](const mesh::LodMesh& lodMesh) {
                 if (lodMesh.m_flags.tessellation) return (ki::program_id)nullptr;
                 return lodMesh.m_idProgramId ? lodMesh.m_idProgramId : m_idProgramId;
@@ -197,5 +197,5 @@ void ObjectIdRenderer::drawNodes(const RenderContext& parentCtx)
             drawContext.kindBits);
     }
 
-    ctx.m_batch->flush(ctx);
+    localCtx.m_batch->flush(localCtx);
 }

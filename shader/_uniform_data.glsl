@@ -1,21 +1,8 @@
 layout(std140, binding = UBO_DATA) uniform Data {
-  vec3 u_cameraPos;
-  vec3 u_cameraFront;
-  vec3 u_cameraUp;
-  vec3 u_cameraRight;
-
-  vec3 u_mainCameraPos;
-  vec3 u_mainCameraFront;
-  vec3 u_mainCameraUp;
-  vec3 u_mainCameraRight;
-
   vec4 u_fogColor;
 
   uint u_selectionMaterialIndex;
   uint u_tagMaterialIndex;
-
-  float u_nearPlane;
-  float u_farPlane;
 
   bool u_cubeMapEnabled;
 
@@ -46,6 +33,6 @@ layout(std140, binding = UBO_DATA) uniform Data {
   float u_shadowCascade_2;
   float u_shadowCascade_3;
 
-  int pad1;
-  int pad2;
+  // int pad1;
+  // int pad2;
 };
