@@ -157,12 +157,21 @@ void ObjectIdRenderer::updateRT(const UpdateViewContext& ctx)
 void ObjectIdRenderer::render(
     const RenderContext& ctx)
 {
-    RenderContext idCtx("OBJECT_ID", &ctx, ctx.m_camera, m_idBuffer->m_spec.width, m_idBuffer->m_spec.height);
-    idCtx.m_forceSolid = true;
+    RenderContext localCtx(
+        "OBJECT_ID",
+        &ctx,
+        ctx.m_camera,
+        m_idBuffer->m_spec.width,
+        m_idBuffer->m_spec.height);
 
-    m_idBuffer->bind(idCtx);
+    localCtx.m_forceSolid = true;
 
-    drawNodes(idCtx);
+    localCtx.updateUBOs();
+    localCtx.bindDefaults();
+
+    m_idBuffer->bind(localCtx);
+
+    drawNodes(localCtx);
     m_idBuffer->unbind(ctx);
 }
 
