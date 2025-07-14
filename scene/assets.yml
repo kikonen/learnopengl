@@ -200,6 +200,8 @@ assets:
   cube_map_render_frame_step: 6
 
   skybox_enabled: true
+  skybox_color_enabled: false
+  skybox_color: [1, 0, 1]
   skybox_size: 1024
 
   environment_map_enabled: true
