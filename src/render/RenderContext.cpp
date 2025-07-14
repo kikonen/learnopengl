@@ -168,33 +168,34 @@ void RenderContext::prepareUBOs()
     auto& assets = m_assets;
 
     {
-        m_matricesUBO.u_view = m_camera->getView();
-        m_matricesUBO.u_invView = glm::inverse(m_matricesUBO.u_view);
+        auto& matricesUBO = m_cameraUBO;
+        matricesUBO.u_view = m_camera->getView();
+        matricesUBO.u_invView = glm::inverse(matricesUBO.u_view);
 
-        m_matricesUBO.u_projection = m_camera->getProjection();
-        m_matricesUBO.u_invProjection = glm::inverse(m_matricesUBO.u_projection);
+        matricesUBO.u_projection = m_camera->getProjection();
+        matricesUBO.u_invProjection = glm::inverse(matricesUBO.u_projection);
 
-        m_matricesUBO.u_projected = m_camera->getProjected();
+        matricesUBO.u_projected = m_camera->getProjected();
 
-        m_matricesUBO.u_mainProjected = m_parent ? m_parent->m_camera->getProjected() : m_camera->getProjected();
+        matricesUBO.u_mainProjected = m_parent ? m_parent->m_camera->getProjected() : m_camera->getProjected();
 
-        m_matricesUBO.u_viewportMatrix = util::getViewportMatrix(m_parent ? m_parent->m_resolution : m_resolution);
+        matricesUBO.u_viewportMatrix = util::getViewportMatrix(m_parent ? m_parent->m_resolution : m_resolution);
 
         {
             // https://www.rioki.org/2013/03/07/glsl-skybox.html
             // NOTE KI remove translation from the view matrix for skybox
-            glm::mat4 m = m_matricesUBO.u_view;
+            glm::mat4 m = matricesUBO.u_view;
             m[3][0] = 0.f;
             m[3][1] = 0.f;
             m[3][2] = 0.f;
 
-            m_matricesUBO.u_viewSkybox = glm::inverse(m) * glm::inverse(m_matricesUBO.u_projection);
+            matricesUBO.u_viewSkybox = glm::inverse(m) * glm::inverse(matricesUBO.u_projection);
 
             const auto& planes = m_camera->getFrustumPlanes();
             std::copy(
                 std::begin(planes),
                 std::end(planes),
-                std::begin(m_matricesUBO.u_frustumPlanes));
+                std::begin(matricesUBO.u_frustumPlanes));
         }
 
         if (m_parent) {
@@ -202,27 +203,20 @@ void RenderContext::prepareUBOs()
         }
     }
 
-    m_cameraUBO = {
-        m_camera->getWorldPosition(),
-        //0,
-        m_camera->getViewFront(),
-        //0,
-        m_camera->getViewUp(),
-        //0,
-        m_camera->getViewRight(),
-        //0,
-        mainCamera->getWorldPosition(),
-        //0,
-        mainCamera->getViewFront(),
-        //0,
-        mainCamera->getViewUp(),
-        //0,
-        mainCamera->getViewRight(),
-        //0,
+    {
+        auto& cameraUBO = m_cameraUBO;
+        cameraUBO.u_cameraPos = m_camera->getWorldPosition();
+        cameraUBO.u_cameraFront = m_camera->getViewFront();
+        cameraUBO.u_cameraUp = m_camera->getViewUp();
+        cameraUBO.u_cameraRight = m_camera->getViewRight();
+        cameraUBO.u_mainCameraPos = mainCamera->getWorldPosition();
+        cameraUBO.u_mainCameraFront = mainCamera->getViewFront();
+        cameraUBO.u_mainCameraUp = mainCamera->getViewUp();
+        cameraUBO.u_mainCameraRight = mainCamera->getViewRight();
 
-        m_camera->getNearPlane(),
-        m_camera->getFarPlane(),
-    };
+        cameraUBO.u_nearPlane = m_camera->getNearPlane();
+        cameraUBO.u_farPlane = m_camera->getFarPlane();
+    }
 
     // NOTE KI keep clipping
     if (m_parent) {
@@ -251,15 +245,8 @@ void RenderContext::bindDefaults() const
 void RenderContext::updateUBOs() const
 {
     // https://stackoverflow.com/questions/49798189/glbuffersubdata-offsets-for-structs
-    updateMatricesUBO();
     updateCameraUBO();
-    updateClipPlanesUBO();
-}
-
-void RenderContext::updateMatricesUBO() const
-{
-    validateRender("update_matrices_ubo");
-    m_renderData->updateMatrices(m_matricesUBO);
+    //updateClipPlanesUBO();
 }
 
 void RenderContext::updateCameraUBO() const
@@ -291,9 +278,9 @@ void RenderContext::validateRender(std::string_view label) const
 void RenderContext::copyShadowMatrixFrom(const RenderContext& b)
 {
     std::copy(
-        std::begin(b.m_matricesUBO.u_shadow),
-        std::end(b.m_matricesUBO.u_shadow),
-        std::begin(m_matricesUBO.u_shadow));
+        std::begin(b.m_cameraUBO.u_shadow),
+        std::end(b.m_cameraUBO.u_shadow),
+        std::begin(m_cameraUBO.u_shadow));
 
     //std::copy(
     //    std::begin(b.m_matrices.u_shadowProjected),

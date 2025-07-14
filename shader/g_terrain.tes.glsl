@@ -11,6 +11,7 @@ layout(triangles, fractional_odd_spacing, ccw) in;
 #include ssbo_socket_transforms.glsl
 
 #include uniform_matrices.glsl
+#include uniform_camera.glsl
 #include uniform_clip_planes.glsl
 
 in TCS_OUT {

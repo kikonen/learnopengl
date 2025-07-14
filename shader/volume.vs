@@ -10,6 +10,7 @@ layout (location = ATTR_POS) in vec3 a_pos;
 #include ssbo_socket_transforms.glsl
 
 #include uniform_matrices.glsl
+#include uniform_camera.glsl
 
 out VS_OUT {
   vec3 worldPos;

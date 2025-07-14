@@ -383,6 +383,7 @@ bool WaterMapRenderer::render(
         }
 
         localCtx.updateUBOs();
+        localCtx.updateClipPlanesUBO();
 
         drawNodes(localCtx, reflectionBuffer.get(), closest, true);
     }
@@ -428,6 +429,7 @@ bool WaterMapRenderer::render(
         }
 
         localCtx.updateUBOs();
+        localCtx.updateClipPlanesUBO();
 
         drawNodes(localCtx, refractionBuffer.get(), closest, false);
     }

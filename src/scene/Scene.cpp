@@ -534,6 +534,7 @@ void Scene::render(const RenderContext& ctx)
     MaterialRegistry::get().renderMaterials(ctx);
 
     updateUBOs();
+    ctx.updateClipPlanesUBO();
 
     if (m_shadowMapRenderer->render(ctx)) {
         renderCount++;

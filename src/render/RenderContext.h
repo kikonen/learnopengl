@@ -4,7 +4,6 @@
 
 #include "asset/LayerInfo.h"
 
-#include "shader/MatricesUBO.h"
 #include "shader/CameraUBO.h"
 #include "shader/ClipPlaneUBO.h"
 
@@ -83,7 +82,6 @@ public:
     void bindDefaults() const;
 
     void updateUBOs() const;
-    void updateMatricesUBO() const;
     void updateCameraUBO() const;
     void updateClipPlanesUBO() const;
 
@@ -157,7 +155,6 @@ public:
 
     render::Camera* const m_camera;
 
-    mutable MatricesUBO m_matricesUBO;
     mutable CameraUBO m_cameraUBO;
 
     mutable ClipPlanesUBO m_clipPlanesUBO;

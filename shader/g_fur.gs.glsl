@@ -7,6 +7,7 @@ layout (triangle_strip, max_vertices = 64) out;
 #include struct_clip_plane.glsl
 
 #include uniform_matrices.glsl
+#include uniform_camera.glsl
 #include uniform_data.glsl
 #include uniform_clip_planes.glsl
 

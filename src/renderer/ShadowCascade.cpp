@@ -208,7 +208,7 @@ void ShadowCascade::bind(const RenderContext& ctx)
 
         const auto scaleBiasMatrix = translateMatrix * scaleMatrix;
 
-        ctx.m_matricesUBO.u_shadow[m_index] = scaleBiasMatrix * m_camera.getProjected();
+        ctx.m_cameraUBO.u_shadow[m_index] = scaleBiasMatrix * m_camera.getProjected();
         //ctx.m_matrices.u_shadow[m_index] = ctx.m_matrices.u_shadowProjected[m_index];
 
         //KI_INFO_OUT(fmt::format(
