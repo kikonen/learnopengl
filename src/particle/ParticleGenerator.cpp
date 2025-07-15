@@ -32,8 +32,7 @@ namespace particle {
     {
         if (m_requestedCount <= 0.f && m_pendingCount <= 0.f) return;
 
-        auto& ps = ParticleSystem::get();
-        //if (ps.isFull()) return;
+        auto& particleSystem = ParticleSystem::get();
 
         const auto& df = m_definition;
 
@@ -44,13 +43,15 @@ namespace particle {
 
         if (m_pendingCount < 1.f) return;
 
-        const int freespace = ps.getFreespace();
+        const int freespace = particleSystem.getFreespace();
         const int count = std::min(
             static_cast<int>(m_pendingCount),
             freespace);
 
         m_pendingCount -= count;
         if (count == 0) return;
+
+        if (!particleSystem.isEnabled()) return;
 
         const auto& state = node.getState();
         //glm::vec3 pos = state.getWorldPosition();
@@ -77,7 +78,7 @@ namespace particle {
                 particle.m_spriteSpeed = df.randomSpriteSpeed(rnd);
             }
 
-            if (!ps.addParticle(particle)) break;
+            if (!particleSystem.addParticle(particle)) break;
         }
     }
 }

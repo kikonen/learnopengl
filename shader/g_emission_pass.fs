@@ -1,6 +1,7 @@
 #version 460 core
 
 #include uniform_matrices.glsl
+#include uniform_camera.glsl
 #include uniform_data.glsl
 
 // https://www.khronos.org/opengl/wiki/Early_Fragment_Test

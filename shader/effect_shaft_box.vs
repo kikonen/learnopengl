@@ -94,6 +94,6 @@ void main() {
   vs_out.pos = a_pos;
   const mat4 invModel = inverse(modelMatrix);
   vs_out.invModel = invModel;
-  vs_out.cameraObjectPos = (invModel * vec4(u_cameraPos, 1)).xyz;
-  vs_out.cameraObjectFront = normalize((mat3(invModel) * u_cameraFront).xyz);
+  vs_out.cameraObjectPos = (invModel * vec4(u_cameraPos.xyz, 1)).xyz;
+  vs_out.cameraObjectFront = normalize((mat3(invModel) * u_cameraFront.xyz).xyz);
 }

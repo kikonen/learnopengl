@@ -18,19 +18,21 @@ layout(std140, binding = UBO_CAMERA) uniform Camera {
   // top, bottom, left, right, near, far
   vec4 u_frustum[6];
 
-  vec3 u_cameraPos;
-  vec3 u_cameraFront;
-  vec3 u_cameraUp;
-  vec3 u_cameraRight;
+  vec4 u_cameraPos;
+  vec4 u_cameraFront;
+  vec4 u_cameraUp;
+  vec4 u_cameraRight;
 
-  vec3 u_mainCameraPos;
-  vec3 u_mainCameraFront;
-  vec3 u_mainCameraUp;
-  vec3 u_mainCameraRight;
+  vec4 u_mainCameraPos;
+  vec4 u_mainCameraFront;
+  vec4 u_mainCameraUp;
+  vec4 u_mainCameraRight;
 
   float u_nearPlane;
   float u_farPlane;
 
+  bool u_cameraSsaoEnabled;
+
   int pad1;
-  int pad2;
+  // int pad2;
 };

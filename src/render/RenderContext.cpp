@@ -216,6 +216,8 @@ void RenderContext::prepareUBOs()
 
         cameraUBO.u_nearPlane = m_camera->getNearPlane();
         cameraUBO.u_farPlane = m_camera->getFarPlane();
+
+        cameraUBO.u_cameraSsaoEnabled = m_useSsao;
     }
 
     // NOTE KI keep clipping
@@ -252,15 +254,19 @@ void RenderContext::updateUBOs() const
 void RenderContext::updateCameraUBO() const
 {
     validateRender("update_camera_ubo");
+
+    {
+        auto& cameraUBO = m_cameraUBO;
+        cameraUBO.u_cameraSsaoEnabled = m_useSsao;
+    }
+
     m_renderData->updateCamera(m_cameraUBO);
 }
 
 void RenderContext::updateClipPlanesUBO() const
 {
     validateRender("update_clip_planes_ubo");
-    if (true || m_clipPlanesUBO.u_clipCount > 0) {
-        m_renderData->updateClipPlanes(m_clipPlanesUBO);
-    }
+    m_renderData->updateClipPlanes(m_clipPlanesUBO);
 }
 
 void RenderContext::validateRender(std::string_view label) const

@@ -7,7 +7,9 @@
 #include ssbo_instance_indeces.glsl
 
 #include texture_plane.glsl
+
 #include uniform_matrices.glsl
+#include uniform_camera.glsl
 
 out VS_OUT {
   vec2 texCoord;

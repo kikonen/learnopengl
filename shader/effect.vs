@@ -12,6 +12,7 @@ layout (location = ATTR_NORMAL) in vec3 a_normal;
 #include ssbo_instance_indeces.glsl
 
 #include uniform_matrices.glsl
+#include uniform_camera.glsl
 #include uniform_clip_planes.glsl
 
 out VS_OUT {

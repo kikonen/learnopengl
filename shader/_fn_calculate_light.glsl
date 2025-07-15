@@ -57,7 +57,7 @@ vec4 calculateLightPbr(
       roughness = 0;
       ao = 1;
     }
-    if (Debug.u_ssaoEnabled) {
+    if (u_cameraSsaoEnabled && Debug.u_ssaoEnabled) {
       ao = min(material.ssao, ao);
     }
 

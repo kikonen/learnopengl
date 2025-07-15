@@ -502,8 +502,6 @@ void Scene::bind(const RenderContext& ctx)
     NodeTypeRegistry::get().updateMaterials(ctx);
     NodeTypeRegistry::get().bindMaterials(ctx);
 
-    m_dataUBO.u_cubeMapExist = m_cubeMapRenderer->isEnabled() && m_cubeMapRenderer->isRendered();
-
     m_batch->bind();
 }
 
@@ -765,6 +763,10 @@ void Scene::prepareUBOs(const RenderContext& ctx)
     auto& assets = ctx.m_assets;
     auto& selectionRegistry = *m_registry->m_selectionRegistry;
 
+    auto cubeMapEnabled = dbg->m_cubeMapEnabled &&
+        m_cubeMapRenderer->isEnabled() &&
+        m_cubeMapRenderer->isRendered();
+
     m_dataUBO = {
         dbg->m_fogColor,
         // NOTE KI keep original screen resolution across the board
@@ -774,7 +776,7 @@ void Scene::prepareUBOs(const RenderContext& ctx)
         selectionRegistry.getSelectionMaterialIndex(),
         selectionRegistry.getTagMaterialIndex(),
 
-        dbg->m_cubeMapEnabled,
+        cubeMapEnabled,
         assets.skyboxEnabled,
 
         assets.environmentMapEnabled,
@@ -798,7 +800,8 @@ void Scene::prepareUBOs(const RenderContext& ctx)
         0, // shadowCount
     };
 
-    for (int i = 0; auto& v : render::PassSsao::getKernel()) {
+    for (int i = 0; const auto& v : render::PassSsao::getKernel()) {
+        if (i >= 64) break;
         m_dataUBO.u_ssaoSamples[i++] = v;
     }
 

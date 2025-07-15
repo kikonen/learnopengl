@@ -260,8 +260,6 @@ bool CubeMapRenderer::render(
 
         bindTexture(localCtx.m_state);
 
-        localCtx.updateUBOs();
-
         auto targetBuffer = m_curr->asFrameBuffer(face);
         drawNodes(localCtx, &targetBuffer, centerNode, debugColor);
     }
@@ -337,6 +335,9 @@ void CubeMapRenderer::drawNodes(
     if (m_mirrorMapRenderer->isEnabled() && renderedMirror) {
         m_mirrorMapRenderer->bindTexture(ctx.m_state);
     }
+
+    ctx.updateUBOs();
+    ctx.bindDefaults();
 
     // TODO KI to match special logic in CubeMapBuffer
     targetBuffer->bindFace();

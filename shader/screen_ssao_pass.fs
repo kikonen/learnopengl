@@ -56,7 +56,7 @@ float calculateSsao(
   {
     // get sample position
     // from tangent to view-space
-    vec3 samplePos = TBN * u_ssaoSamples[i];
+    vec3 samplePos = TBN * u_ssaoSamples[i].xyz;
     samplePos = viewPos + samplePos * radius;
 
     // project sample position (to sample texture) (to get position on screen/texture)

@@ -8,6 +8,7 @@
 #include ssbo_socket_transforms.glsl
 
 #include uniform_matrices.glsl
+#include uniform_camera.glsl
 
 layout (location = ATTR_POS) in vec3 a_pos;
 //layout (location = ATTR_NORMAL) in vec3 a_normal;

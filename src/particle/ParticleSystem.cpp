@@ -114,6 +114,8 @@ namespace particle {
 
     void ParticleSystem::updateWT(const UpdateContext& ctx)
     {
+        m_enabled = ctx.m_dbg.m_particleEnabled;
+
         if (!isEnabled()) return;
 
         preparePending();
@@ -134,17 +136,15 @@ namespace particle {
             m_particles.resize(size);
         }
 
-        if (ctx.m_dbg.m_particleEnabled) {
-            snapshotParticles();
-        }
+        snapshotParticles();
     }
 
     void ParticleSystem::updateRT(const UpdateContext& ctx)
     {
+        m_enabled = ctx.m_dbg.m_particleEnabled;
+
         if (!isEnabled()) return;
         if (!m_updateReady) return;
-
-        if (!ctx.m_dbg.m_particleEnabled) return;
 
         m_frameSkipCount++;
         if (m_frameSkipCount < 2) {
@@ -163,7 +163,7 @@ namespace particle {
             m_pending.size(),
             m_maxCount - m_particles.size());
 
-        if (count > 0) {
+        if (count > 0 && isEnabled()) {
             //KI_INFO_OUT(fmt::format("PS: pending={}, copy={}, size={}", m_pending.size(), count, m_particles.size()));
             m_particles.insert(m_particles.end(), m_pending.begin(), m_pending.begin() + count);
         }

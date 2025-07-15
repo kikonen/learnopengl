@@ -12,7 +12,7 @@ struct DataUBO {
     GLuint u_selectionMaterialIndex;
     GLuint u_tagMaterialIndex;
 
-    int u_cubeMapExist; // bool as 4 bytes
+    int u_cubeMapEnabled; // bool as 4 bytes
     int u_skyboxExist; // bool as 4 bytes
 
     int u_environmentMapExist; // bool as 4 bytes

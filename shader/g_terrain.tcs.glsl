@@ -136,7 +136,7 @@ void main()
     // => to avoid terrain bumping around when rotating in place
     //mat4 mvMatrix = u_viewMatrix * modelMatrix;
     mat4 mvMatrix = modelMatrix;
-    vec4 eyePos = vec4(u_cameraPos, 1.0);
+    vec4 eyePos = vec4(u_cameraPos.xyz, 1.0);
 
     vec4 eyePos00 = eyePos - mvMatrix * gl_in[0].gl_Position;
     vec4 eyePos01 = eyePos - mvMatrix * gl_in[1].gl_Position;

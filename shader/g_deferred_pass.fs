@@ -76,7 +76,7 @@ void main()
 
   const uint shadowIndex = calculateShadowIndex(viewPos);
 
-  const vec3 viewDir = normalize(u_mainCameraPos - worldPos);
+  const vec3 viewDir = normalize(u_mainCameraPos.xyz - worldPos);
 
   {
     material.diffuse = textureLod(g_albedo, texCoord, 0);

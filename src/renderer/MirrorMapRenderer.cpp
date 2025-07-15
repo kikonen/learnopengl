@@ -309,8 +309,6 @@ bool MirrorMapRenderer::render(
         ////clip.enabled = true;
         //clip.plane = glm::vec4(planePos, 0);
 
-        localCtx.updateUBOs();
-
         bindTexture(localCtx.m_state);
         drawNodes(localCtx, reflectionBuffer.get(), closest);
 
@@ -359,6 +357,9 @@ void MirrorMapRenderer::drawNodes(
     if (m_mirrorMapRenderer && m_mirrorMapRenderer->isEnabled() && renderedMirror) {
         m_mirrorMapRenderer->bindTexture(ctx.m_state);
     }
+
+    ctx.updateUBOs();
+    ctx.bindDefaults();
 
     //const glm::vec4 debugColor{ 0.9f, 0.0f, 0.9f, 0.0f };
     //targetBuffer->clear(ctx, GL_COLOR_BUFFER_BIT, debugColor);

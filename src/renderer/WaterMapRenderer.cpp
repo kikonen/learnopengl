@@ -383,9 +383,6 @@ bool WaterMapRenderer::render(
             localCtx.m_clipPlanesUBO.u_clipCount = 1;
         }
 
-        localCtx.updateUBOs();
-        localCtx.updateClipPlanesUBO();
-
         drawNodes(localCtx, reflectionBuffer.get(), closest, true);
     }
 
@@ -430,13 +427,11 @@ bool WaterMapRenderer::render(
             localCtx.m_clipPlanesUBO.u_clipCount = 1;
         }
 
-        localCtx.updateUBOs();
-        localCtx.updateClipPlanesUBO();
-
         drawNodes(localCtx, refractionBuffer.get(), closest, false);
     }
 
     state.setEnabled(GL_CLIP_DISTANCE0, false);
+    parentCtx.updateClipPlanesUBO();
 
     m_prevIndex = m_currIndex;
     m_currIndex = (m_currIndex + 1) % m_bufferCount;
@@ -454,6 +449,10 @@ void WaterMapRenderer::drawNodes(
 {
     // NOTE KI flush before touching clip distance
     ctx.validateRender("water-nodes");
+
+    ctx.updateUBOs();
+    ctx.bindDefaults();
+    ctx.updateClipPlanesUBO();
 
     //const glm::vec4 debugColor(0.9f, 0.3f, 0.3f, 0.0f);
     //targetBuffer->clear(ctx, GL_COLOR_BUFFER_BIT, debugColor);

@@ -74,7 +74,7 @@ void generateQuad(const int index)
   // https://ogldev.org/www/tutorial27/tutorial27.html
   vec3 pos = gl_in[0].gl_Position.xyz;
   vec3 scale = gs_in[index].scale * 2.0;
-  vec3 viewDir = normalize(u_cameraPos - pos);
+  vec3 viewDir = normalize(u_cameraPos.xyz - pos);
   vec3 up = vec3(0, 1, 0);
   vec3 right = cross(viewDir, up);
 
