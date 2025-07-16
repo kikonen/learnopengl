@@ -122,6 +122,8 @@ namespace render {
         float m_effectBloomThreshold{ 3.0 };
 
         bool m_particleEnabled{ true };
+        int m_particleMaxCount{ 100000 };
+
         bool m_decalEnabled{ true };
 
         std::string m_geometryType;

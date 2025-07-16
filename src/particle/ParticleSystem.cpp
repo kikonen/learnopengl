@@ -114,9 +114,13 @@ namespace particle {
 
     void ParticleSystem::updateWT(const UpdateContext& ctx)
     {
-        m_enabled = ctx.m_dbg.m_particleEnabled;
+        const auto& dbg = ctx.m_dbg;
+
+        m_enabled = dbg.m_particleEnabled;
 
         if (!isEnabled()) return;
+
+        m_maxCount = std::min<int>(dbg.m_particleMaxCount, MAX_BLOCK_COUNT * BLOCK_SIZE);
 
         preparePending();
 

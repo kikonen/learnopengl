@@ -183,7 +183,7 @@ namespace render
     void PassSsao::initRender(const RenderContext& ctx)
     {
         auto& state = ctx.m_state;
-        const auto& dbg = *ctx.m_dbg;
+        const auto& dbg = ctx.m_dbg;
 
         m_enabled = !(ctx.m_forceSolid || !ctx.m_useScreenspaceEffects) &&
             ctx.m_useSsao &&

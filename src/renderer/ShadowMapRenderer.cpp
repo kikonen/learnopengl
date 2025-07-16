@@ -100,7 +100,7 @@ void ShadowMapRenderer::bind(
     const RenderContext& ctx,
     DataUBO& dataUbo)
 {
-    const auto& dbg = *ctx.m_dbg;
+    const auto& dbg = ctx.m_dbg;
 
     // NOTE KI no shadows if no light
     if (!dbg.m_lightEnabled) return;
@@ -142,7 +142,7 @@ bool ShadowMapRenderer::render(
 
     if (!needRender(ctx)) return false;
 
-    const auto& dbg = *ctx.m_dbg;
+    const auto& dbg = ctx.m_dbg;
 
     // NOTE KI no shadows if no light
     if (!dbg.m_lightEnabled) return false;

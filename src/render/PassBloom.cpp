@@ -55,7 +55,7 @@ namespace render
 
     void PassBloom::initRender(const RenderContext& ctx)
     {
-        const auto& dbg = *ctx.m_dbg;
+        const auto& dbg = ctx.m_dbg;
 
         m_enabled = !ctx.m_forceSolid
             && ctx.m_useBloom

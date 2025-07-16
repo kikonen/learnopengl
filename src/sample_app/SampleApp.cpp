@@ -209,6 +209,8 @@ int SampleApp::onInit()
         dbg.m_effectBloomThreshold = assets.effectBloomThreshold;
 
         dbg.m_particleEnabled = assets.particleEnabled;
+        dbg.m_particleMaxCount = assets.particleMaxCount;
+
         dbg.m_decalEnabled = assets.decalEnabled;
     }
 
@@ -311,7 +313,7 @@ int SampleApp::onRender(const ki::RenderClock& clock)
             scene->m_registry.get(),
             size.x,
             size.y,
-            &m_dbg);
+            m_dbg);
 
         scene->updateViewRT(ctx);
     }
@@ -330,7 +332,7 @@ int SampleApp::onRender(const ki::RenderClock& clock)
         assets.farPlane,
         size.x,
         size.y,
-        &m_dbg);
+        m_dbg);
     {
         if (const auto* layer = LayerInfo::findLayer(LAYER_MAIN); layer) {
             ctx.m_layer = layer->m_index;

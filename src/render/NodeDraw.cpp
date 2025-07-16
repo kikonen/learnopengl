@@ -128,7 +128,7 @@ namespace render {
 
         {
             auto& state = ctx.m_state;
-            const auto& dbg = *ctx.m_dbg;
+            const auto& dbg = ctx.m_dbg;
 
             state.setStencil({});
         }

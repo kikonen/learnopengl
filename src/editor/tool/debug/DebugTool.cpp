@@ -124,7 +124,15 @@ namespace editor
             ImGui::Checkbox("Prepass depth enabled", &dbg.m_prepassDepthEnabled);
             ImGui::Checkbox("OIT enabled", &dbg.m_effectOitEnabled);
             ImGui::Checkbox("Emission enabled", &dbg.m_effectEmissionEnabled);
+        }
+
+        {
+            ImGui::Spacing();
+            ImGui::SeparatorText("Particles");
+            ImGui::Spacing();
+
             ImGui::Checkbox("Particle enabled", &dbg.m_particleEnabled);
+            ImGui::InputInt("Particle max", &dbg.m_particleMaxCount, 1000, 100000);
         }
 
         {

@@ -753,16 +753,16 @@ ki::node_id Scene::getObjectID(const RenderContext& ctx, float screenPosX, float
 void Scene::prepareUBOs(const RenderContext& ctx)
 {
     //KI_INFO_OUT(fmt::format("ts: {}", m_data.u_time));
-    const render::DebugContext* const dbg = ctx.m_dbg;
+    const render::DebugContext& dbg = ctx.m_dbg;
     auto& assets = ctx.m_assets;
     auto& selectionRegistry = *m_registry->m_selectionRegistry;
 
-    auto cubeMapEnabled = dbg->m_cubeMapEnabled &&
+    auto cubeMapEnabled = dbg.m_cubeMapEnabled &&
         m_cubeMapRenderer->isEnabled() &&
         m_cubeMapRenderer->isRendered();
 
     m_dataUBO = {
-        dbg->m_fogColor,
+        dbg.m_fogColor,
         // NOTE KI keep original screen resolution across the board
         // => current buffer resolution is separately in bufferInfo UBO
         //m_parent ? m_parent->m_resolution : m_resolution,
@@ -775,17 +775,17 @@ void Scene::prepareUBOs(const RenderContext& ctx)
 
         assets.environmentMapEnabled,
 
-        dbg->m_shadowVisual,
-        dbg->m_forceLineMode,
+        dbg.m_shadowVisual,
+        dbg.m_forceLineMode,
 
-        dbg->m_fogStart,
-        dbg->m_fogEnd,
-        dbg->m_fogDensity,
+        dbg.m_fogStart,
+        dbg.m_fogEnd,
+        dbg.m_fogDensity,
 
-        dbg->m_effectBloomThreshold,
+        dbg.m_effectBloomThreshold,
 
-        dbg->m_gammaCorrect,
-        dbg->m_hdrExposure,
+        dbg.m_gammaCorrect,
+        dbg.m_hdrExposure,
 
         static_cast<float>(ctx.m_clock.ts),
         static_cast<int>(ctx.m_clock.frameCount),
@@ -799,56 +799,37 @@ void Scene::prepareUBOs(const RenderContext& ctx)
         m_dataUBO.u_ssaoSamples[i++] = v;
     }
 
-    if (dbg) {
+    {
         float parallaxDepth = -1.f;
-        if (!dbg->m_parallaxEnabled) {
+        if (!dbg.m_parallaxEnabled) {
             parallaxDepth = 0;
         }
-        else if (dbg->m_parallaxDebugEnabled) {
-            parallaxDepth = dbg->m_parallaxDebugDepth;
+        else if (dbg.m_parallaxDebugEnabled) {
+            parallaxDepth = dbg.m_parallaxDebugDepth;
         }
 
         m_debugUBO = {
-            dbg->m_wireframeLineColor,
-            dbg->m_skyboxColor,
-            dbg->m_effectSsaoBaseColor,
+            dbg.m_wireframeLineColor,
+            dbg.m_skyboxColor,
+            dbg.m_effectSsaoBaseColor,
 
-            dbg->m_wireframeOnly,
-            dbg->m_wireframeLineWidth,
+            dbg.m_wireframeOnly,
+            dbg.m_wireframeLineWidth,
 
-            dbg->m_entityId,
-            dbg->m_animationBoneIndex,
-            dbg->m_animationDebugBoneWeight,
+            dbg.m_entityId,
+            dbg.m_animationBoneIndex,
+            dbg.m_animationDebugBoneWeight,
 
-            dbg->m_lightEnabled,
-            dbg->m_normalMapEnabled,
+            dbg.m_lightEnabled,
+            dbg.m_normalMapEnabled,
 
-            dbg->m_skyboxColorEnabled,
+            dbg.m_skyboxColorEnabled,
 
-            dbg->m_effectSsaoEnabled,
-            dbg->m_effectSsaoBaseColorEnabled,
+            dbg.m_effectSsaoEnabled,
+            dbg.m_effectSsaoBaseColorEnabled,
 
             parallaxDepth,
-            dbg->m_parallaxMethod,
-        };
-    }
-    else {
-        m_debugUBO = {
-            { 0.f, 0.f, 0.f }, // Fog color,
-            { 0.f, 0.f, 0.f }, // skybox color,
-            { 0.f, 0.f, 0.f }, // SSAO color,
-            false, // wireframe only
-            0.f,   // wireframe line width
-            0,     // entityId
-            0,     // animation boneIndex
-            false, // animation boneDebug
-            true,  // light
-            true,  // normal map
-            false, // skybox color
-            true,  // SSAO
-            false, // SSAO color
-            0.f,   // parallax depth
-            0,     // parallax method
+            dbg.m_parallaxMethod,
         };
     }
 }

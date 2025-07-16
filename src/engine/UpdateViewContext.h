@@ -25,12 +25,12 @@ public:
         Registry* registry,
         int width,
         int height,
-        const render::DebugContext* dbg);
+        const render::DebugContext& dbg);
 
 public:
     const Assets& m_assets;
 
-    const render::DebugContext* const m_dbg;
+    const render::DebugContext& m_dbg;
 
     const ki::RenderClock& m_clock;
 

@@ -85,7 +85,7 @@ namespace render
         const RenderContext& ctx)
     {
         auto& state = ctx.m_state;
-        const auto& dbg = *ctx.m_dbg;
+        const auto& dbg = ctx.m_dbg;
 
         m_gBuffer.m_buffer->resetDrawBuffers();
         m_gBuffer.clearAll();
@@ -210,7 +210,7 @@ namespace render
         const DrawContext& drawContext,
         const PassContext& src)
     {
-        const auto& dbg = *ctx.m_dbg;
+        const auto& dbg = ctx.m_dbg;
 
         startScreenPass(
             ctx,

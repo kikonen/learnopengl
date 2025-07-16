@@ -139,7 +139,7 @@ void WaterMapRenderer::prepareRT(
 
 void WaterMapRenderer::updateRT(const UpdateViewContext& parentCtx)
 {
-    const auto& dbg = *parentCtx.m_dbg;
+    const auto& dbg = parentCtx.m_dbg;
     m_enabled = dbg.m_waterMapEnabled;
 
     if (!isEnabled()) return;

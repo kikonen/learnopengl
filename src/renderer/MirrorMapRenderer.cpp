@@ -139,7 +139,7 @@ void MirrorMapRenderer::prepareRT(
 
 void MirrorMapRenderer::updateRT(const UpdateViewContext& parentCtx)
 {
-    const auto& dbg = *parentCtx.m_dbg;
+    const auto& dbg = parentCtx.m_dbg;
     m_enabled = dbg.m_mirrorMapEnabled;
 
     if (!isEnabled()) return;
@@ -337,7 +337,7 @@ void MirrorMapRenderer::drawNodes(
     Node* current)
 {
     const auto& assets = ctx.m_assets;
-    const auto& dbg = *ctx.m_dbg;
+    const auto& dbg = ctx.m_dbg;
 
     bool renderedWater{ false };
     bool renderedMirror{ false };

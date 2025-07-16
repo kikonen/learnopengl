@@ -48,7 +48,7 @@ namespace render
 
     bool Pass::updateSize(const UpdateViewContext& ctx, float bufferScale)
     {
-        const auto& dbg = *ctx.m_dbg;
+        const auto& dbg = ctx.m_dbg;
 
         const auto& res = ctx.m_resolution;
 

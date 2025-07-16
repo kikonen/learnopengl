@@ -167,7 +167,7 @@ void CubeMapRenderer::prepareRT(
 
 void CubeMapRenderer::updateRT(const UpdateViewContext& parentCtx)
 {
-    const auto& dbg = *parentCtx.m_dbg;
+    const auto& dbg = parentCtx.m_dbg;
     m_enabled = dbg.m_cubeMapEnabled;
 
     if (!isEnabled()) return;
@@ -318,7 +318,7 @@ void CubeMapRenderer::drawNodes(
     const glm::vec4& debugColor)
 {
     const auto& assets = ctx.m_assets;
-    const auto& dbg = *ctx.m_dbg;
+    const auto& dbg = ctx.m_dbg;
 
     bool renderedWater{ false };
     bool renderedMirror{ false };
