@@ -164,7 +164,7 @@ void RenderContext::prepareUBOs()
 {
     //KI_INFO_OUT(fmt::format("ts: {}", m_data.u_time));
     auto* mainCamera = getMainCamera();
-    const render::DebugContext& const dbg = m_dbg;
+    const render::DebugContext& dbg = m_dbg;
     auto& assets = m_assets;
 
     {
