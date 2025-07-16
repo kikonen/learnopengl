@@ -21,7 +21,7 @@ namespace kigl {
         }
 
         for (int i = 0; i < m_textureUnits.size(); i++) {
-            m_textureUnits[i] = 0;
+            m_textureUnits[i] = -1;
         }
 
         m_cullFace = -1;
@@ -143,6 +143,7 @@ namespace kigl {
         const GLuint textureID,
         bool force) noexcept
     {
+        assert(unitIndex >= 0 && unitIndex <= 127);
         //force = true;
 
         const auto curr = m_textureUnits[unitIndex];
@@ -171,6 +172,7 @@ namespace kigl {
     void GLState::invalidateTexture(
         const GLuint unitIndex) noexcept
     {
+        assert(unitIndex >= 0 && unitIndex <= 127);
         m_textureUnits[unitIndex] = -1;
     }
 

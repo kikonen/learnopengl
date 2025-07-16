@@ -400,28 +400,24 @@ void AssetsLoader::loadAssets(
                 data.mirrorMapEnabled = readBool(v);
                 continue;
             }
-            if (k == "mirror_reflection_size") {
-                data.mirrorReflectionSize = readInt(v);
+            if (k == "mirror_map_fov") {
+                data.mirrorMapFov = readFloat(v);
                 continue;
             }
-            if (k == "mirror_fov") {
-                data.mirrorFov = readFloat(v);
+            if (k == "mirror_map_render_mirror") {
+                data.mirrorMapRenderMirror = readBool(v);
                 continue;
             }
-            if (k == "mirror_render_mirror") {
-                data.mirrorRenderMirror = readBool(v);
+            if (k == "mirror_map_render_water") {
+                data.mirrorMapRenderWater = readBool(v);
                 continue;
             }
-            if (k == "mirror_render_water") {
-                data.mirrorRenderWater = readBool(v);
+            if (k == "mirror_map_render_frame_start") {
+                data.mirrorMapRenderFrameStart = readInt(v);
                 continue;
             }
-            if (k == "mirror_render_frame_start") {
-                data.mirrorRenderFrameStart = readInt(v);
-                continue;
-            }
-            if (k == "mirror_render_frame_step") {
-                data.mirrorRenderFrameStep = readInt(v);
+            if (k == "mirror_map_render_frame_step") {
+                data.mirrorMapRenderFrameStep = readInt(v);
                 continue;
             }
             if (k == "mirror_map_near_plane") {
@@ -438,16 +434,16 @@ void AssetsLoader::loadAssets(
                 data.waterMapEnabled = readBool(v);
                 continue;
             }
-            if (k == "water_tile_size") {
-                data.waterTileSize = readInt(v);
+            if (k == "water_map_tile_size") {
+                data.waterMapTileSize = readInt(v);
                 continue;
             }
-            if (k == "water_render_frame_start") {
-                data.waterRenderFrameStart = readInt(v);
+            if (k == "water_map_render_frame_start") {
+                data.waterMapRenderFrameStart = readInt(v);
                 continue;
             }
-            if (k == "water_render_frame_step") {
-                data.waterRenderFrameStep = readInt(v);
+            if (k == "water_map_render_frame_step") {
+                data.waterMapRenderFrameStep = readInt(v);
                 continue;
             }
             if (k == "water_map_near_plane") {

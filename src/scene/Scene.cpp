@@ -556,15 +556,9 @@ void Scene::render(const RenderContext& ctx)
         renderCount++;
 
     {
-        if (m_cubeMapRenderer->isEnabled()) {
-            m_cubeMapRenderer->bindTexture(ctx.m_state);
-        }
-        if (m_waterMapRenderer->isEnabled()) {
-            m_waterMapRenderer->bindTexture(ctx.m_state);
-        }
-        if (m_mirrorMapRenderer->isEnabled()) {
-            m_mirrorMapRenderer->bindTexture(ctx.m_state);
-        }
+        m_cubeMapRenderer->bindTexture(ctx.m_state);
+        m_waterMapRenderer->bindTexture(ctx.m_state);
+        m_mirrorMapRenderer->bindTexture(ctx.m_state);
     }
 
     // NOTE KI skip main render if special update cycle

@@ -144,25 +144,24 @@ Assets::Assets()
     nodeRenderFrameStep = 0;
 
     mirrorMapEnabled = true;
-    mirrorReflectionSize = 1024;
-    mirrorFov = 30.f;
+    mirrorMapFov = 30.f;
 
-    mirrorRenderMirror = true;
-    mirrorRenderWater = true;
+    mirrorMapRenderMirror = true;
+    mirrorMapRenderWater = true;
 
     // NOTE KI mirror does not tolerate much skip
-    mirrorRenderFrameStart = 0;
-    mirrorRenderFrameStep = 2;
+    mirrorMapRenderFrameStart = 0;
+    mirrorMapRenderFrameStep = 2;
 
     mirrorMapNearPlane = 0.1f;
     mirrorMapFarPlane = 1000;
 
     waterMapEnabled = true;
-    waterTileSize = 128;
+    waterMapTileSize = 128;
     // NOTE KI water tolerates less skip than shadow/cube
     // => i.e. it's "sharper" thus lack is more visible to user
-    waterRenderFrameStart = 0;
-    waterRenderFrameStep = 2;
+    waterMapRenderFrameStart = 0;
+    waterMapRenderFrameStep = 2;
 
     waterMapNearPlane = 0.1f;
     waterMapFarPlane = 1000;

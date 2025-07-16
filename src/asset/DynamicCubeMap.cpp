@@ -28,6 +28,13 @@ void DynamicCubeMap::bindTexture(
     m_cubeMap.bindTexture(state, unitIndex);
 }
 
+void DynamicCubeMap::unbindTexture(
+    kigl::GLState& state,
+    int unitIndex)
+{
+    m_cubeMap.unbindTexture(state, unitIndex);
+}
+
 void DynamicCubeMap::bind(const RenderContext& ctx)
 {
     auto& state = ctx.m_state;

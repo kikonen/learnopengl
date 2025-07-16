@@ -50,6 +50,11 @@ namespace render {
         state.bindTexture(unitIndex, m_cubeTexture, false);
     }
 
+    void CubeMap::unbindTexture(kigl::GLState& state, int unitIndex)
+    {
+        state.unbindTexture(unitIndex, false);
+    }
+
     //
     // EMPTY cube map
     //

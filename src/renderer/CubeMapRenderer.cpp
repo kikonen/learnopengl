@@ -25,6 +25,7 @@
 
 #include "render/RenderContext.h"
 #include "render/NodeCollection.h"
+#include "render/DebugContext.h"
 #include "render/Batch.h"
 #include "render/FrameBuffer.h"
 #include "render/DrawContext.h"
@@ -166,6 +167,9 @@ void CubeMapRenderer::prepareRT(
 
 void CubeMapRenderer::updateRT(const UpdateViewContext& parentCtx)
 {
+    const auto& dbg = *parentCtx.m_dbg;
+    m_enabled = dbg.m_cubeMapEnabled;
+
     if (!isEnabled()) return;
 
     const auto& assets = parentCtx.m_assets;
@@ -188,6 +192,11 @@ void CubeMapRenderer::updateRT(const UpdateViewContext& parentCtx)
 
 void CubeMapRenderer::bindTexture(kigl::GLState& state)
 {
+    if (!isEnabled()) {
+        m_prev->unbindTexture(state, UNIT_CUBE_MAP);
+        return;
+    }
+
     //if (!rendered) return;
     m_prev->bindTexture(state, UNIT_CUBE_MAP);
 }
@@ -309,18 +318,19 @@ void CubeMapRenderer::drawNodes(
     const glm::vec4& debugColor)
 {
     const auto& assets = ctx.m_assets;
+    const auto& dbg = *ctx.m_dbg;
 
     bool renderedWater{ false };
     bool renderedMirror{ false };
 
-    if (assets.cubeMapRenderWater) {
+    if (dbg.m_cubeMapRenderWater) {
         // NOTE KI notice if water was actually existing
         if (m_waterMapRenderer->isEnabled()) {
             renderedWater = m_waterMapRenderer->render(ctx);
         }
     }
 
-    if (assets.cubeMapRenderMirror) {
+    if (dbg.m_cubeMapRenderMirror) {
         // NOTE KI mirror is *NOT* rendered in all cube sides
         // => only when eye reflect dir in mirror matches closest
         if (m_mirrorMapRenderer->isEnabled()) {

@@ -138,24 +138,23 @@ public:
 
     // NOTE KI mirror does not tolerate much skip
     bool mirrorMapEnabled;
-    int mirrorReflectionSize;
-    float mirrorFov;
+    float mirrorMapFov;
 
-    bool mirrorRenderMirror;
-    bool mirrorRenderWater;
+    bool mirrorMapRenderMirror;
+    bool mirrorMapRenderWater;
 
-    int mirrorRenderFrameStart;
-    int mirrorRenderFrameStep;
+    int mirrorMapRenderFrameStart;
+    int mirrorMapRenderFrameStep;
 
     float mirrorMapNearPlane;
     float mirrorMapFarPlane;
 
     bool waterMapEnabled;
-    int waterTileSize;
+    int waterMapTileSize;
     // NOTE KI water tolerates less skip than shadow/cube
     // => i.e. it's "sharper" thus lack is more visible to user
-    int waterRenderFrameStart;
-    int waterRenderFrameStep;
+    int waterMapRenderFrameStart;
+    int waterMapRenderFrameStep;
 
     float waterMapNearPlane;
     float waterMapFarPlane;

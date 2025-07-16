@@ -33,6 +33,10 @@ public:
         kigl::GLState& state,
         int unitIndex);
 
+    void unbindTexture(
+        kigl::GLState& state,
+        int unitIndex);
+
     void bind(const RenderContext& ctx);
     void unbind(const RenderContext& ctx);
 

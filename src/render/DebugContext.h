@@ -44,7 +44,23 @@ namespace render {
         bool m_skyboxColorEnabled{ false };
         glm::vec3 m_skyboxColor{ 0.f };
 
+        bool m_mirrorMapEnabled{ true };
+        float m_mirrorMapNearPlane{ 0.1 };
+        float m_mirrorMapFarPlane{ 1000.f };
+        float m_mirrorMapFov{ 30.f };
+        bool m_mirrorMapRenderMirror{ true };
+        bool m_mirrorMapRenderWater{ true };
+
+        bool m_waterMapEnabled{ true };
+        float m_waterMapNearPlane{ 0.1f };
+        float m_waterMapFarPlane{ 1000.f };
+        int m_waterMapTileSize{ 128 };
+
         bool m_cubeMapEnabled{ true };
+        float m_cubeMapNearPlane{ 0.1 };
+        float m_cubeMapFarPlane{ 1000.f };
+        bool m_cubeMapRenderMirror{ true };
+        bool m_cubeMapRenderWater{ true };
 
         glm::vec3 m_selectionAxis{ 0.f };
 

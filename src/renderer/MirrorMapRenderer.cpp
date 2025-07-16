@@ -18,6 +18,7 @@
 
 #include "render/RenderContext.h"
 #include "render/NodeCollection.h"
+#include "render/DebugContext.h"
 #include "render/Batch.h"
 #include "render/FrameBuffer.h"
 #include "render/NodeDraw.h"
@@ -81,8 +82,8 @@ void MirrorMapRenderer::prepareRT(
         m_tagMaterial.registerMaterial();
     }
 
-    m_renderFrameStart = assets.mirrorRenderFrameStart;
-    m_renderFrameStep = assets.mirrorRenderFrameStep;
+    m_renderFrameStart = assets.mirrorMapRenderFrameStart;
+    m_renderFrameStep = assets.mirrorMapRenderFrameStep;
 
     m_nearPlane = assets.mirrorMapNearPlane;
     m_farPlane = assets.mirrorMapFarPlane;
@@ -95,7 +96,7 @@ void MirrorMapRenderer::prepareRT(
     glm::vec3 origo(0);
     for (int i = 0; i < 1; i++) {
         auto& camera = m_cameras.emplace_back(origo, CAMERA_FRONT[i], CAMERA_UP[i]);
-        camera.setFov(assets.mirrorFov);
+        camera.setFov(assets.mirrorMapFov);
     }
 
     {
@@ -138,6 +139,9 @@ void MirrorMapRenderer::prepareRT(
 
 void MirrorMapRenderer::updateRT(const UpdateViewContext& parentCtx)
 {
+    const auto& dbg = *parentCtx.m_dbg;
+    m_enabled = dbg.m_mirrorMapEnabled;
+
     if (!isEnabled()) return;
 
     const auto& assets = parentCtx.m_assets;
@@ -213,6 +217,11 @@ void MirrorMapRenderer::updateRT(const UpdateViewContext& parentCtx)
 void MirrorMapRenderer::bindTexture(kigl::GLState& state)
 {
     auto& reflectionBuffer = m_reflectionBuffers[m_prevIndex];
+
+    if (!isEnabled()) {
+        reflectionBuffer->unbindTexture(state, UNIT_MIRROR_REFLECTION);
+        return;
+    }
 
     reflectionBuffer->bindTexture(state, ATT_ALBEDO_INDEX, UNIT_MIRROR_REFLECTION);
 }
@@ -328,11 +337,12 @@ void MirrorMapRenderer::drawNodes(
     Node* current)
 {
     const auto& assets = ctx.m_assets;
+    const auto& dbg = *ctx.m_dbg;
 
     bool renderedWater{ false };
     bool renderedMirror{ false };
 
-    if (assets.mirrorRenderWater) {
+    if (dbg.m_mirrorMapRenderWater) {
         if (m_waterMapRenderer && m_waterMapRenderer->isEnabled()) {
             // NOTE KI ignore mirror when not yet rendered
             m_waterMapRenderer->m_sourceNode = current;
@@ -341,7 +351,7 @@ void MirrorMapRenderer::drawNodes(
         }
     }
 
-    if (assets.mirrorRenderMirror) {
+    if (dbg.m_mirrorMapRenderMirror) {
         if (m_mirrorMapRenderer && m_mirrorMapRenderer->isEnabled()) {
             // NOTE KI ignore mirror when not yet rendered
             m_mirrorMapRenderer->m_sourceNode = current;

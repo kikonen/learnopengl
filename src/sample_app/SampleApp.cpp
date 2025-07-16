@@ -121,7 +121,21 @@ int SampleApp::onInit()
         dbg.m_skyboxColorEnabled = assets.skyboxColorEnabled;
         dbg.m_skyboxColor = assets.skyboxColor;
 
+        dbg.m_mirrorMapEnabled = assets.mirrorMapEnabled;
+        dbg.m_mirrorMapNearPlane = assets.mirrorMapNearPlane;
+        dbg.m_mirrorMapFarPlane = assets.mirrorMapFarPlane;
+        dbg.m_mirrorMapRenderMirror = assets.mirrorMapRenderMirror;
+        dbg.m_mirrorMapRenderWater = assets.mirrorMapRenderWater;
+
+        dbg.m_waterMapEnabled = assets.waterMapEnabled;
+        dbg.m_waterMapNearPlane = assets.waterMapNearPlane;
+        dbg.m_waterMapFarPlane = assets.waterMapFarPlane;
+
         dbg.m_cubeMapEnabled = assets.cubeMapEnabled;
+        dbg.m_cubeMapNearPlane = assets.cubeMapNearPlane;
+        dbg.m_cubeMapFarPlane = assets.cubeMapFarPlane;
+        dbg.m_cubeMapRenderMirror = assets.cubeMapRenderMirror;
+        dbg.m_cubeMapRenderWater = assets.cubeMapRenderWater;
 
         dbg.m_showVolume = assets.showVolume;
         dbg.m_showSelectionVolume = assets.showSelectionVolume;

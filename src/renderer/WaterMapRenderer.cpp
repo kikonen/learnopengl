@@ -26,6 +26,7 @@
 #include "render/FrameBuffer.h"
 #include "render/NodeCollection.h"
 #include "render/RenderContext.h"
+#include "render/DebugContext.h"
 #include "render/Batch.h"
 #include "render/NodeDraw.h"
 #include "render/DrawContext.h"
@@ -77,8 +78,8 @@ void WaterMapRenderer::prepareRT(
         m_tagMaterial.registerMaterial();
     }
 
-    m_renderFrameStart = assets.waterRenderFrameStart;
-    m_renderFrameStep = assets.waterRenderFrameStep;
+    m_renderFrameStart = assets.waterMapRenderFrameStart;
+    m_renderFrameStep = assets.waterMapRenderFrameStep;
 
     m_nearPlane = assets.waterMapNearPlane;
     m_farPlane = assets.waterMapFarPlane;
@@ -138,6 +139,9 @@ void WaterMapRenderer::prepareRT(
 
 void WaterMapRenderer::updateRT(const UpdateViewContext& parentCtx)
 {
+    const auto& dbg = *parentCtx.m_dbg;
+    m_enabled = dbg.m_waterMapEnabled;
+
     if (!isEnabled()) return;
 
     const auto& assets = parentCtx.m_assets;
@@ -296,6 +300,12 @@ void WaterMapRenderer::bindTexture(kigl::GLState& state)
 
     auto& refractionBuffer = m_refractionBuffers[m_prevIndex];
     auto& reflectionBuffer = m_reflectionBuffers[m_prevIndex];
+
+    if (!isEnabled()) {
+        reflectionBuffer->unbindTexture(state, UNIT_WATER_REFLECTION);
+        refractionBuffer->unbindTexture(state, UNIT_WATER_REFRACTION);
+        return;
+    }
 
     reflectionBuffer->bindTexture(state, ATT_ALBEDO_INDEX, UNIT_WATER_REFLECTION);
     refractionBuffer->bindTexture(state, ATT_ALBEDO_INDEX, UNIT_WATER_REFRACTION);

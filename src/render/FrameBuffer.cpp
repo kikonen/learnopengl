@@ -266,7 +266,7 @@ namespace render {
         kigl::GLState & state,
         int unitIndex)
     {
-        state.bindTexture(unitIndex, 0, true);
+        state.unbindTexture(unitIndex, false);
     }
 
     void FrameBuffer::bindImageTexture(

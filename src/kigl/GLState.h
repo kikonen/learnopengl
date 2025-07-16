@@ -46,6 +46,7 @@ namespace kigl {
         void bindVAO(GLuint vaoId) noexcept;
         void invalidateVAO() noexcept;
 
+        // @param textureID 0 to unbind unit
         void bindTexture(
             const GLuint unitIndex,
             const GLuint textureID,
@@ -96,7 +97,7 @@ namespace kigl {
     private:
         std::unordered_map<GLenum, int> m_enabled;
 
-        std::array<GLuint, 128> m_textureUnits;
+        std::array<GLint, 128> m_textureUnits;
 
         int m_cullFace = -1;
         int m_frontFace = -1;
