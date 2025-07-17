@@ -112,18 +112,6 @@ void AssetsLoader::loadAssets(
                 data.gBufferScale = readFloat(v);
                 continue;
             }
-            if (k == "water_reflection_buffer_scale") {
-                data.waterReflectionBufferScale = readFloat(v);
-                continue;
-            }
-            if (k == "water_refraction_buffer_scale") {
-                data.waterRefractionBufferScale = readFloat(v);
-                continue;
-            }
-            if (k == "mirror_reflection_buffer_scale") {
-                data.mirrorReflectionBufferScale = readFloat(v);
-                continue;
-            }
         }
         {
             if (k == "window_icon") {
@@ -404,6 +392,10 @@ void AssetsLoader::loadAssets(
                 data.mirrorMapFov = readFloat(v);
                 continue;
             }
+            if (k == "mirror_map_reflection_buffer_scale") {
+                data.mirrorMapReflectionBufferScale = readFloat(v);
+                continue;
+            }
             if (k == "mirror_map_render_mirror") {
                 data.mirrorMapRenderMirror = readBool(v);
                 continue;
@@ -432,6 +424,15 @@ void AssetsLoader::loadAssets(
         {
             if (k == "water_map_enabled") {
                 data.waterMapEnabled = readBool(v);
+                continue;
+            }
+            if (k == "water_map_reflection_buffer_scale") {
+                data.waterMapReflectionBufferScale = readFloat(v);
+                continue;
+
+            }
+            if (k == "water_map_refraction_buffer_scale") {
+                data.waterMapRefractionBufferScale = readFloat(v);
                 continue;
             }
             if (k == "water_map_tile_size") {
@@ -722,6 +723,10 @@ void AssetsLoader::loadAssets(
         {
             if (k == "cube_map_enabled") {
                 data.cubeMapEnabled = readBool(v);
+                continue;
+            }
+            if (k == "cube_map_buffer_scale") {
+                data.cubeMapBufferScale = readFloat(v);
                 continue;
             }
             if (k == "cube_map_seamless") {

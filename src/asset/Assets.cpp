@@ -57,9 +57,6 @@ Assets::Assets()
     prepassDepthEnabled = false;
 
     gBufferScale = 0.5f;
-    waterReflectionBufferScale = 0.125f;
-    waterRefractionBufferScale = 0.25f;
-    mirrorReflectionBufferScale = 0.25f;
 
     windowSize = { 800, 600 };
     windowMaximized = false;
@@ -145,6 +142,7 @@ Assets::Assets()
 
     mirrorMapEnabled = true;
     mirrorMapFov = 30.f;
+    mirrorMapReflectionBufferScale = 0.25f;
 
     mirrorMapRenderMirror = true;
     mirrorMapRenderWater = true;
@@ -157,6 +155,8 @@ Assets::Assets()
     mirrorMapFarPlane = 1000;
 
     waterMapEnabled = true;
+    waterMapReflectionBufferScale = 0.125f;
+    waterMapRefractionBufferScale = 0.25f;
     waterMapTileSize = 128;
     // NOTE KI water tolerates less skip than shadow/cube
     // => i.e. it's "sharper" thus lack is more visible to user
@@ -249,6 +249,7 @@ Assets::Assets()
     shadowVisual = false;
 
     cubeMapEnabled = true;
+    cubeMapBufferScale = 0.5f;
     cubeMapSeamless = true;
     cubeMapSkipOthers = true;
     cubeMapSize = 1024;

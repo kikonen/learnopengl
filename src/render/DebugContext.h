@@ -45,6 +45,7 @@ namespace render {
         glm::vec3 m_skyboxColor{ 0.f };
 
         bool m_mirrorMapEnabled{ true };
+        float m_mirrorMapReflectionBufferScale{ 0.25f };
         float m_mirrorMapNearPlane{ 0.1 };
         float m_mirrorMapFarPlane{ 1000.f };
         float m_mirrorMapFov{ 30.f };
@@ -52,11 +53,14 @@ namespace render {
         bool m_mirrorMapRenderWater{ true };
 
         bool m_waterMapEnabled{ true };
+        float m_waterMapReflectionBufferScale{ 0.125f };
+        float m_waterMapRefractionBufferScale{ 0.25f };
         float m_waterMapNearPlane{ 0.1f };
         float m_waterMapFarPlane{ 1000.f };
         int m_waterMapTileSize{ 128 };
 
         bool m_cubeMapEnabled{ true };
+        float m_cubeMapBufferScale{ 0.5f };
         float m_cubeMapNearPlane{ 0.1 };
         float m_cubeMapFarPlane{ 1000.f };
         bool m_cubeMapRenderMirror{ true };

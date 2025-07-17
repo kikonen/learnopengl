@@ -151,8 +151,8 @@ void WaterMapRenderer::updateRT(const UpdateViewContext& parentCtx)
     {
         const auto& res = parentCtx.m_resolution;
         const float bufferScale = std::max(
-            assets.waterRefractionBufferScale,
-            assets.waterReflectionBufferScale);
+            dbg.m_waterMapRefractionBufferScale,
+            dbg.m_waterMapReflectionBufferScale);
 
         w = (int)(bufferScale * res.x);
         h = (int)(bufferScale * res.y);
@@ -189,14 +189,15 @@ void WaterMapRenderer::updateRT(const UpdateViewContext& parentCtx)
 void WaterMapRenderer::updateReflectionView(const UpdateViewContext& ctx)
 {
     const auto& assets = ctx.m_assets;
+    const auto& dbg = ctx.m_dbg;
 
     int w;
     int h;
     {
         const auto& res = ctx.m_resolution;
 
-        w = (int)(assets.waterReflectionBufferScale * res.x);
-        h = (int)(assets.waterReflectionBufferScale * res.y);
+        w = (int)(dbg.m_waterMapReflectionBufferScale * res.x);
+        h = (int)(dbg.m_waterMapReflectionBufferScale * res.y);
 
         if (m_squareAspectRatio) {
             h = w;
@@ -243,14 +244,15 @@ void WaterMapRenderer::updateReflectionView(const UpdateViewContext& ctx)
 void WaterMapRenderer::updateRefractionView(const UpdateViewContext& ctx)
 {
     const auto& assets = ctx.m_assets;
+    const auto& dbg = ctx.m_dbg;
 
     int w;
     int h;
     {
         const auto& res = ctx.m_resolution;
 
-        w = (int)(assets.waterRefractionBufferScale * res.x);
-        h = (int)(assets.waterRefractionBufferScale * res.y);
+        w = (int)(dbg.m_waterMapRefractionBufferScale * res.x);
+        h = (int)(dbg.m_waterMapRefractionBufferScale * res.y);
 
         if (m_squareAspectRatio) {
             h = w;

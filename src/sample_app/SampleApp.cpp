@@ -122,16 +122,20 @@ int SampleApp::onInit()
         dbg.m_skyboxColor = assets.skyboxColor;
 
         dbg.m_mirrorMapEnabled = assets.mirrorMapEnabled;
+        dbg.m_mirrorMapReflectionBufferScale = assets.mirrorMapReflectionBufferScale;
         dbg.m_mirrorMapNearPlane = assets.mirrorMapNearPlane;
         dbg.m_mirrorMapFarPlane = assets.mirrorMapFarPlane;
         dbg.m_mirrorMapRenderMirror = assets.mirrorMapRenderMirror;
         dbg.m_mirrorMapRenderWater = assets.mirrorMapRenderWater;
 
         dbg.m_waterMapEnabled = assets.waterMapEnabled;
+        dbg.m_waterMapReflectionBufferScale = assets.waterMapReflectionBufferScale;
+        dbg.m_waterMapRefractionBufferScale = assets.waterMapRefractionBufferScale;
         dbg.m_waterMapNearPlane = assets.waterMapNearPlane;
         dbg.m_waterMapFarPlane = assets.waterMapFarPlane;
 
         dbg.m_cubeMapEnabled = assets.cubeMapEnabled;
+        dbg.m_cubeMapBufferScale = assets.cubeMapBufferScale;
         dbg.m_cubeMapNearPlane = assets.cubeMapNearPlane;
         dbg.m_cubeMapFarPlane = assets.cubeMapFarPlane;
         dbg.m_cubeMapRenderMirror = assets.cubeMapRenderMirror;

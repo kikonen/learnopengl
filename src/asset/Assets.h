@@ -53,9 +53,6 @@ public:
     bool prepassDepthEnabled;
 
     float gBufferScale;
-    float waterReflectionBufferScale;
-    float waterRefractionBufferScale;
-    float mirrorReflectionBufferScale;
 
     std::string windowIcon;
     glm::uvec2 windowSize;
@@ -139,6 +136,7 @@ public:
     // NOTE KI mirror does not tolerate much skip
     bool mirrorMapEnabled;
     float mirrorMapFov;
+    float mirrorMapReflectionBufferScale;
 
     bool mirrorMapRenderMirror;
     bool mirrorMapRenderWater;
@@ -150,6 +148,8 @@ public:
     float mirrorMapFarPlane;
 
     bool waterMapEnabled;
+    float waterMapReflectionBufferScale;
+    float waterMapRefractionBufferScale;
     int waterMapTileSize;
     // NOTE KI water tolerates less skip than shadow/cube
     // => i.e. it's "sharper" thus lack is more visible to user
@@ -243,6 +243,7 @@ public:
     bool shadowVisual;
 
     bool cubeMapEnabled;
+    float cubeMapBufferScale;
     bool cubeMapSeamless;
     bool cubeMapSkipOthers;
     int cubeMapSize;

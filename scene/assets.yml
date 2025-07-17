@@ -19,9 +19,6 @@ assets:
   prepass_depth_enabled: false
 
   g_buffer_scale: 0.5
-  water_reflection_buffer_scale: 0.125
-  water_refraction_buffer_scale: 0.25
-  mirror_reflection_buffer_scale: 0.25
 
   window_icon: textures/kari_512.png
   window_size: [800, 600]
@@ -173,6 +170,7 @@ assets:
 
   mirror_map_enabled: true
   mirror_map_fov: 30
+  mirror_map_reflection_buffer_scale: 0.25
   mirror_map_render_mirror: true
   mirror_map_render_water: true
   mirror_map_render_frame_start: 0
@@ -181,6 +179,8 @@ assets:
   mirror_map_far_plane: 600
 
   water_map_enabled: true
+  water_map_reflection_buffer_scale: 0.125
+  water_map_refraction_buffer_scale: 0.25
   water_map_tile_size: 100
   water_map_render_frame_start: 0
   water_map_render_frame_step: 1
@@ -188,6 +188,7 @@ assets:
   water_map_far_plane: 800
 
   cube_map_enabled: true
+  cube_map_buffer_scale: 0.5
   cube_map_seamless: true
   cube_map_skip_others: true
   cube_map_size: 512

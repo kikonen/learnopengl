@@ -144,6 +144,11 @@ void MirrorMapRenderer::updateRT(const UpdateViewContext& parentCtx)
 
     if (!isEnabled()) return;
 
+    for (int i = 0; i < 1; i++) {
+        auto& camera = m_cameras[i];
+        camera.setFov(dbg.m_mirrorMapFov);
+    }
+
     const auto& assets = parentCtx.m_assets;
 
     int w;
@@ -151,8 +156,8 @@ void MirrorMapRenderer::updateRT(const UpdateViewContext& parentCtx)
     {
         const auto& res = parentCtx.m_resolution;
 
-        w = (int)(assets.mirrorReflectionBufferScale * res.x);
-        h = (int)(assets.mirrorReflectionBufferScale * res.y);
+        w = (int)(dbg.m_mirrorMapReflectionBufferScale * res.x);
+        h = (int)(dbg.m_mirrorMapReflectionBufferScale * res.y);
 
         if (m_squareAspectRatio) {
             h = w;

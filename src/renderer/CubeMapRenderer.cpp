@@ -128,7 +128,7 @@ void CubeMapRenderer::prepareRT(
         m_tagMaterial.registerMaterial();
     }
 
-    int size = assets.cubeMapSize;
+    const int size = assets.cubeMapSize;
 
     {
         m_curr = std::make_unique<DynamicCubeMap>(fmt::format("{}_next", m_name), size);
@@ -173,7 +173,7 @@ void CubeMapRenderer::updateRT(const UpdateViewContext& parentCtx)
     if (!isEnabled()) return;
 
     const auto& assets = parentCtx.m_assets;
-    int size = assets.cubeMapSize;
+    const int size = assets.cubeMapSize;
 
     UpdateViewContext localCtx{
         parentCtx.m_clock,
@@ -182,7 +182,7 @@ void CubeMapRenderer::updateRT(const UpdateViewContext& parentCtx)
         size,
         parentCtx.m_dbg};
 
-    float bufferScale = 0.5f;
+    const float bufferScale = dbg.m_cubeMapBufferScale;
     m_nodeDraw->updateRT(localCtx, bufferScale);
 
     // NOTE KI nested renderers scale down from current

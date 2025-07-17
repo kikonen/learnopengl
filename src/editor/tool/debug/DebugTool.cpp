@@ -153,7 +153,9 @@ namespace editor
             ImGui::Spacing();
 
             ImGui::Checkbox("Water enabled", &dbg.m_waterMapEnabled);
-            ImGui::InputInt("Water tilesize", &dbg.m_waterMapTileSize, 1, 8);
+            ImGui::InputFloat("Water reflection scale", &dbg.m_waterMapReflectionBufferScale, 0.01, 0.1f);
+            ImGui::InputFloat("Water refraction scale", &dbg.m_waterMapRefractionBufferScale, 0.01, 0.1f);
+            //ImGui::InputInt("Water tilesize", &dbg.m_waterMapTileSize, 1, 8);
             ImGui::InputFloat("Water near plane", &dbg.m_waterMapNearPlane, 0.01, 0.1f);
             ImGui::InputFloat("Water far plane", &dbg.m_waterMapFarPlane, 0.01, 0.1f);
         }
@@ -165,6 +167,7 @@ namespace editor
 
             ImGui::Checkbox("Mirror enabled", &dbg.m_mirrorMapEnabled);
             ImGui::InputFloat("Mirror fov", &dbg.m_mirrorMapFov, 0.01, 0.1f);
+            ImGui::InputFloat("Mirror reflection scale", &dbg.m_mirrorMapReflectionBufferScale, 0.01, 0.1f);
             ImGui::InputFloat("Mirror near plane", &dbg.m_mirrorMapNearPlane, 0.01, 0.1f);
             ImGui::InputFloat("Mirror far plane", &dbg.m_mirrorMapFarPlane, 0.01, 0.1f);
             ImGui::Checkbox("Mirror nested mirror", &dbg.m_mirrorMapRenderMirror);
@@ -177,6 +180,7 @@ namespace editor
             ImGui::Spacing();
 
             ImGui::Checkbox("Cube map enabled", &dbg.m_cubeMapEnabled);
+            ImGui::InputFloat("cube buffer scale", &dbg.m_cubeMapBufferScale, 0.01, 0.1f);
             ImGui::InputFloat("Cube near plane", &dbg.m_cubeMapNearPlane, 0.01, 0.1f);
             ImGui::InputFloat("Cube far plane", &dbg.m_cubeMapFarPlane, 0.01, 0.1f);
             ImGui::Checkbox("Cube nested Mirror", &dbg.m_cubeMapRenderMirror);
