@@ -55,17 +55,18 @@ vec3 getViewPosFromGBuffer(const vec2 texCoord)
   // NOTE KI pixCoord == texCoord in fullscreen quad
   const float depth = textureLod(g_depth, texCoord, 0).x;
 
-  const vec4 clip = vec4(
+  // clip space [-1, 1]
+  const vec4 ndcPos = vec4(
     texCoord.x * 2.0 - 1.0,
     texCoord.y * 2.0 - 1.0,
     depth * 2.0 - 1.0,
     1.0);
-  vec4 viewW  = u_invProjectionMatrix * clip;
+  vec4 viewW  = u_invProjectionMatrix * ndcPos;
   return viewW.xyz / viewW.w;
 }
 
 // Convert viewPos to worldPos
 vec3 getWorldPosFromViewPos(const vec3 viewPos)
 {
-  return (u_invViewMatrix * vec4(viewPos, 1)).xyz;
+  return (u_invViewMatrix * vec4(viewPos, 1.0)).xyz;
 }

@@ -73,11 +73,11 @@ float calculateSsao(
 
     // get sample depth
     // get depth value of kernel sample
-    float sampleDepth = getViewPosFromGBuffer(offset.xy).z;
+    float sampleZ = getViewPosFromGBuffer(offset.xy).z;
 
     // range check & accumulate
-    float rangeCheck = smoothstep(0.0, 1.0, radius / abs(viewPos.z - sampleDepth));
-    occlusion += (sampleDepth >= samplePos.z + bias ? 1.0 : 0.0) * rangeCheck;
+    float rangeCheck = smoothstep(0.0, 1.0, radius / abs(viewPos.z - sampleZ));
+    occlusion += (sampleZ >= samplePos.z + bias ? 1.0 : 0.0) * rangeCheck;
   }
   occlusion = 1.0 - (occlusion / kernelSize);
 
