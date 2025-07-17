@@ -51,15 +51,17 @@ vec4 calculateLightPbr(
     float roughness = material.mra.g;
     float ao = material.mra.b;
 
+#ifndef PASS_FORWARD
     if (Debug.u_ssaoBaseColorEnabled) {
       albedo = Debug.u_ssaoBaseColor.rgb;
       metallic = 0;
-      roughness = 0;
+      roughness = 1;
       ao = 1;
     }
     if (u_cameraSsaoEnabled && Debug.u_ssaoEnabled) {
       ao = min(material.ssao, ao);
     }
+#endif
 
     // calculate reflectance at normal incidence; if dia-electric (like plastic) use F0
     // of 0.04 and if it's a metal, use the albedo color as F0 (metallic workflow)

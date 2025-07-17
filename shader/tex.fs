@@ -1,5 +1,7 @@
 #version 460 core
 
+#define PASS_FORWARD
+
 #include struct_lights.glsl
 
 #include struct_material.glsl
