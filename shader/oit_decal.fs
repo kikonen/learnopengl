@@ -51,6 +51,8 @@ LAYOUT_OIT_OUT;
 
 SET_FLOAT_PRECISION;
 
+#include fn_oit_util.glsl
+
 // NOTE KI approx cos(90), NOT exact 0.0, due to small rounding errors in math
 // cos(90) = 0
 // cos(60) = 0.5

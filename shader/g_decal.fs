@@ -126,7 +126,7 @@ void main() {
 
 #ifdef USE_ALPHA
 #ifdef USE_BLEND
-  if (material.diffuse.a < OIT_MAX_BLEND_THRESHOLD) {
+  if (material.diffuse.a < u_oitMaxBlendThreshold) {
     discard;
   }
 #else

@@ -849,6 +849,14 @@ void AssetsLoader::loadAssets(
                 data.effectOitEnabled = readBool(v);
                 continue;
             }
+            if (k == "effect_oit_min_blend_threshold") {
+                data.effectOitMinBlendThreshold = readFloat(v);
+                continue;
+            }
+            if (k == "effect_oit_max_blend_threshold") {
+                data.effectOitMaxBlendThreshold = readFloat(v);
+                continue;
+            }
             if (k == "effect_ssao_enabled") {
                 data.effectSsaoEnabled = readBool(v);
                 continue;

@@ -108,7 +108,10 @@ namespace render {
         float m_hdrExposure{ 1.0f };
 
         bool m_prepassDepthEnabled{ false };
+
         bool m_effectOitEnabled{ true };
+        float m_effectOitMinBlendThreshold{ 0.001f };
+        float m_effectOitMaxBlendThreshold{ 0.995f };
 
         bool m_effectSsaoEnabled{ true };
         bool m_effectSsaoBaseColorEnabled{ false };

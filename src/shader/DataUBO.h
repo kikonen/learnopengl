@@ -24,6 +24,9 @@ struct DataUBO {
     float u_fogEnd;
     float u_fogDensity;
 
+    float u_effectOitMinBlendThreshold;
+    float u_effectOitMaxBlendThreshold;
+
     float u_effectBloomThresHold;
 
     float u_gammaCorrect;

@@ -118,12 +118,41 @@ namespace editor
 
         {
             ImGui::Spacing();
+            ImGui::SeparatorText("Lighting");
+            ImGui::Spacing();
+
+            ImGui::Checkbox("Light enabled", &dbg.m_lightEnabled);
+            ImGui::Checkbox("Normal map enabled", &dbg.m_normalMapEnabled);
+        }
+
+        {
+            ImGui::Spacing();
             ImGui::SeparatorText("Misc effects");
             ImGui::Spacing();
 
             ImGui::Checkbox("Prepass depth enabled", &dbg.m_prepassDepthEnabled);
-            ImGui::Checkbox("OIT enabled", &dbg.m_effectOitEnabled);
             ImGui::Checkbox("Emission enabled", &dbg.m_effectEmissionEnabled);
+        }
+
+        {
+            ImGui::Spacing();
+            ImGui::SeparatorText("Skybox");
+            ImGui::Spacing();
+
+            ImGui::Checkbox("Skybox enabled", &dbg.m_skyboxEnabled);
+            ImGui::Checkbox("Skybox color enabled", &dbg.m_skyboxColorEnabled);
+            ImGui::ColorEdit3("Skybox color", glm::value_ptr(dbg.m_skyboxColor));
+        }
+
+        {
+            ImGui::Spacing();
+            ImGui::SeparatorText("Parallax");
+            ImGui::Spacing();
+
+            ImGui::Checkbox("Parallax enabled", &dbg.m_parallaxEnabled);
+            ImGui::InputInt("Parallax method", &dbg.m_parallaxMethod, 1, 10);
+            ImGui::Checkbox("Parallax debug enabled", &dbg.m_parallaxDebugEnabled);
+            ImGui::InputFloat("Parallax debug depth", &dbg.m_parallaxDebugDepth, 0.01f, 0.1f);
         }
 
         {
@@ -137,14 +166,32 @@ namespace editor
 
         {
             ImGui::Spacing();
-            ImGui::SeparatorText("Fog");
+            ImGui::SeparatorText("Decals");
             ImGui::Spacing();
 
-            ImGui::Checkbox("Fog enabled", &dbg.m_effectFogEnabled);
-            ImGui::ColorEdit3("Fog color", glm::value_ptr(dbg.m_fogColor));
-            ImGui::InputFloat("Fog start", &dbg.m_fogStart, 0.01f, 0.1f);
-            ImGui::InputFloat("Fog end", &dbg.m_fogEnd, 0.01f, 0.1f);
-            ImGui::InputFloat("Fog density", &dbg.m_fogDensity, 0.01f, 0.1f);
+            ImGui::Checkbox("Decal enabled", &dbg.m_decalEnabled);
+
+            {
+                ImGui::Spacing();
+                ImGui::Separator();
+
+                if (ImGui::BeginCombo("Decal", dbg.m_decalId.str().c_str())) {
+                    for (const auto& decalId : decal::DecalRegistry::get().getDecalIds()) {
+                        const auto& name = decalId.str().c_str();
+
+                        ImGui::PushID((void*)name);
+                        const bool isSelected = dbg.m_decalId == decalId;
+                        if (ImGui::Selectable(name, isSelected)) {
+                            dbg.m_decalId = decalId;
+                        }
+                        ImGui::PopID();
+
+                        //if (isSelected)
+                        //    ImGui::SetItemDefaultFocus();
+                    }
+                    ImGui::EndCombo();
+                }
+            }
         }
 
         {
@@ -189,32 +236,24 @@ namespace editor
 
         {
             ImGui::Spacing();
-            ImGui::SeparatorText("Decals");
+            ImGui::SeparatorText("OIT");
             ImGui::Spacing();
 
-            ImGui::Checkbox("Decal enabled", &dbg.m_decalEnabled);
+            ImGui::Checkbox("OIT enabled", &dbg.m_effectOitEnabled);
+            ImGui::InputFloat("OIT min threshold", &dbg.m_effectOitMinBlendThreshold, 0.01f, 0.1f);
+            ImGui::InputFloat("OIT max threshold", &dbg.m_effectOitMaxBlendThreshold, 0.01f, 0.1f);
+        }
 
-            {
-                ImGui::Spacing();
-                ImGui::Separator();
+        {
+            ImGui::Spacing();
+            ImGui::SeparatorText("Fog");
+            ImGui::Spacing();
 
-                if (ImGui::BeginCombo("Decal", dbg.m_decalId.str().c_str())) {
-                    for (const auto& decalId : decal::DecalRegistry::get().getDecalIds()) {
-                        const auto& name = decalId.str().c_str();
-
-                        ImGui::PushID((void*)name);
-                        const bool isSelected = dbg.m_decalId == decalId;
-                        if (ImGui::Selectable(name, isSelected)) {
-                            dbg.m_decalId = decalId;
-                        }
-                        ImGui::PopID();
-
-                        //if (isSelected)
-                        //    ImGui::SetItemDefaultFocus();
-                    }
-                    ImGui::EndCombo();
-                }
-            }
+            ImGui::Checkbox("Fog enabled", &dbg.m_effectFogEnabled);
+            ImGui::ColorEdit3("Fog color", glm::value_ptr(dbg.m_fogColor));
+            ImGui::InputFloat("Fog start", &dbg.m_fogStart, 0.01f, 0.1f);
+            ImGui::InputFloat("Fog end", &dbg.m_fogEnd, 0.01f, 0.1f);
+            ImGui::InputFloat("Fog density", &dbg.m_fogDensity, 0.01f, 0.1f);
         }
 
         {
@@ -228,40 +267,11 @@ namespace editor
 
         {
             ImGui::Spacing();
-            ImGui::SeparatorText("Skybox");
-            ImGui::Spacing();
-
-            ImGui::Checkbox("Skybox enabled", &dbg.m_skyboxEnabled);
-            ImGui::Checkbox("Skybox color enabled", &dbg.m_skyboxColorEnabled);
-            ImGui::ColorEdit3("Skybox color", glm::value_ptr(dbg.m_skyboxColor));
-        }
-
-        {
-            ImGui::Spacing();
             ImGui::SeparatorText("SSAO");
             ImGui::Spacing();
             ImGui::Checkbox("SSAO enabled", &dbg.m_effectSsaoEnabled);
             ImGui::Checkbox("SSAO baseColor enabled", &dbg.m_effectSsaoBaseColorEnabled);
             ImGui::ColorEdit3("SSAO baseColor", glm::value_ptr(dbg.m_effectSsaoBaseColor));
-        }
-
-        {
-            ImGui::Spacing();
-            ImGui::SeparatorText("Lighting");
-            ImGui::Spacing();
-
-            ImGui::Checkbox("Light enabled", &dbg.m_lightEnabled);
-            ImGui::Checkbox("Normal map enabled", &dbg.m_normalMapEnabled);
-        }
-        {
-            ImGui::Spacing();
-            ImGui::SeparatorText("Parallax");
-            ImGui::Spacing();
-
-            ImGui::Checkbox("Parallax enabled", &dbg.m_parallaxEnabled);
-            ImGui::InputInt("Parallax method", &dbg.m_parallaxMethod, 1, 10);
-            ImGui::Checkbox("Parallax debug enabled", &dbg.m_parallaxDebugEnabled);
-            ImGui::InputFloat("Parallax debug depth", &dbg.m_parallaxDebugDepth, 0.01f, 0.1f);
         }
     }
 

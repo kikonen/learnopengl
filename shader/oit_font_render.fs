@@ -30,6 +30,8 @@ LAYOUT_OIT_OUT;
 
 SET_FLOAT_PRECISION;
 
+#include fn_oit_util.glsl
+
 ResolvedMaterial material;
 
 #include fn_shape_font.glsl

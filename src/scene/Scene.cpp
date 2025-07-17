@@ -782,6 +782,9 @@ void Scene::prepareUBOs(const RenderContext& ctx)
         dbg.m_fogEnd,
         dbg.m_fogDensity,
 
+        dbg.m_effectOitMinBlendThreshold,
+        dbg.m_effectOitMaxBlendThreshold,
+
         dbg.m_effectBloomThreshold,
 
         dbg.m_gammaCorrect,

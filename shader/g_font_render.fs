@@ -85,7 +85,7 @@ void main()
   if (!u_forceLineMode) {
 #ifdef USE_ALPHA
 #ifdef USE_BLEND
-  if (color.a < OIT_MAX_BLEND_THRESHOLD)
+  if (color.a < u_oitMaxBlendThreshold)
     discard;
 #else
   if (color.a < GBUFFER_ALPHA_THRESHOLD)

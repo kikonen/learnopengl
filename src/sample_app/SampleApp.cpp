@@ -188,7 +188,10 @@ int SampleApp::onInit()
         dbg.m_drawDebug = assets.drawDebug;
 
         dbg.m_prepassDepthEnabled = assets.prepassDepthEnabled;
+
         dbg.m_effectOitEnabled = assets.effectOitEnabled;
+        dbg.m_effectOitMinBlendThreshold = assets.effectOitMinBlendThreshold;
+        dbg.m_effectOitMaxBlendThreshold = assets.effectOitMaxBlendThreshold;
 
         dbg.m_effectSsaoEnabled = assets.effectSsaoEnabled;
         dbg.m_effectSsaoBaseColorEnabled = assets.effectSsaoBaseColorEnabled;

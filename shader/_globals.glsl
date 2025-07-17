@@ -155,9 +155,9 @@
 #define STENCIL_MODE_SHIFT_RIGHT 3
 #define STENCIL_MODE_SHIFT_DOWN 4
 
-#define BLEND_THRESHOLD 0.95
-#define OIT_MAX_BLEND_THRESHOLD 0.995
-#define OIT_MIN_BLEND_THRESHOLD 0.001
+// #define BLEND_THRESHOLD 0.95
+// #define OIT_MAX_BLEND_THRESHOLD 0.995
+// #define OIT_MIN_BLEND_THRESHOLD 0.001
 
 // TODO KI alpha threshold was adjusted really low (0.01) due to decals seemingly
 // => conflicts with other cases (like Fence007 opacity_map)

@@ -281,6 +281,8 @@ public:
     float effectBloomThreshold;
 
     bool effectOitEnabled;
+    float effectOitMinBlendThreshold;
+    float effectOitMaxBlendThreshold;
 
     bool effectSsaoEnabled;
     bool effectSsaoBaseColorEnabled;

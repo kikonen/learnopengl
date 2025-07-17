@@ -19,6 +19,9 @@ layout(std140, binding = UBO_DATA) uniform Data {
   float u_fogEnd;
   float u_fogDensity;
 
+  float u_oitMinBlendThreshold;
+  float u_oitMaxBlendThreshold;
+
   float u_bloomThreshold;
 
   float u_gammaCorrect;

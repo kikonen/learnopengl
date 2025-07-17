@@ -284,6 +284,8 @@ Assets::Assets()
     effectBloomThreshold = 3.0;
 
     effectOitEnabled = true;
+    effectOitMinBlendThreshold = 0.001f;
+    effectOitMaxBlendThreshold = 0.995f;
 
     effectSsaoEnabled = true;
     effectSsaoBaseColorEnabled = false;
