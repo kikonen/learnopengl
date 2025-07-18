@@ -1,12 +1,22 @@
 #include "DecalLoader.h"
 
+#include <filesystem>
+
+#include "asset/Assets.h"
+
+#include "util/Log.h"
 #include "util/util.h"
+#include "util/file.h"
 
 #include "decal/DecalDefinition.h"
+
+#include "loader/converter/YamlConverter.h"
 
 #include "loader/document.h"
 #include "loader_util.h"
 #include "loader/Loaders.h"
+
+#include "Context.h"
 
 namespace loader {
     DecalLoader::DecalLoader(
@@ -31,6 +41,8 @@ namespace loader {
         loader::DecalData& data,
         Loaders& loaders) const
     {
+        loadDecalPrefab(node.findNode("prefab"), data, loaders);
+
         for (const auto& pair : node.getNodes()) {
             const std::string& k = pair.getName();
             const loader::DocNode& v = pair.getNode();
@@ -73,6 +85,57 @@ namespace loader {
             }
             else {
                 reportUnknown("decal_entry", k, v);
+            }
+        }
+    }
+
+    void DecalLoader::loadDecalPrefab(
+        const loader::DocNode& node,
+        DecalData& data,
+        Loaders& loaders) const
+    {
+        if (node.isNull()) return;
+
+        std::string path = readString(node);
+        if (path.empty()) return;
+
+        {
+            std::filesystem::path filePath{ path };
+            if (filePath.extension().empty()) {
+                path += ".yml";
+            }
+        }
+
+        std::string fullPath = path;
+
+        if (!util::fileExists(fullPath)) {
+            fullPath = util::joinPath(m_ctx->m_assetsDir, path);
+        }
+
+        if (!util::fileExists(fullPath)) {
+            fullPath = util::joinPath(m_ctx->m_dirName, path);
+        }
+
+        KI_INFO_OUT(fmt::format("decal_prefab={}", fullPath));
+
+        if (!util::fileExists(fullPath))
+        {
+            throw fmt::format("INVALID: decal_prefab missing - path={}", fullPath);
+        }
+
+        loader::YamlConverter converter;
+        auto doc = converter.load(fullPath);
+
+        for (const auto& pair : doc.getNodes()) {
+            const std::string& k = pair.getName();
+            const loader::DocNode& v = pair.getNode();
+
+            if (k == "decal") {
+                std::vector<NodeData> clones;
+                loadDecal(
+                    v,
+                    data,
+                    loaders);
             }
         }
     }

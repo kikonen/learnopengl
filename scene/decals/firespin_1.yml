@@ -1,0 +1,15 @@
+decal:
+  name: firespin_1
+  lifetime: 99999
+  scale: 0.4
+  scale_variation: [-0.2, 0.2]
+  sprite_speed: 0
+  sprite_speed_variation: [-10, 10]
+  static: false
+  material:
+    base: particles
+    map_kd: 7_firespin_spritesheet.png
+    sprites: 61
+    sprites_x: 8
+    texture_spec:
+      wrap: GL_CLAMP_TO_EDGE

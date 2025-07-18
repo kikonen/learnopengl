@@ -1,0 +1,15 @@
+decal:
+  name: poster_2
+  lifetime: 99999
+  scale: 1
+  scale_variation: [-0.2, 0.2]
+  rotation_variation: [-90, 90]
+  material:
+    base:  decals/Poster_udnhcalka
+    map_kd: Albedo_2K__udnhcalka.jpg
+    map_normal: Normal_2K__udnhcalka.jpg
+    map_mrao: default_mrao
+    map_displacement: default_displacement
+    parallax_depth: 0.05
+    texture_spec:
+      wrap: GL_CLAMP_TO_EDGE

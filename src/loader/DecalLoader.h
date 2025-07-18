@@ -27,6 +27,11 @@ namespace loader {
             loader::DecalData& data,
             Loaders& loaders) const;
 
+        void loadDecalPrefab(
+            const loader::DocNode& node,
+            DecalData& data,
+            Loaders& loaders) const;
+
         std::vector<decal::DecalDefinition> createDecals(
             const std::vector<loader::DecalData>& decals,
             Loaders& loaders) const;
