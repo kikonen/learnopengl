@@ -17,6 +17,8 @@ class RenderContext;
 class Registry;
 class Program;
 
+struct ShadowUBO;
+
 class ShadowCascade final {
 public:
     ShadowCascade(
@@ -39,7 +41,9 @@ public:
 
     GLuint getTextureID();
 
-    void bind(const RenderContext& ctx);
+    void bind(
+        const RenderContext& ctx,
+        ShadowUBO& shadowUbo);
 
     void render(
         const RenderContext& ctx);

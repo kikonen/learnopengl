@@ -12,5 +12,6 @@ constexpr GLuint UBO_LIGHTS = 3;
 constexpr GLuint UBO_CAMERA = 4;
 //constexpr GLuint UBO_MATERIALS = 4;
 //constexpr GLuint UBO_TEXTURES = 5;
+constexpr GLuint UBO_SHADOW = 5;
 constexpr GLuint UBO_BUFFER_INFO = 6;
 constexpr GLuint UBO_DEBUG = 7;

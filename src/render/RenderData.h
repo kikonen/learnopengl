@@ -9,6 +9,7 @@ class Registry;
 struct MatricesUBO;
 struct CameraUBO;
 struct DataUBO;
+struct ShadowUBO;
 struct DebugUBO;
 struct BufferInfoUBO;
 struct ClipPlanesUBO;
@@ -31,6 +32,7 @@ namespace render {
         void updateMatrices(const MatricesUBO& data);
         void updateCamera(const CameraUBO& data);
         void updateData(const DataUBO& data);
+        void updateShadow(const ShadowUBO& data);
         void updateDebug(const DebugUBO& data);
         void updateBufferInfo(const BufferInfoUBO& data);
         void updateClipPlanes(const ClipPlanesUBO& data);
@@ -41,6 +43,7 @@ namespace render {
 
         kigl::GLBuffer m_matricesBuffer;
         kigl::GLBuffer m_cameraBuffer;
+        kigl::GLBuffer m_shadowBuffer;
         kigl::GLBuffer m_dataBuffer;
         kigl::GLBuffer m_debugBuffer;
         kigl::GLBuffer m_bufferInfoBuffer;

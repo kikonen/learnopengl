@@ -496,7 +496,7 @@ void Scene::bind(const RenderContext& ctx)
     prepareUBOs(ctx);
 
     if (m_shadowMapRenderer->isEnabled()) {
-        m_shadowMapRenderer->bind(ctx, m_dataUBO);
+        m_shadowMapRenderer->bind(ctx, m_shadowUBO);
     }
 
     NodeTypeRegistry::get().updateMaterials(ctx);
@@ -540,8 +540,7 @@ void Scene::render(const RenderContext& ctx)
         m_shadowMapRenderer->bindTexture(ctx.m_state);
     }
 
-    // NOTE KI update shadowmap UBO
-    updateDataUBO();
+    updateShadowUBO();
 
     state.setEnabled(GL_TEXTURE_CUBE_MAP_SEAMLESS, assets.cubeMapSeamless);
 
@@ -618,8 +617,6 @@ void Scene::renderUi(const RenderContext& parentCtx)
     localCtx.m_forceLineMode = false;
     localCtx.m_allowLineMode = false;
     //localCtx.m_useScreenspaceEffects = false;
-
-    localCtx.copyShadowMatrixFrom(parentCtx);
 
     renderScene(localCtx, m_uiRenderer.get());
 }
@@ -792,9 +789,6 @@ void Scene::prepareUBOs(const RenderContext& ctx)
 
         static_cast<float>(ctx.m_clock.ts),
         static_cast<int>(ctx.m_clock.frameCount),
-
-        // NOTE KI u_shadowPlanes not initialized
-        0, // shadowCount
     };
 
     for (int i = 0; const auto& v : render::PassSsao::getKernel()) {
@@ -850,6 +844,11 @@ void Scene::updateDataUBO() const
     m_renderData->updateData(m_dataUBO);
 }
 
+void Scene::updateShadowUBO() const
+{
+    m_renderData->updateData(m_dataUBO);
+}
+
 void Scene::updateDebugUBO() const
 {
     m_renderData->updateDebug(m_debugUBO);
@@ -859,3 +858,16 @@ void Scene::updateLightsUBO() const
 {
     m_renderData->updateLights(m_collection.get());
 }
+
+//void Scane::copyShadowMatrixFrom(const RenderContext& b)
+//{
+//    std::copy(
+//        std::begin(b.m_cameraUBO.u_shadow),
+//        std::end(b.m_cameraUBO.u_shadow),
+//        std::begin(m_cameraUBO.u_shadow));
+//
+//    //std::copy(
+//    //    std::begin(b.m_matrices.u_shadowProjected),
+//    //    std::end(b.m_matrices.u_shadowProjected),
+//    //    std::begin(m_matrices.u_shadowProjected));
+//}

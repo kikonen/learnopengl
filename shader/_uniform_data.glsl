@@ -30,15 +30,10 @@ layout(std140, binding = UBO_DATA) uniform Data {
 
   float u_time;
   int u_frame;
-  int u_shadowCount;
+
+  int data_pad1;
+  int data_pad2;
+  int data_pad3;
 
   vec4 u_ssaoSamples[64];
-
-  float u_shadowCascade_0;
-  float u_shadowCascade_1;
-  float u_shadowCascade_2;
-  float u_shadowCascade_3;
-
-  // int pad1;
-  // int pad2;
 };

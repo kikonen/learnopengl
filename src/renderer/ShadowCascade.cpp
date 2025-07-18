@@ -9,6 +9,7 @@
 #include "shader/Shader.h"
 #include "shader/Uniform.h"
 #include "shader/ProgramRegistry.h"
+#include "shader/ShadowUBO.h"
 
 #include "component/Light.h"
 
@@ -16,7 +17,6 @@
 
 #include "mesh/LodMesh.h"
 
-#include "model/Node.h"
 #include "model/Viewport.h"
 
 #include "engine/PrepareContext.h"
@@ -120,7 +120,9 @@ GLuint ShadowCascade::getTextureID()
     return m_buffer->m_spec.attachments[0].textureID;
 }
 
-void ShadowCascade::bind(const RenderContext& ctx)
+void ShadowCascade::bind(
+    const RenderContext& ctx,
+    ShadowUBO& shadowUbo)
 {
     auto& nodeRegistry = *ctx.m_registry->m_nodeRegistry;
 
@@ -208,7 +210,7 @@ void ShadowCascade::bind(const RenderContext& ctx)
 
         const auto scaleBiasMatrix = translateMatrix * scaleMatrix;
 
-        ctx.m_cameraUBO.u_shadow[m_index] = scaleBiasMatrix * m_camera.getProjected();
+        shadowUbo.u_shadow[m_index] = scaleBiasMatrix * m_camera.getProjected();
         //ctx.m_matrices.u_shadow[m_index] = ctx.m_matrices.u_shadowProjected[m_index];
 
         //KI_INFO_OUT(fmt::format(
