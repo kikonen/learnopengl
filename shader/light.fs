@@ -1,8 +1,8 @@
 #version 460 core
 
-#include struct_material.glsl
-#include uniform_data.glsl
 #include ssbo_materials.glsl
+
+#include uniform_data.glsl
 
 in VS_OUT {
   flat uint entityIndex;

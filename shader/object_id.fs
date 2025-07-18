@@ -2,9 +2,6 @@
 
 
 #ifdef USE_ALPHA
-#include struct_material.glsl
-#include struct_resolved_material.glsl
-
 #include ssbo_materials.glsl
 
 in VS_OUT {

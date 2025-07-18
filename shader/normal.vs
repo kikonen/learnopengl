@@ -6,9 +6,6 @@ layout (location = ATTR_TANGENT) in vec3 a_tangent;
 
 #include tech_skinned_mesh_data.glsl
 
-#include struct_entity.glsl
-#include struct_instance.glsl
-
 #include ssbo_entities.glsl
 #include ssbo_instance_indeces.glsl
 #include ssbo_socket_transforms.glsl

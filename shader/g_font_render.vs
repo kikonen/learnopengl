@@ -8,13 +8,6 @@ layout (location = ATTR_TANGENT) in vec3 a_tangent;
 layout (location = ATTR_TEX) in vec2 a_texCoord;
 layout (location = ATTR_FONT_ATLAS_TEX) in vec2 a_atlasCoord;
 
-#include struct_material.glsl
-#include struct_resolved_material.glsl
-
-#include struct_clip_plane.glsl
-#include struct_entity.glsl
-#include struct_instance.glsl
-
 #include ssbo_entities.glsl
 #include ssbo_instance_indeces.glsl
 #include ssbo_socket_transforms.glsl

@@ -2,9 +2,6 @@
 
 layout (location = ATTR_POS) in vec3 a_pos;
 
-#include struct_entity.glsl
-#include struct_instance.glsl
-
 #include ssbo_entities.glsl
 #include ssbo_instance_indeces.glsl
 

@@ -4,12 +4,6 @@
 
 #include unit_cube_strip.glsl
 
-#include struct_material.glsl
-#include struct_resolved_material.glsl
-#include struct_decal.glsl
-
-#include struct_clip_plane.glsl
-
 #include ssbo_decals.glsl
 #include ssbo_materials.glsl
 

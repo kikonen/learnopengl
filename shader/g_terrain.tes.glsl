@@ -2,10 +2,6 @@
 
 layout(triangles, fractional_odd_spacing, ccw) in;
 
-#include struct_clip_plane.glsl
-#include struct_entity.glsl
-#include struct_instance.glsl
-
 #include ssbo_entities.glsl
 #include ssbo_instance_indeces.glsl
 #include ssbo_socket_transforms.glsl

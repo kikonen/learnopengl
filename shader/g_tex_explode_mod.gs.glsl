@@ -3,8 +3,6 @@
 layout (triangles) in;
 layout (triangle_strip, max_vertices = 3) out;
 
-#include struct_clip_plane.glsl
-
 #include uniform_data.glsl
 #include uniform_clip_planes.glsl
 

@@ -2,8 +2,6 @@
 
 layout(triangles, fractional_odd_spacing, ccw) in;
 
-#include struct_clip_plane.glsl
-
 #include uniform_matrices.glsl
 #include uniform_camera.glsl
 #include uniform_clip_planes.glsl

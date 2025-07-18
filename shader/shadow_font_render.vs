@@ -4,11 +4,6 @@ layout (location = ATTR_POS) in vec3 a_pos;
 layout (location = ATTR_FONT_ATLAS_TEX) in vec2 a_atlasCoord;
 layout (location = ATTR_TEX) in vec2 a_texCoord;
 
-#include struct_material.glsl
-
-#include struct_entity.glsl
-#include struct_instance.glsl
-
 #include ssbo_entities.glsl
 #include ssbo_instance_indeces.glsl
 #include ssbo_socket_transforms.glsl

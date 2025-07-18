@@ -1,12 +1,5 @@
 #version 460 core
 
-#include struct_particle.glsl
-
-#include struct_material.glsl
-#include struct_resolved_material.glsl
-
-#include struct_clip_plane.glsl
-
 #include ssbo_particles.glsl
 #include ssbo_materials.glsl
 

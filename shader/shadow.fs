@@ -1,9 +1,6 @@
 #version 460 core
 
 #ifdef USE_ALPHA
-#include struct_material.glsl
-#include struct_resolved_material.glsl
-
 #include ssbo_materials.glsl
 #endif
 

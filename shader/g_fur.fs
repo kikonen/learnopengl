@@ -1,12 +1,10 @@
 #version 460 core
 
-#include struct_material.glsl
-#include struct_resolved_material.glsl
+#include ssbo_materials.glsl
 
 #include uniform_matrices.glsl
 #include uniform_camera.glsl
 #include uniform_data.glsl
-#include ssbo_materials.glsl
 
 in VS_OUT {
   vec3 worldPos;

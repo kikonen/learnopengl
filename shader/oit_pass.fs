@@ -1,10 +1,8 @@
 #version 460 core
 
-#include struct_material.glsl
-#include struct_resolved_material.glsl
+#include ssbo_materials.glsl
 
 #include uniform_data.glsl
-#include ssbo_materials.glsl
 
 // NOTE KI depth is *not* updated in OIT pass
 // => testing against solid depth

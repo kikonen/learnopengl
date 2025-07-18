@@ -1,11 +1,9 @@
 #version 460 core
 
-#include struct_material.glsl
-#include struct_resolved_material.glsl
+#include ssbo_materials.glsl
 
 #include uniform_camera.glsl
 #include uniform_data.glsl
-#include ssbo_materials.glsl
 
 #ifndef USE_ALPHA
 // https://www.khronos.org/opengl/wiki/Early_Fragment_Test

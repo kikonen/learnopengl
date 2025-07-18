@@ -2,17 +2,13 @@
 
 #define PASS_FORWARD
 
-#include struct_lights.glsl
-
-#include struct_material.glsl
-#include struct_resolved_material.glsl
+#include ssbo_materials.glsl
 
 #include uniform_matrices.glsl
 #include uniform_camera.glsl
 #include uniform_data.glsl
 #include uniform_debug.glsl
 #include uniform_lights.glsl
-#include ssbo_materials.glsl
 
 #ifndef USE_ALPHA
 // https://www.khronos.org/opengl/wiki/Early_Fragment_Test

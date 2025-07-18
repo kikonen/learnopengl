@@ -1,17 +1,12 @@
 #version 460 core
 
-#include struct_lights.glsl
-
-#include struct_material.glsl
-#include struct_resolved_material.glsl
+#include ssbo_materials.glsl
 
 #include uniform_matrices.glsl
 #include uniform_camera.glsl
 #include uniform_data.glsl
 #include uniform_buffer_info.glsl
 #include uniform_lights.glsl
-
-#include ssbo_materials.glsl
 
 // NOTE KI depth is *not* used
 // => for *stencil test

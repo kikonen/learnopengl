@@ -7,14 +7,6 @@ layout (location = ATTR_TEX) in vec2 a_texCoord;
 
 #include tech_skinned_mesh_data.glsl
 
-#ifdef USE_ALPHA
-#include struct_material.glsl
-#include struct_resolved_material.glsl
-#endif
-
-#include struct_entity.glsl
-#include struct_instance.glsl
-
 #include ssbo_entities.glsl
 #include ssbo_instance_indeces.glsl
 #include ssbo_socket_transforms.glsl
