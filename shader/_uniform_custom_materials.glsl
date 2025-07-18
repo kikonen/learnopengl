@@ -1,3 +1,4 @@
+#define _UNIFORM_CUSTOM_MATERIALS
 layout(binding = UNIT_CHANNEL_0) uniform sampler2D u_channel0;
 layout(binding = UNIT_CHANNEL_1) uniform sampler2D u_channel1;
 layout(binding = UNIT_CHANNEL_2) uniform sampler2D u_channel2;

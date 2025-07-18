@@ -1,3 +1,4 @@
+#define _UBO_DEBUG
 layout(std140, binding = UBO_DEBUG) uniform DebugUBO {
   vec4 u_wireframeLineColor;
   vec4 u_skyboxColor;

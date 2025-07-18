@@ -1,3 +1,4 @@
+#define _UBO_LIGHTS
 layout(std140, binding = UBO_LIGHTS) uniform Lights {
   uint u_dirLightCount;
   uint u_pointLightCount;

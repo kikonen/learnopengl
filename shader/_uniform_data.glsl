@@ -1,3 +1,4 @@
+#define _UBO_DATA
 layout(std140, binding = UBO_DATA) uniform Data {
   vec4 u_fogColor;
 

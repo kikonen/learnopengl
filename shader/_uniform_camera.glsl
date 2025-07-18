@@ -1,3 +1,4 @@
+#define _UBO_CAMERA
 layout(std140, binding = UBO_CAMERA) uniform Camera {
   mat4 u_mainProjectedMatrix;
 
