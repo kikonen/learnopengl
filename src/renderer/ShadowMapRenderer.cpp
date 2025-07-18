@@ -7,7 +7,7 @@
 #include "shader/Shader.h"
 #include "shader/Uniform.h"
 #include "shader/ProgramRegistry.h"
-#include "shader/DataUBO.h"
+#include "shader/ShadowUBO.h"
 
 #include "kigl/GLState.h"
 
@@ -98,7 +98,7 @@ void ShadowMapRenderer::prepareRT(
 
 void ShadowMapRenderer::bind(
     const RenderContext& ctx,
-    DataUBO& dataUbo)
+    ShadowUBO& shadowUbo)
 {
     const auto& dbg = ctx.m_dbg;
 
@@ -109,13 +109,13 @@ void ShadowMapRenderer::bind(
     if (!node) return;
 
     for (auto& cascade : m_cascades) {
-        cascade->bind(ctx);
+        cascade->bind(ctx, shadowUbo);
     }
 
     const auto size = m_planes.size() - 1;
 
     {
-        auto& ubo = dataUbo;
+        auto& ubo = shadowUbo;
         ubo.u_shadowCount = static_cast<int>(size);
 
         // NOTE KI plane defines range for cascade, u_shadowCascade_n tracks

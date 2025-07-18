@@ -4,6 +4,8 @@
 
 #include "engine/UpdateViewContext.h"
 
+#include "shader/Shader.h"
+
 #include "render/DebugContext.h"
 #include "render/RenderContext.h"
 #include "render/GBuffer.h"

@@ -14,8 +14,6 @@ layout(std140, binding = UBO_CAMERA) uniform Camera {
 
   mat4 u_viewportMatrix;
 
-  mat4 u_shadowMatrix[MAX_SHADOW_MAP_COUNT_ABS];
-
   // top, bottom, left, right, near, far
   vec4 u_frustum[6];
 
@@ -34,6 +32,6 @@ layout(std140, binding = UBO_CAMERA) uniform Camera {
 
   bool u_cameraSsaoEnabled;
 
-  int pad1;
-  // int pad2;
+  int camera_pad1;
+  // int camera_pad2;
 };

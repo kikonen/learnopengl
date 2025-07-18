@@ -34,18 +34,11 @@ struct DataUBO {
 
     float u_time;
     int u_frame;
-    int u_shadowCount;
+
+    int pad1;
+    int pad2;
+    int pad3;
 
     glm::vec3 u_ssaoSamples[64];
-
-    // From *camera* view (not shadow view)
-    // NOTE KI std410 arrays are glm::vec4 *alignment* per item
-    float u_shadowCascade_0;
-    float u_shadowCascade_1;
-    float u_shadowCascade_2;
-    float u_shadowCascade_3;
-
-    //int pad1;
-    //int pad2;
 };
 #pragma pack(pop)

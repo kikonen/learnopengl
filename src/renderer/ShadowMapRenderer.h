@@ -15,7 +15,7 @@ namespace render {
 
 class ShadowCascade;
 class Viewport;
-struct DataUBO;
+struct ShadowUBO;
 
 class ShadowMapRenderer final : public Renderer
 {
@@ -33,7 +33,7 @@ public:
 
     void bind(
         const RenderContext& ctx,
-        DataUBO& dataUbo);
+        ShadowUBO& shadowUbo);
 
     bool render(
         const RenderContext& ctx);

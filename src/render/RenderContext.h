@@ -88,8 +88,6 @@ public:
     // Ensure context is in sane state for start rendering
     void validateRender(std::string_view label) const;
 
-    void copyShadowMatrixFrom(const RenderContext& b);
-
     bool setForceSolid(bool flag) const {
         bool old = m_forceSolid;
         m_forceSolid = flag;

@@ -39,7 +39,7 @@
 #define UBO_LIGHTS 3
 #define UBO_CAMERA 4
 //#define UBO_MATERIALS 4
-#define UBO_TEXTURES 5
+#define UBO_SHADOW 5
 #define UBO_BUFFER_INFO 6
 #define UBO_DEBUG 7
 

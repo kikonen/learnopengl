@@ -10,8 +10,9 @@
 
 #include "backend/gl/PerformanceCounters.h"
 
-#include "shader/DebugUBO.h"
 #include "shader/DataUBO.h"
+#include "shader/ShadowUBO.h"
+#include "shader/DebugUBO.h"
 
 
 namespace event {
@@ -115,6 +116,7 @@ public:
     void prepareUBOs(const RenderContext& ctx);
     void updateUBOs() const;
     void updateDataUBO() const;
+    void updateShadowUBO() const;
     void updateDebugUBO() const;
     void updateLightsUBO() const;
 
@@ -143,6 +145,7 @@ private:
     std::unique_ptr<render::NodeCollection> m_collection;
 
     DataUBO m_dataUBO;
+    ShadowUBO m_shadowUBO;
     DebugUBO m_debugUBO;
 
     std::unique_ptr<LayerRenderer> m_uiRenderer{ nullptr };

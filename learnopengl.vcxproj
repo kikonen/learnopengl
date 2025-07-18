@@ -966,6 +966,7 @@
     <ClInclude Include="src\scene\Updater.h" />
     <ClInclude Include="src\script\command\AnimationPlay.h" />
     <ClInclude Include="src\script\api\UtilAPI.h" />
+    <ClInclude Include="src\shader\ShadowUBO.h" />
     <ClInclude Include="src\text\Align.h" />
     <ClInclude Include="src\text\TextSystem.h" />
     <ClInclude Include="src\util\assimp_util.h" />

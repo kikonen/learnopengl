@@ -8,6 +8,7 @@
 
 #include "asset/Assets.h"
 
+#include "shader/Shader.h"
 #include "shader/Program.h"
 #include "shader/ProgramRegistry.h"
 

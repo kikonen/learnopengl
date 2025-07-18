@@ -197,10 +197,6 @@ void RenderContext::prepareUBOs()
                 std::end(planes),
                 std::begin(matricesUBO.u_frustumPlanes));
         }
-
-        if (m_parent) {
-            copyShadowMatrixFrom(*m_parent);
-        }
     }
 
     {
@@ -279,19 +275,6 @@ void RenderContext::validateRender(std::string_view label) const
     //if (fbo > 0) {
     //    throw std::runtime_error{ fmt::format("CONTEXT: Stale frame buffer: context={}, fbo={}, label={}", m_name, fbo, label)};
     //}
-}
-
-void RenderContext::copyShadowMatrixFrom(const RenderContext& b)
-{
-    std::copy(
-        std::begin(b.m_cameraUBO.u_shadow),
-        std::end(b.m_cameraUBO.u_shadow),
-        std::begin(m_cameraUBO.u_shadow));
-
-    //std::copy(
-    //    std::begin(b.m_matrices.u_shadowProjected),
-    //    std::end(b.m_matrices.u_shadowProjected),
-    //    std::begin(m_matrices.u_shadowProjected));
 }
 
 UpdateContext RenderContext::toUpdateContext() const

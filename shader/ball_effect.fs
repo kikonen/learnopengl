@@ -5,6 +5,7 @@
 #include uniform_matrices.glsl
 #include uniform_camera.glsl
 #include uniform_data.glsl
+#include uniform_shadow.glsl
 #include uniform_buffer_info.glsl
 
 #ifndef USE_ALPHA

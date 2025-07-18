@@ -4,6 +4,7 @@
 #include "shader/MatricesUBO.h"
 #include "shader/CameraUBO.h"
 #include "shader/DataUBO.h"
+#include "shader/ShadowUBO.h"
 #include "shader/DebugUBO.h"
 #include "shader/BufferInfoUBO.h"
 #include "shader/ClipPlaneUBO.h"
@@ -28,6 +29,7 @@ namespace render {
         : m_matricesBuffer{ "matrices_ubo" },
         m_cameraBuffer{ "camera_ubo" },
         m_dataBuffer{ "data_ubo" },
+        m_shadowBuffer{ "shadow_ubo" },
         m_debugBuffer{ "debug_ubo" },
         m_bufferInfoBuffer{ "buffer_info_ubo" },
         m_clipPlanesBuffer{ "clip_planes_ubo" },
@@ -86,6 +88,13 @@ namespace render {
         constexpr auto sz = sizeof(DataUBO);
         m_dataBuffer.update(0, sz, &data);
         m_dataBuffer.bindUBORange(UBO_DATA, 0, sz);
+    }
+
+    void RenderData::updateShadow(const ShadowUBO& data)
+    {
+        constexpr auto sz = sizeof(ShadowUBO);
+        m_shadowBuffer.update(0, sz, &data);
+        m_shadowBuffer.bindUBORange(UBO_SHADOW, 0, sz);
     }
 
     void RenderData::updateDebug(const DebugUBO& data)

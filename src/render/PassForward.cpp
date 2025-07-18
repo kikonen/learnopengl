@@ -6,6 +6,8 @@
 
 #include "mesh/LodMesh.h"
 
+#include "shader/Shader.h"
+
 #include "render/DebugContext.h"
 #include "render/RenderContext.h"
 #include "render/FrameBuffer.h"
