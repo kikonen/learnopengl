@@ -38,6 +38,17 @@ namespace render {
         void updateClipPlanes(const ClipPlanesUBO& data);
         void updateLights(NodeCollection* collection);
 
+        void invalidateAll();
+
+        void invalidateMatrices();
+        void invalidateCamera();
+        void invalidateData();
+        void invalidateShadow();
+        void invalidateDebug();
+        void invalidateBufferInfo();
+        void invalidateClipPlanes();
+        void invalidateLights();
+
     private:
         LightsUBO m_lightsUBO;
 

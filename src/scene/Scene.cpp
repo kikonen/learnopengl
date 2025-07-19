@@ -571,6 +571,8 @@ void Scene::render(const RenderContext& ctx)
         renderUi(ctx);
     }
     renderViewports(ctx);
+
+    m_renderData->invalidateAll();
 }
 
 void Scene::renderUi(const RenderContext& parentCtx)
