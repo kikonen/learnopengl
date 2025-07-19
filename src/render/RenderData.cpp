@@ -26,7 +26,8 @@ namespace {
 
 namespace render {
     RenderData::RenderData()
-        : m_matricesBuffer{ "matrices_ubo" },
+        : m_lightsUBO{},
+        m_matricesBuffer{ "matrices_ubo" },
         m_cameraBuffer{ "camera_ubo" },
         m_dataBuffer{ "data_ubo" },
         m_shadowBuffer{ "shadow_ubo" },
@@ -55,6 +56,9 @@ namespace render {
 
         m_dataBuffer.create();
         m_dataBuffer.initEmpty(sizeof(DataUBO), GL_DYNAMIC_STORAGE_BIT);
+
+        m_shadowBuffer.create();
+        m_shadowBuffer.initEmpty(sizeof(ShadowUBO), GL_DYNAMIC_STORAGE_BIT);
 
         m_debugBuffer.create();
         m_debugBuffer.initEmpty(sizeof(DebugUBO), GL_DYNAMIC_STORAGE_BIT);

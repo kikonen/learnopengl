@@ -846,7 +846,7 @@ void Scene::updateDataUBO() const
 
 void Scene::updateShadowUBO() const
 {
-    m_renderData->updateData(m_dataUBO);
+    m_renderData->updateShadow(m_shadowUBO);
 }
 
 void Scene::updateDebugUBO() const
