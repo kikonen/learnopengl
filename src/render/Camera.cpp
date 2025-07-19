@@ -33,6 +33,7 @@ namespace render {
         const std::array<float, 4>& viewport)
     {
         m_viewport = viewport;
+        m_fovProjection = -1.f;
         m_orthogonal = true;
         m_dirty = true;
     }
