@@ -29,6 +29,7 @@ namespace event {
             NodeTypeAction nodeType;
             ScriptAction script;
             SelectAction select;
+            ViewportAction view;
         } body;
 
         Type type;

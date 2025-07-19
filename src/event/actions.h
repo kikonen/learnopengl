@@ -61,4 +61,9 @@ namespace event {
         bool select{ false };
         bool append{ false };
     };
+
+    struct ViewportAction {
+        uint8_t layer{ 0 };
+        glm::uvec2 aspectRatio{ 1 };
+    };
 }

@@ -27,6 +27,20 @@ types:
         #prefab: materials/Plastic01.yml
         program: g_tex
     layer: ui
+  - id: ui_quad
+    mesh:
+      vertex:
+        type: quad
+        radius: 0.5
+      material:
+        kd: [1, 0, 1, 1]
+        program: g_tex
+    layer: ui
+    xscript: |
+      cmd:rotate(
+        { time=60 * 100 },
+        vec3(0, 0, 1),
+        360 * 120)
   - id: player
     mesh:
       path: water_ball
@@ -198,8 +212,20 @@ nodes:
     id: fps_counter
     pos: [2, -2, -1]
   - type: ui_origo
-    pos: [0, 0, -2]
-    layer: ui
+    Xpos: [0, 0, -2]
+    pos: [2, 2, -2]
+    repeat:
+      x_step: -0.5
+      y_step: -0.5
+      x_count: 9
+      y_count: 9
+  - type: ui_quad
+    pos: [1, 1, -3]
+    repeat:
+      x_step: -2
+      y_step: -2
+      x_count: 2
+      y_count: 2
   - type: player
     pos: [2.5, 2, 3]
     scale: 0.1

@@ -29,6 +29,8 @@ namespace event
 
         script_run,
 
+        viewport_changed,
+
         console_execute,
         console_complete,
 

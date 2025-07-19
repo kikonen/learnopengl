@@ -3,6 +3,8 @@
 #include <vector>
 #include <memory>
 
+#include <glm/glm.hpp>
+
 #include "Renderer.h"
 
 namespace render {
@@ -49,6 +51,8 @@ public:
     std::unique_ptr<render::FrameBuffer> m_buffer{ nullptr };
 
     std::unique_ptr<render::NodeDraw> m_nodeDraw;
+
+    glm::uvec2 m_aspectRatio{ 1, 1 };
 
 private:
     Program* m_selectionProgram{ nullptr };

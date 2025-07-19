@@ -55,10 +55,6 @@
 #include "renderer/ObjectIdRenderer.h"
 
 namespace {
-    ki::node_id fpsNodeId = SID("fps_counter");
-
-    glm::uvec2 lastAspectRatio{ 1 };
-    bool aspectChanged{ false };
 }
 
 Scene::Scene(
@@ -463,13 +459,19 @@ void Scene::updateViewRT(const UpdateViewContext& ctx)
     //if (false)
     {
         const auto& spec = m_uiRenderer->m_buffer->m_spec;
-        glm::uvec2 aspectRatio = { spec.width, spec.height };
-        if (aspectRatio != lastAspectRatio) {
-            lastAspectRatio = aspectRatio;
-            auto handle = pool::NodeHandle::toHandle(fpsNodeId);
-            if (auto* node = handle.toNode(); node) {
-                auto& state = node->modifyState();
-                state.setAspectRatio(aspectRatio);
+        const glm::uvec2 aspectRatio = { spec.width, spec.height };
+        if (aspectRatio != m_uiRenderer->m_aspectRatio) {
+            m_uiRenderer->m_aspectRatio = aspectRatio;
+
+            const auto* layer = LayerInfo::findLayer(LAYER_UI);
+            if (layer && layer->m_enabled) {
+                // NOTE KI tell WT that RT has diposed node
+                event::Event evt{ event::Type::viewport_changed };
+                auto& body = evt.body.view = {
+                    .layer = layer->m_index,
+                    .aspectRatio = aspectRatio,
+                };
+                m_registry->m_dispatcherWorker->send(evt);
             }
         }
     }
@@ -586,7 +588,8 @@ void Scene::renderUi(const RenderContext& parentCtx)
         (float)m_uiRenderer->m_buffer->m_spec.height;
 
     float w = 4.f;
-    float h = w;// / aspectRatio;
+    float h = w;
+    w = w * aspectRatio;
     float mw = w * 0.5f;
     float mh = h * 0.5f;
     camera.setViewport({-mw, mw, -mh, mh});

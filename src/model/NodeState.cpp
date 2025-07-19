@@ -34,7 +34,7 @@ void NodeState::updateRootMatrix() noexcept
     //ASSERT_WT();
     if (!m_dirty) return;
 
-    updateRotationMatrix();
+    const auto& rotationMatrix = glm::toMat4(m_rotation * m_baseRotation);
 
     static glm::mat4 s_translateMatrix{ 1.f };
     static glm::mat4 s_scaleMatrix{ 1.f };
@@ -48,7 +48,7 @@ void NodeState::updateRootMatrix() noexcept
         s_scaleMatrix[2].z = m_scale.z * m_baseScale.z;
     }
 
-    m_modelMatrix = s_translateMatrix * m_rotationMatrix * s_scaleMatrix;
+    m_modelMatrix = s_translateMatrix * rotationMatrix * s_scaleMatrix;
     m_modelScale = m_scale * m_baseScale;
 
     //{
@@ -75,13 +75,13 @@ void NodeState::updateModelMatrix(const NodeState& parent) noexcept
     }
 
     const float aspect = (float)m_aspectRatio.x / (float)m_aspectRatio.y;
-    const float aspectScaleX = m_scale.x * m_baseScale.x / aspect;
+    const float aspectScaleX = m_scale.x * m_baseScale.x;// / aspect;
     const float aspectScaleY = m_scale.y * m_baseScale.y;
 
     const auto hasPivot = m_pivot != ZERO_VEC;
 
     {
-        g_translateMatrix[3].x = m_position.x;
+        g_translateMatrix[3].x = m_position.x * aspect;
         g_translateMatrix[3].y = m_position.y;
         g_translateMatrix[3].z = m_position.z;
 
@@ -100,20 +100,20 @@ void NodeState::updateModelMatrix(const NodeState& parent) noexcept
         }
     }
 
-    updateRotationMatrix();
+    const auto& rotationMatrix = glm::toMat4(m_rotation * m_baseRotation);
 
     if (hasPivot) {
         m_modelMatrix = parent.m_modelMatrix *
             g_translateMatrix *
             g_invPivotMatrix *
-            m_rotationMatrix *
+            rotationMatrix *
             g_pivotMatrix *
             g_scaleMatrix;
     }
     else {
         //m_modelMatrix = parent.m_modelMatrix *
         //    g_translateMatrix *
-        //    m_rotationMatrix *
+        //    rotationMatrix *
         //    g_scaleMatrix;
         glm::vec3 scale = m_scale * m_baseScale.z;
         scale.x = aspectScaleX;
@@ -121,7 +121,7 @@ void NodeState::updateModelMatrix(const NodeState& parent) noexcept
 
         m_modelMatrix = parent.m_modelMatrix *
             glm::scale(
-                g_translateMatrix * m_rotationMatrix,
+                g_translateMatrix * rotationMatrix,
                 scale);
     }
 
@@ -160,12 +160,12 @@ void NodeState::updateModelAxis() const noexcept
     m_dirtyAxis = false;
 }
 
-void NodeState::updateRotationMatrix() noexcept
-{
-    //ASSERT_WT();
-    if (!m_dirtyRotation) return;
-    // TODO KI glm::mat4_Cast (is same as glm::toMat4)
-    m_rotationMatrix = glm::toMat4(m_rotation * m_baseRotation);
-    m_dirtyRotation = false;
-    m_dirtyAxis = true;
-}
+//void NodeState::updateRotationMatrix() noexcept
+//{
+//    //ASSERT_WT();
+//    if (!m_dirtyRotation) return;
+//    // TODO KI glm::mat4_Cast (is same as glm::toMat4)
+//    m_rotationMatrix = glm::toMat4(m_rotation * m_baseRotation);
+//    m_dirtyRotation = false;
+//    m_dirtyAxis = true;
+//}
