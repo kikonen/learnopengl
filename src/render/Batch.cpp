@@ -54,7 +54,7 @@ namespace {
         const Frustum& frustum,
         const glm::vec4& volume) noexcept
     {
-        const Sphere& sphere{ volume };
+        const Sphere sphere{ volume };
         return sphere.isOnFrustum(frustum);
     }
 }

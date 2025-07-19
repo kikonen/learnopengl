@@ -2,14 +2,17 @@
 
 #include "util/thread.h"
 
+#include "asset/Sphere.h"
+
 #include "model/EntityFlags.h"
 #include "registry/EntitySSBO.h"
 
 #include "model/NodeState.h"
 
-
 namespace {
     constexpr ki::size_t_entity_flags PLANE_BITS = 0;
+
+    Sphere s_sphere;
 }
 
 Snapshot::Snapshot(const NodeState& o)
@@ -17,7 +20,6 @@ Snapshot::Snapshot(const NodeState& o)
     m_flags{ o.m_flags },
     //m_boneBaseIndex{ o.m_boneBaseIndex },
     //m_socketBaseIndex{ o.m_socketBaseIndex },
-    m_volume{ o.m_volume.getVolume() },
     //m_worldPos{ o.m_worldPos },
     //m_rotation{ o.m_rotation },
     m_viewUp{ o.m_viewUp },
@@ -26,8 +28,11 @@ Snapshot::Snapshot(const NodeState& o)
     m_modelMatrix{ o.m_modelMatrix },
     m_modelScale{ o.m_modelScale }
 {
-    o.m_volume.updateVolume(o.m_matrixLevel, o.m_modelMatrix, o.getWorldPosition(), o.getWorldMaxScale());
-    o.m_volume.storeWorldVolume(m_volume);
+    m_volume = Sphere::calculateWorldVolume(
+        o.m_volume,
+        o.m_modelMatrix,
+        o.getWorldPosition(),
+        o.getWorldMaxScale());
 }
 
 Snapshot::Snapshot(const NodeState&& o)
@@ -43,8 +48,11 @@ Snapshot::Snapshot(const NodeState&& o)
     m_modelMatrix{ o.m_modelMatrix },
     m_modelScale{ o.m_modelScale }
 {
-    o.m_volume.updateVolume(o.m_matrixLevel, o.m_modelMatrix, o.getWorldPosition(), o.getWorldMaxScale());
-    o.m_volume.storeWorldVolume(m_volume);
+    m_volume = Sphere::calculateWorldVolume(
+        o.m_volume,
+        o.m_modelMatrix,
+        o.getWorldPosition(),
+        o.getWorldMaxScale());
 }
 
 void Snapshot::applyFrom(const NodeState& o) noexcept
@@ -59,8 +67,11 @@ void Snapshot::applyFrom(const NodeState& o) noexcept
     //m_boneBaseIndex = o.m_boneBaseIndex;
     //m_socketBaseIndex = o.m_socketBaseIndex;
 
-    o.m_volume.updateVolume(o.m_matrixLevel, o.m_modelMatrix, o.getWorldPosition(), o.getWorldMaxScale());
-    o.m_volume.storeWorldVolume(m_volume);
+    m_volume = Sphere::calculateWorldVolume(
+        o.m_volume,
+        o.m_modelMatrix,
+        o.getWorldPosition(),
+        o.getWorldMaxScale());
 
     //m_worldPos = o.m_worldPos;
 

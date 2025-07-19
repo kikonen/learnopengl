@@ -15,32 +15,28 @@ namespace {
 }
 
 Sphere::Sphere(const glm::vec3& center, float radius) noexcept
-    : m_center{ center },
-    m_radius{ radius }
+    : m_volume{ center, radius }
 {}
 
-Sphere::Sphere(const glm::vec4& worldVolume) noexcept
-    : m_center{ worldVolume },
-    m_radius{ worldVolume.w },
-    m_worldCenter { worldVolume },
-    m_worldRadius{ worldVolume.w }
+Sphere::Sphere(const glm::vec4& volume) noexcept
+    : m_volume{ volume }
 {}
 
 Sphere::~Sphere() noexcept = default;
 
-std::unique_ptr<Sphere> Sphere::clone() const noexcept
-{
-    auto clone = std::make_unique<Sphere>(m_center, m_radius);
-    clone->m_worldCenter = m_worldCenter;
-    clone->m_worldRadius = m_worldRadius;
-    return clone;
-}
+//std::unique_ptr<Sphere> Sphere::clone() const noexcept
+//{
+//    auto clone = std::make_unique<Sphere>(m_center, m_radius);
+//    clone->m_worldCenter = m_worldCenter;
+//    clone->m_worldRadius = m_worldRadius;
+//    return clone;
+//}
 
 std::string Sphere::str() const noexcept
 {
     return fmt::format(
-        "<SPHERE: center={}, radius={}, worldCenter={}, worldRadius={}>",
-        m_center, m_radius, m_worldCenter, m_worldRadius);
+        "<SPHERE: {}>",
+        m_volume);
 }
 
 //bool Sphere::isOnFrustum(
@@ -82,23 +78,14 @@ std::string Sphere::str() const noexcept
 //        isOnOrForwardPlane(frustum.farFace);
 //};
 
-void Sphere::updateVolume(
-    const ki::level_id matrixLevel,
+glm::vec4 Sphere::calculateWorldVolume(
+    const glm::vec4& volume,
     const glm::mat4& modelMatrix,
     const glm::vec3& worldPos,
-    float maxScale) const noexcept
+    float maxScale) noexcept
 {
-    if (m_modelMatrixLevel == matrixLevel) {
-        return;
-    }
+    const auto& center = modelMatrix * glm::vec4(volume.x, volume.y, volume.z, 1.f);
+    const auto& radius = volume.w * maxScale;
 
-    if (false && m_center == ZERO) {
-        m_worldCenter = worldPos;
-    }
-    else {
-        m_worldCenter = modelMatrix * glm::vec4(m_center, 1.f);
-    }
-    m_worldRadius = m_radius * maxScale;
-
-    m_modelMatrixLevel = matrixLevel;
+    return { center.x, center.y, center.z, radius };
 }
