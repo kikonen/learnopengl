@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include <stdint.h>
 
 #include "asset/ViewportEffect.h"
 
@@ -14,7 +15,7 @@ inline const std::string LAYER_UI{ "ui" };
 struct LayerInfo
 {
     std::string m_name;
-    int m_index{ 0 };
+    uint8_t m_index{ 0 };
     int m_order{ 0 };
     bool m_enabled{ true };
     bool m_effectEnabled{ true };

@@ -204,6 +204,13 @@ void NodeRegistry::prepare(
 
     m_rootId = assets.rootId;
 
+    {
+        m_layerInfos.resize(assets.layers.size());
+        for (auto& layerInfo : m_layerInfos) {
+            layerInfo = { glm::uvec2{0}, false };
+        }
+    }
+
     attachListeners();
 }
 
@@ -227,6 +234,8 @@ void NodeRegistry::updateWT(const UpdateContext& ctx)
             state.updateRootMatrix();
         }
 
+        const auto layerCount = m_layerInfos.size();
+
         //std::lock_guard lock(m_lock);
         // NOTE KI nodes are in DAG order
         for (int i = m_rootIndex + 1; i < m_states.size(); i++) {
@@ -239,6 +248,13 @@ void NodeRegistry::updateWT(const UpdateContext& ctx)
             auto& state = m_states[i];
             const auto& parentState = m_states[m_parentIndeces[i]];
             auto* generator = node->m_generator.get();
+
+            if (node->m_layer < layerCount) {
+                const auto& layerInfo = m_layerInfos[node->m_layer];
+                if (layerInfo.second) {
+                    state.setAspectRatio(layerInfo.first);
+                }
+            }
 
             state.updateModelMatrix(parentState);
 
@@ -257,6 +273,10 @@ void NodeRegistry::updateWT(const UpdateContext& ctx)
                 }
             }
         }
+    }
+
+    for (auto& layerInfo : m_layerInfos) {
+        layerInfo.second = false;
     }
 }
 
@@ -545,6 +565,15 @@ void NodeRegistry::attachListeners()
             auto* type = pool::TypeHandle::toType(data.target);
             if (!type) return;
             type->prepareRT({ m_registry });
+        });
+
+    dispatcher->addListener(
+        event::Type::viewport_changed,
+        [this](const event::Event& e) {
+            auto& data = e.body.view;
+            viewportChanged(
+                data.layer,
+                data.aspectRatio);
         });
 }
 
@@ -1009,6 +1038,20 @@ void NodeRegistry::bindSkybox(
     node->prepareWT({ m_registry }, m_states[node->m_entityIndex]);
 
     m_skybox = handle;
+}
+
+void NodeRegistry::viewportChanged(
+    uint8_t layer,
+    glm::uvec2 aspectRatio) noexcept
+{
+    if (layer >= m_layerInfos.size()) return;
+
+    auto& info = m_layerInfos[layer];
+    if (info.first != aspectRatio)
+    {
+        info.first = aspectRatio;
+        info.second = true;
+    }
 }
 
 void NodeRegistry::updateBounds(

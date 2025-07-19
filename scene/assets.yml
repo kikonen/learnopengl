@@ -185,7 +185,7 @@ assets:
   water_map_render_frame_start: 0
   water_map_render_frame_step: 1
   water_map_near_plane: 0.1
-  water_map_far_plane: 800
+  water_map_far_plane: 600
 
   cube_map_enabled: true
   cube_map_buffer_scale: 0.5
@@ -251,6 +251,8 @@ assets:
   effect_bloom_threshold: 5.0
 
   effect_oit_enabled: true
+  effect_oit_min_blend_threshold: 0.001
+  effect_oit_max_blend_threshold: 0.995
 
   effect_ssao_enabled: true
   effect_ssao_base_color_enabled: false

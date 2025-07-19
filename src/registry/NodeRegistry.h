@@ -116,6 +116,10 @@ public:
         const pool::NodeHandle nodeHandle,
         ki::node_id parentId) noexcept;
 
+    void viewportChanged(
+        uint8_t layer,
+        glm::uvec2 aspectRatio) noexcept;
+
     inline Node* getActiveNode() const noexcept { return m_activeNode.toNode(); }
 
     uint32_t getNodeCount() const noexcept
@@ -272,4 +276,6 @@ private:
     mutable std::mutex m_snapshotLock;
 
     pool::NodeHandle m_activeNode{};
+
+    std::vector<std::pair<glm::uvec2, bool>> m_layerInfos;
 };
