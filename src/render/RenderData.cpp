@@ -185,4 +185,64 @@ namespace render {
         m_lightsBuffer.update(0, sz, &m_lightsUBO);
         m_lightsBuffer.bindUBORange(UBO_LIGHTS, 0, sz);
     }
+
+    void RenderData::invalidateAll()
+    {
+        invalidateMatrices();
+        invalidateCamera();
+        invalidateData();
+        invalidateShadow();
+        invalidateDebug();
+        invalidateBufferInfo();
+        invalidateClipPlanes();
+        invalidateLights();
+    }
+
+    void RenderData::invalidateMatrices()
+    {
+        constexpr auto sz = sizeof(MatricesUBO);
+        m_matricesBuffer.invalidateRange(0, sz);
+    }
+
+    void RenderData::invalidateCamera()
+    {
+        constexpr auto sz = sizeof(CameraUBO);
+        m_cameraBuffer.invalidateRange(0, sz);
+    }
+
+    void RenderData::invalidateData()
+    {
+        constexpr auto sz = sizeof(DataUBO);
+        m_dataBuffer.invalidateRange(0, sz);
+    }
+
+    void RenderData::invalidateShadow()
+    {
+        constexpr auto sz = sizeof(ShadowUBO);
+        m_shadowBuffer.invalidateRange(0, sz);
+    }
+
+    void RenderData::invalidateDebug()
+    {
+        constexpr auto sz = sizeof(DebugUBO);
+        m_debugBuffer.invalidateRange(0, sz);
+    }
+
+    void RenderData::invalidateBufferInfo()
+    {
+        constexpr auto sz = sizeof(BufferInfoUBO);
+        m_bufferInfoBuffer.invalidateRange(0, sz);
+    }
+
+    void RenderData::invalidateClipPlanes()
+    {
+        constexpr auto sz = sizeof(ClipPlanesUBO);
+        m_clipPlanesBuffer.invalidateRange(0, sz);
+    }
+
+    void RenderData::invalidateLights()
+    {
+        constexpr auto sz = sizeof(LightsUBO);
+        m_lightsBuffer.invalidateRange(0, sz);
+    }
 }
