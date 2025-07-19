@@ -5,8 +5,6 @@
 #include <glm/glm.hpp>
 #include <glm/gtx/quaternion.hpp>
 
-#include "asset/Sphere.h"
-
 #include "ki/limits.h"
 #include "ki/size.h"
 
@@ -27,7 +25,7 @@ struct NodeState {
     friend struct Snapshot;
 
 private:
-    Sphere m_volume;
+    glm::vec4 m_volume;
 
     glm::vec3 m_position{ 0.f };
 
@@ -112,14 +110,14 @@ public:
         return m_invBaseRotation;
     }
 
-    inline const glm::vec4 getVolume() const noexcept
+    inline const glm::vec4& getVolume() const noexcept
     {
-        return m_volume.getVolume();
+        return m_volume;
     }
 
     inline void setVolume(const glm::vec4& volume) noexcept
     {
-        if (m_volume.getVolume() != volume) {
+        if (m_volume != volume) {
             m_volume = volume;
             m_dirtySnapshot = true;
         }

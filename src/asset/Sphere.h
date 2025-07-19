@@ -12,7 +12,7 @@ struct Sphere final
 {
     Sphere() noexcept = default;
     Sphere(const glm::vec3& center, float radius) noexcept;
-    Sphere(const glm::vec4& worldVolume) noexcept;
+    Sphere(const glm::vec4& volume) noexcept;
 
     ~Sphere() noexcept;
 
@@ -20,32 +20,21 @@ struct Sphere final
 
     std::string str() const noexcept;
 
-    inline const glm::vec4 getVolume() const noexcept {
-        return { m_center, m_radius };
+    inline const glm::vec4& getVolume() const noexcept {
+        return m_volume;
     }
 
-    inline const glm::vec4 getWorldVolume() const noexcept {
-        return { m_worldCenter, m_worldRadius };
-    }
-
-    inline void storeWorldVolume(glm::vec4& volume) const noexcept {
-        volume.x = m_worldCenter.x;
-        volume.y = m_worldCenter.y;
-        volume.z = m_worldCenter.z;
-        volume.w = m_worldRadius;
-    }
-
-    inline const glm::vec3& getCenter() const noexcept {
-        return m_center;
+    inline glm::vec3 getCenter() const noexcept {
+        return m_volume;
     }
 
     inline float getRadius() const noexcept {
-        return m_radius;
+        return m_volume.w;
     }
 
     inline bool isOnOrForwardPlane(const Plane& plane) const noexcept
     {
-        return plane.getSignedDistanceToPlane(m_worldCenter) >= -m_worldRadius;
+        return plane.getSignedDistanceToPlane(m_volume) >= -m_volume.w;
     }
 
     //bool isOnFrustum(
@@ -66,17 +55,13 @@ struct Sphere final
         //    isOnOrForwardPlane(frustum.farFace);
     };
 
-    void updateVolume(
-        const ki::level_id matrixLevel,
+    static glm::vec4 calculateWorldVolume(
+        const glm::vec4& volume,
         const glm::mat4& modelMatrix,
         const glm::vec3& worldPos,
-        float maxScale) const noexcept;
+        float maxScale) noexcept;
 
 private:
-    glm::vec3 m_center{ 0.f };
-    mutable glm::vec3 m_worldCenter{ 0.f };
-    float m_radius{ 0.f };
-    mutable float m_worldRadius{ 0.f };
-    mutable ki::level_id m_modelMatrixLevel{ 0 };
+    const glm::vec4 m_volume;
 };
 
