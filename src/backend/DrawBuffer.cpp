@@ -313,7 +313,7 @@ namespace backend {
         if (instanceBuffer.m_size < totalCount * sz) {
             size_t blocks = (totalCount / INDEX_BLOCK_SIZE) + 2;
             size_t bufferSize = blocks * INDEX_BLOCK_SIZE * sz;
-            instanceBuffer.resizeBuffer(bufferSize);
+            instanceBuffer.resizeBuffer(bufferSize, false);
         }
 
         //m_indexBuffer.invalidateRange(

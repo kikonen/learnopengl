@@ -213,7 +213,7 @@ namespace particle {
         if (m_ssbo.m_size < totalCount * sz) {
             size_t blocks = (totalCount / BLOCK_SIZE) + 2;
             size_t bufferSize = blocks * BLOCK_SIZE * sz;
-            if (m_ssbo.resizeBuffer(bufferSize)) {
+            if (m_ssbo.resizeBuffer(bufferSize, false)) {
                 m_ssbo.bindSSBO(SSBO_PARTICLES);
             }
         }
@@ -230,6 +230,8 @@ namespace particle {
             0,
             totalCount * sz,
             m_snapshot.data());
+
+        m_ssbo.markUsed(totalCount * sz);
 
         m_activeCount = totalCount;
 

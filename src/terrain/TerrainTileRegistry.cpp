@@ -145,7 +145,7 @@ namespace terrain {
         if (m_ssbo.m_size < totalCount * sz) {
             size_t blocks = (totalCount / BLOCK_SIZE) + 2;
             size_t bufferSize = blocks * BLOCK_SIZE * sz;
-            m_ssbo.resizeBuffer(bufferSize);
+            m_ssbo.resizeBuffer(bufferSize, false);
             m_ssbo.bindSSBO(SSBO_TERRAIN_TILES);
         }
 
@@ -157,6 +157,8 @@ namespace terrain {
             0,
             totalCount * sz,
             m_snapshot.data());
+
+        m_ssbo.markUsed(totalCount * sz);
 
         m_activeCount = totalCount;
 

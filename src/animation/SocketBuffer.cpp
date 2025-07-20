@@ -9,7 +9,7 @@
 #include "SocketRegistry.h"
 
 namespace {
-    constexpr size_t BLOCK_SIZE = 1000;
+    constexpr size_t BLOCK_SIZE = 1024;
     constexpr size_t MAX_BLOCK_COUNT = 5100;
 }
 
@@ -99,12 +99,12 @@ namespace animation
         if (m_ssbo.m_size < totalCount * sz) {
             size_t blocks = (totalCount / BLOCK_SIZE) + 2;
             size_t bufferSize = blocks * BLOCK_SIZE * sz;
-            if (m_ssbo.resizeBuffer(bufferSize)) {
+            if (m_ssbo.resizeBuffer(bufferSize, true)) {
                 m_ssbo.bindSSBO(SSBO_SOCKET_TRANSFORMS);
             }
 
-            updateIndex = 0;
-            updateCount = totalCount;
+            //updateIndex = 0;
+            //updateCount = totalCount;
         }
 
         //if (m_useInvalidate) {
@@ -115,6 +115,8 @@ namespace animation
             updateIndex * sz,
             updateCount * sz,
             &snapshot[updateIndex]);
+
+        m_ssbo.markUsed(totalCount * sz);
 
         return updateCount == totalCount;
     }

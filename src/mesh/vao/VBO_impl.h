@@ -5,7 +5,7 @@
 #include "kigl/GLVertexArray.h"
 
 namespace mesh {
-    constexpr size_t VERTEX_BLOCK_SIZE = 1000;
+    constexpr size_t VERTEX_BLOCK_SIZE = 1024;
     constexpr size_t VERTEX_BLOCK_COUNT = 10000;
 
     constexpr size_t MAX_VERTEX_COUNT = VERTEX_BLOCK_SIZE * VERTEX_BLOCK_COUNT;
@@ -94,10 +94,11 @@ namespace mesh {
 
             // NOTE KI *reallocate* SSBO if needed
             if (m_vbo.m_size < totalCount * sz) {
-                m_vbo.resizeBuffer(m_entries.capacity() * sz);
+                m_vbo.resizeBuffer(m_entries.capacity() * sz, true);
                 glVertexArrayVertexBuffer(vao, m_binding, m_vbo, 0, sz);
-                updateIndex = 0;
-                updateCount = totalCount;
+
+                //updateIndex = 0;
+                //updateCount = totalCount;
             }
 
             //m_vbo.invalidateRange(
@@ -108,6 +109,8 @@ namespace mesh {
                 updateIndex * sz,
                 updateCount * sz,
                 &m_entries[updateIndex]);
+
+            m_vbo.markUsed(totalCount * sz);
         }
 
         return updateCount == totalCount;

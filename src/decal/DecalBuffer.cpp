@@ -102,7 +102,7 @@ namespace decal {
         if (m_ssbo.m_size < totalCount * sz) {
             size_t blocks = (totalCount / BLOCK_SIZE) + 2;
             size_t bufferSize = blocks * BLOCK_SIZE * sz;
-            if (m_ssbo.resizeBuffer(bufferSize)) {
+            if (m_ssbo.resizeBuffer(bufferSize, false)) {
                 m_ssbo.bindSSBO(SSBO_DECALS);
             }
         }
@@ -119,6 +119,8 @@ namespace decal {
             0,
             totalCount * sz,
             snapshot.data());
+
+        m_ssbo.markUsed(totalCount * sz);
 
         m_collection->m_activeCount = totalCount;
 

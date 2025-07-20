@@ -93,10 +93,11 @@ namespace mesh {
 
             // NOTE KI *reallocate* SSBO if needed
             if (m_ebo.m_size < totalCount * sz) {
-                m_ebo.resizeBuffer(m_entries.capacity() * sz);
+                m_ebo.resizeBuffer(m_entries.capacity() * sz, true);
                 glVertexArrayElementBuffer(vao, m_ebo);
-                updateIndex = 0;
-                updateCount = totalCount;
+
+                //updateIndex = 0;
+                //updateCount = totalCount;
             }
 
             //m_ebo.invalidateRange(
@@ -107,6 +108,8 @@ namespace mesh {
                 updateIndex * sz,
                 updateCount * sz,
                 &m_entries[updateIndex]);
+
+            m_ebo.markUsed(totalCount * sz);
         }
 
         return updateCount == totalCount;
