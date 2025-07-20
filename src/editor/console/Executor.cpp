@@ -100,7 +100,7 @@ namespace editor
             std::lock_guard lock(m_lock);
             m_commands = m_pending;
             m_pending.clear();
-            resultCount = m_results.size();
+            resultCount = static_cast<int>(m_results.size());
         }
 
         if (m_commands.empty()) return resultCount;
@@ -120,7 +120,7 @@ namespace editor
             {
                 m_results.push_back(item);
             }
-            resultCount = m_results.size();
+            resultCount = static_cast<int>(m_results.size());
         }
 
         m_commands.clear();
