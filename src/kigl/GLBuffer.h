@@ -49,7 +49,9 @@ namespace kigl {
         //
         // @return true if recreate was done
         //
-        bool resizeBuffer(size_t size)
+        bool resizeBuffer(
+            size_t size,
+            bool keepData)
         {
             KI_DEBUG(fmt::format(
                 "BUFFER: resize - name={}, id={}, oldSize={}, newSize={}",
@@ -57,11 +59,27 @@ namespace kigl {
                 m_size, size));
             if (size == m_size) return false;
             unmap();
-            if (m_created) {
-                glDeleteBuffers(1, &m_id);
-                m_created = false;
-            }
+
+            bool wasCreated = m_created;
+            GLuint oldId = m_id;
+            size_t oldSize = m_size;
+            m_created = false;
+
             createEmpty(size, m_flags);
+
+            if (wasCreated) {
+                if (keepData && m_usedSize > 0) {
+                    glCopyNamedBufferSubData(
+                        oldId,
+                        m_id,
+                        0,
+                        0,
+                        std::min(m_usedSize, size));
+                }
+
+                glDeleteBuffers(1, &oldId);
+            }
+
             return true;
         }
 
@@ -87,6 +105,13 @@ namespace kigl {
 
             glNamedBufferStorage(m_id, size, data, flags);
         }
+
+        void markUsed(size_t usedSize)
+        {
+            assert(usedSize <= m_size);
+            m_usedSize = std::min(usedSize, m_size);
+        }
+
 
         void clear() {
             glClearNamedBufferSubData(
@@ -208,6 +233,8 @@ namespace kigl {
         GLuint m_id = 0;
         size_t m_size = 0;
         GLuint m_flags = 0;
+
+        size_t m_usedSize = 0;
 
         int m_binding = -1;
 

@@ -17,7 +17,7 @@
 
 
 namespace {
-    constexpr size_t ENTITY_BLOCK_SIZE = 100;
+    constexpr size_t ENTITY_BLOCK_SIZE = 128;
     constexpr size_t ENTITY_BLOCK_COUNT = 40000;
 
     constexpr size_t MAX_ENTITY_COUNT = ENTITY_BLOCK_SIZE * ENTITY_BLOCK_COUNT;
@@ -119,14 +119,15 @@ void EntityRegistry::updateRT(const UpdateContext& ctx)
     {
         // NOTE KI *reallocate* SSBO if needed
         if (m_ssbo.m_size < totalCount * sz) {
-            m_ssbo.resizeBuffer(entries.capacity() * sz);
+            m_ssbo.resizeBuffer(entries.capacity() * sz, true);
             if (m_useMapped) {
                 m_ssbo.map(GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_FLUSH_EXPLICIT_BIT);
+                refreshAll = true;
             }
             else {
                 m_ssbo.bindSSBO(SSBO_ENTITIES);
+                //refreshAll = true;
             }
-            refreshAll = true;
         }
     }
 
@@ -176,6 +177,8 @@ void EntityRegistry::updateRT(const UpdateContext& ctx)
             idx++;
         }
     }
+
+    m_ssbo.markUsed(totalCount * sz);
 
     for (int i = 0; i < totalCount; i++) {
         dirtyEntries[i] = false;

@@ -208,9 +208,10 @@ void MaterialRegistry::updateMaterialBuffer()
 
         // NOTE KI *reallocate* SSBO if needed
         if (m_ssbo.m_size < totalCount * sz) {
-            m_ssbo.resizeBuffer(m_materialEntries.capacity() * sz);
+            m_ssbo.resizeBuffer(m_materialEntries.capacity() * sz, true);
             m_ssbo.bindSSBO(SSBO_MATERIALS);
-            updateIndex = 0;
+
+            //updateIndex = 0;
         }
 
         const size_t updateCount = totalCount - updateIndex;
@@ -219,6 +220,8 @@ void MaterialRegistry::updateMaterialBuffer()
             updateIndex * sz,
             updateCount * sz,
             &m_materialEntries[updateIndex]);
+
+        m_ssbo.markUsed(totalCount * sz);
     }
 
     m_lastSize = totalCount;

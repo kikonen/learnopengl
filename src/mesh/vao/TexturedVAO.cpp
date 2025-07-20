@@ -30,7 +30,7 @@ namespace mesh {
         m_indexEbo{ m_name + "_ebo" },
         m_fence{ m_name + "_fence" }
     {
-        m_useSeparate = true;
+        m_useSeparate = false;
     }
 
     TexturedVAO::~TexturedVAO() = default;
