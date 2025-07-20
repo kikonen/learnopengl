@@ -90,6 +90,7 @@ types:
         tiling: 1
         program: g_tex
   - id: hello_world
+    layer: ui
     type: text
     mesh:
       material:
@@ -100,7 +101,7 @@ types:
         #map_displacement: ""
         tiling: 3
         alpha: true
-        blend: true
+        xblend: true
         render_back: true
         default_programs: false
         program: g_font_render
@@ -124,7 +125,12 @@ types:
       align_vertical: center
     flags:
       xeffect: true
-    script_file: scripts/seq_hello_text
+      no_shadow: true
+      no_frustum: true
+    base_scale: 0.01
+    script_files:
+      - scripts/seq_hello_text
+      - scripts/scroll_hello_text
     xscript: |
       printf("text rotate: %d", id)
       cmd:rotate(
@@ -236,8 +242,7 @@ nodes:
   - type: hello_world_origo
     pos: [0.0, 4.0, -3.0]
   - type: hello_world
-    pos: [0.0, 4.0, -3.0]
-    scale: 0.01
+    pos: [0.0, 0.0, -2]
   - type: another_text
     pos: [2, 5, -8.5]
     scale: 0.01
