@@ -1,12 +1,11 @@
 #pragma once
 
-#include "kigl/GLBuffer.h"
+#include "kigl/GLSyncQueue.h"
 
 #include "shader/LightsUBO.h"
 
 class Registry;
 
-struct MatricesUBO;
 struct CameraUBO;
 struct DataUBO;
 struct ShadowUBO;
@@ -29,7 +28,6 @@ namespace render {
             bool useFenceDebug,
             bool debug);
 
-        void updateMatrices(const MatricesUBO& data);
         void updateCamera(const CameraUBO& data);
         void updateData(const DataUBO& data);
         void updateShadow(const ShadowUBO& data);
@@ -40,25 +38,16 @@ namespace render {
 
         void invalidateAll();
 
-        void invalidateMatrices();
-        void invalidateCamera();
-        void invalidateData();
-        void invalidateShadow();
-        void invalidateDebug();
-        void invalidateBufferInfo();
-        void invalidateClipPlanes();
-        void invalidateLights();
-
     private:
         LightsUBO m_lightsUBO;
 
-        kigl::GLBuffer m_matricesBuffer;
-        kigl::GLBuffer m_cameraBuffer;
-        kigl::GLBuffer m_shadowBuffer;
-        kigl::GLBuffer m_dataBuffer;
-        kigl::GLBuffer m_debugBuffer;
-        kigl::GLBuffer m_bufferInfoBuffer;
-        kigl::GLBuffer m_clipPlanesBuffer;
-        kigl::GLBuffer m_lightsBuffer;
+        // NOTE KI OpenGL Insights - Chapter 28
+        std::unique_ptr<kigl::GLSyncQueue<CameraUBO>> m_camera;
+        std::unique_ptr<kigl::GLSyncQueue<DataUBO>> m_data;
+        std::unique_ptr<kigl::GLSyncQueue<ShadowUBO>> m_shadow;
+        std::unique_ptr<kigl::GLSyncQueue<DebugUBO>> m_debug;
+        std::unique_ptr<kigl::GLSyncQueue<BufferInfoUBO>> m_bufferInfo;
+        std::unique_ptr<kigl::GLSyncQueue<ClipPlanesUBO>> m_clipPlanes;
+        std::unique_ptr<kigl::GLSyncQueue<LightsUBO>> m_lights;
     };
 }
