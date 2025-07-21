@@ -12,6 +12,8 @@ namespace animation {
     class AnimationSystem;
     class SocketBuffer;
 
+    struct SocketTransformSSBO;
+
     class SocketRegistry {
         friend AnimationSystem;
         friend SocketBuffer;
@@ -63,7 +65,7 @@ namespace animation {
         std::vector<glm::mat4> m_transforms;
         std::vector<std::pair<uint32_t, size_t>> m_dirtyTransform;
 
-        std::vector<glm::mat4> m_snapshot;
+        std::vector<SocketTransformSSBO> m_snapshot;
         std::vector<std::pair<uint32_t, size_t>> m_dirtySnapshot;
     };
 }

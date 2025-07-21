@@ -74,6 +74,8 @@ namespace animation {
             double stopTime);
 
         uint32_t getActiveCount() const noexcept;
+        uint32_t getActiveBoneBaseIndex() const noexcept;
+        uint32_t getActiveSocketBaseIndex() const noexcept;
 
         void updateWT(const UpdateContext& ctx);
         void updateRT(const UpdateContext& ctx);

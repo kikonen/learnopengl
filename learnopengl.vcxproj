@@ -300,6 +300,7 @@
     <ClCompile Include="src\animation\BoneContainer.cpp" />
     <ClCompile Include="src\animation\SocketBuffer.cpp" />
     <ClCompile Include="src\animation\SocketRegistry.cpp" />
+    <ClCompile Include="src\animation\SocketTransformSSBO.h" />
     <ClCompile Include="src\asset\LayerInfo.cpp" />
     <ClCompile Include="src\component\definition\AudioListenerDefinition.cpp" />
     <ClCompile Include="src\component\definition\AudioSourceDefinition.cpp" />

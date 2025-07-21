@@ -19,7 +19,7 @@ const mat4 meshMatrix = transpose(mat4(
 if (instance.u_socketIndex >= 0) {
   modelMatrix =
     modelMatrix
-    * u_socketTransforms[entity.u_socketBaseIndex + instance.u_socketIndex]
+    * resolveSocketMatrix(entity.u_socketBaseIndex + instance.u_socketIndex + u_socketBaseIndex)
     * meshMatrix;
 } else {
   modelMatrix *= meshMatrix;

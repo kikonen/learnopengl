@@ -113,9 +113,9 @@ namespace particle {
         m_useFenceDebug = assets.glUseFenceDebug;
 
         m_useMapped = true;
-        m_useInvalidate = true;
-        m_useFence = false;
-        m_useFenceDebug = false;
+        m_useInvalidate = false;
+        m_useFence = true;
+        m_useFenceDebug = true;
 
         if (!isEnabled()) return;
     }
@@ -231,10 +231,12 @@ namespace particle {
         auto& current = m_queue->current();
         auto* mappedData = m_queue->m_buffer.mapped< ParticleSSBO>(current.m_baseOffset);
 
+        m_queue->waitFence();
         std::copy(
             std::begin(m_snapshot),
             std::end(m_snapshot),
             mappedData);
+        m_queue->setFence();
 
         m_activeCount = totalCount;
         m_activeBaseIndex = current.m_baseIndex;

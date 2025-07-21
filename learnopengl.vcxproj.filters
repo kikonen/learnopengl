@@ -1272,6 +1272,9 @@
     <ClCompile Include="src\engine\asssets_loader_util.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\animation\SocketTransformSSBO.h">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h">

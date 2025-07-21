@@ -12,6 +12,8 @@ namespace animation {
     class AnimationSystem;
     class BoneBuffer;
 
+    struct BoneTransformSSBO;
+
     class BoneRegistry {
         friend BoneBuffer;
         friend AnimationSystem;
@@ -63,7 +65,7 @@ namespace animation {
         std::vector<glm::mat4> m_transforms;
         std::vector<std::pair<uint32_t, size_t>> m_dirtyTransform;
 
-        std::vector<glm::mat4> m_snapshot;
+        std::vector<BoneTransformSSBO> m_snapshot;
         std::vector<std::pair<uint32_t, size_t>> m_dirtySnapshot;
     };
 }

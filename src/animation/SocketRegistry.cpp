@@ -4,6 +4,8 @@
 
 #include "asset/Assets.h"
 
+#include "SocketTransformSSBO.h"
+
 namespace {
     constexpr int INITIAL_SIZE = 10000;
 }

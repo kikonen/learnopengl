@@ -269,6 +269,16 @@ namespace animation
         return static_cast<uint32_t>(m_states.size());
     }
 
+    uint32_t AnimationSystem::getActiveBoneBaseIndex() const noexcept
+    {
+        return m_boneBuffer->getActiveBaseIndex();
+    }
+
+    uint32_t AnimationSystem::getActiveSocketBaseIndex() const noexcept
+    {
+        return m_socketBuffer->getActiveBaseIndex();
+    }
+
     void AnimationSystem::updateWT(const UpdateContext& ctx)
     {
         prepareNodes();
