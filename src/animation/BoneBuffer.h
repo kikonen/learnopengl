@@ -28,11 +28,6 @@ namespace animation {
         void shutdown();
         void prepare();
 
-        uint32_t getActiveBaseIndex() const noexcept
-        {
-            return static_cast<uint32_t>(m_activeBaseIndex);
-        }
-
     protected:
         void updateRT();
 
@@ -52,8 +47,6 @@ namespace animation {
         std::unique_ptr<kigl::GLSyncQueue<BoneTransformSSBO>> m_queue;
 
         size_t m_frameSkipCount{ 0 };
-
-        size_t m_activeBaseIndex{ 0 };
 
         bool m_useMapped{ false };
         bool m_useInvalidate{ false };

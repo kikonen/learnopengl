@@ -20,10 +20,6 @@ struct DataUBO {
     int u_shadowVisual; // bool as 4 bytes
     int u_forceLineMode; // bool as 4 bytes
 
-    GLuint u_particleBaseIndex;
-    GLuint u_boneBaseIndex;
-    GLuint u_socketBaseIndex;
-
     float u_fogStart;
     float u_fogEnd;
     float u_fogDensity;
@@ -39,9 +35,9 @@ struct DataUBO {
     float u_time;
     int u_frame;
 
-    //int pad1;
-    //int pad2;
-    //int pad3;
+    int pad1;
+    int pad2;
+    int pad3;
 
     glm::vec3 u_ssaoSamples[64];
 };

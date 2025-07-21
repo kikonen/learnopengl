@@ -239,7 +239,8 @@ namespace particle {
         m_queue->setFence();
 
         m_activeCount = totalCount;
-        m_activeBaseIndex = current.m_baseIndex;
+
+        m_queue->bindCurrentSSBO(SSBO_PARTICLES, false, totalCount);
 
         m_queue->next();
 
@@ -265,8 +266,6 @@ namespace particle {
                 m_useFenceDebug);
 
             m_queue->prepare(1, false);
-
-            m_queue->bindSSBO(SSBO_PARTICLES);
         }
     }
 }

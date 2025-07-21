@@ -32,7 +32,7 @@ Particle particle;
 #include fn_calculate_clipping.glsl
 
 void main() {
-  const uint particleIndex = gl_BaseInstance + gl_InstanceID + u_particleBaseIndex;
+  const uint particleIndex = gl_BaseInstance + gl_InstanceID;
   particle = u_particles[particleIndex];
 
   const uint msp = particle.u_msp;

@@ -112,8 +112,6 @@ namespace animation
                 m_useFenceDebug);
 
             m_queue->prepare(1, false);
-
-            m_queue->bindSSBO(SSBO_SOCKET_TRANSFORMS);
         }
     }
 
@@ -137,7 +135,7 @@ namespace animation
             mappedData);
         m_queue->setFence();
 
-        m_activeBaseIndex = current.m_baseIndex;
+        m_queue->bindCurrentSSBO(SSBO_SOCKET_TRANSFORMS, false, totalCount);
 
         m_queue->next();
 
