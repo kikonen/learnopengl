@@ -4,6 +4,8 @@
 
 #include "asset/Assets.h"
 
+#include "kigl/GLSyncQueue_impl.h"
+
 #include "shader/SSBO.h"
 #include "shader/ProgramRegistry.h"
 
@@ -18,11 +20,14 @@
 #include "registry/Registry.h"
 
 #include "Particle.h"
+#include "ParticleSSBO.h"
 #include "ParticleGenerator.h"
 
 namespace {
     constexpr size_t BLOCK_SIZE = 10000;
     constexpr size_t MAX_BLOCK_COUNT = 1100;
+
+    constexpr size_t RANGE_COUNT = 3;
 
     static particle::ParticleSystem* s_system{ nullptr };
 }
@@ -55,6 +60,8 @@ namespace particle {
         clear();
     }
 
+    ParticleSystem::~ParticleSystem() = default;
+
     void ParticleSystem::clear()
     {
         m_updateReady = false;
@@ -68,6 +75,10 @@ namespace particle {
         m_snapshotCount = 0;
         m_activeCount = 0;
         m_lastParticleSize = 0;
+    }
+
+    bool ParticleSystem::isFull() const noexcept {
+        return !m_enabled || m_particles.size() >= m_maxCount;
     }
 
     uint32_t ParticleSystem::getFreespace() const noexcept
@@ -101,15 +112,12 @@ namespace particle {
         m_useFence = assets.glUseFence;
         m_useFenceDebug = assets.glUseFenceDebug;
 
-        m_useMapped = false;
+        m_useMapped = true;
         m_useInvalidate = true;
         m_useFence = false;
         m_useFenceDebug = false;
 
         if (!isEnabled()) return;
-
-        m_ssbo.createEmpty(1 * BLOCK_SIZE * sizeof(ParticleSSBO), GL_DYNAMIC_STORAGE_BIT);
-        m_ssbo.bindSSBO(SSBO_PARTICLES);
     }
 
     void ParticleSystem::updateWT(const UpdateContext& ctx)
@@ -210,13 +218,7 @@ namespace particle {
         constexpr size_t sz = sizeof(ParticleSSBO);
         const size_t totalCount = m_snapshotCount;
 
-        if (m_ssbo.m_size < totalCount * sz) {
-            size_t blocks = (totalCount / BLOCK_SIZE) + 2;
-            size_t bufferSize = blocks * BLOCK_SIZE * sz;
-            if (m_ssbo.resizeBuffer(bufferSize, false)) {
-                m_ssbo.bindSSBO(SSBO_PARTICLES);
-            }
-        }
+        createParticleBuffer();
 
         //m_ssbo.invalidateRange(
         //    0,
@@ -226,15 +228,43 @@ namespace particle {
         //    m_ssbo.invalidateRange(0, totalCount * sz);
         //}
 
-        m_ssbo.update(
-            0,
-            totalCount * sz,
-            m_snapshot.data());
+        auto& current = m_queue->current();
+        auto* mappedData = m_queue->m_buffer.mapped< ParticleSSBO>(current.m_baseOffset);
 
-        m_ssbo.markUsed(totalCount * sz);
+        std::copy(
+            std::begin(m_snapshot),
+            std::end(m_snapshot),
+            mappedData);
 
         m_activeCount = totalCount;
+        m_activeBaseIndex = current.m_baseIndex;
+
+        m_queue->next();
 
         m_updateReady = false;
+    }
+
+    void ParticleSystem::createParticleBuffer()
+    {
+        const size_t totalCount = m_snapshotCount;
+
+        if (!m_queue || m_queue->getEntryCount() < totalCount) {
+            size_t blocks = (totalCount / BLOCK_SIZE) + 2;
+            size_t entryCount = blocks * BLOCK_SIZE;
+
+            // NOTE KI OpenGL Insights - Chapter 28
+            m_queue = std::make_unique<kigl::GLSyncQueue<ParticleSSBO>>(
+                "particle_ssbo",
+                entryCount,
+                RANGE_COUNT,
+                m_useMapped,
+                m_useInvalidate,
+                m_useFence,
+                m_useFenceDebug);
+
+            m_queue->prepare(1, false);
+
+            m_queue->bindSSBO(SSBO_PARTICLES);
+        }
     }
 }

@@ -151,7 +151,7 @@ assets:
   parallax_debug_depth: 0.01
 
   particle_enabled: true
-  particle_max_count: 100000
+  particle_max_count: 200000
 
   decal_enabled: true
   decal_max_count: 4000

@@ -23,6 +23,9 @@ namespace kigl {
         m_useInvalidate{ useInvalidate },
         m_useFence{ useFence },
         m_useFenceDebug{ useFenceDebug },
+        m_flags{ static_cast<GLuint>(useMapped ? GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_COHERENT_BIT : GL_DYNAMIC_STORAGE_BIT) },
+        // Beyond Porting.pdf
+        m_mapFlags{ GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_COHERENT_BIT },
         m_entrySize{ sizeof(T) },
         m_name{ fmt::format("{}_sync_queue", name) },
         m_buffer{ m_name }
@@ -38,7 +41,9 @@ namespace kigl {
     }
 
     template <class T>
-    void GLSyncQueue<T>::prepare(int bindAlignment, bool debug)
+    void GLSyncQueue<T>::prepare(
+        int bindAlignment,
+        bool debug)
     {
         m_debug = debug;
         m_bindAlignment = bindAlignment;
@@ -55,18 +60,17 @@ namespace kigl {
             // - based into slides, use GL_DYNAMIC_STORAGE_BIT for create of mapped buffer
             m_buffer.createEmpty(
                 m_rangeCount * m_paddedRangeLength,
-                GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_DYNAMIC_STORAGE_BIT);
+                m_flags);
 
             // https://registry.khronos.org/OpenGL-Refpages/gl4/html/glMapBufferRange.xhtml
             // https://stackoverflow.com/questions/44299324/how-to-use-gl-map-unsynchronized-bit-with-gl-map-persistent-bit
             // https://stackoverflow.com/questions/44203387/does-gl-map-invalidate-range-bit-require-glinvalidatebuffersubdata
-            m_data = m_buffer.map(
-                GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_FLUSH_EXPLICIT_BIT);
+            m_data = m_buffer.map(m_mapFlags);
         }
         else {
             m_buffer.createEmpty(
                 m_rangeCount * m_paddedRangeLength,
-                GL_DYNAMIC_STORAGE_BIT);
+                m_flags);
             m_data = (unsigned char*)malloc(m_rangeCount * m_paddedRangeLength);
             if (m_data) {
                 memset(m_data, 0, m_rangeCount * m_paddedRangeLength);
@@ -162,6 +166,12 @@ namespace kigl {
         m_current = (m_current + 1) % m_ranges.size();
 
         return m_ranges[m_current];
+    }
+
+    template <class T>
+    void GLSyncQueue<T>::bindSSBO(GLuint ssbo)
+    {
+        m_buffer.bindSSBO(ssbo);
     }
 
     template <class T>
