@@ -49,11 +49,6 @@ namespace particle {
             return static_cast<uint32_t>(m_activeCount);
         }
 
-        uint32_t getActiveBaseIndex() const noexcept
-        {
-            return static_cast<uint32_t>(m_activeBaseIndex);
-        }
-
         uint32_t getFreespace() const noexcept;
 
         bool isFull() const noexcept;
@@ -83,7 +78,6 @@ namespace particle {
         std::vector<ParticleSSBO> m_snapshot;
         size_t m_snapshotCount{ 0 };
         size_t m_activeCount{ 0 };
-        size_t m_activeBaseIndex{ 0 };
 
         std::unique_ptr<kigl::GLSyncQueue<ParticleSSBO>> m_queue;
         size_t m_lastParticleSize{ 0 };

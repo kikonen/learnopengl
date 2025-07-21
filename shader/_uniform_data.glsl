@@ -16,10 +16,6 @@ layout(std140, binding = UBO_DATA) uniform Data {
   bool u_shadowVisual;
   bool u_forceLineMode;
 
-  uint u_particleBaseIndex;
-  uint u_boneBaseIndex;
-  uint u_socketBaseIndex;
-
   float u_fogStart;
   float u_fogEnd;
   float u_fogDensity;
@@ -35,9 +31,9 @@ layout(std140, binding = UBO_DATA) uniform Data {
   float u_time;
   int u_frame;
 
-  // int data_pad1;
-  // int data_pad2;
-  // int data_pad3;
+  int data_pad1;
+  int data_pad2;
+  int data_pad3;
 
   vec4 u_ssaoSamples[64];
 };
