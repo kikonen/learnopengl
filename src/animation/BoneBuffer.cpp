@@ -4,13 +4,18 @@
 
 #include "util/thread.h"
 
+#include "kigl/GLSyncQueue_impl.h"
+
 #include "shader/SSBO.h"
 
 #include "BoneRegistry.h"
+#include "BoneTransformSSBO.h"
 
 namespace {
     constexpr size_t BLOCK_SIZE = 1024;
     constexpr size_t MAX_BLOCK_COUNT = 5100;
+
+    constexpr size_t RANGE_COUNT = 3;
 }
 
 namespace animation
@@ -45,13 +50,10 @@ namespace animation
         m_useFence = assets.glUseFence;
         m_useFenceDebug = assets.glUseFenceDebug;
 
-        m_useMapped = false;
-        m_useInvalidate = true;
-        m_useFence = false;
-        m_useFenceDebug = false;
-
-        m_ssbo.createEmpty(1 * BLOCK_SIZE * sizeof(glm::mat4), GL_DYNAMIC_STORAGE_BIT);
-        m_ssbo.bindSSBO(SSBO_BONE_TRANSFORMS);
+        m_useMapped = true;
+        m_useInvalidate = false;
+        m_useFence = true;
+        m_useFenceDebug = true;
     }
 
     void BoneBuffer::updateRT()
@@ -73,48 +75,69 @@ namespace animation
 
         if (m_boneRegistry->m_dirtySnapshot.empty()) return;
 
-        for (const auto& range : m_boneRegistry->m_dirtySnapshot) {
-            if (updateSpan(
-                m_boneRegistry->m_snapshot,
-                range.first,
-                range.second)) break;
-        }
+        //for (const auto& range : m_boneRegistry->m_dirtySnapshot) {
+        //    if (updateSpan(
+        //        m_boneRegistry->m_snapshot,
+        //        range.first,
+        //        range.second)) break;
+        //}
+
+        auto totalCount = m_boneRegistry->m_snapshot.size();
+        createBuffer(totalCount);
+        updateSpan(
+            m_boneRegistry->m_snapshot,
+            0,
+            totalCount);
 
         m_boneRegistry->m_dirtySnapshot.clear();
         m_boneRegistry->m_updateReady = false;
     }
 
+    void BoneBuffer::createBuffer(size_t totalCount)
+    {
+        if (!m_queue || m_queue->getEntryCount() < totalCount) {
+            size_t blocks = (totalCount / BLOCK_SIZE) + 2;
+            size_t entryCount = blocks * BLOCK_SIZE;
+
+            // NOTE KI OpenGL Insights - Chapter 28
+            m_queue = std::make_unique<kigl::GLSyncQueue<BoneTransformSSBO>>(
+                "bone_ssbo",
+                entryCount,
+                RANGE_COUNT,
+                m_useMapped,
+                m_useInvalidate,
+                m_useFence,
+                m_useFenceDebug);
+
+            m_queue->prepare(1, false);
+
+            m_queue->bindSSBO(SSBO_BONE_TRANSFORMS);
+        }
+    }
+
     bool BoneBuffer::updateSpan(
-        const std::vector<glm::mat4>& snapshot,
+        const std::vector<BoneTransformSSBO>& snapshot,
         size_t updateIndex,
         size_t updateCount)
     {
-        constexpr size_t sz = sizeof(glm::mat4);
+        constexpr size_t sz = sizeof(BoneTransformSSBO);
         const size_t totalCount = snapshot.size();
 
         if (totalCount == 0) return true;
 
-        if (m_ssbo.m_size < totalCount * sz) {
-            size_t blocks = (totalCount / BLOCK_SIZE) + 2;
-            size_t bufferSize = blocks * BLOCK_SIZE * sz;
-            if (m_ssbo.resizeBuffer(bufferSize, true)) {
-                m_ssbo.bindSSBO(SSBO_BONE_TRANSFORMS);
-            }
+        auto& current = m_queue->current();
+        auto* mappedData = m_queue->m_buffer.mapped<BoneTransformSSBO>(current.m_baseOffset);
 
-            //updateIndex = 0;
-            //updateCount = totalCount;
-        }
+        m_queue->waitFence();
+        std::copy(
+            std::begin(snapshot),
+            std::end(snapshot),
+            mappedData);
+        m_queue->setFence();
 
-        //if (m_useInvalidate) {
-        //    m_ssbo.invalidateRange(updateIndex * sz, updateCount * sz);
-        //}
+        m_activeBaseIndex = current.m_baseIndex;
 
-        m_ssbo.update(
-            updateIndex * sz,
-            updateCount * sz,
-            &snapshot[updateIndex]);
-
-        m_ssbo.markUsed(totalCount * sz);
+        m_queue->next();
 
         return updateCount == totalCount;
     }

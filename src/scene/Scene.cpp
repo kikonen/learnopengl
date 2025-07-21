@@ -35,6 +35,7 @@
 #include "engine/UpdateViewContext.h"
 
 #include "particle/ParticleSystem.h"
+#include "animation/AnimationSystem.h"
 
 #include "render/Camera.h"
 #include "render/DebugContext.h"
@@ -783,6 +784,8 @@ void Scene::prepareUBOs(const RenderContext& ctx)
         dbg.m_forceLineMode,
 
         particle::ParticleSystem::get().getActiveBaseIndex(),
+        animation::AnimationSystem::get().getActiveBoneBaseIndex(),
+        animation::AnimationSystem::get().getActiveSocketBaseIndex(),
 
         dbg.m_fogStart,
         dbg.m_fogEnd,

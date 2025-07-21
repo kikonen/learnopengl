@@ -4,18 +4,17 @@
 
 #include "kigl/kigl.h"
 
-namespace animation
-{
+namespace animation {
 #pragma pack(push, 1)
-    struct BoneTransformSSBO {
+    struct SocketTransformSSBO {
         //glm::mat4x3 u_transformMatrix;
         glm::vec4 u_transformMatrixRow0{ 1.f, 0.f, 0.f, 0.f };
         glm::vec4 u_transformMatrixRow1{ 0.f, 1.f, 0.f, 0.f };
         glm::vec4 u_transformMatrixRow2{ 0.f, 0.f, 1.f, 0.f };
 
-        BoneTransformSSBO() {}
+        SocketTransformSSBO() {}
 
-        BoneTransformSSBO(const glm::mat4& transform)
+        SocketTransformSSBO(const glm::mat4& transform)
         {
             setTransform(transform);
         }

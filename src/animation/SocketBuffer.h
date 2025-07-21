@@ -5,11 +5,13 @@
 #include <atomic>
 #include <span>
 
-#include "kigl/GLBuffer.h"
+#include "kigl/GLSyncQueue.h"
 
 namespace animation {
     class AnimationSystem;
     class SocketRegistry;
+
+    struct SocketTransformSSBO;
 
     class SocketBuffer {
         friend AnimationSystem;
@@ -25,23 +27,31 @@ namespace animation {
         void shutdown();
         void prepare();
 
+        uint32_t getActiveBaseIndex() const noexcept
+        {
+            return static_cast<uint32_t>(m_activeBaseIndex);
+        }
+
     protected:
         void updateRT();
 
     private:
         void updateBuffer();
+        void createBuffer(size_t totalCount);
 
         bool updateSpan(
-            const std::vector<glm::mat4>& snapshot,
+            const std::vector<SocketTransformSSBO>& snapshot,
             size_t updateIndex,
             size_t updateCount);
 
     private:
         SocketRegistry* const m_socketRegistry;
 
-        kigl::GLBuffer m_ssbo{ "bone_socket_ssbo" };
+        std::unique_ptr<kigl::GLSyncQueue<SocketTransformSSBO>> m_queue;
 
         size_t m_frameSkipCount{ 0 };
+
+        size_t m_activeBaseIndex{ 0 };
 
         bool m_useMapped{ false };
         bool m_useInvalidate{ false };

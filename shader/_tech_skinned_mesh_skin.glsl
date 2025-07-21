@@ -17,13 +17,13 @@
 // NOTE KI u_boneBaseIndex == 0 is NULL entry
 // => this broke normal debug rendering
 if (entity.u_boneBaseIndex > 0) {
-  const uvec4 boneIndex = a_boneIndex + entity.u_boneBaseIndex;
+  const uvec4 boneIndex = a_boneIndex + entity.u_boneBaseIndex + u_boneBaseIndex;
   const vec4 boneWeight = a_boneWeight;
 
-  const mat4 b1 = u_boneTransforms[boneIndex.x];
-  const mat4 b2 = u_boneTransforms[boneIndex.y];
-  const mat4 b3 = u_boneTransforms[boneIndex.z];
-  const mat4 b4 = u_boneTransforms[boneIndex.w];
+  const mat4 b1 = resolveBoneMatrix(boneIndex.x);
+  const mat4 b2 = resolveBoneMatrix(boneIndex.y);
+  const mat4 b3 = resolveBoneMatrix(boneIndex.z);
+  const mat4 b4 = resolveBoneMatrix(boneIndex.w);
 
   // const mat4 b1 = mat4(1.f);
   // const mat4 b2 = mat4(1.f);

@@ -4,6 +4,8 @@
 
 #include "util/thread.h"
 
+#include "BoneTransformSSBO.h"
+
 namespace {
     constexpr int INITIAL_SIZE = 10000;
 }

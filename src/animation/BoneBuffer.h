@@ -4,12 +4,15 @@
 #include <mutex>
 #include <atomic>
 #include <span>
+#include <memory>
 
-#include "kigl/GLBuffer.h"
+#include "kigl/GLSyncQueue.h"
 
 namespace animation {
     class AnimationSystem;
     class BoneRegistry;
+
+    struct BoneTransformSSBO;
 
     class BoneBuffer {
         friend AnimationSystem;
@@ -25,23 +28,32 @@ namespace animation {
         void shutdown();
         void prepare();
 
+        uint32_t getActiveBaseIndex() const noexcept
+        {
+            return static_cast<uint32_t>(m_activeBaseIndex);
+        }
+
     protected:
         void updateRT();
 
     private:
         void updateBuffer();
 
+        void createBuffer(size_t totalCount);
+
         bool updateSpan(
-            const std::vector<glm::mat4>& m_snapshot,
+            const std::vector<BoneTransformSSBO>& m_snapshot,
             size_t updateIndex,
             size_t updateCount);
 
     private:
         BoneRegistry* const m_boneRegistry;
 
-        kigl::GLBuffer m_ssbo{ "bone_palette_ssbo" };
+        std::unique_ptr<kigl::GLSyncQueue<BoneTransformSSBO>> m_queue;
 
         size_t m_frameSkipCount{ 0 };
+
+        size_t m_activeBaseIndex{ 0 };
 
         bool m_useMapped{ false };
         bool m_useInvalidate{ false };
