@@ -193,21 +193,32 @@ namespace kigl {
         }
 
         unsigned char* mapRange(size_t offset, size_t length, GLuint flags) {
-            if (!m_created || m_mapped) return m_data;
+            if (!m_created || m_mapped) return m_mappedData;
 
             KI_DEBUG(fmt::format(
                 "BUFFER: mapRange - name={}, id={}, size={}, offset={}, len={}, flags={}",
                 m_name, m_id, m_size, offset, length, flags));
 
-            m_data = (unsigned char*)glMapNamedBufferRange(m_id, offset, length, flags);
+            m_mappedData = (unsigned char*)glMapNamedBufferRange(m_id, offset, length, flags);
             m_mapped = true;
-            return m_data;
+            m_mappedFlags = flags;
+            return m_mappedData;
+        }
+
+        template <typename T>
+        T* mapped(size_t offset) const
+        {
+            return (T*)(m_mappedData + offset);
         }
 
         void flushRange(size_t offset, size_t length) {
             assert(m_mapped);
             assert(offset >= 0);
             assert(length > 0 && length <= m_size);
+
+            // NOTE KI flush is pointless for coherent
+            if (m_mappedFlags & GL_MAP_COHERENT_BIT) return;
+
             glFlushMappedNamedBufferRange(m_id, offset, length);
         }
 
@@ -224,7 +235,7 @@ namespace kigl {
         void unmap() {
             if (!m_mapped) return;
             glUnmapNamedBuffer(m_id);
-            m_data = nullptr;
+            m_mappedData = nullptr;
             m_mapped = false;
         }
 
@@ -238,9 +249,10 @@ namespace kigl {
 
         int m_binding = -1;
 
-        unsigned char* m_data{ nullptr };
+        unsigned char* m_mappedData{ nullptr };
 
         bool m_created = false;
         bool m_mapped = false;
+        GLuint m_mappedFlags = 0;
     };
 }

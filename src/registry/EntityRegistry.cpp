@@ -135,7 +135,10 @@ void EntityRegistry::updateRT(const UpdateContext& ctx)
 
     if (refreshAll) {
         if (m_useMapped) {
-            memcpy(m_ssbo.m_data, entries.data(), totalCount * sz);
+            std::copy(
+                std::begin(entries),
+                std::begin(entries) + totalCount,
+                m_ssbo.mapped<EntitySSBO>(0));
             m_ssbo.flushRange(0, totalCount * sz);
         }
         else {
@@ -160,7 +163,11 @@ void EntityRegistry::updateRT(const UpdateContext& ctx)
 
                 //KI_DEBUG(fmt::format("ENTITY_UPDATE: frame={}, from={}, to={}, count={}", ctx.m_clock.frameCount, from, to, count));
                 if (m_useMapped) {
-                    memcpy(m_ssbo.m_data + from * sz, &entries[from], count * sz);
+                    std::copy(
+                        std::begin(entries) + from,
+                        std::begin(entries) + count,
+                        m_ssbo.mapped<EntitySSBO>(from * sz));
+
                     m_ssbo.flushRange(from * sz, count * sz);
                 }
                 else {

@@ -99,7 +99,7 @@ particles:
     speed_variation: 0
     size: 0.1
     size_variation: 0.1
-    rate: 20000
+    rate: 10000
     rate_variation: 50
     sprite_base: 0
     sprite_base_variation: 0

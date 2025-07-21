@@ -101,8 +101,8 @@ namespace backend {
             m_performanceCounters.createEmpty(rangeCount * sizeof(gl::PerformanceCounters), storageFlags);
             m_performanceCounters.map(mapFlags);
 
-            auto* data = (gl::PerformanceCounters*)m_performanceCounters.m_data;
-            *data = { 0, 0 };
+            auto* mappedData = m_performanceCounters.mapped<gl::PerformanceCounters>(0);
+            *mappedData = { 0, 0 };
         }
 
         m_commands = std::make_unique<GLCommandQueue>(
@@ -178,7 +178,7 @@ namespace backend {
         // - execute draw program
 
         if (m_frustumGPU) {
-            auto* data = (gl::DrawIndirectParameters*)m_drawParameters.m_data;
+            auto* data = m_drawParameters.mapped< gl::DrawIndirectParameters>(0);
             data += cmdRange.m_index;
 
             data->u_baseIndex = static_cast<GLuint>(cmdRange.m_baseIndex);
@@ -374,11 +374,11 @@ namespace backend {
         gl::PerformanceCounters counters;
 
         if (m_frustumGPU) {
-            auto* data = (gl::PerformanceCounters*)m_performanceCounters.m_data;
-            counters = *data;
+            auto* mappedData = m_performanceCounters.mapped<gl::PerformanceCounters>(0);
+            counters = *mappedData;
 
             if (clear) {
-                *data = { 0, 0 };
+                *mappedData = { 0, 0 };
             }
         }
 

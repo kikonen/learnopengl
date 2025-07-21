@@ -4,10 +4,7 @@
 #include <mutex>
 #include <atomic>
 
-#include "Particle.h"
-#include "ParticleSSBO.h"
-
-#include "kigl/GLBuffer.h"
+#include "kigl/GLSyncQueue.h"
 
 struct PrepareContext;
 struct UpdateContext;
@@ -17,6 +14,9 @@ class Registry;
 class Program;
 
 namespace particle {
+    struct Particle;
+    struct ParticleSSBO;
+
     class ParticleSystem final
     {
     public:
@@ -25,6 +25,7 @@ namespace particle {
         static ParticleSystem& get() noexcept;
 
         ParticleSystem();
+        ~ParticleSystem();
 
         void clear();
 
@@ -43,21 +44,27 @@ namespace particle {
         // @return true if was added, false if full
         bool addParticle(const Particle& particle);
 
-        uint32_t getActiveParticleCount() const noexcept {
+        uint32_t getActiveParticleCount() const noexcept
+        {
             return static_cast<uint32_t>(m_activeCount);
+        }
+
+        uint32_t getActiveBaseIndex() const noexcept
+        {
+            return static_cast<uint32_t>(m_activeBaseIndex);
         }
 
         uint32_t getFreespace() const noexcept;
 
-        bool isFull() const noexcept {
-            return !m_enabled || m_particles.size() >= m_maxCount;
-        }
+        bool isFull() const noexcept;
 
     private:
+
         void preparePending();
 
         void snapshotParticles();
         void updateParticleBuffer();
+        void createParticleBuffer();
 
     private:
         bool m_enabled{ false };
@@ -76,8 +83,9 @@ namespace particle {
         std::vector<ParticleSSBO> m_snapshot;
         size_t m_snapshotCount{ 0 };
         size_t m_activeCount{ 0 };
+        size_t m_activeBaseIndex{ 0 };
 
-        kigl::GLBuffer m_ssbo{ "particle_ssbo" };
+        std::unique_ptr<kigl::GLSyncQueue<ParticleSSBO>> m_queue;
         size_t m_lastParticleSize{ 0 };
 
         bool m_useMapped{ false };

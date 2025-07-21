@@ -28,7 +28,41 @@ namespace kigl {
 
         ~GLSyncQueue();
 
-        void prepare(int bindAlignment, bool debug);
+        size_t getEntryCount() const noexcept
+        {
+            return m_entryCount;
+        }
+
+        size_t getRangeCount() const noexcept
+        {
+            return m_rangeCount;
+        }
+
+        GLuint getFlags() const noexcept
+        {
+            return m_flags;
+        }
+
+        void setFlags(GLuint flags)
+        {
+            m_flags = flags;
+        }
+
+        GLuint getMapFlags() const noexcept
+        {
+            m_mapFlags;
+        }
+
+        void setMapFlags(GLuint flags)
+        {
+            m_mapFlags = flags;
+        }
+
+        // @param flags 0 for defaults
+        // @param mapFlags 0 for defaults
+        void prepare(
+            int bindAlignment,
+            bool debug);
 
         //
         // Send entry data, wait if needed for queue buffer
@@ -82,10 +116,12 @@ namespace kigl {
         //
         GLBufferRange& next();
 
+        // Bind whole buffer; offset of current buffer need to be used in rendering logic
+        void bindSSBO(GLuint ssbo);
+
         void bindCurrentUBO(GLuint ubo, bool used, size_t count);
         void bindCurrentSSBO(GLuint ssbo, bool used, size_t count);
 
-    private:
         void setFence();
         void waitFence();
 
@@ -105,6 +141,9 @@ namespace kigl {
         bool m_debug{ false };
 
         const size_t m_entrySize;
+
+        GLuint m_flags;
+        GLuint m_mapFlags;
 
         size_t m_bindAlignment = 0;
         size_t m_rangeLength = 0;
