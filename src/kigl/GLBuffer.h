@@ -211,18 +211,21 @@ namespace kigl {
             return (T*)(m_mappedData + offset);
         }
 
-        void flushRange(size_t offset, size_t length) {
+        void flushRange(size_t offset, size_t length) const
+        {
             assert(m_mapped);
             assert(offset >= 0);
             assert(length > 0 && length <= m_size);
 
-            // NOTE KI flush is pointless for coherent
-            if (m_mappedFlags & GL_MAP_COHERENT_BIT) return;
+            // NOTE KI flush only for explicit
+            // https://registry.khronos.org/OpenGL-Refpages/gl4/html/glFlushMappedBufferRange.xhtml
+            if (!(m_mappedFlags & GL_MAP_FLUSH_EXPLICIT_BIT)) return;
 
             glFlushMappedNamedBufferRange(m_id, offset, length);
         }
 
-        void invalidate() {
+        void invalidate() const
+        {
             glInvalidateBufferData(m_id);
         }
 

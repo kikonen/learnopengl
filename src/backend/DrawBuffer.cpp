@@ -1,5 +1,7 @@
 #include "DrawBuffer.h"
 
+#include <tuple>
+
 #include <fmt/format.h>
 
 #include "kigl/GLState.h"
@@ -32,6 +34,8 @@ namespace {
     constexpr size_t INDEX_BLOCK_COUNT = 500;
 
     constexpr size_t MAX_INDEX_COUNT = INDEX_BLOCK_SIZE * INDEX_BLOCK_COUNT;
+
+    constexpr size_t MAX_INSTANCE_BUFFERS = 256;
 }
 
 namespace backend {
@@ -61,6 +65,7 @@ namespace backend {
 
         m_frustumGPU = assets.frustumEnabled && assets.frustumGPU;
 
+        m_batchDebug = assets.batchDebug;
         m_batchCount = batchCount;
         m_rangeCount = rangeCount;
 
@@ -113,25 +118,7 @@ namespace backend {
             m_useInvalidate,
             m_useFence,
             m_useFenceDebug);
-        m_commands->prepare(BUFFER_ALIGNMENT, assets.batchDebug);
-
-        m_drawRanges.resize(rangeCount);
-
-        {
-            m_instanceBuffers.emplace_back("draw_buffer_instance_0");
-            m_instanceBuffers.emplace_back("draw_buffer_instance_1");
-
-            if (m_useFence) {
-                m_instanceFences.emplace_back("draw_buffer_instance_fence_0");
-                m_instanceFences.emplace_back("draw_buffer_instance_fence_1");
-            }
-
-            for (auto& buffer : m_instanceBuffers) {
-                //buffer.createEmpty(INDEX_BLOCK_SIZE * sizeof(GLuint), GL_DYNAMIC_STORAGE_BIT);
-                buffer.createEmpty(1 * sizeof(mesh::InstanceSSBO), GL_DYNAMIC_STORAGE_BIT);
-
-            }
-        }
+        m_commands->prepare(BUFFER_ALIGNMENT, m_batchDebug);
     }
 
     void DrawBuffer::bind()
@@ -150,6 +137,8 @@ namespace backend {
 
         {
             m_commands->m_buffer.bindDrawIndirect();
+        }
+        if (m_frustumGPU) {
             m_commands->m_buffer.bindSSBO(SSBO_DRAW_COMMANDS);
         }
     }
@@ -163,7 +152,6 @@ namespace backend {
     void DrawBuffer::flush()
     {
         const auto& cmdRange = m_commands->current();
-        const auto& drawRange = m_drawRanges[cmdRange.m_index];
         const int drawCount = static_cast<int>(cmdRange.m_usedCount);
 
         if (drawCount == 0) return;
@@ -182,7 +170,8 @@ namespace backend {
             data += cmdRange.m_index;
 
             data->u_baseIndex = static_cast<GLuint>(cmdRange.m_baseIndex);
-            data->u_drawType = static_cast<GLuint>(util::as_integer(drawRange.m_drawOptions.m_type));
+            // TODO KI broken
+            //data->u_drawType = static_cast<GLuint>(util::as_integer(drawRange.m_drawOptions.m_type));
             data->u_drawCount = static_cast<GLuint>(drawCount);
 
             constexpr size_t PARAMS_SZ = sizeof(gl::DrawIndirectParameters);
@@ -210,163 +199,141 @@ namespace backend {
 
         m_drawCounter += drawCount;
 
-        drawPending(true);
+        drawPending();
         m_commands->next();
     }
 
-    void DrawBuffer::flushIfNotSameMultiDraw(
+    void DrawBuffer::finish()
+    {
+        // NOTE KI instances are fenced after their associated draw
+        m_instanceBuffers->setFence();
+        m_instanceBuffers->next();
+    }
+
+    bool DrawBuffer::isSameMultiDraw(
         const backend::MultiDrawRange& sendRange)
     {
         const auto& cmdRange = m_commands->current();
-        auto& curr = m_drawRanges[cmdRange.m_index];
+        if (cmdRange.empty()) return false;
 
-        bool sameDraw = true;
-        if (!cmdRange.empty()) {
-            const auto& cd = curr.m_drawOptions;
-            const auto& sd = sendRange.m_drawOptions;
+        auto& curr = m_drawRanges.back().second;
 
-            // NOTE KI KIND_SOLID & KIND_ALPHA can be in same multidraw
-            sameDraw = curr.m_vaoId == sendRange.m_vaoId &&
-                curr.m_programId == sendRange.m_programId &&
-                cd.m_renderBack == sd.m_renderBack &&
-                cd.m_lineMode == sd.m_lineMode &&
-                cd.isBlend() == sd.isBlend() &&
-                cd.m_mode == sd.m_mode &&
-                cd.m_type == sd.m_type;
-        }
+        const auto& cd = curr.m_drawOptions;
+        const auto& sd = sendRange.m_drawOptions;
 
-        if (!sameDraw) {
-            flush();
-        }
+        // NOTE KI KIND_SOLID & KIND_ALPHA can be in same multidraw
+        return curr.m_vaoId == sendRange.m_vaoId &&
+            curr.m_programId == sendRange.m_programId &&
+            cd.m_renderBack == sd.m_renderBack &&
+            cd.m_lineMode == sd.m_lineMode &&
+            cd.isBlend() == sd.isBlend() &&
+            cd.m_mode == sd.m_mode &&
+            cd.m_type == sd.m_type;
     }
 
     void DrawBuffer::send(
         const backend::MultiDrawRange& sendRange,
         const backend::gl::DrawIndirectCommand& cmd)
     {
-        flushIfNotSameMultiDraw(sendRange);
-
         const auto& cmdRange = m_commands->current();
-        auto& curr = m_drawRanges[cmdRange.m_index];
 
-        if (cmdRange.empty()) {
+        if (isSameMultiDraw(sendRange)) {
+            m_drawRanges.back().first++;
+        }
+        else {
             // starting new range
-            curr = sendRange;
+            m_drawRanges.push_back({ 1, sendRange });
         }
 
         if (m_commands->send(cmd)) {
+            KI_INFO_OUT("full: flush");
             flush();
-        }
-    }
-
-    void DrawBuffer::sendDirect(
-        const backend::MultiDrawRange& drawRange,
-        const backend::gl::DrawIndirectCommand& cmd)
-    {
-        const auto& drawOptions = drawRange.m_drawOptions;
-        bindMultiDrawRange(drawRange);
-
-        // https://www.khronos.org/opengl/wiki/Vertex_Rendering
-        if (drawOptions.m_type == backend::DrawOptions::Type::elements) {
-            auto& elem = cmd.element;
-            if (elem.u_instanceCount == 0) return;
-
-            glDrawElementsInstancedBaseVertexBaseInstance(
-                drawOptions.toMode(),
-                elem.u_count,
-                GL_UNSIGNED_INT,
-                (void*)(elem.u_firstIndex * sizeof(GLuint)),
-                elem.u_instanceCount,
-                elem.u_baseVertex,
-                elem.u_baseInstance);
-        }
-        else if (drawOptions.m_type == backend::DrawOptions::Type::arrays)
-        {
-            auto& arr = cmd.array;
-            if (arr.u_instanceCount == 0) return;
-
-            glDrawArraysInstancedBaseInstance(
-                drawOptions.toMode(),
-                arr.u_firstVertex,
-                arr.u_vertexCount,
-                arr.u_instanceCount,
-                arr.u_baseInstance);
         }
     }
 
     void DrawBuffer::sendInstanceIndeces(
         std::span<mesh::InstanceSSBO> indeces)
     {
-        m_instanceBufferIndex = (m_instanceBufferIndex + 1) % 2;
-
-        auto& instanceBuffer = m_instanceBuffers[m_instanceBufferIndex];
-
-        if (m_useFence) {
-            auto& instanceBufferFence = m_instanceFences[m_instanceBufferIndex];
-            instanceBufferFence.waitFence(false);
-        }
-
         const size_t totalCount = indeces.size();
-        constexpr size_t sz = sizeof(mesh::InstanceSSBO);
+        {
+            createInstanceBuffers(totalCount);
 
-        // NOTE KI *reallocate* SSBO if needed
-        if (instanceBuffer.m_size < totalCount * sz) {
-            size_t blocks = (totalCount / INDEX_BLOCK_SIZE) + 2;
-            size_t bufferSize = blocks * INDEX_BLOCK_SIZE * sz;
-            instanceBuffer.resizeBuffer(bufferSize, false);
+            auto& current = m_instanceBuffers->current();
+            auto* mappedData = m_instanceBuffers->currentMapped();
+
+            m_instanceBuffers->waitFence();
+            std::copy(
+                std::begin(indeces),
+                std::end(indeces),
+                mappedData);
+            m_instanceBuffers->bindCurrentSSBO(SSBO_INSTANCE_INDECES, false, totalCount);
+
+            // NOTE KI instances are fenced after their associated draw
         }
-
-        //m_indexBuffer.invalidateRange(
-        //    0 * sz,
-        //    totalCount * sz);
-
-        instanceBuffer.update(
-            0 * sz,
-            totalCount * sz,
-            indeces.data());
-
-        instanceBuffer.bindSSBO(SSBO_INSTANCE_INDECES);
     }
 
-    void DrawBuffer::drawPending(bool drawCurrent)
+    void DrawBuffer::createInstanceBuffers(size_t totalCount)
+    {
+        if (!m_instanceBuffers || m_instanceBuffers->getEntryCount() < totalCount) {
+            size_t blocks = (totalCount / INDEX_BLOCK_SIZE) + 2;
+            size_t entryCount = blocks * INDEX_BLOCK_SIZE;
+
+            m_instanceBuffers = std::make_unique<kigl::GLSyncQueue<mesh::InstanceSSBO>>(
+                "draw_instance",
+                entryCount,
+                MAX_INSTANCE_BUFFERS,
+                true,
+                false,
+                true,
+                m_useFenceDebug);
+            m_instanceBuffers->prepare(BUFFER_ALIGNMENT, m_batchDebug);
+        }
+    }
+
+    void DrawBuffer::drawPending()
     {
         if (m_frustumGPU) {
             glMemoryBarrier(GL_COMMAND_BARRIER_BIT);
         }
 
-        size_t count = 0;
-        auto handler = [this, &count](kigl::GLBufferRange& cmdRange) {
-            auto& drawRange = m_drawRanges[cmdRange.m_index];
-            const auto& drawOptions = drawRange.m_drawOptions;
-            const GLsizei drawCount = (GLsizei)cmdRange.m_usedCount;
+        size_t tallyCount = 0;
+        auto handler = [this, &tallyCount](kigl::GLBufferRange& cmdRange) {
+            constexpr auto sz = sizeof(backend::gl::DrawIndirectCommand);
 
-            bindMultiDrawRange(drawRange);
+            for (const auto& drawEntry : m_drawRanges) {
+                const auto& drawRange = drawEntry.second;
+                const auto& drawCount = drawEntry.first;
+                const auto& baseOffset = cmdRange.m_baseOffset + tallyCount * sz;
 
-            if (drawOptions.m_type == backend::DrawOptions::Type::elements) {
-                glMultiDrawElementsIndirect(
-                    drawOptions.toMode(),
-                    GL_UNSIGNED_INT,
-                    (void*)cmdRange.m_baseOffset,
-                    drawCount,
-                    sizeof(backend::gl::DrawIndirectCommand));
+                const auto& drawOptions = drawRange.m_drawOptions;
+
+                bindMultiDrawRange(drawRange);
+
+                if (drawOptions.m_type == backend::DrawOptions::Type::elements) {
+                    glMultiDrawElementsIndirect(
+                        drawOptions.toMode(),
+                        GL_UNSIGNED_INT,
+                        (void*)baseOffset,
+                        drawCount,
+                        sz);
+                }
+                else if (drawOptions.m_type == backend::DrawOptions::Type::arrays)
+                {
+                    glMultiDrawArraysIndirect(
+                        drawOptions.toMode(),
+                        (void*)baseOffset,
+                        drawCount,
+                        sz);
+                }
+                tallyCount += drawCount;
             }
-            else if (drawOptions.m_type == backend::DrawOptions::Type::arrays)
-            {
-                glMultiDrawArraysIndirect(
-                    drawOptions.toMode(),
-                    (void*)cmdRange.m_baseOffset,
-                    drawCount,
-                    sizeof(backend::gl::DrawIndirectCommand));
-            }
-            count += drawCount;
+
+            assert(cmdRange.m_usedCount == tallyCount);
+            if (cmdRange.m_usedCount != tallyCount) throw "CORRUPTED";
         };
 
         m_commands->processCurrent(handler);
-
-        if (m_useFence) {
-            auto& instanceBufferFence = m_instanceFences[m_instanceBufferIndex];
-            instanceBufferFence.setFenceIfNotSet(false);
-        }
+        m_drawRanges.clear();
     }
 
     gl::PerformanceCounters DrawBuffer::getCounters(bool clear) const

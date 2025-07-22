@@ -340,11 +340,21 @@ namespace render {
             bufferCount = 1;
         }
 
+        auto useMapped = assets.glUseMapped;
+        auto useInvalidate = assets.glUseInvalidate;
+        auto useFence = assets.glUseFence;
+        auto useFenceDebug = assets.glUseFenceDebug;
+
+        useMapped = true;
+        useInvalidate = false;
+        useFence = true;
+        useFenceDebug = true;
+
         m_draw = std::make_unique<backend::DrawBuffer>(
-            assets.glUseMapped,
-            assets.glUseInvalidate,
-            assets.glUseFence,
-            assets.glUseFenceDebug);
+            useMapped,
+            useInvalidate,
+            useFence,
+            useFenceDebug);
 
         m_draw->prepareRT(ctx, entryCount, bufferCount);
 
@@ -545,7 +555,7 @@ namespace render {
 
         {
             draw->flush();
-            //draw->drawPending(false);
+            draw->finish();
             clearBatches();
         }
 
