@@ -229,7 +229,7 @@ namespace particle {
         //}
 
         auto& current = m_queue->current();
-        auto* mappedData = m_queue->m_buffer.mapped< ParticleSSBO>(current.m_baseOffset);
+        auto* mappedData = m_queue->currentMapped();
 
         m_queue->waitFence();
         std::copy(
@@ -237,13 +237,10 @@ namespace particle {
             std::end(m_snapshot),
             mappedData);
         m_queue->setFence();
-
-        m_activeCount = totalCount;
-
         m_queue->bindCurrentSSBO(SSBO_PARTICLES, false, totalCount);
-
         m_queue->next();
 
+        m_activeCount = totalCount;
         m_updateReady = false;
     }
 

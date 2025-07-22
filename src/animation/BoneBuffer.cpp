@@ -124,7 +124,7 @@ namespace animation
         if (totalCount == 0) return true;
 
         auto& current = m_queue->current();
-        auto* mappedData = m_queue->m_buffer.mapped<BoneTransformSSBO>(current.m_baseOffset);
+        auto* mappedData = m_queue->currentMapped();
 
         m_queue->waitFence();
         std::copy(
