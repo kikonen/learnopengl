@@ -740,7 +740,7 @@ namespace loader {
 
             if (material.alpha) {
                 definitions[DEF_USE_ALPHA] = "1";
-                oitDefinitions[DEF_USE_ALPHA] = "1";
+                //oitDefinitions[DEF_USE_ALPHA] = "1";
                 shadowDefinitions[DEF_USE_ALPHA] = "1";
                 selectionDefinitions[DEF_USE_ALPHA] = "1";
                 idDefinitions[DEF_USE_ALPHA] = "1";
@@ -807,13 +807,13 @@ namespace loader {
             }
 
             if (!shadowName.empty()) {
-                {
-                    size_t shadowCount = std::min(
-                        std::max(Assets::get().shadowPlanes.size() - 1, static_cast<size_t>(1)),
-                        static_cast<size_t>(MAX_SHADOW_MAP_COUNT_ABS));
+                //{
+                //    size_t shadowCount = std::min(
+                //        std::max(Assets::get().shadowPlanes.size() - 1, static_cast<size_t>(1)),
+                //        static_cast<size_t>(MAX_SHADOW_MAP_COUNT_ABS));
 
-                    shadowDefinitions[DEF_MAX_SHADOW_MAP_COUNT] = std::to_string(shadowCount);
-                }
+                //    shadowDefinitions[DEF_MAX_SHADOW_MAP_COUNT] = std::to_string(shadowCount);
+                //}
 
                 material.m_programs[MaterialProgramType::shadow] = ProgramRegistry::get().getProgramId(
                     shadowName,
