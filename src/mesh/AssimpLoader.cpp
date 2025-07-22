@@ -663,7 +663,7 @@ namespace mesh
         const auto parentPath = meshPath.parent_path();
 
         std::filesystem::path fsPath{ assetPath };
-        std::string assetPath2 = std::filesystem::weakly_canonical(fsPath).string();
+        //std::string assetPath2 = std::filesystem::weakly_canonical(fsPath).string();
 
         std::string filePath = util::joinPathExt(
             rootDir,
