@@ -87,6 +87,12 @@ namespace kigl {
             return (T&)m_data[range.m_baseOffset];
         }
 
+        T* currentMapped()
+        {
+            auto& range = current();
+            return m_buffer.mapped<T>(range.m_baseOffset);
+        }
+
         //
         // @return true if current range is full
         //

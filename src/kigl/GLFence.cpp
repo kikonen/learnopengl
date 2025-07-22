@@ -3,7 +3,8 @@
 #include <fmt/format.h>
 
 namespace {
-    constexpr long WAIT_DELAY = 5 * 1000 *1000;
+    constexpr long WAIT_DELAY_MS = 5;
+    constexpr long WAIT_DELAY = WAIT_DELAY_MS * 1000 *1000;
 }
 
 namespace kigl {
@@ -40,7 +41,7 @@ namespace kigl {
 
         if (debug) {
             if (count > 1) {
-                KI_OUT(fmt::format("[{}={}]", m_name,count));
+                KI_OUT(fmt::format("[{}={}-{}ms]", m_name, count, WAIT_DELAY_MS * count));
             }
         }
 
