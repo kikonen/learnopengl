@@ -23,6 +23,11 @@
 class Program;
 struct PrepareContext;
 
+namespace mesh
+{
+    struct InstanceSSBO;
+}
+
 namespace backend {
     // WIP KI it seems that there was no corruption in NVidia even if sync is turned off
     using GLCommandQueue = kigl::GLSyncQueue<backend::gl::DrawIndirectCommand>;
@@ -46,7 +51,7 @@ namespace backend {
         // - sendInstanceIndeces
         // - send or sendDirect
         // - flush
-        // - drawPending
+        // - finish
         void sendInstanceIndeces(
             std::span<mesh::InstanceSSBO> indeces);
 
@@ -54,21 +59,20 @@ namespace backend {
             const backend::MultiDrawRange& sendRange,
             const backend::gl::DrawIndirectCommand& cmd);
 
-        void sendDirect(
-            const backend::MultiDrawRange& sendRange,
-            const backend::gl::DrawIndirectCommand& cmd);
-
         void flush();
+        void finish();
 
         gl::PerformanceCounters getCounters(bool clear) const;
 
     private:
+        void createInstanceBuffers(size_t totalCount);
+
         void flushIfNeeded();
 
-        void flushIfNotSameMultiDraw(
+        bool isSameMultiDraw(
             const backend::MultiDrawRange& sendRange);
 
-        void drawPending(bool drawCurrent);
+        void drawPending();
 
         void bindMultiDrawRange(
             const backend::MultiDrawRange& drawRange) const;
@@ -79,6 +83,7 @@ namespace backend {
         const bool m_useFence;
         const bool m_useFenceDebug;
 
+        bool m_batchDebug{ false };
         int m_batchCount = 0;
         int m_rangeCount = 0;
 
@@ -91,13 +96,11 @@ namespace backend {
         ki::program_id m_cullingComputeId{ 0 };
         Program* m_cullingCompute{ nullptr };
 
+        std::unique_ptr<kigl::GLSyncQueue<mesh::InstanceSSBO>> m_instanceBuffers{ nullptr };
         std::unique_ptr<GLCommandQueue> m_commands{ nullptr };
 
-        std::vector<backend::MultiDrawRange> m_drawRanges;
-
-        std::vector<kigl::GLBuffer> m_instanceBuffers;
-        std::vector<kigl::GLFence> m_instanceFences;
-        int m_instanceBufferIndex{ -1 };
+        // (range-params, command-count)
+        std::vector<std::pair<uint16_t, backend::MultiDrawRange>> m_drawRanges;
 
         kigl::GLBuffer m_drawParameters{ "draw_parameters" };
         kigl::GLBuffer m_performanceCounters{ "draw_performance_counters" };

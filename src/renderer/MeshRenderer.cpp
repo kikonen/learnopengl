@@ -123,7 +123,7 @@ void MeshRenderer::drawObjects(
         baseInstance++;
     }
     drawBuffer->flush();
-    //drawBuffer->drawPending(false);
+    drawBuffer->finish();
 
     ctx.m_state.setDepthFunc(ctx.m_depthFunc);
     ctx.m_state.setDepthMask(GL_TRUE);
