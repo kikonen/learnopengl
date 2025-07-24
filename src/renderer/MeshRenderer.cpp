@@ -44,6 +44,8 @@ void MeshRenderer::drawObjects(
 {
     if (meshes.empty()) return;
 
+    bool useFenceDebug = true;
+
     backend::DrawBuffer* drawBuffer = ctx.m_batch->getDrawBuffer();
 
     // NOTE KI for troubleshooting
@@ -51,13 +53,21 @@ void MeshRenderer::drawObjects(
     //glGetIntegerv(GL_DRAW_FRAMEBUFFER_BINDING, &drawFboId);
     //glGetIntegerv(GL_READ_FRAMEBUFFER_BINDING, &readFboId);
 
-    m_dynamicVaoIndex = (m_dynamicVaoIndex + 1) % 2;
-
     auto* sharedVao = VaoRegistry::get().getSharedPrimitiveVao();
-    auto* dynamicVao = VaoRegistry::get().getDynamicPrimitiveVao(m_dynamicVaoIndex);
+    mesh::TexturedVAO* dynamicVao = nullptr;
 
-    //dynamicVao->getFence().waitFence(false);
-    dynamicVao->clear();
+    bool hasDynamic = false;
+    for (const auto& meshInstance : meshes)
+    {
+        hasDynamic |= !meshInstance.m_shared;
+    }
+
+    if (hasDynamic) {
+        m_dynamicVaoIndex = (m_dynamicVaoIndex + 1) % 2;
+        dynamicVao = VaoRegistry::get().getDynamicPrimitiveVao(m_dynamicVaoIndex);
+        dynamicVao->getFence().waitFence(useFenceDebug);
+        dynamicVao->clear();
+    }
 
     m_instances.clear();
     m_instances.reserve(meshes.size());
@@ -87,7 +97,9 @@ void MeshRenderer::drawObjects(
     }
 
     sharedVao->updateRT();
-    dynamicVao->updateRT();
+    if (dynamicVao) {
+        dynamicVao->updateRT();
+    }
     drawBuffer->sendInstanceIndeces(m_instances);
 
     targetBuffer->bind(ctx);
@@ -128,5 +140,7 @@ void MeshRenderer::drawObjects(
     ctx.m_state.setDepthFunc(ctx.m_depthFunc);
     ctx.m_state.setDepthMask(GL_TRUE);
 
-    //dynamicVao->getFence().setFence(false);
+    if (dynamicVao) {
+        dynamicVao->getFence().setFence(useFenceDebug);
+    }
 }
