@@ -576,8 +576,10 @@ types:
         map_dudv: textures/waterDUDV_512.png
         tiling: 2
         render_back: true
+        program: g_water
       scale: 30
-      program: g_water
+      flags:
+        pre_depth: true
     priority: -5
     flags:
       no_shadow: true
@@ -701,8 +703,10 @@ types:
         map_dudv: textures/waterDUDV_512.png
         tiling: 2
         render_back: true
+        program: g_water
       scale: 128
-      program: g_water
+      flags:
+        pre_depth: true
     flags:
       no_shadow: true
       water: true
