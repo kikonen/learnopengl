@@ -35,7 +35,7 @@ namespace {
 
     constexpr size_t MAX_INDEX_COUNT = INDEX_BLOCK_SIZE * INDEX_BLOCK_COUNT;
 
-    constexpr size_t MAX_INSTANCE_BUFFERS = 256;
+    constexpr size_t MAX_INSTANCE_BUFFERS = 64;
 }
 
 namespace backend {
@@ -275,7 +275,7 @@ namespace backend {
     void DrawBuffer::createInstanceBuffers(size_t totalCount)
     {
         if (!m_instanceBuffers || m_instanceBuffers->getEntryCount() < totalCount) {
-            size_t blocks = (totalCount / INDEX_BLOCK_SIZE) + 2;
+            size_t blocks = (totalCount * 1.25 / INDEX_BLOCK_SIZE) + 2;
             size_t entryCount = blocks * INDEX_BLOCK_SIZE;
 
             m_instanceBuffers = std::make_unique<kigl::GLSyncQueue<mesh::InstanceSSBO>>(
