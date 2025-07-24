@@ -127,10 +127,11 @@ types:
         texture_spec:
           wrap: GL_CLAMP_TO_EDGE
         program: g_terrain
-        depth_program: g_terrain_depth
+        pre_depth_program: g_terrain_depth
         tiling: 1
       flags:
         tessellation: true
+        pre_depth: true
     priority: 20
     front: [0, 1, 0]
     type_flags:

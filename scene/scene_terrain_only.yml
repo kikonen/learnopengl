@@ -36,11 +36,12 @@ types:
         xxline_mode: true
         xrender_back: true
         program: g_terrain
-        depth_program: g_terrain_depth
+        pre_depth_program: g_terrain_depth
         xdefault_programs: true
         tiling: 4
       flags:
         tessellation: true
+        pre_depth: true
     priority: 20
     type_flags:
       pre_depth: true
