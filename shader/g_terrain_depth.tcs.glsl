@@ -2,14 +2,17 @@
 
 layout(vertices=3) out;
 
+#include ssbo_entities.glsl
+#include ssbo_instance_indeces.glsl
+
 #include uniform_matrices.glsl
 #include uniform_camera.glsl
 #include uniform_data.glsl
 
 in VS_OUT {
-  flat mat4 modelMatrix;
+  flat uint entityIndex;
+  flat uint instanceIndex;
 
-  vec3 worldPos;
   vec2 texCoord;
   vec3 vertexPos;
 
@@ -20,9 +23,9 @@ in VS_OUT {
 } tcs_in[];
 
 out TCS_OUT {
-  flat mat4 modelMatrix;
+  flat uint entityIndex;
+  flat uint instanceIndex;
 
-  vec3 worldPos;
   vec2 texCoord;
   vec3 vertexPos;
 
@@ -38,16 +41,21 @@ out TCS_OUT {
 
 SET_FLOAT_PRECISION;
 
+Instance instance;
+Entity entity;
+
 void main()
 {
+  instance = u_instances[tcs_in[gl_InvocationID].instanceIndex];
+  entity = u_entities[tcs_in[gl_InvocationID].entityIndex];
+  #include var_entity_model_matrix.glsl
+
   gl_out[gl_InvocationID].gl_Position = gl_in[gl_InvocationID].gl_Position;
 
-  tcs_out[gl_InvocationID].modelMatrix = tcs_in[gl_InvocationID].modelMatrix;
-  tcs_out[gl_InvocationID].worldPos = tcs_in[gl_InvocationID].worldPos;
+  tcs_out[gl_InvocationID].entityIndex = tcs_in[gl_InvocationID].entityIndex;
+  tcs_out[gl_InvocationID].instanceIndex = tcs_in[gl_InvocationID].instanceIndex;
   tcs_out[gl_InvocationID].texCoord = tcs_in[gl_InvocationID].texCoord;
   tcs_out[gl_InvocationID].vertexPos = tcs_in[gl_InvocationID].vertexPos;
-  tcs_out[gl_InvocationID].rangeYmin = tcs_in[gl_InvocationID].rangeYmin;
-  tcs_out[gl_InvocationID].rangeYmax = tcs_in[gl_InvocationID].rangeYmax;
 
   tcs_out[gl_InvocationID].rangeYmin = tcs_in[gl_InvocationID].rangeYmin;
   tcs_out[gl_InvocationID].rangeYmax = tcs_in[gl_InvocationID].rangeYmax;
@@ -67,13 +75,13 @@ void main()
     // NOTE KI use *world* not *view* space for distance
     // => to avoid terrain bumping around when rotating in place
     //mat4 mvMatrix = u_viewMatrix * modelMatrix;
-    mat4 mat = tcs_in[gl_InvocationID].modelMatrix;
+    mat4 mvMatrix = modelMatrix;
     vec4 eyePos = vec4(u_cameraPos.xyz, 1.0);
 
-    vec4 eyePos00 = eyePos - mat * gl_in[0].gl_Position;
-    vec4 eyePos01 = eyePos - mat * gl_in[1].gl_Position;
-    vec4 eyePos10 = eyePos - mat * gl_in[2].gl_Position;
-    //vec4 eyePos11 = eyePos - mat * gl_in[3].gl_Position;
+    vec4 eyePos00 = eyePos - mvMatrix * gl_in[0].gl_Position;
+    vec4 eyePos01 = eyePos - mvMatrix * gl_in[1].gl_Position;
+    vec4 eyePos10 = eyePos - mvMatrix * gl_in[2].gl_Position;
+    //vec4 eyePos11 = eyePos - mvMatrix * gl_in[3].gl_Position;
 
     // "distance" from camera scaled between 0 and 1
     float dist00 = clamp( (abs(eyePos00.z) - MIN_DIST) / (DIST_DIFF), 0.0, 1.0 );

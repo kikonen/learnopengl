@@ -2,14 +2,17 @@
 
 layout(triangles, fractional_odd_spacing, ccw) in;
 
+#include ssbo_entities.glsl
+#include ssbo_instance_indeces.glsl
+
 #include uniform_matrices.glsl
 #include uniform_camera.glsl
 #include uniform_clip_planes.glsl
 
 in TCS_OUT {
-  flat mat4 modelMatrix;
+  flat uint entityIndex;
+  flat uint instanceIndex;
 
-  vec3 worldPos;
   vec2 texCoord;
   vec3 vertexPos;
 
@@ -18,7 +21,6 @@ in TCS_OUT {
   flat uvec2 heightMapTex;
 } tes_in[];
 
-
 out float gl_ClipDistance[CLIP_COUNT];
 
 ////////////////////////////////////////////////////////////
@@ -26,6 +28,9 @@ out float gl_ClipDistance[CLIP_COUNT];
 ////////////////////////////////////////////////////////////
 
 SET_FLOAT_PRECISION;
+
+Instance instance;
+Entity entity;
 
 #include fn_calculate_clipping.glsl
 
@@ -48,25 +53,20 @@ float fetchHeight(
   in sampler2D heightMap,
   in vec2 texCoord)
 {
-  const vec2 ts = 1.0 / vec2(textureSize(heightMap, 0));
-
-  float height = 0.0;
-  for (int x = -1; x < 2; x++) {
-    for (int y = -1; y < 2; y++) {
-      height += texture(heightMap, texCoord + vec2(x * ts.x, y * ts.y)).r;
-    }
-  }
-  return height / 9.0;
+  return texture(heightMap, texCoord).r;
 }
 
 void main()
 {
+  instance = u_instances[tes_in[0].instanceIndex];
+  entity = u_entities[tes_in[0].entityIndex];
+  #include var_entity_model_matrix.glsl
+
   sampler2D heightMap = sampler2D(tes_in[0].heightMapTex);
 
   // Interpolate the attributes of the output vertex using the barycentric coordinates
   vec2 texCoord = interpolate2D(tes_in[0].texCoord, tes_in[1].texCoord, tes_in[2].texCoord);
   vec3 vertexPos = interpolate3D(tes_in[0].vertexPos, tes_in[1].vertexPos, tes_in[2].vertexPos);
-
 
   const float rangeYmin = tes_in[0].rangeYmin;
   const float rangeYmax = tes_in[0].rangeYmax;
@@ -77,7 +77,7 @@ void main()
 
   vertexPos.y += h;
 
-  vec4 worldPos = tes_in[0].modelMatrix * vec4(vertexPos, 1.0);
+  vec4 worldPos = modelMatrix * vec4(vertexPos, 1.0);
 
   calculateClipping(worldPos);
 

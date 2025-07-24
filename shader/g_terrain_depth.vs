@@ -6,15 +6,16 @@ layout (location = ATTR_TEX) in vec2 a_texCoord;
 #include ssbo_entities.glsl
 #include ssbo_instance_indeces.glsl
 #include ssbo_materials.glsl
+#include ssbo_terrain_tiles.glsl
 
 #include uniform_matrices.glsl
 #include uniform_camera.glsl
 #include uniform_data.glsl
 
 out VS_OUT {
-  flat mat4 modelMatrix;
+  flat uint entityIndex;
+  flat uint instanceIndex;
 
-  vec3 worldPos;
   vec2 texCoord;
   vec3 vertexPos;
 
@@ -38,23 +39,24 @@ ResolvedMaterial material;
 TerrainTile tile;
 
 void main() {
-  instance = u_instances[gl_BaseInstance + gl_InstanceID];
+  const uint instanceIndex = gl_BaseInstance + gl_InstanceID;
+  instance = u_instances[instanceIndex];
+
   const uint entityIndex = instance.u_entityIndex;
   entity = u_entities[entityIndex];
-  tile = u_terrainTiles[instane.u_data];
+
+  const uint tileIndex = instance.u_data;
+  tile = u_terrainTiles[tileIndex];
 
   #include var_entity_model_matrix.glsl
 
   const uint materialIndex = instance.u_materialIndex;
 
   const vec4 pos = vec4(a_pos, 1.0);
-  vec4 worldPos;
-
-  worldPos = modelMatrix * pos;
-
   gl_Position = pos;
 
-  vs_out.modelMatrix = modelMatrix;
+  vs_out.entityIndex = entityIndex;
+  vs_out.instanceIndex = instanceIndex;
 
   vs_out.rangeYmin = tile.u_rangeYmin;
   vs_out.rangeYmax = tile.u_rangeYmax;
@@ -77,6 +79,5 @@ void main() {
     vs_out.tilingX = tilingX;
   }
 
-  vs_out.worldPos = worldPos.xyz;
   vs_out.vertexPos = a_pos;
 }
