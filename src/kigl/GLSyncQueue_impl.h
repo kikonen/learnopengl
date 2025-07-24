@@ -23,11 +23,11 @@ namespace kigl {
         m_useInvalidate{ useInvalidate },
         m_useFence{ useFence },
         m_useFenceDebug{ useFenceDebug },
-        //m_flags{ static_cast<GLuint>(useMapped ? GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_COHERENT_BIT : GL_DYNAMIC_STORAGE_BIT) },
-        m_flags{ static_cast<GLuint>(useMapped ? GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT : GL_DYNAMIC_STORAGE_BIT) },
+        m_flags{ static_cast<GLuint>(useMapped ? GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_COHERENT_BIT : GL_DYNAMIC_STORAGE_BIT) },
+        //m_flags{ static_cast<GLuint>(useMapped ? GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT : GL_DYNAMIC_STORAGE_BIT) },
         // Beyond Porting.pdf
-        //m_mapFlags{ GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_COHERENT_BIT },
-        m_mapFlags{ GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_FLUSH_EXPLICIT_BIT },
+        m_mapFlags{ GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_COHERENT_BIT },
+        //m_mapFlags{ GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_FLUSH_EXPLICIT_BIT },
         m_entrySize{ sizeof(T) },
         m_name{ fmt::format("{}_sync_queue", name) },
         m_buffer{ m_name }
