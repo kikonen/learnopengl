@@ -93,7 +93,9 @@ types:
         map_dudv: textures/waterDUDV_512.png
         tiling: 2
         render_back: true
-      program: g_water
+        program: g_water
+      flags:
+        pre_depth: true
     priority: -20
     flags:
       no_shadow: true

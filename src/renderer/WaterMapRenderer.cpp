@@ -64,6 +64,7 @@ void WaterMapRenderer::prepareRT(
         m_nodeDraw = std::make_unique<render::NodeDraw>(m_name);
 
         auto& pipeline = m_nodeDraw->m_pipeline;
+        pipeline.m_preDepth = false;
         pipeline.m_particle = false;
         pipeline.m_decal = false;
         pipeline.m_fog = false;

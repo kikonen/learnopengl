@@ -170,6 +170,8 @@ types:
         tiling: 2
         render_back: true
         program: g_water
+      flags:
+        pre_depth: true
       scale: 30
     flags:
       no_shadow: true
@@ -411,6 +413,8 @@ types:
         tiling: 2
         render_back: true
         program: g_water
+      flags:
+        pre_depth: true
       scale: 60
     priority: -5
     flags:

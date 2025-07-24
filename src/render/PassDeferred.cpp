@@ -169,6 +169,8 @@ namespace render
             },
             drawContext.kindBits & render::KIND_SOLID);
 
+        ctx.m_batch->flush(ctx);
+
         //auto flushedCount = ctx.m_batch->flush(ctx);
         //if (flushedCount > 0) {
         //    //KI_INFO_OUT(fmt::format("PRE_PASS: count={}", flushedCount));
