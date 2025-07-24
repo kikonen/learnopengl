@@ -88,8 +88,8 @@ assets:
 
   terrain_grid_size: 64
 
-  batch_size: 200
-  batch_buffers: 10
+  batch_size: 2000
+  batch_buffers: 256
   batch_debug: false
 
   draw_debug: false
