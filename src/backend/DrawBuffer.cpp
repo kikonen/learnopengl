@@ -206,7 +206,10 @@ namespace backend {
     void DrawBuffer::finish()
     {
         // NOTE KI instances are fenced after their associated draw
-        m_instanceBuffers->setFence();
+        if (!m_instanceBuffers->setFenceIfNotSet())
+        {
+            KI_OUT(fmt::format("DUPLICATE_FENCE"));
+        }
         m_instanceBuffers->next();
     }
 
@@ -275,7 +278,7 @@ namespace backend {
     void DrawBuffer::createInstanceBuffers(size_t totalCount)
     {
         if (!m_instanceBuffers || m_instanceBuffers->getEntryCount() < totalCount) {
-            size_t blocks = (totalCount * 1.25 / INDEX_BLOCK_SIZE) + 2;
+            size_t blocks = (totalCount * 1.25f / INDEX_BLOCK_SIZE) + 2;
             size_t entryCount = blocks * INDEX_BLOCK_SIZE;
 
             m_instanceBuffers = std::make_unique<kigl::GLSyncQueue<mesh::InstanceSSBO>>(

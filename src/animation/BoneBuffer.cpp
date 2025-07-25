@@ -53,7 +53,7 @@ namespace animation
         m_useMapped = true;
         m_useInvalidate = false;
         m_useFence = true;
-        m_useFenceDebug = true;
+        //m_useFenceDebug = true;
     }
 
     void BoneBuffer::updateRT()

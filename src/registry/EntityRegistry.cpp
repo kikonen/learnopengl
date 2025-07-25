@@ -78,7 +78,7 @@ void EntityRegistry::prepare()
     m_useMapped = false;
     m_useInvalidate = true;
     m_useFence = false;
-    m_useFenceDebug = false;
+    //m_useFenceDebug = false;
 
     if (m_useMapped) {
         // https://stackoverflow.com/questions/44203387/does-gl-map-invalidate-range-bit-require-glinvalidatebuffersubdata

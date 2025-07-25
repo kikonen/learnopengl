@@ -201,6 +201,14 @@ namespace kigl {
     }
 
     template <class T>
+    bool GLSyncQueue<T>::setFenceIfNotSet()
+    {
+        if (!m_useFence) return false;
+
+        return m_fences[m_current].setFenceIfNotSet(m_useFenceDebug);
+    }
+
+    template <class T>
     void GLSyncQueue<T>::waitFence()
     {
         if (!m_useFence) return;

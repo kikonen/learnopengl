@@ -4,7 +4,7 @@
 
 namespace {
     constexpr long WAIT_DELAY_MS = 5;
-    constexpr long WAIT_DELAY = WAIT_DELAY_MS * 1000 *1000;
+    constexpr long WAIT_DELAY = WAIT_DELAY_MS * 1000 * 1000;
 }
 
 namespace kigl {
@@ -19,10 +19,11 @@ namespace kigl {
         m_sync = glFenceSync(GL_SYNC_GPU_COMMANDS_COMPLETE, 0);
     }
 
-    void GLFence::setFenceIfNotSet(bool debug)
+    bool GLFence::setFenceIfNotSet(bool debug)
     {
-        if (isSet()) return;
+        if (isSet()) return false;
         m_sync = glFenceSync(GL_SYNC_GPU_COMMANDS_COMPLETE, 0);
+        return true;
     }
 
     void GLFence::waitFence(bool debug)

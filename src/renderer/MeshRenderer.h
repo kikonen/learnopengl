@@ -47,4 +47,6 @@ private:
     std::vector<mesh::InstanceSSBO> m_instances;
 
     int m_dynamicVaoIndex{ -1 };
+
+    bool m_useFenceDebug{ false };
 };
