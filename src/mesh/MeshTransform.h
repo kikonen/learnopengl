@@ -15,12 +15,9 @@ namespace mesh {
         glm::vec3 m_scale{ 1.f };
 
         glm::vec4 m_volume{ 0.f };
-        glm::vec4 m_worldPos{ 0.f, 0.f, 0.f, 1.f };
+        //glm::vec4 m_worldPos{ 0.f, 0.f, 0.f, 1.f };
 
         uint32_t m_data{ 0 };
-
-        //glm::vec4 m_worldPos2{ 1.f };
-        //glm::mat4 m_parentMatrix{ 1.f };
 
         inline glm::vec3 getPosition() const noexcept
         {
@@ -97,19 +94,16 @@ namespace mesh {
                 glm::scale(glm::mat4{ 1.f }, m_scale);
 
             const auto& modelMatrix = parentMatrix * m_transform;
-            {
-                const auto& wp = modelMatrix[3];
-                m_worldPos.x = wp.x;
-                m_worldPos.y = wp.y;
-                m_worldPos.z = wp.z;
-            }
+            //{
+            //    const auto& wp = modelMatrix[3];
+            //    m_worldPos.x = wp.x;
+            //    m_worldPos.y = wp.y;
+            //    m_worldPos.z = wp.z;
+            //}
             {
                 m_volume = modelMatrix * glm::vec4{ volume.x, volume.y, volume.z, 1.f };
                 m_volume.w = volume.w * m_scale.x;
             }
-
-            //m_parentMatrix = parentMatrix;
-            //m_worldPos2 = m_transform[3];
         }
     };
 }

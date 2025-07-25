@@ -142,7 +142,7 @@ namespace render {
             }
 
             commandEntry->addInstance({
-                lodMesh.m_transform,
+                lodMesh.m_baseTransform,
                 dist2,
                 entityIndex,
                 static_cast<uint32_t>(lodMesh.m_materialIndex),
@@ -293,7 +293,7 @@ namespace render {
 
                     commandEntry->reserve(count);
                     commandEntry->addInstance({
-                        transforms[i].getTransform() * lodMesh.m_transform,
+                        transforms[i].getTransform() * lodMesh.m_baseTransform,
                         dist2,
                         entityIndex,
                         static_cast<uint32_t>(lodMesh.m_materialIndex),

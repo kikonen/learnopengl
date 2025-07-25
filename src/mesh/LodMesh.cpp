@@ -45,8 +45,8 @@ namespace mesh {
         m_baseScale = o.m_baseScale;
         m_baseRotation = o.m_baseRotation;
 
-        m_animationRigTransform = o.m_animationRigTransform;
-        m_transform = o.m_transform;
+        //m_animationRigTransform = o.m_animationRigTransform;
+        m_baseTransform = o.m_baseTransform;
 
         m_material = std::move(o.m_material);
         m_materialIndex = o.m_materialIndex;
@@ -108,7 +108,7 @@ namespace mesh {
         m_normalProgramId = o.m_normalProgramId;
         m_drawOptions = o.m_drawOptions;
 
-        m_animationRigTransform = o.m_animationRigTransform;
+        //m_animationRigTransform = o.m_animationRigTransform;
 
         m_flags = o.m_flags;
 
@@ -272,7 +272,7 @@ namespace mesh {
 
     void LodMesh::updateTransform() {
         // TODO KI rotate here causes very weird artifacts
-        m_transform =
+        m_baseTransform =
             glm::mat4(m_baseRotation) *
             glm::scale(glm::mat4{ 1.f }, m_scale * m_baseScale) *
             m_mesh->m_rigTransform;
