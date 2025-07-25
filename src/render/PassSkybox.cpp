@@ -16,6 +16,7 @@
 #include "registry/NodeRegistry.h"
 
 namespace {
+    const std::string PROGRAM_NAME = "skybox";
 }
 
 namespace render
@@ -29,6 +30,8 @@ namespace render
 
     void PassSkybox::prepare(const PrepareContext& ctx)
     {
+        auto programId = ProgramRegistry::get().getProgram(PROGRAM_NAME);
+        m_program = Program::get(programId);
     }
 
     void PassSkybox::updateRT(
@@ -69,9 +72,6 @@ namespace render
 
         if (node->m_layer != ctx.m_layer) return;
 
-        auto* lodMesh = node->getLodMesh(0);
-        auto* program = Program::get(lodMesh->m_programId);
-
         auto& state = ctx.m_state;
 
         // NOTE KI cannot update stencil without depth update
@@ -83,7 +83,7 @@ namespace render
         state.setStencil(kigl::GLStencilMode::fill(STENCIL_SKYBOX, STENCIL_SKYBOX, ~STENCIL_OIT));
         state.polygonFrontAndBack(GL_FILL);
 
-        program->bind();
+        m_program->bind();
         m_textureQuad.draw();
 
         state.setDepthFunc(ctx.m_depthFunc);

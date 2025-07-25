@@ -110,39 +110,13 @@ namespace loader {
 
         const auto& assets = Assets::get();
 
-        // TODO KI just generate primitive mesh
-        auto future = ModelRegistry::get().getMeshSet(
-            "",
-            assets.modelsDir,
-            SKYBOX_MESH_NAME,
-            false,
-            false);
-        const auto& meshSet = future.get();
-
-        if (!meshSet) {
-            KI_ERROR("Failed to load skybox mesh");
-            return;
-        }
-
         std::string name = "<skybox>";
         auto typeHandle = pool::TypeHandle::allocate(SID(name));
         auto* type = typeHandle.toType();
         type->setName(name);
 
-        type->addMeshSet(*meshSet);
-
         if (const auto* layer = LayerInfo::findLayer(LAYER_MAIN); layer) {
             type->m_layer = layer->m_index;
-        }
-
-        auto* lodMesh = type->modifyLodMesh(0);
-        {
-            lodMesh->m_priority = data.priority;
-            lodMesh->m_drawOptions.m_lineMode = false;
-            lodMesh->m_drawOptions.m_renderBack = true;
-            //lodMesh->flags.gbuffer = false;// data.programName.starts_with("g_");
-
-            lodMesh->m_programId = ProgramRegistry::get().getProgram(data.programName);
         }
 
         auto& flags = type->m_flags;
