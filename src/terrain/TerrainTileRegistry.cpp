@@ -56,7 +56,7 @@ namespace terrain {
         m_useMapped = false;
         m_useInvalidate = true;
         m_useFence = false;
-        m_useFenceDebug = false;
+        //m_useFenceDebug = false;
 
         m_ssbo.createEmpty(1 * BLOCK_SIZE * sizeof(TerrainTileSSBO), GL_DYNAMIC_STORAGE_BIT);
         m_ssbo.bindSSBO(SSBO_TERRAIN_TILES);

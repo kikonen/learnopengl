@@ -129,6 +129,8 @@ namespace kigl {
         void bindCurrentSSBO(GLuint ssbo, bool used, size_t count);
 
         void setFence();
+        // @return true if fence is set now
+        bool setFenceIfNotSet();
         void waitFence();
 
     public:

@@ -348,7 +348,7 @@ namespace render {
         useMapped = true;
         useInvalidate = false;
         useFence = true;
-        useFenceDebug = true;
+        //useFenceDebug = true;
 
         m_draw = std::make_unique<backend::DrawBuffer>(
             useMapped,

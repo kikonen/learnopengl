@@ -1,5 +1,7 @@
 #include "MeshRenderer.h"
 
+#include "asset/Assets.h"
+
 #include "render/RenderContext.h"
 #include "render/FrameBuffer.h"
 #include "render/DebugContext.h"
@@ -27,12 +29,16 @@ MeshRenderer::~MeshRenderer() = default;
 
 void MeshRenderer::prepareRT(const PrepareContext& ctx)
 {
+    const auto& assets = Assets::get();
+
     {
         m_fallbackMaterial = Material::createMaterial(BasicMaterial::yellow);
         m_fallbackMaterial.registerMaterial();
     }
 
     m_programId = ProgramRegistry::get().getProgram("g_tex");
+
+    m_useFenceDebug = assets.glUseFenceDebug;
 
     m_entityIndex = ID_INDEX;
 }
@@ -43,8 +49,6 @@ void MeshRenderer::drawObjects(
     const std::vector<mesh::MeshInstance>& meshes)
 {
     if (meshes.empty()) return;
-
-    bool useFenceDebug = true;
 
     backend::DrawBuffer* drawBuffer = ctx.m_batch->getDrawBuffer();
 
@@ -65,7 +69,7 @@ void MeshRenderer::drawObjects(
     if (hasDynamic) {
         m_dynamicVaoIndex = (m_dynamicVaoIndex + 1) % 2;
         dynamicVao = VaoRegistry::get().getDynamicPrimitiveVao(m_dynamicVaoIndex);
-        dynamicVao->getFence().waitFence(useFenceDebug);
+        dynamicVao->getFence().waitFence(m_useFenceDebug);
         dynamicVao->clear();
     }
 
@@ -141,6 +145,6 @@ void MeshRenderer::drawObjects(
     ctx.m_state.setDepthMask(GL_TRUE);
 
     if (dynamicVao) {
-        dynamicVao->getFence().setFence(useFenceDebug);
+        dynamicVao->getFence().setFence(m_useFenceDebug);
     }
 }
