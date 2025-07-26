@@ -43,7 +43,7 @@ namespace render {
         {
             // NOTE KI alpha NOT needed
             auto buffer = new FrameBuffer(
-                fmt::format("{}_oit_buffer", namePrefix),
+                fmt::format("{}_oit_buffer_{}x{}", namePrefix, w, h),
                 {
                     w, h,
                     {

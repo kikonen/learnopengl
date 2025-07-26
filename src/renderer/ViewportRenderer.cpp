@@ -71,7 +71,7 @@ void ViewportRenderer::updateRT(const UpdateViewContext& ctx)
             {
                 // NOTE KI alpha NOT needed
                 auto buffer = new render::FrameBuffer(
-                    "final_buffer",
+                    fmt::format("final_buffer_{}x{}", w, h),
                     {
                         w, h,
                         {

@@ -138,7 +138,7 @@ void ObjectIdRenderer::updateRT(const UpdateViewContext& ctx)
 
     // https://riptutorial.com/opengl/example/28872/using-pbos
     auto buffer = new render::FrameBuffer(
-        "object_id",
+        fmt::format("object_id_{}x{}", w, h),
         {
             w, h,
             {

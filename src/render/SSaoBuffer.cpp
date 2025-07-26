@@ -28,9 +28,11 @@ namespace render {
         auto& dbg = render::DebugContext::get();
 
         const auto& res = ctx.m_resolution;
+        const float ssaoScale = 0.5f;
 
-        int w = (int)(bufferScale * res.x);
-        int h = (int)(bufferScale * res.y);
+        // NOTE KI use smaller size buffer for SSAO to save GPU time
+        int w = (int)(bufferScale * res.x * ssaoScale);
+        int h = (int)(bufferScale * res.y * ssaoScale);
         if (w < 1) w = 1;
         if (h < 1) h = 1;
 
@@ -43,14 +45,14 @@ namespace render {
         {
             // NOTE KI alpha NOT needed
             auto buffer = new FrameBuffer(
-                fmt::format("{}_ssao_buffer", namePrefix),
+                fmt::format("{}_ssao_buffer_{}x{}", namePrefix, w, h),
                 {
                     w, h,
                     {
                         FrameBufferAttachment::getSsaoTexture(GL_COLOR_ATTACHMENT0),
                         FrameBufferAttachment::getSsaoTexture(GL_COLOR_ATTACHMENT1),
                     }
-                });
+                 });
 
             m_buffer.reset(buffer);
             m_buffer->prepare();

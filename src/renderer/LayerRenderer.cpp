@@ -104,7 +104,7 @@ void LayerRenderer::updateRT(const UpdateViewContext& ctx)
 
         if (m_useHighlight) {
             buffer = new render::FrameBuffer(
-                m_name + "_node",
+                fmt::format("{}_node_{}x{}", m_name, w, h),
                 {
                     w, h,
                     {
