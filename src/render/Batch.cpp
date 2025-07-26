@@ -371,6 +371,7 @@ namespace render {
 
         m_frustumCPU = assets.frustumEnabled && assets.frustumCPU && dbg.m_frustumEnabled;
 
+        m_batchRegistry.optimizeMultiDrawOrder();
         m_pending.resize(m_batchRegistry.getMaxMultDrawIndex() + 1);
     }
 

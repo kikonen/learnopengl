@@ -89,6 +89,8 @@ namespace render {
             return m_commands.size();
         }
 
+        void optimizeMultiDrawOrder() noexcept;
+
     private:
         std::vector<MultiDrawKey> m_multiDraws;
         std::vector<CommandKey> m_commands;

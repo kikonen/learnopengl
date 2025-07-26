@@ -1,5 +1,7 @@
 #include "BatchRegistry.h"
 
+#include <algorithm>
+
 namespace
 {
 }
@@ -27,5 +29,16 @@ namespace render {
         m_commandIndeces.insert({ cmd, index });
 
         return index;
+    }
+
+    void BatchRegistry::optimizeMultiDrawOrder() noexcept
+    {
+        std::sort(
+            m_multiDraws.begin(),
+            m_multiDraws.end());
+        m_multiDrawIndeces.clear();
+        for (int i = 0; i < m_multiDraws.size(); i++) {
+            m_multiDrawIndeces.insert({ m_multiDraws[i], i });
+        }
     }
 }
