@@ -658,6 +658,8 @@ void Scene::renderPlayer(const RenderContext& parentCtx)
     localCtx.m_useDecals = false;
     localCtx.m_useFog = false;
     localCtx.m_useEmission = false;
+    // TODO KI SSAO is so slow that cannot afford it multiple times
+    localCtx.m_useSsao = false;
     localCtx.m_useBloom = false;
     //localCtx.m_useScreenspaceEffects = false;
 
