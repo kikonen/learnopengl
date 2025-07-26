@@ -232,7 +232,7 @@ void WaterMapRenderer::updateReflectionView(const UpdateViewContext& ctx)
             };
 
             m_reflectionBuffers.push_back(std::make_unique<render::FrameBuffer>(
-                fmt::format("{}_reflect_{}", m_name, i),
+                fmt::format("{}_reflect_{}x{}_{}", m_name, w, h, i),
                 spec));
         }
     }
@@ -287,7 +287,7 @@ void WaterMapRenderer::updateRefractionView(const UpdateViewContext& ctx)
             };
 
             m_refractionBuffers.push_back(std::make_unique<render::FrameBuffer>(
-                fmt::format("{}_refract_{}", m_name, i),
+                fmt::format("{}_refract_{}x{}_{}", m_name, w, h, i),
                 spec));
         }
     }

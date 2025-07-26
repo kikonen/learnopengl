@@ -59,7 +59,7 @@ namespace render {
             if (currH < 1) currH = 1;
 
             auto fb = new FrameBuffer(
-                fmt::format("{}_blur_buffer_{}", namePrefix, i),
+                fmt::format("{}_blur_buffer_{}x{}_{}", namePrefix, w, h, i),
                 {
                     w, h,
                     {

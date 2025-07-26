@@ -41,7 +41,7 @@ namespace render {
         {
             // NOTE KI alpha NOT needed
             auto buffer = new FrameBuffer(
-                "effect_primary",
+                fmt::format("effect_primary_{}x{}", w, h),
                 {
                     w, h,
                     {
@@ -67,7 +67,7 @@ namespace render {
         {
             // NOTE KI alpha NOT needed
             auto buffer = new FrameBuffer(
-                "effect_secondary",
+                fmt::format("effect_secondary_{}x{}", w, h),
                 {
                     w, h,
                     {
