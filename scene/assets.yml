@@ -174,7 +174,7 @@ assets:
   mirror_map_render_mirror: true
   mirror_map_render_water: true
   mirror_map_render_frame_start: 0
-  mirror_map_render_frame_step: 4
+  mirror_map_render_frame_step: 2
   mirror_map_near_plane: 0.1
   mirror_map_far_plane: 600
 

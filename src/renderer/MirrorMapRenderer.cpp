@@ -365,11 +365,11 @@ void MirrorMapRenderer::drawNodes(
         }
     }
 
-    if (m_waterMapRenderer && m_waterMapRenderer->isEnabled() && renderedWater) {
+    if (m_waterMapRenderer && m_waterMapRenderer->isEnabled() /*&& renderedWater*/) {
         m_waterMapRenderer->bindTexture(ctx.m_state);
     }
 
-    if (m_mirrorMapRenderer && m_mirrorMapRenderer->isEnabled() && renderedMirror) {
+    if (m_mirrorMapRenderer && m_mirrorMapRenderer->isEnabled() /*&& renderedMirror*/) {
         m_mirrorMapRenderer->bindTexture(ctx.m_state);
     }
 
