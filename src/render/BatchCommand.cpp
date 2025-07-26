@@ -29,8 +29,8 @@ namespace render {
         const auto& d = m_drawOptions;
         const auto& od = o.m_drawOptions;
         return
-            std::tie(  m_vaoId,   m_programId,  d.m_renderBack,  d.m_kindBits,  d.m_lineMode,  d.m_type,  d.m_mode) <
-            std::tie(o.m_vaoId, o.m_programId, od.m_renderBack, od.m_kindBits, od.m_lineMode, od.m_type, od.m_mode);
+            std::tie(  m_vaoId,  d.m_renderBack,   m_programId,  d.m_kindBits,  d.m_lineMode,  d.m_type,  d.m_mode,  d.m_reverseFrontFace,  d.m_noDepth,  d.m_clip) <
+            std::tie(o.m_vaoId, od.m_renderBack, o.m_programId, od.m_kindBits, od.m_lineMode, od.m_type, od.m_mode, od.m_reverseFrontFace, od.m_noDepth, od.m_clip);
         //return tie ? true : (m_drawOptions < o.m_drawOptions);
     }
 
