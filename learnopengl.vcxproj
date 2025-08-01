@@ -801,7 +801,7 @@
     <ClInclude Include="src\nav\Waypoint.h" />
     <ClInclude Include="src\registry\SelectionRegistry.h" />
     <ClInclude Include="src\render\BatchRegistry.h" />
-    <ClInclude Include="src\mesh\MeshTransform.h" />
+    <ClInclude Include="src\mesh\Transform.h" />
     <ClInclude Include="src\mesh\NonVaoMesh.h" />
     <ClInclude Include="src\mesh\VaoMesh.h" />
     <ClInclude Include="src\asset\LayerInfo.h" />

@@ -16,7 +16,7 @@ namespace backend {
 
 namespace mesh {
     struct LodMesh;
-    struct MeshTransform;
+    struct Transform;
 }
 
 class Program;
@@ -63,7 +63,7 @@ namespace render {
             const std::function<void(ki::program_id)>& programPrepare,
             uint8_t kindBits,
             const Snapshot& snapshot,
-            std::span<const mesh::MeshTransform> transforms,
+            std::span<const mesh::Transform> transforms,
             uint32_t entityIndex) noexcept;
 
         void bind() noexcept;

@@ -26,7 +26,7 @@ namespace render {
 
 namespace mesh {
     struct LodMesh;
-    struct MeshTransform;
+    struct Transform;
 }
 
 class Program;
@@ -109,6 +109,6 @@ protected:
     glm::vec4 m_volume{ 0.f };
 
     std::vector<uint32_t> m_indeces;
-    std::vector<mesh::MeshTransform> m_transforms;
+    std::vector<mesh::Transform> m_transforms;
     std::vector<pool::NodeHandle> m_nodes;
 };

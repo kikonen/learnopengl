@@ -284,7 +284,7 @@ namespace mesh {
 
         AABB aabb{ true };
 
-        if (m_mesh) {
+        {
             // TODO KI rotate here causes very weird artifacts
             const auto& transform =
                 glm::mat4(m_baseRotation) *

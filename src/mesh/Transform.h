@@ -6,7 +6,7 @@
 #include "ki/size.h"
 
 namespace mesh {
-    struct MeshTransform {
+    struct Transform {
         glm::mat4 m_transform{ 1.f };
         glm::quat m_rotation{ 1.f, 0.f, 0.f, 0.f };
         float m_x{ 0.f };
