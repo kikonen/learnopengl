@@ -32,7 +32,7 @@ private:
     void initAsteroids(
         const PrepareContext& ctx,
         const Node& container,
-        std::vector<mesh::MeshTransform>& transforms);
+        std::vector<mesh::Transform>& transforms);
 
     void rotateAsteroids(
         const UpdateContext& ctx,

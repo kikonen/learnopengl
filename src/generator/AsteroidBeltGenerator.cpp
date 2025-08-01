@@ -10,7 +10,7 @@
 #include "ki/sid.h"
 
 #include "mesh/LodMesh.h"
-#include "mesh/MeshTransform.h"
+#include "mesh/Transform.h"
 
 #include "model/Node.h"
 
@@ -118,7 +118,7 @@ void AsteroidBeltGenerator::createAsteroids(
 void AsteroidBeltGenerator::initAsteroids(
     const PrepareContext& ctx,
     const Node& container,
-    std::vector<mesh::MeshTransform>& transforms)
+    std::vector<mesh::Transform>& transforms)
 {
     // initialize random seed
     auto ts = duration_cast<std::chrono::seconds>(

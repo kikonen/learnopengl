@@ -21,7 +21,7 @@
 #include "model/Node.h"
 
 #include "mesh/LodMesh.h"
-#include "mesh/MeshTransform.h"
+#include "mesh/Transform.h"
 
 #include "mesh/MeshSet.h"
 

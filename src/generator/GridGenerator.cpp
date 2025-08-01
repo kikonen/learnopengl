@@ -8,7 +8,7 @@
 #include "ki/sid.h"
 
 #include "mesh/Mesh.h"
-#include "mesh/MeshTransform.h"
+#include "mesh/Transform.h"
 
 #include "model/Node.h"
 
@@ -146,7 +146,7 @@ void GridGenerator::prepareInstances(
 
 void GridGenerator::prepareGrid(
     const Node& container,
-    std::vector<mesh::MeshTransform>& transforms) const
+    std::vector<mesh::Transform>& transforms) const
 {
     //const auto& containerState = container.getState();
     int idx = 0;
@@ -169,7 +169,7 @@ void GridGenerator::prepareGrid(
 
 void GridGenerator::prepareRandom(
     const Node& container,
-    std::vector<mesh::MeshTransform>& transforms) const
+    std::vector<mesh::Transform>& transforms) const
 {
     const auto count = transforms.size();
 

@@ -2426,7 +2426,7 @@
     <ClInclude Include="src\physics\PhysicsMaterial.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\mesh\MeshTransform.h">
+    <ClInclude Include="src\mesh\Transform.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\loader\value\PhysicsCategoryValue.h">

@@ -24,7 +24,7 @@
 #include "mesh/LodMesh.h"
 #include "mesh/LodMesh.h"
 #include "mesh/InstanceFlags.h"
-#include "mesh/MeshTransform.h"
+#include "mesh/Transform.h"
 
 #include "model/Node.h"
 #include "model/Snapshot.h"
@@ -161,7 +161,7 @@ namespace render {
         const std::function<void(ki::program_id)>& programPrepare,
         uint8_t kindBits,
         const Snapshot& snapshot,
-        std::span<const mesh::MeshTransform> transforms,
+        std::span<const mesh::Transform> transforms,
         uint32_t entityIndex) noexcept
     {
         const uint32_t count = static_cast<uint32_t>(transforms.size());

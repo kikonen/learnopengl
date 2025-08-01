@@ -34,11 +34,11 @@ private:
 
     void prepareGrid(
         const Node& container,
-        std::vector<mesh::MeshTransform>& transforms) const;
+        std::vector<mesh::Transform>& transforms) const;
 
     void prepareRandom(
         const Node& container,
-        std::vector<mesh::MeshTransform>& transforms) const;
+        std::vector<mesh::Transform>& transforms) const;
 
     void updateBounds(
         const UpdateContext& ctx,
