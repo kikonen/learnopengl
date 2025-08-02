@@ -17,7 +17,7 @@ prefab:
           map_kd: coconut palm leaf.png
           map_normal: coconut palm leaf_Normal.png
           render_back: true
-        - name: palm_trunk
+        - name: palm_branch
           alias: Tree_2Mat
           base: textures
           map_kd: palm02.png
@@ -41,7 +41,7 @@ prefab:
           base: textures
           map_kd: coconut palm leaf.png
           render_back: true
-        - name: palm_trunk
+        - name: palm_branch
           alias: Tree_2Mat
           base: textures
           map_kd: palm02.png
@@ -63,7 +63,8 @@ prefab:
           base: textures
           alias: Tree_1Mat
           map_kd: coconut palm leaf.png
-        - name: palm_trunk
+          render_back: true
+        - name: palm_branch
           alias: Tree_2Mat
           base: textures
           map_kd: palm02.png
