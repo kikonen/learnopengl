@@ -232,7 +232,7 @@ namespace terrain {
             {
                 auto& transform = m_transforms.emplace_back();
                 transform.setScale(scale);
-                transform.m_data = info.m_registeredIndex;
+                transform.setData(info.m_registeredIndex);
 
                 const glm::vec3 pos{
                     step / 2 + info.m_tileU * step,

@@ -192,7 +192,7 @@ namespace render {
             }
         }
 
-        const auto isValidLodMesh = [&kindBits, &programSelector] (
+        const auto resolveLodMeshProgram = [&kindBits, &programSelector] (
             const int instanceIndex,
             const float dist2,
             const auto& lodMesh) -> ki::program_id
@@ -210,16 +210,10 @@ namespace render {
         if (useFrustum) {
             const auto& frustum = ctx.m_camera->getFrustum();
 
-            const auto& checkFrustum = [this, &type, &frustum, &transforms, &isValidLodMesh]
+            const auto& checkFrustum = [&frustum, &transforms]
                 (int32_t& idx)
                 {
-                    bool validMesh = false;
-                    for (const auto& lodMesh : type->getLodMeshes()) {
-                        validMesh = isValidLodMesh(idx, s_distances2[idx], lodMesh) != 0;
-                        if (validMesh) break;
-                    }
-
-                    if (!validMesh || !inFrustum(frustum, transforms[idx].getVolume())) {
+                    if (!inFrustum(frustum, transforms[idx].getVolume())) {
                         idx = SKIP;
                     }
                 };
@@ -250,7 +244,7 @@ namespace render {
                 const auto dist2 = s_distances2[i];
 
                 for (const auto& lodMesh : type->getLodMeshes()) {
-                    const auto  programId = isValidLodMesh(i, dist2, lodMesh);
+                    const auto  programId = resolveLodMeshProgram(i, dist2, lodMesh);
                     if (!programId) continue;
 
                     programPrepare(programId);
@@ -298,7 +292,7 @@ namespace render {
                         entityIndex,
                         static_cast<uint32_t>(lodMesh.m_materialIndex),
                         lodMesh.m_socketIndex,
-                        transforms[i].m_data
+                        transforms[i].getData()
                         });
 
                     m_pendingCount++;
