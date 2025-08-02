@@ -6,19 +6,32 @@
 #include "ki/size.h"
 
 namespace mesh {
+    // Local transform to position mesh within Node
     struct Transform {
+    private:
         glm::mat4 m_transform{ 1.f };
         glm::quat m_rotation{ 1.f, 0.f, 0.f, 0.f };
         float m_x{ 0.f };
         float m_y{ 0.f };
         float m_z{ 0.f };
-        glm::vec3 m_scale{ 1.f };
 
-        glm::vec4 m_volume{ 0.f };
-        //glm::vec4 m_worldPos{ 0.f, 0.f, 0.f, 1.f };
+        float m_scaleX{ 1.f };
+        float m_scaleY{ 1.f };
+        float m_scaleZ{ 1.f };
+
+        float m_worldPosX{ 0.f };
+        float m_worldPosY{ 0.f };
+        float m_worldPosZ{ 0.f };
+
+        // NOTE KI volume center is not same as worldPos always
+        float m_volumeX{ 1.f };
+        float m_volumeY{ 1.f };
+        float m_volumeZ{ 1.f };
+        float m_volumeW{ 1.f };
 
         uint32_t m_data{ 0 };
 
+    public:
         inline glm::vec3 getPosition() const noexcept
         {
             return glm::vec3{ m_x, m_y, m_z };
@@ -31,19 +44,23 @@ namespace mesh {
             m_z = pos.z;
         }
 
-        inline const glm::vec3& getScale() const noexcept
+        inline glm::vec3 getScale() const noexcept
         {
-            return m_scale;
+            return glm::vec3{ m_scaleX, m_scaleY, m_scaleZ };
         }
 
         inline void setScale(const glm::vec3& scale) noexcept
         {
-            m_scale = scale;
+            m_scaleX = scale.x;
+            m_scaleY = scale.y;
+            m_scaleZ = scale.z;
         }
 
         inline void setScale(float scale) noexcept
         {
-            m_scale = glm::vec3{ scale, scale, scale };
+            m_scaleX = scale;
+            m_scaleY = scale;
+            m_scaleZ = scale;
         }
 
         inline void adjustRotation(const glm::quat& adjust) noexcept
@@ -66,22 +83,36 @@ namespace mesh {
             return m_rotation;
         }
 
-        inline const glm::vec4& getVolume() const noexcept
+        inline glm::vec4 getVolume() const noexcept
         {
-            return m_volume;
+            return glm::vec4{ m_volumeX, m_volumeY, m_volumeZ, m_volumeW };
         }
 
         inline void setVolume(const glm::vec4& volume) noexcept
         {
-            m_volume = volume;
+            m_volumeX = volume.x;
+            m_volumeY = volume.y;
+            m_volumeZ = volume.z;
+            m_volumeW = volume.w;
         }
 
         inline glm::vec3 getWorldPosition() const noexcept
         {
-            return glm::vec3{ m_volume };
+            return glm::vec3{ m_worldPosX, m_worldPosY, m_worldPosZ };
         }
 
-        inline const glm::mat4& getTransform() const noexcept {
+        inline uint32_t getData() const noexcept
+        {
+            return m_data;
+        }
+
+        inline void setData(uint32_t data) noexcept
+        {
+            m_data = data;
+        }
+
+        inline const glm::mat4& getTransform() const noexcept
+        {
             return m_transform;
         }
 
@@ -91,18 +122,21 @@ namespace mesh {
         {
             m_transform = glm::translate(glm::mat4{ 1.f }, getPosition()) *
                 glm::mat4{ m_rotation } *
-                glm::scale(glm::mat4{ 1.f }, m_scale);
+                glm::scale(glm::mat4{ 1.f }, glm::vec3{ m_scaleX, m_scaleY, m_scaleZ });
 
             const auto& modelMatrix = parentMatrix * m_transform;
-            //{
-            //    const auto& wp = modelMatrix[3];
-            //    m_worldPos.x = wp.x;
-            //    m_worldPos.y = wp.y;
-            //    m_worldPos.z = wp.z;
-            //}
             {
-                m_volume = modelMatrix * glm::vec4{ volume.x, volume.y, volume.z, 1.f };
-                m_volume.w = volume.w * m_scale.x;
+                const auto& wp = modelMatrix[3];
+                m_worldPosX = wp.x;
+                m_worldPosY = wp.y;
+                m_worldPosZ = wp.z;
+            }
+            {
+                auto v = modelMatrix * glm::vec4{ volume.x, volume.y, volume.z, 1.f };
+                m_volumeX = v.x;
+                m_volumeY = v.y;
+                m_volumeZ = v.z;
+                m_volumeW = volume.w * std::max(m_scaleX, std::max(m_scaleY, m_scaleZ));
             }
         }
     };
