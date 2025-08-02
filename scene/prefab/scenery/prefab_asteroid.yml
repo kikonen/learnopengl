@@ -12,9 +12,9 @@ prefab:
         map_kd: Rock002_1K_Color.png
         map_normal: Rock002_1K_NormalGL.png
         map_mrao: Rock002_1K_mrao
-        map_displacement: Rock002_1K_displacement
+        xmap_displacement: Rock002_1K_displacement
         tiling: 4
-        parallax_depth: 0.015
+        parallax_depth: 0
     - path: rock2/rock_lod_1
       lod:
         min: 20
