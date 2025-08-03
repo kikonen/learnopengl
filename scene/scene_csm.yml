@@ -6,6 +6,10 @@ skybox:
 script:
   scripts:
     - path: lib/common
+
+includes:
+  - path: prefab/creatures/include_skeleton_warrior.yml
+
 types:
   - id: player
     type: origo
@@ -41,14 +45,19 @@ types:
     xflags:
       static_bounds: true
   - id: skeleton_army_grid_2
-    prefab:
-      path: prefab/creatures/prefab_skeleton_warrior.yml
-    priority: 1
+    base: prefab_skeleton_warrior
     script: scripts/seq_skeleton
+  - id: prefab_skeleton
+    script: |
+      self.cmd:animation_play(
+        { name = "master:Idle" });
   - id: skeleton_army_2
     prefab:
       path: prefab/creatures/prefab_skeleton.yml
     priority: 1
+    script: |
+      self.cmd:animation_play(
+        { name = "master:Idle" });
   - id: cube_map
     type: origo
     flags:

@@ -7,6 +7,10 @@ skybox:
 script:
   scripts:
     - path: lib/common
+
+includes:
+  - path: prefab/creatures/include_skeleton_warrior.yml
+
 types:
   - id: origo
     type: origo
@@ -59,12 +63,12 @@ types:
       path: texture_cube_3
       program: g_tex
   - id: skeleton_army_2
-    prefab:
-      path: prefab/creatures/prefab_skeleton_warrior.yml
+    base: prefab_skeleton_warrior
     physics:
       enabled: false
+  - id: prefab_skeleton
     script: |
-      cmd:animation_play(
+      self.cmd:animation_play(
         { name = "master:Idle" });
   - id: glass_ball
     mesh:

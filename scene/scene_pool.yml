@@ -9,6 +9,10 @@ prefab_dirs:
 script:
   scripts:
     - path: lib/common
+
+includes:
+  - path: prefab/creatures/include_skeleton_warrior.yml
+
 types:
   - id: grid
     prefab:
@@ -237,22 +241,21 @@ types:
         x_step: 20
         z_step: -40
   - id: skeleton_army_2
-    prefab:
-      path: prefab/creatures/prefab_skeleton.yml
-    priority: -1
+    base: prefab_skeleton_warrior
     base_rot: [0, 180, 0]
     type_flags:
-      dynamic_bounds: true
+      xdynamic_bounds: true
       xstatic_bounds: true
     physics:
       enabled: true
       update: true
-      body:
+      xbody:
         kinematic: true
-    xscript: |
-      cmd:animation_play(
-        { name = "master:Idle" });
     script: scripts/seq_skeleton_random_nav
+  - id: prefab_skeleton
+    script: |
+      self.cmd:animation_play(
+        { name = "master:Idle" });
   - id: terrain_grass_v2
     mesh:
       path: quad_terrain

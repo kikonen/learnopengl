@@ -21,6 +21,10 @@ root:
 script:
   scripts:
     - path: lib/common
+
+includes:
+  - path: prefab/creatures/include_skeleton_warrior.yml
+
 types:
   - id: grid
     prefab:
@@ -993,8 +997,7 @@ types:
         x_step: 40
         z_step: 40
   - id: skeleton_army
-    prefab:
-      path: prefab/creatures/prefab_skeleton_warrior.yml
+    base: prefab_skeleton_warrior
     priority: -15
     type_flags:
       dynamic_bounds: true
@@ -1008,6 +1011,10 @@ types:
         category: [npc, can_terrain]
         collision: [prop, npc]
     script_file: scripts/seq_skeleton_random_nav
+  - id: prefab_skeleton
+    script: |
+      self.cmd:animation_play(
+        { name = "master:Idle" });
   - id: giant_wooden_box
     mesh:
       path: quad
