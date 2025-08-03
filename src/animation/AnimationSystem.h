@@ -6,6 +6,8 @@
 #include <condition_variable>
 #include <tuple>
 
+#include <glm/glm.hpp>
+
 #include "AnimationState.h"
 
 namespace pool {
@@ -52,6 +54,9 @@ namespace animation {
             const animation::RigContainer& rig,
             uint32_t boneBaseIndex,
             uint32_t socketBaseIndex);
+
+        glm::mat4 getSocketTransform(
+            uint32_t index) const noexcept;
 
         animation::AnimationState* getState(
             pool::NodeHandle handle);
