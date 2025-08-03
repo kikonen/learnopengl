@@ -43,7 +43,6 @@ in VS_OUT {
 #endif
 #endif
 #ifdef USE_DEBUG
-  flat uint socketBaseIndex;
   flat uint socketIndex;
 #endif
 
@@ -174,7 +173,7 @@ void main() {
 #endif
 
 // #ifdef USE_DEBUG
-//   if (fs_in.socketBaseIndex + fs_in.socketIndex > 0) {
+//   if (fs_in.socketIndex > 0) {
 //     o_fragColor = vec3(1, 1, 0);
 //   }
 // #endif

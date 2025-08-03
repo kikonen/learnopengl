@@ -40,6 +40,8 @@
 
 #include "generator/NodeGenerator.h"
 
+#include "animation/RigContainer.h"
+
 #include "audio/Listener.h"
 #include "audio/Source.h"
 #include "audio/AudioSystem.h"
@@ -462,7 +464,6 @@ std::pair<int, int> NodeRegistry::updateEntity(const UpdateContext& ctx)
         }
 
         entity.u_boneBaseIndex = state.m_boneBaseIndex;
-        entity.u_socketBaseIndex = state.m_socketBaseIndex;
 
         entity.u_tilingX = state.m_tilingX;
         entity.u_tilingY = state.m_tilingY;
@@ -501,9 +502,12 @@ void NodeRegistry::attachListeners()
     dispatcher->addListener(
         event::Type::node_add,
         [this](const event::Event& e) {
+            const auto& data = e.body.node;
+
             attachNode(
-                pool::NodeHandle::toHandle(e.body.node.target),
-                pool::NodeHandle::toHandle(e.body.node.parentId),
+                pool::NodeHandle::toHandle(data.target),
+                pool::NodeHandle::toHandle(data.parentId),
+                data.socketId,
                 e.blob->body.state);
         });
 
@@ -678,6 +682,7 @@ void NodeRegistry::notifyPendingChanges()
 void NodeRegistry::attachNode(
     const pool::NodeHandle nodeHandle,
     ki::node_id parentId,
+    ki::socket_id socketId,
     const CreateState& state) noexcept
 {
     auto* node = nodeHandle.toNode();
@@ -715,6 +720,8 @@ void NodeRegistry::attachNode(
             parentId, node->str()));
         return;
     }
+
+    bindParentSocket(nodeHandle, socketId);
 
     auto* type = node->m_typeHandle.toType();
 
@@ -826,9 +833,12 @@ void NodeRegistry::disposeNode(
 
 void NodeRegistry::changeParent(
     const pool::NodeHandle nodeHandle,
-    ki::node_id parentId) noexcept
+    ki::node_id parentId,
+    ki::socket_id socketId) noexcept
 {
     bindParent(nodeHandle, parentId);
+    // TODO KI need to save socketId
+    bindParentSocket(nodeHandle, 0);
 }
 
 void NodeRegistry::bindNode(
@@ -1007,6 +1017,56 @@ bool NodeRegistry::unbindParent(
     KI_INFO(fmt::format(
         "UNBIND_PARENT: parent={}, child={}",
         (int)parentHandle, (int)nodeHandle));
+
+    return true;
+}
+
+bool NodeRegistry::bindParentSocket(
+    const pool::NodeHandle nodeHandle,
+    ki::socket_id socketId)
+{
+    if (!socketId) return true;
+
+    const auto& socketName = SID_NAME(socketId);
+
+    auto* node = nodeHandle.toNode();
+    auto* parent = node->getParent();
+
+    if (!parent) {
+        KI_INFO_OUT(fmt::format(
+            "PARENT_BIND_ERROR: parent_missing - parent={}, socket={}",
+            parent->str(),
+            socketName));
+        return false;
+    }
+
+    const auto* parentType = parent->getType();
+    const auto& parentState = m_states[parent->m_entityIndex];
+    auto& state = m_states[node->m_entityIndex];
+
+    const auto& rig = parentType->findRig();
+    if (!rig) {
+        KI_INFO_OUT(fmt::format(
+            "PARENT_BIND_ERROR: rig_missing - parent={}, socket={}",
+            parent->str(),
+            socketName));
+        return false;
+    }
+
+    const auto* socket = rig->findSocket(socketName);
+    if (!socket) {
+        const auto& names = rig->getSocketNames();
+        KI_INFO_OUT(fmt::format(
+            "PARENT_BIND_ERROR: socket_missing - parent={}, rig={}, socket={}, socket_names=[{}]",
+            parent->str(),
+            rig->m_name,
+            socketName,
+            util::join(names, ", ")));
+        return false;
+    }
+
+    // TODO KI resolve socketIndex from socketId
+    state.m_attachedSocketIndex = parentState.m_socketBaseIndex + socket->m_index;
 
     return true;
 }

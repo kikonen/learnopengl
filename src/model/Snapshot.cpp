@@ -18,15 +18,11 @@ namespace {
 Snapshot::Snapshot(const NodeState& o)
     : m_matrixLevel{ o.m_matrixLevel },
     m_flags{ o.m_flags },
-    //m_boneBaseIndex{ o.m_boneBaseIndex },
-    //m_socketBaseIndex{ o.m_socketBaseIndex },
-    //m_worldPos{ o.m_worldPos },
-    //m_rotation{ o.m_rotation },
     m_viewUp{ o.m_viewUp },
     m_viewFront{ o.m_viewFront },
-    //m_viewRight{ o.m_viewRight },
     m_modelMatrix{ o.m_modelMatrix },
-    m_modelScale{ o.m_modelScale }
+    m_modelScale{ o.m_modelScale },
+    m_attachedSocketIndex{ o.m_attachedSocketIndex }
 {
     m_volume = Sphere::calculateWorldVolume(
         o.m_volume,
@@ -38,15 +34,11 @@ Snapshot::Snapshot(const NodeState& o)
 Snapshot::Snapshot(const NodeState&& o)
     : m_matrixLevel{ o.m_matrixLevel },
     m_flags{ o.m_flags },
-    //m_boneBaseIndex{ o.m_boneBaseIndex },
-    //m_socketBaseIndex{ o.m_socketBaseIndex },
-    //m_worldPos{ o.m_worldPos },
-    //m_rotation{ o.m_rotation },
     m_viewUp{ o.m_viewUp },
     m_viewFront{ o.m_viewFront },
-    //m_viewRight{ o.m_viewRight },
     m_modelMatrix{ o.m_modelMatrix },
-    m_modelScale{ o.m_modelScale }
+    m_modelScale{ o.m_modelScale },
+    m_attachedSocketIndex{ o.m_attachedSocketIndex }
 {
     m_volume = Sphere::calculateWorldVolume(
         o.m_volume,
@@ -64,35 +56,24 @@ void Snapshot::applyFrom(const NodeState& o) noexcept
 
     m_flags = o.m_flags;
 
-    //m_boneBaseIndex = o.m_boneBaseIndex;
-    //m_socketBaseIndex = o.m_socketBaseIndex;
-
     m_volume = Sphere::calculateWorldVolume(
         o.m_volume,
         o.m_modelMatrix,
         o.getWorldPosition(),
         o.getWorldMaxScale());
 
-    //m_worldPos = o.m_worldPos;
-
-    //m_rotation = o.m_rotation;
-
     o.updateModelAxis();
     m_viewUp = o.m_viewUp;
     m_viewFront = o.m_viewFront;
-    //m_viewRight = o.m_viewRight;
     m_modelMatrix = o.m_modelMatrix;
 
     m_modelScale = o.m_modelScale;
 
+    m_attachedSocketIndex = o.m_attachedSocketIndex;
+
     o.m_dirtySnapshot = false;
     o.m_dirtyNormal = false;
 }
-
-//glm::vec3 Snapshot::getDegreesRotation() const noexcept
-//{
-//    return util::quatToDegrees(m_rotation);
-//}
 
 void Snapshot::updateEntity(
     EntitySSBO& entity) const
@@ -102,9 +83,6 @@ void Snapshot::updateEntity(
     entity.u_flags = m_flags;
 
     entity.u_volume = m_volume;
-
-    //entity.u_boneBaseIndex = m_boneBaseIndex;
-    //entity.u_socketBaseIndex = m_socketBaseIndex;
 
     // NOTE KI M-T matrix needed *ONLY* if non uniform scale
     // NOTE KI flat planes are *always* uniform, since problem with normal scaling does

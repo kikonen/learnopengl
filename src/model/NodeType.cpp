@@ -12,6 +12,7 @@
 #include "mesh/MeshSet.h"
 #include "mesh/LodMesh.h"
 #include "mesh/Mesh.h"
+#include "mesh/mesh_util.h"
 
 #include "engine/PrepareContext.h"
 
@@ -141,6 +142,11 @@ void NodeType::prepareRT(
 void NodeType::bind(const RenderContext& ctx)
 {
     assert(isReady());
+}
+
+std::shared_ptr<animation::RigContainer> NodeType::findRig() const
+{
+    return mesh::findRig(m_lodMeshes);
 }
 
 void NodeType::setCustomMaterial(std::unique_ptr<CustomMaterial> customMaterial) noexcept

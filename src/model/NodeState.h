@@ -35,7 +35,6 @@ private:
     glm::vec3 m_pivot{ 0.f };
 
     glm::vec3 m_worldPivot{ 0.f };
-    //glm::vec3 m_worldPos{ 0.f };
 
     // Base rotation for node
     glm::quat m_baseRotation{ 1.f, 0.f, 0.f, 0.f };
@@ -43,14 +42,12 @@ private:
 
     // http://www.opengl-tutorial.org/intermediate-tutorials/tutorial-17-quaternions/
     glm::quat m_rotation{ 1.f, 0.f, 0.f, 0.f };
-    //glm::mat4 m_rotationMatrix{ 1.f };
 
     glm::vec3 m_up{ 0.f, 1.f, 0.f };
     glm::vec3 m_front{ 0.f, 0.f, 1.f };
 
     mutable glm::vec3 m_viewUp{ 0.f };
     mutable glm::vec3 m_viewFront{ 0.f };
-    //glm::vec3 m_viewRight{ 0.f };
 
     glm::mat4 m_modelMatrix{ 1.f };
     glm::vec3 m_modelScale{ 1.f };
@@ -66,13 +63,15 @@ public:
     uint32_t m_boneBaseIndex{ 0 };
     uint32_t m_socketBaseIndex{ 0 };
 
+    // parent socket
+    uint32_t m_attachedSocketIndex{ 0 };
+
     ki::size_t_entity_flags m_flags{ 0 }; // 1 * 4 = 4
 
     ki::level_id m_parentMatrixLevel{ 0 };
     ki::level_id m_matrixLevel{ 0 };
 
     bool m_dirty : 1 {true};
-    //bool m_dirtyRotation : 1 {true};
 
     mutable bool m_dirtyNormal : 1 {true};
     mutable bool m_dirtySnapshot : 1 {true};
@@ -94,7 +93,6 @@ public:
             m_baseRotation = rotation;
             m_invBaseRotation = glm::conjugate(rotation);
             m_dirty = true;
-            //m_dirtyRotation = true;
             m_dirtyAxis = true;
             m_dirtySnapshot = true;
         }
@@ -277,7 +275,6 @@ public:
     }
 
     inline glm::vec3 getViewRight() const noexcept {
-        //return m_viewRight;
         updateModelAxis();
         return glm::cross(m_viewFront, m_viewUp);
     }
@@ -332,5 +329,4 @@ public:
     void updateRootMatrix() noexcept;
     void updateModelMatrix(const NodeState& parent) noexcept;
     void updateModelAxis() const noexcept;
-    void updateRotationMatrix() noexcept;
 };

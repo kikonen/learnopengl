@@ -86,7 +86,7 @@ namespace script::api
                 opt.scale,
                 util::degreesToQuat(opt.rot) };
 
-            nodeId = builder.build(opt.parentId, type, state);
+            nodeId = builder.build(opt.parentId, 0, type, state);
             if (nodeId) {
                 builder.attach();
             }
@@ -119,7 +119,7 @@ namespace script::api
                 quat };
 
             CompositeBuilder builder{ NodeRegistry::get() };
-            if (builder.build(parentId, type, state)) {
+            if (builder.build(parentId, 0, type, state)) {
                 auto rootHandle = builder.attach();
             }
         }

@@ -1,0 +1,13 @@
+---
+prefab:
+  meshes:
+    - path: fbx\props\construction_hat\construction hat.fbx
+      material:
+        map_kd: hardhat_color.png
+        map_normal: hardhat_normal.png
+        map_metalness: hardhat_metallic.png
+        program: g_tex
+        shadow_program: shadow
+      flags:
+        use_sockets: true
+      base_scale: 0.01

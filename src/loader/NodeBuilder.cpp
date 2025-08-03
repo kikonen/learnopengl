@@ -80,6 +80,7 @@ namespace loader
     // => i.e. api which can be used also from Lua
     bool NodeBuilder::resolveNode(
         const ki::node_id parentId,
+        const ki::socket_id socketId,
         const NodeData& baseData,
         std::shared_ptr<Context> ctx,
         std::shared_ptr<Loaders> loaders)
@@ -88,7 +89,7 @@ namespace loader
             return false;
         }
 
-        ctx->m_asyncLoader->addLoader(ctx->m_alive, [this, parentId, &baseData, loaders]() {
+        ctx->m_asyncLoader->addLoader(ctx->m_alive, [this, parentId, socketId, &baseData, loaders]() {
             std::vector<std::pair<std::string, ki::node_id>> aliases;
 
             NodeDefinition nodeDefinition;

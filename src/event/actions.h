@@ -43,6 +43,7 @@ namespace event {
     struct NodeAction {
         ki::node_id target{ 0 };
         ki::node_id parentId{ 0 };
+        ki::socket_id socketId{ 0 };
         int offset{ 0 };
     };
 

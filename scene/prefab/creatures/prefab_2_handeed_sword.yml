@@ -1,0 +1,14 @@
+---
+prefab:
+  meshes:
+    - path: fbx/creatures/skeleton_knight/2HandedSword.fbx
+      material:
+        base: Textures
+        map_kd: T_2HandedSword_BaseColor.jpg
+        map_normal: T_2HandedSword_Normal.jpg
+        map_mrao: T_2HandedSword_mrao
+        program: g_tex
+        shadow_program: shadow
+      flags:
+        use_sockets: true
+      base_scale: 0.000075

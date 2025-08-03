@@ -264,7 +264,7 @@ namespace loader {
 
             m_pendingCount = 0;
             for (const auto& node : m_nodes) {
-                if (m_nodeBuilder->resolveNode(root.rootId, node, m_ctx, m_loaders)) {
+                if (m_nodeBuilder->resolveNode(root.rootId, 0, node, m_ctx, m_loaders)) {
                     m_pendingCount++;
                     KI_INFO_OUT(fmt::format("START: node={}, pending={}", node.name, m_pendingCount));
                 }
@@ -302,6 +302,7 @@ namespace loader {
             evt.body.node = {
                 .target = nodeHandle.toId(),
                 .parentId = resolved.parentId,
+                .socketId = resolved.socketId,
             };
             assert(evt.body.node.target > 1);
             m_dispatcher->send(evt);

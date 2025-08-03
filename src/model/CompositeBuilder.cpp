@@ -105,6 +105,7 @@ void CompositeBuilder::addResolvedNode(
 
 ki::node_id CompositeBuilder::build(
     const ki::node_id parentId,
+    const ki::socket_id socketId,
     const NodeType* type,
     const CreateState& state)
 {
@@ -123,6 +124,7 @@ ki::node_id CompositeBuilder::build(
 
         addResolvedNode({
             parentId,
+            socketId,
             node->m_handle,
             false,
             state
@@ -165,6 +167,7 @@ pool::NodeHandle CompositeBuilder::attach()
         m_nodeRegistry.attachNode(
             resolved->handle,
             resolved->parentId,
+            resolved->socketId,
             resolved->state);
     }
 
@@ -198,6 +201,7 @@ pool::NodeHandle CompositeBuilder::asyncAttach(
         evt.body.node = {
             .target = nodeHandle.toId(),
             .parentId = resolved.parentId,
+            .socketId = resolved.socketId,
         };
         assert(evt.body.node.target > 1);
         registry->m_dispatcherWorker->send(evt);
@@ -289,6 +293,8 @@ void CompositeBuilder::buildNodeCloneRepeat(
         parentId = id;
     }
 
+    ki::socket_id socketId = SID(cloneData.m_socketId);
+
     if (!cloneData.m_aliasId.empty())
     {
         aliases.push_back({ cloneData.m_aliasId, handle.toId() });
@@ -296,6 +302,7 @@ void CompositeBuilder::buildNodeCloneRepeat(
 
     ResolvedNode resolved{
         parentId,
+        socketId,
         handle,
         cloneData.m_active,
         state,
@@ -333,6 +340,8 @@ std::pair<pool::NodeHandle, CreateState> CompositeBuilder::createNode(
     auto handle = pool::NodeHandle::allocate(nodeId);
     auto* node = handle.toNode();
     assert(node);
+
+    const ki::socket_id socketId = SID(nodeData.m_socketId);
 
     node->setName(resolvedSID);
 

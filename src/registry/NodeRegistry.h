@@ -104,6 +104,7 @@ public:
     void attachNode(
         const pool::NodeHandle nodeHandle,
         ki::node_id parentId,
+        ki::socket_id socketId,
         const CreateState& state) noexcept;
 
     void detachNode(
@@ -114,7 +115,8 @@ public:
 
     void changeParent(
         const pool::NodeHandle nodeHandle,
-        ki::node_id parentId) noexcept;
+        ki::node_id parentId,
+        ki::socket_id socketId) noexcept;
 
     void viewportChanged(
         uint8_t layer,
@@ -208,6 +210,10 @@ private:
 
     bool unbindParent(
         const pool::NodeHandle nodeHandle);
+
+    bool bindParentSocket(
+        const pool::NodeHandle nodeHandle,
+        ki::socket_id socketId);
 
     void bindSkybox(
         pool::NodeHandle handle) noexcept;
