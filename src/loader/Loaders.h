@@ -2,6 +2,7 @@
 
 #include "BaseLoader.h"
 #include "RootLoader.h"
+#include "IncludeLoader.h"
 #include "ScriptLoader.h"
 #include "SkyboxLoader.h"
 #include "FontLoader.h"
@@ -40,6 +41,8 @@ namespace loader {
         ScriptLoader m_scriptLoader;
 
         SkyboxLoader m_skyboxLoader;
+
+        IncludeLoader m_includeLoader;
 
         NodeTypeLoader m_nodeTypeLoader;
         NodeLoader m_nodeLoader;

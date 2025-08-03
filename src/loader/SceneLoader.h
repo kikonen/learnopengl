@@ -9,7 +9,6 @@
 
 #include "BaseLoader.h"
 
-struct Material;
 struct ResolvedNode;
 class Registry;
 
@@ -19,6 +18,8 @@ namespace pool {
 }
 
 namespace loader {
+    struct SceneData;
+    struct MetaData;
     struct RootData;
     struct SkyboxData;
     struct ScriptSystemData;
@@ -31,13 +32,6 @@ namespace loader {
 
     class NodeTypeBuilder;
     class NodeBuilder;
-
-    struct MetaData {
-        std::string name;
-
-        //std::string assetsDir;
-        //std::string modelsDir;
-    };
 
     class SceneLoader : public BaseLoader
     {
@@ -71,10 +65,6 @@ namespace loader {
 
         void attachResolvedNode(
             const ResolvedNode& resolvedNode);
-
-        void loadMeta(
-            const loader::DocNode& node,
-            MetaData& data) const;
 
         void validate(
             const RootData& root);
@@ -112,21 +102,7 @@ namespace loader {
 
         std::atomic<size_t> m_runningCount;
 
-        std::unique_ptr<MetaData> m_meta;
-        std::unique_ptr<SkyboxData> m_skybox;
-
-        std::unique_ptr<RootData> m_root;
-        std::unique_ptr<ScriptSystemData> m_scriptSystemData;
-
-        std::vector<NodeTypeData> m_nodeTypes;
-        std::vector<NodeData> m_nodes;
-        std::vector<CompositeData> m_composites;
-
-        std::unique_ptr<Material> m_defaultMaterial;
-
-        std::vector<ParticleData> m_particles;
-        std::vector<DecalData> m_decals;
-        std::vector<MaterialUpdaterData> m_materialUpdaters;
+        std::unique_ptr<SceneData> m_sceneData;
 
         std::shared_ptr<Loaders> m_loaders;
 

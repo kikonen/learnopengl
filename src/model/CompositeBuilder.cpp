@@ -328,7 +328,9 @@ std::pair<pool::NodeHandle, CreateState> CompositeBuilder::createNode(
 {
     const auto* type = pool::TypeHandle::toType(nodeData.m_typeId);
     if (!type) {
-        throw fmt::format("type missing: node={}, type={}", nodeData.m_id, nodeData.m_typeId);
+        throw fmt::format(
+            "type missing: node={}, type={}",
+            nodeData.m_id, SID_NAME(nodeData.m_typeId));
     }
 
     const auto [nodeId, resolvedSID] = resolveNodeId(
