@@ -78,6 +78,10 @@ namespace loader {
     const NodeType* findNodeType(
         BaseId baseId);
 
+    NodeTypeData* findNodeTypeData(
+        BaseId baseId,
+        std::vector<NodeTypeData>& nodeTypes);
+
     const NodeTypeData* findNodeTypeData(
         BaseId baseId,
         const std::vector<NodeTypeData>& nodeTypes);

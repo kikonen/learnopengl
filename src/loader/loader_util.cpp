@@ -543,6 +543,17 @@ namespace loader {
         return pool::TypeHandle::toType(typeId);
     }
 
+    NodeTypeData* findNodeTypeData(
+        BaseId baseId,
+        std::vector<NodeTypeData>& nodeTypes)
+    {
+        const auto& it = std::find_if(
+            nodeTypes.begin(),
+            nodeTypes.end(),
+            [&baseId](const auto& e) { return e.baseId == baseId; });
+        return it != nodeTypes.end() ? &(*it) : nullptr;
+    }
+
     const NodeTypeData* findNodeTypeData(
         BaseId baseId,
         const std::vector<NodeTypeData>& nodeTypes)
