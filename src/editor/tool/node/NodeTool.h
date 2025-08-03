@@ -4,10 +4,15 @@
 
 #include "NodeToolState.h"
 
+
 namespace editor
 {
+    struct NodeTree;
+
     class NodeTool : public Tool
     {
+        friend struct NodeTree;
+
     public:
         NodeTool(EditorFrame& editor);
         ~NodeTool() override;

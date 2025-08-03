@@ -1,5 +1,7 @@
 #include "NodeTool.h"
 
+#include <unordered_map>
+
 #include <math.h>
 
 #include <imgui.h>
@@ -50,6 +52,8 @@
 #include "registry/SelectionRegistry.h"
 
 #include "editor/EditorFrame.h"
+
+#include "NodeTree.h"
 
 class PawnController;
 
@@ -147,6 +151,13 @@ namespace editor
             }
 
             ImGui::EndCombo();
+        }
+
+        {
+            const auto& nodes = NodeRegistry::get().getCachedNodesRT();
+            NodeTree tree{ *this };
+            tree.build(nodes);
+            tree.drawNode(ctx, tree.m_root.get(), true);
         }
     }
 

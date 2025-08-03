@@ -15,7 +15,8 @@ namespace mesh {
 }
 
 namespace editor {
-    struct NodeToolState : public ToolState {
+    struct NodeToolState : public ToolState
+    {
         pool::NodeHandle m_selectedNode;
 
         mesh::Mesh* m_selectedMesh{ nullptr };
