@@ -106,12 +106,15 @@ namespace loader {
 
         m_ctx->m_asyncLoader->addLoader(m_ctx->m_alive, [this]() {
             try {
-                auto& l = *m_loaders;
+                {
+                    auto& l = *m_loaders;
+                    YamlConverter converter;
+                    auto doc = converter.load(m_ctx->m_fullPath);
+                    l.m_includeLoader.loadScene(doc, *m_sceneData, *m_loaders);
 
-                YamlConverter converter;
-                auto doc = converter.load(m_ctx->m_fullPath);
-
-                l.m_includeLoader.loadScene(doc, *m_sceneData, *m_loaders);
+                    // NOTE KI include fiels not needed any longer
+                    m_sceneData->m_includeFiles.clear();
+                }
 
                 validate(*m_sceneData->m_root);
                 attach(*m_sceneData->m_root);

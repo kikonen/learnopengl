@@ -72,6 +72,8 @@ namespace loader {
         float asFloat() const noexcept;
         bool asBool() const noexcept;
 
+        static const loader::DocNode& getNull();
+
     private:
         void createIfNeeded();
 

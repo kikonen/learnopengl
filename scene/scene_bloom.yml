@@ -7,6 +7,10 @@ skybox:
 script:
   scripts:
     - path: lib/common
+
+includes:
+  - path: prefab/creatures/include_skeleton_warrior.yml
+
 types:
   - id: cube_map
     type: origo
@@ -68,9 +72,7 @@ types:
     priority: 1
     flags:
       static_bounds: true
-  - id: skeleton_army_grid_2
-    prefab:
-      path: prefab/creatures/prefab_skeleton_warrior.yml
+  - id: prefab_skeleton
     mesh:
       material_modifier:
         kd: [0.8, 1.4, 0.8, 0.4]
@@ -82,14 +84,12 @@ types:
         shadow_program: shadow
         id_program: object_id
         selection_program: selection
-    priority: 1
     script: |
       cmd:animation_play(
         { name = "master:SwingNormal" });
   - id: skeleton_army_2
     prefab:
       path: prefab/creatures/prefab_skeleton.yml
-    priority: 1
     physics:
       enabled: true
     script: |
@@ -154,7 +154,7 @@ nodes:
       z_count: 2
       x_step: 20
       z_step: -20
-  - type: skeleton_army_grid_2
+  - type: prefab_skeleton_warrior
     pos: [20, 0.5, 20]
     xrotation: [0, 45, 0]
     rotation: [0, -90, 0]

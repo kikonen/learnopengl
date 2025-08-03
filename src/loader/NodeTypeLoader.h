@@ -7,6 +7,8 @@
 #include "NodeTypeData.h"
 
 namespace loader {
+    struct SceneData;
+
     class NodeTypeLoader : public BaseLoader
     {
     public:
@@ -15,6 +17,7 @@ namespace loader {
 
         void loadNodeTypes(
             const loader::DocNode& node,
+            SceneData& sceneData,
             std::vector<NodeTypeData>& nodeTypes,
             Loaders& loaders) const;
 
