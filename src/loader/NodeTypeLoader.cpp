@@ -55,10 +55,22 @@ namespace loader {
         }
 
         for (const auto& entry : node.getNodes()) {
-            auto& data = nodeTypes.emplace_back();
+            NodeTypeData* data = nullptr;
+            {
+                const auto& pair = entry.findNode("id");
+                if (!pair.isNull()) {
+                    auto id = readId(pair.getNode());
+                    data = findNodeTypeData(id, nodeTypes);
+                }
+            }
+
+            if (!data) {
+                data = &nodeTypes.emplace_back();
+            }
+
             loadNodeType(
                 entry,
-                data,
+                *data,
                 idToType,
                 loaders);
         }

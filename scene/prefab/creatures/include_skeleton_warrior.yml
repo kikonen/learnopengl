@@ -7,9 +7,6 @@ types:
       static_bounds: true
     xphysics:
       update: true
-    script: |
-      cmd:animation_play(
-        { name = "master:Idle" })
   - id: prefab_helmet
     prefab:
       path: prefab/creatures/addon/prefab_helmet.yml
