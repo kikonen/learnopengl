@@ -106,6 +106,21 @@ namespace {
         }
     }
 
+    void odeDebugMessage(int errnum, const char* msg, va_list ap)
+    {
+        KI_DEBUG(fmt::format("PHYSICS: ODE_DEBUG={}, msg={}", errnum, msg));
+    }
+
+    void odeInfoMessage(int errnum, const char* msg, va_list ap)
+    {
+        KI_INFO_OUT(fmt::format("PHYSICS: ODE_INFO={}, msg={}", errnum, msg));
+    }
+
+    void odeErrorMessage(int errnum, const char* msg, va_list ap)
+    {
+        KI_CRITICAL(fmt::format("PHYSICS: ODE_ERROR={}, msg={}", errnum, msg));
+    }
+
     static physics::PhysicsSystem* s_system{ nullptr };
 }
 
@@ -262,6 +277,10 @@ namespace physics
 
         m_elapsedTotal = 0.f;
         m_initialDelay = assets.physicsInitialDelay;
+
+        dSetDebugHandler(odeDebugMessage);
+        dSetMessageHandler(odeInfoMessage);
+        dSetErrorHandler(odeErrorMessage);
 
         dInitODE2(0);
         m_worldId = dWorldCreate();
