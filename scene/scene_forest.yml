@@ -220,7 +220,7 @@ types:
         xrotation: [0, 180, 0]
 
 nodes:
-  - type: grid
+  - xtype: grid
   - type: fps_counter
     id: fps_counter
     pos: [2, -2, -1]
