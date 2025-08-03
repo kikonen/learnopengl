@@ -25,6 +25,20 @@ types:
   - id: prefab_skeleton_warrior
     type: composite
     composite: prefab_skeleton_warrior_composite
+    physics:
+      body:
+        type: capsule
+        density: 0.01
+        rot: [90, 0, 0]
+        max_angular_velocity: 0
+        force_axis: true
+      geom:
+        type: capsule
+        category: [npc]
+        collision: [world, player]
+        size: [0.25, 0.75, 0]
+        xoffset: [0, 0, -0.77]
+        offset: [0, 0, -0.35]
 
 composites:
   - id: prefab_skeleton_warrior_composite

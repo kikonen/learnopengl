@@ -1,11 +1,15 @@
 #pragma once
 
-#include <memory>
+#include <string>
 #include <vector>
+#include <tuple>
+#include <memory>
 
 struct Material;
 
 namespace loader {
+    class DocNode;
+
     struct MetaData;
     struct RootData;
     struct SkyboxData;
@@ -18,9 +22,6 @@ namespace loader {
     struct MaterialUpdaterData;
 
     struct SceneData {
-        SceneData();
-        ~SceneData();
-
         std::unique_ptr<MetaData> m_meta;
         std::unique_ptr<SkyboxData> m_skybox;
 
@@ -36,5 +37,13 @@ namespace loader {
         std::vector<ParticleData> m_particles;
         std::vector<DecalData> m_decals;
         std::vector<MaterialUpdaterData> m_materialUpdaters;
+
+        std::vector<std::pair<std::string, loader::DocNode>> m_includeFiles;
+
+        SceneData();
+        ~SceneData();
+
+        const loader::DocNode* findInclude(
+            const std::string& filePath);
     };
 }

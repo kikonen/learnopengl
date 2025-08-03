@@ -100,11 +100,4 @@ namespace editor
             }
         }
     };
-
-    //std::unique_ptr<NodeTree> buildNodeTree(const std::vector<Node*> nodes)
-    //{
-    //    std::unique_ptr<NodeTree> tree = std::make_unique<NodeTree>();
-    //    tree->build(nodes);
-    //    return std::move(tree);
-    //}
 }

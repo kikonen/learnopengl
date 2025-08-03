@@ -28,8 +28,23 @@
 #include "PivotLoader.h"
 
 #include "NodeTypeData.h"
+#include "SceneData.h"
 
 namespace {
+    void collectTypes(
+        std::unordered_map<std::string, const loader::DocNode*>& idToType,
+        const loader::DocNode& node)
+    {
+        if (node.isNull()) return;
+
+        for (const auto& entry : node.getNodes()) {
+            const auto& node = entry.findNode("id");
+            if (node.isNull()) continue;
+
+            auto id = readId(node);
+            idToType.insert({ id.m_path, &entry });
+        }
+    }
 }
 
 namespace loader {
@@ -41,18 +56,20 @@ namespace loader {
 
     void NodeTypeLoader::loadNodeTypes(
         const loader::DocNode& node,
+        SceneData& sceneData,
         std::vector<NodeTypeData>& nodeTypes,
         Loaders& loaders) const
     {
         std::unordered_map<std::string, const loader::DocNode*> idToType;
 
-        for (const auto& entry : node.getNodes()) {
-            const auto& node = entry.findNode("id");
-            if (node.isNull()) continue;
-
-            auto id = readId(node);
-            idToType.insert({ id.m_path, &entry });
+        // NOTE KI embed docnodes from includes to allow having data from them available
+        for (const auto& includeFile : sceneData.m_includeFiles)
+        {
+            const auto& typesNode = includeFile.second.findNode("types");
+            collectTypes(idToType, typesNode);
         }
+
+        collectTypes(idToType, node);
 
         for (const auto& entry : node.getNodes()) {
             NodeTypeData* data = nullptr;

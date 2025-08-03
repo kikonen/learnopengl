@@ -6,6 +6,10 @@ skybox:
 script:
   scripts:
     - path: lib/common
+
+includes:
+  - path: prefab/creatures/include_skeleton_warrior.yml
+
 types:
   - id: grid
     prefab:
@@ -27,8 +31,7 @@ types:
       - type: pawn
       - type: camera_zoom
   - id: player_3rd_person
-    prefab:
-      path: prefab/creatures/prefab_skeleton_warrior.yml
+    base: prefab_skeleton_warrior
     camera:
       type: follow
       distance: [5, 2.5, 10]
@@ -40,13 +43,14 @@ types:
       listener:
         default: true
     physics:
-      enabled: true
+      #enabled: true
       update: true
       body:
         xkinematic: true
         density: 0.01
       geom:
         category: [player]
+  - id: prefab_skeleton
     script: |
       local wid = cmd:wait({ time=2 })
       cmd:animation_play(

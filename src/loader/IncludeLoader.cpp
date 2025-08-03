@@ -86,18 +86,32 @@ namespace loader {
 
         KI_INFO_OUT(fmt::format("include={}", fullPath));
 
+        {
+            auto* includeDoc = sceneData.findInclude(fullPath);
+            if (includeDoc)
+            {
+                throw fmt::format("INVALID: recursive_include- path={}", fullPath);
+            }
+        }
+
         if (!util::fileExists(fullPath))
         {
-            throw fmt::format("INVALID: include missing - path={}", fullPath);
+            throw fmt::format("INVALID: include_missing - path={}", fullPath);
         }
 
         loader::YamlConverter converter;
         auto doc = converter.load(fullPath);
 
+        auto& entry = sceneData.m_includeFiles.emplace_back(fullPath, loader::DocNode::getNull());
+
         loadScene(
             doc,
             sceneData,
             loaders);
+
+        sceneData.m_includeFiles.emplace_back(fullPath, doc);
+
+        entry.second = doc;
     }
 
     void IncludeLoader::loadScene(
@@ -122,6 +136,7 @@ namespace loader {
 
         l.m_nodeTypeLoader.loadNodeTypes(
             node.findNode("types"),
+            sceneData,
             sceneData.m_nodeTypes,
             l);
 

@@ -33,7 +33,7 @@ prefab:
         shadow_program: shadow
       base_scale: 0.01375
       scale: 2
-  physics:
+  xphysics:
     body:
       type: capsule
       density: 0.01

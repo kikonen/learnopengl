@@ -106,4 +106,9 @@ namespace loader {
         if (m_data) return;
         m_data = std::make_shared<DocNodeData>();
     }
+
+    const loader::DocNode& DocNode::getNull()
+    {
+        return NULL_NODE;
+    }
 }

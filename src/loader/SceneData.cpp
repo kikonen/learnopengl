@@ -13,6 +13,7 @@
 #include "ParticleData.h"
 #include "MaterialUpdaterData.h"
 
+#include "loader/document.h"
 
 namespace loader
 {
@@ -27,4 +28,14 @@ namespace loader
     }
 
     SceneData::~SceneData() = default;
+
+    const loader::DocNode* SceneData::findInclude(
+        const std::string& filePath)
+    {
+        const auto& it = std::find_if(
+            m_includeFiles.cbegin(),
+            m_includeFiles.cend(),
+            [&filePath](const auto& e) { return e.first == filePath; });
+        return it != m_includeFiles.end() ? &(it->second) : nullptr;
+    }
 }

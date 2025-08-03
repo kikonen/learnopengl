@@ -301,26 +301,23 @@ types:
       effect: true
       no_select: true
       no_shadow: true
-  - id: prefab_skeleton
-    # prefab:
-    #   path: prefab/creatures/prefab_skeleton_warrior.yml
-    # xflags:
-    #   static_bounds: true
+  - id: prefab_skeleton_warrior
+    particle: skeleton_hit
     audio:
       sources:
         - name: explode
           path: audio/explosions/explode_rocket.wav
           reference_distance: 10
           gain: 0.8
-    particle: skeleton_hit
     physics:
       update: true
       geom:
         collision: [world, player]
-    xscript: |
+    script_file: scripts/seq_skeleton_2
+  - id: prefab_skeleton
+    script: |
       self.cmd:animation_play(
         { name = "master:Idle" });
-    script_file: scripts/seq_skeleton_2
   - id: light
     type: origo
     light:
