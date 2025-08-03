@@ -10,6 +10,10 @@ skybox:
 script:
   scripts:
     - path: lib/common
+
+includes:
+  - path: prefab/creatures/include_skeleton_warrior.yml
+
 types:
   - id: grid
     prefab:
@@ -139,11 +143,8 @@ types:
   - id: four_cubes_4
     base: four_cubes
     particle: four_cubes_4
-  - id: skeleton_army
-    prefab:
-      path: prefab/creatures/prefab_skeleton_warrior.yml
-    priority: 1
-    flags:
+  - id: prefab_skeleton
+    xflags:
       static_bounds: true
     audio:
       sources:
@@ -151,7 +152,7 @@ types:
           path: audio/explosions/explode_rocket.wav
           reference_distance: 10
           gain: 0.8
-    physics:
+    xphysics:
       update: true
     script: scripts/seq_skeleton_2
   - id: rock
@@ -451,7 +452,7 @@ nodes:
         type: four_cubes_3
       - pos: [5.0, 2.0, 5.0]
         type: four_cubes_4
-  - type: skeleton_army
+  - type: prefab_skeleton_warrior
     pos: [20, 0.2, 20]
     rotation: [0, -90, 0]
     scale: 3

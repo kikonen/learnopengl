@@ -136,6 +136,11 @@ public:
 
     //void withLock(const std::function<void(NodeRegistry&)>& fn);
 
+    uint32_t getParentIndex(uint32_t entityIndex) const noexcept
+    {
+        return m_parentIndeces[entityIndex];
+    }
+
     pool::NodeHandle getParentHandle(uint32_t entityIndex) const noexcept
     {
         return m_handles[m_parentIndeces[entityIndex]];
@@ -145,6 +150,7 @@ public:
     {
         return m_handles[m_parentIndeces[entityIndex]].toNode();
     }
+
 
     const NodeState& getParentState(uint32_t entityIndex) const noexcept
     {

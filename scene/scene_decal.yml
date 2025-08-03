@@ -6,6 +6,10 @@ skybox:
 script:
   scripts:
     - path: lib/common
+
+includes:
+  - path: prefab/creatures/include_skeleton_warrior.yml
+
 types:
   - id: origo
     type: origo
@@ -297,11 +301,11 @@ types:
       effect: true
       no_select: true
       no_shadow: true
-  - id: skeleton_army
-    prefab:
-      path: prefab/creatures/prefab_skeleton_warrior.yml
-    xflags:
-      static_bounds: true
+  - id: prefab_skeleton
+    # prefab:
+    #   path: prefab/creatures/prefab_skeleton_warrior.yml
+    # xflags:
+    #   static_bounds: true
     audio:
       sources:
         - name: explode
@@ -337,7 +341,7 @@ nodes:
     pos: [0, 1, 15]
     xrotation: [0, 180, 0]
     active: true
-    children:
+    xchildren:
       - type: player_fps_arms_v2
         pos: [0.1, -0.7, -0.0]
         rotation: [-20, 20, 0]
@@ -377,10 +381,10 @@ nodes:
       - type: light
       - type: lamp
       - type: lamp_halo
-  - type: skeleton_army
+  - type: prefab_skeleton_warrior
     pos: [7, 1.5, 5]
     rot: [0, -90, 0]
-    repeat:
+    xrepeat:
       x_count: 1
       z_count: 2
       x_step: 3

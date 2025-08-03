@@ -745,6 +745,7 @@
     <ClInclude Include="src\editor\tool\debug\DebugToolState.h" />
     <ClInclude Include="src\editor\tool\node\NodeToolState.h" />
     <ClInclude Include="src\editor\tool\node\NodeTool.h" />
+    <ClInclude Include="src\editor\tool\node\NodeTree.h" />
     <ClInclude Include="src\editor\tool\node_type\NodeTypeTool.h" />
     <ClInclude Include="src\editor\tool\node_type\NodeTypeToolState.h" />
     <ClInclude Include="src\editor\tool\options\OptionsTool.h" />
