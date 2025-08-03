@@ -3,6 +3,7 @@
 namespace loader {
     Loaders::Loaders(std::shared_ptr<Context> ctx)
       : m_rootLoader(ctx),
+        m_includeLoader(ctx),
         m_scriptLoader(ctx),
         m_skyboxLoader(ctx),
         m_fontLoader(ctx),
@@ -29,6 +30,7 @@ namespace loader {
     void Loaders::prepare(
         std::shared_ptr<Registry> registry)
     {
+        m_includeLoader.setRegistry(registry);
         m_fontLoader.setRegistry(registry);
         m_materialLoader.setRegistry(registry);
         m_materialUpdaterLoader.setRegistry(registry);

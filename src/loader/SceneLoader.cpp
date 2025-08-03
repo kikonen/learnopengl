@@ -51,12 +51,12 @@
 #include "CompositeData.h"
 #include "DecalData.h"
 #include "ScriptData.h"
+#include "SceneData.h"
 
 #include "NodeTypeBuilder.h"
 #include "NodeBuilder.h"
 
 #include "converter/YamlConverter.h"
-
 #include "loader/document.h"
 #include "loader_util.h"
 
@@ -66,15 +66,10 @@ namespace loader {
         std::shared_ptr<Context> ctx)
         : BaseLoader(ctx),
         m_loaders{ std::make_shared<Loaders>(ctx) },
+        m_sceneData{ std::make_unique<SceneData>() },
         m_nodeTypeBuilder{ std::make_unique<NodeTypeBuilder>(ctx, m_loaders) },
-        m_nodeBuilder{ std::make_unique<NodeBuilder>(this) },
-        m_meta{ std::make_unique<MetaData>() },
-        m_root{ std::make_unique<RootData>() },
-        m_skybox{ std::make_unique<SkyboxData>() },
-        m_scriptSystemData{ std::make_unique<ScriptSystemData>() }
+        m_nodeBuilder{ std::make_unique<NodeBuilder>(this) }
     {
-        // NOTE KI white causes least unexpectedly tinted results
-        m_defaultMaterial = std::make_unique<Material>(Material::createMaterial(BasicMaterial::white));
     }
 
     SceneLoader::~SceneLoader()
@@ -116,44 +111,10 @@ namespace loader {
                 YamlConverter converter;
                 auto doc = converter.load(m_ctx->m_fullPath);
 
-                loadMeta(doc.findNode("meta"), *m_meta);
+                l.m_includeLoader.loadScene(doc, *m_sceneData, *m_loaders);
 
-                l.m_skyboxLoader.loadSkybox(doc.findNode("skybox"), *m_skybox);
-
-                l.m_rootLoader.loadRoot(doc.findNode("root"), *m_root);
-                l.m_scriptLoader.loadScriptSystem(doc.findNode("script"), *m_scriptSystemData);
-                l.m_materialUpdaterLoader.loadMaterialUpdaters(
-                    doc.findNode("material_updaters"),
-                    m_materialUpdaters,
-                    *m_loaders);
-
-                l.m_nodeTypeLoader.loadNodeTypes(
-                    doc.findNode("types"),
-                    m_nodeTypes,
-                    l);
-
-                l.m_compositeLoader.loadComposites(
-                    doc.findNode("composites"),
-                    m_composites,
-                    l);
-
-                l.m_particleLoader.loadParticles(
-                    doc.findNode("particles"),
-                    m_particles,
-                    l);
-
-                l.m_nodeLoader.loadNodes(
-                    doc.findNode("nodes"),
-                    m_nodes,
-                    l);
-
-                l.m_decalLoader.loadDecals(
-                    doc.findNode("decals"),
-                    m_decals,
-                    l);
-
-                validate(*m_root);
-                attach(*m_root);
+                validate(*m_sceneData->m_root);
+                attach(*m_sceneData->m_root);
             }
             catch (const std::runtime_error& ex) {
                 KI_CRITICAL(fmt::format("SCENE_ERROR: LOAD - {}", ex.what()));
@@ -228,12 +189,12 @@ namespace loader {
     {
         auto& l = *m_loaders;
 
-        l.m_rootLoader.attachRoot(root, *m_scriptSystemData, *m_loaders);
-        l.m_skyboxLoader.attachSkybox(root.rootId, *m_skybox);
+        l.m_rootLoader.attachRoot(root, *m_sceneData->m_scriptSystemData, *m_loaders);
+        l.m_skyboxLoader.attachSkybox(root.rootId, *m_sceneData->m_skybox);
 
         {
             auto updaters = l.m_materialUpdaterLoader.createMaterialUpdaters(
-                m_materialUpdaters,
+                m_sceneData->m_materialUpdaters,
                 *m_loaders);
 
             auto& materialRegistry = MaterialRegistry::get();
@@ -244,7 +205,7 @@ namespace loader {
 
         {
             const auto& decals = l.m_decalLoader.createDecals(
-                m_decals,
+                m_sceneData->m_decals,
                 l);
 
             for (const auto& decal : decals) {
@@ -254,16 +215,16 @@ namespace loader {
 
         {
             m_nodeTypeBuilder->createTypes(
-                m_nodeTypes,
-                m_composites,
-                m_particles);
+                m_sceneData->m_nodeTypes,
+                m_sceneData->m_composites,
+                m_sceneData->m_particles);
         }
 
         {
             std::lock_guard lock(m_ready_lock);
 
             m_pendingCount = 0;
-            for (const auto& node : m_nodes) {
+            for (const auto& node : m_sceneData->m_nodes) {
                 if (m_nodeBuilder->resolveNode(root.rootId, 0, node, m_ctx, m_loaders)) {
                     m_pendingCount++;
                     KI_INFO_OUT(fmt::format("START: node={}, pending={}", node.name, m_pendingCount));
@@ -340,32 +301,6 @@ namespace loader {
         //}
     }
 
-    void SceneLoader::loadMeta(
-        const loader::DocNode& node,
-        MetaData& data) const
-    {
-        data.name = "<noname>";
-        //data.modelsDir = assets.modelsDir;
-
-        for (const auto& pair : node.getNodes()) {
-            const std::string& k = pair.getName();
-            const loader::DocNode& v = pair.getNode();
-
-            if (k == "name") {
-                data.name = "";// readString(v);
-            }
-            //else if (k == "assetsDir") {
-            //    data.assetsDir = readString(v);
-            //}
-            //else if (k == "modelsDir") {
-            //    data.modelsDir = readString(v);
-            //}
-            else {
-                reportUnknown("meta_entry", k, v);
-            }
-        }
-    }
-
     void SceneLoader::validate(
         const RootData& root)
     {
@@ -373,11 +308,11 @@ namespace loader {
         int pass1Errors = 0;
         int pass2Errors = 0;
 
-        for (const auto& node : m_nodes) {
+        for (const auto& node : m_sceneData->m_nodes) {
             validateNode(root.rootId, node, 0, pass1Errors, collectedIds);
         }
 
-        for (const auto& node : m_nodes) {
+        for (const auto& node : m_sceneData->m_nodes) {
             validateNode(root.rootId, node, 1, pass2Errors, collectedIds);
         }
 

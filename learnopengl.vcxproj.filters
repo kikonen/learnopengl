@@ -1275,6 +1275,12 @@
     <ClCompile Include="src\animation\SocketTransformSSBO.h">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\loader\IncludeLoader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\loader\SceneData.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h">
@@ -2880,6 +2886,15 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\shader\ShadowUBO.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\loader\IncludeLoader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\loader\SceneData.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\loader\MetaData.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
