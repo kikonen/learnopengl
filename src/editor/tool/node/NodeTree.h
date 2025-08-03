@@ -87,14 +87,8 @@ namespace editor
                 flags |= ImGuiTreeNodeFlags_Selected;
             }
 
-            //if (ImGui::Selectable(nodeName, )) {
-            //    m_tool.onSelectNode(ctx, node->toHandle());
-            //}
-
             if (ImGui::TreeNodeEx(nodeName, flags))
             {
-                //ImGui::PushID((void*)node);
-                //ImGui::PopID();
                 if (ImGui::IsItemClicked()) {
                     m_tool.onSelectNode(ctx, node->toHandle());
                 }
