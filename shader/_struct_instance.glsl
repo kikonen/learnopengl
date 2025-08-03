@@ -6,7 +6,7 @@ struct Instance {
 
   uint u_entityIndex;
   uint u_materialIndex;
-  int u_socketIndex;
+  uint u_socketIndex;
   uint u_flags;
 
   // case specific data

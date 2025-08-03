@@ -12,7 +12,7 @@ namespace mesh {
 
         GLuint u_entityIndex;
         GLuint u_materialIndex;
-        GLint u_socketIndex{ -1 };
+        GLuint u_socketIndex{ 0 };
         GLuint u_flags{ 0 };
 
         GLuint u_data{ 0 };

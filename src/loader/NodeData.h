@@ -23,6 +23,8 @@ namespace loader {
 
         BaseId aliasBaseId;
 
+        BaseId socketId;
+
         std::string name;
         std::string desc;
 

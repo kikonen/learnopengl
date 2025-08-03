@@ -20,6 +20,8 @@ struct NodeDefinition
     std::string m_aliasId;
     std::string m_ignoredById;
 
+    std::string m_socketId;
+
     ki::type_id m_typeId;
 
     glm::vec3 m_position{ 0.f };

@@ -98,6 +98,9 @@ namespace loader {
             else if (k == "ignored_by") {
                 data.ignoredByBaseId = readId(v);
             }
+            else if (k == "socket") {
+                data.socketId = readId(v);
+            }
             else if (k == "name") {
                 data.name = readString(v);
             }
@@ -205,6 +208,7 @@ namespace loader {
         df.m_aliasId = nodeData.aliasBaseId.m_path;
         df.m_typeId = SID(nodeData.typeId.m_path);
         df.m_ignoredById = nodeData.ignoredByBaseId.m_path;
+        df.m_socketId = nodeData.socketId.m_path;
 
         df.m_position = nodeData.position;
         df.m_rotation = nodeData.rotation;

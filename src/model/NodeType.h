@@ -3,6 +3,7 @@
 #include <vector>
 #include <functional>
 #include <span>
+#include <memory>
 
 #include "asset/AABB.h"
 
@@ -46,6 +47,10 @@ class CustomMaterial;
 class Registry;
 class RenderContext;
 class NodeTypeRegistry;
+
+namespace animation {
+    struct RigContainer;
+}
 
 namespace mesh {
     class MeshSet;
@@ -117,6 +122,8 @@ public:
     inline bool hasMesh() const noexcept {
         return !m_lodMeshes.empty() && m_lodMeshes[0].m_mesh.get();
     }
+
+    std::shared_ptr<animation::RigContainer> findRig() const;
 
     template<typename T>
     inline T* getCustomMaterial() const noexcept {

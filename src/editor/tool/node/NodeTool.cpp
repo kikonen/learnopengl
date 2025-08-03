@@ -607,7 +607,7 @@ namespace editor
                 quat };
 
             CompositeBuilder builder{ NodeRegistry::get() };
-            if (builder.build(parentId, type, state)) {
+            if (builder.build(parentId, 0, type, state)) {
                 auto rootHandle = builder.asyncAttach(ctx.m_registry);
 
                 auto& commandEngine = script::CommandEngine::get();

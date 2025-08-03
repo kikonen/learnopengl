@@ -45,6 +45,7 @@ namespace loader {
 
         bool resolveNode(
             const ki::node_id parentId,
+            const ki::socket_id socketId,
             const NodeData& baseData,
             std::shared_ptr<Context> ctx,
             std::shared_ptr<Loaders> loaders);

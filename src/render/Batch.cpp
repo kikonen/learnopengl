@@ -146,7 +146,7 @@ namespace render {
                 dist2,
                 entityIndex,
                 static_cast<uint32_t>(lodMesh.m_materialIndex),
-                lodMesh.m_socketIndex,
+                snapshot.m_attachedSocketIndex,
                 0
                 });
 
@@ -291,7 +291,7 @@ namespace render {
                         dist2,
                         entityIndex,
                         static_cast<uint32_t>(lodMesh.m_materialIndex),
-                        lodMesh.m_socketIndex,
+                        snapshot.m_attachedSocketIndex,
                         transforms[i].getData()
                         });
 

@@ -51,13 +51,6 @@ void NodeState::updateRootMatrix() noexcept
     m_modelMatrix = s_translateMatrix * rotationMatrix * s_scaleMatrix;
     m_modelScale = m_scale * m_baseScale;
 
-    //{
-    //    const auto& wp = m_modelMatrix[3];
-    //    m_worldPos.x = wp.x;
-    //    m_worldPos.y = wp.y;
-    //    m_worldPos.z = wp.z;
-    //}
-
     m_matrixLevel++;
 
     m_dirty = false;
@@ -132,13 +125,6 @@ void NodeState::updateModelMatrix(const NodeState& parent) noexcept
 
     m_modelRotation = parent.m_modelRotation * m_rotation * m_baseRotation;
 
-    //{
-    //    const auto& wp = m_modelMatrix[3];
-    //    m_worldPos.x = wp.x;
-    //    m_worldPos.y = wp.y;
-    //    m_worldPos.z = wp.z;
-    //}
-
     {
         m_worldPivot = m_modelMatrix * glm::vec4{ m_pivot, 1.f };
     }
@@ -155,17 +141,6 @@ void NodeState::updateModelAxis() const noexcept
     m_viewFront = glm::normalize(glm::mat3(m_modelRotation * m_invBaseRotation) * m_front);
     glm::vec3 viewRight = glm::cross(m_viewFront, m_up);
     m_viewUp = glm::normalize(glm::cross(viewRight, m_viewFront));
-    //m_viewRight = viewRight;
 
     m_dirtyAxis = false;
 }
-
-//void NodeState::updateRotationMatrix() noexcept
-//{
-//    //ASSERT_WT();
-//    if (!m_dirtyRotation) return;
-//    // TODO KI glm::mat4_Cast (is same as glm::toMat4)
-//    m_rotationMatrix = glm::toMat4(m_rotation * m_baseRotation);
-//    m_dirtyRotation = false;
-//    m_dirtyAxis = true;
-//}

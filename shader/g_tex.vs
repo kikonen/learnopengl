@@ -51,7 +51,6 @@ out VS_OUT {
 #endif
 #endif
 #ifdef USE_DEBUG
-  flat uint socketBaseIndex;
   flat uint socketIndex;
 #endif
 } vs_out;
@@ -195,7 +194,6 @@ void main() {
 #endif
 
 #ifdef USE_DEBUG
-  vs_out.socketBaseIndex = entity.u_socketBaseIndex;
   vs_out.socketIndex = instance.u_socketIndex;
 #endif
 

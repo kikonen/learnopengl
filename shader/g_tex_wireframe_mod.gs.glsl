@@ -45,7 +45,6 @@ in VS_OUT {
 #endif
 #endif
 #ifdef USE_DEBUG
-  flat uint socketBaseIndex;
   flat uint socketIndex;
 #endif
 } gs_in[];
@@ -79,7 +78,6 @@ out VS_OUT {
 #endif
 #endif
 #ifdef USE_DEBUG
-  flat uint socketBaseIndex;
   flat uint socketIndex;
 #endif
 
@@ -124,7 +122,6 @@ void emitVertex(const uint i)
 #endif
 #endif
 #ifdef USE_DEBUG
-  gs_out.socketBaseIndex = gs_in[i].socketBaseIndex;
   gs_out.socketIndex = gs_in[i].socketIndex;
 #endif
 

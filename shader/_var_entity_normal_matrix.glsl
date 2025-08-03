@@ -5,10 +5,10 @@ mat3 normalMatrix = mat3(
   );
 
 #ifdef USE_SOCKETS
-if (instance.u_socketIndex >= 0) {
+if (instance.u_socketIndex > 0) {
   normalMatrix =
     normalMatrix
-    * mat3(resolveSocketMatrix(entity.u_socketBaseIndex + instance.u_socketIndex))
+    * mat3(resolveSocketMatrix(instance.u_socketIndex))
     * mat3(meshMatrix);
 
 } else {

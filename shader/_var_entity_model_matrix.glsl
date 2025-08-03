@@ -16,10 +16,10 @@ const mat4 meshMatrix = transpose(mat4(
 // const mat4 meshMatrix = mat4(instance.u_transform);
 
 #ifdef USE_SOCKETS
-if (instance.u_socketIndex >= 0) {
+if (instance.u_socketIndex > 0) {
   modelMatrix =
     modelMatrix
-    * resolveSocketMatrix(entity.u_socketBaseIndex + instance.u_socketIndex)
+    * resolveSocketMatrix(instance.u_socketIndex)
     * meshMatrix;
 } else {
   modelMatrix *= meshMatrix;
