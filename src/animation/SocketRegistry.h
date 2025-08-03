@@ -31,6 +31,9 @@ namespace animation {
 
         uint32_t getActiveCount() const noexcept;
 
+        glm::mat4 getTransform(
+            uint32_t index) const noexcept;
+
     protected:
         // Register node instance specific rig
         // @return instance index into bone transform buffer

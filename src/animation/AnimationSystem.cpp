@@ -214,6 +214,12 @@ namespace animation
         socketRegistry.removeInstance(socketBaseIndex, rig.m_sockets.size());
     }
 
+    glm::mat4 AnimationSystem::getSocketTransform(
+        uint32_t index) const noexcept
+    {
+        return m_socketRegistry->getTransform(index);
+    }
+
     animation::AnimationState* AnimationSystem::getState(
         pool::NodeHandle handle)
     {
