@@ -100,9 +100,9 @@ namespace loader {
             const AnimationData& data,
             mesh::MeshSet& meshSet);
 
-        void resolveAttachments(
-            NodeType* type,
-            const NodeTypeData& typeData);
+        //void resolveAttachments(
+        //    NodeType* type,
+        //    const NodeTypeData& typeData);
 
         void assignTypeFlags(
             const NodeTypeData& typeData,

@@ -15,7 +15,6 @@
 #include "CameraData.h"
 #include "LightData.h"
 #include "AudioData.h"
-#include "AttachmentData.h"
 #include "ControllerData.h"
 #include "GeneratorData.h"
 #include "ScriptData.h"
@@ -43,7 +42,6 @@ namespace loader
         int8_t priority{ 0 };
 
         std::vector<MeshData> meshes;
-        std::vector<AttachmentData> attachments;
 
         std::unordered_map<MaterialProgramType, std::string> programs;
 

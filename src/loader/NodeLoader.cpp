@@ -98,8 +98,8 @@ namespace loader {
             else if (k == "ignored_by") {
                 data.ignoredByBaseId = readId(v);
             }
-            else if (k == "socket") {
-                data.socketId = readId(v);
+            else if (k == "attach") {
+                loadAttachment(v, data.attachment);
             }
             else if (k == "name") {
                 data.name = readString(v);
@@ -184,6 +184,38 @@ namespace loader {
         }
     }
 
+    void NodeLoader::loadAttachment(
+        const loader::DocNode& node,
+        AttachmentData& data) const
+    {
+        bool explicitEnabled = false;
+
+        for (const auto& pair : node.getNodes()) {
+            const std::string& key = pair.getName();
+            const loader::DocNode& v = pair.getNode();
+
+            const auto k = util::toLower(key);
+
+            if (k == "enabled") {
+                data.enabled = readBool(v);
+                explicitEnabled = true;
+            }
+            else if (k == "xenabled") {
+                data.enabled = false;
+                explicitEnabled = true;
+            }
+            else if (k == "socket") {
+                data.socketId = readId(v);
+                if (!explicitEnabled) {
+                    data.enabled = !data.socketId.empty();
+                }
+            }
+            else {
+                reportUnknown("attachment_entry", k, v);
+            }
+        }
+    }
+
     void NodeLoader::createNodeDefinitions(
         const std::vector<NodeData>& nodes,
         std::vector<NodeDefinition>& definitions,
@@ -208,7 +240,10 @@ namespace loader {
         df.m_aliasId = nodeData.aliasBaseId.m_path;
         df.m_typeId = SID(nodeData.typeId.m_path);
         df.m_ignoredById = nodeData.ignoredByBaseId.m_path;
-        df.m_socketId = nodeData.socketId.m_path;
+
+        if (nodeData.attachment.enabled) {
+            df.m_socketId = nodeData.attachment.socketId.m_path;
+        }
 
         df.m_position = nodeData.position;
         df.m_rotation = nodeData.rotation;
