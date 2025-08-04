@@ -95,12 +95,16 @@ namespace editor
     {
         if (ImGui::CollapsingHeader("Node"))
         {
+            ImGui::PushID("node");
             renderNode(ctx, dbg);
+            ImGui::PopID();
         }
 
         if (ImGui::CollapsingHeader("Animation"))
         {
+            ImGui::PushID("animation");
             renderAnimationDebug(ctx, dbg);
+            ImGui::PopID();
         }
     }
 
@@ -407,7 +411,6 @@ namespace editor
         render::DebugContext& dbg)
     {
         const auto& assets = ctx.m_assets;
-
         ImGui::Checkbox("Pause", &dbg.m_animationPaused);
         ImGui::Checkbox("Animation debug", &dbg.m_animationDebugEnabled);
 
