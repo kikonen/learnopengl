@@ -6,6 +6,10 @@ skybox:
 script:
   scripts:
     - path: lib/common
+
+includes:
+  - path: prefab/creatures/include_skeleton_warrior.yml
+
 types:
   - id: player
     type: origo
@@ -49,14 +53,17 @@ types:
       update: true
     script: scripts/seq_shaky_ground
   - id: skeleton_army
-    prefab:
-      path: prefab/creatures/prefab_skeleton_warrior.yml
+    base: prefab_skeleton_warrior
     script: scripts/seq_skeleton
     physics:
       update: true
     xscript: |
       cmd:animation_play(
         { name = "master:SwingNormal" });
+  - id: prefab_skeleton
+    script: |
+      self.cmd:animation_play(
+        { name = "master:Idle" });
   - id: helmet
     meshes:
       - name: helmet

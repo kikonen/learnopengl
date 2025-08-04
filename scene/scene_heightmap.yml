@@ -7,6 +7,10 @@ skybox:
 script:
   scripts:
     - path: lib/common
+
+includes:
+  - path: prefab/creatures/include_skeleton_warrior.yml
+
 types:
   - id: player_fps
     mesh:
@@ -69,8 +73,7 @@ types:
     flags:
       cube_map: true
   - id: skeleton_player
-    prefab:
-      path: prefab/creatures/prefab_skeleton_warrior.yml
+    base: prefab_skeleton_warrior
     xscript: scripts/seq_skeleton
     active: true
     xaudio:
@@ -92,6 +95,10 @@ types:
     script: |
       cmd:animation_play(
         { name = "master:SwingNormal" });
+  - id: prefab_skeleton
+    script: |
+      self.cmd:animation_play(
+        { name = "master:Idle" });
   - id: object
     mesh:
       path: texture_cube_4/texture_cube_4.obj
