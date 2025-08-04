@@ -12,6 +12,10 @@ skybox:
 script:
   scripts:
     - path: lib/common
+
+includes:
+  - path: prefab/creatures/include_skeleton_warrior.yml
+
 types:
   - id: origo_marker
     mesh:
@@ -97,9 +101,8 @@ types:
         collision: [terrain]
         size: [1, 1, 0]
   - id: player_2
+    xbase: prefab_skeleton_warrior
     type: origo
-    xprefab:
-      path: prefab/creatures/prefab_skeleton_warrior.yml
     camera:
       type: fps
       distance: [4, 2, 10]
@@ -138,6 +141,10 @@ types:
     xscript: |
       cmd:animation_play(
         { name = "master:Walk02" });
+  - id: prefab_skeleton
+    script: |
+      self.cmd:animation_play(
+        { name = "master:Idle" });
   - id: directional_light
     mesh:
       path: light

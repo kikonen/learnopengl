@@ -73,6 +73,9 @@ types:
     script: |
       cmd:animation_play(
         { name="idle_aim:Unreal Take" } )
+  - id: automatic_rifle
+    prefab:
+      path: prefab/weapons/prefab_automatic_rifle.yml
 
 nodes:
   - id: player
@@ -101,6 +104,9 @@ nodes:
   - type: automatic_rifle_hands
     pos: [2, 1, 0]
     #scale: 5
+    children:
+      - type: automatic_rifle
+        socket: rifle
     clones:
       - pos: [2, 1, 0]
       # - pos: [2, 1.5, 0]
