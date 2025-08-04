@@ -223,8 +223,6 @@ namespace loader
             }
         }
 
-        resolveAttachments(type, typeData);
-
         type->m_cameraComponentDefinition = l.m_cameraLoader.createDefinition(typeData.camera);
         type->m_lightDefinition = l.m_lightLoader.createDefinition(typeData.light);
 
@@ -718,66 +716,66 @@ namespace loader
         }
     }
 
-    void NodeTypeBuilder::resolveAttachments(
-        NodeType* type,
-        const NodeTypeData& typeData)
-    {
-        if (typeData.attachments.empty()) return;
+    //void NodeTypeBuilder::resolveAttachments(
+    //    NodeType* type,
+    //    const NodeTypeData& typeData)
+    //{
+    //    if (typeData.attachments.empty()) return;
 
-        auto& lodMeshes = type->modifyLodMeshes();
+    //    auto& lodMeshes = type->modifyLodMeshes();
 
-        auto rig = mesh::findRig(lodMeshes);
-        if (!rig) {
-            KI_INFO_OUT(fmt::format(
-                "SOCKET_BIND_ERROR: rig_missing - node={}",
-                typeData.str()));
-            return;
-        }
+    //    auto rig = mesh::findRig(lodMeshes);
+    //    if (!rig) {
+    //        KI_INFO_OUT(fmt::format(
+    //            "SOCKET_BIND_ERROR: rig_missing - node={}",
+    //            typeData.str()));
+    //        return;
+    //    }
 
-        for (const auto& attachment : typeData.attachments) {
-            if (!attachment.enabled) continue;
+    //    for (const auto& attachment : typeData.attachments) {
+    //        if (!attachment.enabled) continue;
 
-            mesh::LodMesh* lodMesh = mesh::findLodMesh(attachment.name, lodMeshes);
-            if (!lodMesh) {
-                const auto& names = mesh::getLodMeshNames(attachment.name, lodMeshes);
-                const auto& aliases = mesh::getLodMeshNames(attachment.name, lodMeshes);
-                KI_INFO_OUT(fmt::format(
-                    "SOCKET_BIND_ERROR: mesh_missing - node={}, rig={}, socket={}, mesh={}, mesh_names=[{}], mesh_aliases=[{}]",
-                    typeData.str(),
-                    rig->m_name,
-                    attachment.socket,
-                    attachment.name,
-                    util::join(names, ", "),
-                    util::join(aliases, ", ")));
-                continue;
-            }
+    //        mesh::LodMesh* lodMesh = mesh::findLodMesh(attachment.name, lodMeshes);
+    //        if (!lodMesh) {
+    //            const auto& names = mesh::getLodMeshNames(attachment.name, lodMeshes);
+    //            const auto& aliases = mesh::getLodMeshNames(attachment.name, lodMeshes);
+    //            KI_INFO_OUT(fmt::format(
+    //                "SOCKET_BIND_ERROR: mesh_missing - node={}, rig={}, socket={}, mesh={}, mesh_names=[{}], mesh_aliases=[{}]",
+    //                typeData.str(),
+    //                rig->m_name,
+    //                attachment.socket,
+    //                attachment.name,
+    //                util::join(names, ", "),
+    //                util::join(aliases, ", ")));
+    //            continue;
+    //        }
 
-            const auto* socket = rig->findSocket(attachment.socket);
-            if (!socket) {
-                const auto& names = rig->getSocketNames();
-                KI_INFO_OUT(fmt::format(
-                    "SOCKET_BIND_ERROR: socket_missing - node={}, rig={}, socket={}, mesh={}, socket_names=[{}]",
-                    typeData.str(),
-                    rig->m_name,
-                    attachment.socket,
-                    attachment.name,
-                    util::join(names, ", ")));
-                continue;
-            }
+    //        const auto* socket = rig->findSocket(attachment.socket);
+    //        if (!socket) {
+    //            const auto& names = rig->getSocketNames();
+    //            KI_INFO_OUT(fmt::format(
+    //                "SOCKET_BIND_ERROR: socket_missing - node={}, rig={}, socket={}, mesh={}, socket_names=[{}]",
+    //                typeData.str(),
+    //                rig->m_name,
+    //                attachment.socket,
+    //                attachment.name,
+    //                util::join(names, ", ")));
+    //            continue;
+    //        }
 
-            lodMesh->m_socketIndex = socket->m_index;
+    //        lodMesh->m_socketIndex = socket->m_index;
 
-            KI_INFO_OUT(fmt::format(
-                "SOCKET_BIND_OK: node={}, rig={}, joint={}.{}, socket={}.{}, mesh={}",
-                typeData.str(),
-                rig->m_name,
-                socket->m_jointIndex,
-                socket->m_jointName,
-                socket->m_index,
-                attachment.socket,
-                attachment.name));
-        }
-    }
+    //        KI_INFO_OUT(fmt::format(
+    //            "SOCKET_BIND_OK: node={}, rig={}, joint={}.{}, socket={}.{}, mesh={}",
+    //            typeData.str(),
+    //            rig->m_name,
+    //            socket->m_jointIndex,
+    //            socket->m_jointName,
+    //            socket->m_index,
+    //            attachment.socket,
+    //            attachment.name));
+    //    }
+    //}
 
     void NodeTypeBuilder::assignTypeFlags(
         const NodeTypeData& typeData,

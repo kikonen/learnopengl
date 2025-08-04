@@ -10,6 +10,8 @@
 #include "BaseData.h"
 #include "Repeat.h"
 
+#include "AttachmentData.h"
+
 namespace loader {
     struct NodeData {
         bool enabled{ false };
@@ -23,7 +25,7 @@ namespace loader {
 
         BaseId aliasBaseId;
 
-        BaseId socketId;
+        AttachmentData attachment;
 
         std::string name;
         std::string desc;

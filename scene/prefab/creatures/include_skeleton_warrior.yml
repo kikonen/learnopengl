@@ -46,12 +46,17 @@ composites:
       - type: prefab_skeleton
         children:
           - xtype: prefab_helmet
-            socket: head
+            attach:
+              socket: head
           - type: prefab_construction_hat
-            socket: head
+            attach:
+              socket: head
           - type: prefab_shield
-            socket: l_arm
+            attach:
+              socket: l_arm
           - type: prefab_armor
-            socket: neck
+            attach:
+              socket: neck
           - type: prefab_2_handed_sword
-            socket: r_hand
+            attach:
+              socket: r_hand

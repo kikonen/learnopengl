@@ -8,6 +8,7 @@ struct NodeDefinition;
 
 namespace loader {
     struct NodeData;
+    struct AttachmentData;
 
     class NodeLoader : public BaseLoader
     {
@@ -31,6 +32,10 @@ namespace loader {
             bool recurse,
             Loaders& loaders) const;
 
+        void loadAttachment(
+            const loader::DocNode& node,
+            AttachmentData& data) const;
+
         void createNodeDefinitions(
             const std::vector<NodeData>& nodes,
             std::vector<NodeDefinition>& definitions,
@@ -39,6 +44,6 @@ namespace loader {
         void createNodeDefinition(
             const NodeData& node,
             NodeDefinition& definition,
-            bool recurse) const; 
+            bool recurse) const;
     };
 }
