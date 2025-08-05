@@ -9,6 +9,8 @@
 #include <regex>
 #include <fmt/format.h>
 
+// https://stackoverflow.com/questions/5159353/how-can-i-get-rid-of-the-imp-prefix-in-the-linker-in-vc
+#define KHRONOS_STATIC
 #include <ktx.h>
 
 #include <fmt/format.h>
