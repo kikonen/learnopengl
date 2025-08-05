@@ -102,16 +102,15 @@ namespace loader {
         loader::YamlConverter converter;
         auto doc = converter.load(fullPath);
 
-        auto& entry = sceneData.m_includeFiles.emplace_back(fullPath, loader::DocNode::getNull());
+        auto fileIndex = sceneData.m_includeFiles.size();
+        sceneData.m_includeFiles.emplace_back(fullPath, loader::DocNode::getNull());
 
         loadScene(
             doc,
             sceneData,
             loaders);
 
-        sceneData.m_includeFiles.emplace_back(fullPath, doc);
-
-        entry.second = doc;
+        sceneData.m_includeFiles[fileIndex].second = doc;
     }
 
     void IncludeLoader::loadScene(
