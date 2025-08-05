@@ -3,7 +3,7 @@
 #include <vector>
 #include <string>
 
-#include <AL/al.h>
+#include "al_call.h"
 
 #include "size.h"
 

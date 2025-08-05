@@ -123,23 +123,27 @@
     <VcpkgEnableManifest>true</VcpkgEnableManifest>
   </PropertyGroup>
   <PropertyGroup Label="Vcpkg" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
-    <VcpkgUseStatic>false</VcpkgUseStatic>
+    <VcpkgUseStatic>true</VcpkgUseStatic>
     <VcpkgTriplet>
     </VcpkgTriplet>
     <VcpkgHostTriplet>
     </VcpkgHostTriplet>
     <VcpkgAdditionalInstallOptions> --overlay-triplets=$(ProjectDir)triplets</VcpkgAdditionalInstallOptions>
+    <VcpkgUseMD>
+    </VcpkgUseMD>
   </PropertyGroup>
   <PropertyGroup Label="Vcpkg" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <VcpkgUseStatic>false</VcpkgUseStatic>
+    <VcpkgUseStatic>true</VcpkgUseStatic>
     <VcpkgTriplet>
     </VcpkgTriplet>
     <VcpkgHostTriplet>
     </VcpkgHostTriplet>
     <VcpkgAdditionalInstallOptions> --overlay-triplets=$(ProjectDir)triplets</VcpkgAdditionalInstallOptions>
+    <VcpkgUseMD>
+    </VcpkgUseMD>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Build|x64'" Label="Vcpkg">
-    <VcpkgUseStatic>false</VcpkgUseStatic>
+    <VcpkgUseStatic>true</VcpkgUseStatic>
     <VcpkgTriplet />
     <VcpkgHostTriplet />
     <VcpkgAdditionalInstallOptions> --overlay-triplets=$(ProjectDir)triplets</VcpkgAdditionalInstallOptions>
@@ -209,11 +213,12 @@
       <InlineFunctionExpansion>OnlyExplicitInline</InlineFunctionExpansion>
       <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
       <UseDynamicDebugging>false</UseDynamicDebugging>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>avrt.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <UseDynamicDebugging>false</UseDynamicDebugging>
     </Link>
     <PreBuildEvent>
@@ -238,6 +243,7 @@
       <BufferSecurityCheck>false</BufferSecurityCheck>
       <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
       <UseDynamicDebugging>true</UseDynamicDebugging>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -246,6 +252,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <Profile>true</Profile>
       <UseDynamicDebugging>true</UseDynamicDebugging>
+      <AdditionalDependencies>avrt.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PreBuildEvent>
       <Command>del $(TargetDir)main.obj</Command>
@@ -277,6 +284,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <Profile>true</Profile>
       <UseDynamicDebugging>false</UseDynamicDebugging>
+      <AdditionalDependencies>avrt.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PreBuildEvent>
       <Command>del $(TargetDir)main.obj</Command>

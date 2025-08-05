@@ -2,6 +2,9 @@
 
 #include <string>
 
+// https://stackoverflow.com/questions/5159353/how-can-i-get-rid-of-the-imp-prefix-in-the-linker-in-vc
+// https://github.com/kcat/openal-soft/issues/577
+#define AL_LIBTYPE_STATIC
 #include <AL/al.h>
 #include "AL/alc.h"
 

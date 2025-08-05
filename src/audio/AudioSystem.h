@@ -6,7 +6,7 @@
 
 #include <glm/glm.hpp>
 
-#include "AL/alc.h"
+#include "al_call.h"
 
 #include "size.h"
 
