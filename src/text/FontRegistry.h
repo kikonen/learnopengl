@@ -23,14 +23,19 @@ namespace text {
 
         void updateRT(const UpdateContext& ctx);
 
-        text::FontAtlas* getFont(text::font_id id) noexcept
+        text::FontAtlas* getDefaultFontAtlas() noexcept
+        {
+            return getFontAtlas(m_defaultFontId);
+        }
+
+        text::FontAtlas* getFontAtlas(text::font_id id) noexcept
         {
             if (id < 1) return nullptr;
 
             std::shared_lock lock(m_lock);
             if (id < 1 || id > m_fonts.size()) return nullptr;
 
-            return &m_fonts[id - 1];
+            return m_fonts[id - 1].valid() ? & m_fonts[id - 1] : nullptr;
         }
 
         text::font_id registerFont(
@@ -44,5 +49,7 @@ namespace text {
         mutable std::shared_mutex m_lock{};
 
         std::vector<text::FontAtlas> m_fonts;
+
+        text::font_id m_defaultFontId{ 0 };
     };
 }

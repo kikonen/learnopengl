@@ -36,6 +36,15 @@ namespace text {
     {
         // NOTE KI reserve 0 for null font
         registerFont({});
+
+        {
+            text::FontAtlas font;
+            font.m_name = "Default";
+            font.m_fontPath = "fonts/LuckiestGuy.ttf";
+            font.m_fontSize = 16;
+
+            m_defaultFontId = registerFont(std::move(font));
+        }
     }
 
     FontRegistry::~FontRegistry()

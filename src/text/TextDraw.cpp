@@ -303,14 +303,17 @@ namespace text
         text::Align alignVertical,
         mesh::TextMesh* mesh)
     {
-        auto* font = text::FontRegistry::get().getFont(fontId);
-        if (!font) return;
+        auto* fontAtlas = text::FontRegistry::get().getFontAtlas(fontId);
+        if (!fontAtlas) {
+            fontAtlas = text::FontRegistry::get().getDefaultFontAtlas();
+        }
+        if (!fontAtlas) return;
 
-        const auto atlasPad = font->getPadding();
-        const auto atlasSize = font->getAtlasSize();
+        const auto atlasPad = fontAtlas->getPadding();
+        const auto atlasSize = fontAtlas->getAtlasSize();
 
         addText(
-            mesh, font, text, pivot,
+            mesh, fontAtlas, text, pivot,
             alignHorizontal,
             alignVertical,
             //static_cast<float>(atlasPad / atlasSize.x),
