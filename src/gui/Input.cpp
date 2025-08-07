@@ -44,16 +44,23 @@ Input::Input(Window* window)
         0 };
     m_keyMappings[Key::UP] = new int[] {
         GLFW_KEY_PAGE_UP,
+        GLFW_KEY_R,
         0 };
     m_keyMappings[Key::DOWN] = new int[] {
         GLFW_KEY_PAGE_DOWN,
+        GLFW_KEY_F,
         0 };
 
     m_keyMappings[Key::ZOOM_IN] = new int[] {
         GLFW_KEY_HOME,
-        0 };
+        GLFW_KEY_1,
+        GLFW_KEY_EQUAL,
+        0
+    };
     m_keyMappings[Key::ZOOM_OUT] = new int[] {
         GLFW_KEY_END,
+        GLFW_KEY_2,
+        GLFW_KEY_MINUS,
         0 };
 
     m_modifierMappings[Modifier::SHIFT] = new int[] {
