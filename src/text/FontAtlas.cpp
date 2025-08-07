@@ -16,7 +16,9 @@
 #include "FontHandle.h"
 
 namespace {
-    glm::vec3 BLACK{ 0.f };
+    const glm::vec3 BLACK{ 0.f };
+
+    const std::string DEFAULT_FONT{ "fonts/Vera.ttf" };
 
     glm::uvec2 resolveAtlasSize(float fontSize, float padding)
     {
@@ -34,7 +36,7 @@ namespace {
 namespace text
 {
     FontAtlas::FontAtlas()
-        : m_fontPath{ "fonts/Vera.ttf" },
+        : m_fontPath{ DEFAULT_FONT },
         m_fontSize{ 32.f },
         m_padding{ 32 },
         m_atlasSize{ 0 }
@@ -81,6 +83,11 @@ namespace text
             m_atlasSize == o.m_atlasSize;
     }
 
+    bool FontAtlas::valid()
+    {
+        return m_fontHandle && m_fontHandle->valid();
+    }
+
     void FontAtlas::prepare()
     {
         if (m_prepared) return;
@@ -106,6 +113,8 @@ namespace text
                 m_fontSize,
                 m_padding);
         }
+
+        if (!m_fontHandle->valid()) return;
 
 
         if (true)
@@ -151,6 +160,8 @@ namespace text
 
     void FontAtlas::update()
     {
+        if (!valid()) return;
+
         size_t currentAtlasSize = m_atlasHandle->m_atlas->used;
         if (m_usedAtlasSize == currentAtlasSize) return;
 
@@ -162,7 +173,8 @@ namespace text
             0,
             0, 0, w, h,
             GL_RED,
-            GL_UNSIGNED_BYTE, m_atlasHandle->m_atlas->data);
+            GL_UNSIGNED_BYTE,
+            m_atlasHandle->m_atlas->data);
 
         m_usedAtlasSize = currentAtlasSize;
     }

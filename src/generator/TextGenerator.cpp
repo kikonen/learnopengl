@@ -163,7 +163,12 @@ void TextGenerator::bindBatch(
 
 GLuint64 TextGenerator::getAtlasTextureHandle() const noexcept
 {
-    return text::FontRegistry::get().getFont(m_fontId)->getTextureHandle();
+    auto* fontAtlas = text::FontRegistry::get().getFontAtlas(m_fontId);
+    if (!fontAtlas) {
+        fontAtlas = text::FontRegistry::get().getDefaultFontAtlas();
+    }
+
+    return fontAtlas ? fontAtlas->getTextureHandle() : 0;
 }
 
 void TextGenerator::clear()

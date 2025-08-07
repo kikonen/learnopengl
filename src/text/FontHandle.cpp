@@ -46,6 +46,11 @@ namespace text
         //ftgl::texture_font_delete(m_font);
     }
 
+    bool FontHandle::valid()
+    {
+        return m_font != nullptr;
+    }
+
     void FontHandle::create(
         const std::string& fullPath,
         float fontSize,

@@ -29,6 +29,8 @@ namespace text
 
         bool operator==(const FontAtlas& o) const noexcept;
 
+        bool valid();
+
         void prepare();
 
         void update();

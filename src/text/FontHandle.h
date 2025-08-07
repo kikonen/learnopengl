@@ -16,6 +16,8 @@ namespace text
         FontHandle(FontHandle&& o) noexcept;
         ~FontHandle();
 
+        bool valid();
+
         void create(
             const std::string& fullPath,
             float fontSize,
