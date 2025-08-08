@@ -7,6 +7,10 @@ skybox:
 script:
   scripts:
     - path: lib/common
+
+includes:
+  - path: prefab/creatures/include_skeleton_warrior.yml
+
 types:
   - id: grid
     prefab:
@@ -143,7 +147,8 @@ types:
         x_step: -20
         z_step: 20
   - id: skeleton_army_2
-    prefab:
+    base: prefab_skeleton_warrior
+    xprefab:
       path: prefab/creatures/prefab_skeleton.yml
     priority: 1
     type_flags:
@@ -159,6 +164,10 @@ types:
         { name = "master:Idle" });
     script: scripts/seq_skeleton_random_nav
     xscript: scripts/seq_skeleton_2
+  - id: prefab_skeleton
+    script: |
+      self.cmd:animation_play(
+        { name = "master:Idle" });
   - id: world_plane
     type: origo
     physics:
