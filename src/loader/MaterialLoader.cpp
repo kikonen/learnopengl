@@ -735,7 +735,7 @@ namespace loader {
 
             bool usePreDepth = meshFlags.preDepth;
             bool useBones = meshFlags.useBones;
-            bool useSockets = meshFlags.useSockets;
+            bool useSockets = true; // meshFlags.useSockets;
             bool useDebug = assets.glslUseDebug;
 
             if (material.alpha) {
