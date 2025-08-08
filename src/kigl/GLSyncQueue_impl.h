@@ -107,11 +107,11 @@ namespace kigl {
 
         auto& range = m_ranges[m_current];
 
-        T* ptr = (T*)(m_data + range.nextOffset());
+        T* __restrict ptr = (T*)(m_data + range.nextOffset());
 
         // NOTE KI memcpy is *likely* faster than assingment operator
         //*ptr = entry;
-        memcpy(ptr, &entry, sizeof(T));
+        std::memcpy(ptr, &entry, sizeof(T));
 
         return range.full();
     }
@@ -125,10 +125,10 @@ namespace kigl {
 
         //m_data[range.index(idx)] = entry;
 
-        T* ptr = (T*)(m_data + range.offset(idx));
+        T* __restrict ptr = (T*)(m_data + range.offset(idx));
         // NOTE KI memcpy is *likely* faster than assingment operator
         //*ptr = entry;
-        memcpy(ptr, &entry, sizeof(T));
+        std::memcpy(ptr, &entry, sizeof(T));
 
         if (idx >= range.m_usedCount) {
             range.m_usedCount = idx + 1;

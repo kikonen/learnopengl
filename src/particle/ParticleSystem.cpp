@@ -229,7 +229,7 @@ namespace particle {
         //}
 
         auto& current = m_queue->current();
-        auto* mappedData = m_queue->currentMapped();
+        auto* __restrict mappedData = m_queue->currentMapped();
 
         m_queue->waitFence();
         std::copy(

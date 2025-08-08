@@ -87,7 +87,7 @@ namespace kigl {
             return (T&)m_data[range.m_baseOffset];
         }
 
-        T* currentMapped()
+        T* __restrict currentMapped()
         {
             auto& range = current();
             return m_buffer.mapped<T>(range.m_baseOffset);
