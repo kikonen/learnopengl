@@ -262,7 +262,7 @@ namespace backend {
             createInstanceBuffers(totalCount);
 
             auto& current = m_instanceBuffers->current();
-            auto* mappedData = m_instanceBuffers->currentMapped();
+            auto* __restrict mappedData = m_instanceBuffers->currentMapped();
 
             m_instanceBuffers->waitFence();
             std::copy(

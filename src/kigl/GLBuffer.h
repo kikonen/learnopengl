@@ -192,7 +192,7 @@ namespace kigl {
             return mapRange(0, m_size, flags);
         }
 
-        unsigned char* mapRange(size_t offset, size_t length, GLuint flags) {
+        unsigned char* __restrict mapRange(size_t offset, size_t length, GLuint flags) {
             if (!m_created || m_mapped) return m_mappedData;
 
             KI_DEBUG(fmt::format(
@@ -206,7 +206,7 @@ namespace kigl {
         }
 
         template <typename T>
-        T* mapped(size_t offset) const
+        T* __restrict mapped(size_t offset) const
         {
             return (T*)(m_mappedData + offset);
         }
@@ -252,7 +252,7 @@ namespace kigl {
 
         int m_binding = -1;
 
-        unsigned char* m_mappedData{ nullptr };
+        unsigned char* __restrict m_mappedData{ nullptr };
 
         bool m_created = false;
         bool m_mapped = false;
