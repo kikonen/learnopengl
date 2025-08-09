@@ -207,12 +207,9 @@ namespace animation {
         }
 
         for (const auto& socket : rig.m_sockets) {
-            socketPalette[socket.m_index] =
-                socket.m_meshScaleTransform *
-                parentTransforms[socket.m_jointIndex + 1] *
-                glm::translate(glm::mat4{ 1.f }, socket.m_offset) *
-                glm::toMat4(socket.m_rotation) *
-                socket.m_invMeshScaleTransform;
+            // NOTE KI see AnimationSystem::registerInstance()
+            socketPalette[socket.m_index] = socket.calculateWorldTransform(
+                parentTransforms[socket.m_jointIndex + 1]);
         }
 
         return true;

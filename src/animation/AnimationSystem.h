@@ -14,6 +14,11 @@ namespace pool {
     struct NodeHandle;
 }
 
+namespace editor
+{
+    class NodeTool;
+}
+
 struct UpdateContext;
 class RenderContext;
 class Node;
@@ -28,6 +33,8 @@ namespace animation {
     struct RigContainer;
 
     class AnimationSystem {
+        friend editor::NodeTool;
+
     public:
         static void init() noexcept;
         static void release() noexcept;

@@ -19,10 +19,11 @@ namespace animation
 
         void updateTransforms();
 
+        glm::mat4 calculateWorldTransform(
+            const glm::mat4& jointTransform) const;
+
         const std::string m_name;
         const std::string m_jointName;
-
-        glm::mat4 m_transform;
 
         glm::vec3 m_offset;
         glm::quat m_rotation;

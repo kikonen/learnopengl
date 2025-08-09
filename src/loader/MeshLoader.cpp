@@ -274,6 +274,8 @@ namespace loader {
         const loader::DocNode& node,
         SocketData& data) const
     {
+        bool explicitEnabled = false;
+
         for (const auto& pair : node.getNodes()) {
             const std::string& key = pair.getName();
             const loader::DocNode& v = pair.getNode();
@@ -282,10 +284,17 @@ namespace loader {
 
             if (k == "enabled") {
                 data.enabled = readBool(v);
+                explicitEnabled = true;
             }
-            else if (k == "name" || k == "xname") {
+            else if (k == "name") {
                 data.name = readString(v);
-                data.enabled = k != "xname";
+                data.enabled = true;
+                explicitEnabled = true;
+            }
+            else if (k == "xname") {
+                data.name = readString(v);
+                data.enabled = false;
+                explicitEnabled = true;
             }
             else if (k == "joint") {
                 data.joint = readString(v);
@@ -326,6 +335,8 @@ namespace loader {
         const loader::DocNode& node,
         AnimationData& data) const
     {
+        bool explicitEnabled = false;
+
         for (const auto& pair : node.getNodes()) {
             const std::string& key = pair.getName();
             const loader::DocNode& v = pair.getNode();
@@ -334,9 +345,22 @@ namespace loader {
 
             if (k == "name") {
                 data.name = readString(v);
+                explicitEnabled = true;
+            }
+            else if (k == "xname") {
+                data.name = readString(v);
+                data.enabled = false;
+                explicitEnabled = true;
+            }
+            else if (k == "enabled") {
+                data.enabled = readBool(v);
+                explicitEnabled = true;
             }
             else if (k == "path") {
                 data.path = readString(v);
+                if (!explicitEnabled) {
+                    data.enabled = true;
+                }
             }
             else {
                 reportUnknown("animation_entry", k, v);
