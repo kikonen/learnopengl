@@ -39,13 +39,21 @@ namespace animation
         m_rotation{ rotation },
         m_scale{ scale },
         m_meshScale{ meshScale },
-        m_transform{ calcTransform(offset, rotation, scale) },
         m_meshScaleTransform{ calcMeshScaleTransform(meshScale) },
         m_invMeshScaleTransform{ glm::inverse(m_meshScaleTransform) }
     {}
 
+    glm::mat4 RigSocket::calculateWorldTransform(
+        const glm::mat4& jointTransform) const
+    {
+        return m_meshScaleTransform *
+            jointTransform *
+            glm::translate(glm::mat4{ 1.f }, m_offset)*
+            glm::toMat4(m_rotation)*
+            m_invMeshScaleTransform;
+    }
+
     void RigSocket::updateTransforms() {
-        m_transform = calcTransform(m_offset, m_rotation, m_scale);
         m_meshScaleTransform = calcMeshScaleTransform(m_meshScale);
         m_invMeshScaleTransform = glm::inverse(m_meshScaleTransform);
     }

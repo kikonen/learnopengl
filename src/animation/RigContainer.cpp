@@ -108,6 +108,9 @@ namespace animation {
     {
         const auto& jointName = a_socket.m_jointName;
 
+        // NOTE KI allow duplicate sockets in same joint
+        // => they can have different offset/rotation
+        if (false)
         {
             const auto& socketIt = m_NameToSocket.find(jointName);
             if (socketIt != m_NameToSocket.end()) {
