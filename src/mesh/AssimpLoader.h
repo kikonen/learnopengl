@@ -29,7 +29,8 @@ namespace mesh {
     class AssimpLoader : public ModelLoader {
     public:
         AssimpLoader(
-            std::shared_ptr<std::atomic<bool>> alive);
+            std::shared_ptr<std::atomic<bool>> alive,
+            bool debug);
 
         ~AssimpLoader();
 
@@ -112,5 +113,8 @@ namespace mesh {
         std::string findTexturePath(
             const MeshSet& meshSet,
             const std::string& origPath);
+
+    private:
+        const bool m_debug;
     };
 }

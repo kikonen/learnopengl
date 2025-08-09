@@ -116,8 +116,8 @@ std::shared_future<std::shared_ptr<mesh::MeshSet>> ModelRegistry::startLoad(
 
                 std::unique_ptr<mesh::ModelLoader> loader;
 
-                if (assets.useAssimpLoader) {
-                    loader = std::make_unique<mesh::AssimpLoader>(m_alive);
+                if (assets.assimpLoaderEnabled) {
+                    loader = std::make_unique<mesh::AssimpLoader>(m_alive, assets.assimpDebug);
                 }
                 else {
                     throw "no loader";
