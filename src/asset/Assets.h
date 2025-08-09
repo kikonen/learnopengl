@@ -70,7 +70,8 @@ public:
     bool asyncLoaderEnabled;
     int asyncLoaderDelay;
 
-    bool useAssimpLoader;
+    bool assimpLoaderEnabled;
+    bool assimpDebug;
 
     std::string logFile;
 

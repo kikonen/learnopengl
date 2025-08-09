@@ -41,8 +41,10 @@ namespace {
 namespace mesh
 {
     AssimpLoader::AssimpLoader(
-        std::shared_ptr<std::atomic<bool>> alive)
-        : ModelLoader{ alive }
+        std::shared_ptr<std::atomic<bool>> alive,
+        bool debug)
+        : ModelLoader{ alive },
+        m_debug{ debug }
     {}
 
     AssimpLoader::~AssimpLoader()
@@ -115,14 +117,16 @@ namespace mesh
             return;
         }
 
-        KI_INFO_OUT(fmt::format(
-            "ASSIMP: SCENE scene={}, mesh_set={}, meshes={}, anims={}, materials={}, textures={}",
-            meshSet.m_name,
-            meshSet.m_filePath,
-            scene->mNumMeshes,
-            scene->mNumAnimations,
-            scene->mNumMaterials,
-            scene->mNumTextures));
+        if (m_debug) {
+            KI_INFO_OUT(fmt::format(
+                "ASSIMP: SCENE scene={}, mesh_set={}, meshes={}, anims={}, materials={}, textures={}",
+                meshSet.m_name,
+                meshSet.m_filePath,
+                scene->mNumMeshes,
+                scene->mNumAnimations,
+                scene->mNumMaterials,
+                scene->mNumTextures));
+        }
 
         auto rig = std::make_shared<animation::RigContainer>(meshSet.m_filePath);
         mesh::LoadContext ctx{ rig };
@@ -172,10 +176,12 @@ namespace mesh
             }
         }
 
-        for (auto& mesh : meshSet.m_meshes) {
-            KI_INFO_OUT(fmt::format("MESH: mesh_set={}, mesh={}",
-                meshSet.m_name,
-                mesh->str()));
+        if (m_debug) {
+            for (auto& mesh : meshSet.m_meshes) {
+                KI_INFO_OUT(fmt::format("MESH: mesh_set={}, mesh={}",
+                    meshSet.m_name,
+                    mesh->str()));
+            }
         }
     }
 
@@ -216,17 +222,19 @@ namespace mesh
             rigJoint.m_globalTransform = globalTransform;
             rigJoint.m_globalInvTransform = globalInvTransform;
 
-            KI_INFO_OUT(fmt::format(
-                "ASSIMP: NODE mesh_set={}, node={}.{}, name={}, children={}, meshes={}\nTRAN: {}\nGLOB: {}\nINVE: {}",
-                meshSet.m_name,
-                parentIndex,
-                jointIndex,
-                node->mName.C_Str(),
-                node->mNumChildren,
-                node->mNumMeshes,
-                rigJoint.m_transform,
-                rigJoint.m_globalTransform,
-                rigJoint.m_globalInvTransform));
+            if (m_debug) {
+                KI_INFO_OUT(fmt::format(
+                    "ASSIMP: NODE mesh_set={}, node={}.{}, name={}, children={}, meshes={}\nTRAN: {}\nGLOB: {}\nINVE: {}",
+                    meshSet.m_name,
+                    parentIndex,
+                    jointIndex,
+                    node->mName.C_Str(),
+                    node->mNumChildren,
+                    node->mNumMeshes,
+                    rigJoint.m_transform,
+                    rigJoint.m_globalTransform,
+                    rigJoint.m_globalInvTransform));
+            }
         }
 
         for (size_t n = 0; n < node->mNumChildren; ++n)
@@ -312,14 +320,16 @@ namespace mesh
                 break;
             }
 
-            KI_INFO_OUT(fmt::format(
-                "ASSIMP: META mesh_set={}, node={}.{}, name={}, key={}, value={}",
-                meshSet.m_name,
-                rigJoint.m_parentIndex,
-                rigJoint.m_index,
-                rigJoint.m_name,
-                formattedKey,
-                formattedValue));
+            if (m_debug) {
+                KI_INFO_OUT(fmt::format(
+                    "ASSIMP: META mesh_set={}, node={}.{}, name={}, key={}, value={}",
+                    meshSet.m_name,
+                    rigJoint.m_parentIndex,
+                    rigJoint.m_index,
+                    rigJoint.m_name,
+                    formattedKey,
+                    formattedValue));
+            }
         }
     }
 
@@ -422,16 +432,17 @@ namespace mesh
             //modelMesh.setMaterial(Material::createMaterial(BasicMaterial::blue));
         }
 
-
-        KI_INFO_OUT(fmt::format("ASSIMP: MESH mesh_set={}, node={}.{}, name={}, material={}, vertices={}, faces={}, bones={}",
-            meshSet.m_name,
-            rigJoint.m_parentIndex,
-            rigJoint.m_index,
-            modelMesh.m_name,
-            material ? material->m_name : fmt::format("{}", mesh->mMaterialIndex),
-            mesh->mNumVertices,
-            mesh->mNumFaces,
-            mesh->mNumBones));
+        if (m_debug) {
+            KI_INFO_OUT(fmt::format("ASSIMP: MESH mesh_set={}, node={}.{}, name={}, material={}, vertices={}, faces={}, bones={}",
+                meshSet.m_name,
+                rigJoint.m_parentIndex,
+                rigJoint.m_index,
+                modelMesh.m_name,
+                material ? material->m_name : fmt::format("{}", mesh->mMaterialIndex),
+                mesh->mNumVertices,
+                mesh->mNumFaces,
+                mesh->mNumBones));
+        }
 
         for (size_t vertexIndex = 0; vertexIndex < mesh->mNumVertices; vertexIndex++) {
             glm::vec2 texCoord{ 0.f };
@@ -494,14 +505,16 @@ namespace mesh
     {
         auto& bi = ctx.m_rig->registerBone(bone);
 
-        KI_INFO_OUT(fmt::format(
-            "ASSIMP: BONE mesh_set={}, joint={}, bone={}, name={}, mesh={}, weights={}",
-            meshSet.m_name,
-            bi.m_jointIndex,
-            bi.m_index,
-            bi.m_jointName,
-            meshIndex,
-            bone->mNumWeights))
+        if (m_debug) {
+            KI_INFO_OUT(fmt::format(
+                "ASSIMP: BONE mesh_set={}, joint={}, bone={}, name={}, mesh={}, weights={}",
+                meshSet.m_name,
+                bi.m_jointIndex,
+                bi.m_index,
+                bi.m_jointName,
+                meshIndex,
+                bone->mNumWeights))
+        }
 
         auto& vertexBones = modelMesh.m_vertexBones;
 
@@ -518,7 +531,8 @@ namespace mesh
             auto& vb = vertexBones[vertexIndex];
             vb.addBone(bi.m_index, vw.mWeight);
 
-            //KI_INFO_OUT(fmt::format(
+            if (m_debug) {
+                //KI_INFO_OUT(fmt::format(
             //    "ASSIMP: BONE mesh_set={}, mesh={}, bone={}, vertex={}, vertexBones={}, vertexWeights={}",
             //    meshSet.m_name,
             //    meshIndex,
@@ -526,6 +540,7 @@ namespace mesh
             //    vertexIndex,
             //    vb.m_boneIds,
             //    vb.m_weights));
+            }
         }
     }
 
@@ -550,11 +565,13 @@ namespace mesh
     {
         const auto name = const_cast<aiMaterial*>(src)->GetName().C_Str();
 
-        KI_INFO_OUT(fmt::format("ASSIMP: MATERIAL mesh_set={}, name={}, properties={}, allocated={}",
-            meshSet.m_name,
-            name,
-            src->mNumProperties,
-            src->mNumAllocated));
+        if (m_debug) {
+            KI_INFO_OUT(fmt::format("ASSIMP: MATERIAL mesh_set={}, name={}, properties={}, allocated={}",
+                meshSet.m_name,
+                name,
+                src->mNumProperties,
+                src->mNumAllocated));
+        }
 
         Material material;
         material.m_modelDir = meshSet.m_dir;
@@ -679,10 +696,12 @@ namespace mesh
                 filePath.length() - rootDir.length() - 1);
         }
 
-        KI_INFO_OUT(fmt::format("ASSIMP: TEX mesh_set={}, path={}, was={}",
-            meshSet.m_name,
-            assetPath,
-            origPath));
+        if (m_debug) {
+            KI_INFO_OUT(fmt::format("ASSIMP: TEX mesh_set={}, path={}, was={}",
+                meshSet.m_name,
+                assetPath,
+                origPath));
+        }
 
         return assetPath;
     }
