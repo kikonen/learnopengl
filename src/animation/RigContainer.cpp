@@ -393,13 +393,13 @@ namespace animation {
 
         for (const auto& socket : m_sockets) {
             const auto& line = fmt::format(
-                "SOCK: {}.{}, joint={}, offset={}, rot={}, scale={}, meshScale={}, jointIndex={}",
+                "SOCK: {}.{}, joint={}, pos={}, rot={}, scale={}, meshScale={}, jointIndex={}",
                 socket.m_index,
                 socket.m_name,
                 socket.m_jointName,
-                socket.m_offset,
-                socket.m_rotation,
-                socket.m_scale,
+                socket.m_offset.m_position,
+                socket.m_offset.m_rotation,
+                socket.m_offset.m_scale,
                 socket.m_meshScale,
                 socket.m_jointIndex
                 );

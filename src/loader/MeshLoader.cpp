@@ -299,14 +299,14 @@ namespace loader {
             else if (k == "joint") {
                 data.joint = readString(v);
             }
-            else if (k == "offset") {
-                data.offset = readVec3(v);
+            else if (k == "position" || k == "offset") {
+                data.offset.position = readVec3(v);
             }
             else if (k == "rotation") {
-                data.rotation = readDegreesRotation(v);
+                data.offset.rotation = readDegreesRotation(v);
             }
             else if (k == "scale") {
-                data.scale = readFloat(v);
+                data.offset.scale = glm::vec3{ readFloat(v) };
             }
             else {
                 reportUnknown("socket_entry", k, v);

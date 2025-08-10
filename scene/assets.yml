@@ -36,7 +36,8 @@ assets:
   async_loader_enabled: true
   async_loader_delay: 0
 
-  use_assimp_loader: true
+  assimp_loader_enabled: true
+  assimp_debug: true
 
   assets_dir: resources/assets
   assets_build_dir: resources/build/2048

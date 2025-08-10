@@ -716,7 +716,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\animation\BoneBuffer.h" />
-    <ClInclude Include="src\animation\LocalTransform.h" />
     <ClInclude Include="src\animation\animation_util.h" />
     <ClInclude Include="src\animation\ClipContainer.h" />
     <ClInclude Include="src\animation\AnimationLoader.h" />
@@ -784,12 +783,14 @@
     <ClInclude Include="src\loader\Repeat.h" />
     <ClInclude Include="src\loader\SceneData.h" />
     <ClInclude Include="src\loader\TerrainTiling.h" />
+    <ClInclude Include="src\loader\TransformData.h" />
     <ClInclude Include="src\loader\Value.h" />
     <ClInclude Include="src\loader\value\PhysicsCategoryValue.h" />
     <ClInclude Include="src\loader\value\PhysicsGeomValue.h" />
     <ClInclude Include="src\material\FontAtlasMaterialUpdater.h" />
     <ClInclude Include="src\material\ShaderMaterialUpdater.h" />
     <ClInclude Include="src\material\MaterialUpdater.h" />
+    <ClInclude Include="src\util\Transform.h" />
     <ClInclude Include="src\mesh\PrimitiveRegistry.h" />
     <ClInclude Include="src\mesh\generator\TangentCalculator.h" />
     <ClInclude Include="src\mesh\vao\TangentEntry.h" />

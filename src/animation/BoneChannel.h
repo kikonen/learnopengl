@@ -6,13 +6,16 @@
 #include <glm/glm.hpp>
 #include <glm/gtx/quaternion.hpp>
 
+namespace util
+{
+    struct Transform;
+}
+
 struct aiNodeAnim;
 struct aiVectorKey;
 struct aiQuatKey;
 
 namespace animation {
-    struct LocalTransform;
-
     // Vector transform/scale key frame
     struct VectorKey {
         VectorKey(const aiVectorKey& key);
@@ -55,7 +58,7 @@ namespace animation {
             uint16_t firstFrame,
             uint16_t lastFrame,
             bool single,
-            animation::LocalTransform& local) const noexcept;
+            util::Transform& local) const noexcept;
 
     private:
         glm::vec3 interpolatePosition(

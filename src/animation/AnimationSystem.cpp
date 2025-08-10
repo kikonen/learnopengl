@@ -187,7 +187,7 @@ namespace animation
             for (const auto& socket : rig.m_sockets) {
                 // NOTE KI see Animator::animate()
                 const auto& rigJoint = rig.m_joints[socket.m_jointIndex];
-                socketPalette[socket.m_index] = socket.calculateWorldTransform(rigJoint.m_globalTransform);
+                socketPalette[socket.m_index] = socket.calculateGlobalTransform(rigJoint.m_globalTransform);
             }
             socketRegistry.markDirty(socketBaseIndex, rig.m_sockets.size());
         }
@@ -356,6 +356,8 @@ namespace animation
             auto* mesh = lodMesh.getMesh<mesh::VaoMesh>();
             if (!mesh) continue;
 
+            // TDOO KI handle case when same rig is used for multiple
+            // meshes (i.e. meshes possibly split due to material, etc.)
             auto rig = mesh->getRigContainer().get();
             if (!rig) continue;
 
@@ -430,8 +432,6 @@ namespace animation
                      *rig,
                      mesh->m_rigTransform,
                      mesh->m_inverseRigTransform,
-                     //lodMesh.m_animationRigTransform,
-                     glm::mat4{ 1.f },
                      bonePalette,
                      socketPalette,
                      playA.m_clipIndex,
@@ -445,8 +445,6 @@ namespace animation
                      *rig,
                      mesh->m_rigTransform,
                      mesh->m_inverseRigTransform,
-                     //lodMesh.m_animationRigTransform,
-                     glm::mat4{ 1.f },
                      bonePalette,
                      socketPalette,
                      playA.m_clipIndex,
