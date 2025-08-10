@@ -289,26 +289,28 @@ namespace editor
             if (auto* socket = rig->modifySocket(m_state.m_selectedSocketIndex);  socket) {
                 ImGui::Text(socket->m_jointName.c_str());
 
+                auto& offset = socket->m_offset;
+
                 {
-                    glm::vec3 offset = socket->m_offset;
-                    if (ImGui::InputFloat3("Socket offset", glm::value_ptr(offset))) {
-                        socket->m_offset = offset;
+                    glm::vec3 pos = socket->m_offset.m_position;
+                    if (ImGui::InputFloat3("Socket position", glm::value_ptr(pos))) {
+                        socket->m_offset.m_position = pos;
                         socket->updateTransforms();
                     }
                 }
 
                 {
-                    glm::vec3 rot = util::quatToDegrees(socket->m_rotation);
+                    glm::vec3 rot = util::quatToDegrees(socket->m_offset.m_rotation);
                     if (ImGui::InputFloat3("Socket rotation", glm::value_ptr(rot))) {
-                        socket->m_rotation = util::degreesToQuat(rot);
+                        socket->m_offset.m_rotation = util::degreesToQuat(rot);
                         socket->updateTransforms();
                     }
                 }
 
                 {
-                    float scale = socket->m_scale;
+                    float scale = socket->m_offset.m_scale.x;
                     if (ImGui::InputFloat("Socket scale", &scale)) {
-                        socket->m_scale = scale;
+                        socket->m_offset.setScale(scale);
                         socket->updateTransforms();
                     }
                 }
