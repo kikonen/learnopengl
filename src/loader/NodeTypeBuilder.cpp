@@ -667,9 +667,7 @@ namespace loader
             animation::RigSocket socket{
                 socketData.name,
                 socketData.joint,
-                socketData.offset,
-                util::degreesToQuat(socketData.rotation),
-                socketData.scale,
+                socketData.offset.toTransform(),
                 meshScale
             };
 

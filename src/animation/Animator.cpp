@@ -13,40 +13,17 @@
 #include "util/glm_util.h"
 #include "util/glm_format.h"
 #include "util/util.h"
+#include "util/Transform.h"
 
 #include "RigContainer.h"
 #include "Animation.h"
 #include "BoneChannel.h"
 #include "BoneInfo.h"
-#include "LocalTransform.h"
 
 namespace {
     constexpr size_t MAX_JOINTS = 200;
 
     static const glm::mat4 ID_MAT{ 1.f };
-
-   glm::mat4 combine(
-       const animation::LocalTransform& transform)
-   {
-       //static const glm::mat4 ID_MAT{ 1.f };
-       glm::mat4 s_translateMatrix{ 1.f };
-       glm::mat4 s_scaleMatrix{ 1.f };
-
-       {
-           s_translateMatrix[3].x = transform.m_translate.x;
-           s_translateMatrix[3].y = transform.m_translate.y;
-           s_translateMatrix[3].z = transform.m_translate.z;
-       }
-       {
-           s_scaleMatrix[0].x = transform.m_scale.x;
-           s_scaleMatrix[1].y = transform.m_scale.y;
-           s_scaleMatrix[2].z = transform.m_scale.z;
-       }
-
-       const auto& rotateMatrix = glm::toMat4(transform.m_rotation);
-
-       return s_translateMatrix * rotateMatrix * s_scaleMatrix;
-   }
 
    // @return interpolated transform matrix
    glm::mat4 interpolate(
@@ -60,14 +37,14 @@ namespace {
            firstFrame = 0;
        }
 
-       animation::LocalTransform transform;
+       util::Transform transform;
        channel->interpolate(animationTimeTicks, firstFrame, lastFrame, single, transform);
-       return combine(transform);
+       return transform.toMatrix();
    }
 
    glm::mat4 combineBlended(
-       const animation::LocalTransform& transformA,
-       const animation::LocalTransform& transformB,
+       const util::Transform& transformA,
+       const util::Transform& transformB,
        float blendFactor)
    {
        //static const glm::mat4 ID_MAT{ 1.f };
@@ -76,8 +53,8 @@ namespace {
 
        {
            const auto blendedTranslate =
-               (1.f - blendFactor) * transformA.m_translate +
-               transformB.m_translate * blendFactor;
+               (1.f - blendFactor) * transformA.m_position +
+               transformB.m_position * blendFactor;
 
            s_translateMatrix[3].x = blendedTranslate.x;
            s_translateMatrix[3].y = blendedTranslate.y;
@@ -123,8 +100,8 @@ namespace {
            firstFrameB = 0;
        }
 
-       animation::LocalTransform transformA;
-       animation::LocalTransform transformB;
+       util::Transform transformA;
+       util::Transform transformB;
 
        channelA->interpolate(animationTimeTicksA, firstFrameA, lastFrameA, singleA, transformA);
        channelB->interpolate(animationTimeTicksB, firstFrameB, lastFrameB, singleB, transformB);
@@ -138,7 +115,6 @@ namespace animation {
         const animation::RigContainer& rig,
         const glm::mat4& meshRigTransform,
         const glm::mat4& inverseMeshRigTransform,
-        const glm::mat4& animationRigTransform,
         std::span<glm::mat4> bonePalette,
         std::span<glm::mat4> socketPalette,
         uint16_t clipIndex,
@@ -170,7 +146,7 @@ namespace animation {
         // NOTE KI cancel out modelMesh->m_transform set in AssimpLoader for mesh
         // => animation joint hierarchy includes equivalent transforms (presumeably)
         // NOTE KI order MATTERS when applying inverse
-        parentTransforms[0] = animationRigTransform;
+        parentTransforms[0] = glm::mat4{ 1.f };
 
         for (size_t jointIndex = 0; jointIndex < rig.m_joints.size(); jointIndex++)
         {
@@ -208,7 +184,7 @@ namespace animation {
 
         for (const auto& socket : rig.m_sockets) {
             // NOTE KI see AnimationSystem::registerInstance()
-            socketPalette[socket.m_index] = socket.calculateWorldTransform(
+            socketPalette[socket.m_index] = socket.calculateGlobalTransform(
                 parentTransforms[socket.m_jointIndex + 1]);
         }
 
@@ -219,7 +195,6 @@ namespace animation {
         const animation::RigContainer& rig,
         const glm::mat4& meshRigTransform,
         const glm::mat4& inverseMeshRigTransform,
-        const glm::mat4& animationRigTransform,
         std::span<glm::mat4> bonePalette,
         std::span<glm::mat4> socketPalette,
         uint16_t clipIndexA,
@@ -277,7 +252,7 @@ namespace animation {
         // NOTE KI cancel out modelMesh->m_transform set in AssimpLoader for mesh
         // => animation joint hierarchy includes equivalent transforms (presumeably)
         // NOTE KI order MATTERS when applying inverse
-        parentTransforms[0] = animationRigTransform;
+        parentTransforms[0] = glm::mat4{ 1.f };
 
         for (size_t jointIndex = 0; jointIndex < rig.m_joints.size(); jointIndex++)
         {
@@ -336,12 +311,8 @@ namespace animation {
         }
 
         for (const auto& socket : rig.m_sockets) {
-            socketPalette[socket.m_index] =
-                socket.m_meshScaleTransform *
-                parentTransforms[socket.m_jointIndex + 1] *
-                glm::translate(glm::mat4{ 1.f }, socket.m_offset) *
-                glm::toMat4(socket.m_rotation) *
-                socket.m_invMeshScaleTransform;
+            socketPalette[socket.m_index] = socket.calculateGlobalTransform(
+                parentTransforms[socket.m_jointIndex + 1]);
         }
 
         return true;

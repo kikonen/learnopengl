@@ -5,6 +5,8 @@
 #include <glm/glm.hpp>
 #include <glm/gtx/quaternion.hpp>
 
+#include "util/Transform.h"
+
 namespace animation
 {
     struct RigSocket
@@ -12,28 +14,27 @@ namespace animation
         RigSocket(
             const std::string& name,
             const std::string& jointName,
-            glm::vec3 offset,
-            glm::quat rotation,
-            float scale,
+            const util::Transform& offset,
             glm::vec3 meshScale);
 
         void updateTransforms();
 
-        glm::mat4 calculateWorldTransform(
-            const glm::mat4& jointTransform) const;
+        glm::mat4 calculateGlobalTransform(
+            const glm::mat4& jointWorldTransform) const;
 
         const std::string m_name;
         const std::string m_jointName;
 
-        glm::vec3 m_offset;
-        glm::quat m_rotation;
-        float m_scale;
+        util::Transform m_offset;
         glm::vec3 m_meshScale;
-
-        glm::mat4 m_meshScaleTransform;
-        glm::mat4 m_invMeshScaleTransform;
 
         int16_t m_index{ -1 };
         int16_t m_jointIndex{ -1 };
+
+    private:
+        glm::mat4 m_transform;
+
+        glm::mat4 m_meshScaleTransform;
+        glm::mat4 m_invMeshScaleTransform;
     };
 }

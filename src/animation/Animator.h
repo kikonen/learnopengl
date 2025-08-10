@@ -6,9 +6,13 @@
 
 #include "ki/size.h"
 
+namespace util
+{
+    struct Transform;
+}
+
 namespace animation {
     struct RigContainer;
-    struct LocalTransform;
 
     class Animator {
     public:
@@ -18,7 +22,6 @@ namespace animation {
             const animation::RigContainer& rig,
             const glm::mat4& meshRigTransform,
             const glm::mat4& inverseMeshRigTransform,
-            const glm::mat4& animationBaseTransform,
             std::span<glm::mat4> bonePalette,
             std::span<glm::mat4> socketPalette,
             uint16_t clipIndex,
@@ -33,7 +36,6 @@ namespace animation {
             const animation::RigContainer& rig,
             const glm::mat4& meshRigTransform,
             const glm::mat4& inverseMeshRigTransform,
-            const glm::mat4& animationBaseTransform,
             std::span<glm::mat4> bonePalette,
             std::span<glm::mat4> socketPalette,
             uint16_t clipIndexA,

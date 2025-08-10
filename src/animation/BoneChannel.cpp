@@ -3,8 +3,7 @@
 #include <assimp/scene.h>
 
 #include "util/assimp_util.h"
-
-#include "LocalTransform.h"
+#include "util/Transform.h"
 
 namespace {
     uint16_t findIndex(
@@ -92,13 +91,13 @@ namespace animation {
         uint16_t firstFrame,
         uint16_t lastFrame,
         bool single,
-        animation::LocalTransform& transform) const noexcept
+        util::Transform& transform) const noexcept
     {
         if (single) {
             firstFrame = 0;
         }
 
-        transform.m_translate = interpolatePosition(
+        transform.m_position = interpolatePosition(
             animationTimeTicks, firstFrame,
             single ? static_cast<uint16_t>(m_positionKeyTimes.size() - 1) : lastFrame);
 

@@ -2354,9 +2354,6 @@
     <ClInclude Include="src\animation\AnimationState.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\animation\LocalTransform.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\physics\MeshGenerator.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -2898,6 +2895,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\editor\tool\node\NodeTree.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\util\Transform.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\loader\TransformData.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
