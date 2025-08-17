@@ -43,11 +43,11 @@ namespace animation
     }
 
     glm::mat4 RigSocket::calculateGlobalTransform(
-        const glm::mat4& jointWorldTransform) const
+        const glm::mat4& jointGlobalTransform) const
     {
         return m_meshScaleTransform *
-            jointWorldTransform *
-            m_transform *
+            jointGlobalTransform *
+            m_offsetTransform *
             m_invMeshScaleTransform;
 
         //return jointWorldTransform * m_transform;
@@ -55,7 +55,7 @@ namespace animation
 
     void RigSocket::updateTransforms() {
         //m_transform = calculateLocalTransform(m_offset, m_meshScale);
-        m_transform = m_offset.toMatrix();
+        m_offsetTransform = m_offset.toMatrix();
         m_meshScaleTransform = calcMeshScaleTransform(m_meshScale);
         m_invMeshScaleTransform = glm::inverse(m_meshScaleTransform);
     }

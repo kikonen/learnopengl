@@ -8,6 +8,11 @@
 
 #include "kigl/GLBuffer.h"
 
+namespace editor
+{
+    class NodeTool;
+}
+
 namespace animation {
     class AnimationSystem;
     class BoneBuffer;
@@ -17,6 +22,7 @@ namespace animation {
     class BoneRegistry {
         friend BoneBuffer;
         friend AnimationSystem;
+        friend editor::NodeTool;
 
     public:
         BoneRegistry();

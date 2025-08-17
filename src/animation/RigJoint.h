@@ -30,6 +30,8 @@ namespace animation {
         int16_t m_socketIndex{ -1 };
         bool m_socketRequired : 1{ false };
 
+        bool m_mesh{ false };
+
         // local == relative to parent joint
         const glm::mat4 m_transform;
         const glm::mat4 m_invTransform;

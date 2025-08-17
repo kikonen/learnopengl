@@ -81,7 +81,7 @@ namespace mesh {
         AABB calculateAABB() const noexcept;
 
     private:
-        void updateTransform();
+        void updateTransform() const;
 
     public:
         std::shared_ptr<Mesh> m_mesh;
@@ -90,8 +90,7 @@ namespace mesh {
         glm::vec3 m_baseScale{ 1.f };
         glm::quat m_baseRotation{ 1.f, 0.f, 0.f, 0.f };
 
-        //glm::mat4 m_animationRigTransform{ 1.f };
-        glm::mat4 m_baseTransform{ 1.f };
+        mutable glm::mat4 m_baseTransform{ 1.f };
 
         std::unique_ptr<Material> m_material;
         ki::material_index m_materialIndex{ 0 };

@@ -8,6 +8,11 @@
 
 #include <glm/glm.hpp>
 
+namespace editor
+{
+    class NodeTool;
+}
+
 namespace animation {
     class AnimationSystem;
     class SocketBuffer;
@@ -17,6 +22,7 @@ namespace animation {
     class SocketRegistry {
         friend AnimationSystem;
         friend SocketBuffer;
+        friend editor::NodeTool;
 
     public:
         SocketRegistry();

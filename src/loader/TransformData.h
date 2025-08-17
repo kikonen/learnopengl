@@ -6,11 +6,15 @@
 
 #include <glm/glm.hpp>
 
+#include "loader/document.h"
+
 namespace loader {
     struct TransformData {
         glm::vec3 position{ 0.f };
         glm::vec3 rotation{ 0.f };
         glm::vec3 scale{ 1.f };
+
+        void load(const loader::DocNode& node);
 
         util::Transform toTransform() const noexcept
         {

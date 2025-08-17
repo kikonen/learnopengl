@@ -109,7 +109,7 @@ namespace loader {
     bool readBool(const loader::DocNode& node)
     {
         if (!util::isBool(readString(node))) {
-            KI_WARN(fmt::format("invalid bool={}", renderNode(node)));
+            KI_CRITICAL(fmt::format("invalid bool={}", renderNode(node)));
             return false;
         }
 
@@ -119,7 +119,7 @@ namespace loader {
     int readInt(const loader::DocNode& node)
     {
         if (!util::isInt(readString(node))) {
-            KI_WARN(fmt::format("invalid int{}", renderNode(node)));
+            KI_CRITICAL(fmt::format("invalid int{}", renderNode(node)));
             return 0;
         }
 
@@ -129,7 +129,7 @@ namespace loader {
     float readFloat(const loader::DocNode& node)
     {
         if (!util::isFloat(readString(node))) {
-            KI_WARN(fmt::format("invalid float {}", renderNode(node)));
+            KI_CRITICAL(fmt::format("invalid float {}", renderNode(node)));
             return 0.f;
         }
 

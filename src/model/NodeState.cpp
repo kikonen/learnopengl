@@ -16,6 +16,8 @@
 namespace {
     const glm::vec3 ZERO_VEC{ 0.f };
 
+    const glm::mat4 ID_MAT{ 1.f };
+
     // NOTE KI only *SINGLE* thread is allowed to do model updates
     // => thus can use globally shared temp vars
     static glm::mat4 g_translateMatrix{ 1.f };
@@ -95,8 +97,13 @@ void NodeState::updateModelMatrix(const NodeState& parent) noexcept
 
     const auto& rotationMatrix = glm::toMat4(m_rotation * m_baseRotation);
 
+    const auto& parentModelMatrix = m_socketBaseIndex
+        ? parent.m_modelMatrix *
+            glm::inverse(glm::scale(glm::mat4{ 1.f }, parent.m_scale * parent.m_baseScale))
+        : parent.m_modelMatrix;
+
     if (hasPivot) {
-        m_modelMatrix = parent.m_modelMatrix *
+        m_modelMatrix = parentModelMatrix *
             g_translateMatrix *
             g_invPivotMatrix *
             rotationMatrix *
@@ -104,7 +111,7 @@ void NodeState::updateModelMatrix(const NodeState& parent) noexcept
             g_scaleMatrix;
     }
     else {
-        //m_modelMatrix = parent.m_modelMatrix *
+        //m_modelMatrix = parentModelMatrix *
         //    g_translateMatrix *
         //    rotationMatrix *
         //    g_scaleMatrix;
@@ -112,18 +119,19 @@ void NodeState::updateModelMatrix(const NodeState& parent) noexcept
         scale.x = aspectScaleX;
         scale.y = aspectScaleY;
 
-        m_modelMatrix = parent.m_modelMatrix *
+        m_modelMatrix = parentModelMatrix *
             glm::scale(
                 g_translateMatrix * rotationMatrix,
                 scale);
     }
 
+    {
+        m_modelScale = parent.m_modelScale * glm::mat3{ g_scaleMatrix };
 
-    m_modelScale = parent.m_modelScale * glm::mat3{ g_scaleMatrix };
+        assert(m_modelScale.x >= 0 && m_modelScale.y >= 0 && m_modelScale.z >= 0);
 
-    assert(m_modelScale.x >= 0 && m_modelScale.y >= 0 && m_modelScale.z >= 0);
-
-    m_modelRotation = parent.m_modelRotation * m_rotation * m_baseRotation;
+        m_modelRotation = parent.m_modelRotation * m_rotation * m_baseRotation;
+    }
 
     {
         m_worldPivot = m_modelMatrix * glm::vec4{ m_pivot, 1.f };

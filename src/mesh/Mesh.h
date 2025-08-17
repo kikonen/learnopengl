@@ -13,6 +13,8 @@
 #include "asset/Volume.h"
 #include "asset/AABB.h"
 
+#include "util/Transform.h"
+
 #include "registry/Registry.h"
 
 #include "mesh/Index.h"
@@ -143,7 +145,7 @@ namespace mesh {
         const std::string m_name;
         std::string m_alias;
 
-        glm::mat4 m_rigTransform{ 1.f };
+        util::Transform m_offset;
 
     protected:
         std::unique_ptr<Material> m_material;

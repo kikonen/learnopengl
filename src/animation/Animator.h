@@ -20,7 +20,6 @@ namespace animation {
         // @return true if palette was changed
         bool animate(
             const animation::RigContainer& rig,
-            const glm::mat4& meshRigTransform,
             const glm::mat4& inverseMeshRigTransform,
             std::span<glm::mat4> bonePalette,
             std::span<glm::mat4> socketPalette,
@@ -34,7 +33,6 @@ namespace animation {
         // @return true if palette was changed
         bool animateBlended(
             const animation::RigContainer& rig,
-            const glm::mat4& meshRigTransform,
             const glm::mat4& inverseMeshRigTransform,
             std::span<glm::mat4> bonePalette,
             std::span<glm::mat4> socketPalette,

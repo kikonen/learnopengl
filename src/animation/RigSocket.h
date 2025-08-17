@@ -20,7 +20,7 @@ namespace animation
         void updateTransforms();
 
         glm::mat4 calculateGlobalTransform(
-            const glm::mat4& jointWorldTransform) const;
+            const glm::mat4& jointGlobalTransform) const;
 
         const std::string m_name;
         const std::string m_jointName;
@@ -32,8 +32,11 @@ namespace animation
         int16_t m_jointIndex{ -1 };
 
     private:
-        glm::mat4 m_transform;
+        glm::mat4 m_offsetTransform;
 
+        // NOTE KI or scaling mesh attached into socket into
+        // scale of mesh owning socket, so that transforms happen
+        // in correct scale
         glm::mat4 m_meshScaleTransform;
         glm::mat4 m_invMeshScaleTransform;
     };
