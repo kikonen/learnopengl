@@ -50,8 +50,7 @@ namespace mesh {
             const aiNode* node,
             int16_t level,
             int16_t parentIndex,
-            const glm::mat4& parentTransform,
-            const glm::mat4& parentInvTransform);
+            const glm::mat4& parentTransform);
 
         void dumpMetaData(
             MeshSet& meshSet,

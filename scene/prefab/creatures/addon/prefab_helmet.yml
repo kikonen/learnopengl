@@ -1,7 +1,7 @@
 ---
 prefab:
   meshes:
-    - path: fbx/creatures/skeleton_knight/Helmet.fbx
+    - path: fbx/creatures/skeleton_knight/Helmet-v2.fbx
       material:
         base: Textures
         kd: [0.8, 0.8, 0]
@@ -12,4 +12,4 @@ prefab:
         shadow_program: shadow
       flags:
         use_sockets: true
-      base_scale: 0.00125
+      base_scale: 0.3

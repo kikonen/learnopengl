@@ -89,6 +89,9 @@ namespace animation
     {
         ASSERT_WT();
 
+        // NOTE KI modifying null socket is not allowed
+        assert(index > 0);
+
         std::lock_guard lock(m_lock);
 
         auto it = m_freeSlots.find(count);
@@ -104,6 +107,9 @@ namespace animation
         uint32_t start,
         size_t count) noexcept
     {
+        // NOTE KI modifying null socket is not allowed
+        assert(start > 0);
+
         return std::span{ m_transforms }.subspan(start, count);
     }
 

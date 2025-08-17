@@ -38,6 +38,8 @@ inline const std::string DEF_USE_NORMAL_PATTERN{ "USE_NORMAL_PATTERN" };
 inline const std::string DEF_USE_BONES{ "USE_BONES" };
 inline const std::string DEF_USE_SOCKETS{ "USE_SOCKETS" };
 
+inline const std::string DEF_USE_GL_POINTS{ "USE_GL_POINTS" };
+
 inline const std::string DEF_MAX_SHADOW_MAP_COUNT{ "MAX_SHADOW_MAP_COUNT" };
 
 inline const std::string DEF_MAT_COUNT{ "MAT_COUNT" };

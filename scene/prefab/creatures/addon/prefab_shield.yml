@@ -1,7 +1,7 @@
 ---
 prefab:
   meshes:
-    - path: fbx/creatures/skeleton_knight/Shield.fbx
+    - path: fbx/creatures/skeleton_knight/Shield-v2.fbx
       material:
         base: Textures
         map_kd: T_Shield_BaseColor.jpg
@@ -11,4 +11,4 @@ prefab:
         shadow_program: shadow
       flags:
         use_sockets: true
-      base_scale: 0.0001
+      base_scale: 0.5

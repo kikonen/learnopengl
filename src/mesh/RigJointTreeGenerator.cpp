@@ -144,6 +144,7 @@ namespace mesh {
 
             material.inmutable = true;
             material.m_programDefinitions.insert({ DEF_USE_BONES, "1" });
+            material.m_programDefinitions.insert({ DEF_USE_GL_POINTS, "1" });
             material.m_programNames.insert({ MaterialProgramType::shader, SHADER_G_TEX });
             material.m_programNames.insert({ MaterialProgramType::shadow, SHADER_SHADOW });
             material.layersDepth = 6.f;

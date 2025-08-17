@@ -4,6 +4,14 @@
 
 #include "NodeToolState.h"
 
+namespace mesh {
+    class Mesh;
+}
+
+namespace animation {
+    struct RigContainer;
+    struct RigSocket;
+}
 
 namespace editor
 {
@@ -79,6 +87,12 @@ namespace editor
         void onCloneNode(
             const RenderContext& ctx,
             pool::NodeHandle nodeHandle);
+
+        void updateSocket(
+            Node* node,
+            mesh::Mesh* mesh,
+            animation::RigContainer* rig,
+            animation::RigSocket* socket);
 
     private:
         NodeToolState m_state;

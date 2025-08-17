@@ -21,6 +21,10 @@
 #include "event/Event.h"
 #include "event/Dispatcher.h"
 
+#include "animation/AnimationSystem.h"
+#include "animation/BoneRegistry.h"
+#include "animation/SocketRegistry.h"
+
 #include "script/CommandEngine.h"
 #include "script/command/SelectNode.h"
 #include "script/command/AudioPlay.h"
@@ -255,14 +259,16 @@ namespace editor
         const RenderContext& ctx,
         render::DebugContext& dbg)
     {
+        if (!m_state.m_selectedNode) return;
         if (!m_state.m_selectedMesh) return;
 
+        auto* node = m_state.m_selectedNode.toNode();
         auto* mesh = m_state.m_selectedMesh;
 
-        auto rig = mesh->getRigContainer();
+        auto* rig = mesh->getRigContainer().get();
         if (!rig) return;
 
-        if (ImGui::CollapsingHeader("Rig"))
+        if (ImGui::CollapsingHeader("Rig", ImGuiTreeNodeFlags_DefaultOpen))
         {
             auto& clipContainer = rig->m_clipContainer;
 
@@ -295,7 +301,7 @@ namespace editor
                     glm::vec3 pos = socket->m_offset.m_position;
                     if (ImGui::InputFloat3("Socket position", glm::value_ptr(pos))) {
                         socket->m_offset.m_position = pos;
-                        socket->updateTransforms();
+                        updateSocket(node, mesh, rig, socket);
                     }
                 }
 
@@ -303,7 +309,7 @@ namespace editor
                     glm::vec3 rot = util::quatToDegrees(socket->m_offset.m_rotation);
                     if (ImGui::InputFloat3("Socket rotation", glm::value_ptr(rot))) {
                         socket->m_offset.m_rotation = util::degreesToQuat(rot);
-                        socket->updateTransforms();
+                        updateSocket(node, mesh, rig, socket);
                     }
                 }
 
@@ -311,7 +317,7 @@ namespace editor
                     float scale = socket->m_offset.m_scale.x;
                     if (ImGui::InputFloat("Socket scale", &scale)) {
                         socket->m_offset.setScale(scale);
-                        socket->updateTransforms();
+                        updateSocket(node, mesh, rig, socket);
                     }
                 }
             }
@@ -639,4 +645,28 @@ namespace editor
 
     }
 
+    void NodeTool::updateSocket(
+        Node* node,
+        mesh::Mesh* mesh,
+        animation::RigContainer* rig,
+        animation::RigSocket* socket)
+    {
+        socket->updateTransforms();
+
+        // NOTE KI MUST update palette if animation is not playing
+        {
+            auto& animationSystem = animation::AnimationSystem::get();
+            auto& socketRegistry = *animationSystem.m_socketRegistry.get();
+            std::lock_guard lockSockets(socketRegistry.m_lock);
+
+            const auto& rigJoint = rig->m_joints[socket->m_jointIndex];
+
+            const auto& state = node->getState();
+            const auto socketIndex = state.m_socketBaseIndex + socket->m_index;
+
+            auto socketPalette = socketRegistry.modifyRange(socketIndex , 1);
+            socketPalette[0] = socket->calculateGlobalTransform(rigJoint.m_globalTransform);
+            socketRegistry.markDirty(socketIndex, 1);
+        }
+    }
 }

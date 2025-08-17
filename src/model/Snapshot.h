@@ -48,8 +48,8 @@ public:
     ///////////////////////////////////////
     //
     Snapshot() = default;
-    Snapshot(const NodeState& o);
-    Snapshot(const NodeState&& o);
+    //Snapshot(const NodeState& o);
+    //Snapshot(const NodeState&& o);
 
     void applyFrom(const NodeState& o) noexcept;
 

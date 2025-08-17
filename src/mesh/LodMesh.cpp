@@ -19,7 +19,10 @@
 
 #include "render/size.h"
 
+#include "animation/RigContainer.h"
+
 #include "Mesh.h"
+#include "VaoMesh.h"
 #include "InstanceFlags.h"
 
 namespace {
@@ -270,12 +273,26 @@ namespace mesh {
         }
     }
 
-    void LodMesh::updateTransform() {
+    void LodMesh::updateTransform() const
+    {
         // TODO KI rotate here causes very weird artifacts
         m_baseTransform =
             glm::mat4(m_baseRotation) *
             glm::scale(glm::mat4{ 1.f }, m_scale * m_baseScale) *
-            m_mesh->m_rigTransform;
+            m_mesh->m_offset.toMatrix();
+            //*
+            //m_mesh->m_rigTransform;
+
+        if (!m_flags.useBones) {
+            if (auto* mesh = getMesh<mesh::VaoMesh>();  mesh && mesh->m_rigJointIndex >= 0)
+            {
+                if (auto* rig = mesh->getRigContainer().get(); rig)
+                {
+                    m_baseTransform = m_baseTransform *
+                        rig->m_joints[mesh->m_rigJointIndex].m_globalTransform;
+                }
+            }
+        }
     }
 
     AABB LodMesh::calculateAABB() const noexcept
@@ -285,12 +302,8 @@ namespace mesh {
         AABB aabb{ true };
 
         {
-            // TODO KI rotate here causes very weird artifacts
-            const auto& transform =
-                glm::mat4(m_baseRotation) *
-                glm::scale(glm::mat4{ 1.f }, m_scale * m_baseScale) *
-                m_mesh->m_rigTransform;
-            aabb.minmax(m_mesh->calculateAABB(transform));
+            updateTransform();
+            aabb.minmax(m_mesh->calculateAABB(m_baseTransform));
         }
 
         aabb.updateVolume();

@@ -306,7 +306,7 @@ namespace loader {
                 data.offset.rotation = readDegreesRotation(v);
             }
             else if (k == "scale") {
-                data.offset.scale = glm::vec3{ readFloat(v) };
+                data.offset.scale = readScale3(v);
             }
             else {
                 reportUnknown("socket_entry", k, v);

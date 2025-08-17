@@ -51,20 +51,20 @@ types:
       path: prefab/scenery/prefab_wooden_floor.yml
     physics:
       update: true
-    script: scripts/seq_shaky_ground
+    xscript: scripts/seq_shaky_ground
   - id: skeleton_army
     base: prefab_skeleton_warrior
-    script: scripts/seq_skeleton
+    xscript: scripts/seq_skeleton
     physics:
       update: true
     xscript: |
       cmd:animation_play(
         { name = "master:SwingNormal" });
-  - id: prefab_skeleton
+  - xid: prefab_skeleton
     script: |
       self.cmd:animation_play(
         { name = "master:Idle" });
-  - id: helmet
+  - xid: helmet
     meshes:
       - name: helmet
         path: fbx\creatures\skeleton_knight\Helmet.fbx
@@ -92,6 +92,14 @@ types:
       geom:
         type: box
         size: [0.5]
+  - id: scale
+    mesh:
+      vertex:
+        type: box
+        size: 0.5
+      material:
+        kd: [0.8, 0.8, 0.8, 1]
+        program: g_tex
 
 nodes:
   - type: player
@@ -115,10 +123,25 @@ nodes:
       z_count: 2
       x_step: 10
       z_step: -10
-  - type: helmet
+  - xtype: helmet
     pos: [-0.2, 1.9, 0]
     scale: 1
-  - type: object
+  - type: prefab_construction_hat
+    pos: [-2.0, 0.5, 0.0]
+  - type: prefab_2_handed_sword
+    pos: [-4.0, 0.5, 0.0]
+  - type: prefab_armor
+    pos: [-6.0, 0.5, 0.0]
+  - type: prefab_shield
+    pos: [-8.0, 0.5, 0.0]
+  - type: prefab_helmet
+    pos: [-10.0, 0.5, 0.0]
+  - type: scale
+    pos: [2, 0.5, -1]
+    repeat:
+      x_count: 8
+      x_step: -2
+  - xtype: object
     pos: [0.0, 0.5, 0.0]
     rotation: [0, 0, 0]
     clone_position_offset: [2, 0, 0]

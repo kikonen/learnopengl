@@ -347,6 +347,7 @@
     <ClCompile Include="src\loader\NodeTypeBuilder.cpp" />
     <ClCompile Include="src\loader\NodeBuilder.cpp" />
     <ClCompile Include="src\loader\SceneData.cpp" />
+    <ClCompile Include="src\loader\TransformData.cpp" />
     <ClCompile Include="src\loader\value\PhysicsCategoryValue.cpp" />
     <ClCompile Include="src\loader\value\PhysicsGeomValue.cpp" />
     <ClCompile Include="src\material\ColorTexture.cpp" />

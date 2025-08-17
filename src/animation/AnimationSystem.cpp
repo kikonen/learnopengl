@@ -153,24 +153,29 @@ namespace animation
         uint32_t socketBaseIndex = socketRegistry.addInstance(rig.m_sockets.size());
 
         // Initialize bones
-        if (false) {
+        if (true) {
             std::lock_guard lockBones(boneRegistry.m_lock);
 
             auto bonePalette = boneRegistry.modifyRange(boneBaseIndex, rig.m_boneContainer.size());
 
-            std::vector<glm::mat4> parentTransforms;
-            parentTransforms.resize(rig.m_joints.size() + 1);
-            parentTransforms[0] = glm::mat4{ 1.f };
+            std::vector<glm::mat4> globalTransforms;
+            globalTransforms.resize(rig.m_joints.size() + 1);
+            globalTransforms[0] = glm::mat4{ 1.f };
+
+            glm::mat4 inverseMeshRigTransform{ 1.f };
 
             for (const auto& rigJoint : rig.m_joints) {
+                if (rigJoint.m_mesh) {
+                    //inverseMeshRigTransform = rigJoint.m_globalInvTransform;
+                }
 
                 const auto& jointTransform = rigJoint.m_transform;
-                parentTransforms[rigJoint.m_index + 1] = parentTransforms[rigJoint.m_parentIndex + 1] * jointTransform;
+                globalTransforms[rigJoint.m_index + 1] = globalTransforms[rigJoint.m_parentIndex + 1] * jointTransform;
 
                 const auto* bone = rig.m_boneContainer.getInfo(rigJoint.m_boneIndex);
                 if (bone) {
-                    const auto& globalTransform = parentTransforms[rigJoint.m_index + 1];
-                    bonePalette[bone->m_index] = globalTransform * bone->m_offsetMatrix;
+                    const auto& globalTransform = globalTransforms[rigJoint.m_index + 1];
+                    bonePalette[bone->m_index] = inverseMeshRigTransform * globalTransform * bone->m_offsetMatrix;
                 }
             }
             boneRegistry.markDirty(boneBaseIndex, rig.m_boneContainer.size());
@@ -355,6 +360,7 @@ namespace animation
 
             auto* mesh = lodMesh.getMesh<mesh::VaoMesh>();
             if (!mesh) continue;
+            if (mesh->m_rigJointIndex < 0) continue;
 
             // TDOO KI handle case when same rig is used for multiple
             // meshes (i.e. meshes possibly split due to material, etc.)
@@ -430,8 +436,8 @@ namespace animation
              if (!playB.m_active) {
                  changed = animator.animate(
                      *rig,
-                     mesh->m_rigTransform,
-                     mesh->m_inverseRigTransform,
+                     //rig->m_joints[mesh->m_rigJointIndex].m_globalInvTransform,
+                     glm::mat4{ 1.f },
                      bonePalette,
                      socketPalette,
                      playA.m_clipIndex,
@@ -443,8 +449,8 @@ namespace animation
             else {
                  changed = animator.animateBlended(
                      *rig,
-                     mesh->m_rigTransform,
-                     mesh->m_inverseRigTransform,
+                     //rig->m_joints[mesh->m_rigJointIndex].m_globalInvTransform,
+                     glm::mat4{ 1.f },
                      bonePalette,
                      socketPalette,
                      playA.m_clipIndex,

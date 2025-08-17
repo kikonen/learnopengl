@@ -16,6 +16,7 @@
 #include "util/Log.h"
 #include "util/util.h"
 #include "util/file.h"
+#include "util/Transform.h"
 
 #include "animation/RigContainer.h"
 #include "animation/RigJoint.h"
@@ -134,7 +135,7 @@ namespace mesh
         processMaterials(meshSet, ctx.m_materials, ctx.m_materialMapping, scene);
 
         std::vector<const aiNode*> assimpNodes;
-        collectJoints(ctx, meshSet, assimpNodes, scene, scene->mRootNode, 0, -1, glm::mat4{ 1.f }, glm::mat4{ 1.f });
+        collectJoints(ctx, meshSet, assimpNodes, scene, scene->mRootNode, 0, -1, glm::mat4{ 1.f });
 
         if (false) {
             dumpMetaData(meshSet, rig->m_joints, assimpNodes);
@@ -153,16 +154,27 @@ namespace mesh
 
             if (assets.animationJointTree)
             {
-                const auto offset = glm::translate(glm::mat4{ 1.f }, glm::vec3{ 20, 0, 0 }) *
-                    meshSet.getMesh<mesh::VaoMesh>(0)->m_rigTransform;
+                auto* primaryMesh = meshSet.getMesh<mesh::VaoMesh>(0);
+                const auto& joint = rig->m_joints[primaryMesh->m_rigJointIndex];
+
+                util::Transform offset{};
+                offset.m_position = glm::vec3{ 20, 0, 0 };
+
+                //const auto offset = glm::translate(glm::mat4{ 1.f }, glm::vec3{ 20, 0, 0 }) *
+                //    joint.m_globalTransform;
 
                 RigJointTreeGenerator generator;
                 if (auto mesh = generator.generateTree(rig)) {
-                    mesh->setRigTransform(offset);
+                    mesh->m_offset = offset;
+                    mesh->m_rigJointIndex = primaryMesh->m_rigJointIndex;
+                    mesh->m_rigJointName = primaryMesh->m_rigJointName;
                     meshSet.addMesh(std::move(mesh));
                 }
+
                 if (auto mesh = generator.generatePoints(rig)) {
-                    mesh->setRigTransform(offset);
+                    mesh->m_offset = offset;
+                    mesh->m_rigJointIndex = primaryMesh->m_rigJointIndex;
+                    mesh->m_rigJointName = primaryMesh->m_rigJointName;
                     meshSet.addMesh(std::move(mesh));
                 }
             }
@@ -193,20 +205,16 @@ namespace mesh
         const aiNode* node,
         int16_t level,
         int16_t parentIndex,
-        const glm::mat4& parentTransform2,
-        const glm::mat4& parentInvTransform2)
+        const glm::mat4& parentTransform)
     {
         auto& rig = *ctx.m_rig;
 
         int16_t jointIndex;
         glm::mat4 globalTransform;
-        glm::mat4 globalInvTransform;
         {
             assimpNodes.push_back(node);
 
-            glm::mat4 parentTransform = parentTransform2;
-            glm::mat4 parentInvTransform = parentInvTransform2;
-
+            //glm::mat4 parentTransform = parentTransform2;
             //if (std::string{ "root" } == std::string{ node->mName.C_Str() }) {
             //    //parentTransform = glm::mat4{ 1.f };
             //    parentInvTransform = glm::mat4{ 1.f };
@@ -218,9 +226,8 @@ namespace mesh
             jointIndex = rigJoint.m_index;
 
             globalTransform = parentTransform * rigJoint.m_transform;
-            globalInvTransform = parentInvTransform * rigJoint.m_invTransform;
             rigJoint.m_globalTransform = globalTransform;
-            rigJoint.m_globalInvTransform = globalInvTransform;
+            rigJoint.m_globalInvTransform = glm::inverse(globalTransform);
 
             if (m_debug) {
                 KI_INFO_OUT(fmt::format(
@@ -239,7 +246,7 @@ namespace mesh
 
         for (size_t n = 0; n < node->mNumChildren; ++n)
         {
-            collectJoints(ctx, meshSet, assimpNodes, scene, node->mChildren[n], level + 1, jointIndex, globalTransform, globalInvTransform);
+            collectJoints(ctx, meshSet, assimpNodes, scene, node->mChildren[n], level + 1, jointIndex, globalTransform);
         }
     }
 
@@ -393,10 +400,9 @@ namespace mesh
 
                     modelMesh->m_rig = ctx.m_rig;
 
+                    modelMesh->m_rigJointIndex = rigJoint.m_index;
                     modelMesh->m_rigJointName = rigJoint.m_name;
-
-                    // NOTE KI for animated meshes, this transform is canceled in animator
-                    modelMesh->setRigTransform(rigJoint.m_globalTransform);
+                    rigJoint.m_mesh = true;
 
                     // NOTE KI for debug
                     rig.registerMesh(rigJoint.m_index, modelMesh.get());
@@ -521,7 +527,7 @@ namespace mesh
         for (size_t i = 0; i < bone->mNumWeights; i++)
         {
             const auto& vw = bone->mWeights[i];
-            const auto mat = assimp_util::toMat4(bone->mOffsetMatrix);
+            //const auto mat = assimp_util::toMat4(bone->mOffsetMatrix);
 
             size_t vertexIndex = bone->mWeights[i].mVertexId;
 

@@ -12,11 +12,6 @@ namespace mesh {
         VaoMesh(std::string_view name);
         virtual ~VaoMesh();
 
-        void setRigTransform(const glm::mat4& rigTransform) {
-            m_rigTransform = rigTransform;
-            m_inverseRigTransform = glm::inverse(rigTransform);
-        }
-
         virtual const kigl::GLVertexArray* getVAO() const noexcept override
         {
             return m_vao;
@@ -44,10 +39,10 @@ namespace mesh {
         std::vector<mesh::Vertex> m_vertices;
         std::vector<mesh::Index32> m_indeces;
 
+        int32_t m_rigJointIndex{ -1 };
+
         // NOTE KI for debug
         std::string m_rigJointName;
-
-        glm::mat4 m_inverseRigTransform{ 1.f };
 
     protected:
         const kigl::GLVertexArray* m_vao{ nullptr };

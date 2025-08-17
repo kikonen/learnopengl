@@ -113,7 +113,6 @@ namespace {
 namespace animation {
     bool Animator::animate(
         const animation::RigContainer& rig,
-        const glm::mat4& meshRigTransform,
         const glm::mat4& inverseMeshRigTransform,
         std::span<glm::mat4> bonePalette,
         std::span<glm::mat4> socketPalette,
@@ -141,12 +140,12 @@ namespace animation {
             forceFirstFrame ? animationStartTime : currentTime,
             speed);
 
-        glm::mat4 parentTransforms[MAX_JOINTS + 1];
+        glm::mat4 globalTransforms[MAX_JOINTS + 1];
 
         // NOTE KI cancel out modelMesh->m_transform set in AssimpLoader for mesh
         // => animation joint hierarchy includes equivalent transforms (presumeably)
         // NOTE KI order MATTERS when applying inverse
-        parentTransforms[0] = glm::mat4{ 1.f };
+        globalTransforms[0] = glm::mat4{ 1.f };
 
         for (size_t jointIndex = 0; jointIndex < rig.m_joints.size(); jointIndex++)
         {
@@ -167,8 +166,8 @@ namespace animation {
                     ? interpolate(channel, animationTimeTicks, firstFrame, lastFrame, clip.m_single)
                     : rigJoint.m_transform;
 
-                parentTransforms[rigJoint.m_index + 1] = parentTransforms[rigJoint.m_parentIndex + 1] * jointTransform;
-                const auto& globalTransform = parentTransforms[rigJoint.m_index + 1];
+                globalTransforms[rigJoint.m_index + 1] = globalTransforms[rigJoint.m_parentIndex + 1] * jointTransform;
+                const auto& globalTransform = globalTransforms[rigJoint.m_index + 1];
 
                 if (bone) {
                     // NOTE KI m_offsetMatrix so that vertex is first converted to local space of bone
@@ -177,7 +176,7 @@ namespace animation {
             }
             else {
                 if (rigJoint.m_socketRequired) {
-                    parentTransforms[rigJoint.m_index + 1] = parentTransforms[rigJoint.m_parentIndex + 1] * rigJoint.m_transform;
+                    globalTransforms[rigJoint.m_index + 1] = globalTransforms[rigJoint.m_parentIndex + 1] * rigJoint.m_transform;
                 }
             }
         }
@@ -185,7 +184,7 @@ namespace animation {
         for (const auto& socket : rig.m_sockets) {
             // NOTE KI see AnimationSystem::registerInstance()
             socketPalette[socket.m_index] = socket.calculateGlobalTransform(
-                parentTransforms[socket.m_jointIndex + 1]);
+                globalTransforms[socket.m_jointIndex + 1]);
         }
 
         return true;
@@ -193,7 +192,6 @@ namespace animation {
 
     bool Animator::animateBlended(
         const animation::RigContainer& rig,
-        const glm::mat4& meshRigTransform,
         const glm::mat4& inverseMeshRigTransform,
         std::span<glm::mat4> bonePalette,
         std::span<glm::mat4> socketPalette,
@@ -247,12 +245,12 @@ namespace animation {
             forceFirstFrame ? animationStartTimeB : currentTime,
             speedB);
 
-        glm::mat4 parentTransforms[MAX_JOINTS + 1];
+        glm::mat4 globalTransforms[MAX_JOINTS + 1];
 
         // NOTE KI cancel out modelMesh->m_transform set in AssimpLoader for mesh
         // => animation joint hierarchy includes equivalent transforms (presumeably)
         // NOTE KI order MATTERS when applying inverse
-        parentTransforms[0] = glm::mat4{ 1.f };
+        globalTransforms[0] = glm::mat4{ 1.f };
 
         for (size_t jointIndex = 0; jointIndex < rig.m_joints.size(); jointIndex++)
         {
@@ -295,24 +293,24 @@ namespace animation {
                     jointTransform = rigJoint.m_transform;
                 }
 
-                parentTransforms[rigJoint.m_index + 1] = parentTransforms[rigJoint.m_parentIndex + 1] * jointTransform;
+                globalTransforms[rigJoint.m_index + 1] = globalTransforms[rigJoint.m_parentIndex + 1] * jointTransform;
 
                 if (bone) {
                     // NOTE KI m_offsetMatrix so that vertex is first converted to local space of bone
-                    const auto& globalTransform = parentTransforms[rigJoint.m_index + 1];
+                    const auto& globalTransform = globalTransforms[rigJoint.m_index + 1];
                     bonePalette[bone->m_index] = inverseMeshRigTransform * globalTransform * bone->m_offsetMatrix;
                 }
             }
             else {
                 if (rigJoint.m_socketRequired) {
-                    parentTransforms[rigJoint.m_index + 1] = parentTransforms[rigJoint.m_parentIndex + 1] * rigJoint.m_transform;
+                    globalTransforms[rigJoint.m_index + 1] = globalTransforms[rigJoint.m_parentIndex + 1] * rigJoint.m_transform;
                 }
             }
         }
 
         for (const auto& socket : rig.m_sockets) {
             socketPalette[socket.m_index] = socket.calculateGlobalTransform(
-                parentTransforms[socket.m_jointIndex + 1]);
+                globalTransforms[socket.m_jointIndex + 1]);
         }
 
         return true;
