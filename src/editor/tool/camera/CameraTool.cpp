@@ -77,13 +77,9 @@ namespace editor
             const auto* currNode = nr.getActiveNode();
             if (ImGui::BeginCombo("Pawn selector", currNode ? currNode->getName().c_str() : nullptr)) {
                 for (const auto& [nodeHandle, controllers] : cr.getControllers()) {
-                    const PawnController* nodeController = nullptr;
                     for (const auto& controller : controllers) {
-                        nodeController = dynamic_cast<const PawnController*>(&(*controller));
-                        if (nodeController) break;
-                    }
+                        if (!controller->isPawn()) continue;
 
-                    if (nodeController) {
                         const auto* node = nodeHandle.toNode();
                         if (!node) continue;
 
@@ -105,17 +101,12 @@ namespace editor
 
         // Camera
         {
-
             const auto* currNode = ctx.m_collection->getActiveCameraNode();
             if (ImGui::BeginCombo("Camera selector", currNode ? currNode->getName().c_str() : nullptr)) {
                 for (const auto& [nodeHandle, controllers] : cr.getControllers()) {
-                    const PawnController* nodeController = nullptr;
                     for (const auto& controller : controllers) {
-                        nodeController = dynamic_cast<const PawnController*>(&(*controller));
-                        if (nodeController) break;
-                    }
+                        if (!controller->isCamera()) continue;
 
-                    if (nodeController) {
                         const auto* node = nodeHandle.toNode();
                         if (!node) continue;
 
