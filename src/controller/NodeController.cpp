@@ -2,7 +2,12 @@
 
 #include "engine/PrepareContext.h"
 
-NodeController::NodeController() = default;
+NodeController::NodeController(
+    bool pawn,
+    bool camera)
+    : m_pawn{ pawn },
+    m_camera{ camera }
+{ }
 
 NodeController::~NodeController() = default;
 

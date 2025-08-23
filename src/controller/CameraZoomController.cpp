@@ -27,6 +27,7 @@
 
 
 CameraZoomController::CameraZoomController()
+    : NodeController(false, true)
 {
 }
 

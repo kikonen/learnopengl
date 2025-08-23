@@ -15,8 +15,21 @@ class Node;
 class NodeController
 {
 public:
-    NodeController();
+    NodeController(
+        bool pawn,
+        bool camera);
+
     virtual ~NodeController();
+
+    bool isPawn() const noexcept
+    {
+        return m_pawn;
+    }
+
+    bool isCamera() const noexcept
+    {
+        return m_camera;
+    }
 
     virtual void prepare(
         const PrepareContext& ctx,
@@ -38,6 +51,9 @@ public:
         float yoffset) {};
 
 protected:
+    const bool m_pawn;
+    const bool m_camera;
+
     bool m_prepared{ false };
 
     Registry* m_registry{ nullptr };

@@ -30,6 +30,7 @@ namespace {
 }
 
 PawnController::PawnController()
+    : NodeController(true, false)
 {
 }
 

@@ -454,18 +454,17 @@ void Window::processInput(const InputContext& ctx)
     auto* nodeControllers = m_engine.m_currentScene->getActiveNodeControllers();
     auto* cameraControllers = m_engine.m_currentScene->getActiveCameraControllers();
 
-    {
-        if (nodeControllers) {
-            for (auto& controller : *nodeControllers) {
-                controller->processInput(ctx);
-            }
+    if (nodeControllers) {
+        for (auto& controller : *nodeControllers) {
+            if (!controller->isPawn()) continue;
+            controller->processInput(ctx);
         }
     }
-    {
-        if (cameraControllers && cameraControllers != nodeControllers) {
-            for (auto& controller : *cameraControllers) {
-                controller->processInput(ctx);
-            }
+
+    if (cameraControllers){
+        for (auto& controller : *cameraControllers) {
+            if (!controller->isCamera()) continue;
+            controller->processInput(ctx);
         }
     }
 }
