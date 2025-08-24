@@ -60,7 +60,7 @@ types:
     front: [0, 0, -1]
     camera:
       type: fps
-      pitch: -16
+      pitch: -12
       xdistance: [4, 1.5, 20]
       xdefault: true
     controllers:
