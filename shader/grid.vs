@@ -1,5 +1,7 @@
 #version 460 core
 
+#undef USE_SOCKETS
+
 #include ssbo_entities.glsl
 #include ssbo_instance_indeces.glsl
 
