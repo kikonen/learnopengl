@@ -110,7 +110,7 @@ namespace animation
         size_t count) noexcept
     {
         // NOTE KI modifying null socket is not allowed
-        assert(start > 0);
+        if (!start) return std::span<glm::mat4>{};
 
         return std::span{ m_transforms }.subspan(start, count);
     }

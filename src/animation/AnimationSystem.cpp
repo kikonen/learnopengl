@@ -153,7 +153,7 @@ namespace animation
         uint32_t socketBaseIndex = socketRegistry.addInstance(rig.m_sockets.size());
 
         // Initialize bones
-        if (true) {
+        if (boneBaseIndex) {
             std::lock_guard lockBones(boneRegistry.m_lock);
 
             auto bonePalette = boneRegistry.modifyRange(boneBaseIndex, rig.m_boneContainer.size());
@@ -183,6 +183,7 @@ namespace animation
 
         // NOTE KI all bones are initially identity matrix
         // NOTE KI sockets need to be initialiazed to match initial static joint hierarchy
+        if (socketBaseIndex)
         {
             // NOTE KI need to keep locked while bones are modified
             // => avoid races with registration of other instances
