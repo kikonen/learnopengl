@@ -1,0 +1,11 @@
+types:
+  - id: prefab_origo_marker
+    mesh:
+      vertex:
+        type: ball
+      material:
+        name: default_ball
+        kd: [0.0, 0.2, 0.8, 1.0]
+        mrao: [0.2, 0.1, 1.0]
+        program: g_tex
+      scale: 0.05

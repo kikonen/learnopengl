@@ -302,8 +302,21 @@ namespace loader {
         if (node.isSequence()) {
             auto a = readFloatVector(node, 3);
 
-            while (a.size() < 3) {
-                a.push_back(1.0f);
+            if (a.size() == 0) {
+                // NOTE KI default to 1 instead of 0 for scale
+                a.push_back(1.f);
+                a.push_back(1.f);
+                a.push_back(1.f);
+            }
+            else if (a.size() == 1) {
+                // FILL x, x, x
+                a.push_back(a[0]);
+                a.push_back(a[0]);
+            }
+            else if (a.size() == 2) {
+                // FILL x, 1, z
+                a.push_back(a[1]);
+                a[1] = 1.f;
             }
 
             return glm::vec3{ a[0], a[1], a[2] };

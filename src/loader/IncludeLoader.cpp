@@ -58,6 +58,8 @@ namespace loader {
         if (node.isNull()) return;
 
         std::string path;
+        bool pathRead = false;
+        bool disabled = false;
 
         for (const auto& pair : node.getNodes()) {
             const std::string& k = pair.getName();
@@ -65,7 +67,14 @@ namespace loader {
 
             if (k == "path") {
                 path = readString(v);
+                pathRead = true;
                 break;
+            }
+            else if (k == "xpath") {
+                path = readString(v);
+                pathRead = true;
+                disabled = true;
+                return;
             }
         }
 
@@ -84,7 +93,12 @@ namespace loader {
 
         const auto& fullPath = util::joinPath(m_ctx->m_dirName, path);
 
-        KI_INFO_OUT(fmt::format("include={}", fullPath));
+        if (disabled) {
+            KI_INFO_OUT(fmt::format("SKIP: include={}", fullPath));
+            return;
+        }
+
+        KI_INFO_OUT(fmt::format("LOAD: include={}", fullPath));
 
         {
             auto* includeDoc = sceneData.findInclude(fullPath);

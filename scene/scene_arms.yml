@@ -7,7 +7,20 @@ skybox:
 script:
   scripts:
     - path: lib/common
+
+includes:
+  - path: prefab/util/include_grid.yml
+  - path: prefab/util/include_origo_marker.yml
+  - path: prefab/util/include_fps_counter.yml
+  - path: prefab/characters/include_player_fps.yml
+
 types:
+  - id: origo
+    type: origo
+  - id: cube_map
+    type: origo
+    flags:
+      cube_map: true
   - id: player
     mesh:
       path: water_ball
@@ -29,62 +42,6 @@ types:
     controllers:
       - type: pawn
       - type: camera_zoom
-  - id: player_fps
-    type: composite
-    composite: player_fps_composite
-    front: [0, 0, -1]
-    audio:
-      listener:
-        default: true
-      sources:
-        - name: idle_1
-          path: audio/Wheeze 1_B2356390_normal.wav
-          reference_distance: 0.1
-          gain: 0.4
-          loop: true
-        - name: walk_2
-          path: audio/Steps On Solid Floor_2B9D1307_normal.wav
-          reference_distance: 0.1
-          gain: 1.0
-          pitch: 1.4
-          loop: true
-        - name: run_2
-          path: audio/Steps On Solid Floor_2B9D1307_normal.wav
-          reference_distance: 0.1
-          gain: 1.0
-          pitch: 3.2
-          loop: true
-        - name: turn_1
-          path: audio/Steps In Grass_6D932A6E_normal.wav
-          reference_distance: 0.1
-          gain: 1.0
-          pitch: 1.5
-          loop: true
-    camera:
-      type: fps
-      pitch: -16
-      xdistance: [4, 1.5, 20]
-      xdefault: true
-    controllers:
-      - type: pawn
-      - type: camera_zoom
-    xphysics:
-      body:
-        type: capsule
-        density: 0.1
-        size: [0.5, 2.5, 0]
-      geom:
-        type: capsule
-        size: [0.5, 2.5, 0]
-  - id: player_fps_point
-    mesh:
-      path: water_ball
-      material:
-        name: default_ball
-        kd: [0.0, 0.5, 0.0, 1.0]
-        mrao: [0.2, 0.1, 1.0]
-        program: g_tex
-      scale: 0.03
   - id: dir_light
     type: origo
     mesh:
@@ -96,95 +53,63 @@ types:
       type: directional
       diffuse: [0.7, 0.7, 0.7, 1.0]
       intensity: 30000
-  - id: origo_marker
-    mesh:
-      path: water_ball
-      material:
-        name: default_ball
-        kd: [0.0, 0.2, 0.8, 1.0]
-        mrao: [0.2, 0.1, 1.0]
-        program: g_tex
-      scale: 0.05
-  - id: cube_map
-    type: origo
-    flags:
-      cube_map: true
   - id: wooden_floor
     prefab:
       path: prefab/scenery/prefab_cobblestone_floor.yml
-  - id: player_fps_arms
-    prefab:
-      path: prefab/characters/prefab_fps_arms.yml
-    pivot:
-      alignment: m
-    layer: player
-    script:
-      path: scripts/fps_player
-  - id: player_fps_arms_v2
-    prefab:
-      path: prefab/characters/prefab_fps_arms_v2.yml
-    xmesh:
-      material_modifier:
-        map_kd: T_Hands_04_Albedo_06_2048.png
-        xrender_back: true
-    pivot:
-      alignment: m
-    layer: player
-    script: |
-      cmd:animation_play(
-        { name="idle_aim:Unreal Take" } )
   - id: SM_JungleGym_01a
     prefab:
       path: prefab/scenery/prefab_junglegym.yml
   - id: weeping_angel
     prefab:
       path: prefab/creatures/prefab_weeping_angel.yml
-    particle: weeping_angel
-    script_file: scripts/seq_particle_generator
+    xparticle: weeping_angel
+    xscript_file: scripts/seq_particle_generator
   - id: weeping_angel_particle_origin
     mesh:
       vertex:
         type: ball
-        radius: 1
       material:
         kd: [0.5, 0.5, 0.0, 1.0]
         mrao: [0.2, 0.1, 1.0]
-        programs: g_tex
-      base_scale: 0.1
-    particle: weeping_angel_particle_origin
-    script_file: scripts/seq_particle_generator
+        program: g_tex
+      scale: 0.1
+    xparticle: weeping_angel_particle_origin
+    xscript_file: scripts/seq_particle_generator
   - id: world_plane
     type: origo
     physics:
       geom:
         type: plane
-
-composites:
-  - id: player_fps_composite
-    nodes:
-      - type: player_fps_point
-        pos: [0.0, 0.0, -0.1]
-      - xtype: player_fps_arms
-        pos: [-0.14, -1.59, -0.2]
-      - type: player_fps_arms_v2
-        pos: [0.1, -0.7, -0.0]
-        rotation: [-20, 20, 0]
-        scale: 0.25
+  - id: scale
+    mesh:
+      vertex:
+        type: box
+      material:
+        kd: [0.8, 0.8, 0.8, 1]
+        program: g_tex
 
 nodes:
-  - type: player
-    id: player
-    pos: [0, 1, 15]
-    xactive: true
-  - type: player_fps
-    pos: [0, 1, 15]
-    active: true
-  - type: dir_light
-    pos: [-15, 25, 25]
-  - type: origo_marker
+  - type: prefab_fps_counter
+    id: fps_counter
+    pos: [2, -2, -1]
+  - type: prefab_origo_marker
     pos: [0.0, 0.0, 0.0]
   - xtype: cube_map
     pos: [0, 5, 10]
+  - type: player
+    id: player
+    pos: [0, 1, 15]
+    active: true
+  - type: prefab_player_fps
+    pos: [0, 0, 15]
+    xactive: true
+  - type: scale
+    pos: [0, 0.5, 13]
+    xrepeat:
+      x_count: 8
+      x_step: -2
+  - type: dir_light
+    pos: [-15, 25, 25]
   - type: wooden_floor
     scale: 100
   - type: SM_JungleGym_01a

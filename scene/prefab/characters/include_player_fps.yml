@@ -1,0 +1,102 @@
+---
+types:
+  - id: prefab_player_fps
+    type: composite
+    composite: prefab_player_fps_composite
+    front: [0, 0, -1]
+    audio:
+      listener:
+        default: true
+      sources:
+        - name: idle_1
+          path: audio/Wheeze 1_B2356390_normal.wav
+          reference_distance: 0.1
+          gain: 0.4
+          loop: true
+        - name: walk_2
+          path: audio/Steps On Solid Floor_2B9D1307_normal.wav
+          reference_distance: 0.1
+          gain: 1.0
+          pitch: 1.4
+          loop: true
+        - name: run_2
+          path: audio/Steps On Solid Floor_2B9D1307_normal.wav
+          reference_distance: 0.1
+          gain: 1.0
+          pitch: 3.2
+          loop: true
+        - name: turn_1
+          path: audio/Steps In Grass_6D932A6E_normal.wav
+          reference_distance: 0.1
+          gain: 1.0
+          pitch: 1.5
+          loop: true
+    controllers:
+      - type: pawn
+    physics:
+      update: true
+      body:
+        kinematic: true
+        type: capsule
+        density: 0.1
+        size: [0.25, 0.825, 0]
+        rot: [90, 0, 0]
+      geom:
+        type: capsule
+        size: [0.25, 0.625, 0]
+        xoffset: [0, 0.625, 0]
+        offset: [0, 0, -0.875]
+    script: |
+      cmd:audio_play(
+        { sync=true, sid=util.sid("idle_1") })
+  - id: prefab_player_fps_camera
+    mesh:
+      vertex:
+        type: ball
+      material:
+        kd: [1, 1, 0, 1]
+        program: g_tex
+      scale: 0.03
+    front: [0, 0, -1]
+    camera:
+      type: fps
+      pitch: -16
+      xdistance: [4, 1.5, 20]
+      xdefault: true
+    controllers:
+      - type: camera_zoom
+  - id: prefab_player_fps_point
+    mesh:
+      vertex:
+        type: ball
+      material:
+        name: default_ball
+        kd: [0.0, 0.5, 0.0, 1.0]
+        mrao: [0.2, 0.1, 1.0]
+        program: g_tex
+      scale: 0.05
+  - id: prefab_player_fps_arms_v2
+    prefab:
+      path: prefab/characters/prefab_fps_arms_v2.yml
+    xmesh:
+      material_modifier:
+        map_kd: T_Hands_04_Albedo_06_2048.png
+        xrender_back: true
+    pivot:
+      offset: [0, 1.5, 0]
+    xlayer: player
+    script: |
+      cmd:animation_play(
+        { name="idle_aim:Unreal Take" } )
+
+composites:
+  - id: prefab_player_fps_composite
+    nodes:
+      - type: prefab_player_fps_point
+        pos: [0.0, 1.0, 0]
+      - type: prefab_player_fps_camera
+        pos: [0.0, 1.65, 0.0]
+        rot: [0, 0, 0]
+      - type: prefab_player_fps_arms_v2
+        pos: [0, -1.5, 0]
+        rot: [0, 0, 0]
