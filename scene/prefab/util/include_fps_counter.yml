@@ -1,0 +1,6 @@
+types:
+  - id: prefab_fps_counter
+    prefab:
+      path: prefab/util/prefab_fps_counter.yml
+    base_scale: 0.0025
+    layer: ui

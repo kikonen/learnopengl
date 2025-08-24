@@ -8,101 +8,18 @@ script:
     - path: lib/common
 
 includes:
+  - path: prefab/util/include_grid.yml
+  - path: prefab/util/include_origo_marker.yml
+  - path: prefab/util/include_fps_counter.yml
+  - path: prefab/characters/include_player_fps.yml
   - path: prefab/creatures/include_skeleton_warrior.yml
 
 types:
   - id: origo
     type: origo
-  - id: fps_counter
-    prefab:
-      path: prefab/util/prefab_fps_counter.yml
-    base_scale: 0.0025
-    layer: ui
-  - id: player
-    type: origo
-    front: [0, 0, -1]
-    audio:
-      listener:
-        default: true
-      xsources:
-        - name: idle_1
-          path: audio/Wheeze 1_B2356390_normal.wav
-          reference_distance: 0.1
-          gain: 0.4
-          loop: true
-        - name: walk_1
-          xpath: audio/Steps On Solid Floor_2B9D1307_normal.wav
-          path: audio/fab/Footstep_Metal_Boots_Walk_combined.wav
-          reference_distance: 0.1
-          gain: 0.5
-          pitch: 1.8
-          loop: true
-        - name: run_1
-          xpath: audio/Steps On Solid Floor_2B9D1307_normal.wav
-          path: audio/fab/Footstep_Metal_Boots_Run_combined.wav
-          reference_distance: 0.1
-          gain: 0.5
-          pitch: 3.8
-          loop: true
-        - name: walk_2
-          xpath: audio/metal-footsteps-14727.wav
-          path: audio/fab/Footstep_Metal_Boots_Walk_combined.wav
-          reference_distance: 0.1
-          gain: 0.5
-          pitch: 1.8
-          loop: true
-        - name: run_2
-          xpath: audio/metal-footsteps-14727.wav
-          path: audio/fab/Footstep_Metal_Boots_Run_combined.wav
-          reference_distance: 0.1
-          gain: 0.5
-          pitch: 3.8
-          loop: true
-        - name: turn_1
-          path: audio/Steps In Grass_6D932A6E_normal.wav
-          reference_distance: 0.1
-          gain: 1.0
-          pitch: 1.5
-          loop: true
+  - id: prefab_player_fps_camera
     camera:
       default: true
-      type: fps
-      pitch: -12
-    controllers:
-      - type: pawn
-      - type: camera_zoom
-    physics:
-      update: true
-      body:
-        kinematic: true
-        type: capsule
-        density: 0.01
-        rot: [90, 0, 0]
-        max_angular_velocity: 0
-        force_axis: true
-      geom:
-        type: capsule
-        category: [player]
-        size: [0.25, 0.5, 0]
-    script: |
-      printf("here-script\n")
-      local sid = util.sid("idle_1")
-      printf("SID: %s\n", sid)
-      self.cmd:audio_play(
-        { sync=true, sid=sid })
-  - id: player_fps_arms_v2
-    prefab:
-      path: prefab/characters/prefab_fps_arms_v2.yml
-    xmesh:
-      material_modifier:
-        map_kd: T_Hands_04_Albedo_06_2048.png
-        xrender_back: true
-    pivot:
-      alignment: m
-    layer: player
-    script: |
-      self.cmd:animation_play(
-        { name="idle_aim:Unreal Take" } )
   - id: dir_light
     mesh:
       path: light
@@ -330,19 +247,13 @@ types:
       intensity: 200
 
 nodes:
-  - type: fps_counter
+  - type: prefab_fps_counter
     id: fps_counter
     pos: [2, -2, -1]
-  - id: player
-    type: player
-    pos: [0, 1, 15]
+  - id: prefab_player_fps
+    pos: [0, 9, 15]
     xrotation: [0, 180, 0]
     active: true
-    xchildren:
-      - type: player_fps_arms_v2
-        pos: [0.1, -0.7, -0.0]
-        rotation: [-20, 20, 0]
-        scale: 0.25
   - type: dir_light
     pos: [-25, 25, 20]
     scale: 2.5

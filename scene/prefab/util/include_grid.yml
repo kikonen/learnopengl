@@ -1,0 +1,4 @@
+types:
+  - id: prefab_grid
+    prefab:
+      path: prefab/util/prefab_grid.yml

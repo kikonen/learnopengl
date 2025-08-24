@@ -7,16 +7,17 @@ skybox:
 script:
   scripts:
     - path: lib/common
+
+includes:
+  - path: prefab/util/include_grid.yml
+  - path: prefab/util/include_origo_marker.yml
+  - path: prefab/util/include_fps_counter.yml
+
 types:
   - id: cube_map
     type: origo
     flags:
       cube_map: true
-  - id: fps_counter
-    prefab:
-      path: prefab/util/prefab_fps_counter.yml
-    base_scale: 0.0025
-    layer: ui
   - id: ui_origo
     mesh:
       vertex:
@@ -214,7 +215,7 @@ types:
         billboard: true
 
 nodes:
-  - type: fps_counter
+  - type: prefab_fps_counter
     id: fps_counter
     pos: [2, -2, -1]
   - type: ui_origo
