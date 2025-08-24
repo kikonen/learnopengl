@@ -32,7 +32,8 @@ private:
     glm::vec3 m_scale{ 1.f };
     glm::vec3 m_baseScale{ 1.f };
 
-    glm::vec3 m_pivot{ 0.f };
+    glm::vec3 m_pivotAlignment{ 0.f };
+    glm::vec3 m_pivotOffset{ 0.f };
 
     glm::vec3 m_worldPivot{ 0.f };
 
@@ -186,16 +187,32 @@ public:
         }
     }
 
-    inline const glm::vec3& getPivot() const noexcept
+    inline const glm::vec3& getPivotAlignment() const noexcept
     {
-        return m_pivot;
+        return m_pivotAlignment;
     }
 
-    inline void setPivot(const glm::vec3& pivot) noexcept
+    inline void setPivotAlignment(
+        const glm::vec3& pivotAlignment) noexcept
     {
-        if (m_pivot != pivot)
+        if (m_pivotAlignment != pivotAlignment)
         {
-            m_pivot = pivot;
+            m_pivotAlignment = pivotAlignment;
+            m_dirty = true;
+        }
+    }
+
+    inline const glm::vec3& getPivotOffset() const noexcept
+    {
+        return m_pivotOffset;
+    }
+
+    inline void setPivotOffset(
+        const glm::vec3& pivotOffset) noexcept
+    {
+        if (m_pivotOffset != pivotOffset)
+        {
+            m_pivotOffset = pivotOffset;
             m_dirty = true;
         }
     }

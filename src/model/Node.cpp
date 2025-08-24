@@ -87,7 +87,8 @@ void Node::prepareWT(
 
     // TODO KI need to set these to *NodeType* in loader
     // => apply from there in NodeRegistry
-    state.setPivot(type->m_pivotPoint.resolve(type));
+    state.setPivotAlignment(type->m_pivotPoint.resolveAlignment(type));
+    state.setPivotOffset(type->m_pivotPoint.m_offset);
     state.setFront(type->m_front);
     state.setBaseRotation(type->m_baseRotation);
 
