@@ -4,6 +4,7 @@
 #include <vector>
 #include <algorithm>
 #include <string>
+#include <optional>
 
 #include <fmt/format.h>
 
@@ -335,7 +336,7 @@ namespace loader {
         const loader::DocNode& node,
         AnimationData& data) const
     {
-        bool explicitEnabled = false;
+        std::optional<bool> enabled;
 
         for (const auto& pair : node.getNodes()) {
             const std::string& key = pair.getName();
@@ -343,28 +344,82 @@ namespace loader {
 
             const auto k = util::toLower(key);
 
-            if (k == "name") {
+            if (k == "name" || k == "xname") {
+                enabled = readEnabled(k, enabled);
+
                 data.name = readString(v);
-                explicitEnabled = true;
+
+                auto& clipData = data.clips.empty() ? data.clips.emplace_back() : data.clips[0];
+                clipData.name = data.name;
+                if (clipData.clip.empty()) {
+                    clipData.clip = "Unreal Take";
+                }
+                clipData.enabled = readEnabled(k);
             }
-            else if (k == "xname") {
-                data.name = readString(v);
-                data.enabled = false;
-                explicitEnabled = true;
+            else if (k == "clip") {
+                auto& clipData = data.clips.empty() ? data.clips.emplace_back() : data.clips[0];
+                clipData.clip = readString(v);
             }
             else if (k == "enabled") {
-                data.enabled = readBool(v);
-                explicitEnabled = true;
+                enabled = readBool(v);
             }
-            else if (k == "path") {
+            else if (k == "path" || k == "xpath") {
                 data.path = readString(v);
-                if (!explicitEnabled) {
-                    data.enabled = true;
-                }
+                enabled = readEnabled(k, enabled);
+            }
+            else if (k == "clips") {
+                loadClips(v, data.clips);
             }
             else {
                 reportUnknown("animation_entry", k, v);
             }
+        }
+
+        if (!enabled.has_value())
+        {
+            enabled = !data.clips.empty();
+        }
+
+        data.enabled = enabled.has_value() && enabled.value();
+    }
+
+    void MeshLoader::loadClips(
+        const loader::DocNode& node,
+        std::vector<ClipData>& clips) const
+    {
+        for (const auto& entry : node.getNodes()) {
+            ClipData& data = clips.emplace_back();
+            loadClip(entry, data);
+        }
+    }
+
+    void MeshLoader::loadClip(
+        const loader::DocNode& node,
+        ClipData& data) const
+    {
+        std::optional<bool> enabled;
+
+        for (const auto& pair : node.getNodes()) {
+            const std::string& key = pair.getName();
+            const loader::DocNode& v = pair.getNode();
+
+            const auto k = util::toLower(key);
+
+            if (k == "name" || k == "xname") {
+                data.name = readString(v);
+                enabled = readEnabled(k, enabled);
+            }
+            else if (k == "clip") {
+                data.clip = readString(v);
+            }
+            else if (k == "enabled") {
+                enabled = readBool(v);
+            }
+            else {
+                reportUnknown("clip_entry", k, v);
+            }
+
+            data.enabled = enabled.has_value() && enabled.value();
         }
     }
 }

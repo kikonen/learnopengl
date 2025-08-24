@@ -60,7 +60,7 @@ types:
       path: prefab/creatures/prefab_lion.yml
     script: |
       cmd:animation_play(
-        { name = "walk:Take 001" } )
+        { name = "walk" } )
     mesh:
       material:
         geometry_type: wireframe_mod

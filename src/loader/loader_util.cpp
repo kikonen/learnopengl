@@ -101,6 +101,23 @@ namespace loader {
         }
     }
 
+    bool readEnabled(
+        const std::string& key)
+    {
+        return key[0] == 'x';
+    }
+
+    std::optional<bool> readEnabled(
+        const std::string& key,
+        std::optional<bool> defaultValue)
+    {
+        if (key[0] == 'x') {
+            return false;
+        }
+
+        return defaultValue.has_value() ? defaultValue : true;
+    }
+
     const std::string& readString(const loader::DocNode& node)
     {
         return node.asString();

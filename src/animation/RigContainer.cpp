@@ -364,9 +364,10 @@ namespace animation {
 
         for (const auto& clip : m_clipContainer.m_clips) {
             const auto& line = fmt::format(
-                "CLIP: [{}, {}] - range=[{}, {}], duration={}, loop={}, anim={}.{}",
+                "CLIP: [{}, {} / {}] - range=[{}, {}], duration={}, loop={}, anim={}.{}",
                 clip.m_index,
-                clip.m_name,
+                clip.getName(),
+                clip.m_uniqueName,
                 clip.m_firstFrame,
                 clip.m_lastFrame,
                 clip.m_durationSecs,

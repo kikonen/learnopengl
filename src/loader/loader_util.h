@@ -2,6 +2,7 @@
 
 #include <string>
 #include <vector>
+#include <optional>
 
 #include <glm/glm.hpp>
 #include <glm/gtx/quaternion.hpp>
@@ -32,6 +33,13 @@ namespace loader {
     void loadTerrainTiling(
         const loader::DocNode& node,
         TerrainTiling& data);
+
+    bool readEnabled(
+        const std::string& key);
+
+    std::optional<bool> readEnabled(
+        const std::string& key,
+        std::optional<bool> defaultValue);
 
     const std::string& readString(const loader::DocNode& node);
     bool readBool(const loader::DocNode& node);

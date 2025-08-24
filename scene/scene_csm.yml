@@ -50,14 +50,14 @@ types:
   - id: prefab_skeleton
     script: |
       self.cmd:animation_play(
-        { name = "master:Idle" });
+        { name = "idle" });
   - id: skeleton_army_2
     prefab:
       path: prefab/creatures/prefab_skeleton.yml
     priority: 1
     script: |
       self.cmd:animation_play(
-        { name = "master:Idle" });
+        { name = "idle" });
   - id: cube_map
     type: origo
     flags:

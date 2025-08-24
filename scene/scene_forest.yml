@@ -49,7 +49,7 @@ types:
     script: |
       local wid = cmd:wait({ time=2 })
       cmd:animation_play(
-        { after=wid, name = "master:Walk02" });
+        { after=wid, name = "walk_2" });
   - id: dir_light
     mesh:
       path: light

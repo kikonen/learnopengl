@@ -234,7 +234,7 @@ types:
   - id: prefab_skeleton
     script: |
       self.cmd:animation_play(
-        { name = "master:Idle" });
+        { name = "idle" });
   - id: light
     type: origo
     light:

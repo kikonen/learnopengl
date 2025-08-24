@@ -4,6 +4,7 @@
 #include <vector>
 
 #include "ki/size.h"
+#include "ki/sid.h"
 
 namespace animation
 {
@@ -75,10 +76,13 @@ namespace animation
       additiveReferencePoseFrame: 0
 */
     struct Clip {
-        std::string m_name;
         ki::sid_t m_id{ 0 };
+
+        std::string m_uniqueName;
+
         int32_t m_index{ -1 };
 
+        std::string m_animationClip;
         std::string m_animationName;
         int32_t m_animationIndex{ -1 };
 
@@ -92,5 +96,9 @@ namespace animation
 
         bool m_single{ true };
         //std::vector<std::string> m_events;
+
+        const std::string& getName() const noexcept {
+            return SID_NAME(m_id);
+        }
     };
 }

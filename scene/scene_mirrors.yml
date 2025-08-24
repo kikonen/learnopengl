@@ -69,7 +69,7 @@ types:
   - id: prefab_skeleton
     script: |
       self.cmd:animation_play(
-        { name = "master:Idle" });
+        { name = "idle" });
   - id: glass_ball
     mesh:
       path: glass_ball

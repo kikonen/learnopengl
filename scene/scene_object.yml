@@ -95,7 +95,7 @@ types:
   - id: prefab_skeleton
     script: |
       cmd:animation_play(
-        { name = "master:Idle" })
+        { name = "idle" })
 
 nodes:
   - type: player

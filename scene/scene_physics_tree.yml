@@ -140,11 +140,11 @@ types:
         collision: [terrain, npc]
     xscript: |
       cmd:animation_play(
-        { name = "master:Walk02" });
+        { name = "walk_2" });
   - id: prefab_skeleton
     script: |
       self.cmd:animation_play(
-        { name = "master:Idle" });
+        { name = "idle" });
   - id: directional_light
     mesh:
       path: light
@@ -167,7 +167,7 @@ types:
       enabled: true
     script: |
       cmd:animation_play(
-        { name = "master:Idle2" });
+        { name = "idle_2" });
   - id: wooden_floor
     prefab:
       path: prefab/scenery/prefab_wooden_floor.yml
@@ -192,7 +192,7 @@ types:
       enabled: true
     script: |
       cmd:animation_play(
-        { name = "master:Idle2" });
+        { name = "idle_2" });
   - id: palm_tree_forest
     prefab:
       path: prefab/scenery/prefab_palm_tree.yml

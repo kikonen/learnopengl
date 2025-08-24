@@ -363,9 +363,9 @@ namespace editor
             if (!clipContainer.m_clips.empty())
             {
                 auto* currClip = clipContainer.getClip(m_state.m_selectedClipIndex);
-                if (ImGui::BeginCombo("Clip", currClip ? currClip->m_name.c_str() : nullptr)) {
+                if (ImGui::BeginCombo("Clip", currClip ? currClip->getName().c_str() : nullptr)) {
                     for (auto& clip : clipContainer.m_clips) {
-                        const auto* name = clip.m_name.c_str();
+                        const auto* name = clip.getName().c_str();
 
                         ImGui::PushID((void*)clip.m_index);
                         const bool isSelected = m_state.m_selectedClipIndex == clip.m_index;

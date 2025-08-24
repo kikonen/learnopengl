@@ -161,13 +161,13 @@ types:
         kinematic: true
     xscript: |
       cmd:animation_play(
-        { name = "master:Idle" });
+        { name = "idle" });
     script: scripts/seq_skeleton_random_nav
     xscript: scripts/seq_skeleton_2
   - id: prefab_skeleton
     script: |
       self.cmd:animation_play(
-        { name = "master:Idle" });
+        { name = "idle" });
   - id: world_plane
     type: origo
     physics:

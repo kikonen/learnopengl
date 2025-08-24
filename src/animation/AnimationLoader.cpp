@@ -100,8 +100,7 @@ namespace animation {
         const auto metadata = metadataLoader.load(filePath);
         if (metadata) {
             for (auto& clip : metadata->m_clips) {
-                clip.m_name = uniquePrefix + ":" + clip.m_name;
-                clip.m_id = SID(clip.m_name);
+                clip.m_uniqueName = uniquePrefix + ":" + clip.m_uniqueName;
 
                 // TODO KI clip sequences seem to be stored like
                 // 0 - 48, 48 - 98, 98 - ...
@@ -137,8 +136,7 @@ namespace animation {
             }
             else {
                 animation::Clip clip;
-                clip.m_name = animation.m_uniqueName;
-                clip.m_id = SID(clip.m_name);
+                clip.m_uniqueName = animation.m_uniqueName;
                 clip.m_animationName = animation.m_uniqueName;
                 clip.m_lastFrame = animation.getMaxFrame();
                 clipContainer.addClip(clip);

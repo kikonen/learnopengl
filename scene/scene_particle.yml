@@ -72,7 +72,7 @@ types:
   - id: prefab_skeleton
     script: |
       self.cmd:animation_play(
-        { name = "master:Idle" });
+        { name = "idle" });
   - id: rock
     prefab:
       path: prefab/scenery/prefab_asteroid.yml

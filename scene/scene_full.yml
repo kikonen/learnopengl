@@ -361,7 +361,7 @@ types:
     script: |
       local wid = cmd:wait({ time=2 })
       cmd:animation_play(
-        { after=wid, name = "fire:Take 001" });
+        { after=wid, name = "fire" });
   - id: backback
     prefab:
       path: prefab/props/prefab_backpack.yml
@@ -1012,7 +1012,7 @@ types:
   - id: prefab_skeleton
     script: |
       self.cmd:animation_play(
-        { name = "master:Idle" });
+        { name = "idle" });
   - id: giant_wooden_box
     mesh:
       path: quad

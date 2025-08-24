@@ -1,7 +1,7 @@
 ---
 prefab:
   meshes:
-    - id: prefab_SK_Hands_04
+    - id: prefab_player_fps_arms_v2
       path: fbx/weapons/fab/FPS_Automatic_Rifle_01/Mesh/Hands/SK_Hands_04.FBX
       materials:
         - alias: "*"
@@ -33,7 +33,8 @@ prefab:
         - name: pistol_fire
           path: fbx/weapons/fab/FPS_Pistol_Knife/Animations/Arms/Anim_Pistol_Knife_Shot.FBX
       default_programs: true
-      base_scale: 0.01
+      base_scale: 0.0175
+      base_rotation: [0, 180, 0]
       flags:
         use_bones: true
         use_animation: true

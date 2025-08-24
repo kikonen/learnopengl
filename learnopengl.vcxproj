@@ -770,6 +770,7 @@
     <ClInclude Include="src\generator\GeneratorMode.h" />
     <ClInclude Include="src\component\definition\TextGeneratorDefinition.h" />
     <ClInclude Include="src\ki\error.h" />
+    <ClInclude Include="src\loader\ClipData.h" />
     <ClInclude Include="src\loader\CompositeData.h" />
     <ClInclude Include="src\loader\DecalData.h" />
     <ClInclude Include="src\loader\DecalLoader.h" />
