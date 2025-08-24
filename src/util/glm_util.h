@@ -34,4 +34,10 @@ namespace util
         const glm::vec3& pos,
         glm::vec3& min,
         glm::vec3& max);
+
+    // https://stackoverflow.com/questions/17918033/glm-decompose-mat4-into-translation-and-rotation
+    void decomposeMtx(
+        const glm::mat4& m,
+        glm::vec3& pos,
+        glm::quat& rot);
 }

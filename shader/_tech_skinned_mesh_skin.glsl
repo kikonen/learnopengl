@@ -34,6 +34,7 @@ if (entity.u_boneBaseIndex > 0) {
   vec4 skinPos = skinMat * pos;
 
   // https://www.khronos.org/opengl/wiki/Skeletal_Animation
+  // There is a risk that newVertex.w might not be exactly 1.0. Just to be safe
   pos = vec4(skinPos.xyz, 1.0);
 
 #ifdef USE_BONES_NORMAL

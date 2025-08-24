@@ -4,6 +4,7 @@
 #include <filesystem>
 #include <mutex>
 
+#include <glm/gtx/matrix_decompose.hpp>
 #include <fmt/format.h>
 
 #include <assimp/Importer.hpp>
@@ -13,6 +14,7 @@
 #include "asset/Assets.h"
 
 #include "util/glm_format.h"
+#include "util/glm_util.h"
 #include "util/Log.h"
 #include "util/util.h"
 #include "util/file.h"
@@ -185,6 +187,23 @@ namespace mesh
             for (auto& mesh : meshSet.getMeshes()) {
                 auto* modelMesh = dynamic_cast<mesh::ModelMesh*>(mesh.get());
                 modelMesh->m_rig.reset();
+
+                const auto& rigJoint = rig->m_joints[modelMesh->m_rigJointIndex];
+                const auto& transform = rigJoint.m_globalTransform;
+
+                glm::quat rotation;
+                glm::vec3 translation;
+                glm::vec3 scale;
+                glm::vec3 skew;
+                glm::vec4 perspective;
+
+                // https://stackoverflow.com/questions/17918033/glm-decompose-mat4-into-translation-and-rotation
+                glm::decompose(transform, scale, rotation, translation, skew, perspective);
+                //util::decomposeMtx(transform, translation, rotation);
+
+                modelMesh->m_offset.m_position = translation;
+                modelMesh->m_offset.m_rotation = rotation;
+                modelMesh->m_offset.m_scale = scale;
             }
         }
 

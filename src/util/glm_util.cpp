@@ -151,4 +151,14 @@ namespace util
         max.y = std::max(max.y, pos.y);
         max.z = std::max(max.z, pos.z);
     }
+
+    // https://stackoverflow.com/questions/17918033/glm-decompose-mat4-into-translation-and-rotation
+    void decomposeMtx(
+        const glm::mat4& m,
+        glm::vec3& pos,
+        glm::quat& rot)
+    {
+        pos = m[3];
+        rot = glm::quat_cast(m);
+    }
 }
