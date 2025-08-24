@@ -253,7 +253,7 @@ types:
   - id: prefab_skeleton
     script: |
       self.cmd:animation_play(
-        { name = "master:Idle" });
+        { name = "idle" });
   - id: terrain_grass_v2
     mesh:
       path: quad_terrain

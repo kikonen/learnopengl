@@ -69,7 +69,7 @@ namespace animation {
             if (auto max = anim->getMaxFrame(); clip.m_lastFrame > max) {
                 KI_WARN_OUT(fmt::format(
                     "ASSIMP: CLIP_OUT_OF_BOUNDS: name={}, index={}, animName={}, animIndex={}, range=[{},{}], max={}",
-                    clip.m_name,
+                    clip.m_uniqueName,
                     clip.m_index,
                     clip.m_animationName,
                     clip.m_animationIndex,
@@ -88,7 +88,7 @@ namespace animation {
 
         KI_INFO_OUT(fmt::format(
             "ASSIMP: ADD_CLIP: name={}, index={}, animName={}, animIndex={}, range=[{},{}]",
-            clip.m_name,
+            clip.m_uniqueName,
             clip.m_index,
             clip.m_animationName,
             clip.m_animationIndex,
@@ -114,6 +114,17 @@ namespace animation {
             m_clips.begin(),
             m_clips.end(),
             [&id](const auto& clip) { return clip.m_id == id;  });
+        if (it == m_clips.end()) return nullptr;
+        return &(*it);
+    }
+
+    animation::Clip* ClipContainer::findClipByUniqueName(
+        const std::string& uniqueName)
+    {
+        const auto& it = std::find_if(
+            m_clips.begin(),
+            m_clips.end(),
+            [&uniqueName](const auto& clip) { return clip.m_uniqueName == uniqueName;  });
         if (it == m_clips.end()) return nullptr;
         return &(*it);
     }

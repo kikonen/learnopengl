@@ -2906,6 +2906,9 @@
     <ClInclude Include="src\loader\TransformData.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\loader\ClipData.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="learnopengl.rc">

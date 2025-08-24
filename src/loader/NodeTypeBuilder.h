@@ -95,6 +95,11 @@ namespace loader {
             const MeshData& meshData,
             mesh::MeshSet& meshSet);
 
+        void resolveAnimations(
+            const std::string& baseDir,
+            const std::vector<AnimationData>& animations,
+            mesh::MeshSet& meshSet);
+
         void loadAnimation(
             const std::string& baseDir,
             const AnimationData& data,

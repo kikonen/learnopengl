@@ -104,7 +104,7 @@ namespace animation
             const auto& v = pair.second;
 
             if (k == "name") {
-                clip.m_name = readString(v);
+                clip.m_uniqueName = readString(v);
             }
             else if (k == "takeName") {
                 clip.m_animationName = readString(v);

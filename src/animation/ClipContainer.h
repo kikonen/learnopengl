@@ -28,6 +28,7 @@ namespace animation {
 
         const animation::Animation* findAnimation(const std::string& name) const;
         const animation::Clip* findClip(ki::sid_t id) const;
+        animation::Clip* findClipByUniqueName(const std::string& uniqueName);
 
         uint16_t getClipCount(uint16_t animationIndex) const;
 

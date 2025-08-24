@@ -99,19 +99,19 @@ types:
     script: |
       local wid = cmd:wait({ time=2 })
       cmd:animation_play(
-        { after=wid, name = "master:Walk02" });
+        { after=wid, name = "walk_2" });
   - id: prefab_skeleton
     script: |
       self.cmd:animation_play(
-        { name = "master:Idle" });
+        { name = "idle" });
   - id: skeleton_1
     prefab:
       path: prefab/creatures/prefab_skeleton.yml
     script: |
-      local sid = util.sid("master:Idle2")
-      printf("LUA: SID=%d, id=%s", sid, "master:Idle2")
+      local sid = util.sid("idle_2")
+      printf("LUA: SID=%d, id=%s", sid, "idle_2")
       cmd:animation_play(
-        { name = "master:Idle2" })
+        { name = "idle_2" })
     physics:
       enabled: true
   - id: skeleton_2
@@ -119,7 +119,7 @@ types:
       path: prefab/creatures/prefab_skeleton.yml
     script: |
       cmd:animation_play(
-        { name = "master:Idle" });
+        { name = "idle" });
     physics:
       enabled: true
   - id: dir_light

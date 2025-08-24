@@ -48,6 +48,7 @@
 #include "animation/AnimationLoader.h"
 #include "animation/RigContainer.h"
 #include "animation/RigSocket.h"
+#include "animation/Clip.h"
 
 #include "registry/Registry.h"
 #include "registry/ModelRegistry.h"
@@ -548,12 +549,10 @@ namespace loader
                     *meshSet
                 );
 
-                for (auto& animationData : meshData.animations) {
-                    loadAnimation(
-                        meshData.baseDir,
-                        animationData,
-                        *meshSet);
-                }
+                resolveAnimations(
+                    meshData.baseDir,
+                    meshData.animations,
+                    *meshSet);
 
                 {
                     KI_INFO_OUT(fmt::format(
@@ -677,6 +676,19 @@ namespace loader
         rig.prepare();
     }
 
+    void NodeTypeBuilder::resolveAnimations(
+        const std::string& baseDir,
+        const std::vector<AnimationData>& animations,
+        mesh::MeshSet& meshSet)
+    {
+        for (auto& animationData : animations) {
+            loadAnimation(
+                baseDir,
+                animationData,
+                meshSet);
+        }
+    }
+
     void NodeTypeBuilder::loadAnimation(
         const std::string& baseDir,
         const AnimationData& data,
@@ -689,24 +701,40 @@ namespace loader
         animation::AnimationLoader loader{};
 
         std::string filePath;
-        {
-            filePath = util::joinPathExt(
-                meshSet.m_rootDir,
-                baseDir,
-                data.path, "");
-        }
 
-        if (!util::fileExists(filePath)) {
-            filePath = util::joinPath(
-                meshSet.m_rootDir,
-                data.path);
+        if (!data.path.empty()) {
+            {
+                filePath = util::joinPathExt(
+                    meshSet.m_rootDir,
+                    baseDir,
+                    data.path, "");
+            }
+
+            if (!util::fileExists(filePath)) {
+                filePath = util::joinPath(
+                    meshSet.m_rootDir,
+                    data.path);
+            }
         }
 
         try {
-            loader.loadAnimations(
-                *meshSet.m_rig,
-                data.name,
-                filePath);
+            auto& rig = *meshSet.m_rig;
+
+            if (!data.path.empty()) {
+                loader.loadAnimations(
+                    rig,
+                    data.name,
+                    filePath);
+            }
+
+            // map clips
+            for (const auto& clipData : data.clips) {
+                const auto& uniqueName = clipData.getUniqueName(data.name);
+                auto* clip = rig.m_clipContainer.findClipByUniqueName(uniqueName);
+                if (clip) {
+                    clip->m_id = SID(clipData.name);
+                }
+            }
         }
         catch (animation::AnimationNotFoundError ex) {
             KI_CRITICAL(fmt::format("SCENE_ERROR: LOAD_ANIMATION - {}", ex.what()));

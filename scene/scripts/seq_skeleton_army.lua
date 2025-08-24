@@ -3,17 +3,17 @@ local cmd = self.cmd
 
 --printf("START: name=%s, clone=%d\n", node:get_name(), node:get_clone_index())
 
-local ANIM_IDLE = util.sid("master:Idle")
-local ANIM_IDLE_2 = util.sid("master:Idle2")
-local ANIM_HIT = util.sid("master:Hit")
+local ANIM_IDLE = util.sid("idle")
+local ANIM_IDLE_2 = util.sid("idle_2")
+local ANIM_HIT = util.sid("hit")
 
-local ANIM_WALK_1 = util.sid("master:Walk01")
-local ANIM_WALK_2 = util.sid("master:Walk02")
-local ANIM_RUN = util.sid("master:Run")
+local ANIM_WALK_1 = util.sid("walk_1")
+local ANIM_WALK_2 = util.sid("walk_2")
+local ANIM_RUN = util.sid("run")
 
-local ANIM_SWING_HEAVY = util.sid("master:SwingHeavy")
-local ANIM_SWING_NORMAL = util.sid("master:SwingNormal")
-local ANIM_SWING_QUICK = util.sid("master:SwingQuick")
+local ANIM_SWING_HEAVY = util.sid("swing_heavy")
+local ANIM_SWING_NORMAL = util.sid("swing_normal")
+local ANIM_SWING_QUICK = util.sid("swing_quick")
 
 local rnd = math.random
 

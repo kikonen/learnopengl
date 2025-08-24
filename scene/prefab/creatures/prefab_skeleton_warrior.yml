@@ -33,17 +33,53 @@ prefab:
         shadow_program: shadow
       base_scale: 0.01375
       scale: 2
-  xphysics:
-    body:
-      type: capsule
-      density: 0.01
-      rot: [90, 0, 0]
-      max_angular_velocity: 0
-      force_axis: true
-    geom:
-      type: capsule
-      category: [npc]
-      collision: [world, player]
-      size: [0.25, 0.75, 0]
-      xoffset: [0, 0, -0.77]
-      offset: [0, 0, -0.35]
+      animations:
+        - clips:
+          - name: death
+            clip: Death
+          - name: hit
+            clip: Hit
+          - name: hit_2
+            clip: Hit2
+          - name: idle
+            clip: Idle
+          - name: idle_2
+            clip: Idle2
+          - name: idle_hold_sword
+            clip: IdleHoldSword
+          - name: jump
+            hit: Jump
+          - name: resurrection
+            clip: Resurrection
+          - name: run
+            clip: Run
+          - name: standup_1
+            clip: StandUp01
+          - name: standup_2
+            clip: StandUp02
+          - name: standup_3
+            clip: StandUp03
+          - name: swing_heavy
+            clip: SwingHeavy
+          - name: swing_normal
+            clip: SwingNormal
+          - name: swing_quick
+            clip: SwingQuick
+          - name: walk_1
+            clip: Walk01
+          - name: walk_2
+            clip: Walk02
+          - name: walk_back
+            clip: WalkBack
+          - name: walk_left
+            clip: WalkLeft
+          - name: walk_right
+            clip: WalkRight
+          - name: cast_spell
+            clip: CastSpell
+          - name: jump_begin
+            clip: BeginJump
+          - name: jump_lopp
+            clip: JumpLoop
+          - name: jump_land
+            clip: LandFromJump

@@ -44,32 +44,32 @@ types:
       path: prefab/creatures/prefab_wolf.yml
     script: |
       cmd:animation_play(
-        { name = "walk:Unreal Take" })
+        { name = "walk" })
   - id: lion
     prefab:
       path: prefab/creatures/prefab_lion.yml
     xscript_file: scripts/cow_audio
     script: |
       cmd:animation_play(
-        { name = "walk:Take 001" })
+        { name = "walk" })
   - id: deinodonte
     prefab:
       path: prefab/creatures/prefab_deinodonte.yml
     script: |
       cmd:animation_play(
-        { name = "idle:Take 001" })
+        { name = "idle" })
   - id: elf
     prefab:
       path: prefab/characters/prefab_elf.yml
     script: |
       cmd:animation_play(
-        { name = "walk:Idle" })
+        { name = "idle" })
   - id: scavenger
     prefab:
       path: prefab/characters/prefab_scavenger.yml
     script: |
       cmd:animation_play(
-        { name = "master:Take 001" })
+        { name = "default" })
   - id: skeleton
     prefab:
       path: prefab/creatures/prefab_skeleton.yml
@@ -78,7 +78,7 @@ types:
       enabled: true
     script: |
       cmd:animation_play(
-        { name = "master:Idle" });
+        { name = "idle" });
   - id: cube
     mesh:
       path: texture_cube_4/texture_cube_4.obj

@@ -59,11 +59,11 @@ types:
       update: true
     xscript: |
       cmd:animation_play(
-        { name = "master:SwingNormal" });
-  - xid: prefab_skeleton
+        { name = "swing_normal" });
+  - id: prefab_skeleton
     script: |
       self.cmd:animation_play(
-        { name = "master:Idle" });
+        { name = "idle" });
   - xid: helmet
     meshes:
       - name: helmet

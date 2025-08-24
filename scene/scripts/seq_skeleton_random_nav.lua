@@ -6,13 +6,13 @@ if not State.explode then
 (function()
   print("Register STATE")
 
-  local ANIM_IDLE = util.sid("master:Idle")
-  local ANIM_IDLE_2 = util.sid("master:Idle2")
-  local ANIM_HIT = util.sid("master:Hit")
+  local ANIM_IDLE = util.sid("idle")
+  local ANIM_IDLE_2 = util.sid("idle_2")
+  local ANIM_HIT = util.sid("hit")
 
-  local ANIM_SWING_HEAVY = util.sid("master:SwingHeavy")
-  local ANIM_SWING_NORMAL = util.sid("master:SwingNormal")
-  local ANIM_SWING_QUICK = util.sid("master:SwingQuick")
+local ANIM_SWING_HEAVY = util.sid("swing_heavy")
+local ANIM_SWING_NORMAL = util.sid("swing_normal")
+local ANIM_SWING_QUICK = util.sid("swing_quick")
 
   local EXPLODE_SID = util.sid("explode")
 

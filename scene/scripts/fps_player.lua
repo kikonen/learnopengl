@@ -3,9 +3,9 @@ local cmd = self.cmd
 
 --printf("START: name=%s, clone=%d\n", node:get_name(), node:get_clone_index())
 
-local ANIM_IDLE = util.sid("idle:Unreal Take")
-local ANIM_RUN = util.sid("run:Unreal Take")
-local ANIM_FIRE = util.sid("fire:Unreal Take")
+local ANIM_IDLE = util.sid("idle")
+local ANIM_RUN = util.sid("run")
+local ANIM_FIRE = util.sid("fire")
 
 local function attack(wid)
   --print(string.format("START: %d", id))

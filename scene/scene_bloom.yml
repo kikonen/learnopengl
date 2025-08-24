@@ -86,7 +86,7 @@ types:
         selection_program: selection
     script: |
       cmd:animation_play(
-        { name = "master:SwingNormal" });
+        { name = "swing_normal" });
   - id: skeleton_army_2
     prefab:
       path: prefab/creatures/prefab_skeleton.yml
@@ -94,7 +94,7 @@ types:
       enabled: true
     script: |
       cmd:animation_play(
-        { name = "master:Idle" });
+        { name = "idle" });
   - id: mirror_ball
     mesh:
       path: glass_ball

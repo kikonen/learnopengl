@@ -7,6 +7,13 @@ skybox:
 script:
   scripts:
     - path: lib/common
+
+includes:
+  - path: prefab/util/include_grid.yml
+  - path: prefab/util/include_origo_marker.yml
+  - path: prefab/util/include_fps_counter.yml
+  - path: prefab/characters/include_player_fps.yml
+
 types:
   - id: player
     type: origo
@@ -71,11 +78,27 @@ types:
       static_bounds: true
       no_shadow: true
     script: |
+      --cmd:animation_play(
+      --  { name="rifle_idle_aim" } )
       cmd:animation_play(
-        { name="idle_aim:Unreal Take" } )
+        { name="rifle_idle_aim" } )
+      --cmd:animation_play(
+      --  { name="pistol_fire" } )
   - id: automatic_rifle
     prefab:
       path: prefab/weapons/prefab_automatic_rifle.yml
+    script: |
+      cmd:animation_play(
+        { name="rifle_fire_aim" } )
+  - id: pistol
+    prefab:
+      path: prefab/weapons/prefab_pistol.yml
+    xflags:
+      static_bounds: true
+      no_shadow: true
+    xscript: |
+      cmd:animation_play(
+        { name = "fire", repeat=true })
 
 nodes:
   - id: player
@@ -101,6 +124,9 @@ nodes:
       - pos: [1, 1, 0]
       - pos: [1, 1.5, 0]
         type: automatic_rifle_2
+  - type: pistol
+    pos: [-1, 1, 0]
+    scale: 5
   - type: automatic_rifle_hands
     pos: [2, 1, 0]
     #scale: 5
@@ -108,6 +134,9 @@ nodes:
       - type: automatic_rifle
         attach:
           socket: rifle
+      - type: pistol
+        attach:
+          socket: pistol
     clones:
       - pos: [2, 1, 0]
       # - pos: [2, 1.5, 0]

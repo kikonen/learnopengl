@@ -51,5 +51,13 @@ namespace loader {
         void loadAnimation(
             const loader::DocNode& node,
             AnimationData& data) const;
+
+        void loadClips(
+            const loader::DocNode& node,
+            std::vector<ClipData>& clips) const;
+
+        void loadClip(
+            const loader::DocNode& node,
+            ClipData& data) const;
     };
 }

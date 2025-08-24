@@ -1,0 +1,19 @@
+---
+prefab:
+  meshes:
+    - name: prefab_pistol
+      alias: pistol
+      path: fbx/weapons/fab/FPS_Pistol_Knife/Mesh/Pistol/SK_Pistol.FBX
+      materials:
+        - alias: "*"
+          base: fbx/weapons/fab/FPS_Pistol_Knife/Textures/Pistol
+          map_kd: T_Pistol_Albedo_01.PNG
+          map_normal: Pistol_Normals.PNG
+          map_mrao: T_Pistol_mrao
+      default_programs: true
+      base_scale: 0.01
+      flags:
+        use_sockets: true
+      animations:
+        - name: fire
+          path: fbx/weapons/fab/FPS_Pistol_Knife/Animations/Arms/Anim_Pistol_Knife_Shot.FBX
