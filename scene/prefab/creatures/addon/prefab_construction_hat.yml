@@ -10,5 +10,5 @@ prefab:
         shadow_program: shadow
       flags:
         use_sockets: true
-      xbase_scale: 0.01
-      base_rotation: [-90, 0, 0]
+      base_scale: 0.01
+      xbase_rotation: [-90, 0, 0]
