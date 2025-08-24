@@ -250,8 +250,8 @@ nodes:
   - type: prefab_fps_counter
     id: fps_counter
     pos: [2, -2, -1]
-  - id: prefab_player_fps
-    pos: [0, 9, 15]
+  - type: prefab_player_fps
+    pos: [0, 0, 15]
     xrotation: [0, 180, 0]
     active: true
   - type: dir_light
