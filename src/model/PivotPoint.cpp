@@ -3,9 +3,9 @@
 #include "model/NodeType.h"
 
 
-glm::vec3 PivotPoint::resolve(const NodeType* type) const
+glm::vec3 PivotPoint::resolveAlignment(const NodeType* type) const
 {
-    glm::vec3 pivot{ 0.f };
+    glm::vec3 align{ 0.f };
 
     const auto& aabb = type->getAABB();
     const auto& volume = aabb.getVolume();
@@ -13,27 +13,25 @@ glm::vec3 PivotPoint::resolve(const NodeType* type) const
     for (int i = 0; i < 3; i++) {
         switch (m_alignment[i]) {
         case PivotAlignment::origin:
-            pivot[i] = 0.f;
+            align[i] = 0.f;
             break;
         case PivotAlignment::middle:
-            pivot[i] = volume[i];
+            align[i] = volume[i];
             break;
         case PivotAlignment::top:
-            pivot[i] = aabb.m_max.y;
+            align[i] = aabb.m_max.y;
             break;
         case PivotAlignment::bottom:
-            pivot[i] = aabb.m_min.y;
+            align[i] = aabb.m_min.y;
             break;
         case PivotAlignment::right:
-            pivot[i] = aabb.m_min.x;
+            align[i] = aabb.m_min.x;
             break;
         case PivotAlignment::left:
-            pivot[i] = aabb.m_max.x;
+            align[i] = aabb.m_max.x;
             break;
         }
     }
 
-    pivot += m_offset;
-
-    return pivot;
+    return align;
 }

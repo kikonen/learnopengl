@@ -73,7 +73,7 @@ void NodeState::updateModelMatrix(const NodeState& parent) noexcept
     const float aspectScaleX = m_scale.x * m_baseScale.x;// / aspect;
     const float aspectScaleY = m_scale.y * m_baseScale.y;
 
-    const auto hasPivot = m_pivot != ZERO_VEC;
+    const auto hasPivot = m_pivotAlignment != ZERO_VEC || m_pivotOffset != ZERO_VEC;
 
     {
         g_translateMatrix[3].x = m_position.x * aspect;
@@ -85,32 +85,31 @@ void NodeState::updateModelMatrix(const NodeState& parent) noexcept
         g_scaleMatrix[2].z = m_scale.z * m_baseScale.z;
 
         if (hasPivot) {
-            g_pivotMatrix[3].x = -m_pivot.x * aspectScaleX;
-            g_pivotMatrix[3].y = -m_pivot.y * aspectScaleY;
-            g_pivotMatrix[3].z = -m_pivot.z * m_scale.z * m_baseScale.z;
+            const auto pivot = m_pivotAlignment + m_pivotOffset;
 
-            g_invPivotMatrix[3].x = m_pivot.x * aspectScaleX;
-            g_invPivotMatrix[3].y = m_pivot.y * aspectScaleY;
-            g_invPivotMatrix[3].z = m_pivot.z * m_scale.z * m_baseScale.z;
+            g_pivotMatrix[3].x = -pivot.x * aspectScaleX;
+            g_pivotMatrix[3].y = -pivot.y * aspectScaleY;
+            g_pivotMatrix[3].z = -pivot.z * m_scale.z * m_baseScale.z;
+
+            g_invPivotMatrix[3].x = pivot.x * aspectScaleX;
+            g_invPivotMatrix[3].y = pivot.y * aspectScaleY;
+            g_invPivotMatrix[3].z = pivot.z * m_scale.z * m_baseScale.z;
         }
     }
 
-    const auto& rotationMatrix = glm::toMat4(m_rotation * m_baseRotation);
+    auto rotationMatrix = glm::toMat4(m_rotation * m_baseRotation);
+    if (hasPivot) {
+        rotationMatrix = g_invPivotMatrix *
+            rotationMatrix *
+            g_pivotMatrix;
+    }
 
     const auto& parentModelMatrix = m_socketBaseIndex
         ? parent.m_modelMatrix *
             glm::inverse(glm::scale(glm::mat4{ 1.f }, parent.m_scale * parent.m_baseScale))
         : parent.m_modelMatrix;
 
-    if (hasPivot) {
-        m_modelMatrix = parentModelMatrix *
-            g_translateMatrix *
-            g_invPivotMatrix *
-            rotationMatrix *
-            g_pivotMatrix *
-            g_scaleMatrix;
-    }
-    else {
+    {
         //m_modelMatrix = parentModelMatrix *
         //    g_translateMatrix *
         //    rotationMatrix *
@@ -134,7 +133,7 @@ void NodeState::updateModelMatrix(const NodeState& parent) noexcept
     }
 
     {
-        m_worldPivot = m_modelMatrix * glm::vec4{ m_pivot, 1.f };
+        m_worldPivot = m_modelMatrix * glm::vec4{ m_pivotAlignment + m_pivotOffset, 1.f };
     }
 
     m_dirty = false;

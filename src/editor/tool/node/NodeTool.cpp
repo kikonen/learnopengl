@@ -179,6 +179,21 @@ namespace editor
         auto& state = node->modifyState();
 
         {
+            glm::vec3 pivotAlignment = state.getPivotAlignment();
+            // , "%.3f", ImGuiInputTextFlags_EnterReturnsTrue
+            if (ImGui::InputFloat3("Pivot alignment", glm::value_ptr(pivotAlignment))) {
+                state.setPivotAlignment(pivotAlignment);
+            }
+        }
+        {
+            glm::vec3 pivotOffset = state.getPivotOffset();
+            // , "%.3f", ImGuiInputTextFlags_EnterReturnsTrue
+            if (ImGui::InputFloat3("Pivot offset", glm::value_ptr(pivotOffset))) {
+                state.setPivotOffset(pivotOffset);
+            }
+        }
+
+        {
             glm::vec3 pos = state.getPosition();
             // , "%.3f", ImGuiInputTextFlags_EnterReturnsTrue
             if (ImGui::InputFloat3("Position", glm::value_ptr(pos))) {
