@@ -35,7 +35,7 @@
 #include "engine/UpdateViewContext.h"
 
 #include "render/Camera.h"
-#include "render/DebugContext.h"
+#include "debug/DebugContext.h"
 #include "render/Batch.h"
 #include "render/RenderContext.h"
 #include "render/WindowBuffer.h"
@@ -121,7 +121,7 @@ void Scene::destroy()
 void Scene::prepareRT()
 {
     const auto& assets = Assets::get();
-    const auto& dbg = render::DebugContext::get();
+    const auto& dbg = debug::DebugContext::get();
 
     std::cout << "RT: worker=" << util::isWorkerThread() << '\n';
 
@@ -395,7 +395,7 @@ void Scene::postRT(const UpdateContext& ctx)
 void Scene::updateViewRT(const UpdateViewContext& ctx)
 {
     const auto& assets = ctx.m_assets;
-    const auto& dbg = render::DebugContext::get();
+    const auto& dbg = debug::DebugContext::get();
 
     {
         m_viewportRenderer->setGammaCorrectEnabled(dbg.m_gammaCorrectEnabled);
@@ -772,7 +772,7 @@ ki::node_id Scene::getObjectID(const RenderContext& ctx, float screenPosX, float
 void Scene::prepareUBOs(const RenderContext& ctx)
 {
     //KI_INFO_OUT(fmt::format("ts: {}", m_data.u_time));
-    const render::DebugContext& dbg = ctx.m_dbg;
+    const debug::DebugContext& dbg = ctx.m_dbg;
     auto& assets = ctx.m_assets;
     auto& selectionRegistry = *m_registry->m_selectionRegistry;
 

@@ -36,7 +36,7 @@ namespace editor {
         void draw(
             const RenderContext& ctx,
             Scene* scene,
-            render::DebugContext& dbg) override;
+            debug::DebugContext& dbg) override;
 
         EditorState& getState()
         {
@@ -47,7 +47,7 @@ namespace editor {
         void renderMenuBar(
             const RenderContext& ctx,
             Scene* scene,
-            render::DebugContext& dbg);
+            debug::DebugContext& dbg);
 
     private:
         EditorState m_state;

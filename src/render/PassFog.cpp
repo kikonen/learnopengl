@@ -6,7 +6,7 @@
 #include "shader/Program.h"
 #include "shader/ProgramRegistry.h"
 
-#include "render/DebugContext.h"
+#include "debug/DebugContext.h"
 #include "render/RenderContext.h"
 #include "render/FrameBuffer.h"
 

@@ -16,7 +16,7 @@
 #include "event/Dispatcher.h"
 
 #include "render/RenderContext.h"
-#include "render/DebugContext.h"
+#include "debug/DebugContext.h"
 
 #include "registry/Registry.h"
 
@@ -74,7 +74,7 @@ namespace editor
     void ConsoleFrame::draw(
         const RenderContext& ctx,
         Scene* scene,
-        render::DebugContext& dbg)
+        debug::DebugContext& dbg)
     {
         const auto& assets = ctx.m_assets;
 

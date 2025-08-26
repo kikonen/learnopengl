@@ -1,6 +1,6 @@
 #include "PhysicsRenderer.h"
 
-#include "render/DebugContext.h"
+#include "debug/DebugContext.h"
 
 #include "shader/Shader.h"
 #include "shader/Program.h"
@@ -21,7 +21,7 @@ void PhysicsRenderer::render(
     const RenderContext& ctx,
     render::FrameBuffer* targetBuffer)
 {
-    const auto& dbg = render::DebugContext::get();
+    const auto& dbg = debug::DebugContext::get();
     if (!dbg.m_physicsShowObjects) return;
 
     const auto meshes = dbg.m_physicsMeshesRT.load();

@@ -11,7 +11,7 @@ namespace script::binding
         //if (!player) return;
 
         //{
-        //    const auto& dbg = render::DebugContext::get();
+        //    const auto& dbg = debug::DebugContext::get();
 
         //    glm::vec2 screenPos{ m_window->m_input->mouseX, m_window->m_input->mouseY };
 

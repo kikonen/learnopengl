@@ -6,7 +6,7 @@
 
 #include "engine/UpdateViewContext.h"
 
-#include "render/DebugContext.h"
+#include "debug/DebugContext.h"
 #include "render/RenderContext.h"
 #include "render/ScreenTri.h"
 #include "render/FrameBuffer.h"
@@ -48,7 +48,7 @@ void ViewportRenderer::prepareRT(
 void ViewportRenderer::updateRT(const UpdateViewContext& ctx)
 {
     const auto& assets = ctx.m_assets;
-    auto& dbg = render::DebugContext::get();
+    auto& dbg = debug::DebugContext::get();
 
     for (auto& viewport : ViewportRegistry::get().getViewports()) {
         viewport->updateRT(ctx);

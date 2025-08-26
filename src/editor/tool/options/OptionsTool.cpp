@@ -44,7 +44,7 @@ namespace editor
     void OptionsTool::drawMenuImpl(
         const RenderContext& ctx,
         Scene* scene,
-        render::DebugContext& dbg)
+        debug::DebugContext& dbg)
     {
         if (ImGui::BeginMenu("Options"))
         {
@@ -56,7 +56,7 @@ namespace editor
     void OptionsTool::drawImpl(
         const RenderContext& ctx,
         Scene* scene,
-        render::DebugContext& dbg)
+        debug::DebugContext& dbg)
     {
         if (ImGui::CollapsingHeader("Options"))
         {
@@ -76,7 +76,7 @@ namespace editor
 
     void OptionsTool::renderOptions(
         const RenderContext& ctx,
-        render::DebugContext& dbg)
+        debug::DebugContext& dbg)
     {
         {
             ImGui::Checkbox("Show volume", &dbg.m_showVolume);

@@ -103,7 +103,7 @@ int SampleApp::onInit()
 
     {
         const auto& assets = Assets::get();
-        auto& dbg = render::DebugContext::modify();
+        auto& dbg = debug::DebugContext::modify();
 
         dbg.m_glfwSwapInterval = assets.glfwSwapInterval;
         dbg.m_gBufferScale = assets.gBufferScale;
@@ -276,7 +276,7 @@ int SampleApp::onUpdate(const ki::RenderClock& clock) {
     }
 
     {
-        auto& dbg = render::DebugContext::modify();
+        auto& dbg = debug::DebugContext::modify();
 
         glfwSwapInterval(dbg.m_glfwSwapInterval);
     }
@@ -669,7 +669,7 @@ void SampleApp::shoot(
     if (!player) return;
 
     {
-        const auto& dbg = render::DebugContext::get();
+        const auto& dbg = debug::DebugContext::get();
 
         glm::vec2 screenPos{ input.mouseX, input.mouseY };
 
@@ -716,7 +716,7 @@ void SampleApp::shootCallback(
     if (!player) return;
 
     {
-        const auto& dbg = render::DebugContext::get();
+        const auto& dbg = debug::DebugContext::get();
 
         if (hit.isHit && g_hitElapsed >= HIT_RATE) {
             g_hitElapsed -= HIT_RATE;

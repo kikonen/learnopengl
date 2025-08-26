@@ -90,7 +90,7 @@ namespace editor {
     void EditorFrame::draw(
         const RenderContext& ctx,
         Scene* scene,
-        render::DebugContext& dbg)
+        debug::DebugContext& dbg)
     {
         const auto& assets = ctx.m_assets;
 
@@ -147,7 +147,7 @@ namespace editor {
     void EditorFrame::renderMenuBar(
         const RenderContext& ctx,
         Scene* scene,
-        render::DebugContext& dbg)
+        debug::DebugContext& dbg)
     {
         if (ImGui::BeginMenuBar())
         {

@@ -49,7 +49,7 @@ namespace editor
     void ViewportTool::drawImpl(
         const RenderContext& ctx,
         Scene* scene,
-        render::DebugContext& dbg)
+        debug::DebugContext& dbg)
     {
         if (ImGui::CollapsingHeader("Viewport"))
         {
@@ -69,7 +69,7 @@ namespace editor
     void ViewportTool::renderBufferDebug(
         const RenderContext& ctx,
         Scene* scene,
-        render::DebugContext& dbg)
+        debug::DebugContext& dbg)
     {
         const auto& assets = ctx.m_assets;
 

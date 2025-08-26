@@ -21,7 +21,7 @@
 #include "engine/PrepareContext.h"
 #include "engine/UpdateViewContext.h"
 
-#include "render/DebugContext.h"
+#include "debug/DebugContext.h"
 #include "render/Camera.h"
 #include "render/RenderContext.h"
 #include "render/FrameBuffer.h"
@@ -73,7 +73,7 @@ void LayerRenderer::prepareRT(
 void LayerRenderer::updateRT(const UpdateViewContext& ctx)
 {
     const auto& assets = ctx.m_assets;
-    auto& dbg = render::DebugContext::get();
+    auto& dbg = debug::DebugContext::get();
 
     int w;
     int h;

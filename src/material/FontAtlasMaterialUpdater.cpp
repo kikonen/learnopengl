@@ -8,7 +8,7 @@
 #include "kigl/GLState.h"
 
 #include "render/RenderContext.h"
-#include "render/DebugContext.h"
+#include "debug/DebugContext.h"
 
 #include "text/FontAtlas.h"
 #include "text/FontRegistry.h"
@@ -38,7 +38,7 @@ void FontAtlasMaterialUpdater::prepareRT(
 void FontAtlasMaterialUpdater::render(
     const RenderContext& ctx)
 {
-    const auto& dbg = render::DebugContext::get();
+    const auto& dbg = debug::DebugContext::get();
 
     bool changed = m_fontId != dbg.m_showFontId;
 

@@ -37,7 +37,7 @@
 
 #include "render/Camera.h"
 #include "render/RenderContext.h"
-#include "render/DebugContext.h"
+#include "debug/DebugContext.h"
 
 #include "BatchCommand.h"
 

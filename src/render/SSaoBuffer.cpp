@@ -6,7 +6,7 @@
 
 #include "engine/UpdateViewContext.h"
 
-#include "render/DebugContext.h"
+#include "debug/DebugContext.h"
 #include "render/RenderContext.h"
 #include "render/FrameBuffer.h"
 
@@ -25,7 +25,7 @@ namespace render {
         float bufferScale)
     {
         const auto& assets = ctx.m_assets;
-        auto& dbg = render::DebugContext::get();
+        auto& dbg = debug::DebugContext::get();
 
         const auto& res = ctx.m_resolution;
         const float ssaoScale = 0.5f;

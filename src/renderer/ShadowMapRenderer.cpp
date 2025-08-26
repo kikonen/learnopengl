@@ -17,7 +17,7 @@
 
 #include "render/FrameBuffer.h"
 #include "render/RenderContext.h"
-#include "render/DebugContext.h"
+#include "debug/DebugContext.h"
 #include "render/NodeCollection.h"
 
 #include "registry/Registry.h"

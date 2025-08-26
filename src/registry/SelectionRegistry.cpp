@@ -22,7 +22,7 @@
 #include "script/CommandEngine.h"
 #include "script/command/RotateNode.h"
 
-#include "render/DebugContext.h"
+#include "debug/DebugContext.h"
 
 #include "material/Material.h"
 
@@ -110,7 +110,7 @@ void SelectionRegistry::selectNode(
     pool::NodeHandle nodeHandle,
     bool append)
 {
-    const auto& dbg = render::DebugContext::get();
+    const auto& dbg = debug::DebugContext::get();
 
     if (!append) {
         m_selected.clear();

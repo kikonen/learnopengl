@@ -48,7 +48,7 @@ namespace editor
     void CameraTool::drawImpl(
         const RenderContext& ctx,
         Scene* scene,
-        render::DebugContext& dbg)
+        debug::DebugContext& dbg)
     {
         if (ImGui::CollapsingHeader("Camera"))
         {
@@ -67,7 +67,7 @@ namespace editor
 
     void CameraTool::renderCamera(
         const RenderContext& ctx,
-        render::DebugContext& dbg)
+        debug::DebugContext& dbg)
     {
         const auto& nr = NodeRegistry::get();
         const auto& cr = ControllerRegistry::get();

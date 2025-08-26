@@ -19,7 +19,7 @@
 
 #include "model/Node.h"
 
-#include "render/DebugContext.h"
+#include "debug/DebugContext.h"
 
 #include "mesh/generator/PrimitiveGenerator.h"
 #include "mesh/Mesh.h"

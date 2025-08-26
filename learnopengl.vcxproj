@@ -481,7 +481,7 @@
     <ClCompile Include="src\registry\VaoRegistry.cpp" />
     <ClCompile Include="src\renderer\DecalRenderer.cpp" />
     <ClCompile Include="src\renderer\PhysicsRenderer.cpp" />
-    <ClCompile Include="src\render\DebugContext.cpp" />
+    <ClCompile Include="src\debug\DebugContext.cpp" />
     <ClCompile Include="src\scene\AnimationUpdater.cpp" />
     <ClCompile Include="src\scene\Updater.cpp" />
     <ClCompile Include="src\script\command\AnimationPlay.cpp" />
@@ -938,7 +938,7 @@
     <ClInclude Include="src\registry\VaoRegistry.h" />
     <ClInclude Include="src\renderer\DecalRenderer.h" />
     <ClInclude Include="src\renderer\PhysicsRenderer.h" />
-    <ClInclude Include="src\render\DebugContext.h" />
+    <ClInclude Include="src\debug\DebugContext.h" />
     <ClInclude Include="src\render\size.h" />
     <ClInclude Include="src\scene\AnimationUpdater.h" />
     <ClInclude Include="src\animation\Animator.h" />

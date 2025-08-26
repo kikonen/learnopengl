@@ -9,7 +9,7 @@
 #include "engine/UpdateContext.h"
 #include "engine/PrepareContext.h"
 
-#include "render/DebugContext.h"
+#include "debug/DebugContext.h"
 
 #include "Decal.h"
 #include "DecalBuffer.h"

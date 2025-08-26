@@ -8,7 +8,7 @@ class Scene;
 class Input;
 struct InputState;
 
-namespace render
+namespace debug
 {
     struct DebugContext;
 }
@@ -28,22 +28,22 @@ namespace editor
         void drawMenu(
             const RenderContext& ctx,
             Scene* scene,
-            render::DebugContext& dbg);
+            debug::DebugContext& dbg);
 
         void draw(
             const RenderContext& ctx,
             Scene* scene,
-            render::DebugContext& dbg);
+            debug::DebugContext& dbg);
 
         virtual void drawMenuImpl(
             const RenderContext& ctx,
             Scene* scene,
-            render::DebugContext& dbg) { }
+            debug::DebugContext& dbg) { }
 
         virtual void drawImpl(
             const RenderContext& ctx,
             Scene* scene,
-            render::DebugContext& dbg) {}
+            debug::DebugContext& dbg) {}
 
         virtual void processInputs(
             const RenderContext& ctx,

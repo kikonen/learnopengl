@@ -4,7 +4,7 @@
 
 #include "engine/UpdateContext.h"
 
-#include "render/DebugContext.h"
+#include "debug/DebugContext.h"
 
 #include "Program.h"
 #include "FileEntryCache.h"
@@ -71,7 +71,7 @@ void ProgramRegistry::dirtyCheck(const UpdateContext& ctx)
 {
     std::lock_guard lock(m_programs_lock);
 
-    const auto& dbg = render::DebugContext::get();
+    const auto& dbg = debug::DebugContext::get();
 
     std::vector<ki::program_id> dirty;
 

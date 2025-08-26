@@ -33,7 +33,7 @@ void Frame::render(const RenderContext& ctx)
 }
 
 void Frame::trackImGuiState(
-    render::DebugContext& dbg)
+    debug::DebugContext& dbg)
 {
     auto& input = *m_window->m_input;
 

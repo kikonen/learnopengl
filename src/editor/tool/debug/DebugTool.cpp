@@ -54,7 +54,7 @@ namespace editor
     void DebugTool::drawImpl(
         const RenderContext& ctx,
         Scene* scene,
-        render::DebugContext& dbg)
+        debug::DebugContext& dbg)
     {
         if (ImGui::CollapsingHeader("Physics"))
         {
@@ -83,7 +83,7 @@ namespace editor
 
     void DebugTool::renderPhysicsDebug(
         const RenderContext& ctx,
-        render::DebugContext& dbg)
+        debug::DebugContext& dbg)
     {
         ImGui::Checkbox("Physics update enabled", &dbg.m_physicsUpdateEnabled);
         ImGui::Checkbox("Physics show objects", &dbg.m_physicsShowObjects);
@@ -95,7 +95,7 @@ namespace editor
 
     void DebugTool::renderEffectDebug(
         const RenderContext& ctx,
-        render::DebugContext& dbg)
+        debug::DebugContext& dbg)
     {
         {
             ImGui::Spacing();
@@ -277,7 +277,7 @@ namespace editor
 
     void DebugTool::renderLayersDebug(
         const RenderContext& ctx,
-        render::DebugContext& dbg)
+        debug::DebugContext& dbg)
     {
         for (auto& layer : dbg.m_layers)
         {

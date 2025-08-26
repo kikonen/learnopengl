@@ -18,7 +18,7 @@ namespace editor
     void Tool::drawMenu(
         const RenderContext& ctx,
         Scene* scene,
-        render::DebugContext& dbg)
+        debug::DebugContext& dbg)
     {
         ImGui::PushID(m_toolId.c_str());
         drawMenuImpl(ctx, scene, dbg);
@@ -28,7 +28,7 @@ namespace editor
     void Tool::draw(
         const RenderContext& ctx,
         Scene* scene,
-        render::DebugContext& dbg)
+        debug::DebugContext& dbg)
     {
         ImGui::PushID(m_toolId.c_str());
         drawImpl(ctx, scene, dbg);

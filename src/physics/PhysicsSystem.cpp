@@ -17,7 +17,7 @@
 #include "mesh/Mesh.h"
 #include "mesh/LodMesh.h"
 
-#include "render/DebugContext.h"
+#include "debug/DebugContext.h"
 
 #include "engine/UpdateContext.h"
 
@@ -56,7 +56,7 @@ namespace {
 
     void initSurface(dSurfaceParameters& surface)
     {
-        auto& dbg = render::DebugContext::modify();
+        auto& dbg = debug::DebugContext::modify();
 
         // http://monsterden.net/software/ragdoll-pyode-tutorial
         // c.setMu(500) # 0-5 = very slippery, 50-500 = normal, 5000 = very sticky
@@ -332,7 +332,7 @@ namespace physics
         m_elapsedTotal += ctx.m_clock.elapsedSecs;
         if (m_elapsedTotal < m_initialDelay) return;
 
-        auto& dbg = render::DebugContext::modify();
+        auto& dbg = debug::DebugContext::modify();
 
         //std::lock_guard lock{ m_lock };
 
@@ -613,7 +613,7 @@ namespace physics
         //if (debugCounter < 2) return;
         debugCounter = 0;
 
-        auto& dbg = render::DebugContext::modify();
+        auto& dbg = debug::DebugContext::modify();
 
         // https://stackoverflow.com/questions/29541387/is-shared-ptr-swap-thread-safe
         if (dbg.m_physicsShowObjects) {

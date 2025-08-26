@@ -9,7 +9,7 @@ UpdateViewContext::UpdateViewContext(
     Registry* registry,
     int width,
     int height,
-    const render::DebugContext& dbg)
+    const debug::DebugContext& dbg)
     : m_assets{ Assets::get() },
     m_clock(clock),
     m_state{ kigl::GLState::get() },

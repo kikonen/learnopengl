@@ -95,7 +95,7 @@ namespace editor
     void NodeTool::drawImpl(
         const RenderContext& ctx,
         Scene* scene,
-        render::DebugContext& dbg)
+        debug::DebugContext& dbg)
     {
         if (ImGui::CollapsingHeader("Node"))
         {
@@ -114,7 +114,7 @@ namespace editor
 
     void NodeTool::renderNode(
         const RenderContext& ctx,
-        render::DebugContext& dbg)
+        debug::DebugContext& dbg)
     {
         renderNodeSelector(ctx, dbg);
 
@@ -137,7 +137,7 @@ namespace editor
 
     void NodeTool::renderNodeSelector(
         const RenderContext& ctx,
-        render::DebugContext& dbg)
+        debug::DebugContext& dbg)
     {
         const auto& nr = NodeRegistry::get();
 
@@ -171,7 +171,7 @@ namespace editor
 
     void NodeTool::renderNodeProperties(
         const RenderContext& ctx,
-        render::DebugContext& dbg)
+        debug::DebugContext& dbg)
     {
         auto* node = m_state.m_selectedNode.toNode();
         if (!node) return;
@@ -238,7 +238,7 @@ namespace editor
 
     void NodeTool::renderTypeProperties(
         const RenderContext& ctx,
-        render::DebugContext& dbg)
+        debug::DebugContext& dbg)
     {
         auto* node = m_state.m_selectedNode.toNode();
         if (!node) return;
@@ -272,7 +272,7 @@ namespace editor
 
     void NodeTool::renderRigProperties(
         const RenderContext& ctx,
-        render::DebugContext& dbg)
+        debug::DebugContext& dbg)
     {
         if (!m_state.m_selectedNode) return;
         if (!m_state.m_selectedMesh) return;
@@ -385,7 +385,7 @@ namespace editor
 
     void NodeTool::renderNodeDebug(
         const RenderContext& ctx,
-        render::DebugContext& dbg)
+        debug::DebugContext& dbg)
     {
         ImGui::Checkbox("Node debug", &dbg.m_nodeDebugEnabled);
 
@@ -431,7 +431,7 @@ namespace editor
 
     void NodeTool::renderAnimationDebug(
         const RenderContext& ctx,
-        render::DebugContext& dbg)
+        debug::DebugContext& dbg)
     {
         const auto& assets = ctx.m_assets;
         ImGui::Checkbox("Pause", &dbg.m_animationPaused);
@@ -509,7 +509,7 @@ namespace editor
         auto& selectionRegistry = *ctx.m_registry->m_selectionRegistry;
         auto& commandEngine = script::CommandEngine::get();
 
-        auto& dbg = render::DebugContext::modify();
+        auto& dbg = debug::DebugContext::modify();
 
         const bool selectMode = inputState.ctrl;
 
