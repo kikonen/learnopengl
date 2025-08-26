@@ -11,7 +11,7 @@
 
 #include "gui/Input.h"
 
-#include "render/DebugContext.h"
+#include "debug/DebugContext.h"
 
 class Window;
 class Scene;
@@ -79,7 +79,7 @@ public:
 
     std::shared_ptr<Window> m_window;
 
-    render::DebugContext& m_dbg;
+    debug::DebugContext& m_dbg;
 
 protected:
     ki::RenderClock m_clock;

@@ -7,7 +7,7 @@
 
 #include "model/Node.h"
 
-#include "render/DebugContext.h"
+#include "debug/DebugContext.h"
 #include "render/RenderContext.h"
 #include "render/FrameBuffer.h"
 #include "render/CollectionRender.h"

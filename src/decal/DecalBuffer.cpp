@@ -13,7 +13,7 @@
 #include "engine/PrepareContext.h"
 
 #include "render/RenderContext.h"
-#include "render/DebugContext.h"
+#include "debug/DebugContext.h"
 
 #include "registry/Registry.h"
 

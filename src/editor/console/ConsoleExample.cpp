@@ -12,7 +12,7 @@
 #include "script/ScriptSystem.h"
 
 #include "render/RenderContext.h"
-#include "render/DebugContext.h"
+#include "debug/DebugContext.h"
 
 namespace console {
     // Demonstrate creating a simple console window, with scrolling, filtering, completion and history.

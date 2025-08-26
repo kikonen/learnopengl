@@ -43,7 +43,7 @@ namespace editor
     void StatusTool::drawImpl(
         const RenderContext& ctx,
         Scene* scene,
-        render::DebugContext& dbg)
+        debug::DebugContext& dbg)
     {
         //if (ImGui::CollapsingHeader("Status"))
         {
@@ -62,7 +62,7 @@ namespace editor
 
     void StatusTool::renderStatus(
         const RenderContext& ctx,
-        render::DebugContext& dbg)
+        debug::DebugContext& dbg)
     {
         auto& window = m_editor.getWindow();
 

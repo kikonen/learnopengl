@@ -7,7 +7,7 @@
 class Assets;
 class Registry;
 
-namespace render {
+namespace debug {
     struct DebugContext;
 }
 
@@ -29,7 +29,7 @@ public:
 
 public:
     const Assets& m_assets;
-    const render::DebugContext& m_dbg;
+    const debug::DebugContext& m_dbg;
     const ki::RenderClock& m_clock;
 
     Registry* const m_registry;

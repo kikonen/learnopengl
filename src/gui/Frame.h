@@ -15,7 +15,7 @@ class Scene;
 class Input;
 struct InputState;
 
-namespace render {
+namespace debug {
     struct DebugContext;
 }
 
@@ -38,7 +38,7 @@ public:
     virtual void draw(
         const RenderContext& ctx,
         Scene* scene,
-        render::DebugContext& dbg) = 0;
+        debug::DebugContext& dbg) = 0;
 
     virtual void render(const RenderContext& ctx);
 
@@ -49,7 +49,7 @@ public:
 
 protected:
     void trackImGuiState(
-        render::DebugContext& dbg);
+        debug::DebugContext& dbg);
 
 protected:
     bool m_prepared = false;

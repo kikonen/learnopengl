@@ -72,7 +72,7 @@ namespace editor
     void NodeTypeTool::drawImpl(
         const RenderContext& ctx,
         Scene* scene,
-        render::DebugContext& dbg)
+        debug::DebugContext& dbg)
     {
         if (ImGui::CollapsingHeader("Type"))
         {
@@ -87,7 +87,7 @@ namespace editor
 
     void NodeTypeTool::renderTypeEdit(
         const RenderContext& ctx,
-        render::DebugContext& dbg)
+        debug::DebugContext& dbg)
     {
         renderTypeSelector(ctx, dbg);
 
@@ -109,7 +109,7 @@ namespace editor
 
     void NodeTypeTool::renderTypeSelector(
         const RenderContext& ctx,
-        render::DebugContext& dbg)
+        debug::DebugContext& dbg)
     {
         const auto& typeRegistry = NodeTypeRegistry::get();
 
@@ -139,7 +139,7 @@ namespace editor
 
     void NodeTypeTool::renderTypeProperties(
         const RenderContext& ctx,
-        render::DebugContext& dbg)
+        debug::DebugContext& dbg)
     {
         auto* type = m_state.m_selectedType.toType();
         if (!type) return;

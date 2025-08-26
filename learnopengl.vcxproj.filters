@@ -717,7 +717,7 @@
     <ClCompile Include="src\animation\animation_util.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\render\DebugContext.cpp">
+    <ClCompile Include="src\debug\DebugContext.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\animation\MetadataLoader.cpp">
@@ -2285,7 +2285,7 @@
     <ClInclude Include="src\shader\DebugUBO.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\render\DebugContext.h">
+    <ClInclude Include="src\debug\DebugContext.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\loader\SocketData.h">

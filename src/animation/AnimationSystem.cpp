@@ -22,7 +22,7 @@
 
 #include "pool/NodeHandle.h"
 
-#include "render/DebugContext.h"
+#include "debug/DebugContext.h"
 
 #include "animation/RigContainer.h"
 #include "animation/BoneInfo.h"
@@ -333,7 +333,7 @@ namespace animation
         animation::AnimationState& state,
         Node* node)
     {
-        auto& dbg = render::DebugContext::modify();
+        auto& dbg = debug::DebugContext::modify();
 
         auto& boneRegistry = *m_boneRegistry;
         auto& socketRegistry = *m_socketRegistry;

@@ -15,7 +15,7 @@ namespace editor
         void drawImpl(
             const RenderContext& ctx,
             Scene* scene,
-            render::DebugContext& dbg) override;
+            debug::DebugContext& dbg) override;
 
         void processInputs(
             const RenderContext& ctx,
@@ -28,7 +28,7 @@ namespace editor
         void renderBufferDebug(
             const RenderContext& ctx,
             Scene* scene,
-            render::DebugContext& dbg);
+            debug::DebugContext& dbg);
 
     private:
         ViewportToolState m_state;

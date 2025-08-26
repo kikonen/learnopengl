@@ -30,7 +30,7 @@ namespace editor
         void drawImpl(
             const RenderContext& ctx,
             Scene* scene,
-            render::DebugContext& dbg) override;
+            debug::DebugContext& dbg) override;
 
         void processInputs(
             const RenderContext& ctx,
@@ -49,31 +49,31 @@ namespace editor
 
         void renderNode(
             const RenderContext& ctx,
-            render::DebugContext& dbg);
+            debug::DebugContext& dbg);
 
         void renderNodeSelector(
             const RenderContext& ctx,
-            render::DebugContext& dbg);
+            debug::DebugContext& dbg);
 
         void renderNodeProperties(
             const RenderContext& ctx,
-            render::DebugContext& dbg);
+            debug::DebugContext& dbg);
 
         void renderTypeProperties(
             const RenderContext& ctx,
-            render::DebugContext& dbg);
+            debug::DebugContext& dbg);
 
         void renderRigProperties(
             const RenderContext& ctx,
-            render::DebugContext& dbg);
+            debug::DebugContext& dbg);
 
         void renderNodeDebug(
             const RenderContext& ctx,
-            render::DebugContext& dbg);
+            debug::DebugContext& dbg);
 
         void renderAnimationDebug(
             const RenderContext& ctx,
-            render::DebugContext& dbg);
+            debug::DebugContext& dbg);
 
     private:
         void onSelectNode(

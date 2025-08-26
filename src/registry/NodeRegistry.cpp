@@ -56,7 +56,7 @@
 
 #include "generator/TextGenerator.h"
 
-#include "render/DebugContext.h"
+#include "debug/DebugContext.h"
 
 #include "script/ScriptSystem.h"
 
@@ -375,7 +375,7 @@ void NodeRegistry::snapshotPending()
     }
 
     {
-        auto& dbg = render::DebugContext::modify();
+        auto& dbg = debug::DebugContext::modify();
         dbg.m_physicsMeshesPending.exchange(dbg.m_physicsMeshesWT);
 
         std::shared_ptr<std::vector<mesh::MeshInstance>> tmp;
@@ -393,7 +393,7 @@ void NodeRegistry::snapshotRT()
     m_entities.resize(m_snapshotsRT.size());
     m_dirtyEntities.resize(m_snapshotsRT.size());
 
-    auto& dbg = render::DebugContext::modify();
+    auto& dbg = debug::DebugContext::modify();
 
     if (dbg.m_physicsMeshesPending.load()) {
         dbg.m_physicsMeshesRT.exchange(dbg.m_physicsMeshesPending);
@@ -446,6 +446,8 @@ std::pair<int, int> NodeRegistry::updateEntity(const UpdateContext& ctx)
     int maxDirty = INT32_MIN;
 
     for (int i = 0; i < m_snapshotsRT.size(); i++) {
+        if (m_cachedNodesRT.size() < i + 1) continue;
+
         auto* node = m_cachedNodesRT[i];
         const auto& state = m_states[i];
         const auto& snapshot = m_snapshotsRT[i];

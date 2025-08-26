@@ -8,7 +8,7 @@
 
 #include "engine/UpdateViewContext.h"
 
-#include "render/DebugContext.h"
+#include "debug/DebugContext.h"
 #include "render/RenderContext.h"
 
 namespace render

@@ -14,11 +14,15 @@
 
 #include "ki/RenderClock.h"
 
+namespace debug
+{
+    struct DebugContext;
+}
+
 namespace render {
     //class NodeDraw;
     class Batch;
     class RenderData;
-    struct DebugContext;
     class Camera;
     class NodeCollection;
 }
@@ -73,7 +77,7 @@ public:
         float farPlane,
         int width,
         int height,
-        const render::DebugContext& dbg);
+        const debug::DebugContext& dbg);
 
     ~RenderContext();
 
@@ -127,7 +131,7 @@ public:
     const std::string m_name;
     const RenderContext* const m_parent;
 
-    const render::DebugContext& m_dbg;
+    const debug::DebugContext& m_dbg;
 
     const Assets& m_assets;
     const ki::RenderClock& m_clock;

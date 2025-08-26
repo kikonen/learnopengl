@@ -15,7 +15,7 @@ namespace editor
         void drawImpl(
             const RenderContext& ctx,
             Scene* scene,
-            render::DebugContext& dbg) override;
+            debug::DebugContext& dbg) override;
 
         void processInputs(
             const RenderContext& ctx,
@@ -27,15 +27,15 @@ namespace editor
     protected:
         void renderTypeEdit(
             const RenderContext& ctx,
-            render::DebugContext& dbg);
+            debug::DebugContext& dbg);
 
         void renderTypeSelector(
             const RenderContext& ctx,
-            render::DebugContext& dbg);
+            debug::DebugContext& dbg);
 
         void renderTypeProperties(
             const RenderContext& ctx,
-            render::DebugContext& dbg);
+            debug::DebugContext& dbg);
 
     private:
         void onSelectType(

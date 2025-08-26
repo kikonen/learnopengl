@@ -43,7 +43,7 @@ namespace editor
         void draw(
             const RenderContext& ctx,
             Scene* scene,
-            render::DebugContext& dbg) override;
+            debug::DebugContext& dbg) override;
 
         int textEditCallback(ImGuiInputTextCallbackData* data);
 

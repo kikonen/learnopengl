@@ -16,10 +16,10 @@ namespace mesh {
     struct MeshInstance;
 }
 
-namespace render {
+namespace debug {
     struct DebugContext {
-        static const render::DebugContext& get() noexcept;
-        static render::DebugContext& modify() noexcept;
+        static const debug::DebugContext& get() noexcept;
+        static debug::DebugContext& modify() noexcept;
 
         int m_glfwSwapInterval{ 1 };
 

@@ -11,7 +11,7 @@ namespace kigl {
     class GLState;
 }
 
-namespace render {
+namespace debug {
     struct DebugContext;
 }
 
@@ -25,12 +25,12 @@ public:
         Registry* registry,
         int width,
         int height,
-        const render::DebugContext& dbg);
+        const debug::DebugContext& dbg);
 
 public:
     const Assets& m_assets;
 
-    const render::DebugContext& m_dbg;
+    const debug::DebugContext& m_dbg;
 
     const ki::RenderClock& m_clock;
 

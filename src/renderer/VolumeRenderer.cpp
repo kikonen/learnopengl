@@ -13,7 +13,7 @@
 #include "mesh/Mesh.h"
 #include "mesh/MeshInstance.h"
 
-#include "render/DebugContext.h"
+#include "debug/DebugContext.h"
 #include "render/RenderContext.h"
 
 #include "shader/Shader.h"
@@ -54,7 +54,7 @@ void VolumeRenderer::render(
     const RenderContext& ctx,
     render::FrameBuffer* targetBuffer)
 {
-    const auto& dbg = render::DebugContext::get();
+    const auto& dbg = debug::DebugContext::get();
     if (!(dbg.m_showVolume || dbg.m_showSelectionVolume)) return;
 
     auto& nodeRegistry = *ctx.m_registry->m_nodeRegistry;

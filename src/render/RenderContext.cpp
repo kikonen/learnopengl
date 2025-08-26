@@ -21,7 +21,7 @@
 #include "render/RenderData.h"
 #include "render/FrameBuffer.h"
 #include "render/Batch.h"
-#include "render/DebugContext.h"
+#include "debug/DebugContext.h"
 
 
 RenderContext::RenderContext(
@@ -106,7 +106,7 @@ RenderContext::RenderContext(
     float farPlane,
     int width,
     int height,
-    const render::DebugContext& dbg)
+    const debug::DebugContext& dbg)
     : m_name{ name },
     m_parent{ parent },
     m_assets{ Assets::get() },
@@ -164,7 +164,7 @@ void RenderContext::prepareUBOs()
 {
     //KI_INFO_OUT(fmt::format("ts: {}", m_data.u_time));
     auto* mainCamera = getMainCamera();
-    const render::DebugContext& dbg = m_dbg;
+    const debug::DebugContext& dbg = m_dbg;
     auto& assets = m_assets;
 
     {

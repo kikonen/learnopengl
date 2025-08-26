@@ -25,7 +25,7 @@
 
 #include "render/RenderContext.h"
 #include "render/NodeCollection.h"
-#include "render/DebugContext.h"
+#include "debug/DebugContext.h"
 #include "render/Batch.h"
 #include "render/FrameBuffer.h"
 #include "render/DrawContext.h"

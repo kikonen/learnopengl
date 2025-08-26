@@ -6,7 +6,7 @@
 
 #include "shader/Shader.h"
 
-#include "render/DebugContext.h"
+#include "debug/DebugContext.h"
 #include "render/RenderContext.h"
 #include "render/GBuffer.h"
 #include "render/FrameBuffer.h"
@@ -22,7 +22,7 @@ namespace render {
     void EffectBuffer::updateRT(const UpdateViewContext& ctx, float bufferScale)
     {
         const auto& assets = Assets::get();
-        auto& dbg = render::DebugContext::get();
+        auto& dbg = debug::DebugContext::get();
 
         const auto& res = ctx.m_resolution;
 

@@ -15,7 +15,7 @@
 
 #include "mesh/LodMesh.h"
 
-#include "render/DebugContext.h"
+#include "debug/DebugContext.h"
 #include "render/Camera.h"
 #include "render/RenderContext.h"
 #include "render/Batch.h"
@@ -122,7 +122,7 @@ void ObjectIdRenderer::prepareRT(
 void ObjectIdRenderer::updateRT(const UpdateViewContext& ctx)
 {
     const auto& assets = ctx.m_assets;
-    auto& dbg = render::DebugContext::get();
+    auto& dbg = debug::DebugContext::get();
 
     const auto& res = ctx.m_resolution;
     const auto bufferScale = dbg.getGBufferScale();

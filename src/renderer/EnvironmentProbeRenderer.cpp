@@ -13,7 +13,7 @@
 #include "mesh/Mesh.h"
 #include "mesh/MeshInstance.h"
 
-#include "render/DebugContext.h"
+#include "debug/DebugContext.h"
 
 #include "shader/Shader.h"
 #include "shader/Program.h"
@@ -50,7 +50,7 @@ void EnvironmentProbeRenderer::render(
     const RenderContext& ctx,
     render::FrameBuffer* targetBuffer)
 {
-    const auto& dbg = render::DebugContext::get();
+    const auto& dbg = debug::DebugContext::get();
     if (!dbg.m_showEnvironmentProbe) return;
 
     auto& nodeRegistry = NodeRegistry::get();

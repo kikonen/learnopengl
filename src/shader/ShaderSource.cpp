@@ -15,7 +15,7 @@
 #include "Program.h"
 #include "FileEntryCache.h"
 
-#include "render/DebugContext.h"
+#include "debug/DebugContext.h"
 
 namespace {
     const std::string INC_GLOBALS{ "globals.glsl" };
@@ -259,7 +259,7 @@ void ShaderSource::appendDefines(
     std::vector<std::string>& lines,
     const Program& program)
 {
-    const auto& dbg = render::DebugContext::get();
+    const auto& dbg = debug::DebugContext::get();
 
     lines.push_back(fmt::format("#define _{}_ 1", getTypeName(shaderType)));
 

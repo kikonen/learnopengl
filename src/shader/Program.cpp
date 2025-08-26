@@ -30,7 +30,7 @@
 
 #include "ProgramRegistry.h"
 
-#include "render/DebugContext.h"
+#include "debug/DebugContext.h"
 
 
 namespace {
