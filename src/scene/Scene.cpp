@@ -836,8 +836,8 @@ void Scene::prepareUBOs(const RenderContext& ctx)
             dbg.m_wireframeLineWidth,
 
             dbg.m_entityId,
-            dbg.m_animationBoneIndex,
-            dbg.m_animationDebugBoneWeight,
+            dbg.m_animation.m_boneIndex,
+            dbg.m_animation.m_debugBoneWeight,
 
             dbg.m_lightEnabled,
             dbg.m_normalMapEnabled,

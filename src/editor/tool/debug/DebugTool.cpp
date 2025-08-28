@@ -85,8 +85,10 @@ namespace editor
         const RenderContext& ctx,
         debug::DebugContext& dbg)
     {
-        ImGui::Checkbox("Physics update enabled", &dbg.m_physicsUpdateEnabled);
-        ImGui::Checkbox("Physics show objects", &dbg.m_physicsShowObjects);
+        auto& physics = dbg.m_physics;
+
+        ImGui::Checkbox("Physics update enabled", &physics.m_updateEnabled);
+        ImGui::Checkbox("Physics show objects", &physics.m_showObjects);
 
         //ImGui::Checkbox("Physics show objects", &dbg.m_physicsShowObjects)
         //{

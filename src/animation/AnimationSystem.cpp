@@ -333,12 +333,13 @@ namespace animation
         animation::AnimationState& state,
         Node* node)
     {
-        auto& dbg = debug::DebugContext::modify();
+        const auto& dbg = debug::DebugContext::modify();
+        const auto& anim = dbg.m_animation;
 
         auto& boneRegistry = *m_boneRegistry;
         auto& socketRegistry = *m_socketRegistry;
 
-        if (dbg.m_animationPaused) return;
+        if (anim.m_paused) return;
 
         auto& playA = state.m_current;
         auto& playB = state.m_next;
@@ -352,7 +353,7 @@ namespace animation
                 playB.m_active = false;
             }
 
-            if (!playA.m_active && !dbg.m_animationDebugEnabled)
+            if (!playA.m_active && !anim.m_debugEnabled)
                 return;
         }
 
@@ -383,19 +384,19 @@ namespace animation
 
             float blendFactor = -1.f;
 
-            if (dbg.m_animationDebugEnabled) {
-                playA.m_clipIndex = dbg.m_animationClipIndexA;
-                playB.m_clipIndex = dbg.m_animationClipIndexB;
+            if (anim.m_debugEnabled) {
+                playA.m_clipIndex = anim.m_clipIndexA;
+                playB.m_clipIndex = anim.m_clipIndexB;
 
-                playA.m_speed = dbg.m_animationSpeedA;
-                playB.m_speed = dbg.m_animationSpeedB;
+                playA.m_speed = anim.m_speedA;
+                playB.m_speed = anim.m_speedB;
 
-                blendFactor = dbg.m_animationBlendFactor;
+                blendFactor = anim.m_blendFactor;
 
-                if (dbg.m_animationManualTime) {
-                    currentTime = dbg.m_animationCurrentTime;
-                    playA.m_startTime = dbg.m_animationStartTimeA;
-                    playB.m_startTime = dbg.m_animationStartTimeB;
+                if (anim.m_manualTime) {
+                    currentTime = anim.m_currentTime;
+                    playA.m_startTime = anim.m_startTimeA;
+                    playB.m_startTime = anim.m_startTimeB;
                 }
                 else {
                     if (playA.m_startTime < 1000.f) {
@@ -406,7 +407,7 @@ namespace animation
                     }
                 }
 
-                if (!dbg.m_animationBlend) {
+                if (!anim.m_blend) {
                     playB.m_clipIndex = -1;
                     playB.m_active = false;
                 }
@@ -445,7 +446,7 @@ namespace animation
                      playA.m_startTime,
                      playA.m_speed,
                      currentTime,
-                     dbg.m_animationForceFirstFrame);
+                     anim.m_forceFirstFrame);
             }
             else {
                  changed = animator.animateBlended(
@@ -462,7 +463,7 @@ namespace animation
                      playB.m_speed,
                      blendFactor,
                      currentTime,
-                     dbg.m_animationForceFirstFrame);
+                     anim.m_forceFirstFrame);
             }
 
             if (m_onceOnly) {

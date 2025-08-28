@@ -57,40 +57,41 @@ namespace {
     void initSurface(dSurfaceParameters& surface)
     {
         auto& dbg = debug::DebugContext::modify();
+        auto& physicsDbg = dbg.m_physics;
 
         // http://monsterden.net/software/ragdoll-pyode-tutorial
         // c.setMu(500) # 0-5 = very slippery, 50-500 = normal, 5000 = very sticky
 
         int mode = 0;
-        if (dbg.m_physics_dContactMu2) mode |= dContactMu2;
-        if (dbg.m_physics_dContactSlip1) mode |= dContactSlip1;
-        if (dbg.m_physics_dContactSlip2) mode |= dContactSlip2;
-        if (dbg.m_physics_dContactRolling) mode |= dContactRolling;
-        if (dbg.m_physics_dContactBounce) mode |= dContactBounce;
-        if (dbg.m_physics_dContactMotion1) mode |= dContactMotion1;
-        if (dbg.m_physics_dContactMotion2) mode |= dContactMotion2;
-        if (dbg.m_physics_dContactMotionN) mode |= dContactMotionN;
-        if (dbg.m_physics_dContactSoftCFM) mode |= dContactSoftCFM;
-        if (dbg.m_physics_dContactSoftERP) mode |= dContactSoftERP;
-        if (dbg.m_physics_dContactApprox1) mode |= dContactApprox1;
-        if (dbg.m_physics_dContactFDir1) mode |= dContactFDir1;
+        if (physicsDbg.m_dContactMu2) mode |= dContactMu2;
+        if (physicsDbg.m_dContactSlip1) mode |= dContactSlip1;
+        if (physicsDbg.m_dContactSlip2) mode |= dContactSlip2;
+        if (physicsDbg.m_dContactRolling) mode |= dContactRolling;
+        if (physicsDbg.m_dContactBounce) mode |= dContactBounce;
+        if (physicsDbg.m_dContactMotion1) mode |= dContactMotion1;
+        if (physicsDbg.m_dContactMotion2) mode |= dContactMotion2;
+        if (physicsDbg.m_dContactMotionN) mode |= dContactMotionN;
+        if (physicsDbg.m_dContactSoftCFM) mode |= dContactSoftCFM;
+        if (physicsDbg.m_dContactSoftERP) mode |= dContactSoftERP;
+        if (physicsDbg.m_dContactApprox1) mode |= dContactApprox1;
+        if (physicsDbg.m_dContactFDir1) mode |= dContactFDir1;
 
         surface.mode = mode;
 
-        surface.mu = dbg.m_physics_mu;
-        surface.mu2 = dbg.m_physics_mu2;
-        surface.rho = dbg.m_physics_rho;
-        surface.rho2 = dbg.m_physics_rho2;
-        surface.rhoN = dbg.m_physics_rhoN;
-        surface.slip1 = dbg.m_physics_slip1;
-        surface.slip2 = dbg.m_physics_slip2;
-        surface.bounce = dbg.m_physics_bounce;
-        surface.bounce_vel = dbg.m_physics_bounce_vel;
-        surface.motion1 = dbg.m_physics_motion1;
-        surface.motion2 = dbg.m_physics_motion2;
-        surface.motionN = dbg.m_physics_motionN;
-        surface.soft_erp = dbg.m_physics_soft_erp;
-        surface.soft_cfm = dbg.m_physics_soft_cfm;
+        surface.mu = physicsDbg.m_mu;
+        surface.mu2 = physicsDbg.m_mu2;
+        surface.rho = physicsDbg.m_rho;
+        surface.rho2 = physicsDbg.m_rho2;
+        surface.rhoN = physicsDbg.m_rhoN;
+        surface.slip1 = physicsDbg.m_slip1;
+        surface.slip2 = physicsDbg.m_slip2;
+        surface.bounce = physicsDbg.m_bounce;
+        surface.bounce_vel = physicsDbg.m_bounce_vel;
+        surface.motion1 = physicsDbg.m_motion1;
+        surface.motion2 = physicsDbg.m_motion2;
+        surface.motionN = physicsDbg.m_motionN;
+        surface.soft_erp = physicsDbg.m_soft_erp;
+        surface.soft_cfm = physicsDbg.m_soft_cfm;
     }
 
     void initTemplates()
@@ -333,6 +334,7 @@ namespace physics
         if (m_elapsedTotal < m_initialDelay) return;
 
         auto& dbg = debug::DebugContext::modify();
+        auto& physicsDbg = dbg.m_physics;
 
         //std::lock_guard lock{ m_lock };
 
@@ -354,7 +356,7 @@ namespace physics
             m_invokeCount++;
             m_stepCount += steps;
 
-            if (dbg.m_physicsUpdateEnabled)
+            if (physicsDbg.m_updateEnabled)
             {
                 for (int i = 0; i < steps; i++) {
                     if (!*m_alive) return;
@@ -614,15 +616,16 @@ namespace physics
         debugCounter = 0;
 
         auto& dbg = debug::DebugContext::modify();
+        auto& physicsDbg = dbg.m_physics;
 
         // https://stackoverflow.com/questions/29541387/is-shared-ptr-swap-thread-safe
-        if (dbg.m_physicsShowObjects) {
+        if (physicsDbg.m_showObjects) {
             auto meshes = m_meshGenerator->generateMeshes(false);
-            dbg.m_physicsMeshesWT.store(meshes);
+            physicsDbg.m_meshesWT.store(meshes);
         }
         else {
             std::shared_ptr<std::vector<mesh::MeshInstance>> tmp;
-            dbg.m_physicsMeshesWT.store(tmp);
+            physicsDbg.m_meshesWT.store(tmp);
         }
     }
 

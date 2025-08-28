@@ -22,9 +22,11 @@ void PhysicsRenderer::render(
     render::FrameBuffer* targetBuffer)
 {
     const auto& dbg = debug::DebugContext::get();
-    if (!dbg.m_physicsShowObjects) return;
+    const auto& physicsDbg = dbg.m_physics;
 
-    const auto meshes = dbg.m_physicsMeshesRT.load();
+    if (!physicsDbg.m_showObjects) return;
+
+    const auto meshes = physicsDbg.m_meshesRT.load();
     if (!meshes || meshes->empty()) return;
 
     drawObjects(ctx, targetBuffer, *meshes);
