@@ -376,10 +376,12 @@ void NodeRegistry::snapshotPending()
 
     {
         auto& dbg = debug::DebugContext::modify();
-        dbg.m_physicsMeshesPending.exchange(dbg.m_physicsMeshesWT);
+        auto& physicsDbg = dbg.m_physics;
+
+        physicsDbg.m_meshesPending.exchange(physicsDbg.m_meshesWT);
 
         std::shared_ptr<std::vector<mesh::MeshInstance>> tmp;
-        dbg.m_physicsMeshesWT.store(tmp);
+        physicsDbg.m_meshesWT.store(tmp);
     }
 }
 
@@ -394,12 +396,13 @@ void NodeRegistry::snapshotRT()
     m_dirtyEntities.resize(m_snapshotsRT.size());
 
     auto& dbg = debug::DebugContext::modify();
+    auto& physicsDbg = dbg.m_physics;
 
-    if (dbg.m_physicsMeshesPending.load()) {
-        dbg.m_physicsMeshesRT.exchange(dbg.m_physicsMeshesPending);
+    if (physicsDbg.m_meshesPending.load()) {
+        physicsDbg.m_meshesRT.exchange(physicsDbg.m_meshesPending);
 
         std::shared_ptr<std::vector<mesh::MeshInstance>> tmp;
-        dbg.m_physicsMeshesPending.store(tmp);
+        physicsDbg.m_meshesPending.store(tmp);
     }
 }
 

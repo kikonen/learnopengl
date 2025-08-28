@@ -12,9 +12,8 @@
 
 #include "asset/LayerInfo.h"
 
-namespace mesh {
-    struct MeshInstance;
-}
+#include "PhysicsDebug.h"
+#include "AnimationDebug.h"
 
 namespace debug {
     struct DebugContext {
@@ -67,27 +66,6 @@ namespace debug {
         bool m_cubeMapRenderWater{ true };
 
         glm::vec3 m_selectionAxis{ 0.f };
-
-        bool m_animationDebugEnabled{ false };
-        bool m_animationPaused{ false };
-        bool m_animationForceFirstFrame{ false };
-
-        bool m_animationManualTime{ 0 };
-        float m_animationCurrentTime{ 0 };
-
-        int m_animationClipIndexA{ -1 };
-        float m_animationStartTimeA{ 0 };
-        float m_animationSpeedA{ 1.f };
-
-        bool m_animationBlend{ false };
-        float m_animationBlendFactor{ 0.f };
-
-        int m_animationClipIndexB{ -1 };
-        float m_animationStartTimeB{ 0 };
-        float m_animationSpeedB{ 1.f };
-
-        int m_animationBoneIndex{ 0 };
-        bool m_animationDebugBoneWeight{ false };
 
         bool m_normalMapEnabled{ true };
 
@@ -142,40 +120,10 @@ namespace debug {
         bool m_showSelectionVolume{ false };
         bool m_showEnvironmentProbe{ false };
 
-        bool m_physicsUpdateEnabled{ true };
-        bool m_physicsShowObjects{ false };
+        PhysicsDebug m_physics;
+        AnimationDebug m_animation;
 
-        bool m_physics_dContactMu2{ false };
-        bool m_physics_dContactSlip1{ false };
-        bool m_physics_dContactSlip2{ false };
-        bool m_physics_dContactRolling{ false };
-        bool m_physics_dContactMotion1{ false };
-        bool m_physics_dContactMotion2{ false };
-        bool m_physics_dContactMotionN{ false };
-        bool m_physics_dContactBounce{ false };
-        bool m_physics_dContactSoftCFM{ false };
-        bool m_physics_dContactSoftERP{ false };
-        bool m_physics_dContactApprox1{ false };
-        bool m_physics_dContactFDir1{ false };
-
-        float m_physics_mu{ 0.f };
-        float m_physics_mu2{ 0.f };
-        float m_physics_rho{ 0.f };
-        float m_physics_rho2{ 0.f };
-        float m_physics_rhoN{ 0.f };
-        float m_physics_slip1{ 0.f };
-        float m_physics_slip2{ 0.f };
-        float m_physics_bounce{ 0.f };
-        float m_physics_bounce_vel{ 0.f };
-        float m_physics_motion1{ 0.f };
-        float m_physics_motion2{ 0.f };
-        float m_physics_motionN{ 0.f };
-        float m_physics_soft_erp{ 0.f };
-        float m_physics_soft_cfm{ 0.f };
-
-        std::atomic<std::shared_ptr<std::vector<mesh::MeshInstance>>> m_physicsMeshesWT;
-        std::atomic<std::shared_ptr<std::vector<mesh::MeshInstance>>> m_physicsMeshesPending;
-        std::atomic<std::shared_ptr<std::vector<mesh::MeshInstance>>> m_physicsMeshesRT;
+        void prepare();
 
         float getGBufferScale() const noexcept
         {

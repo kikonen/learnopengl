@@ -42,9 +42,10 @@ namespace render
     void PassDebugPhysics::initRender(const RenderContext& ctx)
     {
         const auto& dbg = ctx.m_dbg;
+        const auto& physicsDbg = dbg.m_physics;
 
         m_enabled = ctx.m_allowDrawDebug &&
-            dbg.m_physicsShowObjects;
+            physicsDbg.m_showObjects;
     }
 
     PassContext PassDebugPhysics::render(

@@ -318,6 +318,8 @@
     <ClCompile Include="src\component\definition\LightDefinition.cpp" />
     <ClCompile Include="src\component\definition\ParticleGeneratorDefinition.cpp" />
     <ClCompile Include="src\component\definition\TextGeneratorDefinition.cpp" />
+    <ClCompile Include="src\debug\AnimationDebug.cpp" />
+    <ClCompile Include="src\debug\PhysicsDebug.cpp" />
     <ClCompile Include="src\decal\DecalBuffer.cpp" />
     <ClCompile Include="src\decal\DecalCollection.cpp" />
     <ClCompile Include="src\decal\DecalDefinition.cpp" />
@@ -737,6 +739,8 @@
     <ClInclude Include="src\component\LightType.h" />
     <ClInclude Include="src\component\definition\ParticleGeneratorDefinition.h" />
     <ClInclude Include="src\component\definition\PhysicsDefinition.h" />
+    <ClInclude Include="src\debug\AnimationDebug.h" />
+    <ClInclude Include="src\debug\PhysicsDebug.h" />
     <ClInclude Include="src\decal\DecalBuffer.h" />
     <ClInclude Include="src\decal\DecalCollection.h" />
     <ClInclude Include="src\decal\DecalDefinition.h" />

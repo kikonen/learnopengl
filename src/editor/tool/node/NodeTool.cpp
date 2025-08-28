@@ -434,41 +434,43 @@ namespace editor
         debug::DebugContext& dbg)
     {
         const auto& assets = ctx.m_assets;
-        ImGui::Checkbox("Pause", &dbg.m_animationPaused);
-        ImGui::Checkbox("Animation debug", &dbg.m_animationDebugEnabled);
+        auto& anim = dbg.m_animation;
 
-        if (dbg.m_animationDebugEnabled) {
+        ImGui::Checkbox("Pause", &anim.m_paused);
+        ImGui::Checkbox("Animation debug", &anim.m_debugEnabled);
+
+        if (anim.m_debugEnabled) {
             ImGui::SeparatorText("Animation blending");
 
-            ImGui::Checkbox("Force first frame", &dbg.m_animationForceFirstFrame);
-            if (!dbg.m_animationForceFirstFrame) {
-                ImGui::Checkbox("Manual time", &dbg.m_animationManualTime);
-                if (dbg.m_animationManualTime) {
-                    ImGui::InputFloat("Current time", &dbg.m_animationCurrentTime, 0.01f, 0.1f);
+            ImGui::Checkbox("Force first frame", &anim.m_forceFirstFrame);
+            if (!anim.m_forceFirstFrame) {
+                ImGui::Checkbox("Manual time", &anim.m_manualTime);
+                if (anim.m_manualTime) {
+                    ImGui::InputFloat("Current time", &anim.m_currentTime, 0.01f, 0.1f);
                 }
             }
 
             ImGui::SeparatorText("Clip A");
-            ImGui::InputInt("Clip A", &dbg.m_animationClipIndexA, 1, 10);
-            ImGui::InputFloat("Clip A start", &dbg.m_animationStartTimeA, 0.01f, 0.1f);
-            ImGui::InputFloat("Clip A speed", &dbg.m_animationSpeedA, 0.01f, 0.1f);
+            ImGui::InputInt("Clip A", &anim.m_clipIndexA, 1, 10);
+            ImGui::InputFloat("Clip A start", &anim.m_startTimeA, 0.01f, 0.1f);
+            ImGui::InputFloat("Clip A speed", &anim.m_speedA, 0.01f, 0.1f);
 
             ImGui::SeparatorText("Clip B");
-            ImGui::Checkbox("Blend animation", &dbg.m_animationBlend);
+            ImGui::Checkbox("Blend animation", &anim.m_blend);
 
-            if (dbg.m_animationBlend) {
-                ImGui::InputFloat("Blend factor", &dbg.m_animationBlendFactor, 0.01f, 0.1f);
+            if (anim.m_blend) {
+                ImGui::InputFloat("Blend factor", &anim.m_blendFactor, 0.01f, 0.1f);
 
-                ImGui::InputInt("Clip B", &dbg.m_animationClipIndexB, 1, 10);
-                ImGui::InputFloat("Clip B start", &dbg.m_animationStartTimeB, 0.01f, 0.1f);
-                ImGui::InputFloat("Clip B speed", &dbg.m_animationSpeedB, 0.01f, 0.1f);
+                ImGui::InputInt("Clip B", &anim.m_clipIndexB, 1, 10);
+                ImGui::InputFloat("Clip B start", &anim.m_startTimeB, 0.01f, 0.1f);
+                ImGui::InputFloat("Clip B speed", &anim.m_speedB, 0.01f, 0.1f);
             }
 
             if (assets.glslUseDebug) {
                 ImGui::SeparatorText("Bone visualization");
 
-                ImGui::Checkbox("Bone debug", &dbg.m_animationDebugBoneWeight);
-                ImGui::InputInt("Bone index", &dbg.m_animationBoneIndex, 1, 10);
+                ImGui::Checkbox("Bone debug", &anim.m_debugBoneWeight);
+                ImGui::InputInt("Bone index", &anim.m_boneIndex, 1, 10);
             }
         }
     }
