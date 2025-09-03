@@ -101,6 +101,8 @@ int SampleApp::onInit()
 
     Assets::set(loadAssets());
 
+    m_dbg.prepare();
+
     return 0;
 }
 
