@@ -151,7 +151,6 @@ public:
         return m_handles[m_parentIndeces[entityIndex]].toNode();
     }
 
-
     const NodeState& getParentState(uint32_t entityIndex) const noexcept
     {
         return m_states[m_parentIndeces[entityIndex]];
@@ -199,6 +198,10 @@ public:
     {
         return m_dirtyEntities;
     }
+
+    pool::NodeHandle findTaggedChild(
+        pool::NodeHandle handle,
+        ki::tag_id tagId);
 
 private:
     void setActiveNode(pool::NodeHandle node);

@@ -25,6 +25,9 @@ namespace script::api
 
         ki::node_id lua_get_id() const noexcept;
 
+        ki::node_id lua_find_child(
+            const sol::table& lua_opt) const noexcept;
+
         const std::string& lua_get_type_name() const noexcept;
         const std::string& lua_get_name() const noexcept;
 

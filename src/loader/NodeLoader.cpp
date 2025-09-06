@@ -98,6 +98,9 @@ namespace loader {
             else if (k == "ignored_by") {
                 data.ignoredByBaseId = readId(v);
             }
+            else if (k == "tag") {
+                data.tagId = readId(v);
+            }
             else if (k == "attach") {
                 loadAttachment(v, data.attachment);
             }
@@ -240,6 +243,7 @@ namespace loader {
         df.m_aliasId = nodeData.aliasBaseId.m_path;
         df.m_typeId = SID(nodeData.typeId.m_path);
         df.m_ignoredById = nodeData.ignoredByBaseId.m_path;
+        df.m_tagId = nodeData.tagId.m_path;
 
         if (nodeData.attachment.enabled) {
             df.m_socketId = nodeData.attachment.socketId.m_path;

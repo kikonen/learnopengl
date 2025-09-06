@@ -18,6 +18,7 @@ namespace script
         int index = 0;
         ki::sid_t sid = 0;
         ki::node_id nodeId = 0;
+        ki::tag_id tagId = 0;
         float duration = 0.f;
         float speed = 1.f;
         float count = 0.f;
@@ -44,7 +45,14 @@ namespace script
 
     std::vector<script::command_id> readCommandIds(const sol::table& v) noexcept;
 
-    pool::NodeHandle getHandle(ki::node_id nodeId, pool::NodeHandle handle) noexcept;
+    pool::NodeHandle getHandle(
+        ki::node_id nodeId,
+        pool::NodeHandle handle) noexcept;
+
+    pool::NodeHandle getHandle(
+        ki::node_id nodeId,
+        pool::NodeHandle handle,
+        ki::tag_id tagId) noexcept;
 
     //glm::vec3 readVec3(const sol::table& v) noexcept;
 }

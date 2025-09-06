@@ -38,3 +38,11 @@ function run(script)
     printf("FAILED: %s\n", path)
   end
 end
+
+function SID(name)
+  return util.sid(name)
+end
+
+function SID_NAME(sid)
+  return util.sid_name(sid)
+end

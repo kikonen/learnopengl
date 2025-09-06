@@ -366,6 +366,7 @@ std::pair<pool::NodeHandle, CreateState> CompositeBuilder::createNode(
     state.m_rotation = util::degreesToQuat(nodeData.m_rotation);
     state.m_tilingX = nodeData.m_tiling.x;
     state.m_tilingY = nodeData.m_tiling.y;
+    state.m_tagId = SID(nodeData.m_tagId);
 
     if (type->m_compositeDefinition) {
         CompositeBuilder builder{ NodeRegistry::get() };

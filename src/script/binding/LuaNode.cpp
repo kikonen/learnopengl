@@ -18,6 +18,7 @@ namespace script::binding
         t["get_pos"] = &NodeAPI::lua_get_pos;
         t["get_front"] = &NodeAPI::lua_get_front;
         t["get_model_matrix"] = &NodeAPI::lua_get_model_matrix;
+        t["find_child"] = &NodeAPI::lua_find_child;
 
         t.set_function(
             "str",

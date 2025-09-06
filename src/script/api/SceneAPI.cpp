@@ -18,6 +18,8 @@ namespace {
     const inline std::string OPT_TYPE{ "type" };
     const inline std::string OPT_NODE{ "node" };
     const inline std::string OPT_PARENT{ "parent" };
+    const inline std::string OPT_SOCKET{ "socket" };
+    const inline std::string OPT_TAG{ "tag" };
     const inline std::string OPT_POS{ "pos" };
     const inline std::string OPT_ROT{ "rot" };
     const inline std::string OPT_SCALE{ "scale" };
@@ -26,6 +28,8 @@ namespace {
         ki::type_id typeId;
         ki::node_id nodeId;
         ki::node_id parentId{ 0 };
+        ki::socket_id socketId{ 0 };
+        ki::tag_id tagId{ 0 };
         glm::vec3 pos{ 0.f };
         glm::vec3 rot{ 0.f };
         glm::vec3 scale{ 1.f };
@@ -45,6 +49,12 @@ namespace {
             }
             else if (k == OPT_PARENT) {
                 opt.parentId = value.as<unsigned int>();
+            }
+            else if (k == OPT_SOCKET) {
+                opt.socketId = value.as<unsigned int>();
+            }
+            else if (k == OPT_TAG) {
+                opt.tagId = value.as<unsigned int>();
             }
             else if (k == OPT_POS) {
                 opt.pos = value.as<glm::vec3>();
@@ -84,7 +94,8 @@ namespace script::api
             CreateState state{
                 opt.pos,
                 opt.scale,
-                util::degreesToQuat(opt.rot) };
+                util::degreesToQuat(opt.rot),
+                opt.tagId};
 
             nodeId = builder.build(opt.parentId, 0, type, state);
             if (nodeId) {
@@ -112,11 +123,13 @@ namespace script::api
             glm::vec3 pos{ state.getPosition() };
             glm::quat quat{ state.getRotation() };
             glm::vec3 scale{ state.getScale() };
+            ki::tag_id tagId{ state.m_tagId };
 
             CreateState state{
                 pos,
                 scale,
-                quat };
+                quat,
+                tagId};
 
             CompositeBuilder builder{ NodeRegistry::get() };
             if (builder.build(parentId, 0, type, state)) {

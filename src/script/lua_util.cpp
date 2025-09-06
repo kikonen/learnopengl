@@ -2,11 +2,14 @@
 
 #include <fmt/format.h>
 
+#include "registry/NodeRegistry.h"
+
 namespace {
     const inline std::string OPT_AFTER{ "after" };
     const inline std::string OPT_TIME{ "time" };
     const inline std::string OPT_RELATIVE{ "relative" };
     const inline std::string OPT_SID{ "sid" };
+    const inline std::string OPT_TAG{ "tag" };
     const inline std::string OPT_INDEX{ "index" };
     const inline std::string OPT_DURATION{ "duration" };
     const inline std::string OPT_SPEED{ "speed" };
@@ -53,6 +56,9 @@ namespace script {
             }
             else if (k == OPT_SID) {
                 opt.sid = value.as<unsigned int>();
+            }
+            else if (k == OPT_TAG) {
+                opt.tagId = value.as<unsigned int>();
             }
             else if (k == OPT_INDEX) {
                 opt.index = value.as<int>();
@@ -113,9 +119,25 @@ namespace script {
         return ids;
     }
 
-    pool::NodeHandle getHandle(ki::node_id nodeId, pool::NodeHandle handle) noexcept
+    pool::NodeHandle getHandle(
+        ki::node_id nodeId,
+        pool::NodeHandle handle) noexcept
     {
         return nodeId > 0 ? pool::NodeHandle::toHandle(nodeId) : handle;
+    }
+
+    pool::NodeHandle getHandle(
+        ki::node_id nodeId,
+        pool::NodeHandle handle,
+        ki::tag_id tagId) noexcept
+    {
+        if (nodeId > 0) {
+            handle = pool::NodeHandle::toHandle(nodeId);
+        }
+        if (tagId > 0) {
+            handle = NodeRegistry::get().findTaggedChild(handle, tagId);
+        }
+        return handle;
     }
 
     //glm::vec3 readVec3(const sol::table& v) noexcept

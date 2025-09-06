@@ -67,6 +67,8 @@ public:
     // parent socket
     uint32_t m_attachedSocketIndex{ 0 };
 
+    ki::tag_id m_tagId{ 0 };
+
     ki::size_t_entity_flags m_flags{ 0 }; // 1 * 4 = 4
 
     ki::level_id m_parentMatrixLevel{ 0 };
