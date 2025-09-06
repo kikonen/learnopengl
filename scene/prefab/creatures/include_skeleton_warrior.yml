@@ -44,6 +44,7 @@ composites:
   - id: prefab_skeleton_warrior_composite
     nodes:
       - type: prefab_skeleton
+        tag: body
         children:
           - xtype: prefab_helmet
             attach:

@@ -6,17 +6,21 @@ if not State.explode then
 (function()
   debug("Register STATE")
 
-  local ANIM_IDLE = util.sid("idle")
-  local ANIM_IDLE_2 = util.sid("idle_2")
-  local ANIM_HIT = util.sid("hit")
+  local ANIM_IDLE = SID("idle")
+  local ANIM_IDLE_2 = SID("idle_2")
+  local ANIM_HIT = SID("hit")
 
-local ANIM_SWING_HEAVY = util.sid("swing_heavy")
-local ANIM_SWING_NORMAL = util.sid("swing_normal")
-local ANIM_SWING_QUICK = util.sid("swing_quick")
+local ANIM_SWING_HEAVY = SID("swing_heavy")
+local ANIM_SWING_NORMAL = SID("swing_normal")
+local ANIM_SWING_QUICK = SID("swing_quick")
 
-  local EXPLODE_SID = util.sid("explode")
+  local EXPLODE_SID = SID("explode")
 
-  debug("LUA: SID=%d, SID_NAME=%s\n", ANIM_SWING_QUICK, util.sid_name(ANIM_SWING_QUICK))
+  -- debug("LUA: SID=%d, SID_NAME=%s\n", ANIM_SWING_QUICK, SID_NAME(ANIM_SWING_QUICK))
+
+  function State:initialize()
+    self.body_id = self.node:find_child({ tag = SID("body") })
+  end
 
   function State:explode()
     explode_cid = self.cmd:audio_play(
@@ -63,7 +67,7 @@ local ANIM_SWING_QUICK = util.sid("swing_quick")
 
     local cid
     cid = self.cmd:animation_play(
-      { after=wid, sid=self:random_idle() } )
+      { after=wid, node = self.body_id, sid=self:random_idle() } )
 
     return cid
   end
@@ -74,7 +78,7 @@ local ANIM_SWING_QUICK = util.sid("swing_quick")
     local cid
 
     cid = self.cmd:animation_play(
-      { after=wid, sid=self:random_attack() } )
+      { after=wid, node = self.body_id, sid=self:random_attack() } )
 
     return cid
   end

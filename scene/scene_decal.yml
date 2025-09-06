@@ -218,7 +218,8 @@ types:
       effect: true
       no_select: true
       no_shadow: true
-  - id: prefab_skeleton_warrior
+  - id: skeleton_army
+    base: prefab_skeleton_warrior
     particle: skeleton_hit
     audio:
       sources:
@@ -231,10 +232,6 @@ types:
       geom:
         collision: [world, player]
     script_file: scripts/seq_skeleton_2
-  - id: prefab_skeleton
-    script: |
-      self.cmd:animation_play(
-        { name = "idle" });
   - id: light
     type: origo
     light:
@@ -289,10 +286,10 @@ nodes:
       - type: light
       - type: lamp
       - type: lamp_halo
-  - type: prefab_skeleton_warrior
+  - type: skeleton_army
     pos: [7, 1.5, 5]
     rot: [0, -90, 0]
-    xrepeat:
+    repeat:
       x_count: 1
       z_count: 2
       x_step: 3

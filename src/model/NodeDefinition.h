@@ -22,6 +22,8 @@ struct NodeDefinition
 
     std::string m_socketId;
 
+    std::string m_tagId;
+
     ki::type_id m_typeId;
 
     glm::vec3 m_position{ 0.f };

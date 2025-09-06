@@ -487,15 +487,27 @@ end)", fnName, scriptFile.m_source);
 
             KI_INFO_OUT(fmt::format("SCRIPT::RUN: function={} - {}", fnName, node->getName()));
 
-            invokeLuaFunction([this, nodeHandle, &fnName]() {
-                sol::optional<sol::table> nodeState = getLua()[TABLE_STATES][nodeHandle.toId()];
-                if (nodeState) {
-                    sol::table t = nodeState.value();
-                    sol::protected_function fn(t[fnName]);
-                    return fn(nodeState);
+            sol::optional<sol::table> nodeState = getLua()[TABLE_STATES][nodeHandle.toId()];
+            if (nodeState) {
+                sol::table t = nodeState.value();
+
+                {
+                    sol::optional<sol::protected_function> fn = t[fnName];
+                    if (fn) {
+                        invokeLuaFunction([this, &t, &fn]() {
+                            return fn.value()(t);
+                        });
+                    }
                 }
-                return sol::protected_function_result{ getLua(), 0, 0, 0, sol::call_status::runtime };
-            });
+
+                // NOTE KI run initialize if it exists in state
+                sol::optional<sol::protected_function> fn = t["_init"];
+                if (fn) {
+                    invokeLuaFunction([this, &t, &fn]() {
+                        return fn.value()(t);
+                    });
+                }
+            }
 
             execScript("Updater:refresh()");
         }

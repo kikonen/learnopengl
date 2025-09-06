@@ -1,10 +1,71 @@
 #include "NodeAPI.h"
 
+#include "ki/size.h"
+
 #include "model/Node.h"
 #include "model/NodeState.h"
 #include "model/NodeType.h"
 
 #include "registry/NodeRegistry.h"
+
+#include "script/lua_util.h"
+
+namespace {
+    const inline std::string OPT_TYPE{ "type" };
+    const inline std::string OPT_NODE{ "node" };
+    const inline std::string OPT_PARENT{ "parent" };
+    const inline std::string OPT_SOCKET{ "socket" };
+    const inline std::string OPT_TAG{ "tag" };
+    const inline std::string OPT_POS{ "pos" };
+    const inline std::string OPT_ROT{ "rot" };
+    const inline std::string OPT_SCALE{ "scale" };
+
+    struct NodeOptions {
+        ki::type_id typeId{ 0 };
+        ki::node_id nodeId{ 0 };
+        ki::node_id parentId{ 0 };
+        ki::socket_id socketId{ 0 };
+        ki::tag_id tagId{ 0 };
+        glm::vec3 pos{ 0.f };
+        glm::vec3 rot{ 0.f };
+        glm::vec3 scale{ 1.f };
+    };
+
+    NodeOptions readNodeOptions(const sol::table& lua_opt)
+    {
+        NodeOptions opt;
+
+        lua_opt.for_each([&](sol::object const& key, sol::object const& value) {
+            const auto& k = key.as<std::string>();
+            if (k == OPT_TYPE) {
+                opt.typeId = value.as<unsigned int>();
+            }
+            else if (k == OPT_NODE) {
+                opt.nodeId = value.as<unsigned int>();
+            }
+            else if (k == OPT_PARENT) {
+                opt.parentId = value.as<unsigned int>();
+            }
+            else if (k == OPT_SOCKET) {
+                opt.socketId = value.as<unsigned int>();
+            }
+            else if (k == OPT_TAG) {
+                opt.tagId = value.as<unsigned int>();
+            }
+            else if (k == OPT_POS) {
+                opt.pos = value.as<glm::vec3>();
+            }
+            else if (k == OPT_ROT) {
+                opt.rot = value.as<glm::vec3>();
+            }
+            else if (k == OPT_SCALE) {
+                opt.scale = value.as<glm::vec3>();
+            }
+            });
+
+        return opt;
+    }
+}
 
 namespace script::api
 {
@@ -25,6 +86,15 @@ namespace script::api
     ki::node_id NodeAPI::lua_get_id() const noexcept
     {
         return m_handle.m_id;
+    }
+
+    ki::node_id NodeAPI::lua_find_child(
+        const sol::table& lua_opt) const noexcept
+    {
+        const auto opt = readNodeOptions(lua_opt);
+
+        auto handle = getHandle(opt.nodeId, m_handle, opt.tagId);
+        return handle.toId();
     }
 
     const std::string& NodeAPI::lua_get_type_name() const noexcept

@@ -897,6 +897,7 @@ void NodeRegistry::bindNode(
             state.setRotation(createState.m_rotation);
             state.m_tilingX = createState.m_tilingX;
             state.m_tilingY = createState.m_tilingY;
+            state.m_tagId = createState.m_tagId;
         }
 
         std::lock_guard lock(m_snapshotLock);
@@ -1081,6 +1082,26 @@ bool NodeRegistry::bindParentSocket(
 //    std::lock_guard lock(m_lock);
 //    fn(*this);
 //}
+
+pool::NodeHandle NodeRegistry::findTaggedChild(
+    pool::NodeHandle handle,
+    ki::tag_id tagId)
+{
+    const auto* node = handle.toNode();
+    if (!node) return pool::NodeHandle::NULL_HANDLE;
+    const auto parentIndex = node->m_entityIndex;
+
+    for (int childEntityIndex = 0; childEntityIndex < m_parentIndeces.size(); childEntityIndex++) {
+        if (m_parentIndeces[childEntityIndex] == parentIndex) {
+            const auto& state = m_states[childEntityIndex];
+            if (state.m_tagId == tagId) {
+                return m_handles[childEntityIndex];
+            }
+        }
+    }
+
+    return pool::NodeHandle::NULL_HANDLE;
+}
 
 void NodeRegistry::setActiveNode(pool::NodeHandle handle)
 {

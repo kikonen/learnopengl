@@ -12,6 +12,14 @@ includes:
   - path: prefab/creatures/include_skeleton_warrior.yml
 
 types:
+  - id: scale
+    mesh:
+      vertex:
+        type: box
+        size: 0.5
+      material:
+        kd: [0.8, 0.8, 0.8, 1]
+        program: g_tex
   - id: cube_map
     type: origo
     flags:
@@ -72,6 +80,11 @@ types:
     priority: 1
     flags:
       static_bounds: true
+  - id: skeleton_army_1
+    base: prefab_skeleton_warrior
+    script: |
+      cmd:animation_play(
+        { tag = SID("body"), name = "swing_normal" })
   - id: prefab_skeleton
     mesh:
       material_modifier:
@@ -84,9 +97,6 @@ types:
         shadow_program: shadow
         id_program: object_id
         selection_program: selection
-    script: |
-      cmd:animation_play(
-        { name = "swing_normal" });
   - id: skeleton_army_2
     prefab:
       path: prefab/creatures/prefab_skeleton.yml
@@ -154,11 +164,18 @@ nodes:
       z_count: 2
       x_step: 20
       z_step: -20
-  - type: prefab_skeleton_warrior
+  - type: scale
+    pos: [22, 0.5, 20]
+    repeat:
+      x_count: 2
+      z_count: 2
+      x_step: 10
+      z_step: -10
+  - type: skeleton_army_1
     pos: [20, 0.5, 20]
     xrotation: [0, 45, 0]
     rotation: [0, -90, 0]
-    scale: 3
+    xscale: 3
     repeat:
       x_count: 2
       z_count: 2
@@ -167,7 +184,7 @@ nodes:
   - type: skeleton_army_2
     pos: [20, 0.0, 50]
     rotation: [0, -90, 0]
-    scale: 3
+    scale: 2
     repeat:
       x_count: 2
       z_count: 2

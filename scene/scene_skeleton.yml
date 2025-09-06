@@ -57,13 +57,9 @@ types:
     xscript: scripts/seq_skeleton
     physics:
       update: true
-    xscript: |
-      cmd:animation_play(
-        { name = "swing_normal" });
-  - id: prefab_skeleton
     script: |
-      self.cmd:animation_play(
-        { name = "idle" });
+      cmd:animation_play(
+        { tag = SID("body"), name = "swing_normal" })
   - xid: helmet
     meshes:
       - name: helmet

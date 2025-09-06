@@ -10,6 +10,7 @@ namespace ki
     typedef uint16_t mesh_id;
     typedef uint32_t type_id;
     typedef uint32_t composite_id;
+    typedef uint32_t tag_id;
 
     typedef uint32_t socket_id;
 

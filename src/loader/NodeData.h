@@ -25,6 +25,8 @@ namespace loader {
 
         BaseId aliasBaseId;
 
+        BaseId tagId;
+
         AttachmentData attachment;
 
         std::string name;

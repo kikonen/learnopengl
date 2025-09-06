@@ -14,6 +14,13 @@ function Node:new(o)
   return o
 end
 
+function Node:_init(o)
+  if not self._initialized and self.initialize then
+    self:initialize()
+    self._initialized = true
+  end
+end
+
 function Node:destroy(o)
   debug("destroy node: %d\n", self.id)
 

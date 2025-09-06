@@ -157,7 +157,7 @@ namespace script::api
         return m_commandEngine->addCommand(
             opt.afterId,
             MoveNode{
-                getHandle(opt.nodeId, m_handle),
+                getHandle(opt.nodeId, m_handle, opt.tagId),
                 opt.duration,
                 opt.relative,
                 pos
@@ -176,7 +176,7 @@ namespace script::api
         return m_commandEngine->addCommand(
             opt.afterId,
             MoveSplineNode{
-                getHandle(opt.nodeId, m_handle),
+                getHandle(opt.nodeId, m_handle, opt.tagId),
                 opt.duration,
                 opt.relative,
                 p,
@@ -195,7 +195,7 @@ namespace script::api
         return m_commandEngine->addCommand(
             opt.afterId,
             MovePathNode{
-                getHandle(opt.nodeId, m_handle),
+                getHandle(opt.nodeId, m_handle, opt.tagId),
                 opt.duration,
                 opt.relative,
                 path
@@ -214,7 +214,7 @@ namespace script::api
         return m_commandEngine->addCommand(
             opt.afterId,
             RotateNode{
-                getHandle(opt.nodeId, m_handle),
+                getHandle(opt.nodeId, m_handle, opt.tagId),
                 opt.duration,
                 opt.relative,
                 axis,
@@ -233,7 +233,7 @@ namespace script::api
         return m_commandEngine->addCommand(
             opt.afterId,
             ScaleNode{
-                getHandle(opt.nodeId, m_handle),
+                getHandle(opt.nodeId, m_handle, opt.tagId),
                 opt.duration,
                 opt.relative,
                 scale
@@ -257,7 +257,7 @@ namespace script::api
         return m_commandEngine->addCommand(
             opt.afterId,
             SetTextNode{
-                getHandle(opt.nodeId, m_handle),
+                getHandle(opt.nodeId, m_handle, opt.tagId),
                 text
             });
     }
@@ -271,7 +271,7 @@ namespace script::api
         return m_commandEngine->addCommand(
             opt.afterId,
             SetVisibleNode{
-                getHandle(opt.nodeId, m_handle),
+                getHandle(opt.nodeId, m_handle, opt.tagId),
                 visible
             });
     }
@@ -286,7 +286,7 @@ namespace script::api
         return m_commandEngine->addCommand(
             opt.afterId,
             SelectNode{
-                getHandle(opt.nodeId, m_handle),
+                getHandle(opt.nodeId, m_handle, opt.tagId),
                 select,
                 append
             });
@@ -304,7 +304,7 @@ namespace script::api
         return m_commandEngine->addCommand(
             opt.afterId,
             AudioPlay{
-                getHandle(opt.nodeId, m_handle),
+                getHandle(opt.nodeId, m_handle, opt.tagId),
                 opt.sid,
                 opt.sync
             });
@@ -322,7 +322,7 @@ namespace script::api
         return m_commandEngine->addCommand(
             opt.afterId,
             AudioPause{
-                getHandle(opt.nodeId, m_handle),
+                getHandle(opt.nodeId, m_handle, opt.tagId),
                 opt.sid
             });
     }
@@ -339,7 +339,7 @@ namespace script::api
         return m_commandEngine->addCommand(
             opt.afterId,
             AudioStop{
-                getHandle(opt.nodeId, m_handle),
+                getHandle(opt.nodeId, m_handle, opt.tagId),
                 opt.sid
             });
     }
@@ -356,7 +356,7 @@ namespace script::api
         return m_commandEngine->addCommand(
             opt.afterId,
             AnimationPlay{
-                getHandle(opt.nodeId, m_handle),
+                getHandle(opt.nodeId, m_handle, opt.tagId),
                 opt.sid,
                 opt.speed,
                 opt.repeat
@@ -371,7 +371,7 @@ namespace script::api
         return m_commandEngine->addCommand(
             opt.afterId,
             ParticleEmit{
-                getHandle(opt.nodeId, m_handle),
+                getHandle(opt.nodeId, m_handle, opt.tagId),
                 opt.count,
                 opt.sync
             });
@@ -385,7 +385,7 @@ namespace script::api
         return m_commandEngine->addCommand(
             opt.afterId,
             ParticleStop{
-                getHandle(opt.nodeId, m_handle)
+                getHandle(opt.nodeId, m_handle, opt.tagId)
             });
     }
 
