@@ -43,6 +43,8 @@ namespace script
     CommandOptions readOptions(const sol::table& lua_opt) noexcept;
     CommandEvent readEvent(const sol::table& lua_opt) noexcept;
 
+    uint32_t readSID(const sol::object& v) noexcept;
+
     std::vector<script::command_id> readCommandIds(const sol::table& v) noexcept;
 
     pool::NodeHandle getHandle(

@@ -1083,6 +1083,34 @@ bool NodeRegistry::bindParentSocket(
 //    fn(*this);
 //}
 
+pool::NodeHandle NodeRegistry::findTagged(
+    ki::tag_id tagId)
+{
+    for (int entityIndex = 0; entityIndex < m_states.size(); entityIndex++) {
+        const auto& state = m_states[entityIndex];
+        if (state.m_tagId == tagId) {
+            return m_handles[entityIndex];
+        }
+    }
+
+    return pool::NodeHandle::NULL_HANDLE;
+}
+
+std::vector<pool::NodeHandle> NodeRegistry::findTaggedAll(
+    ki::tag_id tagId)
+{
+    std::vector<pool::NodeHandle> result;
+
+    for (int entityIndex = 0; entityIndex < m_states.size(); entityIndex++) {
+        const auto& state = m_states[entityIndex];
+        if (state.m_tagId == tagId) {
+            result.push_back(m_handles[entityIndex]);
+        }
+    }
+
+    return result;
+}
+
 pool::NodeHandle NodeRegistry::findTaggedChild(
     pool::NodeHandle handle,
     ki::tag_id tagId)

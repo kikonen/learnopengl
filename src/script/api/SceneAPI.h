@@ -11,6 +11,12 @@ namespace script::api
         SceneAPI();
         ~SceneAPI();
 
+        ki::node_id lua_find_node(
+            const sol::table& lua_opt) const noexcept;
+
+        std::vector<uint32_t> lua_find_nodes(
+            const sol::table& lua_opt) const noexcept;
+
         ki::node_id lua_create_node(
             const sol::table& lua_opt);
 

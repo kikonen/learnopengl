@@ -60,6 +60,12 @@ namespace {
 namespace script::api
 {
     NodeCommandAPI::NodeCommandAPI(
+        CommandEngine* const commandEngine)
+        : NodeCommandAPI{ commandEngine, pool::NodeHandle::NULL_HANDLE }
+    {
+    }
+
+    NodeCommandAPI::NodeCommandAPI(
         CommandEngine* const commandEngine,
         pool::NodeHandle handle)
         :m_commandEngine{ commandEngine },

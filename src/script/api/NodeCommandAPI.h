@@ -23,8 +23,12 @@ namespace script::api
     {
     public:
         NodeCommandAPI(
+            CommandEngine* const commandEngine);
+
+        NodeCommandAPI(
             CommandEngine* const commandEngine,
             pool::NodeHandle handle);
+
         ~NodeCommandAPI();
 
         std::string str() const noexcept;

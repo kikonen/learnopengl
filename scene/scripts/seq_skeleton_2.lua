@@ -2,24 +2,25 @@
 
 local rnd = math.random
 
-if not State.initialize then
-(function()
-  debug("Register STATE")
-
-  local ANIM_IDLE = SID("idle")
-  local ANIM_IDLE_2 = SID("idle_2")
-  local ANIM_HIT = SID("hit")
+local ANIM_IDLE = SID("idle")
+local ANIM_IDLE_2 = SID("idle_2")
+local ANIM_HIT = SID("hit")
 
 local ANIM_SWING_HEAVY = SID("swing_heavy")
 local ANIM_SWING_NORMAL = SID("swing_normal")
 local ANIM_SWING_QUICK = SID("swing_quick")
 
-  local EXPLODE_SID = SID("explode")
+local EXPLODE_SID = SID("explode")
+
+if not State.initialize then
+(function()
+  debug("Register STATE")
 
   -- debug("LUA: SID=%d, SID_NAME=%s\n", ANIM_SWING_QUICK, SID_NAME(ANIM_SWING_QUICK))
 
   function State:initialize()
-    self.body_id = self.node:find_child({ tag = SID("body") })
+    self.body_id = self.node:find_child({ tag = "body" })
+    self.sword_id = self.node:find_child({ tag = "sword" })
   end
 
   function State:explode()
@@ -30,6 +31,9 @@ local ANIM_SWING_QUICK = SID("swing_quick")
   function State:emit_particles()
     self.cmd:particle_emit(
       { count=(10 + rnd(50)) * 1000 })
+
+    cmd:particle_emit(
+      { tag = self.sword_id, count=(10 + rnd(10)) * 100 })
   end
 
   function State:random_idle()
@@ -66,7 +70,7 @@ local ANIM_SWING_QUICK = SID("swing_quick")
     --print(string.format("idle: %d", id))
 
     local cid
-    cid = self.cmd:animation_play(
+    cid = _G.cmd:animation_play(
       { after=wid, node = self.body_id, sid=self:random_idle() } )
 
     return cid
@@ -79,6 +83,9 @@ local ANIM_SWING_QUICK = SID("swing_quick")
 
     cid = self.cmd:animation_play(
       { after=wid, node = self.body_id, sid=self:random_attack() } )
+
+    cmd:particle_emit(
+      { tag = self.sword_id, count=(10 + rnd(10)) * 100 })
 
     return cid
   end
@@ -238,14 +245,14 @@ local function ray_caster(self)
     cast_elapsed = 0
 
     local rot_quat = util.axis_degrees_to_quat(vec3(0, 1, 0), ray_degrees)
-    local rot_degrees = rot_quat:to_degrees()
+  local rot_degrees = rot_quat:to_degrees()
 
     local dir = (rot_quat:to_mat4() * node:get_front()):normalize()
     -- local dir_quat = util.normal_to_quat(dir, vec3(0, 1, 0))
     -- local dir_degrees = dir_quat:to_degrees()
 
-    debug("CAST[%d] rot=%s, dir=%s\n",
-      self.id, rot_degrees, dir)
+    -- debug("CAST[%d] rot=%s, dir=%s\n",
+    --   self.id, rot_degrees, dir)
 
     cast_cid = cmd:cancel(
       {},

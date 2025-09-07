@@ -46,6 +46,8 @@ namespace
     const static std::string TABLE_SCENE = "scene";
     const static std::string TABLE_TMP = "tmp";
 
+    const static std::string API_CMD = "cmd";
+
     static script::ScriptSystem* s_system{ nullptr };
 }
 
@@ -177,6 +179,9 @@ namespace script
         lua[TABLE_TMP] = lua.create_table_with();
 
         lua[TABLE_SCENE] = std::ref(m_sceneApi);
+
+        m_nodeCommandApi = std::make_unique<api::NodeCommandAPI>(m_commandEngine);
+        lua[API_CMD] = std::ref(m_nodeCommandApi);
     }
 
     void ScriptSystem::update(const UpdateContext& ctx)

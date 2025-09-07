@@ -14,6 +14,8 @@
 
 #include "registry/NodeRegistry.h"
 
+#include "script/lua_util.h"
+
 namespace {
     const inline std::string OPT_TYPE{ "type" };
     const inline std::string OPT_NODE{ "node" };
@@ -35,6 +37,17 @@ namespace {
         glm::vec3 scale{ 1.f };
     };
 
+    struct NodeOptions {
+        ki::type_id typeId{ 0 };
+        ki::node_id nodeId{ 0 };
+        ki::node_id parentId{ 0 };
+        ki::socket_id socketId{ 0 };
+        ki::tag_id tagId{ 0 };
+        glm::vec3 pos{ 0.f };
+        glm::vec3 rot{ 0.f };
+        glm::vec3 scale{ 1.f };
+    };
+
     CreateOptions readCreateOptions(const sol::table& lua_opt)
     {
         CreateOptions opt;
@@ -42,19 +55,19 @@ namespace {
         lua_opt.for_each([&](sol::object const& key, sol::object const& value) {
             const auto& k = key.as<std::string>();
             if (k == OPT_TYPE) {
-                opt.typeId = value.as<unsigned int>();
+                opt.typeId = script::readSID(value);
             }
             else if (k == OPT_NODE) {
-                opt.nodeId = value.as<unsigned int>();
+                opt.nodeId = script::readSID(value);
             }
             else if (k == OPT_PARENT) {
-                opt.parentId = value.as<unsigned int>();
+                opt.parentId = script::readSID(value);
             }
             else if (k == OPT_SOCKET) {
-                opt.socketId = value.as<unsigned int>();
+                opt.socketId = script::readSID(value);
             }
             else if (k == OPT_TAG) {
-                opt.tagId = value.as<unsigned int>();
+                opt.tagId = script::readSID(value);
             }
             else if (k == OPT_POS) {
                 opt.pos = value.as<glm::vec3>();
@@ -69,6 +82,41 @@ namespace {
 
         return opt;
     }
+
+    NodeOptions readNodeOptions(const sol::table& lua_opt)
+    {
+        NodeOptions opt;
+
+        lua_opt.for_each([&](sol::object const& key, sol::object const& value) {
+            const auto& k = key.as<std::string>();
+            if (k == OPT_TYPE) {
+                opt.typeId = script::readSID(value);
+            }
+            else if (k == OPT_NODE) {
+                opt.nodeId = script::readSID(value);
+            }
+            else if (k == OPT_PARENT) {
+                opt.parentId = script::readSID(value);
+            }
+            else if (k == OPT_SOCKET) {
+                opt.socketId = script::readSID(value);
+            }
+            else if (k == OPT_TAG) {
+                opt.tagId = script::readSID(value);
+            }
+            else if (k == OPT_POS) {
+                opt.pos = value.as<glm::vec3>();
+            }
+            else if (k == OPT_ROT) {
+                opt.rot = value.as<glm::vec3>();
+            }
+            else if (k == OPT_SCALE) {
+                opt.scale = value.as<glm::vec3>();
+            }
+            });
+
+        return opt;
+    }
 }
 
 namespace script::api
@@ -78,6 +126,30 @@ namespace script::api
     }
 
     SceneAPI::~SceneAPI() = default;
+
+    ki::node_id SceneAPI::lua_find_node(
+        const sol::table& lua_opt) const noexcept
+    {
+        const auto opt = readNodeOptions(lua_opt);
+
+        auto handle = NodeRegistry::get().findTagged(opt.tagId);
+        return handle.toId();
+    }
+
+    std::vector<uint32_t> SceneAPI::lua_find_nodes(
+        const sol::table& lua_opt) const noexcept
+    {
+        const auto opt = readNodeOptions(lua_opt);
+
+        auto handles = NodeRegistry::get().findTaggedAll(opt.tagId);
+
+        std::vector<uint32_t> nodeIds;
+        nodeIds.reserve(handles.size());
+        for (auto handle : handles) {
+            nodeIds.push_back(handle.toId());
+        }
+        return nodeIds;
+    }
 
     ki::node_id SceneAPI::lua_create_node(
         const sol::table& lua_opt)

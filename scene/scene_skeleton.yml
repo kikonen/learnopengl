@@ -125,7 +125,12 @@ nodes:
   - type: prefab_construction_hat
     pos: [-2.0, 0.5, 0.0]
   - type: prefab_2_handed_sword
+    tag: sword
     pos: [-4.0, 0.5, 0.0]
+    children:
+      - type: prefab_2_handed_sword_particle
+        tag: sword_particle
+        pos: [0, 0.75, 0]
   - type: prefab_armor
     pos: [-6.0, 0.5, 0.0]
   - type: prefab_shield
