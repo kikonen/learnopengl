@@ -57,7 +57,8 @@ types:
   - id: four_cubes_4
     base: four_cubes
     particle: four_cubes_4
-  - id: prefab_skeleton_warrior
+  - id: skeleton_army
+    base: prefab_skeleton_warrior
     xflags:
       static_bounds: true
     audio:
@@ -69,10 +70,6 @@ types:
     physics:
       update: true
     script: scripts/seq_skeleton_2
-  - id: prefab_skeleton
-    script: |
-      self.cmd:animation_play(
-        { name = "idle" });
   - id: rock
     prefab:
       path: prefab/scenery/prefab_asteroid.yml
@@ -372,7 +369,7 @@ nodes:
     xrepeat:
       x_count: 8
       x_step: -2
-  - type: prefab_skeleton_warrior
+  - type: skeleton_army
     pos: [20, 0.2, 20]
     rotation: [0, -90, 0]
     scale: 3

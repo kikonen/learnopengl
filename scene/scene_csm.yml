@@ -47,10 +47,6 @@ types:
   - id: skeleton_army_grid_2
     base: prefab_skeleton_warrior
     script: scripts/seq_skeleton
-  - id: prefab_skeleton
-    script: |
-      self.cmd:animation_play(
-        { name = "idle" });
   - id: skeleton_army_2
     prefab:
       path: prefab/creatures/prefab_skeleton.yml

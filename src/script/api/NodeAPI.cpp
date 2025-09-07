@@ -38,19 +38,44 @@ namespace {
         lua_opt.for_each([&](sol::object const& key, sol::object const& value) {
             const auto& k = key.as<std::string>();
             if (k == OPT_TYPE) {
-                opt.typeId = value.as<unsigned int>();
+                if (value.is<std::string>()) {
+                    opt.typeId = SID(value.as<std::string>());
+                }
+                else {
+                    opt.typeId = value.as<unsigned int>();
+                }
             }
             else if (k == OPT_NODE) {
-                opt.nodeId = value.as<unsigned int>();
+                if (value.is<std::string>()) {
+                    opt.nodeId = SID(value.as<std::string>());
+                }
+                else {
+                    opt.nodeId = value.as<unsigned int>();
+                }
             }
             else if (k == OPT_PARENT) {
-                opt.parentId = value.as<unsigned int>();
+                if (value.is<std::string>()) {
+                    opt.parentId = SID(value.as<std::string>());
+                }
+                else {
+                    opt.parentId = value.as<unsigned int>();
+                }
             }
             else if (k == OPT_SOCKET) {
-                opt.socketId = value.as<unsigned int>();
+                if (value.is<std::string>()) {
+                    opt.socketId = SID(value.as<std::string>());
+                }
+                else {
+                    opt.socketId = value.as<unsigned int>();
+                }
             }
             else if (k == OPT_TAG) {
-                opt.tagId = value.as<unsigned int>();
+                if (value.is<std::string>()) {
+                    opt.tagId = SID(value.as<std::string>());
+                }
+                else {
+                    opt.tagId = value.as<unsigned int>();
+                }
             }
             else if (k == OPT_POS) {
                 opt.pos = value.as<glm::vec3>();

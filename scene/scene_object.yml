@@ -46,7 +46,7 @@ types:
       path: prefab/scenery/prefab_cobblestone_floor.yml
   - id: object
     prefab:
-      xpath: prefab/creatures/prefab_skeleton_warrior.yml
+      #path: prefab/creatures/prefab_skeleton_warrior.yml
       #path: prefab/characters/prefab_scavenger.yml
       #path: prefab/props/prefab_backpack.yml
       #path: prefab/props/prefab_door_05.yml
@@ -57,6 +57,7 @@ types:
       #path: prefab/creatures/prefab_lion.yml
       #path: prefab/scenery/prefab_asteroid.yml
       #path: prefab/scenery/prefab_palm_tree.yml
+      path: prefab/scenery/prefab_bush01.yml
     xmesh:
       path: texture_cube_4/texture_cube_4.obj
       material_modifier:
@@ -72,6 +73,10 @@ types:
         kd: [0.160, 0.578, 0.168, 1.0]
         xreflection: 0.4
       base_scale: 0.2
+  - id: prefab_skeleton_warrior
+    script: |
+      cmd:animation_play(
+        { tag = "body", name = "idle" })
   - id: fence
     mesh:
       vertex:
@@ -92,10 +97,6 @@ types:
       geom:
         type: box
         size: [0.5, 0.5, 0.0001]
-  - id: prefab_skeleton
-    script: |
-      cmd:animation_play(
-        { name = "idle" })
 
 nodes:
   - type: player

@@ -59,7 +59,7 @@ types:
       update: true
     script: |
       cmd:animation_play(
-        { tag = SID("body"), name = "swing_normal" })
+        { tag = "body", name = "swing_normal" })
   - xid: helmet
     meshes:
       - name: helmet

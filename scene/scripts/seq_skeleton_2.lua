@@ -2,7 +2,7 @@
 
 local rnd = math.random
 
-if not State.explode then
+if not State.initialize then
 (function()
   debug("Register STATE")
 
