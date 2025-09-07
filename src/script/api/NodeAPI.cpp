@@ -38,44 +38,19 @@ namespace {
         lua_opt.for_each([&](sol::object const& key, sol::object const& value) {
             const auto& k = key.as<std::string>();
             if (k == OPT_TYPE) {
-                if (value.is<std::string>()) {
-                    opt.typeId = SID(value.as<std::string>());
-                }
-                else {
-                    opt.typeId = value.as<unsigned int>();
-                }
+                opt.typeId = script::readSID(value);
             }
             else if (k == OPT_NODE) {
-                if (value.is<std::string>()) {
-                    opt.nodeId = SID(value.as<std::string>());
-                }
-                else {
-                    opt.nodeId = value.as<unsigned int>();
-                }
+                opt.nodeId = script::readSID(value);
             }
             else if (k == OPT_PARENT) {
-                if (value.is<std::string>()) {
-                    opt.parentId = SID(value.as<std::string>());
-                }
-                else {
-                    opt.parentId = value.as<unsigned int>();
-                }
+                opt.parentId = script::readSID(value);
             }
             else if (k == OPT_SOCKET) {
-                if (value.is<std::string>()) {
-                    opt.socketId = SID(value.as<std::string>());
-                }
-                else {
-                    opt.socketId = value.as<unsigned int>();
-                }
+                opt.socketId = script::readSID(value);
             }
             else if (k == OPT_TAG) {
-                if (value.is<std::string>()) {
-                    opt.tagId = SID(value.as<std::string>());
-                }
-                else {
-                    opt.tagId = value.as<unsigned int>();
-                }
+                opt.tagId = script::readSID(value);
             }
             else if (k == OPT_POS) {
                 opt.pos = value.as<glm::vec3>();
@@ -86,7 +61,7 @@ namespace {
             else if (k == OPT_SCALE) {
                 opt.scale = value.as<glm::vec3>();
             }
-            });
+        });
 
         return opt;
     }

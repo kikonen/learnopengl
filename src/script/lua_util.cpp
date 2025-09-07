@@ -57,20 +57,10 @@ namespace script {
                 opt.relative = value.as<bool>();
             }
             else if (k == OPT_SID) {
-                if (value.is<std::string>()) {
-                    opt.sid = SID(value.as<std::string>());
-                }
-                else {
-                    opt.sid = value.as<unsigned int>();
-                }
+                opt.sid = readSID(value);
             }
             else if (k == OPT_TAG) {
-                if (value.is<std::string>()) {
-                    opt.tagId = SID(value.as<std::string>());
-                }
-                else {
-                    opt.tagId = value.as<unsigned int>();
-                }
+                opt.tagId = readSID(value);
             }
             else if (k == OPT_INDEX) {
                 opt.index = value.as<int>();
@@ -119,6 +109,14 @@ namespace script {
             }
             });
         return ev;
+    }
+
+    uint32_t readSID(const sol::object& value) noexcept
+    {
+        if (value.is<std::string>()) {
+            return SID(value.as<std::string>());
+        }
+        return value.as<unsigned int>();
     }
 
     std::vector<script::command_id> readCommandIds(const sol::table& v) noexcept

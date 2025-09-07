@@ -73,13 +73,42 @@ end
 
 -- sample()
 -- cylon_armada()
-create_new_node("water_ball")
-create_new_node("pool")
-create_new_node("cylon_group")
+-- create_new_node("water_ball")
+-- create_new_node("pool")
+-- create_new_node("cylon_group")
 
 -- create_new_fps_counter()
 -- create_new_node("flag_stand")
 
 -- delete_test()
 
-  emit_particles()
+  -- emit_particles()
+
+function sword_action(node_id)
+  debug("sword_id=%d\n", node_id)
+  cid = cmd:rotate(
+    { node=node_id, time=2 },
+    vec3(1, 1, 0),
+    360)
+end
+
+function sword_particle(node_id)
+  debug("particle_id=%d\n", node_id)
+  cmd:particle_emit(
+    { node = node_id, count=(10 + rnd(10)) * 200 })
+end
+
+function sword_test()
+  local sword_ids = scene:find_nodes({ tag = "sword" })
+  local particle_ids = scene:find_nodes({ tag = "sword_particle" })
+
+  for i=1, sword_ids:size() do
+    sword_action(sword_ids[i])
+  end
+
+  for i=1, particle_ids:size() do
+    sword_particle(particle_ids[i])
+  end
+end
+
+sword_test()

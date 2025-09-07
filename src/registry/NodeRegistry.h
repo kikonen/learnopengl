@@ -199,6 +199,12 @@ public:
         return m_dirtyEntities;
     }
 
+    pool::NodeHandle findTagged(
+        ki::tag_id tagId);
+
+    std::vector<pool::NodeHandle> findTaggedAll(
+        ki::tag_id tagId);
+
     pool::NodeHandle findTaggedChild(
         pool::NodeHandle handle,
         ki::tag_id tagId);
