@@ -250,10 +250,6 @@ types:
       xbody:
         kinematic: true
     script: scripts/seq_skeleton_random_nav
-  - id: prefab_skeleton
-    script: |
-      self.cmd:animation_play(
-        { name = "idle" });
   - id: terrain_grass_v2
     mesh:
       path: quad_terrain

@@ -45,11 +45,10 @@ types:
         density: 0.01
       geom:
         category: [player]
-  - id: prefab_skeleton
     script: |
       local wid = cmd:wait({ time=2 })
       cmd:animation_play(
-        { after=wid, name = "walk_2" });
+        { after=wid, tag = "body", name = "walk_2" });
   - id: dir_light
     mesh:
       path: light
@@ -233,8 +232,8 @@ nodes:
     pos: [-10, 25, 40]
     scale: 2.5
   - type: palm_tree_forest
-  - type: maple_tree_forest
-  - type: pine_tree_forest
+  - xtype: maple_tree_forest
+  - xtype: pine_tree_forest
   - xtype: dandelion
   - xtype: flower
   - type: wooden_floor

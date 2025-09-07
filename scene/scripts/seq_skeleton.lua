@@ -1,7 +1,6 @@
-local node = self.node
-local cmd = self.cmd
-
 --printf("START: name=%s, clone=%d\n", node:get_name(), node:get_clone_index())
+
+local rnd = math.random
 
 local ANIM_IDLE = util.sid("idle")
 local ANIM_IDLE_2 = util.sid("idle_2")
@@ -15,12 +14,37 @@ local EXPLODE_SID = util.sid("explode")
 
 printf("LUA: SID=%d, SID_NAME=%s\n", ANIM_SWING_QUICK, util.sid_name(ANIM_SWING_QUICK))
 
-local rnd = math.random
+local node = self.node
+local cmd = self.cmd
 
-function State:ditto(args)
-  print("LUA: DITTO_SHARED_CALLED")
-  printf("LUA: self=%s\n", table_format(self));
-  printf("LUA: args=%s\n", table_format(args));
+if not State.initialize then
+(function()
+  function State:initialize()
+    self.body_id = self.node:find_child({ tag = SID("body") })
+  end
+
+  function State:ditto(args)
+    print("LUA: DITTO_SHARED_CALLED")
+    printf("LUA: self=%s\n", table_format(self));
+    printf("LUA: args=%s\n", table_format(args));
+  end
+
+  function State:explode()
+    explode_cid = self.cmd:audio_play(
+      { sync=true, sid=EXPLODE_SID })
+  end
+
+  function State:emit_particles()
+    self.cmd:particle_emit(
+      { count=(10 + rnd(50)) * 1000 })
+  end
+
+  print("-------------")
+  table_print(self)
+  print("-------------")
+end)()
+else
+  print("Register STATE: ALREADY_DONE")
 end
 
 local function ditto(args)
@@ -64,7 +88,7 @@ local function idle(wid)
 
   local cid
   cid = cmd:animation_play(
-    { after=wid, sid=randomIdle() } )
+    { after=wid, node = self.body_id, sid=randomIdle() } )
 
   return cid
 end
@@ -75,19 +99,9 @@ local function attack(wid)
   local cid
 
   cid = cmd:animation_play(
-    { after=wid, sid=randomAttack() } )
+    { after=wid, node = self.body_id, sid=randomAttack() } )
 
   return cid
-end
-
-function State:explode()
-  explode_cid = self.cmd:audio_play(
-    { sync=true, sid=EXPLODE_SID })
-end
-
-function State:emit_particles()
-  self.cmd:particle_emit(
-    { count=(10 + rnd(50)) * 1000 })
 end
 
 local function ray_caster()

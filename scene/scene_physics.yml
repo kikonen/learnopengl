@@ -99,11 +99,7 @@ types:
     script: |
       local wid = cmd:wait({ time=2 })
       cmd:animation_play(
-        { after=wid, name = "walk_2" });
-  - id: prefab_skeleton
-    script: |
-      self.cmd:animation_play(
-        { name = "idle" });
+        { after=wid, tag = "body", name = "walk_2" });
   - id: skeleton_1
     prefab:
       path: prefab/creatures/prefab_skeleton.yml

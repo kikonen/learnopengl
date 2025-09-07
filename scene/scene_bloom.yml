@@ -84,7 +84,7 @@ types:
     base: prefab_skeleton_warrior
     script: |
       cmd:animation_play(
-        { tag = SID("body"), name = "swing_normal" })
+        { tag = "body", name = "swing_normal" })
   - id: prefab_skeleton
     mesh:
       material_modifier:

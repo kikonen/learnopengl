@@ -159,15 +159,11 @@ types:
       update: true
       body:
         kinematic: true
-    xscript: |
+    script: |
       cmd:animation_play(
-        { name = "idle" });
+        { tag = "body", name = "idle" });
     script: scripts/seq_skeleton_random_nav
     xscript: scripts/seq_skeleton_2
-  - id: prefab_skeleton
-    script: |
-      self.cmd:animation_play(
-        { name = "idle" });
   - id: world_plane
     type: origo
     physics:

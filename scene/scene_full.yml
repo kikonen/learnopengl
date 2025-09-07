@@ -109,7 +109,7 @@ types:
     desc: "NOTE overriding material in clones is *NOT* supported"
     mesh:
       path: light
-      program: light
+      program: g_light
     base_scale: 0.5
     flags:
       no_shadow: true
@@ -1009,10 +1009,6 @@ types:
         category: [npc, can_terrain]
         collision: [prop, npc]
     script_file: scripts/seq_skeleton_random_nav
-  - id: prefab_skeleton
-    script: |
-      self.cmd:animation_play(
-        { name = "idle" });
   - id: giant_wooden_box
     mesh:
       path: quad

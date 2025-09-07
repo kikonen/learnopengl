@@ -66,10 +66,9 @@ types:
     base: prefab_skeleton_warrior
     physics:
       enabled: false
-  - id: prefab_skeleton
     script: |
       self.cmd:animation_play(
-        { name = "idle" });
+        { tag = "body", name = "idle" });
   - id: glass_ball
     mesh:
       path: glass_ball

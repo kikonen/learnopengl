@@ -2,6 +2,8 @@
 
 #include <fmt/format.h>
 
+#include "ki/sid.h"
+
 #include "registry/NodeRegistry.h"
 
 namespace {
@@ -55,10 +57,20 @@ namespace script {
                 opt.relative = value.as<bool>();
             }
             else if (k == OPT_SID) {
-                opt.sid = value.as<unsigned int>();
+                if (value.is<std::string>()) {
+                    opt.sid = SID(value.as<std::string>());
+                }
+                else {
+                    opt.sid = value.as<unsigned int>();
+                }
             }
             else if (k == OPT_TAG) {
-                opt.tagId = value.as<unsigned int>();
+                if (value.is<std::string>()) {
+                    opt.tagId = SID(value.as<std::string>());
+                }
+                else {
+                    opt.tagId = value.as<unsigned int>();
+                }
             }
             else if (k == OPT_INDEX) {
                 opt.index = value.as<int>();

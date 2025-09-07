@@ -2,7 +2,7 @@
 
 local rnd = math.random
 
-if not State.explode then
+if not State.initialize then
 (function()
   print("Register STATE")
 
@@ -17,6 +17,10 @@ local ANIM_SWING_QUICK = util.sid("swing_quick")
   local EXPLODE_SID = util.sid("explode")
 
   debug("LUA: SID=%d, SID_NAME=%s\n", ANIM_SWING_QUICK, util.sid_name(ANIM_SWING_QUICK))
+
+  function State:initialize()
+    self.body_id = self.node:find_child({ tag = SID("body") })
+  end
 
   function State:explode()
     explode_cid = self.cmd:audio_play(
@@ -63,7 +67,7 @@ local ANIM_SWING_QUICK = util.sid("swing_quick")
 
     local cid
     cid = self.cmd:animation_play(
-      { after=wid, sid=self:random_idle() } )
+      { after=wid, node = self.body_id, sid=self:random_idle() } )
 
     return cid
   end
@@ -74,7 +78,7 @@ local ANIM_SWING_QUICK = util.sid("swing_quick")
     local cid
 
     cid = self.cmd:animation_play(
-      { after=wid, sid=self:random_attack() } )
+      { after=wid, node = self.body_id, sid=self:random_attack() } )
 
     return cid
   end

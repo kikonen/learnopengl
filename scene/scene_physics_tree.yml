@@ -138,13 +138,9 @@ types:
       geom:
         category: [player]
         collision: [terrain, npc]
-    xscript: |
-      cmd:animation_play(
-        { name = "walk_2" });
-  - id: prefab_skeleton
     script: |
-      self.cmd:animation_play(
-        { name = "idle" });
+      cmd:animation_play(
+        { tag = "body", name = "walk_2" });
   - id: directional_light
     mesh:
       path: light
