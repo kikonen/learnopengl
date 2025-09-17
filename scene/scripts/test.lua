@@ -85,7 +85,8 @@ end
   -- emit_particles()
 
 function sword_action(node_id)
-  debug("sword_id=%d\n", node_id)
+  debug("sword_id=%s, pos=%s\n", node_id, node:get_pos({ node = node_id}))
+
   cid = cmd:rotate(
     { node=node_id, time=2 },
     vec3(1, 1, 0),
@@ -93,14 +94,14 @@ function sword_action(node_id)
 end
 
 function sword_particle(node_id)
-  debug("particle_id=%d\n", node_id)
+  debug("particle_id=%s, pos=%s\n", node_id, node:get_pos({ node=node_id}))
   cmd:particle_emit(
-    { node = node_id, count=(10 + rnd(10)) * 200 })
+    { node=node_id, count=(10 + rnd(10)) * 200 })
 end
 
 function sword_test()
-  local sword_ids = scene:find_nodes({ tag = "sword" })
-  local particle_ids = scene:find_nodes({ tag = "sword_particle" })
+  local sword_ids = scene:find_nodes({ tag="sword" })
+  local particle_ids = scene:find_nodes({ tag="sword_particle" })
 
   for i=1, sword_ids:size() do
     sword_action(sword_ids[i])

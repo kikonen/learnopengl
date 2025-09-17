@@ -255,10 +255,10 @@ private:
 
     pool::NodeHandle m_rootWT{};
     pool::NodeHandle m_rootRT{};
-    uint32_t m_rootIndex{ 0 };
+    uint32_t m_rootEntityIndex{ 0 };
     bool m_rootPreparedRT{ false };
 
-    // Free deleted slots
+    // Free deleted slots (entityIndeces)
     // => reuse slots after RT is synced with WT
     std::vector<uint32_t> m_freeIndeces;
 
@@ -266,6 +266,10 @@ private:
     std::vector<pool::NodeHandle> m_pendingRemoved;
 
     std::vector<pool::NodeHandle> m_pendingAdded;
+
+    // topologically sorted nodes (entityIndeces)
+    // INDEX = nodeIndex
+    std::vector<uint32_t> m_sortedNodes;
 
     // Entries matched by index
     // INDEX = entityIndex

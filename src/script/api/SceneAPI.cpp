@@ -127,40 +127,33 @@ namespace script::api
 
     SceneAPI::~SceneAPI() = default;
 
-    ki::node_id SceneAPI::lua_find_node(
+    pool::NodeHandle SceneAPI::lua_find_node(
         const sol::table& lua_opt) const noexcept
     {
         const auto opt = readNodeOptions(lua_opt);
 
         auto handle = NodeRegistry::get().findTagged(opt.tagId);
-        return handle.toId();
+        return handle;
     }
 
-    std::vector<uint32_t> SceneAPI::lua_find_nodes(
+    std::vector<pool::NodeHandle> SceneAPI::lua_find_nodes(
         const sol::table& lua_opt) const noexcept
     {
         const auto opt = readNodeOptions(lua_opt);
 
-        auto handles = NodeRegistry::get().findTaggedAll(opt.tagId);
-
-        std::vector<uint32_t> nodeIds;
-        nodeIds.reserve(handles.size());
-        for (auto handle : handles) {
-            nodeIds.push_back(handle.toId());
-        }
-        return nodeIds;
+        return NodeRegistry::get().findTaggedAll(opt.tagId);
     }
 
-    ki::node_id SceneAPI::lua_create_node(
+    pool::NodeHandle SceneAPI::lua_create_node(
         const sol::table& lua_opt)
     {
         const CreateOptions& opt = readCreateOptions(lua_opt);
 
         const auto typeId = opt.typeId;
         const auto* type = pool::TypeHandle::toType(typeId);
-        if (!type) return 0;
+        if (!type) return pool::NodeHandle::NULL_HANDLE;
 
-        ki::node_id nodeId;
+        pool::NodeHandle handle;
         {
             CompositeBuilder builder{ NodeRegistry::get() };
             CreateState state{
@@ -169,27 +162,28 @@ namespace script::api
                 util::degreesToQuat(opt.rot),
                 opt.tagId};
 
-            nodeId = builder.build(opt.parentId, 0, type, state);
-            if (nodeId) {
+            handle = builder.build(opt.parentId, 0, type, state);
+            if (handle) {
                 builder.attach();
             }
         }
 
-        return nodeId;
+        return handle;
     }
 
-    ki::node_id SceneAPI::lua_clone_node(
+    pool::NodeHandle SceneAPI::lua_clone_node(
         const sol::table& lua_opt)
     {
         const CreateOptions& opt = readCreateOptions(lua_opt);
 
         const auto nodeId = opt.nodeId;
         const auto* node = pool::NodeHandle::toNode(nodeId);
-        if (!node) return 0;
+        if (!node) return pool::NodeHandle::NULL_HANDLE;
 
         const auto& state = node->getState();
         const auto* type = node->getType();
 
+        pool::NodeHandle handle;
         {
             ki::node_id parentId{ node->getParentHandle().toId() };
             glm::vec3 pos{ state.getPosition() };
@@ -204,18 +198,18 @@ namespace script::api
                 tagId};
 
             CompositeBuilder builder{ NodeRegistry::get() };
-            if (builder.build(parentId, 0, type, state)) {
-                auto rootHandle = builder.attach();
+            handle = builder.build(parentId, 0, type, state);
+            if (handle) {
+                builder.attach();
             }
         }
 
-        return nodeId;
+        return handle;
     }
 
     bool SceneAPI::lua_delete_node(
-        ki::node_id nodeId)
+        pool::NodeHandle handle)
     {
-        auto handle = pool::NodeHandle::toHandle(nodeId);
         if (!handle) return false;
 
         auto& nodeRegistry = NodeRegistry::get();

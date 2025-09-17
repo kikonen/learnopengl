@@ -2,6 +2,8 @@
 
 #include "script/api/SceneAPI.h"
 
+#include "pool/NodeHandle.h"
+
 namespace script::binding
 {
     using namespace script::api;

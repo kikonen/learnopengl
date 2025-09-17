@@ -59,8 +59,19 @@ namespace pool {
         }
 
         if (!destroy) {
-            // NOTE KI NULL object
-            allocate();
+            {
+                // NOTE KI NULL object
+                auto index = allocate();
+                //assert(index == 0);
+                //if (index != 0) throw "corrupt null_index";
+            }
+
+            {
+                // NOTE KI ID object
+                auto index = allocate();
+                //assert(index == 1);
+                //if (index != 1) throw "corrupt id_index";
+            }
         }
     }
 

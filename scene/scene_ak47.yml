@@ -105,6 +105,10 @@ nodes:
     type: player
     pos: [0, 3, 7]
     active: true
+  - type: prefab_player_fps
+    pos: [4, 1, 0]
+    rot: [0, 180, 0]
+    xactive: true
   - type: dir_light
     pos: [0, 25, 40]
     scale: 2.5

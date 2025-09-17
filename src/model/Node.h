@@ -85,7 +85,10 @@ public:
 
     std::string str() const noexcept;
 
+    inline uint32_t getNodeIndex() const noexcept { return m_nodeIndex; }
+
     inline ki::node_id getId() const noexcept { return m_handle.m_id; }
+    inline uint32_t getEntityIndex() const noexcept { return m_handle.m_handleIndex; }
     inline pool::NodeHandle toHandle() const noexcept { return m_handle; }
 
     inline NodeType* getType() const noexcept
@@ -135,22 +138,22 @@ public:
 
     inline pool::NodeHandle getParentHandle() const noexcept
     {
-        return NodeRegistry::get().getParentHandle(m_entityIndex);
+        return NodeRegistry::get().getParentHandle(getEntityIndex());
     }
 
     inline const Node* getParent() const noexcept
     {
-        return NodeRegistry::get().getParent(m_entityIndex);
+        return NodeRegistry::get().getParent(getEntityIndex());
     }
 
     inline NodeState& modifyState() const noexcept
     {
-        return NodeRegistry::get().modifyState(m_entityIndex);
+        return NodeRegistry::get().modifyState(getEntityIndex());
     }
 
     inline const NodeState& getState() const noexcept
     {
-        return NodeRegistry::get().getState(m_entityIndex);
+        return NodeRegistry::get().getState(getEntityIndex());
     }
 
     inline void updateModelMatrix() const
@@ -160,7 +163,7 @@ public:
 
     inline const Snapshot* getSnapshotRT() const noexcept
     {
-        return NodeRegistry::get().getSnapshotRT(m_entityIndex);
+        return NodeRegistry::get().getSnapshotRT(m_nodeIndex);
     }
 
     audio::Source* getAudioSource(audio::source_id) const;
@@ -187,7 +190,7 @@ public:
     std::unique_ptr<std::vector<audio::Source>> m_audioSources;
 
     // Index of node in NodeRegistry
-    uint32_t m_entityIndex{ 0 };
+    uint32_t m_nodeIndex{ 0 };
 
     ki::node_id m_ignoredBy{ 0 };
 

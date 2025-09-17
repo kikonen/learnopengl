@@ -17,15 +17,17 @@ namespace script::api
     class NodeAPI final
     {
     public:
+        NodeAPI();
         NodeAPI(
             pool::NodeHandle handle);
+
         ~NodeAPI();
 
         std::string str() const noexcept;
 
         ki::node_id lua_get_id() const noexcept;
 
-        ki::node_id lua_find_child(
+        pool::NodeHandle lua_find_child(
             const sol::table& lua_opt) const noexcept;
 
         const std::string& lua_get_type_name() const noexcept;
@@ -44,6 +46,5 @@ namespace script::api
 
     private:
         const pool::NodeHandle m_handle;
-        const uint32_t m_entityIndex;
     };
 }

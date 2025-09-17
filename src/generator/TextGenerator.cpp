@@ -74,7 +74,7 @@ void TextGenerator::updateWT(
 //{
 //    auto& state = container.modifyState();
 //    auto& snapshot = snapshotRegistry.modifySnapshot(container.m_snapshotIndex);
-//    auto* entity = entityRegistry.modifyEntity(container.m_entityIndex, true);
+//    auto* entity = entityRegistry.modifyEntity(container.getEntityIndex(), true);
 //
 //    //const glm::vec4 volume{ 0.f, 0.f, 0.f, m_aabb.getVolume().w };
 //    const glm::vec4& volume = m_aabb.getVolume();
@@ -158,7 +158,7 @@ void TextGenerator::bindBatch(
         programPrepare,
         kindBits,
         snapshot,
-        container.m_entityIndex);
+        container.getEntityIndex());
 }
 
 GLuint64 TextGenerator::getAtlasTextureHandle() const noexcept

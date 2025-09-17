@@ -1,22 +1,88 @@
 assets:
   log_file: log/development.log
   scene_file: scene_physics.yml
-  xscene_file: scene_particle.yml
+  #scene_file: scene_full.yml
+  #scene_file: scene_csm.yml
+  #scene_file: scene_bloom.yml
+  #scene_file: scene_blend.yml
+  #scene_file: scene_emission_glow.yml
+  scene_file: scene_particle.yml
+  #scene_file: scene_particle_2.yml
+  #scene_file: scene_pool.yml
+  #scene_file: scene_pool_only.yml
+  scene_file: scene_decal.yml
+  #scene_file: scene_decal_2.yml
+  #scene_file: scene_halo.yml
+  #scene_file: scene_shaft.yml
+  #scene_file: scene_flag.yml
+  #scene_file: scene_lucy.yml
+  #scene_file: scene_animation.yml
+  #scene_file: scene_mirrors.yml
+  #scene_file: scene_primitive.yml
+  #scene_file: scene_parallax.yml
+  #scene_file: scene_asteroids.yml
+  #scene_file: scene_pool_side.yml
+  #scene_file: scene_water_only.yml
+  #scene_file: scene_audio.yml
+  #scene_file: scene_terrain.yml
+  #scene_file: scene_terrain_only.yml
+  #scene_file: scene_terrain_lake.yml
+  #scene_file: scene_forest.yml
+  #scene_file: scene_arms.yml
+  #scene_file: scene_material_balls.yml
+  scene_file: scene_skeleton.yml
+  #scene_file: scene_heightmap.yml
+  #scene_file: scene_wireframe.yml
+  #scene_file: scene_fur_ball.yml
+  #scene_file: scene_moving_point_light.yml
+  #scene_file: scene_light.yml
+  #scene_file: scene_cube.yml
+  #scene_file: scene_grid.yml
+  #scene_file: scene_frustum.yml
+  #scene_file: scene_tree.yml
+  #scene_file: scene_shader_toy.yml
+  #scene_file: scene_physics_tree.yml
+  #scene_file: scene_christmas_tree.yml
+  #scene_file: scene_fireworks.yml
+  #scene_file: scene_birthday_cake.yml
+  #scene_file: scene_text.yml
+  #scene_file: scene_bd_dance.yml
+  #scene_file: scene_airboat.yml
+  #scene_file: scene_flower_field.yml
+  #scene_file: scene_cylon_raider.yml
+  #scene_file: scene_ak47.yml
+  #scene_file: scene_object.yml
+  #scene_file: scene_ssao.yml
+  #scene_file: scene_player.yml
+  #scene_file: scene_origo.yml
+  #scene_file: scene_test.yml
+  #scene_file: scene_local_skeleton_knight.yml
+  #scene_file: scene_local_scavenger.yml
+  #scene_file: scene_local_prefab.yml
+  #scene_file: scene_local_lion.yml
+  #scene_file: scene_local_cobblestone_floor.yml
+  #scene_file: scene_local_capsule.yml
+  #scene_file: scene_local_physics_skeleton.yml
+  #scene_file: scene_local_bush.yml
+  #scene_file: scene_local_zen_2.yml
+  #scene_file: scene_local_door.yml
+  #scene_file: scene_local_elf.yml
+  #scene_file: scene_local_polygon_city.yml
 
-  glfw_swap_interval: 1
+  glfw_swap_interval: 2
   gl_debug: true
   gl_no_error: false
   gl_use_mapped: false
   gl_use_invalidate: true
   gl_use_fence: false
   #gl_use_single_fence: false
-  gl_use_fence_debug: false
+  gl_use_fence_debug: true
   gl_use_finish: false
 
   glsl_use_debug: true
 
   compressed_textures_enabled: true
-  prepass_depth_enabled: false
+  prepass_depth_enabled: true
 
   g_buffer_scale: 0.5
 
@@ -40,7 +106,7 @@ assets:
   assimp_debug: true
 
   assets_dir: resources/assets
-  assets_build_dir: resources/build/2048
+  assets_build_dir: resources/build/1024
   shaders_dir: shader
 
   placeholder_texture_always: false
@@ -76,7 +142,7 @@ assets:
 
   use_lod_debug: false
 
-  frustum_enabled: true
+  frustum_enabled: false
   frustum_cpu: true
   frustum_gpu: false
   frustum_parallel_limit: 500
@@ -104,7 +170,7 @@ assets:
   fog_density: 1.1
 
   animation_enabled: true
-  animation_joint_tree: false
+  animation_joint_tree: true
   animation_first_frame_only: false
   animation_once_only: false
   animation_max_count: 1000
@@ -112,7 +178,7 @@ assets:
   physics_enabled: true
   physics_update_enabled: true
   physics_initial_delay: 3
-  physics_show_objects: true
+  physics_show_objects: false
 
   physics_dContactMu2: false
   physics_dContactSlip1: true

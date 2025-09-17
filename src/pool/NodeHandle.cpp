@@ -34,6 +34,11 @@ namespace pool {
         return *this;
     }
 
+    std::string NodeHandle::str() const noexcept
+    {
+        return fmt::format("[{}.{}.{}]", m_id, m_handleIndex, SID_NAME(m_id));
+    }
+
     Node* NodeHandle::toNode() const noexcept
     {
         if (!m_handleIndex) return nullptr;

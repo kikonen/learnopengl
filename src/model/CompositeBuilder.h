@@ -35,7 +35,7 @@ public:
         return m_resolvedNodes;
     }
 
-    ki::node_id build(
+    pool::NodeHandle build(
         const ki::node_id parentId,
         const ki::socket_id socketId,
         const NodeType* type,

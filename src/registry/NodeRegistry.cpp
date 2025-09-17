@@ -71,8 +71,12 @@
 namespace {
     const std::vector<pool::NodeHandle> EMPTY_NODE_LIST;
 
-    constexpr int NULL_INDEX = 0;
-    constexpr int ID_INDEX = 1;
+    constexpr int NULL_NODE_INDEX = 0;
+    constexpr int ID_NODE_INDEX = 1;
+
+    // NOTE KI null/id entityIndex is reserved in node pool
+    constexpr int NULL_ENTITY_INDEX = 0;
+    constexpr int ID_ENTITY_INDEX = 1;
 
     constexpr int INITIAL_SIZE = 10000;
 
@@ -136,7 +140,9 @@ void NodeRegistry::clear()
     m_rootWT.reset();
     m_rootRT.reset();
 
-    m_rootIndex = 0;
+    m_rootEntityIndex = 0;
+
+    m_sortedNodes.clear();
 
     m_handles.clear();
     m_parentIndeces.clear();
@@ -156,6 +162,8 @@ void NodeRegistry::clear()
     m_activeNode.reset();
 
     {
+        m_sortedNodes.reserve(INITIAL_SIZE);
+
         m_handles.reserve(INITIAL_SIZE);
         m_parentIndeces.reserve(INITIAL_SIZE);
         m_states.reserve(INITIAL_SIZE);
@@ -184,7 +192,8 @@ void NodeRegistry::clear()
         state.updateRootMatrix();
 
         m_handles.emplace_back();
-        m_parentIndeces.push_back(0);
+        m_parentIndeces.push_back(NULL_ENTITY_INDEX);
+        m_sortedNodes.push_back(NULL_ENTITY_INDEX);
     }
 
     {
@@ -193,7 +202,8 @@ void NodeRegistry::clear()
         state.updateRootMatrix();
 
         m_handles.emplace_back();
-        m_parentIndeces.push_back(0);
+        m_parentIndeces.push_back(NULL_ENTITY_INDEX);
+        m_sortedNodes.push_back(ID_ENTITY_INDEX);
     }
 }
 
@@ -224,15 +234,15 @@ void NodeRegistry::updateWT(const UpdateContext& ctx)
         auto& physicsSystem = physics::PhysicsSystem::get();
 
         {
-            auto& state = m_states[NULL_INDEX];
+            auto& state = m_states[NULL_ENTITY_INDEX];
             state.updateRootMatrix();
         }
         {
-            auto& state = m_states[ID_INDEX];
+            auto& state = m_states[ID_ENTITY_INDEX];
             state.updateRootMatrix();
         }
         {
-            auto& state = m_states[m_rootIndex];
+            auto& state = m_states[m_rootEntityIndex];
             state.updateRootMatrix();
         }
 
@@ -240,15 +250,18 @@ void NodeRegistry::updateWT(const UpdateContext& ctx)
 
         //std::lock_guard lock(m_lock);
         // NOTE KI nodes are in DAG order
-        for (int i = m_rootIndex + 1; i < m_states.size(); i++) {
-            // NOTE KI skip free slot
-            if (m_parentIndeces[i] == 0) continue;
+        for (int nodeIndex = ID_NODE_INDEX + 1; nodeIndex < m_sortedNodes.size(); nodeIndex++)
+        {
+            auto entityIndex = m_sortedNodes[nodeIndex];
 
-            auto* node = cachedNodes[i];
+            // NOTE KI skip free/root slot
+            if (m_parentIndeces[entityIndex] == 0) continue;
+
+            auto* node = cachedNodes[entityIndex];
             if (!node) continue;
 
-            auto& state = m_states[i];
-            const auto& parentState = m_states[m_parentIndeces[i]];
+            auto& state = m_states[entityIndex];
+            const auto& parentState = m_states[m_parentIndeces[entityIndex]];
             auto* generator = node->m_generator.get();
 
             if (node->m_layer < layerCount) {
@@ -286,8 +299,8 @@ void NodeRegistry::postUpdateWT(const UpdateContext& ctx)
 {
     auto& cachedNodes = getCachedNodesWT();
 
-    for (int i = m_rootIndex + 1; i < m_states.size(); i++) {
-        // NOTE KI skip free slot
+    for (int i = ID_ENTITY_INDEX + 1; i < m_states.size(); i++) {
+        // NOTE KI skip free/root slot
         if (m_parentIndeces[i] == 0) continue;
 
         auto* node = cachedNodes[i];
@@ -315,8 +328,8 @@ void NodeRegistry::postUpdateWT(const UpdateContext& ctx)
 
 int NodeRegistry::validateModelMatrices()
 {
-    for (auto i = m_rootIndex + 1; i < m_states.size(); i++) {
-        // NOTE KI skip free slot
+    for (auto i = ID_ENTITY_INDEX + 1; i < m_states.size(); i++) {
+        // NOTE KI skip free/root slot
         if (m_parentIndeces[i] == 0) continue;
 
         const auto parentLevel = m_states[m_parentIndeces[i]].m_matrixLevel;
@@ -328,29 +341,32 @@ int NodeRegistry::validateModelMatrices()
 void NodeRegistry::updateModelMatrices()
 {
     {
-        auto& state = m_states[NULL_INDEX];
+        auto& state = m_states[NULL_ENTITY_INDEX];
         state.updateRootMatrix();
     }
     {
-        auto& state = m_states[ID_INDEX];
+        auto& state = m_states[ID_ENTITY_INDEX];
         state.updateRootMatrix();
     }
     {
-        auto& state = m_states[m_rootIndex];
+        auto& state = m_states[m_rootEntityIndex];
         state.updateRootMatrix();
     }
 
-    for (auto i = m_rootIndex + 1; i < m_states.size(); i++) {
-        // NOTE KI skip free slot
-        if (m_parentIndeces[i] == 0) continue;
+    for (int nodeIndex = ID_NODE_INDEX + 1; nodeIndex < m_sortedNodes.size(); nodeIndex++)
+    {
+        auto entityIndex = m_sortedNodes[nodeIndex];
+        //for (auto i = m_rootIndex + 1; i < m_states.size(); i++) {
+        // NOTE KI skip free/root slot
+        if (m_parentIndeces[entityIndex] == 0) continue;
 
-        m_states[i].updateModelMatrix(m_states[m_parentIndeces[i]]);
+        m_states[entityIndex].updateModelMatrix(m_states[m_parentIndeces[entityIndex]]);
     }
 }
 
 void NodeRegistry::updateModelMatrices(const Node* node)
 {
-    auto index = node->m_entityIndex;
+    auto index = node->getNodeIndex();
     m_states[index].updateModelMatrix(m_states[m_parentIndeces[index]]);
 }
 
@@ -360,7 +376,7 @@ void NodeRegistry::snapshotPending()
 
     {
         const auto sz = m_states.size();
-        const auto forceAfter = m_snapshotsPending.size() - 1;
+        const auto forceFrom = m_snapshotsPending.size();
 
         m_snapshotsPending.resize(sz);
 
@@ -368,7 +384,7 @@ void NodeRegistry::snapshotPending()
             const auto& state = m_states[i];
             assert(!state.m_dirty);
 
-            if (i >= forceAfter || state.m_dirtySnapshot) {
+            if (i >= forceFrom || state.m_dirtySnapshot) {
                 m_snapshotsPending[i].applyFrom(state);
             }
         }
@@ -411,13 +427,13 @@ void NodeRegistry::snapshot(
     std::vector<Snapshot>& dst)
 {
     const auto sz = src.size();
-    const auto forceAfter = dst.size() - 1;
+    const auto forceFrom = dst.size();
 
     dst.resize(sz);
 
     for (int i = 0; i < sz; i++) {
         const auto& snapshot = src[i];
-        if (i >= forceAfter || snapshot.m_dirty) {
+        if (i >= forceFrom || snapshot.m_dirty) {
             dst[i].applyFrom(snapshot);
         }
     }
@@ -492,7 +508,10 @@ void NodeRegistry::cacheNodes(
     cacheLevel = m_nodeLevel;
 
     cache.resize(m_handles.size());
-    for (size_t i = 0; i < m_handles.size(); i++) {
+    cache[NULL_ENTITY_INDEX] = nullptr;
+    cache[ID_ENTITY_INDEX] = nullptr;
+
+    for (size_t i = ID_ENTITY_INDEX + 1; i < m_handles.size(); i++) {
         cache[i] = m_handles[i].toNode();
     }
 }
@@ -731,7 +750,7 @@ void NodeRegistry::attachNode(
     auto* type = node->m_typeHandle.toType();
 
     type->prepareWT({ m_registry });
-    node->prepareWT({ m_registry }, m_states[node->m_entityIndex]);
+    node->prepareWT({ m_registry }, m_states[node->getEntityIndex()]);
 
     if (type->m_physicsDefinition &&
         !(node->m_generator &&
@@ -747,7 +766,7 @@ void NodeRegistry::attachNode(
         auto& physicsSystem = physics::PhysicsSystem::get();
         node->m_physicsObjectId = physicsSystem.registerObject(
             node->m_handle,
-            node->m_entityIndex,
+            node->getEntityIndex(),
             df.m_update,
             std::move(obj));
     }
@@ -796,7 +815,7 @@ void NodeRegistry::detachNode(
         return;
     }
 
-    node->unprepareWT({ m_registry }, m_states[node->m_entityIndex]);
+    node->unprepareWT({ m_registry }, m_states[node->getEntityIndex()]);
 
     const auto* type = node->m_typeHandle.toType();
 
@@ -819,7 +838,7 @@ void NodeRegistry::disposeNode(
         auto* node = nodeHandle.toNode();
         if (!node) return;
 
-        entityIndex = entityIndex = node->m_entityIndex;
+        entityIndex = entityIndex = node->getEntityIndex();
     }
 
     nodeHandle.release();
@@ -855,19 +874,18 @@ void NodeRegistry::bindNode(
 
     KI_INFO(fmt::format("BIND_NODE: {}", node->str()));
 
-    uint32_t entityIndex;
+    uint32_t entityIndex = node->getEntityIndex();
     bool reuse = false;
 
-    // NOTE KI reuse slots (after dispose)
-    if (!m_freeIndeces.empty()) {
-        entityIndex = m_freeIndeces[m_freeIndeces.size() - 1];
-        m_freeIndeces.pop_back();
-        reuse = true;
-    }
-    else {
-        entityIndex = static_cast<uint32_t>(m_handles.size());
-    }
-    node->m_entityIndex = entityIndex;
+    //// NOTE KI reuse slots (after dispose)
+    //if (!m_freeIndeces.empty()) {
+    //    entityIndex = m_freeIndeces[m_freeIndeces.size() - 1];
+    //    m_freeIndeces.pop_back();
+    //    reuse = true;
+    //}
+    //else {
+    //    entityIndex = static_cast<uint32_t>(m_handles.size());
+    //}
 
     {
         const auto* type = node->getType();
@@ -903,21 +921,25 @@ void NodeRegistry::bindNode(
         std::lock_guard lock(m_snapshotLock);
 
         if (!reuse) {
-            m_handles.resize(entityIndex + 1);
-            m_parentIndeces.resize(entityIndex + 1);
-            m_states.resize(entityIndex + 1);
+            auto newSize = std::max(static_cast<size_t>(entityIndex + 1), m_handles.size());
+            m_handles.resize(newSize);
+            m_parentIndeces.resize(newSize);
+            m_states.resize(newSize);
         }
 
         m_handles[entityIndex] = nodeHandle;
         m_parentIndeces[entityIndex] = 0;
         m_states[entityIndex] = state;
 
+        node->m_nodeIndex = static_cast<uint32_t>(m_sortedNodes.size());
+        m_sortedNodes.push_back(entityIndex);
+
         m_nodeLevel++;
 
         if (nodeHandle == m_rootHandle) {
             assert(!m_rootWT);
             m_rootWT = nodeHandle;
-            m_rootIndex = node->m_entityIndex;
+            m_rootEntityIndex = node->getEntityIndex();
         }
     }
 
@@ -951,7 +973,7 @@ void NodeRegistry::unbindNode(
     {
         std::lock_guard lock(m_snapshotLock);
 
-        const auto entityIndex = node->m_entityIndex;
+        const auto entityIndex = node->getEntityIndex();
 
         m_handles[entityIndex] = pool::NodeHandle::NULL_HANDLE;
         m_parentIndeces[entityIndex] = 0;
@@ -986,23 +1008,30 @@ bool NodeRegistry::bindParent(
     ki::node_id parentId)
 {
     // NOTE KI everything else, except root requires parent
-    if (nodeHandle == m_rootHandle) return true;
+    if (!nodeHandle || nodeHandle == m_rootHandle) return true;
 
     auto parentHandle = pool::NodeHandle::toHandle(parentId);
 
     auto* node = nodeHandle.toNode();
     auto* parent = parentHandle.toNode();
 
-    if (!node || !parent) return false;
+    if (!node || !parent) {
+        KI_INFO(fmt::format(
+            "PARENT_MISSING: parent={}, child={}",
+            parentHandle.str(),
+            nodeHandle.str()));
+        return false;
+    }
 
-    assert(parent->m_entityIndex >= m_rootIndex);
-    assert(parent->m_entityIndex < node->m_entityIndex);
+    //assert(parent->m_nodeIndex >= m_rootIndex);
+    //assert(parent->m_nodeIndex < node->m_nodeIndex);
 
-    m_parentIndeces[node->m_entityIndex] = parent->m_entityIndex;
+    m_parentIndeces[node->getEntityIndex()] = parent->getEntityIndex();
 
     KI_INFO(fmt::format(
         "BIND_PARENT: parent={}, child={}",
-        (int)parentHandle, (int)nodeHandle));
+        parentHandle.str(),
+        nodeHandle.str()));
 
     return true;
 }
@@ -1015,14 +1044,15 @@ bool NodeRegistry::unbindParent(
     auto* node = nodeHandle.toNode();
     if (!node) return false;
 
-    auto parentIndex = m_parentIndeces[node->m_entityIndex];
+    auto parentIndex = m_parentIndeces[node->getEntityIndex()];
     auto parentHandle = m_handles[parentIndex];
 
-    m_parentIndeces[node->m_entityIndex] = 0;
+    m_parentIndeces[node->getEntityIndex()] = 0;
 
     KI_INFO(fmt::format(
         "UNBIND_PARENT: parent={}, child={}",
-        (int)parentHandle, (int)nodeHandle));
+        parentHandle.str(),
+        nodeHandle.str()));
 
     return true;
 }
@@ -1039,16 +1069,19 @@ bool NodeRegistry::bindParentSocket(
     auto* parent = node->getParent();
 
     if (!parent) {
+        auto parentId = m_parentIndeces[node->getEntityIndex()];
         KI_INFO_OUT(fmt::format(
-            "PARENT_BIND_ERROR: parent_missing - parent={}, socket={}",
-            parent->str(),
-            socketName));
+            "PARENT_BIND_ERROR: parent_missing - parent={}/{}, socket={}, child={}",
+            parentId,
+            SID_NAME(parentId),
+            socketName,
+            nodeHandle.str()));
         return false;
     }
 
     const auto* parentType = parent->getType();
-    const auto& parentState = m_states[parent->m_entityIndex];
-    auto& state = m_states[node->m_entityIndex];
+    const auto& parentState = m_states[parent->getEntityIndex()];
+    auto& state = m_states[node->getEntityIndex()];
 
     const auto& rig = parentType->findRig();
     if (!rig) {
@@ -1117,7 +1150,7 @@ pool::NodeHandle NodeRegistry::findTaggedChild(
 {
     const auto* node = handle.toNode();
     if (!node) return pool::NodeHandle::NULL_HANDLE;
-    const auto parentIndex = node->m_entityIndex;
+    const auto parentIndex = node->getEntityIndex();
 
     for (int childEntityIndex = 0; childEntityIndex < m_parentIndeces.size(); childEntityIndex++) {
         if (m_parentIndeces[childEntityIndex] == parentIndex) {
@@ -1149,7 +1182,7 @@ void NodeRegistry::bindSkybox(
     auto* type = node->m_typeHandle.toType();
 
     type->prepareWT({ m_registry });
-    node->prepareWT({ m_registry }, m_states[node->m_entityIndex]);
+    node->prepareWT({ m_registry }, m_states[node->getEntityIndex()]);
 
     m_skybox = handle;
 }

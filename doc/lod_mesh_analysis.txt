@@ -1,0 +1,65 @@
+CASE 1: mesh consisting from multiple parts
+--------------------------------------------
+I: MESH: mesh_set=Palm_01, mesh=<MESH: id=10, name=Tree_0, alias=Tree_0, baseVertex=0, baseIndex=0, vertexCount=225, indexCount=1116>
+I: MESH: mesh_set=Palm_01, mesh=<MESH: id=11, name=Tree_1, alias=Tree_1, baseVertex=0, baseIndex=0, vertexCount=1400, indexCount=6048>
+I: MESH: mesh_set=Palm_01, mesh=<MESH: id=12, name=Tree_2, alias=Tree_2, baseVertex=0, baseIndex=0, vertexCount=560, indexCount=2016>
+
+-		m_lodMeshes	{ size=9 }	std::vector<mesh::LodMesh,std::allocator<mesh::LodMesh>>
+		[capacity]	9	unsigned __int64
++		[allocator]	allocator	std::_Compressed_pair<std::allocator<mesh::LodMesh>,std::_Vector_val<std::_Simple_types<mesh::LodMesh>>,1>
+
++		[0]	{m_mesh=shared_ptr {m_vertexBones={ size=0 } m_rig=empty m_smoothNormals=false ...} [4 strong refs] [custom deleter] ...}	mesh::LodMesh
++		[1]	{m_mesh=shared_ptr {m_vertexBones={ size=0 } m_rig=empty m_smoothNormals=false ...} [4 strong refs] [custom deleter] ...}	mesh::LodMesh
++		[2]	{m_mesh=shared_ptr {m_vertexBones={ size=0 } m_rig=empty m_smoothNormals=false ...} [4 strong refs] [custom deleter] ...}	mesh::LodMesh
+
+... duplicate due to "meshes" lod logic
++		[3]	{m_mesh=shared_ptr {m_vertexBones={ size=0 } m_rig=empty m_smoothNormals=false ...} [4 strong refs] [custom deleter] ...}	mesh::LodMesh
++		[4]	{m_mesh=shared_ptr {m_vertexBones={ size=0 } m_rig=empty m_smoothNormals=false ...} [4 strong refs] [custom deleter] ...}	mesh::LodMesh
++		[5]	{m_mesh=shared_ptr {m_vertexBones={ size=0 } m_rig=empty m_smoothNormals=false ...} [4 strong refs] [custom deleter] ...}	mesh::LodMesh
+
++		[6]	{m_mesh=shared_ptr {m_vertexBones={ size=0 } m_rig=empty m_smoothNormals=false ...} [4 strong refs] [custom deleter] ...}	mesh::LodMesh
++		[7]	{m_mesh=shared_ptr {m_vertexBones={ size=0 } m_rig=empty m_smoothNormals=false ...} [4 strong refs] [custom deleter] ...}	mesh::LodMesh
++		[8]	{m_mesh=shared_ptr {m_vertexBones={ size=0 } m_rig=empty m_smoothNormals=false ...} [4 strong refs] [custom deleter] ...}	mesh::LodMesh
+
+
+CASE 2: mesh split into separate parts by material
+---------------------------------------------------
+I: MESH: mesh_set=texture_cube_4, mesh=<MESH: id=10, name=Cube, alias=Cube, baseVertex=0, baseIndex=0, vertexCount=40, indexCount=108>
+I: MESH: mesh_set=texture_cube_4, mesh=<MESH: id=11, name=Cube, alias=daisy, baseVertex=0, baseIndex=0, vertexCount=4, indexCount=6>
+I: MESH: mesh_set=texture_cube_4, mesh=<MESH: id=12, name=Cube, alias=kari, baseVertex=0, baseIndex=0, vertexCount=4, indexCount=6>
+I: MESH: mesh_set=texture_cube_4, mesh=<MESH: id=13, name=Cube, alias=wood-emission, baseVertex=0, baseIndex=0, vertexCount=8, indexCount=12>
+
+-		m_lodMeshes	{ size=4 }	std::vector<mesh::LodMesh,std::allocator<mesh::LodMesh>>
+		[capacity]	4	unsigned __int64
+
++		[0]	{m_mesh=shared_ptr {m_vertexBones={ size=0 } m_rig=empty m_smoothNormals=false ...} [2 strong refs] [custom deleter] ...}	mesh::LodMesh
++		[1]	{m_mesh=shared_ptr {m_vertexBones={ size=0 } m_rig=empty m_smoothNormals=false ...} [2 strong refs] [custom deleter] ...}	mesh::LodMesh
++		[2]	{m_mesh=shared_ptr {m_vertexBones={ size=0 } m_rig=empty m_smoothNormals=false ...} [2 strong refs] [custom deleter] ...}	mesh::LodMesh
++		[3]	{m_mesh=shared_ptr {m_vertexBones={ size=0 } m_rig=empty m_smoothNormals=false ...} [2 strong refs] [custom deleter] ...}	mesh::LodMesh
+
+
+CASE 3: mesh consisting of separate LOD levels
+----------------------------------------------
+This case likely is neveer subset of CASE 1, but may trigger CASE 2 splitting for each LOD
+
+=> should still assume that each LOD may consist from multiple meshes
+=> for example lion mesh has 2 meshes per LOD0 and LOD1, 1 in LOD2 and LOD3
+I: MESH: mesh_set=SK_Lion, mesh=<MESH: id=10, name=SK_Lion_LOD0, alias=SK_Lion_LOD0, baseVertex=0, baseIndex=0, vertexCount=4659, indexCount=25014>
+I: MESH: mesh_set=SK_Lion, mesh=<MESH: id=11, name=SK_Lion_LOD0, alias=SK_Lion_LOD0, baseVertex=0, baseIndex=0, vertexCount=3694, indexCount=20379>
+I: MESH: mesh_set=SK_Lion, mesh=<MESH: id=12, name=SK_Lion_LOD1, alias=SK_Lion_LOD1, baseVertex=0, baseIndex=0, vertexCount=4659, indexCount=25014>
+I: MESH: mesh_set=SK_Lion, mesh=<MESH: id=13, name=SK_Lion_LOD1, alias=SK_Lion_LOD1, baseVertex=0, baseIndex=0, vertexCount=2658, indexCount=14634>
+I: MESH: mesh_set=SK_Lion, mesh=<MESH: id=14, name=SK_Lion_LOD2, alias=SK_Lion_LOD2, baseVertex=0, baseIndex=0, vertexCount=4659, indexCount=25014>
+I: MESH: mesh_set=SK_Lion, mesh=<MESH: id=15, name=SK_Lion_LOD3, alias=SK_Lion_LOD3, baseVertex=0, baseIndex=0, vertexCount=3412, indexCount=17742>
+
+
+-		m_lodMeshes	{ size=6 }	std::vector<mesh::LodMesh,std::allocator<mesh::LodMesh>>
+		[capacity]	6	unsigned __int64
++		[allocator]	allocator	std::_Compressed_pair<std::allocator<mesh::LodMesh>,std::_Vector_val<std::_Simple_types<mesh::LodMesh>>,1>
++		[0]	{m_mesh=shared_ptr {m_vertexBones={ size=4659 } m_rig=shared_ptr {m_name="resources\\assets\\fbx\\creatures\\lion\\SK_Lion.FBX" m_joints={ size=52 } m_boneContainer=...} [7 strong refs] [make_shared] ...} [2 strong refs] [custom deleter] ...}	mesh::LodMesh
++		[1]	{m_mesh=shared_ptr {m_vertexBones={ size=3694 } m_rig=shared_ptr {m_name="resources\\assets\\fbx\\creatures\\lion\\SK_Lion.FBX" m_joints={ size=52 } m_boneContainer=...} [7 strong refs] [make_shared] ...} [2 strong refs] [custom deleter] ...}	mesh::LodMesh
++		[2]	{m_mesh=shared_ptr {m_vertexBones={ size=4659 } m_rig=shared_ptr {m_name="resources\\assets\\fbx\\creatures\\lion\\SK_Lion.FBX" m_joints={ size=52 } m_boneContainer=...} [7 strong refs] [make_shared] ...} [2 strong refs] [custom deleter] ...}	mesh::LodMesh
++		[3]	{m_mesh=shared_ptr {m_vertexBones={ size=2658 } m_rig=shared_ptr {m_name="resources\\assets\\fbx\\creatures\\lion\\SK_Lion.FBX" m_joints={ size=52 } m_boneContainer=...} [7 strong refs] [make_shared] ...} [2 strong refs] [custom deleter] ...}	mesh::LodMesh
++		[4]	{m_mesh=shared_ptr {m_vertexBones={ size=4659 } m_rig=shared_ptr {m_name="resources\\assets\\fbx\\creatures\\lion\\SK_Lion.FBX" m_joints={ size=52 } m_boneContainer=...} [7 strong refs] [make_shared] ...} [2 strong refs] [custom deleter] ...}	mesh::LodMesh
++		[5]	{m_mesh=shared_ptr {m_vertexBones={ size=3412 } m_rig=shared_ptr {m_name="resources\\assets\\fbx\\creatures\\lion\\SK_Lion.FBX" m_joints={ size=52 } m_boneContainer=...} [7 strong refs] [make_shared] ...} [2 strong refs] [custom deleter] ...}	mesh::LodMesh
+
+===========================================

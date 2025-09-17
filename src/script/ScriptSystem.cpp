@@ -38,6 +38,7 @@
 #include "binding/LuaGlm.h"
 #include "binding/LuaRayHit.h"
 #include "binding/LuaPath.h"
+#include "binding/LuaNodeHandle.h"
 
 namespace
 {
@@ -47,6 +48,9 @@ namespace
     const static std::string TABLE_TMP = "tmp";
 
     const static std::string API_CMD = "cmd";
+    const static std::string API_NODE = "node";
+
+    const static std::string FIELD_ID = "id";
 
     static script::ScriptSystem* s_system{ nullptr };
 }
@@ -180,6 +184,9 @@ namespace script
 
         lua[TABLE_SCENE] = std::ref(m_sceneApi);
 
+        m_nodeApi = std::make_unique<api::NodeAPI>();
+        lua[API_NODE] = std::ref(m_nodeApi);
+
         m_nodeCommandApi = std::make_unique<api::NodeCommandAPI>(m_commandEngine);
         lua[API_CMD] = std::ref(m_nodeCommandApi);
     }
@@ -208,6 +215,7 @@ namespace script
         binding::LuaGlm::bind(lua);
         binding::LuaRayHit::bind(lua);
         binding::LuaPath::bind(lua);
+        binding::LuaNodeHandle::bind(lua);
         binding::LuaNodeCommand::bind(lua);
         binding::LuaNode::bind(lua);
     }
@@ -302,9 +310,9 @@ node->getName(), id, typeId);
             auto* cmdApi = m_nodeCommandApis.find(nodeHandle)->second.get();
 
             sol::table nodeState = getLua()[TABLE_STATES][nodeHandle.toId()];
-            nodeState["id"] = node->getId();
-            nodeState["cmd"] = std::ref(cmdApi);
-            nodeState["node"] = std::ref(nodeApi);
+            nodeState[FIELD_ID] = node->m_handle;
+            nodeState[API_CMD] = std::ref(cmdApi);
+            nodeState[API_NODE] = std::ref(nodeApi);
         }
     }
 

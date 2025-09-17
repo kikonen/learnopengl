@@ -69,10 +69,14 @@ namespace {
 
 namespace script::api
 {
+    NodeAPI::NodeAPI()
+        : NodeAPI{ pool::NodeHandle::NULL_HANDLE }
+    {
+    }
+
     NodeAPI::NodeAPI(
         pool::NodeHandle handle)
-        : m_handle{ handle },
-        m_entityIndex{ handle.toNode()->m_entityIndex }
+        : m_handle{ handle }
     {
     }
 
@@ -88,13 +92,13 @@ namespace script::api
         return m_handle.m_id;
     }
 
-    ki::node_id NodeAPI::lua_find_child(
+    pool::NodeHandle NodeAPI::lua_find_child(
         const sol::table& lua_opt) const noexcept
     {
         const auto opt = readNodeOptions(lua_opt);
 
         auto handle = getHandle(opt.nodeId, m_handle, opt.tagId);
-        return handle.toId();
+        return handle;
     }
 
     const std::string& NodeAPI::lua_get_type_name() const noexcept
@@ -130,6 +134,6 @@ namespace script::api
 
     const NodeState& NodeAPI::getState() const
     {
-        return NodeRegistry::get().getState(m_entityIndex);
+        return NodeRegistry::get().getState(m_handle.m_handleIndex);
     }
 }
