@@ -11,11 +11,11 @@ end
 function create_new_fps_counter()
   local opt = {
     type = util.sid("fps_counter"),
-    id = "fps_counter",
+    tag = "fps_counter",
     pos = vec3(2, -2, -1)
   }
-  local node_id = scene:create_node(opt)
-  printf("created_fps_coutner: %d\n", node_id)
+  local node_handle = scene:create_node(opt)
+  printf("created_fps_counter: %d\n", node_handle)
 end
 
 function create_new_node(type)
@@ -25,8 +25,8 @@ function create_new_node(type)
     rot = vec3(0, rnd(360), 0),
     scale = vec3(0.25 + rnd(1)),
   }
-  local node_id = scene:create_node(opt)
-  printf("created_node: %d\n", node_id)
+  local node_handle = scene:create_node(opt)
+  printf("created_node: %d\n", node_handle)
 end
 
 print("loaded")
@@ -61,8 +61,8 @@ function cylon_armada()
       rot = vec3(0, rnd(360), 0),
       scale = vec3(0.01 + rnd(0.01)),
     }
-    local node_id = scene:create_node(opt)
-    printf("created_node: %d\n", node_id)
+    local node_handle = scene:create_node(opt)
+    printf("created_node: %d\n", node_handle)
   end
 end
 
@@ -84,30 +84,31 @@ end
 
   -- emit_particles()
 
-function sword_action(node_id)
-  debug("sword_id=%d\n", node_id)
+function sword_action(node_handle)
+  debug("sword_handle=%s, pos=%s\n", node_handle, node:get_pos({ node = node_handle}))
+
   cid = cmd:rotate(
-    { node=node_id, time=2 },
+    { node=node_handle, time=2 },
     vec3(1, 1, 0),
     360)
 end
 
-function sword_particle(node_id)
-  debug("particle_id=%d\n", node_id)
+function sword_particle(node_handle)
+  debug("particle_handle=%s, pos=%s\n", node_handle, node:get_pos({ node=node_handle}))
   cmd:particle_emit(
-    { node = node_id, count=(10 + rnd(10)) * 200 })
+    { node=node_handle, count=(10 + rnd(10)) * 200 })
 end
 
 function sword_test()
-  local sword_ids = scene:find_nodes({ tag = "sword" })
-  local particle_ids = scene:find_nodes({ tag = "sword_particle" })
+  local sword_handles = scene:find_nodes({ tag="sword" })
+  local particle_handles = scene:find_nodes({ tag="sword_particle" })
 
-  for i=1, sword_ids:size() do
-    sword_action(sword_ids[i])
+  for i=1, sword_handles:size() do
+    sword_action(sword_handles[i])
   end
 
-  for i=1, particle_ids:size() do
-    sword_particle(particle_ids[i])
+  for i=1, particle_handles:size() do
+    sword_particle(particle_handles[i])
   end
 end
 

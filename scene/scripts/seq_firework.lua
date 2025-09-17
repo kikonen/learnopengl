@@ -7,7 +7,7 @@ local rnd = math.random
 
 local shoot_sid = util.sid("shoot")
 local explode_sid = util.sid("explode")
--- local text_node_sid = util.sid("rocket_message")
+-- local text_node_handle = scne:find_node({ tag="rocket_message" })
 
 local function animation(self)
   local listener_id
@@ -28,10 +28,10 @@ local function animation(self)
       true)
 
     -- cmd:set_visible(
-    --   { after=cid, node=text_node_sid },
+    --   { after=cid, node=text_node_handle },
     --   false)
 
-    -- cid = cmd:set_text({ after=cid, node=text_node_sid },
+    -- cid = cmd:set_text({ after=cid, node=text_node_handle },
     --   { text="" })
 
     wid = cmd:wait(
@@ -61,18 +61,18 @@ local function animation(self)
     --   { after=cid2, time = 1 })
 
     -- cmd:set_visible(
-    --   { after=wid2, node=text_node_sid },
+    --   { after=wid2, node=text_node_handle },
     --   true)
 
     -- cid = cmd:set_text(
-    --   { after=wid2, node=text_node_sid },
+    --   { after=wid2, node=text_node_handle },
     --   { text="Happy new year!!!" })
 
     wid = cmd:wait(
       { after=cid2, time=0.3 })
 
     -- cid = cmd:rotate(
-    --   { after=wid, node=text_node_sid, time=1 },
+    --   { after=wid, node=text_node_handle, time=1 },
     --   vec3(0, 1, 0),
     --   360)
 

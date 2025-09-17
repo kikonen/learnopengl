@@ -26,5 +26,5 @@ void NodeGenerator::bindBatch(
         kindBits,
         snapshot,
         m_transforms,
-        container.m_entityIndex);
+        container.getEntityIndex());
 }

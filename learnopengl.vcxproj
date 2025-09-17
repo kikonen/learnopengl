@@ -402,6 +402,7 @@
     <ClCompile Include="src\render\ScreenTri.cpp" />
     <ClCompile Include="src\render\SSaoBuffer.cpp" />
     <ClCompile Include="src\script\api\SceneAPI.cpp" />
+    <ClCompile Include="src\script\binding\LuaNodeHandle.cpp" />
     <ClCompile Include="src\script\binding\LuaScene.cpp" />
     <ClCompile Include="src\script\command\CancelMultiple.cpp" />
     <ClCompile Include="src\script\command\EmitEvent.cpp" />
@@ -796,6 +797,7 @@
     <ClInclude Include="src\material\FontAtlasMaterialUpdater.h" />
     <ClInclude Include="src\material\ShaderMaterialUpdater.h" />
     <ClInclude Include="src\material\MaterialUpdater.h" />
+    <ClInclude Include="src\script\binding\LuaNodeHandle.h" />
     <ClInclude Include="src\util\Transform.h" />
     <ClInclude Include="src\mesh\PrimitiveRegistry.h" />
     <ClInclude Include="src\mesh\generator\TangentCalculator.h" />

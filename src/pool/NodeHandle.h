@@ -64,14 +64,11 @@ namespace pool {
         bool isNull() const noexcept { return m_handleIndex == 0;  }
 
         // NOTE KI more useful to default to ki::node_id
-        operator int() const {
+        operator unsigned int() const {
             return m_id;
         }
 
-        inline std::string str() const noexcept
-        {
-            return "[" + std::to_string(m_id) + "." + std::to_string(m_handleIndex) + "]";
-        }
+        std::string str() const noexcept;
 
         void reset() noexcept {
             m_handleIndex = 0;

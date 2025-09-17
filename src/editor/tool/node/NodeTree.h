@@ -49,15 +49,15 @@ namespace editor
                 // NOTE KI first node in list must be root
                 if (!m_root) {
                     m_root = std::make_unique<NodeTreeNode>(node);
-                    collectedNodes[node->m_entityIndex] = m_root.get();
+                    collectedNodes[node->getNodeIndex()] = m_root.get();
                     continue;
                 }
 
-                auto parentIndex = nodeRegistry.getParentIndex(node->m_entityIndex);
+                auto parentIndex = nodeRegistry.getParentIndex(node->getNodeIndex());
 
                 auto* parentTree = collectedNodes[parentIndex];
                 auto& treeNode = parentTree->m_children.emplace_back(std::make_unique<NodeTreeNode>(node));
-                collectedNodes[node->m_entityIndex] = treeNode.get();
+                collectedNodes[node->getNodeIndex()] = treeNode.get();
             }
         }
 
