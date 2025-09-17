@@ -58,7 +58,7 @@ bool PawnController::updateWT(
 {
     const auto dt = ctx.m_clock.elapsedSecs;
 
-    auto& state = NodeRegistry::get().modifyState(node.m_entityIndex);
+    auto& state = NodeRegistry::get().modifyState(node.getEntityIndex());
     bool changed = false;
 
     float angularVelocity = m_angularVelocity;

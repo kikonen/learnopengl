@@ -1290,6 +1290,9 @@
     <ClCompile Include="src\debug\AnimationDebug.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\script\binding\LuaNodeHandle.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h">
@@ -2919,6 +2922,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\debug\PhysicsDebug.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\script\binding\LuaNodeHandle.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

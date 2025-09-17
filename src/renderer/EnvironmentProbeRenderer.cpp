@@ -62,7 +62,7 @@ void EnvironmentProbeRenderer::render(
 
         if (!node->m_typeFlags.cubeMap) continue;
 
-        const auto* snapshot = nodeRegistry.getSnapshotRT(node->m_entityIndex);
+        const auto* snapshot = nodeRegistry.getSnapshotRT(node->getEntityIndex());
 
         //const auto& volume = snapshot->getVolume();
         const auto& pos = snapshot->getWorldPosition();

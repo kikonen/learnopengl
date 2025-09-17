@@ -87,7 +87,7 @@ namespace script {
                 opt.name = value.as<std::string>();
             }
             else if (k == OPT_NODE) {
-                opt.nodeId = value.as<unsigned int>();
+                opt.nodeHandle = readHandle(value);
             }
             });
         return opt;
@@ -119,6 +119,14 @@ namespace script {
         return value.as<unsigned int>();
     }
 
+    pool::NodeHandle readHandle(const sol::object& value) noexcept
+    {
+        if (value.is<pool::NodeHandle>()) {
+            return value.as<pool::NodeHandle>();
+        }
+        return pool::NodeHandle::toHandle(readSID(value));
+    }
+
     std::vector<script::command_id> readCommandIds(const sol::table& v) noexcept
     {
         std::vector<script::command_id> ids;
@@ -129,20 +137,20 @@ namespace script {
         return ids;
     }
 
-    pool::NodeHandle getHandle(
-        ki::node_id nodeId,
+    pool::NodeHandle selectHandle(
+        pool::NodeHandle nodeHandle,
         pool::NodeHandle handle) noexcept
     {
-        return nodeId > 0 ? pool::NodeHandle::toHandle(nodeId) : handle;
+        return nodeHandle > 0 ? nodeHandle : handle;
     }
 
-    pool::NodeHandle getHandle(
-        ki::node_id nodeId,
+    pool::NodeHandle selectHandle(
+        pool::NodeHandle nodeHandle,
         pool::NodeHandle handle,
         ki::tag_id tagId) noexcept
     {
-        if (nodeId > 0) {
-            handle = pool::NodeHandle::toHandle(nodeId);
+        if (nodeHandle > 0) {
+            handle = nodeHandle;
         }
         if (tagId > 0) {
             handle = NodeRegistry::get().findTaggedChild(handle, tagId);

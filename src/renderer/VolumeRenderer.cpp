@@ -66,7 +66,7 @@ void VolumeRenderer::render(
         if (!node) continue;
         if (!dbg.m_showVolume && !selectionRegistry.isSelected(node->toHandle())) continue;
 
-        const auto* snapshot = nodeRegistry.getSnapshotRT(node->m_entityIndex);
+        const auto* snapshot = nodeRegistry.getSnapshotRT(node->getEntityIndex());
 
         const auto& volume = snapshot->getVolume();
         const auto& pos = snapshot->getWorldPosition();

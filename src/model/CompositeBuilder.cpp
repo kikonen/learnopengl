@@ -103,7 +103,7 @@ void CompositeBuilder::addResolvedNode(
     m_resolvedNodes.push_back(resolved);
 }
 
-ki::node_id CompositeBuilder::build(
+pool::NodeHandle CompositeBuilder::build(
     const ki::node_id parentId,
     const ki::socket_id socketId,
     const NodeType* type,
@@ -113,14 +113,15 @@ ki::node_id CompositeBuilder::build(
         fmt::format("<{}>", type->getName()))};
 
     // NOTE KI cannot allow duplicate id
-    if (pool::NodeHandle::toHandle(nodeId)) return 0;
+    if (pool::NodeHandle::toHandle(nodeId)) return pool::NodeHandle::NULL_HANDLE;
 
+    pool::NodeHandle handle;
     {
-        const auto handle = pool::NodeHandle::allocate(nodeId);
+        handle = pool::NodeHandle::allocate(nodeId);
         auto* node = handle.toNode();
 
         node->m_typeHandle = type->toHandle();
-        node->setName(ki::StringID::getName(nodeId));
+        node->setName(SID_NAME(nodeId));
 
         addResolvedNode({
             parentId,
@@ -136,7 +137,7 @@ ki::node_id CompositeBuilder::build(
         build(nodeId, *type->m_compositeDefinition, aliases);
     }
 
-    return nodeId;
+    return handle;
 }
 
 bool CompositeBuilder::build(

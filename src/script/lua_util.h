@@ -17,7 +17,7 @@ namespace script
         script::command_id afterId = 0;
         int index = 0;
         ki::sid_t sid = 0;
-        ki::node_id nodeId = 0;
+        pool::NodeHandle nodeHandle{};
         ki::tag_id tagId = 0;
         float duration = 0.f;
         float speed = 1.f;
@@ -44,15 +44,16 @@ namespace script
     CommandEvent readEvent(const sol::table& lua_opt) noexcept;
 
     uint32_t readSID(const sol::object& v) noexcept;
+    pool::NodeHandle readHandle(const sol::object& v) noexcept;
 
     std::vector<script::command_id> readCommandIds(const sol::table& v) noexcept;
 
-    pool::NodeHandle getHandle(
-        ki::node_id nodeId,
+    pool::NodeHandle selectHandle(
+        pool::NodeHandle nodeHandle,
         pool::NodeHandle handle) noexcept;
 
-    pool::NodeHandle getHandle(
-        ki::node_id nodeId,
+    pool::NodeHandle selectHandle(
+        pool::NodeHandle nodeHandle,
         pool::NodeHandle handle,
         ki::tag_id tagId) noexcept;
 

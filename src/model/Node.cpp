@@ -221,7 +221,7 @@ void Node::bindBatch(
             programPrepare,
             kindBits,
             *snapshot,
-            m_entityIndex);
+            getEntityIndex());
     }
 }
 

@@ -22,7 +22,7 @@ namespace {
 
     struct NodeOptions {
         ki::type_id typeId{ 0 };
-        ki::node_id nodeId{ 0 };
+        pool::NodeHandle nodeHandle{};
         ki::node_id parentId{ 0 };
         ki::socket_id socketId{ 0 };
         ki::tag_id tagId{ 0 };
@@ -41,7 +41,7 @@ namespace {
                 opt.typeId = script::readSID(value);
             }
             else if (k == OPT_NODE) {
-                opt.nodeId = script::readSID(value);
+                opt.nodeHandle = script::readHandle(value);
             }
             else if (k == OPT_PARENT) {
                 opt.parentId = script::readSID(value);
@@ -69,10 +69,14 @@ namespace {
 
 namespace script::api
 {
+    NodeAPI::NodeAPI()
+        : NodeAPI{ pool::NodeHandle::NULL_HANDLE }
+    {
+    }
+
     NodeAPI::NodeAPI(
         pool::NodeHandle handle)
-        : m_handle{ handle },
-        m_entityIndex{ handle.toNode()->m_entityIndex }
+        : m_handle{ handle }
     {
     }
 
@@ -88,13 +92,13 @@ namespace script::api
         return m_handle.m_id;
     }
 
-    ki::node_id NodeAPI::lua_find_child(
+    pool::NodeHandle NodeAPI::lua_find_child(
         const sol::table& lua_opt) const noexcept
     {
         const auto opt = readNodeOptions(lua_opt);
 
-        auto handle = getHandle(opt.nodeId, m_handle, opt.tagId);
-        return handle.toId();
+        auto handle = selectHandle(opt.nodeHandle, m_handle, opt.tagId);
+        return handle;
     }
 
     const std::string& NodeAPI::lua_get_type_name() const noexcept
@@ -130,6 +134,6 @@ namespace script::api
 
     const NodeState& NodeAPI::getState() const
     {
-        return NodeRegistry::get().getState(m_entityIndex);
+        return NodeRegistry::get().getState(m_handle.m_handleIndex);
     }
 }
