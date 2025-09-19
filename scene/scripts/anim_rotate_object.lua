@@ -1,9 +1,7 @@
 local cmd = self.cmd
 
---printf("START: name=%s, clone=%d\n", node:get_name(), node:get_clone_index())
-
 local function animation()
-  local orig_pos = node:get_pos()
+  local orig_pos = node:get_pos(self.handle)
   local wid = 0
   local cid = 0
   local dir = 1

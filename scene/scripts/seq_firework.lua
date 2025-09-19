@@ -15,7 +15,7 @@ local function animation(self)
   local explode_cid = 0
   local wid = 0
   local wid2 = 0
-  local orig_pos = node:get_pos()
+  local orig_pos = node:get_pos(self.handle)
 
   local function animation_listener()
     cid = cmd:move(

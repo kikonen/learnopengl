@@ -1,5 +1,3 @@
---printf("START: name=%s, clone=%d\n", node:get_name(), node:get_clone_index())
-
 local rnd = math.random
 
 local ANIM_IDLE = SID("idle")
@@ -166,11 +164,11 @@ local function ray_caster(self)
     cmd:particle_emit(
       { count=(10 + rnd(50)) * 100 })
 
-    debug("front: %s\n", node:get_front())
+    debug("front: %s\n", node:get_front(self.handle))
 
     local nodePos = node:get_pos(self.handle)
     local targetPos = args.data.pos
-    local n1 = node:get_front()
+    local n1 = node:get_front(self.handle)
     local n2 = targetPos - nodePos
     n1.y = 0
     n2.y = 0
@@ -246,7 +244,7 @@ local function ray_caster(self)
     local rot_quat = util.axis_degrees_to_quat(vec3(0, 1, 0), ray_degrees)
   local rot_degrees = rot_quat:to_degrees()
 
-    local dir = (rot_quat:to_mat4() * node:get_front()):normalize()
+    local dir = (rot_quat:to_mat4() * node:get_front(self.handle)):normalize()
     -- local dir_quat = util.normal_to_quat(dir, vec3(0, 1, 0))
     -- local dir_degrees = dir_quat:to_degrees()
 
@@ -274,7 +272,7 @@ local function animation(self)
   local wid = 0
   local cid = 0
   local cid2 = 0
-  local pos = node:get_pos()
+  local pos = node:get_pos(self.handle)
 
   local function animation_listener()
     cid = self:idle(wid)

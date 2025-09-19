@@ -22,7 +22,7 @@ local function animation(self)
   local cid = 0
   local idx = 0
 
-  printf("text_start: %s\n", node:get_name())
+  printf("text_start: %s\n", node:get_name(self.name))
 
   local function animation_listener()
     wid = cmd:wait({ after=cid, time=5 })

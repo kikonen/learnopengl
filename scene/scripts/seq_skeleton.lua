@@ -1,5 +1,3 @@
---printf("START: name=%s, clone=%d\n", node:get_name(), node:get_clone_index())
-
 local rnd = math.random
 
 local ANIM_IDLE = util.sid("idle")
@@ -122,8 +120,8 @@ local function ray_caster()
     cid = cmd:wait({ after=cid, time=0.25 })
 
     local rot = util.axis_degrees_to_quat(vec3(0, 1, 0), degrees)
-    printf("front=%s, rot=%s\n", node:get_front(), rot)
-    local dir = rot:to_mat4() * node:get_front()
+    printf("front=%s, rot=%s\n", node:get_front(self.handle), rot)
+    local dir = rot:to_mat4() * node:get_front(self.handle)
     printf("dir=%s\n", dir)
 
     cid = cmd:ray_cast(
@@ -151,9 +149,9 @@ local function animation(self)
   local idx = 0
   local wid = 0
   local cid = 0
-  local pos = node:get_pos()
+  local pos = node:get_pos(self.handle)
 
-  printf("node=%s\n", node:str())
+  printf("node=%s\n", node:str(self.handle))
   printf("pos=%s = %f\n", pos, pos:length())
 
   local v2 = vec3(1.0, 2.0, 3.0)
@@ -173,7 +171,7 @@ local function animation(self)
   local v5 = vec3(v4)
   printf("v5=%s = %f\n", v5, v5:length())
 
-  local m6 = node:get_model_matrix()
+  local m6 = node:get_model_matrix(self.handle)
   local v6 = m6 * vec4(1, 0, 0, 1)
   printf("m6=%s, v6=%s = %f\n", m6, v6, v6:length())
 
@@ -244,11 +242,11 @@ local function event_test(self)
     printf("RECEIVED_EVENT: event=%s\n", table_format(e))
   end
 
-  printf("LISTEN_EVENTS: name=%s\n", node:get_name())
+  printf("LISTEN_EVENTS: name=%s\n", node:get_name(self.handle))
   local listener_id = events:listen(test_listener, {"test-1", "test-2"})
   printf("REGISTERED_LISTENER: id=%s\n", listener_id)
 
-  printf("SEND_EVENT: name=%s\n", node:get_name())
+  printf("SEND_EVENT: name=%s\n", node:get_name(self.handle))
   events:emit({type = "test", data = "foo-0"})
   events:emit({type = "test-1", data = "foo-1", listener=listener_id})
   events:emit({type = "test-2", data = "foo-2"})

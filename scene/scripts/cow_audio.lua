@@ -1,14 +1,12 @@
 local cmd = self.cmd
 
---printf("START: name=%s, clone=%d\n", node:get_name(), node:get_clone_index())
-
 local moo_sid = util.sid("moo")
 
 local function animation(self)
   local listener_id
   local wid = 0
   local cid = 0
-  local orig_pos = node:get_pos()
+  local orig_pos = node:get_pos(self.handle)
 
   print("cow run")
 
