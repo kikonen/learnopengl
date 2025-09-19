@@ -1,5 +1,3 @@
---debug("START: name=%s, clone=%d\n", node:get_name(), node:get_clone_index())
-
 local rnd = math.random
 
 if not State.initialize then
@@ -156,7 +154,7 @@ local function ray_caster(self)
     cmd:particle_emit(
       { count=(10 + rnd(50)) * 100 })
 
-    debug("front: %s\n", node:get_front())
+    debug("front: %s\n", node:get_front(self.handle))
 
     local nodePos = node:get_pos(self.handle)
     local targetPos = args.data.pos

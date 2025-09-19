@@ -1,7 +1,5 @@
 local cmd = self.cmd
 
---printf("START: name=%s, clone=%d\n", node:get_name(), node:get_clone_index())
-
 local ANIM_IDLE = util.sid("idle")
 local ANIM_IDLE_2 = util.sid("idle_2")
 local ANIM_HIT = util.sid("hit")
@@ -64,7 +62,7 @@ end
 local function attack(src_wid)
   --print(string.format("START: %d", id))
 
-  local pos = node:get_pos()
+  local pos = node:get_pos(self.handle)
   local x = pos.x
   local y = pos.y
   local z = pos.z
@@ -122,7 +120,7 @@ end
 local function animation()
   local wid = 0
   local cid = 0
-  local orig_pos = node:get_pos()
+  local orig_pos = node:get_pos(self.handle)
 
   local function animation_listener()
     wid = cmd:wait({ after=cid, time=1 + rnd(5) })

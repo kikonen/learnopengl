@@ -1,9 +1,7 @@
 local cmd = self.cmd
 
---printf("START: name=%s, clone=%d\n", node:get_name(), node:get_clone_index())
-
-local clone_index = node:get_clone_index()
-local orig_pos = node:get_pos()
+local clone_index = node:get_clone_index(self.handle)
+local orig_pos = node:get_pos(self.handle)
 
 local function animation_move(self)
   local listener_id = nil

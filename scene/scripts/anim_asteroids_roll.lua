@@ -2,7 +2,7 @@ local cmd = self.cmd
 
 local function animation_x(self)
   local listener_id = nil
-  local orig_pos = node:get_pos()
+  local orig_pos = node:get_pos(self.handle)
   local wid = 0
   local cid = 0
 
@@ -30,7 +30,7 @@ end
 
 local function animation_y(self)
   local listener_id = nil
-  local orig_pos = node:get_pos()
+  local orig_pos = node:get_pos(self.handle)
   local wid = 0
   local cid = 0
 
@@ -58,7 +58,7 @@ end
 
 local function animation_z(self)
   local listener_id = nil
-  local orig_pos = node:get_pos()
+  local orig_pos = node:get_pos(self.handle)
   local wid = 0
   local cid = 0
 

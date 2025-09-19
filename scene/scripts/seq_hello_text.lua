@@ -11,7 +11,7 @@ local TEXTS = {
 
 local function animation(self)
   local listener_id = nil
-  local orig_pos = node:get_pos()
+  local orig_pos = node:get_pos(self.handle)
   local wid = 0
   local cid = 0
   local idx = 0

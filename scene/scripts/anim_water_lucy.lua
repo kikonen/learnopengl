@@ -1,7 +1,5 @@
 local cmd = self.cmd
 
---printf("START: name=%s, clone=%d\n", node:get_name(), node:get_clone_index())
-
 local function animation(self)
   local listener_id = nil
   local orig_pos = nil
@@ -9,7 +7,7 @@ local function animation(self)
   local cid = 0
 
   local function animation_listener()
-    orig_pos = orig_pos or node:get_pos()
+    orig_pos = orig_pos or node:get_pos(self.handle)
 
     wid = cmd:wait({ after=cid, time=10 })
 

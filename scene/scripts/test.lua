@@ -25,8 +25,8 @@ function create_new_node(type)
     rot = vec3(0, rnd(360), 0),
     scale = vec3(0.25 + rnd(1)),
   }
-  local node_handle = scene:create_node(opt)
-  printf("created_node: %d\n", node_handle)
+  local handle = scene:create_node(opt)
+  printf("created_node: %d\n", handle)
 end
 
 print("loaded")
@@ -61,8 +61,8 @@ function cylon_armada()
       rot = vec3(0, rnd(360), 0),
       scale = vec3(0.01 + rnd(0.01)),
     }
-    local node_handle = scene:create_node(opt)
-    printf("created_node: %d\n", node_handle)
+    local handle = scene:create_node(opt)
+    printf("created_node: %d\n", handle)
   end
 end
 
@@ -97,10 +97,10 @@ function sword_action(handle)
     360)
 end
 
-function sword_particle(node_handle)
-  debug("particle_handle=%s, pos=%s\n", node_handle, node:get_pos(node_handle))
+function sword_particle(handle)
+  debug("particle_handle=%s, pos=%s\n", handle, node:get_pos(handle))
   cmd:particle_emit(
-    { node=node_handle, count=(10 + rnd(10)) * 200 })
+    { node=handle, count=(10 + rnd(10)) * 200 })
 end
 
 function sword_test()

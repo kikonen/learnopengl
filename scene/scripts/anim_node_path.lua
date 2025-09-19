@@ -1,16 +1,14 @@
 local cmd = self.cmd
 
---printf("START: name=%s, clone=%d\n", node:get_name(), node:get_clone_index())
-
 local rnd = math.random
 
 local function animation_translate(self)
   local listener_id = nil
-  local orig_pos = node:get_pos()
+  local orig_pos = node:get_pos(self.handle)
   local wid = 0
   local cid = 0
 
-  local center = node:get_pos()
+  local center = node:get_pos(self.handle)
 
   --print(string.format("center: %d, %d, %d", center[1], center[2], center[3]))
 
@@ -48,7 +46,7 @@ end
 
 local function animation_rotate(self)
   local listener_id = nil
-  local orig_pos = node:get_pos()
+  local orig_pos = node:get_pos(self.handle)
   local wid = 0
   local cid = 0
 
@@ -94,7 +92,7 @@ end
 
 local function animation_scale(self)
   local listener_id = nil
-  local orig_pos = node:get_pos()
+  local orig_pos = node:get_pos(self.handle)
   local wid = 0
   local cid = 0
 

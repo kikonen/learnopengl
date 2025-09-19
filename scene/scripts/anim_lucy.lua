@@ -1,7 +1,5 @@
 local cmd = self.cmd
 
---printf("START: name=%s, clone=%d\n", node:get_name(), node:get_clone_index())
-
 local function animation_rotate(self)
   local listener_id = nil
   local orig_pos = nil

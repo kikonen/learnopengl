@@ -1,7 +1,5 @@
 local cmd = self.cmd
 
---printf("START: name=%s, clone=%d\n", node:get_name(), node:get_clone_index())
-
 local function animation(self)
   local listener_id
   local wid = 0

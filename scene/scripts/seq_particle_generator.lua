@@ -1,6 +1,6 @@
 local cmd = self.cmd
 
-printf("PARTICLE_GENERATOR: name=%s, clone=%d\n", node:get_name(), node:get_clone_index())
+printf("PARTICLE_GENERATOR: name=%s, clone=%d\n", node:get_name(self.handle), node:get_clone_index(self.handle))
 
 local rnd = math.random
 
