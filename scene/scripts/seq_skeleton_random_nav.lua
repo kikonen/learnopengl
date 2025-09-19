@@ -19,7 +19,7 @@ local ANIM_SWING_QUICK = util.sid("swing_quick")
   debug("LUA: SID=%d, SID_NAME=%s\n", ANIM_SWING_QUICK, util.sid_name(ANIM_SWING_QUICK))
 
   function State:initialize()
-    self.body_id = self.node:find_child({ tag = SID("body") })
+    self.body_id = node:find_child(self.handle, { tag = SID("body") })
   end
 
   function State:explode()
@@ -94,7 +94,6 @@ end
 local INITIAL_RAY_DEGREES = 50 - rnd(100)
 
 local function ray_caster(self)
-  local node = self.node
   local cmd = self.cmd
 
   local rotate_cid = 0
@@ -111,8 +110,8 @@ local function ray_caster(self)
     print("NAV: PATH")
     table_print(args)
 
-    local node_front = node:get_front()
-    local node_pos = node:get_pos()
+    local node_front = node:get_front(self.handle)
+    local node_pos = node:get_pos(self.handle)
 
     debug("front: %s\n", node_front)
 
@@ -159,9 +158,9 @@ local function ray_caster(self)
 
     debug("front: %s\n", node:get_front())
 
-    local nodePos = node:get_pos()
+    local nodePos = node:get_pos(self.handle)
     local targetPos = args.data.pos
-    local n1 = node:get_front()
+    local n1 = node:get_front(self.handle)
     local n2 = targetPos - nodePos
     n1.y = 0
     n2.y = 0
@@ -237,7 +236,7 @@ local function ray_caster(self)
     ray_degrees = rnd(360)
 
     local rot = util.axis_degrees_to_quat(vec3(0, 1, 0), ray_degrees)
-    local dir = rot:to_mat4() * node:get_front()
+    local dir = rot:to_mat4() * node:get_front(self.handle)
 
     cast_cid = cmd:cancel(
       {},
@@ -249,7 +248,7 @@ local function ray_caster(self)
     --   false,
     --   ray_cast_callback)
 
-    local nodePos = node:get_pos()
+    local nodePos = node:get_pos(self.handle)
 
     path_cid = cmd:find_path(
       { after=cancel_cid, time=0 },
@@ -264,14 +263,13 @@ local function ray_caster(self)
 end
 
 local function animation(self)
-  local node = self.node
   local cmd = self.cmd
 
   local idx = 0
   local wid = 0
   local cid = 0
   local cid2 = 0
-  local pos = node:get_pos()
+  local pos = node:get_pos(self.handle)
 
   local function animation_listener()
     cid = self:idle(wid)

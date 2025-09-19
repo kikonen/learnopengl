@@ -30,11 +30,7 @@
 #include "script/api/UtilAPI.h"
 #include "script/api/SceneAPI.h"
 
-#include "binding/LuaUtil.h"
 #include "binding/LuaPhysics.h"
-#include "binding/LuaScene.h"
-#include "binding/LuaNode.h"
-#include "binding/LuaNodeCommand.h"
 #include "binding/LuaGlm.h"
 #include "binding/LuaRayHit.h"
 #include "binding/LuaPath.h"
@@ -102,9 +98,6 @@ namespace script
                 }
             }
 
-            for (auto& apiName : m_nodeApis) {
-            }
-
             for (auto& apiName : m_nodeCommandApis) {
             }
 
@@ -114,7 +107,6 @@ namespace script
             }
         }
 
-        m_nodeApis.clear();
         m_nodeCommandApis.clear();
         m_scriptEntries.clear();
         //m_nodeScripts.clear();
@@ -209,15 +201,15 @@ namespace script
         // util - static utils
         auto& lua = getLua();
 
-        binding::LuaUtil::bind(lua);
-        binding::LuaScene::bind(lua);
+        api::UtilAPI::bind(lua);
+        api::SceneAPI::bind(lua);
         binding::LuaPhysics::bind(lua);
         binding::LuaGlm::bind(lua);
         binding::LuaRayHit::bind(lua);
         binding::LuaPath::bind(lua);
         binding::LuaNodeHandle::bind(lua);
-        binding::LuaNodeCommand::bind(lua);
-        binding::LuaNode::bind(lua);
+        api::NodeCommandAPI::bind(lua);
+        api::NodeAPI::bind(lua);
     }
 
     script::script_id ScriptSystem::registerScript(
@@ -267,7 +259,6 @@ namespace script
         auto nodeHandle = node->toHandle();
 
         {
-            m_nodeApis.insert({ nodeHandle, std::make_unique<api::NodeAPI>(nodeHandle) });
             m_nodeCommandApis.insert({ nodeHandle, std::make_unique<api::NodeCommandAPI>(m_commandEngine, nodeHandle) });
         }
 
@@ -282,7 +273,6 @@ namespace script
         auto nodeHandle = node->toHandle();
 
         {
-            m_nodeApis.erase(nodeHandle);
             m_nodeCommandApis.erase(nodeHandle);
         }
 
@@ -306,13 +296,11 @@ node->getName(), id, typeId);
 
         {
             const auto nodeHandle = node->toHandle();
-            auto* nodeApi = m_nodeApis.find(nodeHandle)->second.get();
             auto* cmdApi = m_nodeCommandApis.find(nodeHandle)->second.get();
 
             sol::table nodeState = getLua()[TABLE_STATES][nodeHandle.toId()];
             nodeState[FIELD_HANDLE] = node->m_handle;
             nodeState[API_CMD] = std::ref(cmdApi);
-            nodeState[API_NODE] = std::ref(nodeApi);
         }
     }
 
@@ -388,14 +376,14 @@ node->getName(), id, typeId);
 
         if (!global) {
             std::string classScriptlet = fmt::format(
-            "classes[{}] = classes[{}] or Node:new_class({{ type_id={} }})",
+            "classes[{}] = classes[{}] or State:new_class({{ type_id={} }})",
             typeId, typeId, typeId);
 
             std::string inlineScriptlet;
             if (scriptFile.m_embedded) {
                 inlineScriptlet =
 R"(local cmd = self.cmd
-local node = self.node)";
+)";
             }
 
             // NOTE KI pass context as closure to Node

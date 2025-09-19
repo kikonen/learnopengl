@@ -144,7 +144,6 @@ namespace script
         std::unique_ptr<api::NodeAPI> m_nodeApi;
         std::unique_ptr<api::NodeCommandAPI> m_nodeCommandApi;
 
-        std::unordered_map<pool::NodeHandle, std::unique_ptr<api::NodeAPI>> m_nodeApis;
         std::unordered_map<pool::NodeHandle, std::unique_ptr<api::NodeCommandAPI>> m_nodeCommandApis;
 
         std::unordered_map<pool::TypeHandle, std::unordered_map<script::script_id, ScriptEntry>> m_scriptEntries;

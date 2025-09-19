@@ -403,7 +403,6 @@
     <ClCompile Include="src\render\SSaoBuffer.cpp" />
     <ClCompile Include="src\script\api\SceneAPI.cpp" />
     <ClCompile Include="src\script\binding\LuaNodeHandle.cpp" />
-    <ClCompile Include="src\script\binding\LuaScene.cpp" />
     <ClCompile Include="src\script\command\CancelMultiple.cpp" />
     <ClCompile Include="src\script\command\EmitEvent.cpp" />
     <ClCompile Include="src\script\command\EmitEvent.h" />
@@ -420,12 +419,9 @@
     <ClCompile Include="src\script\api\NodeAPI.cpp" />
     <ClCompile Include="src\script\binding\LuaGlm.cpp" />
     <ClCompile Include="src\script\lua_util.cpp" />
-    <ClCompile Include="src\script\binding\LuaNodeCommand.cpp" />
-    <ClCompile Include="src\script\binding\LuaNode.cpp" />
     <ClCompile Include="src\script\binding\LuaPath.cpp" />
     <ClCompile Include="src\script\binding\LuaPhysics.cpp" />
     <ClCompile Include="src\script\binding\LuaRayHit.cpp" />
-    <ClCompile Include="src\script\binding\LuaUtil.cpp" />
     <ClCompile Include="src\shader\FileEntry.cpp" />
     <ClCompile Include="src\shader\FileEntryCache.cpp" />
     <ClCompile Include="src\shader\ShaderSource.cpp" />
@@ -858,7 +854,6 @@
     <ClInclude Include="src\render\ScreenTri.h" />
     <ClInclude Include="src\render\SSaoBuffer.h" />
     <ClInclude Include="src\script\api\SceneAPI.h" />
-    <ClInclude Include="src\script\binding\LuaScene.h" />
     <ClInclude Include="src\script\command\CancelMultiple.h" />
     <ClInclude Include="src\script\command\FindPath.h" />
     <ClInclude Include="src\script\command\MovePathNode.h" />
@@ -875,12 +870,9 @@
     <ClInclude Include="src\script\binding\LuaGlm.h" />
     <ClInclude Include="src\script\lua_binding.h" />
     <ClInclude Include="src\script\lua_util.h" />
-    <ClInclude Include="src\script\binding\LuaNodeCommand.h" />
-    <ClInclude Include="src\script\binding\LuaNode.h" />
     <ClInclude Include="src\script\binding\LuaPath.h" />
     <ClInclude Include="src\script\binding\LuaPhysics.h" />
     <ClInclude Include="src\script\binding\LuaRayHit.h" />
-    <ClInclude Include="src\script\binding\LuaUtil.h" />
     <ClInclude Include="src\shader\CameraUBO.h" />
     <ClInclude Include="src\shader\DebugUBO.h" />
     <ClInclude Include="src\material\MaterialFlags.h" />

@@ -1,32 +1,32 @@
-local Node = {}
+local State = {}
 
-function Node:new_class(o)
+function State:new_class(o)
   o = o or {}
   setmetatable(o, self)
   self.__index = self
   return o
 end
 
-function Node:new(o)
+function State:new(o)
   o = o or {}
   setmetatable(o, self)
   self.__index = self
   return o
 end
 
-function Node:_init(o)
+function State:_init(o)
   if not self._initialized and self.initialize then
     self:initialize()
     self._initialized = true
   end
 end
 
-function Node:destroy(o)
-  debug("destroy node: %d\n", self.id)
+function State:destroy(o)
+  debug("destroy state: %d\n", self.id)
 
   states[self.id] = nil
   states[self.cmd] = nil
-  states[self.node] = nil
+  states[self.state] = nil
 
   self.updaters = nil
 
@@ -38,20 +38,20 @@ function Node:destroy(o)
   end
 end
 
-function Node:class()
+function State:class()
   return getmetatable(self)
 end
 
-function Node:add_updater(fn)
-  -- debug("NODE: %d: Add updater: %s\n", self.id, fn)
+function State:add_updater(fn)
+  -- debug("STATE: %d: Add updater: %s\n", self.id, fn)
   self.updaters = self.updaters or {}
   self.updaters[#self.updaters + 1] = fn
 end
 
-function Node:listen(fn, types)
+function State:listen(fn, types)
   listener_id = events:listen(fn, types)
 
-  debug("NODE: %d: listen: listener=%d, fn=%s, types={%s}\n", self.id, listener_id, fn, table_format(types))
+  debug("STATE: %d: listen: listener=%d, fn=%s, types={%s}\n", self.id, listener_id, fn, table_format(types))
 
   self.listener_ids = self.listener_ids or {}
   self.listener_ids[#self.listener_ids + 1] = listener_id
@@ -59,21 +59,21 @@ function Node:listen(fn, types)
   return listener_id
 end
 
--- function Node:ditto()
+-- function State:ditto()
 --   print("DITTO")
 -- end
 
--- function Node:start()
+-- function State:start()
 -- end
 
--- function Node:update(dt)
+-- function State:update(dt)
 -- end
 
-function node_create(Actor, o)
+function state_create(Actor, o)
   o = o or {}
   setmetatable(o, Actor)
   Actor.__index = Actor
   return o
 end
 
-return Node
+return State

@@ -84,17 +84,21 @@ end
 
   -- emit_particles()
 
-function sword_action(node_handle)
-  debug("sword_handle=%s, pos=%s\n", node_handle, node:get_pos({ node = node_handle}))
+function sword_action(handle)
+  debug("sword_handle=%s, name=%s, pos=%s, str=%s\n",
+    handle,
+    node:get_name(handle),
+    node:get_pos(handle),
+    node:str(handle))
 
   cid = cmd:rotate(
-    { node=node_handle, time=2 },
+    { node=handle, time=2 },
     vec3(1, 1, 0),
     360)
 end
 
 function sword_particle(node_handle)
-  debug("particle_handle=%s, pos=%s\n", node_handle, node:get_pos({ node=node_handle}))
+  debug("particle_handle=%s, pos=%s\n", node_handle, node:get_pos(node_handle))
   cmd:particle_emit(
     { node=node_handle, count=(10 + rnd(10)) * 200 })
 end

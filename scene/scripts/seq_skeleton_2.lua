@@ -19,8 +19,8 @@ if not State.initialize then
   -- debug("LUA: SID=%d, SID_NAME=%s\n", ANIM_SWING_QUICK, SID_NAME(ANIM_SWING_QUICK))
 
   function State:initialize()
-    self.body_id = self.node:find_child({ tag = "body" })
-    self.sword_id = self.node:find_child({ tag = "sword" })
+    self.body_id = node:find_child(self.handle, { tag = "body" })
+    self.sword_id = node:find_child(self.handle, { tag = "sword" })
   end
 
   function State:explode()
@@ -101,7 +101,6 @@ end
 local INITIAL_RAY_DEGREES = 50 - rnd(100)
 
 local function ray_caster(self)
-  local node = self.node
   local cmd = self.cmd
 
   local rotate_cid = 0
@@ -118,8 +117,8 @@ local function ray_caster(self)
     print("NAV: PATH")
     table_print(args)
 
-    local node_front = node:get_front()
-    local node_pos = node:get_pos()
+    local node_front = node:get_front(self.handle)
+    local node_pos = node:get_pos(self.handle)
 
     debug("front: %s\n", node_front)
 
@@ -169,7 +168,7 @@ local function ray_caster(self)
 
     debug("front: %s\n", node:get_front())
 
-    local nodePos = node:get_pos()
+    local nodePos = node:get_pos(self.handle)
     local targetPos = args.data.pos
     local n1 = node:get_front()
     local n2 = targetPos - nodePos
@@ -269,7 +268,6 @@ local function ray_caster(self)
 end
 
 local function animation(self)
-  local node = self.node
   local cmd = self.cmd
 
   local idx = 0
