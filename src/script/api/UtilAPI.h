@@ -17,5 +17,7 @@ namespace script::api
 
         static const std::string& lua_sid_name(
             ki::sid_t id);
+
+        static void bind(sol::state& lua);
     };
 }

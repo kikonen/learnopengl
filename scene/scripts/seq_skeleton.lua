@@ -14,13 +14,12 @@ local EXPLODE_SID = util.sid("explode")
 
 printf("LUA: SID=%d, SID_NAME=%s\n", ANIM_SWING_QUICK, util.sid_name(ANIM_SWING_QUICK))
 
-local node = self.node
 local cmd = self.cmd
 
 if not State.initialize then
 (function()
   function State:initialize()
-    self.body_id = self.node:find_child({ tag = SID("body") })
+    self.body_id = node:find_child(self.handle, { tag = SID("body") })
   end
 
   function State:ditto(args)

@@ -1,4 +1,3 @@
-local node = self.node
 local cmd = self.cmd
 
 printf("PARTICLE_GENERATOR: name=%s, clone=%d\n", node:get_name(), node:get_clone_index())

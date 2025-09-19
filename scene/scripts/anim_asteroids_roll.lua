@@ -1,4 +1,3 @@
-local node = self.node
 local cmd = self.cmd
 
 local function animation_x(self)

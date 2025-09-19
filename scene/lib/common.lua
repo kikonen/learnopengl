@@ -18,7 +18,7 @@ prequire "events"
 prequire "module_1"
 
 Updater = prequire "updater"
-Node = prequire "node"
+State = prequire "state"
 
 BT = prequire('behaviour_tree/behaviour_tree')
 

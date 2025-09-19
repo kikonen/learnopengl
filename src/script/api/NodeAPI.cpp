@@ -70,70 +70,91 @@ namespace {
 namespace script::api
 {
     NodeAPI::NodeAPI()
-        : NodeAPI{ pool::NodeHandle::NULL_HANDLE }
-    {
-    }
-
-    NodeAPI::NodeAPI(
-        pool::NodeHandle handle)
-        : m_handle{ handle }
     {
     }
 
     NodeAPI::~NodeAPI() = default;
 
-    std::string NodeAPI::str() const noexcept
+    std::string NodeAPI::str(pool::NodeHandle handle) const noexcept
     {
-        return m_handle.toNode()->str();
-    }
-
-    ki::node_id NodeAPI::lua_get_id() const noexcept
-    {
-        return m_handle.m_id;
+        return handle.toNode()->str();
     }
 
     pool::NodeHandle NodeAPI::lua_find_child(
+        pool::NodeHandle handle,
         const sol::table& lua_opt) const noexcept
     {
         const auto opt = readNodeOptions(lua_opt);
 
-        auto handle = selectHandle(opt.nodeHandle, m_handle, opt.tagId);
+        handle = selectHandle(opt.nodeHandle, handle, opt.tagId);
         return handle;
     }
 
-    const std::string& NodeAPI::lua_get_type_name() const noexcept
+    const std::string& NodeAPI::lua_get_type_name(
+        pool::NodeHandle handle) const noexcept
     {
-        return m_handle.toNode()->getType()->getName();
+        return handle.toNode()->getType()->getName();
     }
 
-    const std::string& NodeAPI::lua_get_name() const noexcept
+    const std::string& NodeAPI::lua_get_name(
+        pool::NodeHandle handle) const noexcept
     {
-        return m_handle.toNode()->getName();
+        return handle.toNode()->getName();
     }
 
-    int NodeAPI::lua_get_clone_index() const noexcept
+    int NodeAPI::lua_get_clone_index(pool::NodeHandle handle) const noexcept
     {
         //return m_cloneIndex;
         return 0;
     }
 
-    const glm::vec3& NodeAPI::lua_get_pos() const noexcept
+    const glm::vec3& NodeAPI::lua_get_pos(pool::NodeHandle handle) const noexcept
     {
-        return getState().getPosition();
+        return getState(handle).getPosition();
     }
 
-    const glm::vec3& NodeAPI::lua_get_front() const noexcept
+    const glm::vec3& NodeAPI::lua_get_front(pool::NodeHandle handle) const noexcept
     {
-        return getState().getViewFront();
+        return getState(handle).getViewFront();
     }
 
-    const glm::mat4& NodeAPI::lua_get_model_matrix() const noexcept
+    const glm::mat4& NodeAPI::lua_get_model_matrix(
+        pool::NodeHandle handle) const noexcept
     {
-        return getState().getModelMatrix();
+        return getState(handle).getModelMatrix();
     }
 
-    const NodeState& NodeAPI::getState() const
+    const NodeState& NodeAPI::getState(pool::NodeHandle handle) const
     {
-        return NodeRegistry::get().getState(m_handle.m_handleIndex);
+        return NodeRegistry::get().getState(handle.m_handleIndex);
+    }
+
+    // https://thephd.dev/sol3-feature-complete
+    void NodeAPI::bind(sol::state& lua)
+    {
+        sol::usertype<NodeAPI> t = lua.new_usertype<NodeAPI>("Node");
+
+        //t["get_id"] = &NodeAPI::lua_get_id;
+        t["get_type_name"] = &NodeAPI::lua_get_type_name;
+        t["get_name"] = &NodeAPI::lua_get_name;
+        t["get_clone_index"] = &NodeAPI::lua_get_clone_index;
+        t["get_pos"] = &NodeAPI::lua_get_pos;
+        t["get_front"] = &NodeAPI::lua_get_front;
+        t["get_model_matrix"] = &NodeAPI::lua_get_model_matrix;
+        t["find_child"] = &NodeAPI::lua_find_child;
+
+        t.set_function(
+            "str",
+            [](const NodeAPI& v, pool::NodeHandle handle) {
+                return v.str(handle);
+            }
+        );
+
+        t.set_function(
+            "__tostring",
+            [](const NodeAPI& v) {
+                return "NodeAPI";
+            }
+        );
     }
 }

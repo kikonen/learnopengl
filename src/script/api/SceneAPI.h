@@ -29,5 +29,7 @@ namespace script::api
 
         bool lua_delete_node(
             pool::NodeHandle nodeId);
+
+        static void bind(sol::state& lua);
     };
 }

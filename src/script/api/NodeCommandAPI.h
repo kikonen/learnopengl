@@ -129,6 +129,8 @@ namespace script::api
             const sol::table& lua_opt,
             const sol::table& event) noexcept;
 
+        static void bind(sol::state& lua);
+
     private:
         CommandEngine* const m_commandEngine;
         const pool::NodeHandle m_handle;
