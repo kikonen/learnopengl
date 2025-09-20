@@ -87,7 +87,8 @@ namespace script {
                 opt.name = value.as<std::string>();
             }
             else if (k == OPT_NODE) {
-                opt.nodeHandle = readHandle(value);
+                //opt.nodeHandle = readHandle(value);
+                throw "node is unsupported";
             }
             });
         return opt;
@@ -152,6 +153,16 @@ namespace script {
         if (nodeHandle > 0) {
             handle = nodeHandle;
         }
+        if (tagId > 0) {
+            handle = NodeRegistry::get().findTaggedChild(handle, tagId);
+        }
+        return handle;
+    }
+
+    pool::NodeHandle selectHandle(
+        pool::NodeHandle handle,
+        ki::tag_id tagId) noexcept
+    {
         if (tagId > 0) {
             handle = NodeRegistry::get().findTaggedChild(handle, tagId);
         }

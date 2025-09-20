@@ -17,7 +17,7 @@ namespace script
         script::command_id afterId = 0;
         int index = 0;
         ki::sid_t sid = 0;
-        pool::NodeHandle nodeHandle{};
+        //pool::NodeHandle nodeHandle{};
         ki::tag_id tagId = 0;
         float duration = 0.f;
         float speed = 1.f;
@@ -54,6 +54,10 @@ namespace script
 
     pool::NodeHandle selectHandle(
         pool::NodeHandle nodeHandle,
+        pool::NodeHandle handle,
+        ki::tag_id tagId) noexcept;
+
+    pool::NodeHandle selectHandle(
         pool::NodeHandle handle,
         ki::tag_id tagId) noexcept;
 
