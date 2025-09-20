@@ -50,7 +50,7 @@ namespace kigl {
 
         GLuint getMapFlags() const noexcept
         {
-            m_mapFlags;
+            return m_mapFlags;
         }
 
         void setMapFlags(GLuint flags)
