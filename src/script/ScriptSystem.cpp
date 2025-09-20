@@ -98,16 +98,12 @@ namespace script
                 }
             }
 
-            for (auto& apiName : m_nodeCommandApis) {
-            }
-
             sol::table states = getLua()[TABLE_STATES];
             for (auto& state : states) {
 
             }
         }
 
-        m_nodeCommandApis.clear();
         m_scriptEntries.clear();
         //m_nodeScripts.clear();
 
@@ -258,10 +254,6 @@ namespace script
 
         auto nodeHandle = node->toHandle();
 
-        {
-            m_nodeCommandApis.insert({ nodeHandle, std::make_unique<api::NodeCommandAPI>(m_commandEngine, nodeHandle) });
-        }
-
         createNodeState(node);
     }
 
@@ -271,10 +263,6 @@ namespace script
         std::lock_guard lock(m_lock);
 
         auto nodeHandle = node->toHandle();
-
-        {
-            m_nodeCommandApis.erase(nodeHandle);
-        }
 
         deleteNodeState(node);
     }
@@ -296,11 +284,9 @@ node->getName(), id, typeId);
 
         {
             const auto nodeHandle = node->toHandle();
-            auto* cmdApi = m_nodeCommandApis.find(nodeHandle)->second.get();
 
             sol::table nodeState = getLua()[TABLE_STATES][nodeHandle.toId()];
             nodeState[FIELD_HANDLE] = node->m_handle;
-            nodeState[API_CMD] = std::ref(cmdApi);
         }
     }
 
@@ -382,12 +368,11 @@ node->getName(), id, typeId);
             std::string inlineScriptlet;
             if (scriptFile.m_embedded) {
                 inlineScriptlet =
-R"(local cmd = self.cmd
-)";
+R"()";
             }
 
             // NOTE KI pass context as closure to Node
-            // - node, cmd, id
+            // - State
             scriptlet = fmt::format(
 R"(-- {} - {}
 {}

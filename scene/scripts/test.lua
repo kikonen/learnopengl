@@ -92,7 +92,8 @@ function sword_action(handle)
     node:str(handle))
 
   cid = cmd:rotate(
-    { node=handle, time=2 },
+    handle,
+    { time=2 },
     vec3(1, 1, 0),
     360)
 end
@@ -100,7 +101,8 @@ end
 function sword_particle(handle)
   debug("particle_handle=%s, pos=%s\n", handle, node:get_pos(handle))
   cmd:particle_emit(
-    { node=handle, count=(10 + rnd(10)) * 200 })
+    handle,
+    { count=(10 + rnd(10)) * 200 })
 end
 
 function sword_test()

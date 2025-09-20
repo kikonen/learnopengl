@@ -1,5 +1,3 @@
-local cmd = self.cmd
-
 local function animation_x(self)
   local listener_id = nil
   local orig_pos = node:get_pos(self.handle)
@@ -10,6 +8,7 @@ local function animation_x(self)
     wid = cmd:wait({ after=cid, time=0 })
 
     cid = cmd:rotate(
+      self.handle,
       { after=wid, time=120, relative=true },
       vec3(1.0, 0.0, 0.0),
       180.0)
@@ -17,6 +16,7 @@ local function animation_x(self)
     wid = cmd:wait({ after=cid, time=0 })
 
     cid = cmd:emit(
+      self.handle,
       { after=wid },
       { type=Event.SCRIPT_RESUME, listener=listener_id})
   end
@@ -24,6 +24,7 @@ local function animation_x(self)
   listener_id = self:listen(animation_listener, {Event.SCRIPT_RESUME})
 
   cmd:emit(
+    self.handle,
     {},
     { type=Event.SCRIPT_RESUME, listener=listener_id})
 end
@@ -38,6 +39,7 @@ local function animation_y(self)
     wid = cmd:wait({ after=cid, time=0 })
 
     cid = cmd:rotate(
+      self.handle,
       { after=wid, time=100, relative=true },
       vec3(0.0, 1.0, 0.0),
       180.0)
@@ -45,6 +47,7 @@ local function animation_y(self)
     wid = cmd:wait({ after=cid, time=0 })
 
     cid = cmd:emit(
+      self.handle,
       { after=wid },
       { type=Event.SCRIPT_RESUME, listener=listener_id})
   end
@@ -52,6 +55,7 @@ local function animation_y(self)
   listener_id = self:listen(animation_listener, {Event.SCRIPT_RESUME})
 
   cmd:emit(
+    self.handle,
     {},
     { type=Event.SCRIPT_RESUME, listener=listener_id})
 end
@@ -66,6 +70,7 @@ local function animation_z(self)
     wid = cmd:wait({ after=cid, time=0 })
 
     cid = cmd:rotate(
+      self.handle,
       { after=wid, time=140, relative=true },
       vec3(0.0, 0.0, 1.0),
       180.0)
@@ -73,6 +78,7 @@ local function animation_z(self)
     wid = cmd:wait({ after=cid, time=0 })
 
     cid = cmd:emit(
+      self.handle,
       { after=wid },
       { type=Event.SCRIPT_RESUME, listener=listener_id})
   end
@@ -80,6 +86,7 @@ local function animation_z(self)
   listener_id = self:listen(animation_listener, {Event.SCRIPT_RESUME})
 
   cmd:emit(
+    self.handle,
     {},
     { type=Event.SCRIPT_RESUME, listener=listener_id})
 end

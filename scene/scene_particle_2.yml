@@ -47,6 +47,7 @@ types:
     type: origo
     script: |
       cmd:rotate(
+        self.handle,
         { time=10 * 100 },
         vec3(0, 1, 0),
         360 * 100)
@@ -58,6 +59,7 @@ types:
     particle: particle_cube
     script: |
       cmd:rotate(
+        self.handle,
         { time=50 * 100 },
         vec3(0, 0, 1),
         360 * 100)

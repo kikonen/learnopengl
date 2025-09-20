@@ -1,5 +1,3 @@
-local cmd = self.cmd
-
 local function animation(self)
   local listener_id = nil
   local orig_pos = nil
@@ -12,12 +10,14 @@ local function animation(self)
     wid = cmd:wait({ after=cid, time=10 })
 
     cid = cmd:move_spline(
+      self.handle,
       { after=wid, time=10, relative=true },
       vec3(0, 1.5, 0),
       vec3(0, -2.5, 0))
 
     wid = cmd:wait({ after=cid, time=1 })
     cid = cmd:move_spline(
+      self.handle,
       { after=wid, time=10, relative=false },
       vec3(0, -1.5, 0),
       orig_pos)
@@ -25,6 +25,7 @@ local function animation(self)
     wid = cmd:wait({ after=cid, time=1 })
 
     cid = cmd:emit(
+      self.handle,
       { after=wid },
       { type=Event.SCRIPT_RESUME, listener=listener_id})
   end
@@ -32,6 +33,7 @@ local function animation(self)
   listener_id = self:listen(animation_listener, {Event.SCRIPT_RESUME})
 
   cmd:emit(
+    self.handle,
     {},
     { type=Event.SCRIPT_RESUME, listener=listener_id})
 end

@@ -61,22 +61,14 @@ namespace script::api
 {
     NodeCommandAPI::NodeCommandAPI(
         CommandEngine* const commandEngine)
-        : NodeCommandAPI{ commandEngine, pool::NodeHandle::NULL_HANDLE }
-    {
-    }
-
-    NodeCommandAPI::NodeCommandAPI(
-        CommandEngine* const commandEngine,
-        pool::NodeHandle handle)
-        :m_commandEngine{ commandEngine },
-        m_handle{ handle }
+        :m_commandEngine{ commandEngine }
     {}
 
     NodeCommandAPI::~NodeCommandAPI() = default;
 
     std::string NodeCommandAPI::str() const noexcept
     {
-        return fmt::format("<CMD_API: {}>", m_handle.str());
+        return fmt::format("<CMD_API>");
     }
 
     int NodeCommandAPI::lua_cancel(
@@ -153,6 +145,7 @@ namespace script::api
     }
 
     int NodeCommandAPI::lua_move(
+        pool::NodeHandle handle,
         const sol::table& lua_opt,
         const glm::vec3& pos) noexcept
     {
@@ -163,7 +156,7 @@ namespace script::api
         return m_commandEngine->addCommand(
             opt.afterId,
             MoveNode{
-                selectHandle(opt.nodeHandle, m_handle, opt.tagId),
+                selectHandle(opt.nodeHandle, handle, opt.tagId),
                 opt.duration,
                 opt.relative,
                 pos
@@ -171,6 +164,7 @@ namespace script::api
     }
 
     int NodeCommandAPI::lua_move_spline(
+        pool::NodeHandle handle,
         const sol::table& lua_opt,
         const glm::vec3& p,
         const glm::vec3& pos) noexcept
@@ -182,7 +176,7 @@ namespace script::api
         return m_commandEngine->addCommand(
             opt.afterId,
             MoveSplineNode{
-                selectHandle(opt.nodeHandle, m_handle, opt.tagId),
+                selectHandle(opt.nodeHandle, handle, opt.tagId),
                 opt.duration,
                 opt.relative,
                 p,
@@ -191,6 +185,7 @@ namespace script::api
     }
 
     int NodeCommandAPI::lua_move_path(
+        pool::NodeHandle handle,
         const sol::table& lua_opt,
         const std::vector<glm::vec3>& path) noexcept
     {
@@ -201,7 +196,7 @@ namespace script::api
         return m_commandEngine->addCommand(
             opt.afterId,
             MovePathNode{
-                selectHandle(opt.nodeHandle, m_handle, opt.tagId),
+                selectHandle(opt.nodeHandle, handle, opt.tagId),
                 opt.duration,
                 opt.relative,
                 path
@@ -209,6 +204,7 @@ namespace script::api
     }
 
     int NodeCommandAPI::lua_rotate(
+        pool::NodeHandle handle,
         const sol::table& lua_opt,
         const glm::vec3& axis,
         const float lua_degrees) noexcept
@@ -220,7 +216,7 @@ namespace script::api
         return m_commandEngine->addCommand(
             opt.afterId,
             RotateNode{
-                selectHandle(opt.nodeHandle, m_handle, opt.tagId),
+                selectHandle(opt.nodeHandle, handle, opt.tagId),
                 opt.duration,
                 opt.relative,
                 axis,
@@ -229,6 +225,7 @@ namespace script::api
     }
 
     int NodeCommandAPI::lua_scale(
+        pool::NodeHandle handle,
         const sol::table& lua_opt,
         const glm::vec3& scale) noexcept
     {
@@ -239,7 +236,7 @@ namespace script::api
         return m_commandEngine->addCommand(
             opt.afterId,
             ScaleNode{
-                selectHandle(opt.nodeHandle, m_handle, opt.tagId),
+                selectHandle(opt.nodeHandle, handle, opt.tagId),
                 opt.duration,
                 opt.relative,
                 scale
@@ -247,6 +244,7 @@ namespace script::api
     }
 
     int NodeCommandAPI::lua_set_text(
+        pool::NodeHandle handle,
         const sol::table& lua_opt,
         const sol::table& lua_text) noexcept
     {
@@ -263,12 +261,13 @@ namespace script::api
         return m_commandEngine->addCommand(
             opt.afterId,
             SetTextNode{
-                selectHandle(opt.nodeHandle, m_handle, opt.tagId),
+                selectHandle(opt.nodeHandle, handle, opt.tagId),
                 text
             });
     }
 
     int NodeCommandAPI::lua_set_visible(
+        pool::NodeHandle handle,
         const sol::table& lua_opt,
         bool visible) noexcept
     {
@@ -277,12 +276,13 @@ namespace script::api
         return m_commandEngine->addCommand(
             opt.afterId,
             SetVisibleNode{
-                selectHandle(opt.nodeHandle, m_handle, opt.tagId),
+                selectHandle(opt.nodeHandle, handle, opt.tagId),
                 visible
             });
     }
 
     int NodeCommandAPI::lua_select(
+        pool::NodeHandle handle,
         const sol::table& lua_opt,
         bool select,
         bool append) noexcept
@@ -292,13 +292,14 @@ namespace script::api
         return m_commandEngine->addCommand(
             opt.afterId,
             SelectNode{
-                selectHandle(opt.nodeHandle, m_handle, opt.tagId),
+                selectHandle(opt.nodeHandle, handle, opt.tagId),
                 select,
                 append
             });
     }
 
     int NodeCommandAPI::lua_audio_play(
+        pool::NodeHandle handle,
         const sol::table& lua_opt) noexcept
     {
         auto opt = readOptions(lua_opt);
@@ -310,13 +311,14 @@ namespace script::api
         return m_commandEngine->addCommand(
             opt.afterId,
             AudioPlay{
-                selectHandle(opt.nodeHandle, m_handle, opt.tagId),
+                selectHandle(opt.nodeHandle, handle, opt.tagId),
                 opt.sid,
                 opt.sync
             });
     }
 
     int NodeCommandAPI::lua_audio_pause(
+        pool::NodeHandle handle,
         const sol::table& lua_opt) noexcept
     {
         auto opt = readOptions(lua_opt);
@@ -328,12 +330,13 @@ namespace script::api
         return m_commandEngine->addCommand(
             opt.afterId,
             AudioPause{
-                selectHandle(opt.nodeHandle, m_handle, opt.tagId),
+                selectHandle(opt.nodeHandle, handle, opt.tagId),
                 opt.sid
             });
     }
 
     int NodeCommandAPI::lua_audio_stop(
+        pool::NodeHandle handle,
         const sol::table& lua_opt) noexcept
     {
         auto opt = readOptions(lua_opt);
@@ -345,12 +348,13 @@ namespace script::api
         return m_commandEngine->addCommand(
             opt.afterId,
             AudioStop{
-                selectHandle(opt.nodeHandle, m_handle, opt.tagId),
+                selectHandle(opt.nodeHandle, handle, opt.tagId),
                 opt.sid
             });
     }
 
     int NodeCommandAPI::lua_animation_play(
+        pool::NodeHandle handle,
         const sol::table& lua_opt) noexcept
     {
         auto opt = readOptions(lua_opt);
@@ -362,7 +366,7 @@ namespace script::api
         return m_commandEngine->addCommand(
             opt.afterId,
             AnimationPlay{
-                selectHandle(opt.nodeHandle, m_handle, opt.tagId),
+                selectHandle(opt.nodeHandle, handle, opt.tagId),
                 opt.sid,
                 opt.speed,
                 opt.repeat
@@ -370,6 +374,7 @@ namespace script::api
     }
 
     int NodeCommandAPI::lua_particle_emit(
+        pool::NodeHandle handle,
         const sol::table& lua_opt) noexcept
     {
         const auto opt = readOptions(lua_opt);
@@ -377,13 +382,14 @@ namespace script::api
         return m_commandEngine->addCommand(
             opt.afterId,
             ParticleEmit{
-                selectHandle(opt.nodeHandle, m_handle, opt.tagId),
+                selectHandle(opt.nodeHandle, handle, opt.tagId),
                 opt.count,
                 opt.sync
             });
     }
 
     int NodeCommandAPI::lua_particle_stop(
+        pool::NodeHandle handle,
         const sol::table& lua_opt) noexcept
     {
         const auto opt = readOptions(lua_opt);
@@ -391,11 +397,12 @@ namespace script::api
         return m_commandEngine->addCommand(
             opt.afterId,
             ParticleStop{
-                selectHandle(opt.nodeHandle, m_handle, opt.tagId),
+                selectHandle(opt.nodeHandle, handle, opt.tagId),
             });
     }
 
     int NodeCommandAPI::lua_ray_cast(
+        pool::NodeHandle handle,
         const sol::table& lua_opt,
         const glm::vec3& lua_dir,
         bool notifyMiss,
@@ -405,7 +412,7 @@ namespace script::api
 
         uint32_t collisionMask = physics::mask(physics::Category::player);
 
-        auto callback = [this, opt, lua_callback](int cid, const physics::RayHit& hit) {
+        auto callback = [this, handle, opt, lua_callback](int cid, const physics::RayHit& hit) {
             auto& scriptSystem = script::ScriptSystem::get();
             sol::table args = scriptSystem.getLua()[TABLE_TMP];
 
@@ -419,7 +426,7 @@ namespace script::api
             //node = getNode();
 
             scriptSystem.invokeNodeFunction(
-                m_handle.toNode(),
+                handle.toNode(),
                 opt.self,
                 lua_callback,
                 args);
@@ -431,7 +438,7 @@ namespace script::api
         return m_commandEngine->addCommand(
             opt.afterId,
             RayCast{
-                m_handle,
+                selectHandle(opt.nodeHandle, handle, opt.tagId),
                 lua_dir,
                 400.f,
                 collisionMask,
@@ -440,6 +447,7 @@ namespace script::api
     }
 
     int NodeCommandAPI::lua_ray_cast_multiple(
+        pool::NodeHandle handle,
         const sol::table& lua_opt,
         const sol::table& lua_dirs,
         const sol::function& lua_callback) noexcept
@@ -455,7 +463,7 @@ namespace script::api
 
         uint32_t collisionMask = physics::mask(physics::Category::player);
 
-        auto callback = [this, opt, lua_callback](int cid, const std::vector<physics::RayHit>& hits) {
+        auto callback = [this, handle, opt, lua_callback](int cid, const std::vector<physics::RayHit>& hits) {
             auto& scriptSystem = script::ScriptSystem::get();
             sol::table args = scriptSystem.getLua()[TABLE_TMP];
 
@@ -470,7 +478,7 @@ namespace script::api
                 //node = getNode();
 
                 scriptSystem.invokeNodeFunction(
-                    m_handle.toNode(),
+                    handle.toNode(),
                     opt.self,
                     lua_callback,
                     args);
@@ -483,7 +491,7 @@ namespace script::api
         return m_commandEngine->addCommand(
             opt.afterId,
             RayCastMultiple{
-                m_handle,
+                handle,
                 dirs,
                 400.f,
                 collisionMask,
@@ -491,6 +499,7 @@ namespace script::api
     }
 
     int NodeCommandAPI::lua_find_path(
+        pool::NodeHandle handle,
         const sol::table& lua_opt,
         const glm::vec3& startPos,
         const glm::vec3& endPos,
@@ -499,7 +508,7 @@ namespace script::api
     {
         const auto opt = readOptions(lua_opt);
 
-        auto callback = [this, opt, lua_callback](int cid, const nav::Path& path) {
+        auto callback = [this, handle, opt, lua_callback](int cid, const nav::Path& path) {
             auto& scriptSystem = script::ScriptSystem::get();
             sol::table args = scriptSystem.getLua()[TABLE_TMP];
 
@@ -507,7 +516,7 @@ namespace script::api
             args["data"] = path;
 
             scriptSystem.invokeNodeFunction(
-                m_handle.toNode(),
+                handle.toNode(),
                 opt.self,
                 lua_callback,
                 args);
@@ -519,7 +528,7 @@ namespace script::api
         return m_commandEngine->addCommand(
             opt.afterId,
             FindPath{
-                m_handle,
+                handle,
                 startPos,
                 endPos,
                 maxPath,
@@ -527,6 +536,7 @@ namespace script::api
     }
 
     int NodeCommandAPI::lua_invoke(
+        pool::NodeHandle handle,
         const sol::table& lua_opt,
         const sol::function& fn,
         const sol::optional<sol::table>& fn_args) noexcept
@@ -536,7 +546,7 @@ namespace script::api
         return m_commandEngine->addCommand(
             opt.afterId,
             InvokeFunction{
-                m_handle,
+                handle,
                 opt.self,
                 fn,
                 fn_args.has_value() ? fn_args.value() : sol::table{}
@@ -544,6 +554,7 @@ namespace script::api
     }
 
     int NodeCommandAPI::lua_emit(
+        pool::NodeHandle handle,
         const sol::table& lua_opt,
         const sol::table& event) noexcept
     {
@@ -553,7 +564,7 @@ namespace script::api
         return m_commandEngine->addCommand(
             opt.afterId,
             EmitEvent{
-                m_handle,
+                handle,
                 ev.listenerId,
                 ev.type,
                 ev.data

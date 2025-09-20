@@ -48,6 +48,7 @@ types:
     script: |
       local wid = cmd:wait({ time=2 })
       cmd:animation_play(
+        self.handle,
         { after=wid, tag = "body", name = "walk_2" });
   - id: dir_light
     mesh:

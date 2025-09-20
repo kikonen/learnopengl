@@ -1,5 +1,3 @@
-local cmd = self.cmd
-
 local ANIM_IDLE = util.sid("idle")
 local ANIM_RUN = util.sid("run")
 local ANIM_FIRE = util.sid("fire")
@@ -17,21 +15,25 @@ local function animation(self)
 
   local function animation_listener()
     cid = cmd:animation_play(
+      self.handle,
       { after=wid, sid=ANIM_IDLE } )
 
     wid = cmd:wait({ after=cid, time=5 })
 
     cid = cmd:animation_play(
+      self.handle,
       { after=wid, sid=ANIM_RUN } )
 
     wid = cmd:wait({ after=cid, time=5 })
 
     cid = cmd:animation_play(
+      self.handle,
       { after=wid, speed=0.5, sid=ANIM_FIRE } )
 
     wid = cmd:wait({ after=cid, time=3 })
 
     wid = cmd:emit(
+      self.handle,
       { after=wid },
       { type=Event.SCRIPT_RESUME, listener=listener_id})
   end
@@ -39,6 +41,7 @@ local function animation(self)
   listener_id = self:listen(animation_listener, {Event.SCRIPT_RESUME})
 
   cmd:emit(
+    self.handle,
     {},
     { type=Event.SCRIPT_RESUME, listener=listener_id})
 end

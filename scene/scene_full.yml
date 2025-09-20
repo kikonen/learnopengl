@@ -361,6 +361,7 @@ types:
     script: |
       local wid = cmd:wait({ time=2 })
       cmd:animation_play(
+        self.handle,
         { after=wid, name = "fire" });
   - id: backback
     prefab:
@@ -761,6 +762,7 @@ types:
       base_scale: 20
     script: |
       cmd:rotate(
+        self.handle,
         { time=60 * 100 },
         vec3(0, 1, 0),
         360 * 30)
@@ -779,6 +781,7 @@ types:
       no_shadow: true
     script: |
       cmd:rotate(
+        self.handle,
         { time=40 * 100 },
         vec3(0, 1, 0),
         360 * 50)
@@ -786,6 +789,7 @@ types:
     type: origo
     script: |
       cmd:rotate(
+        self.handle,
         { time=60 * 100 },
         vec3(0, 1, 0),
         360 * 200)
@@ -804,6 +808,7 @@ types:
     script: |
       local fly_sid = util.sid("fly")
       cid = cmd:audio_play(
+        self.handle,
         { sid=fly_sid })
     script_file: scripts/seq_particle_generator
   - id: rock_origo

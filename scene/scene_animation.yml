@@ -44,6 +44,7 @@ types:
       path: prefab/creatures/prefab_wolf.yml
     script: |
       cmd:animation_play(
+        self.handle,
         { name = "walk" })
   - id: lion
     prefab:
@@ -51,24 +52,28 @@ types:
     xscript_file: scripts/cow_audio
     script: |
       cmd:animation_play(
+        self.handle,
         { name = "walk" })
   - id: deinodonte
     prefab:
       path: prefab/creatures/prefab_deinodonte.yml
     script: |
       cmd:animation_play(
+        self.handle,
         { name = "idle" })
   - id: elf
     prefab:
       path: prefab/characters/prefab_elf.yml
     script: |
       cmd:animation_play(
+        self.handle,
         { name = "idle" })
   - id: scavenger
     prefab:
       path: prefab/characters/prefab_scavenger.yml
     script: |
       cmd:animation_play(
+        self.handle,
         { name = "default" })
   - id: skeleton
     prefab:
@@ -78,6 +83,7 @@ types:
       enabled: true
     script: |
       cmd:animation_play(
+        self.handle,
         { name = "idle" });
   - id: cube
     mesh:

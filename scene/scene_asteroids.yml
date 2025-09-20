@@ -51,6 +51,7 @@ types:
     script_file: scripts/seq_particle_generator
     script: |
       cmd:rotate(
+        self.handle,
         { time=60 * 100 },
         vec3(0, 1, 0),
         360 * 30)
@@ -69,6 +70,7 @@ types:
       no_shadow: true
     script: |
       cmd:rotate(
+        self.handle,
         { time=40 * 100 },
         vec3(0, 1, 0),
         360 * 50)

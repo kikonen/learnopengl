@@ -1,5 +1,3 @@
-local cmd = self.cmd
-
 local function animation(self)
   local listener_id
   local wid = 0
@@ -15,11 +13,13 @@ local function animation(self)
     wid = cmd:wait({ after=cid, time=0.5 })
 
     cid = cmd:rotate(
+      self.handle,
       { after=wid, time=time, relative=true },
       vec3(0, 0, 1),
       dir * angle )
 
     cid = cmd:emit(
+      self.handle,
       { after=cid },
       { type=Event.SCRIPT_RESUME, listener=listener_id})
 
@@ -34,6 +34,7 @@ local function animation(self)
   listener_id = self:listen(animation_listener, {Event.SCRIPT_RESUME})
 
   cmd:emit(
+    self.handle,
     {},
     { type=Event.SCRIPT_RESUME, listener=listener_id})
 end

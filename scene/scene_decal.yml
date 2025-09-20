@@ -99,7 +99,8 @@ types:
         size: [5, 3, 0.2]
     xscript: |
       local wid = cmd:wait({ time=5 })
-      self.cmd:rotate(
+      cmd:rotate(
+        self.handle,
         { after=wid, time=10 * 100 },
         vec3(0, 1, 0),
         360 * 100)
@@ -134,7 +135,8 @@ types:
         size: [5, 3, 0.2]
     xscript: |
       local wid = cmd:wait({ time=5 })
-      self.cmd:rotate(
+      cmd:rotate(
+        self.handle,
         { after=wid, time=10 * 100 },
         vec3(0, 1, 0),
         360 * 100)

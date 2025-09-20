@@ -12,8 +12,6 @@ local EXPLODE_SID = util.sid("explode")
 
 printf("LUA: SID=%d, SID_NAME=%s\n", ANIM_SWING_QUICK, util.sid_name(ANIM_SWING_QUICK))
 
-local cmd = self.cmd
-
 if not State.initialize then
 (function()
   function State:initialize()
@@ -27,12 +25,14 @@ if not State.initialize then
   end
 
   function State:explode()
-    explode_cid = self.cmd:audio_play(
+    explode_cid = cmd:audio_play(
+      self.handle,
       { sync=true, sid=EXPLODE_SID })
   end
 
   function State:emit_particles()
-    self.cmd:particle_emit(
+    cmd:particle_emit(
+      self.handle,
       { count=(10 + rnd(50)) * 1000 })
   end
 
@@ -85,7 +85,8 @@ local function idle(wid)
 
   local cid
   cid = cmd:animation_play(
-    { after=wid, node = self.body_id, sid=randomIdle() } )
+    self.body_id,
+    { after=wid, sid=randomIdle() } )
 
   return cid
 end
@@ -96,7 +97,8 @@ local function attack(wid)
   local cid
 
   cid = cmd:animation_play(
-    { after=wid, node = self.body_id, sid=randomAttack() } )
+    self.body_id
+    { after=wid, sid=randomAttack() } )
 
   return cid
 end
@@ -110,9 +112,13 @@ local function ray_caster()
     table_print(args)
 
     cmd:particle_emit(
+      self.handle,
       { count=(10 + rnd(50)) * 1000 })
 
-    cmd:rotate({ time=1, relative=true }, vec3(0, 1, 0), degrees)
+    cmd:rotate(
+      self.handle,
+      { time=1, relative=true }, vec3(0, 1, 0), degrees)
+
     degrees = 0;
   end
 
@@ -125,6 +131,7 @@ local function ray_caster()
     printf("dir=%s\n", dir)
 
     cid = cmd:ray_cast(
+      self.handle,
       { after=cid },
       dir,
       false,
@@ -133,6 +140,7 @@ local function ray_caster()
     cid = cmd:wait({ after=cid, time=0.25 })
 
     cid = cmd:call(
+      self.handle,
       { after=cid },
       ray_cast)
 
@@ -140,6 +148,7 @@ local function ray_caster()
   end
 
   cid = cmd:call(
+    self.handle,
     { after=cid },
     ray_cast)
 end
@@ -185,20 +194,24 @@ local function animation(self)
 
     if idx == 0 then
       cid2 = cmd:move(
+        self.handle,
         { after=wid, time=5, relative=true },
         vec3(-2, 0, 0))
 
       cid2 = cmd:move(
+        self.handle,
         { after=wid, time=5, relative=true },
         vec3(0, 0, 2))
     end
 
     cid = cmd:call(
+      self.handle,
       { after=cid, object=true },
       self.ditto,
       { bar="start_of_seq_self" })
 
     cid = cmd:call(
+      self.handle,
       { after=cid },
       ditto,
       { bar="start_of_seq_local" })
@@ -209,15 +222,18 @@ local function animation(self)
     wid = cmd:wait({ after=cid, time=5 + rnd(10) })
 
     wid = cmd:call(
+      self.handle,
       { after=wid, object=true },
       self.ditto,
       { ditto="end_of_seq_self" })
 
     -- wid = cmd:emit(
+    --   self.handle,
     --   { after=wid },
     --   { type=Event.SCRIPT_RESUME, listener=listener_id})
 
     wid = cmd:call(
+      self.handle,
       { after=wid },
       animation_listener)
 
@@ -227,10 +243,12 @@ local function animation(self)
   -- listener_id = self:listen(animation_listener, {Event.SCRIPT_RESUME})
 
   -- cmd:emit(
+  --   self.handle,
   --   {},
   --   { type=Event.SCRIPT_RESUME, listener=listener_id})
 
   wid = cmd:call(
+    self.handle,
     { after=wid },
     animation_listener)
 end

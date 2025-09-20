@@ -52,7 +52,8 @@ types:
       path: prefab/creatures/prefab_skeleton.yml
     priority: 1
     script: |
-      self.cmd:animation_play(
+      cmd:animation_play(
+        self.handle,
         { name = "idle" });
   - id: cube_map
     type: origo

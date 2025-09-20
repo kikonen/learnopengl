@@ -1,5 +1,3 @@
-local cmd = self.cmd
-
 local ANIM_IDLE = util.sid("idle")
 local ANIM_IDLE_2 = util.sid("idle_2")
 local ANIM_HIT = util.sid("hit")
@@ -70,9 +68,11 @@ local function attack(src_wid)
   local wid = 0
 
   cid = cmd:animation_play(
+    self.handle,
     { after=src_wid, sid=randomMove() } )
 
   cid = cmd:move(
+    self.handle,
     { after=src_wid, time=10 + rnd(5), relative=true },
     vec3(25 - rnd(100), 0, 25 - rnd(100)))
 
@@ -80,37 +80,46 @@ local function attack(src_wid)
   cmd:cancel({ after=wid, time=0 }, cid)
 
   cid = cmd:move(
+    self.handle,
     { after=cid, time=10 + rnd(5), relative=true },
     vec3(25 - rnd(100), 0, 25 - rnd(100)))
 
   cmd:cancel({ after=0, time=0 }, cid)
 
   cid = cmd:animation_play(
+    self.handle,
     { after=cid, sid=randomAttack() } )
 
   cid = cmd:move(
+    self.handle,
     { after=cid, time=5 + rnd(5), relative=true },
     vec3(25 - rnd(50), 0, 25 - rnd(50)))
 
   cid = cmd:animation_play(
+    self.handle,
     { after=cid, sid=randomIdle() } )
 
   cid = cmd:move(
+    self.handle,
     { after=cid, time=5 + rnd(5), relative=true },
     vec3(10 - rnd(20), 0, 10 - rnd(20)))
 
   cid = cmd:animation_play(
+    self.handle,
     { after=cid, sid=randomMove() } )
 
   cid = cmd:move_spline(
+    self.handle,
     { after=cid, time=3 + rnd(5), relative=true },
     vec3(20, 0, 5),
     vec3(5 - rnd(10), 0, 5 - rnd(10)))
 
   cid = cmd:animation_play(
+    self.handle,
     { after=cid, sid=randomAttack() } )
 
   cid = cmd:move(
+    self.handle,
     { after=cid, time=2 + rnd(5), relative=false },
     vec3(x, y, z))
 
@@ -130,11 +139,13 @@ local function animation()
     wid = cmd:wait({ after=cid, time=10 + rnd(5) })
 
     cid = cmd:call(
+      self.handle,
       { after=wid },
       animation_listener)
   end
 
   cid = cmd:call(
+    self.handle,
     { after=wid },
     animation_listener)
 end

@@ -1,5 +1,3 @@
-local cmd = self.cmd
-
 local TEXTS = {
   "Christmas\n" ..
   "Time\n",
@@ -25,12 +23,16 @@ local function animation(self)
 
     printf("text text: %s\n", TEXTS[idx + 1])
 
-    cid = cmd:set_text({ after=wid, time=5 }, { text=TEXTS[idx + 1] })
+    cid = cmd:set_text(
+      self.handle,
+      { after=wid, time=5 }, { text=TEXTS[idx + 1] })
+
     idx = (idx + 1) % #TEXTS
 
     wid = cmd:wait({ after=cid, time=5 })
 
     cid = cmd:emit(
+      self.handle,
       { after=wid },
       { type=Event.SCRIPT_RESUME, listener=listener_id})
   end
@@ -38,6 +40,7 @@ local function animation(self)
   listener_id = self:listen(animation_listener, {Event.SCRIPT_RESUME})
 
   cmd:emit(
+    self.handle,
     {},
     { type=Event.SCRIPT_RESUME, listener=listener_id})
 end

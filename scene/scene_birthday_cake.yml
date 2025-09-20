@@ -55,6 +55,7 @@ types:
     type: origo
     script: |
       cmd:rotate(
+        self.handle,
         { time=10 * 100 },
         vec3(0, 1, 0),
         360 * 100)
@@ -62,6 +63,7 @@ types:
     type: origo
     script: |
       cid = cmd:rotate(
+        self.handle,
         { time=15 * 10, relative=true },
         vec3(0.0, 1.0, 0.0),
         20 * 360.0)
@@ -139,10 +141,12 @@ types:
       base_rot: [-45, 0, 0]
     xscript: |
       cmd:rotate(
+        self.handle,
         { time=50 * 100 },
         vec3(0, 0, 1),
         360 * 100)
       cmd:rotate(
+        self.handle,
         { time=30 * 100 },
         vec3(1, 1, 0),
         360 * 100)
@@ -168,6 +172,7 @@ types:
     particle: marilyn
     script: |
       cmd:rotate(
+        self.handle,
         { time=40 * 20 },
         vec3(0, 1, 0),
         -150 * 360)
