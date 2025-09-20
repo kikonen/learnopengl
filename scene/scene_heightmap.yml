@@ -94,6 +94,7 @@ types:
         density: 0.01
     script: |
       cmd:animation_play(
+        self.handle,
         { tag = "body", name = "swing_normal" });
   - id: object
     mesh:

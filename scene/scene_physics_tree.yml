@@ -140,6 +140,7 @@ types:
         collision: [terrain, npc]
     script: |
       cmd:animation_play(
+        self.handle,
         { tag = "body", name = "walk_2" });
   - id: directional_light
     mesh:
@@ -163,6 +164,7 @@ types:
       enabled: true
     script: |
       cmd:animation_play(
+        self.handle,
         { name = "idle_2" });
   - id: wooden_floor
     prefab:
@@ -188,6 +190,7 @@ types:
       enabled: true
     script: |
       cmd:animation_play(
+        self.handle,
         { name = "idle_2" });
   - id: palm_tree_forest
     prefab:

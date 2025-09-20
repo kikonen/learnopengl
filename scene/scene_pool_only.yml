@@ -46,9 +46,10 @@ types:
     composite: pool_composite
     xscript: |
       cmd:rotate(
-      { time=60 * 10},
-      vec3(0.0, 1.0, 0.0),
-      360.0 * 10)
+        self.handle,
+        { time=60 * 10},
+        vec3(0.0, 1.0, 0.0),
+        360.0 * 10)
   - id: pool_floor
     mesh:
       path: plane

@@ -76,6 +76,7 @@ types:
   - id: prefab_skeleton_warrior
     script: |
       cmd:animation_play(
+        self.handle,
         { tag = "body", name = "idle" })
   - id: fence
     mesh:

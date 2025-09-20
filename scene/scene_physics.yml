@@ -99,6 +99,7 @@ types:
     script: |
       local wid = cmd:wait({ time=2 })
       cmd:animation_play(
+        self.handle,
         { after=wid, tag = "body", name = "walk_2" });
   - id: skeleton_1
     prefab:
@@ -107,6 +108,7 @@ types:
       local sid = util.sid("idle_2")
       printf("LUA: SID=%d, id=%s", sid, "idle_2")
       cmd:animation_play(
+        self.handle,
         { name = "idle_2" })
     physics:
       enabled: true
@@ -115,6 +117,7 @@ types:
       path: prefab/creatures/prefab_skeleton.yml
     script: |
       cmd:animation_play(
+        self.handle,
         { name = "idle" });
     physics:
       enabled: true

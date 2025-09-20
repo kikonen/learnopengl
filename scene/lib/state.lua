@@ -22,10 +22,9 @@ function State:_init(o)
 end
 
 function State:destroy(o)
-  debug("destroy state: %d\n", self.id)
+  debug("destroy state: %s\n", self.handle)
 
-  states[self.id] = nil
-  states[self.cmd] = nil
+  states[self.handle] = nil
   states[self.state] = nil
 
   self.updaters = nil
@@ -43,7 +42,7 @@ function State:class()
 end
 
 function State:add_updater(fn)
-  -- debug("STATE: %d: Add updater: %s\n", self.id, fn)
+  -- debug("STATE: %s: Add updater: %s\n", self.handle, fn)
   self.updaters = self.updaters or {}
   self.updaters[#self.updaters + 1] = fn
 end
@@ -51,7 +50,7 @@ end
 function State:listen(fn, types)
   listener_id = events:listen(fn, types)
 
-  debug("STATE: %d: listen: listener=%d, fn=%s, types={%s}\n", self.id, listener_id, fn, table_format(types))
+  debug("STATE: %s: listen: listener=%d, fn=%s, types={%s}\n", self.handle, listener_id, fn, table_format(types))
 
   self.listener_ids = self.listener_ids or {}
   self.listener_ids[#self.listener_ids + 1] = listener_id

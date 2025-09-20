@@ -1,5 +1,3 @@
-local cmd = self.cmd
-
 local function animation(self)
   local listener_id = nil
   local orig_pos = node:get_pos(self.handle)
@@ -11,12 +9,14 @@ local function animation(self)
 
     -- slow for frontside of mirror
     cid = cmd:rotate(
+      self.handle,
       { after=wid, time=120, relative=true },
       vec3(0.0, 1.0, 0.0),
       120.0)
 
     -- fast for backside of mirror
     cid = cmd:rotate(
+      self.handle,
       { after=cid, time=8, relative=true },
       vec3(0.0, 1.0, 0.0),
       240.0)
@@ -24,6 +24,7 @@ local function animation(self)
     wid = cmd:wait({ after=cid, time=1 })
 
     cid = cmd:emit(
+      self.handle,
       { after=wid },
       { type=Event.SCRIPT_RESUME, listener=listener_id})
   end
@@ -31,6 +32,7 @@ local function animation(self)
   listener_id = self:listen(animation_listener, {Event.SCRIPT_RESUME})
 
   cmd:emit(
+    self.handle,
     {},
     { type=Event.SCRIPT_RESUME, listener=listener_id})
 end

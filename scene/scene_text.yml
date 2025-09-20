@@ -39,6 +39,7 @@ types:
     layer: ui
     xscript: |
       cmd:rotate(
+        self.handle,
         { time=60 * 100 },
         vec3(0, 0, 1),
         360 * 120)
@@ -78,6 +79,7 @@ types:
     #layer: ui
     xscript: |
       cmd:rotate(
+        self.handle,
         { time=60 * 100 },
         vec3(0, 1, 0),
         360 * 100)
@@ -135,6 +137,7 @@ types:
     xscript: |
       printf("text rotate: %d", id)
       cmd:rotate(
+        self.handle,
         { time=60 * 100 },
         vec3(0, 1, 0),
         360 * 100)

@@ -1,5 +1,3 @@
-local cmd = self.cmd
-
 local function animation_rotate(self)
   local listener_id = nil
   local orig_pos = nil
@@ -17,20 +15,25 @@ local function animation_rotate(self)
     wid = cmd:wait({ after=cid, time=0.5 })
 
     cid = cmd:audio_play(
+      self.handle,
       { after=cid, sid=AUDIO_ROTATE })
 
     cid = cmd:rotate(
+      self.handle,
       { after=wid, time=40, relative=true },
       vec3(0, 1, 0),
       dir * 720 * 2)
 
     cid = cmd:audio_pause(
+      self.handle,
       { after=cid, sid=AUDIO_ROTATE })
 
     cid = cmd:audio_play(
+      self.handle,
       { after=cid, sid=AUDIO_WIND, sync=true })
 
     cid = cmd:emit(
+      self.handle,
       { after=cid },
       { type=Event.SCRIPT_RESUME, listener=listener_id})
 
@@ -40,6 +43,7 @@ local function animation_rotate(self)
   listener_id = self:listen(animation_listener, {Event.SCRIPT_RESUME})
 
   cmd:emit(
+    self.handle,
     {},
     { type=Event.SCRIPT_RESUME, listener=listener_id})
 end

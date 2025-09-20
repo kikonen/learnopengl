@@ -84,6 +84,7 @@ types:
     base: prefab_skeleton_warrior
     script: |
       cmd:animation_play(
+        self.handle,
         { tag = "body", name = "swing_normal" })
   - id: prefab_skeleton
     mesh:
@@ -104,6 +105,7 @@ types:
       enabled: true
     script: |
       cmd:animation_play(
+        self.handle,
         { name = "idle" });
   - id: mirror_ball
     mesh:

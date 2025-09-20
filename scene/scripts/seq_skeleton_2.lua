@@ -22,15 +22,18 @@ if not State.initialize then
   end
 
   function State:explode()
-    explode_cid = self.cmd:audio_play(
+    explode_cid = cmd:audio_play(
+      self.handle,
       { sync=true, sid=EXPLODE_SID })
   end
 
   function State:emit_particles()
-    self.cmd:particle_emit(
+    cmd:particle_emit(
+      self.handle,
       { count=(10 + rnd(50)) * 1000 })
 
     cmd:particle_emit(
+      self.handle,
       { tag = self.sword_id, count=(10 + rnd(10)) * 100 })
   end
 
@@ -69,7 +72,8 @@ if not State.initialize then
 
     local cid
     cid = _G.cmd:animation_play(
-      { after=wid, node = self.body_id, sid=self:random_idle() } )
+      self.body_id,
+      { after=wid, sid=self:random_idle() } )
 
     return cid
   end
@@ -79,10 +83,12 @@ if not State.initialize then
 
     local cid
 
-    cid = self.cmd:animation_play(
-      { after=wid, node = self.body_id, sid=self:random_attack() } )
+    cid = cmd:animation_play(
+      self.body_id,
+      { after=wid, sid=self:random_attack() } )
 
     cmd:particle_emit(
+      self.handle,
       { tag = self.sword_id, count=(10 + rnd(10)) * 100 })
 
     return cid
@@ -99,8 +105,6 @@ end
 local INITIAL_RAY_DEGREES = 50 - rnd(100)
 
 local function ray_caster(self)
-  local cmd = self.cmd
-
   local rotate_cid = 0
   local move_cid = 0
   local path_cid = 0
@@ -132,6 +136,7 @@ local function ray_caster(self)
       attack_cid = self:attack(prev_cid)
 
       prev_cid = cmd:move(
+        self.handle,
         { after=prev_cid, time=0.5, relative=true },
         rel_pos)
 
@@ -139,6 +144,7 @@ local function ray_caster(self)
     end
 
     -- prev_cid = cmd:move_path(
+    --   self.handle,
     --   { after=prev_cid, time=4, relative=false },
     --   args.data.waypoints)
   end
@@ -162,6 +168,7 @@ local function ray_caster(self)
     table_print(args)
 
     cmd:particle_emit(
+      self.handle,
       { count=(10 + rnd(50)) * 100 })
 
     debug("front: %s\n", node:get_front(self.handle))
@@ -210,11 +217,13 @@ local function ray_caster(self)
       attack_cid)
 
     rotate_cid = cmd:rotate(
+      self.handle,
       { after=cancel_cid, time=1, relative=true },
       vec3(0, 1, 0),
       rot_degrees)
 
     -- move_cid = cmd:move(
+    --   self.handle,
     --   { after=cancel_cid, time=5, relative=false },
     --   targetPos)
 
@@ -223,6 +232,7 @@ local function ray_caster(self)
     ray_degrees = 0
 
     path_cid = cmd:find_path(
+      self.handle,
       { after=cancel_cid, time=0 },
       nodePos,
       targetPos,
@@ -248,14 +258,15 @@ local function ray_caster(self)
     -- local dir_quat = util.normal_to_quat(dir, vec3(0, 1, 0))
     -- local dir_degrees = dir_quat:to_degrees()
 
-    -- debug("CAST[%d] rot=%s, dir=%s\n",
-    --   self.id, rot_degrees, dir)
+    -- debug("CAST[%s] rot=%s, dir=%s\n",
+    --   self.handle, rot_degrees, dir)
 
     cast_cid = cmd:cancel(
       {},
       cast_cid)
 
     cast_cid = cmd:ray_cast(
+      self.handle,
       { after=cast_cid },
       dir,
       false,
@@ -266,8 +277,6 @@ local function ray_caster(self)
 end
 
 local function animation(self)
-  local cmd = self.cmd
-
   local idx = 0
   local wid = 0
   local cid = 0
@@ -279,10 +288,12 @@ local function animation(self)
 
     if idx == 0 then
       cid2 = cmd:move(
+        self.handle,
         { after=wid, time=5, relative=true },
         vec3(-2, 0, 0))
 
       cid2 = cmd:move(
+        self.handle,
         { after=wid, time=5, relative=true },
         vec3(0, 0, 2))
     end
@@ -290,6 +301,7 @@ local function animation(self)
     wid = cmd:wait({ after=cid, time=5 + rnd(10) })
 
     wid = cmd:call(
+      self.handle,
       { after=wid },
       animation_listener)
 
@@ -297,6 +309,7 @@ local function animation(self)
   end
 
   wid = cmd:call(
+    self.handle,
     { after=wid },
     animation_listener)
 end

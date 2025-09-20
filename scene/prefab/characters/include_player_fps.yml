@@ -48,6 +48,7 @@ types:
         offset: [0, 0, -0.875]
     script: |
       cmd:audio_play(
+        self.handle,
         { sync=true, sid=util.sid("idle_1") })
   - id: prefab_player_fps_camera
     mesh:
@@ -87,6 +88,7 @@ types:
     xlayer: player
     script: |
       cmd:animation_play(
+        self.handle,
         { name="rifle_idle_aim" } )
 
   - xid: automatic_rifle

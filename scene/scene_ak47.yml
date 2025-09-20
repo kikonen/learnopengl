@@ -79,16 +79,20 @@ types:
       no_shadow: true
     script: |
       --cmd:animation_play(
+      --  self.handle,
       --  { name="rifle_idle_aim" } )
       cmd:animation_play(
+        self.handle,
         { name="rifle_idle_aim" } )
       --cmd:animation_play(
+      --  self.handle,
       --  { name="pistol_fire" } )
   - id: automatic_rifle
     prefab:
       path: prefab/weapons/prefab_automatic_rifle.yml
     script: |
       cmd:animation_play(
+        self.handle,
         { name="rifle_fire_aim" } )
   - id: pistol
     prefab:
@@ -98,6 +102,7 @@ types:
       no_shadow: true
     xscript: |
       cmd:animation_play(
+        self.handle,
         { name = "fire", repeat=true })
 
 nodes:

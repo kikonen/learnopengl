@@ -153,7 +153,7 @@ namespace script::api
         t.set_function(
             "__tostring",
             [](const NodeAPI& v) {
-                return "NodeAPI";
+                return "<NodeAPI>";
             }
         );
     }

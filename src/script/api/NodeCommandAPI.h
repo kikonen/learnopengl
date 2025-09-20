@@ -25,10 +25,6 @@ namespace script::api
         NodeCommandAPI(
             CommandEngine* const commandEngine);
 
-        NodeCommandAPI(
-            CommandEngine* const commandEngine,
-            pool::NodeHandle handle);
-
         ~NodeCommandAPI();
 
         std::string str() const noexcept;
@@ -50,70 +46,87 @@ namespace script::api
             const sol::table& lua_ids) noexcept;
 
         int lua_move(
+            pool::NodeHandle handle,
             const sol::table& lua_opt,
             const glm::vec3& pos) noexcept;
 
         int lua_move_spline(
+            pool::NodeHandle handle,
             const sol::table& lua_opt,
             const glm::vec3& p,
             const glm::vec3& pos) noexcept;
 
         int lua_move_path(
+            pool::NodeHandle handle,
             const sol::table& lua_opt,
             const std::vector<glm::vec3>& path) noexcept;
 
         int lua_rotate(
+            pool::NodeHandle handle,
             const sol::table& lua_opt,
             const glm::vec3& axis,
             const float lua_degrees) noexcept;
 
         int lua_scale(
+            pool::NodeHandle handle,
             const sol::table& lua_opt,
             const glm::vec3& scale) noexcept;
 
         int lua_set_text(
+            pool::NodeHandle handle,
             const sol::table& lua_opt,
             const sol::table& lua_text) noexcept;
 
         int lua_set_visible(
+            pool::NodeHandle handle,
             const sol::table& lua_opt,
             bool visible) noexcept;
 
         int lua_select(
+            pool::NodeHandle handle,
             const sol::table& lua_opt,
             bool select,
             bool append) noexcept;
 
         int lua_audio_play(
+            pool::NodeHandle handle,
             const sol::table& lua_opt) noexcept;
 
         int lua_audio_pause(
+            pool::NodeHandle handle,
             const sol::table& lua_opt) noexcept;
 
         int lua_audio_stop(
+            pool::NodeHandle handle,
             const sol::table& lua_opt) noexcept;
 
         int lua_animation_play(
+            pool::NodeHandle handle,
             const sol::table& lua_opt) noexcept;
 
         int lua_particle_emit(
+            pool::NodeHandle handle,
             const sol::table& lua_opt) noexcept;
 
         int lua_particle_stop(
+            pool::NodeHandle handle,
             const sol::table& lua_opt) noexcept;
 
         int lua_ray_cast(
+            pool::NodeHandle handle,
             const sol::table& lua_opt,
             const glm::vec3& lua_dir,
             bool notifyMiss,
             const sol::function& lua_callback) noexcept;
 
         int lua_ray_cast_multiple(
+            pool::NodeHandle handle,
             const sol::table& lua_opt,
             const sol::table& lua_dirs,
             const sol::function& lua_callback) noexcept;
 
         int lua_find_path(
+            pool::NodeHandle handle,
             const sol::table& lua_opt,
             const glm::vec3& startPos,
             const glm::vec3& endPos,
@@ -121,11 +134,13 @@ namespace script::api
             const sol::function& lua_callback) noexcept;
 
         int lua_invoke(
+            pool::NodeHandle handle,
             const sol::table& lua_opt,
             const sol::function& fn,
             const sol::optional<sol::table>& fn_args) noexcept;
 
         int lua_emit(
+            pool::NodeHandle handle,
             const sol::table& lua_opt,
             const sol::table& event) noexcept;
 
@@ -133,6 +148,5 @@ namespace script::api
 
     private:
         CommandEngine* const m_commandEngine;
-        const pool::NodeHandle m_handle;
     };
 }

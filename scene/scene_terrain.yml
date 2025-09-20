@@ -161,6 +161,7 @@ types:
         kinematic: true
     script: |
       cmd:animation_play(
+        self.handle,
         { tag = "body", name = "idle" });
     script: scripts/seq_skeleton_random_nav
     xscript: scripts/seq_skeleton_2

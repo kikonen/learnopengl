@@ -1,5 +1,3 @@
-local cmd = self.cmd
-
 local ANIM_IDLE = util.sid("idle")
 local ANIM_IDLE_2 = util.sid("idle_2")
 local ANIM_HIT = util.sid("hit")
@@ -65,6 +63,7 @@ local function attack(wid)
   local cid = 0
 
   cid = cmd:animation_play(
+    self.handle,
     { after=wid, sid=randomMove() } )
 
   wid = cmd:wait({ after=0, time=3 + rnd(5) })
@@ -73,15 +72,19 @@ local function attack(wid)
   cmd:cancel({ after=0, time=0 }, cid)
 
   cid = cmd:animation_play(
+    self.handle,
     { after=cid, sid=randomMove() } )
 
   cid = cmd:animation_play(
+    self.handle,
     { after=cid, sid=randomAttack() } )
 
   cid = cmd:animation_play(
+    self.handle,
     { after=cid, sid=randomIdle() } )
 
   cid = cmd:animation_play(
+    self.handle,
     { after=cid, sid=randomIdle() } )
 
   return cid;
@@ -100,6 +103,7 @@ local function animation(self)
     wid = cmd:wait({ after=cid, time=4 + rnd(3) })
 
     cid = cmd:emit(
+      self.handle,
       { after=wid },
       { type=Event.SCRIPT_RESUME, listener=listener_id})
   end
@@ -107,6 +111,7 @@ local function animation(self)
   listener_id = self:listen(animation_listener, {Event.SCRIPT_RESUME})
 
   cmd:emit(
+    self.handle,
     {},
     { type=Event.SCRIPT_RESUME, listener=listener_id})
 end

@@ -1,5 +1,3 @@
-local cmd = self.cmd
-
 local clone_index = node:get_clone_index(self.handle)
 local orig_pos = node:get_pos(self.handle)
 
@@ -19,10 +17,12 @@ local function animation_move(self)
     wid = cmd:wait({ after=cid, time=2 })
 
     cid = cmd:move(
+      self.handle,
       { after=wid, time=speed, relative=true },
       vec3(dir * 10, 0, 0.0))
 
     cmd:emit(
+      self.handle,
       { after=cid },
       { type=Event.SCRIPT_RESUME, listener=listener_id})
 
@@ -32,6 +32,7 @@ local function animation_move(self)
   listener_id = self:listen(animation_listener, {Event.SCRIPT_RESUME})
 
   cmd:emit(
+    self.handle,
     {},
     { type=Event.SCRIPT_RESUME, listener=listener_id})
 end
@@ -53,11 +54,13 @@ local function animation_rotate(self)
     wid = cmd:wait({ after=cid, time=2 })
 
     cid = cmd:rotate(
+      self.handle,
       { after=wid, time=speed, relative=true },
       vec3(0.0, 1.0, 0.0),
       dir * 360)
 
     cmd:emit(
+      self.handle,
       { after=cid },
       { type=Event.SCRIPT_RESUME, listener=listener_id})
 
@@ -67,6 +70,7 @@ local function animation_rotate(self)
   listener_id = self:listen(animation_listener, {Event.SCRIPT_RESUME})
 
   cmd:emit(
+    self.handle,
     {},
     { type=Event.SCRIPT_RESUME, listener=listener_id})
 end

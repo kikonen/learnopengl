@@ -1,5 +1,3 @@
-local cmd = self.cmd
-
 local rnd = math.random
 
 local function animation_translate(self)
@@ -26,6 +24,7 @@ local function animation_translate(self)
     --printf("pos: %s\n", pos)
 
     cid = cmd:move_spline(
+      self.handle,
       { after=wid, time=5, relative=false },
       vec3(rnd(20) - 10 , rnd(10) - 5, rnd(10) - 5),
       pos)
@@ -33,6 +32,7 @@ local function animation_translate(self)
     wid = cmd:wait({ after=cid, time=0 })
 
     cid = cmd:emit(
+      self.handle,
       { after=wid },
       { type=Event.SCRIPT_RESUME, listener=listener_id})
   end
@@ -40,6 +40,7 @@ local function animation_translate(self)
   listener_id = self:listen(animation_listener, {Event.SCRIPT_RESUME})
 
   cmd:emit(
+    self.handle,
     {},
     { type=Event.SCRIPT_RESUME, listener=listener_id})
 end
@@ -58,16 +59,19 @@ local function animation_rotate(self)
     local rotZ = 180 - rnd(360)
 
     cid1 = cmd:rotate(
+      self.handle,
       { after=wid, time=5, relative=true },
       vec3(1, 0, 0),
       rotX)
 
     cid2 = cmd:rotate(
+      self.handle,
       { after=wid, time=5, relative=true },
       vec3(0, 1, 0),
       rotY)
 
     cid3 = cmd:rotate(
+      self.handle,
       { after=wid, time=5, relative=true },
       vec3(0, 0, 1),
       rotZ)
@@ -79,6 +83,7 @@ local function animation_rotate(self)
     wid = cmd:wait({ after=cid, time=0 })
 
     cid = cmd:emit(
+      self.handle,
       { after=wid },
       { type=Event.SCRIPT_RESUME, listener=listener_id})
   end
@@ -86,6 +91,7 @@ local function animation_rotate(self)
   listener_id = self:listen(animation_listener, {Event.SCRIPT_RESUME})
 
   cmd:emit(
+    self.handle,
     {},
     { type=Event.SCRIPT_RESUME, listener=listener_id})
 end
@@ -108,12 +114,14 @@ local function animation_scale(self)
     end
 
     cid = cmd:scale(
+      self.handle,
       { after=wid, time=5, relative=false },
       vec3(scale, scale, scale))
 
     wid = cmd:wait({ after=cid, time=0 })
 
     cid = cmd:emit(
+      self.handle,
       { after=wid },
       { type=Event.SCRIPT_RESUME, listener=listener_id})
   end
@@ -121,6 +129,7 @@ local function animation_scale(self)
   listener_id = self:listen(animation_listener, {Event.SCRIPT_RESUME})
 
   cmd:emit(
+    self.handle,
     {},
     { type=Event.SCRIPT_RESUME, listener=listener_id})
 end

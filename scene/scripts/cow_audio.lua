@@ -1,5 +1,3 @@
-local cmd = self.cmd
-
 local moo_sid = util.sid("moo")
 
 local function animation(self)
@@ -16,9 +14,11 @@ local function animation(self)
     wid = cmd:wait({ after=cid, time=delay })
 
     cid = cmd:audio_play(
+      self.handle,
       { after=wid, sync=true, sid=moo_sid })
 
     cid = cmd:emit(
+      self.handle,
       { after=cid },
       { type=Event.SCRIPT_RESUME, listener=listener_id})
   end
@@ -26,6 +26,7 @@ local function animation(self)
   listener_id = self:listen(animation_listener, {Event.SCRIPT_RESUME})
 
   cmd:emit(
+    self.handle,
     {},
     { type=Event.SCRIPT_RESUME, listener=listener_id})
 end

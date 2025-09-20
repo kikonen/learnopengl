@@ -64,6 +64,7 @@ types:
     composite: flag_stand_composite
     script: |
       cmd:rotate(
+        self.handle,
         { time=60 * 10, relative=true },
         vec3(0, 1, 0),
         1 * 360 * 10)
@@ -72,6 +73,7 @@ types:
     composite: flag_stand_2_composite
     script: |
       cmd:rotate(
+        self.handle,
         { time=60 * 10, relative=true },
         vec3(0, 1, 0),
         1 * 360 * 10)

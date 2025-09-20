@@ -45,6 +45,7 @@ types:
     type: origo
     script: |
       cmd:rotate(
+        self.handle,
         { time=10 * 100 },
         vec3(0, 1, 0),
         360 * 100)
@@ -69,6 +70,7 @@ types:
     particle: rocket
     xscript: |
       cmd:rotate(
+        self.handle,
         { time=50 * 100 },
         vec3(0, 0, 1),
         360 * 100)
@@ -183,6 +185,7 @@ nodes:
       - pos: [ 10, 0,  10]
         type: rocket_8
   - type: rocket_message
+    tag: rocket_message
     pos: [0.0, 15.0, 0.0]
     scale: 0.015
 
