@@ -156,7 +156,7 @@ namespace script::api
         return m_commandEngine->addCommand(
             opt.afterId,
             MoveNode{
-                selectHandle(opt.nodeHandle, handle, opt.tagId),
+                selectHandle(handle, opt.tagId),
                 opt.duration,
                 opt.relative,
                 pos
@@ -176,7 +176,7 @@ namespace script::api
         return m_commandEngine->addCommand(
             opt.afterId,
             MoveSplineNode{
-                selectHandle(opt.nodeHandle, handle, opt.tagId),
+                selectHandle(handle, opt.tagId),
                 opt.duration,
                 opt.relative,
                 p,
@@ -196,7 +196,7 @@ namespace script::api
         return m_commandEngine->addCommand(
             opt.afterId,
             MovePathNode{
-                selectHandle(opt.nodeHandle, handle, opt.tagId),
+                selectHandle(handle, opt.tagId),
                 opt.duration,
                 opt.relative,
                 path
@@ -216,7 +216,7 @@ namespace script::api
         return m_commandEngine->addCommand(
             opt.afterId,
             RotateNode{
-                selectHandle(opt.nodeHandle, handle, opt.tagId),
+                selectHandle(handle, opt.tagId),
                 opt.duration,
                 opt.relative,
                 axis,
@@ -236,7 +236,7 @@ namespace script::api
         return m_commandEngine->addCommand(
             opt.afterId,
             ScaleNode{
-                selectHandle(opt.nodeHandle, handle, opt.tagId),
+                selectHandle(handle, opt.tagId),
                 opt.duration,
                 opt.relative,
                 scale
@@ -261,7 +261,7 @@ namespace script::api
         return m_commandEngine->addCommand(
             opt.afterId,
             SetTextNode{
-                selectHandle(opt.nodeHandle, handle, opt.tagId),
+                selectHandle(handle, opt.tagId),
                 text
             });
     }
@@ -276,7 +276,7 @@ namespace script::api
         return m_commandEngine->addCommand(
             opt.afterId,
             SetVisibleNode{
-                selectHandle(opt.nodeHandle, handle, opt.tagId),
+                selectHandle(handle, opt.tagId),
                 visible
             });
     }
@@ -292,7 +292,7 @@ namespace script::api
         return m_commandEngine->addCommand(
             opt.afterId,
             SelectNode{
-                selectHandle(opt.nodeHandle, handle, opt.tagId),
+                selectHandle(handle, opt.tagId),
                 select,
                 append
             });
@@ -311,7 +311,7 @@ namespace script::api
         return m_commandEngine->addCommand(
             opt.afterId,
             AudioPlay{
-                selectHandle(opt.nodeHandle, handle, opt.tagId),
+                selectHandle(handle, opt.tagId),
                 opt.sid,
                 opt.sync
             });
@@ -330,7 +330,7 @@ namespace script::api
         return m_commandEngine->addCommand(
             opt.afterId,
             AudioPause{
-                selectHandle(opt.nodeHandle, handle, opt.tagId),
+                selectHandle(handle, opt.tagId),
                 opt.sid
             });
     }
@@ -348,7 +348,7 @@ namespace script::api
         return m_commandEngine->addCommand(
             opt.afterId,
             AudioStop{
-                selectHandle(opt.nodeHandle, handle, opt.tagId),
+                selectHandle(handle, opt.tagId),
                 opt.sid
             });
     }
@@ -366,7 +366,7 @@ namespace script::api
         return m_commandEngine->addCommand(
             opt.afterId,
             AnimationPlay{
-                selectHandle(opt.nodeHandle, handle, opt.tagId),
+                selectHandle(handle, opt.tagId),
                 opt.sid,
                 opt.speed,
                 opt.repeat
@@ -382,7 +382,7 @@ namespace script::api
         return m_commandEngine->addCommand(
             opt.afterId,
             ParticleEmit{
-                selectHandle(opt.nodeHandle, handle, opt.tagId),
+                selectHandle(handle, opt.tagId),
                 opt.count,
                 opt.sync
             });
@@ -397,7 +397,7 @@ namespace script::api
         return m_commandEngine->addCommand(
             opt.afterId,
             ParticleStop{
-                selectHandle(opt.nodeHandle, handle, opt.tagId),
+                selectHandle(handle, opt.tagId),
             });
     }
 
@@ -438,7 +438,7 @@ namespace script::api
         return m_commandEngine->addCommand(
             opt.afterId,
             RayCast{
-                selectHandle(opt.nodeHandle, handle, opt.tagId),
+                selectHandle(handle, opt.tagId),
                 lua_dir,
                 400.f,
                 collisionMask,

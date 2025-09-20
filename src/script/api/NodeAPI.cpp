@@ -22,7 +22,7 @@ namespace {
 
     struct NodeOptions {
         ki::type_id typeId{ 0 };
-        pool::NodeHandle nodeHandle{};
+        //pool::NodeHandle nodeHandle{};
         ki::node_id parentId{ 0 };
         ki::socket_id socketId{ 0 };
         ki::tag_id tagId{ 0 };
@@ -41,7 +41,8 @@ namespace {
                 opt.typeId = script::readSID(value);
             }
             else if (k == OPT_NODE) {
-                opt.nodeHandle = script::readHandle(value);
+                //opt.nodeHandle = script::readHandle(value);
+                throw "node is unsupported";
             }
             else if (k == OPT_PARENT) {
                 opt.parentId = script::readSID(value);
@@ -86,7 +87,7 @@ namespace script::api
     {
         const auto opt = readNodeOptions(lua_opt);
 
-        handle = selectHandle(opt.nodeHandle, handle, opt.tagId);
+        handle = selectHandle(handle, opt.tagId);
         return handle;
     }
 
