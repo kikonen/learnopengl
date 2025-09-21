@@ -70,6 +70,10 @@ types:
     physics:
       update: true
     script: scripts/seq_skeleton_2
+  - id: prefab_construction_hat
+    mesh:
+      material:
+        kd: [1.25, 0.25, 0.25, 1]
   - id: rock
     prefab:
       path: prefab/scenery/prefab_asteroid.yml
