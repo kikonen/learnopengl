@@ -94,6 +94,8 @@ namespace editor {
     {
         const auto& assets = ctx.m_assets;
 
+        m_window->m_input->claimedFocus();
+
         ctx.m_state.bindFrameBuffer(0, false);
 
         if (assets.editorImGuiDemo|| getState().m_showImguiDemo) {

@@ -183,12 +183,6 @@ GL_PREFERRED_TEXTURE_FORMAT_RGB8:  0x{:x}
             ////    KI_INFO("SKIP: snapshot_not_dirty");
             //}
 
-            // input
-            // -----
-            {
-                m_window->processInput(inputCtx);
-            }
-
             // render
             // ------
             {
@@ -209,6 +203,10 @@ GL_PREFERRED_TEXTURE_FORMAT_RGB8:  0x{:x}
                 }
                 if (!close) {
                     close = onRender(clock);
+                }
+                {
+                    // NOTE KI input after checkin imgui focus
+                    m_window->processInput(inputCtx);
                 }
                 if (!close) {
                     close = onPost(clock);

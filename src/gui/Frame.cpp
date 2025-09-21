@@ -1,5 +1,9 @@
 #include "Frame.h"
 
+#include <imgui.h>
+#include <imgui_impl_glfw.h>
+#include <imgui_impl_opengl3.h>
+
 #include "render/RenderContext.h"
 
 Frame::Frame(std::shared_ptr<Window> window)
@@ -37,13 +41,8 @@ void Frame::trackImGuiState(
 {
     auto& input = *m_window->m_input;
 
-    input.imGuiHasKeyboard =
-        ImGui::IsAnyItemActive() ||
-        ImGui::IsAnyItemFocused() ||
-        ImGui::IsPopupOpen(nullptr, ImGuiPopupFlags_AnyPopup);
+    ImGuiIO& io = ImGui::GetIO();
 
-    input.imGuiHasMouse =
-        ImGui::IsWindowHovered(ImGuiHoveredFlags_AnyWindow) ||
-        ImGui::IsAnyItemHovered() ||
-        ImGui::IsPopupOpen(nullptr, ImGuiPopupFlags_AnyPopup);
+    input.imGuiHasKeyboard = io.WantCaptureKeyboard;
+    input.imGuiHasMouse = io.WantCaptureMouse;
 }

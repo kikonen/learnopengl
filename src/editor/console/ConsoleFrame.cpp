@@ -254,6 +254,7 @@ namespace editor
         if (reclaim_focus) {
             // Auto focus previous widget
             ImGui::SetKeyboardFocusHere(-1);
+            m_window->m_input->reclaimFocus();
         }
     }
 

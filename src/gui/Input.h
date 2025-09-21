@@ -72,7 +72,23 @@ public:
 
     inline bool allowKeyboard() const noexcept
     {
-        return !imGuiHasKeyboard;
+        return !imGuiHasKeyboard && !isReclaimFocus();
+    }
+
+    inline bool isReclaimFocus() const noexcept
+    {
+        return imGuiReclaimFocus > 0;
+    }
+
+    inline void reclaimFocus() noexcept
+    {
+        imGuiReclaimFocus = 2;
+    }
+
+    inline void claimedFocus() noexcept
+    {
+        if (imGuiReclaimFocus > 0)
+            imGuiReclaimFocus--;
     }
 
 public:
@@ -92,6 +108,7 @@ public:
 
     bool imGuiHasKeyboard{ false };
     bool imGuiHasMouse{ false };
+    int imGuiReclaimFocus{ 0 };
 
     Window* window;
 
