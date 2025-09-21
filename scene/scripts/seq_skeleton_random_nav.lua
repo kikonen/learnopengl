@@ -67,8 +67,8 @@ local ANIM_SWING_QUICK = util.sid("swing_quick")
 
     local cid
     cid = cmd:animation_play(
-      self.handle,
-      { after=wid, node = self.body_id, sid=self:random_idle() } )
+      self.body_id,
+      { after=wid, sid=self:random_idle() } )
 
     return cid
   end
@@ -79,8 +79,8 @@ local ANIM_SWING_QUICK = util.sid("swing_quick")
     local cid
 
     cid = cmd:animation_play(
-      self.handle,
-      { after=wid, node = self.body_id, sid=self:random_attack() } )
+      self.body_id,
+      { after=wid, sid=self:random_attack() } )
 
     return cid
   end
