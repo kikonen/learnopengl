@@ -85,8 +85,6 @@ public:
 
     std::string str() const noexcept;
 
-    inline uint32_t getNodeIndex() const noexcept { return m_nodeIndex; }
-
     inline ki::node_id getId() const noexcept { return m_handle.m_id; }
     inline uint32_t getEntityIndex() const noexcept { return m_handle.m_handleIndex; }
     inline pool::NodeHandle toHandle() const noexcept { return m_handle; }
@@ -135,6 +133,11 @@ public:
         const std::function<void(ki::program_id)>& programPrepare,
         uint8_t kindBits,
         render::Batch& batch) noexcept;
+
+    //inline uint32_t getSortedIndex() const noexcept
+    //{
+    //    return NodeRegistry::get().getSortedIndex(getEntityIndex());
+    //}
 
     inline pool::NodeHandle getParentHandle() const noexcept
     {
@@ -188,9 +191,6 @@ public:
 
     std::unique_ptr<audio::Listener> m_audioListener;
     std::unique_ptr<std::vector<audio::Source>> m_audioSources;
-
-    // Index of node in NodeRegistry
-    uint32_t m_nodeIndex{ 0 };
 
     ki::node_id m_ignoredBy{ 0 };
 

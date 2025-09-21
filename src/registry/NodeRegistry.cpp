@@ -366,7 +366,7 @@ void NodeRegistry::updateModelMatrices()
 
 void NodeRegistry::updateModelMatrices(const Node* node)
 {
-    auto index = node->getNodeIndex();
+    auto index = node->getEntityIndex();
     m_states[index].updateModelMatrix(m_states[m_parentIndeces[index]]);
 }
 
@@ -703,6 +703,15 @@ void NodeRegistry::notifyPendingChanges()
     m_pendingRemoved.clear();
 }
 
+bool NodeRegistry::isPendingRemoveConflict(uint32_t entityIndex)
+{
+    const auto& it = std::find_if(
+        m_pendingRemoved.cbegin(),
+        m_pendingRemoved.cend(),
+        [entityIndex](const auto& handle) { return handle.m_handleIndex == entityIndex; });
+    return it != m_pendingRemoved.end();
+}
+
 void NodeRegistry::attachNode(
     const pool::NodeHandle nodeHandle,
     ki::node_id parentId,
@@ -730,6 +739,13 @@ void NodeRegistry::attachNode(
     assert(node);
     assert(parentId || nodeHandle == m_rootHandle);
 
+    if (isPendingRemoveConflict(node->getEntityIndex())) {
+        KI_CRITICAL(fmt::format(
+            "IGNORE: ENTITY_CONFLICT node={}",
+            node->str()));
+        return;
+    }
+
     // NOTE KI id != index
     //if (nodeId != m_rootId) {
     //    assert(parentId >= m_rootIndex);
@@ -744,6 +760,8 @@ void NodeRegistry::attachNode(
             parentId, node->str()));
         return;
     }
+
+    // TODO KI sort to keep parent-child ordering
 
     bindParentSocket(nodeHandle, socketId);
 
@@ -852,7 +870,7 @@ void NodeRegistry::disposeNode(
     }
 
     // NOTE KI after dispose slot can be re-used
-    m_freeIndeces.push_back(entityIndex);
+    //m_freeIndeces.push_back(entityIndex);
 }
 
 void NodeRegistry::changeParent(
@@ -931,7 +949,6 @@ void NodeRegistry::bindNode(
         m_parentIndeces[entityIndex] = 0;
         m_states[entityIndex] = state;
 
-        node->m_nodeIndex = static_cast<uint32_t>(m_sortedNodes.size());
         m_sortedNodes.push_back(entityIndex);
 
         m_nodeLevel++;
@@ -1022,9 +1039,6 @@ bool NodeRegistry::bindParent(
             nodeHandle.str()));
         return false;
     }
-
-    //assert(parent->m_nodeIndex >= m_rootIndex);
-    //assert(parent->m_nodeIndex < node->m_nodeIndex);
 
     m_parentIndeces[node->getEntityIndex()] = parent->getEntityIndex();
 

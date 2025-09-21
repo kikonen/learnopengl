@@ -34,11 +34,7 @@ namespace editor
 
         void build(const std::vector<Node*> nodes)
         {
-            std::vector<NodeTreeNode*> collectedNodes;
-            collectedNodes.resize(nodes.size());
-            for (auto& e : collectedNodes) {
-                e = nullptr;
-            }
+            std::unordered_map<uint32_t, NodeTreeNode*> collectedNodes;
 
             const auto& nodeRegistry = NodeRegistry::get();
 
@@ -49,15 +45,17 @@ namespace editor
                 // NOTE KI first node in list must be root
                 if (!m_root) {
                     m_root = std::make_unique<NodeTreeNode>(node);
-                    collectedNodes[node->getNodeIndex()] = m_root.get();
+                    collectedNodes.insert({ node->getEntityIndex(), m_root.get() });
                     continue;
                 }
 
-                auto parentIndex = nodeRegistry.getParentIndex(node->getNodeIndex());
+                auto parentIndex = nodeRegistry.getParentIndex(node->getEntityIndex());
 
-                auto* parentTree = collectedNodes[parentIndex];
+                const auto& it = collectedNodes.find(parentIndex);
+                auto* parentTree = it == collectedNodes.end() ? nullptr : it->second;
+
                 auto& treeNode = parentTree->m_children.emplace_back(std::make_unique<NodeTreeNode>(node));
-                collectedNodes[node->getNodeIndex()] = treeNode.get();
+                collectedNodes.insert({ node->getEntityIndex(), treeNode.get() });
             }
         }
 

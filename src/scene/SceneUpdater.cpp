@@ -152,9 +152,9 @@ void SceneUpdater::update(const UpdateContext& ctx)
                 nodeRegistry.updateWT(ctx);
             }
             {
-                auto nodeIndex = nodeRegistry.validateModelMatrices();
-                if (nodeIndex != -1) {
-                    KI_CRITICAL(fmt::format("UNSTABLE NODE_TREE: index={}", nodeIndex));
+                auto entityIndex = nodeRegistry.validateModelMatrices();
+                if (entityIndex != -1) {
+                    KI_CRITICAL(fmt::format("UNSTABLE NODE_TREE: index={}", entityIndex));
                     nodeRegistry.updateModelMatrices();
                 }
             }

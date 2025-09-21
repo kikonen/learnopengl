@@ -212,6 +212,8 @@ public:
 private:
     void setActiveNode(pool::NodeHandle node);
 
+    bool isPendingRemoveConflict(uint32_t entityIndex);
+
     void bindNode(
         const pool::NodeHandle nodeHandle,
         const CreateState& state);
