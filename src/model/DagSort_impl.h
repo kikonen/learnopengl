@@ -5,18 +5,16 @@
 
 #include "ki/size.h"
 
-#include "ResolvedNode.h"
-
-namespace {
+namespace dag {
     enum class Color {
         white,
         gray,
         black,
     };
 
+    template <typename T, class U>
     struct DagNode {
-        ki::node_id id;
-        ResolvedNode* resolved;
+        DagItem<T, U>* item;
 
         DagNode* previous{ nullptr };
         int depth{ 0 };
@@ -26,33 +24,33 @@ namespace {
         std::vector<DagNode*> children;
     };
 
+    template <typename T, class U>
     void createNodes(
-        std::vector<ResolvedNode>& resolvedEntities,
-        std::vector<DagNode>& nodes)
+        std::vector<DagItem<T, U>>& items,
+        std::vector<DagNode<T, U>>& nodes)
     {
-        nodes.reserve(resolvedEntities.size());
+        nodes.reserve(items.size());
 
         std::map<ki::node_id, std::vector<ki::node_id>> parentToChildren;
 
-        for (auto& resolved : resolvedEntities) {
-            parentToChildren[resolved.parentId].push_back(resolved.handle.toId());
+        for (auto& resolved : items) {
+            parentToChildren[resolved.parentId].push_back(resolved.nodeId);
         }
 
-        for (auto& resolved : resolvedEntities) {
-            auto nodeId = resolved.handle.toId();
+        for (auto& item : items) {
+            auto nodeId = item.nodeId;
 
             auto& node = nodes.emplace_back();
-            node.id = nodeId;
-            node.resolved = &resolved;
+            node.item = &item;
         }
 
-        std::map<ki::node_id, DagNode*> idToNode;
+        std::map<ki::node_id, DagNode<T, U>*> idToNode;
         for (auto& node : nodes) {
-            idToNode.insert({ node.id, &node });
+            idToNode.insert({ node.item->nodeId, &node });
         }
 
         for (auto& node : nodes) {
-            const auto& it = parentToChildren.find(node.id);
+            const auto& it = parentToChildren.find(node.item->nodeId);
             if (it != parentToChildren.end()) {
                 for (auto& childId : it->second) {
                     auto it = idToNode.find(childId);
@@ -64,10 +62,11 @@ namespace {
         }
     }
 
+    template <typename T, class U>
     void visit(
-        DagNode* node,
+        DagNode<T, U>* node,
         int& time,
-        std::vector<DagNode*>& result)
+        std::vector<DagNode<T, U>*>& result)
     {
         time++;
         node->depth = time;
@@ -84,9 +83,10 @@ namespace {
         result.push_back(node);
     }
 
+    template <typename T, class U>
     void dfs(
-        std::vector<DagNode>& nodes,
-        std::vector<DagNode*>& result)
+        std::vector<DagNode<T, U>>& nodes,
+        std::vector<DagNode<T, U>*>& result)
     {
         int time = 0;
         for (auto& node : nodes) {
@@ -95,23 +95,24 @@ namespace {
             }
         }
     }
-}
 
-std::vector<ResolvedNode*> DagSort::sort(
-    std::vector<ResolvedNode>& resolvedEntities)
-{
-    std::vector<DagNode> nodes;
-    std::vector<DagNode*> stack;
+    template <typename T, class U>
+    std::vector<DagItem<T, U>> DagSort<T, U>::sort(
+        std::vector<DagItem<T, U>>& items)
+    {
+        std::vector<DagNode<T, U>> nodes;
+        std::vector<DagNode<T, U>*> stack;
 
-    createNodes(resolvedEntities, nodes);
-    dfs(nodes, stack);
+        createNodes(items, nodes);
+        dfs(nodes, stack);
 
-    std::reverse(stack.begin(), stack.end());
+        std::reverse(stack.begin(), stack.end());
 
-    std::vector<ResolvedNode*> result;
-    for (auto* node : stack) {
-        result.push_back(node->resolved);
+        std::vector<DagItem<T, U>> result;
+        for (auto* node : stack) {
+            result.push_back(*node->item);
+        }
+
+        return result;
     }
-
-    return result;
 }

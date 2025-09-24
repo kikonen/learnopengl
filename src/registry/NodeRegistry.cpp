@@ -19,6 +19,9 @@
 #include "model/NodeType.h"
 #include "model/CreateState.h"
 
+#include "model/DagSort.h"
+#include "model/DagSort_impl.h"
+
 #include "mesh/LodMesh.h"
 
 #include "component/definition/LightDefinition.h"
@@ -70,6 +73,8 @@
 
 namespace {
     const std::vector<pool::NodeHandle> EMPTY_NODE_LIST;
+
+    using t_dag_item = dag::DagItem<pool::NodeHandle, model::Node>;
 
     constexpr int NULL_NODE_INDEX = 0;
     constexpr int ID_NODE_INDEX = 1;
@@ -762,7 +767,7 @@ void NodeRegistry::attachNode(
         return;
     }
 
-    // TODO KI sort to keep parent-child ordering
+    sortNodes(nodeHandle, true, false);
 
     bindParentSocket(nodeHandle, socketId);
 
@@ -846,6 +851,8 @@ void NodeRegistry::detachNode(
 
     unbindNode(nodeHandle);
 
+    sortNodes(nodeHandle, false, true);
+
     //node->unprepareWT({ m_registry }, m_states[node->m_entityIndex]);
 }
 
@@ -882,6 +889,55 @@ void NodeRegistry::changeParent(
     bindParent(nodeHandle, parentId);
     // TODO KI need to save socketId
     bindParentSocket(nodeHandle, 0);
+}
+
+void NodeRegistry::sortNodes(
+	const pool::NodeHandle targetHandle,
+	bool add,
+	bool remove)
+{
+	//m_sortedNodes.reserve(m_handles.size());
+	{
+		auto entityIndex = targetHandle.toIndex();
+		if (add) {
+			m_sortedNodes.push_back(entityIndex);
+		}
+		if (remove) {
+			// https://stackoverflow.com/questions/22729906/stdremove-if-not-working-properly
+			const auto& it = std::remove_if(
+				m_sortedNodes.begin(),
+				m_sortedNodes.end(),
+				[&entityIndex](auto& e) {
+					return e == entityIndex;
+				});
+			m_sortedNodes.erase(it, m_sortedNodes.end());
+		}
+	}
+
+	std::vector<t_dag_item> sorted;
+	{
+		std::vector<t_dag_item> items;
+		items.reserve(m_sortedNodes.size() - ID_NODE_INDEX + 1);
+
+		for (int sortedIndex = ID_NODE_INDEX + 1; sortedIndex < m_sortedNodes.size(); sortedIndex++)
+		{
+			auto entityIndex = m_sortedNodes[sortedIndex];
+			const auto parentEntityIndex = m_parentIndeces[entityIndex];
+
+			const auto nodeHandle = m_handles[entityIndex];
+			const auto parentHandle = m_handles[parentEntityIndex];
+
+			items.push_back({ parentHandle, nodeHandle, nullptr });
+		}
+
+		dag::DagSort<pool::NodeHandle, model::Node> sorter;
+		sorted = sorter.sort(items);
+	}
+
+	for (auto i = 0; i < sorted.size(); i++) {
+		auto entityIndex = sorted[i].nodeId.toIndex();
+		m_sortedNodes[i + ID_NODE_INDEX + 1] = entityIndex;
+	}
 }
 
 void NodeRegistry::bindNode(
@@ -949,8 +1005,6 @@ void NodeRegistry::bindNode(
         m_handles[entityIndex] = nodeHandle;
         m_parentIndeces[entityIndex] = 0;
         m_states[entityIndex] = state;
-
-        m_sortedNodes.push_back(entityIndex);
 
         m_nodeLevel++;
 

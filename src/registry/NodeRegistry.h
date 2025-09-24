@@ -214,6 +214,11 @@ private:
 
     bool isPendingRemoveConflict(uint32_t entityIndex);
 
+    void sortNodes(
+        const pool::NodeHandle nodeHandle,
+        bool add,
+        bool remove);
+
     void bindNode(
         const pool::NodeHandle nodeHandle,
         const CreateState& state);

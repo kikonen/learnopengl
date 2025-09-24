@@ -552,9 +552,6 @@
     <ClCompile Include="src\loader\BaseId.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\model\DagSort.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\ki\FpsCounter.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -891,7 +888,7 @@
     <ClCompile Include="src\component\FollowCamera.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\component\OrbitCamerra.cpp">
+    <ClCompile Include="src\component\OrbitCamera.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\component\SplineCamera.cpp">
@@ -1280,6 +1277,9 @@
     </ClCompile>
     <ClCompile Include="src\script\binding\LuaNodeHandle.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\model\DagSort_impl.h">
+      <Filter>Header Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

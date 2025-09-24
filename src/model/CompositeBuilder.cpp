@@ -35,6 +35,7 @@
 #include "model/CompositeDefinition.h"
 #include "model/NodeDefinition.h"
 #include "model/DagSort.h"
+#include "model/DagSort_impl.h"
 
 #include "registry/Registry.h"
 #include "registry/NodeRegistry.h"
@@ -43,6 +44,8 @@
 namespace
 {
     const std::string ROOT_ID{ "ROOT" };
+
+    using t_dag_item = dag::DagItem<ki::node_id, ResolvedNode>;
 
     IdGenerator<ki::type_id> ID_GENERATOR;
 
@@ -161,10 +164,20 @@ pool::NodeHandle CompositeBuilder::attach()
 {
     ASSERT_WT();
 
-    DagSort sorter;
-    auto sorted = sorter.sort(m_resolvedNodes);
+    std::vector<t_dag_item> sorted;
+    {
+        std::vector<t_dag_item> items;
+        items.reserve(m_resolvedNodes.size());
+        for (auto& node : m_resolvedNodes) {
+            items.push_back({ node.parentId, node.handle.toId(), &node});
+        }
 
-    for (auto* resolved : sorted) {
+        dag::DagSort<ki::node_id, ResolvedNode> sorter;
+        sorted = sorter.sort(items);
+    }
+
+    for (auto& item : sorted) {
+        auto* resolved = item.data;
         m_nodeRegistry.attachNode(
             resolved->handle,
             resolved->parentId,
@@ -172,19 +185,28 @@ pool::NodeHandle CompositeBuilder::attach()
             resolved->state);
     }
 
-    return sorted[0]->handle;
+    return sorted[0].data->handle;
 }
 
 pool::NodeHandle CompositeBuilder::asyncAttach(Registry* registry)
 {
-    DagSort sorter;
-    auto sorted = sorter.sort(m_resolvedNodes);
+    std::vector<t_dag_item> sorted;
+    {
+        std::vector<t_dag_item> items;
+        items.reserve(m_resolvedNodes.size());
+        for (auto& node : m_resolvedNodes) {
+            items.push_back({ node.parentId, node.handle.toId(), &node });
+        }
 
-    for (auto* resolved : sorted) {
-        asyncAttach(*resolved, registry);
+        dag::DagSort<ki::node_id, ResolvedNode> sorter;
+        sorted = sorter.sort(items);
     }
 
-    return sorted[0]->handle;
+    for (auto& item: sorted) {
+        asyncAttach(*item.data, registry);
+    }
+
+    return sorted[0].data->handle;
 }
 
 pool::NodeHandle CompositeBuilder::asyncAttach(

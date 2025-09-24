@@ -430,7 +430,7 @@
     <ClCompile Include="src\component\FollowCamera.cpp" />
     <ClCompile Include="src\component\FpsCamera.h" />
     <ClCompile Include="src\component\FpsCamera.cpp" />
-    <ClCompile Include="src\component\OrbitCamerra.cpp" />
+    <ClCompile Include="src\component\OrbitCamera.cpp" />
     <ClCompile Include="src\component\Spline.cpp" />
     <ClCompile Include="src\component\SplineCamera.cpp" />
     <ClCompile Include="src\decal\Decal.cpp" />
@@ -445,7 +445,7 @@
     <ClCompile Include="src\loader\converter\DocNode.cpp" />
     <ClCompile Include="src\loader\converter\DocNodeData.cpp" />
     <ClCompile Include="src\loader\converter\YamlConverter.cpp" />
-    <ClCompile Include="src\model\DagSort.cpp" />
+    <ClCompile Include="src\model\DagSort_impl.h" />
     <ClCompile Include="src\loader\FontLoader.cpp" />
     <ClCompile Include="src\loader\Loaders.cpp" />
     <ClCompile Include="src\loader\loader_util.cpp" />

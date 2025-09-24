@@ -2,9 +2,18 @@
 
 #include <vector>
 
-struct ResolvedNode;
+namespace dag {
+    template <typename T, class U>
+    struct DagItem
+    {
+        T parentId{ 0 };
+        T nodeId{ 0 };
+        U* data{ nullptr };
+    };
 
-struct DagSort {
-    std::vector<ResolvedNode*> sort(
-        std::vector<ResolvedNode>& resolvedEntities);
-};
+    template <typename T, class U>
+    struct DagSort {
+        std::vector<DagItem<T, U>> sort(
+            std::vector<DagItem<T, U>>& items);
+    };
+}

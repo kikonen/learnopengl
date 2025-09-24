@@ -60,6 +60,9 @@
 #include "loader/document.h"
 #include "loader_util.h"
 
+namespace {
+    using t_dag_item = dag::DagItem<ki::node_id, ResolvedNode>;
+}
 
 namespace loader {
     SceneLoader::SceneLoader(
@@ -243,10 +246,20 @@ namespace loader {
     {
         auto& l = *m_loaders;
 
-        DagSort sorter;
-        auto sorted = sorter.sort(resolvedNodes);
+        std::vector<t_dag_item> sorted;
+        {
+            std::vector<t_dag_item> items;
+            items.reserve(resolvedNodes.size());
+            for (auto& node : resolvedNodes) {
+                items.push_back({ node.parentId, node.handle.toId(), &node });
+            }
 
-        for (auto* resolved : sorted) {
+            dag::DagSort<ki::node_id, ResolvedNode> sorter;
+            sorted = sorter.sort(items);
+        }
+
+        for (auto& item : sorted) {
+            auto* resolved = item.data;
             if (!*m_ctx->m_alive) return;
             attachResolvedNode(*resolved);
         }
