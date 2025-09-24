@@ -79,7 +79,7 @@ namespace render
                     : (ki::program_id)0;
             },
             [](ki::program_id programId) {},
-            [&drawContext](const Node* node) {
+            [&drawContext](const model::Node* node) {
                 return node->m_typeFlags.useForward &&
                     drawContext.nodeSelector(node);
             },

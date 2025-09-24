@@ -22,7 +22,11 @@ namespace editor {
     class ViewportTool;
 }
 
-class Node;
+namespace model
+{
+    class Node;
+}
+
 class Viewport;
 
 class WaterMapRenderer final : public Renderer
@@ -59,10 +63,10 @@ private:
     void drawNodes(
         const RenderContext& ctx,
         render::FrameBuffer* targetBuffer,
-        Node* current,
+        model::Node* current,
         bool reflect);
 
-    Node* findClosest(const RenderContext& ctx);
+    model::Node* findClosest(const RenderContext& ctx);
 
 public:
     std::shared_ptr<Viewport> m_reflectionDebugViewport;

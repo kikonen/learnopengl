@@ -5,12 +5,15 @@
 
 #include "ki/size.h"
 
-class Node;
+namespace model
+{
+    class Node;
+}
 
 namespace pool {
     struct NodeHandle final
     {
-        friend class Node;
+        friend class model::Node;
 
     public:
         NodeHandle()
@@ -52,7 +55,7 @@ namespace pool {
             return *this;
         }
 
-        NodeHandle& operator=(const Node* node) noexcept;
+        NodeHandle& operator=(const model::Node* node) noexcept;
 
         bool operator==(const NodeHandle& o) const noexcept
         {
@@ -77,7 +80,7 @@ namespace pool {
 
         void release() const;
 
-        Node* toNode() const noexcept;
+        model::Node* toNode() const noexcept;
         ki::node_id toId() const noexcept { return m_id; }
         int toIndex() const noexcept { return m_handleIndex; }
 
@@ -92,7 +95,7 @@ namespace pool {
 
         static NodeHandle toHandle(ki::node_id id) noexcept;
 
-        static Node* toNode(ki::node_id id) noexcept;
+        static model::Node* toNode(ki::node_id id) noexcept;
 
         static void clear() noexcept;
 

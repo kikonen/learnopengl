@@ -13,7 +13,10 @@
 #include "registry/Registry.h"
 #include "registry/NodeRegistry.h"
 
-class Node;
+namespace model
+{
+    class Node;
+}
 
 namespace
 {

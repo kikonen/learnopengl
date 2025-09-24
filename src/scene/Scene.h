@@ -27,9 +27,13 @@ namespace render {
     class NodeCollection;
 }
 
+namespace model
+{
+    class Node;
+}
+
 class Light;
 
-class Node;
 class Viewport;
 
 class NodeController;
@@ -79,8 +83,8 @@ public:
     void postRT(const UpdateContext& ctx);
     void updateViewRT(const UpdateViewContext& ctx);
 
-    void handleNodeAdded(Node* node);
-    void handleNodeRemoved(Node* node);
+    void handleNodeAdded(model::Node* node);
+    void handleNodeRemoved(model::Node* node);
 
     void bind(const RenderContext& ctx);
     void unbind(const RenderContext& ctx);
@@ -100,10 +104,10 @@ public:
         const RenderContext& ctx,
         LayerRenderer* layerRenderer);
 
-    Node* getActiveNode() const;
+    model::Node* getActiveNode() const;
     const std::vector<std::unique_ptr<NodeController>>* getActiveNodeControllers() const;
 
-    Node* getActiveCameraNode() const;
+    model::Node* getActiveCameraNode() const;
     const std::vector<std::unique_ptr<NodeController>>* getActiveCameraControllers() const;
 
     ki::node_id getObjectID(const RenderContext& ctx, float posx, float posy);

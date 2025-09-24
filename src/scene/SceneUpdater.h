@@ -2,7 +2,10 @@
 
 #include "Updater.h"
 
-class Node;
+namespace model
+{
+    class Node;
+}
 
 class SceneUpdater : public Updater
 {
@@ -19,6 +22,6 @@ public:
     virtual std::string getStats() override;
 
 private:
-    void handleNodeAdded(Node* node);
-    void handleNodeRemoved(Node* node);
+    void handleNodeAdded(model::Node* node);
+    void handleNodeRemoved(model::Node* node);
 };

@@ -79,7 +79,7 @@ namespace render {
         }
     }
 
-    void NodeCollection::handleNodeAdded(Node* node)
+    void NodeCollection::handleNodeAdded(model::Node* node)
     {
         if (!node) return;
         auto nodeHandle = node->toHandle();
@@ -133,7 +133,7 @@ namespace render {
         }
     }
 
-    void NodeCollection::handleNodeRemoved(Node* node)
+    void NodeCollection::handleNodeRemoved(model::Node* node)
     {
         if (!node) return;
         auto nodeHandle = node->toHandle();

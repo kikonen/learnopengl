@@ -6,14 +6,18 @@
 
 #include <stdint.h>
 
-class Node;
+namespace model
+{
+    class Node;
+}
+
 class NodeType;
 
 namespace render
 {
     struct DrawContext
     {
-        const std::function<bool(const Node*)>& nodeSelector;
+        const std::function<bool(const model::Node*)>& nodeSelector;
 
         // rnder::KIND_NONE
         const uint8_t kindBits;

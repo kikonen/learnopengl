@@ -9,7 +9,7 @@ public:
     OrbitCamera();
     ~OrbitCamera();
 
-    virtual void updateRT(const UpdateContext& ctx, Node& node) override;
+    virtual void updateRT(const UpdateContext& ctx, model::Node& node) override;
 
     // @return radians
     float getPitchSpeed() const {

@@ -69,7 +69,7 @@ namespace render {
 
     void Batch::addSnapshot(
         const RenderContext& ctx,
-        const Node* node,
+        const model::Node* node,
         const std::function<ki::program_id (const mesh::LodMesh&)>& programSelector,
         const std::function<void(ki::program_id)>& programPrepare,
         uint8_t kindBits,
@@ -156,7 +156,7 @@ namespace render {
 
     void Batch::addSnapshotsInstanced(
         const RenderContext& ctx,
-        const Node* node,
+        const model::Node* node,
         const std::function<ki::program_id (const mesh::LodMesh&)>& programSelector,
         const std::function<void(ki::program_id)>& programPrepare,
         uint8_t kindBits,
@@ -371,7 +371,7 @@ namespace render {
 
     void Batch::draw(
         const RenderContext& ctx,
-        Node* node,
+        model::Node* node,
         const std::function<ki::program_id (const mesh::LodMesh&)>& programSelector,
         const std::function<void(ki::program_id)>& programPrepare,
         uint8_t kindBits)

@@ -15,10 +15,13 @@
 
 #include "size.h"
 
+namespace model
+{
+    class Node;
+}
+
 struct PrepareContext;
 struct UpdateContext;
-
-class Node;
 
 namespace script
 {
@@ -64,10 +67,10 @@ namespace script
             script::script_id scriptId);
 
         void bindNode(
-            const Node* node);
+            const model::Node* node);
 
         void unbindNode(
-            const Node* node);
+            const model::Node* node);
 
         std::string getScriptSignature(
             pool::TypeHandle typeHandle,
@@ -81,11 +84,11 @@ namespace script
             pool::TypeHandle typeHandle);
 
         void runGlobalScript(
-            const Node* node,
+            const model::Node* node,
             script::script_id scriptId);
 
         void runNodeScript(
-            const Node* node,
+            const model::Node* node,
             script::script_id scriptId);
 
         bool hasFunction(
@@ -93,7 +96,7 @@ namespace script
             std::string_view name);
 
         void invokeNodeFunction(
-            const Node* node,
+            const model::Node* node,
             bool self,
             const sol::function& fn,
             const sol::table& args);
@@ -113,10 +116,10 @@ namespace script
 
     private:
         void createNodeState(
-            const Node* node);
+            const model::Node* node);
 
         void deleteNodeState(
-            const Node* node);
+            const model::Node* node);
 
         sol::protected_function_result invokeLuaFunction(
             const std::function<sol::protected_function_result()>& fn);

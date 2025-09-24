@@ -35,7 +35,7 @@ GridGenerator::GridGenerator()
 
 void GridGenerator::prepareWT(
     const PrepareContext& ctx,
-    Node& container)
+    model::Node& container)
 {
     //container.m_visible = false;
     prepareInstances(
@@ -45,7 +45,7 @@ void GridGenerator::prepareWT(
 
 void GridGenerator::updateWT(
     const UpdateContext& ctx,
-    const Node& container)
+    const model::Node& container)
 {
     const auto& containerState = container.getState();
     const auto containerLevel = containerState.getMatrixLevel();
@@ -84,13 +84,13 @@ void GridGenerator::updateWT(
 
 void GridGenerator::updateInstances(
     const UpdateContext& ctx,
-    const Node& container)
+    const model::Node& container)
 {
 }
 
 void GridGenerator::prepareInstances(
     const PrepareContext& ctx,
-    const Node& container)
+    const model::Node& container)
 {
     const auto& containerState = container.getState();
 
@@ -145,7 +145,7 @@ void GridGenerator::prepareInstances(
 }
 
 void GridGenerator::prepareGrid(
-    const Node& container,
+    const model::Node& container,
     std::vector<mesh::Transform>& transforms) const
 {
     //const auto& containerState = container.getState();
@@ -168,7 +168,7 @@ void GridGenerator::prepareGrid(
 }
 
 void GridGenerator::prepareRandom(
-    const Node& container,
+    const model::Node& container,
     std::vector<mesh::Transform>& transforms) const
 {
     const auto count = transforms.size();
@@ -260,7 +260,7 @@ void GridGenerator::prepareRandom(
 
 void GridGenerator::updateBounds(
     const UpdateContext& ctx,
-    const Node& container)
+    const model::Node& container)
 {
     if (!m_staticBounds && !m_dynamicBounds) return;
 

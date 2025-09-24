@@ -18,7 +18,7 @@ namespace {
 OrbitCamera::OrbitCamera() = default;
 OrbitCamera::~OrbitCamera() = default;
 
-void OrbitCamera::updateRT(const UpdateContext& ctx, Node& node)
+void OrbitCamera::updateRT(const UpdateContext& ctx, model::Node& node)
 {
     if (!m_enabled) return;
 

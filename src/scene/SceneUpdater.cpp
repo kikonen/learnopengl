@@ -197,7 +197,7 @@ void SceneUpdater::update(const UpdateContext& ctx)
     }
 }
 
-void SceneUpdater::handleNodeAdded(Node* node)
+void SceneUpdater::handleNodeAdded(model::Node* node)
 {
     if (!node) return;
 
@@ -207,7 +207,7 @@ void SceneUpdater::handleNodeAdded(Node* node)
     }
 }
 
-void SceneUpdater::handleNodeRemoved(Node* node)
+void SceneUpdater::handleNodeRemoved(model::Node* node)
 {
     if (!node) return;
 

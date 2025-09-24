@@ -63,144 +63,147 @@ class EntityRegistry;
 
 struct Snapshot;
 
-class Node final
+namespace model
 {
-    friend struct pool::NodeHandle;
-    friend class NodeRegistry;
-
-public:
-    Node();
-    Node(Node& o) = delete;
-    Node(const Node&) = delete;
-    Node(Node&& o) noexcept;
-    ~Node();
-
-    Node& operator=(Node& o) = delete;
-    Node& operator=(Node&& o) noexcept;
-
-    bool operator==(const Node& o) const noexcept
+    class Node final
     {
-        return m_handle == o.m_handle;
-    }
+        friend struct pool::NodeHandle;
+        friend class NodeRegistry;
 
-    std::string str() const noexcept;
+    public:
+        Node();
+        Node(Node& o) = delete;
+        Node(const Node&) = delete;
+        Node(Node&& o) noexcept;
+        ~Node();
 
-    inline ki::node_id getId() const noexcept { return m_handle.m_id; }
-    inline uint32_t getEntityIndex() const noexcept { return m_handle.m_handleIndex; }
-    inline pool::NodeHandle toHandle() const noexcept { return m_handle; }
+        Node& operator=(Node& o) = delete;
+        Node& operator=(Node&& o) noexcept;
 
-    inline NodeType* getType() const noexcept
-    {
-        return m_typeHandle.toType();
-    }
+        bool operator==(const Node& o) const noexcept
+        {
+            return m_handle == o.m_handle;
+        }
 
-    inline const std::vector<mesh::LodMesh>& getLodMeshes() const noexcept
-    {
-        auto lodMeshes = m_generator ? m_generator->getLodMeshes(*this) : nullptr;
-        return lodMeshes ? *lodMeshes : getType()->getLodMeshes();
-    }
+        std::string str() const noexcept;
 
-    inline const mesh::LodMesh* getLodMesh(uint8_t lodIndex) const noexcept {
-        return getType()->getLodMesh(lodIndex);
-    }
+        inline ki::node_id getId() const noexcept { return m_handle.m_id; }
+        inline uint32_t getEntityIndex() const noexcept { return m_handle.m_handleIndex; }
+        inline pool::NodeHandle toHandle() const noexcept { return m_handle; }
 
-    inline mesh::LodMesh* modifyLodMesh(uint8_t lodIndex) const noexcept
-    {
-        return getType()->modifyLodMesh(lodIndex);
-    }
+        inline NodeType* getType() const noexcept
+        {
+            return m_typeHandle.toType();
+        }
 
-    const std::string& getName() const noexcept { return m_name; }
-    void setName(std::string_view name) noexcept {
-        m_name = name;
-    }
+        inline const std::vector<mesh::LodMesh>& getLodMeshes() const noexcept
+        {
+            auto lodMeshes = m_generator ? m_generator->getLodMeshes(*this) : nullptr;
+            return lodMeshes ? *lodMeshes : getType()->getLodMeshes();
+        }
 
-    void prepareWT(
-        const PrepareContext& ctx,
-        NodeState& state);
+        inline const mesh::LodMesh* getLodMesh(uint8_t lodIndex) const noexcept {
+            return getType()->getLodMesh(lodIndex);
+        }
 
-    void unprepareWT(
-        const PrepareContext& ctx,
-        NodeState& state);
+        inline mesh::LodMesh* modifyLodMesh(uint8_t lodIndex) const noexcept
+        {
+            return getType()->modifyLodMesh(lodIndex);
+        }
 
-    void prepareRT(
-        const PrepareContext& ctx);
+        const std::string& getName() const noexcept { return m_name; }
+        void setName(std::string_view name) noexcept {
+            m_name = name;
+        }
 
-    void updateVAO(const RenderContext& ctx) noexcept;
+        void prepareWT(
+            const PrepareContext& ctx,
+            NodeState& state);
 
-    void bindBatch(
-        const RenderContext& ctx,
-        const std::function<ki::program_id (const mesh::LodMesh&)>& programSelector,
-        const std::function<void(ki::program_id)>& programPrepare,
-        uint8_t kindBits,
-        render::Batch& batch) noexcept;
+        void unprepareWT(
+            const PrepareContext& ctx,
+            NodeState& state);
 
-    //inline uint32_t getSortedIndex() const noexcept
-    //{
-    //    return NodeRegistry::get().getSortedIndex(getEntityIndex());
-    //}
+        void prepareRT(
+            const PrepareContext& ctx);
 
-    inline pool::NodeHandle getParentHandle() const noexcept
-    {
-        return NodeRegistry::get().getParentHandle(getEntityIndex());
-    }
+        void updateVAO(const RenderContext& ctx) noexcept;
 
-    inline const Node* getParent() const noexcept
-    {
-        return NodeRegistry::get().getParent(getEntityIndex());
-    }
+        void bindBatch(
+            const RenderContext& ctx,
+            const std::function<ki::program_id(const mesh::LodMesh&)>& programSelector,
+            const std::function<void(ki::program_id)>& programPrepare,
+            uint8_t kindBits,
+            render::Batch& batch) noexcept;
 
-    inline NodeState& modifyState() const noexcept
-    {
-        return NodeRegistry::get().modifyState(getEntityIndex());
-    }
+        //inline uint32_t getSortedIndex() const noexcept
+        //{
+        //    return NodeRegistry::get().getSortedIndex(getEntityIndex());
+        //}
 
-    inline const NodeState& getState() const noexcept
-    {
-        return NodeRegistry::get().getState(getEntityIndex());
-    }
+        inline pool::NodeHandle getParentHandle() const noexcept
+        {
+            return NodeRegistry::get().getParentHandle(getEntityIndex());
+        }
 
-    inline void updateModelMatrix() const
-    {
-        return NodeRegistry::get().updateModelMatrices(this);
-    }
+        inline const model::Node* getParent() const noexcept
+        {
+            return NodeRegistry::get().getParent(getEntityIndex());
+        }
 
-    inline const Snapshot* getSnapshotRT() const noexcept
-    {
-        return NodeRegistry::get().getSnapshotRT(getEntityIndex());
-    }
+        inline NodeState& modifyState() const noexcept
+        {
+            return NodeRegistry::get().modifyState(getEntityIndex());
+        }
 
-    audio::Source* getAudioSource(audio::source_id) const;
+        inline const NodeState& getState() const noexcept
+        {
+            return NodeRegistry::get().getState(getEntityIndex());
+        }
 
-    template<typename T>
-    T* getGenerator()
-    {
-        return dynamic_cast<T*>(m_generator.get());
-    }
+        inline void updateModelMatrix() const
+        {
+            return NodeRegistry::get().updateModelMatrices(this);
+        }
 
-public:
-    std::string m_name;
+        inline const Snapshot* getSnapshotRT() const noexcept
+        {
+            return NodeRegistry::get().getSnapshotRT(getEntityIndex());
+        }
 
-    pool::NodeHandle m_handle;
-    pool::TypeHandle m_typeHandle{};
+        audio::Source* getAudioSource(audio::source_id) const;
 
-    std::unique_ptr<CameraComponent> m_camera{ nullptr };
-    std::unique_ptr<Light> m_light{ nullptr };
-    std::unique_ptr<particle::ParticleGenerator> m_particleGenerator{ nullptr };
+        template<typename T>
+        T* getGenerator()
+        {
+            return dynamic_cast<T*>(m_generator.get());
+        }
 
-    std::unique_ptr<NodeGenerator> m_generator{ nullptr };
+    public:
+        std::string m_name;
 
-    std::unique_ptr<audio::Listener> m_audioListener;
-    std::unique_ptr<std::vector<audio::Source>> m_audioSources;
+        pool::NodeHandle m_handle;
+        pool::TypeHandle m_typeHandle{};
 
-    ki::node_id m_ignoredBy{ 0 };
+        std::unique_ptr<CameraComponent> m_camera{ nullptr };
+        std::unique_ptr<Light> m_light{ nullptr };
+        std::unique_ptr<particle::ParticleGenerator> m_particleGenerator{ nullptr };
 
-    physics::object_id m_physicsObjectId{ 0 };
+        std::unique_ptr<NodeGenerator> m_generator{ nullptr };
 
-    TypeFlags m_typeFlags;
-    uint8_t m_layer{ 0 };
+        std::unique_ptr<audio::Listener> m_audioListener;
+        std::unique_ptr<std::vector<audio::Source>> m_audioSources;
 
-public:
-    bool m_alive : 1 { true };
-    bool m_visible : 1 { true };
-    bool m_preparedRT : 1 { false };
-};
+        ki::node_id m_ignoredBy{ 0 };
+
+        physics::object_id m_physicsObjectId{ 0 };
+
+        TypeFlags m_typeFlags;
+        uint8_t m_layer{ 0 };
+
+    public:
+        bool m_alive : 1 { true };
+        bool m_visible : 1 { true };
+        bool m_preparedRT : 1 { false };
+    };
+}

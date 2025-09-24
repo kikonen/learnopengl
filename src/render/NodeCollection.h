@@ -6,7 +6,10 @@
 #include "pool/NodeHandle.h"
 #include "pool/TypeHandle.h"
 
-class Node;
+namespace model
+{
+    class Node;
+}
 
 struct UpdateContext;
 
@@ -48,7 +51,7 @@ namespace render {
 
         void updateRT(const UpdateContext& ctx);
 
-        inline Node* getActiveCameraNode() const noexcept
+        inline model::Node* getActiveCameraNode() const noexcept
         {
             return m_activeCameraNode.toNode();
         }
@@ -76,8 +79,8 @@ namespace render {
             return m_spotLightNodes;
         }
 
-        void handleNodeAdded(Node* node);
-        void handleNodeRemoved(Node* node);
+        void handleNodeAdded(model::Node* node);
+        void handleNodeRemoved(model::Node* node);
 
     private:
         void insertNode(

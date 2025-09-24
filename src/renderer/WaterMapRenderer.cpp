@@ -457,7 +457,7 @@ bool WaterMapRenderer::render(
 void WaterMapRenderer::drawNodes(
     const RenderContext& ctx,
     render::FrameBuffer* targetBuffer,
-    Node* current,
+    model::Node* current,
     bool reflect)
 {
     // NOTE KI flush before touching clip distance
@@ -472,10 +472,10 @@ void WaterMapRenderer::drawNodes(
     targetBuffer->clearAll();
 
     {
-        Node* sourceNode = m_sourceNode.toNode();
+        auto* sourceNode = m_sourceNode.toNode();
 
         render::DrawContext drawContext{
-            [current, sourceNode, reflect](const Node* node) {
+            [current, sourceNode, reflect](const model::Node* node) {
                 return !node->m_typeFlags.water &&
                     (reflect ? !node->m_typeFlags.noReflect : !node->m_typeFlags.noRefract) &&
                     node != current &&
@@ -493,7 +493,7 @@ void WaterMapRenderer::drawNodes(
     }
 }
 
-Node* WaterMapRenderer::findClosest(
+model::Node* WaterMapRenderer::findClosest(
     const RenderContext& ctx)
 {
     auto& nodes = ctx.m_collection->m_waterNodes;
@@ -503,7 +503,7 @@ Node* WaterMapRenderer::findClosest(
     const glm::vec3& cameraPos = ctx.m_camera->getWorldPosition();
     const glm::vec3& cameraDir = ctx.m_camera->getViewFront();
 
-    std::map<float, Node*> sorted;
+    std::map<float, model::Node*> sorted;
 
     for (const auto& handle : nodes) {
         auto* node = handle.toNode();
@@ -521,7 +521,7 @@ Node* WaterMapRenderer::findClosest(
         sorted[dist2] = node;
     }
 
-    for (std::map<float, Node*>::iterator it = sorted.begin(); it != sorted.end(); ++it) {
+    for (std::map<float, model::Node*>::iterator it = sorted.begin(); it != sorted.end(); ++it) {
         return it->second;
     }
 

@@ -29,7 +29,7 @@ void Renderer::prepareRT(
 
 bool Renderer::setClosest(
     const RenderContext& ctx,
-    Node* closest,
+    model::Node* closest,
     int tagIndex)
 {
     const bool changed = m_lastClosest != closest;

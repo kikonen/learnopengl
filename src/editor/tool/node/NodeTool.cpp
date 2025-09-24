@@ -635,6 +635,7 @@ namespace editor
         const auto* type = node->getType();
 
         {
+            auto* parent = node->getParent();
             ki::node_id parentId{ node->getParentHandle().toId() };
             glm::vec3 pos{ state.getPosition() };
             glm::quat quat{ state.getRotation() };
@@ -663,7 +664,7 @@ namespace editor
     }
 
     void NodeTool::updateSocket(
-        Node* node,
+        model::Node* node,
         mesh::Mesh* mesh,
         animation::RigContainer* rig,
         animation::RigSocket* socket)

@@ -8,10 +8,14 @@
 
 #include "ParticleDefinition.h"
 
+
+namespace model
+{
+    class Node;
+}
+
 struct PrepareContext;
 struct UpdateContext;
-
-class Node;
 
 namespace particle {
     class ParticleGenerator final
@@ -25,7 +29,7 @@ namespace particle {
 
         void updateWT(
             const UpdateContext& ctx,
-            Node& node);
+            model::Node& node);
 
         void setDefinition(const ParticleDefinition& definition)
         {

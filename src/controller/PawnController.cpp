@@ -36,7 +36,7 @@ PawnController::PawnController()
 
 void PawnController::prepare(
     const PrepareContext& ctx,
-    Node& node)
+    model::Node& node)
 {
     NodeController::prepare(ctx, node);
 
@@ -54,7 +54,7 @@ void PawnController::prepare(
 
 bool PawnController::updateWT(
     const UpdateContext& ctx,
-    Node& node)
+    model::Node& node)
 {
     const auto dt = ctx.m_clock.elapsedSecs;
 
@@ -217,7 +217,7 @@ void PawnController::processInput(
 }
 
 void PawnController::toggleAudio(
-    Node* node,
+    model::Node* node,
     bool actionWalk,
     bool actionRun,
     bool actionTurn)

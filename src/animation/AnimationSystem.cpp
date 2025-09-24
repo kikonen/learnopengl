@@ -40,7 +40,7 @@ namespace {
 
     struct ActiveNode {
         animation::AnimationState& m_state;
-        Node* m_node;
+        model::Node* m_node;
     };
 
     static animation::AnimationSystem* s_system{ nullptr };
@@ -331,7 +331,7 @@ namespace animation
     void AnimationSystem::animateNode(
         const UpdateContext& ctx,
         animation::AnimationState& state,
-        Node* node)
+        model::Node* node)
     {
         const auto& dbg = debug::DebugContext::modify();
         const auto& anim = dbg.m_animation;
@@ -523,7 +523,7 @@ namespace animation
         m_pendingWait.notify_all();
     }
 
-    void AnimationSystem::handleNodeAdded(Node* node)
+    void AnimationSystem::handleNodeAdded(model::Node* node)
     {
         if (!m_enabled) return;
 
@@ -533,7 +533,7 @@ namespace animation
         m_pendingNodes.push_back(node->toHandle());
     }
 
-    void AnimationSystem::handleNodeRemoved(Node* node)
+    void AnimationSystem::handleNodeRemoved(model::Node* node)
     {
         if (!m_enabled) return;
         if (!node->m_typeFlags.anyAnimation) return;

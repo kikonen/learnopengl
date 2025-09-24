@@ -14,11 +14,11 @@ public:
 
     virtual bool updateWT(
         const UpdateContext& ctx,
-        Node& node) noexcept override;
+        model::Node& node) noexcept override;
 
     virtual void prepare(
         const PrepareContext& ctx,
-        Node& node) override;
+        model::Node& node) override;
 
     virtual void processInput(
         const InputContext& ctx) override;

@@ -17,7 +17,7 @@ namespace {
 SplineCamera::SplineCamera() = default;
 SplineCamera::~SplineCamera() = default;
 
-void SplineCamera::updateRT(const UpdateContext& ctx, Node& node)
+void SplineCamera::updateRT(const UpdateContext& ctx, model::Node& node)
 {
     if (!m_enabled) return;
 

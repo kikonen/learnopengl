@@ -55,7 +55,7 @@ void NormalRenderer::drawNodes(const RenderContext& ctx)
         ctx.m_state.setStencil({});
 
         render::DrawContext drawContext{
-            [](const Node* node) { return !node->m_typeFlags.noNormals; },
+            [](const model::Node* node) { return !node->m_typeFlags.noNormals; },
             render::KIND_ALL
         };
 

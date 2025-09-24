@@ -174,7 +174,7 @@ void LayerRenderer::render(
 
         {
             render::DrawContext drawContext{
-                [](const Node* node) { return true; },
+                [](const model::Node* node) { return true; },
                 render::KIND_ALL,
                 // NOTE KI nothing to clear; keep stencil, depth copied from gbuffer
                 GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT
@@ -216,7 +216,7 @@ void LayerRenderer::fillHighlightMask(
     // draw entity data mask
     {
         render::DrawContext drawContext{
-            [&selectionRegistry, &assets](const Node* node) {
+            [&selectionRegistry, &assets](const model::Node* node) {
                 bool accept = assets.showTagged || assets.showSelection;
                 if (assets.showTagged)
                     accept &= selectionRegistry.isTagged(node->toHandle());
@@ -280,7 +280,7 @@ void LayerRenderer::renderHighlight(
     // NOTE KI using "shift mode" approach, based into "hell engine"
     for (const auto shift : SHIFTS) {
         render::DrawContext drawContext{
-            [&selectionRegistry, &assets](const Node* node) {
+            [&selectionRegistry, &assets](const model::Node* node) {
                 bool accept = assets.showTagged || assets.showSelection;
                 if (assets.showTagged)
                     accept &= selectionRegistry.isTagged(node->toHandle());

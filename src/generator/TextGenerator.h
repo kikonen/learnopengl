@@ -30,19 +30,19 @@ public:
 
     virtual void prepareWT(
         const PrepareContext& ctx,
-        Node& container) override;
+        model::Node& container) override;
 
     virtual void prepareRT(
         const PrepareContext& ctx,
-        Node& container) override;
+        model::Node& container) override;
 
     virtual void updateWT(
         const UpdateContext& ctx,
-        const Node& container) override;
+        const model::Node& container) override;
 
     virtual void updateVAO(
         const RenderContext& ctx,
-        const Node& container);
+        const model::Node& container);
 
     virtual void bindBatch(
         const RenderContext& ctx,
@@ -50,10 +50,10 @@ public:
         const std::function<void(ki::program_id)>& programPrepare,
         uint8_t kindBits,
         render::Batch& batch,
-        const Node& container,
+        const model::Node& container,
         const Snapshot& snapshot) override;
 
-    virtual const std::vector<mesh::LodMesh>* getLodMeshes(const Node& container) const
+    virtual const std::vector<mesh::LodMesh>* getLodMeshes(const model::Node& container) const
     {
         return &m_lodMeshes;
     }

@@ -190,7 +190,7 @@ int SampleApp::onRender(const ki::RenderClock& clock)
 
     if (!scene) return 0;
 
-    Node* cameraNode = scene->getActiveCameraNode();
+    auto* cameraNode = scene->getActiveCameraNode();
     if (!cameraNode) return 0;
 
     auto& state = kigl::GLState::get();

@@ -15,7 +15,7 @@ void NodeGenerator::bindBatch(
     const std::function<void(ki::program_id)>& programPrepare,
     uint8_t kindBits,
     render::Batch& batch,
-    const Node& container,
+    const model::Node& container,
     const Snapshot& snapshot)
 {
     batch.addSnapshotsInstanced(

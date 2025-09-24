@@ -238,7 +238,7 @@ bool MirrorMapRenderer::render(
 
     if (!needRender(parentCtx)) return false;
 
-    Node* closest = findClosest(parentCtx);
+    model::Node* closest = findClosest(parentCtx);
     setClosest(parentCtx, closest, m_tagMaterial.m_registeredIndex);
     if (!closest) return false;
 
@@ -339,7 +339,7 @@ bool MirrorMapRenderer::render(
 void MirrorMapRenderer::drawNodes(
     const RenderContext& ctx,
     render::FrameBuffer* targetBuffer,
-    Node* current)
+    model::Node* current)
 {
     const auto& assets = ctx.m_assets;
     const auto& dbg = ctx.m_dbg;
@@ -383,10 +383,10 @@ void MirrorMapRenderer::drawNodes(
     //ctx.updateClipPlanesUBO();
     //kigl::GLState::get().setEnabled(GL_CLIP_DISTANCE0, true);
     {
-        Node* sourceNode = m_sourceNode.toNode();
+        model::Node* sourceNode = m_sourceNode.toNode();
 
         render::DrawContext drawContext{
-            [current, sourceNode](const Node* node) {
+            [current, sourceNode](const model::Node* node) {
                 return !node->m_typeFlags.noReflect &&
                     node != current &&
                     node != sourceNode &&
@@ -404,7 +404,7 @@ void MirrorMapRenderer::drawNodes(
     //kigl::GLState::get().setEnabled(GL_CLIP_DISTANCE0, false);
 }
 
-Node* MirrorMapRenderer::findClosest(const RenderContext& ctx)
+model::Node* MirrorMapRenderer::findClosest(const RenderContext& ctx)
 {
     auto& nodes = ctx.m_collection->m_mirrorNodes;
 
@@ -413,7 +413,7 @@ Node* MirrorMapRenderer::findClosest(const RenderContext& ctx)
     const auto& cameraPos = ctx.m_camera->getWorldPosition();
     const auto& cameraFront = ctx.m_camera->getViewFront();
 
-    std::map<float, Node*> sorted;
+    std::map<float, model::Node*> sorted;
 
     for (const auto& handle : nodes) {
         auto* node = handle.toNode();
@@ -458,8 +458,8 @@ Node* MirrorMapRenderer::findClosest(const RenderContext& ctx)
         }
     }
 
-    for (std::map<float, Node*>::iterator it = sorted.begin(); it != sorted.end(); ++it) {
-        return (Node*)it->second;
+    for (std::map<float, model::Node*>::iterator it = sorted.begin(); it != sorted.end(); ++it) {
+        return (model::Node*)it->second;
     }
     return nullptr;
 }

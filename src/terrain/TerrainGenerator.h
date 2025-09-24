@@ -32,26 +32,26 @@ namespace terrain {
 
         virtual void prepareWT(
             const PrepareContext& ctx,
-            Node& container) override;
+            model::Node& container) override;
 
         virtual void updateWT(
             const UpdateContext& ctx,
-            const Node& container) override;
+            const model::Node& container) override;
 
     private:
         void updateTiles(
             const UpdateContext& ctx,
-            const Node& container);
+            const model::Node& container);
 
         physics::height_map_id prepareHeightMap(
             const PrepareContext& ctx,
-            const Node& container);
+            const model::Node& container);
 
         std::shared_ptr<ImageTexture> loadTexture(bool flipY);
 
         void createTiles(
             const PrepareContext& ctx,
-            const Node& container);
+            const model::Node& container);
 
         //pool::TypeHandle createType(
         //    Registry* registry,

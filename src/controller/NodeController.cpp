@@ -13,7 +13,7 @@ NodeController::~NodeController() = default;
 
 void NodeController::prepare(
     const PrepareContext& ctx,
-    Node& node)
+    model::Node& node)
 {
     if (m_prepared) return;
     m_prepared = true;

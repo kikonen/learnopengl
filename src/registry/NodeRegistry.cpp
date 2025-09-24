@@ -250,9 +250,9 @@ void NodeRegistry::updateWT(const UpdateContext& ctx)
 
         //std::lock_guard lock(m_lock);
         // NOTE KI nodes are in DAG order
-        for (int nodeIndex = ID_NODE_INDEX + 1; nodeIndex < m_sortedNodes.size(); nodeIndex++)
+        for (int sortedIndex = ID_NODE_INDEX + 1; sortedIndex < m_sortedNodes.size(); sortedIndex++)
         {
-            auto entityIndex = m_sortedNodes[nodeIndex];
+            auto entityIndex = m_sortedNodes[sortedIndex];
 
             // NOTE KI skip free/root slot
             if (m_parentIndeces[entityIndex] == 0) continue;
@@ -353,9 +353,9 @@ void NodeRegistry::updateModelMatrices()
         state.updateRootMatrix();
     }
 
-    for (int nodeIndex = ID_NODE_INDEX + 1; nodeIndex < m_sortedNodes.size(); nodeIndex++)
+    for (int sortedIndex = ID_NODE_INDEX + 1; sortedIndex < m_sortedNodes.size(); sortedIndex++)
     {
-        auto entityIndex = m_sortedNodes[nodeIndex];
+        auto entityIndex = m_sortedNodes[sortedIndex];
         //for (auto i = m_rootIndex + 1; i < m_states.size(); i++) {
         // NOTE KI skip free/root slot
         if (m_parentIndeces[entityIndex] == 0) continue;
@@ -364,7 +364,7 @@ void NodeRegistry::updateModelMatrices()
     }
 }
 
-void NodeRegistry::updateModelMatrices(const Node* node)
+void NodeRegistry::updateModelMatrices(const model::Node* node)
 {
     auto index = node->getEntityIndex();
     m_states[index].updateModelMatrix(m_states[m_parentIndeces[index]]);
@@ -439,7 +439,7 @@ void NodeRegistry::snapshot(
     }
 }
 
-std::vector<Node*>& NodeRegistry::getCachedNodesWT()
+std::vector<model::Node*>& NodeRegistry::getCachedNodesWT()
 {
     cacheNodes(m_cachedNodesWT, m_cachedNodeLevelWT);
     return m_cachedNodesWT;
@@ -501,7 +501,7 @@ std::pair<int, int> NodeRegistry::updateEntity(const UpdateContext& ctx)
 }
 
 void NodeRegistry::cacheNodes(
-    std::vector<Node*>& cache,
+    std::vector<model::Node*>& cache,
     ki::level_id& cacheLevel)
 {
     if (cacheLevel == m_nodeLevel) return;
@@ -512,6 +512,7 @@ void NodeRegistry::cacheNodes(
     cache[ID_ENTITY_INDEX] = nullptr;
 
     for (size_t i = ID_ENTITY_INDEX + 1; i < m_handles.size(); i++) {
+		if (!m_handles[i]) continue;
         cache[i] = m_handles[i].toNode();
     }
 }
@@ -605,7 +606,7 @@ void NodeRegistry::attachListeners()
         });
 }
 
-void NodeRegistry::handleNodeAdded(Node* node)
+void NodeRegistry::handleNodeAdded(model::Node* node)
 {
     if (!node) return;
 
@@ -620,7 +621,7 @@ void NodeRegistry::handleNodeAdded(Node* node)
     node->m_preparedRT = true;
 }
 
-void NodeRegistry::handleNodeRemoved(Node* node)
+void NodeRegistry::handleNodeRemoved(model::Node* node)
 {
     if (!node) return;
 
@@ -887,7 +888,7 @@ void NodeRegistry::bindNode(
     const pool::NodeHandle nodeHandle,
     const CreateState& createState)
 {
-    Node* node = nodeHandle.toNode();
+    auto* node = nodeHandle.toNode();
     if (!node) return;
 
     KI_INFO(fmt::format("BIND_NODE: {}", node->str()));
@@ -966,7 +967,7 @@ void NodeRegistry::bindNode(
 void NodeRegistry::unbindNode(
     const pool::NodeHandle nodeHandle)
 {
-    Node* node = nodeHandle.toNode();
+    auto* node = nodeHandle.toNode();
     if (!node) return;
 
     KI_INFO(fmt::format("UNBIND_NODE: {}", node->str()));
@@ -1219,7 +1220,7 @@ void NodeRegistry::updateBounds(
     const UpdateContext& ctx,
     NodeState& state,
     const NodeState& parentState,
-    const Node* node,
+    const model::Node* node,
     const physics::PhysicsSystem& physicsSystem)
 {
     if (state.boundStaticDone) return;

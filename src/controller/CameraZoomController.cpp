@@ -33,7 +33,7 @@ CameraZoomController::CameraZoomController()
 
 void CameraZoomController::prepare(
     const PrepareContext& ctx,
-    Node& node)
+    model::Node& node)
 {
     NodeController::prepare(ctx, node);
     const auto& assets = ctx.m_assets;
@@ -50,7 +50,7 @@ void CameraZoomController::prepare(
 
 bool CameraZoomController::updateWT(
     const UpdateContext& ctx,
-    Node& node) noexcept
+    model::Node& node) noexcept
 {
     return false;
 }

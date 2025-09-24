@@ -9,8 +9,12 @@
 
 #include "size.h"
 
+namespace model
+{
+    class Node;
+}
+
 class Image;
-class Node;
 
 namespace physics {
     struct Object;
@@ -63,7 +67,7 @@ namespace physics {
 
         //const std::unique_ptr<Image> m_image;
 
-        const Node* m_origin{ nullptr };
+        const model::Node* m_origin{ nullptr };
 
         int m_worldTileSize{ 0 };
         // X -dir

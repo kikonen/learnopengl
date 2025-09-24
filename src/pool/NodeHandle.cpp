@@ -17,7 +17,7 @@ namespace {
     constexpr size_t MAX_POOL_SIZE{ 100000 };
 
     std::mutex m_lock;
-    pool::Pool<Node> s_pool{ MAX_POOL_SIZE };
+    pool::Pool<model::Node> s_pool{ MAX_POOL_SIZE };
 
     std::unordered_map<ki::node_id, uint32_t> s_IdToIndex;
 }
@@ -25,7 +25,7 @@ namespace {
 namespace pool {
     NodeHandle NodeHandle::NULL_HANDLE{ 0, 0 };
 
-    NodeHandle& NodeHandle::operator=(const Node* node) noexcept
+    NodeHandle& NodeHandle::operator=(const model::Node* node) noexcept
     {
         if (node) {
             m_handleIndex = node->m_handle.m_handleIndex;
@@ -39,7 +39,7 @@ namespace pool {
         return fmt::format("[{}.{}.{}]", m_id, m_handleIndex, SID_NAME(m_id));
     }
 
-    Node* NodeHandle::toNode() const noexcept
+    model::Node* NodeHandle::toNode() const noexcept
     {
         if (!m_handleIndex) return nullptr;
 
@@ -129,7 +129,7 @@ namespace pool {
         return { it->second, id };
     }
 
-    Node* NodeHandle::toNode(ki::node_id id) noexcept
+    model::Node* NodeHandle::toNode(ki::node_id id) noexcept
     {
         std::lock_guard lock(m_lock);
 

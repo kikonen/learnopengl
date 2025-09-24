@@ -9,18 +9,18 @@ public:
 
     virtual void prepare(
         const PrepareContext& ctx,
-        Node& node) override;
+        model::Node& node) override;
 
     bool updateWT(
         const UpdateContext& ctx,
-        Node& node) override;
+        model::Node& node) override;
 
     virtual void processInput(
         const InputContext& ctx) override;
 
 private:
     void toggleAudio(
-        Node* node,
+        model::Node* node,
         bool actionWalk,
         bool actionRun,
         bool actionTurn);

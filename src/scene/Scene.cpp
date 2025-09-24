@@ -477,7 +477,7 @@ void Scene::updateViewRT(const UpdateViewContext& ctx)
     }
 }
 
-void Scene::handleNodeAdded(Node* node)
+void Scene::handleNodeAdded(model::Node* node)
 {
     if (!node) return;
 
@@ -485,7 +485,7 @@ void Scene::handleNodeAdded(Node* node)
     m_collection->handleNodeAdded(node);
 }
 
-void Scene::handleNodeRemoved(Node* node)
+void Scene::handleNodeRemoved(model::Node* node)
 {
     if (!node) return;
 
@@ -738,7 +738,7 @@ void Scene::renderScene(
     }
 }
 
-Node* Scene::getActiveNode() const
+model::Node* Scene::getActiveNode() const
 {
     return NodeRegistry::get().getActiveNode();
 }
@@ -749,7 +749,7 @@ const std::vector<std::unique_ptr<NodeController>>* Scene::getActiveNodeControll
     return node ? ControllerRegistry::get().forNode(node) : nullptr;
 }
 
-Node* Scene::getActiveCameraNode() const
+model::Node* Scene::getActiveCameraNode() const
 {
     return m_collection->getActiveCameraNode();
 }

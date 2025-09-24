@@ -249,7 +249,7 @@ void ShadowCascade::drawNodes(
     const RenderContext& ctx)
 {
     // NOTE KI *NO* G-buffer in shadow
-    const auto nodeFilter = [](const Node* node) {
+    const auto nodeFilter = [](const model::Node* node) {
         // NOTE KI tessellation not suppported
         return !node->m_typeFlags.noShadow;
     };

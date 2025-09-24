@@ -143,7 +143,7 @@ namespace render
                 return m_oitProgram->m_id;
             },
             [](ki::program_id programId) {},
-            [&drawContext](const Node* node) {
+            [&drawContext](const model::Node* node) {
                 return node->m_typeFlags.useOit &&
                     drawContext.nodeSelector(node);
             },

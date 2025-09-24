@@ -2,8 +2,12 @@
 
 #include "render/Camera.h"
 
+namespace model
+{
+    class Node;
+}
+
 struct UpdateContext;
-class Node;
 struct Snapshot;
 
 class CameraComponent
@@ -25,7 +29,7 @@ public:
         return m_camera;
     }
 
-    virtual void updateRT(const UpdateContext& ctx, Node& node) = 0;
+    virtual void updateRT(const UpdateContext& ctx, model::Node& node) = 0;
 
     virtual void snapToIdeal(const Snapshot& snapshot) {};
 

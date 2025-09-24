@@ -6,10 +6,14 @@
 
 #include "render/size.h"
 
+namespace model
+{
+    class Node;
+}
+
 class RenderContext;
 
 class Program;
-class Node;
 class NodeType;
 
 namespace mesh {
@@ -27,18 +31,18 @@ namespace render
             const RenderContext& ctx,
             const std::function<ki::program_id(const mesh::LodMesh&)>& programSelector,
             const std::function<void(ki::program_id)>& programPrepare,
-            const std::function<bool(const Node*)>& nodeSelector,
+            const std::function<bool(const model::Node*)>& nodeSelector,
             uint8_t kindBits);
 
         bool drawNodesImpl(
             const RenderContext& ctx,
             const std::function<ki::program_id(const mesh::LodMesh&)>& programSelector,
             const std::function<void(ki::program_id)>& programPrepare,
-            const std::function<bool(const Node*)>& nodeSelector,
+            const std::function<bool(const model::Node*)>& nodeSelector,
             uint8_t kindBits);
 
         void drawBlendedImpl(
             const RenderContext& ctx,
-            const std::function<bool(const Node*)>& nodeSelector);
+            const std::function<bool(const model::Node*)>& nodeSelector);
     };
 }

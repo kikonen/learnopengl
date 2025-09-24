@@ -5,12 +5,15 @@
 #include "pool/NodeHandle.h"
 #include "pool/TypeHandle.h"
 
+namespace model
+{
+    class Node;
+}
+
 struct PrepareContext;
 struct InputContext;
 struct UpdateContext;
 class Registry;
-
-class Node;
 
 class NodeController
 {
@@ -33,11 +36,11 @@ public:
 
     virtual void prepare(
         const PrepareContext& ctx,
-        Node& node);
+        model::Node& node);
 
     virtual bool updateWT(
         const UpdateContext& ctx,
-        Node& node)
+        model::Node& node)
     {
         return false;
     }

@@ -13,10 +13,10 @@ namespace editor
     struct NodeTreeNode;
     struct NodeTreeNode
     {
-        const Node* const m_node;
+        const model::Node* const m_node;
         std::vector<std::unique_ptr<NodeTreeNode>> m_children;
 
-        NodeTreeNode(const Node* node)
+        NodeTreeNode(const model::Node* node)
             : m_node{ node }
         {
         }
@@ -32,7 +32,7 @@ namespace editor
         {
         }
 
-        void build(const std::vector<Node*> nodes)
+        void build(const std::vector<model::Node*> nodes)
         {
             std::unordered_map<uint32_t, NodeTreeNode*> collectedNodes;
 

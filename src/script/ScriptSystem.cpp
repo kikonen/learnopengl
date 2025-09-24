@@ -248,7 +248,7 @@ namespace script
     }
 
     void ScriptSystem::bindNode(
-        const Node* node)
+        const model::Node* node)
     {
         std::lock_guard lock(m_lock);
 
@@ -258,7 +258,7 @@ namespace script
     }
 
     void ScriptSystem::unbindNode(
-        const Node* node)
+        const model::Node* node)
     {
         std::lock_guard lock(m_lock);
 
@@ -268,7 +268,7 @@ namespace script
     }
 
     void ScriptSystem::createNodeState(
-        const Node* node)
+        const model::Node* node)
     {
         const auto id = node->getId();
         {
@@ -291,7 +291,7 @@ node->getName(), id, typeId);
     }
 
     void ScriptSystem::deleteNodeState(
-        const Node* node)
+        const model::Node* node)
     {
         auto scriptlet = fmt::format(
             "if states[{}] then states[{}]:destroy() end",
@@ -430,7 +430,7 @@ end)", fnName, scriptFile.m_source);
     }
 
     void ScriptSystem::runGlobalScript(
-        const Node* node,
+        const model::Node* node,
         script::script_id scriptId)
     {
         std::lock_guard lock(m_lock);
@@ -453,7 +453,7 @@ end)", fnName, scriptFile.m_source);
     }
 
     void ScriptSystem::runNodeScript(
-        const Node* node,
+        const model::Node* node,
         script::script_id scriptId)
     {
         if (!node) return;
@@ -537,7 +537,7 @@ end)", fnName, scriptFile.m_source);
     }
 
     void ScriptSystem::invokeNodeFunction(
-        const Node* node,
+        const model::Node* node,
         bool self,
         const sol::function& fn,
         const sol::table& args)

@@ -29,11 +29,15 @@ namespace mesh {
     struct Transform;
 }
 
-class Program;
-class Node;
+namespace model
+{
+    class Node;
+}
 
 struct Snapshot;
 struct EntitySSBO;
+
+class Program;
 
 struct PrepareContext;
 struct UpdateContext;
@@ -64,15 +68,15 @@ public:
 
     virtual void prepareWT(
         const PrepareContext& ctx,
-        Node& container) {}
+        model::Node& container) {}
 
     virtual void prepareRT(
         const PrepareContext& ctx,
-        Node& container) {}
+        model::Node& container) {}
 
     virtual void updateWT(
         const UpdateContext& ctx,
-        const Node& container) {}
+        const model::Node& container) {}
 
     virtual void bindBatch(
         const RenderContext& ctx,
@@ -80,14 +84,14 @@ public:
         const std::function<void(ki::program_id)>& programPrepare,
         uint8_t kindBits,
         render::Batch& batch,
-        const Node& container,
+        const model::Node& container,
         const Snapshot& snapshot);
 
     virtual void updateVAO(
         const RenderContext& ctx,
-        const Node& container) {}
+        const model::Node& container) {}
 
-    virtual const std::vector<mesh::LodMesh>* getLodMeshes(const Node& container) const
+    virtual const std::vector<mesh::LodMesh>* getLodMeshes(const model::Node& container) const
     {
         return nullptr;
     }

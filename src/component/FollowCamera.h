@@ -9,7 +9,7 @@ public:
     FollowCamera();
     ~FollowCamera();
 
-    virtual void updateRT(const UpdateContext& ctx, Node& node) override;
+    virtual void updateRT(const UpdateContext& ctx, model::Node& node) override;
 
     virtual void snapToIdeal(const Snapshot& snapshot) override;
 

@@ -18,7 +18,7 @@ Light::~Light() = default;
 
 void Light::updateRT(
     const UpdateContext& ctx,
-    const Node& node) noexcept
+    const model::Node& node) noexcept
 {
     if (!m_enabled) return;
 

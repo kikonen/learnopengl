@@ -18,7 +18,11 @@ namespace render {
     class NodeDraw;
 }
 
-class Node;
+namespace model
+{
+    class Node;
+}
+
 class DynamicCubeMap;
 class WaterMapRenderer;
 class MirrorMapRenderer;
@@ -57,10 +61,10 @@ private:
     void drawNodes(
         const RenderContext& ctx,
         render::CubeMapBuffer* targetBuffer,
-        const Node* centerNode,
+        const model::Node* centerNode,
         const glm::vec4& debugColor);
 
-    Node* findClosest(
+    model::Node* findClosest(
         const RenderContext& ctx);
 
 public:

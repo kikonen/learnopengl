@@ -13,30 +13,30 @@ public:
 
     virtual void prepareWT(
         const PrepareContext& ctx,
-        Node& container) override;
+        model::Node& container) override;
 
     virtual void updateWT(
         const UpdateContext& ctx,
-        const Node& container) override;
+        const model::Node& container) override;
 
 private:
     void updateAsteroids(
         const UpdateContext& ctx,
-        const Node& container,
+        const model::Node& container,
         bool rotate);
 
     void createAsteroids(
         const PrepareContext& ctx,
-        const Node& container);
+        const model::Node& container);
 
     void initAsteroids(
         const PrepareContext& ctx,
-        const Node& container,
+        const model::Node& container,
         std::vector<mesh::Transform>& transforms);
 
     void rotateAsteroids(
         const UpdateContext& ctx,
-        const Node& container);
+        const model::Node& container);
 
 private:
     const int m_asteroidCount;

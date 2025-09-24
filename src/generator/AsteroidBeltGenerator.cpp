@@ -38,7 +38,7 @@ AsteroidBeltGenerator::AsteroidBeltGenerator(int asteroidCount)
 
 void AsteroidBeltGenerator::prepareWT(
     const PrepareContext& ctx,
-    Node& container)
+    model::Node& container)
 {
     NodeGenerator::prepareWT(ctx, container);
 
@@ -49,7 +49,7 @@ void AsteroidBeltGenerator::prepareWT(
 
 void AsteroidBeltGenerator::updateWT(
     const UpdateContext& ctx,
-    const Node& container)
+    const model::Node& container)
 {
     const auto containerLevel = container.getState().getMatrixLevel();
     const auto parentChanged = containerLevel != m_containerMatrixLevel;
@@ -84,7 +84,7 @@ void AsteroidBeltGenerator::updateWT(
 
 void AsteroidBeltGenerator::updateAsteroids(
     const UpdateContext& ctx,
-    const Node& container,
+    const model::Node& container,
     bool rotate)
 {
     if (rotate) {
@@ -94,7 +94,7 @@ void AsteroidBeltGenerator::updateAsteroids(
 
 void AsteroidBeltGenerator::createAsteroids(
     const PrepareContext& ctx,
-    const Node& container)
+    const model::Node& container)
 {
     {
         const auto& containerState = container.getState();
@@ -117,7 +117,7 @@ void AsteroidBeltGenerator::createAsteroids(
 
 void AsteroidBeltGenerator::initAsteroids(
     const PrepareContext& ctx,
-    const Node& container,
+    const model::Node& container,
     std::vector<mesh::Transform>& transforms)
 {
     // initialize random seed
@@ -183,7 +183,7 @@ void AsteroidBeltGenerator::initAsteroids(
 
 void AsteroidBeltGenerator::rotateAsteroids(
     const UpdateContext& ctx,
-    const Node& container)
+    const model::Node& container)
 {
     const float elapsed = ctx.m_clock.elapsedSecs;
 

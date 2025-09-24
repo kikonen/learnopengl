@@ -4,6 +4,11 @@
 
 #include "pool/NodeHandle.h"
 
+namespace model
+{
+    class Node;
+}
+
 class Program;
 
 struct PrepareContext;
@@ -12,8 +17,6 @@ struct UpdateViewContext;
 class RenderContext;
 
 class Registry;
-
-class Node;
 
 class Renderer
 {
@@ -48,7 +51,7 @@ protected:
     // @return true if changed node
     bool setClosest(
         const RenderContext& ctx,
-        Node* closest,
+        model::Node* closest,
         int tagIndex);
 
     void clearClosest(
@@ -75,5 +78,5 @@ protected:
 
     bool m_rendered = false;
 
-    Node* m_lastClosest{ nullptr };
+    model::Node* m_lastClosest{ nullptr };
 };

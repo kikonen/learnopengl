@@ -19,6 +19,11 @@ namespace mesh {
     struct Transform;
 }
 
+namespace model
+{
+    class Node;
+}
+
 class Program;
 
 struct Snapshot;
@@ -26,8 +31,6 @@ struct Snapshot;
 struct PrepareContext;
 struct UpdateContext;
 class RenderContext;
-
-class Node;
 
 namespace render {
     // NOTE KI use single shared UBO buffer for rendering
@@ -48,7 +51,7 @@ namespace render {
 
         void addSnapshot(
             const RenderContext& ctx,
-            const Node* node,
+            const model::Node* node,
             const std::function<ki::program_id (const mesh::LodMesh&)>& programSelector,
             const std::function<void(ki::program_id)>& programPrepare,
             uint8_t kindBits,
@@ -58,7 +61,7 @@ namespace render {
         // NOTE KI lightweigtht "transform only" meshes
         void addSnapshotsInstanced(
             const RenderContext& ctx,
-            const Node* node,
+            const model::Node* node,
             const std::function<ki::program_id (const mesh::LodMesh&)>& programSelector,
             const std::function<void(ki::program_id)>& programPrepare,
             uint8_t kindBits,
@@ -78,7 +81,7 @@ namespace render {
 
         void draw(
             const RenderContext& ctx,
-            Node* node,
+            model::Node* node,
             const std::function<ki::program_id (const mesh::LodMesh&)>& programSelector,
             const std::function<void(ki::program_id)>& programPrepare,
             uint8_t kindBits);

@@ -28,7 +28,7 @@ namespace particle {
 
     void ParticleGenerator::updateWT(
         const UpdateContext& ctx,
-        Node& node)
+        model::Node& node)
     {
         if (m_requestedCount <= 0.f && m_pendingCount <= 0.f) return;
 

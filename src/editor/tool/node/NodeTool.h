@@ -89,7 +89,7 @@ namespace editor
             pool::NodeHandle nodeHandle);
 
         void updateSocket(
-            Node* node,
+            model::Node* node,
             mesh::Mesh* mesh,
             animation::RigContainer* rig,
             animation::RigSocket* socket);

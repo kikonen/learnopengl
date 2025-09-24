@@ -74,7 +74,7 @@ namespace render
 
         collectionRender.drawBlendedImpl(
             ctx,
-            [&drawContext](const Node* node) {
+            [&drawContext](const model::Node* node) {
                 return
                     node->m_typeFlags.anyBlend &&
                     node->m_typeFlags.effect &&

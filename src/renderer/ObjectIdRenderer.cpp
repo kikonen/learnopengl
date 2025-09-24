@@ -190,7 +190,7 @@ void ObjectIdRenderer::drawNodes(const RenderContext& parentCtx)
 
     {
         render::DrawContext drawContext{
-            [](const Node* node) { return !node->m_typeFlags.noSelect; },
+            [](const model::Node* node) { return !node->m_typeFlags.noSelect; },
             render::KIND_ALL
         };
 

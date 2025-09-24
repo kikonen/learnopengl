@@ -37,13 +37,13 @@ TextGenerator::~TextGenerator() = default;
 
 void TextGenerator::prepareWT(
     const PrepareContext& ctx,
-    Node& container)
+    model::Node& container)
 {
 }
 
 void TextGenerator::prepareRT(
     const PrepareContext& ctx,
-    Node& container)
+    model::Node& container)
 {
     m_mesh = std::make_shared<mesh::TextMesh>();
     m_mesh->prepareVAO();
@@ -64,7 +64,7 @@ void TextGenerator::prepareRT(
 
 void TextGenerator::updateWT(
     const UpdateContext& ctx,
-    const Node& container)
+    const model::Node& container)
 {
 }
 
@@ -86,7 +86,7 @@ void TextGenerator::updateWT(
 
 void TextGenerator::updateVAO(
     const RenderContext& ctx,
-    const Node& container)
+    const model::Node& container)
 {
     if (!m_dirty) return;
     m_dirty = false;
@@ -146,7 +146,7 @@ void TextGenerator::bindBatch(
     const std::function<void(ki::program_id)>& programPrepare,
     uint8_t kindBits,
     render::Batch& batch,
-    const Node& container,
+    const model::Node& container,
     const Snapshot& snapshot)
 {
     m_draw->updateRT();

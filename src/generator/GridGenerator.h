@@ -17,32 +17,32 @@ public:
 
     virtual void prepareWT(
         const PrepareContext& ctx,
-        Node& container) override;
+        model::Node& container) override;
 
     virtual void updateWT(
         const UpdateContext& ctx,
-        const Node& container) override;
+        const model::Node& container) override;
 
 private:
     void updateInstances(
         const UpdateContext& ctx,
-        const Node& container);
+        const model::Node& container);
 
     void prepareInstances(
         const PrepareContext& ctx,
-        const Node& container);
+        const model::Node& container);
 
     void prepareGrid(
-        const Node& container,
+        const model::Node& container,
         std::vector<mesh::Transform>& transforms) const;
 
     void prepareRandom(
-        const Node& container,
+        const model::Node& container,
         std::vector<mesh::Transform>& transforms) const;
 
     void updateBounds(
         const UpdateContext& ctx,
-        const Node& container);
+        const model::Node& container);
 
 public:
     glm::uvec3 m_seed{ 0 };

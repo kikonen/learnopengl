@@ -21,7 +21,11 @@ namespace editor
 
 struct UpdateContext;
 class RenderContext;
-class Node;
+
+namespace model
+{
+    class Node;
+}
 
 namespace animation {
     class BoneRegistry;
@@ -90,15 +94,15 @@ namespace animation {
         void updateWT(const UpdateContext& ctx);
         void updateRT(const UpdateContext& ctx);
 
-        void handleNodeAdded(Node* node);
-        void handleNodeRemoved(Node* node);
+        void handleNodeAdded(model::Node* node);
+        void handleNodeRemoved(model::Node* node);
 
     private:
         // @return true if bone palette was updated
         void animateNode(
             const UpdateContext& ctx,
             animation::AnimationState& state,
-            Node* node);
+            model::Node* node);
 
         void waitForPrepared();
         void prepareNodes();

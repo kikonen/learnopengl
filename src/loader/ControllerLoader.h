@@ -7,7 +7,11 @@ namespace pool {
     struct NodeHandle;
 }
 
-class Node;
+namespace model
+{
+    class Node;
+}
+
 struct ControllerDefinition;
 //class NodeController;
 

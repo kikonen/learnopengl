@@ -217,7 +217,7 @@ bool CubeMapRenderer::render(
 
     if (!needRender(parentCtx)) return false;
 
-    Node* centerNode = findClosest(parentCtx);
+    model::Node* centerNode = findClosest(parentCtx);
     if (m_lastClosest && setClosest(parentCtx, centerNode, -1)) {
         m_curr->m_updateFace = -1;
         m_prev->m_updateFace = -1;
@@ -314,7 +314,7 @@ void CubeMapRenderer::clearCubeMap(
 void CubeMapRenderer::drawNodes(
     const RenderContext& ctx,
     render::CubeMapBuffer* targetBuffer,
-    const Node* current,
+    const model::Node* current,
     const glm::vec4& debugColor)
 {
     const auto& assets = ctx.m_assets;
@@ -358,7 +358,7 @@ void CubeMapRenderer::drawNodes(
     render::DrawContext drawContext{
         // NOTE KI skip drawing center node itself (can produce odd results)
         // => i.e. show garbage from old render round and such
-        [&current](const Node* node) {
+        [&current](const model::Node* node) {
             return !node->m_typeFlags.noReflect &&
                 node != current &&
                 node->m_ignoredBy != current->getId();
@@ -375,7 +375,7 @@ void CubeMapRenderer::drawNodes(
     targetBuffer->unbind(ctx);
 }
 
-Node* CubeMapRenderer::findClosest(const RenderContext& ctx)
+model::Node* CubeMapRenderer::findClosest(const RenderContext& ctx)
 {
     auto& nodes = ctx.m_collection->m_cubeMapNodes;
 
@@ -384,7 +384,7 @@ Node* CubeMapRenderer::findClosest(const RenderContext& ctx)
     const glm::vec3& cameraPos = ctx.m_camera->getWorldPosition();
     const glm::vec3& cameraDir = ctx.m_camera->getViewFront();
 
-    std::map<float, Node*> sorted;
+    std::map<float, model::Node*> sorted;
 
     for (const auto& handle : nodes) {
         auto* node = handle.toNode();
@@ -405,7 +405,7 @@ Node* CubeMapRenderer::findClosest(const RenderContext& ctx)
         sorted[dist2] = node;
     }
 
-    for (std::map<float, Node*>::iterator it = sorted.begin(); it != sorted.end(); ++it) {
+    for (std::map<float, model::Node*>::iterator it = sorted.begin(); it != sorted.end(); ++it) {
         return it->second;
     }
     return nullptr;

@@ -39,7 +39,7 @@ namespace mesh
 
 class NodeRegistry final
 {
-    friend class Node;
+    friend class model::Node;
 
 public:
     static void init() noexcept;
@@ -63,7 +63,7 @@ public:
     int validateModelMatrices();
 
     void updateModelMatrices();
-    void updateModelMatrices(const Node* node);
+    void updateModelMatrices(const model::Node* node);
 
     void prepareUpdateRT(const UpdateContext& ctx);
     void updateRT(const UpdateContext& ctx);
@@ -77,27 +77,27 @@ public:
         std::vector<Snapshot>& src,
         std::vector<Snapshot>& dst);
 
-    std::vector<Node*>& getCachedNodesWT();
+    std::vector<model::Node*>& getCachedNodesWT();
 
-    const std::vector<Node*> getCachedNodesRT() const noexcept
+    const std::vector<model::Node*> getCachedNodesRT() const noexcept
     {
         return m_cachedNodesRT;
     }
 
     void attachListeners();
 
-    void handleNodeAdded(Node* node);
-    void handleNodeRemoved(Node* node);
+    void handleNodeAdded(model::Node* node);
+    void handleNodeRemoved(model::Node* node);
 
     void notifyPendingChanges();
 
     // @return root if root is prepared for RT
-    Node* getRootRT() const noexcept {
+    model::Node* getRootRT() const noexcept {
         return m_rootRT.toNode();
     }
 
     // @return root if root is prepared for WT
-    Node* getRootWT() const noexcept {
+    model::Node* getRootWT() const noexcept {
         return m_rootWT.toNode();
     }
 
@@ -122,11 +122,11 @@ public:
         uint8_t layer,
         glm::uvec2 aspectRatio) noexcept;
 
-    inline Node* getActiveNode() const noexcept { return m_activeNode.toNode(); }
+    inline model::Node* getActiveNode() const noexcept { return m_activeNode.toNode(); }
 
     uint32_t getNodeCount() const noexcept
     {
-        return static_cast<uint32_t>(m_handles.size());
+        return static_cast<uint32_t>(m_sortedNodes.size());
     }
 
     //ki::level_id getLevel() const noexcept {
@@ -146,7 +146,7 @@ public:
         return m_handles[m_parentIndeces[entityIndex]];
     }
 
-    const Node* getParent(uint32_t entityIndex) const noexcept
+    const model::Node* getParent(uint32_t entityIndex) const noexcept
     {
         return m_handles[m_parentIndeces[entityIndex]].toNode();
     }
@@ -236,14 +236,14 @@ private:
         pool::NodeHandle handle) noexcept;
 
     void cacheNodes(
-        std::vector<Node*>& cache,
+        std::vector<model::Node*>& cache,
         ki::level_id& cacheLevel);
 
     void updateBounds(
         const UpdateContext& ctx,
         NodeState& state,
         const NodeState& parentState,
-        const Node* node,
+        const model::Node* node,
         const physics::PhysicsSystem& physicsSystem);
 
     void logDebugInfo(const std::string& err, uint32_t entityIndex) const;
@@ -290,9 +290,9 @@ private:
     std::vector<bool> m_dirtyEntities;
 
     // INDEX = entityIndex
-    std::vector<Node*> m_cachedNodesWT;
+    std::vector<model::Node*> m_cachedNodesWT;
     // INDEX = entityIndex
-    std::vector<Node*> m_cachedNodesRT;
+    std::vector<model::Node*> m_cachedNodesRT;
 
     ki::level_id m_nodeLevel{ 0 };
     ki::level_id m_cachedNodeLevelWT{ 0 };

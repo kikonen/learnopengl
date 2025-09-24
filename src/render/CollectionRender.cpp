@@ -20,7 +20,7 @@ namespace render
         const RenderContext& ctx,
         const std::function<ki::program_id(const mesh::LodMesh&)>& programSelector,
         const std::function<void(ki::program_id)>& programPrepare,
-        const std::function<bool(const Node*)>& nodeSelector,
+        const std::function<bool(const model::Node*)>& nodeSelector,
         uint8_t kindBits)
     {
         drawNodesImpl(ctx, programSelector, programPrepare, nodeSelector, kindBits);
@@ -30,7 +30,7 @@ namespace render
         const RenderContext& ctx,
         const std::function<ki::program_id(const mesh::LodMesh&)>& programSelector,
         const std::function<void(ki::program_id)>& programPrepare,
-        const std::function<bool(const Node*)>& nodeSelector,
+        const std::function<bool(const model::Node*)>& nodeSelector,
         const uint8_t kindBits)
     {
         bool rendered{ false };
@@ -71,7 +71,7 @@ namespace render
 
     void CollectionRender::drawBlendedImpl(
         const RenderContext& ctx,
-        const std::function<bool(const Node*)>& nodeSelector)
+        const std::function<bool(const model::Node*)>& nodeSelector)
     {
         auto& collection = *ctx.m_collection;
 
@@ -80,7 +80,7 @@ namespace render
         const glm::vec3& eyePos = ctx.m_camera->getWorldPosition();
 
         // TODO KI discards nodes if *same* distance
-        std::map<float, Node*> sorted;
+        std::map<float, model::Node*> sorted;
         for (const auto& handle : collection.m_blendedNodes) {
             auto* node = handle.toNode();
             if (!node) continue;
@@ -105,7 +105,7 @@ namespace render
 
         // NOTE KI blending is *NOT* optimal program / nodetypw wise due to depth sorting
         // NOTE KI order = from furthest away to nearest
-        for (std::map<float, Node*>::reverse_iterator it = sorted.rbegin(); it != sorted.rend(); ++it) {
+        for (std::map<float, model::Node*>::reverse_iterator it = sorted.rbegin(); it != sorted.rend(); ++it) {
             ctx.m_batch->draw(
                 ctx,
                 it->second,

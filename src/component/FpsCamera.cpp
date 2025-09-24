@@ -15,7 +15,7 @@ namespace {
 FpsCamera::FpsCamera() = default;
 FpsCamera::~FpsCamera() = default;
 
-void FpsCamera::updateRT(const UpdateContext& ctx, Node& node)
+void FpsCamera::updateRT(const UpdateContext& ctx, model::Node& node)
 {
     if (!m_enabled) return;
 

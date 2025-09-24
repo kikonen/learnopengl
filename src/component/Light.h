@@ -10,8 +10,11 @@
 #include "LightType.h"
 
 struct UpdateContext;
-class Node;
 
+namespace model
+{
+    class Node;
+}
 
 class Light final
 {
@@ -41,7 +44,7 @@ public:
 
     void updateRT(
         const UpdateContext& ctx,
-        const Node& node) noexcept;
+        const model::Node& node) noexcept;
 
     void markDirty() noexcept
     {

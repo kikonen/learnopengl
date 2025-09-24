@@ -17,7 +17,7 @@ FollowCamera::FollowCamera() = default;
 FollowCamera::~FollowCamera() = default;
 
 // Game Programming in C++ - chapter 9
-void FollowCamera::updateRT(const UpdateContext& ctx, Node& node)
+void FollowCamera::updateRT(const UpdateContext& ctx, model::Node& node)
 {
     if (!m_enabled) return;
 
