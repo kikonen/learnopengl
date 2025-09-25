@@ -16,11 +16,11 @@ public:
         const PrepareContext& ctx) override;
 
     void render(
-        const RenderContext& ctx,
+        const render::RenderContext& ctx,
         render::FrameBuffer* targetBuffer);
 
 private:
-    void drawNodes(const RenderContext& ctx);
+    void drawNodes(const render::RenderContext& ctx);
 
 private:
     ki::program_id m_normalProgramId{ 0 };

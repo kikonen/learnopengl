@@ -27,7 +27,7 @@ namespace audio
         return *this;
     }
 
-    void Listener::updateActive(const NodeState& state) const
+    void Listener::updateActive(const model::NodeState& state) const
     {
         const auto& pos = state.getWorldPosition();
         const auto& front = glm::normalize(state.getViewFront());

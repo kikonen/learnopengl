@@ -4,7 +4,7 @@
 
 #include "registry/SnapshotRegistry.h"
 
-class NodeSnapshotRegistry final : public SnapshotRegistry<Snapshot> {
+class NodeSnapshotRegistry final : public SnapshotRegistry<model::Snapshot> {
 public:
     NodeSnapshotRegistry();
     ~NodeSnapshotRegistry();

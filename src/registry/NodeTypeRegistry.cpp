@@ -83,14 +83,14 @@ void NodeTypeRegistry::registerCustomMaterial(
     m_customMaterialTypes.push_back(typeHandle);
 }
 
-void NodeTypeRegistry::updateMaterials(const RenderContext& ctx)
+void NodeTypeRegistry::updateMaterials(const render::RenderContext& ctx)
 {
     for (auto& typeHandle : m_customMaterialTypes) {
         typeHandle.toType()->m_customMaterial.get()->updateRT(ctx);
     }
 }
 
-void NodeTypeRegistry::bindMaterials(const RenderContext& ctx)
+void NodeTypeRegistry::bindMaterials(const render::RenderContext& ctx)
 {
     for (auto& typeHandle : m_customMaterialTypes) {
         typeHandle.toType()->m_customMaterial->bindTextures(ctx.m_state);

@@ -100,7 +100,7 @@ void MirrorMapRenderer::prepareRT(
     }
 
     {
-        m_reflectionDebugViewport = std::make_shared<Viewport>(
+        m_reflectionDebugViewport = std::make_shared<model::Viewport>(
             "MirrorReflect",
             glm::vec3(-1.0, 0.5, 0),
             glm::vec3(0, 0, 0),
@@ -109,7 +109,7 @@ void MirrorMapRenderer::prepareRT(
             0,
             ProgramRegistry::get().getProgram(SHADER_VIEWPORT));
 
-        m_reflectionDebugViewport->setBindBefore([this](Viewport& vp) {
+        m_reflectionDebugViewport->setBindBefore([this](model::Viewport& vp) {
             auto& buffer = m_reflectionBuffers[m_prevIndex];
             vp.setTextureId(buffer->m_spec.attachments[0].textureID);
             vp.setSourceFrameBuffer(buffer.get());
@@ -232,7 +232,7 @@ void MirrorMapRenderer::bindTexture(kigl::GLState& state)
 }
 
 bool MirrorMapRenderer::render(
-    const RenderContext& parentCtx)
+    const render::RenderContext& parentCtx)
 {
     parentCtx.validateRender("mirror_map");
 
@@ -304,7 +304,7 @@ bool MirrorMapRenderer::render(
         auto& reflectionBuffer = m_reflectionBuffers[m_currIndex];
 
         // NOTE KI "dist" to cut-off render at mirror plane; camera is mirrored *behind* the mirror
-        RenderContext localCtx("MIRROR",
+        render::RenderContext localCtx("MIRROR",
             &parentCtx,
             &camera,
             nearPlane,
@@ -337,7 +337,7 @@ bool MirrorMapRenderer::render(
 }
 
 void MirrorMapRenderer::drawNodes(
-    const RenderContext& ctx,
+    const render::RenderContext& ctx,
     render::FrameBuffer* targetBuffer,
     model::Node* current)
 {
@@ -404,7 +404,7 @@ void MirrorMapRenderer::drawNodes(
     //kigl::GLState::get().setEnabled(GL_CLIP_DISTANCE0, false);
 }
 
-model::Node* MirrorMapRenderer::findClosest(const RenderContext& ctx)
+model::Node* MirrorMapRenderer::findClosest(const render::RenderContext& ctx)
 {
     auto& nodes = ctx.m_collection->m_mirrorNodes;
 

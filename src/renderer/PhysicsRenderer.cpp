@@ -18,7 +18,7 @@ void PhysicsRenderer::prepareRT(const PrepareContext& ctx)
 }
 
 void PhysicsRenderer::render(
-    const RenderContext& ctx,
+    const render::RenderContext& ctx,
     render::FrameBuffer* targetBuffer)
 {
     const auto& dbg = debug::DebugContext::get();

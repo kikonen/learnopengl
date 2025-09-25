@@ -9,9 +9,9 @@
 namespace model
 {
     class Node;
+    class NodeType;
 }
 
-class NodeType;
 
 namespace render
 {

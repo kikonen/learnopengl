@@ -78,7 +78,7 @@ namespace loader
         }
 
         {
-            CreateState state{};
+            model::CreateState state{};
             event::Event evt { event::Type::node_add };
             evt.blob = std::make_unique<event::BlobData>();
             evt.blob->body.state = state;

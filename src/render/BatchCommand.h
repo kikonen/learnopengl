@@ -8,10 +8,9 @@
 
 #include "backend/DrawOptions.h"
 
-
-class RenderContext;
-
 namespace render {
+    class RenderContext;
+
     struct InstanceEntry {
         //glm::mat4 m_transform;
         glm::vec4 u_transformMatrixRow0{ 1.f, 0.f, 0.f, 0.f };

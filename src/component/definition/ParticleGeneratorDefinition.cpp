@@ -5,7 +5,7 @@
 #include "particle/ParticleGenerator.h"
 
 std::unique_ptr<particle::ParticleGenerator> ParticleGeneratorDefinition::createParticleGenerator(
-    const NodeType* type)
+    const model::NodeType* type)
 {
     if (!type->m_particleGeneratorDefinition) return nullptr;
     auto generator = std::make_unique<particle::ParticleGenerator>();

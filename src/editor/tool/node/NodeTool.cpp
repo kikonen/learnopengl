@@ -93,7 +93,7 @@ namespace editor
     }
 
     void NodeTool::drawImpl(
-        const RenderContext& ctx,
+        const render::RenderContext& ctx,
         Scene* scene,
         debug::DebugContext& dbg)
     {
@@ -113,7 +113,7 @@ namespace editor
     }
 
     void NodeTool::renderNode(
-        const RenderContext& ctx,
+        const render::RenderContext& ctx,
         debug::DebugContext& dbg)
     {
         renderNodeSelector(ctx, dbg);
@@ -136,7 +136,7 @@ namespace editor
     }
 
     void NodeTool::renderNodeSelector(
-        const RenderContext& ctx,
+        const render::RenderContext& ctx,
         debug::DebugContext& dbg)
     {
         const auto& nr = NodeRegistry::get();
@@ -170,7 +170,7 @@ namespace editor
     }
 
     void NodeTool::renderNodeProperties(
-        const RenderContext& ctx,
+        const render::RenderContext& ctx,
         debug::DebugContext& dbg)
     {
         auto* node = m_state.m_selectedNode.toNode();
@@ -237,7 +237,7 @@ namespace editor
     }
 
     void NodeTool::renderTypeProperties(
-        const RenderContext& ctx,
+        const render::RenderContext& ctx,
         debug::DebugContext& dbg)
     {
         auto* node = m_state.m_selectedNode.toNode();
@@ -271,7 +271,7 @@ namespace editor
     }
 
     void NodeTool::renderRigProperties(
-        const RenderContext& ctx,
+        const render::RenderContext& ctx,
         debug::DebugContext& dbg)
     {
         if (!m_state.m_selectedNode) return;
@@ -384,7 +384,7 @@ namespace editor
     }
 
     void NodeTool::renderNodeDebug(
-        const RenderContext& ctx,
+        const render::RenderContext& ctx,
         debug::DebugContext& dbg)
     {
         ImGui::Checkbox("Node debug", &dbg.m_nodeDebugEnabled);
@@ -430,7 +430,7 @@ namespace editor
     }
 
     void NodeTool::renderAnimationDebug(
-        const RenderContext& ctx,
+        const render::RenderContext& ctx,
         debug::DebugContext& dbg)
     {
         const auto& assets = ctx.m_assets;
@@ -476,7 +476,7 @@ namespace editor
     }
 
     void NodeTool::processInputs(
-        const RenderContext& ctx,
+        const render::RenderContext& ctx,
         Scene* scene,
         const Input& input,
         const InputState& inputState,
@@ -498,7 +498,7 @@ namespace editor
     }
 
     void NodeTool::handleSelectNode(
-        const RenderContext& ctx,
+        const render::RenderContext& ctx,
         Scene* scene,
         const Input& input,
         const InputState& inputState,
@@ -595,7 +595,7 @@ namespace editor
     }
 
     void NodeTool::onSelectNode(
-        const RenderContext& ctx,
+        const render::RenderContext& ctx,
         pool::NodeHandle nodeHandle)
     {
         m_state.m_selectedNode = nodeHandle;
@@ -611,7 +611,7 @@ namespace editor
     }
 
     void NodeTool::onDeleteNode(
-        const RenderContext& ctx,
+        const render::RenderContext& ctx,
         pool::NodeHandle nodeHandle)
     {
         auto* node = m_state.m_selectedNode.toNode();
@@ -625,7 +625,7 @@ namespace editor
     }
 
     void NodeTool::onCloneNode(
-        const RenderContext& ctx,
+        const render::RenderContext& ctx,
         pool::NodeHandle nodeHandle)
     {
         auto* node = m_state.m_selectedNode.toNode();
@@ -641,12 +641,12 @@ namespace editor
             glm::quat quat{ state.getRotation() };
             glm::vec3 scale{ state.getScale() };
 
-            CreateState state{
+            model::CreateState state{
                 pos,
                 scale,
                 quat };
 
-            CompositeBuilder builder{ NodeRegistry::get() };
+            model::CompositeBuilder builder{ NodeRegistry::get() };
             if (builder.build(parentId, 0, type, state)) {
                 auto rootHandle = builder.asyncAttach(ctx.m_registry);
 

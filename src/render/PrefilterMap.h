@@ -5,12 +5,13 @@
 #include "kigl/GLTextureHandle.h"
 
 struct PrepareContext;
-class RenderContext;
 
 class Program;
 class CubeMap;
 
 namespace render {
+    class RenderContext;
+
     // NOTE KI https://forums.cgsociety.org/t/gamma-and-hdri/959636
     // - hdri is *linear*
     class PrefilterMap

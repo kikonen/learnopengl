@@ -141,7 +141,7 @@ void LayerRenderer::updateRT(const UpdateViewContext& ctx)
 }
 
 void LayerRenderer::render(
-    const RenderContext& ctx,
+    const render::RenderContext& ctx,
     render::FrameBuffer* targetBuffer)
 {
     auto& state = ctx.m_state;
@@ -194,10 +194,10 @@ void LayerRenderer::render(
 
 // Render selected nodes into stencil mask
 void LayerRenderer::fillHighlightMask(
-    const RenderContext& parentCtx,
+    const render::RenderContext& parentCtx,
     render::FrameBuffer* targetBuffer)
 {
-    RenderContext localCtx{ "local", &parentCtx };
+    render::RenderContext localCtx{ "local", &parentCtx };
     localCtx.m_forceSolid = true;
 
     const auto& assets = localCtx.m_assets;
@@ -246,10 +246,10 @@ void LayerRenderer::fillHighlightMask(
 
 // Render highlight over stencil masked nodes
 void LayerRenderer::renderHighlight(
-    const RenderContext& parentCtx,
+    const render::RenderContext& parentCtx,
     render::FrameBuffer* targetBuffer)
 {
-    RenderContext localCtx{ "local", &parentCtx };
+    render::RenderContext localCtx{ "local", &parentCtx };
     localCtx.m_forceSolid = true;
 
     const auto& assets = localCtx.m_assets;

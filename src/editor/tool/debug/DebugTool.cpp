@@ -52,7 +52,7 @@ namespace editor
     DebugTool::~DebugTool() = default;
 
     void DebugTool::drawImpl(
-        const RenderContext& ctx,
+        const render::RenderContext& ctx,
         Scene* scene,
         debug::DebugContext& dbg)
     {
@@ -73,7 +73,7 @@ namespace editor
     }
 
     void DebugTool::processInputs(
-        const RenderContext& ctx,
+        const render::RenderContext& ctx,
         Scene* scene,
         const Input& input,
         const InputState& inputState,
@@ -82,7 +82,7 @@ namespace editor
     }
 
     void DebugTool::renderPhysicsDebug(
-        const RenderContext& ctx,
+        const render::RenderContext& ctx,
         debug::DebugContext& dbg)
     {
         auto& physics = dbg.m_physics;
@@ -96,7 +96,7 @@ namespace editor
     }
 
     void DebugTool::renderEffectDebug(
-        const RenderContext& ctx,
+        const render::RenderContext& ctx,
         debug::DebugContext& dbg)
     {
         {
@@ -278,7 +278,7 @@ namespace editor
     }
 
     void DebugTool::renderLayersDebug(
-        const RenderContext& ctx,
+        const render::RenderContext& ctx,
         debug::DebugContext& dbg)
     {
         for (auto& layer : dbg.m_layers)

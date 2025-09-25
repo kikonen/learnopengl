@@ -9,7 +9,10 @@
 #include "size.h"
 #include "limits.h"
 
-struct NodeState;
+namespace model
+{
+    struct NodeState;
+}
 
 namespace audio
 {
@@ -35,7 +38,7 @@ namespace audio
 
         void prepare(const Sound* sound);
 
-        void update(const NodeState& state);
+        void update(const model::NodeState& state);
 
         void play() const;
         void stop() const;

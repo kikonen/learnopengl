@@ -9,12 +9,10 @@
 namespace model
 {
     class Node;
+    class NodeType;
 }
 
-class RenderContext;
-
 class Program;
-class NodeType;
 
 namespace mesh {
     struct LodMesh;
@@ -22,6 +20,8 @@ namespace mesh {
 
 namespace render
 {
+    class RenderContext;
+
     // NOTE KI proramSelector != programPrrepare.
     // => selector is called from separate threads, prepare from RT only
     class CollectionRender

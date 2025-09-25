@@ -9,12 +9,16 @@ namespace model
     class Node;
 }
 
+namespace render
+{
+    class RenderContext;
+}
+
 class Program;
 
 struct PrepareContext;
 struct UpdateContext;
 struct UpdateViewContext;
-class RenderContext;
 
 class Registry;
 
@@ -33,7 +37,7 @@ public:
     virtual void prepareRT(
         const PrepareContext& ctx);
 
-    bool needRender(const RenderContext& ctx);
+    bool needRender(const render::RenderContext& ctx);
 
     inline bool isRendered() const noexcept {
         return m_rendered;
@@ -50,12 +54,12 @@ public:
 protected:
     // @return true if changed node
     bool setClosest(
-        const RenderContext& ctx,
+        const render::RenderContext& ctx,
         model::Node* closest,
         int tagIndex);
 
     void clearClosest(
-        const RenderContext& ctx,
+        const render::RenderContext& ctx,
         int tagIndex);
 
 protected:

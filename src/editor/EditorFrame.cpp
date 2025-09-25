@@ -72,7 +72,7 @@ namespace editor {
     }
 
     void EditorFrame::processInputs(
-        const RenderContext& ctx,
+        const render::RenderContext& ctx,
         Scene* scene,
         const Input& input,
         const InputState& inputState,
@@ -88,7 +88,7 @@ namespace editor {
     }
 
     void EditorFrame::draw(
-        const RenderContext& ctx,
+        const render::RenderContext& ctx,
         Scene* scene,
         debug::DebugContext& dbg)
     {
@@ -147,7 +147,7 @@ namespace editor {
     }
 
     void EditorFrame::renderMenuBar(
-        const RenderContext& ctx,
+        const render::RenderContext& ctx,
         Scene* scene,
         debug::DebugContext& dbg)
     {

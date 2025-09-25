@@ -8,9 +8,9 @@ namespace kigl {
 }
 
 struct UpdateViewContext;
-class RenderContext;
 
 namespace render {
+    class RenderContext;
     class FrameBuffer;
     class GBuffer;
 

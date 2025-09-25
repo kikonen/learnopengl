@@ -125,7 +125,7 @@ namespace script::api
         return getState(handle).getModelMatrix();
     }
 
-    const NodeState& NodeAPI::getState(pool::NodeHandle handle) const
+    const model::NodeState& NodeAPI::getState(pool::NodeHandle handle) const
     {
         return NodeRegistry::get().getState(handle.m_handleIndex);
     }

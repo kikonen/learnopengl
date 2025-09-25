@@ -6,9 +6,13 @@
 
 #include "kigl/GLSyncQueue.h"
 
+namespace render
+{
+    class RenderContext;
+}
+
 struct PrepareContext;
 struct UpdateContext;
-class RenderContext;
 
 class Registry;
 class Program;

@@ -7,7 +7,7 @@
 #include "audio/Source.h"
 
 std::unique_ptr<std::vector<audio::Source>> AudioSourceDefinition::createAudioSources(
-    const NodeType* type)
+    const model::NodeType* type)
 {
     if (!type->m_audioSourceDefinitions) return nullptr;
 

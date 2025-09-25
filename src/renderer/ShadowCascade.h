@@ -11,8 +11,12 @@ namespace render {
     class FrameBuffer;
 }
 
+namespace render
+{
+    class RenderContext;
+}
+
 struct PrepareContext;
-class RenderContext;
 
 class Registry;
 class Program;
@@ -42,18 +46,18 @@ public:
     GLuint getTextureID();
 
     void bind(
-        const RenderContext& ctx,
+        const render::RenderContext& ctx,
         ShadowUBO& shadowUbo);
 
     void render(
-        const RenderContext& ctx);
+        const render::RenderContext& ctx);
 
     float getNearPlane() const noexcept { return m_camera.getNearPlane(); }
     float getFarPlane() const noexcept { return m_camera.getFarPlane(); }
 
 private:
     void drawNodes(
-        const RenderContext& ctx);
+        const render::RenderContext& ctx);
 
 public:
     const int m_index;

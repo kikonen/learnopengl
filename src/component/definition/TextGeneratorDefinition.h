@@ -8,9 +8,14 @@
 #include "text/Align.h"
 #include "text/size.h"
 
+
+namespace model
+{
+    class NodeType;
+}
+
 struct Material;
 
-class NodeType;
 class TextGenerator;
 
 struct TextGeneratorDefinition {
@@ -25,5 +30,5 @@ struct TextGeneratorDefinition {
     text::font_id m_fontId;
 
     static std::unique_ptr<TextGenerator> createTextGenerator(
-        const NodeType* type);
+        const model::NodeType* type);
 };

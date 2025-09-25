@@ -11,8 +11,12 @@
 #include "render/CubeMap.h"
 #include "render/CubeMapBuffer.h"
 
+namespace render
+{
+    class RenderContext;
+}
+
 struct PrepareContext;
-class RenderContext;
 struct FrameBufferAttachment;
 
 class DynamicCubeMap
@@ -37,8 +41,8 @@ public:
         kigl::GLState& state,
         int unitIndex);
 
-    void bind(const RenderContext& ctx);
-    void unbind(const RenderContext& ctx);
+    void bind(const render::RenderContext& ctx);
+    void unbind(const render::RenderContext& ctx);
 
     render::CubeMapBuffer asFrameBuffer(int side);
 

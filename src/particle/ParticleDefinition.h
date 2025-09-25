@@ -8,7 +8,10 @@
 
 #include "AreaType.h"
 
-class NodeType;
+namespace model
+{
+    class NodeType;
+}
 
 namespace particle {
     class ParticleGenerator;
@@ -60,6 +63,6 @@ namespace particle {
         float randomSpriteSpeed(const util::Random& rnd) const;
 
         static std::unique_ptr<particle::ParticleGenerator> createParticleGenerator(
-            const NodeType* type);
+            const model::NodeType* type);
     };
 }

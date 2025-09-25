@@ -70,16 +70,16 @@ namespace loader {
         }
     }
 
-    std::unique_ptr<CompositeDefinition> CompositeLoader::createCompositeDefinition(
+    std::unique_ptr<model::CompositeDefinition> CompositeLoader::createCompositeDefinition(
         const CompositeData& compositeData,
         Loaders& loaders) const
     {
         if (!compositeData.nodes) return nullptr;
 
-        auto definition = std::make_unique<CompositeDefinition>();
+        auto definition = std::make_unique<model::CompositeDefinition>();
         auto& df = *definition;
 
-        df.m_nodes = std::make_unique<std::vector<NodeDefinition>>();
+        df.m_nodes = std::make_unique<std::vector<model::NodeDefinition>>();
         loaders.m_nodeLoader.createNodeDefinitions(*compositeData.nodes, *df.m_nodes, true);
 
         return definition;

@@ -10,11 +10,12 @@
 class CubeMap;
 
 struct PrepareContext;
-class RenderContext;
 
 class Program;
 
 namespace render {
+    class RenderContext;
+
     // NOTE KI https://forums.cgsociety.org/t/gamma-and-hdri/959636
     // - hdri is *linear*
     class IrradianceMap

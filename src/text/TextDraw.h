@@ -11,8 +11,12 @@ namespace mesh {
     class TextMesh;
 }
 
+namespace render
+{
+    class RenderContext;
+}
+
 struct PrepareContext;
-class RenderContext;
 
 namespace text
 {

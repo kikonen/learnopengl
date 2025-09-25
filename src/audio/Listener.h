@@ -8,7 +8,10 @@
 
 #include "size.h"
 
-struct NodeState;
+namespace model
+{
+    struct NodeState;
+}
 
 namespace audio
 {
@@ -22,7 +25,7 @@ namespace audio
         Listener& operator=(Listener& o) = delete;
         Listener& operator=(Listener&& o) noexcept;
 
-        void updateActive(const NodeState& state) const;
+        void updateActive(const model::NodeState& state) const;
 
         float m_gain{ 1.f };
     };

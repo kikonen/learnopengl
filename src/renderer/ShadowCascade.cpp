@@ -121,7 +121,7 @@ GLuint ShadowCascade::getTextureID()
 }
 
 void ShadowCascade::bind(
-    const RenderContext& ctx,
+    const render::RenderContext& ctx,
     ShadowUBO& shadowUbo)
 {
     auto& nodeRegistry = *ctx.m_registry->m_nodeRegistry;
@@ -223,9 +223,9 @@ void ShadowCascade::bind(
 }
 
 void ShadowCascade::render(
-    const RenderContext& parentCtx)
+    const render::RenderContext& parentCtx)
 {
-    RenderContext localCtx("SHADOW",
+    render::RenderContext localCtx("SHADOW",
         &parentCtx,
         &m_camera,
         m_camera.getNearPlane(),
@@ -246,7 +246,7 @@ void ShadowCascade::render(
 }
 
 void ShadowCascade::drawNodes(
-    const RenderContext& ctx)
+    const render::RenderContext& ctx)
 {
     // NOTE KI *NO* G-buffer in shadow
     const auto nodeFilter = [](const model::Node* node) {

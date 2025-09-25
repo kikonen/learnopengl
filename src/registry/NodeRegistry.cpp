@@ -19,8 +19,8 @@
 #include "model/NodeType.h"
 #include "model/CreateState.h"
 
-#include "model/DagSort.h"
-#include "model/DagSort_impl.h"
+#include "util/DagSort.h"
+#include "util/DagSort_impl.h"
 
 #include "mesh/LodMesh.h"
 
@@ -74,7 +74,7 @@
 namespace {
     const std::vector<pool::NodeHandle> EMPTY_NODE_LIST;
 
-    using t_dag_item = dag::DagItem<pool::NodeHandle, model::Node>;
+    using t_dag_item = util::DagItem<pool::NodeHandle, model::Node>;
 
     constexpr int NULL_NODE_INDEX = 0;
     constexpr int ID_NODE_INDEX = 1;
@@ -428,8 +428,8 @@ void NodeRegistry::snapshotRT()
 }
 
 void NodeRegistry::snapshot(
-    std::vector<Snapshot>& src,
-    std::vector<Snapshot>& dst)
+    std::vector<model::Snapshot>& src,
+    std::vector<model::Snapshot>& dst)
 {
     const auto sz = src.size();
     const auto forceFrom = dst.size();
@@ -722,7 +722,7 @@ void NodeRegistry::attachNode(
     const pool::NodeHandle nodeHandle,
     ki::node_id parentId,
     ki::socket_id socketId,
-    const CreateState& state) noexcept
+    const model::CreateState& state) noexcept
 {
     auto* node = nodeHandle.toNode();
 
@@ -930,7 +930,7 @@ void NodeRegistry::sortNodes(
 			items.push_back({ parentHandle, nodeHandle, nullptr });
 		}
 
-		dag::DagSort<pool::NodeHandle, model::Node> sorter;
+		util::DagSort<pool::NodeHandle, model::Node> sorter;
 		sorted = sorter.sort(items);
 	}
 
@@ -942,7 +942,7 @@ void NodeRegistry::sortNodes(
 
 void NodeRegistry::bindNode(
     const pool::NodeHandle nodeHandle,
-    const CreateState& createState)
+    const model::CreateState& createState)
 {
     auto* node = nodeHandle.toNode();
     if (!node) return;
@@ -980,7 +980,7 @@ void NodeRegistry::bindNode(
     }
 
     {
-        NodeState state;
+        model::NodeState state;
         {
             const auto* type = node->getType();
 
@@ -1272,8 +1272,8 @@ void NodeRegistry::viewportChanged(
 
 void NodeRegistry::updateBounds(
     const UpdateContext& ctx,
-    NodeState& state,
-    const NodeState& parentState,
+    model::NodeState& state,
+    const model::NodeState& parentState,
     const model::Node* node,
     const physics::PhysicsSystem& physicsSystem)
 {

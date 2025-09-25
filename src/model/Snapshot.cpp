@@ -17,100 +17,103 @@ namespace {
     Sphere s_sphere;
 }
 
-//Snapshot::Snapshot(const NodeState& o)
-//    : m_matrixLevel{ o.m_matrixLevel },
-//    m_flags{ o.m_flags },
-//    m_viewUp{ o.m_viewUp },
-//    m_viewFront{ o.m_viewFront },
-//    m_modelMatrix{ o.m_modelMatrix },
-//    m_modelScale{ o.m_modelScale },
-//    m_attachedSocketIndex{ o.m_attachedSocketIndex }
-//{
-//    glm::mat4 socketTransform{ 1.f };
-//    if (m_attachedSocketIndex) {
-//        socketTransform = animation::AnimationSystem::get().getSocketTransform(m_attachedSocketIndex);
-//    }
-//
-//    m_volume = Sphere::calculateWorldVolume(
-//        o.m_volume,
-//        o.m_modelMatrix * socketTransform,
-//        o.getWorldPosition(),
-//        o.getWorldMaxScale());
-//}
-
-//Snapshot::Snapshot(const NodeState&& o)
-//    : m_matrixLevel{ o.m_matrixLevel },
-//    m_flags{ o.m_flags },
-//    m_viewUp{ o.m_viewUp },
-//    m_viewFront{ o.m_viewFront },
-//    m_modelMatrix{ o.m_modelMatrix },
-//    m_modelScale{ o.m_modelScale },
-//    m_attachedSocketIndex{ o.m_attachedSocketIndex }
-//{
-//    glm::mat4 socketTransform{ 1.f };
-//    if (m_attachedSocketIndex) {
-//        socketTransform = animation::AnimationSystem::get().getSocketTransform(m_attachedSocketIndex);
-//    }
-//
-//    m_volume = Sphere::calculateWorldVolume(
-//        o.m_volume,
-//        o.m_modelMatrix * socketTransform,
-//        o.getWorldPosition(),
-//        o.getWorldMaxScale());
-//}
-
-void Snapshot::applyFrom(const NodeState& o) noexcept
+namespace model
 {
-    m_matrixLevel = o.m_matrixLevel;
+    //Snapshot::Snapshot(const NodeState& o)
+    //    : m_matrixLevel{ o.m_matrixLevel },
+    //    m_flags{ o.m_flags },
+    //    m_viewUp{ o.m_viewUp },
+    //    m_viewFront{ o.m_viewFront },
+    //    m_modelMatrix{ o.m_modelMatrix },
+    //    m_modelScale{ o.m_modelScale },
+    //    m_attachedSocketIndex{ o.m_attachedSocketIndex }
+    //{
+    //    glm::mat4 socketTransform{ 1.f };
+    //    if (m_attachedSocketIndex) {
+    //        socketTransform = animation::AnimationSystem::get().getSocketTransform(m_attachedSocketIndex);
+    //    }
+    //
+    //    m_volume = Sphere::calculateWorldVolume(
+    //        o.m_volume,
+    //        o.m_modelMatrix * socketTransform,
+    //        o.getWorldPosition(),
+    //        o.getWorldMaxScale());
+    //}
 
-    m_dirty |= o.m_dirtySnapshot;
-    m_dirtyNormal |= o.m_dirtyNormal;
+    //Snapshot::Snapshot(const NodeState&& o)
+    //    : m_matrixLevel{ o.m_matrixLevel },
+    //    m_flags{ o.m_flags },
+    //    m_viewUp{ o.m_viewUp },
+    //    m_viewFront{ o.m_viewFront },
+    //    m_modelMatrix{ o.m_modelMatrix },
+    //    m_modelScale{ o.m_modelScale },
+    //    m_attachedSocketIndex{ o.m_attachedSocketIndex }
+    //{
+    //    glm::mat4 socketTransform{ 1.f };
+    //    if (m_attachedSocketIndex) {
+    //        socketTransform = animation::AnimationSystem::get().getSocketTransform(m_attachedSocketIndex);
+    //    }
+    //
+    //    m_volume = Sphere::calculateWorldVolume(
+    //        o.m_volume,
+    //        o.m_modelMatrix * socketTransform,
+    //        o.getWorldPosition(),
+    //        o.getWorldMaxScale());
+    //}
 
-    m_flags = o.m_flags;
+    void Snapshot::applyFrom(const NodeState& o) noexcept
+    {
+        m_matrixLevel = o.m_matrixLevel;
 
-    o.updateModelAxis();
-    m_viewUp = o.m_viewUp;
-    m_viewFront = o.m_viewFront;
-    m_modelMatrix = o.m_modelMatrix;
+        m_dirty |= o.m_dirtySnapshot;
+        m_dirtyNormal |= o.m_dirtyNormal;
 
-    m_modelScale = o.m_modelScale;
+        m_flags = o.m_flags;
 
-    m_attachedSocketIndex = o.m_attachedSocketIndex;
+        o.updateModelAxis();
+        m_viewUp = o.m_viewUp;
+        m_viewFront = o.m_viewFront;
+        m_modelMatrix = o.m_modelMatrix;
 
-    glm::mat4 socketTransform{ 1.f };
-    if (m_attachedSocketIndex) {
-        socketTransform = animation::AnimationSystem::get().getSocketTransform(m_attachedSocketIndex);
+        m_modelScale = o.m_modelScale;
+
+        m_attachedSocketIndex = o.m_attachedSocketIndex;
+
+        glm::mat4 socketTransform{ 1.f };
+        if (m_attachedSocketIndex) {
+            socketTransform = animation::AnimationSystem::get().getSocketTransform(m_attachedSocketIndex);
+        }
+
+        m_volume = Sphere::calculateWorldVolume(
+            o.m_volume,
+            o.m_modelMatrix * socketTransform,
+            o.getWorldPosition(),
+            o.getWorldMaxScale());
+
+        o.m_dirtySnapshot = false;
+        o.m_dirtyNormal = false;
     }
 
-    m_volume = Sphere::calculateWorldVolume(
-        o.m_volume,
-        o.m_modelMatrix * socketTransform,
-        o.getWorldPosition(),
-        o.getWorldMaxScale());
+    void Snapshot::updateEntity(
+        EntitySSBO& entity) const
+    {
+        ASSERT_RT();
 
-    o.m_dirtySnapshot = false;
-    o.m_dirtyNormal = false;
-}
+        entity.u_flags = m_flags;
 
-void Snapshot::updateEntity(
-    EntitySSBO& entity) const
-{
-    ASSERT_RT();
+        entity.u_volume = m_volume;
 
-    entity.u_flags = m_flags;
+        // NOTE KI M-T matrix needed *ONLY* if non uniform scale
+        // NOTE KI flat planes are *always* uniform, since problem with normal scaling does
+        // not truly affect them
+        const auto uniformScale = (m_flags & PLANE_BITS) != 0
+            || (m_modelScale.x == m_modelScale.y && m_modelScale.x == m_modelScale.z);
 
-    entity.u_volume = m_volume;
+        // NOTE KI normal may change only if scale changes
+        entity.setModelMatrix(m_modelMatrix, uniformScale, m_dirtyNormal);
 
-    // NOTE KI M-T matrix needed *ONLY* if non uniform scale
-    // NOTE KI flat planes are *always* uniform, since problem with normal scaling does
-    // not truly affect them
-    const auto uniformScale = (m_flags & PLANE_BITS) != 0
-        || (m_modelScale.x == m_modelScale.y && m_modelScale.x == m_modelScale.z);
+        entity.u_worldScale = m_modelScale;
 
-    // NOTE KI normal may change only if scale changes
-    entity.setModelMatrix(m_modelMatrix, uniformScale, m_dirtyNormal);
-
-    entity.u_worldScale = m_modelScale;
-
-    m_dirtyNormal = false;
+        m_dirtyNormal = false;
+    }
 }

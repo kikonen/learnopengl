@@ -4,8 +4,11 @@
 
 #include "BaseLoader.h"
 
-struct CompositeDefinition;
-struct NodeDefinition;
+namespace model
+{
+    struct CompositeDefinition;
+    struct NodeDefinition;
+}
 
 namespace loader {
     class Loaders;
@@ -29,7 +32,7 @@ namespace loader {
             CompositeData& data,
             Loaders& loaders) const;
 
-        std::unique_ptr<CompositeDefinition> createCompositeDefinition(
+        std::unique_ptr<model::CompositeDefinition> createCompositeDefinition(
             const CompositeData& compositeData,
             Loaders& loaders) const;
     };

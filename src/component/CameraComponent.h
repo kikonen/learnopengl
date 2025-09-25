@@ -5,10 +5,10 @@
 namespace model
 {
     class Node;
+    struct Snapshot;
 }
 
 struct UpdateContext;
-struct Snapshot;
 
 class CameraComponent
 {
@@ -31,7 +31,7 @@ public:
 
     virtual void updateRT(const UpdateContext& ctx, model::Node& node) = 0;
 
-    virtual void snapToIdeal(const Snapshot& snapshot) {};
+    virtual void snapToIdeal(const model::Snapshot& snapshot) {};
 
 public:
     bool m_enabled{ true };

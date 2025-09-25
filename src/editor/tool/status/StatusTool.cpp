@@ -41,7 +41,7 @@ namespace editor
     StatusTool::~StatusTool() = default;
 
     void StatusTool::drawImpl(
-        const RenderContext& ctx,
+        const render::RenderContext& ctx,
         Scene* scene,
         debug::DebugContext& dbg)
     {
@@ -52,7 +52,7 @@ namespace editor
     }
 
     void StatusTool::processInputs(
-        const RenderContext& ctx,
+        const render::RenderContext& ctx,
         Scene* scene,
         const Input& input,
         const InputState& inputState,
@@ -61,7 +61,7 @@ namespace editor
     }
 
     void StatusTool::renderStatus(
-        const RenderContext& ctx,
+        const render::RenderContext& ctx,
         debug::DebugContext& dbg)
     {
         auto& window = m_editor.getWindow();

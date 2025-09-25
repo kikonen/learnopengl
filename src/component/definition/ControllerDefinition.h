@@ -7,8 +7,12 @@
 
 #include "ki/size.h"
 
+namespace model
+{
+    class NodeType;
+}
+
 class NodeController;
-class NodeType;
 
 enum class ControllerType : std::underlying_type_t<std::byte> {
     none,

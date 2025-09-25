@@ -28,6 +28,12 @@ namespace script {
     struct Script;
 }
 
+namespace model
+{
+    struct CompositeDefinition;
+    struct Snapshot;
+}
+
 struct CameraComponentDefinition;
 struct LightDefinition;
 struct TextGeneratorDefinition;
@@ -36,17 +42,19 @@ struct AudioSourceDefinition;
 struct PhysicsDefinition;
 struct ControllerDefinition;
 struct GeneratorDefinition;
-struct CompositeDefinition;
 struct ParticleGeneratorDefinition;
 
 struct PrepareContext;
 
-struct Snapshot;
 
 class CustomMaterial;
 class Registry;
-class RenderContext;
 class NodeTypeRegistry;
+
+namespace render
+{
+	class RenderContext;
+}
 
 namespace animation {
     struct RigContainer;
@@ -58,142 +66,145 @@ namespace mesh {
     struct LodMesh;
 }
 
-class NodeType final
+namespace model
 {
-    friend struct pool::TypeHandle;
-    friend class NodeTypeRegistry;
-    //friend struct render::NodeTypeComparator;
-    //friend struct render::NodeTypeKey;
-
-public:
-    NodeType();
-    NodeType(NodeType& o) = delete;
-    NodeType(const NodeType& o) = delete;
-    NodeType(NodeType&& o) noexcept;
-    ~NodeType();
-
-    NodeType& operator=(const NodeType& o) = delete;
-    NodeType& operator=(NodeType&& o) = delete;
-
-    bool operator==(const NodeType& o) const noexcept
+    class NodeType final
     {
-        return m_handle == o.m_handle;
-    }
+        friend struct pool::TypeHandle;
+        friend class NodeTypeRegistry;
+        //friend struct render::NodeTypeComparator;
+        //friend struct render::NodeTypeKey;
 
-    inline ki::type_id getId() const noexcept { return m_handle.m_id; }
-    inline pool::TypeHandle toHandle() const noexcept { return m_handle; }
+    public:
+        NodeType();
+        NodeType(NodeType& o) = delete;
+        NodeType(const NodeType& o) = delete;
+        NodeType(NodeType&& o) noexcept;
+        ~NodeType();
 
-    const std::string& getName() const noexcept
-    {
-        return *m_name;
-    }
+        NodeType& operator=(const NodeType& o) = delete;
+        NodeType& operator=(NodeType&& o) = delete;
 
-    void setName(std::string_view name) noexcept
-    {
-        *m_name = name;
-    }
+        bool operator==(const NodeType& o) const noexcept
+        {
+            return m_handle == o.m_handle;
+        }
 
-    inline bool isReady() const noexcept { return m_preparedRT; }
+        inline ki::type_id getId() const noexcept { return m_handle.m_id; }
+        inline pool::TypeHandle toHandle() const noexcept { return m_handle; }
 
-    std::string str() const noexcept;
+        const std::string& getName() const noexcept
+        {
+            return *m_name;
+        }
 
-    // @return count of meshes added
-    uint16_t addMeshSet(
-        const mesh::MeshSet& meshSet);
+        void setName(std::string_view name) noexcept
+        {
+            *m_name = name;
+        }
 
-    mesh::LodMesh* addLodMesh(mesh::LodMesh&& lodMesh);
+        inline bool isReady() const noexcept { return m_preparedRT; }
 
-    inline const mesh::LodMesh* getLodMesh(uint8_t lodIndex) const noexcept {
-        return m_lodMeshes.empty() ? nullptr : &m_lodMeshes[lodIndex];
-    }
+        std::string str() const noexcept;
 
-    inline const std::vector<mesh::LodMesh>& getLodMeshes() const noexcept {
-        return m_lodMeshes;
-    }
+        // @return count of meshes added
+        uint16_t addMeshSet(
+            const mesh::MeshSet& meshSet);
 
-    inline mesh::LodMesh* modifyLodMesh(uint8_t lodIndex) noexcept {
-        return m_lodMeshes.empty() ? nullptr : &m_lodMeshes[lodIndex];
-    }
+        mesh::LodMesh* addLodMesh(mesh::LodMesh&& lodMesh);
 
-    inline std::vector<mesh::LodMesh>& modifyLodMeshes() noexcept {
-        return m_lodMeshes;
-    }
+        inline const mesh::LodMesh* getLodMesh(uint8_t lodIndex) const noexcept {
+            return m_lodMeshes.empty() ? nullptr : &m_lodMeshes[lodIndex];
+        }
 
-    inline bool hasMesh() const noexcept {
-        return !m_lodMeshes.empty() && m_lodMeshes[0].m_mesh.get();
-    }
+        inline const std::vector<mesh::LodMesh>& getLodMeshes() const noexcept {
+            return m_lodMeshes;
+        }
 
-    std::shared_ptr<animation::RigContainer> findRig() const;
+        inline mesh::LodMesh* modifyLodMesh(uint8_t lodIndex) noexcept {
+            return m_lodMeshes.empty() ? nullptr : &m_lodMeshes[lodIndex];
+        }
 
-    template<typename T>
-    inline T* getCustomMaterial() const noexcept {
-        return dynamic_cast<T*>(m_customMaterial.get());
-    }
+        inline std::vector<mesh::LodMesh>& modifyLodMeshes() noexcept {
+            return m_lodMeshes;
+        }
 
-    void setCustomMaterial(std::unique_ptr<CustomMaterial> customMaterial) noexcept;
+        inline bool hasMesh() const noexcept {
+            return !m_lodMeshes.empty() && m_lodMeshes[0].m_mesh.get();
+        }
 
-    void prepareWT(
-        const PrepareContext& ctx);
+        std::shared_ptr<animation::RigContainer> findRig() const;
 
-    void prepareRT(
-        const PrepareContext& ctx);
+        template<typename T>
+        inline T* getCustomMaterial() const noexcept {
+            return dynamic_cast<T*>(m_customMaterial.get());
+        }
 
-    void bind(const RenderContext& ctx);
+        void setCustomMaterial(std::unique_ptr<CustomMaterial> customMaterial) noexcept;
 
-    ki::size_t_entity_flags resolveEntityFlags() const noexcept;
+        void prepareWT(
+            const PrepareContext& ctx);
 
-    const AABB& getAABB() const noexcept
-    {
-        return *m_aabb;
-    }
+        void prepareRT(
+            const PrepareContext& ctx);
 
-    void prepareVolume() noexcept;
+        void bind(const render::RenderContext& ctx);
 
-    void addScript(script::script_id id) {
-        m_scripts->push_back(id);
-    }
+        ki::size_t_entity_flags resolveEntityFlags() const noexcept;
 
-    const std::vector<script::script_id>& getScripts() const noexcept
-    {
-        return *m_scripts;
-    }
+        const AABB& getAABB() const noexcept
+        {
+            return *m_aabb;
+        }
 
-private:
-    AABB calculateAABB() const noexcept;
+        void prepareVolume() noexcept;
 
-private:
-    std::vector<mesh::LodMesh> m_lodMeshes;
-    std::unique_ptr<std::string> m_name;
-    std::unique_ptr<AABB> m_aabb;
-    std::unique_ptr<std::vector<script::script_id>> m_scripts;
-    std::unique_ptr<CustomMaterial> m_customMaterial{ nullptr };
+        void addScript(script::script_id id) {
+            m_scripts->push_back(id);
+        }
 
-public:
-    pool::TypeHandle m_handle;
+        const std::vector<script::script_id>& getScripts() const noexcept
+        {
+            return *m_scripts;
+        }
 
-    std::unique_ptr<CameraComponentDefinition> m_cameraComponentDefinition{ nullptr };
-    std::unique_ptr<LightDefinition> m_lightDefinition{ nullptr };
-    std::unique_ptr<ParticleGeneratorDefinition> m_particleGeneratorDefinition{ nullptr };
-    std::unique_ptr<PhysicsDefinition> m_physicsDefinition;
-    std::unique_ptr<GeneratorDefinition> m_generatorDefinition;
+    private:
+        AABB calculateAABB() const noexcept;
 
-    std::unique_ptr<std::vector<ControllerDefinition>> m_controllerDefinitions;
+    private:
+        std::vector<mesh::LodMesh> m_lodMeshes;
+        std::unique_ptr<std::string> m_name;
+        std::unique_ptr<AABB> m_aabb;
+        std::unique_ptr<std::vector<script::script_id>> m_scripts;
+        std::unique_ptr<CustomMaterial> m_customMaterial{ nullptr };
 
-    std::unique_ptr<AudioListenerDefinition> m_audioListenerDefinition;
-    std::unique_ptr<std::vector<AudioSourceDefinition>> m_audioSourceDefinitions;
+    public:
+        pool::TypeHandle m_handle;
 
-    std::unique_ptr<TextGeneratorDefinition> m_textGeneratorDefinition{ nullptr };
-    std::unique_ptr<CompositeDefinition> m_compositeDefinition{ nullptr };
+        std::unique_ptr<CameraComponentDefinition> m_cameraComponentDefinition{ nullptr };
+        std::unique_ptr<LightDefinition> m_lightDefinition{ nullptr };
+        std::unique_ptr<ParticleGeneratorDefinition> m_particleGeneratorDefinition{ nullptr };
+        std::unique_ptr<PhysicsDefinition> m_physicsDefinition;
+        std::unique_ptr<GeneratorDefinition> m_generatorDefinition;
 
-    glm::vec3 m_front{ 0.f, 0.f, 1.f };
-    glm::quat m_baseRotation{ 1.f, 0.f, 0.f, 0.f };
-    glm::vec3 m_baseScale{ 1.f };
-    PivotPoint m_pivotPoint;
+        std::unique_ptr<std::vector<ControllerDefinition>> m_controllerDefinitions;
 
-    TypeFlags m_flags;
-    uint8_t m_layer{ 0 };
+        std::unique_ptr<AudioListenerDefinition> m_audioListenerDefinition;
+        std::unique_ptr<std::vector<AudioSourceDefinition>> m_audioSourceDefinitions;
 
-private:
-    bool m_preparedWT : 1 {false};
-    bool m_preparedRT : 1 {false};
-};
+        std::unique_ptr<TextGeneratorDefinition> m_textGeneratorDefinition{ nullptr };
+        std::unique_ptr<model::CompositeDefinition> m_compositeDefinition{ nullptr };
+
+        glm::vec3 m_front{ 0.f, 0.f, 1.f };
+        glm::quat m_baseRotation{ 1.f, 0.f, 0.f, 0.f };
+        glm::vec3 m_baseScale{ 1.f };
+        PivotPoint m_pivotPoint;
+
+        TypeFlags m_flags;
+        uint8_t m_layer{ 0 };
+
+    private:
+        bool m_preparedWT : 1 {false};
+        bool m_preparedRT : 1 {false};
+    };
+}

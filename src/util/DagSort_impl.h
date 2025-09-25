@@ -5,7 +5,7 @@
 
 #include "ki/size.h"
 
-namespace dag {
+namespace util {
     enum class Color {
         white,
         gray,

@@ -13,12 +13,12 @@ namespace editor
         ~CameraTool() override;
 
         void drawImpl(
-            const RenderContext& ctx,
+            const render::RenderContext& ctx,
             Scene* scene,
             debug::DebugContext& dbg) override;
 
         void processInputs(
-            const RenderContext& ctx,
+            const render::RenderContext& ctx,
             Scene* scene,
             const Input& input,
             const InputState& inputState,
@@ -26,7 +26,7 @@ namespace editor
 
     protected:
         void renderCamera(
-            const RenderContext& ctx,
+            const render::RenderContext& ctx,
             debug::DebugContext& dbg);
 
     private:

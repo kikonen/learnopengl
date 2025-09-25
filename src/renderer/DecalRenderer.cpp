@@ -75,7 +75,7 @@ void DecalRenderer::prepareRT(
 }
 
 void DecalRenderer::renderSolid(
-    const RenderContext& ctx)
+    const render::RenderContext& ctx)
 {
     if (!isEnabled()) return;
 
@@ -86,7 +86,7 @@ void DecalRenderer::renderSolid(
 }
 
 void DecalRenderer::renderBlend(
-    const RenderContext& ctx)
+    const render::RenderContext& ctx)
 {
     if (!isEnabled()) return;
 
@@ -97,7 +97,7 @@ void DecalRenderer::renderBlend(
 }
 
 void DecalRenderer::renderSolidCollection(
-    const RenderContext& ctx,
+    const render::RenderContext& ctx,
     const decal::DecalCollection& collection)
 {
     if (!isEnabled()) return;
@@ -145,7 +145,7 @@ void DecalRenderer::renderSolidCollection(
 }
 
 void DecalRenderer::renderBlendCollection(
-    const RenderContext& ctx,
+    const render::RenderContext& ctx,
     const decal::DecalCollection& collection)
 {
     if (!isEnabled()) return;

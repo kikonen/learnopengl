@@ -6,8 +6,12 @@
 #include "GeneratorData.h"
 #include "MaterialData.h"
 
+namespace model
+{
+    class NodeType;
+}
+
 class NodeGenerator;
-class NodeType;
 struct GeneratorDefinition;
 
 namespace loader {

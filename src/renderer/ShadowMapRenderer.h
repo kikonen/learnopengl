@@ -13,8 +13,12 @@ namespace render {
     class FrameBuffer;
 }
 
+namespace model
+{
+    class Viewport;
+}
+
 class ShadowCascade;
-class Viewport;
 struct ShadowUBO;
 
 class ShadowMapRenderer final : public Renderer
@@ -32,14 +36,14 @@ public:
     void bindTexture(kigl::GLState& state);
 
     void bind(
-        const RenderContext& ctx,
+        const render::RenderContext& ctx,
         ShadowUBO& shadowUbo);
 
     bool render(
-        const RenderContext& ctx);
+        const render::RenderContext& ctx);
 
 public:
-    std::shared_ptr<Viewport> m_debugViewport;
+    std::shared_ptr<model::Viewport> m_debugViewport;
 
 private:
     // NOTE KI std::unique_ptr triggered exhaustive error loop

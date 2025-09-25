@@ -5,9 +5,13 @@
 
 #include "BaseLoader.h"
 
+namespace model
+{
+    class NodeType;
+}
+
 struct Material;
 struct TypeFlags;
-class NodeType;
 
 namespace pool {
     struct TypeHandle;
@@ -56,37 +60,37 @@ namespace loader {
 
     private:
         void resolveMaterials(
-            NodeType* type,
+            model::NodeType* type,
             mesh::LodMesh& lodMesh,
             const NodeTypeData& typeData,
             const MeshData& meshData,
             const LodData* lodData);
 
         void resolveMeshes(
-            NodeType* type,
+            model::NodeType* type,
             const NodeTypeData& typeData);
 
         void resolveMesh(
-            NodeType* type,
+            model::NodeType* type,
             const NodeTypeData& typeData,
             const MeshData& meshData,
             int index);
 
         // @return count of meshes added
         int resolveModelMesh(
-            NodeType* type,
+            model::NodeType* type,
             const NodeTypeData& typeData,
             const MeshData& meshData,
             int index);
 
         void resolveLodMesh(
-            NodeType* type,
+            model::NodeType* type,
             const NodeTypeData& typeData,
             const MeshData& meshData,
             mesh::LodMesh& lodMesh);
 
         const LodData* resolveLod(
-            NodeType* type,
+            model::NodeType* type,
             const NodeTypeData& typeData,
             const MeshData& meshData,
             mesh::LodMesh& lodMesh);
@@ -106,8 +110,9 @@ namespace loader {
             mesh::MeshSet& meshSet);
 
         //void resolveAttachments(
-        //    NodeType* type,
-        //    const NodeTypeData& typeData);
+        //    model::NodeTypeNodeType* type,
+        //    const NodeTypeD
+        // ata& typeData);
 
         void assignTypeFlags(
             const NodeTypeData& typeData,

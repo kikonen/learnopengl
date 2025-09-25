@@ -61,7 +61,7 @@ namespace editor
     NodeTypeTool::~NodeTypeTool() = default;
 
     void NodeTypeTool::processInputs(
-        const RenderContext& ctx,
+        const render::RenderContext& ctx,
         Scene* scene,
         const Input& input,
         const InputState& inputState,
@@ -70,7 +70,7 @@ namespace editor
     }
 
     void NodeTypeTool::drawImpl(
-        const RenderContext& ctx,
+        const render::RenderContext& ctx,
         Scene* scene,
         debug::DebugContext& dbg)
     {
@@ -86,7 +86,7 @@ namespace editor
     }
 
     void NodeTypeTool::renderTypeEdit(
-        const RenderContext& ctx,
+        const render::RenderContext& ctx,
         debug::DebugContext& dbg)
     {
         renderTypeSelector(ctx, dbg);
@@ -108,7 +108,7 @@ namespace editor
     }
 
     void NodeTypeTool::renderTypeSelector(
-        const RenderContext& ctx,
+        const render::RenderContext& ctx,
         debug::DebugContext& dbg)
     {
         const auto& typeRegistry = NodeTypeRegistry::get();
@@ -138,7 +138,7 @@ namespace editor
     }
 
     void NodeTypeTool::renderTypeProperties(
-        const RenderContext& ctx,
+        const render::RenderContext& ctx,
         debug::DebugContext& dbg)
     {
         auto* type = m_state.m_selectedType.toType();
@@ -173,7 +173,7 @@ namespace editor
     }
 
     void NodeTypeTool::onSelectType(
-        const RenderContext& ctx,
+        const render::RenderContext& ctx,
         pool::TypeHandle typeHandle)
     {
         m_state.m_selectedType = typeHandle;
@@ -189,7 +189,7 @@ namespace editor
     }
 
     void NodeTypeTool::onCreateNode(
-        const RenderContext& ctx,
+        const render::RenderContext& ctx,
         pool::TypeHandle typeHandle)
     {
         const auto* type = typeHandle.toType();
@@ -200,12 +200,12 @@ namespace editor
             glm::vec3 rot{ 0.f };
             glm::vec3 scale{ 1.f };
 
-            CreateState state{
+            model::CreateState state{
                 pos,
                 scale,
                 util::degreesToQuat(rot) };
 
-            CompositeBuilder builder{ NodeRegistry::get() };
+            model::CompositeBuilder builder{ NodeRegistry::get() };
             if (builder.build(parentId, 0, type, state)) {
                 auto rootHandle = builder.asyncAttach(ctx.m_registry);
 

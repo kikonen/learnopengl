@@ -88,7 +88,7 @@ namespace model
 
         auto* type = m_typeHandle.toType();
 
-        // TODO KI need to set these to *NodeType* in loader
+        // TODO KI need to set these to *model::NodeType* in loader
         // => apply from there in NodeRegistry
         state.setPivotAlignment(type->m_pivotPoint.resolveAlignment(type));
         state.setPivotOffset(type->m_pivotPoint.m_offset);
@@ -189,7 +189,7 @@ namespace model
         }
     }
 
-    void Node::updateVAO(const RenderContext& ctx) noexcept
+    void Node::updateVAO(const render::RenderContext& ctx) noexcept
     {
         if (m_generator) {
             m_generator->updateVAO(ctx, *this);
@@ -197,7 +197,7 @@ namespace model
     }
 
     void Node::bindBatch(
-        const RenderContext& ctx,
+        const render::RenderContext& ctx,
         const std::function<ki::program_id(const mesh::LodMesh&)>& programSelector,
         const std::function<void(ki::program_id)>& programPrepare,
         uint8_t kindBits,

@@ -41,17 +41,17 @@ public:
         const model::Node& container) override;
 
     virtual void updateVAO(
-        const RenderContext& ctx,
+        const render::RenderContext& ctx,
         const model::Node& container);
 
     virtual void bindBatch(
-        const RenderContext& ctx,
+        const render::RenderContext& ctx,
         const std::function<ki::program_id (const mesh::LodMesh&)>& programSelector,
         const std::function<void(ki::program_id)>& programPrepare,
         uint8_t kindBits,
         render::Batch& batch,
         const model::Node& container,
-        const Snapshot& snapshot) override;
+        const model::Snapshot& snapshot) override;
 
     virtual const std::vector<mesh::LodMesh>* getLodMeshes(const model::Node& container) const
     {

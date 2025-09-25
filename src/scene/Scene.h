@@ -30,11 +30,15 @@ namespace render {
 namespace model
 {
     class Node;
+    class Viewport;
+}
+
+namespace render
+{
+    class RenderContext;
 }
 
 class Light;
-
-class Viewport;
 
 class NodeController;
 
@@ -42,7 +46,6 @@ class Registry;
 
 struct UpdateContext;
 struct UpdateViewContext;
-class RenderContext;
 
 class LayerRenderer;
 class ViewportRenderer;
@@ -86,22 +89,22 @@ public:
     void handleNodeAdded(model::Node* node);
     void handleNodeRemoved(model::Node* node);
 
-    void bind(const RenderContext& ctx);
-    void unbind(const RenderContext& ctx);
+    void bind(const render::RenderContext& ctx);
+    void unbind(const render::RenderContext& ctx);
 
     backend::gl::PerformanceCounters getCounters(bool clear) const;
     backend::gl::PerformanceCounters getCountersLocal(bool clear) const;
 
-    void render(const RenderContext& ctx);
+    void render(const render::RenderContext& ctx);
 
-    void renderUi(const RenderContext& ctx);
-    void renderPlayer(const RenderContext& ctx);
-    void renderMain(const RenderContext& ctx);
-    void renderRear(const RenderContext& ctx);
-    void renderViewports(const RenderContext& ctx);
+    void renderUi(const render::RenderContext& ctx);
+    void renderPlayer(const render::RenderContext& ctx);
+    void renderMain(const render::RenderContext& ctx);
+    void renderRear(const render::RenderContext& ctx);
+    void renderViewports(const render::RenderContext& ctx);
 
     void renderScene(
-        const RenderContext& ctx,
+        const render::RenderContext& ctx,
         LayerRenderer* layerRenderer);
 
     model::Node* getActiveNode() const;
@@ -110,14 +113,14 @@ public:
     model::Node* getActiveCameraNode() const;
     const std::vector<std::unique_ptr<NodeController>>* getActiveCameraControllers() const;
 
-    ki::node_id getObjectID(const RenderContext& ctx, float posx, float posy);
+    ki::node_id getObjectID(const render::RenderContext& ctx, float posx, float posy);
 
     render::NodeCollection* getCollection()
     {
         return m_collection.get();
     }
 
-    void prepareUBOs(const RenderContext& ctx);
+    void prepareUBOs(const render::RenderContext& ctx);
     void updateUBOs() const;
     void updateDataUBO() const;
     void updateShadowUBO() const;
@@ -125,10 +128,10 @@ public:
     void updateLightsUBO() const;
 
 public:
-    std::shared_ptr<Viewport> m_uiViewport{ nullptr };
-    std::shared_ptr<Viewport> m_playerViewport{ nullptr };
-    std::shared_ptr<Viewport> m_mainViewport{ nullptr };
-    std::shared_ptr<Viewport> m_rearViewport{ nullptr };
+    std::shared_ptr<model::Viewport> m_uiViewport{ nullptr };
+    std::shared_ptr<model::Viewport> m_playerViewport{ nullptr };
+    std::shared_ptr<model::Viewport> m_mainViewport{ nullptr };
+    std::shared_ptr<model::Viewport> m_rearViewport{ nullptr };
 
 public:
     std::unique_ptr<render::RenderData> m_renderData;

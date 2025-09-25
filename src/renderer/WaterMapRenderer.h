@@ -25,9 +25,9 @@ namespace editor {
 namespace model
 {
     class Node;
+    class Viewport;
 }
 
-class Viewport;
 
 class WaterMapRenderer final : public Renderer
 {
@@ -54,23 +54,23 @@ public:
     void bindTexture(kigl::GLState& state);
 
     bool render(
-        const RenderContext& ctx);
+        const render::RenderContext& ctx);
 
 private:
     void updateReflectionView(const UpdateViewContext& ctx);
     void updateRefractionView(const UpdateViewContext& ctx);
 
     void drawNodes(
-        const RenderContext& ctx,
+        const render::RenderContext& ctx,
         render::FrameBuffer* targetBuffer,
         model::Node* current,
         bool reflect);
 
-    model::Node* findClosest(const RenderContext& ctx);
+    model::Node* findClosest(const render::RenderContext& ctx);
 
 public:
-    std::shared_ptr<Viewport> m_reflectionDebugViewport;
-    std::shared_ptr<Viewport> m_refractionDebugViewport;
+    std::shared_ptr<model::Viewport> m_reflectionDebugViewport;
+    std::shared_ptr<model::Viewport> m_refractionDebugViewport;
 
     pool::NodeHandle m_sourceNode{};
 

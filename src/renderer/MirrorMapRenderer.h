@@ -23,9 +23,9 @@ namespace editor {
 namespace model
 {
     class Node;
+    class Viewport;
 }
 
-class Viewport;
 class WaterMapRenderer;
 
 class MirrorMapRenderer final : public Renderer
@@ -53,18 +53,18 @@ public:
     void bindTexture(kigl::GLState& state);
 
     bool render(
-        const RenderContext& ctx);
+        const render::RenderContext& ctx);
 
 private:
     void drawNodes(
-        const RenderContext& ctx,
+        const render::RenderContext& ctx,
         render::FrameBuffer* targetBuffer,
         model::Node* current);
 
-    model::Node* findClosest(const RenderContext& ctx);
+    model::Node* findClosest(const render::RenderContext& ctx);
 
 public:
-    std::shared_ptr<Viewport> m_reflectionDebugViewport;
+    std::shared_ptr<model::Viewport> m_reflectionDebugViewport;
 
     pool::NodeHandle m_sourceNode{};
 

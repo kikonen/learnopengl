@@ -27,7 +27,7 @@ namespace pool {
 
 namespace event {
     struct NodeAttach {
-        CreateState state;
+        model::CreateState state;
     };
 
     // Blobdata is for doing passing abnormally large event blobs

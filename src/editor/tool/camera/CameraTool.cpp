@@ -46,7 +46,7 @@ namespace editor
     CameraTool::~CameraTool() = default;
 
     void CameraTool::drawImpl(
-        const RenderContext& ctx,
+        const render::RenderContext& ctx,
         Scene* scene,
         debug::DebugContext& dbg)
     {
@@ -57,7 +57,7 @@ namespace editor
     }
 
     void CameraTool::processInputs(
-        const RenderContext& ctx,
+        const render::RenderContext& ctx,
         Scene* scene,
         const Input& input,
         const InputState& inputState,
@@ -66,7 +66,7 @@ namespace editor
     }
 
     void CameraTool::renderCamera(
-        const RenderContext& ctx,
+        const render::RenderContext& ctx,
         debug::DebugContext& dbg)
     {
         const auto& nr = NodeRegistry::get();

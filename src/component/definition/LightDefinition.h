@@ -9,7 +9,11 @@
 
 #include "component/LightType.h"
 
-class NodeType;
+namespace model
+{
+    class NodeType;
+}
+
 class Light;
 
 struct LightDefinition {
@@ -27,6 +31,6 @@ struct LightDefinition {
     float m_intensity{ 1.f };
 
     static std::unique_ptr<Light> createLight(
-        const NodeType* type);
+        const model::NodeType* type);
 };
 

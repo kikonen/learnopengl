@@ -202,7 +202,7 @@ void CubeMapRenderer::bindTexture(kigl::GLState& state)
 }
 
 bool CubeMapRenderer::render(
-    const RenderContext& parentCtx)
+    const render::RenderContext& parentCtx)
 {
     const auto& assets = parentCtx.m_assets;
 
@@ -253,7 +253,7 @@ bool CubeMapRenderer::render(
         auto& camera = m_cameras[face];
         camera.setWorldPosition(center);
 
-        RenderContext localCtx("CUBE",
+        render::RenderContext localCtx("CUBE",
             &parentCtx,
             &camera,
             m_nearPlane,
@@ -288,7 +288,7 @@ bool CubeMapRenderer::render(
 }
 
 void CubeMapRenderer::clearCubeMap(
-    const RenderContext& ctx,
+    const render::RenderContext& ctx,
     DynamicCubeMap& cube)
 {
     const glm::vec4 clearColor{ 0.f };
@@ -312,7 +312,7 @@ void CubeMapRenderer::clearCubeMap(
 }
 
 void CubeMapRenderer::drawNodes(
-    const RenderContext& ctx,
+    const render::RenderContext& ctx,
     render::CubeMapBuffer* targetBuffer,
     const model::Node* current,
     const glm::vec4& debugColor)
@@ -375,7 +375,7 @@ void CubeMapRenderer::drawNodes(
     targetBuffer->unbind(ctx);
 }
 
-model::Node* CubeMapRenderer::findClosest(const RenderContext& ctx)
+model::Node* CubeMapRenderer::findClosest(const render::RenderContext& ctx)
 {
     auto& nodes = ctx.m_collection->m_cubeMapNodes;
 

@@ -16,9 +16,12 @@
 #include "Repeat.h"
 #include "TerrainTiling.h"
 
-struct Material;
+namespace model
+{
+    class NodeType;
+}
 
-class NodeType;
+struct Material;
 
 namespace loader {
     const std::string ROOT_ID{ "ROOT" };
@@ -83,7 +86,7 @@ namespace loader {
 
     int readLayer(const loader::DocNode& node);
 
-    const NodeType* findNodeType(
+    const model::NodeType* findNodeType(
         BaseId baseId);
 
     NodeTypeData* findNodeTypeData(

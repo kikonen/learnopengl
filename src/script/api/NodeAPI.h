@@ -10,7 +10,10 @@
 
 #include "script/lua_binding.h"
 
-struct NodeState;
+namespace model
+{
+    struct NodeState;
+}
 
 namespace script::api
 {
@@ -47,7 +50,7 @@ namespace script::api
         static void bind(sol::state& lua);
 
     private:
-        const NodeState& getState(pool::NodeHandle handle) const;
+        const model::NodeState& getState(pool::NodeHandle handle) const;
 
     //private:
     //    const pool::NodeHandle m_handle;

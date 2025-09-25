@@ -7,9 +7,9 @@
 
 #include "kigl/kigl.h"
 
-class RenderContext;
-
 namespace render {
+    class RenderContext;
+
     enum class FrameBufferAttachmentType : std::underlying_type_t<std::byte> {
         shared,
         draw_buffer,

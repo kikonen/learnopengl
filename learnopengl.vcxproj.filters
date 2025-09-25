@@ -1278,7 +1278,7 @@
     <ClCompile Include="src\script\binding\LuaNodeHandle.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\model\DagSort_impl.h">
+    <ClCompile Include="src\util\DagSort_impl.h">
       <Filter>Header Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -2039,7 +2039,7 @@
     <ClInclude Include="src\ki\sid.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\model\DagSort.h">
+    <ClInclude Include="src\util\DagSort.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\ki\FpsCounter.h">

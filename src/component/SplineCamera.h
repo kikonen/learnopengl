@@ -4,7 +4,10 @@
 
 #include "Spline.h"
 
-struct Snapshot;
+namespace model
+{
+    struct Snapshot;
+}
 
 class SplineCamera : public CameraComponent {
 public:

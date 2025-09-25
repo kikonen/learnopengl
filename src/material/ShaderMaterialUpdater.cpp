@@ -92,7 +92,7 @@ void ShaderMaterialUpdater::prepareRT(
 }
 
 void ShaderMaterialUpdater::render(
-    const RenderContext& ctx)
+    const render::RenderContext& ctx)
 {
     m_dirty |= m_frameCounter++ > m_frameSkip;
 

@@ -100,7 +100,7 @@ namespace audio
         }
     }
 
-    void Source::update(const NodeState& state)
+    void Source::update(const model::NodeState& state)
     {
         if (!m_sourceId) return;
 

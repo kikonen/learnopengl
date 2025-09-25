@@ -14,107 +14,113 @@
 
 #include "pool/NodeHandle.h"
 
+namespace model
+{
+    struct NodeState;
+}
 
 struct UpdateContext;
 
-struct NodeState;
 struct EntitySSBO;
 
-//
-// Snapshot of transform for RT
-//
-struct Snapshot {
-private:
-    glm::vec4 m_volume{ 0.f };
-
-    glm::vec3 m_viewUp{ 0.f };
-    glm::vec3 m_viewFront{ 0.f };
-
-    glm::mat4 m_modelMatrix{ 1.f };
-    glm::vec3 m_modelScale{ 1.f };
-
-public:
-    // parent socket
-    uint32_t m_attachedSocketIndex{ 0 };
-
-    ki::size_t_entity_flags m_flags{ 0 }; // 1 * 4 = 4
-
-    ki::level_id m_matrixLevel{ 0 };
-
-    mutable bool m_dirty : 1 { true };
-    mutable bool m_dirtyNormal : 1 { true };
-
-public:
-    ///////////////////////////////////////
+namespace model
+{
     //
-    Snapshot() = default;
-    //Snapshot(const NodeState& o);
-    //Snapshot(const NodeState&& o);
+    // Snapshot of transform for RT
+    //
+    struct Snapshot {
+    private:
+        glm::vec4 m_volume{ 0.f };
 
-    void applyFrom(const NodeState& o) noexcept;
+        glm::vec3 m_viewUp{ 0.f };
+        glm::vec3 m_viewFront{ 0.f };
 
-    //Snapshot& operator=(Snapshot& o) = default;
-    inline void applyFrom(const Snapshot& o) noexcept
-    {
-        m_dirty |= o.m_dirty;
-        m_dirtyNormal |= o.m_dirtyNormal;
+        glm::mat4 m_modelMatrix{ 1.f };
+        glm::vec3 m_modelScale{ 1.f };
 
-        m_matrixLevel = o.m_matrixLevel;
+    public:
+        // parent socket
+        uint32_t m_attachedSocketIndex{ 0 };
 
-        m_flags = o.m_flags;
+        ki::size_t_entity_flags m_flags{ 0 }; // 1 * 4 = 4
 
-        m_volume = o.m_volume;
+        ki::level_id m_matrixLevel{ 0 };
 
-        m_viewUp = o.m_viewUp;
-        m_viewFront = o.m_viewFront;
-        m_modelMatrix = o.m_modelMatrix;
+        mutable bool m_dirty : 1 { true };
+        mutable bool m_dirtyNormal : 1 { true };
 
-        m_modelScale = o.m_modelScale;
+    public:
+        ///////////////////////////////////////
+        //
+        Snapshot() = default;
+        //Snapshot(const NodeState& o);
+        //Snapshot(const NodeState&& o);
 
-        m_attachedSocketIndex = o.m_attachedSocketIndex;
+        void applyFrom(const NodeState& o) noexcept;
 
-        o.m_dirty = false;
-        o.m_dirtyNormal = false;
-    }
+        //Snapshot& operator=(Snapshot& o) = default;
+        inline void applyFrom(const Snapshot& o) noexcept
+        {
+            m_dirty |= o.m_dirty;
+            m_dirtyNormal |= o.m_dirtyNormal;
 
-    void setVolume(const glm::vec4& volume) noexcept
-    {
-        if (m_volume != volume) {
-            m_dirty = true;
-            m_volume = volume;
+            m_matrixLevel = o.m_matrixLevel;
+
+            m_flags = o.m_flags;
+
+            m_volume = o.m_volume;
+
+            m_viewUp = o.m_viewUp;
+            m_viewFront = o.m_viewFront;
+            m_modelMatrix = o.m_modelMatrix;
+
+            m_modelScale = o.m_modelScale;
+
+            m_attachedSocketIndex = o.m_attachedSocketIndex;
+
+            o.m_dirty = false;
+            o.m_dirtyNormal = false;
         }
-    }
 
-    inline const glm::vec4& getVolume() const noexcept
-    {
-        return m_volume;
-    }
+        void setVolume(const glm::vec4& volume) noexcept
+        {
+            if (m_volume != volume) {
+                m_dirty = true;
+                m_volume = volume;
+            }
+        }
 
-    inline const glm::vec3& getViewUp() const noexcept {
-        return m_viewUp;
-    }
+        inline const glm::vec4& getVolume() const noexcept
+        {
+            return m_volume;
+        }
 
-    inline const glm::vec3& getViewFront() const noexcept {
-        return m_viewFront;
-    }
+        inline const glm::vec3& getViewUp() const noexcept {
+            return m_viewUp;
+        }
 
-    inline glm::vec3 getViewRight() const noexcept {
-        return glm::cross(m_viewFront, m_viewUp);
-    }
+        inline const glm::vec3& getViewFront() const noexcept {
+            return m_viewFront;
+        }
 
-    inline glm::vec3 getWorldPosition() const noexcept
-    {
-        return m_modelMatrix[3];
-    }
+        inline glm::vec3 getViewRight() const noexcept {
+            return glm::cross(m_viewFront, m_viewUp);
+        }
 
-    inline ki::level_id getMatrixLevel() const noexcept {
-        return m_matrixLevel;
-    }
+        inline glm::vec3 getWorldPosition() const noexcept
+        {
+            return m_modelMatrix[3];
+        }
 
-    inline const glm::mat4& getModelMatrix() const noexcept {
-        return m_modelMatrix;
-    }
+        inline ki::level_id getMatrixLevel() const noexcept {
+            return m_matrixLevel;
+        }
 
-    void updateEntity(
-        EntitySSBO& entity) const;
-};
+        inline const glm::mat4& getModelMatrix() const noexcept {
+            return m_modelMatrix;
+        }
+
+        void updateEntity(
+            EntitySSBO& entity) const;
+    };
+}

@@ -207,7 +207,7 @@ int SampleApp::onRender(const ki::RenderClock& clock)
         scene->updateViewRT(ctx);
     }
 
-    RenderContext ctx(
+    render::RenderContext ctx(
         "TOP",
         nullptr,
         clock,
@@ -295,7 +295,7 @@ int SampleApp::onRender(const ki::RenderClock& clock)
 }
 
 void SampleApp::frustumDebug(
-    const RenderContext& ctx,
+    const render::RenderContext& ctx,
     const ki::RenderClock& clock)
 {
     const auto& assets = ctx.m_assets;
@@ -423,7 +423,7 @@ void SampleApp::onDestroy()
 }
 
 void SampleApp::raycastPlayer(
-    const RenderContext& ctx,
+    const render::RenderContext& ctx,
     Scene* scene,
     const Input& input,
     const InputState& inputState,
@@ -541,7 +541,7 @@ void SampleApp::raycastPlayer(
 }
 
 void SampleApp::shoot(
-    const RenderContext& ctx,
+    const render::RenderContext& ctx,
     Scene* scene,
     const Input& input,
     const InputState& inputState,

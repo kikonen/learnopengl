@@ -2,7 +2,10 @@
 
 #include "CameraComponent.h"
 
-struct Snapshot;
+namespace model
+{
+    struct Snapshot;
+}
 
 class FollowCamera : public CameraComponent {
 public:
@@ -11,10 +14,10 @@ public:
 
     virtual void updateRT(const UpdateContext& ctx, model::Node& node) override;
 
-    virtual void snapToIdeal(const Snapshot& snapshot) override;
+    virtual void snapToIdeal(const model::Snapshot& snapshot) override;
 
 private:
-    glm::vec3 calculateCameraPos(const Snapshot& snapshot);
+    glm::vec3 calculateCameraPos(const model::Snapshot& snapshot);
 
 public:
     // [horiz_offset, vert_offset, target_dist

@@ -32,20 +32,24 @@ namespace mesh {
 namespace model
 {
     class Node;
+    struct NodeState;
+    struct Snapshot;
 }
 
-struct Snapshot;
+namespace render
+{
+    class RenderContext;
+}
+
 struct EntitySSBO;
 
 class Program;
 
 struct PrepareContext;
 struct UpdateContext;
-class RenderContext;
 
 class EntityRegistry;
 
-struct NodeState;
 
 //
 // Generate node OR entity instances for node
@@ -79,16 +83,16 @@ public:
         const model::Node& container) {}
 
     virtual void bindBatch(
-        const RenderContext& ctx,
+        const render::RenderContext& ctx,
         const std::function<ki::program_id (const mesh::LodMesh&)>& programSelector,
         const std::function<void(ki::program_id)>& programPrepare,
         uint8_t kindBits,
         render::Batch& batch,
         const model::Node& container,
-        const Snapshot& snapshot);
+        const model::Snapshot& snapshot);
 
     virtual void updateVAO(
-        const RenderContext& ctx,
+        const render::RenderContext& ctx,
         const model::Node& container) {}
 
     virtual const std::vector<mesh::LodMesh>* getLodMeshes(const model::Node& container) const

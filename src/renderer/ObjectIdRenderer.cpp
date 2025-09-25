@@ -28,10 +28,10 @@
 
 
 ki::node_id ObjectIdRenderer::getObjectId(
-    const RenderContext& ctx,
+    const render::RenderContext& ctx,
     float screenPosX,
     float screenPosY,
-    Viewport* mainViewport)
+    model::Viewport* mainViewport)
 {
     // https://stackoverflow.com/questions/10123601/opengl-read-pixels-from-framebuffer-for-ing-rounded-up-to-255-0xff
     // https://stackoverflow.com/questions/748162/what-are-the-differences-between-a-frame-buffer-object-and-a-pixel-buffer-object
@@ -106,7 +106,7 @@ void ObjectIdRenderer::prepareRT(
 
     m_idProgramId = ProgramRegistry::get().getProgram(SHADER_OBJECT_ID, { { DEF_USE_ALPHA, "1"} });
 
-    m_debugViewport = std::make_shared<Viewport>(
+    m_debugViewport = std::make_shared<model::Viewport>(
         "ObjectID",
         glm::vec3(-1.0, 1.0, 0),
         //glm::vec3(0.5, -0.5, 0),
@@ -155,9 +155,9 @@ void ObjectIdRenderer::updateRT(const UpdateViewContext& ctx)
 }
 
 void ObjectIdRenderer::render(
-    const RenderContext& ctx)
+    const render::RenderContext& ctx)
 {
-    RenderContext localCtx(
+    render::RenderContext localCtx(
         "OBJECT_ID",
         &ctx,
         ctx.m_camera,
@@ -175,9 +175,9 @@ void ObjectIdRenderer::render(
     m_idBuffer->unbind(ctx);
 }
 
-void ObjectIdRenderer::drawNodes(const RenderContext& parentCtx)
+void ObjectIdRenderer::drawNodes(const render::RenderContext& parentCtx)
 {
-    RenderContext localCtx{ "local", &parentCtx };
+    render::RenderContext localCtx{ "local", &parentCtx };
     localCtx.m_forceSolid = true;
 
     auto& state = localCtx.m_state;

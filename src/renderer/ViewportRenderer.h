@@ -22,7 +22,7 @@ public:
     void updateRT(const UpdateViewContext& ctx);
 
     void render(
-        const RenderContext& ctx,
+        const render::RenderContext& ctx,
         render::FrameBuffer* destinationBuffer);
 
     void setGammaCorrectEnabled(bool enabled) {
@@ -56,10 +56,10 @@ public:
 
 private:
     void drawViewports(
-        const RenderContext& ctx);
+        const render::RenderContext& ctx);
 
     void blitWindow(
-        const RenderContext& ctx,
+        const render::RenderContext& ctx,
         render::FrameBuffer* destinationBuffer);
 
 private:

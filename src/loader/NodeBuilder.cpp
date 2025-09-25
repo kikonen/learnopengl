@@ -70,7 +70,7 @@ namespace loader
     }
 
     void NodeBuilder::addResolvedNode(
-        const ResolvedNode& resolved)
+        const model::ResolvedNode& resolved)
     {
         std::lock_guard lock(m_resolvedNodesLock);
         m_resolvedNodes.push_back(resolved);
@@ -92,10 +92,10 @@ namespace loader
         ctx->m_asyncLoader->addLoader(ctx->m_alive, [this, parentId, socketId, &baseData, loaders]() {
             std::vector<std::pair<std::string, ki::node_id>> aliases;
 
-            NodeDefinition nodeDefinition;
+            model::NodeDefinition nodeDefinition;
             loaders->m_nodeLoader.createNodeDefinition(baseData, nodeDefinition, true);
 
-            CompositeBuilder builder{ NodeRegistry::get() };
+            model::CompositeBuilder builder{ NodeRegistry::get() };
             builder.buildNode(parentId, nodeDefinition, aliases, true);
             for (auto& resolvedNode : builder.getResolvedNodes()) {
                 addResolvedNode(resolvedNode);

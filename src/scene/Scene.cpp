@@ -221,7 +221,7 @@ void Scene::prepareRT()
     }
 
     {
-        auto vp = std::make_shared<Viewport>(
+        auto vp = std::make_shared<model::Viewport>(
             "UI",
             //glm::vec3(-0.75, 0.75, 0),
             glm::vec3(-1.0f, 1.f, 0),
@@ -232,10 +232,10 @@ void Scene::prepareRT()
             0,
             ProgramRegistry::get().getProgram(SHADER_VIEWPORT));
 
-        vp->setUpdate([](Viewport& vp, const UpdateViewContext& ctx) {
+        vp->setUpdate([](model::Viewport& vp, const UpdateViewContext& ctx) {
             });
 
-        vp->setBindBefore([this](Viewport& vp) {
+        vp->setBindBefore([this](model::Viewport& vp) {
             auto* buffer = m_uiRenderer->m_buffer.get();
             vp.setTextureId(buffer->m_spec.attachments[LayerRenderer::ATT_ALBEDO_INDEX].textureID);
             vp.setSourceFrameBuffer(buffer);
@@ -252,7 +252,7 @@ void Scene::prepareRT()
     }
 
     {
-        auto vp = std::make_shared<Viewport>(
+        auto vp = std::make_shared<model::Viewport>(
             "player",
             //glm::vec3(-0.75, 0.75, 0),
             glm::vec3(-1.0f, 1.f, 0),
@@ -263,10 +263,10 @@ void Scene::prepareRT()
             0,
             ProgramRegistry::get().getProgram(SHADER_VIEWPORT));
 
-        vp->setUpdate([](Viewport& vp, const UpdateViewContext& ctx) {
+        vp->setUpdate([](model::Viewport& vp, const UpdateViewContext& ctx) {
             });
 
-        vp->setBindBefore([this](Viewport& vp) {
+        vp->setBindBefore([this](model::Viewport& vp) {
             auto* buffer = m_playerRenderer->m_buffer.get();
             vp.setTextureId(buffer->m_spec.attachments[LayerRenderer::ATT_ALBEDO_INDEX].textureID);
             vp.setSourceFrameBuffer(buffer);
@@ -283,7 +283,7 @@ void Scene::prepareRT()
     }
 
     {
-        auto vp = std::make_shared<Viewport>(
+        auto vp = std::make_shared<model::Viewport>(
             "Main",
             //glm::vec3(-0.75, 0.75, 0),
             glm::vec3(-1.0f, 1.f, 0),
@@ -294,10 +294,10 @@ void Scene::prepareRT()
             0,
             ProgramRegistry::get().getProgram(SHADER_VIEWPORT));
 
-        vp->setUpdate([](Viewport& vp, const UpdateViewContext& ctx) {
+        vp->setUpdate([](model::Viewport& vp, const UpdateViewContext& ctx) {
         });
 
-        vp->setBindBefore([this](Viewport& vp) {
+        vp->setBindBefore([this](model::Viewport& vp) {
             auto* buffer = m_mainRenderer->m_buffer.get();
             vp.setTextureId(buffer->m_spec.attachments[LayerRenderer::ATT_ALBEDO_INDEX].textureID);
             vp.setSourceFrameBuffer(buffer);
@@ -315,7 +315,7 @@ void Scene::prepareRT()
     }
 
     if (assets.showRearView) {
-        auto vp = std::make_shared<Viewport>(
+        auto vp = std::make_shared<model::Viewport>(
             "Rear",
             glm::vec3(-1.f, -0.5f, 0),
             glm::vec3(0, 0, 0),
@@ -324,7 +324,7 @@ void Scene::prepareRT()
             0,
             ProgramRegistry::get().getProgram(SHADER_VIEWPORT));
 
-        vp->setBindBefore([this](Viewport& vp) {
+        vp->setBindBefore([this](model::Viewport& vp) {
             auto* buffer = m_rearRenderer->m_buffer.get();
             vp.setTextureId(buffer->m_spec.attachments[LayerRenderer::ATT_ALBEDO_INDEX].textureID);
             vp.setSourceFrameBuffer(buffer);
@@ -493,7 +493,7 @@ void Scene::handleNodeRemoved(model::Node* node)
     m_collection->handleNodeRemoved(node);
 }
 
-void Scene::bind(const RenderContext& ctx)
+void Scene::bind(const render::RenderContext& ctx)
 {
     prepareUBOs(ctx);
 
@@ -507,8 +507,7 @@ void Scene::bind(const RenderContext& ctx)
     m_batch->bind();
 }
 
-
-void Scene::unbind(const RenderContext& ctx)
+void Scene::unbind(const render::RenderContext& ctx)
 {
 }
 
@@ -522,7 +521,7 @@ backend::gl::PerformanceCounters Scene::getCountersLocal(bool clear) const
     return m_batch->getCountersLocal(clear);
 }
 
-void Scene::render(const RenderContext& ctx)
+void Scene::render(const render::RenderContext& ctx)
 {
     const auto& assets = ctx.m_assets;
     auto& state = ctx.m_state;
@@ -592,7 +591,7 @@ void Scene::render(const RenderContext& ctx)
     m_renderData->invalidateAll();
 }
 
-void Scene::renderUi(const RenderContext& parentCtx)
+void Scene::renderUi(const render::RenderContext& parentCtx)
 {
     const auto* layer = LayerInfo::findLayer(LAYER_UI);
     if (!layer || !layer->m_enabled) return;
@@ -610,7 +609,7 @@ void Scene::renderUi(const RenderContext& parentCtx)
     camera.setViewport({-mw, mw, -mh, mh});
 
     // NOTE KI UI is "top level" context (i.e. main camera)
-    RenderContext localCtx(
+    render::RenderContext localCtx(
         "UI",
         nullptr,
         parentCtx.m_clock,
@@ -641,12 +640,12 @@ void Scene::renderUi(const RenderContext& parentCtx)
     renderScene(localCtx, m_uiRenderer.get());
 }
 
-void Scene::renderPlayer(const RenderContext& parentCtx)
+void Scene::renderPlayer(const render::RenderContext& parentCtx)
 {
     const auto* layer = LayerInfo::findLayer(LAYER_PLAYER);
     if (!layer || !layer->m_enabled) return;
 
-    RenderContext localCtx(
+    render::RenderContext localCtx(
         "player",
         &parentCtx,
         parentCtx.m_camera,
@@ -666,12 +665,12 @@ void Scene::renderPlayer(const RenderContext& parentCtx)
     renderScene(localCtx, m_playerRenderer.get());
 }
 
-void Scene::renderMain(const RenderContext& parentCtx)
+void Scene::renderMain(const render::RenderContext& parentCtx)
 {
     const auto* layer = LayerInfo::findLayer(LAYER_MAIN);
     if (!layer || !layer->m_enabled) return;
 
-    RenderContext localCtx(
+    render::RenderContext localCtx(
         "MAIN",
         &parentCtx,
         parentCtx.m_camera,
@@ -685,7 +684,7 @@ void Scene::renderMain(const RenderContext& parentCtx)
 }
 
 // "back mirror" viewport
-void Scene::renderRear(const RenderContext& parentCtx)
+void Scene::renderRear(const render::RenderContext& parentCtx)
 {
     const auto* layer = LayerInfo::findLayer(LAYER_REAR);
     if (!layer || !layer->m_enabled) return;
@@ -706,7 +705,7 @@ void Scene::renderRear(const RenderContext& parentCtx)
     camera.setFov(parentCamera->getFov());
     camera.setAxis(cameraFront, parentCamera->getViewUp());
 
-    RenderContext localCtx(
+    render::RenderContext localCtx(
         "BACK",
         &parentCtx,
         &camera,
@@ -718,7 +717,7 @@ void Scene::renderRear(const RenderContext& parentCtx)
     renderScene(localCtx, m_rearRenderer.get());
 }
 
-void Scene::renderViewports(const RenderContext& ctx)
+void Scene::renderViewports(const render::RenderContext& ctx)
 {
     if (m_viewportRenderer->isEnabled()) {
         m_viewportRenderer->render(ctx, m_windowBuffer.get());
@@ -726,7 +725,7 @@ void Scene::renderViewports(const RenderContext& ctx)
 }
 
 void Scene::renderScene(
-    const RenderContext& ctx,
+    const render::RenderContext& ctx,
     LayerRenderer* layerRenderer)
 {
     if (layerRenderer->isEnabled()) {
@@ -760,7 +759,7 @@ const std::vector<std::unique_ptr<NodeController>>* Scene::getActiveCameraContro
     return node ? ControllerRegistry::get().forNode(node) : nullptr;
 }
 
-ki::node_id Scene::getObjectID(const RenderContext& ctx, float screenPosX, float screenPosY)
+ki::node_id Scene::getObjectID(const render::RenderContext& ctx, float screenPosX, float screenPosY)
 {
     if (m_objectIdRenderer->isEnabled()) {
         m_objectIdRenderer->render(ctx);
@@ -769,7 +768,7 @@ ki::node_id Scene::getObjectID(const RenderContext& ctx, float screenPosX, float
     return 0;
 }
 
-void Scene::prepareUBOs(const RenderContext& ctx)
+void Scene::prepareUBOs(const render::RenderContext& ctx)
 {
     //KI_INFO_OUT(fmt::format("ts: {}", m_data.u_time));
     const debug::DebugContext& dbg = ctx.m_dbg;

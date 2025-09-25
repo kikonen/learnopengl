@@ -11,7 +11,10 @@ namespace audio
     struct Source;
 }
 
-class NodeType;
+namespace model
+{
+    class NodeType;
+}
 
 // AL_MIN_GAIN
 // AL_MAX_GAIN
@@ -39,7 +42,7 @@ struct AudioSourceDefinition
     bool m_looping{ false };
 
     static std::unique_ptr<std::vector<audio::Source>> createAudioSources(
-        const NodeType* type);
+        const model::NodeType* type);
 
     static void createAudioSource(
         const AudioSourceDefinition& data,

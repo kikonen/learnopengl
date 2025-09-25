@@ -11,6 +11,6 @@
 
 namespace loader {
     struct PivotLoader {
-        PivotPoint load(const loader::DocNode& node) const;
+        model::PivotPoint load(const loader::DocNode& node) const;
     };
 }

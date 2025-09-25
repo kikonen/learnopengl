@@ -37,7 +37,7 @@ void NormalRenderer::prepareRT(
 }
 
 void NormalRenderer::render(
-    const RenderContext& ctx,
+    const render::RenderContext& ctx,
     render::FrameBuffer* targetBuffer)
 {
     if (!isEnabled()) return;
@@ -45,7 +45,7 @@ void NormalRenderer::render(
     drawNodes(ctx);
 }
 
-void NormalRenderer::drawNodes(const RenderContext& ctx)
+void NormalRenderer::drawNodes(const render::RenderContext& ctx)
 {
     ctx.m_batch->flush(ctx);
 

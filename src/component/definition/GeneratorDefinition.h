@@ -13,8 +13,12 @@
 
 #include "PhysicsDefinition.h"
 
+namespace model
+{
+    class NodeType;
+}
+
 class NodeGenerator;
-class NodeType;
 struct Material;
 
 enum class GeneratorType : std::underlying_type_t<std::byte> {
@@ -55,5 +59,5 @@ struct GeneratorDefinition {
     uint32_t m_boundsMask{ UINT_MAX };
 
     static std::unique_ptr<NodeGenerator> createGenerator(
-        const NodeType* type);
+        const model::NodeType* type);
 };

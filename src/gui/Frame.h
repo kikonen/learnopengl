@@ -8,7 +8,11 @@
 
 #include "gui/Window.h"
 
-class RenderContext;
+namespace render
+{
+    class RenderContext;
+}
+
 struct PrepareContext;
 
 class Scene;
@@ -26,21 +30,21 @@ public:
     virtual ~Frame();
 
     virtual void prepare(const PrepareContext& ctx);
-    virtual void bind(const RenderContext& ctx);
+    virtual void bind(const render::RenderContext& ctx);
 
     virtual void processInputs(
-        const RenderContext& ctx,
+        const render::RenderContext& ctx,
         Scene* scene,
         const Input& input,
         const InputState& inputState,
         const InputState& lastInputState) { }
 
     virtual void draw(
-        const RenderContext& ctx,
+        const render::RenderContext& ctx,
         Scene* scene,
         debug::DebugContext& dbg) = 0;
 
-    virtual void render(const RenderContext& ctx);
+    virtual void render(const render::RenderContext& ctx);
 
     Window& getWindow()
     {
@@ -56,4 +60,3 @@ protected:
 
     std::shared_ptr<Window> m_window;
 };
-

@@ -28,12 +28,12 @@ namespace editor
         void prepare(const PrepareContext& ctx) override;
 
         void drawImpl(
-            const RenderContext& ctx,
+            const render::RenderContext& ctx,
             Scene* scene,
             debug::DebugContext& dbg) override;
 
         void processInputs(
-            const RenderContext& ctx,
+            const render::RenderContext& ctx,
             Scene* scene,
             const Input& input,
             const InputState& inputState,
@@ -41,51 +41,51 @@ namespace editor
 
     protected:
         void handleSelectNode(
-            const RenderContext& ctx,
+            const render::RenderContext& ctx,
             Scene* scene,
             const Input& input,
             const InputState& inputState,
             const InputState& lastInputState);
 
         void renderNode(
-            const RenderContext& ctx,
+            const render::RenderContext& ctx,
             debug::DebugContext& dbg);
 
         void renderNodeSelector(
-            const RenderContext& ctx,
+            const render::RenderContext& ctx,
             debug::DebugContext& dbg);
 
         void renderNodeProperties(
-            const RenderContext& ctx,
+            const render::RenderContext& ctx,
             debug::DebugContext& dbg);
 
         void renderTypeProperties(
-            const RenderContext& ctx,
+            const render::RenderContext& ctx,
             debug::DebugContext& dbg);
 
         void renderRigProperties(
-            const RenderContext& ctx,
+            const render::RenderContext& ctx,
             debug::DebugContext& dbg);
 
         void renderNodeDebug(
-            const RenderContext& ctx,
+            const render::RenderContext& ctx,
             debug::DebugContext& dbg);
 
         void renderAnimationDebug(
-            const RenderContext& ctx,
+            const render::RenderContext& ctx,
             debug::DebugContext& dbg);
 
     private:
         void onSelectNode(
-            const RenderContext& ctx,
+            const render::RenderContext& ctx,
             pool::NodeHandle nodeHandle);
 
         void onDeleteNode(
-            const RenderContext& ctx,
+            const render::RenderContext& ctx,
             pool::NodeHandle nodeHandle);
 
         void onCloneNode(
-            const RenderContext& ctx,
+            const render::RenderContext& ctx,
             pool::NodeHandle nodeHandle);
 
         void updateSocket(

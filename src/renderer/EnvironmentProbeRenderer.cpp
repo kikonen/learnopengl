@@ -47,7 +47,7 @@ void EnvironmentProbeRenderer::prepareRT(const PrepareContext& ctx)
 }
 
 void EnvironmentProbeRenderer::render(
-    const RenderContext& ctx,
+    const render::RenderContext& ctx,
     render::FrameBuffer* targetBuffer)
 {
     const auto& dbg = debug::DebugContext::get();

@@ -2,7 +2,11 @@
 
 #include <string>
 
-class RenderContext;
+namespace render
+{
+    class RenderContext;
+}
+
 struct PrepareContext;
 class Scene;
 class Input;
@@ -26,27 +30,27 @@ namespace editor
         virtual void prepare(const PrepareContext& ctx) {}
 
         void drawMenu(
-            const RenderContext& ctx,
+            const render::RenderContext& ctx,
             Scene* scene,
             debug::DebugContext& dbg);
 
         void draw(
-            const RenderContext& ctx,
+            const render::RenderContext& ctx,
             Scene* scene,
             debug::DebugContext& dbg);
 
         virtual void drawMenuImpl(
-            const RenderContext& ctx,
+            const render::RenderContext& ctx,
             Scene* scene,
             debug::DebugContext& dbg) { }
 
         virtual void drawImpl(
-            const RenderContext& ctx,
+            const render::RenderContext& ctx,
             Scene* scene,
             debug::DebugContext& dbg) {}
 
         virtual void processInputs(
-            const RenderContext& ctx,
+            const render::RenderContext& ctx,
             Scene* scene,
             const Input& input,
             const InputState& inputState,

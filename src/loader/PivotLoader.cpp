@@ -14,30 +14,30 @@ namespace {
     const std::string PIVOT_LEFT{ "L" };
     const std::string PIVOT_RIGHT{ "R" };
 
-    std::map<std::string, PivotAlignment> m_pivots;
+    std::map<std::string, model::PivotAlignment> m_pivots;
 
-    std::map<std::string, PivotAlignment>& getPivotMapping() {
+    std::map<std::string, model::PivotAlignment>& getPivotMapping() {
         if (m_pivots.empty()) {
-            m_pivots[PIVOT_ORIGIN] = PivotAlignment::origin;
-            m_pivots[PIVOT_MIDDLE] = PivotAlignment::middle;
-            m_pivots[PIVOT_TOP] = PivotAlignment::top;
-            m_pivots[PIVOT_BOTTOM] = PivotAlignment::bottom;
-            m_pivots[PIVOT_LEFT] = PivotAlignment::left;
-            m_pivots[PIVOT_RIGHT] = PivotAlignment::right;
+            m_pivots[PIVOT_ORIGIN] = model::PivotAlignment::origin;
+            m_pivots[PIVOT_MIDDLE] = model::PivotAlignment::middle;
+            m_pivots[PIVOT_TOP] = model::PivotAlignment::top;
+            m_pivots[PIVOT_BOTTOM] = model::PivotAlignment::bottom;
+            m_pivots[PIVOT_LEFT] = model::PivotAlignment::left;
+            m_pivots[PIVOT_RIGHT] = model::PivotAlignment::right;
         }
         return m_pivots;
     }
 
-    PivotAlignment resolvePivot(const std::string& p) {
+    model::PivotAlignment resolvePivot(const std::string& p) {
         const auto& mapping = getPivotMapping();
         const auto& it = mapping.find(p);
         if (it != mapping.end()) return it->second;
-        return PivotAlignment::origin;
+        return model::PivotAlignment::origin;
     }
 
     void readAlignment(
         const loader::DocNode& node,
-        PivotPoint& pivot)
+        model::PivotPoint& pivot)
     {
         auto vec = readStringVector(node, 3);
 
@@ -62,9 +62,9 @@ namespace {
 }
 
 namespace loader {
-    PivotPoint PivotLoader::load(const loader::DocNode& node) const
+    model::PivotPoint PivotLoader::load(const loader::DocNode& node) const
     {
-        PivotPoint pivot;
+        model::PivotPoint pivot;
 
         for (const auto& pair : node.getNodes()) {
             const std::string& k = pair.getName();

@@ -1,6 +1,9 @@
 #pragma once
 
-class PrimitiveNode
+namespace model
 {
-public:
-};
+    class PrimitiveNode
+    {
+    public:
+    };
+}

@@ -72,7 +72,7 @@ namespace editor
     }
 
     void ConsoleFrame::draw(
-        const RenderContext& ctx,
+        const render::RenderContext& ctx,
         Scene* scene,
         debug::DebugContext& dbg)
     {

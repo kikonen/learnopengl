@@ -5,9 +5,9 @@
 #include "kigl/kigl.h"
 
 struct UpdateViewContext;
-class RenderContext;
 
 namespace render {
+    class RenderContext;
     class FrameBuffer;
     struct FrameBufferAttachment;
 

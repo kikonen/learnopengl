@@ -73,12 +73,12 @@ namespace render {
         const std::function<ki::program_id (const mesh::LodMesh&)>& programSelector,
         const std::function<void(ki::program_id)>& programPrepare,
         uint8_t kindBits,
-        const Snapshot& snapshot,
+        const model::Snapshot& snapshot,
         uint32_t entityIndex) noexcept
     {
         if (entityIndex < 0) return;
 
-        bool frustumChecked = !((snapshot.m_flags & ENTITY_NO_FRUSTUM_BIT) != ENTITY_NO_FRUSTUM_BIT);
+        bool frustumChecked = !((snapshot.m_flags & model::ENTITY_NO_FRUSTUM_BIT) != model::ENTITY_NO_FRUSTUM_BIT);
 
         auto dist2 = glm::distance2(snapshot.getWorldPosition(), ctx.m_camera->getWorldPosition());
 
@@ -160,7 +160,7 @@ namespace render {
         const std::function<ki::program_id (const mesh::LodMesh&)>& programSelector,
         const std::function<void(ki::program_id)>& programPrepare,
         uint8_t kindBits,
-        const Snapshot& snapshot,
+        const model::Snapshot& snapshot,
         std::span<const mesh::Transform> transforms,
         uint32_t entityIndex) noexcept
     {
@@ -173,7 +173,7 @@ namespace render {
 
         bool useFrustum = m_frustumCPU;
         {
-            if ((snapshot.m_flags & ENTITY_NO_FRUSTUM_BIT) == ENTITY_NO_FRUSTUM_BIT)
+            if ((snapshot.m_flags & model::ENTITY_NO_FRUSTUM_BIT) == model::ENTITY_NO_FRUSTUM_BIT)
                 useFrustum = false;
         }
 

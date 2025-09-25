@@ -66,7 +66,7 @@ void FollowCamera::updateRT(const UpdateContext& ctx, model::Node& node)
     //m_nodeLevel = level;
 }
 
-void FollowCamera::snapToIdeal(const Snapshot& snapshot)
+void FollowCamera::snapToIdeal(const model::Snapshot& snapshot)
 {
     // Set actual position to ideal
     m_actualPos = calculateCameraPos(snapshot);
@@ -84,7 +84,7 @@ void FollowCamera::snapToIdeal(const Snapshot& snapshot)
     m_camera.setAxis(cameraFront, UP);
 }
 
-glm::vec3 FollowCamera::calculateCameraPos(const Snapshot& snapshot)
+glm::vec3 FollowCamera::calculateCameraPos(const model::Snapshot& snapshot)
 {
     glm::vec3 pos = snapshot.getWorldPosition();
     pos -= snapshot.getViewFront() * m_distance.x;

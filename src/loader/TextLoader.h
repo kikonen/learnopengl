@@ -6,8 +6,12 @@
 
 #include "generator/NodeGenerator.h"
 
+namespace model
+{
+    class NodeType;
+}
+
 struct TextGeneratorDefinition;
-class NodeType;
 
 namespace loader {
     class TextLoader : public BaseLoader
@@ -22,7 +26,7 @@ namespace loader {
             Loaders& loaders) const;
 
         std::unique_ptr<TextGeneratorDefinition> createDefinition(
-            const NodeType* type,
+            const model::NodeType* type,
             const TextData& data,
             Loaders& loaders);
     };

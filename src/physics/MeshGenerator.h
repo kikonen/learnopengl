@@ -12,7 +12,10 @@
 
 #include "size.h"
 
-class NodeType;
+namespace model
+{
+    class NodeType;
+}
 
 namespace mesh {
     class Mesh;

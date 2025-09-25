@@ -7,13 +7,12 @@
 
 #include "kigl/GLTextureHandle.h"
 
-
-struct PrepareContext;
-class RenderContext;
-
 class Program;
+struct PrepareContext;
 
 namespace render {
+    class RenderContext;
+
     class CubeMap
     {
     public:

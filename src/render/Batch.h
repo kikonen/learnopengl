@@ -22,17 +22,17 @@ namespace mesh {
 namespace model
 {
     class Node;
+    struct Snapshot;
 }
 
 class Program;
 
-struct Snapshot;
-
 struct PrepareContext;
 struct UpdateContext;
-class RenderContext;
 
 namespace render {
+    class RenderContext;
+
     // NOTE KI use single shared UBO buffer for rendering
     // => less resources needed
     //
@@ -55,7 +55,7 @@ namespace render {
             const std::function<ki::program_id (const mesh::LodMesh&)>& programSelector,
             const std::function<void(ki::program_id)>& programPrepare,
             uint8_t kindBits,
-            const Snapshot& snapshot,
+            const model::Snapshot& snapshot,
             uint32_t entityIndex) noexcept;
 
         // NOTE KI lightweigtht "transform only" meshes
@@ -65,7 +65,7 @@ namespace render {
             const std::function<ki::program_id (const mesh::LodMesh&)>& programSelector,
             const std::function<void(ki::program_id)>& programPrepare,
             uint8_t kindBits,
-            const Snapshot& snapshot,
+            const model::Snapshot& snapshot,
             std::span<const mesh::Transform> transforms,
             uint32_t entityIndex) noexcept;
 

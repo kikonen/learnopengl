@@ -4,13 +4,12 @@
 
 #include "kigl/GLTextureHandle.h"
 
-
 struct PrepareContext;
-class RenderContext;
-
 class Program;
 
 namespace render {
+    class RenderContext;
+
     // https://learnopengl.com/PBR/IBL/Specular-IBL
     class BrdfLutTexture
     {

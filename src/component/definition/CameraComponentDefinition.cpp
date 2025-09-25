@@ -10,7 +10,7 @@
 #include "component/SplineCamera.h"
 
 std::unique_ptr<CameraComponent> CameraComponentDefinition::createCameraComponent(
-    const NodeType* type)
+    const model::NodeType* type)
 {
     if (!type->m_cameraComponentDefinition) return nullptr;
 

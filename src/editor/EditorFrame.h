@@ -27,14 +27,14 @@ namespace editor {
         void prepare(const PrepareContext& ctx) override;
 
         void processInputs(
-            const RenderContext& ctx,
+            const render::RenderContext& ctx,
             Scene* scene,
             const Input& input,
             const InputState& inputState,
             const InputState& lastInputState) override;
 
         void draw(
-            const RenderContext& ctx,
+            const render::RenderContext& ctx,
             Scene* scene,
             debug::DebugContext& dbg) override;
 
@@ -45,7 +45,7 @@ namespace editor {
 
     private:
         void renderMenuBar(
-            const RenderContext& ctx,
+            const render::RenderContext& ctx,
             Scene* scene,
             debug::DebugContext& dbg);
 

@@ -155,8 +155,8 @@ namespace script::api
 
         pool::NodeHandle handle;
         {
-            CompositeBuilder builder{ NodeRegistry::get() };
-            CreateState state{
+            model::CompositeBuilder builder{ NodeRegistry::get() };
+            model::CreateState state{
                 opt.pos,
                 opt.scale,
                 util::degreesToQuat(opt.rot),
@@ -191,13 +191,13 @@ namespace script::api
             glm::vec3 scale{ state.getScale() };
             ki::tag_id tagId{ state.m_tagId };
 
-            CreateState state{
+            model::CreateState state{
                 pos,
                 scale,
                 quat,
                 tagId};
 
-            CompositeBuilder builder{ NodeRegistry::get() };
+            model::CompositeBuilder builder{ NodeRegistry::get() };
             handle = builder.build(parentId, 0, type, state);
             if (handle) {
                 builder.attach();

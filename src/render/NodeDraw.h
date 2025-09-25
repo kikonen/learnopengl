@@ -9,8 +9,6 @@
 
 struct UpdateViewContext;
 struct PrepareContext;
-class RenderContext;
-
 class Program;
 
 namespace editor {
@@ -23,7 +21,7 @@ namespace mesh {
 }
 
 namespace render {
-
+    class RenderContext;
     struct DrawContext;
     struct PassContext;
 

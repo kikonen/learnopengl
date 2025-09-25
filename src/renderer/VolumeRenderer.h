@@ -17,7 +17,7 @@ public:
     virtual void prepareRT(const PrepareContext& ctx) override;
 
     virtual void render(
-        const RenderContext& ctx,
+        const render::RenderContext& ctx,
         render::FrameBuffer* fbo) override;
 
 private:

@@ -10,7 +10,11 @@
 
 #include "TextureType.h"
 
-class RenderContext;
+namespace render
+{
+    class RenderContext;
+}
+
 struct PrepareContext;
 struct Material;
 
@@ -26,7 +30,7 @@ public:
         const PrepareContext& ctx);
 
     virtual void render(
-        const RenderContext& ctx);
+        const render::RenderContext& ctx);
 
     void setNeedUpdate(bool needUpdate)
     {

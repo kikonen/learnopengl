@@ -11,9 +11,9 @@
 
 #include "FrameBufferAttachment.h"
 
-class RenderContext;
-
 namespace render {
+    class RenderContext;
+
     class FrameBuffer
     {
     public:

@@ -42,7 +42,7 @@ namespace editor
     OptionsTool::~OptionsTool() = default;
 
     void OptionsTool::drawMenuImpl(
-        const RenderContext& ctx,
+        const render::RenderContext& ctx,
         Scene* scene,
         debug::DebugContext& dbg)
     {
@@ -54,7 +54,7 @@ namespace editor
     }
 
     void OptionsTool::drawImpl(
-        const RenderContext& ctx,
+        const render::RenderContext& ctx,
         Scene* scene,
         debug::DebugContext& dbg)
     {
@@ -65,7 +65,7 @@ namespace editor
     }
 
     void OptionsTool::processInputs(
-        const RenderContext& ctx,
+        const render::RenderContext& ctx,
         Scene* scene,
         const Input& input,
         const InputState& inputState,
@@ -75,7 +75,7 @@ namespace editor
 
 
     void OptionsTool::renderOptions(
-        const RenderContext& ctx,
+        const render::RenderContext& ctx,
         debug::DebugContext& dbg)
     {
         {

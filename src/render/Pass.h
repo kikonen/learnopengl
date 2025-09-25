@@ -16,11 +16,11 @@
 
 struct UpdateViewContext;
 struct PrepareContext;
-class RenderContext;
 
 class Program;
 
 namespace render {
+    class RenderContext;
     class FrameBuffer;
 
     class Pass {

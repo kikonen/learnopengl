@@ -4,7 +4,10 @@
 
 #include "BaseLoader.h"
 
-struct NodeDefinition;
+namespace model
+{
+    struct NodeDefinition;
+}
 
 namespace loader {
     struct NodeData;
@@ -38,12 +41,12 @@ namespace loader {
 
         void createNodeDefinitions(
             const std::vector<NodeData>& nodes,
-            std::vector<NodeDefinition>& definitions,
+            std::vector<model::NodeDefinition>& definitions,
             bool recurse) const;
 
         void createNodeDefinition(
             const NodeData& node,
-            NodeDefinition& definition,
+            model::NodeDefinition& definition,
             bool recurse) const;
     };
 }

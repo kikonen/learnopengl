@@ -44,7 +44,7 @@ void MeshRenderer::prepareRT(const PrepareContext& ctx)
 }
 
 void MeshRenderer::drawObjects(
-    const RenderContext& ctx,
+    const render::RenderContext& ctx,
     render::FrameBuffer* targetBuffer,
     const std::vector<mesh::MeshInstance>& meshes)
 {

@@ -21,7 +21,7 @@ void Frame::prepare(const PrepareContext& ctx)
     m_prepared = true;
 }
 
-void Frame::bind(const RenderContext& ctx)
+void Frame::bind(const render::RenderContext& ctx)
 {
     // feed inputs to dear imgui, start new frame
     ImGui_ImplOpenGL3_NewFrame();
@@ -29,7 +29,7 @@ void Frame::bind(const RenderContext& ctx)
     ImGui::NewFrame();
 }
 
-void Frame::render(const RenderContext& ctx)
+void Frame::render(const render::RenderContext& ctx)
 {
     // Render dear imgui into screen
     ImGui::Render();

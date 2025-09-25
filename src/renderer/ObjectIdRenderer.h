@@ -14,10 +14,10 @@ public:
     virtual ~ObjectIdRenderer() {};
 
     ki::node_id getObjectId(
-        const RenderContext& ctx,
+        const render::RenderContext& ctx,
         float screenPosX,
         float screenPosY,
-        Viewport* mainViewport);
+        model::Viewport* mainViewport);
 
     virtual void prepareRT(
         const PrepareContext& ctx) override;
@@ -26,13 +26,13 @@ public:
         const UpdateViewContext& ctx);
 
     void render(
-        const RenderContext& ctx);
+        const render::RenderContext& ctx);
 
 private:
-    void drawNodes(const RenderContext& ctx);
+    void drawNodes(const render::RenderContext& ctx);
 
 public:
-    std::shared_ptr<Viewport> m_debugViewport;
+    std::shared_ptr<model::Viewport> m_debugViewport;
 
 private:
     ki::program_id m_idProgramId{ 0 };

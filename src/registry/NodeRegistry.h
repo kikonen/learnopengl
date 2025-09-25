@@ -21,7 +21,10 @@
 
 struct Material;
 
-struct CreateState;
+namespace model {
+    struct CreateState;
+}
+
 struct UpdateContext;
 
 class Registry;
@@ -74,8 +77,8 @@ public:
     void snapshotRT();
 
     void snapshot(
-        std::vector<Snapshot>& src,
-        std::vector<Snapshot>& dst);
+        std::vector<model::Snapshot>& src,
+        std::vector<model::Snapshot>& dst);
 
     std::vector<model::Node*>& getCachedNodesWT();
 
@@ -105,7 +108,7 @@ public:
         const pool::NodeHandle nodeHandle,
         ki::node_id parentId,
         ki::socket_id socketId,
-        const CreateState& state) noexcept;
+        const model::CreateState& state) noexcept;
 
     void detachNode(
         const pool::NodeHandle nodeHandle) noexcept;
@@ -151,22 +154,22 @@ public:
         return m_handles[m_parentIndeces[entityIndex]].toNode();
     }
 
-    const NodeState& getParentState(uint32_t entityIndex) const noexcept
+    const model::NodeState& getParentState(uint32_t entityIndex) const noexcept
     {
         return m_states[m_parentIndeces[entityIndex]];
     }
 
-    NodeState& modifyState(uint32_t entityIndex) noexcept
+    model::NodeState& modifyState(uint32_t entityIndex) noexcept
     {
         return m_states[entityIndex];
     }
 
-    const NodeState& getState(uint32_t entityIndex) const noexcept
+    const model::NodeState& getState(uint32_t entityIndex) const noexcept
     {
         return m_states[entityIndex];
     }
 
-    //const Snapshot* getSnapshotWT(uint32_t entityIndex) const noexcept
+    //const model::Snapshot* getSnapshotWT(uint32_t entityIndex) const noexcept
     //{
     //    return m_snapshotsWT.size() > entityIndex ? &m_snapshotsWT[entityIndex] : nullptr;
     //}
@@ -176,7 +179,7 @@ public:
     //    return m_snapshotsWT.size() > entityIndex;
     //}
 
-    const Snapshot* getSnapshotRT(uint32_t entityIndex) const noexcept
+    const model::Snapshot* getSnapshotRT(uint32_t entityIndex) const noexcept
     {
         if (m_snapshotsRT.size() <= entityIndex) {
             logDebugInfo("MISSING_SNAPSHOT", entityIndex);
@@ -221,7 +224,7 @@ private:
 
     void bindNode(
         const pool::NodeHandle nodeHandle,
-        const CreateState& state);
+        const model::CreateState& state);
 
     void unbindNode(
         const pool::NodeHandle nodeHandle);
@@ -246,8 +249,8 @@ private:
 
     void updateBounds(
         const UpdateContext& ctx,
-        NodeState& state,
-        const NodeState& parentState,
+        model::NodeState& state,
+        const model::NodeState& parentState,
         const model::Node* node,
         const physics::PhysicsSystem& physicsSystem);
 
@@ -284,11 +287,11 @@ private:
     // INDEX = entityIndex
     std::vector<uint32_t> m_parentIndeces;
     // INDEX = entityIndex
-    std::vector<NodeState> m_states;
+    std::vector<model::NodeState> m_states;
     // INDEX = entityIndex
-    std::vector<Snapshot> m_snapshotsPending;
+    std::vector<model::Snapshot> m_snapshotsPending;
     // INDEX = entityIndex
-    std::vector<Snapshot> m_snapshotsRT;
+    std::vector<model::Snapshot> m_snapshotsRT;
     // INDEX = entityIndex
     std::vector<EntitySSBO> m_entities;
     // INDEX = entityIndex

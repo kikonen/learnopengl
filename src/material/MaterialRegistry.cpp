@@ -120,7 +120,7 @@ void MaterialRegistry::addMaterialUpdater(std::unique_ptr<MaterialUpdater> updat
     m_updaters.insert({ updater->m_id, std::move(updater)});
 }
 
-void MaterialRegistry::renderMaterials(const RenderContext& ctx)
+void MaterialRegistry::renderMaterials(const render::RenderContext& ctx)
 {
     std::lock_guard lock(m_lock);
     for (auto& [id, updater] : m_updaters) {

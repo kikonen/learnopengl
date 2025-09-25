@@ -9,8 +9,11 @@
 
 #include "ki/size.h"
 
-struct CreateState;
-struct ResolvedNode;
+namespace model
+{
+    struct CreateState;
+    struct ResolvedNode;
+}
 
 namespace pool {
     struct NodeHandle;
@@ -34,14 +37,14 @@ namespace loader {
             const NodeData& baseData,
             bool success);
 
-        std::vector<ResolvedNode>& getResolvedNodes()
+        std::vector<model::ResolvedNode>& getResolvedNodes()
         {
             std::lock_guard lock(m_resolvedNodesLock);
             return m_resolvedNodes;
         }
 
         void addResolvedNode(
-            const ResolvedNode& resolved);
+            const model::ResolvedNode& resolved);
 
         bool resolveNode(
             const ki::node_id parentId,
@@ -54,6 +57,6 @@ namespace loader {
         SceneLoader* const m_sceneLoader;
 
         std::mutex m_resolvedNodesLock{};
-        std::vector<ResolvedNode> m_resolvedNodes;
+        std::vector<model::ResolvedNode> m_resolvedNodes;
     };
 }

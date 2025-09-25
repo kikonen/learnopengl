@@ -10,7 +10,10 @@
 #include "text/FontHandle.h"
 #include "text/AtlasHandle.h"
 
-class RenderContext;
+namespace render
+{
+    class RenderContext;
+}
 
 namespace text
 {

@@ -18,7 +18,10 @@
 
 struct UpdateContext;
 
-class NodeType;
+namespace model
+{
+    class NodeType;
+}
 
 namespace physics {
     struct RayHit;

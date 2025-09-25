@@ -6,8 +6,12 @@ namespace kigl {
     class GLState;
 }
 
+namespace render
+{
+    class RenderContext;
+}
+
 struct PrepareContext;
-class RenderContext;
 
 // Special material, like skybox
 class CustomMaterial {
@@ -29,7 +33,7 @@ public:
 
     // NOTE KI render, not update context required
     virtual void updateRT(
-        const RenderContext& ctx)
+        const render::RenderContext& ctx)
     {
         if (!m_dirty) return;
         m_dirty = false;

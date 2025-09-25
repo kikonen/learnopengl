@@ -20,14 +20,14 @@ public:
     void shutdown();
     void prepare();
 
-    void addViewport(std::shared_ptr<Viewport> viewport) noexcept;
+    void addViewport(std::shared_ptr<model::Viewport> viewport) noexcept;
 
-    inline std::vector<std::shared_ptr<Viewport>>& getViewports() noexcept
+    inline std::vector<std::shared_ptr<model::Viewport>>& getViewports() noexcept
     {
         return m_viewports;
     }
 
 private:
-    std::vector<std::shared_ptr<Viewport>> m_viewports;
+    std::vector<std::shared_ptr<model::Viewport>> m_viewports;
 
 };

@@ -17,18 +17,18 @@ public:
         const PrepareContext& ctx) override;
 
     void renderSolid(
-        const RenderContext& ctx);
+        const render::RenderContext& ctx);
 
     void renderBlend(
-        const RenderContext& ctx);
+        const render::RenderContext& ctx);
 
 private:
     void renderSolidCollection(
-        const RenderContext& ctx,
+        const render::RenderContext& ctx,
         const decal::DecalCollection& collection);
 
     void renderBlendCollection(
-        const RenderContext& ctx,
+        const render::RenderContext& ctx,
         const decal::DecalCollection& collection);
 
 private:

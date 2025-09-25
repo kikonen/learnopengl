@@ -24,7 +24,10 @@ namespace physics {
     struct RayHit;
 }
 
-class RenderContext;
+namespace render
+{
+    class RenderContext;
+}
 
 class SampleApp final : public Engine {
 public:
@@ -45,18 +48,18 @@ protected:
 
 private:
     void frustumDebug(
-        const RenderContext& ctx,
+        const render::RenderContext& ctx,
         const ki::RenderClock& clock);
 
     void raycastPlayer(
-        const RenderContext& ctx,
+        const render::RenderContext& ctx,
         Scene* scene,
         const Input& input,
         const InputState& inputState,
         const InputState& lastInputState);
 
     void shoot(
-        const RenderContext& ctx,
+        const render::RenderContext& ctx,
         Scene* scene,
         const Input& input,
         const InputState& inputState,

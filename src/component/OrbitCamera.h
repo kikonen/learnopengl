@@ -2,7 +2,10 @@
 
 #include "CameraComponent.h"
 
-struct Snapshot;
+namespace model
+{
+    struct Snapshot;
+}
 
 class OrbitCamera : public CameraComponent {
 public:

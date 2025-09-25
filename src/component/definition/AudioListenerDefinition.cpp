@@ -5,7 +5,7 @@
 #include "audio/Listener.h"
 
 std::unique_ptr<audio::Listener> AudioListenerDefinition::createAudioListener(
-    const NodeType* type)
+    const model::NodeType* type)
 {
     if (!type->m_audioListenerDefinition) return nullptr;
 

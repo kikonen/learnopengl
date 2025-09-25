@@ -19,13 +19,17 @@ namespace editor
     class NodeTool;
 }
 
-struct UpdateContext;
-class RenderContext;
+namespace render
+{
+    class RenderContext;
+}
 
 namespace model
 {
     class Node;
 }
+
+struct UpdateContext;
 
 namespace animation {
     class BoneRegistry;

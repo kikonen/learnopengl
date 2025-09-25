@@ -94,7 +94,7 @@ void WaterMapRenderer::prepareRT(
     //noiseTextureID = generator.generate();
 
     {
-        m_reflectionDebugViewport = std::make_shared<Viewport>(
+        m_reflectionDebugViewport = std::make_shared<model::Viewport>(
             "WaterReflect",
             glm::vec3(0.5, 0.5, 0),
             glm::vec3(0, 0, 0),
@@ -103,7 +103,7 @@ void WaterMapRenderer::prepareRT(
             0,
             ProgramRegistry::get().getProgram(SHADER_VIEWPORT));
 
-        m_reflectionDebugViewport->setBindBefore([this](Viewport& vp) {
+        m_reflectionDebugViewport->setBindBefore([this](model::Viewport& vp) {
             auto& buffer = m_reflectionBuffers[m_prevIndex];
             vp.setTextureId(buffer->m_spec.attachments[0].textureID);
             vp.setSourceFrameBuffer(buffer.get());
@@ -113,7 +113,7 @@ void WaterMapRenderer::prepareRT(
     }
 
     {
-        m_refractionDebugViewport = std::make_shared<Viewport>(
+        m_refractionDebugViewport = std::make_shared<model::Viewport>(
             "WaterRefract",
             glm::vec3(0.5, 0.0, 0),
             glm::vec3(0, 0, 0),
@@ -122,7 +122,7 @@ void WaterMapRenderer::prepareRT(
             0,
             ProgramRegistry::get().getProgram(SHADER_VIEWPORT));
 
-        m_refractionDebugViewport->setBindBefore([this](Viewport& vp) {
+        m_refractionDebugViewport->setBindBefore([this](model::Viewport& vp) {
             auto& buffer = m_refractionBuffers[m_prevIndex];
             vp.setTextureId(buffer->m_spec.attachments[0].textureID);
             vp.setSourceFrameBuffer(buffer.get());
@@ -319,7 +319,7 @@ void WaterMapRenderer::bindTexture(kigl::GLState& state)
 }
 
 bool WaterMapRenderer::render(
-    const RenderContext& parentCtx)
+    const render::RenderContext& parentCtx)
 {
     parentCtx.validateRender("water_map");
 
@@ -370,7 +370,7 @@ bool WaterMapRenderer::render(
 
         auto& reflectionBuffer = m_reflectionBuffers[m_currIndex];
 
-        RenderContext localCtx(
+        render::RenderContext localCtx(
             "WATER_REFLECT",
             &parentCtx,
             &camera,
@@ -413,7 +413,7 @@ bool WaterMapRenderer::render(
 
         auto& refractionBuffer = m_refractionBuffers[m_currIndex];
 
-        RenderContext localCtx(
+        render::RenderContext localCtx(
             "WATER_REFRACT",
             &parentCtx,
             &camera,
@@ -455,7 +455,7 @@ bool WaterMapRenderer::render(
 }
 
 void WaterMapRenderer::drawNodes(
-    const RenderContext& ctx,
+    const render::RenderContext& ctx,
     render::FrameBuffer* targetBuffer,
     model::Node* current,
     bool reflect)
@@ -494,7 +494,7 @@ void WaterMapRenderer::drawNodes(
 }
 
 model::Node* WaterMapRenderer::findClosest(
-    const RenderContext& ctx)
+    const render::RenderContext& ctx)
 {
     auto& nodes = ctx.m_collection->m_waterNodes;
 

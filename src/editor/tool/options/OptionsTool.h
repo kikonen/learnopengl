@@ -13,17 +13,17 @@ namespace editor
         ~OptionsTool() override;
 
         void drawMenuImpl(
-            const RenderContext& ctx,
+            const render::RenderContext& ctx,
             Scene* scene,
             debug::DebugContext& dbg) override;
 
         void drawImpl(
-            const RenderContext& ctx,
+            const render::RenderContext& ctx,
             Scene* scene,
             debug::DebugContext& dbg) override;
 
         void processInputs(
-            const RenderContext& ctx,
+            const render::RenderContext& ctx,
             Scene* scene,
             const Input& input,
             const InputState& inputState,
@@ -31,7 +31,7 @@ namespace editor
 
     protected:
         void renderOptions(
-            const RenderContext& ctx,
+            const render::RenderContext& ctx,
             debug::DebugContext& dbg);
 
     private:

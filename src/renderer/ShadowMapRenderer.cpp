@@ -69,7 +69,7 @@ void ShadowMapRenderer::prepareRT(
     m_activeCascade = 0;
 
     {
-        m_debugViewport = std::make_shared<Viewport>(
+        m_debugViewport = std::make_shared<model::Viewport>(
             "ShadowMap",
             //glm::vec3(-1 + 0.01, 1 - 0.01, 0),
             glm::vec3(0.5, -0.5, 0),
@@ -79,12 +79,12 @@ void ShadowMapRenderer::prepareRT(
             0,
             ProgramRegistry::get().getProgram(SHADER_DEBUG_DEPTH));
 
-        m_debugViewport->setBindBefore([this, &assets](Viewport& vp) {
+        m_debugViewport->setBindBefore([this, &assets](model::Viewport& vp) {
             auto& active = m_cascades[m_activeCascade];
             vp.setTextureId(active->getTextureID());
             });
 
-        m_debugViewport->setBindAfter([this, &assets](Viewport& vp) {
+        m_debugViewport->setBindAfter([this, &assets](model::Viewport& vp) {
             auto& active = m_cascades[m_activeCascade];
             auto* uniforms = vp.getProgram()->m_uniforms.get();
             uniforms->u_shadowNearPlane.set(active->getNearPlane());
@@ -97,7 +97,7 @@ void ShadowMapRenderer::prepareRT(
 }
 
 void ShadowMapRenderer::bind(
-    const RenderContext& ctx,
+    const render::RenderContext& ctx,
     ShadowUBO& shadowUbo)
 {
     const auto& dbg = ctx.m_dbg;
@@ -136,7 +136,7 @@ void ShadowMapRenderer::bindTexture(kigl::GLState& state)
 }
 
 bool ShadowMapRenderer::render(
-    const RenderContext& ctx)
+    const render::RenderContext& ctx)
 {
     ctx.validateRender("shadow_map");
 

@@ -8,9 +8,9 @@ namespace kigl {
 }
 
 struct UpdateViewContext;
-class RenderContext;
 
 namespace render {
+    class RenderContext;
     class FrameBuffer;
 
     class SsaoBuffer {
@@ -48,4 +48,3 @@ namespace render {
         int m_height{ -1 };
     };
 }
-

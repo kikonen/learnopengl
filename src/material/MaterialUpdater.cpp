@@ -18,7 +18,7 @@ void MaterialUpdater::prepareRT(
 }
 
 void MaterialUpdater::render(
-    const RenderContext& ctx)
+    const render::RenderContext& ctx)
 {
     //markDirty();
 }
@@ -35,4 +35,3 @@ void MaterialUpdater::setMaterial(const Material* src) noexcept
     }
     *m_material = *src;
 }
-

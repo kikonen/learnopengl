@@ -2,7 +2,7 @@
 
 #include <vector>
 
-namespace dag {
+namespace util {
     template <typename T, class U>
     struct DagItem
     {

@@ -8,7 +8,11 @@
 
 #include "component/CameraType.h"
 
-class NodeType;
+namespace model
+{
+    class NodeType;
+}
+
 class CameraComponent;
 
 struct CameraComponentDefinition {
@@ -40,5 +44,5 @@ struct CameraComponentDefinition {
     float m_speed{ 0.f };
 
     static std::unique_ptr<CameraComponent> createCameraComponent(
-        const NodeType* type);
+        const model::NodeType* type);
 };

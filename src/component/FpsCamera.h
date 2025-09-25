@@ -11,7 +11,7 @@ public:
 
     virtual void updateRT(const UpdateContext& ctx, model::Node& node) override;
 
-    virtual void snapToIdeal(const Snapshot& snapshot) override;
+    virtual void snapToIdeal(const model::Snapshot& snapshot) override;
 
     // @param pitch radians
     void setPitch(float pitch)

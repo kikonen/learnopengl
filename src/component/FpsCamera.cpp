@@ -47,5 +47,5 @@ void FpsCamera::updateRT(const UpdateContext& ctx, model::Node& node)
     m_nodeLevel = level;
 }
 
-void FpsCamera::snapToIdeal(const Snapshot& snapshot)
+void FpsCamera::snapToIdeal(const model::Snapshot& snapshot)
 {}

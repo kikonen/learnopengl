@@ -6,7 +6,7 @@
 #include "component/Light.h"
 
 std::unique_ptr<Light> LightDefinition::createLight(
-    const NodeType* type)
+    const model::NodeType* type)
 {
     if (!type->m_lightDefinition) return nullptr;
 

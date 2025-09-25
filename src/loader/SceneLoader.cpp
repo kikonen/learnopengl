@@ -42,7 +42,7 @@
 #include <engine/AsyncLoader.h>
 
 #include "model/ResolvedNode.h"
-#include "model/DagSort.h"
+#include "util/DagSort.h"
 
 #include "Context.h"
 #include "Loaders.h"
@@ -61,7 +61,7 @@
 #include "loader_util.h"
 
 namespace {
-    using t_dag_item = dag::DagItem<ki::node_id, ResolvedNode>;
+    using t_dag_item = util::DagItem<ki::node_id, model::ResolvedNode>;
 }
 
 namespace loader {
@@ -242,7 +242,7 @@ namespace loader {
     }
 
     void SceneLoader::attachResolvedNodes(
-        std::vector<ResolvedNode>& resolvedNodes)
+        std::vector<model::ResolvedNode>& resolvedNodes)
     {
         auto& l = *m_loaders;
 
@@ -254,7 +254,7 @@ namespace loader {
                 items.push_back({ node.parentId, node.handle.toId(), &node });
             }
 
-            dag::DagSort<ki::node_id, ResolvedNode> sorter;
+            util::DagSort<ki::node_id, model::ResolvedNode> sorter;
             sorted = sorter.sort(items);
         }
 
@@ -266,7 +266,7 @@ namespace loader {
     }
 
     void SceneLoader::attachResolvedNode(
-        const ResolvedNode& resolved)
+        const model::ResolvedNode& resolved)
     {
         auto& nodeHandle = resolved.handle;
 

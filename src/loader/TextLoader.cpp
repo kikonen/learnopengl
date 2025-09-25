@@ -75,7 +75,7 @@ namespace loader {
     }
 
     std::unique_ptr<TextGeneratorDefinition> TextLoader::createDefinition(
-        const NodeType* type,
+        const model::NodeType* type,
         const TextData& data,
         Loaders& loaders)
     {

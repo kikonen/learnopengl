@@ -49,6 +49,11 @@ namespace audio {
     struct Source;
 }
 
+namespace render
+{
+    class RenderContext;
+}
+
 class Program;
 class CameraComponent;
 class Light;
@@ -56,12 +61,14 @@ class NodeGenerator;
 
 struct PrepareContext;
 struct UpdateContext;
-class RenderContext;
 
 class Registry;
 class EntityRegistry;
 
-struct Snapshot;
+namespace model
+{
+    struct Snapshot;
+}
 
 namespace model
 {
@@ -91,7 +98,7 @@ namespace model
         inline uint32_t getEntityIndex() const noexcept { return m_handle.m_handleIndex; }
         inline pool::NodeHandle toHandle() const noexcept { return m_handle; }
 
-        inline NodeType* getType() const noexcept
+        inline model::NodeType* getType() const noexcept
         {
             return m_typeHandle.toType();
         }
@@ -127,10 +134,10 @@ namespace model
         void prepareRT(
             const PrepareContext& ctx);
 
-        void updateVAO(const RenderContext& ctx) noexcept;
+        void updateVAO(const render::RenderContext& ctx) noexcept;
 
         void bindBatch(
-            const RenderContext& ctx,
+            const render::RenderContext& ctx,
             const std::function<ki::program_id(const mesh::LodMesh&)>& programSelector,
             const std::function<void(ki::program_id)>& programPrepare,
             uint8_t kindBits,

@@ -9,7 +9,11 @@
 
 #include "DecalSSBO.h"
 
-class RenderContext;
+namespace render
+{
+    class RenderContext;
+}
+
 struct UpdateContext;
 
 namespace decal {

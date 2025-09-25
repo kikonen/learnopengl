@@ -4,8 +4,12 @@
 
 #include "material/Material.h"
 
+namespace render
+{
+    class RenderContext;
+}
+
 class Program;
-class RenderContext;
 struct PrepareContext;
 
 namespace mesh {
@@ -27,12 +31,12 @@ public:
     virtual void prepareRT(const PrepareContext& ctx);
 
     virtual void render(
-        const RenderContext& ctx,
+        const render::RenderContext& ctx,
         render::FrameBuffer* targetBuffer) = 0;
 
 protected:
     void drawObjects(
-        const RenderContext& ctx,
+        const render::RenderContext& ctx,
         render::FrameBuffer* targetBuffer,
         const std::vector<mesh::MeshInstance>& meshes);
 

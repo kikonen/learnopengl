@@ -41,7 +41,7 @@ namespace editor
         void prepare(const PrepareContext& ctx) override;
 
         void draw(
-            const RenderContext& ctx,
+            const render::RenderContext& ctx,
             Scene* scene,
             debug::DebugContext& dbg) override;
 

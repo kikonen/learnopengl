@@ -35,7 +35,7 @@ void DynamicCubeMap::unbindTexture(
     m_cubeMap.unbindTexture(state, unitIndex);
 }
 
-void DynamicCubeMap::bind(const RenderContext& ctx)
+void DynamicCubeMap::bind(const render::RenderContext& ctx)
 {
     auto& state = ctx.m_state;
     // NOTE KI must flush before changing render target
@@ -48,7 +48,7 @@ void DynamicCubeMap::bind(const RenderContext& ctx)
     state.setViewport({ 0, 0, m_size, m_size });
 }
 
-void DynamicCubeMap::unbind(const RenderContext& ctx)
+void DynamicCubeMap::unbind(const render::RenderContext& ctx)
 {
     //kigl::GLState::get().bindFrameBuffer(0, false);
 }

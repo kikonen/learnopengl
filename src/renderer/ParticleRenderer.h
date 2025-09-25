@@ -15,7 +15,7 @@ public:
         const PrepareContext& ctx) override;
 
     void render(
-        const RenderContext& ctx);
+        const render::RenderContext& ctx);
 
 private:
     Program* m_particleProgram{ nullptr };

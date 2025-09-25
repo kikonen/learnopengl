@@ -8,11 +8,10 @@
 #include "kigl/GLTextureHandle.h"
 
 struct PrepareContext;
-class RenderContext;
-
 class Program;
 
 namespace render {
+    class RenderContext;
     class CubeMap;
 
     // NOTE KI https://forums.cgsociety.org/t/gamma-and-hdri/959636

@@ -51,21 +51,21 @@ public:
     void bindTexture(kigl::GLState& state);
 
     bool render(
-        const RenderContext& ctx);
+        const render::RenderContext& ctx);
 
 private:
     void clearCubeMap(
-        const RenderContext& ctx,
+        const render::RenderContext& ctx,
         DynamicCubeMap& cube);
 
     void drawNodes(
-        const RenderContext& ctx,
+        const render::RenderContext& ctx,
         render::CubeMapBuffer* targetBuffer,
         const model::Node* centerNode,
         const glm::vec4& debugColor);
 
     model::Node* findClosest(
-        const RenderContext& ctx);
+        const render::RenderContext& ctx);
 
 public:
 

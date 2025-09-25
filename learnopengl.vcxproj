@@ -445,7 +445,7 @@
     <ClCompile Include="src\loader\converter\DocNode.cpp" />
     <ClCompile Include="src\loader\converter\DocNodeData.cpp" />
     <ClCompile Include="src\loader\converter\YamlConverter.cpp" />
-    <ClCompile Include="src\model\DagSort_impl.h" />
+    <ClCompile Include="src\util\DagSort_impl.h" />
     <ClCompile Include="src\loader\FontLoader.cpp" />
     <ClCompile Include="src\loader\Loaders.cpp" />
     <ClCompile Include="src\loader\loader_util.cpp" />
@@ -964,7 +964,7 @@
     <ClInclude Include="src\ki\FpsCounter.h" />
     <ClInclude Include="src\ki\sid.h" />
     <ClInclude Include="src\loader\AnimationData.h" />
-    <ClInclude Include="src\model\DagSort.h" />
+    <ClInclude Include="src\util\DagSort.h" />
     <ClInclude Include="src\loader\FontData.h" />
     <ClInclude Include="src\loader\FontLoader.h" />
     <ClInclude Include="src\loader\LodData.h" />

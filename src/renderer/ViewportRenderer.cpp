@@ -91,10 +91,10 @@ void ViewportRenderer::updateRT(const UpdateViewContext& ctx)
 }
 
 void ViewportRenderer::render(
-    const RenderContext& parentCtx,
+    const render::RenderContext& parentCtx,
     render::FrameBuffer* destinationBuffer)
 {
-    RenderContext localCtx(parentCtx);
+    render::RenderContext localCtx(parentCtx);
     localCtx.m_forceLineMode = false;
     localCtx.bindDefaults();
 
@@ -103,7 +103,7 @@ void ViewportRenderer::render(
 }
 
 void ViewportRenderer::drawViewports(
-    const RenderContext& ctx)
+    const render::RenderContext& ctx)
 {
     auto& state = ctx.m_state;
 
@@ -135,7 +135,7 @@ void ViewportRenderer::drawViewports(
 }
 
 void ViewportRenderer::blitWindow(
-    const RenderContext& ctx,
+    const render::RenderContext& ctx,
     render::FrameBuffer* destinationBuffer)
 {
     auto& state = ctx.m_state;

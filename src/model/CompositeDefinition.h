@@ -4,10 +4,13 @@
 
 #include "ki/size.h"
 
-// For defining composite types
-struct CompositeDefinition
+namespace model
 {
-    ki::composite_id m_id;
+    // For defining composite types
+    struct CompositeDefinition
+    {
+        ki::composite_id m_id;
 
-    std::shared_ptr<std::vector<NodeDefinition>> m_nodes;
-};
+        std::shared_ptr<std::vector<NodeDefinition>> m_nodes;
+    };
+}

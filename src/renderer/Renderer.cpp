@@ -28,7 +28,7 @@ void Renderer::prepareRT(
 }
 
 bool Renderer::setClosest(
-    const RenderContext& ctx,
+    const render::RenderContext& ctx,
     model::Node* closest,
     int tagIndex)
 {
@@ -46,7 +46,7 @@ bool Renderer::setClosest(
 }
 
 void Renderer::clearClosest(
-    const RenderContext& ctx,
+    const render::RenderContext& ctx,
     int tagIndex)
 {
     if (m_lastClosest) {
@@ -55,7 +55,7 @@ void Renderer::clearClosest(
     }
 }
 
-bool Renderer::needRender(const RenderContext& ctx)
+bool Renderer::needRender(const render::RenderContext& ctx)
 {
     if (!m_enabled) return false;
 

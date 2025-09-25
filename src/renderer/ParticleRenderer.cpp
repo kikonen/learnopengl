@@ -48,7 +48,7 @@ void ParticleRenderer::prepareRT(
 }
 
 void ParticleRenderer::render(
-    const RenderContext& ctx)
+    const render::RenderContext& ctx)
 {
     if (!isEnabled()) return;
 

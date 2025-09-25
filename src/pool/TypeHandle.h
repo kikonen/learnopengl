@@ -4,12 +4,15 @@
 
 #include "ki/size.h"
 
-class NodeType;
+namespace model
+{
+    class NodeType;
+}
 
 namespace pool {
     struct TypeHandle final
     {
-        friend class NodeType;
+        friend class model::NodeType;
 
     public:
         TypeHandle()
@@ -51,7 +54,7 @@ namespace pool {
             return *this;
         }
 
-        TypeHandle& operator=(const NodeType* type) noexcept;
+        TypeHandle& operator=(const model::NodeType* type) noexcept;
 
         bool operator==(const TypeHandle& o) const noexcept
         {
@@ -75,14 +78,14 @@ namespace pool {
             m_id = 0;
         }
 
-        NodeType* toType() const noexcept;
+        model::NodeType* toType() const noexcept;
         ki::type_id toId() const noexcept { return m_id; }
 
         static TypeHandle allocate(ki::type_id id) noexcept;
 
         static TypeHandle toHandle(ki::type_id id) noexcept;
 
-        static NodeType* toType(ki::type_id id) noexcept;
+        static model::NodeType* toType(ki::type_id id) noexcept;
 
         static void clear() noexcept;
 

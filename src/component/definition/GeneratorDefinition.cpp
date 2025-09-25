@@ -14,7 +14,7 @@
 #include "component/definition/GeneratorDefinition.h"
 
 std::unique_ptr<NodeGenerator> GeneratorDefinition::createGenerator(
-    const NodeType* type)
+    const model::NodeType* type)
 {
     if (!type->m_generatorDefinition) return nullptr;
 

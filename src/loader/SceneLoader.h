@@ -9,7 +9,11 @@
 
 #include "BaseLoader.h"
 
-struct ResolvedNode;
+namespace model
+{
+    struct ResolvedNode;
+}
+
 class Registry;
 
 namespace pool {
@@ -61,10 +65,10 @@ namespace loader {
         void notifySceneLoaded();
 
         void attachResolvedNodes(
-            std::vector<ResolvedNode>& resolvedNodes);
+            std::vector<model::ResolvedNode>& resolvedNodes);
 
         void attachResolvedNode(
-            const ResolvedNode& resolvedNode);
+            const model::ResolvedNode& resolvedNode);
 
         void validate(
             const RootData& root);

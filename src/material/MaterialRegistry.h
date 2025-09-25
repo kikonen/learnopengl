@@ -10,9 +10,13 @@
 
 #include "kigl/GLBuffer.h"
 
+namespace render
+{
+    class RenderContext;
+}
+
 struct PrepareContext;
 struct UpdateContext;
-class RenderContext;
 
 struct MaterialSSBO;
 class MaterialUpdater;
@@ -40,7 +44,7 @@ public:
 
     void addMaterialUpdater(std::unique_ptr<MaterialUpdater> updater);
 
-    void renderMaterials(const RenderContext& ctx);
+    void renderMaterials(const render::RenderContext& ctx);
 
     void prepare();
 

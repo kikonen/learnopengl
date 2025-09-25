@@ -6,7 +6,10 @@
 
 #include "pool/TypeHandle.h"
 
-class RenderContext;
+namespace render
+{
+    class RenderContext;
+}
 
 //
 // NOTE KI main purpsoe of this registry is to delete NodeType instances
@@ -32,9 +35,9 @@ public:
     void registerCustomMaterial(
         pool::TypeHandle typeHandle);
 
-    void updateMaterials(const RenderContext& ctx);
+    void updateMaterials(const render::RenderContext& ctx);
 
-    void bindMaterials(const RenderContext& ctx);
+    void bindMaterials(const render::RenderContext& ctx);
 
 private:
     mutable std::mutex m_lock{};

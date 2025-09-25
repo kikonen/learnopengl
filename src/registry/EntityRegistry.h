@@ -12,8 +12,12 @@
 
 #include "EntitySSBO.h"
 
+namespace render
+{
+    class RenderContext;
+}
+
 struct UpdateContext;
-class RenderContext;
 
 //
 // Manage SSBO buffer for registered entity instances

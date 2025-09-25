@@ -29,7 +29,7 @@ public:
         const PrepareContext& ctx) override;
 
     virtual void render(
-        const RenderContext& ctx) override;
+        const render::RenderContext& ctx) override;
 
     virtual GLuint64 getTexHandle(TextureType type) const noexcept override;
 

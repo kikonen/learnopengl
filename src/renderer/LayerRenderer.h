@@ -35,16 +35,16 @@ public:
     void updateRT(const UpdateViewContext& ctx);
 
     void render(
-        const RenderContext& ctx,
+        const render::RenderContext& ctx,
         render::FrameBuffer* targetBuffer);
 
 private:
     void fillHighlightMask(
-        const RenderContext& ctx,
+        const render::RenderContext& ctx,
         render::FrameBuffer* targetBuffer);
 
     void renderHighlight(
-        const RenderContext& ctx,
+        const render::RenderContext& ctx,
         render::FrameBuffer* targetBuffer);
 
 public:

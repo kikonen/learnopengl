@@ -566,7 +566,7 @@ namespace loader {
         return layer ? layer->m_index : LAYER_NONE_INDEX;
     }
 
-    const NodeType* findNodeType(
+    const model::NodeType* findNodeType(
         BaseId baseId)
     {
         auto typeId = SID(baseId.m_path);

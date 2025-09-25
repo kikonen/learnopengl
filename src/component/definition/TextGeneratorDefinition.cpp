@@ -7,7 +7,7 @@
 #include "generator/TextGenerator.h"
 
 std::unique_ptr<TextGenerator> TextGeneratorDefinition::createTextGenerator(
-    const NodeType* type)
+    const model::NodeType* type)
 {
     if (!type->m_textGeneratorDefinition) return nullptr;
 

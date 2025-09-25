@@ -36,7 +36,7 @@ void FontAtlasMaterialUpdater::prepareRT(
 }
 
 void FontAtlasMaterialUpdater::render(
-    const RenderContext& ctx)
+    const render::RenderContext& ctx)
 {
     const auto& dbg = debug::DebugContext::get();
 

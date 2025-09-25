@@ -285,7 +285,7 @@ namespace loader
     }
 
     void NodeTypeBuilder::resolveMaterials(
-        NodeType* type,
+        model::NodeType* type,
         mesh::LodMesh& lodMesh,
         const NodeTypeData& typeData,
         const MeshData& meshData,
@@ -444,7 +444,7 @@ namespace loader
     }
 
     void NodeTypeBuilder::resolveMeshes(
-        NodeType* type,
+        model::NodeType* type,
         const NodeTypeData& typeData)
     {
         uint16_t index = 0;
@@ -459,7 +459,7 @@ namespace loader
     }
 
     void NodeTypeBuilder::resolveMesh(
-        NodeType* type,
+        model::NodeType* type,
         const NodeTypeData& typeData,
         const MeshData& meshData,
         int index)
@@ -524,7 +524,7 @@ namespace loader
     }
 
     int NodeTypeBuilder::resolveModelMesh(
-        NodeType* type,
+        model::NodeType* type,
         const NodeTypeData& typeData,
         const MeshData& meshData,
         int index)
@@ -600,7 +600,7 @@ namespace loader
     }
 
     void NodeTypeBuilder::resolveLodMesh(
-        NodeType* type,
+        model::NodeType* type,
         const NodeTypeData& typeData,
         const MeshData& meshData,
         mesh::LodMesh& lodMesh)
@@ -621,7 +621,7 @@ namespace loader
     }
 
     const LodData* NodeTypeBuilder::resolveLod(
-        NodeType* type,
+        model::NodeType* type,
         const NodeTypeData& typeData,
         const MeshData& meshData,
         mesh::LodMesh& lodMesh)
@@ -743,7 +743,7 @@ namespace loader
     }
 
     //void NodeTypeBuilder::resolveAttachments(
-    //    NodeType* type,
+    //    model::NodeType* type,
     //    const NodeTypeData& typeData)
     //{
     //    if (typeData.attachments.empty()) return;

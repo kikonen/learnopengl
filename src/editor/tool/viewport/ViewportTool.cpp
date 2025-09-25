@@ -47,7 +47,7 @@ namespace editor
     ViewportTool::~ViewportTool() = default;
 
     void ViewportTool::drawImpl(
-        const RenderContext& ctx,
+        const render::RenderContext& ctx,
         Scene* scene,
         debug::DebugContext& dbg)
     {
@@ -58,7 +58,7 @@ namespace editor
     }
 
     void ViewportTool::processInputs(
-        const RenderContext& ctx,
+        const render::RenderContext& ctx,
         Scene* scene,
         const Input& input,
         const InputState& inputState,
@@ -67,7 +67,7 @@ namespace editor
     }
 
     void ViewportTool::renderBufferDebug(
-        const RenderContext& ctx,
+        const render::RenderContext& ctx,
         Scene* scene,
         debug::DebugContext& dbg)
     {
@@ -79,7 +79,7 @@ namespace editor
 
         ImGuiTreeNodeFlags tnFlags = ImGuiTreeNodeFlags_SpanAvailWidth;
 
-        auto viewportTex = [&ctx](Viewport& viewport, bool useAspectRatio) {
+        auto viewportTex = [&ctx](model::Viewport& viewport, bool useAspectRatio) {
             ImVec2 availSize = ImGui::GetContentRegionAvail();
             // NOTE KI allow max half window size
             float w = std::min(availSize.x, ctx.m_resolution.x / 2.f) - scrollbarPadding;

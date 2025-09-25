@@ -9,12 +9,15 @@ namespace particle
     class ParticleGenerator;
 }
 
-class NodeType;
+namespace model
+{
+    class NodeType;
+}
 
 struct ParticleGeneratorDefinition
 {
     particle::ParticleDefinition m_data;
 
     static std::unique_ptr<particle::ParticleGenerator> createParticleGenerator(
-        const NodeType* type);
+        const model::NodeType* type);
 };

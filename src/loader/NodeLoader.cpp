@@ -221,7 +221,7 @@ namespace loader {
 
     void NodeLoader::createNodeDefinitions(
         const std::vector<NodeData>& nodes,
-        std::vector<NodeDefinition>& definitions,
+        std::vector<model::NodeDefinition>& definitions,
         bool recurse) const
     {
         for (const auto& nodeData : nodes) {
@@ -232,7 +232,7 @@ namespace loader {
 
     void NodeLoader::createNodeDefinition(
         const NodeData& nodeData,
-        NodeDefinition& definition,
+        model::NodeDefinition& definition,
         bool recurse) const
     {
         auto& df = definition;
@@ -273,12 +273,12 @@ namespace loader {
         df.m_clonePositionOffset = nodeData.clonePositionOffset;
 
         if (nodeData.clones && recurse) {
-            df.m_clones = std::make_shared<std::vector<NodeDefinition>>();
+            df.m_clones = std::make_shared<std::vector<model::NodeDefinition>>();
             createNodeDefinitions(*nodeData.clones, *df.m_clones, false);
         }
 
         if (nodeData.children) {
-            df.m_children = std::make_shared<std::vector<NodeDefinition>>();
+            df.m_children = std::make_shared<std::vector<model::NodeDefinition>>();
             createNodeDefinitions(*nodeData.children, *df.m_children, true);
         }
     }

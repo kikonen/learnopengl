@@ -16,7 +16,7 @@ namespace editor
     Tool::~Tool() = default;
 
     void Tool::drawMenu(
-        const RenderContext& ctx,
+        const render::RenderContext& ctx,
         Scene* scene,
         debug::DebugContext& dbg)
     {
@@ -26,7 +26,7 @@ namespace editor
     }
 
     void Tool::draw(
-        const RenderContext& ctx,
+        const render::RenderContext& ctx,
         Scene* scene,
         debug::DebugContext& dbg)
     {
