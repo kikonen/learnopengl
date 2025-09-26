@@ -2,6 +2,8 @@
 
 #include "glm/glm.hpp"
 
+#include "asset/AABBBuilder.h"
+
 #include "shader/Shader.h"
 
 #include "kigl/GLVertexArray.h"
@@ -58,15 +60,13 @@ namespace mesh {
 
     AABB VertexPositionVBO::calculateAABB() const noexcept
     {
-        AABB aabb{ true };
+        AABBBuilder builder;
 
         for (auto&& vertex : m_entries)
         {
-            aabb.minmax({ vertex.u_x, vertex.u_y, vertex.u_z });
+            builder.minmax({ vertex.u_x, vertex.u_y, vertex.u_z });
         }
 
-        aabb.updateVolume();
-
-        return aabb;
+        return builder.toAABB();
     }
 }

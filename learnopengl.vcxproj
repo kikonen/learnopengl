@@ -727,6 +727,7 @@
     <ClInclude Include="src\animation\MetadataLoader.h" />
     <ClInclude Include="src\animation\SocketBuffer.h" />
     <ClInclude Include="src\animation\SocketRegistry.h" />
+    <ClInclude Include="src\asset\AABBBuilder.h" />
     <ClInclude Include="src\component\definition\AudioListenerDefinition.h" />
     <ClInclude Include="src\component\definition\AudioSourceDefinition.h" />
     <ClInclude Include="src\component\definition\CameraComponentDefinition.h" />

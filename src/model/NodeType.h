@@ -154,7 +154,7 @@ namespace model
 
         const AABB& getAABB() const noexcept
         {
-            return *m_aabb;
+            return m_aabb;
         }
 
         void prepareVolume() noexcept;
@@ -174,7 +174,7 @@ namespace model
     private:
         std::vector<mesh::LodMesh> m_lodMeshes;
         std::unique_ptr<std::string> m_name;
-        std::unique_ptr<AABB> m_aabb;
+        AABB m_aabb;
         std::unique_ptr<std::vector<script::script_id>> m_scripts;
         std::unique_ptr<CustomMaterial> m_customMaterial{ nullptr };
 

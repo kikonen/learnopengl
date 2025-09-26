@@ -2,6 +2,8 @@
 
 #include <fmt/format.h>
 
+#include "asset/AABBBuilder.h"
+
 #include "util/glm_format.h"
 #include "util/Log.h"
 #include "util/util.h"
@@ -61,15 +63,13 @@ namespace mesh {
     {
         if (m_meshes.empty()) return {};
 
-        AABB aabb{ true };
+        AABBBuilder builder;
 
         for (auto& mesh : m_meshes) {
-            aabb.minmax(mesh->calculateAABB(transform));
+            builder.minmax(mesh->calculateAABB(transform));
         }
 
-        aabb.updateVolume();
-
-        return aabb;
+        return builder.toAABB();
     }
 
     mesh::Mesh* MeshSet::addMesh(std::shared_ptr<mesh::Mesh>&& mesh) noexcept

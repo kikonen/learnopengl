@@ -1,5 +1,7 @@
 #include "VaoMesh.h"
 
+#include "asset/AABBBuilder.h"
+
 namespace mesh {
     VaoMesh::VaoMesh(std::string_view name)
         : Mesh{name}
@@ -9,20 +11,14 @@ namespace mesh {
 
     AABB VaoMesh::calculateAABB(const glm::mat4& transform) const
     {
-        AABB aabb{ true };
+        AABBBuilder builder{};
 
         for (auto&& vertex : m_vertices)
         {
             const auto& pos = transform * glm::vec4(vertex.pos, 1.f);
-            aabb.minmax(pos);
+            builder.minmax(pos);
         }
 
-        //KI_INFO_OUT(fmt::format(
-        //    "AABB: model={}, min={}, max={}",
-        //    m_name, aabb.m_min, aabb.m_max));
-
-        aabb.updateVolume();
-
-        return aabb;
+        return builder.toAABB();
     }
 }

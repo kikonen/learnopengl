@@ -21,7 +21,7 @@ bool OBB::inFrustum(
 
     prepareProjected(projectedLevel, projectedMatrix, modelLevel, modelMatrix);
 
-    const auto count = m_aabb.m_quad ? 8 : 4;
+    const auto count = 8;
 
     for (size_t corner_idx = 0; corner_idx < count; corner_idx++) {
         const auto& corner = m_projected[corner_idx];
@@ -52,7 +52,7 @@ void OBB::prepareProjected(
     m_projected[2] = mvp * m_corners[2];
     m_projected[3] = mvp * m_corners[3];
 
-    if (!m_aabb.m_quad) {
+    {
         m_projected[4] = mvp * m_corners[4];
         m_projected[5] = mvp * m_corners[5];
         m_projected[6] = mvp * m_corners[6];
@@ -67,15 +67,15 @@ void OBB::prepareProjected(
 void OBB::prepareCorners()
 {
     // Use our min max to define eight corners
-    const auto& min = m_aabb.m_min;
-    const auto& max = m_aabb.m_max;
+    const auto& min = m_aabb.getMin();
+    const auto& max = m_aabb.getMax();
 
     m_corners[0] = { min.x, min.y, min.z, 1.0 }; // x y z
     m_corners[1] = { max.x, min.y, min.z, 1.0 }; // X y z
     m_corners[2] = { min.x, max.y, min.z, 1.0 }; // x Y z
     m_corners[3] = { max.x, max.y, min.z, 1.0 }; // X Y z
 
-    if (!m_aabb.m_quad) {
+    {
         m_corners[4] = { min.x, min.y, max.z, 1.0 }; // x y Z
         m_corners[5] = { max.x, min.y, max.z, 1.0 }; // X y Z
         m_corners[6] = { min.x, max.y, max.z, 1.0 }; // x Y Z

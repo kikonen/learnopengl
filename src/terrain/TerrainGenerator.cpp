@@ -189,12 +189,10 @@ namespace terrain {
 
         {
             AABB aabb{
-                glm::vec3{ -1.f, 1, -1.f },
-                glm::vec3{ 1.f, 1, 1.f },
-                false
+                glm::vec3{0.f},
+                glm::vec3{ 0.5f }
             };
-            aabb.updateVolume();
-            m_volume = aabb.getVolume();
+            m_volume = aabb.toVolume();
         }
 
         const int tileCount = m_worldTilesU * m_worldTilesV;

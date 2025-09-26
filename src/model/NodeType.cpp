@@ -2,6 +2,8 @@
 
 #include <fmt/format.h>
 
+#include "asset/AABBBuilder.h"
+
 #include "material/CustomMaterial.h"
 #include "material/Material.h"
 
@@ -41,7 +43,7 @@
 namespace model
 {
     NodeType::NodeType()
-        : m_aabb{ std::make_unique<AABB>() },
+        : m_aabb{},
         m_name{ std::make_unique<std::string>() },
         m_scripts{ std::make_unique<std::vector<script::script_id>>() }
     {
@@ -49,7 +51,7 @@ namespace model
 
     NodeType::NodeType(NodeType&& o) noexcept
         : m_handle{ o.m_handle },
-        m_aabb{ std::move(o.m_aabb) },
+        m_aabb{ o.m_aabb },
         m_name{ std::move(o.m_name) },
         m_flags{ o.m_flags },
         m_layer{ o.m_layer },
@@ -167,22 +169,20 @@ namespace model
     }
 
     void NodeType::prepareVolume() noexcept {
-        *m_aabb = calculateAABB();
+        m_aabb = calculateAABB();
     }
 
     AABB NodeType::calculateAABB() const noexcept
     {
         if (m_lodMeshes.empty()) return {};
 
-        AABB aabb{ true };
+		AABBBuilder builder;
 
         for (auto& lodMesh : m_lodMeshes) {
             if (lodMesh.m_flags.noVolume) continue;
-            aabb.minmax(lodMesh.calculateAABB());
+            builder.minmax(lodMesh.calculateAABB());
         }
 
-        aabb.updateVolume();
-
-        return aabb;
+        return builder.toAABB();
     }
 }

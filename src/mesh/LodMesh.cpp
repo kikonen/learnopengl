@@ -8,6 +8,7 @@
 #include "util/glm_util.h"
 
 #include "asset/Assets.h"
+#include "asset/AABBBuilder.h"
 
 #include "material/Material.h"
 
@@ -299,15 +300,13 @@ namespace mesh {
     {
         if (!m_mesh) return {};
 
-        AABB aabb{ true };
+        AABBBuilder builder{};
 
         {
             updateTransform();
-            aabb.minmax(m_mesh->calculateAABB(m_baseTransform));
+            builder.minmax(m_mesh->calculateAABB(m_baseTransform));
         }
 
-        aabb.updateVolume();
-
-        return aabb;
+        return builder.toAABB();
     }
 }

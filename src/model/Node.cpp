@@ -98,7 +98,7 @@ namespace model
         if (type->hasMesh()) {
             KI_DEBUG(fmt::format("ADD_ENTITY: {}", str()));
 
-            state.setVolume(type->getAABB().getVolume());
+            state.setVolume(type->getAABB().toVolume());
             {
                 state.m_flags = type->resolveEntityFlags();
             }

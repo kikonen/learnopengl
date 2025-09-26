@@ -48,10 +48,13 @@ namespace physics {
 
         inline bool withinBounds(const glm::vec3 pos) const noexcept
         {
-            return pos.x >= m_aabb.m_min.x &&
-                pos.x <= m_aabb.m_max.x &&
-                pos.y >= m_aabb.m_min.y &&
-                pos.y <= m_aabb.m_max.y;
+            const auto& min = m_aabb.getMin();
+            const auto& max = m_aabb.getMax();
+
+            return pos.x >= min.x &&
+                pos.x <= max.x &&
+                pos.y >= min.y &&
+                pos.y <= max.y;
         }
 
         float getLevel(const glm::vec3& pos) const noexcept;

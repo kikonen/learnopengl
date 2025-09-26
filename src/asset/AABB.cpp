@@ -1,33 +1,21 @@
 #include "AABB.h"
 
-#include <iostream>
-
-#include <fmt/format.h>
-
-#include "util/glm_format.h"
 #include "util/glm_util.h"
 
 
-void AABB::minmax(const glm::vec3& pos)
+glm::vec4 AABB::toVolume() const noexcept
 {
-    util::minmax(pos, m_min, m_max);
+    const float radius = glm::length(getMin() - getMax()) * 0.5f;
+
+    return glm::vec4(m_center, radius);
 }
 
-void AABB::minmax(const AABB& o)
+glm::vec3 AABB::getMin() const noexcept
 {
-    minmax(o.m_min);
-    minmax(o.m_max);
+    return m_center - m_halfExtends;
 }
 
-void AABB::updateVolume()
+glm::vec3 AABB::getMax() const noexcept
 {
-    const glm::vec3 center = (m_max + m_min) * 0.5f;
-    const float radius = glm::length(m_min - m_max) * 0.5f;
-
-    //const glm::vec3 center{ 0.f };
-    //const float radius = std::max(glm::length(m_min), glm::length(m_max));
-
-    //std::cout << fmt::format("avg_center={}, avg_radius={}, max_radius={}\n", center2, radius2, radius);
-
-    m_volume = glm::vec4(center, radius);
+    return m_center + m_halfExtends;
 }

@@ -10,7 +10,9 @@ namespace model
         glm::vec3 align{ 0.f };
 
         const auto& aabb = type->getAABB();
-        const auto& volume = aabb.getVolume();
+        const auto& volume = aabb.toVolume();
+        const auto& min = aabb.getMin();
+        const auto& max = aabb.getMax();
 
         for (int i = 0; i < 3; i++) {
             switch (m_alignment[i]) {
@@ -21,16 +23,16 @@ namespace model
                 align[i] = volume[i];
                 break;
             case PivotAlignment::top:
-                align[i] = aabb.m_max.y;
+                align[i] = max.y;
                 break;
             case PivotAlignment::bottom:
-                align[i] = aabb.m_min.y;
+                align[i] = min.y;
                 break;
             case PivotAlignment::right:
-                align[i] = aabb.m_min.x;
+                align[i] = min.x;
                 break;
             case PivotAlignment::left:
-                align[i] = aabb.m_max.x;
+                align[i] = max.x;
                 break;
             }
         }
