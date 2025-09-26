@@ -10,6 +10,10 @@ namespace util
     glm::quat degreesToQuat(const glm::vec3& rot);
     glm::quat radiansToQuat(const glm::vec3& rot);
 
+    // x=pitch, y=yaw
+    glm::quat degreesPitchYawToQuat(const glm::vec2& pitchYaw);
+    glm::quat radiansPitchYawToQuat(const glm::vec2& pitchYaw);
+
     glm::vec3 quatToDegrees(const glm::quat& rot);
     glm::vec3 quatToRadians(const glm::quat& rot);
 

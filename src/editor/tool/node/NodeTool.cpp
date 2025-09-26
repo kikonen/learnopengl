@@ -1,5 +1,5 @@
 #include "NodeTool.h"
-
+    
 #include <unordered_map>
 
 #include <math.h>
@@ -202,17 +202,15 @@ namespace editor
         }
 
         {
-            glm::vec3 rot = state.getDegreesRotation();
+            auto& rotation = m_state.m_nodeRotation;
+            rotation.update(state.getRotation());
+            auto& rot = rotation.m_degrees;
+
             // , "%.3f", ImGuiInputTextFlags_EnterReturnsTrue
-            if (ImGui::InputFloat3("Rotation", glm::value_ptr(rot))) {
+            if (ImGui::InputFloat3("Euler XYZ", glm::value_ptr(rot)))
+            {
                 state.setDegreesRotation(rot);
-
-                auto quat = util::degreesToQuat(rot);
-                auto deg = util::quatToDegrees(quat);
-
-                KI_INFO_OUT(fmt::format(
-                    "rot={}, deg={}, quat={}",
-                    rot, deg, quat));
+                rotation.mark(state.getRotation());
             }
         }
 
@@ -321,9 +319,14 @@ namespace editor
                 }
 
                 {
-                    glm::vec3 rot = util::quatToDegrees(socket->m_offset.m_rotation);
+                    auto& rotation = m_state.m_socketRotation;
+                    rotation.update(socket->m_offset.m_rotation);
+                    auto& rot = rotation.m_degrees;
+
                     if (ImGui::InputFloat3("Socket rotation", glm::value_ptr(rot))) {
                         socket->m_offset.m_rotation = util::degreesToQuat(rot);
+                        rotation.mark(socket->m_offset.m_rotation);
+
                         updateSocket(node, mesh, rig, socket);
                     }
                 }

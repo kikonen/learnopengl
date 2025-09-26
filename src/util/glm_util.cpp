@@ -4,8 +4,12 @@
 #include <algorithm>
 
 #include <glm/gtx/quaternion.hpp>
+#include <glm/gtx/euler_angles.hpp>
 
 namespace {
+    static constexpr float EPSILON = 1e-6f;
+    static constexpr float GIMBAL_LOCK_THRESHOLD = 0.499f;
+
     inline bool nearZero(float val, float epsilon = 0.00001f)
     {
         return fabs(val) <= epsilon;
@@ -25,6 +29,17 @@ namespace util
         if (cosine == -1.f) return std::numbers::pi_v<float>;
         return acos(cosine);
         //return acos(cosine / (glm::length(a) * glm::length(b)));
+    }
+
+    glm::quat degreesPitchYawToQuat(const glm::vec2& pitchYaw)
+    {
+        return radiansPitchYawToQuat(glm::radians(pitchYaw));
+    }
+
+    glm::quat radiansPitchYawToQuat(const glm::vec2& pitchYaw)
+    {
+        glm::vec3 rot{ pitchYaw.x, pitchYaw.y, 0.f };
+        return glm::normalize(glm::quat(rot));
     }
 
     glm::quat degreesToQuat(const glm::vec3& rot)
