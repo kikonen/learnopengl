@@ -14,11 +14,10 @@
 #include "kigl/GLState.h"
 
 #include "engine/Engine.h"
+#include "engine/PrepareContext.h"
 
 #include "event/Event.h"
 #include "event/Dispatcher.h"
-
-#include "render/RenderContext.h"
 
 #include "scene/Scene.h"
 
@@ -54,7 +53,7 @@ namespace editor {
 
     void EditorFrame::prepare(const PrepareContext& ctx)
     {
-        const auto& assets = ctx.m_assets;
+        const auto& assets = ctx.getAssets();
 
         Frame::prepare(ctx);
 
@@ -72,38 +71,32 @@ namespace editor {
     }
 
     void EditorFrame::processInputs(
-        const render::RenderContext& ctx,
-        Scene* scene,
-        const Input& input,
-        const InputState& inputState,
-        const InputState& lastInputState)
+        const InputContext& ctx)
     {
-        m_statusTool->processInputs(ctx, scene, input, inputState, lastInputState);
-        m_cameraTool->processInputs(ctx, scene, input, inputState, lastInputState);
-        m_nodeTypeTool->processInputs(ctx, scene, input, inputState, lastInputState);
-        m_nodeTool->processInputs(ctx, scene, input, inputState, lastInputState);
-        m_viewportTool->processInputs(ctx, scene, input, inputState, lastInputState);
-        m_debugTool->processInputs(ctx, scene, input, inputState, lastInputState);
-        m_optionsTool->processInputs(ctx, scene, input, inputState, lastInputState);
+        m_statusTool->processInputs(ctx);
+        m_cameraTool->processInputs(ctx);
+        m_nodeTypeTool->processInputs(ctx);
+        m_nodeTool->processInputs(ctx);
+        m_viewportTool->processInputs(ctx);
+        m_debugTool->processInputs(ctx);
+        m_optionsTool->processInputs(ctx);
     }
 
     void EditorFrame::draw(
-        const render::RenderContext& ctx,
-        Scene* scene,
-        debug::DebugContext& dbg)
+        const gui::FrameContext& ctx)
     {
-        const auto& assets = ctx.m_assets;
+        const auto& assets = Assets::get();
 
         m_window->m_input->claimedFocus();
 
-        ctx.m_state.bindFrameBuffer(0, false);
+        ctx.getGLState().bindFrameBuffer(0, false);
 
         if (assets.editorImGuiDemo|| getState().m_showImguiDemo) {
             ImGui::ShowDemoWindow();
         }
 
         if (getState().m_showConsole) {
-            m_consoleFrame->draw(ctx, scene, dbg);
+            m_consoleFrame->draw(ctx);
         }
 
         //ImGuiIO& io = ImGui::GetIO();
@@ -117,7 +110,7 @@ namespace editor {
             | ImGuiWindowFlags_MenuBar
             | 0;
         if (!ImGui::Begin("Edit", openPtr, flags)) {
-            trackImGuiState(dbg);
+            trackImGuiState(ctx);
             ImGui::End();
             return;
         }
@@ -129,32 +122,32 @@ namespace editor {
         ImGui::DockSpace(dockspace_id, ImVec2(0.0f, 0.0f), dockspace_flags);
         //}
 
-        renderMenuBar(ctx, scene, dbg);
+        renderMenuBar(ctx);
 
         {
-            m_statusTool->draw(ctx, scene, dbg);
-            m_cameraTool->draw(ctx, scene, dbg);
-            m_nodeTypeTool->draw(ctx, scene, dbg);
-            m_nodeTool->draw(ctx, scene, dbg);
-            m_viewportTool->draw(ctx, scene, dbg);
-            m_debugTool->draw(ctx, scene, dbg);
-            m_optionsTool->draw(ctx, scene, dbg);
+            m_statusTool->draw(ctx);
+            m_cameraTool->draw(ctx);
+            m_nodeTypeTool->draw(ctx);
+            m_nodeTool->draw(ctx);
+            m_viewportTool->draw(ctx);
+            m_debugTool->draw(ctx);
+            m_optionsTool->draw(ctx);
         }
 
-        trackImGuiState(dbg);
+        trackImGuiState(ctx);
 
         ImGui::End();
     }
 
     void EditorFrame::renderMenuBar(
-        const render::RenderContext& ctx,
-        Scene* scene,
-        debug::DebugContext& dbg)
+        const gui::FrameContext& ctx)
     {
         if (ImGui::BeginMenuBar())
         {
             if (ImGui::BeginMenu("File"))
             {
+                if (ImGui::MenuItem("Open scene", "CTRL+O")) { onOpenScene(ctx); }
+                ImGui::Separator();
                 ImGui::Checkbox("ImGui Demo", &m_state.m_showImguiDemo);
                 ImGui::Checkbox("Console", &m_state.m_showConsole);
                 ImGui::EndMenu();
@@ -173,17 +166,24 @@ namespace editor {
 
             if (ImGui::BeginMenu("Tools"))
             {
-                m_statusTool->drawMenu(ctx, scene, dbg);
-                m_cameraTool->drawMenu(ctx, scene, dbg);
-                m_nodeTypeTool->drawMenu(ctx, scene, dbg);
-                m_nodeTool->drawMenu(ctx, scene, dbg);
-                m_viewportTool->drawMenu(ctx, scene, dbg);
-                m_debugTool->drawMenu(ctx, scene, dbg);
-                m_optionsTool->drawMenu(ctx, scene, dbg);
+                m_statusTool->drawMenu(ctx);
+                m_cameraTool->drawMenu(ctx);
+                m_nodeTypeTool->drawMenu(ctx);
+                m_nodeTool->drawMenu(ctx);
+                m_viewportTool->drawMenu(ctx);
+                m_debugTool->drawMenu(ctx);
+                m_optionsTool->drawMenu(ctx);
                 ImGui::EndMenu();
             }
 
             ImGui::EndMenuBar();
         }
+    }
+
+    void EditorFrame::onOpenScene(
+        const gui::FrameContext& ctx)
+    {
+        event::Event evt{ event::Type::action_editor_scene_load };
+        ctx.getRegistry()->m_dispatcherView->send(evt);
     }
 }

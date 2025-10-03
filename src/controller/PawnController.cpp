@@ -40,7 +40,7 @@ void PawnController::prepare(
 {
     NodeController::prepare(ctx, node);
 
-    const auto& assets = ctx.m_assets;
+    const auto& assets = ctx.getAssets();
 
     m_nodeHandle = node.toHandle();
 
@@ -56,7 +56,7 @@ bool PawnController::updateWT(
     const UpdateContext& ctx,
     model::Node& node)
 {
-    const auto dt = ctx.m_clock.elapsedSecs;
+    const auto dt = ctx.getClock().elapsedSecs;
 
     auto& state = NodeRegistry::get().modifyState(node.getEntityIndex());
     bool changed = false;
@@ -87,9 +87,9 @@ void PawnController::processInput(
     const auto* snapshot = node->getSnapshotRT();
     if (!snapshot) return;
 
-    const auto* input = ctx.m_input;
+    const auto& input = ctx.getInput();
 
-    const float dt = ctx.m_clock.elapsedSecs;
+    const float dt = ctx.getClock().elapsedSecs;
 
     const auto& viewUp = glm::normalize(snapshot->getViewUp());
 
@@ -98,17 +98,17 @@ void PawnController::processInput(
 
     bool runningSpeed = false;
 
-    if (input->isModifierDown(Modifier::SHIFT)) {
+    if (input.isModifierDown(Modifier::SHIFT)) {
         moveSpeed = m_speedMoveRun;
         rotateSpeed = glm::radians(m_speedRotateRun);
         runningSpeed = true;
     }
-    if (input->isModifierDown(Modifier::ALT)) {
+    if (input.isModifierDown(Modifier::ALT)) {
         moveSpeed *= 5.f;
         rotateSpeed *= 2.f;
         runningSpeed = true;
     }
-    if (input->isHighPrecisionMode()) {
+    if (input.isHighPrecisionMode()) {
         moveSpeed *= 0.1f;
         rotateSpeed *= 0.25f;
         runningSpeed = false;
@@ -124,11 +124,11 @@ void PawnController::processInput(
         if (true) {
             bool changed = false;
 
-            if (input->isKeyDown(Key::ROTATE_LEFT)) {
+            if (input.isKeyDown(Key::ROTATE_LEFT)) {
                 angularVelocity += rotateSpeed.y;
                 changed = true;
             }
-            if (input->isKeyDown(Key::ROTATE_RIGHT)) {
+            if (input.isKeyDown(Key::ROTATE_RIGHT)) {
                 angularVelocity += -rotateSpeed.y;
                 changed = true;
             }
@@ -146,11 +146,11 @@ void PawnController::processInput(
         {
             const auto& viewFront = glm::normalize(snapshot->getViewFront());
 
-            if (input->isKeyDown(Key::FORWARD)) {
+            if (input.isKeyDown(Key::FORWARD)) {
                 adjust += viewFront * dt * moveSpeed.z;
                 changed = true;
             }
-            if (input->isKeyDown(Key::BACKWARD)) {
+            if (input.isKeyDown(Key::BACKWARD)) {
                 adjust -= viewFront * dt * moveSpeed.z;
                 changed = true;
             }
@@ -159,22 +159,22 @@ void PawnController::processInput(
         {
             const auto& viewRight = glm::normalize(snapshot->getViewRight());
 
-            if (input->isKeyDown(Key::LEFT)) {
+            if (input.isKeyDown(Key::LEFT)) {
                 adjust -= viewRight * dt * moveSpeed.x;
                 changed = true;
             }
-            if (input->isKeyDown(Key::RIGHT)) {
+            if (input.isKeyDown(Key::RIGHT)) {
                 adjust += viewRight * dt * moveSpeed.x;
                 changed = true;
             }
         }
 
         {
-            if (input->isKeyDown(Key::UP)) {
+            if (input.isKeyDown(Key::UP)) {
                 adjust += viewUp * dt * moveSpeed.y;
                 changed = true;
             }
-            if (input->isKeyDown(Key::DOWN)) {
+            if (input.isKeyDown(Key::DOWN)) {
                 adjust -= viewUp * dt * moveSpeed.y;
                 changed = true;
             }
@@ -190,11 +190,11 @@ void PawnController::processInput(
         }
     }
 
-    if (input->isMouseCaptured()) {
+    if (input.isMouseCaptured()) {
         const float maxMouseSpeed = 500.f;
         // Rotation/sec at maximum speed
         const float maxAngularSpeed = std::numbers::pi_v<float> * 8.f;
-        const float x = input->mouseRelativeX;
+        const float x = input.mouseRelativeX;
 
         if (x != 0.f) {
             // Convert to ~[-1.0, 1.0]
@@ -202,7 +202,7 @@ void PawnController::processInput(
             // Multiply by rotation/sec
             mouseAngularVelocity *= maxAngularSpeed;
 
-            if (input->isHighPrecisionMode()) {
+            if (input.isHighPrecisionMode()) {
                 mouseAngularVelocity *= 0.25f;
             }
 

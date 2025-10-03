@@ -4,7 +4,10 @@
 #include <memory>
 #include <mutex>
 
+#include "event/Listen.h"
+
 struct UpdateContext;
+class Engine;
 class Registry;
 
 class Updater
@@ -13,7 +16,7 @@ public:
     Updater(
         std::string_view prefix,
         size_t delay,
-        std::shared_ptr<Registry> registry,
+        Engine& engine,
         std::shared_ptr<std::atomic<bool>> alive);
 
     virtual ~Updater();
@@ -38,6 +41,8 @@ public:
 
     virtual std::string getStats() = 0;
 
+    Registry* getRegistry() const noexcept;
+
 protected:
     bool m_loaded{ false };
 
@@ -50,5 +55,5 @@ protected:
     std::atomic<bool> m_running;
     std::shared_ptr<std::atomic<bool>> m_alive;
 
-    std::shared_ptr<Registry> m_registry;
+    Engine& m_engine;
 };

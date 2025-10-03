@@ -102,7 +102,7 @@ void ObjectIdRenderer::prepareRT(
 
     Renderer::prepareRT(ctx);
 
-    const auto& assets = ctx.m_assets;
+    const auto& assets = ctx.getAssets();
 
     m_idProgramId = ProgramRegistry::get().getProgram(SHADER_OBJECT_ID, { { DEF_USE_ALPHA, "1"} });
 
@@ -121,7 +121,7 @@ void ObjectIdRenderer::prepareRT(
 
 void ObjectIdRenderer::updateRT(const UpdateViewContext& ctx)
 {
-    const auto& assets = ctx.m_assets;
+    const auto& assets = ctx.getAssets();
     auto& dbg = debug::DebugContext::get();
 
     const auto& res = ctx.m_resolution;
@@ -180,7 +180,7 @@ void ObjectIdRenderer::drawNodes(const render::RenderContext& parentCtx)
     render::RenderContext localCtx{ "local", &parentCtx };
     localCtx.m_forceSolid = true;
 
-    auto& state = localCtx.m_state;
+    auto& state = localCtx.getGLState();
 
     state.setEnabled(GL_DEPTH_TEST, true);
 

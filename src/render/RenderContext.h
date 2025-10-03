@@ -105,8 +105,8 @@ namespace render {
             return old;
         }
 
-        UpdateContext toUpdateContext() const;
-        PrepareContext toPrepareContext() const;
+        //UpdateContext toUpdateContext() const;
+        //PrepareContext toPrepareContext() const;
 
         glm::vec3 getScreenDirection(
             const glm::vec2& screenPoint) const;
@@ -127,6 +127,31 @@ namespace render {
         glm::vec3 unproject(const glm::vec2& screenPoint, float deviceZ) const;
 
         render::Camera* const getMainCamera() const noexcept;
+
+        Registry* getRegistry() const noexcept
+        {
+            return m_registry;
+        }
+
+        const ki::RenderClock getClock() const noexcept
+        {
+            return m_clock;
+        }
+
+        const debug::DebugContext& getDebug() const noexcept
+        {
+            return m_dbg;
+        }
+
+        const Assets& getAssets() const noexcept
+        {
+            return m_assets;
+        }
+
+        kigl::GLState& getGLState() const noexcept
+        {
+            return m_state;
+        }
 
     public:
         const std::string m_name;

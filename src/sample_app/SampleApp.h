@@ -10,6 +10,8 @@
 
 #include "TestSceneSetup.h"
 
+#include "event/Listen.h"
+
 struct Material;
 
 namespace loader {
@@ -38,46 +40,38 @@ protected:
     int onInit() override;
     int onSetup() override;
 
-    int onUpdate(const ki::RenderClock& clock) override;
+    int onUpdate(const UpdateContext& ctx) override;
     int onRender(const ki::RenderClock& clock) override;
-    int onPost(const ki::RenderClock& clock) override;
+    int onPost(const UpdateContext& ctx) override;
 
     void onDestroy() override;
 
     virtual void showFps(const ki::FpsCounter& fpsCounter) override;
 
 private:
+    void processInput();
+
     void frustumDebug(
-        const render::RenderContext& ctx,
         const ki::RenderClock& clock);
 
-    void raycastPlayer(
-        const render::RenderContext& ctx,
-        Scene* scene,
-        const Input& input,
-        const InputState& inputState,
-        const InputState& lastInputState);
-
-    void shoot(
-        const render::RenderContext& ctx,
-        Scene* scene,
-        const Input& input,
-        const InputState& inputState,
-        const InputState& lastInputState);
-
-    void shootCallback(
-        const physics::RayHit& hit
-    );
-
     Assets loadAssets();
+
+    void onShoot();
+    void onLoadScene();
+
     std::shared_ptr<Scene> loadScene();
+    void unloadScene();
+    void stopLoader();
 
 private:
     std::shared_ptr<FrameInit> m_editorFrameInit;
     std::shared_ptr<editor::EditorFrame> m_editorFrame;
 
-    std::vector<std::unique_ptr<loader::SceneLoader>> m_loaders;
+    std::unique_ptr<loader::SceneLoader> m_loader;
     std::unique_ptr<TestSceneSetup> m_testSetup;
+
+    event::Listen m_listen_action_editor_scene_load{ event::Type::action_editor_scene_load };
+    event::Listen m_listen_scene_loaded{ event::Type::scene_loaded };
 
     size_t m_drawCount = 0;
     size_t m_skipCount = 0;

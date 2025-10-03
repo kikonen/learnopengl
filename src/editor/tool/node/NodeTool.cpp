@@ -14,8 +14,7 @@
 #include "util/util.h"
 #include "asset/Assets.h"
 
-#include "gui/Input.h"
-
+#include "engine/InputContext.h"
 #include "engine/Engine.h"
 
 #include "event/Event.h"
@@ -78,10 +77,10 @@ namespace editor
 
     void NodeTool::prepare(const PrepareContext& ctx)
     {
-        auto* dispatcherView = ctx.m_registry->m_dispatcherView;
+        auto* dispatcherView = ctx.getRegistry()->m_dispatcherView;
 
-        dispatcherView->addListener(
-            event::Type::node_select,
+        m_listen_node_select.listen(
+            dispatcherView,
             [this](const event::Event& e) {
                 const auto& data = e.body.select;
                 if (auto nodeHandle = pool::NodeHandle::toHandle(data.target)) {
@@ -93,51 +92,47 @@ namespace editor
     }
 
     void NodeTool::drawImpl(
-        const render::RenderContext& ctx,
-        Scene* scene,
-        debug::DebugContext& dbg)
+        const gui::FrameContext& ctx)
     {
         if (ImGui::CollapsingHeader("Node"))
         {
             ImGui::PushID("node");
-            renderNode(ctx, dbg);
+            renderNode(ctx);
             ImGui::PopID();
         }
 
         if (ImGui::CollapsingHeader("Animation"))
         {
             ImGui::PushID("animation");
-            renderAnimationDebug(ctx, dbg);
+            renderAnimationDebug(ctx);
             ImGui::PopID();
         }
     }
 
     void NodeTool::renderNode(
-        const render::RenderContext& ctx,
-        debug::DebugContext& dbg)
+        const gui::FrameContext& ctx)
     {
-        renderNodeSelector(ctx, dbg);
+        renderNodeSelector(ctx);
 
         {
             ImGui::Spacing();
             ImGui::Separator();
 
-            renderNodeProperties(ctx, dbg);
-            renderTypeProperties(ctx, dbg);
-            renderRigProperties(ctx, dbg);
+            renderNodeProperties(ctx);
+            renderTypeProperties(ctx);
+            renderRigProperties(ctx);
         }
 
         {
             ImGui::Spacing();
             ImGui::Separator();
 
-            renderNodeDebug(ctx, dbg);
+            renderNodeDebug(ctx);
         }
     }
 
     void NodeTool::renderNodeSelector(
-        const render::RenderContext& ctx,
-        debug::DebugContext& dbg)
+        const gui::FrameContext& ctx)
     {
         const auto& nr = NodeRegistry::get();
 
@@ -170,8 +165,7 @@ namespace editor
     }
 
     void NodeTool::renderNodeProperties(
-        const render::RenderContext& ctx,
-        debug::DebugContext& dbg)
+        const gui::FrameContext& ctx)
     {
         auto* node = m_state.m_selectedNode.toNode();
         if (!node) return;
@@ -235,8 +229,7 @@ namespace editor
     }
 
     void NodeTool::renderTypeProperties(
-        const render::RenderContext& ctx,
-        debug::DebugContext& dbg)
+        const gui::FrameContext& ctx)
     {
         auto* node = m_state.m_selectedNode.toNode();
         if (!node) return;
@@ -269,8 +262,7 @@ namespace editor
     }
 
     void NodeTool::renderRigProperties(
-        const render::RenderContext& ctx,
-        debug::DebugContext& dbg)
+        const gui::FrameContext& ctx)
     {
         if (!m_state.m_selectedNode) return;
         if (!m_state.m_selectedMesh) return;
@@ -387,9 +379,10 @@ namespace editor
     }
 
     void NodeTool::renderNodeDebug(
-        const render::RenderContext& ctx,
-        debug::DebugContext& dbg)
+        const gui::FrameContext& ctx)
     {
+        auto& dbg = ctx.getDebug().edit();
+
         ImGui::Checkbox("Node debug", &dbg.m_nodeDebugEnabled);
 
         if (dbg.m_nodeDebugEnabled) {
@@ -433,10 +426,11 @@ namespace editor
     }
 
     void NodeTool::renderAnimationDebug(
-        const render::RenderContext& ctx,
-        debug::DebugContext& dbg)
+        const gui::FrameContext& ctx)
     {
-        const auto& assets = ctx.m_assets;
+        const auto& assets = Assets::get();
+        auto& dbg = ctx.getDebug().edit();
+
         auto& anim = dbg.m_animation;
 
         ImGui::Checkbox("Pause", &anim.m_paused);
@@ -479,39 +473,43 @@ namespace editor
     }
 
     void NodeTool::processInputs(
-        const render::RenderContext& ctx,
-        Scene* scene,
-        const Input& input,
-        const InputState& inputState,
-        const InputState& lastInputState)
+        const InputContext& ctx)
     {
-        if (inputState.mouseLeft != lastInputState.mouseLeft &&
+        const auto& input = ctx.getInput();
+        const auto& inputState = ctx.getInputState();
+
+        if (inputState.mouseLeft != m_state.m_wasMouseLeft &&
             inputState.mouseLeft == GLFW_PRESS &&
-            input.allowMouse())
+            ctx.getInput().allowMouse())
         {
+            m_state.m_wasMouseLeft = inputState.mouseLeft;
+
             if (inputState.ctrl)
             {
-                handleSelectNode(ctx, scene, input, inputState, lastInputState);
+                handleSelectNode(ctx);
             }
             //else if (inputState.shift)
             //{
-            //    shoot(ctx, scene, input, inputState, m_lastInputState);
+            //    shoot(ctx, scene, input, inputState);
             //}
+        }
+        else {
+            m_state.m_wasMouseLeft = false;
         }
     }
 
     void NodeTool::handleSelectNode(
-        const render::RenderContext& ctx,
-        Scene* scene,
-        const Input& input,
-        const InputState& inputState,
-        const InputState& lastInputState)
+        const InputContext& ctx)
     {
+        auto* scene = ctx.getScene();
+        if (!scene) return;
+
+        const auto& input = ctx.getInput();
+        const auto& inputState = ctx.getInputState();
         auto& window = m_editor.getWindow();
 
-        const auto& assets = ctx.m_assets;
-        auto& nodeRegistry = *ctx.m_registry->m_nodeRegistry;
-        auto& selectionRegistry = *ctx.m_registry->m_selectionRegistry;
+        auto& nodeRegistry = *ctx.getRegistry()->m_nodeRegistry;
+        auto& selectionRegistry = *ctx.getRegistry()->m_selectionRegistry;
         auto& commandEngine = script::CommandEngine::get();
 
         auto& dbg = debug::DebugContext::modify();
@@ -519,7 +517,7 @@ namespace editor
         const bool selectMode = inputState.ctrl;
 
         ki::node_id nodeId = scene->getObjectID(
-            ctx,
+            ctx.toRenderContext(),
             input.mouseX,
             input.mouseY);
 
@@ -581,7 +579,7 @@ namespace editor
         //        if (exists) {
         //            event::Event evt { event::Type::node_activate };
         //            evt.body.node.target = node->getId();
-        //            ctx.m_registry->m_dispatcherWorker->send(evt);
+        //            ctx.getRegistry()->m_dispatcherWorker->send(evt);
         //        }
 
         //        node = nullptr;
@@ -591,14 +589,14 @@ namespace editor
         //    // NOTE KI null == default camera
         //    event::Event evt { event::Type::camera_activate };
         //    evt.body.node.target = node->getId();
-        //    ctx.m_registry->m_dispatcherView->send(evt);
+        //    ctx.getRegistry()->m_dispatcherView->send(evt);
 
         //    node = nullptr;
         //}
     }
 
     void NodeTool::onSelectNode(
-        const render::RenderContext& ctx,
+        const gui::FrameContext& ctx,
         pool::NodeHandle nodeHandle)
     {
         m_state.m_selectedNode = nodeHandle;
@@ -614,7 +612,7 @@ namespace editor
     }
 
     void NodeTool::onDeleteNode(
-        const render::RenderContext& ctx,
+        const gui::FrameContext& ctx,
         pool::NodeHandle nodeHandle)
     {
         auto* node = m_state.m_selectedNode.toNode();
@@ -624,11 +622,11 @@ namespace editor
         auto& body = evt.body.node = {
             .target = m_state.m_selectedNode.toId(),
         };
-        ctx.m_registry->m_dispatcherWorker->send(evt);
+        ctx.getRegistry()->m_dispatcherWorker->send(evt);
     }
 
     void NodeTool::onCloneNode(
-        const render::RenderContext& ctx,
+        const gui::FrameContext& ctx,
         pool::NodeHandle nodeHandle)
     {
         auto* node = m_state.m_selectedNode.toNode();
@@ -651,7 +649,7 @@ namespace editor
 
             model::CompositeBuilder builder{ NodeRegistry::get() };
             if (builder.build(parentId, 0, type, state)) {
-                auto rootHandle = builder.asyncAttach(ctx.m_registry);
+                auto rootHandle = builder.asyncAttach(ctx.getRegistry());
 
                 auto& commandEngine = script::CommandEngine::get();
                 commandEngine.addCommand(

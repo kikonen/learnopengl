@@ -13,29 +13,20 @@ namespace editor
         ~DebugTool() override;
 
         void drawImpl(
-            const render::RenderContext& ctx,
-            Scene* scene,
-            debug::DebugContext& dbg) override;
+            const gui::FrameContext& ctx) override;
 
         void processInputs(
-            const render::RenderContext& ctx,
-            Scene* scene,
-            const Input& input,
-            const InputState& inputState,
-            const InputState& lastInputState) override;
+            const InputContext& ctx) override;
 
     protected:
         void renderPhysicsDebug(
-            const render::RenderContext& ctx,
-            debug::DebugContext& dbg);
+            const gui::FrameContext& ctx);
 
         void renderEffectDebug(
-            const render::RenderContext& ctx,
-            debug::DebugContext& dbg);
+            const gui::FrameContext& ctx);
 
         void renderLayersDebug(
-            const render::RenderContext& ctx,
-            debug::DebugContext& dbg);
+            const gui::FrameContext& ctx);
 
     private:
         DebugToolState m_state;

@@ -330,7 +330,7 @@ namespace physics
 
         initTemplates();
 
-        m_elapsedTotal += ctx.m_clock.elapsedSecs;
+        m_elapsedTotal += ctx.getClock().elapsedSecs;
         if (m_elapsedTotal < m_initialDelay) return;
 
         auto& dbg = debug::DebugContext::modify();
@@ -347,7 +347,7 @@ namespace physics
             updatedPhysics |= obj.updateToPhysics(m_entityIndeces[id], m_matrixLevels[id], nodeRegistry);
         }
 
-        const float dtTotal = ctx.m_clock.elapsedSecs + m_remainder;
+        const float dtTotal = ctx.getClock().elapsedSecs + m_remainder;
         const int steps = static_cast<int>(dtTotal / STEP_SIZE);
         m_remainder = dtTotal - steps * STEP_SIZE;
 

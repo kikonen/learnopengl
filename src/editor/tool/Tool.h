@@ -2,15 +2,13 @@
 
 #include <string>
 
-namespace render
-{
-    class RenderContext;
-}
+#include "gui/FrameContext.h"
+
+#include "event/Listen.h"
 
 struct PrepareContext;
+struct InputContext;
 class Scene;
-class Input;
-struct InputState;
 
 namespace debug
 {
@@ -29,32 +27,17 @@ namespace editor
 
         virtual void prepare(const PrepareContext& ctx) {}
 
-        void drawMenu(
-            const render::RenderContext& ctx,
-            Scene* scene,
-            debug::DebugContext& dbg);
-
-        void draw(
-            const render::RenderContext& ctx,
-            Scene* scene,
-            debug::DebugContext& dbg);
-
-        virtual void drawMenuImpl(
-            const render::RenderContext& ctx,
-            Scene* scene,
-            debug::DebugContext& dbg) { }
-
-        virtual void drawImpl(
-            const render::RenderContext& ctx,
-            Scene* scene,
-            debug::DebugContext& dbg) {}
+        void drawMenu(const gui::FrameContext& ctx);
+        void draw(const gui::FrameContext& ctx);
 
         virtual void processInputs(
-            const render::RenderContext& ctx,
-            Scene* scene,
-            const Input& input,
-            const InputState& inputState,
-            const InputState& lastInputState) { }
+            const InputContext& ctx)
+        {
+        }
+
+    protected:
+        virtual void drawMenuImpl(const gui::FrameContext& ctx) { }
+        virtual void drawImpl(const gui::FrameContext& ctx) {}
 
     protected:
         EditorFrame& m_editor;

@@ -107,7 +107,7 @@ void DecalRenderer::renderSolidCollection(
 
     collection.bind();
 
-    auto& state = ctx.m_state;
+    auto& state = ctx.getGLState();
     const bool lineMode = ctx.m_forceLineMode;
 
     {
@@ -155,7 +155,7 @@ void DecalRenderer::renderBlendCollection(
 
     collection.bind();
 
-    auto& state = ctx.m_state;
+    auto& state = ctx.getGLState();
     const bool lineMode = ctx.m_forceLineMode;
 
     if (!lineMode) {

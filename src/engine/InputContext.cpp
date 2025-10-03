@@ -1,23 +1,10 @@
 #include "InputContext.h"
 
-#include "asset/Assets.h"
-
-#include "engine/PrepareContext.h"
-
 InputContext::InputContext(
-    const ki::RenderClock& clock,
-    Registry* registry,
-    const Input* const input)
-    : m_assets{ Assets::get() },
-    m_clock( clock ),
-    m_registry( registry ),
-    m_input( input )
+    Engine& engine,
+    const Input& input)
+    : BaseContext{ engine },
+    m_input{ input },
+    m_inputState{ input.getState() }
 {
-}
-
-PrepareContext InputContext::toPrepareContext() const
-{
-    return {
-        m_registry,
-    };
 }

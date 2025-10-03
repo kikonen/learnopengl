@@ -11,7 +11,7 @@ class SceneUpdater : public Updater
 {
 public:
     SceneUpdater(
-        std::shared_ptr<Registry> registry,
+        Engine& engine,
         std::shared_ptr<std::atomic<bool>> alive);
 
     virtual void shutdown() override;
@@ -24,4 +24,10 @@ public:
 private:
     void handleNodeAdded(model::Node* node);
     void handleNodeRemoved(model::Node* node);
+
+private:
+    event::Listen m_listen_scene_loaded{ event::Type::scene_loaded };
+    event::Listen m_listen_node_added{ event::Type::node_added };
+    event::Listen m_listen_node_removed{ event::Type::node_removed };
+    event::Listen m_listen_script_run{ event::Type::script_run };
 };

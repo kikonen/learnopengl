@@ -6,7 +6,6 @@
 
 #include "EditorState.h"
 
-
 namespace editor {
     class StatusTool;
     class CameraTool;
@@ -18,7 +17,7 @@ namespace editor {
 
     class ConsoleFrame;
 
-    class EditorFrame : public Frame
+    class EditorFrame : public gui::Frame
     {
     public:
         EditorFrame(std::shared_ptr<Window> window);
@@ -27,16 +26,10 @@ namespace editor {
         void prepare(const PrepareContext& ctx) override;
 
         void processInputs(
-            const render::RenderContext& ctx,
-            Scene* scene,
-            const Input& input,
-            const InputState& inputState,
-            const InputState& lastInputState) override;
+            const InputContext& ctx) override;
 
         void draw(
-            const render::RenderContext& ctx,
-            Scene* scene,
-            debug::DebugContext& dbg) override;
+            const gui::FrameContext& ctx) override;
 
         EditorState& getState()
         {
@@ -45,9 +38,10 @@ namespace editor {
 
     private:
         void renderMenuBar(
-            const render::RenderContext& ctx,
-            Scene* scene,
-            debug::DebugContext& dbg);
+            const gui::FrameContext& ctx);
+
+        void onOpenScene(
+            const gui::FrameContext& ctx);
 
     private:
         EditorState m_state;

@@ -115,7 +115,7 @@ namespace decal {
 
     void DecalCollection::updateWT(const UpdateContext& ctx)
     {
-        if (!ctx.m_dbg.m_decalEnabled) return;
+        if (!ctx.getDebug().m_decalEnabled) return;
 
         std::lock_guard lock(m_lock);
 

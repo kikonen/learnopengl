@@ -25,7 +25,7 @@ namespace script
     void SelectNode::execute(
         const UpdateContext& ctx) noexcept
     {
-        m_elapsedTime += ctx.m_clock.elapsedSecs;
+        m_elapsedTime += ctx.getClock().elapsedSecs;
 
         m_finished = m_elapsedTime >= m_duration;
         if (m_finished)
@@ -33,7 +33,7 @@ namespace script
             auto* node = getNode();
             if (!node) return;
 
-            auto* dispatcherView = ctx.m_registry->m_dispatcherView;
+            auto* dispatcherView = ctx.getRegistry()->m_dispatcherView;
             {
                 event::Event evt{ event::Type::node_select };
                 evt.body.select = {

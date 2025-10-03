@@ -183,8 +183,8 @@ namespace render
 
     void PassSsao::initRender(const RenderContext& ctx)
     {
-        auto& state = ctx.m_state;
-        const auto& dbg = ctx.m_dbg;
+        auto& state = ctx.getGLState();
+        const auto& dbg = ctx.getDebug();
 
         m_enabled = !(ctx.m_forceSolid || !ctx.m_useScreenspaceEffects) &&
             ctx.m_useSsao &&
@@ -198,7 +198,7 @@ namespace render
     {
         if (!m_enabled) return src;
 
-        auto& state = ctx.m_state;
+        auto& state = ctx.getGLState();
 
         startScreenPass(
             ctx,

@@ -7,6 +7,7 @@
 #include "shader/SSBO.h"
 
 #include "engine/UpdateContext.h"
+#include "engine/PrepareContext.h"
 
 #include "material/MaterialSSBO.h"
 #include "material/MaterialUpdater.h"
@@ -139,8 +140,8 @@ void MaterialRegistry::updateRT(const UpdateContext& ctx)
     if (!m_dirtyFlag) return;
     std::lock_guard lock(m_lock);
 
-    prepareMaterialUpdaters(ctx);
-    prepareMaterials(ctx);
+    prepareMaterialUpdaters(ctx.toPrepareContext());
+    prepareMaterials(ctx.toPrepareContext());
 
     updateMaterialBuffer();
     updateDirtyMaterialBuffer();

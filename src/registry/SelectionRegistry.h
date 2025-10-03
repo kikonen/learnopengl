@@ -4,6 +4,8 @@
 #include <map>
 #include <memory>
 
+#include "event/Listen.h"
+
 #include "pool/NodeHandle.h"
 
 struct Material;
@@ -88,6 +90,8 @@ public:
 
 private:
     Registry* m_registry{ nullptr };
+
+    event::Listen m_listen_node_select{ event::Type::node_select };
 
     std::unique_ptr<Material> m_selectionMaterial;
     std::unique_ptr<Material> m_tagMaterial;

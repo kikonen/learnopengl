@@ -12,6 +12,7 @@
 #include "util/thread.h"
 #include "util/Log.h"
 
+#include "engine/Engine.h"
 #include "engine/UpdateContext.h"
 
 #include "registry/Registry.h"
@@ -26,11 +27,11 @@ namespace {
 Updater::Updater(
     std::string_view prefix,
     size_t delay,
-    std::shared_ptr<Registry> registry,
+    Engine& engine,
     std::shared_ptr<std::atomic<bool>> alive)
     : m_prefix{ prefix },
     m_delay{ delay },
-    m_registry(registry),
+    m_engine{ engine },
     m_alive(alive)
 {}
 
@@ -118,9 +119,7 @@ void Updater::run()
         clock.ts = static_cast<double>(ts.count()) / (1000.0 * 1000.0);
         clock.elapsedSecs = elapsedDuration.count();
 
-        UpdateContext ctx(
-            clock,
-            m_registry.get());
+        UpdateContext ctx{ m_engine };
 
         update(ctx);
 
@@ -139,4 +138,9 @@ void Updater::run()
     }
 
     KI_INFO(fmt::format("{}: stopped - worker={}", m_prefix, util::isWorkerThread()));
+}
+
+Registry* Updater::getRegistry() const noexcept
+{
+    return m_engine.getRegistry();
 }

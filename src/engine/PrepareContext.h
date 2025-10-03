@@ -1,18 +1,13 @@
 #pragma once
 
-class Assets;
-class Registry;
+#include "BaseContext.h"
+
 
 //
 // Context for doing prepare, without rendering
 //
-struct PrepareContext final {
+struct PrepareContext final : BaseContext {
 public:
     PrepareContext(
-        Registry* registry);
-
-public:
-    const Assets& m_assets;
-
-    Registry* const m_registry;
+        Engine& engine);
 };

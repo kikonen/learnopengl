@@ -29,7 +29,7 @@ namespace loader
 
         ~BaseLoader();
 
-        void setRegistry(std::shared_ptr<Registry> registry);
+        void setRegistry(Registry* registry);
 
         bool fileExists(std::string_view filename) const;
         std::string readFile(std::string_view filename) const;
@@ -37,7 +37,7 @@ namespace loader
     public:
         std::shared_ptr<Context> m_ctx;
 
-        std::shared_ptr<Registry> m_registry;
+        Registry* m_registry;
         event::Dispatcher* m_dispatcher { nullptr };
     };
 }

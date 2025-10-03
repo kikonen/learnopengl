@@ -123,7 +123,7 @@ namespace script
     {
         ASSERT_WT();
 
-        const auto& assets = ctx.m_assets;
+        const auto& assets = ctx.getAssets();
 
         m_commandEngine = commandEngine;
 
@@ -188,7 +188,7 @@ namespace script
             }
 
             sol::protected_function fn(updater["update"]);
-            return fn(updater, ctx.m_clock.elapsedSecs);
+            return fn(updater, ctx.getClock().elapsedSecs);
             });
     }
 

@@ -6,43 +6,53 @@
 
 #include "render/RenderContext.h"
 
-Frame::Frame(std::shared_ptr<Window> window)
-    : m_window(window)
+#include "engine/Engine.h"
+
+namespace gui
 {
-}
+    Frame::Frame(std::shared_ptr<Window> window)
+        : m_window(window)
+    {
+    }
 
-Frame::~Frame()
-{
-}
+    Frame::~Frame()
+    {
+    }
 
-void Frame::prepare(const PrepareContext& ctx)
-{
-    if (m_prepared) return;
-    m_prepared = true;
-}
+    Registry* Frame::getRegistry()
+    {
+        return m_window->getEngine().getRegistry();
+    }
 
-void Frame::bind(const render::RenderContext& ctx)
-{
-    // feed inputs to dear imgui, start new frame
-    ImGui_ImplOpenGL3_NewFrame();
-    ImGui_ImplGlfw_NewFrame();
-    ImGui::NewFrame();
-}
+    void Frame::prepare(const PrepareContext& ctx)
+    {
+        if (m_prepared) return;
+        m_prepared = true;
+    }
 
-void Frame::render(const render::RenderContext& ctx)
-{
-    // Render dear imgui into screen
-    ImGui::Render();
-    ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-}
+    void Frame::bind(const gui::FrameContext& ctx)
+    {
+        // feed inputs to dear imgui, start new frame
+        ImGui_ImplOpenGL3_NewFrame();
+        ImGui_ImplGlfw_NewFrame();
+        ImGui::NewFrame();
+    }
 
-void Frame::trackImGuiState(
-    debug::DebugContext& dbg)
-{
-    auto& input = *m_window->m_input;
+    void Frame::render(const gui::FrameContext& ctx)
+    {
+        // Render dear imgui into screen
+        ImGui::Render();
+        ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+    }
 
-    ImGuiIO& io = ImGui::GetIO();
+    void Frame::trackImGuiState(
+        const gui::FrameContext& ctx)
+    {
+        auto& input = *m_window->m_input;
 
-    input.imGuiHasKeyboard = io.WantCaptureKeyboard;
-    input.imGuiHasMouse = io.WantCaptureMouse;
+        ImGuiIO& io = ImGui::GetIO();
+
+        input.imGuiHasKeyboard = io.WantCaptureKeyboard;
+        input.imGuiHasMouse = io.WantCaptureMouse;
+    }
 }

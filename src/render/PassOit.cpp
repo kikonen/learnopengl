@@ -57,7 +57,7 @@ namespace render
 
     void PassOit::initRender(const RenderContext& ctx)
     {
-        const auto& dbg = ctx.m_dbg;
+        const auto& dbg = ctx.getDebug();
 
         m_enabled = !(ctx.m_forceSolid) &&
             dbg.m_effectOitEnabled;
@@ -93,7 +93,7 @@ namespace render
             { GL_FUNC_ADD, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ZERO, GL_ONE });
 
         m_oitBlendProgram->bind();
-        m_oitBuffer.bindTexture(ctx.m_state);
+        m_oitBuffer.bindTexture(ctx.getGLState());
 
         src.buffer->bind(ctx);
 
@@ -110,7 +110,7 @@ namespace render
         const RenderContext& ctx,
         const DrawContext& drawContext)
     {
-        auto& state = ctx.m_state;
+        auto& state = ctx.getGLState();
 
         {
             state.setStencil(kigl::GLStencilMode::fill(STENCIL_OIT | STENCIL_FOG));

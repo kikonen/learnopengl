@@ -87,7 +87,7 @@ void ProgramRegistry::dirtyCheck(const UpdateContext& ctx)
         }
     }
 
-    m_elapsedSecs += ctx.m_clock.elapsedSecs;
+    m_elapsedSecs += ctx.getClock().elapsedSecs;
 
     if (!dirty.empty() || m_elapsedSecs > DIRTY_CHECK_FREQUENCY) {
         auto& fileCache = FileEntryCache::get();

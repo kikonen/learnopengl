@@ -74,7 +74,7 @@ void MirrorMapRenderer::prepareRT(
         m_nodeDraw->prepareRT(ctx);
     }
 
-    const auto& assets = ctx.m_assets;
+    const auto& assets = ctx.getAssets();
 
     {
         m_tagMaterial = Material::createMaterial(BasicMaterial::highlight);
@@ -139,7 +139,7 @@ void MirrorMapRenderer::prepareRT(
 
 void MirrorMapRenderer::updateRT(const UpdateViewContext& parentCtx)
 {
-    const auto& dbg = parentCtx.m_dbg;
+    const auto& dbg = parentCtx.getDebug();
     m_enabled = dbg.m_mirrorMapEnabled;
 
     if (!isEnabled()) return;
@@ -149,7 +149,7 @@ void MirrorMapRenderer::updateRT(const UpdateViewContext& parentCtx)
         camera.setFov(dbg.m_mirrorMapFov);
     }
 
-    const auto& assets = parentCtx.m_assets;
+    const auto& assets = parentCtx.getAssets();
 
     int w;
     int h;
@@ -202,11 +202,9 @@ void MirrorMapRenderer::updateRT(const UpdateViewContext& parentCtx)
 
     {
         UpdateViewContext localCtx{
-            parentCtx.m_clock,
-            parentCtx.m_registry,
+            parentCtx.getEngine(),
             w,
-            h,
-            parentCtx.m_dbg };
+            h};
         m_nodeDraw->updateRT(localCtx, 1.f);
 
         // NOTE KI nested renderers scale down from current
@@ -323,7 +321,7 @@ bool MirrorMapRenderer::render(
         ////clip.enabled = true;
         //clip.plane = glm::vec4(planePos, 0);
 
-        bindTexture(localCtx.m_state);
+        bindTexture(localCtx.getGLState());
         drawNodes(localCtx, reflectionBuffer.get(), closest);
 
         //ctx.updateClipPlanesUBO();
@@ -341,8 +339,8 @@ void MirrorMapRenderer::drawNodes(
     render::FrameBuffer* targetBuffer,
     model::Node* current)
 {
-    const auto& assets = ctx.m_assets;
-    const auto& dbg = ctx.m_dbg;
+    const auto& assets = ctx.getAssets();
+    const auto& dbg = ctx.getDebug();
 
     bool renderedWater{ false };
     bool renderedMirror{ false };
@@ -366,11 +364,11 @@ void MirrorMapRenderer::drawNodes(
     }
 
     if (m_waterMapRenderer && m_waterMapRenderer->isEnabled() /*&& renderedWater*/) {
-        m_waterMapRenderer->bindTexture(ctx.m_state);
+        m_waterMapRenderer->bindTexture(ctx.getGLState());
     }
 
     if (m_mirrorMapRenderer && m_mirrorMapRenderer->isEnabled() /*&& renderedMirror*/) {
-        m_mirrorMapRenderer->bindTexture(ctx.m_state);
+        m_mirrorMapRenderer->bindTexture(ctx.getGLState());
     }
 
     ctx.updateUBOs();

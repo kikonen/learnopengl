@@ -41,7 +41,7 @@ namespace loader
 
     BaseLoader::~BaseLoader() = default;
 
-    void BaseLoader::setRegistry(std::shared_ptr<Registry> registry)
+    void BaseLoader::setRegistry(Registry* registry)
     {
         m_registry = registry;
         m_dispatcher = m_registry->m_dispatcherWorker;

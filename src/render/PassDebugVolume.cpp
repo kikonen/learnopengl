@@ -41,7 +41,7 @@ namespace render
 
     void PassDebugVolume::initRender(const RenderContext& ctx)
     {
-        const auto& dbg = ctx.m_dbg;
+        const auto& dbg = ctx.getDebug();
 
         m_enabled = ctx.m_allowDrawDebug &&
             (dbg.m_showVolume || dbg.m_showSelectionVolume);
@@ -54,7 +54,7 @@ namespace render
     {
         if (!m_enabled) return src;
 
-        auto& state = ctx.m_state;
+        auto& state = ctx.getGLState();
         state.setStencil({});
 
         src.buffer->bind(ctx);

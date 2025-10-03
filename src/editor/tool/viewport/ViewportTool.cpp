@@ -47,31 +47,26 @@ namespace editor
     ViewportTool::~ViewportTool() = default;
 
     void ViewportTool::drawImpl(
-        const render::RenderContext& ctx,
-        Scene* scene,
-        debug::DebugContext& dbg)
+        const gui::FrameContext& ctx)
     {
         if (ImGui::CollapsingHeader("Viewport"))
         {
-            renderBufferDebug(ctx, scene, dbg);
+            renderBufferDebug(ctx);
         }
     }
 
     void ViewportTool::processInputs(
-        const render::RenderContext& ctx,
-        Scene* scene,
-        const Input& input,
-        const InputState& inputState,
-        const InputState& lastInputState)
+        const InputContext& ctx)
     {
     }
 
     void ViewportTool::renderBufferDebug(
-        const render::RenderContext& ctx,
-        Scene* scene,
-        debug::DebugContext& dbg)
+        const gui::FrameContext& ctx)
     {
-        const auto& assets = ctx.m_assets;
+        auto* scene = ctx.getScene();
+        if (!scene) return;
+
+        const auto& assets = Assets::get();
 
         auto& window = m_editor.getWindow();
 
@@ -80,10 +75,13 @@ namespace editor
         ImGuiTreeNodeFlags tnFlags = ImGuiTreeNodeFlags_SpanAvailWidth;
 
         auto viewportTex = [&ctx](model::Viewport& viewport, bool useAspectRatio) {
+            const float aspectRatio = 1.f;
+            const glm::uvec2 resolution{ 100, 100 };
+
             ImVec2 availSize = ImGui::GetContentRegionAvail();
             // NOTE KI allow max half window size
-            float w = std::min(availSize.x, ctx.m_resolution.x / 2.f) - scrollbarPadding;
-            float h = w / ctx.m_aspectRatio;
+            float w = std::min(availSize.x, resolution.x / 2.f) - scrollbarPadding;
+            float h = w / aspectRatio;
             if (!useAspectRatio) {
                 w = h;
             }
@@ -103,10 +101,13 @@ namespace editor
             };
 
         auto bufferTex = [&ctx](render::FrameBuffer& fb, int attachmentIndex, bool useAspectRatio) {
+            const float aspectRatio = 1.f;
+            const glm::uvec2 resolution{ 100, 100 };
+
             ImVec2 availSize = ImGui::GetContentRegionAvail();
             // NOTE KI allow max half window size
-            float w = std::min(availSize.x, ctx.m_resolution.x / 2.f) - scrollbarPadding;
-            float h = w / ctx.m_aspectRatio;
+            float w = std::min(availSize.x, resolution.x / 2.f) - scrollbarPadding;
+            float h = w / aspectRatio;
             if (!useAspectRatio) {
                 w = h;
             }
@@ -194,10 +195,14 @@ namespace editor
             auto& cmr = *scene->m_cubeMapRenderer;
 
             auto faceTex = [&ctx, &cmr](int faceIndex) {
+                const float aspectRatio = 1.f;
+                const glm::uvec2 resolution{ 100, 100 };
+
                 ImVec2 availSize = ImGui::GetContentRegionAvail();
+
                 // NOTE KI allow max half window size
-                float w = std::min(availSize.x, ctx.m_resolution.x / 2.f) - scrollbarPadding;
-                float h = w / ctx.m_aspectRatio;
+                float w = std::min(availSize.x, resolution.x / 2.f) - scrollbarPadding;
+                float h = w / aspectRatio;
                 w = h;
 
                 // https://stackoverflow.com/questions/38543155/opengl-render-face-of-cube-map-to-a-quad

@@ -36,7 +36,7 @@ void CameraZoomController::prepare(
     model::Node& node)
 {
     NodeController::prepare(ctx, node);
-    const auto& assets = ctx.m_assets;
+    const auto& assets = ctx.getAssets();
 
     if (!node.m_camera) return;
 
@@ -63,20 +63,20 @@ void CameraZoomController::processInput(
     auto* node = m_nodeHandle.toNode();
     if (!node) return;
 
-    const auto* input = ctx.m_input;
+    const auto& input = ctx.getInput();
 
     auto& camera = node->m_camera.get()->getCamera();
-    const float dt = ctx.m_clock.elapsedSecs;
+    const float dt = ctx.getClock().elapsedSecs;
 
     glm::vec3 zoomSpeed{ m_speedZoomNormal };
 
-    if (input->isModifierDown(Modifier::CONTROL)) {
+    if (input.isModifierDown(Modifier::CONTROL)) {
         int offset = 0;
-        if (input->isKeyDown(Key::ZOOM_IN) || input->isKeyDown(Key::ZOOM_OUT)) {
-            if (input->isKeyDown(Key::ZOOM_IN)) {
+        if (input.isKeyDown(Key::ZOOM_IN) || input.isKeyDown(Key::ZOOM_OUT)) {
+            if (input.isKeyDown(Key::ZOOM_IN)) {
                 offset = 1;
             }
-            if (input->isKeyDown(Key::ZOOM_OUT)) {
+            if (input.isKeyDown(Key::ZOOM_OUT)) {
                 offset = -1;
             }
         } else {
@@ -95,14 +95,14 @@ void CameraZoomController::processInput(
             m_registry->m_dispatcherView->send(evt);
         }
     } else {
-        if (input->isModifierDown(Modifier::SHIFT)) {
+        if (input.isModifierDown(Modifier::SHIFT)) {
             zoomSpeed = m_speedZoomRun;
         }
 
-        if (input->isKeyDown(Key::ZOOM_IN)) {
+        if (input.isKeyDown(Key::ZOOM_IN)) {
             camera.adjustFov(-zoomSpeed.z * dt);
         }
-        if (input->isKeyDown(Key::ZOOM_OUT)) {
+        if (input.isKeyDown(Key::ZOOM_OUT)) {
             camera.adjustFov(zoomSpeed.z * dt);
         }
     }
@@ -111,10 +111,10 @@ void CameraZoomController::processInput(
     if (fpsCamera) {
         float pitchSpeed = 0.f;
 
-        if (input->isMouseCaptured()) {
+        if (input.isMouseCaptured()) {
             const int maxMouseSpeed = 500;
             const float maxPitchSpeed = std::numbers::pi_v<float> *8;
-            const float y = input->mouseRelativeY;
+            const float y = input.mouseRelativeY;
 
             if (y != 0.f)
             {
@@ -122,7 +122,7 @@ void CameraZoomController::processInput(
                 pitchSpeed = y / maxMouseSpeed;
                 pitchSpeed *= maxPitchSpeed;
 
-                if (input->isHighPrecisionMode()) {
+                if (input.isHighPrecisionMode()) {
                     pitchSpeed *= 0.25f;
                 }
             }

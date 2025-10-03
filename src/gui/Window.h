@@ -28,7 +28,7 @@ public:
 
     bool create();
 
-    const glm::uvec2& getSize();
+    const glm::ivec2& getSize();
 
     bool isFullScreen() const {
         return m_fullScreen;
@@ -65,8 +65,8 @@ protected:
     Engine& m_engine;
 
     bool m_sizeValid{ false };
-    glm::uvec2 m_size{ 0 };
-    glm::uvec2 m_safeSize{ 1 };
+    glm::ivec2 m_size{ 0 };
+    glm::ivec2 m_safeSize{ 1 };
 
     glm::uvec2 m_windowedPos{ 0 };
     glm::uvec2 m_windowedSize{ 0 };

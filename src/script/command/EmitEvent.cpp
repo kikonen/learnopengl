@@ -1,5 +1,7 @@
 #include "EmitEvent.h"
 
+#include "ki/RenderClock.h"
+
 #include "engine/UpdateContext.h"
 
 #include "script/ScriptSystem.h"
@@ -23,7 +25,7 @@ namespace script
     void EmitEvent::execute(
         const UpdateContext& ctx) noexcept
     {
-        m_elapsedTime += ctx.m_clock.elapsedSecs;
+        m_elapsedTime += ctx.getClock().elapsedSecs;
 
         m_finished = m_elapsedTime >= m_duration;
         if (m_finished) {

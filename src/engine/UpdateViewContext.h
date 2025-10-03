@@ -2,41 +2,18 @@
 
 #include <glm/glm.hpp>
 
-#include "ki/RenderClock.h"
-
-class Assets;
-class Registry;
-
-namespace kigl {
-    class GLState;
-}
-
-namespace debug {
-    struct DebugContext;
-}
+#include "engine/BaseContext.h"
 
 //
 // Context for doing updates, without rendering
 //
-struct UpdateViewContext final {
+struct UpdateViewContext final : BaseContext {
 public:
     UpdateViewContext(
-        const ki::RenderClock& clock,
-        Registry* registry,
+        Engine& engine,
         int width,
-        int height,
-        const debug::DebugContext& dbg);
+        int height);
 
 public:
-    const Assets& m_assets;
-
-    const debug::DebugContext& m_dbg;
-
-    const ki::RenderClock& m_clock;
-
-    kigl::GLState& m_state;
-
     const glm::uvec2 m_resolution;
-
-    Registry* const m_registry;
 };

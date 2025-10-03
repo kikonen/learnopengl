@@ -36,7 +36,7 @@ namespace particle {
 
         const auto& df = m_definition;
 
-        float emitCount = std::min(m_requestedCount, df.m_rate * ctx.m_clock.elapsedSecs);
+        float emitCount = std::min(m_requestedCount, df.m_rate * ctx.getClock().elapsedSecs);
         m_requestedCount = std::max(m_requestedCount - emitCount, 0.f);
 
         m_pendingCount += emitCount;

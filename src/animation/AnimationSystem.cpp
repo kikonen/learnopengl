@@ -6,6 +6,8 @@
 
 #include <fmt/format.h>
 
+#include "ki/RenderClock.h"
+
 #include "util/thread.h"
 #include "util/glm_format.h"
 
@@ -380,7 +382,7 @@ namespace animation
             auto bonePalette = boneRegistry.modifyRange(boneBaseIndex, rig->m_boneContainer.size());
             auto socketPalette = socketRegistry.modifyRange(socketBaseIndex, rig->m_sockets.size());
 
-            double currentTime = ctx.m_clock.ts;
+            double currentTime = ctx.getClock().ts;
 
             float blendFactor = -1.f;
 

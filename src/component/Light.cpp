@@ -22,7 +22,7 @@ void Light::updateRT(
 {
     if (!m_enabled) return;
 
-    auto& nodeRegistry = *ctx.m_registry->m_nodeRegistry;
+    auto& nodeRegistry = *ctx.getRegistry()->m_nodeRegistry;
 
     const auto* snapshot = node.getSnapshotRT();
     if (!snapshot) return;

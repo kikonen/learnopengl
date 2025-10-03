@@ -108,8 +108,8 @@ void MeshRenderer::drawObjects(
 
     targetBuffer->bind(ctx);
 
-    ctx.m_state.setDepthFunc(GL_LESS);
-    ctx.m_state.setDepthMask(GL_TRUE);
+    ctx.getGLState().setDepthFunc(GL_LESS);
+    ctx.getGLState().setDepthMask(GL_TRUE);
 
     int baseInstance = 0;
     for (auto& meshInstance : meshes)
@@ -141,8 +141,8 @@ void MeshRenderer::drawObjects(
     drawBuffer->flush();
     drawBuffer->finish();
 
-    ctx.m_state.setDepthFunc(ctx.m_depthFunc);
-    ctx.m_state.setDepthMask(GL_TRUE);
+    ctx.getGLState().setDepthFunc(ctx.m_depthFunc);
+    ctx.getGLState().setDepthMask(GL_TRUE);
 
     if (dynamicVao) {
         dynamicVao->getFence().setFence(m_useFenceDebug);

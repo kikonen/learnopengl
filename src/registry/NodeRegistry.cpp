@@ -36,6 +36,7 @@
 
 #include "particle/ParticleGenerator.h"
 
+#include "engine/Engine.h"
 #include "engine/PrepareContext.h"
 #include "engine/UpdateContext.h"
 
@@ -213,11 +214,11 @@ void NodeRegistry::clear()
 }
 
 void NodeRegistry::prepare(
-    Registry* registry)
+    Engine* engine)
 {
     const auto& assets = Assets::get();
 
-    m_registry = registry;
+    m_engine = engine;
 
     m_rootId = assets.rootId;
 
@@ -526,11 +527,12 @@ void NodeRegistry::attachListeners()
 {
     const auto& assets = Assets::get();
 
-    auto* dispatcher = m_registry->m_dispatcherWorker;
-    auto* dispatcherView = m_registry->m_dispatcherView;
+    auto* registry = m_engine->getRegistry();
+    auto* dispatcher = registry->m_dispatcherWorker;
+    auto* dispatcherView = registry->m_dispatcherView;
 
-    dispatcher->addListener(
-        event::Type::node_add,
+    m_listen_node_add.listen(
+        dispatcher,
         [this](const event::Event& e) {
             const auto& data = e.body.node;
 
@@ -541,30 +543,30 @@ void NodeRegistry::attachListeners()
                 e.blob->body.state);
         });
 
-    dispatcher->addListener(
-        event::Type::node_remove,
+    m_listen_node_remove.listen(
+        dispatcher,
         [this](const event::Event& e) {
             detachNode(
                 pool::NodeHandle::toHandle(e.body.node.target));
         });
 
-    dispatcher->addListener(
-        event::Type::node_dispose,
+    m_listen_node_dispose.listen(
+        dispatcher,
         [this](const event::Event& e) {
             disposeNode(
                 pool::NodeHandle::toHandle(e.body.node.target));
         });
 
-    dispatcher->addListener(
-        event::Type::node_activate,
+    m_listen_node_activate.listen(
+        dispatcher,
         [this](const event::Event& e) {
             setActiveNode(pool::NodeHandle::toHandle(e.body.node.target));
         });
 
     if (assets.useScript) {
-        dispatcher->addListener(
-            event::Type::node_added,
-            [this](const event::Event& e) {
+        m_listen_node_added.listen(
+            dispatcher,
+            [this, registry](const event::Event& e) {
                 auto& data = e.body.node;
                 auto nodeHandle = pool::NodeHandle::toHandle(data.target);
 
@@ -586,23 +588,23 @@ void NodeRegistry::attachListeners()
                             .target = nodeId,
                             .id = scriptId,
                         };
-                        m_registry->m_dispatcherWorker->send(evt);
+                        registry->m_dispatcherWorker->send(evt);
                     }
                 }
             });
     }
 
-    dispatcherView->addListener(
-        event::Type::type_prepare_view,
+    m_listen_type_prepare_view.listen(
+        dispatcher,
         [this](const event::Event& e) {
             auto& data = e.body.nodeType;
             auto* type = pool::TypeHandle::toType(data.target);
             if (!type) return;
-            type->prepareRT({ m_registry });
+            type->prepareRT({ *m_engine });
         });
 
-    dispatcher->addListener(
-        event::Type::viewport_changed,
+    m_listen_viewport_changed.listen(
+        dispatcher,
         [this](const event::Event& e) {
             auto& data = e.body.view;
             viewportChanged(
@@ -617,10 +619,10 @@ void NodeRegistry::handleNodeAdded(model::Node* node)
 
     auto nodeHandle = node->toHandle();
 
-    node->prepareRT({ m_registry });
+    node->prepareRT({ *m_engine });
 
     if (node->m_generator) {
-        const PrepareContext ctx{ m_registry };
+        const PrepareContext ctx{ *m_engine };
         node->m_generator->prepareRT(ctx, *node);
     }
     node->m_preparedRT = true;
@@ -646,6 +648,8 @@ void NodeRegistry::notifyPendingChanges()
     //    m_registry->m_workerSnapshotRegistry,
     //    node->m_snapshotIndex, 1);
 
+    auto* registry = m_engine->getRegistry();
+
     for (auto& nodeHandle : m_pendingAdded) {
         auto* node = nodeHandle.toNode();
         if (!node) continue;
@@ -653,27 +657,27 @@ void NodeRegistry::notifyPendingChanges()
         {
             event::Event evt{ event::Type::node_added };
             evt.body.node.target = nodeHandle;
-            m_registry->m_dispatcherWorker->send(evt);
+            registry->m_dispatcherWorker->send(evt);
         }
 
         // NOTE KI type must be prepared *before* node
         {
             event::Event evt{ event::Type::type_prepare_view };
             evt.body.nodeType.target = node->m_typeHandle.toId();
-            m_registry->m_dispatcherView->send(evt);
+            registry->m_dispatcherView->send(evt);
         }
 
         {
             event::Event evt{ event::Type::node_added };
             evt.body.node.target = nodeHandle;
-            m_registry->m_dispatcherView->send(evt);
+            registry->m_dispatcherView->send(evt);
         }
 
         if (node->m_typeFlags.skybox)
         {
             event::Event evt{ event::Type::type_prepare_view };
             evt.body.nodeType.target = node->m_typeHandle.toId();
-            m_registry->m_dispatcherView->send(evt);
+            registry->m_dispatcherView->send(evt);
         }
     }
 
@@ -690,19 +694,19 @@ void NodeRegistry::notifyPendingChanges()
                 .select = false,
                 .append = true
             };
-            m_registry->m_dispatcherView->send(evt);
+            registry->m_dispatcherView->send(evt);
         }
 
         {
             event::Event evt{ event::Type::node_removed };
             evt.body.node.target = nodeHandle;
-            m_registry->m_dispatcherWorker->send(evt);
+            registry->m_dispatcherWorker->send(evt);
         }
 
         {
             event::Event evt{ event::Type::node_removed };
             evt.body.node.target = nodeHandle;
-            m_registry->m_dispatcherView->send(evt);
+            registry->m_dispatcherView->send(evt);
         }
     }
 
@@ -773,8 +777,8 @@ void NodeRegistry::attachNode(
 
     auto* type = node->m_typeHandle.toType();
 
-    type->prepareWT({ m_registry });
-    node->prepareWT({ m_registry }, m_states[node->getEntityIndex()]);
+    type->prepareWT({ *m_engine });
+    node->prepareWT({ *m_engine }, m_states[node->getEntityIndex()]);
 
     if (type->m_physicsDefinition &&
         !(node->m_generator &&
@@ -839,7 +843,7 @@ void NodeRegistry::detachNode(
         return;
     }
 
-    node->unprepareWT({ m_registry }, m_states[node->getEntityIndex()]);
+    node->unprepareWT({ *m_engine }, m_states[node->getEntityIndex()]);
 
     const auto* type = node->m_typeHandle.toType();
 
@@ -1250,8 +1254,8 @@ void NodeRegistry::bindSkybox(
 
     auto* type = node->m_typeHandle.toType();
 
-    type->prepareWT({ m_registry });
-    node->prepareWT({ m_registry }, m_states[node->getEntityIndex()]);
+    type->prepareWT({ *m_engine });
+    node->prepareWT({ *m_engine }, m_states[node->getEntityIndex()]);
 
     m_skybox = handle;
 }

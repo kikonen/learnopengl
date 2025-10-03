@@ -7,56 +7,47 @@
 #include <imgui_impl_opengl3.h>
 
 #include "gui/Window.h"
-
-namespace render
-{
-    class RenderContext;
-}
+#include "gui/FrameContext.h"
 
 struct PrepareContext;
+struct InputContext;
+class Registry;
 
-class Scene;
-class Input;
-struct InputState;
-
-namespace debug {
-    struct DebugContext;
-}
-
-class Frame
+namespace gui
 {
-public:
-    Frame(std::shared_ptr<Window> window);
-    virtual ~Frame();
-
-    virtual void prepare(const PrepareContext& ctx);
-    virtual void bind(const render::RenderContext& ctx);
-
-    virtual void processInputs(
-        const render::RenderContext& ctx,
-        Scene* scene,
-        const Input& input,
-        const InputState& inputState,
-        const InputState& lastInputState) { }
-
-    virtual void draw(
-        const render::RenderContext& ctx,
-        Scene* scene,
-        debug::DebugContext& dbg) = 0;
-
-    virtual void render(const render::RenderContext& ctx);
-
-    Window& getWindow()
+    class Frame
     {
-        return *m_window;
-    }
+    public:
+        Frame(std::shared_ptr<Window> window);
+        virtual ~Frame();
 
-protected:
-    void trackImGuiState(
-        debug::DebugContext& dbg);
+        virtual void prepare(const PrepareContext& ctx);
+        virtual void bind(const gui::FrameContext& ctx);
 
-protected:
-    bool m_prepared = false;
+        virtual void processInputs(
+            const InputContext& ctx) {
+        }
 
-    std::shared_ptr<Window> m_window;
-};
+        virtual void draw(
+            const gui::FrameContext& ctx) = 0;
+
+        virtual void render(
+            const gui::FrameContext& ctx);
+
+        Window& getWindow()
+        {
+            return *m_window;
+        }
+
+        Registry* getRegistry();
+
+    protected:
+        void trackImGuiState(
+            const gui::FrameContext& ctx);
+
+    protected:
+        bool m_prepared = false;
+
+        std::shared_ptr<Window> m_window;
+    };
+}

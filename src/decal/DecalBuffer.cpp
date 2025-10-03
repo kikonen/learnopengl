@@ -75,7 +75,7 @@ namespace decal {
     void DecalBuffer::update(const UpdateContext& ctx)
     {
         if (!m_collection->m_updateReady) return;
-        if (!ctx.m_dbg.m_decalEnabled) return;
+        if (!ctx.getDebug().m_decalEnabled) return;
 
         //m_frameSkipCount++;
         //if (m_frameSkipCount < 2) {

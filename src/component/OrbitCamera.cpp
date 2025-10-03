@@ -25,7 +25,7 @@ void OrbitCamera::updateRT(const UpdateContext& ctx, model::Node& node)
     const auto* snapshot = node.getSnapshotRT();
     if (!snapshot) return;
 
-    const auto dt = ctx.m_clock.elapsedSecs;
+    const auto dt = ctx.getClock().elapsedSecs;
 
     {
         // Create a quaternion for yaw about world up

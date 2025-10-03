@@ -13,37 +13,28 @@ namespace editor
         ~NodeTypeTool() override;
 
         void drawImpl(
-            const render::RenderContext& ctx,
-            Scene* scene,
-            debug::DebugContext& dbg) override;
+            const gui::FrameContext& ctx) override;
 
         void processInputs(
-            const render::RenderContext& ctx,
-            Scene* scene,
-            const Input& input,
-            const InputState& inputState,
-            const InputState& lastInputState) override;
+            const InputContext& ctx) override;
 
     protected:
         void renderTypeEdit(
-            const render::RenderContext& ctx,
-            debug::DebugContext& dbg);
+            const gui::FrameContext& ctx);
 
         void renderTypeSelector(
-            const render::RenderContext& ctx,
-            debug::DebugContext& dbg);
+            const gui::FrameContext& ctx);
 
         void renderTypeProperties(
-            const render::RenderContext& ctx,
-            debug::DebugContext& dbg);
+            const gui::FrameContext& ctx);
 
     private:
         void onSelectType(
-            const render::RenderContext& ctx,
+            const gui::FrameContext& ctx,
             pool::TypeHandle TypeHandle);
 
         void onCreateNode(
-            const render::RenderContext& ctx,
+            const gui::FrameContext& ctx,
             pool::TypeHandle TypeHandle);
 
     private:

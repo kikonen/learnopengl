@@ -91,8 +91,8 @@ void SelectionRegistry::attachListeners()
 {
     auto* dispatcherView = m_registry->m_dispatcherView;
 
-    dispatcherView->addListener(
-        event::Type::node_select,
+    m_listen_node_select.listen(
+        dispatcherView,
         [this](const event::Event& e) {
             const auto& data = e.body.select;
             if (auto nodeHandle  = pool::NodeHandle::toHandle(data.target)) {

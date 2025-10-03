@@ -52,39 +52,33 @@ namespace editor
     DebugTool::~DebugTool() = default;
 
     void DebugTool::drawImpl(
-        const render::RenderContext& ctx,
-        Scene* scene,
-        debug::DebugContext& dbg)
+        const gui::FrameContext& ctx)
     {
         if (ImGui::CollapsingHeader("Physics"))
         {
-            renderPhysicsDebug(ctx, dbg);
+            renderPhysicsDebug(ctx);
         }
 
         if (ImGui::CollapsingHeader("Effect"))
         {
-            renderEffectDebug(ctx, dbg);
+            renderEffectDebug(ctx);
         }
 
         if (ImGui::CollapsingHeader("Layers"))
         {
-            renderLayersDebug(ctx, dbg);
+            renderLayersDebug(ctx);
         }
     }
 
     void DebugTool::processInputs(
-        const render::RenderContext& ctx,
-        Scene* scene,
-        const Input& input,
-        const InputState& inputState,
-        const InputState& lastInputState)
+        const InputContext& ctx)
     {
     }
 
     void DebugTool::renderPhysicsDebug(
-        const render::RenderContext& ctx,
-        debug::DebugContext& dbg)
+        const gui::FrameContext& ctx)
     {
+        auto& dbg = ctx.getDebug().edit();
         auto& physics = dbg.m_physics;
 
         ImGui::Checkbox("Physics update enabled", &physics.m_updateEnabled);
@@ -96,9 +90,10 @@ namespace editor
     }
 
     void DebugTool::renderEffectDebug(
-        const render::RenderContext& ctx,
-        debug::DebugContext& dbg)
+        const gui::FrameContext& ctx)
     {
+        auto& dbg = ctx.getDebug().edit();
+
         {
             ImGui::Spacing();
             ImGui::SeparatorText("Gamma correction");
@@ -278,9 +273,10 @@ namespace editor
     }
 
     void DebugTool::renderLayersDebug(
-        const render::RenderContext& ctx,
-        debug::DebugContext& dbg)
+        const gui::FrameContext& ctx)
     {
+        auto& dbg = ctx.getDebug().edit();
+
         for (auto& layer : dbg.m_layers)
         {
             const auto idx = layer.m_index;

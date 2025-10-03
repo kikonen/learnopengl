@@ -42,7 +42,7 @@ void LayerRenderer::prepareRT(
 
     Renderer::prepareRT(ctx);
 
-    const auto& assets = ctx.m_assets;
+    const auto& assets = ctx.getAssets();
 
     {
         m_nodeDraw = std::make_unique<render::NodeDraw>(m_name);
@@ -72,7 +72,7 @@ void LayerRenderer::prepareRT(
 
 void LayerRenderer::updateRT(const UpdateViewContext& ctx)
 {
-    const auto& assets = ctx.m_assets;
+    const auto& assets = ctx.getAssets();
     auto& dbg = debug::DebugContext::get();
 
     int w;
@@ -144,7 +144,7 @@ void LayerRenderer::render(
     const render::RenderContext& ctx,
     render::FrameBuffer* targetBuffer)
 {
-    auto& state = ctx.m_state;
+    auto& state = ctx.getGLState();
 
     if (!isEnabled())
     {
@@ -153,9 +153,9 @@ void LayerRenderer::render(
         return;
     }
 
-    const auto& assets = ctx.m_assets;
-    auto& nodeRegistry = *ctx.m_registry->m_nodeRegistry;
-    auto& selectionRegistry = *ctx.m_registry->m_selectionRegistry;
+    const auto& assets = ctx.getAssets();
+    auto& nodeRegistry = *ctx.getRegistry()->m_nodeRegistry;
+    auto& selectionRegistry = *ctx.getRegistry()->m_selectionRegistry;
 
     ctx.validateRender("node_map");
 
@@ -200,14 +200,14 @@ void LayerRenderer::fillHighlightMask(
     render::RenderContext localCtx{ "local", &parentCtx };
     localCtx.m_forceSolid = true;
 
-    const auto& assets = localCtx.m_assets;
+    const auto& assets = localCtx.getAssets();
 
     if (!assets.showHighlight) return;
     if (m_taggedCount == 0 && m_selectedCount == 0) return;
 
-    auto& selectionRegistry = *localCtx.m_registry->m_selectionRegistry;
+    auto& selectionRegistry = *localCtx.getRegistry()->m_selectionRegistry;
 
-    auto& state = localCtx.m_state;
+    auto& state = localCtx.getGLState();
 
     targetBuffer->bind(localCtx);
 
@@ -252,14 +252,14 @@ void LayerRenderer::renderHighlight(
     render::RenderContext localCtx{ "local", &parentCtx };
     localCtx.m_forceSolid = true;
 
-    const auto& assets = localCtx.m_assets;
+    const auto& assets = localCtx.getAssets();
 
     if (!assets.showHighlight) return;
     if (m_taggedCount == 0 && m_selectedCount == 0) return;
 
-    auto& state = localCtx.m_state;
+    auto& state = localCtx.getGLState();
 
-    auto& selectionRegistry = *localCtx.m_registry->m_selectionRegistry;
+    auto& selectionRegistry = *localCtx.getRegistry()->m_selectionRegistry;
 
     targetBuffer->bind(localCtx);
 

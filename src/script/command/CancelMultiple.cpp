@@ -1,5 +1,7 @@
 #include "CancelMultiple.h"
 
+#include "ki/RenderClock.h"
+
 #include "script/CommandEngine.h"
 
 #include "engine/UpdateContext.h"
@@ -19,7 +21,7 @@ namespace script
     void CancelMultiple::execute(
         const UpdateContext& ctx) noexcept
     {
-        m_elapsedTime += ctx.m_clock.elapsedSecs;
+        m_elapsedTime += ctx.getClock().elapsedSecs;
 
         m_finished = m_elapsedTime >= m_duration;
         if (m_finished) {

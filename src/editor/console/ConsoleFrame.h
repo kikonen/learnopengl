@@ -4,6 +4,8 @@
 
 #include "gui/Frame.h"
 
+#include "event/Listen.h"
+
 namespace script
 {
     class ScriptSystem;
@@ -33,7 +35,7 @@ namespace editor
         }
     };
 
-    class ConsoleFrame : public Frame {
+    class ConsoleFrame : public gui::Frame {
     public:
         ConsoleFrame(std::shared_ptr<Window> window);
         ~ConsoleFrame();
@@ -41,16 +43,14 @@ namespace editor
         void prepare(const PrepareContext& ctx) override;
 
         void draw(
-            const render::RenderContext& ctx,
-            Scene* scene,
-            debug::DebugContext& dbg) override;
+            const gui::FrameContext& ctx) override;
 
         int textEditCallback(ImGuiInputTextCallbackData* data);
 
     private:
-        void renderMenuBar();
-        void renderHistory();
-        void renderInput();
+        void renderMenuBar(const gui::FrameContext& ctx);
+        void renderHistory(const gui::FrameContext& ctx);
+        void renderInput(const gui::FrameContext& ctx);
 
         void execCommand(const std::string& script);
 
@@ -60,5 +60,8 @@ namespace editor
 
         event::Dispatcher* m_dispatcherWorker{ nullptr };
         event::Dispatcher* m_dispatcherView{ nullptr };
+
+        event::Listen m_listen_console_execute{ event::Type::console_execute };
+        event::Listen m_listen_console_complete{ event::Type::console_complete };
     };
 }

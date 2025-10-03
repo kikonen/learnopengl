@@ -8,7 +8,7 @@ class AnimationUpdater : public Updater
 {
 public:
     AnimationUpdater(
-        std::shared_ptr<Registry> registry,
+        Engine& engine,
         std::shared_ptr<std::atomic<bool>> alive);
 
     virtual void update(const UpdateContext& ctx) override;

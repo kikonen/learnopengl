@@ -207,7 +207,7 @@ bool Window::create()
     return m_glfwWindow != nullptr;
 }
 
-const glm::uvec2& Window::getSize()
+const glm::ivec2& Window::getSize()
 {
     if (!m_sizeValid) {
         int w;
@@ -424,10 +424,12 @@ void Window::bindGLFWCallbacks()
 
 void Window::processInput(const InputContext& ctx)
 {
-    m_input->updateKeyStates();
-    m_input->updateMouseState();
+    auto& input = *m_input.get();
 
-    if (m_input->isKeyDown(Key::EXIT)) {
+    input.updateKeyStates();
+    input.updateMouseState();
+
+    if (input.isKeyDown(Key::EXIT)) {
         if (!m_was_EXIT) {
             KI_INFO("INPUT: USER EXIT via [ESCAPE]");
             m_was_EXIT = true;
@@ -439,7 +441,7 @@ void Window::processInput(const InputContext& ctx)
         m_was_EXIT = false;
     }
 
-    if (m_input->isKeyDown(Key::FULL_SCREEN_TOGGLE)) {
+    if (input.isKeyDown(Key::FULL_SCREEN_TOGGLE)) {
         if (!m_was_FULL_SCREEN_TOGGLE) {
             KI_INFO("INPUT: FULL_SCREEN_TOGGLE");
             m_was_FULL_SCREEN_TOGGLE = true;
@@ -451,8 +453,11 @@ void Window::processInput(const InputContext& ctx)
         m_was_FULL_SCREEN_TOGGLE = false;
     }
 
-    auto* nodeControllers = m_engine.m_currentScene->getActiveNodeControllers();
-    auto* cameraControllers = m_engine.m_currentScene->getActiveCameraControllers();
+    auto* scene = m_engine.getCurrentScene().get();
+    if (!scene) return;
+
+    auto* nodeControllers = scene->getActiveNodeControllers();
+    auto* cameraControllers = scene->getActiveCameraControllers();
 
     if (nodeControllers) {
         for (auto& controller : *nodeControllers) {
@@ -461,7 +466,7 @@ void Window::processInput(const InputContext& ctx)
         }
     }
 
-    if (cameraControllers){
+    if (cameraControllers) {
         for (auto& controller : *cameraControllers) {
             if (!controller->isCamera()) continue;
             controller->processInput(ctx);
@@ -483,9 +488,11 @@ void Window::onWindowResize(int width, int height)
 
 void Window::onMouseMove(float xpos, float ypos)
 {
-    m_input->onMouseMove(xpos, ypos);
+    auto& input = *m_input.get();
 
-    if (m_input->isMouseCaptured()) {
+    input.onMouseMove(xpos, ypos);
+
+    if (input.isMouseCaptured()) {
         glfwSetInputMode(m_glfwWindow, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
     }
     else {
@@ -499,18 +506,22 @@ void Window::onMouseButton(int button, int action, int modifiers)
 
 void Window::onMouseWheel(float xoffset, float yoffset)
 {
-    m_input->onMouseWheel(xoffset, yoffset);
+    auto& input = *m_input.get();
+
+    input.onMouseWheel(xoffset, yoffset);
+
+    auto* scene = m_engine.getCurrentScene().get();
+    if (!scene) return;
 
     const auto& assets = Assets::get();
 
     const InputContext ctx{
-        m_engine.getClock(),
-        m_engine.getRegistry(),
-        m_input.get(),
+        m_engine,
+        input,
     };
 
-    auto* nodeControllers = m_engine.m_currentScene->getActiveNodeControllers();
-    auto* cameraControllers = m_engine.m_currentScene->getActiveCameraControllers();
+    auto* nodeControllers = scene->getActiveNodeControllers();
+    auto* cameraControllers = scene->getActiveCameraControllers();
 
     {
         if (nodeControllers) {

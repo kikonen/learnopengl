@@ -61,55 +61,47 @@ namespace editor
     NodeTypeTool::~NodeTypeTool() = default;
 
     void NodeTypeTool::processInputs(
-        const render::RenderContext& ctx,
-        Scene* scene,
-        const Input& input,
-        const InputState& inputState,
-        const InputState& lastInputState)
+        const InputContext& ctx)
     {
     }
 
     void NodeTypeTool::drawImpl(
-        const render::RenderContext& ctx,
-        Scene* scene,
-        debug::DebugContext& dbg)
+        const gui::FrameContext& ctx)
     {
         if (ImGui::CollapsingHeader("Type"))
         {
-            renderTypeEdit(ctx, dbg);
+            renderTypeEdit(ctx);
         }
 
         //if (ImGui::CollapsingHeader("Animation"))
         //{
-        //    renderAnimationDebug(ctx, dbg);
+        //    renderAnimationDebug(ctx);
         //}
     }
 
     void NodeTypeTool::renderTypeEdit(
-        const render::RenderContext& ctx,
-        debug::DebugContext& dbg)
+        const gui::FrameContext& ctx)
     {
-        renderTypeSelector(ctx, dbg);
+        renderTypeSelector(ctx);
 
         {
             ImGui::Spacing();
             ImGui::Separator();
 
-            renderTypeProperties(ctx, dbg);
-            //renderRigProperties(ctx, dbg);
+            renderTypeProperties(ctx);
+            //renderRigProperties(ctx);
         }
 
         {
             //ImGui::Spacing();
             //ImGui::Separator();
 
-            //renderNodeDebug(ctx, dbg);
+            //renderNodeDebug(ctx);
         }
     }
 
     void NodeTypeTool::renderTypeSelector(
-        const render::RenderContext& ctx,
-        debug::DebugContext& dbg)
+        const gui::FrameContext& ctx)
     {
         const auto& typeRegistry = NodeTypeRegistry::get();
 
@@ -138,8 +130,7 @@ namespace editor
     }
 
     void NodeTypeTool::renderTypeProperties(
-        const render::RenderContext& ctx,
-        debug::DebugContext& dbg)
+        const gui::FrameContext& ctx)
     {
         auto* type = m_state.m_selectedType.toType();
         if (!type) return;
@@ -173,7 +164,7 @@ namespace editor
     }
 
     void NodeTypeTool::onSelectType(
-        const render::RenderContext& ctx,
+        const gui::FrameContext& ctx,
         pool::TypeHandle typeHandle)
     {
         m_state.m_selectedType = typeHandle;
@@ -189,7 +180,7 @@ namespace editor
     }
 
     void NodeTypeTool::onCreateNode(
-        const render::RenderContext& ctx,
+        const gui::FrameContext& ctx,
         pool::TypeHandle typeHandle)
     {
         const auto* type = typeHandle.toType();
@@ -207,7 +198,7 @@ namespace editor
 
             model::CompositeBuilder builder{ NodeRegistry::get() };
             if (builder.build(parentId, 0, type, state)) {
-                auto rootHandle = builder.asyncAttach(ctx.m_registry);
+                auto rootHandle = builder.asyncAttach(ctx.getRegistry());
 
                 auto& commandEngine = script::CommandEngine::get();
                 commandEngine.addCommand(

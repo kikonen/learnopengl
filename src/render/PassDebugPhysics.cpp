@@ -41,7 +41,7 @@ namespace render
 
     void PassDebugPhysics::initRender(const RenderContext& ctx)
     {
-        const auto& dbg = ctx.m_dbg;
+        const auto& dbg = ctx.getDebug();
         const auto& physicsDbg = dbg.m_physics;
 
         m_enabled = ctx.m_allowDrawDebug &&
@@ -55,7 +55,7 @@ namespace render
     {
         if (!m_enabled) return src;
 
-        auto& state = ctx.m_state;
+        auto& state = ctx.getGLState();
         state.setStencil({});
 
         src.buffer->bind(ctx);

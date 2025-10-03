@@ -56,7 +56,7 @@ namespace render
 
     void PassBloom::initRender(const RenderContext& ctx)
     {
-        const auto& dbg = ctx.m_dbg;
+        const auto& dbg = ctx.getDebug();
 
         m_enabled = !ctx.m_forceSolid
             && ctx.m_useBloom
@@ -95,7 +95,7 @@ namespace render
         const DrawContext& drawContext,
         const PassContext& src)
     {
-        auto& state = ctx.m_state;
+        auto& state = ctx.getGLState();
 
         FrameBuffer* prev = nullptr;
         for (int i = 0; i < BlurBuffer::BUFFER_COUNT; i++)
@@ -105,13 +105,13 @@ namespace render
 
             {
                 if (prev) {
-                    prev->bindTexture(ctx.m_state, BlurBuffer::ATT_COLOR_B_INDEX, UNIT_SOURCE);
+                    prev->bindTexture(ctx.getGLState(), BlurBuffer::ATT_COLOR_B_INDEX, UNIT_SOURCE);
                     m_blurHorizontalProgram->bind();
                 }
                 else {
                     // NOTE KI for first step, use *original* as source
                     // => And do init pass of collecting bright values
-                    src.buffer->bindTexture(ctx.m_state, src.attachmentIndex, UNIT_SOURCE);
+                    src.buffer->bindTexture(ctx.getGLState(), src.attachmentIndex, UNIT_SOURCE);
                     m_bloomInitProgram->bind();
                 }
 
@@ -121,7 +121,7 @@ namespace render
             }
 
             {
-                buffer->bindTexture(ctx.m_state, BlurBuffer::ATT_COLOR_A_INDEX, UNIT_SOURCE);
+                buffer->bindTexture(ctx.getGLState(), BlurBuffer::ATT_COLOR_A_INDEX, UNIT_SOURCE);
                 buffer->setDrawBuffer(BlurBuffer::ATT_COLOR_B_INDEX);
 
                 m_blurVerticalProgram->bind();
@@ -141,7 +141,7 @@ namespace render
 
             for (int i = 0; i < BlurBuffer::BUFFER_COUNT; i++) {
                 auto* buffer = m_blurBuffer.m_buffers[i].get();
-                buffer->bindTexture(ctx.m_state, BlurBuffer::ATT_COLOR_B_INDEX, channels[i]);
+                buffer->bindTexture(ctx.getGLState(), BlurBuffer::ATT_COLOR_B_INDEX, channels[i]);
             }
 
             //{
@@ -153,7 +153,7 @@ namespace render
                 if (!m_blurFinalProgramCS->isReady()) return;
 
                 // NOTE KI image textures cannot be bound into high units for some reason
-                src.buffer->bindImageTexture(ctx.m_state, 0, UNIT_0);
+                src.buffer->bindImageTexture(ctx.getGLState(), 0, UNIT_0);
 
                 m_blurFinalProgramCS->bind();
 
@@ -186,7 +186,7 @@ namespace render
     //    const RenderContext& ctx,
     //    const DrawContext& drawContext)
     //{
-    //    auto& state = ctx.m_state;
+    //    auto& state = ctx.getGLState();
 
     //    if (!m_effectBloomEnabled || !ctx.m_useBloom)
     //    {

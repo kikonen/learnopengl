@@ -60,7 +60,7 @@ namespace editor
         }
 
         void drawNode(
-            const render::RenderContext& ctx,
+            const gui::FrameContext& ctx,
             NodeTreeNode* curr,
             bool defaultExpanded)
         {

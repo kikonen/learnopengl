@@ -88,8 +88,8 @@ ShadowCascade::~ShadowCascade()
 void ShadowCascade::prepareRT(
     const PrepareContext& ctx)
 {
-    const auto& assets = ctx.m_assets;
-    auto& registry = ctx.m_registry;
+    const auto& assets = ctx.getAssets();
+    auto* registry = ctx.getRegistry();
 
     {
         m_solidShadowProgramId = ProgramRegistry::get().getProgram(SHADER_SHADOW);
@@ -124,7 +124,7 @@ void ShadowCascade::bind(
     const render::RenderContext& ctx,
     ShadowUBO& shadowUbo)
 {
-    auto& nodeRegistry = *ctx.m_registry->m_nodeRegistry;
+    auto& nodeRegistry = *ctx.getRegistry()->m_nodeRegistry;
 
     auto* node = ctx.m_collection->getDirLightNode().toNode();
     if (!node) return;

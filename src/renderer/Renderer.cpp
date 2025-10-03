@@ -19,9 +19,9 @@ Renderer::~Renderer()
 void Renderer::prepareRT(
     const PrepareContext& ctx)
 {
-    const auto& assets = ctx.m_assets;
+    const auto& assets = ctx.getAssets();
 
-    m_registry = ctx.m_registry;
+    m_registry = ctx.getRegistry();
 
     m_renderFrameStart = assets.renderFrameStart;
     m_renderFrameStep = assets.renderFrameStep;
@@ -35,10 +35,10 @@ bool Renderer::setClosest(
     const bool changed = m_lastClosest != closest;
     if (changed) {
         if (m_lastClosest) {
-            ctx.m_registry->m_selectionRegistry->untagNode(m_lastClosest->toHandle(), tagIndex);
+            ctx.getRegistry()->m_selectionRegistry->untagNode(m_lastClosest->toHandle(), tagIndex);
         }
         if (closest) {
-            ctx.m_registry->m_selectionRegistry->tagNode(closest->toHandle(), tagIndex);
+            ctx.getRegistry()->m_selectionRegistry->tagNode(closest->toHandle(), tagIndex);
         }
         m_lastClosest = closest;
     }
@@ -50,7 +50,7 @@ void Renderer::clearClosest(
     int tagIndex)
 {
     if (m_lastClosest) {
-        ctx.m_registry->m_selectionRegistry->untagNode(m_lastClosest->toHandle(), tagIndex);
+        ctx.getRegistry()->m_selectionRegistry->untagNode(m_lastClosest->toHandle(), tagIndex);
         m_lastClosest = nullptr;
     }
 }
@@ -62,12 +62,14 @@ bool Renderer::needRender(const render::RenderContext& ctx)
     if (!m_useFrameStep) return true;
     if (m_renderFrameStep <= 0) return true;
 
-    bool hit = ((ctx.m_clock.frameCount + m_renderFrameStart) % m_renderFrameStep) == 0;
+    const auto& clock = ctx.getClock();
+
+    bool hit = ((clock.frameCount + m_renderFrameStart) % m_renderFrameStep) == 0;
 
     if (hit) {
-        m_elapsedSecs = m_elapsedSecs <= -1.f ? 0.f : static_cast<float>(m_lastHitTime - ctx.m_clock.ts);
-        m_lastHitTime = ctx.m_clock.ts;
-        m_lastHitFrame = ctx.m_clock.frameCount;
+        m_elapsedSecs = m_elapsedSecs <= -1.f ? 0.f : static_cast<float>(m_lastHitTime - clock.ts);
+        m_lastHitTime = clock.ts;
+        m_lastHitFrame = clock.frameCount;
     }
 
     return hit;

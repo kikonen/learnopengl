@@ -6,17 +6,17 @@
 
 class AsyncLoader;
 
-class Registry;
+class Engine;
 
 class TestSceneSetup final
 {
 public:
     TestSceneSetup(
+        Engine& engine,
         std::shared_ptr<std::atomic<bool>> alive,
         std::shared_ptr<AsyncLoader> asyncLoader);
 
-    void setup(
-        std::shared_ptr<Registry> registry);
+    void setup();
 
 private:
     void setupEffectExplosion();
@@ -24,9 +24,8 @@ private:
     void setupViewport1();
 
 private:
+    Engine& m_engine;
     std::shared_ptr<std::atomic<bool>> m_alive;
 
     std::shared_ptr<AsyncLoader> m_asyncLoader;
-
-    std::shared_ptr<Registry> m_registry{ nullptr };
 };

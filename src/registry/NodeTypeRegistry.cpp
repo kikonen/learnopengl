@@ -93,6 +93,6 @@ void NodeTypeRegistry::updateMaterials(const render::RenderContext& ctx)
 void NodeTypeRegistry::bindMaterials(const render::RenderContext& ctx)
 {
     for (auto& typeHandle : m_customMaterialTypes) {
-        typeHandle.toType()->m_customMaterial->bindTextures(ctx.m_state);
+        typeHandle.toType()->m_customMaterial->bindTextures(ctx.getGLState());
     }
 }

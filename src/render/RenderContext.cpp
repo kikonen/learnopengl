@@ -282,20 +282,17 @@ namespace render
         //}
     }
 
-    UpdateContext RenderContext::toUpdateContext() const
-    {
-        return {
-            m_clock,
-            m_registry
-        };
-    }
+    //UpdateContext RenderContext::toUpdateContext() const
+    //{
+    //    return { m_engine };
+    //}
 
-    PrepareContext RenderContext::toPrepareContext() const
-    {
-        return {
-            m_registry,
-        };
-    }
+    //PrepareContext RenderContext::toPrepareContext() const
+    //{
+    //    return {
+    //        m_engine,
+    //    };
+    //}
 
     glm::vec3 RenderContext::getScreenDirection(
         const glm::vec2& screenPoint) const

@@ -50,7 +50,7 @@ namespace model
 
         setUpdate([this, origPosition, origDegrees](Viewport& vp, const UpdateViewContext& ctx) {
             glm::vec3 rot{ origDegrees };
-            rot.y = 5.f * sinf(static_cast<float>(ctx.m_clock.ts));
+            rot.y = 5.f * sinf(static_cast<float>(ctx.getClock().ts));
 
             glm::vec3 position{ origPosition };
             position.z += 0.001f;

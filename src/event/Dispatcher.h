@@ -4,11 +4,19 @@
 #include <vector>
 
 #include "eventpp/eventqueue.h"
+#include "eventpp/eventdispatcher.h"
 
 #include "Event.h"
 
 
 namespace event {
+    using Queue = eventpp::EventQueue<
+        Type,
+        void(const event::Event&),
+        EventPolicies
+    >;
+    using Handle = Queue::Handle;
+
     class Dispatcher final {
     public:
         Dispatcher();
@@ -22,17 +30,18 @@ namespace event {
             m_queue.enqueue(evt);
         }
 
-        template <typename ...Params>
-        void addListener(Params&&... params)
+        template <typename Callback>
+        Handle addListener(event::Type type, Callback&& callback)
         {
-            m_queue.appendListener(std::forward<Params>(params)...);
+            return m_queue.appendListener(type, std::forward<Callback>(callback));
+        }
+
+        void removeListener(event::Type type, Handle handle)
+        {
+            m_queue.removeListener(type, handle);
         }
 
     private:
-        eventpp::EventQueue<
-            Type,
-            void(const event::Event&),
-            EventPolicies
-        > m_queue;
+        Queue m_queue;
     };
 }

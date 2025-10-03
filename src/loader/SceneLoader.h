@@ -50,7 +50,7 @@ namespace loader {
         bool isRunning();
 
         void prepare(
-            std::shared_ptr<Registry> registry);
+            Registry* registry);
 
         void load();
 

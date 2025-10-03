@@ -6,7 +6,7 @@
 #include "model/Node.h"
 
 struct UpdateContext;
-class Registry;
+class Engine;
 
 class NodeController;
 
@@ -24,7 +24,7 @@ public:
     void clear();
 
     void shutdown();
-    void prepare(Registry* registry);
+    void prepare(Engine* engine);
 
     void updateWT(const UpdateContext& ctx);
 
@@ -81,7 +81,7 @@ public:
         std::unique_ptr<NodeController> controller);
 
 private:
-    Registry* m_registry{ nullptr };
+    Engine* m_engine{ nullptr };
 
     std::unordered_map<pool::NodeHandle, std::vector<std::unique_ptr<NodeController>>> m_controllers;
 };

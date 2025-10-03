@@ -22,6 +22,7 @@
 
 #include "engine/AsyncLoader.h"
 #include "engine/InputContext.h"
+#include "engine/PrepareContext.h"
 
 #include "shader/ProgramRegistry.h"
 
@@ -30,6 +31,8 @@
 #include "gui/Window.h"
 
 #include "SystemInit.h"
+
+#include "UpdateContext.h"
 
 
 Engine::Engine()
@@ -47,7 +50,7 @@ int Engine::init() {
     SystemInit::init();
     onInit();
 
-    m_registry = std::make_shared<Registry>(m_alive);
+    m_registry = std::make_unique<Registry>(*this, m_alive);
 
     m_asyncLoader = std::make_shared<AsyncLoader>(m_alive);
 
@@ -77,7 +80,7 @@ int Engine::setup() {
     }
 
     m_registry->prepareShared();
-    m_registry->prepareRT();
+    m_registry->prepareRT({ *this });
 
     return onSetup();
 }
@@ -150,9 +153,8 @@ GL_PREFERRED_TEXTURE_FORMAT_RGB8:  0x{:x}
     auto& fpsCounter = m_fpsCounter;
 
     InputContext inputCtx{
-        clock,
-        m_registry.get(),
-        m_window->m_input.get() };
+        *this,
+        *m_window->m_input.get() };
 
     // render loop
     // -----------
@@ -199,7 +201,8 @@ GL_PREFERRED_TEXTURE_FORMAT_RGB8:  0x{:x}
                 }
 
                 if (!close) {
-                    close = onUpdate(clock);
+                    UpdateContext ctx{ *this };
+;                   close = onUpdate(ctx);
                 }
                 if (!close) {
                     close = onRender(clock);
@@ -209,7 +212,8 @@ GL_PREFERRED_TEXTURE_FORMAT_RGB8:  0x{:x}
                     m_window->processInput(inputCtx);
                 }
                 if (!close) {
-                    close = onPost(clock);
+                    UpdateContext ctx{ *this };
+                    close = onPost(ctx);
                 }
                 if (!close) {
                     ProgramRegistry::get().validate();
@@ -250,7 +254,7 @@ void Engine::showFps(const ki::FpsCounter& fpsCounter)
 {
     auto& assets = Assets::modify();
 
-    std::string title = m_currentScene ? m_currentScene->m_name : "OpenGL";
+    std::string title = m_currentScene ? m_currentScene->getName() : "OpenGL";
 
     auto summary = fpsCounter.formatSummary(title.c_str());
     m_window->setTitle(summary);
@@ -265,4 +269,9 @@ void Engine::onDestroy()
     SystemInit::release();
 
     *m_alive = false;
+}
+
+const glm::ivec2& Engine::getSize() const
+{
+    return m_window->getSize();
 }

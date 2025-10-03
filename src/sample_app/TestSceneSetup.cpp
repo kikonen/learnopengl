@@ -25,24 +25,24 @@
 #include "registry/ViewportRegistry.h"
 
 #include "engine/AsyncLoader.h"
+#include "engine/Engine.h"
 
 namespace {
     inline const std::string SHADER_EFFECT{ "effect" };
 }
 
 TestSceneSetup::TestSceneSetup(
+    Engine& engine,
     std::shared_ptr<std::atomic<bool>> alive,
     std::shared_ptr<AsyncLoader> asyncLoader)
-    : m_alive(alive),
+    : m_engine{ engine },
+    m_alive(alive),
     m_asyncLoader(asyncLoader)
 {
 }
 
-void TestSceneSetup::setup(
-    std::shared_ptr<Registry> registry)
+void TestSceneSetup::setup()
 {
-    m_registry = registry;
-
     if (true) {
         //setupEffectExplosion();
 
@@ -84,7 +84,7 @@ void TestSceneSetup::setupEffectExplosion()
                 .parentId = assets.rootId,
             };
             assert(evt.body.node.target > 1);
-            m_registry->m_dispatcherWorker->send(evt);
+            m_engine.getRegistry()->m_dispatcherWorker->send(evt);
         }
     });
 }

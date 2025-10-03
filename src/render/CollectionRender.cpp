@@ -36,7 +36,7 @@ namespace render
         bool rendered{ false };
 
         auto& collection = *ctx.m_collection;
-        auto& nodeRegistry = *ctx.m_registry->m_nodeRegistry;
+        auto& nodeRegistry = *ctx.getRegistry()->m_nodeRegistry;
 
         auto renderTypes = [this, &ctx, &programSelector, &programPrepare, &nodeSelector, &rendered](
             const NodeVector& nodes,

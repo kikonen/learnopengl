@@ -534,9 +534,6 @@
     <ClCompile Include="src\registry\NodeSnapshotRegistry.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\engine\InputContext.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\pool\Pool_impl.h">
       <Filter>Header Files</Filter>
     </ClCompile>
@@ -1281,6 +1278,27 @@
     <ClCompile Include="src\util\DagSort_impl.h">
       <Filter>Header Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\sample_app\action\RayCastPlayer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\sample_app\action\ActionContext.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\engine\InputContext.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\sample_app\action\Shoot.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\gui\FrameContext.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\engine\BaseContext.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\event\Listen.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h">
@@ -2007,9 +2025,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\registry\NodeSnapshotRegistry.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\engine\InputContext.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\util\DirtyVector.h">
@@ -2904,6 +2919,27 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\asset\AABBBuilder.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\sample_app\action\RayCastPlayer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\sample_app\action\ActionContext.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\engine\InputContext.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\sample_app\action\Shoot.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\gui\FrameContext.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\engine\BaseContext.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\event\Listen.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

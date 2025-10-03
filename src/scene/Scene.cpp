@@ -14,6 +14,7 @@
 
 #include "model/Viewport.h"
 
+#include "event/Listen.h"
 #include "event/Dispatcher.h"
 
 #include "controller/NodeController.h"
@@ -29,7 +30,9 @@
 #include "registry/ViewportRegistry.h"
 #include "registry/ControllerRegistry.h"
 #include "registry/NodeTypeRegistry.h"
+#include "registry/VaoRegistry.h"
 
+#include "engine/Engine.h"
 #include "engine/PrepareContext.h"
 #include "engine/UpdateContext.h"
 #include "engine/UpdateViewContext.h"
@@ -58,10 +61,10 @@ namespace {
 }
 
 Scene::Scene(
-    std::shared_ptr<Registry> registry,
+    Engine& engine,
     std::shared_ptr<std::atomic<bool>> alive)
     : m_alive{ alive },
-    m_registry{ registry },
+    m_engine{ engine },
     m_collection{ std::make_unique<render::NodeCollection>()}
 {
     const auto& assets = Assets::get();
@@ -116,6 +119,7 @@ void Scene::clear()
 void Scene::destroy()
 {
     KI_INFO("SCENE: destroy");
+    clear();
 }
 
 void Scene::prepareRT()
@@ -125,23 +129,23 @@ void Scene::prepareRT()
 
     std::cout << "RT: worker=" << util::isWorkerThread() << '\n';
 
-    auto* dispatcherView = m_registry->m_dispatcherView;
+    auto* dispatcherView = m_engine.getRegistry()->m_dispatcherView;
 
-    dispatcherView->addListener(
-        event::Type::scene_loaded,
+    m_listen_scene_loaded.listen(
+        dispatcherView,
         [this](const event::Event& e) {
             m_loaded = true;
         });
 
-    dispatcherView->addListener(
-        event::Type::node_added,
+    m_listen_node_added.listen(
+        dispatcherView,
         [this](const event::Event& e) {
             auto* node = pool::NodeHandle::toNode(e.body.node.target);
             this->handleNodeAdded(node);
         });
 
-    dispatcherView->addListener(
-        event::Type::node_removed,
+    m_listen_node_removed.listen(
+        dispatcherView,
         [this](const event::Event& e) {
             auto* node = pool::NodeHandle::toNode(e.body.node.target);
             this->handleNodeRemoved(node);
@@ -151,19 +155,19 @@ void Scene::prepareRT()
             auto& body = evt.body.node = {
                 .target = e.body.node.target,
             };
-            m_registry->m_dispatcherWorker->send(evt);
+            m_engine.getRegistry()->m_dispatcherWorker->send(evt);
         });
 
-    dispatcherView->addListener(
-        event::Type::camera_activate,
+    m_listen_camera_activate.listen(
+        dispatcherView,
         [this](const event::Event& e) {
             auto& data = e.body.node;
             auto nodeHandle = pool::NodeHandle::toHandle(data.target);
             m_collection->setActiveCameraNode(nodeHandle);
         });
 
-    dispatcherView->addListener(
-        event::Type::camera_activate_next,
+    m_listen_camera_activate_next.listen(
+        dispatcherView,
         [this](const event::Event& e) {
             auto& data = e.body.node;
             auto nodeHandle = pool::NodeHandle::toHandle(data.target);
@@ -178,7 +182,7 @@ void Scene::prepareRT()
         assets.glUseFenceDebug,
         assets.batchDebug);
 
-    PrepareContext ctx{ m_registry.get() };
+    PrepareContext ctx{ m_engine };
 
     m_batch->prepareRT(ctx);
     //m_nodeDraw->prepareRT(ctx);
@@ -368,33 +372,33 @@ void Scene::prepareRT()
 
 void Scene::updateRT(const UpdateContext& ctx)
 {
-    const auto& assets = ctx.m_assets;
-    const auto& dbg = ctx.m_dbg;
+    const auto& assets = ctx.getAssets();
+    const auto& dbg = ctx.getDebug();
 
     // NOTE KI race condition with program prepare and event processing
-    // NOTE KI also rece with snapshot and event processing
+    // NOTE KI also race with snapshot and event processing
     // => doing programs before snapshot reduce scope
     //    but DOES NOT remove it
     ProgramRegistry::get().updateRT(ctx);
 
     NodeRegistry::get().prepareUpdateRT(ctx);
 
-    m_registry->m_dispatcherView->dispatchEvents();
+    m_engine.getRegistry()->m_dispatcherView->dispatchEvents();
 
     m_collection->updateRT(ctx);
-    m_registry->updateRT(ctx);
+    m_engine.getRegistry()->updateRT(ctx);
 
     m_batch->updateRT(ctx);
 }
 
 void Scene::postRT(const UpdateContext& ctx)
 {
-    m_registry->postRT(ctx);
+    m_engine.getRegistry()->postRT(ctx);
 }
 
 void Scene::updateViewRT(const UpdateViewContext& ctx)
 {
-    const auto& assets = ctx.m_assets;
+    const auto& assets = ctx.getAssets();
     const auto& dbg = debug::DebugContext::get();
 
     {
@@ -471,7 +475,7 @@ void Scene::updateViewRT(const UpdateViewContext& ctx)
                     .layer = layer->m_index,
                     .aspectRatio = aspectRatio,
                 };
-                m_registry->m_dispatcherWorker->send(evt);
+                m_engine.getRegistry()->m_dispatcherWorker->send(evt);
             }
         }
     }
@@ -523,8 +527,8 @@ backend::gl::PerformanceCounters Scene::getCountersLocal(bool clear) const
 
 void Scene::render(const render::RenderContext& ctx)
 {
-    const auto& assets = ctx.m_assets;
-    auto& state = ctx.m_state;
+    const auto& assets = ctx.getAssets();
+    auto& state = ctx.getGLState();
 
     state.setDepthFunc(ctx.m_depthFunc);
 
@@ -532,13 +536,14 @@ void Scene::render(const render::RenderContext& ctx)
     int renderCount = 0;
 
     MaterialRegistry::get().renderMaterials(ctx);
+    VaoRegistry::get().bindDefaultVao();
 
     updateUBOs();
     ctx.updateClipPlanesUBO();
 
     if (m_shadowMapRenderer->render(ctx)) {
         renderCount++;
-        m_shadowMapRenderer->bindTexture(ctx.m_state);
+        m_shadowMapRenderer->bindTexture(ctx.getGLState());
     }
 
     updateShadowUBO();
@@ -546,34 +551,34 @@ void Scene::render(const render::RenderContext& ctx)
     state.setEnabled(GL_TEXTURE_CUBE_MAP_SEAMLESS, assets.cubeMapSeamless);
 
     if (m_cubeMapRenderer->render(ctx)) {
-        m_cubeMapRenderer->bindTexture(ctx.m_state);
-        m_waterMapRenderer->bindTexture(ctx.m_state);
-        m_mirrorMapRenderer->bindTexture(ctx.m_state);
+        m_cubeMapRenderer->bindTexture(ctx.getGLState());
+        m_waterMapRenderer->bindTexture(ctx.getGLState());
+        m_mirrorMapRenderer->bindTexture(ctx.getGLState());
 
         wasCubeMap = assets.cubeMapSkipOthers;
     }
     wasCubeMap = false;
 
     if (!wasCubeMap && m_waterMapRenderer->render(ctx)) {
-        m_cubeMapRenderer->bindTexture(ctx.m_state);
-        m_waterMapRenderer->bindTexture(ctx.m_state);
-        m_mirrorMapRenderer->bindTexture(ctx.m_state);
+        m_cubeMapRenderer->bindTexture(ctx.getGLState());
+        m_waterMapRenderer->bindTexture(ctx.getGLState());
+        m_mirrorMapRenderer->bindTexture(ctx.getGLState());
 
         renderCount++;
     }
 
     if (!wasCubeMap && m_mirrorMapRenderer->render(ctx)) {
-        m_cubeMapRenderer->bindTexture(ctx.m_state);
-        m_waterMapRenderer->bindTexture(ctx.m_state);
-        m_mirrorMapRenderer->bindTexture(ctx.m_state);
+        m_cubeMapRenderer->bindTexture(ctx.getGLState());
+        m_waterMapRenderer->bindTexture(ctx.getGLState());
+        m_mirrorMapRenderer->bindTexture(ctx.getGLState());
 
         renderCount++;
     }
 
     {
-        m_cubeMapRenderer->bindTexture(ctx.m_state);
-        m_waterMapRenderer->bindTexture(ctx.m_state);
-        m_mirrorMapRenderer->bindTexture(ctx.m_state);
+        m_cubeMapRenderer->bindTexture(ctx.getGLState());
+        m_waterMapRenderer->bindTexture(ctx.getGLState());
+        m_mirrorMapRenderer->bindTexture(ctx.getGLState());
     }
 
     // NOTE KI skip main render if special update cycle
@@ -612,8 +617,8 @@ void Scene::renderUi(const render::RenderContext& parentCtx)
     render::RenderContext localCtx(
         "UI",
         nullptr,
-        parentCtx.m_clock,
-        m_registry.get(),
+        parentCtx.getClock(),
+        m_engine.getRegistry(),
         m_collection.get(),
         m_renderData.get(),
         //m_nodeDraw.get(),
@@ -623,7 +628,7 @@ void Scene::renderUi(const render::RenderContext& parentCtx)
         5.f,
         m_uiRenderer->m_buffer->m_spec.width,
         m_uiRenderer->m_buffer->m_spec.height,
-        parentCtx.m_dbg);
+        parentCtx.getDebug());
 
     localCtx.m_layer = layer->m_index;
     //localCtx.m_useLight = false;
@@ -689,7 +694,7 @@ void Scene::renderRear(const render::RenderContext& parentCtx)
     const auto* layer = LayerInfo::findLayer(LAYER_REAR);
     if (!layer || !layer->m_enabled) return;
 
-    const auto& assets = parentCtx.m_assets;
+    const auto& assets = parentCtx.getAssets();
 
     if (!assets.showRearView) return;
 
@@ -759,7 +764,10 @@ const std::vector<std::unique_ptr<NodeController>>* Scene::getActiveCameraContro
     return node ? ControllerRegistry::get().forNode(node) : nullptr;
 }
 
-ki::node_id Scene::getObjectID(const render::RenderContext& ctx, float screenPosX, float screenPosY)
+ki::node_id Scene::getObjectID(
+    const render::RenderContext& ctx,
+    float screenPosX,
+    float screenPosY)
 {
     if (m_objectIdRenderer->isEnabled()) {
         m_objectIdRenderer->render(ctx);
@@ -771,9 +779,9 @@ ki::node_id Scene::getObjectID(const render::RenderContext& ctx, float screenPos
 void Scene::prepareUBOs(const render::RenderContext& ctx)
 {
     //KI_INFO_OUT(fmt::format("ts: {}", m_data.u_time));
-    const debug::DebugContext& dbg = ctx.m_dbg;
-    auto& assets = ctx.m_assets;
-    auto& selectionRegistry = *m_registry->m_selectionRegistry;
+    const debug::DebugContext& dbg = ctx.getDebug();
+    auto& assets = ctx.getAssets();
+    auto& selectionRegistry = *m_engine.getRegistry()->m_selectionRegistry;
 
     auto cubeMapEnabled = dbg.m_cubeMapEnabled &&
         m_cubeMapRenderer->isEnabled() &&
@@ -808,8 +816,8 @@ void Scene::prepareUBOs(const render::RenderContext& ctx)
         dbg.m_gammaCorrect,
         dbg.m_hdrExposure,
 
-        static_cast<float>(ctx.m_clock.ts),
-        static_cast<int>(ctx.m_clock.frameCount),
+        static_cast<float>(ctx.getClock().ts),
+        static_cast<int>(ctx.getClock().frameCount),
     };
 
     for (int i = 0; const auto& v : render::PassSsao::getKernel()) {

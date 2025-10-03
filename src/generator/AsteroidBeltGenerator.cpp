@@ -185,7 +185,7 @@ void AsteroidBeltGenerator::rotateAsteroids(
     const UpdateContext& ctx,
     const model::Node& container)
 {
-    const float elapsed = ctx.m_clock.elapsedSecs;
+    const float elapsed = ctx.getClock().elapsedSecs;
 
     auto fn = [this, elapsed](const auto idx) {
         if ((idx % STRIDES) != m_strideIndex) return;

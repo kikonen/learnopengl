@@ -1,5 +1,6 @@
 #include "MovePathNode.h"
 
+#include "ki/RenderClock.h"
 #include "model/Node.h"
 
 #include "engine/UpdateContext.h"
@@ -33,7 +34,7 @@ namespace script
     void MovePathNode::execute(
         const UpdateContext& ctx) noexcept
     {
-        m_elapsedTime += ctx.m_clock.elapsedSecs;
+        m_elapsedTime += ctx.getClock().elapsedSecs;
         m_finished = m_elapsedTime >= m_duration;
 
         // NOTE KI keep steps relative to previous
@@ -66,7 +67,7 @@ namespace script
         const UpdateContext& ctx,
         int leg)
     {
-        m_elapsedTime += ctx.m_clock.elapsedSecs;
+        m_elapsedTime += ctx.getClock().elapsedSecs;
         m_finished = m_elapsedTime >= m_duration;
 
         // NOTE KI keep steps relative to previous

@@ -47,7 +47,7 @@ void ViewportRenderer::prepareRT(
 
 void ViewportRenderer::updateRT(const UpdateViewContext& ctx)
 {
-    const auto& assets = ctx.m_assets;
+    const auto& assets = ctx.getAssets();
     auto& dbg = debug::DebugContext::get();
 
     for (auto& viewport : ViewportRegistry::get().getViewports()) {
@@ -105,7 +105,7 @@ void ViewportRenderer::render(
 void ViewportRenderer::drawViewports(
     const render::RenderContext& ctx)
 {
-    auto& state = ctx.m_state;
+    auto& state = ctx.getGLState();
 
     auto& viewports = ViewportRegistry::get().getViewports();
 
@@ -138,7 +138,7 @@ void ViewportRenderer::blitWindow(
     const render::RenderContext& ctx,
     render::FrameBuffer* destinationBuffer)
 {
-    auto& state = ctx.m_state;
+    auto& state = ctx.getGLState();
 
     state.polygonFrontAndBack(GL_FILL);
     state.setEnabled(GL_DEPTH_TEST, false);

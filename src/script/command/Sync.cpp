@@ -32,7 +32,7 @@ namespace script
             m_syncedAll = m_commandIds.size() == count;
         }
         else {
-            m_elapsedTime += ctx.m_clock.elapsedSecs;
+            m_elapsedTime += ctx.getClock().elapsedSecs;
             m_finished = m_elapsedTime >= m_duration;
         }
     }

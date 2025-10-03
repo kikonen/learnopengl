@@ -27,7 +27,7 @@ namespace render {
         const std::string& namePrefix,
         float bufferScale)
     {
-        const auto& assets = ctx.m_assets;
+        const auto& assets = ctx.getAssets();
         auto& dbg = debug::DebugContext::get();
 
         const auto& res = ctx.m_resolution;

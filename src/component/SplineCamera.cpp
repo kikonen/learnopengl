@@ -21,7 +21,7 @@ void SplineCamera::updateRT(const UpdateContext& ctx, model::Node& node)
 {
     if (!m_enabled) return;
 
-    const auto dt = ctx.m_clock.elapsedSecs;
+    const auto dt = ctx.getClock().elapsedSecs;
 
     if (!m_paused) {
         m_t += m_speed * dt;

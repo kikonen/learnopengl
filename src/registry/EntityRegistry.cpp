@@ -94,7 +94,7 @@ void EntityRegistry::prepare()
 
 void EntityRegistry::updateRT(const UpdateContext& ctx)
 {
-    auto [minDirty, maxDirty] = ctx.m_registry->m_nodeRegistry->updateEntity(ctx);
+    auto [minDirty, maxDirty] = ctx.getRegistry()->m_nodeRegistry->updateEntity(ctx);
 
     if (minDirty > maxDirty) return;
 
@@ -105,7 +105,7 @@ void EntityRegistry::updateRT(const UpdateContext& ctx)
     constexpr size_t sz = sizeof(EntitySSBO);
     const int maxCount = (maxDirty + 1) - minDirty;
 
-    //KI_DEBUG(fmt::format("ENTITY_UPDATE: frame={}, min={}, max={}, maxCount={}", ctx.m_clock.frameCount, m_minDirty, m_maxDirty, maxCount));
+    //KI_DEBUG(fmt::format("ENTITY_UPDATE: frame={}, min={}, max={}, maxCount={}", ctx.getClock().frameCount, m_minDirty, m_maxDirty, maxCount));
 
     int idx = minDirty;
     int from = -1;
@@ -161,7 +161,7 @@ void EntityRegistry::updateRT(const UpdateContext& ctx)
                 int to = idx;
                 const int count = to + 1 - from;
 
-                //KI_DEBUG(fmt::format("ENTITY_UPDATE: frame={}, from={}, to={}, count={}", ctx.m_clock.frameCount, from, to, count));
+                //KI_DEBUG(fmt::format("ENTITY_UPDATE: frame={}, from={}, to={}, count={}", ctx.getClock().frameCount, from, to, count));
                 if (m_useMapped) {
                     std::copy(
                         std::begin(entries) + from,
@@ -191,7 +191,7 @@ void EntityRegistry::updateRT(const UpdateContext& ctx)
         dirtyEntries[i] = false;
     }
 
-    //KI_DEBUG(fmt::format("ENTITY_UPDATE: frame={}, updated={}", ctx.m_clock.frameCount, updatedCount));
+    //KI_DEBUG(fmt::format("ENTITY_UPDATE: frame={}, updated={}", ctx.getClock().frameCount, updatedCount));
 }
 
 void EntityRegistry::postRT(const UpdateContext& ctx)

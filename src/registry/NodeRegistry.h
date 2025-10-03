@@ -11,6 +11,8 @@
 
 #include "ki/size.h"
 
+#include "event/Listen.h"
+
 #include "pool/NodeHandle.h"
 #include "pool/TypeHandle.h"
 
@@ -28,6 +30,7 @@ namespace model {
 struct UpdateContext;
 
 class Registry;
+class Engine;
 
 struct EntitySSBO;
 
@@ -57,7 +60,7 @@ public:
     void clear();
 
     void prepare(
-        Registry* registry);
+        Engine* engine);
 
     void updateWT(const UpdateContext& ctx);
     void postUpdateWT(const UpdateContext& ctx);
@@ -260,6 +263,14 @@ public:
     pool::NodeHandle m_skybox{};
 
 private:
+    event::Listen m_listen_node_add{ event::Type::node_add };
+    event::Listen m_listen_node_remove{ event::Type::node_remove };
+    event::Listen m_listen_node_dispose{ event::Type::node_dispose };
+    event::Listen m_listen_node_activate{ event::Type::node_activate };
+    event::Listen m_listen_node_added{ event::Type::node_added };
+    event::Listen m_listen_type_prepare_view{ event::Type::type_prepare_view };
+    event::Listen m_listen_viewport_changed{ event::Type::viewport_changed };
+
     ki::node_id m_rootId{};
     pool::NodeHandle m_rootHandle{};
 
@@ -306,7 +317,7 @@ private:
     ki::level_id m_cachedNodeLevelWT{ 0 };
     ki::level_id m_cachedNodeLevelRT{ 0 };
 
-    Registry* m_registry{ nullptr };
+    Engine* m_engine{ nullptr };
 
     mutable std::mutex m_snapshotLock;
 

@@ -52,7 +52,7 @@ void NormalRenderer::drawNodes(const render::RenderContext& ctx)
     {
         // NOTE KI stencil mask must be cleared
         // BUG KI normals are showing only if selection/volume is shown some node
-        ctx.m_state.setStencil({});
+        ctx.getGLState().setStencil({});
 
         render::DrawContext drawContext{
             [](const model::Node* node) { return !node->m_typeFlags.noNormals; },

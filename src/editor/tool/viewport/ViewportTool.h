@@ -13,22 +13,14 @@ namespace editor
         ~ViewportTool() override;
 
         void drawImpl(
-            const render::RenderContext& ctx,
-            Scene* scene,
-            debug::DebugContext& dbg) override;
+            const gui::FrameContext& ctx) override;
 
         void processInputs(
-            const render::RenderContext& ctx,
-            Scene* scene,
-            const Input& input,
-            const InputState& inputState,
-            const InputState& lastInputState) override;
+            const InputContext& ctx) override;
 
     protected:
         void renderBufferDebug(
-            const render::RenderContext& ctx,
-            Scene* scene,
-            debug::DebugContext& dbg);
+            const gui::FrameContext& ctx);
 
     private:
         ViewportToolState m_state;

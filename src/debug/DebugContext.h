@@ -20,6 +20,8 @@ namespace debug {
         static const debug::DebugContext& get() noexcept;
         static debug::DebugContext& modify() noexcept;
 
+        debug::DebugContext& edit() const noexcept;
+
         int m_glfwSwapInterval{ 1 };
 
         float m_gBufferScale{ 0.5f };

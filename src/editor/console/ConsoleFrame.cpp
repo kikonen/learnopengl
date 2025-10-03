@@ -43,11 +43,11 @@ namespace editor
 
     void ConsoleFrame::prepare(const PrepareContext& ctx)
     {
-        m_dispatcherWorker = ctx.m_registry->m_dispatcherWorker;
-        m_dispatcherView = ctx.m_registry->m_dispatcherView;
+        m_dispatcherWorker = ctx.getRegistry()->m_dispatcherWorker;
+        m_dispatcherView = ctx.getRegistry()->m_dispatcherView;
 
-        m_dispatcherWorker->addListener(
-            event::Type::console_execute,
+        m_listen_console_execute.listen(
+            m_dispatcherWorker,
             [this](const event::Event& e) {
                 int count = m_executor->execute();
 
@@ -57,8 +57,8 @@ namespace editor
                 }
             });
 
-        m_dispatcherView->addListener(
-            event::Type::console_complete,
+        m_listen_console_complete.listen(
+            m_dispatcherView,
             [this](const event::Event& e) {
                 const auto results = m_executor->getResults();
                 for (const auto result : results) {
@@ -72,11 +72,9 @@ namespace editor
     }
 
     void ConsoleFrame::draw(
-        const render::RenderContext& ctx,
-        Scene* scene,
-        debug::DebugContext& dbg)
+        const gui::FrameContext& ctx)
     {
-        const auto& assets = ctx.m_assets;
+        //const auto& assets = Assets::get();
 
         //ImGuiIO& io = ImGui::GetIO();
         //io.ConfigFlags |= 0 |
@@ -90,7 +88,7 @@ namespace editor
             0;
 
         if (!ImGui::Begin("Console", openPtr, flags)) {
-            trackImGuiState(dbg);
+            trackImGuiState(ctx);
             ImGui::End();
             return;
         }
@@ -104,16 +102,16 @@ namespace editor
         //ImGui::DockSpace(dockspace_id, ImVec2(0.0f, 0.0f), dockspace_flags);
         //}
 
-        renderMenuBar();
-        renderHistory();
-        renderInput();
+        renderMenuBar(ctx);
+        renderHistory(ctx);
+        renderInput(ctx);
 
-        trackImGuiState(dbg);
+        trackImGuiState(ctx);
 
         ImGui::End();
     }
 
-    void ConsoleFrame::renderMenuBar()
+    void ConsoleFrame::renderMenuBar(const gui::FrameContext& ctx)
     {
         if (ImGui::BeginMenuBar())
         {
@@ -135,7 +133,7 @@ namespace editor
         }
     }
 
-    void ConsoleFrame::renderHistory()
+    void ConsoleFrame::renderHistory(const gui::FrameContext& ctx)
     {
         // Reserve enough left-over height for 1 separator + 1 input text
         const float footer_height_to_reserve = ImGui::GetStyle().ItemSpacing.y + ImGui::GetFrameHeightWithSpacing();
@@ -220,7 +218,7 @@ namespace editor
         ImGui::EndChild();
     }
 
-    void ConsoleFrame::renderInput()
+    void ConsoleFrame::renderInput(const gui::FrameContext& ctx)
     {
         // Command-line
         bool reclaim_focus = false;

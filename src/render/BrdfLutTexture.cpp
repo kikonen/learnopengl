@@ -29,8 +29,8 @@ namespace render {
     void BrdfLutTexture::prepareRT(
         const PrepareContext& ctx)
     {
-        const auto& assets = ctx.m_assets;
-        auto& registry = ctx.m_registry;
+        const auto& assets = ctx.getAssets();
+        auto* registry = ctx.getRegistry();
         auto& state = kigl::GLState::get();
 
         m_size = assets.brdfLutSize;

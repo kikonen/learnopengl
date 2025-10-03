@@ -24,7 +24,7 @@ namespace render {
         const std::string& namePrefix,
         float bufferScale)
     {
-        const auto& assets = ctx.m_assets;
+        const auto& assets = ctx.getAssets();
         auto& dbg = debug::DebugContext::get();
 
         const auto& res = ctx.m_resolution;
@@ -60,7 +60,7 @@ namespace render {
             m_buffer.reset(buffer);
             m_buffer->prepare();
 
-            unbindTexture(ctx.m_state);
+            unbindTexture(ctx.getGLState());
         }
 
         m_width = w;

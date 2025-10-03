@@ -44,8 +44,8 @@ namespace render
 
     void PassSkybox::initRender(const RenderContext& ctx)
     {
-        auto& state = ctx.m_state;
-        const auto& dbg = ctx.m_dbg;
+        auto& state = ctx.getGLState();
+        const auto& dbg = ctx.getDebug();
 
         m_enabled = dbg.m_skyboxEnabled;
     }
@@ -66,13 +66,13 @@ namespace render
     void PassSkybox::drawSkybox(
         const RenderContext& ctx)
     {
-        auto& nodeRegistry = *ctx.m_registry->m_nodeRegistry;
+        auto& nodeRegistry = *ctx.getRegistry()->m_nodeRegistry;
         auto* node = nodeRegistry.m_skybox.toNode();
         if (!node) return;
 
         if (node->m_layer != ctx.m_layer) return;
 
-        auto& state = ctx.m_state;
+        auto& state = ctx.getGLState();
 
         // NOTE KI cannot update stencil without depth update
         // => thus *UPDATE* depth

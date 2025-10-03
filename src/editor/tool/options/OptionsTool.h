@@ -12,27 +12,14 @@ namespace editor
         OptionsTool(EditorFrame& editor);
         ~OptionsTool() override;
 
-        void drawMenuImpl(
-            const render::RenderContext& ctx,
-            Scene* scene,
-            debug::DebugContext& dbg) override;
-
-        void drawImpl(
-            const render::RenderContext& ctx,
-            Scene* scene,
-            debug::DebugContext& dbg) override;
-
-        void processInputs(
-            const render::RenderContext& ctx,
-            Scene* scene,
-            const Input& input,
-            const InputState& inputState,
-            const InputState& lastInputState) override;
+    void processInputs(
+        const InputContext& ctx) override;
 
     protected:
-        void renderOptions(
-            const render::RenderContext& ctx,
-            debug::DebugContext& dbg);
+        void drawMenuImpl(const gui::FrameContext& ctx) override;
+        void drawImpl(const gui::FrameContext& ctx) override;
+
+        void renderOptions(const gui::FrameContext& ctx);
 
     private:
         OptionsToolState m_state;

@@ -41,8 +41,10 @@
 
 
 Registry::Registry(
+    Engine& engine,
     std::shared_ptr<std::atomic<bool>> alive)
-    : m_alive(alive),
+    : m_engine{ engine },
+    m_alive(alive),
     // registries
     m_dispatcherWorkerImpl(std::make_unique<event::Dispatcher>()),
     m_dispatcherViewImpl(std::make_unique<event::Dispatcher>()),
@@ -89,7 +91,7 @@ void Registry::prepareShared()
     EntityRegistry::get().prepare();
     ModelRegistry::get().prepare(m_alive);
 
-    NodeRegistry::get().prepare(this);
+    NodeRegistry::get().prepare(&m_engine);
     SelectionRegistry::get().prepare(this);
 
     physics::PhysicsSystem::get().prepare(m_alive);
@@ -135,17 +137,15 @@ void Registry::shutdownWT()
     decal::DecalSystem::get().shutdownWT();
 }
 
-void Registry::prepareWT()
+void Registry::prepareWT(const PrepareContext& ctx)
 {
     ASSERT_WT();
-
-    PrepareContext ctx{ this };
 
     audio::AudioSystem::get().prepare();
 
     animation::AnimationSystem::get().prepareWT();
 
-    ControllerRegistry::get().prepare(this);
+    ControllerRegistry::get().prepare(&m_engine);
 
     script::CommandEngine::get().prepare(this);
     script::ScriptSystem::get().prepare(ctx, &script::CommandEngine::get());
@@ -183,7 +183,7 @@ void Registry::shutdownRT()
     decal::DecalSystem::get().shutdownRT();
 }
 
-void Registry::prepareRT()
+void Registry::prepareRT(const PrepareContext& ctx)
 {
     ASSERT_RT();
 

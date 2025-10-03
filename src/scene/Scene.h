@@ -14,9 +14,12 @@
 #include "shader/ShadowUBO.h"
 #include "shader/DebugUBO.h"
 
+#include "event/Listen.h"
+
 
 namespace event {
     class Dispatcher;
+    class Listen;
 }
 
 namespace render {
@@ -42,6 +45,7 @@ class Light;
 
 class NodeController;
 
+class Engine;
 class Registry;
 
 struct UpdateContext;
@@ -73,7 +77,7 @@ class Scene final
 
 public:
     Scene(
-        std::shared_ptr<Registry> registry,
+        Engine& engine,
         std::shared_ptr<std::atomic<bool>> alive);
     ~Scene();
 
@@ -127,33 +131,47 @@ public:
     void updateDebugUBO() const;
     void updateLightsUBO() const;
 
-public:
-    std::shared_ptr<model::Viewport> m_uiViewport{ nullptr };
-    std::shared_ptr<model::Viewport> m_playerViewport{ nullptr };
-    std::shared_ptr<model::Viewport> m_mainViewport{ nullptr };
-    std::shared_ptr<model::Viewport> m_rearViewport{ nullptr };
+    const std::string& getName() const noexcept
+    {
+        return m_name;
+    }
 
-public:
-    std::unique_ptr<render::RenderData> m_renderData;
+    void setName(const std::string& name)
+    {
+        m_name = name;
+    }
 
-    std::shared_ptr<Registry> m_registry;
+    render::Batch* getBatch() const noexcept
+    {
+        return m_batch.get();
+    }
 
-    std::unique_ptr<render::Batch> m_batch;
-    //std::unique_ptr<render::NodeDraw> m_nodeDraw;
-
-    std::string m_name;
-
-protected:
+    render::RenderData* getRenderData() const noexcept
+    {
+        return m_renderData.get();
+    }
 
 private:
-    bool m_loaded{ false };
+    Engine& m_engine;
     std::shared_ptr<std::atomic<bool>> m_alive;
+
+    std::string m_name;
+    bool m_loaded{ false };
+
+    event::Listen m_listen_scene_loaded{ event::Type::scene_loaded };
+    event::Listen m_listen_node_added{ event::Type::node_added };
+    event::Listen m_listen_node_removed{ event::Type::node_removed };
+    event::Listen m_listen_camera_activate{ event::Type::camera_activate };
+    event::Listen m_listen_camera_activate_next{ event::Type::camera_activate_next };
 
     std::unique_ptr<render::NodeCollection> m_collection;
 
     DataUBO m_dataUBO;
     ShadowUBO m_shadowUBO;
     DebugUBO m_debugUBO;
+
+    std::unique_ptr<render::Batch> m_batch;
+    std::unique_ptr<render::RenderData> m_renderData;
 
     std::unique_ptr<LayerRenderer> m_uiRenderer{ nullptr };
     std::unique_ptr<LayerRenderer> m_playerRenderer{ nullptr };
@@ -170,4 +188,9 @@ private:
     std::unique_ptr<ObjectIdRenderer> m_objectIdRenderer{ nullptr };
 
     std::unique_ptr<render::WindowBuffer> m_windowBuffer{ nullptr };
+
+    std::shared_ptr<model::Viewport> m_uiViewport{ nullptr };
+    std::shared_ptr<model::Viewport> m_playerViewport{ nullptr };
+    std::shared_ptr<model::Viewport> m_mainViewport{ nullptr };
+    std::shared_ptr<model::Viewport> m_rearViewport{ nullptr };
 };

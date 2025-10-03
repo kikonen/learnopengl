@@ -33,7 +33,7 @@ namespace render
     void PassDeferred::prepare(
         const PrepareContext& ctx)
     {
-        const auto& assets = ctx.m_assets;
+        const auto& assets = ctx.getAssets();
 
         m_gBuffer.prepare();
 
@@ -85,8 +85,8 @@ namespace render
     void PassDeferred::initRender(
         const RenderContext& ctx)
     {
-        auto& state = ctx.m_state;
-        const auto& dbg = ctx.m_dbg;
+        auto& state = ctx.getGLState();
+        const auto& dbg = ctx.getDebug();
 
         m_gBuffer.m_buffer->resetDrawBuffers();
         m_gBuffer.clearAll();
@@ -110,7 +110,7 @@ namespace render
     {
         if (!m_preDepthEnabled) return src;
 
-        auto& state = ctx.m_state;
+        auto& state = ctx.getGLState();
         state.setStencil({});
 
         {
@@ -127,7 +127,7 @@ namespace render
         const DrawContext& drawContext,
         const PassContext& src)
     {
-        auto& state = ctx.m_state;
+        auto& state = ctx.getGLState();
         state.setStencil({});
 
         if (m_preDepthEnabled) {
@@ -181,7 +181,7 @@ namespace render
         const RenderContext& ctx,
         const DrawContext& drawContext)
     {
-        auto& state = ctx.m_state;
+        auto& state = ctx.getGLState();
 
         m_gBuffer.m_buffer->resetDrawBuffers();
         m_gBuffer.bind(ctx);
@@ -205,7 +205,7 @@ namespace render
         ctx.m_batch->flush(ctx);
 
         m_gBuffer.updateDepthCopy();
-        m_gBuffer.bindTexture(ctx.m_state);
+        m_gBuffer.bindTexture(ctx.getGLState());
     }
 
     PassContext PassDeferred::combine(
@@ -213,7 +213,7 @@ namespace render
         const DrawContext& drawContext,
         const PassContext& src)
     {
-        const auto& dbg = ctx.m_dbg;
+        const auto& dbg = ctx.getDebug();
 
         startScreenPass(
             ctx,

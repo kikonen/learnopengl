@@ -40,7 +40,7 @@ namespace render
 
     void PassEffect::initRender(const RenderContext& ctx)
     {
-        const auto& dbg = ctx.m_dbg;
+        const auto& dbg = ctx.getDebug();
 
         m_enabled = !ctx.m_forceSolid;
     }
@@ -65,7 +65,7 @@ namespace render
         const RenderContext& ctx,
         const DrawContext& drawContext)
     {
-        auto& state = ctx.m_state;
+        auto& state = ctx.getGLState();
 
         state.setStencil({});
         state.setDepthMask(GL_FALSE);

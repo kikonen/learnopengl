@@ -20,6 +20,7 @@
 #include "decal/DecalSystem.h"
 
 #include "engine/UpdateContext.h"
+#include "engine/PrepareContext.h"
 
 #include "physics/PhysicsSystem.h"
 
@@ -39,9 +40,9 @@ namespace {
 }
 
 SceneUpdater::SceneUpdater(
-    std::shared_ptr<Registry> registry,
+    Engine& engine,
     std::shared_ptr<std::atomic<bool>> alive)
-    : Updater("WT", 5, registry, alive)
+    : Updater("WT", 5, engine, alive)
 {}
 
 void SceneUpdater::shutdown()
@@ -49,7 +50,7 @@ void SceneUpdater::shutdown()
     if (!m_prepared) return;
     Updater::shutdown();
 
-    m_registry->shutdownWT();
+    getRegistry()->shutdownWT();
 }
 
 void SceneUpdater::prepare()
@@ -58,34 +59,35 @@ void SceneUpdater::prepare()
     Updater::prepare();
 
     const auto& assets = Assets::get();
+    auto* registry = getRegistry();
 
     std::lock_guard lock(m_prepareLock);
 
-    m_registry->prepareWT();
+    registry->prepareWT({ m_engine });
 
-    auto* dispatcher = m_registry->m_dispatcherWorker;
+    auto* dispatcher = registry->m_dispatcherWorker;
 
-    dispatcher->addListener(
-        event::Type::scene_loaded,
+    m_listen_scene_loaded.listen(
+        dispatcher,
         [this](const event::Event& e) {
             m_loaded = true;
 
             // NOTE KI trigger UI sidew update *after* all worker side processing done
             {
                 event::Event evt { event::Type::scene_loaded };
-                m_registry->m_dispatcherView->send(evt);
+                getRegistry()->m_dispatcherView->send(evt);
             }
         });
 
-    dispatcher->addListener(
-        event::Type::node_added,
+    m_listen_node_added.listen(
+        dispatcher,
         [this](const event::Event& e) {
             auto* node = pool::NodeHandle::toNode(e.body.node.target);
             this->handleNodeAdded(node);
         });
 
-    dispatcher->addListener(
-        event::Type::node_removed,
+    m_listen_node_removed.listen(
+        dispatcher,
         [this](const event::Event& e) {
             auto* node = pool::NodeHandle::toNode(e.body.node.target);
             this->handleNodeRemoved(node);
@@ -93,8 +95,8 @@ void SceneUpdater::prepare()
 
     if (assets.useScript)
     {
-        dispatcher->addListener(
-            event::Type::script_run,
+        m_listen_script_run.listen(
+            dispatcher,
             [this](const event::Event& e) {
                 auto& data = e.body.script;
 
@@ -120,13 +122,14 @@ void SceneUpdater::update(const UpdateContext& ctx)
 {
     KI_TIMER("[loop]  ");
 
+    auto* registry = getRegistry();
     auto& nodeRegistry = NodeRegistry::get();
     auto& physicsSystem = physics::PhysicsSystem::get();
     auto& scriptSystem = script::ScriptSystem::get();
 
     {
         KI_TIMER("event   ");
-        m_registry->m_dispatcherWorker->dispatchEvents();
+        registry->m_dispatcherWorker->dispatchEvents();
     }
 
     g_count++;
@@ -139,7 +142,7 @@ void SceneUpdater::update(const UpdateContext& ctx)
 
         {
             KI_TIMER("registry");
-            m_registry->updateWT(ctx);
+            registry->updateWT(ctx);
         }
 
         if (m_loaded) {
@@ -219,12 +222,13 @@ void SceneUpdater::handleNodeRemoved(model::Node* node)
 
 std::string SceneUpdater::getStats()
 {
+    auto* registry = getRegistry();
     auto& commandEngine = script::CommandEngine::get();
     const auto pendingCommandCount = commandEngine.getPendingCount();
     const auto blockedCommandCount = commandEngine.getBlockedCount();
     const auto activeCommandCount = commandEngine.getActiveCount();
 
-    const auto nodeCount = m_registry->m_nodeRegistry->getNodeCount();
+    const auto nodeCount = registry->m_nodeRegistry->getNodeCount();
     const auto decalCount = decal::DecalSystem::get().getActiveDecalCount();
     const auto physicsCount = physics::PhysicsSystem::get().getObjectCount();
 

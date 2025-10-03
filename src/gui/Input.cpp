@@ -222,3 +222,14 @@ void Input::onMouseWheel(float xoffset, float yoffset)
     mouseWheelXOffset = xoffset;
     mouseWheelYOffset = yoffset;
 }
+
+InputState Input::getState() const
+{
+    return {
+        isModifierDown(Modifier::CONTROL),
+        isModifierDown(Modifier::SHIFT),
+        isModifierDown(Modifier::ALT),
+        glfwGetMouseButton(window->m_glfwWindow, GLFW_MOUSE_BUTTON_LEFT) != 0,
+        glfwGetMouseButton(window->m_glfwWindow, GLFW_MOUSE_BUTTON_RIGHT) != 0
+    };
+}

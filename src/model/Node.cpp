@@ -84,8 +84,6 @@ namespace model
         const PrepareContext& ctx,
         NodeState& state)
     {
-        auto& registry = ctx.m_registry;
-
         auto* type = m_typeHandle.toType();
 
         // TODO KI need to set these to *model::NodeType* in loader

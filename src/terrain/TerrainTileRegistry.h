@@ -23,8 +23,10 @@ namespace terrain {
 
         void prepare();
 
+        void clearWT();
         void updateWT(const UpdateContext& ctx);
 
+        void clearRT();
         void updateRT(const UpdateContext& ctx);
 
         uint32_t addTile(TerrainTileInfo& tile);

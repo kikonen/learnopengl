@@ -74,8 +74,8 @@ namespace render {
     void NodeDraw::prepareRT(
         const PrepareContext& ctx)
     {
-        const auto& assets = ctx.m_assets;
-        auto& registry = ctx.m_registry;
+        const auto& assets = ctx.getAssets();
+        auto* registry = ctx.getRegistry();
 
         if (m_pipeline.m_deferred) m_passDeferred->prepare(ctx);
         if (m_pipeline.m_oit) m_passOit->prepare(ctx);
@@ -127,8 +127,8 @@ namespace render {
         PassContext passContext;
 
         {
-            auto& state = ctx.m_state;
-            const auto& dbg = ctx.m_dbg;
+            auto& state = ctx.getGLState();
+            const auto& dbg = ctx.getDebug();
 
             state.setStencil({});
         }

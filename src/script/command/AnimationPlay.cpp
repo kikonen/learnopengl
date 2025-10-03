@@ -71,7 +71,7 @@ namespace script
             m_speed,
             false,
             m_repeat,
-            ctx.m_clock.ts);
+            ctx.getClock().ts);
 
         m_finished = true;
     }

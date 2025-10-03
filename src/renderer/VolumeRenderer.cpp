@@ -57,8 +57,8 @@ void VolumeRenderer::render(
     const auto& dbg = debug::DebugContext::get();
     if (!(dbg.m_showVolume || dbg.m_showSelectionVolume)) return;
 
-    auto& nodeRegistry = *ctx.m_registry->m_nodeRegistry;
-    auto& selectionRegistry = *ctx.m_registry->m_selectionRegistry;
+    auto& nodeRegistry = *ctx.getRegistry()->m_nodeRegistry;
+    auto& selectionRegistry = *ctx.getRegistry()->m_selectionRegistry;
 
     std::vector<mesh::MeshInstance> meshes;
 

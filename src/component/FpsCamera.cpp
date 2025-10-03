@@ -22,7 +22,7 @@ void FpsCamera::updateRT(const UpdateContext& ctx, model::Node& node)
     const auto* snapshot = node.getSnapshotRT();
     if (!snapshot) return;
 
-    const auto dt = ctx.m_clock.elapsedSecs;
+    const auto dt = ctx.getClock().elapsedSecs;
 
     const auto& level = snapshot->getMatrixLevel();
     const bool nodeChanged = m_nodeLevel != level;

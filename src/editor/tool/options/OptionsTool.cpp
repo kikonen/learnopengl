@@ -41,11 +41,10 @@ namespace editor
 
     OptionsTool::~OptionsTool() = default;
 
-    void OptionsTool::drawMenuImpl(
-        const render::RenderContext& ctx,
-        Scene* scene,
-        debug::DebugContext& dbg)
+    void OptionsTool::drawMenuImpl(const gui::FrameContext& ctx)
     {
+        auto& dbg = ctx.getDebug().edit();
+
         if (ImGui::BeginMenu("Options"))
         {
             ImGui::Checkbox("Options|Draw debug", &dbg.m_drawDebug);
@@ -53,31 +52,24 @@ namespace editor
         }
     }
 
-    void OptionsTool::drawImpl(
-        const render::RenderContext& ctx,
-        Scene* scene,
-        debug::DebugContext& dbg)
+    void OptionsTool::drawImpl(const gui::FrameContext& ctx)
     {
         if (ImGui::CollapsingHeader("Options"))
         {
-            renderOptions(ctx, dbg);
+            renderOptions(ctx);
         }
     }
 
     void OptionsTool::processInputs(
-        const render::RenderContext& ctx,
-        Scene* scene,
-        const Input& input,
-        const InputState& inputState,
-        const InputState& lastInputState)
+        const InputContext& ctx)
     {
     }
 
 
-    void OptionsTool::renderOptions(
-        const render::RenderContext& ctx,
-        debug::DebugContext& dbg)
+    void OptionsTool::renderOptions(const gui::FrameContext& ctx)
     {
+        auto& dbg = ctx.getDebug().edit();
+
         {
             ImGui::Checkbox("Show volume", &dbg.m_showVolume);
             ImGui::Checkbox("Show selection volume", &dbg.m_showSelectionVolume);

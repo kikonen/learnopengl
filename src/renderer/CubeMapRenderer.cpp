@@ -101,7 +101,7 @@ void CubeMapRenderer::prepareRT(
 
     Renderer::prepareRT(ctx);
 
-    const auto& assets = ctx.m_assets;
+    const auto& assets = ctx.getAssets();
 
     {
         m_nodeDraw = std::make_unique<render::NodeDraw>(m_name);
@@ -167,20 +167,18 @@ void CubeMapRenderer::prepareRT(
 
 void CubeMapRenderer::updateRT(const UpdateViewContext& parentCtx)
 {
-    const auto& dbg = parentCtx.m_dbg;
+    const auto& dbg = parentCtx.getDebug();
     m_enabled = dbg.m_cubeMapEnabled;
 
     if (!isEnabled()) return;
 
-    const auto& assets = parentCtx.m_assets;
+    const auto& assets = parentCtx.getAssets();
     const int size = assets.cubeMapSize;
 
     UpdateViewContext localCtx{
-        parentCtx.m_clock,
-        parentCtx.m_registry,
+        parentCtx.getEngine(),
         size,
-        size,
-        parentCtx.m_dbg};
+        size};
 
     const float bufferScale = dbg.m_cubeMapBufferScale;
     m_nodeDraw->updateRT(localCtx, bufferScale);
@@ -204,7 +202,7 @@ void CubeMapRenderer::bindTexture(kigl::GLState& state)
 bool CubeMapRenderer::render(
     const render::RenderContext& parentCtx)
 {
-    const auto& assets = parentCtx.m_assets;
+    const auto& assets = parentCtx.getAssets();
 
     parentCtx.validateRender("cube_map");
 
@@ -267,7 +265,7 @@ bool CubeMapRenderer::render(
         localCtx.m_useEmission = false;
         localCtx.m_useBloom = false;
 
-        bindTexture(localCtx.m_state);
+        bindTexture(localCtx.getGLState());
 
         auto targetBuffer = m_curr->asFrameBuffer(face);
         drawNodes(localCtx, &targetBuffer, centerNode, debugColor);
@@ -317,8 +315,8 @@ void CubeMapRenderer::drawNodes(
     const model::Node* current,
     const glm::vec4& debugColor)
 {
-    const auto& assets = ctx.m_assets;
-    const auto& dbg = ctx.m_dbg;
+    const auto& assets = ctx.getAssets();
+    const auto& dbg = ctx.getDebug();
 
     bool renderedWater{ false };
     bool renderedMirror{ false };
@@ -339,11 +337,11 @@ void CubeMapRenderer::drawNodes(
     }
 
     if (m_waterMapRenderer->isEnabled() && renderedWater) {
-        m_waterMapRenderer->bindTexture(ctx.m_state);
+        m_waterMapRenderer->bindTexture(ctx.getGLState());
     }
 
     if (m_mirrorMapRenderer->isEnabled() && renderedMirror) {
-        m_mirrorMapRenderer->bindTexture(ctx.m_state);
+        m_mirrorMapRenderer->bindTexture(ctx.getGLState());
     }
 
     ctx.updateUBOs();

@@ -50,6 +50,8 @@ namespace editor {
         int m_selectedAnimationIndex{ -1 };
         int m_selectedClipIndex{ -1 };
 
+        bool m_wasMouseLeft{ false };
+
         RotationState m_nodeRotation;
         RotationState m_socketRotation;
     };

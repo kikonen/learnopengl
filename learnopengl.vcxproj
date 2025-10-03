@@ -327,6 +327,9 @@
     <ClCompile Include="src\editor\console\ConsoleExample.cpp" />
     <ClCompile Include="src\editor\console\ConsoleState.cpp" />
     <ClCompile Include="src\editor\console\Executor.cpp" />
+    <ClCompile Include="src\engine\BaseContext.cpp" />
+    <ClCompile Include="src\event\Listen.cpp" />
+    <ClCompile Include="src\gui\FrameContext.cpp" />
     <ClCompile Include="src\editor\editor_util.cpp" />
     <ClCompile Include="src\editor\tool\camera\CameraTool.cpp" />
     <ClCompile Include="src\editor\tool\debug\DebugTool.cpp" />
@@ -339,6 +342,7 @@
     <ClCompile Include="src\engine\asssets_loader_util.cpp" />
     <ClCompile Include="src\engine\SystemInit.cpp" />
     <ClCompile Include="src\event\actions.cpp" />
+    <ClCompile Include="src\engine\InputContext.cpp" />
     <ClCompile Include="src\loader\CompositeLoader.cpp" />
     <ClCompile Include="src\loader\CompositeLoader.h" />
     <ClCompile Include="src\loader\DecalLoaderr.cpp" />
@@ -401,6 +405,9 @@
     <ClCompile Include="src\render\PassSsao.cpp" />
     <ClCompile Include="src\render\ScreenTri.cpp" />
     <ClCompile Include="src\render\SSaoBuffer.cpp" />
+    <ClCompile Include="src\sample_app\action\ActionContext.cpp" />
+    <ClCompile Include="src\sample_app\action\RayCastPlayer.cpp" />
+    <ClCompile Include="src\sample_app\action\Shoot.cpp" />
     <ClCompile Include="src\script\api\SceneAPI.cpp" />
     <ClCompile Include="src\script\binding\LuaNodeHandle.cpp" />
     <ClCompile Include="src\script\command\CancelMultiple.cpp" />
@@ -435,7 +442,6 @@
     <ClCompile Include="src\component\SplineCamera.cpp" />
     <ClCompile Include="src\decal\Decal.cpp" />
     <ClCompile Include="src\decal\DecalSystem.cpp" />
-    <ClCompile Include="src\engine\InputContext.cpp" />
     <ClCompile Include="src\engine\PrepareContext.cpp" />
     <ClCompile Include="src\generator\TextGenerator.cpp" />
     <ClCompile Include="src\kigl\GLFence.cpp" />
@@ -748,6 +754,9 @@
     <ClInclude Include="src\editor\console\ConsoleState.h" />
     <ClInclude Include="src\editor\console\Executor.h" />
     <ClInclude Include="src\editor\console\HistoryItem.h" />
+    <ClInclude Include="src\engine\BaseContext.h" />
+    <ClInclude Include="src\event\Listen.h" />
+    <ClInclude Include="src\gui\FrameContext.h" />
     <ClInclude Include="src\editor\editor_util.h" />
     <ClInclude Include="src\editor\tool\camera\CameraTool.h" />
     <ClInclude Include="src\editor\tool\camera\CameraToolState.h" />
@@ -771,6 +780,7 @@
     <ClInclude Include="src\event\actions.h" />
     <ClInclude Include="src\generator\GeneratorMode.h" />
     <ClInclude Include="src\component\definition\TextGeneratorDefinition.h" />
+    <ClInclude Include="src\engine\InputContext.h" />
     <ClInclude Include="src\ki\error.h" />
     <ClInclude Include="src\loader\ClipData.h" />
     <ClInclude Include="src\loader\CompositeData.h" />
@@ -794,6 +804,9 @@
     <ClInclude Include="src\material\FontAtlasMaterialUpdater.h" />
     <ClInclude Include="src\material\ShaderMaterialUpdater.h" />
     <ClInclude Include="src\material\MaterialUpdater.h" />
+    <ClInclude Include="src\sample_app\action\ActionContext.h" />
+    <ClInclude Include="src\sample_app\action\RayCastPlayer.h" />
+    <ClInclude Include="src\sample_app\action\Shoot.h" />
     <ClInclude Include="src\script\binding\LuaNodeHandle.h" />
     <ClInclude Include="src\util\Transform.h" />
     <ClInclude Include="src\mesh\PrimitiveRegistry.h" />
@@ -958,7 +971,6 @@
     <ClInclude Include="src\shader\ProgramUniforms.h" />
     <ClInclude Include="src\asset\ViewportEffect.h" />
     <ClInclude Include="src\backend\Lod.h" />
-    <ClInclude Include="src\engine\InputContext.h" />
     <ClInclude Include="src\engine\PrepareContext.h" />
     <ClInclude Include="src\generator\TextGenerator.h" />
     <ClInclude Include="src\kigl\GLSyncQueue_impl.h" />

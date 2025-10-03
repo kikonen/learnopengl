@@ -46,28 +46,21 @@ namespace editor
     CameraTool::~CameraTool() = default;
 
     void CameraTool::drawImpl(
-        const render::RenderContext& ctx,
-        Scene* scene,
-        debug::DebugContext& dbg)
+        const gui::FrameContext& ctx)
     {
         if (ImGui::CollapsingHeader("Camera"))
         {
-            renderCamera(ctx, dbg);
+            renderCamera(ctx);
         }
     }
 
     void CameraTool::processInputs(
-        const render::RenderContext& ctx,
-        Scene* scene,
-        const Input& input,
-        const InputState& inputState,
-        const InputState& lastInputState)
+        const InputContext& ctx)
     {
     }
 
     void CameraTool::renderCamera(
-        const render::RenderContext& ctx,
-        debug::DebugContext& dbg)
+        const gui::FrameContext& ctx)
     {
         const auto& nr = NodeRegistry::get();
         const auto& cr = ControllerRegistry::get();
@@ -89,7 +82,7 @@ namespace editor
                         if (ImGui::Selectable(name, node == currNode)) {
                             event::Event evt{ event::Type::node_activate };
                             evt.body.node.target = node->getId();
-                            ctx.m_registry->m_dispatcherWorker->send(evt);
+                            ctx.getRegistry()->m_dispatcherWorker->send(evt);
                         }
                         ImGui::PopID();
                     }
@@ -100,8 +93,11 @@ namespace editor
         }
 
         // Camera
+        if (auto* scene = ctx.getScene(); scene)
         {
-            const auto* currNode = ctx.m_collection->getActiveCameraNode();
+            auto* collection = scene->getCollection();
+
+            const auto* currNode = collection->getActiveCameraNode();
             if (ImGui::BeginCombo("Camera selector", currNode ? currNode->getName().c_str() : nullptr)) {
                 for (const auto& [nodeHandle, controllers] : cr.getControllers()) {
                     for (const auto& controller : controllers) {
@@ -116,7 +112,7 @@ namespace editor
                         if (ImGui::Selectable(name, node == currNode)) {
                             event::Event evt{ event::Type::camera_activate };
                             evt.body.node.target = node->getId();
-                            ctx.m_registry->m_dispatcherView->send(evt);
+                            ctx.getRegistry()->m_dispatcherView->send(evt);
                         }
                         ImGui::PopID();
                     }

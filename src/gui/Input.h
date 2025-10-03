@@ -91,6 +91,8 @@ public:
             imGuiReclaimFocus--;
     }
 
+    InputState getState() const;
+
 public:
     float mouseX{ 0.f };
     float mouseY{ 0.f };

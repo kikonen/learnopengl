@@ -227,7 +227,7 @@ namespace render {
 
     void FrameBuffer::bind(const RenderContext& ctx)
     {
-        auto& state = ctx.m_state;
+        auto& state = ctx.getGLState();
 
         ctx.validateRender("FBO");
 
@@ -388,7 +388,7 @@ namespace render {
         GLbitfield clearMask,
         const glm::vec4& debugColor)
     {
-        const auto& assets = ctx.m_assets;
+        const auto& assets = ctx.getAssets();
 
         const bool useDebugColor = assets.useDebugColor;
         const bool hasAttachments = !m_spec.attachments.empty();

@@ -7,7 +7,7 @@
 namespace particle {
     bool Particle::update(const UpdateContext& ctx) noexcept
     {
-        const auto dt = ctx.m_clock.elapsedSecs;
+        const auto dt = ctx.getClock().elapsedSecs;
 
         m_lifetime -= dt;
         if (m_lifetime <= 0) return false;

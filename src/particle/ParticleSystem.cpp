@@ -122,7 +122,7 @@ namespace particle {
 
     void ParticleSystem::updateWT(const UpdateContext& ctx)
     {
-        const auto& dbg = ctx.m_dbg;
+        const auto& dbg = ctx.getDebug();
 
         m_enabled = dbg.m_particleEnabled;
 
@@ -153,7 +153,7 @@ namespace particle {
 
     void ParticleSystem::updateRT(const UpdateContext& ctx)
     {
-        m_enabled = ctx.m_dbg.m_particleEnabled;
+        m_enabled = ctx.getDebug().m_particleEnabled;
 
         if (!isEnabled()) return;
         if (!m_updateReady) return;

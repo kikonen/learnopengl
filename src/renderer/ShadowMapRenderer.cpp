@@ -43,8 +43,8 @@ void ShadowMapRenderer::prepareRT(
 
     Renderer::prepareRT(ctx);
 
-    const auto& assets = ctx.m_assets;
-    auto& registry = ctx.m_registry;
+    const auto& assets = ctx.getAssets();
+    auto* registry = ctx.getRegistry();
 
     m_renderFrameStart = assets.shadowRenderFrameStart;
     m_renderFrameStep = assets.shadowRenderFrameStep;
@@ -100,7 +100,7 @@ void ShadowMapRenderer::bind(
     const render::RenderContext& ctx,
     ShadowUBO& shadowUbo)
 {
-    const auto& dbg = ctx.m_dbg;
+    const auto& dbg = ctx.getDebug();
 
     // NOTE KI no shadows if no light
     if (!dbg.m_lightEnabled) return;
@@ -142,7 +142,7 @@ bool ShadowMapRenderer::render(
 
     if (!needRender(ctx)) return false;
 
-    const auto& dbg = ctx.m_dbg;
+    const auto& dbg = ctx.getDebug();
 
     // NOTE KI no shadows if no light
     if (!dbg.m_lightEnabled) return false;
@@ -150,8 +150,8 @@ bool ShadowMapRenderer::render(
     auto* node = ctx.m_collection->getDirLightNode().toNode();
     if (!node) return false;
 
-    const auto& assets = ctx.m_assets;
-    auto& state = ctx.m_state;
+    const auto& assets = ctx.getAssets();
+    auto& state = ctx.getGLState();
 
     {
         // OpenGL Programming Guide, 8th Edition, page 404
@@ -168,7 +168,7 @@ bool ShadowMapRenderer::render(
         state.setEnabled(GL_POLYGON_OFFSET_FILL, false);
     }
 
-    m_rotateElapsedSecs += ctx.m_clock.elapsedSecs;
+    m_rotateElapsedSecs += ctx.getClock().elapsedSecs;
     if (m_rotateElapsedSecs > 5) {
         m_activeCascade = (m_activeCascade + 1) % m_cascades.size();
         m_rotateElapsedSecs = 0.f;

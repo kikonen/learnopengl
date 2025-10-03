@@ -5,9 +5,9 @@
 #include "particle/ParticleSystem.h"
 
 ParticleUpdater::ParticleUpdater(
-    std::shared_ptr<Registry> registry,
+    Engine& engine,
     std::shared_ptr<std::atomic<bool>> alive)
-    : Updater("PS", 20, registry, alive)
+    : Updater("PS", 20, engine, alive)
 {}
 
 void ParticleUpdater::update(const UpdateContext& ctx)

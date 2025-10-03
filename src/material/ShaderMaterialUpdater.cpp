@@ -109,7 +109,7 @@ void ShaderMaterialUpdater::render(
     m_buffer->bind(ctx);
     m_buffer->clearAll();
 
-    auto& state = ctx.m_state;
+    auto& state = ctx.getGLState();
 
     glBindSampler(UNIT_CHANNEL_0, m_samplerId);
 

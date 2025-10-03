@@ -48,7 +48,7 @@ namespace render
 
     bool Pass::updateSize(const UpdateViewContext& ctx, float bufferScale)
     {
-        const auto& dbg = ctx.m_dbg;
+        const auto& dbg = ctx.getDebug();
 
         const auto& res = ctx.m_resolution;
 
@@ -75,7 +75,7 @@ namespace render
         bool useBlend,
         const kigl::GLBlendMode& blend)
     {
-        auto& state = ctx.m_state;
+        auto& state = ctx.getGLState();
 
         // NOTE KI do NOT modify depth with screenpass
         state.setEnabled(GL_DEPTH_TEST, false);
@@ -103,7 +103,7 @@ namespace render
     void Pass::stopScreenPass(
         const RenderContext& ctx)
     {
-        auto& state = ctx.m_state;
+        auto& state = ctx.getGLState();
 
         state.setEnabled(GL_DEPTH_TEST, true);
         state.setDepthMask(GL_TRUE);

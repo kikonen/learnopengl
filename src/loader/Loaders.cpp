@@ -28,7 +28,7 @@ namespace loader {
     {}
 
     void Loaders::prepare(
-        std::shared_ptr<Registry> registry)
+        Registry* registry)
     {
         m_includeLoader.setRegistry(registry);
         m_fontLoader.setRegistry(registry);

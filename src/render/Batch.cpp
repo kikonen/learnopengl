@@ -319,7 +319,7 @@ namespace render {
         if (m_prepared) return;
         m_prepared = true;
 
-        const auto& assets = ctx.m_assets;
+        const auto& assets = ctx.getAssets();
 
         if (entryCount <= 0) {
             entryCount = assets.batchSize;
@@ -360,8 +360,8 @@ namespace render {
     void Batch::updateRT(
         const UpdateContext& ctx)
     {
-        const auto& assets = ctx.m_assets;
-        const auto& dbg = ctx.m_dbg;
+        const auto& assets = ctx.getAssets();
+        const auto& dbg = ctx.getDebug();
 
         m_frustumCPU = assets.frustumEnabled && assets.frustumCPU && dbg.m_frustumEnabled;
 

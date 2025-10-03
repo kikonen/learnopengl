@@ -57,7 +57,7 @@ namespace terrain {
         const PrepareContext& ctx,
         model::Node& container)
     {
-        const auto& assets = ctx.m_assets;
+        const auto& assets = ctx.getAssets();
 
         m_gridSize = assets.terrainGridSize;
 
@@ -85,8 +85,8 @@ namespace terrain {
         const PrepareContext& ctx,
         const model::Node& container)
     {
-        const auto& assets = ctx.m_assets;
-        auto& registry = ctx.m_registry;
+        const auto& assets = ctx.getAssets();
+        auto* registry = ctx.getRegistry();
 
         bool flipY = false;
         auto texture = loadTexture(flipY);
@@ -169,8 +169,8 @@ namespace terrain {
         const PrepareContext& ctx,
         const model::Node& container)
     {
-        const auto& assets = ctx.m_assets;
-        auto& registry = ctx.m_registry;
+        const auto& assets = ctx.getAssets();
+        auto* registry = ctx.getRegistry();
         auto& dispatcher = registry->m_dispatcherWorker;
 
         auto& entityRegistry = EntityRegistry::get();

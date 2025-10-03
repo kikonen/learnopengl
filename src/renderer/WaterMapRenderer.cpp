@@ -58,7 +58,7 @@ void WaterMapRenderer::prepareRT(
 
     Renderer::prepareRT(ctx);
 
-    const auto& assets = ctx.m_assets;
+    const auto& assets = ctx.getAssets();
 
     {
         m_nodeDraw = std::make_unique<render::NodeDraw>(m_name);
@@ -140,12 +140,12 @@ void WaterMapRenderer::prepareRT(
 
 void WaterMapRenderer::updateRT(const UpdateViewContext& parentCtx)
 {
-    const auto& dbg = parentCtx.m_dbg;
+    const auto& dbg = parentCtx.getDebug();
     m_enabled = dbg.m_waterMapEnabled;
 
     if (!isEnabled()) return;
 
-    const auto& assets = parentCtx.m_assets;
+    const auto& assets = parentCtx.getAssets();
 
     int w;
     int h;
@@ -174,11 +174,9 @@ void WaterMapRenderer::updateRT(const UpdateViewContext& parentCtx)
 
     {
         UpdateViewContext localCtx{
-            parentCtx.m_clock,
-            parentCtx.m_registry,
+            parentCtx.getEngine(),
             w,
-            h,
-            parentCtx.m_dbg };
+            h };
 
         m_nodeDraw->updateRT(localCtx, 1.f);
     }
@@ -189,8 +187,8 @@ void WaterMapRenderer::updateRT(const UpdateViewContext& parentCtx)
 
 void WaterMapRenderer::updateReflectionView(const UpdateViewContext& ctx)
 {
-    const auto& assets = ctx.m_assets;
-    const auto& dbg = ctx.m_dbg;
+    const auto& assets = ctx.getAssets();
+    const auto& dbg = ctx.getDebug();
 
     int w;
     int h;
@@ -244,8 +242,8 @@ void WaterMapRenderer::updateReflectionView(const UpdateViewContext& ctx)
 
 void WaterMapRenderer::updateRefractionView(const UpdateViewContext& ctx)
 {
-    const auto& assets = ctx.m_assets;
-    const auto& dbg = ctx.m_dbg;
+    const auto& assets = ctx.getAssets();
+    const auto& dbg = ctx.getDebug();
 
     int w;
     int h;
@@ -329,7 +327,7 @@ bool WaterMapRenderer::render(
     setClosest(parentCtx, closest, m_tagMaterial.m_registeredIndex);
     if (!closest) return false;
 
-    auto& state = parentCtx.m_state;
+    auto& state = parentCtx.getGLState();
 
     // https://www.youtube.com/watch?v=7T5o4vZXAvI&list=PLRIWtICgwaX23jiqVByUs0bqhnalNTNZh&index=7
     // computergraphicsprogrammminginopenglusingcplusplussecondedition.pdf

@@ -67,7 +67,7 @@ namespace render
         // => currently these *CANNOT* work correctly
         ctx.validateRender("non_gbuffer");
 
-        auto& state = ctx.m_state;
+        auto& state = ctx.getGLState();
         state.setStencil(kigl::GLStencilMode::fill(STENCIL_SOLID | STENCIL_FOG));
 
         CollectionRender collectionRender;

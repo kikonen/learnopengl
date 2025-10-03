@@ -90,7 +90,7 @@ namespace loader {
     }
 
     void SceneLoader::prepare(
-        std::shared_ptr<Registry> registry)
+        Registry* registry)
     {
         m_registry = registry;
         m_dispatcher = registry->m_dispatcherWorker;

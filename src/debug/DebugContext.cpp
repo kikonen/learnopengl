@@ -9,11 +9,18 @@ namespace {
 
 namespace debug
 {
-    const debug::DebugContext& DebugContext::get() noexcept {
+    const debug::DebugContext& DebugContext::get() noexcept
+    {
         return s_instance;
     }
 
-    debug::DebugContext& DebugContext::modify() noexcept {
+    debug::DebugContext& DebugContext::modify() noexcept
+    {
+        return s_instance;
+    }
+
+    debug::DebugContext& DebugContext::edit() const noexcept
+    {
         return s_instance;
     }
 

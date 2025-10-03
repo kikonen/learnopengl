@@ -37,7 +37,7 @@ void DynamicCubeMap::unbindTexture(
 
 void DynamicCubeMap::bind(const render::RenderContext& ctx)
 {
-    auto& state = ctx.m_state;
+    auto& state = ctx.getGLState();
     // NOTE KI must flush before changing render target
     //ctx.m_batch->flush(ctx);
     if (!ctx.m_batch->isFlushed()) {

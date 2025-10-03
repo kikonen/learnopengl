@@ -35,5 +35,11 @@ namespace event
         console_complete,
 
         app_shutdown,
+
+        action_editor_scene_load,
+        action_editor_scene_unload,
+        action_app_quit,
+
+        action_game_shoot,
     };
 }

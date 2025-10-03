@@ -15,23 +15,17 @@ namespace editor
 
     Tool::~Tool() = default;
 
-    void Tool::drawMenu(
-        const render::RenderContext& ctx,
-        Scene* scene,
-        debug::DebugContext& dbg)
+    void Tool::drawMenu(const gui::FrameContext& ctx)
     {
         ImGui::PushID(m_toolId.c_str());
-        drawMenuImpl(ctx, scene, dbg);
+        drawMenuImpl(ctx);
         ImGui::PopID();
     }
 
-    void Tool::draw(
-        const render::RenderContext& ctx,
-        Scene* scene,
-        debug::DebugContext& dbg)
+    void Tool::draw(const gui::FrameContext& ctx)
     {
         ImGui::PushID(m_toolId.c_str());
-        drawImpl(ctx, scene, dbg);
+        drawImpl(ctx);
         ImGui::PopID();
     }
 }

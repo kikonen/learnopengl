@@ -62,11 +62,21 @@ namespace terrain {
         m_ssbo.bindSSBO(SSBO_TERRAIN_TILES);
     }
 
+    void TerrainTileRegistry::clearWT()
+    {
+        std::lock_guard lock(m_lock);
+    }
+
     void TerrainTileRegistry::updateWT(const UpdateContext& ctx)
     {
         std::lock_guard lock(m_lock);
 
         snapshotTiles();
+    }
+
+    void TerrainTileRegistry::clearRT()
+    {
+        std::lock_guard lock(m_lock);
     }
 
     void TerrainTileRegistry::updateRT(const UpdateContext& ctx)

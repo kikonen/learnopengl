@@ -35,7 +35,7 @@ void FollowCamera::updateRT(const UpdateContext& ctx, model::Node& node)
         return;
     }
 
-    const auto dt = ctx.m_clock.elapsedSecs;
+    const auto dt = ctx.getClock().elapsedSecs;
 
     //const auto& level = snapshot.getMatrixLevel();
     //const bool nodeChanged = m_nodeLevel != level;

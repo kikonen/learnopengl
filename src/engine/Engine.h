@@ -1,5 +1,7 @@
 #pragma once
 
+#include <glm/glm.hpp>
+
 #include "kigl/kigl.h"
 
 #include "ki/RenderClock.h"
@@ -49,13 +51,20 @@ public:
         return m_currentScene;
     }
 
+    std::shared_ptr<Window> getWindow()
+    {
+        return m_window;
+    }
+
+    const glm::ivec2& getSize() const;
+
 protected:
     virtual int onInit() = 0;
     virtual int onSetup() = 0;
 
-    virtual int onUpdate(const ki::RenderClock& clock) = 0;
+    virtual int onUpdate(const UpdateContext& ctx) = 0;
     virtual int onRender(const ki::RenderClock& clock) = 0;
-    virtual int onPost(const ki::RenderClock& clock) = 0;
+    virtual int onPost(const UpdateContext& ctx) = 0;
 
     virtual void onDestroy();
 
@@ -70,9 +79,8 @@ public:
     // => alloes change for graceful exit for loaders
     std::shared_ptr<AsyncLoader> m_asyncLoader;
 
-    std::shared_ptr<Registry> m_registry;
+    std::unique_ptr<Registry> m_registry;
 
-    std::shared_ptr<Scene> m_currentScene;
     std::shared_ptr<SceneUpdater> m_sceneUpdater;
     std::shared_ptr<ParticleUpdater> m_particleUpdater;
     std::shared_ptr<AnimationUpdater> m_animationUpdater;
@@ -89,5 +97,5 @@ protected:
 
     std::string m_title;
 
-    InputState m_lastInputState;
+    std::shared_ptr<Scene> m_currentScene;
 };

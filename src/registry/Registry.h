@@ -11,8 +11,11 @@ namespace event
 
 struct UpdateContext;
 
+class Engine;
 class NodeRegistry;
 class SelectionRegistry;
+
+struct PrepareContext;
 
 //
 // Container for all registries to simplify passing them around
@@ -20,6 +23,7 @@ class SelectionRegistry;
 class Registry {
 public:
     Registry(
+        Engine& engine,
         std::shared_ptr<std::atomic<bool>> alive);
 
     ~Registry();
@@ -32,11 +36,11 @@ public:
 
     void clearWT();
     void shutdownWT();
-    void prepareWT();
+    void prepareWT(const PrepareContext& ctx);
 
     void clearRT();
     void shutdownRT();
-    void prepareRT();
+    void prepareRT(const PrepareContext& ctx);
 
     void updateWT(const UpdateContext& ctx);
     void updateRT(const UpdateContext& ctx);
@@ -47,6 +51,7 @@ public:
 private:
     bool m_prepared = false;
 
+    Engine& m_engine;
     std::shared_ptr<std::atomic<bool>> m_alive;
     std::mutex m_lock{};
 

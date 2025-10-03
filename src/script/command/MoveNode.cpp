@@ -32,7 +32,7 @@ namespace script
     void MoveNode::execute(
         const UpdateContext& ctx) noexcept
     {
-        m_elapsedTime += ctx.m_clock.elapsedSecs;
+        m_elapsedTime += ctx.getClock().elapsedSecs;
         m_finished = m_elapsedTime >= m_duration;
 
         // NOTE KI keep steps relative to previous

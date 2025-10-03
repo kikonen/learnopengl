@@ -16,6 +16,8 @@
 
 #include "pool/NodeHandle.h"
 
+#include "engine/InputContext.h"
+
 #include "editor/EditorFrame.h"
 
 #include "asset/DynamicCubeMap.h"
@@ -46,7 +48,7 @@
 #include "registry/ControllerRegistry.h"
 
 #include "engine/AssetsLoader.h"
-
+#include "engine/SystemInit.h"
 #include "engine/PrepareContext.h"
 #include "engine/UpdateContext.h"
 #include "engine/UpdateViewContext.h"
@@ -57,6 +59,8 @@
 #include "loader/Context.h"
 #include "loader/SceneLoader.h"
 
+#include "shader/ProgramRegistry.h"
+
 #include "scene/Scene.h"
 #include "scene/SceneUpdater.h"
 #include "scene/ParticleUpdater.h"
@@ -66,6 +70,7 @@
 
 #include "gui/Input.h"
 #include "gui/Window.h"
+#include "gui/FrameContext.h"
 
 #include "decal/DecalSystem.h"
 #include "decal/DecalRegistry.h"
@@ -74,16 +79,16 @@
 #include "physics/RayHit.h"
 #include "physics/physics_util.h"
 
+#include "action/ActionContext.h"
+#include "action/RayCastPlayer.h"
+
 namespace {
     const glm::vec4 BLACK_COLOR{ 0.f };
 
     ki::node_id fpsNodeId1 = SID("fps_counter");
     ki::node_id fpsNodeId2 = SID("prefab_fps_counter");
 
-    std::vector<script::command_id> g_rayMarkers;
-
-    constexpr float HIT_RATE = 0.01f;
-    float g_hitElapsed = 0.f;
+    render::Camera DEFAULT_CAMERA{};
 }
 
 SampleApp::SampleApp()
@@ -110,18 +115,16 @@ int SampleApp::onSetup()
 {
     const auto& assets = Assets::get();
 
-    m_currentScene = loadScene();
-
     m_sceneUpdater = std::make_shared<SceneUpdater>(
-        m_registry,
+        *this,
         m_alive);
 
     m_particleUpdater = std::make_shared<ParticleUpdater>(
-        m_registry,
+        *this,
         m_alive);
 
     m_animationUpdater = std::make_shared<AnimationUpdater>(
-        m_registry,
+        *this,
         m_alive);
 
     m_sceneUpdater->start();
@@ -136,29 +139,45 @@ int SampleApp::onSetup()
         m_editorFrameInit = std::make_shared<FrameInit>(m_window);
         m_editorFrame = std::make_unique<editor::EditorFrame>(m_window);
 
-        PrepareContext ctx{ m_registry.get()};
+        PrepareContext ctx{ *this };
 
         m_editorFrameInit->prepare(ctx);
         m_editorFrame->prepare(ctx);
-    }
+
+        m_listen_action_editor_scene_load.listen(
+            m_registry->m_dispatcherView,
+            [this](const event::Event& e) {
+				m_loader = nullptr;
+                onLoadScene();
+			});
+	}
+
+    m_listen_scene_loaded.listen(
+        m_registry->m_dispatcherView,
+        [this](const event::Event& e) {
+            m_loader = nullptr;
+        });
 
     return 0;
 }
 
-int SampleApp::onUpdate(const ki::RenderClock& clock) {
+int SampleApp::onUpdate(const UpdateContext& ctx)
+{
+	const auto& assets = ctx.getAssets();
+	const auto& dbg = ctx.getDebug();
+
     auto* scene = m_currentScene.get();
-    if (!scene) return 0;
 
-    {
-        UpdateContext ctx(
-            clock,
-            scene->m_registry.get());
-
+    if (scene)
+	{
         scene->updateRT(ctx);
     }
+    else {
+        getRegistry()->m_dispatcherView->dispatchEvents();
+    }
 
-    {
-        auto& dbg = debug::DebugContext::modify();
+	{
+        auto& dbg = debug::DebugContext::get();
 
         glfwSwapInterval(dbg.m_glfwSwapInterval);
     }
@@ -166,15 +185,10 @@ int SampleApp::onUpdate(const ki::RenderClock& clock) {
     return 0;
 }
 
-int SampleApp::onPost(const ki::RenderClock& clock) {
-    auto* scene = m_currentScene.get();
-    if (!scene) return 0;
-
-    {
-        UpdateContext ctx(
-            clock,
-            scene->m_registry.get());
-
+int SampleApp::onPost(const UpdateContext& ctx)
+{
+    if (auto* scene = m_currentScene.get(); scene)
+	{
         scene->postRT(ctx);
     }
 
@@ -188,41 +202,44 @@ int SampleApp::onRender(const ki::RenderClock& clock)
     auto* scene = m_currentScene.get();
     Window* window = m_window.get();
 
-    if (!scene) return 0;
-
-    auto* cameraNode = scene->getActiveCameraNode();
-    if (!cameraNode) return 0;
-
     auto& state = kigl::GLState::get();
-    const glm::uvec2& size = window->getSize();
+    const glm::ivec2& size = window->getSize();
 
-    {
-        UpdateViewContext ctx(
-            clock,
-            scene->m_registry.get(),
+    if (scene) {
+        UpdateViewContext ctx{
+            *this,
             size.x,
-            size.y,
-            m_dbg);
+            size.y };
 
         scene->updateViewRT(ctx);
     }
 
-    render::RenderContext ctx(
-        "TOP",
-        nullptr,
-        clock,
-        scene->m_registry.get(),
-        scene->getCollection(),
-        scene->m_renderData.get(),
-        //scene->m_nodeDraw.get(),
-        scene->m_batch.get(),
-        &cameraNode->m_camera->getCamera(),
-        assets.nearPlane,
-        assets.farPlane,
-        size.x,
-        size.y,
-        m_dbg);
-    {
+    render::Camera* camera = &DEFAULT_CAMERA;
+    
+    if (scene) {
+        auto* cameraNode = scene->getActiveCameraNode();
+        if (cameraNode) {
+            camera = &cameraNode->m_camera->getCamera();
+        }
+    }
+
+    if (scene)
+	{
+        render::RenderContext ctx(
+            "TOP",
+            nullptr,
+            clock,
+            m_registry.get(),
+            scene->getCollection(),
+            scene->getRenderData(),
+            scene->getBatch(),
+            camera,
+            assets.nearPlane,
+            assets.farPlane,
+            size.x,
+            size.y,
+            m_dbg);
+
         if (const auto* layer = LayerInfo::findLayer(LAYER_MAIN); layer) {
             ctx.m_layer = layer->m_index;
         }
@@ -245,60 +262,57 @@ int SampleApp::onRender(const ki::RenderClock& clock)
         // => ensure "sane" start state for each loop
         state.setClearColor(BLACK_COLOR);
 
-        if (assets.useEditor) {
-            m_editorFrame->bind(ctx);
-            state.invalidateAll();
+        if (scene) {
+            scene->bind(ctx);
+            scene->render(ctx);
+            scene->unbind(ctx);
         }
-
-        scene->bind(ctx);
-        scene->render(ctx);
-        scene->unbind(ctx);
     }
+
+    processInput();
 
     if (assets.useEditor) {
-        m_editorFrame->draw(ctx, scene, m_dbg);
-    }
-
-    {
-        const auto& input = *window->m_input;
-        InputState inputState{
-            input.isModifierDown(Modifier::CONTROL),
-            input.isModifierDown(Modifier::SHIFT),
-            input.isModifierDown(Modifier::ALT),
-            glfwGetMouseButton(window->m_glfwWindow, GLFW_MOUSE_BUTTON_LEFT) != 0,
-            glfwGetMouseButton(window->m_glfwWindow, GLFW_MOUSE_BUTTON_RIGHT) != 0,
-        };
-
-        if (inputState.mouseRight == GLFW_PRESS &&
-            input.allowMouse())
-        {
-            if (inputState.ctrl)
-            {
-                shoot(ctx, scene, input, inputState, m_lastInputState);
-            }
-        }
-
-        if (assets.useEditor) {
-            m_editorFrame->processInputs(ctx, scene, input, inputState, m_lastInputState);
-        }
-
-        m_lastInputState = inputState;
-    }
-
-    if (assets.useEditor) {
+        gui::FrameContext ctx{ *this };
+        m_editorFrame->bind(ctx);
+        m_editorFrame->draw(ctx);
         m_editorFrame->render(ctx);
+        state.invalidateAll();
     }
 
-    frustumDebug(ctx, clock);
+    frustumDebug(clock);
 
     return 0;
 }
 
+void SampleApp::processInput()
+{
+    const auto& assets = Assets::get();
+    auto* scene = m_currentScene.get();
+
+    InputContext ctx{ *this, *m_window->m_input };
+    const auto& inputState = ctx.getInputState();
+
+    if (scene) {
+        if (inputState.mouseRight == GLFW_PRESS &&
+            ctx.getInput().allowMouse())
+        {
+            if (inputState.ctrl)
+            {
+                event::Event evt{ event::Type::action_game_shoot };
+                getRegistry()->m_dispatcherView->send(evt);
+            }
+        }
+    }
+
+    if (assets.useEditor) {
+        m_editorFrame->processInputs(ctx);
+    }
+}
+
 void SampleApp::frustumDebug(
-    const render::RenderContext& ctx,
     const ki::RenderClock& clock)
 {
-    const auto& assets = ctx.m_assets;
+    const auto& assets = Assets::get();
 
     if (!assets.frustumDebug) return;
 
@@ -328,12 +342,12 @@ void SampleApp::frustumDebug(
             auto frameSkip = (float)m_skipCount / (float)clock.frameCount;
 
             KI_INFO_OUT(fmt::format(
-                "{}: total-frames={}, gpu-draw={}, gpu-skip={}, gpu-ratio={}",
-                ctx.m_name, clock.frameCount, m_drawCount, m_skipCount, ratio));
+                "STOP: total-frames={}, gpu-draw={}, gpu-skip={}, gpu-ratio={}",
+                clock.frameCount, m_drawCount, m_skipCount, ratio));
 
             KI_INFO(fmt::format(
-                "{}: gpu-frame-draw={}, gpu-frame-skip={}",
-                ctx.m_name, frameDraw, frameSkip));
+                "TOP: gpu-frame-draw={}, gpu-frame-skip={}",
+                frameDraw, frameSkip));
         }
     }
 }
@@ -363,19 +377,7 @@ void SampleApp::onDestroy()
 
     *m_alive = false;
 
-    if (!m_loaders.empty()) {
-        KI_INFO_OUT("APP: stopping loaders...");
-        for (auto& loader : m_loaders) {
-            loader->destroy();
-        }
-        for (auto& loader : m_loaders) {
-            // NOTE KI wait for worker threads to shutdown
-            while (loader->isRunning()) {
-                util::sleep(100);
-            }
-        }
-        KI_INFO_OUT("APP: loaders stopped!");
-    }
+    stopLoader();
 
     {
         m_sceneUpdater->destroy();
@@ -422,212 +424,16 @@ void SampleApp::onDestroy()
     KI_INFO_OUT("APP: stopped all!");
 }
 
-void SampleApp::raycastPlayer(
-    const render::RenderContext& ctx,
-    Scene* scene,
-    const Input& input,
-    const InputState& inputState,
-    const InputState& lastInputState)
+void SampleApp::onLoadScene()
 {
-    auto* player = scene->getActiveNode();
-    if (!player) return;
-
-    {
-        const auto* snapshot = player->getSnapshotRT();
-        if (!snapshot) return;
-
-        const auto& hit = physics::PhysicsSystem::get().rayCastClosest(
-            snapshot->getWorldPosition(),
-            snapshot->getViewFront(),
-            100.f,
-            physics::mask(physics::Category::npc),
-            player->toHandle());
-
-        if (hit.isHit) {
-            auto* node = hit.handle.toNode();
-
-            KI_INFO_OUT(fmt::format(
-                "PLAYER_HIT: node={}, pos={}, normal={}, depth={}",
-                node ? node->getName() : "N/A",
-                hit.pos,
-                hit.normal,
-                hit.depth));
-        }
-    }
-
-    {
-        glm::vec2 screenPos{ input.mouseX, input.mouseY };
-
-        const auto startPos = ctx.unproject(screenPos, .01f);
-        const auto endPos = ctx.unproject(screenPos, .8f);
-        const auto dir = glm::normalize(endPos - startPos);
-
-        KI_INFO_OUT(fmt::format(
-            "UNPROJECT: screenPos={}, z0={}, z1={}",
-            screenPos, startPos, endPos));
-
-        auto greenBall = pool::NodeHandle::toNode(SID("green_ball"));
-        auto redBall = pool::NodeHandle::toNode(SID("red_ball"));
-
-        for (auto& cmdId : g_rayMarkers) {
-            script::CommandEngine::get().cancelCommand(cmdId);
-        }
-        g_rayMarkers.clear();
-
-        if (greenBall) {
-            auto cmdId = 0;
-            for (int i = 0; i < 5; i++) {
-                cmdId = script::CommandEngine::get().addCommand(
-                    cmdId,
-                    script::MoveNode{
-                        greenBall->toHandle(),
-                        0.f,
-                        false,
-                        startPos
-                    });
-                g_rayMarkers.push_back(cmdId);
-
-                if (i == 0) {
-                    cmdId = script::CommandEngine::get().addCommand(
-                        cmdId,
-                        script::Wait{
-                            2.f
-                        });
-                    g_rayMarkers.push_back(cmdId);
-                }
-
-                cmdId = script::CommandEngine::get().addCommand(
-                    cmdId,
-                    script::MoveNode{
-                        greenBall->toHandle(),
-                        2.f,
-                        true,
-                        dir * 5.f
-                    });
-                g_rayMarkers.push_back(cmdId);
-            }
-            {
-                cmdId = script::CommandEngine::get().addCommand(
-                    cmdId,
-                    script::MoveNode{
-                        greenBall->toHandle(),
-                        0.f,
-                        false,
-                        startPos
-                    });
-                g_rayMarkers.push_back(cmdId);
-            }
-        }
-        if (redBall) {
-            auto cmdId = script::CommandEngine::get().addCommand(
-                0,
-                script::MoveNode{
-                    redBall->toHandle(),
-                    0.f,
-                    false,
-                    endPos
-                });
-            g_rayMarkers.push_back(cmdId);
-        }
-
-        const auto& hit = physics::PhysicsSystem::get().rayCastClosest(
-            startPos,
-            dir,
-            400.f,
-            physics::mask(physics::Category::npc, physics::Category::prop),
-            //physics::mask(physics::Category::all),
-            player->toHandle());
-    }
+    m_currentScene = loadScene();
 }
 
-void SampleApp::shoot(
-    const render::RenderContext& ctx,
-    Scene* scene,
-    const Input& input,
-    const InputState& inputState,
-    const InputState& lastInputState)
+void SampleApp::onShoot()
 {
-    auto* player = scene->getActiveNode();
-    if (!player) return;
+    const auto& input = *m_window->m_input;
 
-    {
-        const auto& dbg = debug::DebugContext::get();
-
-        glm::vec2 screenPos{ input.mouseX, input.mouseY };
-
-        const auto startPos = ctx.unproject(screenPos, .01f);
-        const auto endPos = ctx.unproject(screenPos, .8f);
-        const auto dir = glm::normalize(endPos - startPos);
-
-        //const auto& hits = physics::PhysicsSystem::get().rayCast(
-        //    startPos,
-        //    dir,
-        //    400.f,
-        //    physics::mask(physics::Category::ray_player_fire),
-        //    physics::mask(physics::Category::npc, physics::Category::prop),
-        //    //physics::mask(physics::Category::all),
-        //    player->toHandle(),
-        //    true);
-
-        auto callback = [this](int cid, const physics::RayHit& hits) {
-            shootCallback(hits);
-        };
-
-        auto& commandEngine = script::CommandEngine::get();
-        commandEngine.addCommand(
-            0,
-            script::RayCast{
-                player->toHandle(),
-                dir,
-                400.f,
-                physics::mask(physics::Category::npc, physics::Category::prop, physics::Category::terrain),
-                false,
-                callback
-            });
-
-
-        g_hitElapsed += ctx.m_clock.elapsedSecs;
-    }
-}
-
-void SampleApp::shootCallback(
-    const physics::RayHit& hit
-)
-{
-    auto* player = m_currentScene->getActiveNode();
-    if (!player) return;
-
-    {
-        const auto& dbg = debug::DebugContext::get();
-
-        if (hit.isHit && g_hitElapsed >= HIT_RATE) {
-            g_hitElapsed -= HIT_RATE;
-
-            {
-                auto* node = hit.handle.toNode();
-                KI_INFO_OUT(fmt::format(
-                    "SCREEN_HIT: node={}, pos={}, normal={}, depth={}",
-                    node ? node->getName() : "N/A",
-                    hit.pos,
-                    hit.normal,
-                    hit.depth));
-
-                auto sid = dbg.m_decalId;
-                auto df = decal::DecalRegistry::get().getDecal(sid);
-                KI_INFO_OUT(fmt::format("DECAL: name={}, valid={}", sid.str(), df ? true : false));
-
-                auto decal = df.createForHit(hit.handle, hit.pos, glm::normalize(hit.normal));
-
-                decal::DecalSystem::get().addDecal(decal);
-
-                KI_INFO_OUT(fmt::format(
-                    "DECAL: node={}, pos={}, normal={}",
-                    node ? node->getName() : "N/A",
-                    decal.m_position,
-                    decal.m_normal));
-            }
-        }
-    }
+    //shoot(ctx, m_currentScene.get(), input, inputState, m_lastInputState);
 }
 
 Assets SampleApp::loadAssets()
@@ -640,11 +446,14 @@ std::shared_ptr<Scene> SampleApp::loadScene()
 {
     const auto& assets = Assets::get();
 
-    auto scene = std::make_shared<Scene>(m_registry, m_alive);
+    stopLoader();
+    unloadScene();
+
+    auto scene = std::make_shared<Scene>(*this, m_alive);
 
     {
         if (!assets.sceneFile.empty()) {
-            scene->m_name = assets.sceneFile;
+            scene->setName(assets.sceneFile);
 
             auto ctx = std::make_shared<loader::Context>(
                 m_alive,
@@ -652,26 +461,43 @@ std::shared_ptr<Scene> SampleApp::loadScene()
                 assets.sceneDir,
                 assets.sceneFile
             );
-            std::unique_ptr<loader::SceneLoader> loader = std::make_unique<loader::SceneLoader>(ctx);
-            m_loaders.push_back(std::move(loader));
+            m_loader = std::make_unique<loader::SceneLoader>(ctx);
         }
     }
 
-    for (auto& loader : m_loaders) {
-        KI_INFO_OUT(fmt::format("LOAD_SCENE: {}", loader->m_ctx->str()));
-        loader->prepare(m_registry);
-        loader->load();
+    if (m_loader) {
+        KI_INFO_OUT(fmt::format("LOAD_SCENE: {}", m_loader->m_ctx->str()));
+        m_loader->prepare(getRegistry());
+        m_loader->load();
     }
-
-    //m_testSetup = std::make_unique<TestSceneSetup>(
-    //    m_alive,
-    //    m_asyncLoader);
-
-    //m_testSetup->setup(
-    //    scene->m_registry
-    //);
 
     scene->prepareRT();
 
     return scene;
+}
+
+void SampleApp::unloadScene()
+{
+    if (!m_currentScene) return;
+    m_currentScene->destroy();
+    m_registry->clear();
+    SystemInit::clear();
+    m_currentScene = nullptr;
+}
+
+void SampleApp::stopLoader()
+{
+    if (!m_loader) return;
+
+    KI_INFO_OUT("APP: stopping loader...");
+    m_loader->destroy();
+
+    // NOTE KI wait for worker threads to shutdown
+    while (m_loader->isRunning()) {
+        util::sleep(100);
+    }
+
+    m_loader = nullptr;
+
+    KI_INFO_OUT("APP: loader stopped!");
 }
