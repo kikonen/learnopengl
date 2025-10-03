@@ -15,6 +15,7 @@
 
 #include "engine/Engine.h"
 #include "engine/PrepareContext.h"
+#include "engine/InputContext.h"
 
 #include "event/Event.h"
 #include "event/Dispatcher.h"
@@ -73,6 +74,10 @@ namespace editor {
     void EditorFrame::processInputs(
         const InputContext& ctx)
     {
+        if (ImGui::IsKeyPressed(ImGuiKey_O) && ImGui::GetIO().KeyCtrl) {
+            onOpenScene({ ctx.getEngine() });
+        }
+
         m_statusTool->processInputs(ctx);
         m_cameraTool->processInputs(ctx);
         m_nodeTypeTool->processInputs(ctx);

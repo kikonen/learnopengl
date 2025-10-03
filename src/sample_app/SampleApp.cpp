@@ -158,6 +158,8 @@ int SampleApp::onSetup()
             m_loader = nullptr;
         });
 
+    //m_currentScene = loadScene();
+
     return 0;
 }
 
@@ -275,6 +277,10 @@ int SampleApp::onRender(const ki::RenderClock& clock)
         gui::FrameContext ctx{ *this };
         m_editorFrame->bind(ctx);
         m_editorFrame->draw(ctx);
+        {
+            InputContext ctx{ *this, *m_window->m_input };
+            m_editorFrame->processInputs(ctx);
+        }
         m_editorFrame->render(ctx);
         state.invalidateAll();
     }
@@ -302,10 +308,6 @@ void SampleApp::processInput()
                 getRegistry()->m_dispatcherView->send(evt);
             }
         }
-    }
-
-    if (assets.useEditor) {
-        m_editorFrame->processInputs(ctx);
     }
 }
 
