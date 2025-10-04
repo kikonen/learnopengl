@@ -2,8 +2,7 @@
 
 namespace event
 {
-    Listen::Listen(event::Type type)
-        : m_type{ type }
+    Listen::Listen()
     { }
 
     Listen::~Listen()

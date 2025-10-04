@@ -91,7 +91,7 @@ public:
 private:
     Registry* m_registry{ nullptr };
 
-    event::Listen m_listen_node_select{ event::Type::node_select };
+    event::Listen m_listen_node_select;
 
     std::unique_ptr<Material> m_selectionMaterial;
     std::unique_ptr<Material> m_tagMaterial;

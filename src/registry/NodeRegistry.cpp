@@ -526,91 +526,104 @@ void NodeRegistry::cacheNodes(
 void NodeRegistry::attachListeners()
 {
     const auto& assets = Assets::get();
-
     auto* registry = m_engine->getRegistry();
-    auto* dispatcher = registry->m_dispatcherWorker;
-    auto* dispatcherView = registry->m_dispatcherView;
 
-    m_listen_node_add.listen(
-        dispatcher,
-        [this](const event::Event& e) {
-            const auto& data = e.body.node;
+    {
+        auto* dispatcher = registry->m_dispatcherWorker;
 
-            attachNode(
-                pool::NodeHandle::toHandle(data.target),
-                pool::NodeHandle::toHandle(data.parentId),
-                data.socketId,
-                e.blob->body.state);
-        });
-
-    m_listen_node_remove.listen(
-        dispatcher,
-        [this](const event::Event& e) {
-            detachNode(
-                pool::NodeHandle::toHandle(e.body.node.target));
-        });
-
-    m_listen_node_dispose.listen(
-        dispatcher,
-        [this](const event::Event& e) {
-            disposeNode(
-                pool::NodeHandle::toHandle(e.body.node.target));
-        });
-
-    m_listen_node_activate.listen(
-        dispatcher,
-        [this](const event::Event& e) {
-            setActiveNode(pool::NodeHandle::toHandle(e.body.node.target));
-        });
-
-    if (assets.useScript) {
-        m_listen_node_added.listen(
+        m_listen_node_add.listen(
+            event::Type::node_add,
             dispatcher,
-            [this, registry](const event::Event& e) {
-                auto& data = e.body.node;
-                auto nodeHandle = pool::NodeHandle::toHandle(data.target);
+            [this](const event::Event& e) {
+                const auto& data = e.body.node;
 
-                const auto* node = nodeHandle.toNode();
-                if (!node) return;
+                attachNode(
+                    pool::NodeHandle::toHandle(data.target),
+                    pool::NodeHandle::toHandle(data.parentId),
+                    data.socketId,
+                    e.blob->body.state);
+            });
 
-                const auto* type = node->getType();
-                const auto nodeId = data.target;
+        m_listen_node_remove.listen(
+            event::Type::node_remove,
+            dispatcher,
+            [this](const event::Event& e) {
+                detachNode(
+                    pool::NodeHandle::toHandle(e.body.node.target));
+            });
 
-                auto& scriptSystem = script::ScriptSystem::get();
+        m_listen_node_dispose.listen(
+            event::Type::node_dispose,
+            dispatcher,
+            [this](const event::Event& e) {
+                disposeNode(
+                    pool::NodeHandle::toHandle(e.body.node.target));
+            });
 
-                for (const auto& scriptId : type->getScripts()) {
-                    if (nodeHandle == m_rootHandle) {
-                        //scriptSystem.runGlobalScript(node, scriptId);
-                    } else
-                    {
-                        event::Event evt { event::Type::script_run };
-                        auto& body = evt.body.script = {
-                            .target = nodeId,
-                            .id = scriptId,
-                        };
-                        registry->m_dispatcherWorker->send(evt);
+        m_listen_node_activate.listen(
+            event::Type::node_activate,
+            dispatcher,
+            [this](const event::Event& e) {
+                setActiveNode(pool::NodeHandle::toHandle(e.body.node.target));
+            });
+
+        if (assets.useScript) {
+            m_listen_node_added.listen(
+                event::Type::node_added,
+                dispatcher,
+                [this, registry](const event::Event& e) {
+                    auto& data = e.body.node;
+                    auto nodeHandle = pool::NodeHandle::toHandle(data.target);
+
+                    const auto* node = nodeHandle.toNode();
+                    if (!node) return;
+
+                    const auto* type = node->getType();
+                    const auto nodeId = data.target;
+
+                    auto& scriptSystem = script::ScriptSystem::get();
+
+                    for (const auto& scriptId : type->getScripts()) {
+                        if (nodeHandle == m_rootHandle) {
+                            //scriptSystem.runGlobalScript(node, scriptId);
+                        }
+                        else
+                        {
+                            event::Event evt{ event::Type::script_run };
+                            auto& body = evt.body.script = {
+                                .target = nodeId,
+                                .id = scriptId,
+                            };
+                            registry->m_dispatcherWorker->send(evt);
+                        }
                     }
-                }
+                });
+        }
+
+        m_listen_viewport_changed.listen(
+            event::Type::viewport_changed,
+            dispatcher,
+            [this](const event::Event& e) {
+                auto& data = e.body.view;
+                viewportChanged(
+                    data.layer,
+                    data.aspectRatio);
             });
     }
 
-    m_listen_type_prepare_view.listen(
-        dispatcher,
-        [this](const event::Event& e) {
-            auto& data = e.body.nodeType;
-            auto* type = pool::TypeHandle::toType(data.target);
-            if (!type) return;
-            type->prepareRT({ *m_engine });
-        });
+    {
+        auto* dispatcherView = registry->m_dispatcherView;
 
-    m_listen_viewport_changed.listen(
-        dispatcher,
-        [this](const event::Event& e) {
-            auto& data = e.body.view;
-            viewportChanged(
-                data.layer,
-                data.aspectRatio);
-        });
+        m_listen_type_prepare_view.listen(
+            event::Type::type_prepare_view,
+            dispatcherView,
+            [this](const event::Event& e) {
+                auto& data = e.body.nodeType;
+                auto* type = pool::TypeHandle::toType(data.target);
+                if (!type) return;
+                type->prepareRT({ *m_engine });
+            });
+    }
 }
 
 void NodeRegistry::handleNodeAdded(model::Node* node)

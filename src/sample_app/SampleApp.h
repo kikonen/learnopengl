@@ -70,8 +70,8 @@ private:
     std::unique_ptr<loader::SceneLoader> m_loader;
     std::unique_ptr<TestSceneSetup> m_testSetup;
 
-    event::Listen m_listen_action_editor_scene_load{ event::Type::action_editor_scene_load };
-    event::Listen m_listen_scene_loaded{ event::Type::scene_loaded };
+    event::Listen m_listen_action_editor_scene_load;
+    event::Listen m_listen_scene_loaded;
 
     size_t m_drawCount = 0;
     size_t m_skipCount = 0;

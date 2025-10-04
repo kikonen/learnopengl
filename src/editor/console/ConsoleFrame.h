@@ -61,7 +61,7 @@ namespace editor
         event::Dispatcher* m_dispatcherWorker{ nullptr };
         event::Dispatcher* m_dispatcherView{ nullptr };
 
-        event::Listen m_listen_console_execute{ event::Type::console_execute };
-        event::Listen m_listen_console_complete{ event::Type::console_complete };
+        event::Listen m_listen_console_execute;
+        event::Listen m_listen_console_complete;
     };
 }

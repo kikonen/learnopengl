@@ -68,6 +68,7 @@ void SceneUpdater::prepare()
     auto* dispatcher = registry->m_dispatcherWorker;
 
     m_listen_scene_loaded.listen(
+        event::Type::scene_loaded,
         dispatcher,
         [this](const event::Event& e) {
             m_loaded = true;
@@ -80,6 +81,7 @@ void SceneUpdater::prepare()
         });
 
     m_listen_node_added.listen(
+        event::Type::node_added,
         dispatcher,
         [this](const event::Event& e) {
             auto* node = pool::NodeHandle::toNode(e.body.node.target);
@@ -87,6 +89,7 @@ void SceneUpdater::prepare()
         });
 
     m_listen_node_removed.listen(
+        event::Type::node_removed,
         dispatcher,
         [this](const event::Event& e) {
             auto* node = pool::NodeHandle::toNode(e.body.node.target);
@@ -96,6 +99,7 @@ void SceneUpdater::prepare()
     if (assets.useScript)
     {
         m_listen_script_run.listen(
+            event::Type::script_run,
             dispatcher,
             [this](const event::Event& e) {
                 auto& data = e.body.script;

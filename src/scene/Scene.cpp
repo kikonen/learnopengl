@@ -132,12 +132,14 @@ void Scene::prepareRT()
     auto* dispatcherView = m_engine.getRegistry()->m_dispatcherView;
 
     m_listen_scene_loaded.listen(
+        event::Type::scene_loaded,
         dispatcherView,
         [this](const event::Event& e) {
             m_loaded = true;
         });
 
     m_listen_node_added.listen(
+        event::Type::node_added,
         dispatcherView,
         [this](const event::Event& e) {
             auto* node = pool::NodeHandle::toNode(e.body.node.target);
@@ -145,6 +147,7 @@ void Scene::prepareRT()
         });
 
     m_listen_node_removed.listen(
+        event::Type::node_removed,
         dispatcherView,
         [this](const event::Event& e) {
             auto* node = pool::NodeHandle::toNode(e.body.node.target);
@@ -159,6 +162,7 @@ void Scene::prepareRT()
         });
 
     m_listen_camera_activate.listen(
+        event::Type::camera_activate,
         dispatcherView,
         [this](const event::Event& e) {
             auto& data = e.body.node;
@@ -167,6 +171,7 @@ void Scene::prepareRT()
         });
 
     m_listen_camera_activate_next.listen(
+        event::Type::camera_activate_next,
         dispatcherView,
         [this](const event::Event& e) {
             auto& data = e.body.node;

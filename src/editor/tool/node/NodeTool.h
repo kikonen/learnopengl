@@ -80,6 +80,6 @@ namespace editor
     private:
         NodeToolState m_state;
 
-        event::Listen m_listen_node_select{ event::Type::node_select };
+        event::Listen m_listen_node_select;
     };
 }

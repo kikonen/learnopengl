@@ -158,11 +158,11 @@ private:
     std::string m_name;
     bool m_loaded{ false };
 
-    event::Listen m_listen_scene_loaded{ event::Type::scene_loaded };
-    event::Listen m_listen_node_added{ event::Type::node_added };
-    event::Listen m_listen_node_removed{ event::Type::node_removed };
-    event::Listen m_listen_camera_activate{ event::Type::camera_activate };
-    event::Listen m_listen_camera_activate_next{ event::Type::camera_activate_next };
+    event::Listen m_listen_scene_loaded;
+    event::Listen m_listen_node_added;
+    event::Listen m_listen_node_removed;
+    event::Listen m_listen_camera_activate;
+    event::Listen m_listen_camera_activate_next;
 
     std::unique_ptr<render::NodeCollection> m_collection;
 

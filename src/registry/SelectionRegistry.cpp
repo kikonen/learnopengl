@@ -92,6 +92,7 @@ void SelectionRegistry::attachListeners()
     auto* dispatcherView = m_registry->m_dispatcherView;
 
     m_listen_node_select.listen(
+        event::Type::node_select,
         dispatcherView,
         [this](const event::Event& e) {
             const auto& data = e.body.select;

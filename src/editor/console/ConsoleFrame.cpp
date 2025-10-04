@@ -47,6 +47,7 @@ namespace editor
         m_dispatcherView = ctx.getRegistry()->m_dispatcherView;
 
         m_listen_console_execute.listen(
+            event::Type::console_execute,
             m_dispatcherWorker,
             [this](const event::Event& e) {
                 int count = m_executor->execute();
@@ -58,6 +59,7 @@ namespace editor
             });
 
         m_listen_console_complete.listen(
+            event::Type::console_complete,
             m_dispatcherView,
             [this](const event::Event& e) {
                 const auto results = m_executor->getResults();

@@ -145,6 +145,7 @@ int SampleApp::onSetup()
         m_editorFrame->prepare(ctx);
 
         m_listen_action_editor_scene_load.listen(
+            event::Type::action_editor_scene_load,
             m_registry->m_dispatcherView,
             [this](const event::Event& e) {
 				m_loader = nullptr;
@@ -153,6 +154,7 @@ int SampleApp::onSetup()
 	}
 
     m_listen_scene_loaded.listen(
+        event::Type::scene_loaded,
         m_registry->m_dispatcherView,
         [this](const event::Event& e) {
             m_loader = nullptr;

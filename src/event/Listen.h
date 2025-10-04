@@ -10,20 +10,25 @@ namespace event
     class Listen
     {
     public:
-        Listen(event::Type type);
+        Listen();
         ~Listen();
 
         template <typename Callback>
         void listen(
+            event::Type type,
             event::Dispatcher* dispatcher,
             Callback&& cb)
         {
+            if (type == event::Type::none) return;
+            if (m_type != event::Type::none) throw "duplicate event register";
+
+            m_type = type;
             m_dispatcher = dispatcher;
             m_handle = dispatcher->addListener(m_type, std::forward<Callback>(cb));
         }
 
     private:
-        const event::Type m_type;
+        event::Type m_type{ event::Type::none };
         event::Dispatcher* m_dispatcher{ nullptr };
         event::Handle m_handle;
     };

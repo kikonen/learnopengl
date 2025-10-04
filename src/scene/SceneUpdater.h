@@ -26,8 +26,8 @@ private:
     void handleNodeRemoved(model::Node* node);
 
 private:
-    event::Listen m_listen_scene_loaded{ event::Type::scene_loaded };
-    event::Listen m_listen_node_added{ event::Type::node_added };
-    event::Listen m_listen_node_removed{ event::Type::node_removed };
-    event::Listen m_listen_script_run{ event::Type::script_run };
+    event::Listen m_listen_scene_loaded;
+    event::Listen m_listen_node_added;
+    event::Listen m_listen_node_removed;
+    event::Listen m_listen_script_run;
 };
