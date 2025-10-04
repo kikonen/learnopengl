@@ -30,7 +30,6 @@
 #include "registry/ViewportRegistry.h"
 #include "registry/ControllerRegistry.h"
 #include "registry/NodeTypeRegistry.h"
-#include "registry/VaoRegistry.h"
 
 #include "engine/Engine.h"
 #include "engine/PrepareContext.h"
@@ -45,7 +44,6 @@
 #include "render/RenderData.h"
 #include "render/NodeDraw.h"
 #include "render/NodeCollection.h"
-#include "render/PassSsao.h"
 
 #include "renderer/LayerRenderer.h"
 #include "renderer/ViewportRenderer.h"
@@ -98,10 +96,6 @@ Scene::Scene(
 
         m_objectIdRenderer->setEnabled(true);
     }
-
-    m_batch = std::make_unique<render::Batch>();
-    //m_nodeDraw = std::make_unique<render::NodeDraw>();
-    m_renderData = std::make_unique<render::RenderData>();
 }
 
 Scene::~Scene()
@@ -180,16 +174,8 @@ void Scene::prepareRT()
             m_collection->setActiveCameraNode(nextCamera);
         });
 
-    m_renderData->prepare(
-        false,
-        assets.glUseInvalidate,
-        assets.glUseFence,
-        assets.glUseFenceDebug,
-        assets.batchDebug);
-
     PrepareContext ctx{ m_engine };
 
-    m_batch->prepareRT(ctx);
     //m_nodeDraw->prepareRT(ctx);
 
     m_uiRenderer->prepareRT(ctx);
@@ -380,20 +366,12 @@ void Scene::updateRT(const UpdateContext& ctx)
     const auto& assets = ctx.getAssets();
     const auto& dbg = ctx.getDebug();
 
-    // NOTE KI race condition with program prepare and event processing
-    // NOTE KI also race with snapshot and event processing
-    // => doing programs before snapshot reduce scope
-    //    but DOES NOT remove it
-    ProgramRegistry::get().updateRT(ctx);
-
     NodeRegistry::get().prepareUpdateRT(ctx);
 
     m_engine.getRegistry()->m_dispatcherView->dispatchEvents();
 
     m_collection->updateRT(ctx);
     m_engine.getRegistry()->updateRT(ctx);
-
-    m_batch->updateRT(ctx);
 }
 
 void Scene::postRT(const UpdateContext& ctx)
@@ -504,30 +482,16 @@ void Scene::handleNodeRemoved(model::Node* node)
 
 void Scene::bind(const render::RenderContext& ctx)
 {
-    prepareUBOs(ctx);
-
     if (m_shadowMapRenderer->isEnabled()) {
         m_shadowMapRenderer->bind(ctx, m_shadowUBO);
     }
 
     NodeTypeRegistry::get().updateMaterials(ctx);
     NodeTypeRegistry::get().bindMaterials(ctx);
-
-    m_batch->bind();
 }
 
 void Scene::unbind(const render::RenderContext& ctx)
 {
-}
-
-backend::gl::PerformanceCounters Scene::getCounters(bool clear) const
-{
-    return m_batch->getCounters(clear);
-}
-
-backend::gl::PerformanceCounters Scene::getCountersLocal(bool clear) const
-{
-    return m_batch->getCountersLocal(clear);
 }
 
 void Scene::render(const render::RenderContext& ctx)
@@ -541,9 +505,7 @@ void Scene::render(const render::RenderContext& ctx)
     int renderCount = 0;
 
     MaterialRegistry::get().renderMaterials(ctx);
-    VaoRegistry::get().bindDefaultVao();
 
-    updateUBOs();
     ctx.updateClipPlanesUBO();
 
     if (m_shadowMapRenderer->render(ctx)) {
@@ -597,8 +559,6 @@ void Scene::render(const render::RenderContext& ctx)
         renderUi(ctx);
     }
     renderViewports(ctx);
-
-    m_renderData->invalidateAll();
 }
 
 void Scene::renderUi(const render::RenderContext& parentCtx)
@@ -625,9 +585,9 @@ void Scene::renderUi(const render::RenderContext& parentCtx)
         parentCtx.getClock(),
         m_engine.getRegistry(),
         m_collection.get(),
-        m_renderData.get(),
+        m_engine.getRenderData(),
         //m_nodeDraw.get(),
-        m_batch.get(),
+        m_engine.getBatch(),
         &camera,
         0.1f,
         5.f,
@@ -781,116 +741,14 @@ ki::node_id Scene::getObjectID(
     return 0;
 }
 
-void Scene::prepareUBOs(const render::RenderContext& ctx)
-{
-    //KI_INFO_OUT(fmt::format("ts: {}", m_data.u_time));
-    const debug::DebugContext& dbg = ctx.getDebug();
-    auto& assets = ctx.getAssets();
-    auto& selectionRegistry = *m_engine.getRegistry()->m_selectionRegistry;
-
-    auto cubeMapEnabled = dbg.m_cubeMapEnabled &&
-        m_cubeMapRenderer->isEnabled() &&
-        m_cubeMapRenderer->isRendered();
-
-    m_dataUBO = {
-        dbg.m_fogColor,
-        // NOTE KI keep original screen resolution across the board
-        // => current buffer resolution is separately in bufferInfo UBO
-        //m_parent ? m_parent->m_resolution : m_resolution,
-
-        selectionRegistry.getSelectionMaterialIndex(),
-        selectionRegistry.getTagMaterialIndex(),
-
-        cubeMapEnabled,
-        assets.skyboxEnabled,
-
-        assets.environmentMapEnabled,
-
-        dbg.m_shadowVisual,
-        dbg.m_forceLineMode,
-
-        dbg.m_fogStart,
-        dbg.m_fogEnd,
-        dbg.m_fogDensity,
-
-        dbg.m_effectOitMinBlendThreshold,
-        dbg.m_effectOitMaxBlendThreshold,
-
-        dbg.m_effectBloomThreshold,
-
-        dbg.m_gammaCorrect,
-        dbg.m_hdrExposure,
-
-        static_cast<float>(ctx.getClock().ts),
-        static_cast<int>(ctx.getClock().frameCount),
-    };
-
-    for (int i = 0; const auto& v : render::PassSsao::getKernel()) {
-        if (i >= 64) break;
-        m_dataUBO.u_ssaoSamples[i++] = v;
-    }
-
-    {
-        float parallaxDepth = -1.f;
-        if (!dbg.m_parallaxEnabled) {
-            parallaxDepth = 0;
-        }
-        else if (dbg.m_parallaxDebugEnabled) {
-            parallaxDepth = dbg.m_parallaxDebugDepth;
-        }
-
-        m_debugUBO = {
-            dbg.m_wireframeLineColor,
-            dbg.m_skyboxColor,
-            dbg.m_effectSsaoBaseColor,
-
-            dbg.m_wireframeOnly,
-            dbg.m_wireframeLineWidth,
-
-            dbg.m_entityId,
-            dbg.m_animation.m_boneIndex,
-            dbg.m_animation.m_debugBoneWeight,
-
-            dbg.m_lightEnabled,
-            dbg.m_normalMapEnabled,
-
-            dbg.m_skyboxColorEnabled,
-
-            dbg.m_effectSsaoEnabled,
-            dbg.m_effectSsaoBaseColorEnabled,
-
-            parallaxDepth,
-            dbg.m_parallaxMethod,
-        };
-    }
-}
-
-void Scene::updateUBOs() const
-{
-    // https://stackoverflow.com/questions/49798189/glbuffersubdata-offsets-for-structs
-    updateDataUBO();
-    updateDebugUBO();
-    updateLightsUBO();
-}
-
-void Scene::updateDataUBO() const
-{
-    m_renderData->updateData(m_dataUBO);
-}
-
 void Scene::updateShadowUBO() const
 {
-    m_renderData->updateShadow(m_shadowUBO);
-}
-
-void Scene::updateDebugUBO() const
-{
-    m_renderData->updateDebug(m_debugUBO);
+    m_engine.getRenderData()->updateShadow(m_shadowUBO);
 }
 
 void Scene::updateLightsUBO() const
 {
-    m_renderData->updateLights(m_collection.get());
+    m_engine.getRenderData()->updateLights(m_collection.get());
 }
 
 //void Scane::copyShadowMatrixFrom(const RenderContext& b)

@@ -8,11 +8,7 @@
 
 #include "pool/NodeHandle.h"
 
-#include "backend/gl/PerformanceCounters.h"
-
-#include "shader/DataUBO.h"
 #include "shader/ShadowUBO.h"
-#include "shader/DebugUBO.h"
 
 #include "event/Listen.h"
 
@@ -96,9 +92,6 @@ public:
     void bind(const render::RenderContext& ctx);
     void unbind(const render::RenderContext& ctx);
 
-    backend::gl::PerformanceCounters getCounters(bool clear) const;
-    backend::gl::PerformanceCounters getCountersLocal(bool clear) const;
-
     void render(const render::RenderContext& ctx);
 
     void renderUi(const render::RenderContext& ctx);
@@ -124,13 +117,6 @@ public:
         return m_collection.get();
     }
 
-    void prepareUBOs(const render::RenderContext& ctx);
-    void updateUBOs() const;
-    void updateDataUBO() const;
-    void updateShadowUBO() const;
-    void updateDebugUBO() const;
-    void updateLightsUBO() const;
-
     const std::string& getName() const noexcept
     {
         return m_name;
@@ -141,15 +127,9 @@ public:
         m_name = name;
     }
 
-    render::Batch* getBatch() const noexcept
-    {
-        return m_batch.get();
-    }
-
-    render::RenderData* getRenderData() const noexcept
-    {
-        return m_renderData.get();
-    }
+private:
+    void updateShadowUBO() const;
+    void updateLightsUBO() const;
 
 private:
     Engine& m_engine;
@@ -166,12 +146,7 @@ private:
 
     std::unique_ptr<render::NodeCollection> m_collection;
 
-    DataUBO m_dataUBO;
     ShadowUBO m_shadowUBO;
-    DebugUBO m_debugUBO;
-
-    std::unique_ptr<render::Batch> m_batch;
-    std::unique_ptr<render::RenderData> m_renderData;
 
     std::unique_ptr<LayerRenderer> m_uiRenderer{ nullptr };
     std::unique_ptr<LayerRenderer> m_playerRenderer{ nullptr };

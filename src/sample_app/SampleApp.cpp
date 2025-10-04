@@ -47,7 +47,6 @@
 #include "registry/SelectionRegistry.h"
 #include "registry/ControllerRegistry.h"
 
-#include "engine/AssetsLoader.h"
 #include "engine/SystemInit.h"
 #include "engine/PrepareContext.h"
 #include "engine/UpdateContext.h"
@@ -103,8 +102,6 @@ int SampleApp::onInit()
 {
     m_title = "OpenGL";
     //glfwWindowHint(GLFW_SAMPLES, 4);
-
-    Assets::set(loadAssets());
 
     m_dbg.prepare();
 
@@ -235,8 +232,8 @@ int SampleApp::onRender(const ki::RenderClock& clock)
             clock,
             m_registry.get(),
             scene->getCollection(),
-            scene->getRenderData(),
-            scene->getBatch(),
+            getRenderData(),
+            getBatch(),
             camera,
             assets.nearPlane,
             assets.farPlane,
@@ -327,11 +324,11 @@ void SampleApp::frustumDebug(
     if (m_frustumElapsedSecs >= 10) {
         m_frustumElapsedSecs -= 10;
 
-        auto counters = scene->getCounters(true);
+        auto counters = getCounters(true);
         m_drawCount += counters.u_drawCount;
         m_skipCount += counters.u_skipCount;
 
-        auto countersLocal = scene->getCountersLocal(true);
+        auto countersLocal = getCountersLocal(true);
 
         if (assets.frustumCPU) {
             auto ratio = (float)countersLocal.u_skipCount / (float)countersLocal.u_drawCount;
@@ -440,12 +437,6 @@ void SampleApp::onShoot()
     //shoot(ctx, m_currentScene.get(), input, inputState, m_lastInputState);
 }
 
-Assets SampleApp::loadAssets()
-{
-    AssetsLoader loader{ "scene/assets.yml" };
-    return loader.load();
-}
-
 std::shared_ptr<Scene> SampleApp::loadScene()
 {
     const auto& assets = Assets::get();
@@ -476,6 +467,7 @@ std::shared_ptr<Scene> SampleApp::loadScene()
     }
 
     scene->prepareRT();
+    ProgramRegistry::get().updateRT({ *this });
 
     return scene;
 }

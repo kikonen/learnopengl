@@ -54,8 +54,6 @@ private:
     void frustumDebug(
         const ki::RenderClock& clock);
 
-    Assets loadAssets();
-
     void onShoot();
     void onLoadScene();
 

@@ -66,6 +66,8 @@ namespace editor
         auto* scene = ctx.getScene();
         if (!scene) return;
 
+        const auto& renderCtx = ctx.toRenderContext();
+
         const auto& assets = Assets::get();
 
         auto& window = m_editor.getWindow();
@@ -74,9 +76,9 @@ namespace editor
 
         ImGuiTreeNodeFlags tnFlags = ImGuiTreeNodeFlags_SpanAvailWidth;
 
-        auto viewportTex = [&ctx](model::Viewport& viewport, bool useAspectRatio) {
-            const float aspectRatio = 1.f;
-            const glm::uvec2 resolution{ 100, 100 };
+        auto viewportTex = [&ctx, &renderCtx](model::Viewport& viewport, bool useAspectRatio) {
+            const float aspectRatio = renderCtx.m_aspectRatio;
+            const glm::uvec2 resolution = renderCtx.m_resolution;
 
             ImVec2 availSize = ImGui::GetContentRegionAvail();
             // NOTE KI allow max half window size
@@ -100,9 +102,9 @@ namespace editor
             );
             };
 
-        auto bufferTex = [&ctx](render::FrameBuffer& fb, int attachmentIndex, bool useAspectRatio) {
-            const float aspectRatio = 1.f;
-            const glm::uvec2 resolution{ 100, 100 };
+        auto bufferTex = [&ctx, &renderCtx](render::FrameBuffer& fb, int attachmentIndex, bool useAspectRatio) {
+            const float aspectRatio = renderCtx.m_aspectRatio;
+            const glm::uvec2 resolution = renderCtx.m_resolution;
 
             ImVec2 availSize = ImGui::GetContentRegionAvail();
             // NOTE KI allow max half window size
@@ -194,9 +196,9 @@ namespace editor
         if (false && ImGui::TreeNodeEx("Cube - Faces", tnFlags)) {
             auto& cmr = *scene->m_cubeMapRenderer;
 
-            auto faceTex = [&ctx, &cmr](int faceIndex) {
-                const float aspectRatio = 1.f;
-                const glm::uvec2 resolution{ 100, 100 };
+            auto faceTex = [&ctx, &renderCtx, &cmr](int faceIndex) {
+                const float aspectRatio = renderCtx.m_aspectRatio;
+                const glm::uvec2 resolution = renderCtx.m_resolution;
 
                 ImVec2 availSize = ImGui::GetContentRegionAvail();
 

@@ -9,18 +9,29 @@
 #include "registry/Registry.h"
 
 #include "ki/FpsCounter.h"
-#include "ki/FpsCounter.h"
+
+#include "backend/gl/PerformanceCounters.h"
 
 #include "gui/Input.h"
 
 #include "debug/DebugContext.h"
 
+#include "shader/DataUBO.h"
+#include "shader/DebugUBO.h"
+
+class Assets;
 class Window;
 class Scene;
 class SceneUpdater;
 class ParticleUpdater;
 class AnimationUpdater;
 class AsyncLoader;
+
+namespace render
+{
+    class Batch;
+    class RenderData;
+}
 
 /**
  * Base engine
@@ -30,9 +41,13 @@ public:
     Engine();
     virtual ~Engine();
 
+    void run();
+
     int init();
     int setup();
-    void run();
+    int update();
+    int render();
+    void processInput();
 
     inline Registry* getRegistry() const noexcept {
         return m_registry.get();
@@ -51,12 +66,25 @@ public:
         return m_currentScene;
     }
 
+    render::Batch* getBatch() const noexcept
+    {
+        return m_batch.get();
+    }
+
+    render::RenderData* getRenderData() const noexcept
+    {
+        return m_renderData.get();
+    }
+
     std::shared_ptr<Window> getWindow()
     {
         return m_window;
     }
 
     const glm::ivec2& getSize() const;
+
+    backend::gl::PerformanceCounters getCounters(bool clear) const;
+    backend::gl::PerformanceCounters getCountersLocal(bool clear) const;
 
 protected:
     virtual int onInit() = 0;
@@ -69,6 +97,11 @@ protected:
     virtual void onDestroy();
 
     virtual void showFps(const ki::FpsCounter& fpsCounter);
+
+    void prepareUBOs();
+    void updateUBOs() const;
+
+    Assets loadAssets();
 
 public:
     bool m_debug = false;
@@ -98,4 +131,9 @@ protected:
     std::string m_title;
 
     std::shared_ptr<Scene> m_currentScene;
+
+    std::unique_ptr<render::Batch> m_batch;
+    std::unique_ptr<render::RenderData> m_renderData;
+    DataUBO m_dataUBO;
+    DebugUBO m_debugUBO;
 };

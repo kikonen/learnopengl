@@ -121,7 +121,7 @@ namespace render {
         std::vector<MultiDrawEntry> m_pending;
         size_t m_pendingCount{ 0 };
 
-            std::vector<mesh::InstanceSSBO> m_instances;
+        std::vector<mesh::InstanceSSBO> m_instances;
 
         std::unique_ptr<backend::DrawBuffer> m_draw;
 

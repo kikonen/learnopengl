@@ -99,7 +99,7 @@ Program::~Program()
 
 void Program::bind() const noexcept
 {
-    //assert(isReady());
+    assert(isReady());
     kigl::GLState::get().useProgram(m_programId);
 }
 
