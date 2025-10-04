@@ -3,25 +3,13 @@
 #include <vector>
 #include <string>
 #include <functional>
-#include <mutex>
 #include <atomic>
-
-#include "pool/NodeHandle.h"
 
 #include "shader/ShadowUBO.h"
 
 #include "event/Listen.h"
 
-
-namespace event {
-    class Dispatcher;
-    class Listen;
-}
-
 namespace render {
-    //class NodeDraw;
-    class Batch;
-    class RenderData;
     class WindowBuffer;
     class NodeCollection;
 }
@@ -42,7 +30,6 @@ class Light;
 class NodeController;
 
 class Engine;
-class Registry;
 
 struct UpdateContext;
 struct UpdateViewContext;
@@ -86,23 +73,10 @@ public:
     void postRT(const UpdateContext& ctx);
     void updateViewRT(const UpdateViewContext& ctx);
 
-    void handleNodeAdded(model::Node* node);
-    void handleNodeRemoved(model::Node* node);
-
     void bind(const render::RenderContext& ctx);
     void unbind(const render::RenderContext& ctx);
 
     void render(const render::RenderContext& ctx);
-
-    void renderUi(const render::RenderContext& ctx);
-    void renderPlayer(const render::RenderContext& ctx);
-    void renderMain(const render::RenderContext& ctx);
-    void renderRear(const render::RenderContext& ctx);
-    void renderViewports(const render::RenderContext& ctx);
-
-    void renderScene(
-        const render::RenderContext& ctx,
-        LayerRenderer* layerRenderer);
 
     model::Node* getActiveNode() const;
     const std::vector<std::unique_ptr<NodeController>>* getActiveNodeControllers() const;
@@ -128,6 +102,19 @@ public:
     }
 
 private:
+    void renderUi(const render::RenderContext& ctx);
+    void renderPlayer(const render::RenderContext& ctx);
+    void renderMain(const render::RenderContext& ctx);
+    void renderRear(const render::RenderContext& ctx);
+    void renderViewports(const render::RenderContext& ctx);
+
+    void renderScene(
+        const render::RenderContext& ctx,
+        LayerRenderer* layerRenderer);
+
+    void handleNodeAdded(model::Node* node);
+    void handleNodeRemoved(model::Node* node);
+
     void updateShadowUBO() const;
     void updateLightsUBO() const;
 
