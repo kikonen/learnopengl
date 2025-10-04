@@ -128,6 +128,7 @@ namespace editor {
         //}
 
         renderMenuBar(ctx);
+        renderToolBar(ctx);
 
         {
             m_statusTool->draw(ctx);
@@ -183,6 +184,16 @@ namespace editor {
 
             ImGui::EndMenuBar();
         }
+    }
+
+    void EditorFrame::renderToolBar(
+        const gui::FrameContext& ctx)
+    {
+        if (ImGui::Button("Open scene"))
+        {
+            onOpenScene(ctx);
+        }
+        ImGui::Separator();
     }
 
     void EditorFrame::onOpenScene(

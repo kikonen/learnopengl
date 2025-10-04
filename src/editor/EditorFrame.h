@@ -40,6 +40,9 @@ namespace editor {
         void renderMenuBar(
             const gui::FrameContext& ctx);
 
+        void renderToolBar(
+            const gui::FrameContext& ctx);
+
         void onOpenScene(
             const gui::FrameContext& ctx);
 
