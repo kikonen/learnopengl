@@ -114,6 +114,30 @@ void Scene::destroy()
 {
     KI_INFO("SCENE: destroy");
     clear();
+
+    if (m_uiViewport)
+    {
+        ViewportRegistry::get().removeViewport(m_uiViewport->m_id);
+        m_uiViewport.reset();
+    }
+
+    if (m_playerViewport)
+    {
+        ViewportRegistry::get().removeViewport(m_playerViewport->m_id);
+        m_playerViewport.reset();
+    }
+
+    if (m_mainViewport)
+    {
+        ViewportRegistry::get().removeViewport(m_mainViewport->m_id);
+        m_mainViewport.reset();
+    }
+
+    if (m_rearViewport)
+    {
+        ViewportRegistry::get().removeViewport(m_rearViewport->m_id);
+        m_rearViewport.reset();
+    }
 }
 
 void Scene::prepareRT()
@@ -368,7 +392,7 @@ void Scene::updateRT(const UpdateContext& ctx)
 
     NodeRegistry::get().prepareUpdateRT(ctx);
 
-    m_engine.getRegistry()->m_dispatcherView->dispatchEvents();
+    //m_engine.getRegistry()->m_dispatcherView->dispatchEvents();
 
     m_collection->updateRT(ctx);
     m_engine.getRegistry()->updateRT(ctx);

@@ -117,6 +117,8 @@ int Engine::update()
     //    but DOES NOT remove it
     ProgramRegistry::get().updateRT(ctx);
 
+    getRegistry()->m_dispatcherView->dispatchEvents();
+
     m_batch->updateRT(ctx);
     return onUpdate(ctx);
 }

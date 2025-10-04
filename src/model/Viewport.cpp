@@ -9,6 +9,8 @@
 
 #include "util/util.h"
 
+#include "ki/sid.h"
+
 #include "kigl/GLState.h"
 
 #include "shader/ProgramUniforms.h"
@@ -37,7 +39,8 @@ namespace model
         bool m_useDirectBlit,
         unsigned int textureId,
         ki::program_id programId)
-        : m_name{ name },
+        : m_id{ ki::StringID::nextID(name) },
+        m_name{ name },
         m_position{ pos },
         m_degreesRotation{ degrees },
         m_size{ size },

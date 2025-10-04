@@ -196,6 +196,7 @@ namespace model
         void updateTransform(const UpdateViewContext& ctx);
 
     public:
+        const ki::sid_t m_id;
         const std::string m_name;
 
         const bool m_useDirectBlit;

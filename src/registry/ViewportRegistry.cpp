@@ -62,3 +62,15 @@ void ViewportRegistry::addViewport(std::shared_ptr<model::Viewport> viewport) no
         return a->getOrder() < b->getOrder();
         });
 }
+
+void ViewportRegistry::removeViewport(ki::sid_t id) noexcept
+{
+    const auto& it = std::remove_if(
+        m_viewports.begin(),
+        m_viewports.end(),
+        [id](const auto& vp) {
+            return vp->m_id == id;
+        }
+    );
+    m_viewports.erase(it, m_viewports.end());
+}
