@@ -61,8 +61,11 @@ namespace mesh {
 
         m_eboIndex = vao->reserveIndeces(m_maxSize * 4);
 
-        m_vao = vao->getVAO();
-        return m_vao;
+        auto* va = vao->getVAO();
+        if (shared) {
+            m_vao = va;
+        }
+        return va;
     }
 
     void TextMesh::prepareLodMesh(

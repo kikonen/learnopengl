@@ -90,8 +90,11 @@ namespace mesh {
                 m_vertexBones);
         }
 
-        m_vao = vao->getVAO();
-        return m_vao;
+        auto* va = vao->getVAO();
+        if (shared) {
+            m_vao = va;
+        }
+        return va;
     }
 
     void PrimitiveMesh::prepareLodMesh(
