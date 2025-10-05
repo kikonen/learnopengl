@@ -90,5 +90,12 @@ render::RenderContext BaseContext::toRenderContext() const
         size.y,
         debug::DebugContext::get()
     };
+    {
+        // TODO KI layer needed for getObjectId()
+        // => but doing this here globally is bad
+        const auto* layer = LayerInfo::findLayer(LAYER_MAIN);
+        //if (!layer || !layer->m_enabled) return;
+        ctx.m_layer = layer->m_index;
+    }
     return ctx;
 }

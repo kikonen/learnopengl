@@ -483,8 +483,6 @@ namespace editor
             inputState.mouseLeft == GLFW_PRESS &&
             ctx.getInput().allowMouse())
         {
-            m_state.m_wasMouseLeft = inputState.mouseLeft;
-
             if (inputState.ctrl)
             {
                 handleSelectNode(ctx);
@@ -494,9 +492,8 @@ namespace editor
             //    shoot(ctx, scene, input, inputState);
             //}
         }
-        else {
-            m_state.m_wasMouseLeft = false;
-        }
+
+        m_state.m_wasMouseLeft = inputState.mouseLeft;
     }
 
     void NodeTool::handleSelectNode(
