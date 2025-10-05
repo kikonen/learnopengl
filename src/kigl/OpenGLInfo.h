@@ -5,22 +5,33 @@
 
 namespace kigl {
     struct OpenGLInfo {
-        std::string vendor;
-        std::string renderer;
-        std::string version;
-        std::string glslVersion;
+        std::string m_vendor;
+        std::string m_renderer;
+        std::string m_version;
+        std::string m_glslVersion;
 
-        int maxVertexUniformComponents = 0;
-        int maxVertexAttributes = 0;
+        int m_maxVertexUniformComponents = 0;
+        int m_maxVertexAttributes = 0;
 
         // GL_MAX_COMPUTE_WORK_GROUP_COUNT
-        int maxComputeWorkGroupCount[3] = { 0, 0, 0 };
+        int m_maxComputeWorkGroupCount[3] = { 0, 0, 0 };
 
-        int preferredFormatRGBA8 = 0;
-        int preferredFormatRGB8 = 0;
+        int m_maxTextureUnits = 0;
+
+        int m_preferredFormatRGBA8 = 0;
+        int m_preferredFormatRGB8 = 0;
 
         std::string formatMaxComputeWorkGroupCount() const {
-            return fmt::format("[{}, {}, {}]", maxComputeWorkGroupCount[0], maxComputeWorkGroupCount[1], maxComputeWorkGroupCount[2]);
+            return fmt::format(
+                "[{}, {}, {}]",
+                m_maxComputeWorkGroupCount[0],
+                m_maxComputeWorkGroupCount[1],
+                m_maxComputeWorkGroupCount[2]);
         }
+
+        bool isNvidia() const;
+        bool isIntel() const;
+
+        void dumpInfo() const;
     };
 }

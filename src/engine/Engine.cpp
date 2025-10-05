@@ -150,46 +150,16 @@ void Engine::processInput()
 void Engine::run() {
     auto& assets = Assets::modify();
 
-    const auto& info = kigl::GL::getInfo();
-    const auto& extensions = kigl::GL::getExtensions();
-    // NOTE KI https://www.khronos.org/opengl/wiki/Common_Mistakes
-    // - preferredFormat is performnce topic
-    KI_INFO_OUT(fmt::format(
-R"(
-ENGINE::RUN
--------------
-vendor:   {}
-renderer: {}
-version:  {}
-glsl:     {}
--------------
-GL_MAX_VERTEX_UNIFORM_COMPONENTS:  {}
-GL_MAX_VERTEX_ATTRIBS:             {}
-GL_MAX_COMPUTE_WORK_GROUP_COUNT:   {}
-GL_PREFERRED_TEXTURE_FORMAT_RGBA8: 0x{:x}
-GL_PREFERRED_TEXTURE_FORMAT_RGB8:  0x{:x}
-)",
-        info.vendor,
-        info.renderer,
-        info.version,
-        info.glslVersion,
-        info.maxVertexUniformComponents,
-        info.maxVertexAttributes,
-        info.formatMaxComputeWorkGroupCount(),
-        info.preferredFormatRGBA8,
-        info.preferredFormatRGB8));
+    {
+        const auto& info = kigl::GL::getInfo();
+        info.dumpInfo();
 
-    const auto vendor = util::toLower(info.vendor);
-    assets.glVendorNvidia = std::regex_match(vendor, std::regex(".*nvidia.*"));
-    assets.glVendorIntel = std::regex_match(vendor, std::regex(".*intel.*"));
+        assets.glVendorNvidia = info.isNvidia();
+        assets.glVendorIntel = info.isIntel();
 
-    KI_INFO("[EXTENSIONS]");
-    for (const auto& ext : extensions) {
-        KI_INFO(ext);
+        assets.glPreferredTextureFormatRGBA = info.m_preferredFormatRGBA8;
+        assets.glPreferredTextureFormatRGB = info.m_preferredFormatRGB8;
     }
-
-    assets.glPreferredTextureFormatRGBA = info.preferredFormatRGBA8;
-    assets.glPreferredTextureFormatRGB = info.preferredFormatRGB8;
 
     KI_INFO("setup");
     if (!assets.glNoError) {

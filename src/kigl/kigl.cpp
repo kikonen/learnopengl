@@ -186,20 +186,21 @@ namespace kigl {
     {
         OpenGLInfo info;
 
-        info.vendor = (char*)glGetString(GL_VENDOR);
-        info.renderer = (char*)glGetString(GL_RENDERER);
-        info.version = (char*)glGetString(GL_VERSION);
-        info.glslVersion = (char*)glGetString(GL_SHADING_LANGUAGE_VERSION);
+        info.m_vendor = (char*)glGetString(GL_VENDOR);
+        info.m_renderer = (char*)glGetString(GL_RENDERER);
+        info.m_version = (char*)glGetString(GL_VERSION);
+        info.m_glslVersion = (char*)glGetString(GL_SHADING_LANGUAGE_VERSION);
 
-        glGetIntegerv(GL_MAX_VERTEX_UNIFORM_COMPONENTS, &info.maxVertexUniformComponents);
-        glGetIntegerv(GL_MAX_VERTEX_ATTRIBS, &info.maxVertexAttributes);
+        glGetIntegerv(GL_MAX_VERTEX_UNIFORM_COMPONENTS, &info.m_maxVertexUniformComponents);
+        glGetIntegerv(GL_MAX_VERTEX_ATTRIBS, &info.m_maxVertexAttributes);
+        glGetIntegerv(GL_MAX_TEXTURE_IMAGE_UNITS, &info.m_maxTextureUnits);
 
         for (int i = 0; i < 3; i++) {
-            glGetIntegeri_v(GL_MAX_COMPUTE_WORK_GROUP_COUNT, i, &info.maxComputeWorkGroupCount[i]);
+            glGetIntegeri_v(GL_MAX_COMPUTE_WORK_GROUP_COUNT, i, &info.m_maxComputeWorkGroupCount[i]);
         }
 
-        glGetInternalformativ(GL_TEXTURE_2D, GL_RGBA8, GL_TEXTURE_IMAGE_FORMAT, 1, &info.preferredFormatRGBA8);
-        glGetInternalformativ(GL_TEXTURE_2D, GL_RGB8, GL_TEXTURE_IMAGE_FORMAT, 1, &info.preferredFormatRGB8);
+        glGetInternalformativ(GL_TEXTURE_2D, GL_RGBA8, GL_TEXTURE_IMAGE_FORMAT, 1, &info.m_preferredFormatRGBA8);
+        glGetInternalformativ(GL_TEXTURE_2D, GL_RGB8, GL_TEXTURE_IMAGE_FORMAT, 1, &info.m_preferredFormatRGB8);
 
         KI_GL_CHECK("get_info");
 
