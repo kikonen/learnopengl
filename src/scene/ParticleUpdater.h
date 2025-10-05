@@ -6,8 +6,7 @@ class ParticleUpdater : public Updater
 {
 public:
     ParticleUpdater(
-        Engine& engine,
-        std::shared_ptr<std::atomic<bool>> alive);
+        Engine& engine);
 
     virtual void update(const UpdateContext& ctx) override;
 

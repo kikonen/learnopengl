@@ -27,21 +27,21 @@ namespace {
 Updater::Updater(
     std::string_view prefix,
     size_t delay,
-    Engine& engine,
-    std::shared_ptr<std::atomic<bool>> alive)
+    Engine& engine)
     : m_prefix{ prefix },
     m_delay{ delay },
-    m_engine{ engine },
-    m_alive(alive)
+    m_engine{ engine }
 {}
 
 Updater::~Updater()
 {
-    KI_INFO(fmt::format("{}_UPDATER: destroy", m_prefix));
+    KI_INFO(fmt::format("{}_UPDATER: deleted", m_prefix));
 }
 
 void Updater::destroy()
 {
+    m_alive = false;
+    KI_INFO(fmt::format("{}_UPDATER: shutdownRequested", m_prefix));
 }
 
 bool Updater::isRunning() const
@@ -51,6 +51,7 @@ bool Updater::isRunning() const
 
 void Updater::shutdown()
 {
+    KI_INFO(fmt::format("{}_UPDATER: shutdown", m_prefix));
 }
 
 void Updater::prepare()
@@ -61,6 +62,7 @@ void Updater::prepare()
 
 void Updater::start()
 {
+    m_alive = true;
     auto th = std::thread{
         [this]() mutable {
             try {
@@ -106,7 +108,7 @@ void Updater::run()
     auto loopTime = std::chrono::system_clock::now();
     std::chrono::duration<float> elapsedDuration;
 
-    while (*m_alive) {
+    while (m_alive) {
         fpsCounter.startFame();
 
         loopTime = std::chrono::system_clock::now();

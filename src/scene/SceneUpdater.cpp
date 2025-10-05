@@ -40,9 +40,8 @@ namespace {
 }
 
 SceneUpdater::SceneUpdater(
-    Engine& engine,
-    std::shared_ptr<std::atomic<bool>> alive)
-    : Updater("WT", 5, engine, alive)
+    Engine& engine)
+    : Updater("WT", 5, engine)
 {}
 
 void SceneUpdater::shutdown()
@@ -76,6 +75,19 @@ void SceneUpdater::prepare()
             // NOTE KI trigger UI sidew update *after* all worker side processing done
             {
                 event::Event evt { event::Type::scene_loaded };
+                getRegistry()->m_dispatcherView->send(evt);
+            }
+        });
+
+    m_listen_scene_unload.listen(
+        event::Type::scene_loaded,
+        dispatcher,
+        [this](const event::Event& e) {
+            m_loaded = true;
+
+            // NOTE KI trigger UI sidew update *after* all worker side processing done
+            {
+                event::Event evt{ event::Type::scene_loaded };
                 getRegistry()->m_dispatcherView->send(evt);
             }
         });

@@ -7,11 +7,10 @@
 
 namespace loader {
     Context::Context(
-        std::shared_ptr<std::atomic<bool>> alive,
         std::shared_ptr<AsyncLoader> asyncLoader,
         const std::string& dirName,
         const std::string& fileName)
-        : m_alive(alive),
+        : m_alive{ std::make_shared<std::atomic<bool>>(true) },
         m_asyncLoader(asyncLoader),
         m_assetsDir{ Assets::get().assetsDir},
         m_dirName{ dirName },

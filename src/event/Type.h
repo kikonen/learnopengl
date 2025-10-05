@@ -26,6 +26,7 @@ namespace event
         camera_activate_next,
 
         scene_loaded,
+        scene_unload,
 
         script_run,
 

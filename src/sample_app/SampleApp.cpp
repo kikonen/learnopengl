@@ -112,22 +112,6 @@ int SampleApp::onSetup()
 {
     const auto& assets = Assets::get();
 
-    m_sceneUpdater = std::make_shared<SceneUpdater>(
-        *this,
-        m_alive);
-
-    m_particleUpdater = std::make_shared<ParticleUpdater>(
-        *this,
-        m_alive);
-
-    m_animationUpdater = std::make_shared<AnimationUpdater>(
-        *this,
-        m_alive);
-
-    m_sceneUpdater->start();
-    m_particleUpdater->start();
-    m_animationUpdater->start();
-
     //glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
     //state.setEnabled(GL_MULTISAMPLE, false);
@@ -145,7 +129,6 @@ int SampleApp::onSetup()
             event::Type::action_editor_scene_load,
             m_registry->m_dispatcherView,
             [this](const event::Event& e) {
-				m_loader = nullptr;
                 onLoadScene();
 			});
 	}
@@ -154,7 +137,14 @@ int SampleApp::onSetup()
         event::Type::scene_loaded,
         m_registry->m_dispatcherView,
         [this](const event::Event& e) {
-            m_loader = nullptr;
+            stopLoader();
+        });
+
+    m_listen_scene_unload.listen(
+        event::Type::scene_unload,
+        m_registry->m_dispatcherView,
+        [this](const event::Event& e) {
+            stopLoader();
         });
 
     //m_currentScene = loadScene();
@@ -372,18 +362,21 @@ void SampleApp::showFps(const ki::FpsCounter& fpsCounter)
         });
 }
 
-void SampleApp::onDestroy()
+void SampleApp::stopUpdaters()
 {
-    KI_INFO_OUT("APP: destroy");
-
-    *m_alive = false;
-
-    stopLoader();
-
     {
-        m_sceneUpdater->destroy();
-        m_particleUpdater->destroy();
-        m_animationUpdater->destroy();
+        if (m_sceneUpdater)
+        {
+            m_sceneUpdater->destroy();
+        }
+        if (m_particleUpdater)
+        {
+            m_particleUpdater->destroy();
+        }
+        if (m_animationUpdater)
+        {
+            m_animationUpdater->destroy();
+        }
     }
 
     if (m_sceneUpdater) {
@@ -394,6 +387,7 @@ void SampleApp::onDestroy()
             util::sleep(100);
         }
         KI_INFO_OUT("APP: WT stopped!");
+        m_sceneUpdater = nullptr;
     }
 
     if (m_particleUpdater) {
@@ -404,6 +398,7 @@ void SampleApp::onDestroy()
             util::sleep(100);
         }
         KI_INFO_OUT("APP: PS stopped!");
+        m_particleUpdater = nullptr;
     }
 
     if (m_animationUpdater) {
@@ -414,7 +409,18 @@ void SampleApp::onDestroy()
             util::sleep(100);
         }
         KI_INFO_OUT("APP: AS stopped!");
+        m_animationUpdater = nullptr;
     }
+}
+
+void SampleApp::onDestroy()
+{
+    KI_INFO_OUT("APP: destroy");
+
+    *m_alive = false;
+
+    stopLoader();
+    stopUpdaters();
 
     if (m_currentScene) {
         m_currentScene->destroy();
@@ -441,7 +447,6 @@ std::shared_ptr<Scene> SampleApp::loadScene()
 {
     const auto& assets = Assets::get();
 
-    stopLoader();
     unloadScene();
 
     auto scene = std::make_shared<Scene>(*this, m_alive);
@@ -451,13 +456,27 @@ std::shared_ptr<Scene> SampleApp::loadScene()
             scene->setName(assets.sceneFile);
 
             auto ctx = std::make_shared<loader::Context>(
-                m_alive,
                 m_asyncLoader,
                 assets.sceneDir,
                 assets.sceneFile
             );
             m_loader = std::make_unique<loader::SceneLoader>(ctx);
         }
+    }
+
+    if (m_loader) {
+        m_sceneUpdater = std::make_shared<SceneUpdater>(
+            *this);
+
+        m_particleUpdater = std::make_shared<ParticleUpdater>(
+            *this);
+
+        m_animationUpdater = std::make_shared<AnimationUpdater>(
+            *this);
+
+        m_sceneUpdater->start();
+        m_particleUpdater->start();
+        m_animationUpdater->start();
     }
 
     if (m_loader) {
@@ -474,10 +493,13 @@ std::shared_ptr<Scene> SampleApp::loadScene()
 
 void SampleApp::unloadScene()
 {
+    stopLoader();
+    stopUpdaters();
+
     if (!m_currentScene) return;
     m_currentScene->destroy();
     m_registry->clear();
-    SystemInit::clear();
+    //SystemInit::clear();
     m_currentScene = nullptr;
 }
 

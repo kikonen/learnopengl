@@ -16,16 +16,13 @@ public:
     Updater(
         std::string_view prefix,
         size_t delay,
-        Engine& engine,
-        std::shared_ptr<std::atomic<bool>> alive);
+        Engine& engine);
 
     virtual ~Updater();
 
     void destroy();
 
     bool isRunning() const;
-
-    virtual void shutdown();
 
     virtual void prepare();
 
@@ -44,6 +41,9 @@ public:
     Registry* getRegistry() const noexcept;
 
 protected:
+    virtual void shutdown();
+
+protected:
     bool m_loaded{ false };
 
     const std::string m_prefix;
@@ -52,8 +52,8 @@ protected:
     mutable std::mutex m_prepareLock;
     bool m_prepared{ false };
 
+    std::atomic<bool> m_alive;
     std::atomic<bool> m_running;
-    std::shared_ptr<std::atomic<bool>> m_alive;
 
     Engine& m_engine;
 };

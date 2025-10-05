@@ -81,7 +81,10 @@ namespace loader {
     }
 
     void SceneLoader::destroy()
-    {}
+    {
+        std::lock_guard lock(m_ready_lock);
+        *m_ctx->m_alive = false;
+    }
 
     bool SceneLoader::isRunning()
     {
@@ -105,6 +108,8 @@ namespace loader {
         }
 
         std::lock_guard lock(m_ready_lock);
+        if (!*m_ctx->m_alive) return;
+
         m_runningCount++;
 
         m_ctx->m_asyncLoader->addLoader(m_ctx->m_alive, [this]() {

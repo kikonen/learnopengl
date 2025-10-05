@@ -17,9 +17,8 @@ namespace {
 }
 
 AnimationUpdater::AnimationUpdater(
-    Engine& engine,
-    std::shared_ptr<std::atomic<bool>> alive)
-    : Updater("AS", 22, engine, alive)
+    Engine& engine)
+    : Updater("AS", 22, engine)
 {}
 
 void AnimationUpdater::update(const UpdateContext& ctx)

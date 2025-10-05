@@ -60,6 +60,7 @@ private:
     std::shared_ptr<Scene> loadScene();
     void unloadScene();
     void stopLoader();
+    void stopUpdaters();
 
 private:
     std::shared_ptr<FrameInit> m_editorFrameInit;
@@ -70,6 +71,7 @@ private:
 
     event::Listen m_listen_action_editor_scene_load;
     event::Listen m_listen_scene_loaded;
+    event::Listen m_listen_scene_unload;
 
     size_t m_drawCount = 0;
     size_t m_skipCount = 0;

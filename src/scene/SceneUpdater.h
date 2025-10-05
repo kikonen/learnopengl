@@ -11,8 +11,7 @@ class SceneUpdater : public Updater
 {
 public:
     SceneUpdater(
-        Engine& engine,
-        std::shared_ptr<std::atomic<bool>> alive);
+        Engine& engine);
 
     virtual void shutdown() override;
     virtual void prepare() override;
@@ -27,6 +26,7 @@ private:
 
 private:
     event::Listen m_listen_scene_loaded;
+    event::Listen m_listen_scene_unload;
     event::Listen m_listen_node_added;
     event::Listen m_listen_node_removed;
     event::Listen m_listen_script_run;

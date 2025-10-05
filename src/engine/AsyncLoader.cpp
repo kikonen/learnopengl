@@ -34,7 +34,7 @@ void AsyncLoader::waitForReady()
 }
 
 void AsyncLoader::addLoader(
-    std::shared_ptr<std::atomic<bool>> sceneAlive,
+    std::shared_ptr<std::atomic<bool>> alive,
     std::function<void()> loader)
 {
     const auto& assets = Assets::get();
@@ -50,14 +50,14 @@ void AsyncLoader::addLoader(
     // NOTE KI use thread instead of std::async since std::future blocking/cleanup is problematic
     // https://stackoverflow.com/questions/21531096/can-i-use-stdasync-without-waiting-for-the-future-limitation
     auto th = std::thread{
-        [this, loader, sceneAlive]() {
+        [this, loader, alive]() {
             try {
                 const auto& assets = Assets::get();
 
                 if (assets.asyncLoaderDelay > 0)
                     util::sleep(assets.asyncLoaderDelay);
 
-                if (*sceneAlive && *m_alive) {
+                if (*alive && *m_alive) {
                     loader();
                 }
                 std::unique_lock lock(m_load_lock);
