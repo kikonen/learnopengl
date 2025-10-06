@@ -62,7 +62,7 @@ namespace mesh {
         m_eboIndex = vao->reserveIndeces(m_maxSize * 4);
 
         auto* va = vao->getVAO();
-        if (shared) {
+        if (true || shared) {
             m_vao = va;
         }
         return va;

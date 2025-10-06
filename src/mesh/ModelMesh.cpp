@@ -82,7 +82,7 @@ namespace mesh {
         }
 
         auto* va = vao->getVAO();
-        if (shared) {
+        if (true || shared) {
             m_vao = va;
         }
         return va;
