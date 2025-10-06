@@ -255,6 +255,9 @@ namespace model
         catch (const std::runtime_error& ex) {
             KI_CRITICAL(fmt::format("COMPOSITE_ERROR: RESOLVE_NODE - {}", ex.what()));
         }
+        catch (const std::exception& ex) {
+            KI_CRITICAL(fmt::format("COMPOSITE_ERROR: RESOLVE_NODE - {}", ex.what()));
+        }
         catch (const std::string& ex) {
             KI_CRITICAL(fmt::format("COMPOSITE_ERROR: RESOLVE_NODE - {}", ex));
         }

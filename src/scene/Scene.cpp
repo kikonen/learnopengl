@@ -59,9 +59,8 @@ namespace {
 }
 
 Scene::Scene(
-    Engine& engine,
-    std::shared_ptr<std::atomic<bool>> alive)
-    : m_alive{ alive },
+    Engine& engine)
+    : m_alive{ std::make_shared<std::atomic<bool>>(true) },
     m_engine{ engine },
     m_collection{ std::make_unique<render::NodeCollection>()}
 {

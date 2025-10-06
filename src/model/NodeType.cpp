@@ -81,7 +81,7 @@ namespace model
 
         return fmt::format(
             "<NODE_TYPE: id={}, name={}, lod={}>",
-            m_handle.str(), *m_name, lodMesh ? lodMesh->str() : "N/A");
+            m_handle.str(), m_name ? *m_name : "N/A", lodMesh ? lodMesh->str() : "N/A");
     }
 
     uint16_t NodeType::addMeshSet(

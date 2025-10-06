@@ -89,20 +89,24 @@ namespace loader
             return false;
         }
 
-        ctx->m_asyncLoader->addLoader(ctx->m_alive, [this, parentId, socketId, &baseData, loaders]() {
-            std::vector<std::pair<std::string, ki::node_id>> aliases;
+        ctx->m_asyncLoader->addLoader(
+            ctx->m_alive,
+            ctx->m_runningCount,
+            [this, parentId, socketId, &baseData, loaders]()
+            {
+                std::vector<std::pair<std::string, ki::node_id>> aliases;
 
-            model::NodeDefinition nodeDefinition;
-            loaders->m_nodeLoader.createNodeDefinition(baseData, nodeDefinition, true);
+                model::NodeDefinition nodeDefinition;
+                loaders->m_nodeLoader.createNodeDefinition(baseData, nodeDefinition, true);
 
-            model::CompositeBuilder builder{ NodeRegistry::get() };
-            builder.buildNode(parentId, nodeDefinition, aliases, true);
-            for (auto& resolvedNode : builder.getResolvedNodes()) {
-                addResolvedNode(resolvedNode);
-            }
+                model::CompositeBuilder builder{ NodeRegistry::get() };
+                builder.buildNode(parentId, nodeDefinition, aliases, true);
+                for (auto& resolvedNode : builder.getResolvedNodes()) {
+                    addResolvedNode(resolvedNode);
+                }
 
-            loadedNode(baseData, true);
-        });
+                loadedNode(baseData, true);
+            });
 
         return true;
     }

@@ -104,8 +104,6 @@ namespace loader {
         size_t m_pendingCount{ 0 };
         std::mutex m_ready_lock{};
 
-        std::atomic<size_t> m_runningCount;
-
         std::unique_ptr<SceneData> m_sceneData;
 
         std::shared_ptr<Loaders> m_loaders;

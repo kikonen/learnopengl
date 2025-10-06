@@ -55,7 +55,9 @@ private:
         const ki::RenderClock& clock);
 
     void onShoot();
+
     void onLoadScene();
+    void onUnloadScene();
 
     std::shared_ptr<Scene> loadScene();
     void unloadScene();
@@ -70,6 +72,7 @@ private:
     std::unique_ptr<TestSceneSetup> m_testSetup;
 
     event::Listen m_listen_action_editor_scene_load;
+    event::Listen m_listen_action_editor_scene_unload;
     event::Listen m_listen_scene_loaded;
     event::Listen m_listen_scene_unload;
 

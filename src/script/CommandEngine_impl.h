@@ -38,6 +38,10 @@ namespace script {
             KI_CRITICAL(fmt::format("COMMAND_ENGINE: ADD_COMMAND_FAIL - {}", ex.what()));
             return -1;
         }
+        catch (const std::exception& ex) {
+            KI_CRITICAL(fmt::format("COMMAND_ENGINE: ADD_COMMAND_FAIL - {}", ex.what()));
+            return -1;
+        }
         catch (const std::string& ex) {
             KI_CRITICAL(fmt::format("COMMAND_ENGINE: ADD_COMMAND_FAIL - {}", ex));
             return -1;

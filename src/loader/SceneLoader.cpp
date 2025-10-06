@@ -89,7 +89,8 @@ namespace loader {
     bool SceneLoader::isRunning()
     {
         std::lock_guard lock(m_ready_lock);
-        return m_runningCount > 0 || m_pendingCount > 0;
+        auto running = m_ctx->m_runningCount->load();
+        return running > 0 || m_pendingCount > 0;
     }
 
     void SceneLoader::prepare(
@@ -110,9 +111,7 @@ namespace loader {
         std::lock_guard lock(m_ready_lock);
         if (!*m_ctx->m_alive) return;
 
-        m_runningCount++;
-
-        m_ctx->m_asyncLoader->addLoader(m_ctx->m_alive, [this]() {
+        m_ctx->m_asyncLoader->addLoader(m_ctx->m_alive, m_ctx->m_runningCount, [this]() {
             try {
                 {
                     auto& l = *m_loaders;
@@ -130,6 +129,9 @@ namespace loader {
             catch (const std::runtime_error& ex) {
                 KI_CRITICAL(fmt::format("SCENE_ERROR: LOAD - {}", ex.what()));
             }
+            catch (const std::exception& ex) {
+                KI_CRITICAL(fmt::format("SCENE_ERROR: LOAD - {}", ex.what()));
+            }
             catch (const std::string& ex) {
                 KI_CRITICAL(fmt::format("SCENE_ERROR: RESOLVE_NODE - {}", ex));
             }
@@ -141,7 +143,6 @@ namespace loader {
             }
 
             std::lock_guard lock(m_ready_lock);
-            m_runningCount--;
         });
     }
 
@@ -163,12 +164,16 @@ namespace loader {
         // => should they should be fully attached in scene at this point
         // => worker will trigger event into UI thread after processing all updates
 
-        m_ctx->m_asyncLoader->addLoader(m_ctx->m_alive, [this]() {
+        m_ctx->m_asyncLoader->addLoader(m_ctx->m_alive, m_ctx->m_runningCount, [this]() {
             try {
                 attachResolvedNodes(m_nodeBuilder->getResolvedNodes());
                 notifySceneLoaded();
             }
             catch (const std::runtime_error& ex) {
+                KI_CRITICAL(fmt::format("SCENE_ERROR: LOADED_NODE - {}", ex.what()));
+                throw ex;
+            }
+            catch (const std::exception& ex) {
                 KI_CRITICAL(fmt::format("SCENE_ERROR: LOADED_NODE - {}", ex.what()));
                 throw ex;
             }

@@ -25,6 +25,11 @@ namespace loader {
                 "PARSE_FAIL: {} - {}",
                 filePath, ex.what()) };
         }
+        catch (const std::exception& ex) {
+            throw std::runtime_error{ fmt::format(
+                "PARSE_FAIL: {} - {}",
+                filePath, ex.what()) };
+        }
     }
 
     loader::DocNode YamlConverter::convertNode(

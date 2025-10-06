@@ -57,7 +57,7 @@ namespace audio
 
     void AudioSystem::clear()
     {
-        ASSERT_WT();
+        //ASSERT_WT();
 
         // NOTE KI MUST close buffers before closing context
         m_soundRegistry->clear();

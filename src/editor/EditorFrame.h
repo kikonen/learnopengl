@@ -43,7 +43,10 @@ namespace editor {
         void renderToolBar(
             const gui::FrameContext& ctx);
 
-        void onOpenScene(
+        void onLoadScene(
+            const gui::FrameContext& ctx);
+
+        void onUnloadScene(
             const gui::FrameContext& ctx);
 
     private:

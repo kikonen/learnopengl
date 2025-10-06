@@ -1,29 +1,30 @@
 #pragma once
 
 #include <future>
+#include <atomic>
 #include <mutex>
 
 class AsyncLoader
 {
 public:
-    AsyncLoader(
-        std::shared_ptr<std::atomic<bool>> alive);
+    AsyncLoader();
+    ~AsyncLoader();
 
     virtual void setup();
 
     void addLoader(
-        std::shared_ptr<std::atomic<bool>> sceneAlive,
+        std::shared_ptr<std::atomic<bool>> alive,
+        std::shared_ptr<std::atomic<int>> runningCount,
         std::function<void()> loader);
 
     void waitForReady();
 
 private:
-    std::shared_ptr<std::atomic<bool>> m_alive;
+    std::atomic<int> m_startedCount{ 0 };
+    std::atomic<int> m_loadedCount{ 0 };
+    std::atomic<int> m_failedCount{ 0 };
 
-    int m_startedCount = 0;
-    int m_loadedCount = 0;
-
-    int m_asyncWaiterCount = 0;
+    std::atomic<int> m_asyncWaiterCount{ 0 };
 
     std::condition_variable m_waitCondition;
 

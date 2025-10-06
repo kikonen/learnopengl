@@ -755,6 +755,7 @@
     <ClInclude Include="src\editor\console\ConsoleState.h" />
     <ClInclude Include="src\editor\console\Executor.h" />
     <ClInclude Include="src\editor\console\HistoryItem.h" />
+    <ClInclude Include="src\engine\AsyncCounter.h" />
     <ClInclude Include="src\engine\BaseContext.h" />
     <ClInclude Include="src\event\Listen.h" />
     <ClInclude Include="src\gui\FrameContext.h" />

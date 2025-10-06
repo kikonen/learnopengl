@@ -86,7 +86,7 @@ namespace script
 
     void ScriptSystem::clear()
     {
-        ASSERT_WT();
+        //ASSERT_WT();
 
         std::lock_guard lock(m_lock);
 

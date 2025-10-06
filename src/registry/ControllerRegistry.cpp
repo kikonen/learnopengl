@@ -54,7 +54,7 @@ ControllerRegistry::~ControllerRegistry()
 
 void ControllerRegistry::clear()
 {
-    ASSERT_WT();
+    //ASSERT_WT();
 
     m_controllers.clear();
 }

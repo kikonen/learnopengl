@@ -74,9 +74,9 @@ namespace editor {
     void EditorFrame::processInputs(
         const InputContext& ctx)
     {
-        if (ImGui::IsKeyPressed(ImGuiKey_O) && ImGui::GetIO().KeyCtrl) {
-            onOpenScene({ ctx.getEngine() });
-        }
+        //if (ImGui::IsKeyPressed(ImGuiKey_O) && ImGui::GetIO().KeyCtrl) {
+        //    onOpenScene({ ctx.getEngine() });
+        //}
 
         m_statusTool->processInputs(ctx);
         m_cameraTool->processInputs(ctx);
@@ -152,7 +152,8 @@ namespace editor {
         {
             if (ImGui::BeginMenu("File"))
             {
-                if (ImGui::MenuItem("Open scene", "CTRL+O")) { onOpenScene(ctx); }
+                if (ImGui::MenuItem("Load", "CTRL+O")) { onLoadScene(ctx); }
+                if (ImGui::MenuItem("Close", "CTRL+O")) { onUnloadScene(ctx); }
                 ImGui::Separator();
                 ImGui::Checkbox("ImGui Demo", &m_state.m_showImguiDemo);
                 ImGui::Checkbox("Console", &m_state.m_showConsole);
@@ -189,17 +190,38 @@ namespace editor {
     void EditorFrame::renderToolBar(
         const gui::FrameContext& ctx)
     {
-        if (ImGui::Button("Open scene"))
+        if (ImGui::Button("Load"))
         {
-            onOpenScene(ctx);
+            onLoadScene(ctx);
         }
+
+        ImGui::SameLine();
+
+        if (ImGui::Button("Close"))
+        {
+            onUnloadScene(ctx);
+        }
+
         ImGui::Separator();
     }
 
-    void EditorFrame::onOpenScene(
+    void EditorFrame::onLoadScene(
         const gui::FrameContext& ctx)
     {
-        event::Event evt{ event::Type::action_editor_scene_load };
+        {
+            event::Event evt{ event::Type::action_editor_scene_unload };
+            ctx.getRegistry()->m_dispatcherView->send(evt);
+        }
+        {
+            event::Event evt{ event::Type::action_editor_scene_load };
+            ctx.getRegistry()->m_dispatcherView->send(evt);
+        }
+    }
+
+    void EditorFrame::onUnloadScene(
+        const gui::FrameContext& ctx)
+    {
+        event::Event evt{ event::Type::action_editor_scene_unload };
         ctx.getRegistry()->m_dispatcherView->send(evt);
     }
 }

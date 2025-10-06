@@ -62,7 +62,7 @@ int Engine::init()
 
     m_registry = std::make_unique<Registry>(*this, m_alive);
 
-    m_asyncLoader = std::make_shared<AsyncLoader>(m_alive);
+    m_asyncLoader = std::make_shared<AsyncLoader>();
 
     m_window = std::make_unique<Window>(*this);
     return m_window->create() ? 0 : -1;

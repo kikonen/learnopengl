@@ -28,5 +28,6 @@ namespace loader {
         std::shared_ptr<std::atomic<bool>> m_alive;
 
         std::shared_ptr<AsyncLoader> m_asyncLoader;
+        std::shared_ptr<std::atomic<int>> m_runningCount;
     };
 }

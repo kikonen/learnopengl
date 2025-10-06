@@ -173,7 +173,7 @@ namespace model
 
     private:
         std::vector<mesh::LodMesh> m_lodMeshes;
-        std::unique_ptr<std::string> m_name;
+        std::unique_ptr<std::string> m_name{ nullptr };
         AABB m_aabb;
         std::unique_ptr<std::vector<script::script_id>> m_scripts;
         std::unique_ptr<CustomMaterial> m_customMaterial{ nullptr };

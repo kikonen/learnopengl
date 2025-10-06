@@ -60,8 +60,7 @@ class Scene final
 
 public:
     Scene(
-        Engine& engine,
-        std::shared_ptr<std::atomic<bool>> alive);
+        Engine& engine);
     ~Scene();
 
     void clear();

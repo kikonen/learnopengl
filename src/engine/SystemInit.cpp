@@ -42,6 +42,10 @@ void SystemInit::init() noexcept
     FileEntryCache::init();
 
     ImageRegistry::init();
+    ProgramRegistry::init();
+    ModelRegistry::init();
+    text::FontRegistry::init();
+
     MaterialRegistry::init();
 
     audio::AudioSystem::init();
@@ -58,16 +62,13 @@ void SystemInit::init() noexcept
     terrain::TerrainTileRegistry::init();
 
     text::TextSystem::init();
-    text::FontRegistry::init();
 
     script::CommandEngine::init();
     script::ScriptSystem::init();
 
-    ProgramRegistry::init();
     ControllerRegistry::init();
     NodeRegistry::init();
     NodeTypeRegistry::init();
-    ModelRegistry::init();
     EntityRegistry::init();
     ViewportRegistry::init();
     SelectionRegistry::init();
@@ -117,6 +118,7 @@ void SystemInit::clear() noexcept
 
     ImageRegistry::get().clear();
     MaterialRegistry::get().clear();
+    //ProgramRegistry::get().clear();
 
     audio::AudioSystem::get().clear();
     physics::PhysicsSystem::get().clear(false);
@@ -137,7 +139,6 @@ void SystemInit::clear() noexcept
     script::CommandEngine::get().clear();
     script::ScriptSystem::get().clear();
 
-    //ProgramRegistry::get().clear();
     ControllerRegistry::get().clear();
     NodeRegistry::get().clear();
     NodeTypeRegistry::get().clear();

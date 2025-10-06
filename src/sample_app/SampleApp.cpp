@@ -131,7 +131,14 @@ int SampleApp::onSetup()
             [this](const event::Event& e) {
                 onLoadScene();
 			});
-	}
+
+        m_listen_action_editor_scene_unload.listen(
+            event::Type::action_editor_scene_unload,
+            m_registry->m_dispatcherView,
+            [this](const event::Event& e) {
+                onUnloadScene();
+            });
+    }
 
     m_listen_scene_loaded.listen(
         event::Type::scene_loaded,
@@ -148,6 +155,9 @@ int SampleApp::onSetup()
         });
 
     //m_currentScene = loadScene();
+
+    m_registry->clear();
+    SystemInit::clear();
 
     return 0;
 }
@@ -436,6 +446,11 @@ void SampleApp::onLoadScene()
     m_currentScene = loadScene();
 }
 
+void SampleApp::onUnloadScene()
+{
+    unloadScene();
+}
+
 void SampleApp::onShoot()
 {
     const auto& input = *m_window->m_input;
@@ -449,7 +464,7 @@ std::shared_ptr<Scene> SampleApp::loadScene()
 
     unloadScene();
 
-    auto scene = std::make_shared<Scene>(*this, m_alive);
+    auto scene = std::make_shared<Scene>(*this);
 
     {
         if (!assets.sceneFile.empty()) {
@@ -480,13 +495,15 @@ std::shared_ptr<Scene> SampleApp::loadScene()
     }
 
     if (m_loader) {
+        scene->prepareRT();
+        ProgramRegistry::get().updateRT({ *this });
+    }
+
+    if (m_loader) {
         KI_INFO_OUT(fmt::format("LOAD_SCENE: {}", m_loader->m_ctx->str()));
         m_loader->prepare(getRegistry());
         m_loader->load();
     }
-
-    scene->prepareRT();
-    ProgramRegistry::get().updateRT({ *this });
 
     return scene;
 }
@@ -499,7 +516,7 @@ void SampleApp::unloadScene()
     if (!m_currentScene) return;
     m_currentScene->destroy();
     m_registry->clear();
-    //SystemInit::clear();
+    SystemInit::clear();
     m_currentScene = nullptr;
 }
 

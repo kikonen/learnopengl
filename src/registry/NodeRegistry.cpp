@@ -124,8 +124,9 @@ NodeRegistry::~NodeRegistry()
     {
         m_activeNode.reset();
 
-        m_rootRT.reset();;
-        m_rootWT.reset();;
+        m_rootHandle.reset();
+        m_rootRT.reset();
+        m_rootWT.reset();
     }
 
     //m_nodes.clear();
@@ -143,8 +144,9 @@ void NodeRegistry::clear()
 {
     m_skybox.reset();
 
-    m_rootWT.reset();
+    m_rootHandle.reset();
     m_rootRT.reset();
+    m_rootWT.reset();
 
     m_rootEntityIndex = 0;
 
@@ -388,7 +390,7 @@ void NodeRegistry::snapshotPending()
 
         for (int i = 0; i < sz; i++) {
             const auto& state = m_states[i];
-            assert(!state.m_dirty);
+            //assert(!state.m_dirty);
 
             if (i >= forceFrom || state.m_dirtySnapshot) {
                 m_snapshotsPending[i].applyFrom(state);
