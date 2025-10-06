@@ -235,10 +235,6 @@ void Scene::prepareRT()
     }
 
     {
-        m_windowBuffer = std::make_unique<render::WindowBuffer>(true);
-    }
-
-    {
         auto vp = std::make_shared<model::Viewport>(
             "UI",
             //glm::vec3(-0.75, 0.75, 0),
@@ -462,9 +458,6 @@ void Scene::updateViewRT(const UpdateViewContext& ctx)
     m_cubeMapRenderer->updateRT(ctx);
     m_mirrorMapRenderer->updateRT(ctx);
     m_waterMapRenderer->updateRT(ctx);
-
-    //m_nodeDraw->updateRT(ctx);
-    m_windowBuffer->updateRT(ctx);
 
     //if (false)
     {
@@ -713,7 +706,7 @@ void Scene::renderRear(const render::RenderContext& parentCtx)
 void Scene::renderViewports(const render::RenderContext& ctx)
 {
     if (m_viewportRenderer->isEnabled()) {
-        m_viewportRenderer->render(ctx, m_windowBuffer.get());
+        m_viewportRenderer->render(ctx, m_engine.getWindowBuffer());
     }
 }
 

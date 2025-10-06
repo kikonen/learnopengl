@@ -31,6 +31,7 @@ namespace render
 {
     class Batch;
     class RenderData;
+    class WindowBuffer;
 }
 
 /**
@@ -81,6 +82,11 @@ public:
         return m_window;
     }
 
+    render::WindowBuffer* getWindowBuffer() const noexcept
+    {
+        return m_windowBuffer.get();
+    }
+
     const glm::ivec2& getSize() const;
 
     backend::gl::PerformanceCounters getCounters(bool clear) const;
@@ -119,6 +125,7 @@ public:
     std::shared_ptr<AnimationUpdater> m_animationUpdater;
 
     std::shared_ptr<Window> m_window;
+    std::unique_ptr<render::WindowBuffer> m_windowBuffer{ nullptr };
 
     debug::DebugContext& m_dbg;
 

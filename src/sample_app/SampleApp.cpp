@@ -54,6 +54,7 @@
 
 #include "render/RenderContext.h"
 #include "render/NodeDraw.h"
+#include "render/WindowBuffer.h"
 
 #include "loader/Context.h"
 #include "loader/SceneLoader.h"
@@ -268,6 +269,30 @@ int SampleApp::onRender(const ki::RenderClock& clock)
             scene->render(ctx);
             scene->unbind(ctx);
         }
+    }
+    else {
+        render::RenderContext ctx(
+            "TOP",
+            nullptr,
+            clock,
+            m_registry.get(),
+            nullptr,
+            getRenderData(),
+            getBatch(),
+            camera,
+            assets.nearPlane,
+            assets.farPlane,
+            size.x,
+            size.y,
+            m_dbg);
+
+        auto* buffer = m_windowBuffer.get();
+
+        buffer->bind(ctx);
+        buffer->clear(
+            ctx,
+            GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT,
+            { 0.f, 0.f, 0.f, 1.f });
     }
 
     processInput();

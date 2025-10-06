@@ -24,6 +24,7 @@
 #include "engine/AssetsLoader.h"
 #include "engine/InputContext.h"
 #include "engine/PrepareContext.h"
+#include "engine/UpdateViewContext.h"
 
 #include "shader/ProgramRegistry.h"
 
@@ -32,6 +33,7 @@
 #include "render/Batch.h"
 #include "render/RenderData.h"
 #include "render/PassSsao.h"
+#include "render/WindowBuffer.h"
 
 #include "registry/VaoRegistry.h"
 #include "registry/SelectionRegistry.h"
@@ -104,6 +106,10 @@ int Engine::setup() {
         assets.glUseFenceDebug,
         assets.batchDebug);
 
+    {
+        m_windowBuffer = std::make_unique<render::WindowBuffer>(true);
+    }
+
     return onSetup();
 }
 
@@ -118,6 +124,15 @@ int Engine::update()
     ProgramRegistry::get().updateRT(ctx);
 
     getRegistry()->m_dispatcherView->dispatchEvents();
+
+    {
+        const glm::ivec2& size = getSize();
+        UpdateViewContext updateCtx{
+            *this,
+            size.x,
+            size.y };
+        m_windowBuffer->updateRT(updateCtx);
+    }
 
     m_batch->updateRT(ctx);
     return onUpdate(ctx);
