@@ -5,6 +5,20 @@
 #include "util/util.h"
 #include "util/file.h"
 
+namespace {
+    std::string resolveFilePath(
+        const std::string& dirName,
+        const std::string& fileName)
+    {
+        if (util::fileExists(fileName))
+        {
+            return fileName;
+        }
+
+        return util::joinPath(dirName, fileName);
+    }
+}
+
 namespace loader {
     Context::Context(
         std::shared_ptr<AsyncLoader> asyncLoader,
@@ -16,7 +30,7 @@ namespace loader {
         m_assetsDir{ Assets::get().assetsDir},
         m_dirName{ dirName },
         m_fileName{ fileName },
-        m_fullPath{ util::joinPath(dirName, fileName) }
+        m_fullPath{ resolveFilePath(dirName, fileName) }
     {
     }
 }

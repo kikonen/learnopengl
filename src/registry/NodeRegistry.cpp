@@ -543,7 +543,7 @@ void NodeRegistry::attachListeners()
                     pool::NodeHandle::toHandle(data.target),
                     pool::NodeHandle::toHandle(data.parentId),
                     data.socketId,
-                    e.blob->body.state);
+                    e.attachment->nodeEntry.state);
             });
 
         m_listen_node_remove.listen(

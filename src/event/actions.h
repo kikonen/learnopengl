@@ -30,14 +30,19 @@ namespace event {
         model::CreateState state;
     };
 
+    struct Path {
+        std::string filePath;
+    };
+
     // Blobdata is for doing passing abnormally large event blobs
     // for initalization, which are not needed in normal event logic
     // => To reduce bloating of Event struct size
-    struct BlobData {
-        BlobData() {};
-        ~BlobData();
+    struct Attachment {
+        Attachment();
+        ~Attachment();
 
-        NodeAttach body;
+        NodeAttach nodeEntry;
+        Path pathEntry;
     };
 
     struct NodeAction {

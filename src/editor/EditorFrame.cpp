@@ -3,11 +3,13 @@
 #include <math.h>
 
 #include <glm/gtc/type_ptr.hpp>
-
 #include <fmt/format.h>
+
+#include <nfd.h>
 
 #include "util/glm_format.h"
 #include "util/util.h"
+#include "util/file.h"
 
 #include "asset/Assets.h"
 
@@ -208,13 +210,50 @@ namespace editor {
     void EditorFrame::onLoadScene(
         const gui::FrameContext& ctx)
     {
+        const auto& assets = Assets::get();
+
+        std::string filePath;
+
         {
-            event::Event evt{ event::Type::action_editor_scene_unload };
-            ctx.getRegistry()->m_dispatcherView->send(evt);
+            NFD_Init();
+
+            nfdu8char_t* outPath;
+
+            nfdu8filteritem_t filters[1] = {
+                { "Scene file", "yml" },
+            };
+
+            nfdopendialogu8args_t args = { 0 };
+
+            const auto& scenePath = util::joinPath(assets.rootDir, assets.sceneDir);
+            args.defaultPath = scenePath.c_str();
+
+            args.filterList = filters;
+            args.filterCount = 1;
+
+            nfdresult_t result = NFD_OpenDialogU8_With(&outPath, &args);
+
+            if (result == NFD_OKAY)
+            {
+                filePath = outPath;
+                NFD_FreePathU8(outPath);
+            }
+
+            NFD_Quit();
         }
+
+        if (!filePath.empty())
         {
-            event::Event evt{ event::Type::action_editor_scene_load };
-            ctx.getRegistry()->m_dispatcherView->send(evt);
+            {
+                event::Event evt{ event::Type::action_editor_scene_unload };
+                ctx.getRegistry()->m_dispatcherView->send(evt);
+            }
+            {
+                event::Event evt{ event::Type::action_editor_scene_load };
+                auto* att = evt.attach();
+                att->pathEntry.filePath = filePath;
+                ctx.getRegistry()->m_dispatcherView->send(evt);
+            }
         }
     }
 

@@ -11,7 +11,7 @@ namespace loader {
     struct Context {
         Context(
             std::shared_ptr<AsyncLoader> asyncLoader,
-            const std::string& dirName,
+            const std::string& sdirName,
             const std::string& fileName);
 
         std::string str() const noexcept
@@ -21,9 +21,9 @@ namespace loader {
 
     public:
         const std::string m_assetsDir;
-        const std::string m_fullPath;
         const std::string m_dirName;
         const std::string m_fileName;
+        const std::string m_fullPath;
 
         std::shared_ptr<std::atomic<bool>> m_alive;
 

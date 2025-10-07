@@ -114,7 +114,7 @@ void SystemInit::release() noexcept
 
 void SystemInit::clear() noexcept
 {
-    FileEntryCache::get().clear();
+    //FileEntryCache::get().clear();
 
     ImageRegistry::get().clear();
     MaterialRegistry::get().clear();

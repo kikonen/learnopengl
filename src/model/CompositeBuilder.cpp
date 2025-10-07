@@ -220,8 +220,8 @@ namespace model
 
         {
             event::Event evt{ event::Type::node_add };
-            evt.blob = std::make_unique<event::BlobData>();
-            evt.blob->body = {
+            auto* att = evt.attach();
+            att->nodeEntry = {
                 .state = resolved.state,
             };
             evt.body.node = {

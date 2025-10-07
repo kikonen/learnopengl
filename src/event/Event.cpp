@@ -6,9 +6,6 @@
 #include "registry/NodeRegistry.h"
 
 namespace event {
-    BlobData::~BlobData()
-    {}
-
     Event::~Event()
     {
         //switch (type) {

@@ -130,7 +130,9 @@ int SampleApp::onSetup()
             event::Type::action_editor_scene_load,
             m_registry->m_dispatcherView,
             [this](const event::Event& e) {
-                onLoadScene();
+                if (!e.attachment) return;
+                const auto& filePath = e.attachment->pathEntry.filePath;
+                onLoadScene(filePath);
 			});
 
         m_listen_action_editor_scene_unload.listen(
@@ -158,7 +160,6 @@ int SampleApp::onSetup()
     //m_currentScene = loadScene();
 
     m_registry->clear();
-    SystemInit::clear();
 
     return 0;
 }
@@ -466,9 +467,9 @@ void SampleApp::onDestroy()
     KI_INFO_OUT("APP: stopped all!");
 }
 
-void SampleApp::onLoadScene()
+void SampleApp::onLoadScene(const std::string& filePath)
 {
-    m_currentScene = loadScene();
+    m_currentScene = loadScene(filePath);
 }
 
 void SampleApp::onUnloadScene()
@@ -483,7 +484,8 @@ void SampleApp::onShoot()
     //shoot(ctx, m_currentScene.get(), input, inputState, m_lastInputState);
 }
 
-std::shared_ptr<Scene> SampleApp::loadScene()
+std::shared_ptr<Scene> SampleApp::loadScene(
+    const std::string& filePath)
 {
     const auto& assets = Assets::get();
 
@@ -498,7 +500,7 @@ std::shared_ptr<Scene> SampleApp::loadScene()
             auto ctx = std::make_shared<loader::Context>(
                 m_asyncLoader,
                 assets.sceneDir,
-                assets.sceneFile
+                filePath
             );
             m_loader = std::make_unique<loader::SceneLoader>(ctx);
         }

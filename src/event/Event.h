@@ -11,19 +11,28 @@ namespace event {
 
         Event(Event& o) noexcept
             : type{ o.type },
-            blob{ std::move(o.blob) },
+            attachment{ std::move(o.attachment) },
             body{ o.body }
         {}
 
         Event(Event&& o) noexcept
             : type{ o.type },
-            blob{ std::move(o.blob) },
+            attachment{ std::move(o.attachment) },
             body{ o.body }
         {}
 
         ~Event();
 
-        std::unique_ptr<BlobData> blob;
+        event::Attachment* attach()
+        {
+            if (!attachment) {
+                attachment = std::make_unique<event::Attachment>();
+            }
+            return attachment.get();
+        }
+
+        std::unique_ptr<event::Attachment> attachment;
+
         union Body {
             NodeAction node;
             NodeTypeAction nodeType;

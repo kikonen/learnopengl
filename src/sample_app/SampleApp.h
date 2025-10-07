@@ -56,10 +56,10 @@ private:
 
     void onShoot();
 
-    void onLoadScene();
+    void onLoadScene(const std::string& filePath);
     void onUnloadScene();
 
-    std::shared_ptr<Scene> loadScene();
+    std::shared_ptr<Scene> loadScene(const std::string& filePath);
     void unloadScene();
     void stopLoader();
     void stopUpdaters();
