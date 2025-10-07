@@ -16,8 +16,6 @@ namespace pool {
         m_entrySize{ sizeof(Entry<T>) }
     {
         m_pool = reinterpret_cast<Entry<T>*>(malloc(m_blockSize * m_entrySize));
-        memset(m_pool, 0, m_blockSize);
-
         clear(false);
     }
 
@@ -34,6 +32,8 @@ namespace pool {
             std::lock_guard lock(m_lock);
 
             if (!m_pool) return;
+
+            memset(m_pool, 0, m_blockSize);
 
             {
                 // NOTE KI release all used entries for clean shutdown

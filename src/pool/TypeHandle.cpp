@@ -19,7 +19,7 @@ namespace {
     std::mutex m_lock;
     pool::Pool<model::NodeType> s_pool{ MAX_POOL_SIZE };
 
-    std::unordered_map<ki::type_id, uint32_t> m_IdToIndex;
+    std::unordered_map<ki::type_id, uint32_t> s_IdToIndex;
 }
 
 namespace pool {
@@ -65,7 +65,7 @@ namespace pool {
         TypeHandle handle{ handleIndex, id };
         entry->m_data.m_handle = handle;
 
-        m_IdToIndex.insert({ id, handleIndex });
+        s_IdToIndex.insert({ id, handleIndex });
 
         return { handleIndex, id };
     }
@@ -74,8 +74,8 @@ namespace pool {
     {
         std::lock_guard lock(m_lock);
 
-        const auto& it = m_IdToIndex.find(id);
-        if (it == m_IdToIndex.end()) return {};
+        const auto& it = s_IdToIndex.find(id);
+        if (it == s_IdToIndex.end()) return {};
         return { it->second, id };
     }
 
@@ -83,8 +83,8 @@ namespace pool {
     {
         std::lock_guard lock(m_lock);
 
-        const auto& it = m_IdToIndex.find(id);
-        if (it == m_IdToIndex.end()) return nullptr;
+        const auto& it = s_IdToIndex.find(id);
+        if (it == s_IdToIndex.end()) return nullptr;
         TypeHandle handle{ it->second, id };
         return handle.toType();
     }
@@ -93,6 +93,7 @@ namespace pool {
     {
         std::lock_guard lock(m_lock);
 
+        s_IdToIndex.clear();
         s_pool.clear(false);
     }
 }
