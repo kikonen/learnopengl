@@ -49,7 +49,7 @@
 
 Registry::Registry(
     Engine& engine,
-    std::shared_ptr<std::atomic<bool>> alive)
+    std::shared_ptr<std::atomic_bool> alive)
     : m_engine{ engine },
     m_alive(alive),
     // registries
@@ -71,6 +71,8 @@ void Registry::clear()
 {
     ASSERT_RT();
 
+    nav::NavigationSystem::get().stop();
+
     debug::DebugContext::modify().clear();
 
     //FileEntryCache::get().clear();
@@ -84,8 +86,6 @@ void Registry::clear()
 
     audio::AudioSystem::get().clear();
     physics::PhysicsSystem::get().clear();
-
-    nav::NavigationSystem::get().clear();
 
     particle::ParticleSystem::get().clear();
 

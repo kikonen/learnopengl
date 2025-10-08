@@ -35,8 +35,8 @@ namespace nav
         NavigationSystem();
         ~NavigationSystem();
 
-        void clear();
-
+        void stop();
+        void start();
         void prepare();
 
         void registerNode(pool::NodeHandle nodeHandle);

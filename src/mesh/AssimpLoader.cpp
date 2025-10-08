@@ -44,7 +44,7 @@ namespace {
 namespace mesh
 {
     AssimpLoader::AssimpLoader(
-        std::shared_ptr<std::atomic<bool>> alive,
+        std::shared_ptr<std::atomic_bool> alive,
         bool debug)
         : ModelLoader{ alive },
         m_debug{ debug }

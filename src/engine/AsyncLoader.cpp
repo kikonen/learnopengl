@@ -36,7 +36,7 @@ void AsyncLoader::waitForReady()
 }
 
 void AsyncLoader::addLoader(
-    std::shared_ptr<std::atomic<bool>> alive,
+    std::shared_ptr<std::atomic_bool> alive,
     std::shared_ptr<std::atomic<int>> runningCount,
     std::function<void()> loader)
 {

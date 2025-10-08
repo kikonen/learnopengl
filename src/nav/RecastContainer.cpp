@@ -7,8 +7,6 @@ namespace nav
 {
     RecastContainer::RecastContainer()
     {
-        m_navQuery = dtAllocNavMeshQuery();
-        m_crowd = dtAllocCrowd();
     }
 
     RecastContainer::~RecastContainer()
@@ -18,14 +16,21 @@ namespace nav
 
     void RecastContainer::clear()
     {
+        cleanup();
+
         dtFreeNavMeshQuery(m_navQuery);
         m_navQuery = nullptr;
 
-        dtFreeNavMesh(m_navMesh);
-        m_navMesh = nullptr;
-
         dtFreeCrowd(m_crowd);
         m_crowd = nullptr;
+    }
+
+    void RecastContainer::prepare()
+    {
+        clear();
+
+        m_navQuery = dtAllocNavMeshQuery();
+        m_crowd = dtAllocCrowd();
     }
 
     void RecastContainer::cleanup()

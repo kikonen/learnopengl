@@ -133,7 +133,7 @@ protected:
     ki::RenderClock m_clock;
     ki::FpsCounter m_fpsCounter;
 
-    std::shared_ptr<std::atomic<bool>> m_alive;
+    std::shared_ptr<std::atomic_bool> m_alive;
 
     std::string m_title;
 

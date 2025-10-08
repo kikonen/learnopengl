@@ -7,7 +7,7 @@
 
 namespace mesh {
     ModelLoader::ModelLoader(
-        std::shared_ptr<std::atomic<bool>> alive)
+        std::shared_ptr<std::atomic_bool> alive)
         : m_alive(alive)
     {
     }

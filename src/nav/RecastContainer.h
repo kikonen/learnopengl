@@ -14,6 +14,7 @@ namespace nav
         ~RecastContainer();
 
         void clear();
+        void prepare();
         void cleanup();
 
     public:

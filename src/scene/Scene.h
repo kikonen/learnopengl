@@ -118,7 +118,7 @@ private:
 
 private:
     Engine& m_engine;
-    std::shared_ptr<std::atomic<bool>> m_alive;
+    std::shared_ptr<std::atomic_bool> m_alive;
 
     std::string m_name;
     bool m_loaded{ false };

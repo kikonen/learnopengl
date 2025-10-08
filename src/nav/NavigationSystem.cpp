@@ -1,6 +1,7 @@
 #include "NavigationSystem.h"
 
 #include "util/thread.h"
+#include "util/util.h"
 
 #include "physics/MeshGenerator.h"
 #include "physics/PhysicsSystem.h"
@@ -45,19 +46,30 @@ namespace nav
 
     NavigationSystem::~NavigationSystem()
     {
-        clear();
+        stop();
     }
 
-    void NavigationSystem::clear()
+    void NavigationSystem::stop()
     {
+        KI_INFO_OUT("APP: stopping NAV...");
+        m_builder->stop();
+
+        // NOTE KI builder must be stopped before releasing resources
+        while (m_builder->isRunning())
+        {
+            util::sleep(100);
+        }
+
         m_resolver->clear();
         m_generator->clear();
         m_container->clear();
-        m_builder->stop();
+        KI_INFO_OUT("APP: stopped NAV!");
     }
 
-    void NavigationSystem::prepare()
+    void NavigationSystem::start()
     {
+        stop();
+        m_container->prepare();
     }
 
     void NavigationSystem::registerNode(pool::NodeHandle nodeHandle)

@@ -60,7 +60,7 @@ namespace nav
         m_meshInstances->push_back(meshInstance);
     }
 
-    void InputCollection::build()
+    void InputCollection::build(const std::atomic_bool& alive)
     {
         if (!m_dirty) return;
 
@@ -68,6 +68,8 @@ namespace nav
         m_geometries.clear();
 
         for (auto& nodeHandle : m_nodeHandles) {
+            if (!alive) break;
+
             auto* node = nodeHandle.toNode();
             if (!node) continue;
 
@@ -83,6 +85,8 @@ namespace nav
         }
 
         for (const auto& meshInstance : *m_meshInstances) {
+            if (!alive) break;
+
             auto geom = std::make_unique<nav::InputGeom>(
                 meshInstance.getTransform(),
                 meshInstance.m_mesh);
@@ -90,6 +94,8 @@ namespace nav
         }
 
         for (auto& geom : m_geometries) {
+            if (!alive) break;
+
             geom->build();
             m_maxTriCount = std::max(m_maxTriCount, geom->getTriCount());
         }

@@ -29,7 +29,7 @@ public:
 
     void clear();
 
-    void prepare(std::shared_ptr<std::atomic<bool>> alive);
+    void prepare(std::shared_ptr<std::atomic_bool> alive);
 
     std::shared_future<std::shared_ptr<mesh::MeshSet>> getMeshSet(
         std::string_view id,
@@ -43,7 +43,7 @@ private:
         std::shared_ptr<mesh::MeshSet> meshSet);
 
 private:
-    std::shared_ptr<std::atomic<bool>> m_alive;
+    std::shared_ptr<std::atomic_bool> m_alive;
 
     std::mutex m_meshes_lock{};
     std::unordered_map<const std::string, std::shared_future<std::shared_ptr<mesh::MeshSet>>, util::constant_string_hash> m_meshes;

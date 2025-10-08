@@ -15,7 +15,7 @@ namespace mesh {
     {
     public:
         ModelLoader(
-            std::shared_ptr<std::atomic<bool>> alive);
+            std::shared_ptr<std::atomic_bool> alive);
 
         virtual ~ModelLoader();
 
@@ -33,6 +33,6 @@ namespace mesh {
         Material m_defaultMaterial;
         bool m_forceDefaultMaterial{ false };
 
-        std::shared_ptr<std::atomic<bool>> m_alive;
+        std::shared_ptr<std::atomic_bool> m_alive;
     };
 }

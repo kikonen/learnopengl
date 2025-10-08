@@ -24,7 +24,7 @@ class Registry {
 public:
     Registry(
         Engine& engine,
-        std::shared_ptr<std::atomic<bool>> alive);
+        std::shared_ptr<std::atomic_bool> alive);
 
     ~Registry();
 
@@ -41,7 +41,7 @@ private:
     bool m_prepared = false;
 
     Engine& m_engine;
-    std::shared_ptr<std::atomic<bool>> m_alive;
+    std::shared_ptr<std::atomic_bool> m_alive;
     std::mutex m_lock{};
 
     std::unique_ptr<event::Dispatcher> m_dispatcherWorkerImpl;

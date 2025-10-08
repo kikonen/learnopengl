@@ -87,7 +87,7 @@ namespace nav
     }
 
     // Build must be done after registering all meshes
-    bool Generator::build()
+    bool Generator::build(const std::atomic_bool& alive)
     {
         auto* buildCollection = &m_buildCollection;
 
@@ -98,7 +98,7 @@ namespace nav
             buildCollection->prepareBuild(m_inputCollection);
         }
 
-        buildCollection->build();
+        buildCollection->build(alive);
         if (buildCollection->empty()) return false;
 
         auto* ctx = m_ctx.get();
@@ -110,6 +110,7 @@ namespace nav
         //
 
         // Init build configuration from GUI
+        if (alive)
         {
             memset(&m_cfg, 0, sizeof(m_cfg));
             m_cfg.cs = m_settings.m_cellSize;
@@ -149,21 +150,25 @@ namespace nav
         //
 
         // Allocate voxel heightfield where we rasterize our input data to.
-        m_solid = rcAllocHeightfield();
-        if (!m_solid)
+        if (alive)
         {
-            ctx->log(RC_LOG_ERROR, "NAV: buildNavigation: Out of memory 'solid'.");
-            return false;
-        }
-        if (!rcCreateHeightfield(ctx, *m_solid, m_cfg.width, m_cfg.height, m_cfg.bmin, m_cfg.bmax, m_cfg.cs, m_cfg.ch))
-        {
-            ctx->log(RC_LOG_ERROR, "NAV: buildNavigation: Could not create solid heightfield.");
-            return false;
+            m_solid = rcAllocHeightfield();
+            if (!m_solid)
+            {
+                ctx->log(RC_LOG_ERROR, "NAV: buildNavigation: Out of memory 'solid'.");
+                return false;
+            }
+            if (!rcCreateHeightfield(ctx, *m_solid, m_cfg.width, m_cfg.height, m_cfg.bmin, m_cfg.bmax, m_cfg.cs, m_cfg.ch))
+            {
+                ctx->log(RC_LOG_ERROR, "NAV: buildNavigation: Could not create solid heightfield.");
+                return false;
+            }
         }
 
         // Allocate array that can hold triangle area types.
         // If you have multiple meshes you need to process, allocate
         // and array which can hold the max number of triangles you need to process.
+        if (alive)
         {
             int maxTriCount = buildCollection->getMaxTriCount();
             delete[] m_triareas;
@@ -180,6 +185,8 @@ namespace nav
         // the are type for each of the meshes and rasterize them.
         for (auto& geom : buildCollection->getGeometries())
         {
+            if (!alive) break;
+
             const float* verts = geom->getVertices();
             const int nverts = geom->getVertexCount();
             const int* tris = geom->getTris();
@@ -209,13 +216,15 @@ namespace nav
         // Once all geometry is rasterized, we do initial pass of filtering to
         // remove unwanted overhangs caused by the conservative rasterization
         // as well as filter spans where the character cannot possibly stand.
-        if (m_filterLowHangingObstacles)
-            rcFilterLowHangingWalkableObstacles(ctx, m_cfg.walkableClimb, *m_solid);
-        if (m_filterLedgeSpans)
-            rcFilterLedgeSpans(ctx, m_cfg.walkableHeight, m_cfg.walkableClimb, *m_solid);
-        if (m_filterWalkableLowHeightSpans)
-            rcFilterWalkableLowHeightSpans(ctx, m_cfg.walkableHeight, *m_solid);
-
+        if (alive)
+        {
+            if (m_filterLowHangingObstacles)
+                rcFilterLowHangingWalkableObstacles(ctx, m_cfg.walkableClimb, *m_solid);
+            if (m_filterLedgeSpans)
+                rcFilterLedgeSpans(ctx, m_cfg.walkableHeight, m_cfg.walkableClimb, *m_solid);
+            if (m_filterWalkableLowHeightSpans)
+                rcFilterWalkableLowHeightSpans(ctx, m_cfg.walkableHeight, *m_solid);
+        }
 
         //
         // Step 4. Partition walkable surface to simple regions.
@@ -224,16 +233,20 @@ namespace nav
         // Compact the heightfield so that it is faster to handle from now on.
         // This will result more cache coherent data as well as the neighbours
         // between walkable cells will be calculated.
-        m_chf = rcAllocCompactHeightfield();
-        if (!m_chf)
+        if (alive)
         {
-            ctx->log(RC_LOG_ERROR, "NAV: buildNavigation: Out of memory 'chf'.");
-            return false;
-        }
-        if (!rcBuildCompactHeightfield(ctx, m_cfg.walkableHeight, m_cfg.walkableClimb, *m_solid, *m_chf))
-        {
-            ctx->log(RC_LOG_ERROR, "NAV: buildNavigation: Could not build compact data.");
-            return false;
+            m_chf = rcAllocCompactHeightfield();
+            if (!m_chf)
+            {
+                ctx->log(RC_LOG_ERROR, "NAV: buildNavigation: Out of memory 'chf'.");
+                return false;
+            }
+
+            if (!rcBuildCompactHeightfield(ctx, m_cfg.walkableHeight, m_cfg.walkableClimb, *m_solid, *m_chf))
+            {
+                ctx->log(RC_LOG_ERROR, "NAV: buildNavigation: Could not build compact data.");
+                return false;
+            }
         }
 
         if (!m_keepInterResults)
@@ -243,10 +256,13 @@ namespace nav
         }
 
         // Erode the walkable area by agent radius.
-        if (!rcErodeWalkableArea(ctx, m_cfg.walkableRadius, *m_chf))
+        if (alive)
         {
-            ctx->log(RC_LOG_ERROR, "NAV: buildNavigation: Could not erode.");
-            return false;
+            if (!rcErodeWalkableArea(ctx, m_cfg.walkableRadius, *m_chf))
+            {
+                ctx->log(RC_LOG_ERROR, "NAV: buildNavigation: Could not erode.");
+                return false;
+            }
         }
 
         // (Optional) Mark areas.
@@ -254,6 +270,7 @@ namespace nav
         //for (int i = 0; i < m_geom->getConvexVolumeCount(); ++i)
         //    rcMarkConvexPolyArea(ctx, vols[i].verts, vols[i].nverts, vols[i].hmin, vols[i].hmax, (unsigned char)vols[i].area, *m_chf);
 
+        if (alive)
         {
             // Prepare for region partitioning, by calculating distance field along the walkable surface.
             if (!rcBuildDistanceField(ctx, *m_chf))
@@ -274,51 +291,60 @@ namespace nav
         // Step 5. Trace and simplify region contours.
         //
 
-        // Create contours.
-        m_cset = rcAllocContourSet();
-        if (!m_cset)
+        if (alive)
         {
-            ctx->log(RC_LOG_ERROR, "NAV: buildNavigation: Out of memory 'cset'.");
-            return false;
-        }
-        if (!rcBuildContours(ctx, *m_chf, m_cfg.maxSimplificationError, m_cfg.maxEdgeLen, *m_cset))
-        {
-            ctx->log(RC_LOG_ERROR, "NAV: buildNavigation: Could not create contours.");
-            return false;
+            // Create contours.
+            m_cset = rcAllocContourSet();
+            if (!m_cset)
+            {
+                ctx->log(RC_LOG_ERROR, "NAV: buildNavigation: Out of memory 'cset'.");
+                return false;
+            }
+            if (!rcBuildContours(ctx, *m_chf, m_cfg.maxSimplificationError, m_cfg.maxEdgeLen, *m_cset))
+            {
+                ctx->log(RC_LOG_ERROR, "NAV: buildNavigation: Could not create contours.");
+                return false;
+            }
         }
 
         //
         // Step 6. Build polygons mesh from contours.
         //
 
-        // Build polygon navmesh from the contours.
-        m_pmesh = rcAllocPolyMesh();
-        if (!m_pmesh)
+        if (alive)
         {
-            ctx->log(RC_LOG_ERROR, "NAV: buildNavigation: Out of memory 'pmesh'.");
-            return false;
-        }
-        if (!rcBuildPolyMesh(ctx, *m_cset, m_cfg.maxVertsPerPoly, *m_pmesh))
-        {
-            ctx->log(RC_LOG_ERROR, "NAV: buildNavigation: Could not triangulate contours.");
-            return false;
+            // Build polygon navmesh from the contours.
+            m_pmesh = rcAllocPolyMesh();
+            if (!m_pmesh)
+            {
+                ctx->log(RC_LOG_ERROR, "NAV: buildNavigation: Out of memory 'pmesh'.");
+                return false;
+            }
+            if (!rcBuildPolyMesh(ctx, *m_cset, m_cfg.maxVertsPerPoly, *m_pmesh))
+            {
+                ctx->log(RC_LOG_ERROR, "NAV: buildNavigation: Could not triangulate contours.");
+                return false;
+            }
         }
 
         //
         // Step 7. Create detail mesh which allows to access approximate height on each polygon.
         //
 
-        m_dmesh = rcAllocPolyMeshDetail();
-        if (!m_dmesh)
+        if (alive)
         {
-            ctx->log(RC_LOG_ERROR, "NAV: buildNavigation: Out of memory 'pmdtl'.");
-            return false;
-        }
+            m_dmesh = rcAllocPolyMeshDetail();
+            if (!m_dmesh)
+            {
+                ctx->log(RC_LOG_ERROR, "NAV: buildNavigation: Out of memory 'pmdtl'.");
+                return false;
+            }
 
-        if (!rcBuildPolyMeshDetail(ctx, *m_pmesh, *m_chf, m_cfg.detailSampleDist, m_cfg.detailSampleMaxError, *m_dmesh))
-        {
-            ctx->log(RC_LOG_ERROR, "NAV: buildNavigation: Could not build detail mesh.");
-            return false;
+            if (!rcBuildPolyMeshDetail(ctx, *m_pmesh, *m_chf, m_cfg.detailSampleDist, m_cfg.detailSampleMaxError, *m_dmesh))
+            {
+                ctx->log(RC_LOG_ERROR, "NAV: buildNavigation: Could not build detail mesh.");
+                return false;
+            }
         }
 
         if (!m_keepInterResults)
@@ -338,7 +364,7 @@ namespace nav
 
         // The GUI may allow more max points per polygon than Detour can handle.
         // Only build the detour navmesh if we do not exceed the limit.
-        if (m_cfg.maxVertsPerPoly <= DT_VERTS_PER_POLYGON)
+        if (alive && m_cfg.maxVertsPerPoly <= DT_VERTS_PER_POLYGON)
         {
             unsigned char* navData = nullptr;
             int navDataSize = 0;
@@ -396,44 +422,56 @@ namespace nav
             params.ch = m_cfg.ch;
             params.buildBvTree = true;
 
-            if (!dtCreateNavMeshData(&params, &navData, &navDataSize))
+            if (alive)
             {
-                ctx->log(RC_LOG_ERROR, "NAV: Could not build Detour navmesh.");
-                return false;
+                if (!dtCreateNavMeshData(&params, &navData, &navDataSize))
+                {
+                    ctx->log(RC_LOG_ERROR, "NAV: Could not build Detour navmesh.");
+                    return false;
+                }
             }
 
-            m_container->m_navMesh = dtAllocNavMesh();
-            if (!m_container->m_navMesh)
+            if (alive)
             {
-                dtFree(navData);
-                ctx->log(RC_LOG_ERROR, "NAV: Could not create Detour navmesh");
-                return false;
+                m_container->m_navMesh = dtAllocNavMesh();
+                if (!m_container->m_navMesh)
+                {
+                    dtFree(navData);
+                    ctx->log(RC_LOG_ERROR, "NAV: Could not create Detour navmesh");
+                    return false;
+                }
             }
 
-            dtStatus status;
-
-            status = m_container->m_navMesh->init(navData, navDataSize, DT_TILE_FREE_DATA);
-            if (dtStatusFailed(status))
+            if (alive)
             {
-                dtFree(navData);
-                ctx->log(RC_LOG_ERROR, "NAV: Could not init Detour navmesh");
-                return false;
-            }
+                dtStatus status;
 
-            status = m_container->m_navQuery->init(m_container->m_navMesh, 2048);
-            if (dtStatusFailed(status))
-            {
-                ctx->log(RC_LOG_ERROR, "NAV: Could not init Detour navmesh query");
-                return false;
+                status = m_container->m_navMesh->init(navData, navDataSize, DT_TILE_FREE_DATA);
+                if (dtStatusFailed(status))
+                {
+                    dtFree(navData);
+                    ctx->log(RC_LOG_ERROR, "NAV: Could not init Detour navmesh");
+                    return false;
+                }
+
+                status = m_container->m_navQuery->init(m_container->m_navMesh, 2048);
+                if (dtStatusFailed(status))
+                {
+                    ctx->log(RC_LOG_ERROR, "NAV: Could not init Detour navmesh query");
+                    return false;
+                }
             }
         }
 
         ctx->stopTimer(RC_TIMER_TOTAL);
 
         // Show performance stats.
-        ctx->log(RC_LOG_PROGRESS, "NAV: >> Polymesh: %d vertices  %d polygons", m_pmesh->nverts, m_pmesh->npolys);
+        if (alive)
+        {
+            ctx->log(RC_LOG_PROGRESS, "NAV: >> Polymesh: %d vertices  %d polygons", m_pmesh->nverts, m_pmesh->npolys);
+        }
 
-        m_ready = true;
-        return true;
+        m_ready = alive;
+        return alive;
     }
 }

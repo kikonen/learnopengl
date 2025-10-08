@@ -38,7 +38,7 @@ namespace nav
         void registerMeshInstance(const mesh::MeshInstance& meshInstance);
 
         // Build must be done after registering all meshes
-        bool build();
+        bool build(const std::atomic_bool& alive);
 
         bool isReady() const
         {

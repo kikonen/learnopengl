@@ -59,7 +59,7 @@ private:
     void updateDirtyMaterialBuffer();
 
 private:
-    std::atomic<bool> m_dirtyFlag;
+    std::atomic_bool m_dirtyFlag;
     std::mutex m_lock{};
 
     std::vector<Material> m_materials;

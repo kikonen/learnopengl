@@ -22,10 +22,18 @@ namespace nav
     {
     }
 
+    bool NavigationMeshBuilder::isRunning()
+    {
+        return m_running;
+    }
+
     void NavigationMeshBuilder::start()
     {
-        m_requestCount++;
+        std::lock_guard lock{ m_lock };
+
+        m_pendingCount++;
         if (m_running) return;
+        m_alive = true;
 
         auto th = std::thread{
             [this]() mutable {
@@ -33,28 +41,44 @@ namespace nav
                     m_running = true;
                     util::markOtherThread();
 
-                    while (m_requestCount > 0)
+                    while (m_alive && m_pendingCount > 0)
                     {
                         run();
-                        m_request++;
-                        m_requestCount--;
+
+                        if (m_alive)
+                        {
+                            m_pendingCount--;
+                        }
+                    }
+
+                    std::lock_guard lock{ m_lock };
+
+                    if (!m_alive)
+                    {
+                        m_pendingCount = 0;
+                        m_handledCount = 0;
                     }
 
                     m_running = false;
                 }
                 catch (const std::exception& ex) {
                     KI_CRITICAL(fmt::format("NAV_MESH: {}", ex.what()));
+                    m_pendingCount = 0;
                     m_running = false;
                 }
                 catch (const std::string& ex) {
                     KI_CRITICAL(fmt::format("NAV_MESH: {}", ex));
+                    m_pendingCount = 0;
                     m_running = false;
                 }
                 catch (const char* ex) {
                     KI_CRITICAL(fmt::format("NAV_MESH: {}", ex));
+                    m_pendingCount = 0;
+                    m_running = false;
                 }
                 catch (...) {
                     KI_CRITICAL("NAV_MESH: UNKNOWN_ERROR");
+                    m_pendingCount = 0;
                     m_running = false;
                 }
             }
@@ -63,12 +87,17 @@ namespace nav
     }
 
     void NavigationMeshBuilder::stop()
-    { }
+    {
+        std::lock_guard lock{ m_lock };
+        m_alive = false;
+        m_pendingCount = 0;
+        m_handledCount = 0;
+    }
 
     void NavigationMeshBuilder::run()
     {
-        KI_INFO_OUT(fmt::format("NAV_MESH: start: {}", m_request));
-        m_generator->build();
-        KI_INFO_OUT(fmt::format("NAV_MESH: done: {}", m_request));
+        KI_INFO_OUT(fmt::format("NAV_MESH: start: {}", m_handledCount));
+        m_generator->build(m_alive);
+        KI_INFO_OUT(fmt::format("NAV_MESH: done: {}", m_handledCount));
     }
 }

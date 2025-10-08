@@ -40,7 +40,7 @@ namespace nav
         bool empty() const { return m_geometries.empty(); }
         bool dirty() const { return m_dirty; }
 
-        void build();
+        void build(const std::atomic_bool& alive);
 
         const glm::vec3& getNavMeshBoundsMin() const { return m_navMeshBMin; }
         const glm::vec3& getNavMeshBoundsMax() const { return m_navMeshBMax; }

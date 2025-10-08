@@ -56,7 +56,7 @@ void ModelRegistry::clear()
     m_meshes.clear();
 }
 
-void ModelRegistry::prepare(std::shared_ptr<std::atomic<bool>> alive)
+void ModelRegistry::prepare(std::shared_ptr<std::atomic_bool> alive)
 {
     m_alive = alive;
 }

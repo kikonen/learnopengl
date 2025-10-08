@@ -127,7 +127,8 @@ namespace script::api
 
     const model::NodeState& NodeAPI::getState(pool::NodeHandle handle) const
     {
-        return NodeRegistry::get().getState(handle.m_handleIndex);
+        const auto& nodeRegistry = NodeRegistry::get();
+        return nodeRegistry.getState(handle.m_handleIndex);
     }
 
     // https://thephd.dev/sol3-feature-complete

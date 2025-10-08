@@ -52,8 +52,8 @@ protected:
     mutable std::mutex m_prepareLock;
     bool m_prepared{ false };
 
-    std::atomic<bool> m_alive;
-    std::atomic<bool> m_running;
+    std::atomic_bool m_alive;
+    std::atomic_bool m_running;
 
     Engine& m_engine;
 };

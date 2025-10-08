@@ -41,7 +41,7 @@ namespace physics {
         ~PhysicsSystem();
 
         void clear();
-        void prepare(std::shared_ptr<std::atomic<bool>> alive);
+        void prepare(std::shared_ptr<std::atomic_bool> alive);
 
         void updatePrepare(const UpdateContext& ctx);
         void updateObjects(const UpdateContext& ctx);
@@ -137,7 +137,7 @@ namespace physics {
         std::unordered_map<dGeomID, Object*> m_geomToObject;
 
     private:
-        std::shared_ptr<std::atomic<bool>> m_alive;
+        std::shared_ptr<std::atomic_bool> m_alive;
 
         mutable std::mutex m_lock;
 

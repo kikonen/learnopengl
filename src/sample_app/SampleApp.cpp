@@ -51,6 +51,8 @@
 #include "engine/UpdateContext.h"
 #include "engine/UpdateViewContext.h"
 
+#include "nav/NavigationSystem.h"
+
 #include "render/RenderContext.h"
 #include "render/NodeDraw.h"
 #include "render/WindowBuffer.h"
@@ -399,6 +401,8 @@ void SampleApp::showFps(const ki::FpsCounter& fpsCounter)
 
 void SampleApp::stopUpdaters()
 {
+    nav::NavigationSystem::get().stop();
+
     {
         if (m_sceneUpdater)
         {
@@ -529,6 +533,10 @@ std::shared_ptr<Scene> SampleApp::loadScene(
         KI_INFO_OUT(fmt::format("LOAD_SCENE: {}", m_loader->m_ctx->str()));
         m_loader->prepare(getRegistry());
         m_loader->load();
+    }
+
+    if (m_loader) {
+        nav::NavigationSystem::get().start();
     }
 
     return scene;

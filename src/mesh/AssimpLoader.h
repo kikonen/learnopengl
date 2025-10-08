@@ -29,7 +29,7 @@ namespace mesh {
     class AssimpLoader : public ModelLoader {
     public:
         AssimpLoader(
-            std::shared_ptr<std::atomic<bool>> alive,
+            std::shared_ptr<std::atomic_bool> alive,
             bool debug);
 
         ~AssimpLoader();
