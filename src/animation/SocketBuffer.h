@@ -23,8 +23,6 @@ namespace animation {
         ~SocketBuffer();
 
         void clear();
-
-        void shutdown();
         void prepare();
 
     protected:

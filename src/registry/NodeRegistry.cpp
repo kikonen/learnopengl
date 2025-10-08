@@ -142,6 +142,8 @@ NodeRegistry::~NodeRegistry()
 
 void NodeRegistry::clear()
 {
+    pool::NodeHandle::clear();
+
     m_skybox.reset();
 
     m_rootHandle.reset();

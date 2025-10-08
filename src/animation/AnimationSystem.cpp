@@ -82,9 +82,9 @@ namespace animation
 
     AnimationSystem::~AnimationSystem() = default;
 
-    void AnimationSystem::clearWT()
+    void AnimationSystem::clear()
     {
-        ASSERT_WT();
+        ASSERT_RT();
 
         m_states.clear();
         m_nodeToState.clear();
@@ -93,18 +93,14 @@ namespace animation
 
         m_boneRegistry->clear();
         m_socketRegistry->clear();
+
+        m_boneBuffer->clear();
+        m_socketBuffer->clear();
     }
 
-    void AnimationSystem::shutdownWT()
+    void AnimationSystem::prepare()
     {
-        ASSERT_WT();
-
-        clearWT();
-    }
-
-    void AnimationSystem::prepareWT()
-    {
-        ASSERT_WT();
+        ASSERT_RT();
 
         const auto& assets = Assets::get();
 
@@ -115,32 +111,10 @@ namespace animation
         m_boneRegistry->prepare();
         m_socketRegistry->prepare();
 
-        clearWT();
-    }
-
-    void AnimationSystem::clearRT()
-    {
-        ASSERT_RT();
-
-        m_boneBuffer->clear();
-        m_socketBuffer->clear();
-    }
-
-    void AnimationSystem::shutdownRT()
-    {
-        ASSERT_RT();
-
-        clearRT();
-    }
-
-    void AnimationSystem::prepareRT()
-    {
-        ASSERT_RT();
-
         m_boneBuffer->prepare();
         m_socketBuffer->prepare();
 
-        clearRT();
+        clear();
     }
 
     std::pair<uint32_t, uint32_t> AnimationSystem::registerInstance(

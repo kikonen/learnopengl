@@ -38,13 +38,6 @@ void ViewportRegistry::clear()
     m_viewports.clear();
 }
 
-void ViewportRegistry::shutdown()
-{
-    ASSERT_RT();
-
-    clear();
-}
-
 void ViewportRegistry::prepare()
 {
     ASSERT_RT();

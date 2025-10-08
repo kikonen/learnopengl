@@ -40,12 +40,6 @@ namespace decal {
         m_lastDecalSize = 0;
     }
 
-    void DecalBuffer::shutdown() {
-        ASSERT_RT();
-
-        clear();
-    }
-
     void DecalBuffer::prepare() {
         ASSERT_RT();
 

@@ -48,13 +48,6 @@ namespace text
         m_textVao->clear();
     }
 
-    void TextSystem::shutdown()
-    {
-        ASSERT_RT();
-
-        clear();
-    }
-
     void TextSystem::prepare()
     {
         ASSERT_RT();

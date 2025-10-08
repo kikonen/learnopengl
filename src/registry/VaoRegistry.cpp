@@ -65,13 +65,6 @@ void VaoRegistry::clear()
     }
 }
 
-void VaoRegistry::shutdown()
-{
-    ASSERT_RT();
-
-    clear();
-}
-
 void VaoRegistry::prepare()
 {
     ASSERT_RT();

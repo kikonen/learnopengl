@@ -35,8 +35,6 @@ public:
     EntityRegistry& operator=(const EntityRegistry&) = delete;
 
     void clear();
-
-    void shutdown();
     void prepare();
 
     void updateRT(const UpdateContext& ctx);

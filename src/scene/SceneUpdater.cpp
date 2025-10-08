@@ -48,8 +48,6 @@ void SceneUpdater::shutdown()
 {
     if (!m_prepared) return;
     Updater::shutdown();
-
-    getRegistry()->shutdownWT();
 }
 
 void SceneUpdater::prepare()
@@ -61,8 +59,6 @@ void SceneUpdater::prepare()
     auto* registry = getRegistry();
 
     std::lock_guard lock(m_prepareLock);
-
-    registry->prepareWT({ m_engine });
 
     auto* dispatcher = registry->m_dispatcherWorker;
 

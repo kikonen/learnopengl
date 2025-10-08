@@ -20,7 +20,7 @@ namespace animation
 
     void SocketRegistry::clear()
     {
-        ASSERT_WT();
+        ASSERT_RT();
 
         m_updateReady = false;
 
@@ -39,16 +39,9 @@ namespace animation
         addInstance(1);
     }
 
-    void SocketRegistry::shutdown()
-    {
-        ASSERT_WT();
-
-        clear();
-    }
-
     void SocketRegistry::prepare()
     {
-        ASSERT_WT();
+        ASSERT_RT();
 
         const auto& assets = Assets::get();
 
@@ -57,7 +50,7 @@ namespace animation
 
     uint32_t SocketRegistry::addInstance(size_t count)
     {
-        ASSERT_WT();
+        //ASSERT_WT();
 
         if (count == 0) return 0;
 

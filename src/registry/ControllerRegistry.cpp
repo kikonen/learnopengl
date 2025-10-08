@@ -54,21 +54,14 @@ ControllerRegistry::~ControllerRegistry()
 
 void ControllerRegistry::clear()
 {
-    //ASSERT_WT();
+    ASSERT_RT();
 
     m_controllers.clear();
 }
 
-void ControllerRegistry::shutdown()
-{
-    ASSERT_WT();
-
-    clear();
-}
-
 void ControllerRegistry::prepare(Engine* engine)
 {
-    ASSERT_WT();
+    ASSERT_RT();
 
     m_engine = engine;
 }

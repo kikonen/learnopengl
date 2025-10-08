@@ -53,25 +53,9 @@ namespace audio
 
     AudioSystem::~AudioSystem()
     {
-    }
-
-    void AudioSystem::clear()
-    {
-        //ASSERT_WT();
-
-        // NOTE KI MUST close buffers before closing context
-        m_soundRegistry->clear();
-    }
-
-    void AudioSystem::shutdown()
-    {
-        ASSERT_WT();
-
         // [ALSOFT] (WW) Error generated on context 0x214e0406960, code 0xa004, "Deleting in-use buffer 1"
         // [ALSOFT](WW) 2 Sources not deleted
         // [ALSOFT](WW) 1 Buffer not deleted
-
-        clear();
 
         if (m_context) {
             alcDestroyContext(m_context);
@@ -82,9 +66,17 @@ namespace audio
         }
     }
 
+    void AudioSystem::clear()
+    {
+        ASSERT_RT();
+
+        // NOTE KI MUST close buffers before closing context
+        m_soundRegistry->clear();
+    }
+
     void AudioSystem::prepare()
     {
-        ASSERT_WT();
+        ASSERT_RT();
 
         // NOTE KI use default device
         m_device = alcOpenDevice(nullptr);

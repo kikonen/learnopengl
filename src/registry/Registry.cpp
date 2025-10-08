@@ -10,6 +10,8 @@
 
 #include "audio/AudioSystem.h"
 
+#include "debug/DebugContext.h"
+
 #include "engine/PrepareContext.h"
 
 #include "physics/PhysicsSystem.h"
@@ -21,6 +23,8 @@
 
 #include "particle/ParticleSystem.h"
 #include "decal/DecalSystem.h"
+#include "decal/DecalRegistry.h"
+
 #include "animation/AnimationSystem.h"
 
 #include "terrain/TerrainTileRegistry.h"
@@ -29,13 +33,16 @@
 #include "text/TextSystem.h"
 
 #include "material/MaterialRegistry.h"
+#include "material/ImageRegistry.h"
+
+#include "nav/NavigationSystem.h"
 
 #include "registry/NodeRegistry.h"
 #include "registry/ModelRegistry.h"
 #include "registry/EntityRegistry.h"
 #include "registry/ViewportRegistry.h"
 #include "registry/ControllerRegistry.h"
-#include "registry/NodeRegistry.h"
+#include "registry/NodeTypeRegistry.h"
 #include "registry/SelectionRegistry.h"
 #include "registry/VaoRegistry.h"
 
@@ -61,22 +68,66 @@ Registry::~Registry()
 }
 
 void Registry::clear()
-{}
-
-void Registry::clearShared()
 {
     ASSERT_RT();
+
+    debug::DebugContext::modify().clear();
+
+    //FileEntryCache::get().clear();
+
+    NodeRegistry::get().clear();
+    NodeTypeRegistry::get().clear();
+
+    ImageRegistry::get().clear();
+    MaterialRegistry::get().clear();
+    //ProgramRegistry::get().clear();
+
+    audio::AudioSystem::get().clear();
+    physics::PhysicsSystem::get().clear();
+
+    nav::NavigationSystem::get().clear();
+
+    particle::ParticleSystem::get().clear();
+
+    decal::DecalRegistry::get().clear();
+    decal::DecalSystem::get().clear();
+
+    animation::AnimationSystem::get().clear();
+    terrain::TerrainTileRegistry::get().clear();
+
+    text::TextSystem::get().clear();
+    //text::FontRegistry::get().clear();
+
+    script::CommandEngine::get().clear();
+    script::ScriptSystem::get().clear();
+
+    ControllerRegistry::get().clear();
+    ModelRegistry::get().clear();
+    EntityRegistry::get().clear();
+    ViewportRegistry::get().clear();
+    SelectionRegistry::get().clear();
+    VaoRegistry::get().clear();
+
+    physics::PhysicsSystem::get().clear();
+    audio::AudioSystem::get().clear();
+
+    ControllerRegistry::get().clear();
+
+    script::CommandEngine::get().clear();
+    script::ScriptSystem::get().clear();
+
+    animation::AnimationSystem::get().clear();
+
+    decal::DecalSystem::get().clear();
+
+    text::TextSystem::get().clear();
+
+    VaoRegistry::get().clear();
+
+    ViewportRegistry::get().clear();
 }
 
-void Registry::shutdownShared()
-{
-    ASSERT_RT();
-    if (!m_prepared) return;
-
-    clearShared();
-}
-
-void Registry::prepareShared()
+void Registry::prepare(const PrepareContext& ctx)
 {
     ASSERT_RT();
 
@@ -95,107 +146,20 @@ void Registry::prepareShared()
     SelectionRegistry::get().prepare(this);
 
     physics::PhysicsSystem::get().prepare(m_alive);
-
     particle::ParticleSystem::get().prepare();
+    decal::DecalSystem::get().prepare();
+    audio::AudioSystem::get().prepare();
+    animation::AnimationSystem::get().prepare();
 
     terrain::TerrainTileRegistry::get().prepare();
-
-    clearShared();
-}
-
-void Registry::clearWT()
-{
-    ASSERT_WT();
-
-    audio::AudioSystem::get().clear();
-
-    ControllerRegistry::get().clear();
-
-    script::CommandEngine::get().clear();
-    script::ScriptSystem::get().clear();
-
-    animation::AnimationSystem::get().clearWT();
-
-    decal::DecalSystem::get().clearWT();
-}
-
-void Registry::shutdownWT()
-{
-    ASSERT_WT();
-
-    physics::PhysicsSystem::get().shutdown();
-
-    audio::AudioSystem::get().shutdown();
-
-    ControllerRegistry::get().shutdown();
-
-    script::CommandEngine::get().shutdown();
-    script::ScriptSystem::get().shutdown();
-
-    animation::AnimationSystem::get().shutdownWT();
-
-    decal::DecalSystem::get().shutdownWT();
-}
-
-void Registry::prepareWT(const PrepareContext& ctx)
-{
-    ASSERT_WT();
-
-    audio::AudioSystem::get().prepare();
-
-    animation::AnimationSystem::get().prepareWT();
-
-    ControllerRegistry::get().prepare(&m_engine);
 
     script::CommandEngine::get().prepare(this);
     script::ScriptSystem::get().prepare(ctx, &script::CommandEngine::get());
 
-    decal::DecalSystem::get().prepareWT();
-}
-
-void Registry::clearRT()
-{
-    ASSERT_RT();
-
-    animation::AnimationSystem::get().clearRT();
-
-    text::TextSystem::get().clear();
-
-    VaoRegistry::get().clear();
-
-    ViewportRegistry::get().clear();
-
-    decal::DecalSystem::get().clearRT();
-}
-
-void Registry::shutdownRT()
-{
-    ASSERT_RT();
-
-    animation::AnimationSystem::get().shutdownRT();
-
-    text::TextSystem::get().shutdown();
-
-    VaoRegistry::get().shutdown();
-
-    ViewportRegistry::get().shutdown();
-
-    decal::DecalSystem::get().shutdownRT();
-}
-
-void Registry::prepareRT(const PrepareContext& ctx)
-{
-    ASSERT_RT();
-
-    animation::AnimationSystem::get().prepareRT();
-
     text::TextSystem::get().prepare();
-
     VaoRegistry::get().prepare();
-
     ViewportRegistry::get().prepare();
-
-    decal::DecalSystem::get().prepareRT();
+    ControllerRegistry::get().prepare(&m_engine);
 }
 
 void Registry::updateWT(const UpdateContext& ctx)

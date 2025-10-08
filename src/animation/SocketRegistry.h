@@ -31,8 +31,6 @@ namespace animation {
         ~SocketRegistry();
 
         void clear();
-
-        void shutdown();
         void prepare();
 
         uint32_t getActiveCount() const noexcept;

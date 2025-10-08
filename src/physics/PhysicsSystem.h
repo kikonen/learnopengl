@@ -40,8 +40,7 @@ namespace physics {
 
         ~PhysicsSystem();
 
-        void clear(bool shutdown);
-        void shutdown();
+        void clear();
         void prepare(std::shared_ptr<std::atomic<bool>> alive);
 
         void updatePrepare(const UpdateContext& ctx);

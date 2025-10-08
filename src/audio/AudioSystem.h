@@ -34,8 +34,6 @@ namespace audio
         ~AudioSystem();
 
         void clear();
-
-        void shutdown();
         void prepare();
 
         inline bool isEnabled(bool enabled) const {

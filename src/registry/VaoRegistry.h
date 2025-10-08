@@ -28,8 +28,6 @@ public:
     ~VaoRegistry();
 
     void clear();
-
-    void shutdown();
     void prepare();
 
     void updateRT(const UpdateContext& ctx);

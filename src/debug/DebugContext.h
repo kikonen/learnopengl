@@ -125,6 +125,7 @@ namespace debug {
         PhysicsDebug m_physics;
         AnimationDebug m_animation;
 
+        void clear();
         void prepare();
 
         float getGBufferScale() const noexcept

@@ -32,13 +32,6 @@ namespace animation
         ASSERT_RT();
     }
 
-    void SocketBuffer::shutdown()
-    {
-        ASSERT_RT();
-
-        clear();
-    }
-
     void SocketBuffer::prepare()
     {
         ASSERT_RT();

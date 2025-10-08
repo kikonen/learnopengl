@@ -32,13 +32,6 @@ namespace animation
         ASSERT_RT();
     }
 
-    void BoneBuffer::shutdown()
-    {
-        ASSERT_RT();
-
-        clear();
-    }
-
     void BoneBuffer::prepare()
     {
         ASSERT_RT();

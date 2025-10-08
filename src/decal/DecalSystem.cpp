@@ -61,63 +61,29 @@ namespace decal {
 
     DecalSystem::~DecalSystem() = default;
 
-    void DecalSystem::clearWT()
+    void DecalSystem::clear()
     {
-        ASSERT_WT();
+        ASSERT_RT();
 
         for (auto& coll : m_collections) {
-            coll.clearWT();
+            coll.clear();
         }
     }
 
-    void DecalSystem::shutdownWT()
-    {
-        ASSERT_WT();
-
-        clearWT();
-    }
-
-    void DecalSystem::prepareWT() {
-        ASSERT_WT();
+    void DecalSystem::prepare() {
+        ASSERT_RT();
 
         const auto& assets = Assets::get();
 
         m_enabled = assets.decalEnabled;
 
         for (auto& coll : m_collections) {
-            coll.prepareWT();
+            coll.prepare();
         }
 
         if (!isEnabled()) return;
 
-        clearWT();
-    }
-
-    void DecalSystem::clearRT()
-    {
-        ASSERT_RT();
-
-        for (auto& coll : m_collections) {
-            coll.clearRT();
-        }
-    }
-
-    void DecalSystem::shutdownRT()
-    {
-        ASSERT_RT();
-
-        for (auto& coll : m_collections) {
-            coll.shutdownRT();
-        }
-    }
-
-    void DecalSystem::prepareRT()
-    {
-        ASSERT_RT();
-
-        for (auto& coll : m_collections) {
-            coll.prepareRT();
-        }
+        clear();
     }
 
     void DecalSystem::addDecal(const Decal& decal)

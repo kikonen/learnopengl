@@ -22,8 +22,6 @@ public:
     ControllerRegistry& operator=(const ControllerRegistry&) = delete;
 
     void clear();
-
-    void shutdown();
     void prepare(Engine* engine);
 
     void updateWT(const UpdateContext& ctx);

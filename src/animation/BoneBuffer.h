@@ -24,8 +24,6 @@ namespace animation {
         ~BoneBuffer();
 
         void clear();
-
-        void shutdown();
         void prepare();
 
     protected:

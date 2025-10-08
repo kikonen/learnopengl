@@ -17,7 +17,6 @@ public:
     ViewportRegistry& operator=(const ViewportRegistry&) = delete;
 
     void clear();
-    void shutdown();
     void prepare();
 
     void addViewport(std::shared_ptr<model::Viewport> viewport) noexcept;

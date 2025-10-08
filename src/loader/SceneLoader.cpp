@@ -90,7 +90,7 @@ namespace loader {
     {
         std::lock_guard lock(m_ready_lock);
         auto running = m_ctx->m_runningCount->load();
-        return running > 0 || m_pendingCount > 0;
+        return running > 0; // || m_pendingCount > 0;
     }
 
     void SceneLoader::prepare(

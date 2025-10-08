@@ -49,9 +49,6 @@ namespace script
         ~ScriptSystem();
 
         void clear();
-
-        void shutdown();
-
         void prepare(
             const PrepareContext& ctx,
             CommandEngine* commandEngine);

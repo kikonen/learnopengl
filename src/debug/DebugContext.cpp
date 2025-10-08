@@ -24,6 +24,13 @@ namespace debug
         return s_instance;
     }
 
+    void DebugContext::clear()
+    {
+        m_entityId = 0;
+        m_showFontId = 1;
+        m_decalId = 0;
+    }
+
     void DebugContext::prepare()
     {
         const auto& assets = Assets::get();

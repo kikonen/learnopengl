@@ -230,6 +230,9 @@ namespace physics
 
     PhysicsSystem::~PhysicsSystem()
     {
+        m_objects.clear();
+        m_heightMaps.clear();
+
         if (m_spaceId) {
             dSpaceDestroy(m_spaceId);
         }
@@ -244,27 +247,61 @@ namespace physics
         }
     }
 
-    void PhysicsSystem::clear(bool shutdown)
+    void PhysicsSystem::clear()
     {
-        //ASSERT_WT();
+        ASSERT_RT();
 
-        // TODO KI unregister objects & geometries
+        m_elapsedTotal = 0.f;
+        m_remainder = 0.f;
 
+        m_invokeCount = 0;
+        m_stepCount = 0;
+
+        m_pending.clear();
+
+        m_freeIndeces.clear();
+
+        m_nodeHandles.clear();
+        m_entityIndeces.clear();
         m_objects.clear();
-        m_heightMaps.clear();
 
-        if (!shutdown) {
+        m_level = 0;
+        m_matrixLevels.clear();
+        m_updateObjects.clear();
+
+        m_rayId = 0;
+
+        m_heightMaps.clear();
+        m_heightMapIds.clear();
+        m_bodyToObject.clear();
+        m_handleToId.clear();
+
+        {
             // NOTE KI register NULL object
             registerObject({}, 0, false, {});
             m_heightMaps.emplace_back();
+
+            {
+                physics::Object obj{};
+                obj.m_geom.type = GeomType::ray;
+                obj.m_body.kinematic = true;
+                obj.m_geom.categoryMask = physics::mask(physics::Category::ray);
+                obj.m_geom.collisionMask = 0;
+                m_rayId = registerObject({}, 0, false, std::move(obj));
+            }
         }
-    }
 
-    void PhysicsSystem::shutdown()
-    {
-        ASSERT_WT();
+        {
+            auto& dbg = debug::DebugContext::modify();
+            auto& physicsDbg = dbg.m_physics;
 
-        clear(true);
+            m_meshGenerator->clear();
+
+            std::shared_ptr<std::vector<mesh::MeshInstance>> tmp;
+            physicsDbg.m_meshesWT.store(tmp);
+            physicsDbg.m_meshesPending.store(tmp);
+            physicsDbg.m_meshesRT.store(tmp);
+        }
     }
 
     void PhysicsSystem::prepare(std::shared_ptr<std::atomic<bool>> alive)
@@ -297,18 +334,7 @@ namespace physics
 
         dWorldSetGravity(m_worldId, m_gravity.x, m_gravity.y, m_gravity.z);
 
-        {
-            physics::Object obj{};
-            obj.m_geom.type = GeomType::ray;
-            obj.m_body.kinematic = true;
-            obj.m_geom.categoryMask = physics::mask(physics::Category::ray);
-            obj.m_geom.collisionMask = 0;
-            m_rayId = registerObject({}, 0, false, std::move(obj));
-        }
-
         m_meshGenerator = std::make_unique<physics::MeshGenerator>(*this);
-
-        //clear(false);
     }
 
     void PhysicsSystem::updatePrepare(const UpdateContext& ctx)

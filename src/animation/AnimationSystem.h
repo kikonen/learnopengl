@@ -53,13 +53,8 @@ namespace animation {
 
         ~AnimationSystem();
 
-        void clearWT();
-        void shutdownWT();
-        void prepareWT();
-
-        void clearRT();
-        void shutdownRT();
-        void prepareRT();
+        void clear();
+        void prepare();
 
         // Register joint instance specific rig
         // @return instance index into bone transform buffer

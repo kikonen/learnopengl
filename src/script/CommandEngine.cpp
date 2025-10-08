@@ -55,7 +55,7 @@ namespace script
 
     void CommandEngine::clear()
     {
-        //ASSERT_WT();
+        ASSERT_RT();
 
         {
             std::lock_guard lock{ m_pendingLock };
@@ -86,16 +86,9 @@ namespace script
         m_active.reserve(COMMANDS_SIZE);
     }
 
-    void CommandEngine::shutdown()
-    {
-        ASSERT_WT();
-
-        clear();
-    }
-
     void CommandEngine::prepare(Registry* registry)
     {
-        ASSERT_WT();
+        ASSERT_RT();
 
         clear();
     }

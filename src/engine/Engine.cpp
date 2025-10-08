@@ -92,8 +92,7 @@ int Engine::setup() {
         state.track(key);
     }
 
-    m_registry->prepareShared();
-    m_registry->prepareRT({ *this });
+    m_registry->prepare({ *this });
 
     m_batch = std::make_unique<render::Batch>();
     m_batch->prepareRT({ *this });

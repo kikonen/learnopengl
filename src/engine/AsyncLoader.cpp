@@ -42,6 +42,8 @@ void AsyncLoader::addLoader(
 {
     const auto& assets = Assets::get();
 
+    if (!*alive) return;
+
     if (!assets.asyncLoaderEnabled) {
         loader();
         return;

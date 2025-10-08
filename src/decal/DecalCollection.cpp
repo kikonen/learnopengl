@@ -49,9 +49,9 @@ namespace decal {
         m_decalBuffer->bind();
     }
 
-    void DecalCollection::clearWT()
+    void DecalCollection::clear()
     {
-        ASSERT_WT();
+        ASSERT_RT();
 
         m_updateReady = false;
 
@@ -62,44 +62,21 @@ namespace decal {
         m_activeCount = 0;
 
         m_decals.reserve(1 * BLOCK_SIZE);
+
+        m_decalBuffer->clear();
     }
 
-    void DecalCollection::shutdownWT()
+    void DecalCollection::prepare()
     {
-        ASSERT_WT();
-
-        clearWT();
-    }
-
-    void DecalCollection::prepareWT() {
-        ASSERT_WT();
+        ASSERT_RT();
 
         const auto& assets = Assets::get();
 
         m_maxCount = std::min<int>(assets.decalMaxCount, MAX_BLOCK_COUNT * BLOCK_SIZE);
 
-        clearWT();
-    }
-
-    void DecalCollection::clearRT()
-    {
-        ASSERT_RT();
-
-        m_decalBuffer->clear();
-    }
-
-    void DecalCollection::shutdownRT()
-    {
-        ASSERT_RT();
-
-        m_decalBuffer->shutdown();
-    }
-
-    void DecalCollection::prepareRT()
-    {
-        ASSERT_RT();
-
         m_decalBuffer->prepare();
+
+        clear();
     }
 
     void DecalCollection::addDecal(const Decal& decal)

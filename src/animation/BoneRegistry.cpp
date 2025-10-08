@@ -20,7 +20,7 @@ namespace animation
 
     void BoneRegistry::clear()
     {
-        ASSERT_WT();
+        ASSERT_RT();
 
         m_updateReady = false;
 
@@ -39,23 +39,16 @@ namespace animation
         addInstance(1);
     }
 
-    void BoneRegistry::shutdown()
-    {
-        ASSERT_WT();
-
-        clear();
-    }
-
     void BoneRegistry::prepare()
     {
-        ASSERT_WT();
+        ASSERT_RT();
 
         clear();
     }
 
     uint32_t BoneRegistry::addInstance(size_t count)
     {
-        ASSERT_WT();
+        //ASSERT_WT();
 
         if (count == 0) return 0;
 

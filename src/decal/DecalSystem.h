@@ -19,16 +19,10 @@ namespace decal {
         DecalSystem();
         ~DecalSystem();
 
-        void clearWT();
-        void shutdownWT();
-        void prepareWT();
+        void clear();
+        void prepare();
 
         void updateWT(const UpdateContext& ctx);
-
-        void clearRT();
-        void shutdownRT();
-        void prepareRT();
-
         void updateRT(const UpdateContext& ctx);
 
         void setEnabled(bool enabled) {

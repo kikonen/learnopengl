@@ -47,7 +47,6 @@
 #include "registry/SelectionRegistry.h"
 #include "registry/ControllerRegistry.h"
 
-#include "engine/SystemInit.h"
 #include "engine/PrepareContext.h"
 #include "engine/UpdateContext.h"
 #include "engine/UpdateViewContext.h"
@@ -543,7 +542,6 @@ void SampleApp::unloadScene()
     if (!m_currentScene) return;
     m_currentScene->destroy();
     m_registry->clear();
-    SystemInit::clear();
     m_currentScene = nullptr;
 }
 

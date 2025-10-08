@@ -23,7 +23,6 @@ namespace decal {
         ~DecalBuffer();
 
         void clear();
-        void shutdown();
         void prepare();
 
         void bind();

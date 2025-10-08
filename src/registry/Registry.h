@@ -29,18 +29,7 @@ public:
     ~Registry();
 
     void clear();
-
-    void clearShared();
-    void shutdownShared();
-    void prepareShared();
-
-    void clearWT();
-    void shutdownWT();
-    void prepareWT(const PrepareContext& ctx);
-
-    void clearRT();
-    void shutdownRT();
-    void prepareRT(const PrepareContext& ctx);
+    void prepare(const PrepareContext& ctx);
 
     void updateWT(const UpdateContext& ctx);
     void updateRT(const UpdateContext& ctx);

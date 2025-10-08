@@ -86,7 +86,7 @@ namespace script
 
     void ScriptSystem::clear()
     {
-        //ASSERT_WT();
+        ASSERT_RT();
 
         std::lock_guard lock(m_lock);
 
@@ -110,18 +110,11 @@ namespace script
         m_scripts.clear();
     }
 
-    void ScriptSystem::shutdown()
-    {
-        ASSERT_WT();
-
-        clear();
-    }
-
     void ScriptSystem::prepare(
         const PrepareContext& ctx,
         CommandEngine* commandEngine)
     {
-        ASSERT_WT();
+        ASSERT_RT();
 
         const auto& assets = ctx.getAssets();
 
