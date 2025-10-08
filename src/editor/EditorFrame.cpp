@@ -76,9 +76,9 @@ namespace editor {
     void EditorFrame::processInputs(
         const InputContext& ctx)
     {
-        //if (ImGui::IsKeyPressed(ImGuiKey_O) && ImGui::GetIO().KeyCtrl) {
-        //    onOpenScene({ ctx.getEngine() });
-        //}
+        if (ImGui::IsKeyPressed(ImGuiKey_O) && ImGui::GetIO().KeyCtrl) {
+            onLoadScene({ ctx.getEngine() });
+        }
 
         m_statusTool->processInputs(ctx);
         m_cameraTool->processInputs(ctx);
