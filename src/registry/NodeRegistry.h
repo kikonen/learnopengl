@@ -144,31 +144,37 @@ public:
 
     uint32_t getParentIndex(uint32_t entityIndex) const noexcept
     {
+        assert(entityIndex >= 0 && entityIndex < m_parentIndeces.size());
         return m_parentIndeces[entityIndex];
     }
 
     pool::NodeHandle getParentHandle(uint32_t entityIndex) const noexcept
     {
+        assert(entityIndex >= 0 && entityIndex < m_handles.size());
         return m_handles[m_parentIndeces[entityIndex]];
     }
 
     const model::Node* getParent(uint32_t entityIndex) const noexcept
     {
+        assert(entityIndex >= 0 && entityIndex < m_handles.size());
         return m_handles[m_parentIndeces[entityIndex]].toNode();
     }
 
     const model::NodeState& getParentState(uint32_t entityIndex) const noexcept
     {
+        assert(entityIndex >= 0 && entityIndex < m_states.size());
         return m_states[m_parentIndeces[entityIndex]];
     }
 
     model::NodeState& modifyState(uint32_t entityIndex) noexcept
     {
+        assert(entityIndex >= 0 && entityIndex < m_states.size());
         return m_states[entityIndex];
     }
 
     const model::NodeState& getState(uint32_t entityIndex) const noexcept
     {
+        assert(entityIndex >= 0 && entityIndex < m_states.size());
         return m_states[entityIndex];
     }
 
