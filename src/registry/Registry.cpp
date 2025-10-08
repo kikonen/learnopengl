@@ -71,9 +71,14 @@ void Registry::clear()
 {
     ASSERT_RT();
 
+    debug::DebugContext::modify().clear();
+
     nav::NavigationSystem::get().stop();
 
-    debug::DebugContext::modify().clear();
+    // NOTE KI must first release commands
+    // => they contain sol references
+    script::CommandEngine::get().clear();
+    script::ScriptSystem::get().stop();
 
     //FileEntryCache::get().clear();
 
@@ -98,33 +103,13 @@ void Registry::clear()
     text::TextSystem::get().clear();
     //text::FontRegistry::get().clear();
 
-    script::CommandEngine::get().clear();
-    script::ScriptSystem::get().clear();
-
     ControllerRegistry::get().clear();
     ModelRegistry::get().clear();
     EntityRegistry::get().clear();
-    ViewportRegistry::get().clear();
     SelectionRegistry::get().clear();
-    VaoRegistry::get().clear();
-
-    physics::PhysicsSystem::get().clear();
-    audio::AudioSystem::get().clear();
-
-    ControllerRegistry::get().clear();
-
-    script::CommandEngine::get().clear();
-    script::ScriptSystem::get().clear();
-
-    animation::AnimationSystem::get().clear();
-
-    decal::DecalSystem::get().clear();
-
-    text::TextSystem::get().clear();
-
-    VaoRegistry::get().clear();
 
     ViewportRegistry::get().clear();
+    VaoRegistry::get().clear();
 }
 
 void Registry::prepare(const PrepareContext& ctx)
@@ -154,7 +139,7 @@ void Registry::prepare(const PrepareContext& ctx)
     terrain::TerrainTileRegistry::get().prepare();
 
     script::CommandEngine::get().prepare(this);
-    script::ScriptSystem::get().prepare(ctx, &script::CommandEngine::get());
+    script::ScriptSystem::get().prepare(&script::CommandEngine::get());
 
     text::TextSystem::get().prepare();
     VaoRegistry::get().prepare();

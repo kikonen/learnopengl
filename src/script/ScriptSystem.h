@@ -48,9 +48,10 @@ namespace script
 
         ~ScriptSystem();
 
-        void clear();
+        void stop();
+        void start();
+
         void prepare(
-            const PrepareContext& ctx,
             CommandEngine* commandEngine);
 
         void update(const UpdateContext& ctx);
@@ -109,9 +110,9 @@ namespace script
         sol::protected_function_result execRepl(
             const std::string& script);
 
-        inline sol::state& getLua() noexcept{ return m_lua; }
+        inline sol::state& getLua() noexcept{ return *m_lua; }
 
-    private:
+        private:
         void createNodeState(
             const model::Node* node);
 
@@ -137,15 +138,13 @@ namespace script
     private:
         CommandEngine* m_commandEngine{ nullptr };
 
-        sol::state m_lua;
+        std::unique_ptr<sol::state> m_lua;
 
         std::unique_ptr<api::SceneAPI> m_sceneApi;
-
         std::unique_ptr<api::NodeAPI> m_nodeApi;
         std::unique_ptr<api::NodeCommandAPI> m_nodeCommandApi;
 
         std::unordered_map<pool::TypeHandle, std::unordered_map<script::script_id, ScriptEntry>> m_scriptEntries;
-
         std::unordered_map<script::script_id, script::ScriptFile> m_scripts;
 
         std::mutex m_lock{};

@@ -76,51 +76,39 @@ namespace script
 namespace script
 {
     ScriptSystem::ScriptSystem()
-        : m_sceneApi{ std::make_unique<api::SceneAPI>() }
+        : m_sceneApi{ std::make_unique<api::SceneAPI>() },
+        m_nodeApi{ std::make_unique<api::NodeAPI>() }
     {
+        //m_utilApi = std::make_unique<UtilAPI>();
     }
 
     ScriptSystem::~ScriptSystem()
     {
     }
 
-    void ScriptSystem::clear()
+    void ScriptSystem::stop()
     {
         ASSERT_RT();
-
-        std::lock_guard lock(m_lock);
-
-        // TODO KI clear scriptlets from Lua
-        if (m_commandEngine) {
-            for (auto& [nodeId, entries] : m_scriptEntries) {
-                for (auto& [scriptId, fnName] : entries) {
-                    unregisterScriptEntry(fnName);
-                }
-            }
-
-            sol::table states = getLua()[TABLE_STATES];
-            for (auto& state : states) {
-
-            }
-        }
 
         m_scriptEntries.clear();
-        //m_nodeScripts.clear();
-
         m_scripts.clear();
+
+        m_nodeCommandApi = nullptr;
+
+        m_lua = nullptr;
     }
 
-    void ScriptSystem::prepare(
-        const PrepareContext& ctx,
-        CommandEngine* commandEngine)
+    void ScriptSystem::start()
     {
         ASSERT_RT();
 
-        const auto& assets = ctx.getAssets();
+        const auto& assets = Assets::get();
 
-        m_commandEngine = commandEngine;
+        stop();
 
-        //m_utilApi = std::make_unique<UtilAPI>();
+        m_lua = std::make_unique<sol::state>();
+
+        m_nodeCommandApi = std::make_unique<api::NodeCommandAPI>(m_commandEngine);
 
         auto& lua = getLua();
 
@@ -146,7 +134,7 @@ namespace script
                 util::joinPath({ assets.rootDir, assets.sceneDir, "lib", "?.lua" }),
             };
 
-            const auto notEmpty = [](const std::string& s){ return !s.empty(); };
+            const auto notEmpty = [](const std::string& s) { return !s.empty(); };
             auto filtered = paths | std::views::filter(notEmpty);
 
             const auto packagePath = util::join(
@@ -164,12 +152,16 @@ namespace script
         lua[TABLE_TMP] = lua.create_table_with();
 
         lua[TABLE_SCENE] = std::ref(m_sceneApi);
-
-        m_nodeApi = std::make_unique<api::NodeAPI>();
         lua[API_NODE] = std::ref(m_nodeApi);
-
-        m_nodeCommandApi = std::make_unique<api::NodeCommandAPI>(m_commandEngine);
         lua[API_CMD] = std::ref(m_nodeCommandApi);
+    }
+
+    void ScriptSystem::prepare(
+        CommandEngine* commandEngine)
+    {
+        ASSERT_RT();
+
+        m_commandEngine = commandEngine;
     }
 
     void ScriptSystem::update(const UpdateContext& ctx)

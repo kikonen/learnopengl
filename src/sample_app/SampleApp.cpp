@@ -36,6 +36,8 @@
 #include "script/command/SelectNode.h"
 #include "script/command/RayCast.h"
 
+#include "script/ScriptSystem.h"
+
 #include "event/Dispatcher.h"
 
 #include "mesh/LodMesh.h"
@@ -530,13 +532,14 @@ std::shared_ptr<Scene> SampleApp::loadScene(
     }
 
     if (m_loader) {
-        KI_INFO_OUT(fmt::format("LOAD_SCENE: {}", m_loader->m_ctx->str()));
-        m_loader->prepare(getRegistry());
-        m_loader->load();
+        nav::NavigationSystem::get().start();
+        script::ScriptSystem::get().start();
     }
 
     if (m_loader) {
-        nav::NavigationSystem::get().start();
+        KI_INFO_OUT(fmt::format("LOAD_SCENE: {}", m_loader->m_ctx->str()));
+        m_loader->prepare(getRegistry());
+        m_loader->load();
     }
 
     return scene;
