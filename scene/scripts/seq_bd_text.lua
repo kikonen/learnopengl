@@ -30,6 +30,7 @@ local function animation(self)
     wid = cmd:wait({ after=cid, time=5 })
 
     cid = cmd:emit(
+      self.handle,
       { after=wid },
       { type=Event.SCRIPT_RESUME, listener=listener_id})
   end
