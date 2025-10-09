@@ -524,6 +524,8 @@ void Scene::render(const render::RenderContext& ctx)
 
     ctx.updateClipPlanesUBO();
 
+    updateLightsUBO();
+
     if (m_shadowMapRenderer->render(ctx)) {
         renderCount++;
         m_shadowMapRenderer->bindTexture(ctx.getGLState());
