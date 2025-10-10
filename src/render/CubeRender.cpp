@@ -57,6 +57,8 @@ namespace render {
 
             for (unsigned int face = 0; face < 6; ++face)
             {
+                program->bind();
+
                 //program->setMat4("view", captureViews[face]);
                 auto projected = captureProjection * captureViews[face];
                 program->setMat4("projected", projected);

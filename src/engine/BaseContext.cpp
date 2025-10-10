@@ -14,6 +14,11 @@
 
 #include "scene/Scene.h"
 
+namespace
+{
+    render::Camera DEFAULT_CAMERA{};
+}
+
 BaseContext::BaseContext(
     Engine& engine)
     : m_engine{ engine }
@@ -69,10 +74,12 @@ render::RenderContext BaseContext::toRenderContext() const
 
     auto* scene = m_engine.getCurrentScene().get();
 
-    render::Camera* camera;
+    render::Camera* camera = &DEFAULT_CAMERA;
     {
         auto* cameraNode = scene->getActiveCameraNode();
-        camera = &cameraNode->m_camera->getCamera();
+        if (cameraNode) {
+            camera = &cameraNode->m_camera->getCamera();
+        }
     }
 
     render::RenderContext ctx{

@@ -17,12 +17,15 @@
 
 #include "render/TextureCube.h"
 #include "render/RenderContext.h"
+#include "render/FrameBuffer.h"
+#include "render/ScreenTri.h"
 
 #include "registry/Registry.h"
 
 
 namespace {
     inline const std::string SHADER_PREFILTER_CUBE_MAP{ "prefilter_cube_map" };
+    inline const std::string SHADER_FLAT_CUBE_MAP{ "flat_cube_map" };
 
     constexpr unsigned int MAX_MIP_LEVELS = 5;
 }
@@ -88,6 +91,8 @@ namespace render {
         int cubeTextureID,
         int baseSize)
     {
+        auto& state = kigl::GLState::get();
+
         const glm::mat4 captureProjection = glm::perspective(glm::radians(90.0f), 1.0f, 0.1f, 10.0f);
         const glm::mat4 captureViews[] =
         {
@@ -148,6 +153,46 @@ namespace render {
 
                 cube.draw();
             }
+        }
+
+        {
+            auto* program = Program::get(ProgramRegistry::get().getProgram(SHADER_FLAT_CUBE_MAP));
+
+            program->prepareRT();
+            program->bind();
+            state.bindTexture(UNIT_EDITOR_CUBE_MAP, m_cubeTexture, false);
+
+            const glm::ivec2 flatSize{ m_size * 4 * 0.25f, m_size * 3 * 0.25f };
+
+            std::unique_ptr<render::FrameBuffer> captureFBO{ nullptr };
+            {
+                auto buffer = new render::FrameBuffer(
+                    "captureFBO",
+                    {
+                        flatSize.x, flatSize.y,
+                        {
+                        //render::FrameBufferAttachment::getDrawBuffer(),
+                        render::FrameBufferAttachment::getTextureRGBA(GL_COLOR_ATTACHMENT0),
+                        render::FrameBufferAttachment::getDepthRbo(),
+                    }
+                    });
+                captureFBO.reset(buffer);
+                captureFBO->prepare();
+            }
+
+            glViewport(0, 0, flatSize.x, flatSize.y);
+            glBindFramebuffer(GL_DRAW_FRAMEBUFFER, *captureFBO);
+            captureFBO->clearAll();
+
+            render::ScreenTri tri;
+            tri.draw();
+
+            auto& att = captureFBO->m_spec.attachments[0];
+            m_flatTexture = att.textureID;
+            att.textureID = 0;
+            att.createdTexture = false;
+
+            state.unbindTexture(UNIT_EDITOR_CUBE_MAP, m_cubeTexture);
         }
     }
 }

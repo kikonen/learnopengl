@@ -130,6 +130,8 @@ inline constexpr int UNIT_SSAO = 46;
 inline constexpr int UNIT_SSAO_BLUR = 47;
 inline constexpr int UNIT_NOISE = 48;
 
+inline constexpr int UNIT_EDITOR_CUBE_MAP = 50;
+
 // https://registry.khronos.org/OpenGL-Refpages/gl4/html/glActiveTexture.xhtml
 inline constexpr int UNIT_WATER_NOISE = 64;
 inline constexpr int UNIT_WATER_REFLECTION = 65;

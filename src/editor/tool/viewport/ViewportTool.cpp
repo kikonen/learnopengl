@@ -22,12 +22,20 @@
 #include "event/Dispatcher.h"
 
 #include "model/Viewport.h"
+#include "model/Node.h"
+#include "model/NodeType.h"
+
+#include "shader/Shader.h"
+#include "shader/Program.h"
+#include "shader/ProgramRegistry.h"
 
 #include "render/RenderContext.h"
 #include "render/FrameBuffer.h"
+#include "render/ScreenTri.h"
 #include "render/NodeDraw.h"
 
 #include "scene/Scene.h"
+#include "scene/SkyboxMaterial.h"
 
 #include "renderer/ObjectIdRenderer.h"
 #include "renderer/WaterMapRenderer.h"
@@ -35,7 +43,13 @@
 #include "renderer/CubeMapRenderer.h"
 #include "renderer/ShadowMapRenderer.h"
 
+#include "registry/NodeRegistry.h"
+
 #include "editor/EditorFrame.h"
+
+namespace {
+    inline const std::string SHADER_FLAT_CUBE_MAP{ "flat_cube_map" };
+}
 
 namespace editor
 {
@@ -52,6 +66,10 @@ namespace editor
         if (ImGui::CollapsingHeader("Viewport"))
         {
             renderBufferDebug(ctx);
+        }
+        if (ImGui::CollapsingHeader("Skybox material"))
+        {
+            renderSkyboxDebug(ctx);
         }
     }
 
@@ -320,6 +338,151 @@ namespace editor
 
             //    bufferIndex++;
             //}
+        }
+    }
+
+    void ViewportTool::renderSkyboxDebug(
+        const gui::FrameContext& ctx)
+    {
+        const auto& assets = Assets::get();
+
+        auto* scene = ctx.getScene();
+        if (!scene) return;
+
+        auto& nodeRegistry = NodeRegistry::get();
+        auto* node = nodeRegistry.m_skybox.toNode();
+        if (!node) return;
+
+        auto* type = node->getType();
+        auto* material = type->getCustomMaterial<SkyboxMaterial>();
+        if (!material) return;
+
+        const auto& renderCtx = ctx.toRenderContext();
+
+        auto& window = m_editor.getWindow();
+        constexpr float scrollbarPadding = 0.f;
+
+        ImGuiTreeNodeFlags tnFlags = ImGuiTreeNodeFlags_SpanAvailWidth;
+
+        //GLuint getEnvironmentCubeMapTextureId() const;
+        //GLuint getSkyboxCubeMapTextureId() const;
+        //GLuint getIrradianceTextureId() const;
+        //GLuint getPrefilterCubeMapTextureId() const;
+        //GLuint getBrdfLutTextureId() const;
+
+        auto imageTex = [&ctx, &renderCtx](GLuint textureId) {
+            const float aspectRatio = renderCtx.m_aspectRatio;
+            const glm::uvec2 resolution = renderCtx.m_resolution;
+
+            ImVec2 availSize = ImGui::GetContentRegionAvail();
+
+            // NOTE KI allow max half window size
+            float w = std::min(availSize.x, resolution.x / 2.f) - scrollbarPadding;
+            float h = w / aspectRatio;
+            w = h;
+
+            ImGui::Image(
+                textureId,
+                ImVec2{ w, h },
+                ImVec2{ 0, 1 }, // uv1
+                ImVec2{ 1, 0 }, // uv2
+                ImVec4{ 1, 1, 1, 1 }, // tint_col
+                ImVec4{ 1, 1, 1, 1 }  // border_col
+            );
+        };
+
+        auto cubeTex = [&ctx, &renderCtx](GLuint cubeMapTextureId) {
+            const float aspectRatio = renderCtx.m_aspectRatio;
+            const glm::uvec2 resolution = renderCtx.m_resolution;
+
+            ImVec2 availSize = ImGui::GetContentRegionAvail();
+
+            // NOTE KI allow max half window size
+            float w = std::min(availSize.x, resolution.x / 2.f) - scrollbarPadding;
+            float h = w / aspectRatio;
+            w = h;
+
+            {
+                auto& state = kigl::GLState::get();
+                auto* program = Program::get(ProgramRegistry::get().getProgram(SHADER_FLAT_CUBE_MAP));
+
+                program->prepareRT();
+                program->bind();
+                state.bindTexture(UNIT_EDITOR_CUBE_MAP, cubeMapTextureId, false);
+
+                int size = 512;
+                const glm::ivec2 flatSize{ size * 4 * 0.25f, size * 3 * 0.25f };
+
+                std::unique_ptr<render::FrameBuffer> captureFBO{ nullptr };
+                {
+                    auto buffer = new render::FrameBuffer(
+                        "captureFBO",
+                        {
+                            flatSize.x, flatSize.y,
+                            {
+                            //render::FrameBufferAttachment::getDrawBuffer(),
+                            render::FrameBufferAttachment::getTextureRGBA(GL_COLOR_ATTACHMENT0),
+                            render::FrameBufferAttachment::getDepthRbo(),
+                        }
+                        });
+                    captureFBO.reset(buffer);
+                    captureFBO->prepare();
+                }
+
+                glViewport(0, 0, flatSize.x, flatSize.y);
+                glBindFramebuffer(GL_DRAW_FRAMEBUFFER, *captureFBO);
+                captureFBO->clearAll();
+
+                render::ScreenTri tri;
+                tri.draw();
+
+
+                auto& att = captureFBO->m_spec.attachments[0];
+                GLuint flatTextureId = att.textureID;
+                //att.textureID = 0;
+                //att.createdTexture = false;
+
+                state.unbindTexture(UNIT_EDITOR_CUBE_MAP, cubeMapTextureId);
+
+                ImGui::Image(
+                    flatTextureId,
+                    ImVec2{ w, h },
+                    ImVec2{ 0, 1 }, // uv1
+                    ImVec2{ 1, 0 }, // uv2
+                    ImVec4{ 1, 1, 1, 1 }, // tint_col
+                    ImVec4{ 1, 1, 1, 1 }  // border_col
+                );
+            }
+        };
+
+        if (ImGui::TreeNodeEx("BrdfLut Tex", tnFlags)) {
+            imageTex(material->getBrdfLutTextureId());
+            ImGui::TreePop();
+        }
+
+        if (ImGui::TreeNodeEx("HDRI Tex", tnFlags)) {
+            imageTex(material->getHdriTextureId());
+            ImGui::TreePop();
+        }
+
+        if (ImGui::TreeNodeEx("Environment Map", tnFlags)) {
+            imageTex(material->getEnvironmentFlatTextureId());
+            ImGui::TreePop();
+        }
+
+        if (ImGui::TreeNodeEx("Prefilter Map", tnFlags)) {
+            imageTex(material->getPrefilterFlatTextureId());
+            ImGui::TreePop();
+        }
+
+        if (ImGui::TreeNodeEx("Irradiance Map", tnFlags)) {
+            imageTex(material->getIrradianceFlatTextureId());
+            ImGui::TreePop();
+        }
+
+        if (ImGui::TreeNodeEx("Skybox Map", tnFlags)) {
+            imageTex(material->getSkyboxFlatTextureId());
+            ImGui::TreePop();
         }
     }
 }

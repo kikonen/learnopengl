@@ -128,6 +128,7 @@ namespace render {
 
     void TextureCube::drawInstanced(int instanceCount)
     {
+        kigl::GLState::get().bindVAO(m_vao);
         glDrawArraysInstanced(GL_TRIANGLES, 0, 36, instanceCount);
     }
 }

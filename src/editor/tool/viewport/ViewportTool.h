@@ -22,6 +22,9 @@ namespace editor
         void renderBufferDebug(
             const gui::FrameContext& ctx);
 
+        void renderSkyboxDebug(
+            const gui::FrameContext& ctx);
+
     private:
         ViewportToolState m_state;
     };

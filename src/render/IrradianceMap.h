@@ -39,6 +39,7 @@ namespace render {
         int m_size{ 0 };
 
         kigl::GLTextureHandle m_cubeTexture;
+        kigl::GLTextureHandle m_flatTexture;
 
         int m_envCubeMapID{ 0 };
     };

@@ -43,6 +43,56 @@ SkyboxMaterial::SkyboxMaterial(
 {
 }
 
+GLuint SkyboxMaterial::getHdriTextureId() const
+{
+    return m_hdriTexture.m_texture.m_textureID;
+}
+
+GLuint SkyboxMaterial::getBrdfLutTextureId() const
+{
+    return m_brdfLutTexture.m_texture.m_textureID;
+}
+
+GLuint SkyboxMaterial::getIrradianceCubeMapTextureId() const
+{
+    return m_irradianceMap.m_cubeTexture.m_textureID;
+}
+
+GLuint SkyboxMaterial::getPrefilterCubeMapTextureId() const
+{
+    return m_prefilterMap.m_cubeTexture.m_textureID;
+}
+
+GLuint SkyboxMaterial::getEnvironmentCubeMapTextureId() const
+{
+    return m_environmentMap.m_cubeTexture.m_textureID;
+}
+
+GLuint SkyboxMaterial::getSkyboxCubeMapTextureId() const
+{
+    return m_skyboxMap.m_cubeTexture.m_textureID;
+}
+
+GLuint SkyboxMaterial::getIrradianceFlatTextureId() const
+{
+    return m_irradianceMap.m_flatTexture.m_textureID;
+}
+
+GLuint SkyboxMaterial::getPrefilterFlatTextureId() const
+{
+    return m_prefilterMap.m_flatTexture.m_textureID;
+}
+
+GLuint SkyboxMaterial::getEnvironmentFlatTextureId() const
+{
+    return m_environmentMap.m_flatTexture.m_textureID;
+}
+
+GLuint SkyboxMaterial::getSkyboxFlatTextureId() const
+{
+    return m_skyboxMap.m_flatTexture.m_textureID;
+}
+
 void SkyboxMaterial::prepareRT(
     const PrepareContext& ctx)
 {

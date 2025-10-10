@@ -34,6 +34,19 @@ public:
 
     virtual void bindTextures(kigl::GLState& state) override;
 
+    GLuint getHdriTextureId() const;
+    GLuint getBrdfLutTextureId() const;
+
+    GLuint getIrradianceCubeMapTextureId() const;
+    GLuint getPrefilterCubeMapTextureId() const;
+    GLuint getEnvironmentCubeMapTextureId() const;
+    GLuint getSkyboxCubeMapTextureId() const;
+
+    GLuint getIrradianceFlatTextureId() const;
+    GLuint getPrefilterFlatTextureId() const;
+    GLuint getEnvironmentFlatTextureId() const;
+    GLuint getSkyboxFlatTextureId() const;
+
 private:
     void prepareFaces(
         const PrepareContext& ctx);
