@@ -26,6 +26,7 @@ types:
 nodes:
   - type: player
     pos: [0, 5, 25]
+    active: true
   - type: wyvern
     pos: [0.0, 0, 0]
     scale: 2
