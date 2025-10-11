@@ -1,0 +1,106 @@
+---
+name: Origo
+skybox:
+  program: g_skybox
+  material: skybox/polyhaven/drakensberg_solitary_mountain_2k.hdr
+script:
+  scripts:
+    - path: lib/common
+nodes:
+  - name: Player
+    id: player
+    type: origo
+    pos: [0, 1, 15]
+    front: [0, 0, -1]
+    active: true
+    audio:
+      listener:
+        default: true
+    controllers:
+      - type: pawn
+  - name: Player Camera
+    parent_id: player
+    type: origo
+    camera:
+      default: true
+    controllers:
+      - type: camera_zoom
+  - name: Directional light
+    type: origo
+    mesh:
+      path: light
+    program: g_light
+    pos: [-15, 25, 25]
+    render_flags:
+      no_shadow: true
+    light:
+      type: directional
+      diffuse: [0.7, 0.7, 0.7, 1.0]
+      intensity: 30000
+  - name: origo
+    mesh:
+      path: water_ball
+      material:
+        name: default_ball
+        kd: [0.0, 0.2, 0.8, 1.0]
+        metal: [0.2, 0.1, 0.0, 1.0]
+    program: g_tex
+    pos: [0.0, 0.0, 0.0]
+    scale: 0.05
+  - xname: Cube map
+    type: origo
+    pos: [0, 5, 10]
+    render_flags:
+      cube_map: true
+  - name: wooden floor
+    mesh:
+      path: plane
+      material:
+        name: wood_floor
+        map_pbr: textures\Planks 09 [8K]
+        tiling: 60
+        render_back: true
+    program: g_tex
+    position: [0, 0, 0]
+    render_flags:
+      no_shadow: true
+    scale: 100
+  - id: orc_{t}
+    meshes:
+      - path: fbx\creatures\Orc\FBX Files\SK_Orc.FBX
+        xsockets:
+          - joint: SM_Helmet
+        lods:
+          - flags:
+              use_bones: true
+              xuse_animation: true
+              z_up: true
+          - name: SK_OrcBody
+            flags:
+              use_bones: true
+              use_animation: true
+              z_up: true
+        xmaterials:
+          - name: M_Armor
+            map_kd: ..\textures\T_ChestArmor_BaseColor.jpg
+            map_bump: ..\textures\T_ChestArmor_Normal.jpg
+            map_metalness: ..\textures\T_ChestArmor_MetallicSmoothness_1024.png
+        animations:
+          - name: walk
+            path: Orc@Walk.FBX
+    xattachments:
+      - name: SM_Helmet
+        socket: SM_Helmet
+    program: g_tex
+    shadow_program: simple_depth
+    xpos: [0.0, 3.0, 0.0]
+    pos: [0.0, 0.0, 0.0]
+    xrotation: [0, 0, 0]
+    xbase_rotation: [-90, 0, 0]
+    scale: 0.01
+    xbase_scale: 0.01
+    xrepeat:
+      x_count: 2
+      z_count: 2
+      x_step: 10
+      z_step: -10

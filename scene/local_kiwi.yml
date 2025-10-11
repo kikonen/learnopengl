@@ -1,0 +1,240 @@
+---
+name: Origo
+skybox:
+  program: g_skybox
+  xmaterial: skybox/polyhaven/drakensberg_solitary_mountain_2k.hdr
+  material: skybox/polyhaven/wasteland_clouds_puresky_2k.hdr
+script:
+  scripts:
+    - path: lib/common
+entities:
+  - id: player
+    type: origo
+    pos: [0, 1, 15]
+    front: [0, 0, -1]
+    active: true
+    audio:
+      listener:
+        default: true
+    controllers:
+      - type: pawn
+  - name: Player Camera
+    parent_id: player
+    type: origo
+    camera:
+      default: true
+    controllers:
+      - type: camera_zoom
+  - name: Directional light
+    type: origo
+    pos: [-15, 25, 25]
+    xmodel:
+      mesh: light
+    program: g_light
+    render_flags:
+      no_shadow: true
+    light:
+      type: directional
+      diffuse: [0.7, 0.7, 0.7, 1.0]
+      intensity: 50000
+  - xname: Cube map
+    type: origo
+    pos: [0, 5, 10]
+    render_flags:
+      cube_map: true
+  - name: wooden floor
+    model:
+      mesh: plane
+      material:
+        name: wood_floor
+        map_pbr: textures\Planks 09 [8K]
+        tiling: 60
+    xxmodel: woodwall
+    program: g_tex
+    position: [0, 0, 0]
+    render_flags:
+      render_back: true
+      no_shadow: true
+    scale: 100
+  - xid: object
+    model:
+      mesh: texture_cube_4/texture_cube_4.fbx
+    program: g_tex
+    shadow_program: simple_depth
+    pos: [0.0, 3.0, 0.0]
+    rotation: [0, 0, 0]
+    base_rotation: [0, 0, 0]
+    scale: 1
+    base_scale: 0.01
+    render_flags:
+      xrender_back: true
+      xwireframe: true
+      xuse_bones: true
+      xuse_bones_debug: true
+      xuse_animation: true
+  - xid: object_{t}
+    model:
+      mesh: fbx\characters\viking/SK_Viking_M01_Warrior_Compiled.FBX
+      materials:
+        - name: viking_head_pbr
+          alias: MI_Human_Eye01
+          map_pbr: fbx\characters\viking\viking_head_pbr
+        - name: viking_head_pbr
+          alias: MI_Human_M01_Eye_AO_Head01
+          map_pbr: fbx\characters\viking\viking_upper_pbr
+        - name: viking_hair_pbr
+          alias: MI_Viking_M01_Hair08_Brown
+          map_pbr: fbx\characters\viking\viking_hair_pbr
+        - name: viking_upper_pbr
+          alias: MI_Viking_M01_Warrior_Upper_01
+          map_pbr: fbx\characters\viking\viking_upper_pbr
+        - name: viking_lower_pbr
+          alias: Fbx Default Material 4
+          map_pbr: fbx\characters\viking\viking_lower_pbr
+    program: g_tex
+    shadow_program: simple_depth
+    pos: [0.0, 0.0, 0.0]
+    rotation: [0, 0, 0]
+    base_rotation: [-90, 0, 0]
+    scale: 1
+    base_scale: 0.01
+    render_flags:
+      alpha: true
+      render_back: true
+      xwireframe: true
+      xuse_bones: true
+      xuse_bones_debug: true
+      xuse_animation: true
+    repeat:
+      x_count: 10
+      z_count: 10
+      x_step: 7
+      z_step: -7
+  - xid: house_{t}
+    model:
+      mesh: fbx\scenery\building\SM_HouseBuilding_001_a.FBX
+      material:
+        name: graffiti_pbr
+        map_pbr: textures/Graffiti
+    program: g_tex
+    shadow_program: simple_depth
+    pos: [0.0, 0.1, 0.0]
+    rotation: [0, 0, 0]
+    base_rotation: [-90, 0, 0]
+    scale: 1
+    base_scale: 0.01
+    render_flags:
+      alpha: true
+      render_back: true
+      xwireframe: true
+      xuse_bones: true
+      xuse_bones_debug: true
+      xuse_animation: true
+    repeat:
+      x_count: 10
+      z_count: 10
+      x_step: 20
+      z_step: -20
+  - xid: object_{t}
+    model:
+      mesh: fbx\scenery\props\SM_Prop_SpellBook_Chained_01.fbx
+      material:
+        name: wood_pbr
+        map_pbr: fbx\scenery\structures\wood_pbr
+    program: g_tex
+    shadow_program: simple_depth
+    pos: [0.0, 0.1, 0.0]
+    rotation: [0, 0, 0]
+    base_rotation: [-90, 0, 0]
+    scale: 100
+    base_scale: 0.01
+    render_flags:
+      alpha: true
+      render_back: true
+      xwireframe: true
+      xuse_bones: true
+      xuse_bones_debug: true
+      xuse_animation: true
+    repeat:
+      x_count: 10
+      z_count: 10
+      x_step: 20
+      z_step: -20
+  - xid: object_{t}
+    model:
+      mesh: fbx\characters\02_Neutral_F\Neutral_F.Fbx
+      materials:
+        - name: Std_Skin_Head
+          alias: Std_Skin_Head
+          map_pbr: fbx\characters\02_Neutral_F\textures\Neutral_F\Neutral_F\CC_Base_Body\Std_Skin_Head
+        - name: Std_Eyelash
+          alias: Std_Eyelash
+          map_pbr: fbx\characters\02_Neutral_F\textures\Neutral_F\Neutral_F\CC_Base_Body\Std_Eyelash
+        - name: Std_Skin_Body
+          alias: Std_Skin_Body
+          map_pbr: fbx\characters\02_Neutral_F\textures\Neutral_F\Neutral_F\CC_Base_Body\Std_Skin_Body
+        - name: Std_Skin_Arm
+          alias: Std_Skin_Arm
+          map_pbr: fbx\characters\02_Neutral_F\textures\Neutral_F\Neutral_F\CC_Base_Body\Std_Skin_Arm
+        - name: Std_Skin_Leg
+          alias: Std_Skin_Leg
+          map_pbr: fbx\characters\02_Neutral_F\textures\Neutral_F\Neutral_F\CC_Base_Body\Std_Skin_Leg
+    program: g_tex
+    shadow_program: simple_depth
+    pos: [0.0, 0.1, 0.0]
+    rotation: [0, 0, 0]
+    base_rotation: [-90, 0, 0]
+    scale: 1
+    base_scale: 0.01
+    render_flags:
+      alpha: true
+      blend_oit: true
+      xrender_back: true
+      xwireframe: true
+      xuse_bones: true
+      xuse_bones_debug: true
+      xuse_animation: true
+    repeat:
+      x_count: 10
+      z_count: 10
+      x_step: 20
+      z_step: -20
+  - id: vampire_{t}
+    meshes:
+      - path: fbx\creatures\Vampire\FBX Files\SK_Vampire.FBX
+        sockets:
+          - xname: head
+            joint: SkeletonKnight_ Head
+            xxoffset: [0, 0, 0]
+            xrotation: [0, 0, 45]
+        lods:
+          - name: skeleton_knight
+            flags:
+              use_bones: true
+              xuse_bones_debug: true
+              use_animation: true
+              z_up: true
+        materials:
+          - name: M_Armor
+            map_kd: textures\T_ChestArmor_BaseColor.jpg
+            map_bump: textures\T_ChestArmor_Normal.jpg
+            map_metalness: textures\T_ChestArmor_MetallicSmoothness_1024.png
+        animations:
+          - name: walk
+            path: anim/SkeletonKnight@2HandedWalk.FBX
+    attachments:
+      - xname: SM_Helmet
+        socket: head
+    program: g_tex
+    shadow_program: simple_depth
+    xpos: [0.0, 3.0, 0.0]
+    pos: [0.0, 0.0, 0.0]
+    xrotation: [0, 0, 0]
+    xbase_rotation: [-180, 0, 0]
+    scale: 0.01
+    xbase_scale: 0.01
+    xrepeat:
+      x_count: 2
+      z_count: 2
+      x_step: 10
+      z_step: -10

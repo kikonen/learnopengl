@@ -1,0 +1,72 @@
+---
+name: Origo
+skybox:
+  program: g_skybox
+  material: skybox/polyhaven/drakensberg_solitary_mountain_2k.hdr
+script:
+  scripts:
+    - path: lib/common
+nodes:
+  - id: player
+    type: origo
+    pos: [0, 1, 15]
+    front: [0, 0, -1]
+    active: true
+    audio:
+      listener:
+        default: true
+    controllers:
+      - type: pawn
+  - id: player_camera
+    parent_id: player
+    type: origo
+    camera:
+      default: true
+    controllers:
+      - type: camera_zoom
+  - name: Directional light
+    type: origo
+    pos: [-20, 25, 25]
+    mesh:
+      path: light
+    program: g_light
+    render_flags:
+      no_shadow: true
+    light:
+      type: directional
+      diffuse: [0.7, 0.7, 0.7, 1.0]
+      intensity: 30000
+  - xname: Cube map
+    type: origo
+    pos: [0, 5, 10]
+    render_flags:
+      cube_map: true
+  - id: wooden_floor
+    prefab:
+      path: prefab/scenery/prefab_wooden_floor.yml
+    scale: 100
+    position: [0, 0, 0]
+  - xid: object
+    mesh:
+      #path: texture_cube_4/texture_cube_4.fbx
+      #path: fbx/chracters/SK_Character_Grandpa.fbx
+      path: fbx/chracters/SK_Character_PunkGuy.fbx
+      flags:
+        xuse_bones: true
+        xuse_bones_debug: true
+        xuse_animation: true
+      material:
+        name: skin
+        xmap_kd: skaterMaleA.png
+        map_kd: Polygon_City_Characters_Texture_01_C.png
+        map_kd: skaterMaleA.png
+        metal: [0.3, 0.4, 0, 1]
+        xtiling: 60
+        xrender_back: true
+        xwireframe: true
+        program: g_tex
+        shadow_program: simple_depth
+      base_scale: 0.025
+      base_rotation: [180, 0, 0]
+    pos: [0.0, 0.0, 0.0]
+    rotation: [0, 0, 0]

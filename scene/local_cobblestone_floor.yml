@@ -1,0 +1,172 @@
+---
+name: Origo
+skybox:
+  program: g_skybox
+  material: skybox/polyhaven/drakensberg_solitary_mountain_2k.hdr
+script:
+  scripts:
+    - path: lib/common
+nodes:
+  - id: player
+    type: origo
+    pos: [0, 1, 1]
+    front: [0, 0, -1]
+    active: true
+    audio:
+      listener:
+        default: true
+    controllers:
+      - type: pawn
+  - id: player_camera
+    parent_id: player
+    type: origo
+    camera:
+      default: true
+    controllers:
+      - type: camera_zoom
+  - name: Directional light
+    type: origo
+    pos: [-20, 25, 25]
+    mesh:
+      path: light
+    program: g_light
+    render_flags:
+      no_shadow: true
+    light:
+      type: directional
+      diffuse: [0.7, 0.7, 0.7, 1.0]
+      intensity: 30000
+  - xname: Cube map
+    type: origo
+    pos: [0, 5, 10]
+    render_flags:
+      cube_map: true
+  - id: cobblestones
+    prefab:
+      path: prefab/scenery/prefab_cobblestone_floor.yml
+    scale: 1
+    position: [0, 0, 0]
+  - id: cobblestones_2
+    mesh:
+      path: plane
+      material:
+        map_kd: textures\PavingStones115C_1K-PNG/PavingStones115C_1K_Color.png
+        map_normal: textures\PavingStones115C_1K-PNG/PavingStones115C_1K_NormalGL.png
+        map_channel:
+          - path: textures\PavingStones115C_1K-PNG/PavingStones115C_1K_Roughness.png
+            type: roughness_map
+            channel: G
+          - path: textures\PavingStones115C_1K-PNG/PavingStones115C_1K_Displacement.png
+            type: displacement_map
+            channel: B
+          - path: textures\PavingStones115C_1K-PNG/PavingStones115C_1K_AmbientOcclusion.png
+            type: occlusion_map
+            channel: A
+        tiling: 1
+        parallax_depth: 0.05
+        program: g_tex
+    scale: 1
+    position: [0, 0, -2.2]
+  - id: cobblestones_2.2
+    mesh:
+      path: plane
+      material:
+        map_kd: textures\PavingStones115C_1K-PNG/PavingStones115C_1K_Color.png
+        map_normal: textures\PavingStones115C_1K-PNG/PavingStones115C_1K_NormalGL.png
+        map_channel:
+          - path: textures\PavingStones115C_1K-PNG/PavingStones115C_1K_Roughness.png
+            type: roughness_map
+            channel: G
+          - path: textures\PavingStones115C_1K-PNG/PavingStones115C_1K_AmbientOcclusion.png
+            type: occlusion_map
+            channel: A
+        tiling: 1
+        program: g_tex
+    scale: 1
+    position: [2, 0, -2.2]
+  - id: cobblestones_3
+    mesh:
+      path: plane
+      material:
+        map_kd: textures\Cobblestone Floor 05 [8K]\cobblestone_floor_05_diff_8k_4096.png
+        map_normal: textures\Cobblestone Floor 05 [8K]\cobblestone_floor_05_nor_8k_4096.png
+        tiling: 1
+        parallax_depth: 0.1
+        program: g_tex
+    scale: 1
+    position: [2.2, 0, 0]
+  - id: cobblestones_4
+    mesh:
+      path: plane
+      material:
+        map_kd: textures/learnopengl_bricks2/bricks2.jpg
+        map_normal: textures/learnopengl_bricks2/bricks2_normal.jpg
+        map_channel:
+          - path: textures/learnopengl_bricks2/bricks2_disp.jpg
+            type: displacement_map
+            channel: B
+        tiling: 2
+        parallax_depth: 0.1
+        program: g_tex
+    scale: 1
+    position: [-2.2, 0, 0]
+  - xid: lion_{t}
+    mesh:
+      path: fbx/creatures/lion/SK_Lion.FBX
+      flags:
+        use_bones: true
+        xuse_bones_debug: true
+        use_animation: true
+        z_up: true
+      lods:
+        - name: SK_Lion_LOD0
+          level: 0
+        - name: SK_Lion_LOD1
+          level: 1
+        - name: SK_Lion_LOD2
+          level: 2
+        - name: SK_Lion_LOD3
+          level: 3
+      material:
+        name: lion_pbr
+        map_pbr: lion_skin_pbr
+        xmetal: [0.3, 0.4, 0, 1]
+        xtiling: 60
+        xrender_back: true
+        xwireframe: true
+      animations:
+        - name: walk
+          path: anim/Lion@Walk.FBX
+        - name: jump
+          path: anim/Lion@Jump.FBX
+        - name: idle
+          path: anim/Lion@IdleBreathe.FBX
+        - name: roar
+          path: anim/Lion@Roar.FBX
+      program: g_tex
+      shadow_program: simple_depth
+      base_scale: 0.025
+    lod_levels:
+      - level: 0
+        distance: 0
+      - level: 1
+        distance: 20
+      - level: 2
+        distance: 30
+      - level: 3
+        distance: 40
+    pos: [0.0, 0.0, 0.0]
+    rotation: [0, 0, 0]
+    xaudio:
+      source:
+        path: audio/Lion Growl Fx_19237D66_normal_mono.wav
+        reference_distance: 3
+        gain: 0.5
+    xrepeat:
+      x_count: 2
+      z_count: 2
+      x_step: 4
+      z_step: -7
+    script: |
+      cmd:animationPlay(
+        { name = "walk:Take 001" } )

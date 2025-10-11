@@ -1,0 +1,153 @@
+---
+name: Origo
+skybox:
+  program: g_skybox
+  material: skybox/polyhaven/drakensberg_solitary_mountain_4k.hdr
+script:
+  scripts:
+    - path: lib/common
+
+includes:
+  - path: prefab/creatures/include_skeleton_warrior.yml
+
+types:
+  - id: player
+    type: origo
+    front: [0, 0, -1]
+    audio:
+      listener:
+        default: true
+    camera:
+      default: true
+    controllers:
+      - type: pawn
+      - type: camera_zoom
+  - id: dir_light
+    type: origo
+    mesh:
+      path: light
+      program: g_light
+    flags:
+      no_shadow: true
+    light:
+      type: directional
+      diffuse: [0.7, 0.7, 0.7, 1.0]
+      intensity: 30000
+  - id: origo_marker
+    mesh:
+      path: water_ball
+      material:
+        name: default_ball
+        kd: [0.0, 0.2, 0.8, 1.0]
+        mrao: [0.2, 0.1, 1.0]
+        program: g_tex
+      scale: 0.05
+  - id: cube_map
+    type: origo
+    flags:
+      cube_map: true
+  - id: wooden_floor
+    prefab:
+      path: prefab/scenery/prefab_wooden_floor.yml
+    physics:
+      update: true
+    xscript: scripts/seq_shaky_ground
+  - id: skeleton_army
+    base: prefab_skeleton_warrior
+    xscript: scripts/seq_skeleton
+    physics:
+      update: true
+    script: |
+      cmd:animation_play(
+        self.handle,
+        { tag = "body", name = "swing_normal" })
+  - xid: helmet
+    meshes:
+      - name: helmet
+        path: fbx\creatures\skeleton_knight\Helmet.fbx
+        material:
+          base: textures
+          kd: [0, 0.8, 0]
+          map_kd: T_Helmet_BaseColor.jpg
+          map_normal: T_Helmet_Normal.jpg
+          map_mrao: T_Helmet_mrao
+          map_displacement: T_Helmet_displacement
+        scale: 0.001
+        program: g_tex
+        shadow_program: shadow
+  - id: object
+    mesh:
+      path: texture_cube_4/texture_cube_4.obj
+      material_modifier:
+        program: g_tex
+        shadow_program: shadow
+      base_scale: 0.5
+    physics:
+      body:
+        type: box
+        density: 0.1
+      geom:
+        type: box
+        size: [0.5]
+  - id: scale
+    mesh:
+      vertex:
+        type: box
+        size: 0.5
+      material:
+        kd: [0.8, 0.8, 0.8, 1]
+        program: g_tex
+
+nodes:
+  - type: player
+    pos: [0, 1.5, 5]
+    active: true
+  - type: dir_light
+    pos: [-15, 25, 25]
+  - type: origo_marker
+    pos: [0.0, 0.0, 0.0]
+  - xtype: cube_map
+    pos: [0, 5, 10]
+  - type: wooden_floor
+    scale: 100
+    xrot: [0, 0, 5]
+  - type: skeleton_army
+    pos: [0, 0.5, 0]
+    #rotation: [0, -90, 0]
+    scale: 1
+    xrepeat:
+      x_count: 2
+      z_count: 2
+      x_step: 10
+      z_step: -10
+  - xtype: helmet
+    pos: [-0.2, 1.9, 0]
+    scale: 1
+  - type: prefab_construction_hat
+    pos: [-2.0, 0.5, 0.0]
+  - type: prefab_2_handed_sword
+    tag: sword
+    pos: [-4.0, 0.5, 0.0]
+    children:
+      - type: prefab_2_handed_sword_particle
+        tag: sword_particle
+        pos: [0, 0.75, 0]
+  - type: prefab_armor
+    pos: [-6.0, 0.5, 0.0]
+  - type: prefab_shield
+    pos: [-8.0, 0.5, 0.0]
+  - type: prefab_helmet
+    pos: [-10.0, 0.5, 0.0]
+  - type: scale
+    pos: [2, 0.5, -1]
+    repeat:
+      x_count: 8
+      x_step: -2
+  - xtype: object
+    pos: [0.0, 0.5, 0.0]
+    rotation: [0, 0, 0]
+    clone_position_offset: [2, 0, 0]
+    clones:
+      - pos: [0.0, 0.5, 0.0]
+      - pos: [0.5, 1.5, 0.0]
+      - pos: [0, 2.5, 0.0]

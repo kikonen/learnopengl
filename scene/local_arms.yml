@@ -1,0 +1,112 @@
+---
+name: Origo
+skybox:
+  program: g_skybox
+  material: skybox/polyhaven/drakensberg_solitary_mountain_2k.hdr
+script:
+  scripts:
+    - path: lib/common
+nodes:
+  - id: player
+    mesh:
+      path: water_ball
+      material:
+        name: default_ball
+        kd: [0.5, 0.5, 0.0, 1.0]
+        metal: [0.2, 0.1, 0.0, 1.0]
+        program: g_tex
+      scale: 0.05
+    pos: [0, 1, 15]
+    front: [0, 0, -1]
+    xactive: true
+    audio:
+      listener:
+        xdefault: true
+    controllers:
+      - type: pawn
+    camera:
+      type: follow
+      distance: [2, 1, 5]
+      xdefault: true
+  - id: player_fps
+    type: origo
+    pos: [0, 1, 15]
+    front: [0, 0, -1]
+    active: true
+    audio:
+      listener:
+        xdefault: true
+    controllers:
+      - type: pawn
+    camera:
+      type: fps
+      distance: [4, 2, 20]
+      default: true
+  - id: player_fps_point
+    parent: player_fps
+    mesh:
+      path: water_ball
+      material:
+        name: default_ball
+        kd: [0.0, 0.5, 0.0, 1.0]
+        metal: [0.2, 0.1, 0.0, 1.0]
+        program: g_tex
+      scale: 0.03
+    pos: [0.0, 0.0, -0.1]
+  - name: Directional light
+    type: origo
+    mesh:
+      path: light
+    program: g_light
+    pos: [-15, 25, 25]
+    render_flags:
+      no_shadow: true
+    light:
+      type: directional
+      diffuse: [0.7, 0.7, 0.7, 1.0]
+      intensity: 30000
+  - name: origo
+    mesh:
+      path: water_ball
+      material:
+        name: default_ball
+        kd: [0.0, 0.2, 0.8, 1.0]
+        metal: [0.2, 0.1, 0.0, 1.0]
+        program: g_tex
+      scale: 0.05
+    pos: [0.0, 0.0, 0.0]
+  - xname: Cube map
+    type: origo
+    pos: [0, 5, 10]
+    render_flags:
+      cube_map: true
+  - id: wooden_floor
+    prefab:
+      path: prefab/scenery/prefab_cobblestone_floor.yml
+    scale: 100
+    position: [0, 0, 0]
+  - id: player_fps_arms_{t}
+    parent: player_fps
+    prefab:
+      path: prefab/characters/prefab_fps_arms.yml
+    pos: [-1.35, -1.5, -1.0]
+    rotation: [0, 0, 0]
+    pivot:
+      alignment: m
+    script:
+      path: scripts/fps_player
+  - id: SM_JungleGym_01a_{c}_{t}
+    mesh:
+      path: fbx/props/SM_JungleGym_01a/SM_JungleGym_01a.FBX
+      material:
+        map_kd: material/MI_JungleGym_01a_BaseColor.png
+        map_normal: material/MI_JungleGym_01a_Normal.png
+        map_channel:
+          - path: material/MI_JungleGym_01a_MetallicRoughness.png
+            channel: xRG
+          - path: material/MI_JungleGym_01a_Occlusion.png
+            channel: A
+        program: g_tex
+      base_scale: 0.01
+      base_rotation: [-90, 0, 0]
+    pos: [0, 0, 0]

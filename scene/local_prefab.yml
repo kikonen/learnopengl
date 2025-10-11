@@ -1,0 +1,106 @@
+---
+name: Origo
+skybox:
+  program: g_skybox
+  material: skybox/polyhaven/drakensberg_solitary_mountain_2k.hdr
+script:
+  scripts:
+    - path: lib/common
+nodes:
+  - name: Player
+    id: player
+    type: origo
+    pos: [0, 1.5, 5]
+    front: [0, 0, -1]
+    active: true
+    audio:
+      listener:
+        default: true
+    controllers:
+      - type: pawn
+  - id: player_camera
+    parent_id: player
+    type: origo
+    camera:
+      default: true
+    controllers:
+      - type: camera_zoom
+  - name: Directional light
+    type: origo
+    mesh:
+      path: light
+    program: g_light
+    pos: [-15, 25, 25]
+    render_flags:
+      no_shadow: true
+    light:
+      type: directional
+      diffuse: [0.7, 0.7, 0.7, 1.0]
+      intensity: 30000
+  - name: origo
+    mesh:
+      path: water_ball
+      material:
+        name: default_ball
+        kd: [0.0, 0.2, 0.8, 1.0]
+        metal: [0.2, 0.1, 0.0, 1.0]
+        program: g_tex
+      scale: 0.05
+    pos: [0.0, 0.0, 0.0]
+  - xname: Cube map
+    type: origo
+    pos: [0, 5, 10]
+    render_flags:
+      cube_map: true
+  - id: wooden_floor
+    prefab:
+      path: prefab/scenery/prefab_wooden_floor.yml
+    position: [0, 0, 0]
+    scale: 100
+  - id: skeleton_army_{c}_{t}
+    prefab:
+      path: prefab/creatures/prefab_skeleton_warrior.yml
+    pos: [0, 0.0, 0]
+    xrepeat:
+      x_count: 2
+      z_count: 2
+      x_step: 10
+      z_step: -10
+    script:
+      path: scripts/seq_skeleton
+  - id: helmet_{t}
+    meshes:
+      - name: helmet
+        path: fbx\creatures\skeleton_knight\Helmet.fbx
+        lod:
+          level: [0, 1, 2]
+        material:
+          kd: [0, 0.8, 0]
+          map_kd: textures\T_Helmet_BaseColor.jpg
+          map_bump: textures\T_Helmet_Normal.jpg
+          map_channel:
+            - path: textures\T_Helmet_MetallicSmoothness_1024.png
+              channel: R
+            - path: textures\T_Helmet_Occlusion.png
+              channel: A
+        scale: 0.001
+    program: g_tex
+    shadow_program: simple_depth
+    pos: [-0.2, 1.9, 0]
+    scale: 1
+  - id: object_{c}_{t}
+    mesh:
+      path: texture_cube_4/texture_cube_4.obj
+      material_modifier:
+        xrender_back: true
+        xwireframe: true
+        program: g_tex
+        shadow_program: simple_depth
+      scale: 0.5
+    pos: [0.0, 0.5, 0.0]
+    rotation: [0, 0, 0]
+    clone_position_offset: [2, 0, 0]
+    clones:
+      - pos: [0.0, 0.5, 0.0]
+      - pos: [1, 1.5, 0.0]
+      - pos: [0, 2.5, 0.0]

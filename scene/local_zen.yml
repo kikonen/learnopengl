@@ -1,0 +1,448 @@
+---
+name: Origo
+skybox:
+  program: g_skybox
+  material: skybox/polyhaven/drakensberg_solitary_mountain_2k.hdr
+script:
+  scripts:
+    - path: lib/common
+nodes:
+  - name: Player
+    id: player
+    type: origo
+    pos: [0, 1, 15]
+    front: [0, 0, -1]
+    active: true
+    audio:
+      listener:
+        default: true
+    controllers:
+      - type: pawn
+  - id: player_camera
+    parent_id: player
+    type: origo
+    camera:
+      default: true
+    controllers:
+      - type: camera_zoom
+  - name: Directional light
+    type: origo
+    mesh:
+      path: light
+    program: g_light
+    pos: [-15, 25, 25]
+    render_flags:
+      no_shadow: true
+    light:
+      type: directional
+      diffuse: [0.7, 0.7, 0.7, 1.0]
+      intensity: 30000
+  - name: origo
+    mesh:
+      path: water_ball
+      material:
+        name: default_ball
+        kd: [0.0, 0.2, 0.8, 1.0]
+        metal: [0.2, 0.1, 0.0, 1.0]
+    program: g_tex
+    pos: [0.0, 0.0, 0.0]
+    scale: 0.05
+  - xname: Cube map
+    type: origo
+    pos: [0, 5, 10]
+    render_flags:
+      cube_map: true
+  - id: wooden_floor
+    prefab:
+      path: prefab/scenery/prefab_wooden_floor.yml
+    scale: 100
+    position: [0, 0, 0]
+  - xid: object
+    mesh:
+      path: texture_cube_4/texture_cube_4.fbx
+      flags:
+        xuse_bones: true
+        xuse_bones_debug: true
+        xuse_animation: true
+      material_modifier:
+        xrender_back: true
+        xwireframe: true
+      program: g_tex
+      shadow_program: simple_depth
+      base_scale: 0.01
+      base_rotation: [0, 0, 0]
+    pos: [0.0, 3.0, 0.0]
+    rotation: [0, 0, 0]
+  - xid: grass_{t}
+    mesh:
+      path: fbx/scenery/foliage/SM_grass_bush_01.fbx
+      flags:
+        xuse_bones: true
+        xuse_bones_debug: true
+        xuse_animation: true
+      materials:
+        - name: grass_bush_01_pbr
+          alias: M_atlas_grass_01
+          map_pbr: grass_01_pbr
+          alpha: true
+          render_back: true
+          xwireframe: true
+      program: g_tex
+      shadow_program: simple_depth
+      base_scale: 0.01
+      base_rotation: [0, 0, 0]
+    pos: [0.0, 0.0, 0.0]
+    rotation: [0, 0, 0]
+    repeat:
+      x_count: 100
+      z_count: 100
+      x_step: 2
+      z_step: -2
+  - xid: object_{t}
+    mesh:
+      path: fbx\scenery\structures\fences\SM_WW2_FieldFences01a_c1_LOD1.fbx
+      flags:
+        xuse_bones: true
+        xuse_bones_debug: true
+        xuse_animation: true
+      lods:
+        - name: Mesh.007
+        - level: []
+      materials:
+        - name: fence_pbr
+          alias: M_WoodenPlanks
+          map_pbr: field_fence_pbr
+          xalpha: true
+          xrender_back: true
+          xwireframe: true
+        - xname: MI_COL
+          alias: MI_COL
+          xwireframe: true
+      program: g_tex
+      shadow_program: simple_depth
+      base_scale: 0.01
+      base_rotation: [0, 0, 0]
+    pos: [0.0, 0.0, 0.0]
+    rotation: [0, 0, 0]
+    xrepeat:
+      x_count: 2
+      z_count: 2
+      x_step: 10
+      z_step: -10
+  - xid: skeleton_knight_{t}
+    meshes:
+      - path: fbx\creatures\skeleton_knight\SK_SkeletonKnight.fbx
+        sockets:
+          - xname: head
+            joint: SkeletonKnight_ Head
+            xxoffset: [0, 0, 0]
+            xrotation: [0, 0, 45]
+          - name: head_2
+            joint: SkeletonKnight_ Head
+            offset: [7, 0, 0]
+            rotation: [0, -90, 165]
+          - name: r_hand
+            joint: SkeletonKnight_ R Hand
+            xoffset: [-50, 0, 0]
+          - name: l_hand
+            joint: SkeletonKnight_ L Hand
+            xoffset: [-50, 0, 0]
+          - xjoint: SM_Helmet
+          - joint: SM_2HandedSword
+          - joint: SM_Shield
+        lods:
+          - name: skeleton_knight
+            flags:
+              use_bones: true
+              xuse_bones_debug: true
+              use_animation: true
+              xz_up: true
+          - name: SK_Armor
+            flags:
+              use_bones: true
+              xuse_bones_debug: true
+              xuse_animation: true
+              xz_up: true
+          - name: SM_Helmet
+          - name: SM_2HandedSword
+          - name: SM_Shield
+          - name: WEAPON_BONE
+            level: []
+          - name: SM_Sword
+            level: []
+        materials:
+          - name: M_Armor
+            map_kd: textures\T_ChestArmor_BaseColor.jpg
+            map_bump: textures\T_ChestArmor_Normal.jpg
+            map_metalness: textures\T_ChestArmor_MetallicSmoothness_1024.png
+          - name: M_Skeleton
+            map_kd: textures\T_SkeletonKnight_BaseColor.jpg
+            map_bump: textures\T_SkeletonKnight_Normal.jpg
+            map_metalness: textures\T_SkeletonKnight_MetallicSmoothness_2048.png
+          - name: M_Helmet
+            map_kd: textures\T_Helmet_BaseColor.jpg
+            map_bump: textures\T_Helmet_Normal.jpg
+            map_metalness: textures\T_Helmet_MetallicSmoothness.tga
+            map_metalness: textures\T_Helmet_MetallicSmoothness_1024.png
+          - name: M_2HandedSword
+            map_kd: textures\T_2HandedSword_BaseColor.jpg
+            map_bump: textures\T_2HandedSword_Normal.jpg
+            map_metalness: textures\T_2HandedSword_MetallicSmoothness_1024.png
+          - name: M_Sword
+            map_kd: textures\T_1HandedSword_BaseColor.jpg
+            map_bump: textures\T_1HandedSword_Normal.jpg
+            map_metalness: textures\T_1HandedSword_MetallicSmoothness_2048.png
+          - name: M_Shield
+            map_kd: textures\T_Shield_BaseColor.jpg
+            map_bump: textures\T_Shield_Normal.jpg
+            map_metalness: textures\T_Shield_MetallicSmoothness_2048.png
+            xalpha: true
+            xrender_back: true
+            xwireframe: true
+        animations:
+          - name: walk
+            path: anim/SkeletonKnight@2HandedWalk.FBX
+          - name: run
+            path: anim/SkeletonKnight@1HandedRun.FBX
+        program: g_tex
+        shadow_program: simple_depth
+        base_scale: 0.01
+        xbase_rotation: [-180, 0, 0]
+      - name: construction hat
+        path: fbx\props\construction_hat\construction hat.fbx
+        material:
+          map_kd: hardhat_color.png
+          map_bump: hardhat_normal.png
+          map_metalness: hardhat_metallic.png
+        program: g_tex
+        shadow_program: simple_depth
+        base_scale: 0.01
+        xbase_rotation: [-180, 0, 0]
+      - name: helmet
+        xpath: fbx\creatures\skeleton_knight\helmet.fbx
+        lod:
+          level: [0, 1, 2]
+        material:
+          map_kd: textures\T_Helmet_BaseColor.jpg
+          map_bump: textures\T_Helmet_Normal.jpg
+          map_metalness: textures\T_Helmet_MetallicSmoothness.tga
+          map_metalness: textures\T_Helmet_MetallicSmoothness_1024.png
+        program: g_tex
+        shadow_program: simple_depth
+        base_scale: 0.01
+        xbase_rotation: [-180, 0, 0]
+    attachments:
+      - xname: SM_Helmet
+        socket: head
+      - name: Helmet
+        socket: head_2
+      - name: Cube
+        socket: r_hand
+      - name: SM_2HandedSword
+        socket: r_hand
+      - name: SM_Shield
+        socket: l_hand
+      - xname: WEAPON_BONE
+        socket: r_hand
+      - xname: SM_Sword
+        socket: r_hand
+    xpos: [0.0, 3.0, 0.0]
+    pos: [0.0, 0.0, 0.0]
+    xrotation: [0, 0, 0]
+    xrepeat:
+      x_count: 2
+      z_count: 2
+      x_step: 10
+      z_step: -10
+  - xid: lion_{t}
+    meshes:
+      - path: fbx/creatures/lion/SK_Lion.FBX
+        sockets:
+          - name: head
+            joint: LION_ Head
+            offset: [12, -20, 0]
+            scale: 160
+            rotation: [55, -90, 90]
+        flags:
+          use_bones: true
+          xuse_bones_debug: true
+          use_animation: true
+          z_up: true
+        lods:
+          - name: SK_Lion_LOD0
+            level: 0
+          - name: SK_Lion_LOD1
+            level: 1
+          - name: SK_Lion_LOD2
+            level: 2
+          - name: SK_Lion_LOD3
+            level: 3
+        material:
+          name: lion_pbr
+          map_pbr: lion_skin_pbr
+          xmetal: [0.3, 0.4, 0, 1]
+          xtiling: 60
+          xrender_back: true
+          xwireframe: true
+        animations:
+          - name: walk
+            path: anim/Lion@Walk.FBX
+          - name: jump
+            path: anim/Lion@Jump.FBX
+          - name: idle
+            path: anim/Lion@IdleBreathe.FBX
+          - name: roar
+            path: anim/Lion@Roar.FBX
+        program: g_tex
+        shadow_program: simple_depth
+        base_scale: 0.025
+        base_rotation: [90, 0, 0]
+      - name: construction hat
+        path: fbx\props\construction_hat\construction hat.fbx
+        lod:
+          level: [0, 1, 2]
+        material:
+          map_kd: hardhat_color.png
+          map_bump: hardhat_normal.png
+          map_metalness: hardhat_metallic.png
+        program: g_tex
+        shadow_program: simple_depth
+        base_scale: 0.025
+        base_rotation: [90, 0, 0]
+    attachments:
+      - name: Cube
+        socket: head
+    lod_levels:
+      - level: 0
+        distance: 0
+      - level: 1
+        distance: 20
+      - level: 2
+        distance: 30
+      - level: 3
+        distance: 40
+    pos: [-10.0, 0.0, 0.0]
+    rotation: [0, 0, 0]
+    xaudio:
+      source:
+        path: audio/Lion Growl Fx_19237D66_normal_mono.wav
+        reference_distance: 3
+        gain: 0.5
+    xrepeat:
+      x_count: 2
+      z_count: 2
+      x_step: 4
+      z_step: -7
+    xscript_file: scripts/cow_audio
+  - xid: construction_hat
+    mesh:
+      path: fbx\props\construction_hat\construction hat.fbx
+      material:
+        map_kd: hardhat_color.png
+        map_bump: hardhat_normal.png
+        map_metalness: hardhat_metallic.png
+    program: g_tex
+    pos: [3.0, 0.0, 3.0]
+    scale: 0.01
+  - xid: skeleton_{t}
+    meshes:
+      - path: fbx/creatures/skeleton/skeleton_animated.FBX
+        sockets:
+          - name: head
+            joint: Bip01_Head1
+            scale: 0.43
+            offset: [3.6, 1.6, 0]
+            rotation: [0, 90, 0]
+          - name: neck
+            joint: Bip01_Spine4
+            scale: 0.37
+            offset: [-0.5, 2, 0]
+            rotation: [195, -90, -45]
+          - name: l_arm
+            joint: Bip01_L_Forearm
+            scale: 0.35
+            offset: [10, 0, 0]
+            rotation: [90, -45, 90]
+          - name: r_hand
+            joint: Bip01_R_Hand
+            scale: 0.25
+            offset: [2.3, -1.4, 0]
+            rotation: [20, -90, 0]
+        flags:
+          use_bones: true
+          use_animation: true
+        material:
+          name: skeleton_pbr
+          map_pbr: skeleton_pbr
+          xmetal: [0.3, 0.4, 0, 1]
+          xtiling: 60
+          xrender_back: true
+          xwireframe: true
+        program: g_tex
+        shadow_program: simple_depth
+        xbase_rotation: [0, 0, 0]
+        base_scale: 0.05
+      - name: helmet
+        path: fbx\creatures\skeleton_knight\Helmet.fbx
+        lod:
+          level: [0, 1, 2]
+        material:
+          map_kd: textures\T_Helmet_BaseColor.jpg
+          map_bump: textures\T_Helmet_Normal.jpg
+          map_metalness: textures\T_Helmet_MetallicSmoothness_1024.png
+        program: g_tex
+        shadow_program: simple_depth
+        xbase_rotation: [0, 0, 0]
+        base_scale: 0.05
+      - name: armor
+        path: fbx\creatures\skeleton_knight\Armor.fbx
+        lod:
+          level: [0, 1, 2]
+        material:
+          map_kd: textures\T_ChestArmor_BaseColor.jpg
+          map_bump: textures\T_ChestArmor_Normal.jpg
+          map_metalness: textures\T_ChestArmor_MetallicSmoothness_1024.png
+        program: g_tex
+        shadow_program: simple_depth
+        xbase_rotation: [0, 0, 0]
+        base_scale: 0.05
+      - name: 2HandedSword
+        path: fbx\creatures\skeleton_knight\2HandedSword.fbx
+        lod:
+          level: [0, 1, 2]
+        material:
+          map_kd: textures\T_2HandedSword_BaseColor.jpg
+          map_bump: textures\T_2HandedSword_Normal.jpg
+          map_metalness: textures\T_2HandedSword_MetallicSmoothness_1024.png
+        program: g_tex
+        shadow_program: simple_depth
+        xbase_rotation: [0, 0, 0]
+        base_scale: 0.05
+      - name: shield
+        path: fbx\creatures\skeleton_knight\Shield.fbx
+        lod:
+          level: [0, 1, 2]
+        material:
+          map_kd: textures\T_Shield_BaseColor.jpg
+          map_bump: textures\T_Shield_Normal.jpg
+          map_metalness: textures\T_Shield_MetallicSmoothness_2048.png
+        program: g_tex
+        shadow_program: simple_depth
+        xbase_rotation: [0, 0, 0]
+        base_scale: 0.05
+    attachments:
+      - name: Helmet
+        socket: head
+      - name: Armor
+        socket: neck
+      - name: 2HandedSword
+        socket: r_hand
+      - name: SM_Shield
+        socket: l_arm
+    pos: [5.0, 0.0, 0.0]
+    rotation: [0, 0, 0]
+    xrepeat:
+      x_count: 2
+      z_count: 2
+      x_step: 5
+      z_step: -5

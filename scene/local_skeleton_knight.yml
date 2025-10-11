@@ -1,0 +1,184 @@
+---
+name: Origo
+skybox:
+  program: g_skybox
+  material: skybox/polyhaven/drakensberg_solitary_mountain_2k.hdr
+script:
+  scripts:
+    - path: lib/common
+nodes:
+  - name: Player
+    id: player
+    type: origo
+    pos: [0, 1, 15]
+    front: [0, 0, -1]
+    active: true
+    audio:
+      listener:
+        default: true
+    camera:
+      type: fps
+      default: true
+    controllers:
+      - type: pawn
+  - name: Directional light
+    type: origo
+    mesh:
+      path: light
+    program: g_light
+    pos: [-15, 25, 25]
+    render_flags:
+      no_shadow: true
+    light:
+      type: directional
+      diffuse: [0.7, 0.7, 0.7, 1.0]
+      intensity: 30000
+  - name: origo
+    mesh:
+      path: water_ball
+      material:
+        name: default_ball
+        kd: [0.0, 0.2, 0.8, 1.0]
+        metal: [0.2, 0.1, 0.0, 1.0]
+        program: g_tex
+      scale: 0.05
+    pos: [0.0, 0.0, 0.0]
+  - xname: Cube map
+    type: origo
+    pos: [0, 5, 10]
+    render_flags:
+      cube_map: true
+  - name: wooden floor
+    mesh:
+      path: plane
+      material:
+        name: wood_floor
+        map_pbr: textures\Planks 09 [8K]
+        tiling: 60
+        render_back: true
+    program: g_tex
+    position: [0, 0, 0]
+    render_flags:
+      no_shadow: true
+    scale: 100
+  - id: skeleton_knight_{t}
+    meshes:
+      - path: fbx\creatures\skeleton_knight_fixed\SK_SkeletonKnight.fbx
+        sockets:
+          - xname: head
+            joint: SkeletonKnight_ Head
+            xxoffset: [0, 0, 0]
+            xrotation: [0, 0, 45]
+          - xname: head_2
+            joint: SkeletonKnight_ Head
+            offset: [7, 0, 0]
+            rotation: [0, -90, 165]
+          - name: r_hand
+            joint: SkeletonKnight_ R Hand
+            xoffset: [-50, 0, 0]
+          - name: l_hand
+            joint: SkeletonKnight_ L Hand
+            xoffset: [-50, 0, 0]
+          - name: SM_Helmet
+          - name: SM_2HandedSword
+          - name: SM_Shield
+        lods:
+          - name: skeleton_knight
+            flags:
+              use_bones: true
+              xuse_bones_debug: true
+              use_animation: true
+              xz_up: true
+          - name: SK_Armor
+            flags:
+              use_bones: true
+              xuse_bones_debug: true
+              xuse_animation: true
+              xz_up: true
+          - name: SM_Helmet
+          - name: SM_2HandedSword
+          - name: SM_Shield
+          - name: WEAPON_BONE
+            level: []
+          - name: SM_Sword
+            level: []
+        materials:
+          - name: M_Armor
+            map_kd: textures\T_ChestArmor_BaseColor.jpg
+            map_bump: textures\T_ChestArmor_Normal.jpg
+            map_metalness: textures\T_ChestArmor_MetallicSmoothness_1024.png
+          - name: M_Skeleton
+            map_kd: textures\T_SkeletonKnight_BaseColor.jpg
+            map_bump: textures\T_SkeletonKnight_Normal.jpg
+            map_metalness: textures\T_SkeletonKnight_MetallicSmoothness_2048.png
+          - name: M_Helmet
+            map_kd: textures\T_Helmet_BaseColor.jpg
+            map_bump: textures\T_Helmet_Normal.jpg
+            map_metalness: textures\T_Helmet_MetallicSmoothness.tga
+            map_metalness: textures\T_Helmet_MetallicSmoothness_1024.png
+          - name: M_2HandedSword
+            map_kd: textures\T_2HandedSword_BaseColor.jpg
+            map_bump: textures\T_2HandedSword_Normal.jpg
+            map_metalness: textures\T_2HandedSword_MetallicSmoothness_1024.png
+          - name: M_Sword
+            map_kd: textures\T_1HandedSword_BaseColor.jpg
+            map_bump: textures\T_1HandedSword_Normal.jpg
+            map_metalness: textures\T_1HandedSword_MetallicSmoothness_2048.png
+          - name: M_Shield
+            map_kd: textures\T_Shield_BaseColor.jpg
+            map_bump: textures\T_Shield_Normal.jpg
+            map_metalness: textures\T_Shield_MetallicSmoothness_2048.png
+            xalpha: true
+            xrender_back: true
+            xwireframe: true
+        animations:
+          - name: walk
+            path: anim/SkeletonKnight@2HandedWalk.FBX
+          - name: run-1
+            path: anim/SkeletonKnight@1HandedRun.FBX
+          - name: run-2
+            path: anim/SkeletonKnight@2HandedRun.FBX
+        base_scale: 0.01
+      - xname: construction hat
+        path: fbx\props\construction_hat\construction hat.fbx
+        material:
+          map_kd: hardhat_color.png
+          map_bump: hardhat_normal.png
+          map_metalness: hardhat_metallic.png
+        base_scale: 0.01
+      - name: helmet
+        path: fbx\creatures\skeleton_knight_fixed\helmet.fbx
+        lod:
+          level: [0, 1, 2]
+        material:
+          map_kd: textures\T_Helmet_BaseColor.jpg
+          map_bump: textures\T_Helmet_Normal.jpg
+          map_metalness: textures\T_Helmet_MetallicSmoothness.tga
+          map_metalness: textures\T_Helmet_MetallicSmoothness_1024.png
+        base_scale: 0.001
+    attachments:
+      - name: SM_Helmet
+        socket: SM_Helmet
+      - xname: Helmet
+        socket: head_2
+      - xname: Cube
+        socket: r_hand
+      - name: SM_2HandedSword
+        socket: SM_2HandedSword
+      - name: SM_Shield
+        socket: SM_Shield
+      - xname: WEAPON_BONE
+        socket: r_hand
+      - xname: SM_Sword
+        socket: r_hand
+    program: g_tex
+    shadow_program: simple_depth
+    xpos: [0.0, 3.0, 0.0]
+    pos: [0.0, 0.0, 0.0]
+    xrotation: [0, 0, 0]
+    xbase_rotation: [-180, 0, 0]
+    xrepeat:
+      x_count: 2
+      z_count: 2
+      x_step: 10
+      z_step: -10

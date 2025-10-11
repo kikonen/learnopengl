@@ -1,0 +1,111 @@
+---
+name: Material balls
+viewports:
+skybox:
+  program: g_skybox
+  xmaterial: skybox
+  material: skybox/polyhaven/borghese_gardens_2k.hdr
+  xmaterial: skybox/polyhaven/circus_arena_2k.hdr
+  xmaterial: skybox/polyhaven/drakensberg_solitary_mountain_2k.hdr
+  xmaterial: skybox/polyhaven/gray_pier_2k.hdr
+  xmaterial: skybox/polyhaven/wasteland_clouds_puresky_2k.hdr
+lights: {}
+cube_maps: {}
+script:
+  scripts:
+    - path: lib/common
+nodes:
+  - name: origo
+    mesh:
+      path: water_ball
+      material:
+        kd: [0.0, 0.2, 0.8, 1.0]
+        metal: [0.2, 0.1, 0.0, 1.0]
+        program: g_tex
+      base_scale: 0.1
+    pos: [0.0, 0.0, 0.0]
+  - id: player
+    xtype: origo
+    mesh:
+      path: water_ball
+      base_scale: 0.25
+      program: g_tex
+    pos: [0, 3, 4]
+    front: [0, 0, -1]
+    active: true
+    controller:
+      type: pawn
+    audio:
+      listener:
+        default: true
+    physics:
+      update: true
+      body:
+        kinematic: true
+        type: sphere
+        density: 0.1
+      geom:
+        size: 0.25
+        type: sphere
+  - id: player_camera
+    parent_id: player
+    type: origo
+    pos: [0, 0.5, 1]
+    rotation: [-15, 0, 0]
+    controller:
+      type: camera_zoom
+    camera:
+      default: true
+  - name: Directional light
+    mesh:
+      path: light
+      material_modifier:
+        kd: [0.8, 0.8, 0.6, 1.0]
+    pos: [-25, 45, 0]
+    scale: 1.5
+    program: g_light
+    render_flags:
+      no_shadow: true
+    light:
+      type: directional
+      diffuse: [0.7, 0.7, 0.7, 1.0]
+      intensity: 20000
+  - name: shape
+    mesh:
+      vertex:
+        type: capsule
+        radius: 1
+        length: 1
+      material:
+        kd: [0.7140, 0.4284, 0.1814, 1.0]
+        xmap_pbr: textures\Plastic 01 [4K]
+        map_pbr: textures\Metal008_1K-PNG
+        xreflection: 0.05
+        tiling: 3
+        parallax_depth: 0.0
+        program: g_tex
+    pos: [0.0, 3.0, 0.0]
+    scale: [1, 1, 1]
+    base_rot: [90, 0, 0]
+    physics:
+      body:
+        type: capsule
+        density: 0.00001
+        rot: [90, 0, 0]
+      geom:
+        type: capsule
+        size: [1, 1, 0]
+  - id: wooden_floor
+    prefab:
+      path: prefab/scenery/prefab_wooden_floor.yml
+    mesh:
+      material:
+        kd: [1, 1, 1, 0.3]
+        alpha: true
+        blend: true
+    pos: [0.0, 0.0, 0.0]
+    physics:
+      geom:
+        type: plane
+        rot: [0, 0, 0]
+    scale: 200

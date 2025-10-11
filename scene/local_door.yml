@@ -1,0 +1,60 @@
+---
+name: Test
+skybox:
+  program: g_skybox
+  material: skybox/polyhaven/drakensberg_solitary_mountain_2k.hdr
+script:
+  scripts:
+    - path: lib/common
+nodes:
+  - id: player
+    type: origo
+    pos: [0, 3, 7]
+    front: [0, 0, -1]
+    active: true
+    audio:
+      listener:
+        default: true
+    controllers:
+      - type: pawn
+  - id: player_camera
+    parent_id: player
+    type: origo
+    camera:
+      default: true
+    controllers:
+      - type: camera_zoom
+  - name: Directional light
+    pos: [0, 25, 40]
+    scale: 2.5
+    mesh:
+      path: light
+      material_modifier:
+        kd: [0.8, 0.8, 0.6, 1.0]
+    program: g_light
+    render_flags:
+      no_shadow: true
+    light:
+      type: directional
+      diffuse: [0.9, 0.9, 0.7, 1.0]
+      intensity: 30000
+  - id: wooden_floor
+    prefab:
+      path: prefab/scenery/prefab_wooden_floor.yml
+    scale: 100
+    position: [0, 0, 0]
+  - id: object_{t}
+    mesh:
+      path: fbx\scenery\structures\doors\SM_Door_Interior_Wooden_Glass_01c.FBX
+      material:
+        name: door_glass_1_pbr
+        map_pbr: door_glass_1_pbr
+        blend: true
+        render_back: true
+      program: g_tex
+      base_scale: 0.01
+      base_rotation: [-90.0, 0.0, 0.0]
+    pos: [0.0, 0.0, -8.0]
+    pivot:
+      alignment: m
+    scale: 2
