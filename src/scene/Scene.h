@@ -109,6 +109,11 @@ public:
         m_filePath = filePath;
     }
 
+    bool isLoaded() const noexcept
+    {
+        return m_loaded;
+    }
+
 private:
     void renderUi(const render::RenderContext& ctx);
     void renderPlayer(const render::RenderContext& ctx);

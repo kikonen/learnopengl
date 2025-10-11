@@ -221,7 +221,7 @@ int SampleApp::onRender(const ki::RenderClock& clock)
     }
 
     render::Camera* camera = &DEFAULT_CAMERA;
-    
+
     if (scene) {
         auto* cameraNode = scene->getActiveCameraNode();
         if (cameraNode) {
@@ -475,6 +475,7 @@ void SampleApp::onDestroy()
 void SampleApp::onLoadScene(const std::string& filePath)
 {
     m_currentScene = loadScene(filePath);
+    showFps(m_fpsCounter);
 }
 
 void SampleApp::onUnloadScene()
@@ -557,10 +558,14 @@ void SampleApp::unloadScene()
     m_currentScene->destroy();
     m_registry->clear();
     m_currentScene = nullptr;
+
+    showFps(m_fpsCounter);
 }
 
 void SampleApp::stopLoader()
 {
+    showFps(m_fpsCounter);
+
     if (!m_loader) return;
 
     KI_INFO_OUT("APP: stopping loader...");

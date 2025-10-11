@@ -294,7 +294,16 @@ void Engine::showFps(const ki::FpsCounter& fpsCounter)
 {
     auto& assets = Assets::modify();
 
-    std::string title = m_currentScene ? m_currentScene->getName() : "OpenGL";
+    std::string title;
+    if (auto* scene = m_currentScene.get(); scene)
+    {
+        title = fmt::format(
+            "{}{}",
+            scene->getName(), scene->isLoaded() ? " (LOADED)" : " loading...");
+    }
+    else {
+        title = "OpenGL";
+    }
 
     auto summary = fpsCounter.formatSummary(title.c_str());
     m_window->setTitle(summary);
