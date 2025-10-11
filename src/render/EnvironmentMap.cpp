@@ -91,7 +91,7 @@ namespace render {
             std::unique_ptr<render::FrameBuffer> captureFBO{ nullptr };
             {
                 auto buffer = new render::FrameBuffer(
-                    "captureFBO",
+                    "flat_capture_fbo",
                     {
                         flatSize.x, flatSize.y,
                         {

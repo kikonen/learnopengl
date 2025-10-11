@@ -19,7 +19,7 @@ namespace render {
         std::unique_ptr<FrameBuffer> captureFBO{ nullptr };
         {
             auto buffer = new FrameBuffer(
-                "captureFBO",
+                "cube_map_capture_fbo",
                 {
                     size, size,
                     {

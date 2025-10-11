@@ -45,7 +45,7 @@ void LayerRenderer::prepareRT(
     const auto& assets = ctx.getAssets();
 
     {
-        m_nodeDraw = std::make_unique<render::NodeDraw>(m_name);
+        m_nodeDraw = std::make_unique<render::NodeDraw>(fmt::format("{}_layer_draw", m_name));
 
         auto& pipeline = m_nodeDraw->m_pipeline;
         //pipeline.m_particle = false;
@@ -93,7 +93,7 @@ void LayerRenderer::updateRT(const UpdateViewContext& ctx)
         m_width = w;
         m_height = h;
 
-        KI_INFO(fmt::format("NODE_BUFFER: update - w={}, h={}", w, h));
+        KI_INFO(fmt::format("LAYER_BUFFER: update - w={}, h={}", w, h));
 
         m_nodeDraw->updateRT(ctx, bufferScale);
     }
@@ -104,7 +104,7 @@ void LayerRenderer::updateRT(const UpdateViewContext& ctx)
 
         if (m_useHighlight) {
             buffer = new render::FrameBuffer(
-                fmt::format("{}_node_{}x{}", m_name, w, h),
+                fmt::format("{}_layer_{}x{}", m_name, w, h),
                 {
                     w, h,
                     {
@@ -117,7 +117,7 @@ void LayerRenderer::updateRT(const UpdateViewContext& ctx)
         }
         else {
             buffer = new render::FrameBuffer(
-                m_name + "_node",
+                fmt::format("{}_layer_{}x{}", m_name, w, h),
                 {
                     w, h,
                     {
@@ -157,7 +157,7 @@ void LayerRenderer::render(
     auto& nodeRegistry = *ctx.getRegistry()->m_nodeRegistry;
     auto& selectionRegistry = *ctx.getRegistry()->m_selectionRegistry;
 
-    ctx.validateRender("node_map");
+    ctx.validateRender("layer");
 
     if (m_useHighlight) {
         m_taggedCount = assets.showTagged ? selectionRegistry.getTaggedCount() : 0;

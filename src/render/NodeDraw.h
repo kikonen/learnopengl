@@ -77,7 +77,7 @@ namespace render {
         Pipeline m_pipeline;
 
     private:
-        const std::string& m_namePrefix;
+        const std::string m_namePrefix;
 
         query::TimeElapsedQuery m_timeElapsedQuery;
 

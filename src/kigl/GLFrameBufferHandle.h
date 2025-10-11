@@ -37,6 +37,7 @@ namespace kigl {
         void create(std::string_view name) {
             if (m_fbo > 0) return;
             glCreateFramebuffers(1, &m_fbo);
+            glNamedFramebufferReadBuffer(m_fbo, GL_NONE);
 
             kigl::setLabel(GL_FRAMEBUFFER, m_fbo, name);
 

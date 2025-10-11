@@ -61,6 +61,10 @@ void DynamicCubeMap::prepareRT(
     if (m_prepared) return;
     m_prepared = true;
 
+    // NOTE KI dynamic cubemap is not drawn directly, but end result is copied into it
+    // => thus DEPTH is not needed
+    // => and existence of this FBO is technicality to manage glNamedFramebufferTextureLayer
+    //    logic for cubemap faces
     m_fbo.create(m_name + "_dyn_cubemap_fbo");
 
     m_cubeMap.m_size = m_size;
