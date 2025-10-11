@@ -23,7 +23,9 @@ namespace loader {
         const std::string m_assetsDir;
         const std::string m_dirName;
         const std::string m_fileName;
+
         const std::string m_fullPath;
+        const std::string m_name;
 
         std::shared_ptr<std::atomic_bool> m_alive;
 

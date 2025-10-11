@@ -36,6 +36,8 @@
 
 
 namespace {
+    bool s_was_key_F5{ false };
+    bool s_was_CTRL_O{ false };
 }
 
 namespace editor {
@@ -76,8 +78,21 @@ namespace editor {
     void EditorFrame::processInputs(
         const InputContext& ctx)
     {
-        if (ImGui::IsKeyPressed(ImGuiKey_O) && ImGui::GetIO().KeyCtrl) {
+        if (!s_was_key_F5 && ImGui::IsKeyPressed(ImGuiKey_F5)) {
+            onReloadScene({ ctx.getEngine() });
+            s_was_key_F5 = true;
+        }
+        else
+        {
+            s_was_key_F5 = false;
+        }
+
+        if (!s_was_CTRL_O && ImGui::IsKeyPressed(ImGuiKey_O) && ImGui::GetIO().KeyCtrl) {
             onLoadScene({ ctx.getEngine() });
+            s_was_CTRL_O = true;
+        }
+        else {
+            s_was_CTRL_O = false;
         }
 
         m_statusTool->processInputs(ctx);
@@ -192,6 +207,13 @@ namespace editor {
     void EditorFrame::renderToolBar(
         const gui::FrameContext& ctx)
     {
+        if (ImGui::Button("Reload"))
+        {
+            onReloadScene(ctx);
+        }
+
+        ImGui::SameLine();
+
         if (ImGui::Button("Load"))
         {
             onLoadScene(ctx);
@@ -205,6 +227,31 @@ namespace editor {
         }
 
         ImGui::Separator();
+    }
+
+    void EditorFrame::onReloadScene(
+        const gui::FrameContext& ctx)
+    {
+        std::string filePath;
+
+        if (auto* scene = ctx.getScene(); scene)
+        {
+            filePath = scene->getFilePath();
+        }
+
+        if (!filePath.empty())
+        {
+            {
+                event::Event evt{ event::Type::action_editor_scene_unload };
+                ctx.getRegistry()->m_dispatcherView->send(evt);
+            }
+            {
+                event::Event evt{ event::Type::action_editor_scene_load };
+                auto* att = evt.attach();
+                att->pathEntry.filePath = filePath;
+                ctx.getRegistry()->m_dispatcherView->send(evt);
+            }
+        }
     }
 
     void EditorFrame::onLoadScene(

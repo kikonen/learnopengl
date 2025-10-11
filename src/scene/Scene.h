@@ -99,6 +99,16 @@ public:
         m_name = name;
     }
 
+    const std::string& getFilePath() const noexcept
+    {
+        return m_filePath;
+    }
+
+    void setFilePath(const std::string& filePath)
+    {
+        m_filePath = filePath;
+    }
+
 private:
     void renderUi(const render::RenderContext& ctx);
     void renderPlayer(const render::RenderContext& ctx);
@@ -121,6 +131,7 @@ private:
     std::shared_ptr<std::atomic_bool> m_alive;
 
     std::string m_name;
+    std::string m_filePath;
     bool m_loaded{ false };
 
     event::Listen m_listen_scene_loaded;

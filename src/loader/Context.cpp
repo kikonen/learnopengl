@@ -1,5 +1,7 @@
 #include "Context.h"
 
+#include <filesystem>
+
 #include "asset/Assets.h"
 
 #include "util/util.h"
@@ -17,6 +19,13 @@ namespace {
 
         return util::joinPath(dirName, fileName);
     }
+
+    std::string resolveName(
+        const std::string& fileName)
+    {
+        std::filesystem::path p{ fileName };
+        return p.stem().string();
+    }
 }
 
 namespace loader {
@@ -30,7 +39,8 @@ namespace loader {
         m_assetsDir{ Assets::get().assetsDir},
         m_dirName{ dirName },
         m_fileName{ fileName },
-        m_fullPath{ resolveFilePath(dirName, fileName) }
+        m_fullPath{ resolveFilePath(dirName, fileName) },
+        m_name{ resolveName(fileName) }
     {
     }
 }

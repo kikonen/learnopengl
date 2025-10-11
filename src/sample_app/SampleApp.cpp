@@ -507,6 +507,9 @@ std::shared_ptr<Scene> SampleApp::loadScene(
                 assets.sceneDir,
                 filePath
             );
+            scene->setFilePath(ctx->m_fullPath);
+            scene->setName(ctx->m_name);
+
             m_loader = std::make_unique<loader::SceneLoader>(ctx);
         }
     }
