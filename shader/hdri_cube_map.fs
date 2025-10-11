@@ -1,7 +1,15 @@
 #version 460 core
 
+#include uniform_buffer_info.glsl
+
+// in VS_OUT {
+//   vec3 worldPos;
+// } fs_in;
+
 in VS_OUT {
+  vec2 texCoord;
   vec3 worldPos;
+  flat mat4 projected;
 } fs_in;
 
 // equirectangularMap
@@ -30,13 +38,25 @@ vec2 sampleSphericalMap(vec3 v)
 
 void main()
 {
+const vec2 texCoord = gl_FragCoord.xy / u_bufferResolution;
+
   // make sure to normalize localPos
-  vec2 uv = sampleSphericalMap(normalize(fs_in.worldPos));
+  vec3 worldPos = vec3(0, texCoord.x, texCoord.y);
+  vec2 uv = sampleSphericalMap(normalize(worldPos));
   vec3 color = texture(u_hdriTexture, uv).rgb;
 
   color.r = clamp(color.r, MIN_VALUE, MAX_VALUE);
   color.g = clamp(color.g, MIN_VALUE, MAX_VALUE);
   color.b = clamp(color.b, MIN_VALUE, MAX_VALUE);
 
+  // color *= vec3(1, 2, 1);
+  // color.rg = texCoord;
+
+  color = vec3(fs_in.projected[2][0]);
+  color = normalize((fs_in.projected * vec4(1)).rgb);
+  color = color * 0.5 + 0.5;
+  // color = vec3(color) * vec3(0, 3, 0);
+
   o_fragColor = vec4(color, 1.0);
+  // o_fragColor = vec4(1, 0, 0, 1.0);
 }
