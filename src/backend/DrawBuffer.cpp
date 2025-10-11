@@ -248,7 +248,7 @@ namespace backend {
         }
 
         if (m_commands->send(cmd)) {
-            KI_INFO_OUT("full: flush");
+            //KI_INFO_OUT("full: flush");
             flush();
         }
     }
