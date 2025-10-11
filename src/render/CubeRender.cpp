@@ -1,5 +1,9 @@
 #include "CubeRender.h"
 
+#include <fmt/format.h>
+
+#include "util/glm_format.h"
+
 #include "kigl/GLTextureHandle.h"
 #include "kigl/GLState.h"
 
@@ -16,7 +20,8 @@ namespace render {
         int cubeTextureID,
         int size)
     {
-        std::unique_ptr<FrameBuffer> captureFBO{ nullptr };
+        //std::unique_ptr<FrameBuffer> captureFBO{ nullptr };
+        FrameBuffer * captureFBO{ nullptr };
         {
             auto buffer = new FrameBuffer(
                 "cube_map_capture_fbo",
@@ -27,13 +32,19 @@ namespace render {
                         FrameBufferAttachment::getDepthRbo(),
                     }
                 });
-            captureFBO.reset(buffer);
+            //captureFBO.reset(buffer);
+            captureFBO = buffer;
             captureFBO->prepare();
         }
 
-
         {
+            auto& state = kigl::GLState::get();
             const TextureCube& cube = TextureCube::get();
+
+            // NTOE KI cube drawn from inside-out
+            state.frontFace(GL_CW);
+
+            program->bind();
 
             const glm::mat4 captureProjection = glm::perspective(glm::radians(90.0f), 1.0f, 0.1f, 10.0f);
             const glm::mat4 captureViews[] =
@@ -46,22 +57,20 @@ namespace render {
                glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f,  0.0f, -1.0f), glm::vec3(0.0f, -1.0f,  0.0f))
             };
 
-            //program->setMat4("projection", captureProjection);
+            const glm::vec4 clearColor{ 0.f, 0.f, 0.f, 0.f };
+            const float clearDepth{ 1.f };
 
             glViewport(0, 0, size, size);
             glBindFramebuffer(GL_DRAW_FRAMEBUFFER, *captureFBO);
 
-            // HACK KI env cubemap fails to render from HDRI often (reason unknown)
-            const glm::vec4 clearColor{ 0.8f, 0.8f, 0.9f, 0.f };
-            const float clearDepth{ 1.f };
-
             for (unsigned int face = 0; face < 6; ++face)
             {
-                program->bind();
-
-                //program->setMat4("view", captureViews[face]);
                 auto projected = captureProjection * captureViews[face];
-                program->setMat4("projected", projected);
+                program->setMat4("u_projected", projected);
+
+                KI_INFO_OUT(fmt::format("projection: {}", captureProjection));
+                KI_INFO_OUT(fmt::format("face: {}", captureViews[face]));
+                KI_INFO_OUT(fmt::format("u_projected: {}", projected));
 
                 // NOTE KI side vs. face difference
                 // https://stackoverflow.com/questions/55169053/opengl-render-to-cubemap-using-dsa-direct-state-access
@@ -77,6 +86,8 @@ namespace render {
 
                 cube.draw();
             }
+
+            state.frontFace(GL_CCW);
         }
     }
 }

@@ -2,9 +2,7 @@
 
 layout (location = ATTR_POS) in vec3 a_pos;
 
-//uniform mat4 projection;
-//uniform mat4 view;
-uniform mat4 projected;
+uniform mat4 U_projected;
 
 out VS_OUT {
   vec3 worldPos;

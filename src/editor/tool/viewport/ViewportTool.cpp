@@ -18,6 +18,8 @@
 
 #include "engine/Engine.h"
 
+#include "kigl/GLTextureHandle.h"
+
 #include "event/Event.h"
 #include "event/Dispatcher.h"
 
@@ -362,24 +364,22 @@ namespace editor
         auto& window = m_editor.getWindow();
         constexpr float scrollbarPadding = 0.f;
 
-        ImGuiTreeNodeFlags tnFlags = ImGuiTreeNodeFlags_SpanAvailWidth;
+        ImGuiTreeNodeFlags tnFlags = ImGuiTreeNodeFlags_SpanAvailWidth
+            | ImGuiTreeNodeFlags_DefaultOpen;
 
-        //GLuint getEnvironmentCubeMapTextureId() const;
-        //GLuint getSkyboxCubeMapTextureId() const;
-        //GLuint getIrradianceTextureId() const;
-        //GLuint getPrefilterCubeMapTextureId() const;
-        //GLuint getBrdfLutTextureId() const;
-
-        auto imageTex = [&ctx, &renderCtx](GLuint textureId) {
+        auto imageTex = [&ctx, &renderCtx](GLuint textureId, const glm::ivec2 size) {
+            glm::ivec2 sz = size;
+            if (sz.x <= 0) {
+                sz = { 512.f, 512.f };
+            }
             const float aspectRatio = renderCtx.m_aspectRatio;
-            const glm::uvec2 resolution = renderCtx.m_resolution;
 
             ImVec2 availSize = ImGui::GetContentRegionAvail();
 
             // NOTE KI allow max half window size
-            float w = std::min(availSize.x, resolution.x / 2.f) - scrollbarPadding;
-            float h = w / aspectRatio;
-            w = h;
+            float w = std::min(availSize.x, sz.x / 2.f) - scrollbarPadding;
+            float scale = w / sz.x;
+            float h = sz.y * scale;
 
             ImGui::Image(
                 textureId,
@@ -456,32 +456,38 @@ namespace editor
         };
 
         if (ImGui::TreeNodeEx("BrdfLut Tex", tnFlags)) {
-            imageTex(material->getBrdfLutTextureId());
+            const auto& handle = material->getBrdfLutTextureHandle();
+            imageTex(handle, handle.getSize());
             ImGui::TreePop();
         }
 
         if (ImGui::TreeNodeEx("HDRI Tex", tnFlags)) {
-            imageTex(material->getHdriTextureId());
+            const auto& handle = material->getHdriTextureHandle();
+            imageTex(handle, handle.getSize());
             ImGui::TreePop();
         }
 
         if (ImGui::TreeNodeEx("Environment Map", tnFlags)) {
-            imageTex(material->getEnvironmentFlatTextureId());
+            const auto& handle = material->getEnvironmentFlatTextureHandle();
+            imageTex(handle, handle.getSize());
             ImGui::TreePop();
         }
 
         if (ImGui::TreeNodeEx("Prefilter Map", tnFlags)) {
-            imageTex(material->getPrefilterFlatTextureId());
+            const auto& handle = material->getPrefilterFlatTextureHandle();
+            imageTex(handle, handle.getSize());
             ImGui::TreePop();
         }
 
         if (ImGui::TreeNodeEx("Irradiance Map", tnFlags)) {
-            imageTex(material->getIrradianceFlatTextureId());
+            const auto& handle = material->getIrradianceFlatTextureHandle();
+            imageTex(handle, handle.getSize());
             ImGui::TreePop();
         }
 
         if (ImGui::TreeNodeEx("Skybox Map", tnFlags)) {
-            imageTex(material->getSkyboxFlatTextureId());
+            const auto& handle = material->getSkyboxFlatTextureHandle();
+            imageTex(handle, handle.getSize());
             ImGui::TreePop();
         }
     }

@@ -13,11 +13,20 @@ namespace kigl {
             : m_textureID(textureID) {
         }
 
+        GLTextureHandle(int textureID, const glm::ivec2& size)
+            : m_textureID(textureID),
+            m_width{ size.x },
+            m_height{ size.y }
+        {
+        }
+
         GLTextureHandle(GLTextureHandle& o) = delete;
         GLTextureHandle& operator=(GLTextureHandle& o) = delete;
 
         GLTextureHandle(GLTextureHandle&& o) noexcept
-            : m_textureID{ o.m_textureID }
+            : m_textureID{ o.m_textureID },
+            m_width{ o.m_width },
+            m_height{ o.m_height }
         {
             o.m_textureID = 0;
         }
@@ -25,6 +34,8 @@ namespace kigl {
         GLTextureHandle& operator=(GLTextureHandle&& o) noexcept
         {
             m_textureID = o.m_textureID;
+            m_width = o.m_width;
+            m_height = o.m_height;
             o.m_textureID = 0;
             return *this;
         }
@@ -35,7 +46,21 @@ namespace kigl {
             }
         }
 
-        bool valid() const noexcept { return m_textureID > 0; }
+        bool valid() const noexcept
+        {
+            return m_textureID > 0;
+        }
+
+        glm::ivec2 getSize() const noexcept
+        {
+            return { m_width, m_height };
+        }
+
+        void setSize(const glm::ivec2& size)
+        {
+            m_width = size.x;
+            m_height = size.y;
+        }
 
         void create(
             std::string_view name,

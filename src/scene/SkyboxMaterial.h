@@ -15,6 +15,7 @@
 
 namespace kigl {
     class GLState;
+    class GLTextureHandle;
 }
 
 class SkyboxMaterial : public CustomMaterial
@@ -34,18 +35,18 @@ public:
 
     virtual void bindTextures(kigl::GLState& state) override;
 
-    GLuint getHdriTextureId() const;
-    GLuint getBrdfLutTextureId() const;
+    const kigl::GLTextureHandle& getHdriTextureHandle() const;
+    const kigl::GLTextureHandle& getBrdfLutTextureHandle() const;
 
-    GLuint getIrradianceCubeMapTextureId() const;
-    GLuint getPrefilterCubeMapTextureId() const;
-    GLuint getEnvironmentCubeMapTextureId() const;
-    GLuint getSkyboxCubeMapTextureId() const;
+    const kigl::GLTextureHandle& getIrradianceCubeMapTextureHandle() const;
+    const kigl::GLTextureHandle& getPrefilterCubeMapTextureHandle() const;
+    const kigl::GLTextureHandle& getEnvironmentCubeMapTextureHandle() const;
+    const kigl::GLTextureHandle& getSkyboxCubeMapTextureHandle() const;
 
-    GLuint getIrradianceFlatTextureId() const;
-    GLuint getPrefilterFlatTextureId() const;
-    GLuint getEnvironmentFlatTextureId() const;
-    GLuint getSkyboxFlatTextureId() const;
+    const kigl::GLTextureHandle& getIrradianceFlatTextureHandle() const;
+    const kigl::GLTextureHandle& getPrefilterFlatTextureHandle() const;
+    const kigl::GLTextureHandle& getEnvironmentFlatTextureHandle() const;
+    const kigl::GLTextureHandle& getSkyboxFlatTextureHandle() const;
 
 private:
     void prepareFaces(

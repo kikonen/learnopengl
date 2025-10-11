@@ -80,6 +80,11 @@ namespace render {
         //    glTextureParameteri(m_flatTexture, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
         //}
         {
+            auto& state = kigl::GLState::get();
+
+            // NTOE KI cube drawn from inside-out
+            state.frontFace(GL_CCW);
+
             auto* program = Program::get(ProgramRegistry::get().getProgram(SHADER_FLAT_CUBE_MAP));
 
             program->prepareRT();
@@ -95,6 +100,7 @@ namespace render {
                     {
                         flatSize.x, flatSize.y,
                         {
+
                             //render::FrameBufferAttachment::getDrawBuffer(),
                             render::FrameBufferAttachment::getTextureRGBA(GL_COLOR_ATTACHMENT0),
                             render::FrameBufferAttachment::getDepthRbo(),
@@ -113,6 +119,7 @@ namespace render {
 
             auto& att = captureFBO->m_spec.attachments[0];
             m_flatTexture = att.textureID;
+            m_flatTexture.setSize(flatSize);
             att.textureID = 0;
             att.createdTexture = false;
 

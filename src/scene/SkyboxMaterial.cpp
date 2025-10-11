@@ -43,54 +43,54 @@ SkyboxMaterial::SkyboxMaterial(
 {
 }
 
-GLuint SkyboxMaterial::getHdriTextureId() const
+const kigl::GLTextureHandle& SkyboxMaterial::getHdriTextureHandle() const
 {
-    return m_hdriTexture.m_texture.m_textureID;
+    return m_hdriTexture.m_texture;
 }
 
-GLuint SkyboxMaterial::getBrdfLutTextureId() const
+const kigl::GLTextureHandle& SkyboxMaterial::getBrdfLutTextureHandle() const
 {
-    return m_brdfLutTexture.m_texture.m_textureID;
+    return m_brdfLutTexture.m_texture;
 }
 
-GLuint SkyboxMaterial::getIrradianceCubeMapTextureId() const
+const kigl::GLTextureHandle& SkyboxMaterial::getIrradianceCubeMapTextureHandle() const
 {
-    return m_irradianceMap.m_cubeTexture.m_textureID;
+    return m_irradianceMap.m_cubeTexture;
 }
 
-GLuint SkyboxMaterial::getPrefilterCubeMapTextureId() const
+const kigl::GLTextureHandle& SkyboxMaterial::getPrefilterCubeMapTextureHandle() const
 {
-    return m_prefilterMap.m_cubeTexture.m_textureID;
+    return m_prefilterMap.m_cubeTexture;
 }
 
-GLuint SkyboxMaterial::getEnvironmentCubeMapTextureId() const
+const kigl::GLTextureHandle& SkyboxMaterial::getEnvironmentCubeMapTextureHandle() const
 {
-    return m_environmentMap.m_cubeTexture.m_textureID;
+    return m_environmentMap.m_cubeTexture;
 }
 
-GLuint SkyboxMaterial::getSkyboxCubeMapTextureId() const
+const kigl::GLTextureHandle& SkyboxMaterial::getSkyboxCubeMapTextureHandle() const
 {
-    return m_skyboxMap.m_cubeTexture.m_textureID;
+    return m_skyboxMap.m_cubeTexture;
 }
 
-GLuint SkyboxMaterial::getIrradianceFlatTextureId() const
+const kigl::GLTextureHandle& SkyboxMaterial::getIrradianceFlatTextureHandle() const
 {
-    return m_irradianceMap.m_flatTexture.m_textureID;
+    return m_irradianceMap.m_flatTexture;
 }
 
-GLuint SkyboxMaterial::getPrefilterFlatTextureId() const
+const kigl::GLTextureHandle& SkyboxMaterial::getPrefilterFlatTextureHandle() const
 {
-    return m_prefilterMap.m_flatTexture.m_textureID;
+    return m_prefilterMap.m_flatTexture;
 }
 
-GLuint SkyboxMaterial::getEnvironmentFlatTextureId() const
+const kigl::GLTextureHandle& SkyboxMaterial::getEnvironmentFlatTextureHandle() const
 {
-    return m_environmentMap.m_flatTexture.m_textureID;
+    return m_environmentMap.m_flatTexture;
 }
 
-GLuint SkyboxMaterial::getSkyboxFlatTextureId() const
+const kigl::GLTextureHandle& SkyboxMaterial::getSkyboxFlatTextureHandle() const
 {
-    return m_skyboxMap.m_flatTexture.m_textureID;
+    return m_skyboxMap.m_flatTexture;
 }
 
 void SkyboxMaterial::prepareRT(

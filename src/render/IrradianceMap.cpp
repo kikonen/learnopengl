@@ -73,6 +73,9 @@ namespace render {
         }
 
         {
+            auto& state = kigl::GLState::get();
+            state.frontFace(GL_CCW);
+
             auto* program = Program::get(ProgramRegistry::get().getProgram(SHADER_FLAT_CUBE_MAP));
 
             program->prepareRT();
@@ -106,6 +109,7 @@ namespace render {
 
             auto& att = captureFBO->m_spec.attachments[0];
             m_flatTexture = att.textureID;
+            m_flatTexture.setSize(flatSize);
             att.textureID = 0;
             att.createdTexture = false;
 

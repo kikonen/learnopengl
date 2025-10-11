@@ -91,71 +91,83 @@ namespace render {
         int cubeTextureID,
         int baseSize)
     {
-        auto& state = kigl::GLState::get();
-
-        const glm::mat4 captureProjection = glm::perspective(glm::radians(90.0f), 1.0f, 0.1f, 10.0f);
-        const glm::mat4 captureViews[] =
         {
-           glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f,  0.0f,  0.0f), glm::vec3(0.0f, -1.0f,  0.0f)),
-           glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(-1.0f,  0.0f,  0.0f), glm::vec3(0.0f, -1.0f,  0.0f)),
-           glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f,  1.0f,  0.0f), glm::vec3(0.0f,  0.0f,  1.0f)),
-           glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, -1.0f,  0.0f), glm::vec3(0.0f,  0.0f, -1.0f)),
-           glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f,  0.0f,  1.0f), glm::vec3(0.0f, -1.0f,  0.0f)),
-           glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f,  0.0f, -1.0f), glm::vec3(0.0f, -1.0f,  0.0f))
-        };
+            auto& state = kigl::GLState::get();
 
-        const glm::vec4 clearColor{ 0.f };
-        const float clearDepth{ 1.f };
+            // NTOE KI cube drawn from inside-out
+            state.frontFace(GL_CW);
 
-        const TextureCube& cube = TextureCube::get();
-
-        kigl::GLFrameBufferHandle captureFBO;
-        kigl::GLRenderBufferHandle rbo;
-        {
-            captureFBO.create("capture_fbo");
-            rbo.create("capture_rbo");
-
-            glNamedFramebufferRenderbuffer(captureFBO, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, rbo);
-            glNamedFramebufferDrawBuffer(captureFBO, GL_COLOR_ATTACHMENT0);
-        }
-
-        glBindFramebuffer(GL_DRAW_FRAMEBUFFER, captureFBO);
-
-        for (unsigned int mip = 0; mip < MAX_MIP_LEVELS; ++mip)
-        {
-            // reisze framebuffer according to mip-level size.
-            unsigned int mipSize = static_cast<unsigned int>(baseSize * std::pow(0.5, mip));
-
-            const float roughness = (float)mip / (float)(MAX_MIP_LEVELS - 1);
-            program->setFloat("u_roughness", roughness);
-
+            const glm::mat4 captureProjection = glm::perspective(glm::radians(90.0f), 1.0f, 0.1f, 10.0f);
+            const glm::mat4 captureViews[] =
             {
-                glNamedRenderbufferStorage(rbo, GL_DEPTH_COMPONENT24, mipSize, mipSize);
-                glViewport(0, 0, mipSize, mipSize);
+               glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(1.0f,  0.0f,  0.0f), glm::vec3(0.0f, -1.0f,  0.0f)),
+               glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(-1.0f,  0.0f,  0.0f), glm::vec3(0.0f, -1.0f,  0.0f)),
+               glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f,  1.0f,  0.0f), glm::vec3(0.0f,  0.0f,  1.0f)),
+               glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, -1.0f,  0.0f), glm::vec3(0.0f,  0.0f, -1.0f)),
+               glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f,  0.0f,  1.0f), glm::vec3(0.0f, -1.0f,  0.0f)),
+               glm::lookAt(glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f,  0.0f, -1.0f), glm::vec3(0.0f, -1.0f,  0.0f))
+            };
+
+            const glm::vec4 clearColor{ 0.f };
+            const float clearDepth{ 1.f };
+
+            const TextureCube& cube = TextureCube::get();
+
+            kigl::GLFrameBufferHandle captureFBO;
+            kigl::GLRenderBufferHandle rbo;
+            {
+                captureFBO.create("capture_fbo");
+                rbo.create("capture_rbo");
+
+                glNamedFramebufferRenderbuffer(captureFBO, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, rbo);
+                glNamedFramebufferDrawBuffer(captureFBO, GL_COLOR_ATTACHMENT0);
             }
 
-            for (unsigned int face = 0; face < 6; ++face)
+            glBindFramebuffer(GL_DRAW_FRAMEBUFFER, captureFBO);
+
+            for (unsigned int mip = 0; mip < MAX_MIP_LEVELS; ++mip)
             {
-                auto projected = captureProjection * captureViews[face];
-                program->setMat4("projected", projected);
+                // reisze framebuffer according to mip-level size.
+                unsigned int mipSize = static_cast<unsigned int>(baseSize * std::pow(0.5, mip));
 
-                // NOTE KI side vs. face difference
-                // https://stackoverflow.com/questions/55169053/opengl-render-to-cubemap-using-dsa-direct-state-access
-                glNamedFramebufferTextureLayer(
-                    captureFBO,
-                    GL_COLOR_ATTACHMENT0,
-                    cubeTextureID,
-                    mip,
-                    face);
+                const float roughness = (float)mip / (float)(MAX_MIP_LEVELS - 1);
+                program->setFloat("u_roughness", roughness);
 
-                glClearNamedFramebufferfv(captureFBO, GL_COLOR, 0, glm::value_ptr(clearColor));
-                glClearNamedFramebufferfv(captureFBO, GL_DEPTH, 0, &clearDepth);
+                {
+                    glNamedRenderbufferStorage(rbo, GL_DEPTH_COMPONENT24, mipSize, mipSize);
+                    glViewport(0, 0, mipSize, mipSize);
+                }
 
-                cube.draw();
+                for (unsigned int face = 0; face < 6; ++face)
+                {
+                    auto projected = captureProjection * captureViews[face];
+                    program->setMat4("u_projected", projected);
+
+                    // NOTE KI side vs. face difference
+                    // https://stackoverflow.com/questions/55169053/opengl-render-to-cubemap-using-dsa-direct-state-access
+                    glNamedFramebufferTextureLayer(
+                        captureFBO,
+                        GL_COLOR_ATTACHMENT0,
+                        cubeTextureID,
+                        mip,
+                        face);
+
+                    glClearNamedFramebufferfv(captureFBO, GL_COLOR, 0, glm::value_ptr(clearColor));
+                    glClearNamedFramebufferfv(captureFBO, GL_DEPTH, 0, &clearDepth);
+
+                    cube.draw();
+                }
+
             }
+
+            // NTOE KI cube drawn from inside-out
+            state.frontFace(GL_CCW);
         }
 
         {
+            auto& state = kigl::GLState::get();
+            state.frontFace(GL_CCW);
+
             auto* program = Program::get(ProgramRegistry::get().getProgram(SHADER_FLAT_CUBE_MAP));
 
             program->prepareRT();
@@ -189,6 +201,7 @@ namespace render {
 
             auto& att = captureFBO->m_spec.attachments[0];
             m_flatTexture = att.textureID;
+            m_flatTexture.setSize(flatSize);
             att.textureID = 0;
             att.createdTexture = false;
 
