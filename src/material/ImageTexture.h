@@ -14,6 +14,7 @@ public:
     ImageTexture(
         std::string_view name,
         std::string_view path,
+        bool shared,
         bool grayScale,
         bool gammaCorrect,
         bool flipY,
@@ -36,6 +37,9 @@ public:
 public:
     const std::string m_path;
     const bool m_flipY{ false };
+    // NOTE KI shared == image data may be reused
+    // => thus cannot automatically release after uploading to GPU
+    const bool m_shared{ false };
 
     std::unique_ptr<Image> m_image;
 

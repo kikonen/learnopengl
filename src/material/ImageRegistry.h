@@ -27,6 +27,7 @@ public:
     std::shared_future<std::shared_ptr<ImageTexture>> getTexture(
         std::string_view name,
         std::string_view path,
+        bool shared,
         bool grayScale,
         bool gammaCorrect,
         bool flipY,

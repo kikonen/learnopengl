@@ -127,6 +127,7 @@ namespace terrain {
             auto future = ImageRegistry::get().getTexture(
                 texturePath,
                 texturePath,
+                true,
                 false,
                 false,
                 true,

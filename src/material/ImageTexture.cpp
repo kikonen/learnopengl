@@ -31,11 +31,13 @@ namespace {
 ImageTexture::ImageTexture(
     std::string_view name,
     std::string_view path,
+    bool shared,
     bool grayScale,
     bool gammaCorrect,
     bool flipY,
     const TextureSpec& spec)
     : Texture{ name, grayScale, gammaCorrect, spec },
+    m_shared{ shared },
     m_flipY{ flipY },
     m_path{ path }
 {
@@ -143,7 +145,9 @@ void ImageTexture::prepareNormal()
             "IMAGE: unsupported channels {}, image={}",
             m_image->m_channels, str()));
         m_valid = false;
-        m_image.reset();
+        if (!m_shared) {
+            m_image.reset();
+        }
         return;
     }
 
@@ -193,7 +197,9 @@ void ImageTexture::prepareNormal()
 
     //m_texIndex = Texture::nextIndex();
 
-    m_image.reset();
+    if (!m_shared) {
+        m_image.reset();
+    }
 }
 
 void ImageTexture::prepareKtx()
@@ -212,7 +218,9 @@ void ImageTexture::prepareKtx()
 
     if (result) {
         KI_ERROR(fmt::format("Failed to open ktx: {}", m_image->m_path));
-        m_image.reset();
+        if (!m_shared) {
+            m_image.reset();
+        }
         return;
     }
 
@@ -225,7 +233,9 @@ void ImageTexture::prepareKtx()
 
     if (result) {
         KI_ERROR(fmt::format("Failed to upload ktx: {}", m_image->m_path));
-        m_image.reset();
+        if (!m_shared) {
+            m_image.reset();
+        }
         return;
     }
 
@@ -240,7 +250,9 @@ void ImageTexture::prepareKtx()
     m_handle = glGetTextureHandleARB(m_textureID);
     glMakeTextureHandleResidentARB(m_handle);
 
-    m_image.reset();
+    if (!m_shared) {
+        m_image.reset();
+    }
 }
 
 void ImageTexture::load() {

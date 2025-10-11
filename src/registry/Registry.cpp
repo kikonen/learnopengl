@@ -85,7 +85,7 @@ void Registry::clear()
     NodeRegistry::get().clear();
     NodeTypeRegistry::get().clear();
 
-    ImageRegistry::get().clear();
+    //ImageRegistry::get().clear();
     MaterialRegistry::get().clear();
     //ProgramRegistry::get().clear();
 

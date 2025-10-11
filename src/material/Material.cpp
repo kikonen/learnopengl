@@ -315,6 +315,7 @@ void Material::loadTexture(
     auto future = ImageRegistry::get().getTexture(
         info.path,
         usePlaceholder && assets.placeholderTextureAlways ? placeholderPath : texturePath,
+        false,
         grayScale,
         gammaCorrect,
         flipY,
@@ -331,6 +332,7 @@ void Material::loadTexture(
         future = ImageRegistry::get().getTexture(
             "tex-placeholder",
             placeholderPath,
+            false,
             true,
             gammaCorrect,
             flipY,
