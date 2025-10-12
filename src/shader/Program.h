@@ -74,6 +74,7 @@ public:
 
     int prepared() noexcept { return m_prepared; }
 
+    void setBool(const std::string& name, bool value) noexcept;
     void setInt(const std::string& name, int value) noexcept;
     void setFloat(const std::string& name, float value) noexcept;
     void setVec3(const std::string& name, glm::vec3 value) noexcept;

@@ -43,11 +43,6 @@ public:
     const kigl::GLTextureHandle& getEnvironmentCubeMapTextureHandle() const;
     const kigl::GLTextureHandle& getSkyboxCubeMapTextureHandle() const;
 
-    const kigl::GLTextureHandle& getIrradianceFlatTextureHandle() const;
-    const kigl::GLTextureHandle& getPrefilterFlatTextureHandle() const;
-    const kigl::GLTextureHandle& getEnvironmentFlatTextureHandle() const;
-    const kigl::GLTextureHandle& getSkyboxFlatTextureHandle() const;
-
 private:
     void prepareFaces(
         const PrepareContext& ctx);

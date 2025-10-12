@@ -73,26 +73,6 @@ const kigl::GLTextureHandle& SkyboxMaterial::getSkyboxCubeMapTextureHandle() con
     return m_skyboxMap.m_cubeTexture;
 }
 
-const kigl::GLTextureHandle& SkyboxMaterial::getIrradianceFlatTextureHandle() const
-{
-    return m_irradianceMap.m_flatTexture;
-}
-
-const kigl::GLTextureHandle& SkyboxMaterial::getPrefilterFlatTextureHandle() const
-{
-    return m_prefilterMap.m_flatTexture;
-}
-
-const kigl::GLTextureHandle& SkyboxMaterial::getEnvironmentFlatTextureHandle() const
-{
-    return m_environmentMap.m_flatTexture;
-}
-
-const kigl::GLTextureHandle& SkyboxMaterial::getSkyboxFlatTextureHandle() const
-{
-    return m_skyboxMap.m_flatTexture;
-}
-
 void SkyboxMaterial::prepareRT(
     const PrepareContext& ctx)
 {

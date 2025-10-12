@@ -475,6 +475,14 @@ void Program::validateUBO(
     }
 }
 
+void Program::setBool(const std::string& name, bool value) noexcept
+{
+    GLint vi = getUniformLoc(name);
+    if (vi != -1) {
+        glProgramUniform1i(m_programId, vi, (int)value);
+    }
+}
+
 void Program::setInt(const std::string& name, int value) noexcept
 {
     GLint vi = getUniformLoc(name);

@@ -1299,6 +1299,12 @@
     <ClCompile Include="src\event\Listen.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\kigl\OpenGLInfo.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\render\CubeMapDebugTexture.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h">
@@ -2940,6 +2946,12 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\event\Listen.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\engine\AsyncCounter.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\render\CubeMapDebugTexture.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

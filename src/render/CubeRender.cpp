@@ -20,8 +20,7 @@ namespace render {
         int cubeTextureID,
         int size)
     {
-        //std::unique_ptr<FrameBuffer> captureFBO{ nullptr };
-        FrameBuffer * captureFBO{ nullptr };
+        std::unique_ptr<FrameBuffer> captureFBO{ nullptr };
         {
             auto buffer = new FrameBuffer(
                 "cube_map_capture_fbo",
@@ -32,8 +31,7 @@ namespace render {
                         FrameBufferAttachment::getDepthRbo(),
                     }
                 });
-            //captureFBO.reset(buffer);
-            captureFBO = buffer;
+            captureFBO.reset(buffer);
             captureFBO->prepare();
         }
 

@@ -42,7 +42,6 @@ namespace render {
         std::string m_name;
 
         kigl::GLTextureHandle m_cubeTexture;
-        kigl::GLTextureHandle m_flatTexture;
 
         GLuint m_hdriTextureID{ 0 };
     };

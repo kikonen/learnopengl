@@ -2,6 +2,8 @@
 
 layout (binding = UNIT_EDITOR_CUBE_MAP)uniform samplerCube u_cubeMap;
 
+uniform bool u_equirectangular;
+
 in VS_OUT {
   vec2 texCoord;
 } fs_in;
@@ -9,12 +11,12 @@ in VS_OUT {
 layout(location = 0) out vec4 o_fragColor;
 
 ////////////////////////////////////////////////////////////
-//
+// https://stackoverflow.com/questions/54101329/project-cubemap-to-2d-texture
 ////////////////////////////////////////////////////////////
 
 SET_FLOAT_PRECISION;
 
-void main() {
+void flat1() {
   vec4 color = vec4(0);
   vec2 localST = fs_in.texCoord;
 
@@ -66,8 +68,27 @@ void main() {
   }
 
   color = texture(u_cubeMap, dir);
-  // color.rgb = dir * 0.5 + 0.5;
-
   o_fragColor = color;
-  // o_fragColor = vec4(1.0, 1.0, 0, 1.0);
+}
+
+
+void flat2() {
+  float phi = fs_in.texCoord.s * 3.1415 * 2;
+  float theta = (-fs_in.texCoord.t+0.5) * 3.1415;
+
+  vec3 dir = vec3(cos(phi) * cos(theta), sin(theta), sin(phi) * cos(theta));
+
+  // In this example i use a debthmap with only 1 channel,
+  // but the projection should work with a colored cubemap to
+  vec3 color = texture(u_cubeMap, dir).rgb;
+
+  o_fragColor = vec4(color, 1);
+}
+
+void main() {
+  if (u_equirectangular) {
+    flat2();
+  } else {
+    flat1();
+  }
 }

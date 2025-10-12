@@ -2,7 +2,7 @@
 
 layout (location = ATTR_POS) in vec3 a_pos;
 
-uniform mat4 U_projected;
+uniform mat4 u_projected;
 
 out VS_OUT {
   vec3 worldPos;
@@ -17,5 +17,5 @@ SET_FLOAT_PRECISION;
 void main()
 {
   vs_out.worldPos = a_pos;
-  gl_Position =  projected * vec4(vs_out.worldPos, 1.0);
+  gl_Position =  u_projected * vec4(vs_out.worldPos, 1.0);
 }

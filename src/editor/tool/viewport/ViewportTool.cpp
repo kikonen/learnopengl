@@ -35,6 +35,7 @@
 #include "render/FrameBuffer.h"
 #include "render/ScreenTri.h"
 #include "render/NodeDraw.h"
+#include "render/CubeMapDebugTexture.h"
 
 #include "scene/Scene.h"
 #include "scene/SkyboxMaterial.h"
@@ -61,6 +62,21 @@ namespace editor
     }
 
     ViewportTool::~ViewportTool() = default;
+
+    void ViewportTool::prepare(const PrepareContext& ctx)
+    {
+        m_state.m_environmentTexture = std::make_unique<render::CubeMapDebugTexture>("environment", 512);
+        m_state.m_environmentTexture->prepare();
+
+        m_state.m_irradianceTexture = std::make_unique<render::CubeMapDebugTexture>("irradiance", 512);
+        m_state.m_irradianceTexture->prepare();
+
+        m_state.m_prefilterTexture = std::make_unique<render::CubeMapDebugTexture>("prefilter", 512);
+        m_state.m_prefilterTexture->prepare();
+
+        m_state.m_skyboxTexture = std::make_unique<render::CubeMapDebugTexture>("skybox", 1024);
+        m_state.m_skyboxTexture->prepare();
+    }
 
     void ViewportTool::drawImpl(
         const gui::FrameContext& ctx)
@@ -346,6 +362,11 @@ namespace editor
     void ViewportTool::renderSkyboxDebug(
         const gui::FrameContext& ctx)
     {
+        {
+            ImGui::Checkbox("Equirectangular", &m_state.m_equirectangular);
+            ImGui::Separator();
+        }
+
         const auto& assets = Assets::get();
 
         auto* scene = ctx.getScene();
@@ -372,7 +393,6 @@ namespace editor
             if (sz.x <= 0) {
                 sz = { 512.f, 512.f };
             }
-            const float aspectRatio = renderCtx.m_aspectRatio;
 
             ImVec2 availSize = ImGui::GetContentRegionAvail();
 
@@ -391,68 +411,14 @@ namespace editor
             );
         };
 
-        auto cubeTex = [&ctx, &renderCtx](GLuint cubeMapTextureId) {
-            const float aspectRatio = renderCtx.m_aspectRatio;
-            const glm::uvec2 resolution = renderCtx.m_resolution;
+        auto cubeTex = [this, &imageTex] (
+            render::CubeMapDebugTexture& debugTexture,
+            const kigl::GLTextureHandle& handle)
+        {
+            debugTexture.render(handle, m_state.m_equirectangular);
 
-            ImVec2 availSize = ImGui::GetContentRegionAvail();
-
-            // NOTE KI allow max half window size
-            float w = std::min(availSize.x, resolution.x / 2.f) - scrollbarPadding;
-            float h = w / aspectRatio;
-            w = h;
-
-            {
-                auto& state = kigl::GLState::get();
-                auto* program = Program::get(ProgramRegistry::get().getProgram(SHADER_FLAT_CUBE_MAP));
-
-                program->prepareRT();
-                program->bind();
-                state.bindTexture(UNIT_EDITOR_CUBE_MAP, cubeMapTextureId, false);
-
-                int size = 512;
-                const glm::ivec2 flatSize{ size * 4 * 0.25f, size * 3 * 0.25f };
-
-                std::unique_ptr<render::FrameBuffer> captureFBO{ nullptr };
-                {
-                    auto buffer = new render::FrameBuffer(
-                        "flat_capture_fbo",
-                        {
-                            flatSize.x, flatSize.y,
-                            {
-                            //render::FrameBufferAttachment::getDrawBuffer(),
-                            render::FrameBufferAttachment::getTextureRGBA(GL_COLOR_ATTACHMENT0),
-                            render::FrameBufferAttachment::getDepthRbo(),
-                        }
-                        });
-                    captureFBO.reset(buffer);
-                    captureFBO->prepare();
-                }
-
-                glViewport(0, 0, flatSize.x, flatSize.y);
-                glBindFramebuffer(GL_DRAW_FRAMEBUFFER, *captureFBO);
-                captureFBO->clearAll();
-
-                render::ScreenTri tri;
-                tri.draw();
-
-
-                auto& att = captureFBO->m_spec.attachments[0];
-                GLuint flatTextureId = att.textureID;
-                //att.textureID = 0;
-                //att.createdTexture = false;
-
-                state.unbindTexture(UNIT_EDITOR_CUBE_MAP, cubeMapTextureId);
-
-                ImGui::Image(
-                    flatTextureId,
-                    ImVec2{ w, h },
-                    ImVec2{ 0, 1 }, // uv1
-                    ImVec2{ 1, 0 }, // uv2
-                    ImVec4{ 1, 1, 1, 1 }, // tint_col
-                    ImVec4{ 1, 1, 1, 1 }  // border_col
-                );
-            }
+            const auto& debugHandle = debugTexture.m_handle;
+            imageTex(debugHandle, debugHandle.getSize());
         };
 
         if (ImGui::TreeNodeEx("BrdfLut Tex", tnFlags)) {
@@ -468,26 +434,30 @@ namespace editor
         }
 
         if (ImGui::TreeNodeEx("Environment Map", tnFlags)) {
-            const auto& handle = material->getEnvironmentFlatTextureHandle();
-            imageTex(handle, handle.getSize());
+            cubeTex(
+                *m_state.m_environmentTexture,
+                material->getEnvironmentCubeMapTextureHandle());
             ImGui::TreePop();
         }
 
         if (ImGui::TreeNodeEx("Prefilter Map", tnFlags)) {
-            const auto& handle = material->getPrefilterFlatTextureHandle();
-            imageTex(handle, handle.getSize());
+            cubeTex(
+                *m_state.m_prefilterTexture,
+                material->getPrefilterCubeMapTextureHandle());
             ImGui::TreePop();
         }
 
         if (ImGui::TreeNodeEx("Irradiance Map", tnFlags)) {
-            const auto& handle = material->getIrradianceFlatTextureHandle();
-            imageTex(handle, handle.getSize());
+            cubeTex(
+                *m_state.m_irradianceTexture,
+                material->getIrradianceCubeMapTextureHandle());
             ImGui::TreePop();
         }
 
         if (ImGui::TreeNodeEx("Skybox Map", tnFlags)) {
-            const auto& handle = material->getSkyboxFlatTextureHandle();
-            imageTex(handle, handle.getSize());
+            cubeTex(
+                *m_state.m_skyboxTexture,
+                material->getSkyboxCubeMapTextureHandle());
             ImGui::TreePop();
         }
     }

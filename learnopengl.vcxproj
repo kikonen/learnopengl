@@ -385,6 +385,7 @@
     <ClCompile Include="src\render\BatchRegistry.cpp" />
     <ClCompile Include="src\render\BlurBuffer.cpp" />
     <ClCompile Include="src\render\CollectionRender.cpp" />
+    <ClCompile Include="src\render\CubeMapDebugTexture.cpp" />
     <ClCompile Include="src\render\NodeCollection.cpp" />
     <ClCompile Include="src\render\Pass.cpp" />
     <ClCompile Include="src\render\PassBloom.cpp" />
@@ -806,6 +807,7 @@
     <ClInclude Include="src\material\FontAtlasMaterialUpdater.h" />
     <ClInclude Include="src\material\ShaderMaterialUpdater.h" />
     <ClInclude Include="src\material\MaterialUpdater.h" />
+    <ClInclude Include="src\render\CubeMapDebugTexture.h" />
     <ClInclude Include="src\sample_app\action\ActionContext.h" />
     <ClInclude Include="src\sample_app\action\RayCastPlayer.h" />
     <ClInclude Include="src\sample_app\action\Shoot.h" />

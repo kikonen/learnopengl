@@ -163,49 +163,5 @@ namespace render {
             // NTOE KI cube drawn from inside-out
             state.frontFace(GL_CCW);
         }
-
-        {
-            auto& state = kigl::GLState::get();
-            state.frontFace(GL_CCW);
-
-            auto* program = Program::get(ProgramRegistry::get().getProgram(SHADER_FLAT_CUBE_MAP));
-
-            program->prepareRT();
-            program->bind();
-            state.bindTexture(UNIT_EDITOR_CUBE_MAP, m_cubeTexture, false);
-
-            const glm::ivec2 flatSize{ m_size * 4 * 0.25f, m_size * 3 * 0.25f };
-
-            std::unique_ptr<render::FrameBuffer> captureFBO{ nullptr };
-            {
-                auto buffer = new render::FrameBuffer(
-                    "flat_capture_fbo",
-                    {
-                        flatSize.x, flatSize.y,
-                        {
-                        //render::FrameBufferAttachment::getDrawBuffer(),
-                        render::FrameBufferAttachment::getTextureRGBA(GL_COLOR_ATTACHMENT0),
-                        render::FrameBufferAttachment::getDepthRbo(),
-                    }
-                    });
-                captureFBO.reset(buffer);
-                captureFBO->prepare();
-            }
-
-            glViewport(0, 0, flatSize.x, flatSize.y);
-            glBindFramebuffer(GL_DRAW_FRAMEBUFFER, *captureFBO);
-            captureFBO->clearAll();
-
-            render::ScreenTri tri;
-            tri.draw();
-
-            auto& att = captureFBO->m_spec.attachments[0];
-            m_flatTexture = att.textureID;
-            m_flatTexture.setSize(flatSize);
-            att.textureID = 0;
-            att.createdTexture = false;
-
-            state.unbindTexture(UNIT_EDITOR_CUBE_MAP, m_cubeTexture);
-        }
     }
 }

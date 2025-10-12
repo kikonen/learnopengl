@@ -12,6 +12,8 @@ namespace editor
         ViewportTool(EditorFrame& editor);
         ~ViewportTool() override;
 
+        void prepare(const PrepareContext& ctx) override;
+
         void drawImpl(
             const gui::FrameContext& ctx) override;
 
