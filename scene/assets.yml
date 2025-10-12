@@ -208,8 +208,8 @@ assets:
 
   environment_map_enabled: true
   environment_map_size: 512
-  irradiance_map_size: 32
-  prefilter_map_size: 128
+  irradiance_map_size: 128
+  prefilter_map_size: 256
   brdf_lut_size: 512
 
   layers:
