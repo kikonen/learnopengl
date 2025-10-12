@@ -126,7 +126,7 @@ void MaterialRegistry::renderMaterials(const render::RenderContext& ctx)
     std::lock_guard lock(m_lock);
     for (auto& [id, updater] : m_updaters) {
         updater->render(ctx);
-        if (updater->isBeedUpdate()) {
+        if (updater->isNeedUpdate()) {
             for (auto& registeredIndex : updater->m_dependentMaterials) {
                 markDirty(registeredIndex);
                 updater->setNeedUpdate(false);

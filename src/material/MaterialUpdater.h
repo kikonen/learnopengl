@@ -37,7 +37,7 @@ public:
         m_needUpdate = needUpdate;
     }
 
-    bool isBeedUpdate() const noexcept
+    bool isNeedUpdate() const noexcept
     {
         return m_needUpdate;
     }

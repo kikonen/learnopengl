@@ -66,9 +66,9 @@ namespace render {
                 auto projected = captureProjection * captureViews[face];
                 program->setMat4("u_projected", projected);
 
-                KI_INFO_OUT(fmt::format("projection: {}", captureProjection));
-                KI_INFO_OUT(fmt::format("face: {}", captureViews[face]));
-                KI_INFO_OUT(fmt::format("u_projected: {}", projected));
+                //KI_INFO_OUT(fmt::format("projection: {}", captureProjection));
+                //KI_INFO_OUT(fmt::format("face: {}", captureViews[face]));
+                //KI_INFO_OUT(fmt::format("u_projected: {}", projected));
 
                 // NOTE KI side vs. face difference
                 // https://stackoverflow.com/questions/55169053/opengl-render-to-cubemap-using-dsa-direct-state-access
