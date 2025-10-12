@@ -65,10 +65,12 @@ namespace editor
 
     void ViewportTool::prepare(const PrepareContext& ctx)
     {
-        m_state.m_environmentTexture = std::make_unique<render::CubeMapDebugTexture>("environment");
-        m_state.m_irradianceTexture = std::make_unique<render::CubeMapDebugTexture>("irradiance");
-        m_state.m_prefilterTexture = std::make_unique<render::CubeMapDebugTexture>("prefilter");
-        m_state.m_skyboxTexture = std::make_unique<render::CubeMapDebugTexture>("skybox");
+        m_state.m_mainCubeMapTexture = std::make_unique<render::CubeMapDebugTexture>("debug_main_cube");
+
+        m_state.m_environmentTexture = std::make_unique<render::CubeMapDebugTexture>("debug_environment");
+        m_state.m_irradianceTexture = std::make_unique<render::CubeMapDebugTexture>("debug_irradiance");
+        m_state.m_prefilterTexture = std::make_unique<render::CubeMapDebugTexture>("debug_prefilter");
+        m_state.m_skyboxTexture = std::make_unique<render::CubeMapDebugTexture>("debug_skybox");
     }
 
     void ViewportTool::drawImpl(
@@ -104,6 +106,29 @@ namespace editor
         constexpr float scrollbarPadding = 0.f;
 
         ImGuiTreeNodeFlags tnFlags = ImGuiTreeNodeFlags_SpanAvailWidth;
+
+        auto imageTex = [&ctx, &renderCtx](GLuint textureId, const glm::ivec2 size) {
+            glm::ivec2 sz = size;
+            if (sz.x <= 0) {
+                sz = { 512.f, 512.f };
+            }
+
+            ImVec2 availSize = ImGui::GetContentRegionAvail();
+
+            // NOTE KI allow max half window size
+            float w = std::min(availSize.x, sz.x / 2.f) - scrollbarPadding;
+            float scale = w / sz.x;
+            float h = sz.y * scale;
+
+            ImGui::Image(
+                textureId,
+                ImVec2{ w, h },
+                ImVec2{ 0, 1 }, // uv1
+                ImVec2{ 1, 0 }, // uv2
+                ImVec4{ 1, 1, 1, 1 }, // tint_col
+                ImVec4{ 1, 1, 1, 1 }  // border_col
+            );
+            };
 
         auto viewportTex = [&ctx, &renderCtx](model::Viewport& viewport, bool useAspectRatio) {
             const float aspectRatio = renderCtx.m_aspectRatio;
@@ -157,6 +182,10 @@ namespace editor
             );
             };
 
+        {
+            ImGui::Checkbox("Equirectangular", &m_state.m_equirectangular);
+            ImGui::Separator();
+        }
 
         if (ImGui::TreeNodeEx("ObjectId", tnFlags)) {
             auto& viewport = scene->m_objectIdRenderer->m_debugViewport;
@@ -222,45 +251,23 @@ namespace editor
             ImGui::TreePop();
         }
 
-        if (false && ImGui::TreeNodeEx("Cube - Faces", tnFlags)) {
-            auto& cmr = *scene->m_cubeMapRenderer;
+        if (ImGui::TreeNodeEx("Cube map", tnFlags)) {
+            auto& renderer = *scene->m_cubeMapRenderer;
 
-            auto faceTex = [&ctx, &renderCtx, &cmr](int faceIndex) {
-                const float aspectRatio = renderCtx.m_aspectRatio;
-                const glm::uvec2 resolution = renderCtx.m_resolution;
+            auto cubeTex = [this, &imageTex](
+                render::CubeMapDebugTexture& debugTexture,
+                const DynamicCubeMap& cubeMap)
+                {
+                    debugTexture.prepare(cubeMap.m_size);
+                    debugTexture.render(cubeMap.getTextureHandle(), m_state.m_equirectangular);
 
-                ImVec2 availSize = ImGui::GetContentRegionAvail();
-
-                // NOTE KI allow max half window size
-                float w = std::min(availSize.x, resolution.x / 2.f) - scrollbarPadding;
-                float h = w / aspectRatio;
-                w = h;
-
-                // https://stackoverflow.com/questions/38543155/opengl-render-face-of-cube-map-to-a-quad
-                auto& prev = cmr.m_prev;
-                auto fb = prev->asFrameBuffer(faceIndex);
-                //fb.bind(ctx);
-                //fb.bindFace();
-
-                ImTextureID texId = fb.getTextureID();
-                ImGui::Image(
-                    texId,
-                    ImVec2{ w, h },
-                    ImVec2{ 0, 1 }, // uv1
-                    ImVec2{ 1, 0 }, // uv2
-                    ImVec4{ 1, 1, 1, 1 }, // tint_col
-                    ImVec4{ 1, 1, 1, 1 }  // border_col
-                );
+                    const auto& debugHandle = debugTexture.m_handle;
+                    imageTex(debugHandle, debugHandle.getSize());
                 };
 
-            for (unsigned int face = 0; face < 6; face++) {
-                const auto& name = fmt::format("Cube - Face {}", face);
-                if (ImGui::TreeNodeEx(name.c_str(), tnFlags)) {
-                    faceTex(face);
-
-                    ImGui::TreePop();
-                }
-            }
+            cubeTex(
+                *m_state.m_mainCubeMapTexture,
+                *renderer.m_prev);
 
             ImGui::TreePop();
         }

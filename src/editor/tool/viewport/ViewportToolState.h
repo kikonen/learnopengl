@@ -14,6 +14,8 @@ namespace editor {
 
         bool m_equirectangular{ false };
 
+
+        std::unique_ptr<render::CubeMapDebugTexture> m_mainCubeMapTexture;
         std::unique_ptr<render::CubeMapDebugTexture> m_environmentTexture;
         std::unique_ptr<render::CubeMapDebugTexture> m_irradianceTexture;
         std::unique_ptr<render::CubeMapDebugTexture> m_prefilterTexture;

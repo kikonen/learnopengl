@@ -8,12 +8,14 @@
 
 #include "asset/Assets.h"
 
+#include "kigl/GLFrameBufferHandle.h"
+
 #include "shader/Shader.h"
 #include "shader/Program.h"
 #include "shader/ProgramRegistry.h"
 
 #include "render/RenderContext.h"
-#include "render/FrameBuffer.h"
+//#include "render/FrameBuffer.h"
 #include "render/ScreenTri.h"
 
 #include "registry/Registry.h"
@@ -29,7 +31,7 @@ namespace render
     CubeMapDebugTexture::CubeMapDebugTexture(
         const std::string& name)
         : m_name{ name }
-    { 
+    {
     }
 
     CubeMapDebugTexture::~CubeMapDebugTexture() = default;
@@ -73,31 +75,18 @@ namespace render
 
         const glm::ivec2 flatSize = m_handle.getSize();
 
-        std::unique_ptr<FrameBuffer> captureFBO{ nullptr };
-        {
-            auto buffer = new FrameBuffer(
-                "flat_capture_fbo",
-                {
-                    flatSize.x, flatSize.y,
-                    {
-                        FrameBufferAttachment::getDrawBuffer(),
-                        // NOTE KI skip depth, not relevant in this case
-                        FrameBufferAttachment::getDepthRbo(),
-                    }
-                });
-            captureFBO.reset(buffer);
-            captureFBO->prepare();
-        }
-
-        glViewport(0, 0, flatSize.x, flatSize.y);
-        glNamedFramebufferTexture(*captureFBO, GL_COLOR_ATTACHMENT0, m_handle, 0);
-        glBindFramebuffer(GL_DRAW_FRAMEBUFFER, *captureFBO);
+        kigl::GLFrameBufferHandle fbo;
 
         {
             const glm::vec4 clearColor{ 0.f, 0.f, 0.f, 0.f };
-            const float clearDepth{ 1.f };
-            glClearNamedFramebufferfv(*captureFBO, GL_COLOR, 0, glm::value_ptr(clearColor));
-            glClearNamedFramebufferfv(*captureFBO, GL_DEPTH, 0, &clearDepth);
+
+            fbo.create("flat_capture_fbo");
+
+            glViewport(0, 0, flatSize.x, flatSize.y);
+            glNamedFramebufferTexture(fbo, GL_COLOR_ATTACHMENT0, m_handle, 0);
+            glClearNamedFramebufferfv(fbo, GL_COLOR, 0, glm::value_ptr(clearColor));
+
+            state.bindFrameBuffer(fbo, true);
         }
 
         state.bindTexture(UNIT_EDITOR_CUBE_MAP, cubeHandle, false);
@@ -106,5 +95,6 @@ namespace render
         tri.draw();
 
         state.unbindTexture(UNIT_EDITOR_CUBE_MAP, cubeHandle);
+        state.bindFrameBuffer(0, true);
     }
 }

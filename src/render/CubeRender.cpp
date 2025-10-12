@@ -5,6 +5,7 @@
 #include "util/glm_format.h"
 
 #include "kigl/GLTextureHandle.h"
+#include "kigl/GLFrameBufferHandle.h"
 #include "kigl/GLState.h"
 
 #include "shader/Program.h"
@@ -12,7 +13,6 @@
 #include "material/Image.h"
 
 #include "render/TextureCube.h"
-#include "render/FrameBuffer.h"
 
 namespace render {
     void CubeRender::render(
@@ -20,29 +20,21 @@ namespace render {
         int cubeTextureID,
         int size)
     {
-        std::unique_ptr<FrameBuffer> captureFBO{ nullptr };
+        auto& state = kigl::GLState::get();
+
+        kigl::GLFrameBufferHandle fbo;
         {
-            auto buffer = new FrameBuffer(
-                "cube_map_capture_fbo",
-                {
-                    size, size,
-                    {
-                        FrameBufferAttachment::getDrawBuffer(),
-                        FrameBufferAttachment::getDepthRbo(),
-                    }
-                });
-            captureFBO.reset(buffer);
-            captureFBO->prepare();
+            fbo.create("cube_map_capture_fbo");
+
+            glViewport(0, 0, size, size);
+            state.bindFrameBuffer(fbo, true);
         }
 
         {
-            auto& state = kigl::GLState::get();
-            const TextureCube& cube = TextureCube::get();
-
             // NTOE KI cube drawn from inside-out
             state.frontFace(GL_CW);
 
-            program->bind();
+            const TextureCube& cube = TextureCube::get();
 
             const glm::mat4 captureProjection = glm::perspective(glm::radians(90.0f), 1.0f, 0.1f, 10.0f);
             const glm::mat4 captureViews[] =
@@ -56,10 +48,8 @@ namespace render {
             };
 
             const glm::vec4 clearColor{ 0.f, 0.f, 0.f, 0.f };
-            const float clearDepth{ 1.f };
 
-            glViewport(0, 0, size, size);
-            glBindFramebuffer(GL_DRAW_FRAMEBUFFER, *captureFBO);
+            program->bind();
 
             for (unsigned int face = 0; face < 6; ++face)
             {
@@ -73,14 +63,13 @@ namespace render {
                 // NOTE KI side vs. face difference
                 // https://stackoverflow.com/questions/55169053/opengl-render-to-cubemap-using-dsa-direct-state-access
                 glNamedFramebufferTextureLayer(
-                    *captureFBO,
+                    fbo,
                     GL_COLOR_ATTACHMENT0,
                     cubeTextureID,
                     0,
                     face);
 
-                glClearNamedFramebufferfv(*captureFBO, GL_COLOR, 0, glm::value_ptr(clearColor));
-                glClearNamedFramebufferfv(*captureFBO, GL_DEPTH, 0, &clearDepth);
+                glClearNamedFramebufferfv(fbo, GL_COLOR, 0, glm::value_ptr(clearColor));
 
                 cube.draw();
             }

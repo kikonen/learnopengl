@@ -33,6 +33,8 @@ public:
         const bool clear,
         const glm::vec4& clearColor);
 
+    const kigl::GLTextureHandle& getTextureHandle() const;
+
     void bindTexture(
         kigl::GLState& state,
         int unitIndex);
