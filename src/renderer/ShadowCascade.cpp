@@ -108,6 +108,11 @@ void ShadowCascade::prepareRT(
     m_buffer->prepare();
 }
 
+void ShadowCascade::clear()
+{
+    m_buffer->clearAll();
+}
+
 void ShadowCascade::bindTexture(kigl::GLState& state)
 {
     // NOTE KI important, how binding works in uniforms for array

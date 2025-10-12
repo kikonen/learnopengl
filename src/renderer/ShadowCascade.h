@@ -41,6 +41,7 @@ public:
     void prepareRT(
         const PrepareContext& ctx);
 
+    void clear();
     void bindTexture(kigl::GLState& state);
 
     GLuint getTextureID();

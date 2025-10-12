@@ -129,7 +129,10 @@ void ShadowMapRenderer::bind(
 
 void ShadowMapRenderer::bindTexture(kigl::GLState& state)
 {
-    if (!m_rendered) return;
+    // NOTE KI don't skip; avoid opengl errors while scene is loading
+    // or if no light setup
+    //if (!m_rendered) return;
+
     for (auto& cascade : m_cascades) {
         cascade->bindTexture(state);
     }
@@ -143,6 +146,12 @@ bool ShadowMapRenderer::render(
     if (!needRender(ctx)) return false;
 
     const auto& dbg = ctx.getDebug();
+
+    // NOTE KI avoid opengl errors while scene is loading
+    // or if no light setup
+    for (auto& cascade : m_cascades) {
+        cascade->clear();
+    }
 
     // NOTE KI no shadows if no light
     if (!dbg.m_lightEnabled) return false;

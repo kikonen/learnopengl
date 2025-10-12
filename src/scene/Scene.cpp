@@ -528,8 +528,8 @@ void Scene::render(const render::RenderContext& ctx)
 
     if (m_shadowMapRenderer->render(ctx)) {
         renderCount++;
-        m_shadowMapRenderer->bindTexture(ctx.getGLState());
     }
+    m_shadowMapRenderer->bindTexture(ctx.getGLState());
 
     updateShadowUBO();
 

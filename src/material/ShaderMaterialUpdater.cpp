@@ -97,6 +97,7 @@ void ShaderMaterialUpdater::render(
     m_dirty |= m_frameCounter++ > m_frameSkip;
 
     if (!m_dirty) return;
+    if (!m_buffer) return;
 
     m_dirty = false;
     m_frameCounter = 0;
