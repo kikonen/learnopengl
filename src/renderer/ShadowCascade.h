@@ -44,6 +44,7 @@ public:
     void clear();
     void bindTexture(kigl::GLState& state);
 
+    glm::ivec2 getTextureSize();
     GLuint getTextureID();
 
     void bind(

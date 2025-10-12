@@ -251,7 +251,9 @@ void Scene::prepareRT()
 
         vp->setBindBefore([this](model::Viewport& vp) {
             auto* buffer = m_uiRenderer->m_buffer.get();
-            vp.setTextureId(buffer->m_spec.attachments[LayerRenderer::ATT_ALBEDO_INDEX].textureID);
+            vp.setTexture(
+                buffer->m_spec.attachments[LayerRenderer::ATT_ALBEDO_INDEX].textureID,
+                buffer->m_spec.getSize());
             vp.setSourceFrameBuffer(buffer);
             });
 
@@ -282,7 +284,9 @@ void Scene::prepareRT()
 
         vp->setBindBefore([this](model::Viewport& vp) {
             auto* buffer = m_playerRenderer->m_buffer.get();
-            vp.setTextureId(buffer->m_spec.attachments[LayerRenderer::ATT_ALBEDO_INDEX].textureID);
+            vp.setTexture(
+                buffer->m_spec.attachments[LayerRenderer::ATT_ALBEDO_INDEX].textureID,
+                buffer->m_spec.getSize());
             vp.setSourceFrameBuffer(buffer);
             });
 
@@ -313,7 +317,9 @@ void Scene::prepareRT()
 
         vp->setBindBefore([this](model::Viewport& vp) {
             auto* buffer = m_mainRenderer->m_buffer.get();
-            vp.setTextureId(buffer->m_spec.attachments[LayerRenderer::ATT_ALBEDO_INDEX].textureID);
+            vp.setTexture(
+                buffer->m_spec.attachments[LayerRenderer::ATT_ALBEDO_INDEX].textureID,
+                buffer->m_spec.getSize());
             vp.setSourceFrameBuffer(buffer);
         });
 
@@ -340,7 +346,9 @@ void Scene::prepareRT()
 
         vp->setBindBefore([this](model::Viewport& vp) {
             auto* buffer = m_rearRenderer->m_buffer.get();
-            vp.setTextureId(buffer->m_spec.attachments[LayerRenderer::ATT_ALBEDO_INDEX].textureID);
+            vp.setTexture(
+                buffer->m_spec.attachments[LayerRenderer::ATT_ALBEDO_INDEX].textureID,
+                buffer->m_spec.getSize());
             vp.setSourceFrameBuffer(buffer);
         });
 

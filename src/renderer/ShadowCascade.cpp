@@ -125,6 +125,11 @@ GLuint ShadowCascade::getTextureID()
     return m_buffer->m_spec.attachments[0].textureID;
 }
 
+glm::ivec2 ShadowCascade::getTextureSize()
+{
+    return m_buffer->m_spec.getSize();
+}
+
 void ShadowCascade::bind(
     const render::RenderContext& ctx,
     ShadowUBO& shadowUbo)

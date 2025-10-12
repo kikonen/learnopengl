@@ -61,7 +61,14 @@ namespace model
 
         void setSourceFrameBuffer(render::FrameBuffer* frameBuffer);
 
-        void setTextureId(GLuint textureId);
+        const glm::ivec2& getTextureSize() const noexcept
+        {
+            return m_textureSize;
+        }
+
+        void setTexture(
+            GLuint textureId,
+            glm::ivec2 textureSize);
 
         void prepareRT();
 
@@ -225,6 +232,7 @@ namespace model
         render::FrameBuffer* m_destinationBuffer{ nullptr };
 
         GLuint m_textureId;
+        glm::ivec2 m_textureSize{ 0 };
 
         Program* m_program{ nullptr };
 

@@ -158,6 +158,11 @@ namespace render {
             attachments(attachments) {
         }
 
+        glm::ivec2 getSize() const
+        {
+            return { width, height };
+        }
+
         int width;
         int height;
 

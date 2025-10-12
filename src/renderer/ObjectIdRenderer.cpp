@@ -150,7 +150,10 @@ void ObjectIdRenderer::updateRT(const UpdateViewContext& ctx)
     m_idBuffer.reset(buffer);
     m_idBuffer->prepare();
 
-    m_debugViewport->setTextureId(m_idBuffer->m_spec.attachments[0].textureID);
+    m_debugViewport->setTexture(
+        m_idBuffer->m_spec.attachments[0].textureID,
+        m_idBuffer->m_spec.getSize());
+
     m_debugViewport->setSourceFrameBuffer(m_idBuffer.get());
 }
 

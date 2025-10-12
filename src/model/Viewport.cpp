@@ -83,9 +83,12 @@ namespace model
         m_sourceBuffer = frameBuffer;
     }
 
-    void Viewport::setTextureId(GLuint textureId)
+    void Viewport::setTexture(
+            GLuint textureId,
+        glm::ivec2 textureSize)
     {
         m_textureId = textureId;
+        m_textureSize = textureSize;
     }
 
     void Viewport::prepareRT()

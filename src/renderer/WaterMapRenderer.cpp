@@ -105,7 +105,9 @@ void WaterMapRenderer::prepareRT(
 
         m_reflectionDebugViewport->setBindBefore([this](model::Viewport& vp) {
             auto& buffer = m_reflectionBuffers[m_prevIndex];
-            vp.setTextureId(buffer->m_spec.attachments[0].textureID);
+            vp.setTexture(
+                buffer->m_spec.attachments[0].textureID,
+                buffer->m_spec.getSize());
             vp.setSourceFrameBuffer(buffer.get());
             });
 
@@ -124,7 +126,9 @@ void WaterMapRenderer::prepareRT(
 
         m_refractionDebugViewport->setBindBefore([this](model::Viewport& vp) {
             auto& buffer = m_refractionBuffers[m_prevIndex];
-            vp.setTextureId(buffer->m_spec.attachments[0].textureID);
+            vp.setTexture(
+                buffer->m_spec.attachments[0].textureID,
+                buffer->m_spec.getSize());
             vp.setSourceFrameBuffer(buffer.get());
             });
 

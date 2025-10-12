@@ -107,7 +107,7 @@ namespace editor
 
         ImGuiTreeNodeFlags tnFlags = ImGuiTreeNodeFlags_SpanAvailWidth;
 
-        auto imageTex = [&ctx, &renderCtx](GLuint textureId, const glm::ivec2 size) {
+        auto imageTex = [&ctx, &renderCtx](GLuint textureId, const glm::ivec2 size, bool renderSize) {
             glm::ivec2 sz = size;
             if (sz.x <= 0) {
                 sz = { 512.f, 512.f };
@@ -120,6 +120,10 @@ namespace editor
             float scale = w / sz.x;
             float h = sz.y * scale;
 
+            if (renderSize) {
+                ImGui::Text(fmt::format("size: {} x {}", size.x, size.y).c_str());
+            }
+
             ImGui::Image(
                 textureId,
                 ImVec2{ w, h },
@@ -130,56 +134,23 @@ namespace editor
             );
             };
 
-        auto viewportTex = [&ctx, &renderCtx](model::Viewport& viewport, bool useAspectRatio) {
-            const float aspectRatio = renderCtx.m_aspectRatio;
-            const glm::uvec2 resolution = renderCtx.m_resolution;
-
-            ImVec2 availSize = ImGui::GetContentRegionAvail();
-            // NOTE KI allow max half window size
-            float w = std::min(availSize.x, resolution.x / 2.f) - scrollbarPadding;
-            float h = w / aspectRatio;
-            if (!useAspectRatio) {
-                w = h;
-            }
-
+        auto viewportTex = [&ctx, &renderCtx, &imageTex](model::Viewport& viewport, bool useAspectRatio) {
             viewport.invokeBindBefore();
+
             const auto& fb = viewport.getSourceFrameBuffer();
             auto& att = fb->m_spec.attachments[0];
             ImTextureID texId = att.textureID;
-            ImGui::Image(
-                texId,
-                ImVec2{ w, h },
-                ImVec2{ 0, 1 }, // uv1
-                ImVec2{ 1, 0 }, // uv2
-                ImVec4{ 1, 1, 1, 1 }, // tint_col
-                ImVec4{ 1, 1, 1, 1 }  // border_col
-            );
+
+            imageTex(texId, { fb->m_spec.width, fb->m_spec.height }, true);
             };
 
-        auto bufferTex = [&ctx, &renderCtx](render::FrameBuffer& fb, int attachmentIndex, bool useAspectRatio) {
-            const float aspectRatio = renderCtx.m_aspectRatio;
-            const glm::uvec2 resolution = renderCtx.m_resolution;
-
-            ImVec2 availSize = ImGui::GetContentRegionAvail();
-            // NOTE KI allow max half window size
-            float w = std::min(availSize.x, resolution.x / 2.f) - scrollbarPadding;
-            float h = w / aspectRatio;
-            if (!useAspectRatio) {
-                w = h;
-            }
-
+        auto bufferTex = [&ctx, &renderCtx, &imageTex](render::FrameBuffer& fb, int attachmentIndex, bool useAspectRatio) {
             // https://stackoverflow.com/questions/38543155/opengl-render-face-of-cube-map-to-a-quad
 
             const auto& att = fb.m_spec.attachments[attachmentIndex];
             ImTextureID texId = att.textureID;
-            ImGui::Image(
-                texId,
-                ImVec2{ w, h },
-                ImVec2{ 0, 1 }, // uv1
-                ImVec2{ 1, 0 }, // uv2
-                ImVec4{ 1, 1, 1, 1 }, // tint_col
-                ImVec4{ 1, 1, 1, 1 }  // border_col
-            );
+
+            imageTex(texId, fb.m_spec.getSize(), true);
             };
 
         {
@@ -253,6 +224,7 @@ namespace editor
 
         if (ImGui::TreeNodeEx("Cube map", tnFlags)) {
             auto& renderer = *scene->m_cubeMapRenderer;
+            const auto& cubeMap = *renderer.m_prev;
 
             auto cubeTex = [this, &imageTex](
                 render::CubeMapDebugTexture& debugTexture,
@@ -261,13 +233,15 @@ namespace editor
                     debugTexture.prepare(cubeMap.m_size);
                     debugTexture.render(cubeMap.getTextureHandle(), m_state.m_equirectangular);
 
+                    ImGui::Text(fmt::format("size: {} x {}", cubeMap.m_size, cubeMap.m_size).c_str());
+
                     const auto& debugHandle = debugTexture.m_handle;
-                    imageTex(debugHandle, debugHandle.getSize());
+                    imageTex(debugHandle, debugHandle.getSize(), false);
                 };
 
             cubeTex(
                 *m_state.m_mainCubeMapTexture,
-                *renderer.m_prev);
+                cubeMap);
 
             ImGui::TreePop();
         }
@@ -388,7 +362,7 @@ namespace editor
         ImGuiTreeNodeFlags tnFlags = ImGuiTreeNodeFlags_SpanAvailWidth
             | ImGuiTreeNodeFlags_DefaultOpen;
 
-        auto imageTex = [&ctx, &renderCtx](GLuint textureId, const glm::ivec2 size) {
+        auto imageTex = [&ctx, &renderCtx](GLuint textureId, const glm::ivec2 size, bool renderSize) {
             glm::ivec2 sz = size;
             if (sz.x <= 0) {
                 sz = { 512.f, 512.f };
@@ -400,6 +374,10 @@ namespace editor
             float w = std::min(availSize.x, sz.x / 2.f) - scrollbarPadding;
             float scale = w / sz.x;
             float h = sz.y * scale;
+
+            if (renderSize) {
+                ImGui::Text(fmt::format("size: {} x {}", size.x, size.y).c_str());
+            }
 
             ImGui::Image(
                 textureId,
@@ -415,22 +393,25 @@ namespace editor
             render::CubeMapDebugTexture& debugTexture,
             const kigl::GLTextureHandle& cubeHandle)
             {
-                debugTexture.prepare(cubeHandle.getSize().x);
+                const auto& cubeSize = cubeHandle.getSize();
+                debugTexture.prepare(cubeSize.x);
                 debugTexture.render(cubeHandle, m_state.m_equirectangular);
 
+                ImGui::Text(fmt::format("size: {} x {}", cubeSize.x, cubeSize.y).c_str());
+
                 const auto& debugHandle = debugTexture.m_handle;
-                imageTex(debugHandle, debugHandle.getSize());
+                imageTex(debugHandle, debugHandle.getSize(), false);
             };
 
         if (ImGui::TreeNodeEx("BrdfLut Tex", tnFlags)) {
             const auto& handle = material->getBrdfLutTextureHandle();
-            imageTex(handle, handle.getSize());
+            imageTex(handle, handle.getSize(), true);
             ImGui::TreePop();
         }
 
         if (ImGui::TreeNodeEx("HDRI Tex", tnFlags)) {
             const auto& handle = material->getHdriTextureHandle();
-            imageTex(handle, handle.getSize());
+            imageTex(handle, handle.getSize(), true);
             ImGui::TreePop();
         }
 

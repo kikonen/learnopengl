@@ -81,7 +81,7 @@ void ShadowMapRenderer::prepareRT(
 
         m_debugViewport->setBindBefore([this, &assets](model::Viewport& vp) {
             auto& active = m_cascades[m_activeCascade];
-            vp.setTextureId(active->getTextureID());
+            vp.setTexture(active->getTextureID(), active->getTextureSize());
             });
 
         m_debugViewport->setBindAfter([this, &assets](model::Viewport& vp) {
