@@ -76,11 +76,15 @@ namespace script
             handle.release();
         }
 
+        m_blocked.clear();
+        m_active.clear();
+        m_alive.clear();
+
         m_blockedDeadCount = 0;
         m_activeDeadCount = 0;
 
-        int m_cleanupIndex = 0;
-        int m_cleanupStep = 0;
+        m_cleanupIndex = 0;
+        m_cleanupStep = 0;
 
         m_blocked.reserve(COMMANDS_SIZE);
         m_active.reserve(COMMANDS_SIZE);
