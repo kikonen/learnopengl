@@ -63,6 +63,13 @@ namespace {
         }
     }
 
+    void clearMaterials()
+    {
+        std::lock_guard lock{ g_materialLock };
+
+        g_materials.clear();
+    }
+
     const Material& getMaterial(physics::GeomType type)
     {
         setupMaterials();
@@ -82,9 +89,15 @@ namespace physics {
         : m_physicsSystem{ physicsSystem }
     {}
 
+    MeshGenerator::~MeshGenerator()
+    {
+        clear();
+    }
+
     void MeshGenerator::clear()
     {
         m_cache.clear();
+        clearMaterials();
     }
 
     std::shared_ptr<std::vector<mesh::MeshInstance>> MeshGenerator::generateMeshes(bool onlyNavMesh)

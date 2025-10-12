@@ -27,6 +27,7 @@ namespace physics {
     class MeshGenerator {
     public:
         MeshGenerator(const PhysicsSystem& physicsSystem);
+        ~MeshGenerator();
 
         void clear();
         std::shared_ptr<std::vector<mesh::MeshInstance>> generateMeshes(bool onlyNavMesh);
