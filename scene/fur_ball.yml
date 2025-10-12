@@ -48,6 +48,7 @@ types:
     prefab: prefab/creatures/prefab_cow.yml
     audio:
       source:
+        name: moo
         path: audio/Cow_CE882860_normal_mono.wav
         gain: 1.0
     script_file: scripts/cow_audio

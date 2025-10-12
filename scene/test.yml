@@ -205,6 +205,7 @@ types:
       alignment: m
     xaudio:
       source:
+        name: growl
         path: audio/Lion Growl Fx_19237D66_normal_mono.wav
         reference_distance: 3
         gain: 0.5
@@ -236,6 +237,7 @@ types:
       alignment: m
     xaudio:
       source:
+        name: growl
         path: audio/Lion Growl Fx_19237D66_normal_mono.wav
         reference_distance: 3
         gain: 0.5
@@ -267,6 +269,7 @@ types:
       alignment: m
     xaudio:
       source:
+        name: growl
         path: audio/Lion Growl Fx_19237D66_normal_mono.wav
         reference_distance: 3
         gain: 0.5

@@ -6,8 +6,7 @@ namespace audio
 {
     SoundRegistry::SoundRegistry()
     {
-        // NOTE KI null entries to avoid need for "- 1" math
-        m_sounds.emplace_back<Sound>({});
+        clear();
     }
 
     SoundRegistry::~SoundRegistry() = default;
@@ -16,6 +15,10 @@ namespace audio
     {
         std::unique_lock lock(m_lock);
         m_sounds.clear();
+        m_sidToId.clear();
+
+        // NOTE KI null entries to avoid need for "- 1" math
+        m_sounds.emplace_back<Sound>({});
     }
 
     Sound* SoundRegistry::getSound(

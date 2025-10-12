@@ -48,6 +48,7 @@ prefab:
       base_scale: 0.0125
   audio:
     source:
+      name: growl
       path: audio/Lion Growl Fx_19237D66_normal_mono.wav
       reference_distance: 3
       gain: 0.5
