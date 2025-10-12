@@ -8,7 +8,8 @@ skybox:
 script:
   scripts:
     - path: lib/common
-nodes:
+
+types:
   - id: player
     type: origo
     front: [0, 0, -1]
