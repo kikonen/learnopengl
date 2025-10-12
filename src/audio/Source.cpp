@@ -34,6 +34,7 @@ namespace audio
     Source::~Source()
     {
         if (m_sourceId) {
+            alSourceStop(m_sourceId);
             alDeleteSources(1, &m_sourceId);
         }
     }

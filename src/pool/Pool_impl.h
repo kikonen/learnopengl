@@ -33,8 +33,6 @@ namespace pool {
 
             if (!m_pool) return;
 
-            memset(m_pool, 0, m_blockSize);
-
             {
                 // NOTE KI release all used entries for clean shutdown
                 for (uint32_t i = 0; i < m_blockSize; i++) {
@@ -46,15 +44,18 @@ namespace pool {
             }
 
             m_nextFree = 0;
-            for (uint32_t i = 0; i < m_blockSize; i++) {
-                auto& entry = m_pool[i];
-                entry.m_nextFree = i + 1;
-            }
-            m_pool[m_blockSize - 1].m_nextFree = -2;
 
             if (destroy) {
                 free((void*)m_pool);
                 m_pool = nullptr;
+            }
+            else {
+                memset(m_pool, 0, m_blockSize);
+                for (uint32_t i = 0; i < m_blockSize; i++) {
+                    auto& entry = m_pool[i];
+                    entry.m_nextFree = i + 1;
+                }
+                m_pool[m_blockSize - 1].m_nextFree = -2;
             }
         }
 

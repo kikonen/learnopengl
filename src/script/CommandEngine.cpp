@@ -84,6 +84,8 @@ namespace script
 
         m_blocked.reserve(COMMANDS_SIZE);
         m_active.reserve(COMMANDS_SIZE);
+
+        CommandHandle::clear();
     }
 
     void CommandEngine::prepare(Registry* registry)
