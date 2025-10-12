@@ -62,13 +62,6 @@ void SelectionRegistry::clear()
 {
     m_selected.clear();
     m_tagged.clear();
-}
-
-void SelectionRegistry::prepare(Registry* registry)
-{
-    const auto& assets = Assets::get();
-
-    m_registry = registry;
 
     {
         m_selectionMaterial = std::make_unique<Material>();
@@ -83,6 +76,15 @@ void SelectionRegistry::prepare(Registry* registry)
         m_tagMaterial->registerMaterial();
         m_tagMaterialIndex = m_tagMaterial->m_registeredIndex;
     }
+}
+
+void SelectionRegistry::prepare(Registry* registry)
+{
+    const auto& assets = Assets::get();
+
+    m_registry = registry;
+
+    clear();
 
     attachListeners();
 }
