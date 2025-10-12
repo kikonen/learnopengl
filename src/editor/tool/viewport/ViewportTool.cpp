@@ -80,9 +80,19 @@ namespace editor
         {
             renderBufferDebug(ctx);
         }
+        else {
+            m_state.m_mainCubeMapTexture->release();
+        }
+
         if (ImGui::CollapsingHeader("Skybox material"))
         {
             renderSkyboxDebug(ctx);
+        }
+        else {
+            m_state.m_environmentTexture->release();
+            m_state.m_irradianceTexture->release();
+            m_state.m_prefilterTexture->release();
+            m_state.m_skyboxTexture->release();
         }
     }
 
@@ -244,6 +254,9 @@ namespace editor
                 cubeMap);
 
             ImGui::TreePop();
+        }
+        else {
+            m_state.m_mainCubeMapTexture->release();
         }
 
         if (assets.showRearView) {
@@ -421,12 +434,18 @@ namespace editor
                 material->getEnvironmentCubeMapTextureHandle());
             ImGui::TreePop();
         }
+        else {
+            m_state.m_environmentTexture->release();
+        }
 
         if (ImGui::TreeNodeEx("Prefilter Map", tnFlags)) {
             cubeTex(
                 *m_state.m_prefilterTexture,
                 material->getPrefilterCubeMapTextureHandle());
             ImGui::TreePop();
+        }
+        else {
+            m_state.m_prefilterTexture->release();
         }
 
         if (ImGui::TreeNodeEx("Irradiance Map", tnFlags)) {
@@ -435,12 +454,18 @@ namespace editor
                 material->getIrradianceCubeMapTextureHandle());
             ImGui::TreePop();
         }
+        else {
+            m_state.m_irradianceTexture->release();
+        }
 
         if (ImGui::TreeNodeEx("Skybox Map", tnFlags)) {
             cubeTex(
                 *m_state.m_skyboxTexture,
                 material->getSkyboxCubeMapTextureHandle());
             ImGui::TreePop();
+        }
+        else {
+            m_state.m_skyboxTexture->release();
         }
     }
 }

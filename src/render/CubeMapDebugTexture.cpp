@@ -59,6 +59,12 @@ namespace render
         }
     }
 
+    void CubeMapDebugTexture::release()
+    {
+        m_handle.release();
+        m_cubeSize = -1;
+    }
+
     void CubeMapDebugTexture::render(
         const kigl::GLTextureHandle& cubeHandle,
         bool equirectangular)

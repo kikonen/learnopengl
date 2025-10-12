@@ -14,13 +14,15 @@ namespace render
         ~CubeMapDebugTexture();
 
         void prepare(int cubeSize);
+        void release();
+
         void render(
             const kigl::GLTextureHandle& cubeHandle,
             bool equirectangular);
 
     public:
         const std::string m_name;
-        int m_cubeSize{ 0 };
+        int m_cubeSize{ -1 };
         kigl::GLTextureHandle m_handle;
     };
 }
