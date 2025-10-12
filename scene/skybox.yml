@@ -10,6 +10,14 @@ script:
     - path: lib/common
 
 types:
+  - id: origo
+    mesh:
+      vertex:
+        type: sphere
+        radius: 0.01
+      material:
+        kd: [0.7, 0.7, 0.7, 1]
+        program: g_tex
   - id: player
     type: origo
     front: [0, 0, -1]
@@ -23,6 +31,7 @@ types:
       - type: camera_zoom
 
 nodes:
+  - type: origo
   - type: player
     pos: [0, 0, 0]
     active: true

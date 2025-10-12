@@ -337,7 +337,7 @@ void Program::createProgram() {
         programId = glCreateProgram();
 
         if (programId == 0)
-            throw std::runtime_error{ fmt::format("CREATE_PROGRAM: {}", programId) };
+            throw std::runtime_error{ fmt::format("PROGRAM_ERROR: {}", m_key) };
 
         kigl::setLabel(GL_PROGRAM, programId, m_key);
 
@@ -384,6 +384,8 @@ void Program::createProgram() {
             if (shaderId == -1) continue;
             glDeleteShader(shaderId);
         }
+
+        KI_INFO_OUT(fmt::format("PROGRAM_CREATED: key={}, local_id={}, glsl_id={}", m_key, m_id, m_programId));
     }
 
     for (auto& [type, source] : m_sources) {

@@ -17,5 +17,5 @@ SET_FLOAT_PRECISION;
 void main()
 {
   vs_out.worldPos = a_pos;
-  gl_Position =  projected * vec4(vs_out.worldPos, 1.0);
+  gl_Position =  u_projected * vec4(vs_out.worldPos, 1.0);
 }
