@@ -40,10 +40,9 @@ namespace kigl {
             return *this;
         }
 
-        ~GLTextureHandle() {
-            if (m_textureID > 0) {
-                glDeleteTextures(1, &m_textureID);
-            }
+        ~GLTextureHandle()
+        {
+            release();
         }
 
         bool valid() const noexcept
@@ -76,6 +75,15 @@ namespace kigl {
             m_height = height;
 
             kigl::setLabel(GL_TEXTURE, m_textureID, name);
+        }
+
+        void release()
+        {
+            if (m_textureID > 0)
+            {
+                glDeleteTextures(1, &m_textureID);
+                m_textureID = 0;
+            }
         }
 
         void bindTexture(int unitIndex)

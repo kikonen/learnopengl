@@ -27,19 +27,21 @@ namespace {
 namespace render
 {
     CubeMapDebugTexture::CubeMapDebugTexture(
-        const std::string& name,
-        int cubeSize)
-        : m_cubeSize{ cubeSize },
-        m_name{ name }
+        const std::string& name)
+        : m_name{ name }
     { 
     }
 
     CubeMapDebugTexture::~CubeMapDebugTexture() = default;
 
-    void CubeMapDebugTexture::prepare()
+    void CubeMapDebugTexture::prepare(int cubeSize)
     {
+        if (cubeSize == m_cubeSize) return;
+        m_cubeSize = cubeSize;
+
         const glm::ivec2 flatSize{ m_cubeSize * 4 * 0.25f, m_cubeSize * 3 * 0.25f };
         {
+            m_handle.release();
             m_handle.create(fmt::format("flat_cube_{}", m_name), GL_TEXTURE_2D, flatSize.x, flatSize.y);
 
             // NOTE KI allow HDR

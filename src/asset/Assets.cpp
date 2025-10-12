@@ -270,8 +270,8 @@ Assets::Assets()
 
     environmentMapEnabled = true;
     environmentMapSize = 512;
-    irradianceMapSize = 32;
-    prefilterMapSize = 128;
+    irradianceMapSize = 128;
+    prefilterMapSize = 256;
     brdfLutSize = 512;
 
     gammaCorrectEnabled = true;

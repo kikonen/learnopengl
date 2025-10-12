@@ -65,17 +65,10 @@ namespace editor
 
     void ViewportTool::prepare(const PrepareContext& ctx)
     {
-        m_state.m_environmentTexture = std::make_unique<render::CubeMapDebugTexture>("environment", 512);
-        m_state.m_environmentTexture->prepare();
-
-        m_state.m_irradianceTexture = std::make_unique<render::CubeMapDebugTexture>("irradiance", 512);
-        m_state.m_irradianceTexture->prepare();
-
-        m_state.m_prefilterTexture = std::make_unique<render::CubeMapDebugTexture>("prefilter", 512);
-        m_state.m_prefilterTexture->prepare();
-
-        m_state.m_skyboxTexture = std::make_unique<render::CubeMapDebugTexture>("skybox", 1024);
-        m_state.m_skyboxTexture->prepare();
+        m_state.m_environmentTexture = std::make_unique<render::CubeMapDebugTexture>("environment");
+        m_state.m_irradianceTexture = std::make_unique<render::CubeMapDebugTexture>("irradiance");
+        m_state.m_prefilterTexture = std::make_unique<render::CubeMapDebugTexture>("prefilter");
+        m_state.m_skyboxTexture = std::make_unique<render::CubeMapDebugTexture>("skybox");
     }
 
     void ViewportTool::drawImpl(
@@ -413,13 +406,14 @@ namespace editor
 
         auto cubeTex = [this, &imageTex] (
             render::CubeMapDebugTexture& debugTexture,
-            const kigl::GLTextureHandle& handle)
-        {
-            debugTexture.render(handle, m_state.m_equirectangular);
+            const kigl::GLTextureHandle& cubeHandle)
+            {
+                debugTexture.prepare(cubeHandle.getSize().x);
+                debugTexture.render(cubeHandle, m_state.m_equirectangular);
 
-            const auto& debugHandle = debugTexture.m_handle;
-            imageTex(debugHandle, debugHandle.getSize());
-        };
+                const auto& debugHandle = debugTexture.m_handle;
+                imageTex(debugHandle, debugHandle.getSize());
+            };
 
         if (ImGui::TreeNodeEx("BrdfLut Tex", tnFlags)) {
             const auto& handle = material->getBrdfLutTextureHandle();

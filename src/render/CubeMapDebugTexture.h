@@ -10,18 +10,17 @@ namespace render
     {
     public:
         CubeMapDebugTexture(
-            const std::string& name,
-            int cubeSize);
+            const std::string& name);
         ~CubeMapDebugTexture();
 
-        void prepare();
+        void prepare(int cubeSize);
         void render(
             const kigl::GLTextureHandle& cubeHandle,
             bool equirectangular);
 
     public:
         const std::string m_name;
-        const int m_cubeSize;
+        int m_cubeSize{ 0 };
         kigl::GLTextureHandle m_handle;
     };
 }
