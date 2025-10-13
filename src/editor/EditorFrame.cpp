@@ -37,6 +37,7 @@
 
 namespace {
     bool s_was_key_F5{ false };
+    bool s_was_key_F6{ false };
     bool s_was_CTRL_O{ false };
 }
 
@@ -85,6 +86,15 @@ namespace editor {
         else
         {
             s_was_key_F5 = false;
+        }
+
+        if (!s_was_key_F6 && ImGui::IsKeyPressed(ImGuiKey_F6)) {
+            onUnloadScene({ ctx.getEngine() });
+            s_was_key_F6 = true;
+        }
+        else
+        {
+            s_was_key_F6 = false;
         }
 
         if (!s_was_CTRL_O && ImGui::IsKeyPressed(ImGuiKey_O) && ImGui::GetIO().KeyCtrl) {
@@ -170,7 +180,8 @@ namespace editor {
             if (ImGui::BeginMenu("File"))
             {
                 if (ImGui::MenuItem("Load", "CTRL+O")) { onLoadScene(ctx); }
-                if (ImGui::MenuItem("Close", "CTRL+O")) { onUnloadScene(ctx); }
+                if (ImGui::MenuItem("Reload", "F5")) { onReloadScene(ctx); }
+                if (ImGui::MenuItem("Close", "F6")) { onUnloadScene(ctx); }
                 ImGui::Separator();
                 ImGui::Checkbox("ImGui Demo", &m_state.m_showImguiDemo);
                 ImGui::Checkbox("Console", &m_state.m_showConsole);
