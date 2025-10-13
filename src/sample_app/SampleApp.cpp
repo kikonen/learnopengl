@@ -58,6 +58,8 @@
 #include "render/RenderContext.h"
 #include "render/NodeDraw.h"
 #include "render/WindowBuffer.h"
+#include "render/Batch.h"
+#include "render/RenderData.h"
 
 #include "loader/Context.h"
 #include "loader/SceneLoader.h"
@@ -528,6 +530,19 @@ std::shared_ptr<Scene> SampleApp::loadScene(
         m_sceneUpdater->start();
         m_particleUpdater->start();
         m_animationUpdater->start();
+    }
+
+    if (m_loader) {
+        m_batch = std::make_unique<render::Batch>();
+        m_batch->prepareRT({ *this });
+
+        m_renderData = std::make_unique<render::RenderData>();
+        m_renderData->prepare(
+            false,
+            assets.glUseInvalidate,
+            assets.glUseFence,
+            assets.glUseFenceDebug,
+            assets.batchDebug);
     }
 
     if (m_loader) {
