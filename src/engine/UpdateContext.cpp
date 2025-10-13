@@ -1,6 +1,8 @@
 #include "UpdateContext.h"
 
 UpdateContext::UpdateContext(
-    Engine& engine)
-    : BaseContext{ engine }
+    Engine& engine,
+    const ki::RenderClock& clock)
+    : BaseContext{ engine },
+    m_clock { clock }
 { }

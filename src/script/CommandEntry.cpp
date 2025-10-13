@@ -96,9 +96,12 @@ namespace script {
                 throw std::runtime_error{ msg };
             }
 
+            m_cmd->setId(m_id);
+
             // NOTE KI virtual destructor works via calling base class
-            if (useDelete)
+            if (useDelete) {
                 m_cmd->~Command();
+            }
         }
         else {
             m_cmd = nullptr;

@@ -121,7 +121,7 @@ void Updater::run()
         clock.ts = static_cast<double>(ts.count()) / (1000.0 * 1000.0);
         clock.elapsedSecs = elapsedDuration.count();
 
-        UpdateContext ctx{ m_engine };
+        UpdateContext ctx{ m_engine, clock };
 
         update(ctx);
 

@@ -395,12 +395,14 @@ void SampleApp::showFps(const ki::FpsCounter& fpsCounter)
         handle = pool::NodeHandle::toHandle(fpsNodeId2);
     }
 
-    script::CommandEngine::get().addCommand(
-        0,
-        script::SetTextNode{
-            handle,
-            fpsText
-        });
+    if (handle) {
+        script::CommandEngine::get().addCommand(
+            0,
+            script::SetTextNode{
+                handle,
+                fpsText
+            });
+    }
 }
 
 void SampleApp::stopUpdaters()
@@ -547,7 +549,7 @@ std::shared_ptr<Scene> SampleApp::loadScene(
 
     if (m_loader) {
         scene->prepareRT();
-        ProgramRegistry::get().updateRT({ *this });
+        ProgramRegistry::get().updateRT({ *this, m_clock });
     }
 
     if (m_loader) {

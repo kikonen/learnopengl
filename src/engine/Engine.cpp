@@ -114,7 +114,7 @@ int Engine::setup() {
 
 int Engine::update()
 {
-    UpdateContext ctx{ *this };
+    UpdateContext ctx{ *this, m_clock };
 
     // NOTE KI race condition with program prepare and event processing
     // NOTE KI also race with snapshot and event processing
@@ -252,7 +252,7 @@ void Engine::run() {
                     processInput();
                 }
                 if (!close) {
-                    UpdateContext ctx{ *this };
+                    UpdateContext ctx{ *this, m_clock };
                     close = onPost(ctx);
                 }
                 if (!close) {

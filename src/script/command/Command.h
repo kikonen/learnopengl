@@ -16,6 +16,8 @@ namespace script
 
     class Command
     {
+        friend class CommandEngine;
+
     public:
         // @param duration seconds
         Command(float duration) noexcept;
