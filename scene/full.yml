@@ -653,6 +653,8 @@ types:
           wrap: GL_CLAMP_TO_EDGE
         program: g_terrain
         pre_depth_program: g_terrain_depth
+        id_program: g_terrain_object_id
+        selection_program: g_terrain_selection
         tiling: 8
       flags:
         tessellation: true

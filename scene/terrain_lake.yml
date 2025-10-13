@@ -43,6 +43,8 @@ types:
         xrender_back: true
         program: g_terrain
         pre_depth_program: g_terrain_depth
+        id_program: g_terrain_object_id
+        selection_program: g_terrain_selection
         xdefault_programs: true
         tiling: 8
       flags:

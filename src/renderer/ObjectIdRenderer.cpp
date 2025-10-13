@@ -201,7 +201,7 @@ void ObjectIdRenderer::drawNodes(const render::RenderContext& parentCtx)
         collectionRender.drawProgram(
             localCtx,
             [this](const mesh::LodMesh& lodMesh) {
-                if (lodMesh.m_flags.tessellation) return (ki::program_id)nullptr;
+                //if (lodMesh.m_flags.tessellation) return (ki::program_id)nullptr;
                 return lodMesh.m_idProgramId ? lodMesh.m_idProgramId : m_idProgramId;
             },
             [](ki::program_id programId) {},
