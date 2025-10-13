@@ -1,5 +1,5 @@
 #include "NodeTool.h"
-    
+
 #include <unordered_map>
 
 #include <math.h>
@@ -161,7 +161,9 @@ namespace editor
             const auto& nodes = NodeRegistry::get().getCachedNodesRT();
             NodeTree tree{ *this };
             tree.build(nodes);
-            tree.drawNode(ctx, tree.m_root.get(), true);
+            if (tree.m_root) {
+                tree.drawNode(ctx, tree.m_root.get(), true);
+            }
         }
     }
 
