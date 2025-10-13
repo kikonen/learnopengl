@@ -96,9 +96,12 @@ void TextGenerator::updateVAO(
 
     mesh->clear();
 
+    // TODO KI race condition between WT and RT
+    std::string text = m_text;
+
     m_draw->render(
         m_fontId,
-        m_text,
+        text,
         m_pivot,
         m_alignHorizontal,
         m_alignVertical,
