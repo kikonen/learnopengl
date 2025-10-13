@@ -18,7 +18,7 @@ if not State.initialize then
 
   function State:initialize()
     self.body_id = node:find_child(self.handle, { tag = "body" })
-    self.sword_id = node:find_child(self.handle, { tag = "sword" })
+    self.sword_tag = SID("sword")
   end
 
   function State:explode()
@@ -34,7 +34,7 @@ if not State.initialize then
 
     cmd:particle_emit(
       self.handle,
-      { tag = self.sword_id, count=(10 + rnd(10)) * 100 })
+      { tag = self.sword_tag, count=(10 + rnd(10)) * 100 })
   end
 
   function State:random_idle()
@@ -89,7 +89,7 @@ if not State.initialize then
 
     cmd:particle_emit(
       self.handle,
-      { tag = self.sword_id, count=(10 + rnd(10)) * 100 })
+      { tag = self.sword_tag, count=(10 + rnd(10)) * 100 })
 
     return cid
   end
