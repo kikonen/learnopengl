@@ -1,6 +1,7 @@
 #pragma once
 
 #include <vector>
+#include <unordered_map>
 #include <shared_mutex>
 
 #include "text/FontAtlas.h"
@@ -19,36 +20,29 @@ namespace text {
 
         ~FontRegistry();
 
+        void clear();
         void prepareRT();
 
         void updateRT(const UpdateContext& ctx);
 
-        text::FontAtlas* getDefaultFontAtlas() noexcept
+        const text::FontAtlas* getDefaultFontAtlas() const noexcept
         {
             return getFontAtlas(m_defaultFontId);
         }
 
-        text::FontAtlas* getFontAtlas(text::font_id id) noexcept
+        const text::FontAtlas* getFontAtlas(text::font_id id) const noexcept
         {
-            if (id < 1) return nullptr;
-
-            std::shared_lock lock(m_lock);
-            if (id < 1 || id > m_fonts.size()) return nullptr;
-
-            return m_fonts[id - 1].valid() ? & m_fonts[id - 1] : nullptr;
+            const auto& it = m_fonts.find(id);
+            return it != m_fonts.end() ? &it->second : nullptr;
         }
 
         text::font_id registerFont(
             text::FontAtlas&& src);
 
     private:
-        text::font_id findFont(
-            const text::FontAtlas& src) const noexcept;
-
-    private:
         mutable std::shared_mutex m_lock{};
 
-        std::vector<text::FontAtlas> m_fonts;
+        std::unordered_map<text::font_id, text::FontAtlas> m_fonts;
 
         text::font_id m_defaultFontId{ 0 };
     };

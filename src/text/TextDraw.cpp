@@ -45,7 +45,7 @@ namespace
     //
     void addText(
         mesh::TextMesh* mesh,
-        text::FontAtlas* fontAtlas,
+        const text::FontAtlas* fontAtlas,
         std::string_view text,
         const glm::vec2& pivot,
         text::Align alignHorizontal,

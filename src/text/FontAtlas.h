@@ -32,13 +32,14 @@ namespace text
 
         bool operator==(const FontAtlas& o) const noexcept;
 
-        bool valid();
+        bool valid() const;
 
         void prepare();
 
         void update();
 
-        FontHandle* getFont() {
+        FontHandle* getFont() const
+        {
             return m_fontHandle.get();
         }
 

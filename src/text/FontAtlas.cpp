@@ -83,7 +83,7 @@ namespace text
             m_atlasSize == o.m_atlasSize;
     }
 
-    bool FontAtlas::valid()
+    bool FontAtlas::valid() const
     {
         return m_fontHandle && m_fontHandle->valid();
     }

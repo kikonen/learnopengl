@@ -46,7 +46,7 @@ namespace text
         //ftgl::texture_font_delete(m_font);
     }
 
-    bool FontHandle::valid()
+    bool FontHandle::valid() const
     {
         return m_font != nullptr;
     }

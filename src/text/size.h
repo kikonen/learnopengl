@@ -4,5 +4,6 @@
 
 namespace text
 {
-    typedef uint8_t font_id;
+    // SID
+    typedef uint32_t font_id;
 }
