@@ -152,7 +152,7 @@ void Scene::prepareRT()
         event::Type::scene_loaded,
         dispatcherView,
         [this](const event::Event& e) {
-            m_loaded = true;
+            handleLoaded();
         });
 
     m_listen_node_added.listen(
@@ -486,6 +486,25 @@ void Scene::updateViewRT(const UpdateViewContext& ctx)
             }
         }
     }
+}
+
+void Scene::handleLoaded()
+{
+    m_loaded = true;
+
+    //const auto& spec = m_uiRenderer->m_buffer->m_spec;
+    //const glm::uvec2 aspectRatio = { spec.width, spec.height };
+    //m_uiRenderer->m_aspectRatio = aspectRatio;
+
+    //const auto* layer = LayerInfo::findLayer(LAYER_UI);
+    //if (layer && layer->m_enabled) {
+    //    event::Event evt{ event::Type::viewport_changed };
+    //    auto& body = evt.body.view = {
+    //        .layer = layer->m_index,
+    //        .aspectRatio = aspectRatio,
+    //    };
+    //    m_engine.getRegistry()->m_dispatcherWorker->send(evt);
+    //}
 }
 
 void Scene::handleNodeAdded(model::Node* node)

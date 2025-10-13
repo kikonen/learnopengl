@@ -43,6 +43,12 @@ namespace mesh
     class MeshYype;
 }
 
+struct NodeLayerInfo
+{
+    int m_index;
+    glm::uvec2 m_aspectRatio;
+};
+
 class NodeRegistry final
 {
     friend class model::Node;
@@ -329,5 +335,5 @@ private:
 
     pool::NodeHandle m_activeNode{};
 
-    std::vector<std::pair<glm::uvec2, bool>> m_layerInfos;
+    std::vector<NodeLayerInfo> m_layerInfos;
 };

@@ -125,6 +125,8 @@ private:
         const render::RenderContext& ctx,
         LayerRenderer* layerRenderer);
 
+    void handleLoaded();
+
     void handleNodeAdded(model::Node* node);
     void handleNodeRemoved(model::Node* node);
 

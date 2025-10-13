@@ -228,8 +228,8 @@ void NodeRegistry::prepare(
 
     {
         m_layerInfos.resize(assets.layers.size());
-        for (auto& layerInfo : m_layerInfos) {
-            layerInfo = { glm::uvec2{0}, false };
+        for (int index = 0; auto& layerInfo : m_layerInfos) {
+            layerInfo = { index++, glm::uvec2{1, 1} };
         }
     }
 
@@ -256,8 +256,6 @@ void NodeRegistry::updateWT(const UpdateContext& ctx)
             state.updateRootMatrix();
         }
 
-        const auto layerCount = m_layerInfos.size();
-
         //std::lock_guard lock(m_lock);
         // NOTE KI nodes are in DAG order
         for (int sortedIndex = ID_NODE_INDEX + 1; sortedIndex < m_sortedNodes.size(); sortedIndex++)
@@ -273,13 +271,6 @@ void NodeRegistry::updateWT(const UpdateContext& ctx)
             auto& state = m_states[entityIndex];
             const auto& parentState = m_states[m_parentIndeces[entityIndex]];
             auto* generator = node->m_generator.get();
-
-            if (node->m_layer < layerCount) {
-                const auto& layerInfo = m_layerInfos[node->m_layer];
-                if (layerInfo.second) {
-                    state.setAspectRatio(layerInfo.first);
-                }
-            }
 
             state.updateModelMatrix(parentState);
 
@@ -298,10 +289,6 @@ void NodeRegistry::updateWT(const UpdateContext& ctx)
                 }
             }
         }
-    }
-
-    for (auto& layerInfo : m_layerInfos) {
-        layerInfo.second = false;
     }
 }
 
@@ -1027,6 +1014,10 @@ void NodeRegistry::bindNode(
         m_parentIndeces[entityIndex] = 0;
         m_states[entityIndex] = state;
 
+        if (node->m_layer < m_layerInfos.size()) {
+            m_states[entityIndex].setAspectRatio(m_layerInfos[node->m_layer].m_aspectRatio);
+        }
+
         m_nodeLevel++;
 
         if (nodeHandle == m_rootHandle) {
@@ -1284,10 +1275,19 @@ void NodeRegistry::viewportChanged(
     if (layer >= m_layerInfos.size()) return;
 
     auto& info = m_layerInfos[layer];
-    if (info.first != aspectRatio)
+    info.m_aspectRatio = aspectRatio;
+
+    for (int sortedIndex = ID_NODE_INDEX + 1; sortedIndex < m_sortedNodes.size(); sortedIndex++)
     {
-        info.first = aspectRatio;
-        info.second = true;
+        auto entityIndex = m_sortedNodes[sortedIndex];
+        auto& state = m_states[entityIndex];
+
+        auto* node = getCachedNodesWT()[entityIndex];
+        if (!node) continue;
+
+        if (node->m_layer == info.m_index) {
+            state.setAspectRatio(info.m_aspectRatio);
+        }
     }
 }
 
