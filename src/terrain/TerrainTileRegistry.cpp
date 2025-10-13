@@ -55,6 +55,8 @@ namespace terrain {
         m_snapshotCount = 0;
         m_activeCount = 0;
         m_lastTilesSize = 0;
+
+        m_ssbo.markUsed(0);
     }
 
     void TerrainTileRegistry::prepare()

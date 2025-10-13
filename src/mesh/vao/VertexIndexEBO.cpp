@@ -19,6 +19,8 @@ namespace mesh {
     {
         m_entries.clear();
         m_dirty.clear();
+
+        m_ebo.markUsed(0);
     }
 
 

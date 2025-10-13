@@ -38,6 +38,7 @@ namespace decal {
         ASSERT_RT();
 
         m_lastDecalSize = 0;
+        m_ssbo.markUsed(0);
     }
 
     void DecalBuffer::prepare() {

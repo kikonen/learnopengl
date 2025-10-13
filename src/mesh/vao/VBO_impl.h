@@ -29,6 +29,8 @@ namespace mesh {
     {
         m_entries.clear();
         m_dirty.clear();
+
+        m_vbo.markUsed(0);
     }
 
     template<typename T_Vertex, typename T_Entry>

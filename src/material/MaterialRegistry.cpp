@@ -68,6 +68,8 @@ void MaterialRegistry::clear()
         m_materials.emplace_back(zero);
         registerMaterial(zero);
     }
+
+    m_ssbo.markUsed(0);
 }
 
 ki::material_index MaterialRegistry::registerMaterial(Material& material)

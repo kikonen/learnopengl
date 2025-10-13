@@ -55,6 +55,8 @@ EntityRegistry::~EntityRegistry() = default;
 void EntityRegistry::clear()
 {
     ASSERT_RT();
+
+    m_ssbo.markUsed(0);
 }
 
 void EntityRegistry::prepare()
