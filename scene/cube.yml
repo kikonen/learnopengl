@@ -33,8 +33,6 @@ types:
         blend: true
         alpha: true
         render_back: true
-        program_definitions:
-          APPLY_TOY: 1
         updater_id: shader_toy_2
     physics:
       xupdate: true
@@ -61,8 +59,6 @@ types:
         blend: true
         alpha: true
         render_back: true
-        program_definitions:
-          APPLY_TOY: 1
         updater_id: shader_toy_1
     physics:
       xupdate: true
@@ -90,8 +86,6 @@ types:
         blend: true
         alpha: true
         render_back: true
-        program_definitions:
-          APPLY_TOY: 1
         updater_id: shader_toy_2
       base_rot: [0, 0, 0]
     physics:

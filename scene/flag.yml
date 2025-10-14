@@ -77,6 +77,15 @@ types:
         { time=60 * 10, relative=true },
         vec3(0, 1, 0),
         1 * 360 * 10)
+  - id: flag_stand_3
+    type: composite
+    composite: flag_stand_3_composite
+    script: |
+      cmd:rotate(
+        self.handle,
+        { time=60 * 10, relative=true },
+        vec3(0, 1, 0),
+        1 * 360 * 10)
   - id: flag
     mesh:
       vertex:
@@ -108,12 +117,35 @@ types:
         render_back: true
         program_definitions:
           USE_FLAG_WAVE: 1
-          APPLY_TOY: 1
         shadow_definitions:
           USE_FLAG_WAVE: 1
         selection_definitions:
           USE_FLAG_WAVE: 1
         updater_id: shader_toy_1
+  - id: flag_3
+    mesh:
+      vertex:
+        type: plane_grid
+        size: [1, 0.6]
+        segments: [10, 6, 6]
+      material:
+        map_kd: textures/flags/fi.png
+        program: g_tex
+        oit_program: oit_pass
+        shadow_program: shadow
+        selection_program: selection
+        blend: true
+        alpha: true
+        render_back: true
+        program_definitions:
+          USE_FLAG_WAVE: 1
+        oit_definitions:
+          USE_FLAG_WAVE: 1
+        shadow_definitions:
+          USE_FLAG_WAVE: 1
+        selection_definitions:
+          USE_FLAG_WAVE: 1
+        updater_id: shader_toy_3
   - id: flag_top
     mesh:
       vertex:
@@ -156,6 +188,15 @@ composites:
       - type: flag_top
         pos: [0, 4, 0]
 
+  - id: flag_stand_3_composite
+    nodes:
+      - type: flag_3
+        pos: [1.08, 3.2, 0]
+      - type: flag_pole
+        pos: [0, 2, 0]
+      - type: flag_top
+        pos: [0, 4, 0]
+
 nodes:
   - type: prefab_fps_counter
     id: fps_counter
@@ -179,6 +220,8 @@ nodes:
     pos: [0]
   - type: flag_stand_2
     pos: [3, 0, 0]
+  - type: flag_stand_3
+    pos: [6, 0, 0]
 
 material_updaters:
 - id: shader_toy_1
