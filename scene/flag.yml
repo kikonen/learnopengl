@@ -94,10 +94,8 @@ types:
         segments: [10, 6, 6]
       material:
         map_kd: textures/flags/fi.png
-        program: g_tex
-        shadow_program: shadow
-        selection_program: selection
         render_back: true
+        default_programs: true
         shared_definitions:
           USE_FLAG_WAVE: 1
           USE_TBN: 1
@@ -109,17 +107,11 @@ types:
         segments: [10, 6, 6]
       material:
         map_kd: textures/flags/fi.png
-        program: g_tex
-        shadow_program: shadow
-        selection_program: selection
         blend: true
         alpha: true
         render_back: true
-        program_definitions:
-          USE_FLAG_WAVE: 1
-        shadow_definitions:
-          USE_FLAG_WAVE: 1
-        selection_definitions:
+        default_programs: true
+        shared_definitions:
           USE_FLAG_WAVE: 1
         updater_id: shader_toy_1
   - id: flag_3
@@ -130,20 +122,11 @@ types:
         segments: [10, 6, 6]
       material:
         map_kd: textures/flags/fi.png
-        program: g_tex
-        oit_program: oit_pass
-        shadow_program: shadow
-        selection_program: selection
         blend: true
         alpha: true
         render_back: true
-        program_definitions:
-          USE_FLAG_WAVE: 1
-        oit_definitions:
-          USE_FLAG_WAVE: 1
-        shadow_definitions:
-          USE_FLAG_WAVE: 1
-        selection_definitions:
+        default_programs: true
+        shared_definitions:
           USE_FLAG_WAVE: 1
         updater_id: shader_toy_3
   - id: flag_top

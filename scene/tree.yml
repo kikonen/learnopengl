@@ -42,25 +42,9 @@ types:
     prefab:
       path: prefab/scenery/prefab_pine_tree.yml
     mesh:
-      material_modifiers:
-        - alias: pine_trunk_pbr
-          program_definitions:
-            USE_TREE_WIND: 1
-          oit_definitions:
-            USE_TREE_WIND: 1
-          shadow_definitions:
-            USE_TREE_WIND: 1
-          selection_definitions:
-            USE_TREE_WIND: 1
-        - alias: pine_leaf_pbr
-          program_definitions:
-            USE_TREE_WIND: 1
-          oit_definitions:
-            USE_TREE_WIND: 1
-          shadow_definitions:
-            USE_TREE_WIND: 1
-          selection_definitions:
-            USE_TREE_WIND: 1
+      material_modifier:
+        shared_definitions:
+          USE_TREE_WIND: 1
 
 nodes:
   - type: player
