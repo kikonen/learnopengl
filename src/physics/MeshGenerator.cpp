@@ -34,6 +34,8 @@ namespace {
     constexpr float SCALE = 1.0f;
     constexpr float OFFSET = 0.0f;
 
+    constexpr float PLANE_SIZE = 100.f;
+
     std::mutex g_materialLock;
     std::map<physics::GeomType, Material> g_materials;
 
@@ -199,7 +201,7 @@ namespace physics {
                 //    normal, dist, rot, degrees));
 
                 pos = normal * dist;
-                glm::vec2 size{ 100.f, 100.f };
+                glm::vec2 size{ PLANE_SIZE, PLANE_SIZE };
 
                 cacheKey = fmt::format(
                     "plane-{}",

@@ -102,24 +102,7 @@ namespace util
         const glm::vec3& normal,
         const glm::vec3& up)
     {
-        const auto& n = glm::normalize(normal);
-        const auto& u = glm::normalize(up);
-
-        const float thetaCos = glm::dot(u, n);
-
-        // Identity rotation if exactly same dir (avoid NaN in acosf)
-        if (thetaCos >= 0.99999f) return glm::quat{ 1.f, 0.f, 0.f, 0.f };
-
-        // 180 rotation exactly opposite dir (avoid NaN in acosf)
-        if (thetaCos <= -0.99999f) {
-            return util::axisRadiansToQuat(normal, 0.f);
-        }
-
-        // https://stackoverflow.com/questions/1171849/finding-quaternion-representing-the-rotation-from-one-vector-to-another/1171995#1171995
-        const auto a = glm::cross(u, n);
-        auto w = 1.f + sqrt(thetaCos);
-
-        return glm::normalize(glm::quat{ w, a.x, a.y, a.z });
+        return glm::rotation(up, normal);
     }
 
     // This will transform the vector and renormalize the w component

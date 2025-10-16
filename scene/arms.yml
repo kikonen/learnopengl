@@ -121,27 +121,27 @@ nodes:
         pos: [0, 20, 0]
   - type: world_plane
     id: world_x_minus
-    pos: [-1200, 0, 0]
+    pos: [-200, 0, 0]
     rot: [0, 0, -90]
   - type: world_plane
     id: world_x_plus
-    pos: [850, 0, 0]
+    pos: [200, 0, 0]
     rot: [0, 0, 90]
   - type: world_plane
     id: world_y_minus
-    pos: [0, -400, 0]
+    pos: [0, -100, 0]
     rot: [0, 0, 0]
   - type: world_plane
     id: world_y_plus
-    pos: [0, 400, 0]
+    pos: [0, 100, 0]
     rot: [180, 0, 0]
   - type: world_plane
     id: world_z_minus
-    pos: [0, 0, -900]
+    pos: [0, 0, -200]
     rot: [90, 0, 0]
   - type: world_plane
     id: world_z_plus
-    pos: [0, 0, 1150]
+    pos: [0, 0, 200]
     rot: [-90, 0, 0]
 
 particles:

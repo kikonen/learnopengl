@@ -55,7 +55,7 @@ types:
       base_scale: 0.25
       base_rot: [90, 0, 0]
     camera:
-      default: true
+      xdefault: true
       type: fps
     controllers:
       - type: pawn
@@ -360,10 +360,10 @@ nodes:
     scale: 1
   - type: cap
     pos: [0, 25, 40]
-  - xtype: player_fps
+  - type: player_fps
     pos: [1, 22, 40]
     rotation: [0, 180, 0]
-    active: true
+    xactive: true
   - type: player_3rd_person
     rotation: [0, 180, 0]
     pos: [0, 21, 40]
