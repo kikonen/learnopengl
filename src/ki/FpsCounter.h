@@ -5,24 +5,26 @@
 #include <chrono>
 
 namespace ki {
-    constexpr size_t FPS_FRAMES = 20;
+    constexpr size_t AVG_FRAMES = 20;
 
     class FpsCounter {
     public:
         FpsCounter();
 
-        void startFame();
+        void startRender();
+        void endRender();
 
-        void endFame(float elapsedSecs);
+        void startFrame();
+        void endFrame();
 
         float getAvgFps() const noexcept
         {
             return m_fpsAvg;
         }
 
-        float getAvgMillis() const noexcept
+        float getRenderAvg() const noexcept
         {
-            return m_millisAvg;
+            return m_renderAvg;
         }
 
         bool isUpdate() const noexcept
@@ -38,13 +40,16 @@ namespace ki {
     private:
         // NOTE KI moving avg of render time and fps
         size_t m_avgIndex{ 0 };
-        std::array<float, FPS_FRAMES> m_fpsSecs{ 0.f };
-        std::array<float, FPS_FRAMES> m_renderSecs{ 0.f };
+        std::array<float, AVG_FRAMES> m_fpsSecs{ 0.f };
+        std::array<float, AVG_FRAMES> m_renderSecs{ 0.f };
+
+        std::chrono::system_clock::time_point m_renderStart;
+        std::chrono::system_clock::time_point m_renderEnd;
 
         std::chrono::system_clock::time_point m_frameStart;
         std::chrono::system_clock::time_point m_frameEnd;
 
         float m_fpsAvg;
-        float m_millisAvg;
+        float m_renderAvg;
     };
 }

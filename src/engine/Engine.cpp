@@ -5,6 +5,8 @@
 #include <iostream>
 #include <regex>
 
+#include <fmt/format.h>
+
 #include "imgui.h"
 
 #include "util/util.h"
@@ -44,6 +46,9 @@
 
 #include "UpdateContext.h"
 
+namespace
+{
+}
 
 Engine::Engine()
     : m_alive(std::make_shared<std::atomic_bool>(true)),
@@ -190,8 +195,9 @@ void Engine::run() {
         m_window->close();
     }
 
-    auto prevLoopTime = std::chrono::system_clock::now();
-    auto loopTime = std::chrono::system_clock::now();
+    auto prevLoopStart = std::chrono::high_resolution_clock::now();
+    auto loopStart = std::chrono::high_resolution_clock::now();
+    auto loopEnd = std::chrono::high_resolution_clock::now();
 
     std::chrono::duration<float> elapsedDuration;
 
@@ -202,35 +208,31 @@ void Engine::run() {
     // -----------
     while (!m_window->isClosed())
     {
+        // Calculate the target time per frame
+        const double TARGET_FRAME_RATE = m_dbg.m_targetFrameRate;
+        const double TARGET_MS_PER_FRAME = 1000.0 / (TARGET_FRAME_RATE * 1.5);
+
+        fpsCounter.startFrame();
+
         int close = 0;
 
         {
             //KI_TIMER("loop");
-            loopTime = std::chrono::system_clock::now();
-            elapsedDuration = loopTime - prevLoopTime;
+            loopStart = std::chrono::high_resolution_clock::now();
+            elapsedDuration = loopStart - prevLoopStart;
 
             clock.frameCount += 1;
             //auto ts = std::chrono::duration_cast<std::chrono::microseconds>(
-            //    std::chrono::system_clock::now().time_since_epoch()
+            //    std::chrono::high_resolution_clock::now().time_since_epoch()
             //);
             //clock.ts = static_cast<double>(ts.count()) / (1000.0 * 1000.0);
             clock.ts = static_cast<double>(glfwGetTime());
             clock.elapsedSecs = elapsedDuration.count();
 
-            //if (m_registry->m_pendingSnapshotRegistry->isDirty()) {
-            //    //KI_INFO("COPY: snapshot_dirty");
-            //    m_registry->m_pendingSnapshotRegistry->copyTo(
-            //        m_registry->m_activeSnapshotRegistry,
-            //        0, -1);
-            ////}
-            ////else {
-            ////    KI_INFO("SKIP: snapshot_not_dirty");
-            //}
-
             // render
             // ------
             {
-                fpsCounter.startFame();
+                fpsCounter.startRender();
 
                 // serious sync issue entity data vs. drawing
                 // - looks like camera is jerky, but it's lack of sync between
@@ -259,7 +261,7 @@ void Engine::run() {
                     ProgramRegistry::get().validate();
                 }
 
-                fpsCounter.endFame(clock.elapsedSecs);
+                fpsCounter.endRender();
             }
 
             if (close) {
@@ -272,11 +274,10 @@ void Engine::run() {
             // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
             // -------------------------------------------------------------------------------
             glfwSwapBuffers(m_window->m_glfwWindow);
-            glfwPollEvents();
         }
 
         if (!close) {
-            prevLoopTime = loopTime;
+            prevLoopStart = loopStart;
 
             if (fpsCounter.isUpdate())
             {
@@ -284,7 +285,19 @@ void Engine::run() {
             }
         }
 
+        fpsCounter.endFrame();
         //KI_GL_CHECK("engine.loop");
+
+        {
+            loopEnd = std::chrono::high_resolution_clock::now();
+            auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(loopEnd - loopStart).count();
+            if (duration < TARGET_MS_PER_FRAME) {
+                //KI_INFO_OUT(fmt::format("wait: {}", TARGET_MS_PER_FRAME - duration));
+                std::this_thread::sleep_for(std::chrono::milliseconds(static_cast<long long>(TARGET_MS_PER_FRAME - duration)));
+            }
+        }
+
+        glfwPollEvents();
     }
 
     onDestroy();

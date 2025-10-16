@@ -23,6 +23,7 @@ namespace debug {
         debug::DebugContext& edit() const noexcept;
 
         int m_glfwSwapInterval{ 1 };
+        int m_targetFrameRate{ 60 };
 
         float m_gBufferScale{ 0.5f };
 

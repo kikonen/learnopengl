@@ -104,19 +104,20 @@ void Updater::run()
 
     ki::FpsCounter fpsCounter;
 
-    auto prevLoopTime = std::chrono::system_clock::now();
-    auto loopTime = std::chrono::system_clock::now();
+    auto prevLoopTime = std::chrono::high_resolution_clock::now();
+    auto loopTime = std::chrono::high_resolution_clock::now();
     std::chrono::duration<float> elapsedDuration;
 
     while (m_alive) {
-        fpsCounter.startFame();
+        fpsCounter.startFrame();
+        fpsCounter.startRender();
 
-        loopTime = std::chrono::system_clock::now();
+        loopTime = std::chrono::high_resolution_clock::now();
         elapsedDuration = loopTime - prevLoopTime;
         prevLoopTime = loopTime;
 
         auto ts = std::chrono::duration_cast<std::chrono::microseconds>(
-            std::chrono::system_clock::now().time_since_epoch()
+            std::chrono::high_resolution_clock::now().time_since_epoch()
         );
         clock.ts = static_cast<double>(ts.count()) / (1000.0 * 1000.0);
         clock.elapsedSecs = elapsedDuration.count();
@@ -125,7 +126,8 @@ void Updater::run()
 
         update(ctx);
 
-        fpsCounter.endFame(clock.elapsedSecs);
+        fpsCounter.endRender();
+        fpsCounter.endFrame();
 
         if (fpsCounter.isUpdate())
         {

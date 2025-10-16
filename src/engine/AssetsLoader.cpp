@@ -114,6 +114,12 @@ void AssetsLoader::loadAssets(
             }
         }
         {
+            if (k == "target_frame_rate") {
+                data.targetFrameRate = readInt(v);
+                continue;
+            }
+        }
+        {
             if (k == "window_icon") {
                 data.windowIcon = readString(v);
                 continue;

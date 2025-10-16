@@ -32,6 +32,24 @@
 
 class PawnController;
 
+namespace
+{
+    struct Rate
+    {
+        int frameRate;
+        std::string label;
+    };
+
+    const Rate FRAME_RATES[3] = {
+        //{20, "20"},
+        {30, "30"},
+        //{45, "45"},
+        {60, "60"},
+        //{90, "90"},
+        {120, "120"},
+    };
+}
+
 namespace editor
 {
     OptionsTool::OptionsTool(EditorFrame& editor)
@@ -71,6 +89,27 @@ namespace editor
         auto& dbg = ctx.getDebug().edit();
 
         {
+            ImGui::Spacing();
+            ImGui::Separator();
+            //ImGui::InputInt("Swap interval", &dbg.m_glfwSwapInterval, 1, 10);
+
+            const auto& currLabel = std::to_string(dbg.m_targetFrameRate);
+            if (ImGui::BeginCombo("Frame rate", currLabel.c_str())) {
+                for (const auto& rate : FRAME_RATES) {
+
+                    ImGui::PushID((void*)rate.frameRate);
+                    const bool isSelected = dbg.m_targetFrameRate == rate.frameRate;
+                    if (ImGui::Selectable(rate.label.c_str(), isSelected)) {
+                        dbg.m_targetFrameRate = rate.frameRate;
+                    }
+                    ImGui::PopID();
+                }
+                ImGui::EndCombo();
+            }
+            ImGui::Spacing();
+        }
+
+        {
             ImGui::Checkbox("Show volume", &dbg.m_showVolume);
             ImGui::Checkbox("Show selection volume", &dbg.m_showSelectionVolume);
             ImGui::Checkbox("Show environment probes", &dbg.m_showEnvironmentProbe);
@@ -83,8 +122,6 @@ namespace editor
         {
             ImGui::Spacing();
             ImGui::Separator();
-            ImGui::InputInt("Swap interval", &dbg.m_glfwSwapInterval, 1, 10);
-
             ImGui::InputFloat("GBuffer scale", &dbg.m_gBufferScale, 0.125f, 0.25f);
 
             ImGui::Checkbox("Frustum enabled", &dbg.m_frustumEnabled);

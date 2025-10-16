@@ -54,6 +54,8 @@ public:
 
     float gBufferScale;
 
+    int targetFrameRate;
+
     std::string windowIcon;
     glm::uvec2 windowSize;
     bool windowMaximized;

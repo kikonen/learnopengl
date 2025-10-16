@@ -37,6 +37,8 @@ namespace debug
         auto& dbg = *this;
 
         dbg.m_glfwSwapInterval = assets.glfwSwapInterval;
+        dbg.m_targetFrameRate = assets.targetFrameRate;
+
         dbg.m_gBufferScale = assets.gBufferScale;
 
         dbg.m_layers = assets.layers;

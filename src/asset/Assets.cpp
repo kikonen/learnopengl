@@ -58,6 +58,8 @@ Assets::Assets()
 
     gBufferScale = 0.5f;
 
+    targetFrameRate = 60;
+
     windowSize = { 800, 600 };
     windowMaximized = false;
     windowFullScreen = false;
