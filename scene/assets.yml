@@ -16,6 +16,8 @@ assets:
 
   glsl_use_debug: true
 
+  target_frame_rate: 30
+
   compressed_textures_enabled: true
   prepass_depth_enabled: false
 
