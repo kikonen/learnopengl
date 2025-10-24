@@ -1,4 +1,4 @@
-#include "RigJoint.h"
+#include "RigNode.h"
 
 #include <regex>
 
@@ -11,7 +11,7 @@ namespace {
 }
 
 namespace animation {
-    RigJoint::RigJoint(const aiNode* node)
+    RigNode::RigNode(const aiNode* node)
         : m_name{ node->mName.C_Str() },
         m_assimpFbx{ std::regex_match(m_name, RE_ASSIMP_FBX) },
         m_index{ -1 },

@@ -734,7 +734,7 @@ namespace loader {
             std::map<std::string, std::string, std::less<>> preDepthDefinitions;
 
             bool usePreDepth = meshFlags.preDepth;
-            bool useBones = meshFlags.useBones;
+            bool useJoints = meshFlags.useJoints;
             bool useSockets = true; // meshFlags.useSockets;
             bool useDebug = assets.glslUseDebug;
 
@@ -772,13 +772,13 @@ namespace loader {
             if (useNormalPattern) {
                 definitions[DEF_USE_NORMAL_PATTERN] = "1";
             }
-            if (useBones) {
-                definitions[DEF_USE_BONES] = "1";
-                oitDefinitions[DEF_USE_BONES] = "1";
-                shadowDefinitions[DEF_USE_BONES] = "1";
-                selectionDefinitions[DEF_USE_BONES] = "1";
-                idDefinitions[DEF_USE_BONES] = "1";
-                normalDefinitions[DEF_USE_BONES] = "1";
+            if (useJoints) {
+                definitions[DEF_USE_JOINTS] = "1";
+                oitDefinitions[DEF_USE_JOINTS] = "1";
+                shadowDefinitions[DEF_USE_JOINTS] = "1";
+                selectionDefinitions[DEF_USE_JOINTS] = "1";
+                idDefinitions[DEF_USE_JOINTS] = "1";
+                normalDefinitions[DEF_USE_JOINTS] = "1";
             }
             if (useSockets) {
                 definitions[DEF_USE_SOCKETS] = "1";

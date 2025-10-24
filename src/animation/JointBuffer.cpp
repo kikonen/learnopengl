@@ -1,4 +1,4 @@
-#include "BoneBuffer.h"
+#include "JointBuffer.h"
 
 #include "asset/Assets.h"
 
@@ -8,8 +8,8 @@
 
 #include "shader/SSBO.h"
 
-#include "BoneRegistry.h"
-#include "BoneTransformSSBO.h"
+#include "JointRegistry.h"
+#include "JointTransformSSBO.h"
 
 namespace {
     constexpr size_t BLOCK_SIZE = 1024;
@@ -20,19 +20,19 @@ namespace {
 
 namespace animation
 {
-    BoneBuffer::BoneBuffer(BoneRegistry* boneRegistry)
-        : m_boneRegistry{ boneRegistry }
+    JointBuffer::JointBuffer(JointRegistry* jointRegistry)
+        : m_jointRegistry{ jointRegistry }
     {
     }
 
-    BoneBuffer::~BoneBuffer() = default;
+    JointBuffer::~JointBuffer() = default;
 
-    void BoneBuffer::clear()
+    void JointBuffer::clear()
     {
         ASSERT_RT();
     }
 
-    void BoneBuffer::prepare()
+    void JointBuffer::prepare()
     {
         ASSERT_RT();
 
@@ -49,9 +49,9 @@ namespace animation
         //m_useFenceDebug = true;
     }
 
-    void BoneBuffer::updateRT()
+    void JointBuffer::updateRT()
     {
-        if (!m_boneRegistry->m_updateReady) return;
+        if (!m_jointRegistry->m_updateReady) return;
 
         m_frameSkipCount++;
         if (m_frameSkipCount < 2) {
@@ -62,39 +62,39 @@ namespace animation
         updateBuffer();
     }
 
-    void BoneBuffer::updateBuffer()
+    void JointBuffer::updateBuffer()
     {
-        std::lock_guard lock(m_boneRegistry->m_lock);
+        std::lock_guard lock(m_jointRegistry->m_lock);
 
-        if (m_boneRegistry->m_dirtySnapshot.empty()) return;
+        if (m_jointRegistry->m_dirtySnapshot.empty()) return;
 
-        //for (const auto& range : m_boneRegistry->m_dirtySnapshot) {
+        //for (const auto& range : m_jointRegistry->m_dirtySnapshot) {
         //    if (updateSpan(
-        //        m_boneRegistry->m_snapshot,
+        //        m_jointRegistry->m_snapshot,
         //        range.first,
         //        range.second)) break;
         //}
 
-        auto totalCount = m_boneRegistry->m_snapshot.size();
+        auto totalCount = m_jointRegistry->m_snapshot.size();
         createBuffer(totalCount);
         updateSpan(
-            m_boneRegistry->m_snapshot,
+            m_jointRegistry->m_snapshot,
             0,
             totalCount);
 
-        m_boneRegistry->m_dirtySnapshot.clear();
-        m_boneRegistry->m_updateReady = false;
+        m_jointRegistry->m_dirtySnapshot.clear();
+        m_jointRegistry->m_updateReady = false;
     }
 
-    void BoneBuffer::createBuffer(size_t totalCount)
+    void JointBuffer::createBuffer(size_t totalCount)
     {
         if (!m_queue || m_queue->getEntryCount() < totalCount) {
             size_t blocks = (totalCount / BLOCK_SIZE) + 2;
             size_t entryCount = blocks * BLOCK_SIZE;
 
             // NOTE KI OpenGL Insights - Chapter 28
-            m_queue = std::make_unique<kigl::GLSyncQueue<BoneTransformSSBO>>(
-                "bone_ssbo",
+            m_queue = std::make_unique<kigl::GLSyncQueue<JointTransformSSBO>>(
+                "joint_ssbo",
                 entryCount,
                 RANGE_COUNT,
                 m_useMapped,
@@ -106,12 +106,12 @@ namespace animation
         }
     }
 
-    bool BoneBuffer::updateSpan(
-        const std::vector<BoneTransformSSBO>& snapshot,
+    bool JointBuffer::updateSpan(
+        const std::vector<JointTransformSSBO>& snapshot,
         size_t updateIndex,
         size_t updateCount)
     {
-        constexpr size_t sz = sizeof(BoneTransformSSBO);
+        constexpr size_t sz = sizeof(JointTransformSSBO);
         const size_t totalCount = snapshot.size();
 
         if (totalCount == 0) return true;
@@ -126,7 +126,7 @@ namespace animation
             mappedData);
         m_queue->setFence();
 
-        m_queue->bindCurrentSSBO(SSBO_BONE_TRANSFORMS, false, totalCount);
+        m_queue->bindCurrentSSBO(SSBO_JOINT_TRANSFORMS, false, totalCount);
 
         m_queue->next();
 

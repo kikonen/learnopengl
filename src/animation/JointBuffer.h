@@ -10,18 +10,18 @@
 
 namespace animation {
     class AnimationSystem;
-    class BoneRegistry;
+    class JointRegistry;
 
-    struct BoneTransformSSBO;
+    struct JointTransformSSBO;
 
-    class BoneBuffer {
+    class JointBuffer {
         friend AnimationSystem;
 
     public:
-        BoneBuffer(BoneRegistry* boneRegistry);
-        BoneBuffer& operator=(const BoneBuffer&) = delete;
+        JointBuffer(JointRegistry* jointRegistry);
+        JointBuffer& operator=(const JointBuffer&) = delete;
 
-        ~BoneBuffer();
+        ~JointBuffer();
 
         void clear();
         void prepare();
@@ -35,14 +35,14 @@ namespace animation {
         void createBuffer(size_t totalCount);
 
         bool updateSpan(
-            const std::vector<BoneTransformSSBO>& m_snapshot,
+            const std::vector<JointTransformSSBO>& m_snapshot,
             size_t updateIndex,
             size_t updateCount);
 
     private:
-        BoneRegistry* const m_boneRegistry;
+        JointRegistry* const m_jointRegistry;
 
-        std::unique_ptr<kigl::GLSyncQueue<BoneTransformSSBO>> m_queue;
+        std::unique_ptr<kigl::GLSyncQueue<JointTransformSSBO>> m_queue;
 
         size_t m_frameSkipCount{ 0 };
 

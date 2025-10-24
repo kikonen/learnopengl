@@ -1,4 +1,4 @@
-#include "RigJointTreeGenerator.h"
+#include "RigNodeTreeGenerator.h"
 
 #include <map>
 
@@ -7,12 +7,12 @@
 #include "shader/Shader.h"
 
 #include "animation/RigContainer.h"
-#include "animation/BoneInfo.h"
+#include "animation/Joint.h"
 
 #include "mesh/PrimitiveMesh.h"
 
 namespace mesh {
-    std::unique_ptr<mesh::VaoMesh> RigJointTreeGenerator::generateTree(std::shared_ptr<animation::RigContainer> rigPtr) const
+    std::unique_ptr<mesh::VaoMesh> RigNodeTreeGenerator::generateTree(std::shared_ptr<animation::RigContainer> rigPtr) const
     {
         auto& rig = *rigPtr;
 
@@ -22,12 +22,12 @@ namespace mesh {
         mesh->m_type = mesh::PrimitiveType::lines;
 
         auto& vertices = mesh->m_vertices;
-        auto& vertexBones = mesh->m_vertexBones;
+        auto& vertexJoints = mesh->m_vertexJoints;
         auto& indeces = mesh->m_indeces;
 
-        vertices.reserve(rig.m_joints.size());
-        vertexBones.reserve(rig.m_joints.size());
-        indeces.reserve(rig.m_joints.size());
+        vertices.reserve(rig.m_nodes.size());
+        vertexJoints.reserve(rig.m_nodes.size());
+        indeces.reserve(rig.m_nodes.size());
 
         std::map<int16_t, int16_t> jointToVertex;
 
@@ -37,35 +37,35 @@ namespace mesh {
         };
 
         // generate initial vertices
-        for (auto& rigJoint : rig.m_joints) {
-            if (rigJoint.m_boneIndex < 0) continue;
+        for (auto& rigNode : rig.m_nodes) {
+            if (rigNode.m_jointIndex < 0) continue;
 
-            jointToVertex.insert({ rigJoint.m_index, static_cast<int16_t>(vertices.size()) });
+            jointToVertex.insert({ rigNode.m_index, static_cast<int16_t>(vertices.size()) });
             {
                 auto& vertex = vertices.emplace_back();
-                const auto* bone = rig.m_boneContainer.getInfo(rigJoint.m_boneIndex);
-                vertex.pos = glm::inverse(bone->m_offsetMatrix) * glm::vec4{ 0, 0, 0, 1 };
+                const auto* joint = rig.m_jointContainer.getJoint(rigNode.m_jointIndex);
+                vertex.pos = glm::inverse(joint->m_offsetMatrix) * glm::vec4{ 0, 0, 0, 1 };
             }
             {
-                auto& vertexBone = vertexBones.emplace_back();
-                vertexBone.addBone(rigJoint.m_boneIndex, 1.f);
+                auto& vertexJoint = vertexJoints.emplace_back();
+                vertexJoint.addJoint(rigNode.m_jointIndex, 1.f);
             }
         }
 
         // generate lines: from child to parent
-        for (auto& rigJoint : rig.m_joints) {
-            if (rigJoint.m_parentIndex < 0) continue;
-            if (rigJoint.m_boneIndex < 0) continue;
+        for (auto& rigNode : rig.m_nodes) {
+            if (rigNode.m_parentIndex < 0) continue;
+            if (rigNode.m_jointIndex < 0) continue;
 
-            int16_t vertexIndex = findVertexIndex(rigJoint.m_index);
+            int16_t vertexIndex = findVertexIndex(rigNode.m_index);
             assert(vertexIndex >= 0);
 
-            int parentIndex = rigJoint.m_parentIndex;
+            int parentIndex = rigNode.m_parentIndex;
             while (parentIndex >= 0) {
-                auto& parentJoint = rig.m_joints[parentIndex];
+                auto& parentJoint = rig.m_nodes[parentIndex];
 
-                // NOTE KI MUST skip non bone parents
-                if (parentJoint.m_boneIndex >= 0) {
+                // NOTE KI MUST skip non joint parents
+                if (parentJoint.m_jointIndex >= 0) {
                     int16_t parentVertexIndex = findVertexIndex(parentJoint.m_index);
                     assert(parentVertexIndex >= 0);
 
@@ -80,7 +80,7 @@ namespace mesh {
 
         auto material = Material::createMaterial(BasicMaterial::blue);
         material.inmutable = true;
-        material.m_programDefinitions.insert({ DEF_USE_BONES, "1" });
+        material.m_programDefinitions.insert({ DEF_USE_JOINTS, "1" });
         material.m_programNames.insert({ MaterialProgramType::shader, SHADER_G_TEX });
         material.m_programNames.insert({ MaterialProgramType::shadow, SHADER_SHADOW });
         mesh->setMaterial(&material);
@@ -88,7 +88,7 @@ namespace mesh {
         return mesh;
     }
 
-    std::unique_ptr<mesh::VaoMesh> RigJointTreeGenerator::generatePoints(std::shared_ptr<animation::RigContainer> rigPtr) const
+    std::unique_ptr<mesh::VaoMesh> RigNodeTreeGenerator::generatePoints(std::shared_ptr<animation::RigContainer> rigPtr) const
     {
         auto& rig = *rigPtr;
 
@@ -98,42 +98,42 @@ namespace mesh {
         mesh->m_type = mesh::PrimitiveType::points;
 
         auto& vertices = mesh->m_vertices;
-        auto& vertexBones = mesh->m_vertexBones;
+        auto& vertexJoints = mesh->m_vertexJoints;
         auto& indeces = mesh->m_indeces;
 
-        vertices.reserve(rig.m_joints.size());
-        vertexBones.reserve(rig.m_joints.size());
-        indeces.reserve(rig.m_joints.size());
+        vertices.reserve(rig.m_nodes.size());
+        vertexJoints.reserve(rig.m_nodes.size());
+        indeces.reserve(rig.m_nodes.size());
 
         std::map<int16_t, int16_t> jointToVertex;
 
-        auto findVertexIndex = [&jointToVertex](uint16_t jointIndex) {
-            const auto& it = jointToVertex.find(jointIndex);
+        auto findVertexIndex = [&jointToVertex](uint16_t nodeIndex) {
+            const auto& it = jointToVertex.find(nodeIndex);
             return it != jointToVertex.end() ? it->second : -1;
             };
 
         // generate initial vertices
-        for (auto& rigJoint : rig.m_joints) {
-            if (rigJoint.m_boneIndex < 0) continue;
+        for (auto& rigNode : rig.m_nodes) {
+            if (rigNode.m_jointIndex < 0) continue;
 
-            jointToVertex.insert({ rigJoint.m_index, static_cast<int16_t>(vertices.size()) });
+            jointToVertex.insert({ rigNode.m_index, static_cast<int16_t>(vertices.size()) });
             {
                 auto& vertex = vertices.emplace_back();
-                const auto* bone = rig.m_boneContainer.getInfo(rigJoint.m_boneIndex);
-                vertex.pos = glm::inverse(bone->m_offsetMatrix) * glm::vec4{ 0, 0, 0, 1 };
+                const auto* joint = rig.m_jointContainer.getJoint(rigNode.m_jointIndex);
+                vertex.pos = glm::inverse(joint->m_offsetMatrix) * glm::vec4{ 0, 0, 0, 1 };
             }
             {
-                auto& vertexBone = vertexBones.emplace_back();
-                vertexBone.addBone(rigJoint.m_boneIndex, 1.f);
+                auto& vertexJoint = vertexJoints.emplace_back();
+                vertexJoint.addJoint(rigNode.m_jointIndex, 1.f);
             }
         }
 
         // generate points: one for each vertex
-        for (auto& rigJoint : rig.m_joints) {
-            if (rigJoint.m_parentIndex < 0) continue;
-            if (rigJoint.m_boneIndex < 0) continue;
+        for (auto& rigNode : rig.m_nodes) {
+            if (rigNode.m_parentIndex < 0) continue;
+            if (rigNode.m_jointIndex < 0) continue;
 
-            int16_t vertexIndex = findVertexIndex(rigJoint.m_index);
+            int16_t vertexIndex = findVertexIndex(rigNode.m_index);
             assert(vertexIndex >= 0);
 
             indeces.push_back(vertexIndex);
@@ -143,7 +143,7 @@ namespace mesh {
             auto material = Material::createMaterial(BasicMaterial::green);
 
             material.inmutable = true;
-            material.m_programDefinitions.insert({ DEF_USE_BONES, "1" });
+            material.m_programDefinitions.insert({ DEF_USE_JOINTS, "1" });
             material.m_programDefinitions.insert({ DEF_USE_GL_POINTS, "1" });
             material.m_programNames.insert({ MaterialProgramType::shader, SHADER_G_TEX });
             material.m_programNames.insert({ MaterialProgramType::shadow, SHADER_SHADOW });

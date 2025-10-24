@@ -15,9 +15,9 @@ struct DebugUBO {
     float u_wireframeLineWidth;
 
     int u_entityId;
-    int u_boneIndex;
+    int u_jointIndex;
 
-    int u_boneWeight; // bool as 4 bytes
+    int u_jointWeight; // bool as 4 bytes
 
     int u_lightEnabled; // bool as 4 bytes
     int u_normalMapEnabled; // bool as 4 bytes

@@ -32,10 +32,11 @@ namespace model
 struct UpdateContext;
 
 namespace animation {
-    class BoneRegistry;
+    class RigNodeRegistry;
     class SocketRegistry;
+    class JointRegistry;
 
-    class BoneBuffer;
+    class JointBuffer;
     class SocketBuffer;
 
     struct RigContainer;
@@ -56,13 +57,14 @@ namespace animation {
         void clear();
         void prepare();
 
-        // Register joint instance specific rig
-        // @return instance index into bone transform buffer
-        std::pair<uint32_t, uint32_t> registerInstance(const animation::RigContainer& rig);
+        // Register node instance specific rig
+        // @return [rigNodeBaseIndex, jointBaseIndex, socketBaseIndex]
+        std::tuple<uint32_t, uint32_t, uint32_t> registerInstance(const animation::RigContainer& rig);
 
         void unregisterInstance(
             const animation::RigContainer& rig,
-            uint32_t boneBaseIndex,
+            uint32_t rigNodeBaseIndex,
+            uint32_t jointBaseIndex,
             uint32_t socketBaseIndex);
 
         glm::mat4 getSocketTransform(
@@ -97,7 +99,7 @@ namespace animation {
         void handleNodeRemoved(model::Node* node);
 
     private:
-        // @return true if bone palette was updated
+        // @return true if joint palette was updated
         void animateNode(
             const UpdateContext& ctx,
             animation::AnimationState& state,
@@ -119,10 +121,11 @@ namespace animation {
 
         std::vector<pool::NodeHandle> m_pendingNodes;
 
-        std::unique_ptr<BoneRegistry> m_boneRegistry;
+        std::unique_ptr<RigNodeRegistry> m_rigNodeRegistry;
         std::unique_ptr<SocketRegistry> m_socketRegistry;
+        std::unique_ptr<JointRegistry> m_jointRegistry;
 
-        std::unique_ptr<BoneBuffer> m_boneBuffer;
+        std::unique_ptr<JointBuffer> m_jointBuffer;
         std::unique_ptr<SocketBuffer> m_socketBuffer;
     };
 }

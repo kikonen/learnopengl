@@ -179,7 +179,7 @@ public:
     float fogDensity;
 
     bool animationEnabled;
-    bool animationJointTree;
+    bool animationNodeTree;
     bool animationFirstFrameOnly;
     bool animationOnceOnly;
     int animationMaxCount;

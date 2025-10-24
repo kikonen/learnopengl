@@ -11,13 +11,14 @@
 struct aiBone;
 
 namespace animation {
-    struct BoneInfo {
-        BoneInfo(const aiBone* bone);
+    // NOTE KI Assimp aiBone == Joint
+    struct Joint {
+        Joint(const aiBone* bone);
 
         int16_t m_index{ -1 };
-        int16_t m_jointIndex{ -1 };
 
-        std::string m_jointName;
+        int16_t m_nodeIndex{ -1 };
+        std::string m_nodeName;
 
         /** FROM ASSIMP
          * Matrix that transforms from mesh space to bone space in bind pose.

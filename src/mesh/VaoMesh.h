@@ -39,10 +39,10 @@ namespace mesh {
         std::vector<mesh::Vertex> m_vertices;
         std::vector<mesh::Index32> m_indeces;
 
-        int32_t m_rigJointIndex{ -1 };
+        int32_t m_rigNodeIndex{ -1 };
 
         // NOTE KI for debug
-        std::string m_rigJointName;
+        std::string m_rigNodeName;
 
     protected:
         const kigl::GLVertexArray* m_vao{ nullptr };

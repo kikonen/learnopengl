@@ -5,12 +5,12 @@
 #include "ki/size.h"
 
 namespace animation {
-    struct BoneTransform {
-        BoneTransform()
+    struct JointTransform {
+        JointTransform()
             : m_transform{ 1.f }
         {}
 
-        BoneTransform(const glm::mat4& transform)
+        JointTransform(const glm::mat4& transform)
             : m_transform{ transform }
         {}
 

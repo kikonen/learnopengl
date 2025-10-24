@@ -21,11 +21,11 @@
 #include "util/Transform.h"
 
 #include "animation/RigContainer.h"
-#include "animation/RigJoint.h"
+#include "animation/RigNode.h"
 #include "animation/Animation.h"
-#include "animation/BoneChannel.h"
-#include "animation/BoneContainer.h"
-#include "animation/BoneInfo.h"
+#include "animation/RigNodeChannel.h"
+#include "animation/JointContainer.h"
+#include "animation/Joint.h"
 #include "animation/MeshInfo.h"
 #include "animation/AnimationLoader.h"
 
@@ -33,7 +33,7 @@
 #include "mesh/MeshSet.h"
 #include "mesh/ModelMesh.h"
 
-#include "mesh/RigJointTreeGenerator.h"
+#include "mesh/RigNodeTreeGenerator.h"
 
 #include "util/assimp_util.h"
 
@@ -137,10 +137,10 @@ namespace mesh
         processMaterials(meshSet, ctx.m_materials, ctx.m_materialMapping, scene);
 
         std::vector<const aiNode*> assimpNodes;
-        collectJoints(ctx, meshSet, assimpNodes, scene, scene->mRootNode, 0, -1, glm::mat4{ 1.f });
+        collectNodes(ctx, meshSet, assimpNodes, scene, scene->mRootNode, 0, -1, glm::mat4{ 1.f });
 
         if (false) {
-            dumpMetaData(meshSet, rig->m_joints, assimpNodes);
+            dumpMetaData(meshSet, rig->m_nodes, assimpNodes);
         }
 
         processMeshes(
@@ -154,29 +154,29 @@ namespace mesh
 
             loadAnimations(ctx, "master", meshSet.m_filePath, scene);
 
-            if (assets.animationJointTree)
+            if (assets.animationNodeTree)
             {
                 auto* primaryMesh = meshSet.getMesh<mesh::VaoMesh>(0);
-                const auto& joint = rig->m_joints[primaryMesh->m_rigJointIndex];
+                const auto& node = rig->m_nodes[primaryMesh->m_rigNodeIndex];
 
                 util::Transform offset{};
                 offset.m_position = glm::vec3{ 20, 0, 0 };
 
                 //const auto offset = glm::translate(glm::mat4{ 1.f }, glm::vec3{ 20, 0, 0 }) *
-                //    joint.m_globalTransform;
+                //    rigNode.m_globalTransform;
 
-                RigJointTreeGenerator generator;
+                RigNodeTreeGenerator generator;
                 if (auto mesh = generator.generateTree(rig)) {
                     mesh->m_offset = offset;
-                    mesh->m_rigJointIndex = primaryMesh->m_rigJointIndex;
-                    mesh->m_rigJointName = primaryMesh->m_rigJointName;
+                    mesh->m_rigNodeIndex = primaryMesh->m_rigNodeIndex;
+                    mesh->m_rigNodeName = primaryMesh->m_rigNodeName;
                     meshSet.addMesh(std::move(mesh));
                 }
 
                 if (auto mesh = generator.generatePoints(rig)) {
                     mesh->m_offset = offset;
-                    mesh->m_rigJointIndex = primaryMesh->m_rigJointIndex;
-                    mesh->m_rigJointName = primaryMesh->m_rigJointName;
+                    mesh->m_rigNodeIndex = primaryMesh->m_rigNodeIndex;
+                    mesh->m_rigNodeName = primaryMesh->m_rigNodeName;
                     meshSet.addMesh(std::move(mesh));
                 }
             }
@@ -188,8 +188,8 @@ namespace mesh
                 auto* modelMesh = dynamic_cast<mesh::ModelMesh*>(mesh.get());
                 modelMesh->m_rig.reset();
 
-                const auto& rigJoint = rig->m_joints[modelMesh->m_rigJointIndex];
-                const auto& transform = rigJoint.m_globalTransform;
+                const auto& rigNode = rig->m_nodes[modelMesh->m_rigNodeIndex];
+                const auto& transform = rigNode.m_globalTransform;
 
                 glm::quat rotation;
                 glm::vec3 translation;
@@ -216,7 +216,7 @@ namespace mesh
         }
     }
 
-    void AssimpLoader::collectJoints(
+    void AssimpLoader::collectNodes(
         mesh::LoadContext& ctx,
         MeshSet& meshSet,
         std::vector<const aiNode*>& assimpNodes,
@@ -228,7 +228,7 @@ namespace mesh
     {
         auto& rig = *ctx.m_rig;
 
-        int16_t jointIndex;
+        int16_t nodeIndex;
         glm::mat4 globalTransform;
         {
             assimpNodes.push_back(node);
@@ -239,49 +239,49 @@ namespace mesh
             //    parentInvTransform = glm::mat4{ 1.f };
             //}
 
-            auto& rigJoint = rig.addJoint(node);
-            rigJoint.m_level = level;
-            rigJoint.m_parentIndex = parentIndex;
-            jointIndex = rigJoint.m_index;
+            auto& rigNode = rig.addNode(node);
+            rigNode.m_level = level;
+            rigNode.m_parentIndex = parentIndex;
+            nodeIndex = rigNode.m_index;
 
-            globalTransform = parentTransform * rigJoint.m_transform;
-            rigJoint.m_globalTransform = globalTransform;
-            rigJoint.m_globalInvTransform = glm::inverse(globalTransform);
+            globalTransform = parentTransform * rigNode.m_transform;
+            rigNode.m_globalTransform = globalTransform;
+            rigNode.m_globalInvTransform = glm::inverse(globalTransform);
 
             if (m_debug) {
                 KI_INFO_OUT(fmt::format(
                     "ASSIMP: NODE mesh_set={}, node={}.{}, name={}, children={}, meshes={}\nTRAN: {}\nGLOB: {}\nINVE: {}",
                     meshSet.m_name,
                     parentIndex,
-                    jointIndex,
+                    nodeIndex,
                     node->mName.C_Str(),
                     node->mNumChildren,
                     node->mNumMeshes,
-                    rigJoint.m_transform,
-                    rigJoint.m_globalTransform,
-                    rigJoint.m_globalInvTransform));
+                    rigNode.m_transform,
+                    rigNode.m_globalTransform,
+                    rigNode.m_globalInvTransform));
             }
         }
 
         for (size_t n = 0; n < node->mNumChildren; ++n)
         {
-            collectJoints(ctx, meshSet, assimpNodes, scene, node->mChildren[n], level + 1, jointIndex, globalTransform);
+            collectNodes(ctx, meshSet, assimpNodes, scene, node->mChildren[n], level + 1, nodeIndex, globalTransform);
         }
     }
 
     void AssimpLoader::dumpMetaData(
         MeshSet& meshSet,
-        const std::vector<animation::RigJoint>& joints,
+        const std::vector<animation::RigNode>& nodes,
         const std::vector<const aiNode*>& assimpNodes)
     {
-        for (int i = 0; i < joints.size(); i++) {
-            dumpMetaData(meshSet, joints[i], assimpNodes[i]);
+        for (int i = 0; i < nodes.size(); i++) {
+            dumpMetaData(meshSet, nodes[i], assimpNodes[i]);
         }
     }
 
     void AssimpLoader::dumpMetaData(
         MeshSet& meshSet,
-        const animation::RigJoint& rigJoint,
+        const animation::RigNode& RigNode,
         const aiNode* node)
     {
         const std::string nodeName{ node->mName.C_Str() };
@@ -350,9 +350,9 @@ namespace mesh
                 KI_INFO_OUT(fmt::format(
                     "ASSIMP: META mesh_set={}, node={}.{}, name={}, key={}, value={}",
                     meshSet.m_name,
-                    rigJoint.m_parentIndex,
-                    rigJoint.m_index,
-                    rigJoint.m_name,
+                    RigNode.m_parentIndex,
+                    RigNode.m_index,
+                    RigNode.m_name,
                     formattedKey,
                     formattedValue));
             }
@@ -382,8 +382,8 @@ namespace mesh
     {
         auto& rig = *ctx.m_rig;
 
-        for (auto& rigJoint : rig.m_joints) {
-            auto& node = assimpNodes[rigJoint.m_index];
+        for (auto& rigNode : rig.m_nodes) {
+            auto& node = assimpNodes[rigNode.m_index];
             if (node->mNumMeshes == 0) continue;
 
             {
@@ -412,19 +412,19 @@ namespace mesh
                     processMesh(
                         ctx,
                         meshSet,
-                        rigJoint,
+                        rigNode,
                         *modelMesh,
                         meshIndex,
                         mesh);
 
                     modelMesh->m_rig = ctx.m_rig;
 
-                    modelMesh->m_rigJointIndex = rigJoint.m_index;
-                    modelMesh->m_rigJointName = rigJoint.m_name;
-                    rigJoint.m_mesh = true;
+                    modelMesh->m_rigNodeIndex = rigNode.m_index;
+                    modelMesh->m_rigNodeName = rigNode.m_name;
+                    rigNode.m_mesh = true;
 
                     // NOTE KI for debug
-                    rig.registerMesh(rigJoint.m_index, modelMesh.get());
+                    rig.registerMesh(rigNode.m_index, modelMesh.get());
 
                     meshSet.addMesh(std::move(modelMesh));
                 }
@@ -435,7 +435,7 @@ namespace mesh
     void AssimpLoader::processMesh(
         mesh::LoadContext& ctx,
         MeshSet& meshSet,
-        animation::RigJoint& rigJoint,
+        animation::RigNode& RigNode,
         ModelMesh& modelMesh,
         size_t meshIndex,
         const aiMesh* mesh)
@@ -460,8 +460,8 @@ namespace mesh
         if (m_debug) {
             KI_INFO_OUT(fmt::format("ASSIMP: MESH mesh_set={}, node={}.{}, name={}, material={}, vertices={}, faces={}, bones={}",
                 meshSet.m_name,
-                rigJoint.m_parentIndex,
-                rigJoint.m_index,
+                RigNode.m_parentIndex,
+                RigNode.m_index,
                 modelMesh.m_name,
                 material ? material->m_name : fmt::format("{}", mesh->mMaterialIndex),
                 mesh->mNumVertices,
@@ -528,20 +528,20 @@ namespace mesh
         const aiMesh* mesh,
         const aiBone* bone)
     {
-        auto& bi = ctx.m_rig->registerBone(bone);
+        auto& joint = ctx.m_rig->registerJoint(bone);
 
         if (m_debug) {
             KI_INFO_OUT(fmt::format(
-                "ASSIMP: BONE mesh_set={}, joint={}, bone={}, name={}, mesh={}, weights={}",
+                "ASSIMP: BONE mesh_set={}, node={}, joint={}, name={}, mesh={}, weights={}",
                 meshSet.m_name,
-                bi.m_jointIndex,
-                bi.m_index,
-                bi.m_jointName,
+                joint.m_nodeIndex,
+                joint.m_index,
+                joint.m_nodeName,
                 meshIndex,
                 bone->mNumWeights))
         }
 
-        auto& vertexBones = modelMesh.m_vertexBones;
+        auto& vertexJoints = modelMesh.m_vertexJoints;
 
         for (size_t i = 0; i < bone->mNumWeights; i++)
         {
@@ -552,16 +552,16 @@ namespace mesh
 
             assert(vertexIndex < modelMesh.m_vertices.size());
 
-            vertexBones.resize(std::max(vertexIndex + 1, vertexBones.size()));
-            auto& vb = vertexBones[vertexIndex];
-            vb.addBone(bi.m_index, vw.mWeight);
+            vertexJoints.resize(std::max(vertexIndex + 1, vertexJoints.size()));
+            auto& vb = vertexJoints[vertexIndex];
+            vb.addJoint(joint.m_index, vw.mWeight);
 
             if (m_debug) {
                 //KI_INFO_OUT(fmt::format(
-            //    "ASSIMP: BONE mesh_set={}, mesh={}, bone={}, vertex={}, vertexBones={}, vertexWeights={}",
+            //    "ASSIMP: BONE mesh_set={}, mesh={}, bone={}, vertex={}, vertexJoints={}, vertexWeights={}",
             //    meshSet.m_name,
             //    meshIndex,
-            //    bi.m_index,
+            //    joint.m_index,
             //    vertexIndex,
             //    vb.m_boneIds,
             //    vb.m_weights));

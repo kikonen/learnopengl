@@ -9,9 +9,9 @@ namespace animation {
 namespace mesh {
     class VaoMesh;
 
-    class RigJointTreeGenerator {
+    class RigNodeTreeGenerator {
     public:
-        RigJointTreeGenerator() = default;
+        RigNodeTreeGenerator() = default;
 
         std::unique_ptr<mesh::VaoMesh> generateTree(
             std::shared_ptr<animation::RigContainer> rig) const;

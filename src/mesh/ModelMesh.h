@@ -5,7 +5,7 @@
 #include <vector>
 #include <map>
 
-#include "animation/VertexBone.h"
+#include "animation/VertexJoint.h"
 
 #include "mesh/VaoMesh.h"
 #include "mesh/Index.h"
@@ -13,7 +13,7 @@
 
 namespace animation {
     struct RigContainer;
-    struct VertexBone;
+    struct VertexJoint;
 }
 
 namespace mesh {
@@ -51,7 +51,7 @@ namespace mesh {
         }
 
     public:
-        std::vector<animation::VertexBone> m_vertexBones;
+        std::vector<animation::VertexJoint> m_vertexJoints;
 
         std::shared_ptr<animation::RigContainer> m_rig;
 

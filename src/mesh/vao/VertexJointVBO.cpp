@@ -1,26 +1,26 @@
-#include "VertexBoneVBO.h"
+#include "VertexJointVBO.h"
 
 #include "VBO_impl.h"
 
 namespace mesh {
-    VertexBoneVBO::VertexBoneVBO(
+    VertexJointVBO::VertexJointVBO(
         std::string_view name,
-        int boneIdAttr,
+        int jointIdAttr,
         int weightAttr,
         int binding)
-        : VBO(name, boneIdAttr, binding),
+        : VBO(name, jointIdAttr, binding),
         m_weightAttr{weightAttr}
     {}
 
-    BoneEntry VertexBoneVBO::convertVertex(
-        const animation::VertexBone& bone)
+    JointEntry VertexJointVBO::convertVertex(
+        const animation::VertexJoint& joint)
     {
-        return { bone };
+        return { joint };
     }
 
-    void VertexBoneVBO::prepareVAO(kigl::GLVertexArray& vao)
+    void VertexJointVBO::prepareVAO(kigl::GLVertexArray& vao)
     {
-        constexpr size_t sz = sizeof(BoneEntry);
+        constexpr size_t sz = sizeof(JointEntry);
         {
             m_entries.reserve(VERTEX_BLOCK_SIZE);
             m_vbo.createEmpty(VERTEX_BLOCK_SIZE * sz, GL_DYNAMIC_STORAGE_BIT);
@@ -40,11 +40,11 @@ namespace mesh {
                 // https://www.khronos.org/opengl/wiki/Vertex_Specification
                 //
 
-                // boneId attr
-                glVertexArrayAttribIFormat(vao, m_attr, 4, GL_UNSIGNED_INT, offsetof(BoneEntry, m_boneIds));
+                // jointId attr
+                glVertexArrayAttribIFormat(vao, m_attr, 4, GL_UNSIGNED_INT, offsetof(JointEntry, m_jointIds));
 
                 // weight attr
-                glVertexArrayAttribFormat(vao, m_weightAttr, 4, GL_FLOAT, GL_FALSE, offsetof(BoneEntry, m_weights));
+                glVertexArrayAttribFormat(vao, m_weightAttr, 4, GL_FLOAT, GL_FALSE, offsetof(JointEntry, m_weights));
 
                 glVertexArrayAttribBinding(vao, m_attr, m_binding);
                 glVertexArrayAttribBinding(vao, m_weightAttr, m_binding);

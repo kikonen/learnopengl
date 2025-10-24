@@ -9,12 +9,12 @@
 
 #include "material/Material.h"
 
-#include "RigJoint.h"
+#include "RigNode.h"
 #include "RigSocket.h"
 #include "MeshInfo.h"
 #include "Clip.h"
 
-#include "BoneContainer.h"
+#include "JointContainer.h"
 #include "ClipContainer.h"
 
 struct aiNode;
@@ -25,29 +25,29 @@ namespace mesh {
 }
 
 namespace animation {
-    struct RigJoint;
+    struct RigNode;
 
     struct RigContainer {
         RigContainer(const std::string& name);
         ~RigContainer();
 
-        animation::RigJoint& addJoint(const aiNode* node);
+        animation::RigNode& addNode(const aiNode* node);
 
-        // Register new bone or return old
-        animation::BoneInfo& registerBone(const aiBone* bone) noexcept;
+        // Register new joint or return old
+        animation::Joint& registerJoint(const aiBone* bone) noexcept;
 
-        // @return true if rig is empty (thus no bones, and thus rig is not needed)
+        // @return true if rig is empty (thus no joints, and thus rig is not needed)
         bool empty() const noexcept
         {
-            return m_boneContainer.empty();
+            return m_jointContainer.empty();
         }
 
-        const animation::RigJoint* getJoint(int16_t index) const noexcept;
+        const animation::RigNode* getNode(int16_t index) const noexcept;
 
         // @return nullptr if not found
-        const animation::RigJoint* findJoint(const std::string& name) const noexcept;
+        const animation::RigNode* findNode(const std::string& name) const noexcept;
 
-        bool hasBones() const noexcept;
+        bool hasJoints() const noexcept;
 
         // @return registered index in m_sockets, -1 if joint not found
         int16_t registerSocket(const animation::RigSocket& socket);
@@ -84,9 +84,9 @@ namespace animation {
 
         const std::string m_name;
 
-        std::vector<animation::RigJoint> m_joints;
+        std::vector<animation::RigNode> m_nodes;
 
-        BoneContainer m_boneContainer;
+        JointContainer m_jointContainer;
 
         std::vector<animation::RigSocket> m_sockets;
 
@@ -95,8 +95,8 @@ namespace animation {
         animation::ClipContainer m_clipContainer;
 
         // NOTE KI for debug
-        std::map<uint16_t, std::vector<MeshInfo>> m_jointMeshes;
+        std::map<uint16_t, std::vector<MeshInfo>> m_nodeMeshes;
 
-        std::vector<std::string> m_jointPrefixes;
+        std::vector<std::string> m_nodePrefixes;
     };
 }

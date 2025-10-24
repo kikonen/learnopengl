@@ -2,7 +2,7 @@
 
 #include <assimp/scene.h>
 
-#include "BoneChannel.h"
+#include "RigNodeChannel.h"
 
 namespace animation {
     Animation::Animation(
@@ -17,28 +17,28 @@ namespace animation {
 
     Animation::~Animation() = default;
 
-    animation::BoneChannel& Animation::addChannel(const animation::BoneChannel& src)
+    animation::RigNodeChannel& Animation::addChannel(const animation::RigNodeChannel& src)
     {
         auto& channel = m_channels.emplace_back(src);
         channel.m_index = static_cast<uint16_t>(m_channels.size() - 1);
         return channel;
     }
 
-    void Animation::bindJoint(uint16_t channelIndex, uint16_t jointIndex)
+    void Animation::bindNode(uint16_t channelIndex, uint16_t nodeIndex)
     {
         {
-            int oldSize = static_cast<int>(m_jointToChannel.size());
-            int newSize = std::max(static_cast<int>(m_jointToChannel.size()), jointIndex + 1);
+            int oldSize = static_cast<int>(m_nodeToChannel.size());
+            int newSize = std::max(static_cast<int>(m_nodeToChannel.size()), nodeIndex + 1);
             if (newSize > oldSize) {
-                m_jointToChannel.resize(newSize);
+                m_nodeToChannel.resize(newSize);
                 for (int i = oldSize; i < newSize; i++) {
-                    m_jointToChannel[i] = -1;
+                    m_nodeToChannel[i] = -1;
                 }
             }
         }
 
-        m_jointToChannel[jointIndex] = channelIndex;
-        m_channels[channelIndex].m_jointIndex = jointIndex;
+        m_nodeToChannel[nodeIndex] = channelIndex;
+        m_channels[channelIndex].m_nodeIndex = nodeIndex;
     }
 
     uint16_t Animation::getMaxFrame() const

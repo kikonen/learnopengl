@@ -40,7 +40,7 @@ namespace animation {
 
     protected:
         // Register node instance specific rig
-        // @return instance index into bone transform buffer
+        // @return instance index into socket transform buffer
         uint32_t addInstance(size_t count);
         void removeInstance(
             uint32_t index,

@@ -7,15 +7,15 @@
 namespace animation
 {
 #pragma pack(push, 1)
-    struct BoneTransformSSBO {
+    struct JointTransformSSBO {
         //glm::mat4x3 u_transformMatrix;
         glm::vec4 u_transformMatrixRow0{ 1.f, 0.f, 0.f, 0.f };
         glm::vec4 u_transformMatrixRow1{ 0.f, 1.f, 0.f, 0.f };
         glm::vec4 u_transformMatrixRow2{ 0.f, 0.f, 1.f, 0.f };
 
-        BoneTransformSSBO() {}
+        JointTransformSSBO() {}
 
-        BoneTransformSSBO(const glm::mat4& transform)
+        JointTransformSSBO(const glm::mat4& transform)
         {
             setTransform(transform);
         }

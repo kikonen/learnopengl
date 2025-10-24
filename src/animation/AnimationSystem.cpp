@@ -27,18 +27,21 @@
 #include "debug/DebugContext.h"
 
 #include "animation/RigContainer.h"
-#include "animation/BoneInfo.h"
+#include "animation/Joint.h"
 #include "animation/Animator.h"
 
-#include "animation/BoneRegistry.h"
+#include "animation/RigNodeRegistry.h"
 #include "animation/SocketRegistry.h"
+#include "animation/JointRegistry.h"
 
-#include "animation/BoneBuffer.h"
+#include "animation/JointBuffer.h"
 #include "animation/SocketBuffer.h"
 
 namespace {
     constexpr size_t BLOCK_SIZE = 1000;
     constexpr size_t MAX_BLOCK_COUNT = 5100;
+
+    static const glm::mat4 ID_MAT{ 1.f };
 
     struct ActiveNode {
         animation::AnimationState& m_state;
@@ -73,9 +76,10 @@ namespace animation
 namespace animation
 {
     AnimationSystem::AnimationSystem()
-        : m_boneRegistry{ std::make_unique<BoneRegistry>() },
+        : m_rigNodeRegistry{ std::make_unique<RigNodeRegistry>() },
+        m_jointRegistry{ std::make_unique<JointRegistry>() },
         m_socketRegistry{ std::make_unique<SocketRegistry>() },
-        m_boneBuffer{ std::make_unique<BoneBuffer>(m_boneRegistry.get()) },
+        m_jointBuffer{ std::make_unique<JointBuffer>(m_jointRegistry.get()) },
         m_socketBuffer{ std::make_unique<SocketBuffer>(m_socketRegistry.get()) }
     {
     }
@@ -91,10 +95,11 @@ namespace animation
 
         m_pendingNodes.clear();
 
-        m_boneRegistry->clear();
+        m_rigNodeRegistry->clear();
+        m_jointRegistry->clear();
         m_socketRegistry->clear();
 
-        m_boneBuffer->clear();
+        m_jointBuffer->clear();
         m_socketBuffer->clear();
     }
 
@@ -108,86 +113,99 @@ namespace animation
         m_onceOnly = assets.animationOnceOnly;
         m_maxCount = assets.animationMaxCount;
 
-        m_boneRegistry->prepare();
+        m_rigNodeRegistry->prepare();
         m_socketRegistry->prepare();
+        m_jointRegistry->prepare();
 
-        m_boneBuffer->prepare();
+        m_jointBuffer->prepare();
         m_socketBuffer->prepare();
 
         clear();
     }
 
-    std::pair<uint32_t, uint32_t> AnimationSystem::registerInstance(
+    std::tuple<uint32_t, uint32_t, uint32_t> AnimationSystem::registerInstance(
         const animation::RigContainer& rig)
     {
         std::lock_guard lock(m_pendingLock);
 
-        auto& boneRegistry = *m_boneRegistry;
+        auto& rigNodeRegistry = *m_rigNodeRegistry;
+        auto& jointRegistry = *m_jointRegistry;
         auto& socketRegistry = *m_socketRegistry;
 
-        uint32_t boneBaseIndex = boneRegistry.addInstance(rig.m_boneContainer.size());
+        uint32_t rigNodeBaseIndex = rigNodeRegistry.addInstance(rig.m_nodes.size());
+        uint32_t jointBaseIndex = jointRegistry.addInstance(rig.m_jointContainer.size());
         uint32_t socketBaseIndex = socketRegistry.addInstance(rig.m_sockets.size());
 
-        // Initialize bones
-        if (boneBaseIndex) {
-            std::lock_guard lockBones(boneRegistry.m_lock);
+        {
+            std::lock_guard lockjoints(jointRegistry.m_lock);
 
-            auto bonePalette = boneRegistry.modifyRange(boneBaseIndex, rig.m_boneContainer.size());
+            // Initialize joints
+            if (rigNodeBaseIndex) {
+                auto rigNodeTransforms = rigNodeRegistry.modifyRange(rigNodeBaseIndex, rig.m_nodes.size());
 
-            std::vector<glm::mat4> globalTransforms;
-            globalTransforms.resize(rig.m_joints.size() + 1);
-            globalTransforms[0] = glm::mat4{ 1.f };
-
-            glm::mat4 inverseMeshRigTransform{ 1.f };
-
-            for (const auto& rigJoint : rig.m_joints) {
-                if (rigJoint.m_mesh) {
-                    //inverseMeshRigTransform = rigJoint.m_globalInvTransform;
+                for (const auto& rigNode : rig.m_nodes) {
+                    const auto& parentTransform = rigNode.m_index > 0 ? rigNodeTransforms[rigNode.m_parentIndex] : ID_MAT;
+                    rigNodeTransforms[rigNode.m_index] = parentTransform * rigNode.m_transform;
                 }
 
-                const auto& jointTransform = rigJoint.m_transform;
-                globalTransforms[rigJoint.m_index + 1] = globalTransforms[rigJoint.m_parentIndex + 1] * jointTransform;
-
-                const auto* bone = rig.m_boneContainer.getInfo(rigJoint.m_boneIndex);
-                if (bone) {
-                    const auto& globalTransform = globalTransforms[rigJoint.m_index + 1];
-                    bonePalette[bone->m_index] = inverseMeshRigTransform * globalTransform * bone->m_offsetMatrix;
-                }
+                jointRegistry.markDirty(jointBaseIndex, rig.m_jointContainer.size());
             }
-            boneRegistry.markDirty(boneBaseIndex, rig.m_boneContainer.size());
+
+            // Initialize joints
+            if (jointBaseIndex) {
+                const auto rigNodeTransforms = rigNodeRegistry.modifyRange(rigNodeBaseIndex, rig.m_nodes.size());
+                auto jointPalette = jointRegistry.modifyRange(jointBaseIndex, rig.m_jointContainer.size());
+
+                glm::mat4 inverseMeshRigTransform{ 1.f };
+
+                for (const auto& rigNode : rig.m_nodes) {
+                    const auto* joint = rig.m_jointContainer.getJoint(rigNode.m_jointIndex);
+                    if (joint) {
+                        const auto& globalTransform = rigNodeTransforms[rigNode.m_index];
+                        jointPalette[joint->m_index] = inverseMeshRigTransform * globalTransform * joint->m_offsetMatrix;
+                    }
+                }
+                jointRegistry.markDirty(jointBaseIndex, rig.m_jointContainer.size());
+            }
         }
 
-        // NOTE KI all bones are initially identity matrix
+        // NOTE KI all joints are initially identity matrix
         // NOTE KI sockets need to be initialiazed to match initial static joint hierarchy
         if (socketBaseIndex)
         {
-            // NOTE KI need to keep locked while bones are modified
+            const auto rigNodeTransforms = rigNodeRegistry.modifyRange(rigNodeBaseIndex, rig.m_nodes.size());
+
+            // NOTE KI need to keep locked while joints are modified
             // => avoid races with registration of other instances
             std::lock_guard lockSockets(socketRegistry.m_lock);
 
             auto socketPalette = socketRegistry.modifyRange(socketBaseIndex, rig.m_sockets.size());
             for (const auto& socket : rig.m_sockets) {
                 // NOTE KI see Animator::animate()
-                const auto& rigJoint = rig.m_joints[socket.m_jointIndex];
-                socketPalette[socket.m_index] = socket.calculateGlobalTransform(rigJoint.m_globalTransform);
+                const auto& rigNode = rig.m_nodes[socket.m_nodeIndex];
+                const auto& globalTransform = rigNodeTransforms[rigNode.m_index];
+                socketPalette[socket.m_index] = socket.calculateGlobalTransform(globalTransform);
             }
             socketRegistry.markDirty(socketBaseIndex, rig.m_sockets.size());
         }
 
-        return { boneBaseIndex, socketBaseIndex };
+        return { rigNodeBaseIndex, jointBaseIndex, socketBaseIndex };
     }
 
     void AnimationSystem::unregisterInstance(
         const animation::RigContainer& rig,
-        uint32_t boneBaseIndex,
+        uint32_t rigNodeBaseIndex,
+        uint32_t jointBaseIndex,
         uint32_t socketBaseIndex)
     {
         std::lock_guard lock(m_pendingLock);
 
-        auto& boneRegistry = *m_boneRegistry;
+        auto& rigNodeRegistry = *m_rigNodeRegistry;
         auto& socketRegistry = *m_socketRegistry;
+        auto& jointRegistry = *m_jointRegistry;
 
-        boneRegistry.removeInstance(boneBaseIndex, rig.m_boneContainer.size());
+        rigNodeRegistry.removeInstance(rigNodeBaseIndex, rig.m_nodes.size());
+        jointRegistry.removeInstance(jointBaseIndex, rig.m_jointContainer.size());
         socketRegistry.removeInstance(socketBaseIndex, rig.m_sockets.size());
     }
 
@@ -256,8 +274,9 @@ namespace animation
     {
         prepareNodes();
 
-        auto& boneRegistry = *m_boneRegistry;
+        auto& rigNodeRegistry = *m_rigNodeRegistry;
         auto& socketRegistry = *m_socketRegistry;
+        auto& jointRegistry = *m_jointRegistry;
 
         static std::vector<ActiveNode> s_activeNodes;
 
@@ -278,9 +297,9 @@ namespace animation
             std::lock_guard lock(m_pendingLock);
 
             if (m_enabled) {
-                // NOTE KI need to keep locked while bones are modified
+                // NOTE KI need to keep locked while joints are modified
                 // => avoid races with registration of other instances
-                std::lock_guard lockBones(boneRegistry.m_lock);
+                std::lock_guard lockjoints(jointRegistry.m_lock);
                 std::lock_guard lockSockets(socketRegistry.m_lock);
 
                 if (true) {
@@ -300,7 +319,8 @@ namespace animation
             }
         }
 
-        boneRegistry.updateWT();
+        rigNodeRegistry.updateWT();
+        jointRegistry.updateWT();
         socketRegistry.updateWT();
     }
 
@@ -312,7 +332,8 @@ namespace animation
         const auto& dbg = debug::DebugContext::modify();
         const auto& anim = dbg.m_animation;
 
-        auto& boneRegistry = *m_boneRegistry;
+        auto& rigNodeRegistry = *m_rigNodeRegistry;
+        auto& jointRegistry = *m_jointRegistry;
         auto& socketRegistry = *m_socketRegistry;
 
         if (anim.m_paused) return;
@@ -338,22 +359,25 @@ namespace animation
 
             auto* mesh = lodMesh.getMesh<mesh::VaoMesh>();
             if (!mesh) continue;
-            if (mesh->m_rigJointIndex < 0) continue;
+            if (mesh->m_rigNodeIndex < 0) continue;
 
             // TDOO KI handle case when same rig is used for multiple
             // meshes (i.e. meshes possibly split due to material, etc.)
             auto rig = mesh->getRigContainer().get();
             if (!rig) continue;
 
-            uint32_t boneBaseIndex;
+            uint32_t rigNodeBaseIndex;
+            uint32_t jointBaseIndex;
             uint32_t socketBaseIndex;
             {
                 const auto& nodeState = node->getState();
-                boneBaseIndex = nodeState.m_boneBaseIndex;
+                rigNodeBaseIndex = nodeState.m_rigNodeBaseIndex;
+                jointBaseIndex = nodeState.m_jointBaseIndex;
                 socketBaseIndex = nodeState.m_socketBaseIndex;
             }
 
-            auto bonePalette = boneRegistry.modifyRange(boneBaseIndex, rig->m_boneContainer.size());
+            auto nodeTransforms = rigNodeRegistry.modifyRange(rigNodeBaseIndex, rig->m_nodes.size());
+            auto jointPalette = jointRegistry.modifyRange(jointBaseIndex, rig->m_jointContainer.size());
             auto socketPalette = socketRegistry.modifyRange(socketBaseIndex, rig->m_sockets.size());
 
             double currentTime = ctx.getClock().ts;
@@ -414,9 +438,9 @@ namespace animation
              if (!playB.m_active) {
                  changed = animator.animate(
                      *rig,
-                     //rig->m_joints[mesh->m_rigJointIndex].m_globalInvTransform,
                      glm::mat4{ 1.f },
-                     bonePalette,
+                     nodeTransforms,
+                     jointPalette,
                      socketPalette,
                      playA.m_clipIndex,
                      playA.m_startTime,
@@ -427,9 +451,9 @@ namespace animation
             else {
                  changed = animator.animateBlended(
                      *rig,
-                     //rig->m_joints[mesh->m_rigJointIndex].m_globalInvTransform,
                      glm::mat4{ 1.f },
-                     bonePalette,
+                     nodeTransforms,
+                     jointPalette,
                      socketPalette,
                      playA.m_clipIndex,
                      playA.m_startTime,
@@ -448,7 +472,8 @@ namespace animation
             }
 
             if (changed) {
-                boneRegistry.markDirty(boneBaseIndex, bonePalette.size());
+                rigNodeRegistry.markDirty(rigNodeBaseIndex, nodeTransforms.size());
+                jointRegistry.markDirty(jointBaseIndex, jointPalette.size());
                 socketRegistry.markDirty(socketBaseIndex, socketPalette.size());
             }
 
@@ -462,10 +487,10 @@ namespace animation
     {
         ASSERT_RT();
 
-        auto& boneBuffer = *m_boneBuffer;
+        auto& jointBuffer = *m_jointBuffer;
         auto& socketBuffer = *m_socketBuffer;
 
-        boneBuffer.updateRT();
+        jointBuffer.updateRT();
         socketBuffer.updateRT();
     }
 

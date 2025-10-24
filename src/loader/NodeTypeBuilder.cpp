@@ -854,18 +854,18 @@ namespace loader
         flags.noVolume = container.getFlag("no_volume", flags.noVolume);
 
         {
-            flags.useBones = container.getFlag("use_bones", flags.useBones);
+            flags.useJoints = container.getFlag("use_joints", flags.useJoints);
 
-            // NOTE KI bones are *required* if using animation
+            // NOTE KI Joints are *required* if using animation
             flags.useAnimation = container.getFlag("use_animation", flags.useAnimation);
             if (flags.useAnimation) {
-                flags.useBones = true;
+                flags.useJoints = true;
             }
 
-            // NOTE KI no bones debug if no bones
-            flags.useBonesDebug = container.getFlag("use_bones_debug", flags.useBonesDebug);
-            if (!flags.useBones) {
-                flags.useBonesDebug = false;
+            // NOTE KI no Joints debug if no Joints
+            flags.useJointsDebug = container.getFlag("use_joints_debug", flags.useJointsDebug);
+            if (!flags.useJoints) {
+                flags.useJointsDebug = false;
             }
 
             flags.useSockets = container.getFlag("use_sockets", flags.useSockets);

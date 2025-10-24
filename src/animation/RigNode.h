@@ -9,8 +9,8 @@
 struct aiNode;
 
 namespace animation {
-    struct RigJoint {
-        RigJoint(const aiNode* node);
+    struct RigNode {
+        RigNode(const aiNode* node);
 
         const std::string m_name;
         const bool m_assimpFbx;
@@ -24,8 +24,8 @@ namespace animation {
         // NOTE KI for debug
         int16_t m_level{ -1 };
 
-        int16_t m_boneIndex{ -1 };
-        bool m_boneRequired : 1{ false };
+        int16_t m_jointIndex{ -1 };
+        bool m_jointRequired : 1{ false };
 
         int16_t m_socketIndex{ -1 };
         bool m_socketRequired : 1{ false };

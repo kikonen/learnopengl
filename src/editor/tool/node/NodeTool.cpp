@@ -21,7 +21,8 @@
 #include "event/Dispatcher.h"
 
 #include "animation/AnimationSystem.h"
-#include "animation/BoneRegistry.h"
+#include "animation/RigNodeRegistry.h"
+#include "animation/JointRegistry.h"
 #include "animation/SocketRegistry.h"
 
 #include "script/CommandEngine.h"
@@ -467,10 +468,10 @@ namespace editor
             }
 
             if (assets.glslUseDebug) {
-                ImGui::SeparatorText("Bone visualization");
+                ImGui::SeparatorText("Joint visualization");
 
-                ImGui::Checkbox("Bone debug", &anim.m_debugBoneWeight);
-                ImGui::InputInt("Bone index", &anim.m_boneIndex, 1, 10);
+                ImGui::Checkbox("Joint debug", &anim.m_debugJointWeight);
+                ImGui::InputInt("Joint index", &anim.m_jointIndex, 1, 10);
             }
         }
     }
@@ -678,13 +679,13 @@ namespace editor
             auto& socketRegistry = *animationSystem.m_socketRegistry.get();
             std::lock_guard lockSockets(socketRegistry.m_lock);
 
-            const auto& rigJoint = rig->m_joints[socket->m_jointIndex];
+            const auto& rigNode = rig->m_nodes[socket->m_nodeIndex];
 
             const auto& state = node->getState();
             const auto socketIndex = state.m_socketBaseIndex + socket->m_index;
 
             auto socketPalette = socketRegistry.modifyRange(socketIndex , 1);
-            socketPalette[0] = socket->calculateGlobalTransform(rigJoint.m_globalTransform);
+            socketPalette[0] = socket->calculateGlobalTransform(rigNode.m_globalTransform);
             socketRegistry.markDirty(socketIndex, 1);
         }
     }

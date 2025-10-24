@@ -32,8 +32,8 @@ void NormalRenderer::prepareRT(
 
     Renderer::prepareRT(ctx);
 
-    // NOTE KI bones are pare case, but for conveniency it's global here
-    m_normalProgramId = ProgramRegistry::get().getProgram(SHADER_NORMAL, { {DEF_USE_BONES, "1"} });
+    // NOTE KI joints are pare case, but for conveniency it's global here
+    m_normalProgramId = ProgramRegistry::get().getProgram(SHADER_NORMAL, { {DEF_USE_JOINTS, "1"} });
 }
 
 void NormalRenderer::render(

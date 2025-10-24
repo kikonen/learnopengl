@@ -4,7 +4,7 @@
 #include <string>
 #include <map>
 
-#include "BoneChannel.h"
+#include "RigNodeChannel.h"
 
 struct aiAnimation;
 
@@ -21,19 +21,19 @@ namespace animation {
         ~Animation();
 
         // @return channel index
-        animation::BoneChannel& addChannel(const animation::BoneChannel& src);
+        animation::RigNodeChannel& addChannel(const animation::RigNodeChannel& src);
 
-        void bindJoint(uint16_t channelIndex, uint16_t jointIndex);
+        void bindNode(uint16_t channelIndex, uint16_t nodeIndex);
 
-        const animation::BoneChannel& getChannel(uint16_t index) const noexcept
+        const animation::RigNodeChannel& getChannel(uint16_t index) const noexcept
         {
             return m_channels[index];
         }
 
-        inline const animation::BoneChannel* findByJointIndex(uint16_t jointIndex) const noexcept
+        inline const animation::RigNodeChannel* findByNodeIndex(uint16_t nodeIndex) const noexcept
         {
-            if (jointIndex >= m_jointToChannel.size() - 1) return nullptr;
-            const auto index = m_jointToChannel[jointIndex];
+            if (nodeIndex >= m_nodeToChannel.size() - 1) return nullptr;
+            const auto index = m_nodeToChannel[nodeIndex];
             if (index < 0) return nullptr;
             return &m_channels[index];
         }
@@ -64,12 +64,12 @@ namespace animation {
         int16_t m_index;
         int16_t m_clipCount{ 0 };
 
-        std::vector<animation::BoneChannel> m_channels;
+        std::vector<animation::RigNodeChannel> m_channels;
 
-        // map jointIndex to channel
-        // NOTE KI amount of joints is not ridicilously high thus array should
+        // map nodeIndex to channel
+        // NOTE KI amount of nodes is not ridicilously high thus array should
         // work instead of map (== faster access)
         // -1 == no index
-        std::vector<int16_t> m_jointToChannel;
+        std::vector<int16_t> m_nodeToChannel;
     };
 }

@@ -21,7 +21,8 @@ namespace animation {
         bool animate(
             const animation::RigContainer& rig,
             const glm::mat4& inverseMeshRigTransform,
-            std::span<glm::mat4> bonePalette,
+            std::span<glm::mat4> rigNodeTransforms,
+            std::span<glm::mat4> jointPalette,
             std::span<glm::mat4> socketPalette,
             uint16_t clipIndex,
             double animationStartTime,
@@ -34,7 +35,8 @@ namespace animation {
         bool animateBlended(
             const animation::RigContainer& rig,
             const glm::mat4& inverseMeshRigTransform,
-            std::span<glm::mat4> bonePalette,
+            std::span<glm::mat4> rigNodeTransforms,
+            std::span<glm::mat4> jointPalette,
             std::span<glm::mat4> socketPalette,
             uint16_t clipIndexA,
             double animationStartTimeA,

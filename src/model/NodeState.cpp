@@ -127,7 +127,10 @@ namespace model
         }
 
         {
-            m_modelScale = parent.m_modelScale * glm::mat3{ g_scaleMatrix };
+            // https://gamedev.stackexchange.com/questions/48927/how-can-you-extract-orientation-from-a-transformation-matrix
+            m_modelScale.x = glm::length(m_modelMatrix[0]);
+            m_modelScale.y = glm::length(m_modelMatrix[1]);
+            m_modelScale.z = glm::length(m_modelMatrix[2]);
 
             assert(m_modelScale.x >= 0 && m_modelScale.y >= 0 && m_modelScale.z >= 0);
 

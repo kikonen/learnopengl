@@ -219,8 +219,8 @@ namespace mesh {
 
         if (m_mesh->isJointVisualization()) {
             m_flags.noVolume = true;
-            m_flags.useBones = true;
-            m_flags.boneVisualization = true;
+            m_flags.useJoints = true;
+            m_flags.jointVisualization = true;
         }
 
         setMaterial(mesh->getMaterial());
@@ -284,13 +284,13 @@ namespace mesh {
             //*
             //m_mesh->m_rigTransform;
 
-        if (!m_flags.useBones) {
-            if (auto* mesh = getMesh<mesh::VaoMesh>();  mesh && mesh->m_rigJointIndex >= 0)
+        if (!m_flags.useJoints) {
+            if (auto* mesh = getMesh<mesh::VaoMesh>();  mesh && mesh->m_rigNodeIndex >= 0)
             {
                 if (auto* rig = mesh->getRigContainer().get(); rig)
                 {
                     m_baseTransform = m_baseTransform *
-                        rig->m_joints[mesh->m_rigJointIndex].m_globalTransform;
+                        rig->m_nodes[mesh->m_rigNodeIndex].m_globalTransform;
                 }
             }
         }

@@ -16,7 +16,7 @@
 namespace mesh {
     SkinnedVAO::SkinnedVAO(std::string_view name)
         : TexturedVAO{ name },
-        m_boneVbo{ m_name + "_bone_vbo", ATTR_BONE_INDEX, ATTR_BONE_WEIGHT, VBO_BONE_BINDING }
+        m_jointVbo{ m_name + "_joint_vbo", ATTR_JOINT_INDEX, ATTR_JOINT_WEIGHT, VBO_JOINT_BINDING }
     {}
 
     SkinnedVAO::~SkinnedVAO() = default;
@@ -27,36 +27,36 @@ namespace mesh {
 
         auto& vao = *m_vao;
 
-        m_boneVbo.prepareVAO(vao);
+        m_jointVbo.prepareVAO(vao);
     }
 
     void SkinnedVAO::clear()
     {
         TexturedVAO::clear();
 
-        m_boneVbo.clear();
+        m_jointVbo.clear();
     }
 
-    void SkinnedVAO::reserveVertexBones(size_t count)
+    void SkinnedVAO::reserveVertexJoints(size_t count)
     {
         ASSERT_RT();
 
-        m_boneVbo.reserveVertices(count);
+        m_jointVbo.reserveVertices(count);
     }
 
-    void SkinnedVAO::updateVertexBones(
+    void SkinnedVAO::updateVertexJoints(
         uint32_t baseVbo,
-        std::span<animation::VertexBone> vertexBones)
+        std::span<animation::VertexJoint> vertexJoints)
     {
         ASSERT_RT();
 
-        m_boneVbo.updateVertices(baseVbo, vertexBones);
+        m_jointVbo.updateVertices(baseVbo, vertexJoints);
     }
 
     void SkinnedVAO::updateRT()
     {
         TexturedVAO::updateRT();
 
-        m_boneVbo.updateVAO(*m_vao);
+        m_jointVbo.updateVAO(*m_vao);
     }
 }

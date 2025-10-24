@@ -109,8 +109,9 @@ namespace model
             const auto rig = mesh::findRig(type->modifyLodMeshes());
 
             if (rig) {
-                auto [boneBaseIndex, socketBaseIndex] = animation::AnimationSystem::get().registerInstance(*rig);
-                state.m_boneBaseIndex = boneBaseIndex;
+                auto [rigNodeBaseIndex, jointBaseIndex, socketBaseIndex] = animation::AnimationSystem::get().registerInstance(*rig);
+                state.m_rigNodeBaseIndex = rigNodeBaseIndex;
+                state.m_jointBaseIndex = jointBaseIndex;
                 state.m_socketBaseIndex = socketBaseIndex;
                 //m_state.m_animationClipIndex = ;
             }
@@ -151,7 +152,8 @@ namespace model
             if (rig) {
                 animation::AnimationSystem::get().unregisterInstance(
                     *rig,
-                    state.m_boneBaseIndex,
+                    state.m_rigNodeBaseIndex,
+                    state.m_jointBaseIndex,
                     state.m_socketBaseIndex);
             }
         }

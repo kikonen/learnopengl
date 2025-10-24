@@ -14,7 +14,7 @@
 
 #include "RigContainer.h"
 #include "Animation.h"
-#include "BoneChannel.h"
+#include "RigNodeChannel.h"
 
 #include "MetadataLoader.h"
 #include "Metadata.h"
@@ -118,7 +118,7 @@ namespace animation {
 
             if (animation.getClipCount() > 1) {
                 // NOTE KI assume all channels are consistent
-                const animation::BoneChannel* prev{ nullptr };
+                const animation::RigNodeChannel* prev{ nullptr };
                 for (const auto& channel : animation.m_channels) {
                     if (prev) {
                         // NOTE KI *NOT* true always
@@ -178,19 +178,19 @@ namespace animation {
                 channel->mNumScalingKeys));
 
             auto& bc = animation->addChannel({ channel });
-            auto* rigJoint = rig.findJoint(bc.m_jointName);
-            if (rigJoint) {
+            auto* rigNode = rig.findNode(bc.m_nodeName);
+            if (rigNode) {
                 KI_INFO_OUT(fmt::format(
                     "ASSIMP: CHANNEL_BIND_JOINT - channel={}, joint={}",
-                    bc.m_jointName,
-                    rigJoint->m_name
+                    bc.m_nodeName,
+                    rigNode->m_name
                 ));
-                animation->bindJoint(bc.m_index, rigJoint->m_index);
+                animation->bindNode(bc.m_index, rigNode->m_index);
             }
             else {
                 KI_WARN_OUT(fmt::format(
                     "ASSIMP: CHANNEL_MISSING_JOINT - channeö={}",
-                    bc.m_jointName
+                    bc.m_nodeName
                 ));
             }
 

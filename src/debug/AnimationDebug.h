@@ -30,8 +30,8 @@ namespace debug {
         float m_startTimeB{ 0 };
         float m_speedB{ 1.f };
 
-        int m_boneIndex{ 0 };
-        bool m_debugBoneWeight{ false };
+        int m_jointIndex{ 0 };
+        bool m_debugJointWeight{ false };
 
         void prepare();
     };

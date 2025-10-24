@@ -59,7 +59,7 @@ namespace mesh {
 
         std::string m_filePath;
 
-        // NOTE KI rig is set only for rigged (with bones) case
+        // NOTE KI rig is set only for rigged (with joints) case
         std::shared_ptr<animation::RigContainer> m_rig;
 
     private:

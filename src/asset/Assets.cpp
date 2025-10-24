@@ -186,7 +186,7 @@ Assets::Assets()
     fogDensity = 1.0;
 
     animationEnabled = true;
-    animationJointTree = false;
+    animationNodeTree = false;
     animationFirstFrameOnly = false;
     animationOnceOnly = false;
     animationMaxCount = 1000;

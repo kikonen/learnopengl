@@ -2,7 +2,7 @@
 
 #include "TexturedVAO.h"
 
-#include "VertexBoneVBO.h"
+#include "VertexJointVBO.h"
 
 namespace mesh {
     class SkinnedVAO : public TexturedVAO {
@@ -12,11 +12,11 @@ namespace mesh {
 
         virtual void clear() override;
 
-        void reserveVertexBones(size_t count);
+        void reserveVertexJoints(size_t count);
 
-        void updateVertexBones(
+        void updateVertexJoints(
             uint32_t baseVbo,
-            std::span<animation::VertexBone> vertexBones);
+            std::span<animation::VertexJoint> vertexJoints);
 
         virtual void updateRT() override;
 
@@ -24,6 +24,6 @@ namespace mesh {
         virtual void prepareVAO() override;
 
     public:
-        VertexBoneVBO m_boneVbo;
+        VertexJointVBO m_jointVbo;
     };
 }

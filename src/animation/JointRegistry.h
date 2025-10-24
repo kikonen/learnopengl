@@ -15,20 +15,20 @@ namespace editor
 
 namespace animation {
     class AnimationSystem;
-    class BoneBuffer;
+    class JointBuffer;
 
-    struct BoneTransformSSBO;
+    struct JointTransformSSBO;
 
-    class BoneRegistry {
-        friend BoneBuffer;
+    class JointRegistry {
+        friend JointBuffer;
         friend AnimationSystem;
         friend editor::NodeTool;
 
     public:
-        BoneRegistry();
-        BoneRegistry& operator=(const BoneRegistry&) = delete;
+        JointRegistry();
+        JointRegistry& operator=(const JointRegistry&) = delete;
 
-        ~BoneRegistry();
+        ~JointRegistry();
 
         void clear();
         void prepare();
@@ -37,7 +37,7 @@ namespace animation {
 
     protected:
         // Register node instance specific rig
-        // @return instance index into bone transform buffer
+        // @return instance index into joint transform buffer
         uint32_t addInstance(size_t count);
         void removeInstance(
             uint32_t index,
@@ -69,7 +69,7 @@ namespace animation {
         std::vector<glm::mat4> m_transforms;
         std::vector<std::pair<uint32_t, size_t>> m_dirtyTransform;
 
-        std::vector<BoneTransformSSBO> m_snapshot;
+        std::vector<JointTransformSSBO> m_snapshot;
         std::vector<std::pair<uint32_t, size_t>> m_dirtySnapshot;
     };
 }

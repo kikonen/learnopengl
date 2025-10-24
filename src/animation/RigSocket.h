@@ -29,7 +29,7 @@ namespace animation
         glm::vec3 m_meshScale;
 
         int16_t m_index{ -1 };
-        int16_t m_jointIndex{ -1 };
+        int16_t m_nodeIndex{ -1 };
 
     private:
         glm::mat4 m_offsetTransform;

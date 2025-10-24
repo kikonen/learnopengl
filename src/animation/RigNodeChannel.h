@@ -32,12 +32,12 @@ namespace animation {
         const float m_time;
     };
 
-    // Animation sequence for Joint
-    struct BoneChannel {
+    // Animation sequence for RigNode
+    struct RigNodeChannel {
         friend class AnimationLoader;
         friend struct Animation;
 
-        BoneChannel(const aiNodeAnim* channel);
+        RigNodeChannel(const aiNodeAnim* channel);
 
         uint16_t getMaxFrame() const noexcept
         {
@@ -111,10 +111,10 @@ namespace animation {
         //    const std::vector<float>& times,
         //    float animationTimeTicks) const noexcept;
 
-        const std::string m_jointName;
+        const std::string m_nodeName;
 
         uint16_t m_index{ 0 };
-        int16_t m_jointIndex;
+        int16_t m_nodeIndex;
 
         std::vector<glm::vec3> m_positionKeyValues;
         std::vector<float> m_positionKeyTimes;

@@ -50,7 +50,7 @@ namespace mesh {
     {
         TexturedVAO* vao;
 
-        if (m_rig && !m_vertexBones.empty()) {
+        if (m_rig && !m_vertexJoints.empty()) {
             vao = VaoRegistry::get().getSkinnedVao();
         }
         else {
@@ -84,10 +84,10 @@ namespace mesh {
             m_indeces);
 
         if (skinnedVao) {
-            skinnedVao->reserveVertexBones(m_vertexBones.size());
-            skinnedVao->updateVertexBones(
+            skinnedVao->reserveVertexJoints(m_vertexJoints.size());
+            skinnedVao->updateVertexJoints(
                 m_vboIndex,
-                m_vertexBones);
+                m_vertexJoints);
         }
 
         auto* va = vao->getVAO();

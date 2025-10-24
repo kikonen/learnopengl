@@ -597,16 +597,16 @@
     <ClCompile Include="src\mesh\vao\VertexIndexEBO.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\animation\RigJoint.cpp">
+    <ClCompile Include="src\animation\RigNode.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\mesh\vao\VertexBoneVBO.cpp">
+    <ClCompile Include="src\mesh\vao\VertexJointVBO.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\animation\BoneContainer.cpp">
+    <ClCompile Include="src\animation\JointContainer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\animation\BoneTransform.cpp">
+    <ClCompile Include="src\animation\JointTransform.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\util\assimp_util.cpp">
@@ -618,7 +618,7 @@
     <ClCompile Include="src\mesh\vao\SkinnedVAO.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\animation\BoneChannel.cpp">
+    <ClCompile Include="src\animation\RigNodeChannel.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\animation\AnimationLoader.cpp">
@@ -639,7 +639,7 @@
     <ClCompile Include="src\scene\Updater.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\animation\BoneInfo.cpp">
+    <ClCompile Include="src\animation\Joint.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\loader\PrefabLoader.cpp">
@@ -684,7 +684,7 @@
     <ClCompile Include="src\animation\SocketRegistry.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\animation\BoneRegistry.cpp">
+    <ClCompile Include="src\animation\JointRegistry.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\animation\RigSocket.cpp">
@@ -726,7 +726,7 @@
     <ClCompile Include="src\loader\VertexLoader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\mesh\RigJointTreeGenerator.cpp">
+    <ClCompile Include="src\mesh\RigNodeTreeGenerator.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\script\command\AnimationPlay.cpp">
@@ -1053,7 +1053,7 @@
     <ClCompile Include="src\registry\SelectionRegistry.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\animation\BoneBuffer.cpp">
+    <ClCompile Include="src\animation\JointBuffer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\animation\SocketBuffer.cpp">
@@ -1303,6 +1303,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\render\CubeMapDebugTexture.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\animation\RigNodeRegistry.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -2141,10 +2144,10 @@
     <ClInclude Include="src\mesh\AssimpLoader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\animation\BoneTransform.h">
+    <ClInclude Include="src\animation\JointTransform.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\mesh\vao\BoneEntry.h">
+    <ClInclude Include="src\mesh\vao\JointEntry.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\mesh\vao\VertexNormalVBO.h">
@@ -2156,22 +2159,22 @@
     <ClInclude Include="src\mesh\vao\VertexIndexEBO.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\animation\RigJoint.h">
+    <ClInclude Include="src\animation\RigNode.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\animation\Animation.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\mesh\vao\VertexBoneVBO.h">
+    <ClInclude Include="src\mesh\vao\VertexJointVBO.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\animation\BoneContainer.h">
+    <ClInclude Include="src\animation\JointContainer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\util\assimp_util.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\animation\VertexBone.h">
+    <ClInclude Include="src\animation\VertexJoint.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\animation\RigContainer.h">
@@ -2183,7 +2186,7 @@
     <ClInclude Include="src\animation\NodeAnimation.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\animation\BoneChannel.h">
+    <ClInclude Include="src\animation\RigNodeChannel.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\animation\AnimationLoader.h">
@@ -2198,7 +2201,7 @@
     <ClInclude Include="src\animation\AnimationSystem.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\animation\BoneTransformSSBO.h">
+    <ClInclude Include="src\animation\JointTransformSSBO.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\scene\AnimationUpdater.h">
@@ -2207,7 +2210,7 @@
     <ClInclude Include="src\scene\Updater.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\animation\BoneInfo.h">
+    <ClInclude Include="src\animation\Joint.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\loader\MaterialReference.h">
@@ -2297,7 +2300,7 @@
     <ClInclude Include="src\animation\SocketRegistry.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\animation\BoneRegistry.h">
+    <ClInclude Include="src\animation\JointRegistry.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\shader\DebugUBO.h">
@@ -2357,7 +2360,7 @@
     <ClInclude Include="src\mesh\PrimitiveType.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\mesh\RigJointTreeGenerator.h">
+    <ClInclude Include="src\mesh\RigNodeTreeGenerator.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\material\TextureType.h">
@@ -2606,7 +2609,7 @@
     <ClInclude Include="src\registry\SelectionRegistry.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\animation\BoneBuffer.h">
+    <ClInclude Include="src\animation\JointBuffer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\animation\SocketBuffer.h">
@@ -2952,6 +2955,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\render\CubeMapDebugTexture.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\animation\RigNodeRegistry.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

@@ -71,7 +71,8 @@ namespace model
         float m_tilingY{ 1.f };
 
         // NOTE KI static member fields are rather safe to access frmo anywhere
-        uint32_t m_boneBaseIndex{ 0 };
+        uint32_t m_rigNodeBaseIndex{ 0 };
+        uint32_t m_jointBaseIndex{ 0 };
         uint32_t m_socketBaseIndex{ 0 };
 
         // parent socket

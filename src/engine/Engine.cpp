@@ -400,8 +400,8 @@ void Engine::prepareUBOs()
             dbg.m_wireframeLineWidth,
 
             dbg.m_entityId,
-            dbg.m_animation.m_boneIndex,
-            dbg.m_animation.m_debugBoneWeight,
+            dbg.m_animation.m_jointIndex,
+            dbg.m_animation.m_debugJointWeight,
 
             dbg.m_lightEnabled,
             dbg.m_normalMapEnabled,

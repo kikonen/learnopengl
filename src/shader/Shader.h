@@ -35,7 +35,7 @@ inline const std::string DEF_USE_NORMAL_TEX{ "USE_NORMAL_TEX" };
 inline const std::string DEF_USE_PARALLAX{ "USE_PARALLAX" };
 inline const std::string DEF_USE_CUBE_MAP{ "USE_CUBE_MAP" };
 inline const std::string DEF_USE_NORMAL_PATTERN{ "USE_NORMAL_PATTERN" };
-inline const std::string DEF_USE_BONES{ "USE_BONES" };
+inline const std::string DEF_USE_JOINTS{ "USE_BONES" };
 inline const std::string DEF_USE_SOCKETS{ "USE_SOCKETS" };
 
 inline const std::string DEF_USE_GL_POINTS{ "USE_GL_POINTS" };
@@ -61,8 +61,8 @@ inline constexpr int ATTR_TEX = 1;
 inline constexpr int ATTR_NORMAL = 2;
 inline constexpr int ATTR_TANGENT = 3;
 inline constexpr int ATTR_FONT_ATLAS_TEX = 4;
-inline constexpr int ATTR_BONE_INDEX = 5;
-inline constexpr int ATTR_BONE_WEIGHT = 6;
+inline constexpr int ATTR_JOINT_INDEX = 5;
+inline constexpr int ATTR_JOINT_WEIGHT = 6;
 
 //inline constexpr int ATTR_INSTANCE_ENTITY_INDEX = 5;
 
@@ -74,7 +74,7 @@ inline constexpr int VBO_NORMAL_BINDING = 2;
 inline constexpr int VBO_TANGENT_BINDING = 3;
 inline constexpr int VBO_TEXTURE_BINDING = 4;
 inline constexpr int VBO_FONT_ATLAS_BINDING = 5;
-inline constexpr int VBO_BONE_BINDING = 6;
+inline constexpr int VBO_JOINT_BINDING = 6;
 //inline constexpr int VBO_MODEL_MATRIX_BINDING = 1;
 //inline constexpr int VBO_NORMAL_MATRIX_BINDING = 2;
 //inline constexpr int VBO_OBJECT_ID_BINDING = 3;

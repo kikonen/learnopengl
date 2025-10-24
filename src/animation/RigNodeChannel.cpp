@@ -1,4 +1,4 @@
-#include "BoneChannel.h"
+#include "RigNodeChannel.h"
 
 #include <assimp/scene.h>
 
@@ -44,49 +44,49 @@ namespace animation {
         m_value{ assimp_util::toQuat(key.mValue) }
     {}
 
-    BoneChannel::BoneChannel(const aiNodeAnim* channel)
-        : m_jointName{ channel->mNodeName.C_Str() },
-        m_jointIndex{ -1 }
+    RigNodeChannel::RigNodeChannel(const aiNodeAnim* channel)
+        : m_nodeName{ channel->mNodeName.C_Str() },
+        m_nodeIndex{ -1 }
     {}
 
-    void BoneChannel::reservePositionKeys(uint16_t size)
+    void RigNodeChannel::reservePositionKeys(uint16_t size)
     {
         m_positionKeyValues.reserve(size);
         m_positionKeyTimes.reserve(size);
     }
 
-    void BoneChannel::reserveRotationKeys(uint16_t size)
+    void RigNodeChannel::reserveRotationKeys(uint16_t size)
     {
         m_rotationKeyValues.reserve(size);
         m_rotationKeyTimes.reserve(size);
     }
 
-    void BoneChannel::reserveScaleKeys(uint16_t size)
+    void RigNodeChannel::reserveScaleKeys(uint16_t size)
     {
         m_scaleKeyValues.reserve(size);
         m_scaleKeyTimes.reserve(size);
     }
 
-    void BoneChannel::addPositionKey(const aiVectorKey& key)
+    void RigNodeChannel::addPositionKey(const aiVectorKey& key)
     {
         m_positionKeyValues.push_back(assimp_util::toVec3(key.mValue));
         m_positionKeyTimes.push_back(static_cast<float>(key.mTime));
     }
 
-    void BoneChannel::addeRotationKey(const aiQuatKey& key)
+    void RigNodeChannel::addeRotationKey(const aiQuatKey& key)
     {
         m_rotationKeyValues.push_back(assimp_util::toQuat(key.mValue));
         m_rotationKeyTimes.push_back(static_cast<float>(key.mTime));
     }
 
-    void BoneChannel::addeScaleKey(const aiVectorKey& key)
+    void RigNodeChannel::addeScaleKey(const aiVectorKey& key)
     {
         m_scaleKeyValues.push_back(assimp_util::toVec3(key.mValue));
         m_scaleKeyTimes.push_back(static_cast<float>(key.mTime));
     }
 
     // @return interpolated transform matrix
-    void BoneChannel::interpolate(
+    void RigNodeChannel::interpolate(
         float animationTimeTicks,
         uint16_t firstFrame,
         uint16_t lastFrame,
@@ -110,7 +110,7 @@ namespace animation {
             single ? static_cast<uint16_t>(m_rotationKeyTimes.size() - 1) : lastFrame);
     }
 
-    glm::vec3 BoneChannel::interpolatePosition(
+    glm::vec3 RigNodeChannel::interpolatePosition(
         float animationTimeTicks,
         uint16_t firstFrame,
         uint16_t lastFrame) const noexcept
@@ -133,7 +133,7 @@ namespace animation {
             m_positionKeyTimes[nextIndex]);
     }
 
-    glm::quat BoneChannel::interpolateRotation(
+    glm::quat RigNodeChannel::interpolateRotation(
         float animationTimeTicks,
         uint16_t firstFrame,
         uint16_t lastFrame) const noexcept
@@ -156,7 +156,7 @@ namespace animation {
             m_rotationKeyTimes[nextIndex]);
     }
 
-    glm::vec3 BoneChannel::interpolateScale(
+    glm::vec3 RigNodeChannel::interpolateScale(
         float animationTimeTicks,
         uint16_t firstFrame,
         uint16_t lastFrame) const noexcept
@@ -179,7 +179,7 @@ namespace animation {
             m_scaleKeyTimes[nextIndex]);
     }
 
-    glm::vec3 BoneChannel::interpolateVector(
+    glm::vec3 RigNodeChannel::interpolateVector(
         float animationTimeTicks,
         const glm::vec3& aValue,
         const glm::vec3& bValue,
@@ -206,7 +206,7 @@ namespace animation {
         return start + factor * delta;
     }
 
-    glm::quat BoneChannel::interpolateQuaternion(
+    glm::quat RigNodeChannel::interpolateQuaternion(
         float animationTimeTicks,
         const glm::quat& aValue,
         const glm::quat& bValue,
@@ -229,7 +229,7 @@ namespace animation {
         return glm::slerp(aValue, bValue, factor);
     }
 
-    uint16_t BoneChannel::findPosition(
+    uint16_t RigNodeChannel::findPosition(
         float animationTimeTicks,
         uint16_t firstFrame,
         uint16_t lastFrame) const noexcept
@@ -237,7 +237,7 @@ namespace animation {
         return findIndex(m_positionKeyTimes, animationTimeTicks, firstFrame, lastFrame);
     }
 
-    uint16_t BoneChannel::findRotation(
+    uint16_t RigNodeChannel::findRotation(
         float animationTimeTicks,
         uint16_t firstFrame,
         uint16_t lastFrame) const noexcept
@@ -245,7 +245,7 @@ namespace animation {
         return findIndex(m_rotationKeyTimes, animationTimeTicks, firstFrame, lastFrame);
     }
 
-    uint16_t BoneChannel::findScale(
+    uint16_t RigNodeChannel::findScale(
         float animationTimeTicks,
         uint16_t firstFrame,
         uint16_t lastFrame) const noexcept
@@ -253,7 +253,7 @@ namespace animation {
         return findIndex(m_scaleKeyTimes, animationTimeTicks, firstFrame, lastFrame);
     }
 
-    //uint16_t BoneChannel::findIndex2(
+    //uint16_t RigNodeChannel::findIndex2(
     //    const std::vector<float>& times,
     //    float animationTimeTicks) const noexcept
     //{

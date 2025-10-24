@@ -19,7 +19,7 @@ struct aiMaterial;
 struct aiMetadata;
 
 namespace animation {
-    struct RigJoint;
+    struct RigNode;
 }
 
 namespace mesh {
@@ -42,7 +42,7 @@ namespace mesh {
             mesh::MeshSet& meshSet);
 
     private:
-        void collectJoints(
+        void collectNodes(
             mesh::LoadContext& ctx,
             MeshSet& meshSet,
             std::vector<const aiNode*>& assimpNodes,
@@ -54,12 +54,12 @@ namespace mesh {
 
         void dumpMetaData(
             MeshSet& meshSet,
-            const std::vector<animation::RigJoint>& joints,
+            const std::vector<animation::RigNode>& nodes,
             const std::vector<const aiNode*>& assimpNodes);
 
         void dumpMetaData(
             MeshSet& meshSet,
-            const animation::RigJoint& rigJoint,
+            const animation::RigNode& RigNode,
             const aiNode* node);
 
         void loadAnimations(
@@ -77,7 +77,7 @@ namespace mesh {
         void processMesh(
             mesh::LoadContext& ctx,
             MeshSet& meshSet,
-            animation::RigJoint& rigJoint,
+            animation::RigNode& RigNode,
             ModelMesh& modelMesh,
             size_t meshIndex,
             const aiMesh* mesh);

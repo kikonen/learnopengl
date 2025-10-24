@@ -1,10 +1,10 @@
-#include "BoneRegistry.h"
+#include "JointRegistry.h"
 
 #include "asset/Assets.h"
 
 #include "util/thread.h"
 
-#include "BoneTransformSSBO.h"
+#include "JointTransformSSBO.h"
 
 namespace {
     constexpr int INITIAL_SIZE = 10000;
@@ -12,13 +12,13 @@ namespace {
 
 namespace animation
 {
-    BoneRegistry::BoneRegistry()
+    JointRegistry::JointRegistry()
     {
     }
 
-    BoneRegistry::~BoneRegistry() = default;
+    JointRegistry::~JointRegistry() = default;
 
-    void BoneRegistry::clear()
+    void JointRegistry::clear()
     {
         ASSERT_RT();
 
@@ -32,6 +32,7 @@ namespace animation
 
         m_transforms.reserve(INITIAL_SIZE);
         m_dirtyTransform.reserve(INITIAL_SIZE);
+
         m_snapshot.reserve(INITIAL_SIZE);
         m_dirtySnapshot.reserve(INITIAL_SIZE);
 
@@ -39,14 +40,14 @@ namespace animation
         addInstance(1);
     }
 
-    void BoneRegistry::prepare()
+    void JointRegistry::prepare()
     {
         ASSERT_RT();
 
         clear();
     }
 
-    uint32_t BoneRegistry::addInstance(size_t count)
+    uint32_t JointRegistry::addInstance(size_t count)
     {
         //ASSERT_WT();
 
@@ -76,7 +77,7 @@ namespace animation
         return static_cast<uint32_t>(index);
     }
 
-    void BoneRegistry::removeInstance(
+    void JointRegistry::removeInstance(
         uint32_t index,
         size_t count)
     {
@@ -96,7 +97,7 @@ namespace animation
         }
     }
 
-    std::span<glm::mat4> BoneRegistry::modifyRange(
+    std::span<glm::mat4> JointRegistry::modifyRange(
         uint32_t start,
         size_t count) noexcept
     {
@@ -106,12 +107,12 @@ namespace animation
         return std::span{ m_transforms }.subspan(start, count);
     }
 
-    void BoneRegistry::markDirtyAll() noexcept
+    void JointRegistry::markDirtyAll() noexcept
     {
         markDirty(0, m_transforms.size());
     }
 
-    void BoneRegistry::markDirty(size_t start, size_t count) noexcept
+    void JointRegistry::markDirty(size_t start, size_t count) noexcept
     {
         if (count == 0) return;
 
@@ -128,17 +129,17 @@ namespace animation
         m_dirtyTransform.emplace_back(static_cast<uint32_t>(start), static_cast<uint32_t>(count));
     }
 
-    uint32_t BoneRegistry::getActiveCount() const noexcept
+    uint32_t JointRegistry::getActiveCount() const noexcept
     {
         return static_cast<uint32_t>(m_snapshot.size());
     }
 
-    void BoneRegistry::updateWT()
+    void JointRegistry::updateWT()
     {
         makeSnapshot();
     }
 
-    void BoneRegistry::makeSnapshot()
+    void JointRegistry::makeSnapshot()
     {
         std::lock_guard lock(m_lock);
         std::lock_guard lockDirty(m_lockDirty);

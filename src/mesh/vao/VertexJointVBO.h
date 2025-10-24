@@ -2,23 +2,23 @@
 
 #include <glm/glm.hpp>
 
-#include "animation/VertexBone.h"
+#include "animation/VertexJoint.h"
 
-#include "BoneEntry.h"
+#include "JointEntry.h"
 
 #include "VBO.h"
 
 namespace mesh {
-    class VertexBoneVBO : public VBO<animation::VertexBone, BoneEntry> {
+    class VertexJointVBO : public VBO<animation::VertexJoint, JointEntry> {
     public:
-        VertexBoneVBO(
+        VertexJointVBO(
             std::string_view name,
-            int boneIdAttr,
+            int jointIdAttr,
             int weightAttr,
             int binding);
 
-        virtual BoneEntry convertVertex(
-            const animation::VertexBone& bone) override;
+        virtual JointEntry convertVertex(
+            const animation::VertexJoint& joint) override;
 
         virtual void prepareVAO(kigl::GLVertexArray& vao) override;
 

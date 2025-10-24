@@ -10,9 +10,9 @@
 #include "util/util.h"
 
 #include "Animation.h"
-#include "RigJoint.h"
-#include "BoneInfo.h"
-#include "VertexBone.h"
+#include "RigNode.h"
+#include "Joint.h"
+#include "VertexJoint.h"
 
 namespace {
     std::pair<bool, std::string> reolveJointAlias(
@@ -36,72 +36,73 @@ namespace animation {
     RigContainer::RigContainer(const std::string& name)
         : m_name{ name }
     {
-        m_jointPrefixes.push_back("Scavenger_ ");
-        m_jointPrefixes.push_back("Scavenger_");
-        m_jointPrefixes.push_back("humanoid_ ");
-        m_jointPrefixes.push_back("humanoid_");
+        // TODO KI WTF IS THIS HACK!!!
+        m_nodePrefixes.push_back("Scavenger_ ");
+        m_nodePrefixes.push_back("Scavenger_");
+        m_nodePrefixes.push_back("humanoid_ ");
+        m_nodePrefixes.push_back("humanoid_");
     }
 
     RigContainer::~RigContainer() = default;
 
-    animation::RigJoint& RigContainer::addJoint(const aiNode* node)
+    animation::RigNode& RigContainer::addNode(const aiNode* node)
     {
-        auto& rigJoint = m_joints.emplace_back(node);
-        rigJoint.m_index = static_cast<int16_t>(m_joints.size() - 1);
+        auto& rigNode = m_nodes.emplace_back(node);
+        rigNode.m_index = static_cast<int16_t>(m_nodes.size() - 1);
 
-        const auto [foundAlias, alias] = reolveJointAlias(rigJoint.m_name, m_jointPrefixes);
+        const auto [foundAlias, alias] = reolveJointAlias(rigNode.m_name, m_nodePrefixes);
         if (foundAlias) {
-            rigJoint.m_hasAliasName = true;
-            rigJoint.m_aliasName = alias;
+            rigNode.m_hasAliasName = true;
+            rigNode.m_aliasName = alias;
         }
 
-        return rigJoint;
+        return rigNode;
     }
 
-    animation::BoneInfo& RigContainer::registerBone(const aiBone* bone) noexcept
+    animation::Joint& RigContainer::registerJoint(const aiBone* bone) noexcept
     {
-        auto& bi = m_boneContainer.registerBone(bone);
-        auto* rigJoint = findJoint(bi.m_jointName);
+        auto& bi = m_jointContainer.registerJoint(bone);
+        auto* rigNode = findNode(bi.m_nodeName);
 
-        assert(rigJoint);
+        assert(rigNode);
 
-        if (bi.m_jointIndex >= 0) {
-            assert(rigJoint->m_index == bi.m_jointIndex);
+        if (bi.m_nodeIndex >= 0) {
+            assert(rigNode->m_index == bi.m_nodeIndex);
             return bi;
         }
 
-        if (rigJoint) {
-            m_boneContainer.bindJoint(bi.m_index, rigJoint->m_index);
+        if (rigNode) {
+            m_jointContainer.bindNode(bi.m_index, rigNode->m_index);
         }
 
         return bi;
     }
 
-    const animation::RigJoint* RigContainer::getJoint(int16_t index) const noexcept
+    const animation::RigNode* RigContainer::getNode(int16_t nodeIndex) const noexcept
     {
-        return &m_joints[index];
+        return &m_nodes[nodeIndex];
     }
 
-    const animation::RigJoint* RigContainer::findJoint(const std::string& name) const noexcept
+    const animation::RigNode* RigContainer::findNode(const std::string& name) const noexcept
     {
-        const auto [foundAlias, alias] = reolveJointAlias(name, m_jointPrefixes);
+        const auto [foundAlias, alias] = reolveJointAlias(name, m_nodePrefixes);
 
         const auto& it = std::find_if(
-            m_joints.begin(),
-            m_joints.end(),
-            [&name, &foundAlias, &alias](const RigJoint& j) {
+            m_nodes.begin(),
+            m_nodes.end(),
+            [&name, &foundAlias, &alias](const RigNode& j) {
                 if (j.m_name == name) return true;
                 if (j.m_hasAliasName && foundAlias) {
                     return j.m_aliasName == alias;
                 }
                 return false;
             });
-        return it != m_joints.end() ? &m_joints[it->m_index] : nullptr;
+        return it != m_nodes.end() ? &m_nodes[it->m_index] : nullptr;
     }
 
-    bool RigContainer::hasBones() const noexcept
+    bool RigContainer::hasJoints() const noexcept
     {
-        return m_boneContainer.hasBones();
+        return m_jointContainer.hasJoints();
     }
 
     int16_t RigContainer::registerSocket(const animation::RigSocket& a_socket)
@@ -123,35 +124,35 @@ namespace animation {
             }
         }
 
-        const auto& jointIt = std::find_if(
-            m_joints.begin(),
-            m_joints.end(),
+        const auto& nodeIt = std::find_if(
+            m_nodes.begin(),
+            m_nodes.end(),
             [&jointName](const auto& joint) { return joint.m_name == jointName; });
-        if (jointIt == m_joints.end()) return -1;
+        if (nodeIt == m_nodes.end()) return -1;
 
-        auto& rigJoint = *jointIt;
+        auto& rigNode = *nodeIt;
 
-        int16_t index = static_cast<int16_t>(m_sockets.size());
+        int16_t socketIndex = static_cast<int16_t>(m_sockets.size());
         {
             m_sockets.push_back(a_socket);
-            auto& socket = m_sockets[index];
-            socket.m_jointIndex = rigJoint.m_index;
-            socket.m_index = index;
+            auto& socket = m_sockets[socketIndex];
+            socket.m_nodeIndex = rigNode.m_index;
+            socket.m_index = socketIndex;
         }
-        rigJoint.m_socketIndex = index;
-        m_NameToSocket.insert({ rigJoint.m_name, index });
+        rigNode.m_socketIndex = socketIndex;
+        m_NameToSocket.insert({ rigNode.m_name, socketIndex });
 
         const auto& line = fmt::format(
-            "RIG_SOCKET_ADD: {} - {}.{}, joint={}, bone={}, socket={}.{}]",
+            "RIG_SOCKET_ADD: {} - {}.{}, node={}, joint={}, socket={}.{}]",
             m_name,
-            rigJoint.m_parentIndex,
-            rigJoint.m_index,
-            rigJoint.m_name,
-            rigJoint.m_boneIndex,
-            index,
+            rigNode.m_parentIndex,
+            rigNode.m_index,
+            rigNode.m_name,
+            rigNode.m_jointIndex,
+            socketIndex,
             a_socket.m_name);
 
-        return index;
+        return socketIndex;
     }
 
     const animation::RigSocket* RigContainer::getSocket(int16_t socketIndex) const noexcept
@@ -190,47 +191,47 @@ namespace animation {
         uint16_t jointIndex,
         mesh::ModelMesh* mesh)
     {
-        const auto& it = m_jointMeshes.find(jointIndex);
-        if (it != m_jointMeshes.end()) {
-            m_jointMeshes.insert({ jointIndex, {} });
+        const auto& it = m_nodeMeshes.find(jointIndex);
+        if (it != m_nodeMeshes.end()) {
+            m_nodeMeshes.insert({ jointIndex, {} });
         }
-        m_jointMeshes[jointIndex].emplace_back(mesh);
+        m_nodeMeshes[jointIndex].emplace_back(mesh);
     }
 
     void RigContainer::prepare()
     {
         validate();
 
-        // Mark bones required for rigged animation
-        // - all joints with bone
-        // - all parent joints of bone
-        for (auto& rigJoint : m_joints) {
-            auto* bone = m_boneContainer.findByJointIndex(rigJoint.m_index);
-            if (!bone) continue;
+        // Mark nodes required for rigged animation joints
+        // - all nodes with joint
+        // - all parent nodes of joint
+        for (auto& rigNode : m_nodes) {
+            auto* joint = m_jointContainer.findByNodeIndex(rigNode.m_index);
+            if (!joint) continue;
 
-            rigJoint.m_boneRequired = true;
-            rigJoint.m_boneIndex = bone->m_index;
+            rigNode.m_jointRequired = true;
+            rigNode.m_jointIndex = joint->m_index;
 
-            for (auto jointIndex = rigJoint.m_parentIndex; jointIndex >= 0;) {
-                auto& parent = m_joints[jointIndex];
-                if (parent.m_boneRequired) break;
-                parent.m_boneRequired = true;
-                jointIndex = parent.m_parentIndex;
+            for (auto nodeIndex = rigNode.m_parentIndex; nodeIndex >= 0;) {
+                auto& parent = m_nodes[nodeIndex];
+                if (parent.m_jointRequired) break;
+                parent.m_jointRequired = true;
+                nodeIndex = parent.m_parentIndex;
             }
         }
 
         // NOTE KI mesh required for calculating transforms for attached meshes
-        for (auto& rigJoint : m_joints) {
+        for (auto& rigNode : m_nodes) {
             const auto& it = std::find_if(
                 m_sockets.begin(),
                 m_sockets.end(),
-                [&rigJoint](const auto& socket) { return socket.m_jointIndex == rigJoint.m_index; });
+                [&rigNode](const auto& socket) { return socket.m_nodeIndex == rigNode.m_index; });
             if (it == m_sockets.end()) continue;
 
-            rigJoint.m_socketRequired = true;
+            rigNode.m_socketRequired = true;
 
-            for (auto jointIndex = rigJoint.m_parentIndex; jointIndex >= 0;) {
-                auto& parent = m_joints[jointIndex];
+            for (auto jointIndex = rigNode.m_parentIndex; jointIndex >= 0;) {
+                auto& parent = m_nodes[jointIndex];
                 // NOTE KI m_sockets is not sorted
                 //if (parent.m_socketRequired) break;
                 parent.m_socketRequired = true;
@@ -238,42 +239,42 @@ namespace animation {
             }
         }
 
-        for (auto& rigJoint : m_joints) {
-            if (rigJoint.m_boneIndex >= 0) {
-                const auto& bi = m_boneContainer.m_boneInfos[rigJoint.m_boneIndex];
+        for (auto& rigNode : m_nodes) {
+            if (rigNode.m_jointIndex >= 0) {
+                const auto& joint = m_jointContainer.m_joints[rigNode.m_jointIndex];
 
                 KI_INFO_OUT(fmt::format(
-                    "PREPARE: name={}\nbone: {}\njoin: {}",
-                    rigJoint.m_name,
-                    bi.m_offsetMatrix,
-                    rigJoint.m_globalInvTransform));
+                    "PREPARE: name={}\njoin: {}\nnode: {}",
+                    rigNode.m_name,
+                    joint.m_offsetMatrix,
+                    rigNode.m_globalInvTransform));
             }
             else {
                 KI_INFO_OUT(fmt::format(
-                    "PREPARE: name={}\nbone: {}\njoin: {}",
-                    rigJoint.m_name,
+                    "PREPARE: name={}\njoin: {}\nnode: {}",
+                    rigNode.m_name,
                     "NA",
-                    rigJoint.m_globalInvTransform));
+                    rigNode.m_globalInvTransform));
             }
         }
     }
 
     void RigContainer::validate() const
     {
-        // NOTE KI check that all bones are related to some joint
-        // - every bone has joint
-        // - not every joint has bone
-        for (const auto& it : m_boneContainer.m_jointNameToIndex) {
+        // NOTE KI check that all joints are related to some node
+        // - every joint has node
+        // - not every node has joint
+        for (const auto& it : m_jointContainer.m_nodeNameToIndex) {
             const auto& name = it.first;
 
-            const auto& jointIt = std::find_if(
-                m_joints.begin(),
-                m_joints.end(),
-                [&name](const auto& rigJoint) {
-                    return rigJoint.m_name == name;
+            const auto& nodeIt = std::find_if(
+                m_nodes.begin(),
+                m_nodes.end(),
+                [&name](const auto& rigNode) {
+                    return rigNode.m_name == name;
                 });
 
-            if (jointIt == m_joints.end()) throw std::runtime_error(fmt::format("missing_bone_joint: {}", name));
+            if (nodeIt == m_nodes.end()) throw std::runtime_error(fmt::format("missing_joint_node: {}", name));
         }
     }
 
@@ -300,29 +301,29 @@ namespace animation {
             sb += "\n";
             };
 
-        for (const auto& rigJoint : m_joints) {
-            const RigSocket* socket = rigJoint.m_socketIndex >= 0 ? &m_sockets[rigJoint.m_socketIndex] : nullptr;
+        for (const auto& rigNode : m_nodes) {
+            const RigSocket* socket = rigNode.m_socketIndex >= 0 ? &m_sockets[rigNode.m_socketIndex] : nullptr;
 
             const auto& line = fmt::format(
                 "JOIN: [{}{}.{}, name={}{}{}{}]",
-                rigJoint.m_boneRequired ? "+" : "-",
-                rigJoint.m_parentIndex,
-                rigJoint.m_index,
-                rigJoint.m_name,
-                rigJoint.m_hasAliasName ? fmt::format(", alias={}", rigJoint.m_aliasName) : "",
-                rigJoint.m_boneIndex >= 0 ? fmt::format(", bone={}", rigJoint.m_boneIndex) : "",
+                rigNode.m_jointRequired ? "+" : "-",
+                rigNode.m_parentIndex,
+                rigNode.m_index,
+                rigNode.m_name,
+                rigNode.m_hasAliasName ? fmt::format(", alias={}", rigNode.m_aliasName) : "",
+                rigNode.m_jointIndex >= 0 ? fmt::format(", joint={}", rigNode.m_jointIndex) : "",
                 socket ? fmt::format(", socket={}.{}", socket->m_index, socket->m_name) : "");
 
-            const auto& line2 = rigJoint.m_transform == glm::mat4{ 1.f }
+            const auto& line2 = rigNode.m_transform == glm::mat4{ 1.f }
                     ? "TRAN: [ID]"
                     : fmt::format(
                         "TRAN: {}",
-                        rigJoint.m_transform);
+                        rigNode.m_transform);
 
-            appendLine(sb, rigJoint.m_level, line);
-            appendLine(sb, rigJoint.m_level, line2);
+            appendLine(sb, rigNode.m_level, line);
+            appendLine(sb, rigNode.m_level, line2);
 
-            if (const auto& it = m_jointMeshes.find(rigJoint.m_index); it != m_jointMeshes.end()) {
+            if (const auto& it = m_nodeMeshes.find(rigNode.m_index); it != m_nodeMeshes.end()) {
                 std::vector<std::string> meshLines;
 
                 for (const auto& mi : it->second) {
@@ -330,7 +331,7 @@ namespace animation {
                         "MATE: [mesh={}, material={}, vertices={}, indeces={}]",
                         mi.m_name, mi.m_material, mi.m_vertexCount, mi.m_indexCount);
 
-                    appendLine(sb, rigJoint.m_level, meshLine);
+                    appendLine(sb, rigNode.m_level, meshLine);
                 }
             }
         }
@@ -402,7 +403,7 @@ namespace animation {
                 socket.m_offset.m_rotation,
                 socket.m_offset.m_scale,
                 socket.m_meshScale,
-                socket.m_jointIndex
+                socket.m_nodeIndex
                 );
             appendLine(sb, 0, line);
         }
@@ -412,8 +413,8 @@ namespace animation {
 
     //void RigContainer::calculateInvTransforms() noexcept
     //{
-    //    for (auto& rigJoint : m_joints) {
-    //        rigJoint.m_globalInvTransform = glm::inverse(rigJoint.m_globalTransform);
+    //    for (auto& rigNode : m_joints) {
+    //        rigNode.m_globalInvTransform = glm::inverse(rigNode.m_globalTransform);
     //    }
     //}
 }
