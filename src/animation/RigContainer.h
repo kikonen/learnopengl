@@ -20,16 +20,36 @@
 struct aiNode;
 struct aiBone;
 
-namespace mesh {
+namespace mesh
+{
+    class AssimpLoader;
     class ModelMesh;
+    class RigNodeTreeGenerator;
 }
 
-namespace animation {
+namespace animation
+{
+    class AnimationSystem;
+    class AnimationLoader;
+    class Animator;
     struct RigNode;
 
-    struct RigContainer {
+    struct RigContainer
+    {
+        friend class AnimationSystem;
+        friend class AnimationLoader;
+        friend class Animator;
+        friend class mesh::AssimpLoader;
+        friend class mesh::RigNodeTreeGenerator;
+
+    public:
         RigContainer(const std::string& name);
         ~RigContainer();
+
+        const std::string& getName() const noexcept
+        {
+            return m_name;
+        }
 
         animation::RigNode& addNode(const aiNode* node);
 
@@ -72,6 +92,7 @@ namespace animation {
             uint16_t jointIndex,
             mesh::ModelMesh* mesh);
 
+        // finalizes container; no changes after this
         void prepare();
         void validate() const;
 
@@ -82,7 +103,24 @@ namespace animation {
 
         //void calculateInvTransforms() noexcept;
 
+        const animation::ClipContainer& getClipContainer() const noexcept
+        {
+            return m_clipContainer;
+        }
+
+        animation::ClipContainer& modifyClipContainer() noexcept
+        {
+            return m_clipContainer;
+        }
+
+        const std::vector<animation::RigSocket>& getSockets() const noexcept
+        {
+            return m_sockets;
+        }
+
+    private:
         const std::string m_name;
+        bool m_prepared{ false };
 
         std::vector<animation::RigNode> m_nodes;
 

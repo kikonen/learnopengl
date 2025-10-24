@@ -11,7 +11,8 @@
 namespace animation {
     struct Animation;
 
-    struct ClipContainer {
+    struct ClipContainer
+    {
         std::vector<std::unique_ptr<animation::Animation>> m_animations;
         std::vector<animation::Clip> m_clips;
 

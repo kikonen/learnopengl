@@ -279,12 +279,12 @@ namespace editor
 
         if (ImGui::CollapsingHeader("Rig", ImGuiTreeNodeFlags_DefaultOpen))
         {
-            auto& clipContainer = rig->m_clipContainer;
+            const auto& clipContainer = rig->getClipContainer();
 
             {
                 auto* currSocket = rig->getSocket(m_state.m_selectedSocketIndex);
                 if (ImGui::BeginCombo("Socket", currSocket ? currSocket->m_name.c_str() : nullptr)) {
-                    for (auto& socket : rig->m_sockets) {
+                    for (const auto& socket : rig->getSockets()) {
                         const auto* name = socket.m_name.c_str();
 
                         ImGui::PushID((void*)socket.m_index);
@@ -679,13 +679,13 @@ namespace editor
             auto& socketRegistry = *animationSystem.m_socketRegistry.get();
             std::lock_guard lockSockets(socketRegistry.m_lock);
 
-            const auto& rigNode = rig->m_nodes[socket->m_nodeIndex];
+            const auto* rigNode = rig->getNode(socket->m_nodeIndex);
 
             const auto& state = node->getState();
             const auto socketIndex = state.m_socketBaseIndex + socket->m_index;
 
             auto socketPalette = socketRegistry.modifyRange(socketIndex , 1);
-            socketPalette[0] = socket->calculateGlobalTransform(rigNode.m_globalTransform);
+            socketPalette[0] = socket->calculateGlobalTransform(rigNode->m_globalTransform);
             socketRegistry.markDirty(socketIndex, 1);
         }
     }

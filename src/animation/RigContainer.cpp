@@ -47,6 +47,8 @@ namespace animation {
 
     animation::RigNode& RigContainer::addNode(const aiNode* node)
     {
+        assert(!m_prepared);
+
         auto& rigNode = m_nodes.emplace_back(node);
         rigNode.m_index = static_cast<int16_t>(m_nodes.size() - 1);
 
@@ -61,6 +63,8 @@ namespace animation {
 
     animation::Joint& RigContainer::registerJoint(const aiBone* bone) noexcept
     {
+        assert(!m_prepared);
+
         auto& bi = m_jointContainer.registerJoint(bone);
         auto* rigNode = findNode(bi.m_nodeName);
 
@@ -200,6 +204,11 @@ namespace animation {
 
     void RigContainer::prepare()
     {
+        if (m_prepared) return;
+        m_prepared = true;
+
+        //m_jointContainer.sort();
+
         validate();
 
         // Mark nodes required for rigged animation joints

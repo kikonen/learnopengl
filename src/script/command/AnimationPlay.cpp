@@ -42,7 +42,7 @@ namespace script
             auto rig = lodMesh.getMesh<mesh::Mesh>()->getRigContainer().get();
             if (!rig) continue;
 
-            auto* clip = rig->m_clipContainer.findClip(m_clipId);
+            auto* clip = rig->getClipContainer().findClip(m_clipId);
             if (clip) {
                 m_clipIndex = clip->m_index;
                 break;

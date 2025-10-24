@@ -290,7 +290,7 @@ namespace mesh {
                 if (auto* rig = mesh->getRigContainer().get(); rig)
                 {
                     m_baseTransform = m_baseTransform *
-                        rig->m_nodes[mesh->m_rigNodeIndex].m_globalTransform;
+                        rig->getNode(mesh->m_rigNodeIndex)->m_globalTransform;
                 }
             }
         }

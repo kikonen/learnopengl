@@ -730,7 +730,7 @@ namespace loader
             // map clips
             for (const auto& clipData : data.clips) {
                 const auto& uniqueName = clipData.getUniqueName(data.name);
-                auto* clip = rig.m_clipContainer.findClipByUniqueName(uniqueName);
+                auto* clip = rig.modifyClipContainer().findClipByUniqueName(uniqueName);
                 if (clip) {
                     clip->m_id = SID(clipData.name);
                 }

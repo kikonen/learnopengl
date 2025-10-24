@@ -15,6 +15,9 @@ namespace animation {
     struct JointContainer {
         bool empty() const noexcept;
 
+        // NOTE KI sorting breaks m_index references
+        //void sort() noexcept;
+
         animation::Joint& registerJoint(const aiBone* bone) noexcept;
         void bindNode(int16_t jointIndex, int16_t nodeIndex) noexcept;
 

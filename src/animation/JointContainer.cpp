@@ -1,5 +1,7 @@
 #include "JointContainer.h"
 
+#include <algorithm>
+
 #include <assimp/scene.h>
 
 #include "util/assimp_util.h"
@@ -11,6 +13,15 @@ namespace animation {
     {
         return m_joints.empty();
     }
+
+    //void JointContainer::sort() noexcept
+    //{
+    //    // Sort by nodeIndex to reduce random access in nodes
+    //    std::sort(
+    //        m_joints.begin(),
+    //        m_joints.end(),
+    //        [](const auto& a, const auto& b) { return a.m_nodeIndex < b.m_nodeIndex; });
+    //}
 
     Joint& JointContainer::registerJoint(const aiBone* bone) noexcept
     {

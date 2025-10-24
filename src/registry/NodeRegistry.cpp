@@ -1179,7 +1179,7 @@ bool NodeRegistry::bindParentSocket(
         KI_INFO_OUT(fmt::format(
             "PARENT_BIND_ERROR: socket_missing - parent={}, rig={}, socket={}, socket_names=[{}]",
             parent->str(),
-            rig->m_name,
+            rig->getName(),
             socketName,
             util::join(names, ", ")));
         return false;
