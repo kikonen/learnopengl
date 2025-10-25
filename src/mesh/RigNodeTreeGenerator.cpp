@@ -25,9 +25,9 @@ namespace mesh {
         auto& vertexJoints = mesh->m_vertexJoints;
         auto& indeces = mesh->m_indeces;
 
-        vertices.reserve(rig.m_nodes.size());
-        vertexJoints.reserve(rig.m_nodes.size());
-        indeces.reserve(rig.m_nodes.size());
+        vertices.reserve(rig.m_jointContainer.m_joints.size());
+        vertexJoints.reserve(rig.m_jointContainer.m_joints.size());
+        indeces.reserve(rig.m_jointContainer.m_joints.size() * 2);
 
         std::map<int16_t, int16_t> jointToVertex;
 
@@ -101,9 +101,9 @@ namespace mesh {
         auto& vertexJoints = mesh->m_vertexJoints;
         auto& indeces = mesh->m_indeces;
 
-        vertices.reserve(rig.m_nodes.size());
-        vertexJoints.reserve(rig.m_nodes.size());
-        indeces.reserve(rig.m_nodes.size());
+        vertices.reserve(rig.m_jointContainer.m_joints.size());
+        vertexJoints.reserve(rig.m_jointContainer.m_joints.size());
+        indeces.reserve(rig.m_jointContainer.m_joints.size());
 
         std::map<int16_t, int16_t> jointToVertex;
 

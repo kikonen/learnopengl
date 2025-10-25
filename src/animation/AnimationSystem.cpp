@@ -377,8 +377,6 @@ namespace animation
             }
 
             auto nodeTransforms = rigNodeRegistry.modifyRange(rigNodeBaseIndex, rig->m_nodes.size());
-            auto jointPalette = jointRegistry.modifyRange(jointBaseIndex, rig->m_jointContainer.size());
-            auto socketPalette = socketRegistry.modifyRange(socketBaseIndex, rig->m_sockets.size());
 
             double currentTime = ctx.getClock().ts;
 
@@ -438,10 +436,7 @@ namespace animation
              if (!playB.m_active) {
                  changed = animator.animate(
                      *rig,
-                     glm::mat4{ 1.f },
                      nodeTransforms,
-                     jointPalette,
-                     socketPalette,
                      playA.m_clipIndex,
                      playA.m_startTime,
                      playA.m_speed,
@@ -451,10 +446,7 @@ namespace animation
             else {
                  changed = animator.animateBlended(
                      *rig,
-                     glm::mat4{ 1.f },
                      nodeTransforms,
-                     jointPalette,
-                     socketPalette,
                      playA.m_clipIndex,
                      playA.m_startTime,
                      playA.m_speed,
@@ -472,7 +464,26 @@ namespace animation
             }
 
             if (changed) {
+                auto jointPalette = jointRegistry.modifyRange(jointBaseIndex, rig->m_jointContainer.size());
+                auto socketPalette = socketRegistry.modifyRange(socketBaseIndex, rig->m_sockets.size());
+
+                // STEP 2: update Joint Palette
+                for (const auto& joint : rig->m_jointContainer.m_joints)
+                {
+                    const auto& globalTransform = nodeTransforms[joint.m_nodeIndex];
+                    // NOTE KI m_offsetMatrix so that vertex is first converted to local space of joint
+                    jointPalette[joint.m_index] = globalTransform * joint.m_offsetMatrix;
+                }
+
+                // STEP 3: update Socket Palette
+                for (const auto& socket : rig->m_sockets) {
+                    // NOTE KI see AnimationSystem::registerInstance()
+                    socketPalette[socket.m_index] = socket.calculateGlobalTransform(
+                        nodeTransforms[socket.m_nodeIndex]);
+                }
+
                 rigNodeRegistry.markDirty(rigNodeBaseIndex, nodeTransforms.size());
+
                 jointRegistry.markDirty(jointBaseIndex, jointPalette.size());
                 socketRegistry.markDirty(socketBaseIndex, socketPalette.size());
             }

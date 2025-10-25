@@ -111,10 +111,7 @@ namespace {
 namespace animation {
     bool Animator::animate(
         const animation::RigContainer& rig,
-        const glm::mat4& inverseMeshRigTransform,
         std::span<glm::mat4> rigNodeTransforms,
-        std::span<glm::mat4> jointPalette,
-        std::span<glm::mat4> socketPalette,
         uint16_t clipIndex,
         double animationStartTime,
         float speed,
@@ -167,31 +164,12 @@ namespace animation {
             }
         }
 
-        // STEP 2: update Joint Palette
-        for (const auto& joint : rig.m_jointContainer.m_joints)
-        {
-            const auto& globalTransform = rigNodeTransforms[joint.m_nodeIndex];
-            // NOTE KI m_offsetMatrix so that vertex is first converted to local space of joint
-            jointPalette[joint.m_index] = inverseMeshRigTransform * globalTransform * joint.m_offsetMatrix;
-        }
-
-        // STEP 3: update Socket Palette
-        for (const auto& socket : rig.m_sockets)
-        {
-            // NOTE KI see AnimationSystem::registerInstance()
-            socketPalette[socket.m_index] = socket.calculateGlobalTransform(
-                rigNodeTransforms[socket.m_nodeIndex]);
-        }
-
         return true;
     }
 
     bool Animator::animateBlended(
         const animation::RigContainer& rig,
-        const glm::mat4& inverseMeshRigTransform,
         std::span<glm::mat4> rigNodeTransforms,
-        std::span<glm::mat4> jointPalette,
-        std::span<glm::mat4> socketPalette,
         uint16_t clipIndexA,
         double animationStartTimeA,
         float speedA,
@@ -290,34 +268,6 @@ namespace animation {
                     rigNodeTransforms[rigNode.m_index] = parentTransform * rigNode.m_transform;
                 }
             }
-        }
-
-        //// STEP 2: update Joint Palette
-        //for (size_t nodeIndex = 0; nodeIndex < rig.m_nodes.size(); nodeIndex++)
-        //{
-        //    const auto& rigNode = rig.m_nodes[nodeIndex];
-        //    const auto* joint = rig.m_jointContainer.getInfo(rigNode.m_jointIndex);
-
-        //    if (joint) {
-        //        const auto& globalTransform = rigNodeTransforms[rigNode.m_index];
-        //        // NOTE KI m_offsetMatrix so that vertex is first converted to local space of joint
-        //        jointPalette[joint->m_index] = inverseMeshRigTransform * globalTransform * joint->m_offsetMatrix;
-        //    }
-        //}
-
-        // STEP 2: update Joint Palette
-        for (const auto& joint : rig.m_jointContainer.m_joints)
-        {
-            const auto& globalTransform = rigNodeTransforms[joint.m_nodeIndex];
-            // NOTE KI m_offsetMatrix so that vertex is first converted to local space of joint
-            jointPalette[joint.m_index] = inverseMeshRigTransform * globalTransform * joint.m_offsetMatrix;
-        }
-
-        // STEP 3: update Socket Palette
-        for (const auto& socket : rig.m_sockets) {
-            // NOTE KI see AnimationSystem::registerInstance()
-            socketPalette[socket.m_index] = socket.calculateGlobalTransform(
-                rigNodeTransforms[socket.m_nodeIndex]);
         }
 
         return true;
