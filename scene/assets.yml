@@ -107,7 +107,7 @@ assets:
   fog_density: 1.1
 
   animation_enabled: true
-  animation_joint_tree: false
+  animation_node_tree: true
   animation_first_frame_only: false
   animation_once_only: false
   animation_max_count: 1000

@@ -291,6 +291,7 @@
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\renderer\JointRenderer.cpp" />
     <ClCompile Include="src\animation\Animation.cpp" />
     <ClCompile Include="src\animation\animation_util.cpp" />
     <ClCompile Include="src\animation\JointBuffer.cpp" />
@@ -809,6 +810,7 @@
     <ClInclude Include="src\material\FontAtlasMaterialUpdater.h" />
     <ClInclude Include="src\material\ShaderMaterialUpdater.h" />
     <ClInclude Include="src\material\MaterialUpdater.h" />
+    <ClInclude Include="src\renderer\JointRenderer.h" />
     <ClInclude Include="src\render\CubeMapDebugTexture.h" />
     <ClInclude Include="src\sample_app\action\ActionContext.h" />
     <ClInclude Include="src\sample_app\action\RayCastPlayer.h" />
