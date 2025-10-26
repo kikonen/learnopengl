@@ -12,6 +12,7 @@
 #include "mesh/generator/PrimitiveGenerator.h"
 #include "mesh/Mesh.h"
 #include "mesh/MeshInstance.h"
+#include "mesh/Transform.h"
 
 #include "debug/DebugContext.h"
 #include "render/RenderContext.h"
@@ -66,30 +67,57 @@ void VolumeRenderer::render(
         if (!node) continue;
         if (!dbg.m_showVolume && !selectionRegistry.isSelected(node->toHandle())) continue;
 
-        const auto* snapshot = nodeRegistry.getSnapshotRT(node->getEntityIndex());
-
-        const auto& volume = snapshot->getVolume();
-        const auto& pos = snapshot->getWorldPosition();
-
-        const auto transform = glm::translate(glm::mat4{ 1.f }, glm::vec3{ volume }) *
-            glm::toMat4(util::degreesToQuat(glm::vec3{90, 0, 0})) *
-            glm::scale(glm::mat4{ 1.f }, glm::vec3{ volume.w });
-
-        backend::DrawOptions drawOptions;
+        if (const auto* generator = node->m_generator.get(); generator)
         {
-            drawOptions.m_mode = m_mesh->getDrawMode();
-            drawOptions.m_type = backend::DrawOptions::Type::elements;
-            drawOptions.m_lineMode = true;
-            drawOptions.m_renderBack = true;
-        }
+            for (auto& meshTransform : generator->getTransforms())
+            {
+                const auto& volume = meshTransform.getVolume();
 
-        meshes.emplace_back(
-            transform,
-            m_mesh,
-            drawOptions,
-            m_mesh->getMaterial()->m_registeredIndex,
-            m_programId,
-            true);
+                backend::DrawOptions drawOptions;
+                {
+                    drawOptions.m_mode = m_mesh->getDrawMode();
+                    drawOptions.m_type = backend::DrawOptions::Type::elements;
+                    drawOptions.m_lineMode = true;
+                    drawOptions.m_renderBack = true;
+                }
+
+                meshes.emplace_back(
+                    meshTransform.getTransform(),
+                    m_mesh,
+                    drawOptions,
+                    m_mesh->getMaterial()->m_registeredIndex,
+                    m_programId,
+                    true);
+            }
+        }
+        else {
+            const auto* snapshot = nodeRegistry.getSnapshotRT(node->getEntityIndex());
+
+            if (snapshot) {
+                const auto& volume = snapshot->getVolume();
+                const auto& pos = snapshot->getWorldPosition();
+
+                const auto transform = glm::translate(glm::mat4{ 1.f }, glm::vec3{ volume }) *
+                    glm::toMat4(util::degreesToQuat(glm::vec3{ 90, 0, 0 })) *
+                    glm::scale(glm::mat4{ 1.f }, glm::vec3{ volume.w });
+
+                backend::DrawOptions drawOptions;
+                {
+                    drawOptions.m_mode = m_mesh->getDrawMode();
+                    drawOptions.m_type = backend::DrawOptions::Type::elements;
+                    drawOptions.m_lineMode = true;
+                    drawOptions.m_renderBack = true;
+                }
+
+                meshes.emplace_back(
+                    transform,
+                    m_mesh,
+                    drawOptions,
+                    m_mesh->getMaterial()->m_registeredIndex,
+                    m_programId,
+                    true);
+            }
+        }
     }
 
     drawObjects(ctx, targetBuffer, meshes);

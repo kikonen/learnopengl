@@ -100,6 +100,11 @@ public:
         return nullptr;
     }
 
+    const std::vector<mesh::Transform>& getTransforms() const noexcept
+    {
+        return m_transforms;
+    }
+
 public:
     GeneratorMode m_mode{ GeneratorMode::none };
 

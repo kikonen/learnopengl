@@ -56,10 +56,10 @@ types:
       terrain:
         map_height: textures/terrain_2/terrain_2_height.png
       tiling:
-        tile_size: 256
-        tiles: [4, 0, 4]
+        tile_size: 32
+        tiles: [1, 0, 1]
         xvert_range: [-62.54, 221.9]
-        vert_range: [-20, 100]
+        vert_range: [-20, 10]
         horiz_scale: 2
     physics:
       geom:
