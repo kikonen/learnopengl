@@ -189,9 +189,10 @@ namespace terrain {
         }
 
         {
+            // TODO KI half-extend of sqrt should be enough, but is still failing
             AABB aabb{
                 glm::vec3{0.f},
-                glm::vec3{ 0.5f }
+                glm::vec3{ std::sqrt(2.f) }
             };
             m_volume = aabb.toVolume();
         }
