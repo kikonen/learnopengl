@@ -9,7 +9,7 @@ namespace mesh {
     // Local transform to position mesh within Node
     struct Transform {
     private:
-        glm::mat4 m_transform{ 1.f };
+        glm::mat4 m_matrix{ 1.f };
         glm::quat m_rotation{ 1.f, 0.f, 0.f, 0.f };
         float m_x{ 0.f };
         float m_y{ 0.f };
@@ -111,20 +111,20 @@ namespace mesh {
             m_data = data;
         }
 
-        inline const glm::mat4& getTransform() const noexcept
+        inline const glm::mat4& getMatrix() const noexcept
         {
-            return m_transform;
+            return m_matrix;
         }
 
         inline void updateTransform(
             const glm::mat4& parentMatrix,
             const glm::vec4& volume) noexcept
         {
-            m_transform = glm::translate(glm::mat4{ 1.f }, getPosition()) *
+            m_matrix = glm::translate(glm::mat4{ 1.f }, getPosition()) *
                 glm::mat4{ m_rotation } *
                 glm::scale(glm::mat4{ 1.f }, glm::vec3{ m_scaleX, m_scaleY, m_scaleZ });
 
-            const auto& modelMatrix = parentMatrix * m_transform;
+            const auto& modelMatrix = parentMatrix * m_matrix;
             {
                 const auto& wp = modelMatrix[3];
                 m_worldPosX = wp.x;

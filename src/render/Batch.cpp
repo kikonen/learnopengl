@@ -287,7 +287,7 @@ namespace render {
 
                     commandEntry->reserve(count);
                     commandEntry->addInstance({
-                        transforms[i].getTransform() * lodMesh.m_baseTransform,
+                        transforms[i].getMatrix() * lodMesh.m_baseTransform,
                         dist2,
                         entityIndex,
                         static_cast<uint32_t>(lodMesh.m_materialIndex),

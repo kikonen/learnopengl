@@ -189,10 +189,14 @@ namespace terrain {
         }
 
         {
-            // TODO KI half-extend of sqrt should be enough, but is still failing
+            // side extent
+            const auto& ext = 0.5f;
+            const auto& planeRadius = std::sqrt(ext * ext + ext * ext);
+            const auto& cubeRadius = std::sqrt(planeRadius * planeRadius + ext * ext);
+
             AABB aabb{
-                glm::vec3{0.f},
-                glm::vec3{ std::sqrt(2.f) }
+                glm::vec3{ 0.f },
+                glm::vec3{ cubeRadius }
             };
             m_volume = aabb.toVolume();
         }

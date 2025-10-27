@@ -22,4 +22,5 @@ public:
 
 private:
     std::shared_ptr<mesh::Mesh> m_mesh;
+    glm::mat4 m_meshFixMatrix;
 };
