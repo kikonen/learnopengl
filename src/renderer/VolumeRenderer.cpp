@@ -64,10 +64,18 @@ void VolumeRenderer::render(
     auto& nodeRegistry = *ctx.getRegistry()->m_nodeRegistry;
     auto& selectionRegistry = *ctx.getRegistry()->m_selectionRegistry;
 
-    std::vector<mesh::MeshInstance> meshes;
+    m_meshes.clear();
+    if (dbg.m_showVolume)
+    {
+        m_meshes.reserve(nodeRegistry.getCachedNodesRT().size());
+    }
 
     for (const auto* node : nodeRegistry.getCachedNodesRT()) {
         if (!node) continue;
+        if (node->m_typeFlags.invisible ||
+            !node->m_visible ||
+            !node->m_alive ||
+            node->m_typeFlags.skybox) continue;
         if (!dbg.m_showVolume && !selectionRegistry.isSelected(node->toHandle())) continue;
 
         if (const auto* generator = node->m_generator.get(); generator)
@@ -106,7 +114,7 @@ void VolumeRenderer::render(
                 //            glm::vec3{ volume.w }),
                 //    center);
 
-                meshes.emplace_back(
+                m_meshes.emplace_back(
                     transform,
                     m_mesh,
                     drawOptions,
@@ -134,7 +142,7 @@ void VolumeRenderer::render(
                     drawOptions.m_renderBack = true;
                 }
 
-                meshes.emplace_back(
+                m_meshes.emplace_back(
                     transform,
                     m_mesh,
                     drawOptions,
@@ -145,5 +153,5 @@ void VolumeRenderer::render(
         }
     }
 
-    drawObjects(ctx, targetBuffer, meshes);
+    drawObjects(ctx, targetBuffer, m_meshes);
 }
