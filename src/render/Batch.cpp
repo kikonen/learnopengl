@@ -27,6 +27,7 @@
 #include "mesh/Transform.h"
 
 #include "model/Node.h"
+#include "model/NodeType.h"
 #include "model/Snapshot.h"
 #include "model/EntityFlags.h"
 
@@ -69,7 +70,8 @@ namespace render {
 
     void Batch::addSnapshot(
         const RenderContext& ctx,
-        const model::Node* node,
+        const model::NodeType* type,
+        const std::vector<mesh::LodMesh>& lodMeshes,
         const std::function<ki::program_id (const mesh::LodMesh&)>& programSelector,
         const std::function<void(ki::program_id)>& programPrepare,
         uint8_t kindBits,
@@ -78,11 +80,12 @@ namespace render {
     {
         if (entityIndex < 0) return;
 
-        bool frustumChecked = !((snapshot.m_flags & model::ENTITY_NO_FRUSTUM_BIT) != model::ENTITY_NO_FRUSTUM_BIT);
+        const bool frustumChecked = !type->m_flags.noFrustum;
 
-        auto dist2 = glm::distance2(snapshot.getWorldPosition(), ctx.m_camera->getWorldPosition());
+        const glm::vec3 pos{ 0.f };
+        auto dist2 = glm::distance2(pos, ctx.m_camera->getWorldPosition());
 
-        for (const auto& lodMesh : node->getLodMeshes()) {
+        for (const auto& lodMesh : lodMeshes) {
             if (lodMesh.m_minDistance2 > dist2) continue;
             if (lodMesh.m_maxDistance2 <= dist2) continue;
 
@@ -95,13 +98,15 @@ namespace render {
 
             programPrepare(programId);
 
-            if (!frustumChecked) {
+            if (frustumChecked) {
                 const auto& frustum = ctx.m_camera->getFrustum();
+                // TODO KI wrong volume; assumes that every lodMesh have same
+                // => not true in some more complex cases where node consists
+                //    from set of meshes (which are not LODn meshes)
                 if (m_frustumCPU && !inFrustum(frustum, snapshot.getVolume())) {
                     m_skipCount++;
                     return;
                 }
-                frustumChecked = true;
                 m_drawCount++;
             }
 
@@ -156,7 +161,7 @@ namespace render {
 
     void Batch::addSnapshotsInstanced(
         const RenderContext& ctx,
-        const model::Node* node,
+        const model::NodeType* type,
         const std::function<ki::program_id (const mesh::LodMesh&)>& programSelector,
         const std::function<void(ki::program_id)>& programPrepare,
         uint8_t kindBits,
@@ -168,12 +173,11 @@ namespace render {
 
         if (count <= 0) return;
 
-        const auto* type = node->getType();
         const auto& cameraPos = ctx.m_camera->getWorldPosition();
 
         bool useFrustum = m_frustumCPU;
         {
-            if ((snapshot.m_flags & model::ENTITY_NO_FRUSTUM_BIT) == model::ENTITY_NO_FRUSTUM_BIT)
+            if (type->m_flags.noFrustum)
                 useFrustum = false;
         }
 

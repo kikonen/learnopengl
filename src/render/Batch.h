@@ -22,6 +22,7 @@ namespace mesh {
 namespace model
 {
     class Node;
+    class NodeType;
     struct Snapshot;
 }
 
@@ -51,7 +52,8 @@ namespace render {
 
         void addSnapshot(
             const RenderContext& ctx,
-            const model::Node* node,
+            const model::NodeType* type,
+            const std::vector<mesh::LodMesh>& lodMeshes,
             const std::function<ki::program_id (const mesh::LodMesh&)>& programSelector,
             const std::function<void(ki::program_id)>& programPrepare,
             uint8_t kindBits,
@@ -61,7 +63,7 @@ namespace render {
         // NOTE KI lightweigtht "transform only" meshes
         void addSnapshotsInstanced(
             const RenderContext& ctx,
-            const model::Node* node,
+            const model::NodeType* type,
             const std::function<ki::program_id (const mesh::LodMesh&)>& programSelector,
             const std::function<void(ki::program_id)>& programPrepare,
             uint8_t kindBits,

@@ -219,7 +219,8 @@ namespace model
         else {
             batch.addSnapshot(
                 ctx,
-                this,
+                getType(),
+                getLodMeshes(),
                 programSelector,
                 programPrepare,
                 kindBits,

@@ -20,7 +20,7 @@ void NodeGenerator::bindBatch(
 {
     batch.addSnapshotsInstanced(
         ctx,
-        &container,
+        container.getType(),
         programSelector,
         programPrepare,
         kindBits,

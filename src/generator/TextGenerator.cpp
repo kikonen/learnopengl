@@ -156,7 +156,8 @@ void TextGenerator::bindBatch(
 
     batch.addSnapshot(
         ctx,
-        &container,
+        container.getType(),
+        container.getLodMeshes(),
         programSelector,
         programPrepare,
         kindBits,
