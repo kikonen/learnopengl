@@ -15,16 +15,18 @@ const mat4 meshMatrix = transpose(mat4(
 // mat4 modelMatrix = mat4(entity.u_modelMatrix);
 // const mat4 meshMatrix = mat4(instance.u_transform);
 
-// #undef USE_SOCKETS
-#ifdef USE_SOCKETS
-if (instance.u_socketIndex > 0) {
-  modelMatrix =
-    modelMatrix
-    * resolveSocketMatrix(instance.u_socketIndex)
-    * meshMatrix;
-} else {
-  modelMatrix *= meshMatrix;
-}
-#else
-  modelMatrix *= meshMatrix;
-#endif
+modelMatrix *= meshMatrix;
+
+// // #undef USE_SOCKETS
+// #ifdef USE_SOCKETS
+// if (instance.u_socketIndex > 0) {
+//   modelMatrix =
+//     modelMatrix
+//     * resolveSocketMatrix(instance.u_socketIndex)
+//     * meshMatrix;
+// } else {
+//   modelMatrix *= meshMatrix;
+// }
+// #else
+//   modelMatrix *= meshMatrix;
+// #endif

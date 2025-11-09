@@ -118,7 +118,7 @@ namespace animation
         m_jointRegistry->prepare();
 
         m_jointBuffer->prepare();
-        m_socketBuffer->prepare();
+        //m_socketBuffer->prepare();
 
         clear();
     }
@@ -499,10 +499,10 @@ namespace animation
         ASSERT_RT();
 
         auto& jointBuffer = *m_jointBuffer;
-        auto& socketBuffer = *m_socketBuffer;
+        //auto& socketBuffer = *m_socketBuffer;
 
         jointBuffer.updateRT();
-        socketBuffer.updateRT();
+        //socketBuffer.updateRT();
     }
 
     void AnimationSystem::waitForPrepared()

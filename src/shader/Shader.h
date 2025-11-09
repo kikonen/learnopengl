@@ -36,7 +36,7 @@ inline const std::string DEF_USE_PARALLAX{ "USE_PARALLAX" };
 inline const std::string DEF_USE_CUBE_MAP{ "USE_CUBE_MAP" };
 inline const std::string DEF_USE_NORMAL_PATTERN{ "USE_NORMAL_PATTERN" };
 inline const std::string DEF_USE_JOINTS{ "USE_BONES" };
-inline const std::string DEF_USE_SOCKETS{ "USE_SOCKETS" };
+//inline const std::string DEF_USE_SOCKETS{ "USE_SOCKETS" };
 
 inline const std::string DEF_USE_GL_POINTS{ "USE_GL_POINTS" };
 

@@ -14,7 +14,7 @@ namespace mesh {
         bool useAnimation : 1 {false};
         bool jointVisualization : 1 {false};
 
-        bool useSockets : 1 {false};
+        //bool useSockets : 1 {false};
 
         bool clip : 1 {false};
     };

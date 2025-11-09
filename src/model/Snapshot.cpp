@@ -7,8 +7,6 @@
 #include "model/EntityFlags.h"
 #include "registry/EntitySSBO.h"
 
-#include "animation/AnimationSystem.h"
-
 #include "model/NodeState.h"
 
 namespace {
@@ -19,48 +17,6 @@ namespace {
 
 namespace model
 {
-    //Snapshot::Snapshot(const NodeState& o)
-    //    : m_matrixLevel{ o.m_matrixLevel },
-    //    m_flags{ o.m_flags },
-    //    m_viewUp{ o.m_viewUp },
-    //    m_viewFront{ o.m_viewFront },
-    //    m_modelMatrix{ o.m_modelMatrix },
-    //    m_modelScale{ o.m_modelScale },
-    //    m_attachedSocketIndex{ o.m_attachedSocketIndex }
-    //{
-    //    glm::mat4 socketTransform{ 1.f };
-    //    if (m_attachedSocketIndex) {
-    //        socketTransform = animation::AnimationSystem::get().getSocketTransform(m_attachedSocketIndex);
-    //    }
-    //
-    //    m_volume = Sphere::calculateWorldVolume(
-    //        o.m_volume,
-    //        o.m_modelMatrix * socketTransform,
-    //        o.getWorldPosition(),
-    //        o.getWorldMaxScale());
-    //}
-
-    //Snapshot::Snapshot(const NodeState&& o)
-    //    : m_matrixLevel{ o.m_matrixLevel },
-    //    m_flags{ o.m_flags },
-    //    m_viewUp{ o.m_viewUp },
-    //    m_viewFront{ o.m_viewFront },
-    //    m_modelMatrix{ o.m_modelMatrix },
-    //    m_modelScale{ o.m_modelScale },
-    //    m_attachedSocketIndex{ o.m_attachedSocketIndex }
-    //{
-    //    glm::mat4 socketTransform{ 1.f };
-    //    if (m_attachedSocketIndex) {
-    //        socketTransform = animation::AnimationSystem::get().getSocketTransform(m_attachedSocketIndex);
-    //    }
-    //
-    //    m_volume = Sphere::calculateWorldVolume(
-    //        o.m_volume,
-    //        o.m_modelMatrix * socketTransform,
-    //        o.getWorldPosition(),
-    //        o.getWorldMaxScale());
-    //}
-
     void Snapshot::applyFrom(const NodeState& o) noexcept
     {
         m_matrixLevel = o.m_matrixLevel;
@@ -79,14 +35,9 @@ namespace model
 
         m_attachedSocketIndex = o.m_attachedSocketIndex;
 
-        glm::mat4 socketTransform{ 1.f };
-        if (m_attachedSocketIndex) {
-            socketTransform = animation::AnimationSystem::get().getSocketTransform(m_attachedSocketIndex);
-        }
-
         m_volume = Sphere::calculateWorldVolume(
             o.m_volume,
-            o.m_modelMatrix * socketTransform,
+            o.m_modelMatrix,
             o.getWorldPosition(),
             o.getWorldMaxScale());
 

@@ -214,3 +214,5 @@
  layout(binding = UNIT_EFFECT_ALBEDO) uniform sampler2D effect_albedo;\
  layout(binding = UNIT_EFFECT_BRIGHT) uniform sampler2D effect_bright; \
  layout(binding = UNIT_EFFECT_WORK) uniform sampler2D effect_work;
+
+#undef USE_SOCKETS

@@ -4,16 +4,18 @@ mat3 normalMatrix = mat3(
   entity.u_normalMatrix2.xyz
   );
 
-#ifdef USE_SOCKETS
-if (instance.u_socketIndex > 0) {
-  normalMatrix =
-    normalMatrix
-    * mat3(resolveSocketMatrix(instance.u_socketIndex))
-    * mat3(meshMatrix);
+normalMatrix *= mat3(meshMatrix);
 
-} else {
-  normalMatrix *= mat3(meshMatrix);
-}
-#else
-  normalMatrix *= mat3(meshMatrix);
-#endif
+// #ifdef USE_SOCKETS
+// if (instance.u_socketIndex > 0) {
+//   normalMatrix =
+//     normalMatrix
+//     * mat3(resolveSocketMatrix(instance.u_socketIndex))
+//     * mat3(meshMatrix);
+
+// } else {
+//   normalMatrix *= mat3(meshMatrix);
+// }
+// #else
+//   normalMatrix *= mat3(meshMatrix);
+// #endif

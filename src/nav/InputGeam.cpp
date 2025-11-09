@@ -9,8 +9,8 @@
 namespace nav
 {
     InputGeom::InputGeom(
-        const glm::mat4& transform,
-        const std::shared_ptr<mesh::Mesh> mesh)
+        const mesh::Mesh* const mesh,
+        const glm::mat4& transform)
         : m_transform{ transform },
         m_mesh{ mesh }
     {
@@ -29,7 +29,7 @@ namespace nav
         // TODO KI this is wrong
         // => transform to translate, scale androtate mesh is required
 
-        const auto* vaoMesh = dynamic_cast<const mesh::VaoMesh*>(m_mesh.get());
+        const auto* vaoMesh = dynamic_cast<const mesh::VaoMesh*>(m_mesh);
         if (!vaoMesh) return;
 
         m_vertexCount = m_mesh->getVertexCount();

@@ -13,6 +13,8 @@
 #include "engine/UpdateContext.h"
 #include "render/RenderContext.h"
 
+#include "animation/AnimationSystem.h"
+
 namespace {
     const glm::vec3 ZERO_VEC{ 0.f };
 
@@ -65,6 +67,9 @@ namespace model
     {
         ASSERT_WT();
 
+        // TODO KI should check if parent is animated
+        m_dirty |= m_attachedSocketIndex > 0;
+
         if (!m_dirty && parent.m_matrixLevel == m_parentMatrixLevel) return;
         {
             m_parentMatrixLevel = parent.m_matrixLevel;
@@ -106,10 +111,13 @@ namespace model
                 g_pivotMatrix;
         }
 
-        const auto& parentModelMatrix = m_socketBaseIndex
-            ? parent.m_modelMatrix *
-            glm::inverse(glm::scale(glm::mat4{ 1.f }, parent.m_scale * parent.m_baseScale))
-            : parent.m_modelMatrix;
+        const auto& parentModelMatrix = parent.m_modelMatrix;
+
+        glm::mat4 socketTransform{ 1.f };
+        if (m_attachedSocketIndex)
+        {
+            socketTransform = animation::AnimationSystem::get().getSocketTransform(m_attachedSocketIndex);
+        }
 
         {
             //m_modelMatrix = parentModelMatrix *
@@ -123,7 +131,8 @@ namespace model
             m_modelMatrix = parentModelMatrix *
                 glm::scale(
                     g_translateMatrix * rotationMatrix,
-                    scale);
+                    scale) *
+                socketTransform;
         }
 
         {

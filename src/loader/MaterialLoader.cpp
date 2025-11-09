@@ -735,7 +735,7 @@ namespace loader {
 
             bool usePreDepth = meshFlags.preDepth;
             bool useJoints = meshFlags.useJoints;
-            bool useSockets = true; // meshFlags.useSockets;
+            //bool useSockets = true; // meshFlags.useSockets;
             bool useDebug = assets.glslUseDebug;
 
             if (material.alpha) {
@@ -780,14 +780,14 @@ namespace loader {
                 idDefinitions[DEF_USE_JOINTS] = "1";
                 normalDefinitions[DEF_USE_JOINTS] = "1";
             }
-            if (useSockets) {
-                definitions[DEF_USE_SOCKETS] = "1";
-                oitDefinitions[DEF_USE_SOCKETS] = "1";
-                shadowDefinitions[DEF_USE_SOCKETS] = "1";
-                selectionDefinitions[DEF_USE_SOCKETS] = "1";
-                idDefinitions[DEF_USE_SOCKETS] = "1";
-                normalDefinitions[DEF_USE_SOCKETS] = "1";
-            }
+            //if (useSockets) {
+            //    definitions[DEF_USE_SOCKETS] = "1";
+            //    oitDefinitions[DEF_USE_SOCKETS] = "1";
+            //    shadowDefinitions[DEF_USE_SOCKETS] = "1";
+            //    selectionDefinitions[DEF_USE_SOCKETS] = "1";
+            //    idDefinitions[DEF_USE_SOCKETS] = "1";
+            //    normalDefinitions[DEF_USE_SOCKETS] = "1";
+            //}
             if (useDebug) {
                 definitions[DEF_USE_DEBUG] = "1";
             }

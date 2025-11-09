@@ -868,7 +868,7 @@ namespace loader
                 flags.useJointsDebug = false;
             }
 
-            flags.useSockets = container.getFlag("use_sockets", flags.useSockets);
+            //flags.useSockets = container.getFlag("use_sockets", flags.useSockets);
         }
 
         flags.clip = container.getFlag("clip", flags.clip);
