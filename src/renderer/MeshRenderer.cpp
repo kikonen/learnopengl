@@ -78,7 +78,7 @@ void MeshRenderer::drawObjects(
 
     for (const auto& meshInstance : meshes)
     {
-        auto* mesh = meshInstance.m_mesh.get();
+        auto* mesh = meshInstance.m_mesh;
 
         if (meshInstance.m_shared) {
             mesh->setupVAO(sharedVao, true);
@@ -89,10 +89,7 @@ void MeshRenderer::drawObjects(
 
         auto& instance = m_instances.emplace_back();
         // NOTE KI null entity/mesh are supposed to have ID mat model matrices
-        instance.setTransform(
-            meshInstance.m_transformMatrixRow0,
-            meshInstance.m_transformMatrixRow1,
-            meshInstance.m_transformMatrixRow2);
+        instance.setTransform(meshInstance.getModelMatrix());
         instance.u_entityIndex = m_entityIndex;
         instance.u_materialIndex = meshInstance.m_materialIndex;
         if (instance.u_materialIndex < 0) {
@@ -114,7 +111,7 @@ void MeshRenderer::drawObjects(
     int baseInstance = 0;
     for (auto& meshInstance : meshes)
     {
-        const auto* mesh = meshInstance.m_mesh.get();
+        const auto* mesh = meshInstance.m_mesh;
 
         backend::MultiDrawRange drawRange{
             meshInstance.m_drawOptions,

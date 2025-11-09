@@ -15,8 +15,8 @@ namespace nav
     {
     public:
         InputGeom(
-            const glm::mat4& transform,
-            const std::shared_ptr<mesh::Mesh> mesh);
+            const mesh::Mesh* const mesh,
+            const glm::mat4& modelMatrix);
 
         ~InputGeom();
 
@@ -50,8 +50,8 @@ namespace nav
         ///@}
 
     private:
-        const glm::mat4 m_transform;
-        const std::shared_ptr<mesh::Mesh> m_mesh{ nullptr };
+        const mesh::Mesh* const m_mesh{ nullptr };
+        const glm::mat4 m_modelMatrix;
         bool m_dirty{ true };
 
         float* m_vertices{ nullptr };

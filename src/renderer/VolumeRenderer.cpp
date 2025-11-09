@@ -26,7 +26,11 @@
 #include "registry/SelectionRegistry.h"
 
 
-VolumeRenderer::VolumeRenderer() = default;
+VolumeRenderer::VolumeRenderer()
+    :m_meshFixMatrix{ 1.f }
+{
+}
+
 VolumeRenderer::~VolumeRenderer() = default;
 
 void VolumeRenderer::prepareRT(const PrepareContext& ctx)
@@ -41,7 +45,8 @@ void VolumeRenderer::prepareRT(const PrepareContext& ctx)
     m_mesh = generator.create();
 
     // volume is 90 degrees wrong way visulization wise
-    m_meshFixMatrix = glm::toMat4(util::degreesToQuat(glm::vec3{ 90, 0, 0 }));
+    m_meshFixRotation = util::degreesToQuat(glm::vec3{ 90, 0, 0 });
+    m_meshFixMatrix = glm::toMat4(m_meshFixRotation);
 
     {
         auto material = Material::createMaterial(BasicMaterial::highlight);
@@ -85,13 +90,6 @@ void VolumeRenderer::render(
             for (auto& meshTransform : generator->getTransforms())
             {
                 const auto& volume = meshTransform.getVolume();
-
-                //const auto& center = glm::vec3{
-                //    parentState.getModelMatrix() *
-                //    meshTransform.getMatrix() *
-                //    glm::vec4{ 0, 0, 0, 1.f } };
-                //    //glm::vec4{ volume.x, volume.y, volume.z, 1.f } };
-
                 const auto& center = glm::vec3{ volume };
 
                 backend::DrawOptions drawOptions;
@@ -102,21 +100,15 @@ void VolumeRenderer::render(
                     drawOptions.m_renderBack = true;
                 }
 
-                glm::mat4 transform =
-                    glm::scale(
-                        glm::translate(glm::mat4{ 1.f }, center) * m_meshFixMatrix,
-                        glm::vec3{ volume.w });
-
-                //glm::mat4 transform = 
-                //    glm::translate(
-                //        glm::scale(
-                //            glm::mat4{ 1.f },
-                //            glm::vec3{ volume.w }),
-                //    center);
+                mesh::Transform transform;
+                transform.setPosition(center);
+                transform.setRotation(m_meshFixRotation);
+                transform.setScale(volume.w);
+                transform.updateMatrix();
 
                 m_meshes.emplace_back(
-                    transform,
-                    m_mesh,
+                    m_mesh.get(),
+                    transform.getMatrix(),
                     drawOptions,
                     m_mesh->getMaterial()->m_registeredIndex,
                     m_programId,
@@ -128,11 +120,13 @@ void VolumeRenderer::render(
 
             if (snapshot) {
                 const auto& volume = snapshot->getVolume();
-                const auto& pos = snapshot->getWorldPosition();
+                const auto& center = glm::vec3{ volume };
 
-                const auto transform = glm::translate(glm::mat4{ 1.f }, glm::vec3{ volume }) *
-                    m_meshFixMatrix *
-                    glm::scale(glm::mat4{ 1.f }, glm::vec3{ volume.w });
+                mesh::Transform transform;
+                transform.setPosition(center);
+                transform.setRotation(m_meshFixRotation);
+                transform.setScale(volume.w);
+                transform.updateMatrix();
 
                 backend::DrawOptions drawOptions;
                 {
@@ -143,8 +137,8 @@ void VolumeRenderer::render(
                 }
 
                 m_meshes.emplace_back(
-                    transform,
-                    m_mesh,
+                    m_mesh.get(),
+                    transform.getMatrix(),
                     drawOptions,
                     m_mesh->getMaterial()->m_registeredIndex,
                     m_programId,

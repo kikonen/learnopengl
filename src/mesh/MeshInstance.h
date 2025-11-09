@@ -17,7 +17,9 @@ namespace mesh {
         glm::vec4 m_transformMatrixRow1{ 0.f, 1.f, 0.f, 0.f };
         glm::vec4 m_transformMatrixRow2{ 0.f, 0.f, 1.f, 0.f };
 
-        std::shared_ptr<mesh::Mesh> m_mesh;
+        glm::vec4 m_volume{ 0.f };
+
+        mesh::Mesh* m_mesh{ nullptr };
         ki::material_index m_materialIndex{ 0 };
         backend::DrawOptions m_drawOptions;
         ki::program_id m_programId{ 0 };
@@ -26,8 +28,8 @@ namespace mesh {
         MeshInstance() {}
 
         MeshInstance(
-            const glm::mat4& transform,
-            std::shared_ptr<mesh::Mesh> mesh,
+            mesh::Mesh* mesh,
+            const glm::mat4& modelMatrix,
             backend::DrawOptions drawOptions,
             ki::material_index materialIndex,
             ki::program_id programId,
@@ -38,19 +40,19 @@ namespace mesh {
             m_programId{ programId },
             m_shared{ shared }
         {
-            setTransform(transform);
+            setModelMatrix(modelMatrix);
         }
 
         // NOTE KI M-T matrix needed *ONLY* if non uniform scale
-        inline void setTransform(
-            const glm::mat4& mat)
+        inline void setModelMatrix(
+            const glm::mat4& modelMatrix)
         {
             //m_transformMatrix = mat;
             {
-                const auto& c0 = mat[0];
-                const auto& c1 = mat[1];
-                const auto& c2 = mat[2];
-                const auto& c3 = mat[3];
+                const auto& c0 = modelMatrix[0];
+                const auto& c1 = modelMatrix[1];
+                const auto& c2 = modelMatrix[2];
+                const auto& c3 = modelMatrix[3];
 
                 m_transformMatrixRow0[0] = c0[0];
                 m_transformMatrixRow0[1] = c1[0];
@@ -69,7 +71,7 @@ namespace mesh {
             }
         }
 
-        inline void setTransform(
+        inline void setModelMatrix(
             const glm::vec4& row0,
             const glm::vec4& row1,
             const glm::vec4& row2)
@@ -79,7 +81,7 @@ namespace mesh {
             m_transformMatrixRow2 = row2;
         }
 
-        glm::mat4 getTransform() const noexcept
+        glm::mat4 getModelMatrix() const noexcept
         {
             return glm::transpose(
                 glm::mat4 {
@@ -88,6 +90,16 @@ namespace mesh {
                     m_transformMatrixRow2,
                     glm::vec4{ 0, 0, 0, 1.f }
                 });
+        }
+
+        void setVolume(const glm::vec4& volume)
+        {
+            m_volume = volume;
+        }
+
+        const glm::vec4& getVolume() const noexcept
+        {
+            return m_volume;
         }
     };
 }

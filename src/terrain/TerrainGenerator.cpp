@@ -161,7 +161,8 @@ namespace terrain {
         {
             const auto& parentMatrix = containerState.getModelMatrix();
             for (auto& transform : m_transforms) {
-                transform.updateTransform(parentMatrix, m_volume);
+                transform.updateMatrix();
+                transform.updateVolume(parentMatrix, m_volume);
             }
         }
     }

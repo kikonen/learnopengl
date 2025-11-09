@@ -11,6 +11,7 @@
 
 #include "mesh/generator/PrimitiveGenerator.h"
 #include "mesh/Mesh.h"
+#include "mesh/Transform.h"
 #include "mesh/MeshInstance.h"
 
 #include "debug/DebugContext.h"
@@ -43,6 +44,10 @@ void EnvironmentProbeRenderer::prepareRT(const PrepareContext& ctx)
         m_mesh->setMaterial(&material);
     }
 
+    // volume is 90 degrees wrong way visulization wise
+    m_meshFixRotation = util::degreesToQuat(glm::vec3{ 90, 0, 0 });
+    m_meshFixMatrix = glm::toMat4(m_meshFixRotation);
+
     m_programId = ProgramRegistry::get().getProgram(SHADER_VOLUME);
 }
 
@@ -55,7 +60,7 @@ void EnvironmentProbeRenderer::render(
 
     auto& nodeRegistry = NodeRegistry::get();
 
-    std::vector<mesh::MeshInstance> meshes;
+    m_meshes.clear();
 
     for (const auto* node : nodeRegistry.getCachedNodesRT()) {
         if (!node) continue;
@@ -65,11 +70,19 @@ void EnvironmentProbeRenderer::render(
         const auto* snapshot = nodeRegistry.getSnapshotRT(node->getEntityIndex());
 
         //const auto& volume = snapshot->getVolume();
-        const auto& pos = snapshot->getWorldPosition();
+        const auto& worldPos = snapshot->getWorldPosition();
 
-        const auto transform = glm::translate(glm::mat4{ 1.f }, glm::vec3{ pos }) *
-            glm::toMat4(util::degreesToQuat(glm::vec3{ 90, 0, 0 })) *
-            glm::scale(glm::mat4{ 1.f }, glm::vec3{ 2.5f });
+        //const auto transform = glm::translate(glm::mat4{ 1.f }, glm::vec3{ pos }) *
+        //    glm::toMat4(util::degreesToQuat(glm::vec3{ 90, 0, 0 })) *
+        //    glm::scale(glm::mat4{ 1.f }, glm::vec3{ 2.5f });
+
+        mesh::Transform transform;
+        transform.setPosition(worldPos);
+        transform.setRotation(m_meshFixRotation);
+        transform.setScale(2.5f);
+
+        transform.updateMatrix();
+        transform.updateVolume();
 
         backend::DrawOptions drawOptions;
         {
@@ -79,14 +92,14 @@ void EnvironmentProbeRenderer::render(
             drawOptions.m_renderBack = false;
         }
 
-        meshes.emplace_back(
-            transform,
-            m_mesh,
+        m_meshes.emplace_back(
+            m_mesh.get(),
+            transform.getMatrix(),
             drawOptions,
             m_mesh->getMaterial()->m_registeredIndex,
             m_programId,
             true);
     }
 
-    drawObjects(ctx, targetBuffer, meshes);
+    drawObjects(ctx, targetBuffer, m_meshes);
 }

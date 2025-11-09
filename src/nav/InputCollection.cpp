@@ -77,9 +77,9 @@ namespace nav
 
             for (const auto& lodMesh : node->getLodMeshes()) {
                 auto geom = std::make_unique<nav::InputGeom>(
+                    lodMesh.m_mesh.get(),
                     state.getModelMatrix() *
-                    lodMesh.m_baseTransform,
-                    lodMesh.m_mesh);
+                    lodMesh.m_baseTransform);
                 m_geometries.push_back(std::move(geom));
             }
         }
@@ -88,9 +88,9 @@ namespace nav
             if (!alive) break;
 
             auto geom = std::make_unique<nav::InputGeom>(
-                meshInstance.getTransform(),
-                meshInstance.m_mesh);
-                m_geometries.push_back(std::move(geom));
+                meshInstance.m_mesh,
+                meshInstance.getModelMatrix());
+            m_geometries.push_back(std::move(geom));
         }
 
         for (auto& geom : m_geometries) {

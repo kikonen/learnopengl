@@ -67,8 +67,9 @@ void AsteroidBeltGenerator::updateWT(
         auto fn = [this, &parentMatrix, parentChanged](const auto idx) {
             if (!parentChanged && (idx % STRIDES) != m_strideIndex) return;
             //if (m_strideIndex != 1) continue;
-            m_transforms[idx].updateTransform(parentMatrix, m_volume);
-        };
+            m_transforms[idx].updateMatrix();
+            m_transforms[idx].updateVolume(parentMatrix, m_volume);
+            };
 
         std::for_each(
             std::execution::par_unseq,

@@ -24,6 +24,7 @@
 #include "mesh/generator/PrimitiveGenerator.h"
 #include "mesh/Mesh.h"
 #include "mesh/PrimitiveMesh.h"
+#include "mesh/Transform.h"
 #include "mesh/MeshInstance.h"
 
 #include "PhysicsSystem.h"
@@ -171,14 +172,15 @@ namespace physics {
                     "ray-{}-{}-{}",
                     origin, dir, length);
 
-                auto generator = mesh::PrimitiveGenerator::ray();
-                generator.name = cacheKey;
-                generator.origin = origin;
-                generator.dir = dir;
-                generator.length = length;
-
-                mesh = generator.create();
-                cacheKey = "";
+                mesh = findMesh(cacheKey);
+                if (!mesh) {
+                    auto generator = mesh::PrimitiveGenerator::ray();
+                    generator.name = cacheKey;
+                    generator.origin = origin;
+                    generator.dir = dir;
+                    generator.length = length;
+                    mesh = saveMesh(cacheKey, generator.create());
+                }
 
                 break;
             }
@@ -349,8 +351,10 @@ namespace physics {
             pos += offset;
         }
 
-        glm::mat4 transform = glm::translate(glm::mat4{ 1.f }, pos) *
-            glm::mat4(rot);
+        mesh::Transform transform;
+        transform.setPosition(pos);
+        transform.setRotation(rot);
+        transform.updateMatrix();
 
         backend::DrawOptions drawOptions;
         if (mesh) {
@@ -364,7 +368,7 @@ namespace physics {
             drawOptions.m_renderBack = geomType == GeomType::plane || geomType == GeomType::height_field;
         }
 
-        return { transform, mesh, drawOptions, -1, 0, !cacheKey.empty() };
+        return { mesh.get(), transform.getMatrix(), drawOptions, -1, 0, !cacheKey.empty()};
     }
 
     std::shared_ptr<mesh::Mesh> MeshGenerator::findMesh(const std::string& key)

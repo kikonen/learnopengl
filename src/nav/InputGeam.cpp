@@ -10,8 +10,8 @@ namespace nav
 {
     InputGeom::InputGeom(
         const mesh::Mesh* const mesh,
-        const glm::mat4& transform)
-        : m_transform{ transform },
+        const glm::mat4& modelMatrix)
+        : m_modelMatrix{ modelMatrix },
         m_mesh{ mesh }
     {
     }
@@ -44,7 +44,7 @@ namespace nav
             int i = 0;
             for (auto& vertex : vaoMesh->m_vertices)
             {
-                const auto& pos = glm::vec3{ m_transform * glm::vec4{ vertex.pos, 1.f } };
+                const auto& pos = glm::vec3{ m_modelMatrix * glm::vec4{ vertex.pos, 1.f } };
                 if (i == 0) {
                     meshBMin = pos;
                     meshBMax = pos;

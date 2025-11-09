@@ -3,6 +3,9 @@
 #include <memory>
 #include <vector>
 
+#include <glm/glm.hpp>
+#include <glm/gtx/quaternion.hpp>
+
 #include "MeshRenderer.h"
 
 namespace mesh {
@@ -25,6 +28,7 @@ public:
 private:
     std::shared_ptr<mesh::Mesh> m_mesh;
     glm::mat4 m_meshFixMatrix;
+    glm::quat m_meshFixRotation;
 
     std::vector<mesh::MeshInstance> m_meshes;
 };

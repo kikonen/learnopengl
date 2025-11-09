@@ -116,14 +116,25 @@ namespace mesh {
             return m_matrix;
         }
 
-        inline void updateTransform(
-            const glm::mat4& parentMatrix,
-            const glm::vec4& volume) noexcept
+        // @param volume non-scaled (will be scaled using scale)
+        inline void updateMatrix() noexcept
         {
             m_matrix = glm::translate(glm::mat4{ 1.f }, getPosition()) *
                 glm::mat4{ m_rotation } *
                 glm::scale(glm::mat4{ 1.f }, glm::vec3{ m_scaleX, m_scaleY, m_scaleZ });
+        }
 
+        inline void updateVolume() noexcept
+        {
+            const glm::mat4 ID_MAT{ 1.f };
+            const glm::vec4 ID_VOLUME{ 1.f, 1.f, 1.f, 1.f };
+            updateVolume(ID_MAT, ID_VOLUME);
+        }
+
+        inline void updateVolume(
+            const glm::mat4& parentMatrix,
+            const glm::vec4& volume) noexcept
+        {
             const auto& modelMatrix = parentMatrix * m_matrix;
             {
                 const auto& wp = modelMatrix[3];
