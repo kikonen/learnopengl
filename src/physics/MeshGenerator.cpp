@@ -37,6 +37,8 @@ namespace {
 
     constexpr float PLANE_SIZE = 100.f;
 
+    const glm::vec3 UP{ 0.f, 1.f, 0.f };
+
     std::mutex g_materialLock;
     std::map<physics::GeomType, Material> g_materials;
 
@@ -143,6 +145,7 @@ namespace physics {
         if (geomType == physics::GeomType::none) return {};
 
         glm::vec3 pos{ 0.f };
+        glm::vec3 scale{ 1.f };
         glm::quat rot{ 1.f, 0.f, 0.f, 0.f };
         glm::vec3 offset{ 0.f };
 
@@ -158,26 +161,29 @@ namespace physics {
                 dGeomRayGet(geomId, startOde, dirOde);
                 float length = static_cast<float>(dGeomRayGetLength(geomId));
 
-                const glm::vec3 origin{
+                pos = glm::vec3{
                     static_cast<float>(startOde[0]),
                     static_cast<float>(startOde[1]),
                     static_cast<float>(startOde[2]) };
 
-                const glm::vec3 dir{
+                const glm::vec3 normal{
                     static_cast<float>(dirOde[0]),
                     static_cast<float>(dirOde[1]),
                     static_cast<float>(dirOde[2]) };
 
+                rot = util::normalToQuat(normal, UP);
+                scale = glm::vec3{ length };
+
                 cacheKey = fmt::format(
-                    "ray-{}-{}-{}",
-                    origin, dir, length);
+                    "ray-{}",
+                    1);
 
                 mesh = findMesh(cacheKey);
                 if (!mesh) {
                     auto generator = mesh::PrimitiveGenerator::ray();
                     generator.name = cacheKey;
-                    generator.origin = origin;
-                    generator.dir = dir;
+                    generator.origin = glm::vec3{ 0 };
+                    generator.dir = UP;
                     generator.length = length;
                     mesh = saveMesh(cacheKey, generator.create());
                 }
@@ -203,17 +209,17 @@ namespace physics {
                 //    normal, dist, rot, degrees));
 
                 pos = normal * dist;
-                glm::vec2 size{ PLANE_SIZE, PLANE_SIZE };
+                scale = glm::vec3{ PLANE_SIZE, PLANE_SIZE, PLANE_SIZE };
 
                 cacheKey = fmt::format(
                     "plane-{}",
-                    size);
+                    1);
 
                 mesh = findMesh(cacheKey);
                 if (!mesh) {
                     auto generator = mesh::PrimitiveGenerator::plane();
                     generator.name = cacheKey;
-                    generator.size = glm::vec3{ size.x, size.y, 0.f };
+                    generator.size = glm::vec3{ 1.f, 1.f, 0.f };
                     mesh = saveMesh(cacheKey, generator.create());
                 }
 
@@ -259,33 +265,36 @@ namespace physics {
                     static_cast<float>(lengths[2]) * 0.5f
                 };
 
+                scale = size;
                 cacheKey = fmt::format(
                     "box-{}",
-                    size);
-
+                    1);
 
                 mesh = findMesh(cacheKey);
                 if (!mesh) {
                     auto generator = mesh::PrimitiveGenerator::box();
                     generator.name = cacheKey;
-                    generator.size = size * SCALE;
+                    generator.size = glm::vec3{ 1.f };
                     mesh = saveMesh(cacheKey, generator.create());
                 }
 
                 break;
             }
             case physics::GeomType::sphere: {
-                dReal radius = dGeomSphereGetRadius(geomId);
+                dReal dRadius = dGeomSphereGetRadius(geomId);
+                float radius = static_cast<float>(dRadius);
+
+                scale = glm::vec3{ radius };
 
                 cacheKey = fmt::format(
                     "sphere-{}",
-                    radius);
+                    1);
 
                 mesh = findMesh(cacheKey);
                 if (!mesh) {
                     auto generator = mesh::PrimitiveGenerator::sphere();
                     generator.name = cacheKey;
-                    generator.radius = static_cast<float>(radius) * SCALE;
+                    generator.radius = 1.f;
                     generator.slices = 16;
                     generator.segments = { 8, 0, 0 };
                     mesh = saveMesh(cacheKey, generator.create());
@@ -354,6 +363,7 @@ namespace physics {
         mesh::Transform transform;
         transform.setPosition(pos);
         transform.setRotation(rot);
+        transform.setScale(scale);
         transform.updateMatrix();
 
         backend::DrawOptions drawOptions;
