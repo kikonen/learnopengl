@@ -189,7 +189,7 @@ types:
       vertex:
         type: cylinder
         radius: 1
-        length: 1
+        length: 2
       material:
         prefab: materials/Fence007A.yml
         kd: [0.5075, 0.5075, 0.5075, 1.0]
@@ -205,7 +205,7 @@ types:
         density: 0.05
       geom:
         type: cylinder
-        size: [1, 1, 0]
+        size: [1, 2, 0]
   - id: plastic_cylinder
     mesh:
       vertex:

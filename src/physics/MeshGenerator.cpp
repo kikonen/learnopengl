@@ -303,21 +303,26 @@ namespace physics {
                 break;
             }
             case physics::GeomType::capsule: {
-                dReal radius;
-                dReal length;
-                dGeomCapsuleGetParams(geomId, &radius, &length);
+                dReal dRadius;
+                dReal dLength;
+                dGeomCapsuleGetParams(geomId, &dRadius, &dLength);
+
+                float radius = static_cast<float>(dRadius);
+                float length = static_cast<float>(dLength);
+                float ratio = 1.f / radius;
+
+                scale = glm::vec3{1.f / ratio};
 
                 cacheKey = fmt::format(
                     "capsule-{}-{}",
-                    radius, length);
-
+                    1, length * ratio);
 
                 mesh = findMesh(cacheKey);
                 if (!mesh) {
                     auto generator = mesh::PrimitiveGenerator::capsule();
                     generator.name = cacheKey;
-                    generator.radius = static_cast<float>(radius) * SCALE;
-                    generator.length = static_cast<float>(length * 0.5f) * SCALE;
+                    generator.radius = 1.f;
+                    generator.length = 0.5f * length * ratio;
                     generator.slices = 8;
                     generator.segments = { 4, 0, 0 };
                     mesh = saveMesh(cacheKey, generator.create());
@@ -330,16 +335,22 @@ namespace physics {
                 dReal length;
                 dGeomCylinderGetParams(geomId, &radius, &length);
 
+                scale = glm::vec3{
+                    static_cast<float>(radius),
+                    static_cast<float>(radius),
+                    static_cast<float>(length)
+                    };
+
                 cacheKey = fmt::format(
                     "cylinder-{}-{}",
-                    radius, length);
+                    1, 0.5);
 
                 mesh = findMesh(cacheKey);
                 if (!mesh) {
                     auto generator = mesh::PrimitiveGenerator::capped_cylinder();
                     generator.name = cacheKey;
-                    generator.radius = static_cast<float>(radius) * SCALE;
-                    generator.length = static_cast<float>(length * 0.5f) * SCALE;
+                    generator.radius = 1.f;
+                    generator.length = 0.5f;
                     generator.slices = 8;
                     generator.segments = { 4, 0, 0 };
                     mesh = saveMesh(cacheKey, generator.create());
