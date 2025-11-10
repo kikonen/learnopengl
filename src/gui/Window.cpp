@@ -426,7 +426,9 @@ void Window::processInput(const InputContext& ctx)
 {
     auto& input = *m_input.get();
 
-    input.updateKeyStates();
+    bool modifierDown = input.updateModifierStates();
+    bool keyDown = input.updateKeyStates();
+
     input.updateMouseState();
 
     if (input.isKeyDown(Key::EXIT)) {

@@ -6,6 +6,7 @@
 class Window;
 
 enum class Key : std::underlying_type_t<std::byte> {
+    NONE,
     EXIT,
     FULL_SCREEN_TOGGLE,
     UP,
@@ -18,6 +19,8 @@ enum class Key : std::underlying_type_t<std::byte> {
     ROTATE_RIGHT,
     ZOOM_IN,
     ZOOM_OUT,
+    MOUSE_LOCK,
+    KEY_COUNT,
 };
 
 enum class Modifier : std::underlying_type_t<std::byte> {
@@ -25,6 +28,24 @@ enum class Modifier : std::underlying_type_t<std::byte> {
     SHIFT,
     CONTROL,
     ALT,
+    KEY_COUNT,
+};
+
+struct ModifierMapping {
+    Modifier key;
+    int code{ 0 };
+};
+
+struct KeyMapping {
+    Key key;
+    int code{ 0 };
+};
+
+struct KeyState {
+    bool wasDown{ false };
+    bool down{ false };
+    bool released{ false };
+    bool pressed{ false };
 };
 
 struct InputState {
@@ -46,8 +67,23 @@ public:
 
     void prepare();
 
-    void updateKeyStates();
+    // @return true if any key was pressed
+    bool updateKeyStates();
+
+    // @return true if any key was pressed
+    bool updateModifierStates();
+
     void updateMouseState();
+
+    void addKeyMapping(
+        Key key,
+        const std::vector<int>& codes
+    );
+
+    void addModifierMapping(
+        Modifier key,
+        const std::vector<int>& codes
+    );
 
     bool isKeyDown(Key key) const noexcept;
     bool isModifierDown(Modifier modifier) const noexcept;
@@ -117,13 +153,11 @@ public:
 private:
     bool m_prepared = false;
 
-    std::unordered_map<Key, int*> m_keyMappings;
+    std::vector<KeyMapping> m_keyMapping;
+    std::vector<KeyState> m_keyStates;
 
-    std::unordered_map<Modifier, int*> m_modifierMappings;
-
-    std::unordered_map<Modifier, bool> m_modifierDown;
-    std::unordered_map<Modifier, bool> m_modifierPressed;
-    std::unordered_map<Modifier, bool> m_modifierReleased;
+    std::vector<ModifierMapping> m_modifierMapping;
+    std::vector<KeyState> m_modifierStates;
 
     bool m_firstMouse = true;
 };
