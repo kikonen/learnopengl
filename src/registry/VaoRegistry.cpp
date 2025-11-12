@@ -99,5 +99,5 @@ void VaoRegistry::updateRT(const UpdateContext& ctx)
 
 void VaoRegistry::bindDefaultVao()
 {
-    kigl::GLState::get().bindVAO(*m_texturedVao->getVAO());
+    kigl::GLState::get().bindVAO(m_texturedVao->getVaoId());
 }

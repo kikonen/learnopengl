@@ -26,7 +26,7 @@ namespace model
 
         m_flags = o.m_flags;
 
-        o.updateModelAxis();
+        //o.updateModelAxis();
         m_viewUp = o.m_viewUp;
         m_viewFront = o.m_viewFront;
         m_modelMatrix = o.m_modelMatrix;

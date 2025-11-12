@@ -89,7 +89,6 @@ namespace model
 
         mutable bool m_dirtyNormal : 1 {true};
         mutable bool m_dirtySnapshot : 1 {true};
-        mutable bool m_dirtyAxis : 1 {true};
 
         bool boundStaticDone : 1 { false };
 
@@ -107,7 +106,6 @@ namespace model
                 m_baseRotation = rotation;
                 m_invBaseRotation = glm::conjugate(rotation);
                 m_dirty = true;
-                m_dirtyAxis = true;
                 m_dirtySnapshot = true;
             }
         }
@@ -261,8 +259,6 @@ namespace model
         {
             if (m_rotation != quat) {
                 m_rotation = quat;
-                //m_dirtyRotation = true;
-                m_dirtyAxis = true;
                 m_dirty = true;
                 m_dirtyNormal = true;
             }
@@ -294,18 +290,18 @@ namespace model
 
         inline const glm::vec3& getViewUp() const noexcept {
             assert(!m_dirty);
-            updateModelAxis();
+            //updateModelAxis();
             return m_viewUp;
         }
 
         inline const glm::vec3& getViewFront() const noexcept {
             assert(!m_dirty);
-            updateModelAxis();
+            //updateModelAxis();
             return m_viewFront;
         }
 
         inline glm::vec3 getViewRight() const noexcept {
-            updateModelAxis();
+            //updateModelAxis();
             return glm::cross(m_viewFront, m_viewUp);
         }
 

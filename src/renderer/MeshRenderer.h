@@ -15,7 +15,6 @@ struct PrepareContext;
 namespace mesh {
     struct MeshInstance;
     class Mesh;
-    struct InstanceSSBO;
 }
 
 namespace render {
@@ -47,8 +46,6 @@ protected:
 
 private:
     uint32_t m_entityIndex{ 0 };
-
-    std::vector<mesh::InstanceSSBO> m_instances;
 
     int m_dynamicVaoIndex{ -1 };
 

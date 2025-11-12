@@ -95,6 +95,7 @@ void EnvironmentProbeRenderer::render(
         m_meshes.emplace_back(
             m_mesh.get(),
             transform.getMatrix(),
+            transform.getVolume(),
             drawOptions,
             m_mesh->getMaterial()->m_registeredIndex,
             m_programId,

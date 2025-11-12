@@ -17,6 +17,7 @@ namespace backend {
 namespace mesh {
     struct LodMesh;
     struct Transform;
+    struct MeshInstance;
 }
 
 namespace model
@@ -69,6 +70,13 @@ namespace render {
             uint8_t kindBits,
             const model::Snapshot& snapshot,
             std::span<const mesh::Transform> transforms,
+            uint32_t entityIndex) noexcept;
+
+        void addMesh(
+            const RenderContext& ctx,
+            uint8_t kindBits,
+            const mesh::MeshInstance& instance,
+            ki::program_id programId,
             uint32_t entityIndex) noexcept;
 
         void bind() noexcept;

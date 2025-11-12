@@ -376,6 +376,7 @@ namespace physics {
         transform.setRotation(rot);
         transform.setScale(scale);
         transform.updateMatrix();
+        transform.updateVolume();
 
         backend::DrawOptions drawOptions;
         if (mesh) {
@@ -389,7 +390,14 @@ namespace physics {
             drawOptions.m_renderBack = geomType == GeomType::plane || geomType == GeomType::height_field;
         }
 
-        return { mesh.get(), transform.getMatrix(), drawOptions, -1, 0, !cacheKey.empty()};
+        return {
+            mesh.get(),
+            transform.getMatrix(),
+            transform.getVolume(),
+            drawOptions,
+            -1,
+            0,
+            !cacheKey.empty()};
     }
 
     std::shared_ptr<mesh::Mesh> MeshGenerator::findMesh(const std::string& key)

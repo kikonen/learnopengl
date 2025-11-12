@@ -37,6 +37,12 @@ namespace mesh {
             uint32_t baseEbo,
             std::span<Index32> indeces);
 
+        ki::vao_id getVaoId() const noexcept
+        {
+            const auto* vao = getVAO();
+            return vao ? static_cast<ki::vao_id>(*vao) : 0;
+        }
+
         const kigl::GLVertexArray* getVAO() const
         {
             return m_vao.get();

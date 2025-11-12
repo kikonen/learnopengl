@@ -50,7 +50,7 @@ void MeshRenderer::drawObjects(
 {
     if (meshes.empty()) return;
 
-    backend::DrawBuffer* drawBuffer = ctx.m_batch->getDrawBuffer();
+    auto* batch = ctx.m_batch;
 
     // NOTE KI for troubleshooting
     //GLint drawFboId = 0, readFboId = 0;
@@ -73,9 +73,6 @@ void MeshRenderer::drawObjects(
         dynamicVao->clear();
     }
 
-    m_instances.clear();
-    m_instances.reserve(meshes.size());
-
     for (const auto& meshInstance : meshes)
     {
         auto* mesh = meshInstance.m_mesh;
@@ -86,60 +83,27 @@ void MeshRenderer::drawObjects(
         else {
             mesh->setupVAO(dynamicVao, false);
         }
-
-        auto& instance = m_instances.emplace_back();
-        // NOTE KI null entity/mesh are supposed to have ID mat model matrices
-        instance.setTransform(meshInstance.getModelMatrix());
-        instance.u_entityIndex = m_entityIndex;
-        instance.u_materialIndex = meshInstance.m_materialIndex;
-        if (instance.u_materialIndex < 0) {
-            instance.u_materialIndex = m_fallbackMaterial.m_registeredIndex;
-        }
     }
 
     sharedVao->updateRT();
     if (dynamicVao) {
         dynamicVao->updateRT();
     }
-    drawBuffer->sendInstanceIndeces(m_instances);
 
     targetBuffer->bind(ctx);
 
-    ctx.getGLState().setDepthFunc(GL_LESS);
-    ctx.getGLState().setDepthMask(GL_TRUE);
+    auto& state = ctx.getGLState();
+    state.setDepthFunc(GL_LESS);
+    state.setDepthMask(GL_TRUE);
 
-    int baseInstance = 0;
     for (auto& meshInstance : meshes)
     {
-        const auto* mesh = meshInstance.m_mesh;
-
-        backend::MultiDrawRange drawRange{
-            meshInstance.m_drawOptions,
-            static_cast<ki::vao_id>(*mesh->getVAO()),
-            meshInstance.m_programId > 0 ? meshInstance.m_programId : m_programId,
-        };
-
-        backend::gl::DrawIndirectCommand indirect{};
-        {
-            backend::gl::DrawElementsIndirectCommand& cmd = indirect.element;
-
-            cmd.u_instanceCount = 1;
-            cmd.u_baseInstance = baseInstance;
-
-            cmd.u_baseVertex = mesh->getBaseVertex();
-            cmd.u_firstIndex = mesh->getBaseIndex();
-            cmd.u_count = mesh->getIndexCount();
-        }
-
-        drawBuffer->send(drawRange, indirect);
-
-        baseInstance++;
+        batch->addMesh(ctx, render::KIND_SOLID, meshInstance, m_programId, m_entityIndex);
     }
-    drawBuffer->flush();
-    drawBuffer->finish();
+    batch->flush(ctx);
 
-    ctx.getGLState().setDepthFunc(ctx.m_depthFunc);
-    ctx.getGLState().setDepthMask(GL_TRUE);
+    state.setDepthFunc(ctx.m_depthFunc);
+    state.setDepthMask(GL_TRUE);
 
     if (dynamicVao) {
         dynamicVao->getFence().setFence(m_useFenceDebug);

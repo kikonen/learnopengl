@@ -57,6 +57,8 @@ namespace model
         m_modelMatrix = s_translateMatrix * rotationMatrix * s_scaleMatrix;
         m_modelScale = m_scale * m_baseScale;
 
+        updateModelAxis();
+
         m_matrixLevel++;
 
         m_dirty = false;
@@ -71,10 +73,6 @@ namespace model
         m_dirty |= m_attachedSocketIndex > 0;
 
         if (!m_dirty && parent.m_matrixLevel == m_parentMatrixLevel) return;
-        {
-            m_parentMatrixLevel = parent.m_matrixLevel;
-            m_matrixLevel++;
-        }
 
         const float aspect = (float)m_aspectRatio.x / (float)m_aspectRatio.y;
         const float aspectScaleX = m_scale.x * m_baseScale.x;// / aspect;
@@ -150,6 +148,13 @@ namespace model
             m_worldPivot = m_modelMatrix * glm::vec4{ m_pivotAlignment + m_pivotOffset, 1.f };
         }
 
+        updateModelAxis();
+
+        {
+            m_parentMatrixLevel = parent.m_matrixLevel;
+            m_matrixLevel++;
+        }
+
         m_dirty = false;
         m_dirtySnapshot = true;
     }
@@ -162,7 +167,5 @@ namespace model
         m_viewFront = glm::normalize(glm::mat3(m_modelRotation * m_invBaseRotation) * m_front);
         glm::vec3 viewRight = glm::cross(m_viewFront, m_up);
         m_viewUp = glm::normalize(glm::cross(viewRight, m_viewFront));
-
-        m_dirtyAxis = false;
     }
 }

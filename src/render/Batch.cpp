@@ -21,8 +21,9 @@
 #include "backend/MultiDrawRange.h"
 #include "backend/DrawBuffer.h"
 
+#include "mesh/Mesh.h"
 #include "mesh/LodMesh.h"
-#include "mesh/LodMesh.h"
+#include "mesh/MeshInstance.h"
 #include "mesh/InstanceFlags.h"
 #include "mesh/Transform.h"
 
@@ -45,6 +46,8 @@
 namespace {
     constexpr int ENTITY_COUNT = 100000;
     constexpr int BATCH_RANGE_COUNT = 8;
+
+    inline glm::mat4 ID_MAT{ 1.f };
 
     constexpr int32_t SKIP{ -1 };
     // NOTE KI store accepted *INDECES*
@@ -80,7 +83,7 @@ namespace render {
     {
         if (entityIndex < 0) return;
 
-        const bool frustumChecked = !type->m_flags.noFrustum;
+        bool frustumChecked = type->m_flags.noFrustum;
 
         const glm::vec3 pos{ 0.f };
         auto dist2 = glm::distance2(pos, ctx.m_camera->getWorldPosition());
@@ -98,7 +101,8 @@ namespace render {
 
             programPrepare(programId);
 
-            if (frustumChecked) {
+            // NOTE KI frustum need to be checked only one of the lods
+            if (!frustumChecked) {
                 const auto& frustum = ctx.m_camera->getFrustum();
                 // TODO KI wrong volume; assumes that every lodMesh have same
                 // => not true in some more complex cases where node consists
@@ -107,6 +111,7 @@ namespace render {
                     m_skipCount++;
                     return;
                 }
+                frustumChecked = true;
                 m_drawCount++;
             }
 
@@ -307,6 +312,90 @@ namespace render {
 
             m_skipCount += count - instanceCount;
             m_drawCount += instanceCount;
+        }
+    }
+
+    void Batch::addMesh(
+        const RenderContext& ctx,
+        uint8_t kindBits,
+        const mesh::MeshInstance& instance,
+        ki::program_id defaultProgramId,
+        uint32_t entityIndex) noexcept
+    {
+        if (entityIndex <= 0) return;
+
+        const auto& drawOptions = instance.m_drawOptions;
+        if (!drawOptions.isKind(kindBits)) return;
+        if (drawOptions.m_type == backend::DrawOptions::Type::none) return;
+
+        const auto programId = instance.m_programId ? instance.m_programId  : defaultProgramId;
+        if (!programId) return;
+
+        const auto& volume = instance.getVolume();
+        auto dist2 = glm::distance2(glm::vec3{ volume }, ctx.m_camera->getWorldPosition());
+
+        // NOTE KI frustum need to be checked only one of the lods
+        //if (!type->m_flags.noFrustum)
+        {
+            const auto& frustum = ctx.m_camera->getFrustum();
+            // TODO KI wrong volume; assumes that every lodMesh have same
+            // => not true in some more complex cases where node consists
+            //    from set of meshes (which are not LODn meshes)
+            if (m_frustumCPU && !inFrustum(frustum, volume)) {
+                m_skipCount++;
+                return;
+            }
+            m_drawCount++;
+        }
+
+        CommandEntry* commandEntry{ nullptr };
+        {
+            auto* mesh = instance.m_mesh;
+
+            MultiDrawKey drawKey{
+                programId,
+                mesh->getVaoId(),
+                drawOptions
+            };
+
+            CommandKey commandKey{
+                mesh->getBaseVertex(),
+                mesh->getBaseIndex()
+            };
+
+            const auto drawIndex = m_batchRegistry.getMultiDrawIndex(drawKey);
+            const auto commandIndex = m_batchRegistry.getCommandIndex(commandKey);
+
+            if (m_pending.size() < drawIndex + 1)
+            {
+                m_pending.resize(drawIndex + 1);
+            }
+
+            auto& drawEntry = m_pending[drawIndex];
+            drawEntry.m_index = drawIndex;
+
+            if (drawEntry.m_commands.size() < commandIndex + 1)
+            {
+                drawEntry.m_commands.resize(commandIndex + 1);
+            }
+
+            commandEntry = &drawEntry.m_commands[commandIndex];
+            commandEntry->m_index = commandIndex;
+            commandEntry->m_indexCount = mesh->getIndexCount();
+
+            drawEntry.m_dirty = true;
+
+            /////////
+            commandEntry->addInstance({
+                instance.getModelMatrix(),
+                dist2,
+                entityIndex,
+                static_cast<uint32_t>(instance.m_materialIndex),
+                0,
+                0
+                });
+
+            m_pendingCount++;
         }
     }
 

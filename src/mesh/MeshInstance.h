@@ -30,11 +30,13 @@ namespace mesh {
         MeshInstance(
             mesh::Mesh* mesh,
             const glm::mat4& modelMatrix,
+            const glm::vec4& volume,
             backend::DrawOptions drawOptions,
             ki::material_index materialIndex,
             ki::program_id programId,
             bool shared)
             : m_mesh{ mesh },
+            m_volume{ volume },
             m_materialIndex{ materialIndex},
             m_drawOptions{ drawOptions },
             m_programId{ programId },
@@ -100,6 +102,11 @@ namespace mesh {
         const glm::vec4& getVolume() const noexcept
         {
             return m_volume;
+        }
+
+        ki::program_id getProgramId() const noexcept
+        {
+            return m_programId;
         }
     };
 }

@@ -100,6 +100,12 @@ namespace mesh {
             return m_indexCount;
         }
 
+        ki::vao_id getVaoId() const noexcept
+        {
+            const auto* vao = getVAO();
+            return vao ? static_cast<ki::vao_id>(*vao) : 0;
+        }
+
         virtual const kigl::GLVertexArray* getVAO() const noexcept
         {
             return nullptr;

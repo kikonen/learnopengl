@@ -109,6 +109,7 @@ void VolumeRenderer::render(
                 m_meshes.emplace_back(
                     m_mesh.get(),
                     transform.getMatrix(),
+                    volume,
                     drawOptions,
                     m_mesh->getMaterial()->m_registeredIndex,
                     m_programId,
@@ -136,9 +137,10 @@ void VolumeRenderer::render(
                     drawOptions.m_renderBack = true;
                 }
 
-                m_meshes.emplace_back(
+                auto& meshIntance = m_meshes.emplace_back(
                     m_mesh.get(),
                     transform.getMatrix(),
+                    volume,
                     drawOptions,
                     m_mesh->getMaterial()->m_registeredIndex,
                     m_programId,
