@@ -112,6 +112,12 @@ void Log::warn_out(std::string_view msg) noexcept
     std::cout << "W: " << msg << '\n';
 }
 
+void Log::error_out(std::string_view msg) noexcept
+{
+    Log::error(msg);
+    std::cout << "E: " << msg << '\n';
+}
+
 void Log::out(std::string_view msg) noexcept
 {
     std::cout << msg;

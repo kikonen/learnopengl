@@ -8,6 +8,7 @@ namespace {
     const std::string SUPPORTED_TYPES[]{
         "",
         ".glb",
+        ".gltf",
         ".fbx",
         ".dae",
         ".obj",

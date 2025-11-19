@@ -35,10 +35,219 @@
 
 #include "mesh/RigNodeTreeGenerator.h"
 
+#include "material/InlineTexture.h"
+#include "material/Image.h"
+
 #include "util/assimp_util.h"
 
 namespace {
+    struct TextureMapping
+    {
+        std::string name;
+        aiTextureType asssimpType;
+        TextureType type;
+        bool gammaCorrect;
+        bool checkAlpha{ false };
+    };
+
+
+    const std::vector<TextureMapping> TEXTURE_MAPPING = {
+        {
+            "diffuse",
+            aiTextureType_DIFFUSE,
+            TextureType::diffuse,
+            true,
+            true,
+        },
+        {
+            "normal",
+            aiTextureType_NORMALS,
+            TextureType::map_normal,
+            false,
+            false,
+        },
+        {
+            "emission",
+            aiTextureType_EMISSIVE,
+            TextureType::emission,
+            true,
+            true,
+        },
+        {
+            "displacement",
+            aiTextureType_DISPLACEMENT,
+            TextureType::map_displacement,
+            false,
+            false,
+        },
+        {
+            "metal",
+            aiTextureType_METALNESS,
+            TextureType::map_mrao,
+            false,
+            false,
+        },
+        // SAME as aiTextureType_DIFFUSE_METALNESS
+        //{
+        //    "roughness",
+        //    aiTextureType_DIFFUSE_ROUGHNESS,
+        //    TextureType::map_mrao,
+        //    false,
+        //},
+        {
+            "ambient_occlusion",
+            aiTextureType_AMBIENT_OCCLUSION,
+            TextureType::map_mrao,
+            false,
+            false,
+        },
+    };
+
     std::mutex m_lock;
+
+    const char EMBEDDED_NAME_PREFIX = '*';
+
+    bool isEmbeddedTexture(const std::string name)
+    {
+        return name[0] == EMBEDDED_NAME_PREFIX;
+    }
+
+    bool saveEmbeddedTextureToFile(
+        const std::vector<unsigned char> data,
+        const std::string& outputPath)
+    {
+        FILE* file = fopen(outputPath.c_str(), "wb");
+        if (!file) {
+            KI_ERROR(fmt::format("WRITE_FAIL: {}", outputPath));
+            return false;
+        }
+
+        fwrite(data.data(), 1, data.size(), file);
+        fclose(file);
+
+        KI_INFO_OUT(fmt::format("WROTE: {}", outputPath));
+
+        return true;
+    }
+
+    std::shared_ptr<InlineTexture> loadEmbeddedTexture(
+        const std::string& name,
+        const const aiTexture* texture,
+        const bool gammaCorrect)
+    {
+        std::vector<unsigned char> data;
+        int width = 0;
+        int height = 0;
+        int channels = 0;
+        bool is16Bbit = false;
+
+        if (texture->mHeight == 0) {
+            std::string format = "png_default";
+
+            if (texture->achFormatHint[0] != '\0') {
+                format = std::string(texture->achFormatHint);
+            }
+
+            // Compressed texture (PNG, JPG, etc.)
+            size_t encodeSize = texture->mWidth;
+
+            std::vector<unsigned char> encodedData;
+            encodedData.resize(encodeSize);
+            memcpy(encodedData.data(), texture->pcData, encodeSize);
+
+            saveEmbeddedTextureToFile(
+                encodedData,
+                fmt::format("tmp/{}.{}", name, format));
+
+            //if (texture->achFormatHint[0] != '\0') {
+            //    std::cout << "Format hint: " << texture->achFormatHint << std::endl;
+            //}
+
+            Image image;
+            int res = image.loadFromMememory(encodedData);
+            if (res) {
+                return {};
+            }
+
+            width = image.m_width;
+            height = image.m_height;
+            channels = image.m_channels;
+            is16Bbit = image.m_is16Bbit;
+
+            const size_t channelSize = is16Bbit ? 2 : 1;
+            const size_t size = width * height * channels * channelSize;
+
+            data.resize(size);
+            memcpy(data.data(), image.m_data, size);
+        }
+        else {
+            width = texture->mWidth;
+            height = texture->mHeight;
+            channels = 4;
+
+            // Uncompressed texture (raw RGBA data)
+            const size_t size = width * height * channels;
+            data.resize(size);
+
+            // Convert aiTexel to raw RGBA bytes
+            for (size_t i = 0; i < width * height; ++i)
+            {
+                data[i * 4 + 0] = texture->pcData[i].r;
+                data[i * 4 + 1] = texture->pcData[i].g;
+                data[i * 4 + 2] = texture->pcData[i].b;
+                data[i * 4 + 3] = texture->pcData[i].a;
+            }
+        }
+
+        TextureSpec spec;
+        return std::make_shared<InlineTexture>(
+            name,
+            data,
+            width,
+            height,
+            channels,
+            is16Bbit,
+            gammaCorrect,
+            spec);
+    }
+
+    std::shared_ptr<InlineTexture> loadInlineTexture(
+        const std::string& meshSetName,
+        const aiScene* scene,
+        TextureMapping texInfo,
+        const aiMaterial* material,
+        const std::string& path
+    )
+    {
+        if (!isEmbeddedTexture(path)) return {};
+
+        const auto materialName = const_cast<aiMaterial*>(material)->GetName().C_Str();
+        unsigned int texCount = material->GetTextureCount(texInfo.asssimpType);
+
+        for (int i = 0; i < texCount; i++) {
+            int texIndex = atoi(path.c_str() + 1);
+            const auto& texName = fmt::format(
+                "inline-{}-{}-{}-{}",
+                meshSetName, materialName, texInfo.name, texIndex);
+
+            KI_INFO_OUT(fmt::format(
+                "ASSIMP: TEXTURE mesh_set={}, material={}, name={}, index={}/{}",
+                meshSetName,
+                materialName,
+                texName,
+                i + 1,
+                texCount));
+
+            const aiTexture* tex = scene->mTextures[texIndex];
+            return loadEmbeddedTexture(
+                texName,
+                tex,
+                texInfo.gammaCorrect);
+        }
+        //std::shared_ptr<InlineTexture> texture;
+        //return texture;
+        return {};
+    }
 }
 
 namespace mesh
@@ -647,46 +856,43 @@ namespace mesh
             }
         }
 
-        {
-            int diffuseIndex = 0;
-            aiString diffusePath;
+        //{
+        // aiTextureType_METALNESS,
+        // aiTextureType_DIFFUSE_ROUGHNESS,
+        // aiTextureType_AMBIENT_OCCLUSION
+        //}
 
-            if (src->GetTexture(aiTextureType_DIFFUSE, diffuseIndex, &diffusePath) == AI_SUCCESS) {
-                //auto* embedded = scene->GetEmbeddedTexture(diffusePath.C_Str());
-                material.addTexture(
-                    TextureType::diffuse,
-                    findTexturePath(meshSet, diffusePath.C_Str()),
-                    true);
-            }
-        }
+        for (const auto& texInfo : TEXTURE_MAPPING)
         {
-            int bumpIndex = 0;
-            aiString bumpPath;
-            if (src->GetTexture(aiTextureType_HEIGHT, bumpIndex, &bumpPath) == AI_SUCCESS) {
-                material.addTexture(
-                    TextureType::map_normal,
-                    findTexturePath(meshSet, bumpPath.C_Str()),
-                    true);
-            }
-        }
-        {
-            int normalIndex = 0;
-            aiString normalPath;
-            if (src->GetTexture(aiTextureType_NORMALS, normalIndex, &normalPath) == AI_SUCCESS) {
-                material.addTexture(
-                    TextureType::map_normal,
-                    findTexturePath(meshSet, normalPath.C_Str()),
-                    true);
-            }
-        }
-        {
-            int emissionIndex = 0;
-            aiString emissionPath;
-            if (src->GetTexture(aiTextureType_EMISSIVE, emissionIndex, &emissionPath) == AI_SUCCESS) {
-                material.addTexture(
-                    TextureType::emission,
-                    findTexturePath(meshSet, emissionPath.C_Str()),
-                    true);
+            int texIndex = 0;
+            aiString assimpPath;
+
+            if (src->GetTexture(texInfo.asssimpType, texIndex, &assimpPath) == AI_SUCCESS) {
+                std::string path{ assimpPath.C_Str() };
+
+                if (isEmbeddedTexture(path))
+                {
+                    auto tex = loadInlineTexture(
+                        meshSet.m_name,
+                        scene,
+                        texInfo,
+                        src,
+                        path);
+
+                    if (texInfo.checkAlpha) {
+                        material.alpha = tex->hasAlpha();
+                    }
+
+                    material.addinlineTexture(
+                        texInfo.type,
+                        tex);
+                }
+                else {
+                    material.addTexture(
+                        texInfo.type,
+                        findTexturePath(meshSet, path),
+                        true);
+                }
             }
         }
 

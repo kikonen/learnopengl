@@ -39,6 +39,11 @@ Image::Image(Image&& o) noexcept
     o.m_data = nullptr;
 }
 
+Image::Image()
+    : Image("", false)
+{
+}
+
 Image::Image(std::string_view path, bool flipped)
     :Image(path, flipped, false)
 {
@@ -73,7 +78,8 @@ int Image::load() {
     return loadNormal();
 }
 
-int Image::loadNormal() {
+int Image::loadNormal()
+{
     stbi_set_flip_vertically_on_load_thread(m_flipped);
     //stbi_set_flip_vertically_on_load(flip);
 
@@ -114,6 +120,27 @@ int Image::loadNormal() {
 
     m_res = m_data ? 0 : -1;
     return m_res;
+}
+
+int Image::loadFromMememory(std::vector<unsigned char> data)
+{
+    m_is16Bbit = stbi_is_16_bit_from_memory(data.data(), data.size());
+
+    //stbi_uc* stbi_load_from_memory(
+    //    stbi_uc const* buffer,
+    //    int len,
+    //    int* x,
+    //    int* y,
+    //    int* comp,
+    //    int req_comp)
+    m_data = (unsigned char*)stbi_load_from_memory(
+        data.data(),
+        data.size(),
+        &m_width,
+        &m_height,
+        &m_channels,
+        STBI_default);
+    return m_data ? 0 : -1;
 }
 
 int Image::loadKtx()

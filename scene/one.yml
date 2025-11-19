@@ -19,20 +19,31 @@ types:
     controllers:
       - type: pawn
       - type: camera_zoom
-  - id: mountains
+  - id: dir_light
+    type: origo
     mesh:
-      path: texture_mountains
+      path: light
+      program: g_light
+    flags:
+      no_shadow: true
+    light:
+      type: directional
+      diffuse: [0.7, 0.7, 0.7, 1.0]
+      intensity: 30000
+  - id: orc_01
+    mesh:
+      path: models/Orc_01/SK_Orc_01_Full.glb
       material_modifier:
-        prefab: materials/Fence007A.yml
-        tiling: 6
-        alpha: true
-        render_back: true
-      program: g_tex
+        default_programs: true
+      xmaterial_modifiers:
+        - name: M_Orc_01_Hair
+          alpha: true
 
 nodes:
   - type: player
-    pos: [0, 30, 0]
+    pos: [0, 2, 2]
     active: true
-  - type: mountains
-    pos: [0.0, 0.0, 0.0]
-    scale: 1.0
+  - type: dir_light
+    pos: [-15, 25, 25]
+  - type: orc_01
+    pos: [0.0, 1, 0.0]

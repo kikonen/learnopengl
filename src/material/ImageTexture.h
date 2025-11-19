@@ -30,9 +30,14 @@ public:
     void prepareNormal();
     void prepareKtx();
 
-    bool isValid() { return m_valid; }
+    bool isValid() const noexcept { return m_valid; }
 
     void load();
+
+    const Image* getImage() const
+    {
+        return m_image.get();
+    }
 
 public:
     const std::string m_path;
@@ -41,6 +46,7 @@ public:
     // => thus cannot automatically release after uploading to GPU
     const bool m_shared{ false };
 
+private:
     std::unique_ptr<Image> m_image;
 
     bool m_hdri{ false };

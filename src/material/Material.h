@@ -11,10 +11,10 @@
 #include <glm/glm.hpp>
 
 #include "ki/sid.h"
-
-#include "ImageTexture.h"
+#include "kigl/kigl.h"
 
 #include "TextureType.h"
+#include "TextureSpec.h"
 
 //#include "MaterialSSBO.h"
 
@@ -52,6 +52,12 @@ struct TextureInfo {
     bool compressed;
 };
 
+
+class Texture;
+class InlineTexture;
+class ImageTexture;
+
+
 /*
 * https://en.wikipedia.org/wiki/Wavefront_.obj_file
 * http://paulbourke.net/dataformats/obj/
@@ -75,7 +81,7 @@ struct Material final
 {
 public:
     struct BoundTexture {
-        std::shared_ptr<ImageTexture> m_texture;
+        std::shared_ptr<Texture> m_texture;
     };
 
 public:
@@ -134,6 +140,10 @@ public:
         TextureType type,
         const std::string& path,
         bool compressed) noexcept;
+
+    void addinlineTexture(
+        TextureType type,
+        std::shared_ptr<InlineTexture> texture) noexcept;
 
     bool hasRegisteredTex(TextureType type) const noexcept
     {
@@ -204,7 +214,7 @@ public:
     //// Materials can be transparent. This is referred to as being dissolved. Unlike real transparency,
     //// the result does not depend upon the thickness of the object.
     //// A value of 1.0 for "d" is the default and means fully opaque, as does a value of 0.0 for "Tr".
-    //// Dissolve works on all illumination models.
+        //// Dissolve works on all illumination models.
     //float d = 1.0f;
 
     int layers = 0;
@@ -266,6 +276,7 @@ public:
 private:
     std::map<TextureType, BoundTexture> m_boundTextures{};
     std::map<TextureType, TextureInfo> m_texturePaths{};
+    std::map<TextureType, std::shared_ptr<InlineTexture>> m_inlineTextures{};
 
     ki::material_id m_id;
 

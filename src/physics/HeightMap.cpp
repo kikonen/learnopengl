@@ -41,7 +41,7 @@ namespace physics {
     }
 
     void HeightMap::prepare(
-        Image* _image,
+        const Image* _image,
         bool flipH)
     {
         m_prepared = true;

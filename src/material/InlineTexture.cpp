@@ -1,4 +1,4 @@
-#include "ImageTexture.h"
+#include "InlineTexture.h"
 
 #include <unordered_map>
 #include <mutex>
@@ -9,13 +9,7 @@
 #include <regex>
 #include <fmt/format.h>
 
-// https://stackoverflow.com/questions/5159353/how-can-i-get-rid-of-the-imp-prefix-in-the-linker-in-vc
-#define KHRONOS_STATIC
-#include <ktx.h>
-
 #include <fmt/format.h>
-
-#include "material/Image.h"
 
 #include "util/util.h"
 #include "util/Log.h"
@@ -28,26 +22,30 @@ namespace {
     };
 }
 
-ImageTexture::ImageTexture(
+InlineTexture::InlineTexture(
     std::string_view name,
-    std::string_view path,
-    bool shared,
-    bool grayScale,
+    std::vector<unsigned char> data,
+    int width,
+    int height,
+    int channels,
+    bool is16Bbit,
     bool gammaCorrect,
-    bool flipY,
     const TextureSpec& spec)
-    : Texture{ name, grayScale, gammaCorrect, spec },
-    m_shared{ shared },
-    m_flipY{ flipY },
-    m_path{ path }
+    : Texture{ name, false, gammaCorrect, spec },
+    m_name{ name },
+    m_data{ data },
+    m_width{ width },
+    m_height{ height },
+    m_channels{ channels },
+    m_is16Bbit{ is16Bbit }
 {
 }
 
-ImageTexture::~ImageTexture()
+InlineTexture::~InlineTexture()
 {
 }
 
-std::string ImageTexture::str() const noexcept
+std::string InlineTexture::str() const noexcept
 {
     return fmt::format(
         "<IMG: {} {}bit {}ch {}x{} {}{} ({}), [{}, {}], [{}, {}]>",
@@ -63,36 +61,29 @@ std::string ImageTexture::str() const noexcept
         kigl::formatEnum(m_spec.wrapT),
         kigl::formatEnum(m_spec.minFilter),
         kigl::formatEnum(m_spec.magFilter)
-        );
+    );
 }
 
-void ImageTexture::release()
+void InlineTexture::release()
 {
     if (!m_prepared) return;
     Texture::release();
 }
 
-void ImageTexture::prepare()
+void InlineTexture::prepare()
 {
     if (m_prepared) return;
     m_prepared = true;
 
-    if (!m_valid) return;
-
-    if (m_image->m_ktx) {
-        prepareKtx();
-    }
-    else {
-        prepareNormal();
-    }
+    prepareNormal();
 }
 
-void ImageTexture::prepareNormal()
+void InlineTexture::prepareNormal()
 {
     m_pixelFormat = GL_UNSIGNED_BYTE;
 
     // NOTE KI 1 & 2 channels have issues
-    // => need to convert manually to RGB(A) s
+    // => need to convert manually to RGB(A) format
     // NOTE KI https://learnopengl.com/Advanced-Lighting/Gamma-Correction
     if (m_channels == 1) {
         if (m_is16Bbit) {
@@ -145,9 +136,7 @@ void ImageTexture::prepareNormal()
             "IMAGE: unsupported channels {}, image={}",
             m_channels, str()));
         m_valid = false;
-        if (!m_shared) {
-            m_image.reset();
-        }
+        m_data.resize(0);
         return;
     }
 
@@ -158,7 +147,7 @@ void ImageTexture::prepareNormal()
 
     if (m_specialTexture) {
         glTextureStorage2D(m_textureID, 1, m_internalFormat, m_width, m_height);
-        glTextureSubImage2D(m_textureID, 0, 0, 0, m_width, m_height, m_format, m_pixelFormat, m_image->m_data);
+        glTextureSubImage2D(m_textureID, 0, 0, 0, m_width, m_height, m_format, m_pixelFormat, m_data.data());
 
         glTextureParameteri(m_textureID, GL_TEXTURE_WRAP_S, m_spec.wrapS);
         glTextureParameteri(m_textureID, GL_TEXTURE_WRAP_T, m_spec.wrapT);
@@ -177,7 +166,7 @@ void ImageTexture::prepareNormal()
             static_cast<uint8_t>(log2(std::max(m_width, m_height))));
 
         glTextureStorage2D(m_textureID, mipMapLevels, m_internalFormat, m_width, m_height);
-        glTextureSubImage2D(m_textureID, 0, 0, 0, m_width, m_height, m_format, m_pixelFormat, m_image->m_data);
+        glTextureSubImage2D(m_textureID, 0, 0, 0, m_width, m_height, m_format, m_pixelFormat, m_data.data());
         glGenerateTextureMipmap(m_textureID);
 
         // OpenGL Superbible, 7th Edition, page 552
@@ -187,7 +176,7 @@ void ImageTexture::prepareNormal()
         glGetTextureLevelParameteriv(m_textureID, 0, GL_TEXTURE_COMPRESSED, &compFlag);
         KI_INFO_OUT(fmt::format(
             "TEX_UPLOAD: {}, compressed={}\n{}",
-            m_path,
+            m_name,
             compFlag,
             str()));
 
@@ -197,79 +186,5 @@ void ImageTexture::prepareNormal()
 
     //m_texIndex = Texture::nextIndex();
 
-    if (!m_shared) {
-        m_image.reset();
-    }
-}
-
-void ImageTexture::prepareKtx()
-{
-    ktxTexture* kTexture;
-    KTX_error_code result;
-    //ktx_size_t offset;
-    //ktx_uint8_t* image;
-    //ktx_uint32_t level, layer, faceSlice;
-    GLenum target, glerror;
-
-    result = ktxTexture_CreateFromNamedFile(
-        m_image->m_path.c_str(),
-        KTX_TEXTURE_CREATE_NO_FLAGS,
-        &kTexture);
-
-    if (result) {
-        KI_ERROR(fmt::format("Failed to open ktx: {}", m_image->m_path));
-        if (!m_shared) {
-            m_image.reset();
-        }
-        return;
-    }
-
-    // https://computergraphics.stackexchange.com/questions/4479/how-to-do-texturing-with-opengl-direct-state-access
-    glCreateTextures(GL_TEXTURE_2D, 1, &m_textureID);
-    kigl::setLabel(GL_TEXTURE, m_textureID, m_name);
-
-    result = ktxTexture_GLUpload(kTexture, &m_textureID, &target, &glerror);
-    ktxTexture_Destroy(kTexture);
-
-    if (result) {
-        KI_ERROR(fmt::format("Failed to upload ktx: {}", m_image->m_path));
-        if (!m_shared) {
-            m_image.reset();
-        }
-        return;
-    }
-
-    GLint compFlag;
-    glGetTextureLevelParameteriv(m_textureID, 0, GL_TEXTURE_COMPRESSED, &compFlag);
-    KI_INFO_OUT(fmt::format(
-        "TEX_UPLOAD: path={}, compressed={}\n{}",
-        m_image->m_path,
-        compFlag,
-        str()));
-
-    m_handle = glGetTextureHandleARB(m_textureID);
-    glMakeTextureHandleResidentARB(m_handle);
-
-    if (!m_shared) {
-        m_image.reset();
-    }
-}
-
-void ImageTexture::load() {
-    m_hdri = util::matchAny(hdrMatchers, m_path);
-
-    m_image = std::make_unique<Image>(m_path, m_flipY, m_hdri);
-    int res = m_image->load();
-    if (res) {
-        m_image.reset();
-        return;
-    }
-
-    m_is16Bbit = m_image->m_is16Bbit;
-    m_width = m_image->m_width;
-    m_height = m_image->m_height;
-    m_channels = m_image->m_channels;
-    m_is16Bbit = m_image->m_is16Bbit;
-
-    m_valid = true;
+    m_data.resize(0);
 }

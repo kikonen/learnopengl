@@ -35,7 +35,7 @@ namespace physics {
         }
 
         void prepare(
-            Image* image,
+            const Image* image,
             bool flip);
 
         void create(

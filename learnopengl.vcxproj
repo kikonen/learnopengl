@@ -291,6 +291,7 @@
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\material\InlineTexture.cpp" />
     <ClCompile Include="src\renderer\JointRenderer.cpp" />
     <ClCompile Include="src\animation\Animation.cpp" />
     <ClCompile Include="src\animation\animation_util.cpp" />
@@ -808,6 +809,7 @@
     <ClInclude Include="src\loader\value\PhysicsCategoryValue.h" />
     <ClInclude Include="src\loader\value\PhysicsGeomValue.h" />
     <ClInclude Include="src\material\FontAtlasMaterialUpdater.h" />
+    <ClInclude Include="src\material\InlineTexture.h" />
     <ClInclude Include="src\material\ShaderMaterialUpdater.h" />
     <ClInclude Include="src\material\MaterialUpdater.h" />
     <ClInclude Include="src\renderer\JointRenderer.h" />

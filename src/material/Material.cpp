@@ -22,7 +22,9 @@
 #include "material/ImageRegistry.h"
 
 #include "ImageTexture.h"
+#include "InlineTexture.h"
 #include "ColorTexture.h"
+
 #include "MaterialSSBO.h"
 #include "MaterialRegistry.h"
 #include "MaterialUpdater.h"
@@ -217,7 +219,75 @@ Material::Material()
 
 Material::Material(Material& o) = default;
 Material::Material(const Material& o) = default;
+
 Material::Material(Material&& o) = default;
+//    : m_registeredIndex{ o.m_registeredIndex },
+//    textureSpec{ o.textureSpec },
+//    pattern{ o.pattern },
+//    reflection{ o.reflection },
+//    refraction{ o.refraction },
+//    refractionRatio{ o.refractionRatio },
+//
+//    tilingX{ o.tilingX },
+//    tilingY{ o.tilingY },
+//
+//    map_bump_strength{ o.map_bump_strength },
+//
+//    kd{ o.kd },
+//    ke{ o.ke },
+//
+//    mrao{ o.mrao },
+//
+//    layers{ o.layers },
+//    layersDepth{ o.layersDepth },
+//    parallaxDepth{ o.parallaxDepth },
+//
+//    m_name{ o.m_name },
+//
+//    spriteCount{ o.spriteCount },
+//    spritesX{ o.spritesX },
+//
+//    alpha{ o.alpha },
+//    blend{ o.blend },
+//
+//    renderBack{ o.renderBack },
+//    lineMode{ o.lineMode },
+//    reverseFrontFace{ o.reverseFrontFace },
+//    noDepth{ o.noDepth },
+//
+//    gbuffer{ o.gbuffer },
+//    inmutable{ o.inmutable },
+//
+//    m_geometryType{ o.m_geometryType },
+//    m_baseDir{ o.m_baseDir },
+//    m_modelDir{ o.m_modelDir },
+//
+//    m_defaultPrograms{ o.m_defaultPrograms },
+//    m_programNames{ o.m_programNames },
+//
+//    m_sharedDefinitions{ o.m_sharedDefinitions },
+//    m_programDefinitions{ o.m_programDefinitions },
+//    m_oitDefinitions{ o.m_oitDefinitions },
+//    m_shadowDefinitions{ o.m_shadowDefinitions },
+//    m_selectionDefinitions{ o.m_selectionDefinitions },
+//    m_idDefinitions{ o.m_idDefinitions },
+//    m_normalDefinitions{ o.m_normalDefinitions },
+//
+//    m_programs{ o.m_programs },
+//
+//    m_updaterId{ o.m_updaterId },
+//
+//    m_updater{ o.m_updater },
+//
+//    m_boundTextures{ o.m_boundTextures },
+//    m_texturePaths{ o.m_texturePaths },
+//    m_inlineTextures{ o.m_inlineTextures },
+//
+//    m_id{ o.m_id },
+//
+//    m_prepared{ o.m_prepared },
+//    m_loaded{ o.m_loaded }
+//{}
 
 Material::~Material() = default;
 //{
@@ -289,6 +359,14 @@ void Material::loadTextures()
         }
 
         loadTexture(type, grayScale, gammaCorrect, flipY, usePlaceholder);
+    }
+
+    for (const auto& it : m_inlineTextures) {
+        const auto type = it.first;
+        const auto& texture = it.second;
+        if (texture && texture->isValid()) {
+            m_boundTextures.insert({ type, BoundTexture{ texture } });
+        }
     }
 }
 
@@ -417,6 +495,13 @@ void Material::addTexture(
     else {
         m_texturePaths[type] = { path, compressed };
     }
+}
+
+void Material::addinlineTexture(
+    TextureType type,
+    std::shared_ptr<InlineTexture> texture) noexcept
+{
+    m_inlineTextures.insert({ type, texture });
 }
 
 void Material::prepare()

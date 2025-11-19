@@ -1,10 +1,13 @@
 #pragma once
 
 #include <string>
+#include <vector>
 
 class Image final
 {
 public:
+    Image();
+
     Image(
         std::string_view path,
         bool flipped);
@@ -25,6 +28,8 @@ public:
 
     int loadNormal();
     int loadKtx();
+
+    int loadFromMememory(std::vector<unsigned char> data);
 
 public:
     const std::string m_path;

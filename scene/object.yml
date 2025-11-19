@@ -98,6 +98,12 @@ types:
       geom:
         type: box
         size: [0.5, 0.5, 0.0001]
+  - id: orc_01
+    mesh:
+      path: models/Orc_01/SK_Orc_01_Full.glb
+      material:
+        kd: [0.8, 0.8, 0.8, 1.0]
+        default_programs: true
 
 nodes:
   - type: player
@@ -120,9 +126,11 @@ nodes:
     xclones:
       - pos: [0.0, 1.0, 0.0]
       - pos: [0.5, 2.0, 0.0]
-  - type: prefab_skeleton_warrior
+  - xtype: prefab_skeleton_warrior
     pos: [0.0, 0.5, 0.0]
   - xtype: fence
     #rotation: [0, -90, 0]
     pos: [0, 1, 0]
     scale: 2
+  - type: orc_01
+    pos: [0.0, 1, 0.0]

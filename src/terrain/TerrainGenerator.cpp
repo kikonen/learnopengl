@@ -108,7 +108,7 @@ namespace terrain {
             heightMap->m_worldSizeU = m_worldTileSize * m_worldTilesU;
             heightMap->m_worldSizeV = m_worldTileSize * m_worldTilesV;
 
-            heightMap->prepare(texture->m_image.get(), true);
+            heightMap->prepare(texture->getImage(), true);
         }
 
         return heightMapId;

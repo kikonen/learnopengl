@@ -13,6 +13,7 @@
 
 #define KI_INFO_OUT(msg) Log::info_out(msg);
 #define KI_WARN_OUT(msg) Log::warn_out(msg);
+#define KI_ERROR_OUT(msg) Log::error_out(msg);
 
 #define KI_OUT(msg) Log::out(msg);
 
@@ -39,6 +40,7 @@ public:
 
     static void info_out(std::string_view msg) noexcept;
     static void warn_out(std::string_view msg) noexcept;
+    static void error_out(std::string_view msg) noexcept;
 
     static void out(std::string_view msg) noexcept;
 };
