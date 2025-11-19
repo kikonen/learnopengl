@@ -29,6 +29,7 @@ InlineTexture::InlineTexture(
     int height,
     int channels,
     bool is16Bbit,
+    bool hasAlpha,
     bool gammaCorrect,
     const TextureSpec& spec)
     : Texture{ name, false, gammaCorrect, spec },
@@ -37,7 +38,8 @@ InlineTexture::InlineTexture(
     m_width{ width },
     m_height{ height },
     m_channels{ channels },
-    m_is16Bbit{ is16Bbit }
+    m_is16Bbit{ is16Bbit },
+    m_hasAlpha{ hasAlpha }
 {
 }
 

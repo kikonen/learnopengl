@@ -6,7 +6,7 @@
 class Image final
 {
 public:
-    Image();
+    Image(bool flipped);
 
     Image(
         std::string_view path,
@@ -29,7 +29,11 @@ public:
     int loadNormal();
     int loadKtx();
 
-    int loadFromMememory(std::vector<unsigned char> data);
+    int loadFromMememory(
+        const std::vector<unsigned char>& data);
+
+private:
+    void checkAlpha();
 
 public:
     const std::string m_path;
@@ -42,6 +46,7 @@ public:
     int m_height{ 0 };
     int m_channels{ 0 };
     bool m_is16Bbit{ false };
+    bool m_hasAlpha{ false };
 
     unsigned char* m_data{ nullptr };
 

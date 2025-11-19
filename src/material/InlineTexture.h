@@ -20,6 +20,7 @@ public:
         int height,
         int channels,
         bool is16Bbit,
+        bool hasAlpha,
         bool gammaCorrect,
         const TextureSpec& spec);
 
@@ -34,7 +35,7 @@ public:
 
     bool isValid() const noexcept { return true; }
 
-    bool hasAlpha() const noexcept { return m_channels == 4; }
+    bool hasAlpha() const noexcept { return m_hasAlpha; }
 
 public:
     const std::string m_name;
@@ -48,6 +49,7 @@ public:
     const int m_height;
     const int m_channels;
     const bool m_is16Bbit;
+    const bool m_hasAlpha;
 
     bool m_valid{ true };
 };

@@ -39,8 +39,8 @@ Image::Image(Image&& o) noexcept
     o.m_data = nullptr;
 }
 
-Image::Image()
-    : Image("", false)
+Image::Image(bool flipped)
+    : Image("", flipped)
 {
 }
 
@@ -118,21 +118,19 @@ int Image::loadNormal()
         KI_ERROR(fmt::format("IMAGE::LOAD_FAILED {}", m_path));
     }
 
+    checkAlpha();
+
     m_res = m_data ? 0 : -1;
     return m_res;
 }
 
-int Image::loadFromMememory(std::vector<unsigned char> data)
+int Image::loadFromMememory(
+    const std::vector<unsigned char>& data)
 {
     m_is16Bbit = stbi_is_16_bit_from_memory(data.data(), data.size());
 
-    //stbi_uc* stbi_load_from_memory(
-    //    stbi_uc const* buffer,
-    //    int len,
-    //    int* x,
-    //    int* y,
-    //    int* comp,
-    //    int req_comp)
+    stbi_set_flip_vertically_on_load_thread(m_flipped);
+
     m_data = (unsigned char*)stbi_load_from_memory(
         data.data(),
         data.size(),
@@ -140,6 +138,9 @@ int Image::loadFromMememory(std::vector<unsigned char> data)
         &m_height,
         &m_channels,
         STBI_default);
+
+    checkAlpha();
+
     return m_data ? 0 : -1;
 }
 
@@ -161,4 +162,44 @@ int Image::loadKtx()
     //}
 
     return 0;
+}
+
+void Image::checkAlpha()
+{
+    m_hasAlpha = false;
+
+    if (!m_data) return;
+    if (m_channels != 4) return;
+
+    unsigned char* srcByteData{ nullptr };
+    unsigned short* srcShortData{ nullptr };
+
+    if (m_is16Bbit) {
+        srcShortData = (unsigned short*)m_data;
+    }
+    else {
+        srcByteData = m_data;
+    }
+
+    const auto alphaIndex = 3;
+    bool opaque = true;
+    for (size_t x = 0; x < m_height; x++) {
+        for (size_t y = 0; y < m_width; y++) {
+            int srcIndex = y * (m_width * m_channels) + x * m_channels + alphaIndex;
+            if (srcByteData) {
+                if (srcByteData[srcIndex] < 255) {
+                    opaque = false;
+                    break;
+                }
+            }
+            else if (srcShortData) {
+                if (srcShortData[srcIndex] < 65535) {
+                    opaque = false;
+                    break;
+                }
+            }
+        }
+        if (!opaque) break;
+    }
+    m_hasAlpha = !opaque;
 }

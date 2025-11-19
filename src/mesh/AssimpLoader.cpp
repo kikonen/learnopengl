@@ -141,6 +141,7 @@ namespace {
         int height = 0;
         int channels = 0;
         bool is16Bbit = false;
+        bool hasAlpha = false;
 
         if (texture->mHeight == 0) {
             std::string format = "png_default";
@@ -164,7 +165,7 @@ namespace {
             //    std::cout << "Format hint: " << texture->achFormatHint << std::endl;
             //}
 
-            Image image;
+            Image image{ true };
             int res = image.loadFromMememory(encodedData);
             if (res) {
                 return {};
@@ -174,6 +175,7 @@ namespace {
             height = image.m_height;
             channels = image.m_channels;
             is16Bbit = image.m_is16Bbit;
+            hasAlpha = image.m_hasAlpha;
 
             const size_t channelSize = is16Bbit ? 2 : 1;
             const size_t size = width * height * channels * channelSize;
@@ -207,6 +209,7 @@ namespace {
             height,
             channels,
             is16Bbit,
+            hasAlpha,
             gammaCorrect,
             spec);
     }
