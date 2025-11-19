@@ -101,8 +101,7 @@ types:
   - id: orc_01
     mesh:
       path: models/Orc_01/SK_Orc_01_Full.glb
-      material:
-        kd: [0.8, 0.8, 0.8, 1.0]
+      material_modifier:
         default_programs: true
 
 nodes:

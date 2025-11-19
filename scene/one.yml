@@ -38,6 +38,12 @@ types:
       xmaterial_modifiers:
         - name: M_Orc_01_Hair
           alpha: true
+    script: |
+      cmd:rotate(
+        self.handle,
+        { time=10 * 100 },
+        vec3(0, 1, 0),
+        360 * 100)
 
 nodes:
   - type: player
