@@ -133,6 +133,7 @@ namespace {
     std::shared_ptr<InlineTexture> loadEmbeddedTexture(
         const std::string& name,
         const const aiTexture* texture,
+        TextureSpec spec,
         const bool gammaCorrect)
     {
         std::vector<unsigned char> data;
@@ -199,7 +200,6 @@ namespace {
             }
         }
 
-        TextureSpec spec;
         return std::make_shared<InlineTexture>(
             name,
             data,
@@ -215,6 +215,7 @@ namespace {
         const std::string& meshSetName,
         const aiScene* scene,
         TextureMapping texInfo,
+        TextureSpec spec,
         const aiMaterial* material,
         const std::string& path
     )
@@ -242,6 +243,7 @@ namespace {
             return loadEmbeddedTexture(
                 texName,
                 tex,
+                spec,
                 texInfo.gammaCorrect);
         }
         //std::shared_ptr<InlineTexture> texture;
@@ -856,26 +858,63 @@ namespace mesh
             }
         }
 
-        //{
-        // aiTextureType_METALNESS,
-        // aiTextureType_DIFFUSE_ROUGHNESS,
-        // aiTextureType_AMBIENT_OCCLUSION
-        //}
+        {
+            int twoSided = 0;
+            src->Get(AI_MATKEY_TWOSIDED, twoSided);
+            material.renderBack = twoSided != 0;
+        }
 
         for (const auto& texInfo : TEXTURE_MAPPING)
         {
             int texIndex = 0;
-            aiString assimpPath;
 
-            if (src->GetTexture(texInfo.asssimpType, texIndex, &assimpPath) == AI_SUCCESS) {
+            aiString assimpPath;
+            aiTextureMapping mapping;
+            unsigned int uvIndex;
+            ai_real blend;
+            aiTextureOp op;
+            aiTextureMapMode wrapModeU;
+
+            if (src->GetTexture(
+                texInfo.asssimpType,
+                texIndex,
+                &assimpPath,
+                &mapping,
+                &uvIndex,
+                &blend,
+                &op,
+                &wrapModeU) == AI_SUCCESS)
+            {
                 std::string path{ assimpPath.C_Str() };
 
                 if (isEmbeddedTexture(path))
                 {
+                    TextureSpec spec;
+
+                    switch (wrapModeU) {
+                    case aiTextureMapMode_Wrap:
+                        spec.wrapS = GL_REPEAT;
+                        spec.wrapS = GL_REPEAT;
+                        break;
+                    case aiTextureMapMode_Clamp:
+                        spec.wrapS = GL_CLAMP_TO_EDGE;
+                        spec.wrapS = GL_CLAMP_TO_EDGE;
+                        break;
+                    case aiTextureMapMode_Mirror:
+                        spec.wrapS = GL_MIRRORED_REPEAT;
+                        spec.wrapS = GL_MIRRORED_REPEAT;
+                        break;
+                    case aiTextureMapMode_Decal:
+                        spec.wrapS = GL_CLAMP_TO_BORDER;
+                        spec.wrapS = GL_CLAMP_TO_BORDER;
+                        break;
+                    }
+
                     auto tex = loadInlineTexture(
                         meshSet.m_name,
                         scene,
                         texInfo,
+                        spec,
                         src,
                         path);
 
