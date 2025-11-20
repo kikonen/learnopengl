@@ -3,7 +3,7 @@ struct Material {
   vec4 diffuse;
   vec4 emission;
 
-  // MRAO: [metalness, roughness, ambient-occlusion, opacity]
+  // MRAO: [ambient-occlusion, metalness, roughness, opacity]
   vec4 mrao;
 
   uvec2 diffuseTex;
@@ -11,7 +11,11 @@ struct Material {
   uvec2 normalMapTex;
 
   // uvec2 opacityMapTex;
-  // MRAO: [metalness, roughness, ambient-occlusion, opacity]
+  // MRAO: [ambient-occlusion, metalness, roughness, opacity]
+  // - metalness: 0 = dielectric, 1 = metal
+  // - roughness: 0 = smooth/shiny, 1 = rough/matte
+  // - occlusion: 0 = fully occluded, 1 = no occlusion
+  // - opacity:   0 = transparent, 1 = opaque
   uvec2 mraoMapTex;
   uvec2 displacementMapTex;
 

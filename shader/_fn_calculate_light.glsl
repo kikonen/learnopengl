@@ -47,9 +47,9 @@ vec4 calculateLightPbr(
   vec3 ambient = vec3(0.0);
   if (true) {
     vec3 albedo = material.diffuse.rgb;
-    float metallic = material.mra.r;
-    float roughness = material.mra.g;
-    float ao = material.mra.b;
+    float metallic = MATERIAL_MRA_METALNESS;
+    float roughness = MATERIAL_MRA_ROUGHNESS;
+    float ao = MATERIAL_MRA_OCCLUSION;
 
 #ifndef PASS_FORWARD
     if (Debug.u_ssaoBaseColorEnabled) {

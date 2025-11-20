@@ -2,7 +2,8 @@ struct ResolvedMaterial {
   vec4 diffuse;
   vec3 emission;
 
-  // MRA: [metalness, roughness, ambient-occlusion]
+  // NOTE KI opacity separated from MRAO
+  // MRA: [ambient-occlusion, metalness, roughness]
   vec3 mra;
 
   float ssao;

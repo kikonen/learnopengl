@@ -51,6 +51,7 @@ namespace {
     };
 
 
+    //aiTextureType_OPACITY = 8,
     const std::vector<TextureMapping> TEXTURE_MAPPING = {
         {
             "diffuse",
@@ -133,8 +134,8 @@ namespace {
     std::shared_ptr<InlineTexture> loadEmbeddedTexture(
         const std::string& name,
         const const aiTexture* texture,
-        TextureSpec spec,
-        const bool gammaCorrect)
+        TextureMapping texInfo,
+        TextureSpec spec)
     {
         std::vector<unsigned char> data;
         int width = 0;
@@ -175,7 +176,7 @@ namespace {
             height = image.m_height;
             channels = image.m_channels;
             is16Bbit = image.m_is16Bbit;
-            hasAlpha = image.m_hasAlpha;
+            hasAlpha = texInfo.checkAlpha && image.m_hasAlpha;
 
             const size_t channelSize = is16Bbit ? 2 : 1;
             const size_t size = width * height * channels * channelSize;
@@ -210,7 +211,7 @@ namespace {
             channels,
             is16Bbit,
             hasAlpha,
-            gammaCorrect,
+            texInfo.gammaCorrect,
             spec);
     }
 
@@ -246,8 +247,8 @@ namespace {
             return loadEmbeddedTexture(
                 texName,
                 tex,
-                spec,
-                texInfo.gammaCorrect);
+                texInfo,
+                spec);
         }
         //std::shared_ptr<InlineTexture> texture;
         //return texture;
@@ -843,6 +844,20 @@ namespace mesh
             //}
         }
         {
+            // Get metallic factor
+            float metallic = 1.0f;
+            if (src->Get(AI_MATKEY_METALLIC_FACTOR, metallic) == AI_SUCCESS) {
+                material.mrao.g = metallic;
+            }
+        }
+        {
+            // Get roughness factor
+            float roughness = 1.0f;
+            if (src->Get(AI_MATKEY_ROUGHNESS_FACTOR, roughness) == AI_SUCCESS) {
+                material.mrao.b = roughness;
+            }
+        }
+        {
             aiColor4D emission;
             if (aiGetMaterialColor(src, AI_MATKEY_COLOR_EMISSIVE, &emission) == AI_SUCCESS) {
                 material.ke = assimp_util::toVec4(emission);
@@ -923,6 +938,26 @@ namespace mesh
 
                     if (texInfo.checkAlpha) {
                         material.alpha = tex->hasAlpha();
+                        if (material.alpha) {
+                            float alphaCutoff = 0.5f;
+
+                            // Check for gltf-specific alpha mode property
+                            // glTF uses "$mat.gltf.alphaMode" property
+                            aiString alphaMode;
+                            if (src->Get("$mat.gltf.alphaMode", 0, 0, alphaMode) == AI_SUCCESS) {
+                                std::string alphaModeStr{ alphaMode.C_Str() };
+                                if (alphaModeStr == "OPAQUE") {
+                                    material.alpha = false;
+                                }
+                                else if (alphaModeStr == "MASK") {
+                                    // Get alpha cutoff value for masking
+                                    src->Get("$mat.gltf.alphaCutoff", 0, 0, alphaCutoff);
+                                }
+                                else if (alphaModeStr == "BLEND") {
+                                    material.blend = true;
+                                }
+                            }
+                        }
                     }
 
                     material.addinlineTexture(

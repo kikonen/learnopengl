@@ -35,9 +35,6 @@ types:
       path: models/Orc_01/SK_Orc_01_Full.glb
       material_modifier:
         default_programs: true
-      xmaterial_modifiers:
-        - name: M_Orc_01_Hair
-          alpha: true
     script: |
       cmd:rotate(
         self.handle,

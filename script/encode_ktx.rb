@@ -15,7 +15,7 @@ require 'hashie'
 # TODO KI PBR matchers oboleted from framework
 # => apply here
 #
-# TODO KI handle premade MRA mapps
+# TODO KI handle premade MRAO mapps
 # - fbx/scenery/foliage/VOL10_YardPlants/Textures/TX_DesertDandelion_01a_RMA_2048.png
 # - fbx/scenery/foliage/VOL10_YardPlants/Textures/TX_Flower_01_RSA.PNG
 #
@@ -177,10 +177,13 @@ class Converter < Thor
   RGBA = 'RGBA'
 
   RED_GREEN = 'RG'
+  GREEN_BLUE = 'GB'
   RED_GREEN_BLUE = 'RGB'
   GREEN_RED_BLUE = 'GBB'
   GREEN_BLUE_RED = 'GBR'
   BLUE_GREEN_RED = 'BGR'
+  BLUE_RED_GREEN = 'BRG'
+  RED_BLUE_GREEN = 'RBG'
 
   MAGICK_CHANNELS = {
     RED => Magick::RedChannel,
@@ -189,7 +192,11 @@ class Converter < Thor
     ALPHA => Magick::AlphaChannel,
   }.freeze
 
-  # MRAO: [metalness, roughness, ambient-occlusion, opacity]
+  # MRAO: [ambient-occlusion, metalness, roughness, opacity]
+  # - metalness: 0 = dielectric, 1 = metal
+  # - roughness: 0 = smooth/shiny, 1 = rough/matte
+  # - occlusion: 0 = fully occluded, 1 = no occlusion
+  # - opacity:   0 = transparent, 1 = opaque
   MODE_MRAO = :mrao
   MODE_DISPLACEMENT = :displacement
 
@@ -803,6 +810,7 @@ class Converter < Thor
             action: :skip,
           }
         when :opacity
+          # NOTE KI encode into extansion of MRA, aka. MRAO
           tex_info = {
             group: 'default',
             type: :opacity,
@@ -820,7 +828,7 @@ class Converter < Thor
             mode: MODE_MRAO,
             target_name: MRAO_MAP,
             source_channel: RED,
-            target_channel: RED,
+            target_channel: GREEN,
           }
         when :roughness
           tex_info = {
@@ -830,7 +838,7 @@ class Converter < Thor
             mode: MODE_MRAO,
             target_name: MRAO_MAP,
             source_channel: RED,
-            target_channel: GREEN,
+            target_channel: BLUE,
           }
         when :occlusion
           tex_info = {
@@ -840,7 +848,7 @@ class Converter < Thor
             mode: MODE_MRAO,
             target_name: MRAO_MAP,
             source_channel: RED,
-            target_channel: BLUE,
+            target_channel: RED,
           }
         when :metal_roughness
           tex_info = {
@@ -850,7 +858,7 @@ class Converter < Thor
             mode: MODE_MRAO,
             target_name: MRAO_MAP,
             source_channel: RED_GREEN,
-            target_channel: RED_GREEN,
+            target_channel: GREEN_BLUE
           }
         when :metal_roughness_occlusion
           tex_info = {
@@ -860,7 +868,7 @@ class Converter < Thor
             mode: MODE_MRAO,
             target_name: MRAO_MAP,
             source_channel: RED_GREEN_BLUE,
-            target_channel: RED_GREEN_BLUE,
+            target_channel: GREEN_BLUE_RED,
           }
         when :roughness_metal_occlusion
           tex_info = {
@@ -870,7 +878,7 @@ class Converter < Thor
             mode: MODE_MRAO,
             target_name: MRAO_MAP,
             source_channel: RED_GREEN_BLUE,
-            target_channel: GREEN_RED_BLUE,
+            target_channel: BLUE_GREEN_RED,
           }
         when :roughness_occlusion_metal
           tex_info = {
@@ -880,7 +888,7 @@ class Converter < Thor
             mode: MODE_MRAO,
             target_name: MRAO_MAP,
             source_channel: RED_GREEN_BLUE,
-            target_channel: GREEN_BLUE_RED,
+            target_channel: BLUE_RED_GREEN,
           }
         when :occlusion_roughness_metal
           tex_info = {
@@ -890,7 +898,7 @@ class Converter < Thor
             mode: MODE_MRAO,
             target_name: MRAO_MAP,
             source_channel: RED_GREEN_BLUE,
-            target_channel: BLUE_GREEN_RED,
+            target_channel: RED_BLUE_GREEN,
           }
         when :displacement
           tex_info = {
@@ -1279,8 +1287,8 @@ class Converter < Thor
 
     puts "MRAO: [#{group}] [size=#{target_size}] [depth=#{target_depth}] #{dst_path}"
 
-    # channel: [ metalness, roughness, ambient-occlusion ]
-    # DEFAULTS = glm::vec3 mrao{ 0.f, 1.f, 1.f };
+    # channel: [ ambient-occlusion, metalness, roughness, opacity ]
+    # DEFAULTS = glm::vec3 mrao{ 1.f, 0.f, 1.f, 1.f };
     target_channels = {
       Magick::RedChannel => nil,
       Magick::GreenChannel => nil,
@@ -1328,8 +1336,8 @@ class Converter < Thor
     white = white_image(target_w, target_h, target_depth)
 
     target_placeholders = {
-      Magick::RedChannel => black,
-      Magick::GreenChannel => white,
+      Magick::RedChannel => white,
+      Magick::GreenChannel => black,
       Magick::BlueChannel => white,
       Magick::AlphaChannel => white,
     }
