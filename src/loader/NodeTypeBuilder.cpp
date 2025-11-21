@@ -734,6 +734,10 @@ namespace loader
                 if (clip) {
                     clip->m_id = SID(clipData.name);
                 }
+                else {
+                    KI_WARN_OUT(fmt::format("SCENE_ERROR: CLIP_NOT_FOUND - clip={}, uniq={}",
+                        clipData.name, uniqueName));
+                }
             }
         }
         catch (animation::AnimationNotFoundError ex) {

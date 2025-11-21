@@ -21,4 +21,6 @@ namespace assimp_util {
     std::string resolvePath(
         std::string rootDir,
         std::string meshPath);
+
+    std::string normalizeName(const std::string name);
 }

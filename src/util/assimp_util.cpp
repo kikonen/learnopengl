@@ -59,4 +59,11 @@ namespace assimp_util {
 
         return {};
     }
+
+    std::string normalizeName(const std::string name)
+    {
+        const std::regex RE_SPACE{ " " };
+
+        return std::regex_replace(name, RE_SPACE, "-");
+    }
 }

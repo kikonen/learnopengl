@@ -100,7 +100,10 @@ namespace animation {
         const auto metadata = metadataLoader.load(filePath);
         if (metadata) {
             for (auto& clip : metadata->m_clips) {
-                clip.m_uniqueName = uniquePrefix + ":" + clip.m_uniqueName;
+                clip.m_uniqueName = fmt::format(
+                    "{}:{}",
+                    uniquePrefix.empty() ? "<ANIM_NAME_MISSING>" : uniquePrefix,
+                    clip.m_uniqueName);
 
                 // TODO KI clip sequences seem to be stored like
                 // 0 - 48, 48 - 98, 98 - ...
@@ -169,7 +172,7 @@ namespace animation {
         {
             const aiNodeAnim* channel = anim->mChannels[channelIdx];
             KI_INFO_OUT(fmt::format(
-                "ASSIMP: CHANNEL anim={}, channel={}, joint={}, posKeys={}, rotKeys={}, scalingKeys={}",
+                "ASSIMP: CHANNEL anim={}, channel={}, node={}, posKeys={}, rotKeys={}, scalingKeys={}",
                 animation->m_index,
                 channelIdx,
                 channel->mNodeName.C_Str(),
@@ -179,9 +182,10 @@ namespace animation {
 
             auto& bc = animation->addChannel({ channel });
             auto* rigNode = rig.findNode(bc.m_nodeName);
+
             if (rigNode) {
                 KI_INFO_OUT(fmt::format(
-                    "ASSIMP: CHANNEL_BIND_JOINT - channel={}, joint={}",
+                    "ASSIMP: CHANNEL_BIND_NODE - channel={}, node={}",
                     bc.m_nodeName,
                     rigNode->m_name
                 ));
@@ -189,7 +193,7 @@ namespace animation {
             }
             else {
                 KI_WARN_OUT(fmt::format(
-                    "ASSIMP: CHANNEL_MISSING_JOINT - channeö={}",
+                    "ASSIMP: CHANNEL_MISSING_NODE - channel={}",
                     bc.m_nodeName
                 ));
             }

@@ -98,7 +98,7 @@ namespace animation
         //std::vector<std::string> m_events;
 
         const std::string& getName() const noexcept {
-            return SID_NAME(m_id);
+            return m_id ? SID_NAME(m_id) : "<CLIP_NOT_BOUND>";
         }
     };
 }

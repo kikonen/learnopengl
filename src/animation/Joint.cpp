@@ -7,7 +7,7 @@
 namespace animation {
     Joint::Joint(const aiBone* bone)
         : m_offsetMatrix{ assimp_util::toMat4(bone->mOffsetMatrix) },
-        m_nodeName{ bone->mName.C_Str() }
+        m_nodeName{ assimp_util::normalizeName(bone->mName.C_Str()) }
     {}
 
 }

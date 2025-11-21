@@ -1,5 +1,7 @@
 #include "Animation.h"
 
+#include <fmt/format.h>
+
 #include <assimp/scene.h>
 
 #include "RigNodeChannel.h"
@@ -8,8 +10,11 @@ namespace animation {
     Animation::Animation(
         const aiAnimation* anim,
         const std::string& uniquePrefix)
-        : m_name{ anim->mName.C_Str()},
-        m_uniqueName{ uniquePrefix + ":" + m_name },
+        : m_name{ anim->mName.C_Str() },
+        m_uniqueName{ fmt::format(
+            "{}:{}",
+            uniquePrefix.empty() ? "<ANIM_NAME_MISSING>" : uniquePrefix,
+            m_name) },
         m_duration{ static_cast<float>(anim->mDuration) },
         m_ticksPerSecond{ static_cast<float>(anim->mTicksPerSecond) },
         m_index{ -1 }

@@ -45,7 +45,7 @@ namespace animation {
     {}
 
     RigNodeChannel::RigNodeChannel(const aiNodeAnim* channel)
-        : m_nodeName{ channel->mNodeName.C_Str() },
+        : m_nodeName{ assimp_util::normalizeName(channel->mNodeName.C_Str()) },
         m_nodeIndex{ -1 }
     {}
 
