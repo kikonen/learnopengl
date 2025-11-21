@@ -30,9 +30,11 @@ types:
       type: directional
       diffuse: [0.7, 0.7, 0.7, 1.0]
       intensity: 30000
-  - id: orc_01
+  - xid: orc_01
     mesh:
-      path: models/Orc_01/SK_Orc_01_Full.glb
+      #path: models/Orc_01/SK_Orc_01_Full.glb
+      #path: models/unreal/SK_Griffon.glb
+      #path: models/unreal/SK_Ursag_Full.glb
       material_modifier:
         default_programs: true
         invert_occlusion: true
@@ -44,6 +46,30 @@ types:
         { time=10 * 100 },
         vec3(0, 1, 0),
         360 * 100)
+  - id: griffon
+    mesh:
+      path: models/unreal/SK_Griffon.glb
+      material_modifier:
+        default_programs: true
+        invert_occlusion: true
+        invert_roughness: true
+      flags:
+        use_bones: true
+        use_animation: true
+      animations:
+        - name: fly_backward
+          path: ANIM_Griffon_FlyBackwardsStationary.FBX
+          clip: Unreal Take
+    script: |
+      cmd:rotate(
+        self.handle,
+        { time=10 * 100 },
+        vec3(0, 1, 0),
+        360 * 100)
+
+      cmd:animation_play(
+        self.handle,
+        { name = "fly_backward" })
 
 nodes:
   - type: player
@@ -51,5 +77,5 @@ nodes:
     active: true
   - type: dir_light
     pos: [-15, 25, 25]
-  - type: orc_01
+  - type: griffon
     pos: [0.0, 1, 0.0]
