@@ -107,6 +107,7 @@ void ImageTexture::prepareNormal()
         //m_specialTexture = true;
     }
     else if (m_channels == 2) {
+        // NOTE KI in PNG channel 2 is alpha
         m_format = GL_RG;
         m_internalFormat = GL_TEXTURE_SWIZZLE_RGBA;
     }

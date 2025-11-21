@@ -169,7 +169,7 @@ void Image::checkAlpha()
     m_hasAlpha = false;
 
     if (!m_data) return;
-    if (m_channels != 4) return;
+    if (m_channels != 4 && m_channels != 2) return;
 
     unsigned char* srcByteData{ nullptr };
     unsigned short* srcShortData{ nullptr };
@@ -181,7 +181,7 @@ void Image::checkAlpha()
         srcByteData = m_data;
     }
 
-    const auto alphaIndex = 3;
+    const auto alphaIndex = m_channels == 4 ? 3 : 1;
     bool opaque = true;
     for (size_t x = 0; x < m_height; x++) {
         for (size_t y = 0; y < m_width; y++) {
