@@ -6,6 +6,8 @@ struct ResolvedMaterial {
   // MRA: [ambient-occlusion, metalness, roughness]
   vec3 mra;
 
+  uint flags;
+
   float ssao;
 
   float reflection;

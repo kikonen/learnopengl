@@ -35,6 +35,9 @@ types:
       path: models/Orc_01/SK_Orc_01_Full.glb
       material_modifier:
         default_programs: true
+        invert_occlusion: true
+        #invert_metalness: true
+        invert_roughness: true
     script: |
       cmd:rotate(
         self.handle,

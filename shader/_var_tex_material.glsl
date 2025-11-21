@@ -6,8 +6,24 @@
 {
   const uint i = materialIndex;
 
-  vec4 mrao = u_materials[i].mrao.rgba *
-    texture(sampler2D(u_materials[i].mraoMapTex), texCoord).rgba;
+  material.flags = u_materials[i].flags;
+
+  vec4 mraoTex = texture(sampler2D(u_materials[i].mraoMapTex), texCoord).rgba;
+
+  if ((material.flags & MATERIAL_INVERT_OCCLUSION) != 0)
+  {
+    mraoTex.r = 1.0 - mraoTex.r;
+  }
+  if ((material.flags & MATERIAL_INVERT_METALNESS) != 0)
+  {
+    mraoTex.g = 1.0 - mraoTex.g;
+  }
+  if ((material.flags & MATERIAL_INVERT_ROUGHNESS) != 0)
+  {
+    mraoTex.b = 1.0 - mraoTex.b;
+  }
+
+  vec4 mrao = u_materials[i].mrao.rgba * mraoTex.rgba;
 
   material.diffuse = u_materials[i].diffuse *
     texture(sampler2D(u_materials[i].diffuseTex), texCoord);

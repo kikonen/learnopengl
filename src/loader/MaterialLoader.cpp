@@ -242,6 +242,18 @@ namespace loader {
                 material.mrao = glm::vec4(vec[0], vec[1], vec[2], vec[3]);
                 fields.mrao = true;
             }
+            else if (k == "invert_occlusion") {
+                material.m_invertOcclusion = readBool(v);
+                fields.invertOcclusion = true;
+            }
+            else if (k == "invert_metalness") {
+                material.m_invertMetalness = readBool(v);
+                fields.invertMetalness = true;
+            }
+            else if (k == "invert_roughness") {
+                material.m_invertRoughness = readBool(v);
+                fields.invertRoughness = true;
+            }
             else if (k == "pattern") {
                 material.pattern = readInt(v);
                 fields.pattern = true;
@@ -557,6 +569,10 @@ namespace loader {
         if (f.parallaxDepth) m.parallaxDepth = mod.parallaxDepth;
 
         if (f.mrao) m.mrao = mod.mrao;
+
+        if (f.invertOcclusion) m.m_invertOcclusion = mod.m_invertOcclusion;
+        if (f.invertMetalness) m.m_invertMetalness = mod.m_invertMetalness;
+        if (f.invertRoughness) m.m_invertRoughness = mod.m_invertRoughness;
 
         if (f.alpha) m.alpha = mod.alpha;
         if (f.blend) m.blend = mod.blend;

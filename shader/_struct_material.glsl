@@ -1,3 +1,7 @@
+#define MATERIAL_INVERT_OCCLUSION 1
+#define MATERIAL_INVERT_METALNESS 2
+#define MATERIAL_INVERT_ROUGHNESS 4
+
 // NOTE KI https://stackoverflow.com/questions/38172696/should-i-ever-use-a-vec3-inside-of-a-uniform-buffer-or-shader-storage-buffer-o
 struct Material {
   vec4 diffuse;
@@ -25,7 +29,7 @@ struct Material {
 
   uvec2 custom1Tex;
 
-  int pattern;
+  uint flags;
 
   float reflection;
   float refraction;

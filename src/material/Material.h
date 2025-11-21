@@ -113,6 +113,8 @@ public:
 
     const MaterialSSBO toSSBO() const;
 
+    unsigned int getFlags() const;
+
     const float getRefractionRatio() const noexcept{
         return refractionRatio;
     }
@@ -212,6 +214,10 @@ public:
     // - occlusion: 0 = fully occluded, 1 = no occlusion
     // - opacity:   0 = transparent, 1 = opaque
     glm::vec4 mrao{ 1.f, 0.f, 1.f, 1.f };
+
+    bool m_invertOcclusion : 1{ false };
+    bool m_invertMetalness : 1{ false };
+    bool m_invertRoughness : 1{ false };
 
     //// A material can also have an optical density for its surface. This is also known as index of refraction.
     //float ni = 0.0f;

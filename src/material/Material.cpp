@@ -32,6 +32,10 @@
 namespace {
     IdGenerator<ki::material_id> ID_GENERATOR;
 
+    constexpr unsigned int MATERIAL_INVERT_OCCLUSION = 1;
+    constexpr unsigned int MATERIAL_INVERT_METALNESS = 2;
+    constexpr unsigned int MATERIAL_INVERT_ROUGHNESS = 4;
+
     const glm::vec4 WHITE_RGBA{ 1.f };
     const glm::vec4 BLACK_RGBA{ 0.f };
 
@@ -548,7 +552,7 @@ const MaterialSSBO Material::toSSBO() const
 
         getTexHandle(TextureType::map_custom_1, 0),
 
-        pattern,
+        getFlags(),
 
         reflection,
         refraction,
@@ -565,4 +569,19 @@ const MaterialSSBO Material::toSSBO() const
         layersDepth,
         parallaxDepth,
     };
+}
+
+unsigned int Material::getFlags() const
+{
+    unsigned int flags = 0;
+    if (m_invertOcclusion) {
+        flags |= MATERIAL_INVERT_OCCLUSION;
+    }
+    if (m_invertMetalness) {
+        flags |= MATERIAL_INVERT_METALNESS;
+    }
+    if (m_invertRoughness) {
+        flags |= MATERIAL_INVERT_ROUGHNESS;
+    }
+    return flags;
 }
