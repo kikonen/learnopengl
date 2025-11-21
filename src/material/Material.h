@@ -215,6 +215,10 @@ public:
     // - opacity:   0 = transparent, 1 = opaque
     glm::vec4 mrao{ 1.f, 0.f, 1.f, 1.f };
 
+    float m_occlusionFactor{ 1.f };
+    float m_metalnessFactor{ 1.f };
+    float m_roughnessFactor{ 1.f };
+
     bool m_invertOcclusion : 1{ false };
     bool m_invertMetalness : 1{ false };
     bool m_invertRoughness : 1{ false };

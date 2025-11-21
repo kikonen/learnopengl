@@ -831,6 +831,12 @@ namespace mesh
             }
         }
         {
+            aiColor4D emission;
+            if (aiGetMaterialColor(src, AI_MATKEY_COLOR_EMISSIVE, &emission) == AI_SUCCESS) {
+                material.ke = assimp_util::toVec4(emission);
+            }
+        }
+        {
             //aiColor4D specular;
             //if (aiGetMaterialColor(src, AI_MATKEY_COLOR_SPECULAR, &specular) == AI_SUCCESS) {
             //    material.ks = assimp_util::toVec4(specular);
@@ -845,22 +851,16 @@ namespace mesh
         }
         {
             // Get metallic factor
-            float metallic = 1.0f;
-            if (src->Get(AI_MATKEY_METALLIC_FACTOR, metallic) == AI_SUCCESS) {
-                material.mrao.g = metallic;
+            float metallicFactor = 1.0f;
+            if (src->Get(AI_MATKEY_METALLIC_FACTOR, metallicFactor) == AI_SUCCESS) {
+                material.m_metalnessFactor = metallicFactor;
             }
         }
         {
             // Get roughness factor
-            float roughness = 1.0f;
-            if (src->Get(AI_MATKEY_ROUGHNESS_FACTOR, roughness) == AI_SUCCESS) {
-                material.mrao.b = roughness;
-            }
-        }
-        {
-            aiColor4D emission;
-            if (aiGetMaterialColor(src, AI_MATKEY_COLOR_EMISSIVE, &emission) == AI_SUCCESS) {
-                material.ke = assimp_util::toVec4(emission);
+            float roughnessFactor = 1.0f;
+            if (src->Get(AI_MATKEY_ROUGHNESS_FACTOR, roughnessFactor) == AI_SUCCESS) {
+                material.m_roughnessFactor = roughnessFactor;
             }
         }
 

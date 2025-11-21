@@ -531,11 +531,17 @@ const MaterialSSBO Material::toSSBO() const
         spritesY++;
     }
 
+    const glm::vec4 mraoFactor{
+        m_occlusionFactor,
+        m_metalnessFactor,
+        m_roughnessFactor,
+        1.f };
+
     return {
         kd,
         hasBoundTex(TextureType::emission) ? WHITE_RGBA : ke,
 
-        hasBoundTex(TextureType::map_mrao) ? WHITE_RGBA : mrao,
+        hasBoundTex(TextureType::map_mrao) ? mraoFactor : mrao,
 
         getTexHandle(TextureType::diffuse, whitePx),
         getTexHandle(TextureType::emission, blackPx),
