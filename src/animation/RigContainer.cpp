@@ -314,7 +314,7 @@ namespace animation {
             const RigSocket* socket = rigNode.m_socketIndex >= 0 ? &m_sockets[rigNode.m_socketIndex] : nullptr;
 
             const auto& line = fmt::format(
-                "JOIN: [{}{}.{}, name={}{}{}{}]",
+                "NODE: [{}{}.{}, name={}{}{}{}]",
                 rigNode.m_jointRequired ? "+" : "-",
                 rigNode.m_parentIndex,
                 rigNode.m_index,
@@ -404,7 +404,7 @@ namespace animation {
 
         for (const auto& socket : m_sockets) {
             const auto& line = fmt::format(
-                "SOCK: {}.{}, joint={}, pos={}, rot={}, scale={}, meshScale={}, jointIndex={}",
+                "SOCK: {}.{}, joint={}, pos={}, rot={}, scale={}, meshScale={}, nodeIndex={}",
                 socket.m_index,
                 socket.m_name,
                 socket.m_jointName,

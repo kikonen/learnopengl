@@ -25,22 +25,24 @@ namespace mesh {
         auto& vertexJoints = mesh->m_vertexJoints;
         auto& indeces = mesh->m_indeces;
 
-        vertices.reserve(rig.m_jointContainer.m_joints.size());
-        vertexJoints.reserve(rig.m_jointContainer.m_joints.size());
-        indeces.reserve(rig.m_jointContainer.m_joints.size() * 2);
+        const size_t expectedCount = rig.m_nodes.size();
 
-        std::map<int16_t, int16_t> jointToVertex;
+        vertices.reserve(expectedCount);
+        vertexJoints.reserve(expectedCount);
+        indeces.reserve(expectedCount * 2);
 
-        auto findVertexIndex = [&jointToVertex](uint16_t jointIndex) {
-            const auto& it = jointToVertex.find(jointIndex);
-            return it != jointToVertex.end() ? it->second : -1;
+        std::map<int16_t, int16_t> nodeToVertex;
+
+        auto findVertexIndex = [&nodeToVertex](uint16_t nodeIndex) {
+            const auto& it = nodeToVertex.find(nodeIndex);
+            return it != nodeToVertex.end() ? it->second : -1;
         };
 
         // generate initial vertices
         for (auto& rigNode : rig.m_nodes) {
             if (rigNode.m_jointIndex < 0) continue;
 
-            jointToVertex.insert({ rigNode.m_index, static_cast<int16_t>(vertices.size()) });
+            nodeToVertex.insert({ rigNode.m_index, static_cast<int16_t>(vertices.size()) });
             {
                 auto& vertex = vertices.emplace_back();
                 const auto* joint = rig.m_jointContainer.getJoint(rigNode.m_jointIndex);
@@ -62,11 +64,11 @@ namespace mesh {
 
             int parentIndex = rigNode.m_parentIndex;
             while (parentIndex >= 0) {
-                auto& parentJoint = rig.m_nodes[parentIndex];
+                auto& parentNode = rig.m_nodes[parentIndex];
 
                 // NOTE KI MUST skip non joint parents
-                if (parentJoint.m_jointIndex >= 0) {
-                    int16_t parentVertexIndex = findVertexIndex(parentJoint.m_index);
+                if (parentNode.m_jointIndex >= 0) {
+                    int16_t parentVertexIndex = findVertexIndex(parentNode.m_index);
                     assert(parentVertexIndex >= 0);
 
                     indeces.push_back(parentVertexIndex);
@@ -74,7 +76,7 @@ namespace mesh {
                     break;
                 }
 
-                parentIndex = parentJoint.m_parentIndex;
+                parentIndex = parentNode.m_parentIndex;
             }
         }
 
@@ -101,22 +103,24 @@ namespace mesh {
         auto& vertexJoints = mesh->m_vertexJoints;
         auto& indeces = mesh->m_indeces;
 
-        vertices.reserve(rig.m_jointContainer.m_joints.size());
-        vertexJoints.reserve(rig.m_jointContainer.m_joints.size());
-        indeces.reserve(rig.m_jointContainer.m_joints.size());
+        const size_t expetedCount = rig.m_nodes.size();
 
-        std::map<int16_t, int16_t> jointToVertex;
+        vertices.reserve(expetedCount);
+        vertexJoints.reserve(expetedCount);
+        indeces.reserve(expetedCount);
 
-        auto findVertexIndex = [&jointToVertex](uint16_t nodeIndex) {
-            const auto& it = jointToVertex.find(nodeIndex);
-            return it != jointToVertex.end() ? it->second : -1;
+        std::map<int16_t, int16_t> nodeToVertex;
+
+        auto findVertexIndex = [&nodeToVertex](uint16_t nodeIndex) {
+            const auto& it = nodeToVertex.find(nodeIndex);
+            return it != nodeToVertex.end() ? it->second : -1;
             };
 
         // generate initial vertices
         for (auto& rigNode : rig.m_nodes) {
             if (rigNode.m_jointIndex < 0) continue;
 
-            jointToVertex.insert({ rigNode.m_index, static_cast<int16_t>(vertices.size()) });
+            nodeToVertex.insert({ rigNode.m_index, static_cast<int16_t>(vertices.size()) });
             {
                 auto& vertex = vertices.emplace_back();
                 const auto* joint = rig.m_jointContainer.getJoint(rigNode.m_jointIndex);
