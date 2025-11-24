@@ -117,14 +117,11 @@ namespace {
         const std::vector<unsigned char> data,
         const std::string& outputPath)
     {
-        FILE* file = fopen(outputPath.c_str(), "wb");
-        if (!file) {
-            KI_ERROR(fmt::format("WRITE_FAIL: {}", outputPath));
-            return false;
-        }
-
-        fwrite(data.data(), 1, data.size(), file);
-        fclose(file);
+        std::ofstream file;
+        file.open(outputPath.c_str());
+        
+        file.write((char*)data.data(), data.size());
+        file.close();
 
         KI_INFO_OUT(fmt::format("WROTE: {}", outputPath));
 
@@ -133,7 +130,7 @@ namespace {
 
     std::shared_ptr<InlineTexture> loadEmbeddedTexture(
         const std::string& name,
-        const const aiTexture* texture,
+        const aiTexture* texture,
         TextureMapping texInfo,
         TextureSpec spec)
     {
@@ -229,7 +226,7 @@ namespace {
         const auto materialName = const_cast<aiMaterial*>(material)->GetName().C_Str();
         unsigned int texCount = material->GetTextureCount(texInfo.asssimpType);
 
-        for (int i = 0; i < texCount; i++) {
+        for (unsigned int i = 0; i < texCount; i++) {
             int texIndex = atoi(path.c_str() + 1);
             const auto& texName = fmt::format(
                 "inline-{}-{}-{}-{}",
@@ -763,7 +760,7 @@ namespace mesh
             const auto& vw = bone->mWeights[i];
             //const auto mat = assimp_util::toMat4(bone->mOffsetMatrix);
 
-            size_t vertexIndex = bone->mWeights[i].mVertexId;
+            size_t vertexIndex = vw.mVertexId;
 
             assert(vertexIndex < modelMesh.m_vertices.size());
 
@@ -771,15 +768,16 @@ namespace mesh
             auto& vb = vertexJoints[vertexIndex];
             vb.addJoint(joint.m_index, vw.mWeight);
 
-            if (m_debug) {
-                //KI_INFO_OUT(fmt::format(
-            //    "ASSIMP: BONE mesh_set={}, mesh={}, bone={}, vertex={}, vertexJoints={}, vertexWeights={}",
-            //    meshSet.m_name,
-            //    meshIndex,
-            //    joint.m_index,
-            //    vertexIndex,
-            //    vb.m_boneIds,
-            //    vb.m_weights));
+            if (false && m_debug) {
+                KI_INFO_OUT(fmt::format(
+                    "ASSIMP: JOINT_VERTEX_BIND mesh_set={}, mesh={}, node={}, joint={}, vertex={}, vertexJoints={}, vertexWeights={}",
+                    meshSet.m_name,
+                    meshIndex,
+                    joint.m_nodeIndex,
+                    joint.m_index,
+                    vertexIndex,
+                    vb.m_jointIds,
+                    vb.m_weights));
             }
         }
     }

@@ -165,7 +165,9 @@ namespace loader
         }
         else
         {
-            resolveMeshes(type, typeData);
+            if (typeData.enabled) {
+                resolveMeshes(type, typeData);
+            }
 
             // NOTE KI container does not have mesh itself, but it can setup
             // material & program for contained nodes

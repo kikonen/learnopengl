@@ -8,6 +8,8 @@
 
 namespace {
     constexpr int INITIAL_SIZE = 10000;
+
+    const glm::mat4 ID_MAT{ 1.f };
 }
 
 namespace animation
@@ -68,7 +70,7 @@ namespace animation
             }
 
             for (int i = 0; i < count; i++) {
-                m_transforms[index + i] = glm::mat4{ 1.f };
+                m_transforms[index + i] = ID_MAT;
             }
 
             markDirty(index, count);

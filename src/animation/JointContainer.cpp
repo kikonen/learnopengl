@@ -27,7 +27,7 @@ namespace animation {
     {
         int16_t index;
 
-        std::string nodeName{ bone->mName.C_Str() };
+        const auto& nodeName = assimp_util::normalizeName(bone->mName.C_Str());
         const auto& it = m_nodeNameToIndex.find(nodeName);
         if (it != m_nodeNameToIndex.end()) {
             index = it->second;
