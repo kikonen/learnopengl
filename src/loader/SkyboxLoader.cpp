@@ -18,7 +18,6 @@
 #include "shader/ProgramRegistry.h"
 
 #include "registry/Registry.h"
-#include "registry/ModelRegistry.h"
 #include "registry/NodeTypeRegistry.h"
 
 #include "scene/SkyboxMaterial.h"

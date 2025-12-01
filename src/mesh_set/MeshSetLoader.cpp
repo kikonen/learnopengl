@@ -1,22 +1,23 @@
-#include "ModelLoader.h"
+#include "MeshSetLoader.h"
 
 #include "util/util.h"
 
 #include "mesh/MeshSet.h"
 
 
-namespace mesh {
-    ModelLoader::ModelLoader(
+namespace mesh_set
+{
+    MeshSetLoader::MeshSetLoader(
         std::shared_ptr<std::atomic_bool> alive)
         : m_alive(alive)
     {
     }
 
-    ModelLoader::~ModelLoader()
+    MeshSetLoader::~MeshSetLoader()
     {
     }
 
-    bool ModelLoader::load(
+    bool MeshSetLoader::load(
         mesh::MeshSet& meshSet,
         Material* defaultMaterial,
         bool forceDefaultMaterial)

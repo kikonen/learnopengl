@@ -69,7 +69,6 @@
 #include "Registry.h"
 #include "NodeTypeRegistry.h"
 #include "EntityRegistry.h"
-#include "ModelRegistry.h"
 #include "ControllerRegistry.h"
 
 namespace {

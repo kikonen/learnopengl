@@ -12,15 +12,16 @@
 #include "util/Log.h"
 #include "util/assimp_util.h"
 
-#include "RigContainer.h"
-#include "Animation.h"
-#include "RigNodeChannel.h"
+#include "animation/RigContainer.h"
+#include "animation/Animation.h"
+#include "animation/RigNodeChannel.h"
+#include "animation/Clip.h"
+#include "animation/Metadata.h"
 
 #include "MetadataLoader.h"
-#include "Metadata.h"
-#include "Clip.h"
 
-namespace animation {
+namespace mesh_set
+{
     AnimationLoader::AnimationLoader() = default;
     AnimationLoader::~AnimationLoader() = default;
 
@@ -96,7 +97,7 @@ namespace animation {
             animationIndeces.push_back(animIndex);
         }
 
-        animation::MetadataLoader metadataLoader{};
+        MetadataLoader metadataLoader{};
         const auto metadata = metadataLoader.load(filePath);
         if (metadata) {
             for (auto& clip : metadata->m_clips) {
@@ -182,6 +183,12 @@ namespace animation {
 
             auto& bc = animation->addChannel({ channel });
             auto* rigNode = rig.findNode(bc.m_nodeName);
+
+            if (!rigNode) {
+                //if (bc.m_nodeName.starts_with("root_")) {
+                //    rigNode = rig.findNode("root");
+                //}
+            }
 
             if (rigNode) {
                 KI_INFO_OUT(fmt::format(

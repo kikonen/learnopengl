@@ -8,9 +8,16 @@
 
 struct aiAnimation;
 
-namespace animation {
-    struct Animation {
-        friend class AnimationLoader;
+namespace assimp
+{
+    class AnimationLoader;
+}
+
+namespace animation
+{
+    struct Animation
+    {
+        friend class mesh_set::AnimationLoader;
         friend struct RigContainer;
         friend struct ClipContainer;
 

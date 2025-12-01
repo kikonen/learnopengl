@@ -22,25 +22,29 @@ struct aiBone;
 
 namespace mesh
 {
-    class AssimpLoader;
     class ModelMesh;
+}
+
+namespace mesh_set
+{
+    class AssimpLoader;
+    class AnimationLoader;
     class RigNodeTreeGenerator;
 }
 
 namespace animation
 {
     class AnimationSystem;
-    class AnimationLoader;
     class Animator;
     struct RigNode;
 
     struct RigContainer
     {
+        friend class mesh_set::AssimpLoader;
+        friend class mesh_set::AnimationLoader;
+        friend class mesh_set::RigNodeTreeGenerator;
         friend class AnimationSystem;
-        friend class AnimationLoader;
         friend class Animator;
-        friend class mesh::AssimpLoader;
-        friend class mesh::RigNodeTreeGenerator;
 
     public:
         RigContainer(const std::string& name);

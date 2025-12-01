@@ -38,7 +38,7 @@
 #include "nav/NavigationSystem.h"
 
 #include "registry/NodeRegistry.h"
-#include "registry/ModelRegistry.h"
+#include "registry/MeshSetRegistry.h"
 #include "registry/EntityRegistry.h"
 #include "registry/ViewportRegistry.h"
 #include "registry/ControllerRegistry.h"
@@ -104,7 +104,7 @@ void Registry::clear()
     //text::FontRegistry::get().clear();
 
     ControllerRegistry::get().clear();
-    ModelRegistry::get().clear();
+    MeshSetRegistry::get().clear();
     EntityRegistry::get().clear();
     SelectionRegistry::get().clear();
 
@@ -125,7 +125,7 @@ void Registry::prepare(const PrepareContext& ctx)
 
     MaterialRegistry::get().prepare();
     EntityRegistry::get().prepare();
-    ModelRegistry::get().prepare(m_alive);
+    MeshSetRegistry::get().prepare(m_alive);
 
     NodeRegistry::get().prepare(&m_engine);
     SelectionRegistry::get().prepare(this);

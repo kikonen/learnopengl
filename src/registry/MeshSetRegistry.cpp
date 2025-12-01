@@ -1,4 +1,4 @@
-#include "ModelRegistry.h"
+#include "MeshSetRegistry.h"
 
 #include <fmt/format.h>
 
@@ -12,7 +12,7 @@
 #include "mesh/vao/TexturedVAO.h"
 #include "mesh/vao/SkinnedVAO.h"
 
-#include "mesh/AssimpLoader.h"
+#include "mesh_set/AssimpLoader.h"
 
 #include "render/RenderContext.h"
 
@@ -20,48 +20,48 @@ namespace
 {
     thread_local std::exception_ptr lastException = nullptr;
 
-    static ModelRegistry* s_registry{ nullptr };
+    static MeshSetRegistry* s_registry{ nullptr };
 }
 
-void ModelRegistry::init() noexcept
+void MeshSetRegistry::init() noexcept
 {
     assert(!s_registry);
-    s_registry = new ModelRegistry();
+    s_registry = new MeshSetRegistry();
 }
 
-void ModelRegistry::release() noexcept
+void MeshSetRegistry::release() noexcept
 {
     auto* s = s_registry;
     s_registry = nullptr;
     delete s;
 }
 
-ModelRegistry& ModelRegistry::get() noexcept
+MeshSetRegistry& MeshSetRegistry::get() noexcept
 {
     assert(s_registry);
     return *s_registry;
 }
 
-ModelRegistry::ModelRegistry()
+MeshSetRegistry::MeshSetRegistry()
 {
     clear();
 }
 
-ModelRegistry::~ModelRegistry() {
+MeshSetRegistry::~MeshSetRegistry() {
     clear();
 }
 
-void ModelRegistry::clear()
+void MeshSetRegistry::clear()
 {
     m_meshes.clear();
 }
 
-void ModelRegistry::prepare(std::shared_ptr<std::atomic_bool> alive)
+void MeshSetRegistry::prepare(std::shared_ptr<std::atomic_bool> alive)
 {
     m_alive = alive;
 }
 
-std::shared_future<std::shared_ptr<mesh::MeshSet>> ModelRegistry::getMeshSet(
+std::shared_future<std::shared_ptr<mesh::MeshSet>> MeshSetRegistry::getMeshSet(
     std::string_view id,
     std::string_view rootDir,
     std::string_view meshPath,
@@ -99,7 +99,7 @@ std::shared_future<std::shared_ptr<mesh::MeshSet>> ModelRegistry::getMeshSet(
     return future;
 }
 
-std::shared_future<std::shared_ptr<mesh::MeshSet>> ModelRegistry::startLoad(
+std::shared_future<std::shared_ptr<mesh::MeshSet>> MeshSetRegistry::startLoad(
     std::shared_ptr<mesh::MeshSet> meshSet)
 {
     std::promise<std::shared_ptr<mesh::MeshSet>> promise;
@@ -114,10 +114,10 @@ std::shared_future<std::shared_ptr<mesh::MeshSet>> ModelRegistry::startLoad(
 
                 KI_DEBUG(fmt::format("START_LOADER: {}", meshSet->str()));
 
-                std::unique_ptr<mesh::ModelLoader> loader;
+                std::unique_ptr<mesh_set::MeshSetLoader> loader;
 
                 if (assets.assimpLoaderEnabled) {
-                    loader = std::make_unique<mesh::AssimpLoader>(m_alive, assets.assimpDebug);
+                    loader = std::make_unique<mesh_set::AssimpLoader>(m_alive, assets.assimpDebug);
                 }
                 else {
                     throw "no loader";

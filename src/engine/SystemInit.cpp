@@ -30,7 +30,7 @@
 
 #include "registry/NodeTypeRegistry.h"
 #include "registry/NodeRegistry.h"
-#include "registry/ModelRegistry.h"
+#include "registry/MeshSetRegistry.h"
 #include "registry/EntityRegistry.h"
 #include "registry/ViewportRegistry.h"
 #include "registry/ControllerRegistry.h"
@@ -43,7 +43,7 @@ void SystemInit::init() noexcept
 
     ImageRegistry::init();
     ProgramRegistry::init();
-    ModelRegistry::init();
+    MeshSetRegistry::init();
     text::FontRegistry::init();
 
     MaterialRegistry::init();
@@ -97,7 +97,7 @@ void SystemInit::release() noexcept
     ControllerRegistry::release();
     NodeRegistry::release();
     NodeTypeRegistry::release();
-    ModelRegistry::release();
+    MeshSetRegistry::release();
     EntityRegistry::release();
     ViewportRegistry::release();
     ControllerRegistry::release();

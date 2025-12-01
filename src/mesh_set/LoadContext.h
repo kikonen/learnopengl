@@ -12,8 +12,10 @@ namespace animation {
     struct RigContainer;
 }
 
-namespace mesh {
-    struct LoadContext {
+namespace mesh_set
+{
+    struct LoadContext
+    {
         LoadContext(std::shared_ptr<animation::RigContainer> rig)
             : m_rig{ rig }
         {}

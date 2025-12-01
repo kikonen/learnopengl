@@ -45,13 +45,14 @@
 #include "component/definition/TextGeneratorDefinition.h"
 #include "component/definition/ParticleGeneratorDefinition.h"
 
-#include "animation/AnimationLoader.h"
 #include "animation/RigContainer.h"
 #include "animation/RigSocket.h"
 #include "animation/Clip.h"
 
+#include "mesh_set/AnimationLoader.h"
+
 #include "registry/Registry.h"
-#include "registry/ModelRegistry.h"
+#include "registry/MeshSetRegistry.h"
 #include "registry/NodeTypeRegistry.h"
 
 #include "Loaders.h"
@@ -536,7 +537,7 @@ namespace loader
 
         switch (meshData.type) {
         case MeshDataType::mesh: {
-            auto future = ModelRegistry::get().getMeshSet(
+            auto future = MeshSetRegistry::get().getMeshSet(
                 meshData.id,
                 assets.modelsDir,
                 meshData.path,
@@ -700,7 +701,7 @@ namespace loader
 
         const auto& assets = Assets::get();
 
-        animation::AnimationLoader loader{};
+        mesh_set::AnimationLoader loader{};
 
         std::string filePath;
 
@@ -742,7 +743,7 @@ namespace loader
                 }
             }
         }
-        catch (animation::AnimationNotFoundError ex) {
+        catch (mesh_set::AnimationNotFoundError ex) {
             KI_CRITICAL(fmt::format("SCENE_ERROR: LOAD_ANIMATION - {}", ex.what()));
             //throw std::current_exception();
         }

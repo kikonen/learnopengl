@@ -2,14 +2,20 @@
 
 #include <memory>
 
-namespace animation {
+namespace animation
+{
     struct RigContainer;
 }
 
-namespace mesh {
+namespace mesh
+{
     class VaoMesh;
+}
 
-    class RigNodeTreeGenerator {
+namespace mesh_set
+{
+    class RigNodeTreeGenerator
+    {
     public:
         RigNodeTreeGenerator() = default;
 

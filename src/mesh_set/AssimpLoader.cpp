@@ -1,8 +1,10 @@
 #include "AssimpLoader.h"
 
 #include <iostream>
+#include <fstream>
 #include <filesystem>
 #include <mutex>
+#include <set>
 
 #include <glm/gtx/matrix_decompose.hpp>
 #include <fmt/format.h>
@@ -27,18 +29,18 @@
 #include "animation/JointContainer.h"
 #include "animation/Joint.h"
 #include "animation/MeshInfo.h"
-#include "animation/AnimationLoader.h"
 
-#include "mesh/LoadContext.h"
 #include "mesh/MeshSet.h"
 #include "mesh/ModelMesh.h"
-
-#include "mesh/RigNodeTreeGenerator.h"
 
 #include "material/InlineTexture.h"
 #include "material/Image.h"
 
 #include "util/assimp_util.h"
+
+#include "AnimationLoader.h"
+#include "LoadContext.h"
+#include "RigNodeTreeGenerator.h"
 
 namespace {
     struct TextureMapping
@@ -253,12 +255,12 @@ namespace {
     }
 }
 
-namespace mesh
+namespace mesh_set
 {
     AssimpLoader::AssimpLoader(
         std::shared_ptr<std::atomic_bool> alive,
         bool debug)
-        : ModelLoader{ alive },
+        : MeshSetLoader{ alive },
         m_debug{ debug }
     {}
 
@@ -344,7 +346,7 @@ namespace mesh
         }
 
         auto rig = std::make_shared<animation::RigContainer>(meshSet.m_filePath);
-        mesh::LoadContext ctx{ rig };
+        LoadContext ctx{ rig };
 
         processMaterials(meshSet, ctx.m_materials, ctx.m_materialMapping, scene);
 
@@ -429,8 +431,8 @@ namespace mesh
     }
 
     void AssimpLoader::collectNodes(
-        mesh::LoadContext& ctx,
-        MeshSet& meshSet,
+        LoadContext& ctx,
+        mesh::MeshSet& meshSet,
         std::vector<const aiNode*>& assimpNodes,
         const aiScene* scene,
         const aiNode* node,
@@ -482,7 +484,7 @@ namespace mesh
     }
 
     void AssimpLoader::dumpMetaData(
-        MeshSet& meshSet,
+        mesh::MeshSet& meshSet,
         const std::vector<animation::RigNode>& nodes,
         const std::vector<const aiNode*>& assimpNodes)
     {
@@ -492,7 +494,7 @@ namespace mesh
     }
 
     void AssimpLoader::dumpMetaData(
-        MeshSet& meshSet,
+        mesh::MeshSet& meshSet,
         const animation::RigNode& RigNode,
         const aiNode* node)
     {
@@ -572,12 +574,12 @@ namespace mesh
     }
 
     void AssimpLoader::loadAnimations(
-        mesh::LoadContext& ctx,
+        LoadContext& ctx,
         const std::string& namePrefix,
         const std::string& filePath,
         const aiScene* scene)
     {
-        animation::AnimationLoader loader{};
+        AnimationLoader loader{};
 
         loader.loadAnimations(
             *ctx.m_rig,
@@ -587,8 +589,8 @@ namespace mesh
     }
 
     void AssimpLoader::processMeshes(
-        mesh::LoadContext& ctx,
-        MeshSet& meshSet,
+        LoadContext& ctx,
+        mesh::MeshSet& meshSet,
         const std::vector<const aiNode*>& assimpNodes,
         const aiScene* scene)
     {
@@ -645,10 +647,10 @@ namespace mesh
     }
 
     void AssimpLoader::processMesh(
-        mesh::LoadContext& ctx,
-        MeshSet& meshSet,
+        LoadContext& ctx,
+        mesh::MeshSet& meshSet,
         animation::RigNode& RigNode,
-        ModelMesh& modelMesh,
+        mesh::ModelMesh& modelMesh,
         size_t meshIndex,
         const aiMesh* mesh)
     {
@@ -717,8 +719,8 @@ namespace mesh
     }
 
     void AssimpLoader::processMeshFace(
-        mesh::LoadContext& ctx,
-        ModelMesh& modelMesh,
+        LoadContext& ctx,
+        mesh::ModelMesh& modelMesh,
         size_t meshIndex,
         size_t faceIndex,
         const aiMesh* mesh,
@@ -733,9 +735,9 @@ namespace mesh
     }
 
     void AssimpLoader::processMeshBone(
-        mesh::LoadContext& ctx,
-        MeshSet& meshSet,
-        ModelMesh& modelMesh,
+        LoadContext& ctx,
+        mesh::MeshSet& meshSet,
+        mesh::ModelMesh& modelMesh,
         size_t meshIndex,
         const aiMesh* mesh,
         const aiBone* bone)
@@ -754,6 +756,8 @@ namespace mesh
         }
 
         auto& vertexJoints = modelMesh.m_vertexJoints;
+        vertexJoints.reserve(modelMesh.m_vertices.size());
+        vertexJoints.resize(modelMesh.m_vertices.size());
 
         for (size_t i = 0; i < bone->mNumWeights; i++)
         {
@@ -766,7 +770,30 @@ namespace mesh
 
             vertexJoints.resize(std::max(vertexIndex + 1, vertexJoints.size()));
             auto& vb = vertexJoints[vertexIndex];
-            vb.addJoint(joint.m_index, vw.mWeight);
+
+            float weight = vw.mWeight;
+            if (true) {
+                if (std::isnan(weight))
+                    continue;
+
+                if (weight != 0 && std::fabsf(weight) < std::numeric_limits<float>::min()) {
+                    int x = 0;
+                    weight = 0.f;
+                }
+                if (weight < 0) {
+                    int x = 0;
+                    weight = 0.f;
+                }
+                if (weight > 1) {
+                    int x = 0;
+                    weight = 1.f;
+                }
+
+                if (!weight)
+                    continue;
+            }
+
+            vb.addJoint(joint.m_index, weight);
 
             if (false && m_debug) {
                 KI_INFO_OUT(fmt::format(
@@ -783,7 +810,7 @@ namespace mesh
     }
 
     void AssimpLoader::processMaterials(
-        const MeshSet& meshSet,
+        const mesh::MeshSet& meshSet,
         std::vector<Material>& materials,
         std::map<size_t, size_t>& materialMapping,
         const aiScene* scene)
@@ -797,7 +824,7 @@ namespace mesh
     }
 
     Material AssimpLoader::processMaterial(
-        const MeshSet& meshSet,
+        const mesh::MeshSet& meshSet,
         const aiScene* scene,
         const aiMaterial* src)
     {
@@ -975,7 +1002,7 @@ namespace mesh
     }
 
     std::string AssimpLoader::findTexturePath(
-        const MeshSet& meshSet,
+        const mesh::MeshSet& meshSet,
         const std::string& origPath)
     {
         const auto& rootDir = meshSet.m_rootDir;

@@ -10,8 +10,9 @@
 
 #include "ki/yaml.h"
 
-#include "Metadata.h"
-#include "Clip.h"
+#include "animation/Clip.h"
+
+#include "animation/MetaData.h"
 
 namespace {
     std::string renderNode(
@@ -58,7 +59,7 @@ namespace {
     }
 }
 
-namespace animation
+namespace mesh_set
 {
     std::unique_ptr<animation::Metadata> MetadataLoader::load(const std::string& meshFilePath)
     {

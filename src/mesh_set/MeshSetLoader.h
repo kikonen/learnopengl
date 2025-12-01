@@ -8,16 +8,20 @@
 
 #include "material/Material.h"
 
-namespace mesh {
+namespace mesh
+{
     class MeshSet;
+}
 
-    class ModelLoader
+namespace mesh_set
+{
+    class MeshSetLoader
     {
     public:
-        ModelLoader(
+        MeshSetLoader(
             std::shared_ptr<std::atomic_bool> alive);
 
-        virtual ~ModelLoader();
+        virtual ~MeshSetLoader();
 
         // @return true if
         bool load(

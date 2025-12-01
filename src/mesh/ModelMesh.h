@@ -16,10 +16,18 @@ namespace animation {
     struct VertexJoint;
 }
 
-namespace mesh {
-    class ModelMesh final : public VaoMesh {
-        friend class ModelLoader;
-        friend class AssimpLoader;
+namespace mesh_set
+{
+    class ModelLoader;
+    class AssimpLoader;
+}
+
+namespace mesh
+{
+    class ModelMesh final : public VaoMesh
+    {
+        friend class mesh_set::ModelLoader;
+        friend class mesh_set::AssimpLoader;
 
     public:
         ModelMesh(

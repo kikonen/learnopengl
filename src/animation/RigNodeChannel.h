@@ -15,7 +15,13 @@ struct aiNodeAnim;
 struct aiVectorKey;
 struct aiQuatKey;
 
-namespace animation {
+namespace mesh_set
+{
+    class AnimationLoader;
+}
+
+namespace animation
+{
     // Vector transform/scale key frame
     struct VectorKey {
         VectorKey(const aiVectorKey& key);
@@ -34,7 +40,7 @@ namespace animation {
 
     // Animation sequence for RigNode
     struct RigNodeChannel {
-        friend class AnimationLoader;
+        friend class mesh_set::AnimationLoader;
         friend struct Animation;
 
         RigNodeChannel(const aiNodeAnim* channel);

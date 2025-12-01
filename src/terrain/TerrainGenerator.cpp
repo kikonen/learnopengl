@@ -36,7 +36,6 @@
 #include "registry/Registry.h"
 #include "registry/NodeRegistry.h"
 #include "registry/EntityRegistry.h"
-#include "registry/ModelRegistry.h"
 
 #include "TerrainTileRegistry.h"
 
@@ -273,7 +272,7 @@ namespace terrain {
 
     //    {
     //        // TODO KI just generate primitive mesh
-    //        auto future = ModelRegistry::get().getMeshSet(
+    //        auto future = MeshsetRegistry::get().getMeshSet(
     //            "",
     //            m_modelsDir,
     //            TERRAIN_QUAD_MESH_NAME,

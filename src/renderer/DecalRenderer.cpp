@@ -22,8 +22,6 @@
 #include "decal/DecalCollection.h"
 
 #include "registry/Registry.h"
-#include "registry/NodeRegistry.h"
-#include "registry/ModelRegistry.h"
 
 namespace {
     inline const std::string SHADER_SOLID_DECAL{ "g_decal" };

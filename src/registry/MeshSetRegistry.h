@@ -16,16 +16,16 @@ namespace mesh {
     class MeshSet;
 }
 
-class ModelRegistry {
+class MeshSetRegistry {
 public:
     static void init() noexcept;
     static void release() noexcept;
-    static ModelRegistry& get() noexcept;
+    static MeshSetRegistry& get() noexcept;
 
-    ModelRegistry();
-    ModelRegistry& operator=(const ModelRegistry&) = delete;
+    MeshSetRegistry();
+    MeshSetRegistry& operator=(const MeshSetRegistry&) = delete;
 
-    ~ModelRegistry();
+    ~MeshSetRegistry();
 
     void clear();
 

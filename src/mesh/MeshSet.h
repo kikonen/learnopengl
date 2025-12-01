@@ -6,18 +6,23 @@
 
 #include "asset/AABB.h"
 
-namespace animation {
+namespace animation
+{
     struct RigContainer;
+}
+
+namespace mesh_set
+{
+    class AssimpLoader;
 }
 
 namespace mesh {
     class Mesh;
-    class ModelLoader;
-    class AssimpLoader;
+    class MeshLoader;
 
     class MeshSet {
+        friend class mesh_set::AssimpLoader;
         friend class MeshLoader;
-        friend class AssimpLoader;
 
     public:
         MeshSet(

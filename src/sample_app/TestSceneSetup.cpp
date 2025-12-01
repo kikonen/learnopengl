@@ -20,8 +20,6 @@
 
 #include "registry/Registry.h"
 #include "registry/NodeTypeRegistry.h"
-#include "registry/NodeRegistry.h"
-#include "registry/ModelRegistry.h"
 #include "registry/ViewportRegistry.h"
 
 #include "engine/AsyncLoader.h"

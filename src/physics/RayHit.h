@@ -2,7 +2,7 @@
 
 #include <glm/glm.hpp>
 
-#include "ode/ode.h"
+#include <ode/ode.h>
 
 #include "pool/NodeHandle.h"
 

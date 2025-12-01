@@ -11,7 +11,8 @@
 
 #include "mesh/PrimitiveMesh.h"
 
-namespace mesh {
+namespace mesh_set
+{
     std::unique_ptr<mesh::VaoMesh> RigNodeTreeGenerator::generateTree(std::shared_ptr<animation::RigContainer> rigPtr) const
     {
         auto& rig = *rigPtr;

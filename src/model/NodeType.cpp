@@ -33,7 +33,6 @@
 #include "script/ScriptSystem.h"
 
 #include "registry/NodeRegistry.h"
-#include "registry/ModelRegistry.h"
 #include "registry/NodeTypeRegistry.h"
 
 #include "model/Snapshot.h"

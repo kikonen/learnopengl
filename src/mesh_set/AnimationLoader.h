@@ -11,7 +11,10 @@ struct aiAnimation;
 namespace animation {
     struct RigContainer;
     struct Animation;
+}
 
+namespace mesh_set
+{
     class AnimationNotFoundError : public std::runtime_error {
     public:
         AnimationNotFoundError(const std::string& msg)

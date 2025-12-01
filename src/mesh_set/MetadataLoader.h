@@ -12,7 +12,10 @@ namespace animation
 {
     struct Metadata;
     struct Clip;
+}
 
+namespace mesh_set
+{
     class MetadataLoader
     {
     public:

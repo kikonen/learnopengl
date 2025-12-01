@@ -231,7 +231,7 @@
     <ClCompile Include="src\registry\NodeRegistry.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\registry\ModelRegistry.cpp">
+    <ClCompile Include="src\registry\MeshSetRegistry.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\registry\NodeTypeRegistry.cpp">
@@ -507,7 +507,7 @@
     <ClCompile Include="src\model\NodeType.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\mesh\ModelLoader.cpp">
+    <ClCompile Include="src\mesh_set\MeshSetLoader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\mesh\ModelMesh.cpp">
@@ -585,7 +585,7 @@
     <ClCompile Include="src\material\ColorTexture.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\mesh\AssimpLoader.cpp">
+    <ClCompile Include="src\mesh_set\AssimpLoader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\mesh\vao\VertexNormalVBO.cpp">
@@ -621,7 +621,7 @@
     <ClCompile Include="src\animation\RigNodeChannel.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\animation\AnimationLoader.cpp">
+    <ClCompile Include="src\mesh_set\AnimationLoader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\animation\Animation.cpp">
@@ -714,7 +714,7 @@
     <ClCompile Include="src\debug\DebugContext.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\animation\MetadataLoader.cpp">
+    <ClCompile Include="src\mesh_set\MetadataLoader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\animation\Metadata.cpp">
@@ -726,7 +726,7 @@
     <ClCompile Include="src\loader\VertexLoader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\mesh\RigNodeTreeGenerator.cpp">
+    <ClCompile Include="src\mesh_set\RigNodeTreeGenerator.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\script\command\AnimationPlay.cpp">
@@ -1565,7 +1565,7 @@
     <ClInclude Include="src\registry\NodeRegistry.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\registry\ModelRegistry.h">
+    <ClInclude Include="src\registry\MeshSetRegistry.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\registry\NodeTypeRegistry.h">
@@ -2000,7 +2000,7 @@
     <ClInclude Include="src\model\NodeType.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\mesh\ModelLoader.h">
+    <ClInclude Include="src\mesh_set\MeshSetLoader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\mesh\ModelMesh.h">
@@ -2147,7 +2147,7 @@
     <ClInclude Include="src\material\ColorTexture.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\mesh\AssimpLoader.h">
+    <ClInclude Include="src\mesh_set\AssimpLoader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\animation\JointTransform.h">
@@ -2195,7 +2195,7 @@
     <ClInclude Include="src\animation\RigNodeChannel.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\animation\AnimationLoader.h">
+    <ClInclude Include="src\mesh_set\AnimationLoader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\animation\Animator.h">
@@ -2261,7 +2261,7 @@
     <ClInclude Include="src\mesh\MeshSet.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\mesh\LoadContext.h">
+    <ClInclude Include="src\mesh_set\LoadContext.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\loader\MeshData.h">
@@ -2351,7 +2351,7 @@
     <ClInclude Include="src\animation\MetaData.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\animation\MetadataLoader.h">
+    <ClInclude Include="src\mesh_set\MetadataLoader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\mesh\PrimitiveMesh.h">
@@ -2366,7 +2366,7 @@
     <ClInclude Include="src\mesh\PrimitiveType.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\mesh\RigNodeTreeGenerator.h">
+    <ClInclude Include="src\mesh_set\RigNodeTreeGenerator.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\material\TextureType.h">
