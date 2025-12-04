@@ -1314,6 +1314,9 @@
     <ClCompile Include="src\material\InlineTexture.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\mesh_set\AssimpMaterialLoader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h">
@@ -2970,6 +2973,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\material\InlineTexture.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\mesh_set\AssimpMaterialLoader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

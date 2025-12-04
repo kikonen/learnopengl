@@ -4,8 +4,6 @@
 #include <memory>
 #include <atomic>
 
-#include "material/Material.h"
-
 #include "MeshSetLoader.h"
 
 struct aiScene;
@@ -15,7 +13,6 @@ struct aiFace;
 struct aiBone;
 struct aiSkeleton;
 struct aiSkeletonBone;
-struct aiMaterial;
 struct aiMetadata;
 
 namespace animation
@@ -105,21 +102,6 @@ namespace mesh_set
             size_t meshIndex,
             const aiMesh* mesh,
             const aiBone* bone);
-
-        void processMaterials(
-            const mesh::MeshSet& meshSet,
-            std::vector<Material>& materials,
-            std::map<size_t, size_t>& materialMapping,
-            const aiScene* scene);
-
-        Material processMaterial(
-            const mesh::MeshSet& meshSet,
-            const aiScene* scene,
-            const aiMaterial* material);
-
-        std::string findTexturePath(
-            const mesh::MeshSet& meshSet,
-            const std::string& origPath);
 
     private:
         const bool m_debug;
