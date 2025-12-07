@@ -389,11 +389,11 @@ namespace
     }
 
     bool saveEmbeddedTextureToFile(
-        const std::vector<unsigned char> data,
+        const std::vector<unsigned char>& data,
         const std::string& outputPath)
     {
         std::ofstream file;
-        file.open(outputPath.c_str());
+        file.open(outputPath.c_str(), std::ios::app | std::ios::binary);
 
         file.write((char*)data.data(), data.size());
         file.close();
