@@ -46,36 +46,107 @@ types:
         { time=10 * 100 },
         vec3(0, 1, 0),
         360 * 100)
-  - id: griffon
+  - xid: griffon
     mesh:
-      path: models/unreal/SK_Griffon.glb
+      path: models/unreal/SK_Griffon.fbx
+      scale: 0.01
+      materials:
+        - name: M_Griffon_Feathers
+          base: griffon
+          map_kd: T_Griffon_Feathers
+          map_normal: T_Griffon_Feathers_nml
+          map_mras: T_Griffon_Feathers_mras
+          alpha: true
+          blend: true
+          render_back: true
+        - name: M_Griffon
+          base: griffon
+          map_kd: T_Griffon_BaseColor.PNG
+          map_normal: T_GRIFFON_nml.PNG
+          map_mras: T_GRIFFON_mras
+      material_modifier:
+        default_programs: true
+        #invert_occlusion: true
+        #invert_roughness: true
+      flags:
+        use_bones: true
+        xuse_animation: true
+      animations:
+        - name: fly_backward
+          path: ANIM_Griffon_FlyBackwardsStationary.FBX
+          clip: Unreal Take
+    script: |
+      cmd:animation_play(
+        self.handle,
+        { name = "fly_backward" })
+  - id: griffon_55
+    mesh:
+      path: models/unreal/SK_Griffon_55.glb
+      #scale: 10
       material_modifier:
         default_programs: true
         invert_occlusion: true
         invert_roughness: true
       flags:
         use_bones: true
-        use_animation: true
+        xuse_animation: true
       animations:
         - name: fly_backward
           path: ANIM_Griffon_FlyBackwardsStationary.FBX
           clip: Unreal Take
     script: |
-      cmd:rotate(
-        self.handle,
-        { time=10 * 100 },
-        vec3(0, 1, 0),
-        360 * 100)
-
       cmd:animation_play(
         self.handle,
         { name = "fly_backward" })
+  - xid: skeleton_knight
+    mesh:
+      path: models/unity/SkeletonKnight_Legacy.glb
+      material_modifier:
+        default_programs: true
+        invert_occlusion: false
+        invert_roughness: false
+      flags:
+        use_bones: true
+        use_animation: true
+      xanimations:
+        - name: fly_backward
+          path: ANIM_Griffon_FlyBackwardsStationary.FBX
+          clip: Unreal Take
+    xscript: |
+      cmd:animation_play(
+        self.handle,
+        { name = "fly_backward" })
+  - xid: hydra
+    mesh:
+      path: models/unity/Hydra_PBR.glb
+      material_modifier:
+        default_programs: true
+        invert_occlusion: false
+        invert_roughness: false
+      flags:
+        use_bones: true
+        use_animation: true
+      xanimations:
+        - name: walk
+          path: Hydra@Walk.FBX
+          clip: Take 001
+    script: |
+      cmd:animation_play(
+        self.handle,
+        { name = "walk" })
+  - xid: sample_scene
+    mesh:
+      path: models/unity/SampleScene.glb
+      material_modifier:
+        default_programs: true
 
 nodes:
   - type: player
-    pos: [0, 2, 2]
+    pos: [0, 3.5, 7]
     active: true
   - type: dir_light
     pos: [-15, 25, 25]
-  - type: griffon
+  - type: griffon_55
     pos: [0.0, 1, 0.0]
+  - xtype: griffon
+    pos: [-3.0, 1, 0.0]
