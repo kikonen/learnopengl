@@ -81,7 +81,14 @@ namespace {
         glm::vec3 emissiveFactor;       // RGB emissive color
         int emissiveTexture;           // Emissive texture index (-1 if none)
 
+        // Specular extension (KHR_materials_specular)
+        float specularFactor;          // Specular multiplier (0-1)
+        int specularTexture;           // Specular texture index (-1 if none)
+        glm::vec3 specularColorFactor;  // RGB specular tint
+        int specularColorTexture;      // Specular color texture index (-1 if none)
+
         std::string workflow;          // "metallic-roughness" or "specular-glossiness"
+        bool hasSpecularExtension;     // Uses KHR_materials_specular
     };
 
     enum class AlphaMode
@@ -137,7 +144,7 @@ namespace
         {
             "metal",
             aiTextureType_METALNESS,
-            TextureType::map_mrao,
+            TextureType::map_mras,
             false,
             false,
         },
@@ -145,13 +152,13 @@ namespace
         //{
         //    "roughness",
         //    aiTextureType_DIFFUSE_ROUGHNESS,
-        //    TextureType::map_mrao,
+        //    TextureType::map_mras,
         //    false,
         //},
         {
             "ambient_occlusion",
             aiTextureType_AMBIENT_OCCLUSION,
-            TextureType::map_mrao,
+            TextureType::map_mras,
             false,
             false,
         },
@@ -187,6 +194,13 @@ namespace
         info.occlusionTexture = -1;
         info.emissiveTexture = -1;
         info.workflow = "metallic-roughness";
+        info.hasSpecularExtension = false;
+        info.specularFactor = 1.0f;
+        info.specularTexture = -1;
+        info.specularColorFactor[0] = 1.0f;
+        info.specularColorFactor[1] = 1.0f;
+        info.specularColorFactor[2] = 1.0f;
+        info.specularColorTexture = -1;
 
         // Get base color factor
         aiColor4D baseColor;
@@ -309,6 +323,31 @@ namespace
                     info.emissiveTexture = atoi(path.C_Str() + 1);
                 }
             }
+        }
+
+        // Check for KHR_materials_specular extension
+        // This is used by Unreal and other engines to add specular control
+        float specular = 1.0f;
+        if (material->Get("$mat.gltf.specularFactor", 0, 0, specular) == AI_SUCCESS) {
+            info.hasSpecularExtension = true;
+            info.specularFactor = specular;
+        }
+
+        // Check for specular texture (often packed in alpha of MR texture in Unreal)
+        if (material->GetTextureCount(aiTextureType_SPECULAR) > 0) {
+            aiString path;
+            if (material->GetTexture(aiTextureType_SPECULAR, 0, &path) == AI_SUCCESS) {
+                if (path.data[0] == '*') {
+                    info.specularTexture = atoi(path.C_Str() + 1);
+                    info.hasSpecularExtension = true;
+                }
+            }
+        }
+
+        // Alternatively check material properties for specular
+        if (material->Get(AI_MATKEY_SPECULAR_FACTOR, specular) == AI_SUCCESS) {
+            info.hasSpecularExtension = true;
+            info.specularFactor = specular;
         }
 
         return info;
@@ -646,24 +685,18 @@ namespace mesh_set
                     if (texInfo.checkAlpha) {
                         material.alpha = tex->hasAlpha();
                         if (material.alpha) {
-                            float alphaCutoff = 0.5f;
-
-                            // Check for gltf-specific alpha mode property
-                            // glTF uses "$mat.gltf.alphaMode" property
-                            aiString alphaMode;
-                            if (src->Get("$mat.gltf.alphaMode", 0, 0, alphaMode) == AI_SUCCESS) {
-                                std::string alphaModeStr{ alphaMode.C_Str() };
-                                if (alphaModeStr == "OPAQUE") {
-                                    material.alpha = false;
-                                }
-                                else if (alphaModeStr == "MASK") {
-                                    // Get alpha cutoff value for masking
-                                    src->Get("$mat.gltf.alphaCutoff", 0, 0, alphaCutoff);
-                                }
-                                else if (alphaModeStr == "BLEND") {
-                                    material.blend = true;
-                                }
+                            if (renderInfo.alphaMode == AlphaMode::mask)
+                            {
+                                material.alpha = true;
                             }
+                            else if (renderInfo.alphaMode == AlphaMode::blend)
+                            {
+                                material.alpha = true;
+                                material.blend = true;
+                            }
+
+                            //material.kd = glm::vec4{ 1.f };
+                            //material.blend = false;
                         }
                     }
 

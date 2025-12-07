@@ -16,7 +16,7 @@ namespace render {
         static const int ATT_ALBEDO_ENUM = GL_COLOR_ATTACHMENT0;
         static const int ATT_EMISSION_ENUM = GL_COLOR_ATTACHMENT1;
         static const int ATT_NORMAL_ENUM = GL_COLOR_ATTACHMENT2;
-        static const int ATT_MRAO_ENUM = GL_COLOR_ATTACHMENT3;
+        static const int ATT_MRAS_ENUM = GL_COLOR_ATTACHMENT3;
         //static const int ATT_VIEW_POSITION_ENUM = GL_COLOR_ATTACHMENT4;
         //static const int ATT_VIEW_Z_ENUM = GL_COLOR_ATTACHMENT5;
 
@@ -24,7 +24,7 @@ namespace render {
         //static const int ATT_SPECULAR_INDEX = 1;
         static const int ATT_EMISSION_INDEX = 1;
         static const int ATT_NORMAL_INDEX = 2;
-        static const int ATT_MRAO_INDEX = 3;
+        static const int ATT_MRAS_INDEX = 3;
         //static const int ATT_VIEW_POSITION_INDEX = 4;
         //static const int ATT_VIEW_Z_INDEX = 5;
         static const int ATT_DEPTH_INDEX = 4;

@@ -15,7 +15,7 @@ require 'hashie'
 # TODO KI PBR matchers oboleted from framework
 # => apply here
 #
-# TODO KI handle premade MRAO mapps
+# TODO KI handle premade MRA mapps
 # - fbx/scenery/foliage/VOL10_YardPlants/Textures/TX_DesertDandelion_01a_RMA_2048.png
 # - fbx/scenery/foliage/VOL10_YardPlants/Textures/TX_Flower_01_RSA.PNG
 #
@@ -163,7 +163,7 @@ end
 class Converter < Thor
   EXTENSIONS = ["png", "jpg", "jpeg", "tga"].freeze
 
-  MRAO_MAP = 'mrao'
+  MRAS_MAP = 'mras'
   DISPLACEMENT_MAP = 'displacement'
   CAVITY_MAP = 'cavity'
 
@@ -192,12 +192,13 @@ class Converter < Thor
     ALPHA => Magick::AlphaChannel,
   }.freeze
 
-  # MRAO: [ambient-occlusion, metalness, roughness, opacity]
+  # MRA + KHR_materials_specular
+  # MRAS: [ambient-occlusion, metalness, roughness, specular]
   # - metalness: 0 = dielectric, 1 = metal
   # - roughness: 0 = smooth/shiny, 1 = rough/matte
   # - occlusion: 0 = fully occluded, 1 = no occlusion
-  # - opacity:   0 = transparent, 1 = opaque
-  MODE_MRAO = :mrao
+  # - specular:  0 = no reflection, 1 = strong reflection
+  MODE_MRAS = :mras
   MODE_DISPLACEMENT = :displacement
 
   COMBINE_VERSION = 1
@@ -810,23 +811,21 @@ class Converter < Thor
             action: :skip,
           }
         when :opacity
-          # NOTE KI encode into extansion of MRA, aka. MRAO
           tex_info = {
-            group: 'default',
             type: :opacity,
-            action: :combine,
-            mode: MODE_MRAO,
-            target_name: MRAO_MAP,
+            action: :encode,
+            mode: MODE_OPACITY,
+            target_name: OPACITY_MAP,
             source_channel: RED,
-            target_channel: ALPHA,
+            target_channel: RED,
           }
         when :metal
           tex_info = {
             group: 'default',
             type: :metalness,
             action: :combine,
-            mode: MODE_MRAO,
-            target_name: MRAO_MAP,
+            mode: MODE_MRAS,
+            target_name: MRAS_MAP,
             source_channel: RED,
             target_channel: GREEN,
           }
@@ -835,8 +834,8 @@ class Converter < Thor
             group: 'default',
             type: :roughness,
             action: :combine,
-            mode: MODE_MRAO,
-            target_name: MRAO_MAP,
+            mode: MODE_MRAS,
+            target_name: MRAS_MAP,
             source_channel: RED,
             target_channel: BLUE,
           }
@@ -845,8 +844,8 @@ class Converter < Thor
             group: 'default',
             type: :occlusion,
             action: :combine,
-            mode: MODE_MRAO,
-            target_name: MRAO_MAP,
+            mode: MODE_MRAS,
+            target_name: MRAS_MAP,
             source_channel: RED,
             target_channel: RED,
           }
@@ -855,8 +854,8 @@ class Converter < Thor
             group: 'default',
             type: :metal_roughness,
             action: :skip,
-            mode: MODE_MRAO,
-            target_name: MRAO_MAP,
+            mode: MODE_MRAS,
+            target_name: MRAS_MAP,
             source_channel: RED_GREEN,
             target_channel: GREEN_BLUE
           }
@@ -865,8 +864,8 @@ class Converter < Thor
             group: 'default',
             type: :metal_roughness_occlusion,
             action: :skip,
-            mode: MODE_MRAO,
-            target_name: MRAO_MAP,
+            mode: MODE_MRAS,
+            target_name: MRAS_MAP,
             source_channel: RED_GREEN_BLUE,
             target_channel: GREEN_BLUE_RED,
           }
@@ -875,8 +874,8 @@ class Converter < Thor
             group: 'default',
             type: :roughness_metal_occlusion,
             action: :skip,
-            mode: MODE_MRAO,
-            target_name: MRAO_MAP,
+            mode: MODE_MRAS,
+            target_name: MRAS_MAP,
             source_channel: RED_GREEN_BLUE,
             target_channel: BLUE_GREEN_RED,
           }
@@ -885,8 +884,8 @@ class Converter < Thor
             group: 'default',
             type: :roughness_occlusion_metal,
             action: :skip,
-            mode: MODE_MRAO,
-            target_name: MRAO_MAP,
+            mode: MODE_MRAS,
+            target_name: MRAS_MAP,
             source_channel: RED_GREEN_BLUE,
             target_channel: BLUE_RED_GREEN,
           }
@@ -895,8 +894,8 @@ class Converter < Thor
             group: 'default',
             type: :occlusion_roughness_metal,
             action: :skip,
-            mode: MODE_MRAO,
-            target_name: MRAO_MAP,
+            mode: MODE_MRAS,
+            target_name: MRAS_MAP,
             source_channel: RED_GREEN_BLUE,
             target_channel: RED_BLUE_GREEN,
           }
@@ -1181,8 +1180,8 @@ class Converter < Thor
     group = parts.first.group
 
     case target_mode
-    when MODE_MRAO
-      create_mrao_texture(
+    when MODE_MRAS
+      create_mras_texture(
         src_dir,
         dst_dir,
         parts.first.group,
@@ -1211,9 +1210,9 @@ class Converter < Thor
   end
 
   ########################################
-  # MRAO
+  # MRAS
   ########################################
-  def create_mrao_texture(
+  def create_mras_texture(
     src_dir,
     dst_dir,
     group,
@@ -1285,10 +1284,10 @@ class Converter < Thor
     sha_digest = sha_changed?(dst_path, source_paths, salt)
     return unless sha_digest
 
-    puts "MRAO: [#{group}] [size=#{target_size}] [depth=#{target_depth}] #{dst_path}"
+    puts "MRAS: [#{group}] [size=#{target_size}] [depth=#{target_depth}] #{dst_path}"
 
-    # channel: [ ambient-occlusion, metalness, roughness, opacity ]
-    # DEFAULTS = glm::vec3 mrao{ 1.f, 0.f, 1.f, 1.f };
+    # channel: [ ambient-occlusion, metalness, roughness, specular ]
+    # DEFAULTS = glm::vec3 mras{ 1.f, 0.f, 1.f, 0.f };
     target_channels = {
       Magick::RedChannel => nil,
       Magick::GreenChannel => nil,
@@ -1339,7 +1338,7 @@ class Converter < Thor
       Magick::RedChannel => white,
       Magick::GreenChannel => black,
       Magick::BlueChannel => white,
-      Magick::AlphaChannel => white,
+      Magick::AlphaChannel => black,
     }
 
     target_channels.each do |dst_channel, image_info|

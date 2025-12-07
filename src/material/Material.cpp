@@ -240,7 +240,7 @@ Material::Material(Material&& o) = default;
 //    kd{ o.kd },
 //    ke{ o.ke },
 //
-//    mrao{ o.mrao },
+//    mras{ o.mras },
 //
 //    layers{ o.layers },
 //    layersDepth{ o.layersDepth },
@@ -531,25 +531,25 @@ const MaterialSSBO Material::toSSBO() const
         spritesY++;
     }
 
-    const glm::vec4 mraoFactor{
+    const glm::vec4 mrasFactor{
         m_occlusionFactor,
         m_metalnessFactor,
         m_roughnessFactor,
-        1.f };
+        0.f };
 
     return {
         kd,
         hasBoundTex(TextureType::emission) ? WHITE_RGBA : ke,
 
-        hasBoundTex(TextureType::map_mrao) ? mraoFactor : mrao,
+        hasBoundTex(TextureType::map_mras) ? mrasFactor : mras,
 
         getTexHandle(TextureType::diffuse, whitePx),
         getTexHandle(TextureType::emission, blackPx),
 
         getTexHandle(TextureType::map_normal, 0),
 
-        //getTexHandle(TextureType::map_opacity, whitePx),
-        getTexHandle(TextureType::map_mrao, whitePx),
+        getTexHandle(TextureType::map_opacity, whitePx),
+        getTexHandle(TextureType::map_mras, whitePx),
         getTexHandle(TextureType::map_displacement, blackPx),
 
         getTexHandle(TextureType::map_dudv, 0),

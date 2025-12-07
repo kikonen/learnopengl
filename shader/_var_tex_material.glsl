@@ -8,28 +8,27 @@
 
   material.flags = u_materials[i].flags;
 
-  vec4 mraoTex = texture(sampler2D(u_materials[i].mraoMapTex), texCoord).rgba;
+  vec4 mrasTex = texture(sampler2D(u_materials[i].mrasMapTex), texCoord).rgba;
 
   if ((material.flags & MATERIAL_INVERT_OCCLUSION) != 0)
   {
-    mraoTex.r = 1.0 - mraoTex.r;
+    mrasTex.r = 1.0 - mrasTex.r;
   }
   if ((material.flags & MATERIAL_INVERT_METALNESS) != 0)
   {
-    mraoTex.g = 1.0 - mraoTex.g;
+    mrasTex.g = 1.0 - mrasTex.g;
   }
   if ((material.flags & MATERIAL_INVERT_ROUGHNESS) != 0)
   {
-    mraoTex.b = 1.0 - mraoTex.b;
+    mrasTex.b = 1.0 - mrasTex.b;
   }
 
-  vec4 mrao = u_materials[i].mrao.rgba * mraoTex.rgba;
+  vec4 mras = u_materials[i].mras.rgba * mrasTex.rgba;
 
   material.diffuse = u_materials[i].diffuse *
     texture(sampler2D(u_materials[i].diffuseTex), texCoord);
-  material.diffuse.a *= mrao.a;
 
-  // material.diffuse.a *= texture(sampler2D(u_materials[i].opacityMapTex), texCoord).r;
+  material.diffuse.a *= texture(sampler2D(u_materials[i].opacityMapTex), texCoord).r;
 
   // NOTE KI discard any trash, which is possibly hidden into emission tex with alpha
   // thus (0, 0, 0) == (r, g, b, 0)
@@ -40,7 +39,7 @@
   material.emission = u_materials[i].emission.rgb *
     emission.rgb * emission.a;
 
-  material.mra = mrao.rgb;
+  material.mras = mras.rgba;
 
   material.reflection = u_materials[i].reflection;
   material.refraction = u_materials[i].refraction;

@@ -7,20 +7,22 @@ struct Material {
   vec4 diffuse;
   vec4 emission;
 
-  // MRAO: [ambient-occlusion, metalness, roughness, opacity]
-  vec4 mrao;
+  // MRAS: [ambient-occlusion, metalness, roughness, specular]
+  vec4 mras;
 
   uvec2 diffuseTex;
   uvec2 emissionTex;
   uvec2 normalMapTex;
 
-  // uvec2 opacityMapTex;
-  // MRAO: [ambient-occlusion, metalness, roughness, opacity]
+  uvec2 opacityMapTex;
+
+  // MRAS: [ambient-occlusion, metalness, roughness, specular]
   // - metalness: 0 = dielectric, 1 = metal
   // - roughness: 0 = smooth/shiny, 1 = rough/matte
   // - occlusion: 0 = fully occluded, 1 = no occlusion
-  // - opacity:   0 = transparent, 1 = opaque
-  uvec2 mraoMapTex;
+  // - specular:  0 = no reflection, 1 = strong reflection
+  uvec2 mrasMapTex;
+
   uvec2 displacementMapTex;
 
   uvec2 dudvMapTex;
@@ -46,6 +48,6 @@ struct Material {
   float layersDepth;
   float parallaxDepth;
 
-  int pad1;
-  int pad2;
+  // int pad1;
+  // int pad2;
 };

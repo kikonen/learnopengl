@@ -80,7 +80,7 @@ void main()
     material.diffuse = textureLod(g_albedo, texCoord, 0);
     material.emission = textureLod(g_emission, texCoord, 0).rgb;
     material.diffuse.a = 1.0;
-    material.mra = textureLod(g_mra, texCoord, 0).rgb;
+    material.mras = textureLod(g_mras, texCoord, 0).rgba;
 
     material.ssao = texture(u_ssaoBlurTex, texCoord).r;
   }

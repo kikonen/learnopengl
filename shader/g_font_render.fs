@@ -93,7 +93,7 @@ void main()
   }
 
   o_fragColor = color.rgb;
-  o_fragMRA = material.mra;
+  o_fragMRAS = material.mras;
   o_fragEmission = material.emission;
 
   #include encode_gbuffer_normal.glsl

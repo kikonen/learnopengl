@@ -27,8 +27,8 @@ struct MaterialSSBO {
     glm::vec4 u_diffuse; // 16
     glm::vec4 u_emission; // 16
 
-    // MRAO: [metalness, roughness, ambient-occlusion, opacity]
-    glm::vec4 u_mrao; // 16
+    // MRAS: [metalness, roughness, ambient-occlusion, specular]
+    glm::vec4 u_mras; // 16
 
     // NOTE KI "tex index", not "unit index"
     GLuint64 u_diffuseTex;
@@ -36,9 +36,8 @@ struct MaterialSSBO {
     //GLuint64 u_specularTex;
     GLuint64 u_normalMap;
 
-    // MRAO: [metalness, roughness, ambient-occlusion, opacity]
-    //GLuint64 u_opacityMap;
-    GLuint64 u_mraoMap;
+    GLuint64 u_opacityMap;
+    GLuint64 u_mrasMap;
     GLuint64 displacementMapTex;
 
     GLuint64 u_dudvMap;
@@ -64,8 +63,8 @@ struct MaterialSSBO {
     float u_layersDepth;
     float u_parallaxDepth;
 
-    int pad3_1;
-    int pad3_2;
+    //int pad3_1;
+    //int pad3_2;
     //int pad3_3;
 };
 #pragma pack(pop)

@@ -207,13 +207,13 @@ public:
     glm::vec4 kd { 1.f, 1.f, 1.f, 1.f };
     glm::vec4 ke { 0.f };
 
-    // GLB/GLTF order + opacity extension
-    // MRAO: [ambient-occlusion, metalness, roughness, opacity]
+    // GLB/GLTF order + KHR_materials_specular
+    // MRAS: [ambient-occlusion, metalness, roughness, specular]
     // - metalness: 0 = dielectric, 1 = metal
     // - roughness: 0 = smooth/shiny, 1 = rough/matte
     // - occlusion: 0 = fully occluded, 1 = no occlusion
-    // - opacity:   0 = transparent, 1 = opaque
-    glm::vec4 mrao{ 1.f, 0.f, 1.f, 1.f };
+    // - specular:  0 = no reflection, 1 = strong reflection
+    glm::vec4 mras{ 1.f, 0.f, 1.f, 0.f };
 
     float m_occlusionFactor{ 1.f };
     float m_metalnessFactor{ 1.f };

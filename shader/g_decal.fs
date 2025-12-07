@@ -157,7 +157,7 @@ void main() {
     o_fragColor = vec3(0, 1, 0);
   }
 
-  o_fragMRA = material.mra;
+  o_fragMRAS = material.mras;
   o_fragEmission = material.emission;
 
   #include encode_gbuffer_normal.glsl

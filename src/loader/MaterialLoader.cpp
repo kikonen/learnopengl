@@ -212,13 +212,13 @@ namespace loader {
                     line,
                     true);
             }
-            //else if (k == "map_opacity") {
-            //    std::string line = readString(v);
-            //    material.addTexture(
-            //        TextureType::map_opacity,
-            //        line,
-            //        true);
-            //}
+            else if (k == "map_opacity") {
+                std::string line = readString(v);
+                material.addTexture(
+                    TextureType::map_opacity,
+                    line,
+                    true);
+            }
             else if (k == "map_custom_1") {
                 std::string line = readString(v);
                 material.addTexture(
@@ -226,21 +226,21 @@ namespace loader {
                     line,
                     true);
             }
-            else if (k == "map_mrao") {
+            else if (k == "map_mras") {
                 std::string line = readString(v);
                 material.addTexture(
-                    TextureType::map_mrao,
+                    TextureType::map_mras,
                     line,
                     true);
             }
-            else if (k == "mrao") {
+            else if (k == "mras") {
                 // NOTE KI specifying opacity othe than 1 does not make sense
                 auto vec = readFloatVector(v, 4);
                 while (vec.size() < 4) {
                     vec.push_back(1.f);
                 }
-                material.mrao = glm::vec4(vec[0], vec[1], vec[2], vec[3]);
-                fields.mrao = true;
+                material.mras = glm::vec4(vec[0], vec[1], vec[2], vec[3]);
+                fields.mras = true;
             }
             else if (k == "invert_occlusion") {
                 material.m_invertOcclusion = readBool(v);
@@ -568,7 +568,7 @@ namespace loader {
         if (f.layersDepth) m.layersDepth = mod.layersDepth;
         if (f.parallaxDepth) m.parallaxDepth = mod.parallaxDepth;
 
-        if (f.mrao) m.mrao = mod.mrao;
+        if (f.mras) m.mras = mod.mras;
 
         if (f.invertOcclusion) m.m_invertOcclusion = mod.m_invertOcclusion;
         if (f.invertMetalness) m.m_invertMetalness = mod.m_invertMetalness;

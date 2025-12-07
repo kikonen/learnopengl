@@ -99,7 +99,7 @@
 //#define UNIT_G_SPECULAR 31
 #define UNIT_G_EMISSION 32
 #define UNIT_G_NORMAL 33
-#define UNIT_G_MRA 34
+#define UNIT_G_MRAS 34
 #define UNIT_G_VIEW_POSITION 35
 #define UNIT_G_VIEW_Z 36
 #define UNIT_G_DEPTH 37
@@ -185,7 +185,7 @@
  layout (location = 0) out vec3 o_fragColor;\
  layout (location = 1) out vec3 o_fragEmission;\
  layout (location = 2) out vec3 o_fragNormal;\
- layout (location = 3) out vec3 o_fragMRA;
+ layout (location = 3) out vec4 o_fragMRAS;
 // layout (location = 4) out vec3 o_viewPosition;
 // layout (location = 5) out float o_fragViewZ;
 // layout (location = 1) out vec4 o_fragSpecular;\
@@ -196,7 +196,7 @@
  layout(binding = UNIT_G_EMISSION) uniform sampler2D g_emission;\
  layout(binding = UNIT_G_NORMAL) uniform sampler2D g_normal;\
  layout(binding = UNIT_G_DEPTH) uniform sampler2D g_depth;\
- layout(binding = UNIT_G_MRA) uniform sampler2D g_mra;
+ layout(binding = UNIT_G_MRAS) uniform sampler2D g_mras;
 // layout(binding = UNIT_G_VIEW_POSITION) uniform sampler2D g_viewPosition;
 // layout(binding = UNIT_G_VIEW_Z) uniform sampler2D g_viewZ;\
 // layout(binding = UNIT_G_SPECULAR) uniform sampler2D g_specular;\
@@ -215,8 +215,8 @@
  layout(binding = UNIT_EFFECT_BRIGHT) uniform sampler2D effect_bright; \
  layout(binding = UNIT_EFFECT_WORK) uniform sampler2D effect_work;
 
-#define MATERIAL_MRA_METALNESS material.mra.g
-#define MATERIAL_MRA_ROUGHNESS material.mra.b
-#define MATERIAL_MRA_OCCLUSION material.mra.r
+#define MATERIAL_MRA_METALNESS material.mras.g
+#define MATERIAL_MRA_ROUGHNESS material.mras.b
+#define MATERIAL_MRA_OCCLUSION material.mras.r
 
 #undef USE_SOCKETS

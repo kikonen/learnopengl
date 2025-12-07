@@ -152,7 +152,7 @@ void main() {
   if (u_forceLineMode) {
     o_fragColor = vec3(0, 0, 1);
   }
-  o_fragMRA = material.mra;
+  o_fragMRAS = material.mras;
   o_fragEmission = material.emission;
 
 #ifdef USE_BONES

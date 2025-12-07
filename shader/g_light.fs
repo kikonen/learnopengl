@@ -42,7 +42,7 @@ void main() {
   vec4 texColor = material.diffuse;
 
   o_fragColor = texColor.rgb;
-  o_fragMRA = material.mra;
+  o_fragMRAS = material.mras;
   o_fragEmission = texColor.rgb;
 
   #include encode_gbuffer_normal.glsl
