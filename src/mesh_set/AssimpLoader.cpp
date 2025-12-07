@@ -35,6 +35,7 @@
 
 #include "util/assimp_util.h"
 
+#include "AssimpLogger.h"
 #include "AnimationLoader.h"
 #include "AssimpMaterialLoader.h"
 #include "LoadContext.h"
@@ -95,6 +96,8 @@ namespace mesh_set
         }
 
         Assimp::Importer importer;
+
+        AssimpLogger::attach();
 
         uint32_t flags =
             //aiProcess_FixInfacingNormals |

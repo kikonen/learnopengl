@@ -292,6 +292,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\material\InlineTexture.cpp" />
+    <ClCompile Include="src\mesh_set\AssimpLogger.cpp" />
     <ClCompile Include="src\mesh_set\AssimpMaterialLoader.cpp" />
     <ClCompile Include="src\renderer\JointRenderer.cpp" />
     <ClCompile Include="src\animation\Animation.cpp" />
@@ -737,6 +738,7 @@
     <ClInclude Include="src\animation\MeshInfo.h" />
     <ClInclude Include="src\animation\Clip.h" />
     <ClInclude Include="src\animation\MetaData.h" />
+    <ClInclude Include="src\mesh_set\AssimpLogger.h" />
     <ClInclude Include="src\mesh_set\AssimpMaterialLoader.h" />
     <ClInclude Include="src\mesh_set\MetadataLoader.h" />
     <ClInclude Include="src\animation\SocketBuffer.h" />
