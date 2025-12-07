@@ -9,7 +9,7 @@ prefab:
           base: fbx/weapons/fab/FPS_Pistol_Knife/Textures/Pistol
           map_kd: T_Pistol_Albedo_01.PNG
           map_normal: Pistol_Normals.PNG
-          map_mrao: T_Pistol_mrao
+          map_mras: T_Pistol_mras
       default_programs: true
       base_scale: 0.01
       flags:

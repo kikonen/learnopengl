@@ -42,7 +42,7 @@ types:
     mesh:
       material:
         kd: [0.0, 0.0, 1.0, 1.0]
-        xmrao: [1.0, 0.0, 1]
+        xmras: [1.0, 0.0, 1]
       vertex:
         type: lines
         vertices:
@@ -60,7 +60,7 @@ types:
     mesh:
       material:
         kd: [0.0, 1.0, 0.0, 1.0]
-        xmrao: [1.0, 0.0, 1]
+        xmras: [1.0, 0.0, 1]
         layers_depth: 10
       vertex:
         type: points
@@ -80,7 +80,7 @@ types:
       material:
         prefab: materials/Metal007.yml
         xkd: [0.0, 0.2, 0.0, 1.0]
-        xxmrao: [1.0, 0.0, 1]
+        xxmras: [1.0, 0.0, 1]
         program: g_tex
         render_back: true
       vertex:
@@ -94,7 +94,7 @@ types:
       material:
         prefab: materials/Metal007.yml
         xkd: [0.0, 0.2, 0.0, 1.0]
-        xxmrao: [1.0, 0.0, 1]
+        xxmras: [1.0, 0.0, 1]
         program: g_tex
         render_back: true
       vertex:

@@ -6,7 +6,7 @@ prefab:
       base_dir: textures/DiamondPlate002_1K-PNG
       map_kd: DiamondPlate002_1K_Color.png
       map_normal: DiamondPlate002_1K_NormalGL.png
-      map_mrao: DiamondPlate002_1K_mrao
+      map_mras: DiamondPlate002_1K_mras
       map_displacement: DiamondPlate002_1K_displacement
       tiling: 60
       parallax_depth: 0.008

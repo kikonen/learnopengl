@@ -234,10 +234,10 @@ namespace loader {
                     true);
             }
             else if (k == "mras") {
-                // NOTE KI specifying opacity othe than 1 does not make sense
+                // NOTE KI last one is *specular* (not opacity)
                 auto vec = readFloatVector(v, 4);
                 while (vec.size() < 4) {
-                    vec.push_back(1.f);
+                    vec.push_back(0.f);
                 }
                 material.mras = glm::vec4(vec[0], vec[1], vec[2], vec[3]);
                 fields.mras = true;

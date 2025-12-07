@@ -71,7 +71,7 @@ types:
       material:
         name: skeleton_pbr
         map_pbr: skeleton_pbr
-        xmrao: [0.3, 0.4, 1]
+        xmras: [0.3, 0.4, 1]
       base_scale: 0.05
       program: g_tex
       shadow_program: shadow

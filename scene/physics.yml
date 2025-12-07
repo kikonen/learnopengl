@@ -21,7 +21,7 @@ types:
       path: water_ball
       material:
         kd: [0.0, 0.2, 0.8, 1.0]
-        mrao: [0.2, 0.1, 1.0]
+        mras: [0.2, 0.1, 1.0]
       program: g_tex
   - id: cap
     mesh:
@@ -156,7 +156,7 @@ types:
       material:
         kd: [0.8, 0.8, 0.0, 1.0]
         xreflection: 0.05
-        mrao: [0.2, 0.1, 1.0]
+        mras: [0.2, 0.1, 1.0]
       program: g_tex
     physics:
       body:

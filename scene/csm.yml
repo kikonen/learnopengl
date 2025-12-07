@@ -82,7 +82,7 @@ types:
         name: woodwall
         map_kd: textures/wood_1024.png
         xreflection: 0.4
-        mrao: [1, 0, 1]
+        mras: [1, 0, 1]
         render_back: true
       program: g_tex
   - id: wooden_floor

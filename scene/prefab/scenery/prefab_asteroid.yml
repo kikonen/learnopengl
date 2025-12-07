@@ -7,11 +7,11 @@ prefab:
         max: 20
       material:
         base: textures/Rock002_1K-PNG
-        mrao: [0.5, 0.0, 1]
+        mras: [0.5, 0.0, 1]
         #kd: [1, 1, 0]
         map_kd: Rock002_1K_Color.png
         map_normal: Rock002_1K_NormalGL.png
-        map_mrao: Rock002_1K_mrao
+        map_mras: Rock002_1K_mras
         xmap_displacement: Rock002_1K_displacement
         tiling: 4
         parallax_depth: 0
@@ -21,11 +21,11 @@ prefab:
         max: 40
       material:
         base: textures/Rock002_1K-PNG
-        mrao: [0.5, 0.0, 1]
+        mras: [0.5, 0.0, 1]
         #kd: [0, 1, 1]
         map_kd: Rock002_1K_Color.png
         map_normal: Rock002_1K_NormalGL.png
-        map_mrao: Rock002_1K_mrao
+        map_mras: Rock002_1K_mras
         tiling: 4
       scale: 1.5
     - path: rock2/rock_lod_2
@@ -34,7 +34,7 @@ prefab:
         max: 80
       material:
         base: textures/Rock002_1K-PNG
-        #mrao: [0.5, 0.0, 1]
+        #mras: [0.5, 0.0, 1]
         #kd: [0, 0, 1]
         map_kd: Rock002_1K_Color.png
         map_normal: Rock002_1K_NormalGL.png
@@ -46,7 +46,7 @@ prefab:
         max: 200
       material:
         base: textures/Rock002_1K-PNG
-        #mrao: [0.5, 0.0, 1]
+        #mras: [0.5, 0.0, 1]
         #kd: [0, 1, 0]
         map_kd: Rock002_1K_Color.png
         tiling: 4
@@ -59,7 +59,7 @@ prefab:
         xbillboard: true
       material:
         base: textures/Rock002_1K-PNG
-        #mrao: [0.5, 0.0, 1]
+        #mras: [0.5, 0.0, 1]
         #kd: [1, 0, 0]
         map_kd: Rock002_1K_Color.png
         tiling: 4

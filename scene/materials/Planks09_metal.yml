@@ -4,6 +4,6 @@ material:
   base: textures/Planks 09 [8K]
   map_kd: Planks09_col_2048.png
   map_normal: Planks09_nrm_2048.png
-  map_mrao: default_mrao
+  map_mras: default_mras
   map_displacement: default_displacement
   default_programs: true

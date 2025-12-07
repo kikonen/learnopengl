@@ -4,7 +4,7 @@ material:
   map_kd: T_Wyvern_Albedo.jpg
   map_normal: T_Wyvern_Normal.jpg
   map_ke: T_Wyvern_Emissive.tga
-  map_mrao: T_Wyvern_mrao
+  map_mras: T_Wyvern_mras
   #alpha: true
   #render_back: true
   #line_mode: true

@@ -61,7 +61,7 @@ types:
         kd: [0.800000, 0.800000, 0.800000, 1.0]
         map_kd: toy_box_diffuse.png
         map_normal: toy_box_normal.png
-        map_mrao: toy_box_mrao
+        map_mras: toy_box_mras
         map_displacement: toy_box_displacement
         parallax_depth: 0.04
         render_back: true
@@ -118,7 +118,7 @@ types:
         map_kd: Bricks007_1K_Color.png
         map_normal: Bricks007_1K_NormalGL.png
         render_back: true
-        map_mrao: Bricks007_1K_mrao
+        map_mras: Bricks007_1K_mras
         map_displacement: Bricks007_1K_displacement
       program: g_tex
   - id: brick_wall_1_parallax
@@ -129,7 +129,7 @@ types:
         base: textures/Bricks007_1K-PNG
         map_kd: Bricks007_1K_Color.png
         map_normal: Bricks007_1K_NormalGL.png
-        map_mrao: Bricks007_1K_mrao
+        map_mras: Bricks007_1K_mras
         map_displacement: Bricks007_1K_displacement
         parallax_depth: 0.015
         xalpha: true

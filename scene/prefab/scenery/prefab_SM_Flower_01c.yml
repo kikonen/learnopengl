@@ -24,7 +24,7 @@ prefab:
             blend: false
             render_back: false
             map_normal: ''
-            map_mrao: ''
+            map_mras: ''
             map_displacement: ''
         - name: SM_Flower_01c_LOD3
           min: 100
@@ -33,14 +33,14 @@ prefab:
             blend: false
             render_back: false
             map_normal: ''
-            map_mrao: ''
+            map_mras: ''
             map_displacement: ''
       materials:
         - name: MI_Flower_01a
           base: fbx/scenery/foliage/VOL10_YardPlants/Textures
           map_kd: TX_Flower_01_ALB.PNG
           map_normal: TX_Flower_01_NRM.PNG
-          map_mrao: TX_Flower_01_mrao
+          map_mras: TX_Flower_01_mras
           map_displacement: TX_Flower_01_displacement
           alpha: true
           xblend: true
@@ -49,7 +49,7 @@ prefab:
           base_dir: fbx/scenery/foliage/VOL10_YardPlants/Textures
           map_kd: TX_Flower_01_ALB.PNG
           map_normal: TX_Flower_01_NRM.PNG
-          map_mrao: TX_Flower_01_mrao
+          map_mras: TX_Flower_01_mras
           map_displacement: TX_Flower_01_displacement
           alpha: true
           xblend: true

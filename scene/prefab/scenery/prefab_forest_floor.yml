@@ -6,7 +6,7 @@ prefab:
       base: textures/Ground037_2K-PNG
       map_kd: Ground037_2K-PNG_Color.png
       map_normal: Ground037_2K-PNG_NormalGL.png
-      map_mrao: Ground037_2K-PNG_mrao
+      map_mras: Ground037_2K-PNG_mras
       map_displacement: Ground037_2K-PNG_displacement
       tiling: 60
       parallax_depth: 0.1

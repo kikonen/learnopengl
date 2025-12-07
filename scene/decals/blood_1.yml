@@ -8,7 +8,7 @@ decal:
     base: decals/high_velocity_blood_spatter_sgepbixp_2k
     map_kd: High_Velocity_Blood_Spatter_sgepbixp_2K_BaseColor.jpg
     map_normal: High_Velocity_Blood_Spatter_sgepbixp_2K_Normal.jpg
-    map_mrao: High_Velocity_Blood_Spatter_sgepbixp_2K_mrao
+    map_mras: High_Velocity_Blood_Spatter_sgepbixp_2K_mras
     map_displacement: High_Velocity_Blood_Spatter_sgepbixp_2K_displacement
     xparallax_depth: 0.05
     parallax_depth: 0.008

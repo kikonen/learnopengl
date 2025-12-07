@@ -65,7 +65,7 @@ types:
         name: default_ball
         kd: [0.8, 0.8, 0.0, 1.0]
         xreflection: 0.05
-        mrao: [0.2, 0.1, 1.0]
+        mras: [0.2, 0.1, 1.0, 0]
       program: g_tex
   - id: gold_ball
     mesh:
@@ -108,7 +108,7 @@ types:
         kd: [0.7140, 0.4284, 0.1814, 1.0]
         map_kd: Metal022_1K_Color.png
         map_normal: Metal022_1K_NormalGL.png
-        map_mrao: Metal022_1K_mrao
+        map_mras: Metal022_1K_mras
         map_displacement: Metal022_1K_displacement
         xreflection: 0.05
         tiling: 3

@@ -4,6 +4,6 @@ material:
   base: textures/Bricks007_1K-PNG
   map_kd: Bricks007_1K_Color.png
   map_normal: Bricks007_1K_NormalGL.png
-  map_mrao: Bricks007_1K_mrao
+  map_mras: Bricks007_1K_mras
   map_displacement: Bricks007_1K_displacement
   default_programs: true

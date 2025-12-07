@@ -163,6 +163,7 @@ end
 class Converter < Thor
   EXTENSIONS = ["png", "jpg", "jpeg", "tga"].freeze
 
+  OPACITY_MAP = 'opacity'
   MRAS_MAP = 'mras'
   DISPLACEMENT_MAP = 'displacement'
   CAVITY_MAP = 'cavity'
@@ -199,6 +200,7 @@ class Converter < Thor
   # - occlusion: 0 = fully occluded, 1 = no occlusion
   # - specular:  0 = no reflection, 1 = strong reflection
   MODE_MRAS = :mras
+  MODE_OPACITY = :opacity
   MODE_DISPLACEMENT = :displacement
 
   COMBINE_VERSION = 1
@@ -814,10 +816,10 @@ class Converter < Thor
           tex_info = {
             type: :opacity,
             action: :encode,
-            mode: MODE_OPACITY,
-            target_name: OPACITY_MAP,
-            source_channel: RED,
-            target_channel: RED,
+            #mode: MODE_OPACITY,
+            #target_name: OPACITY_MAP,
+            #source_channel: RED,
+            #target_channel: RED,
           }
         when :metal
           tex_info = {

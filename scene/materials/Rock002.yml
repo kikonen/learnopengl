@@ -4,6 +4,6 @@ material:
   base: textures/Rock002_1K-PNG
   map_kd: Rock002_1K_Color.png
   map_normal: Rock002_1K_NormalGL.png
-  map_mrao: Rock002_1K_mrao
+  map_mras: Rock002_1K_mras
   map_displacement: Rock002_1K_displacement
   default_programs: true

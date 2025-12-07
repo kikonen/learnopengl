@@ -5,6 +5,6 @@ material:
   #kd: [0.160, 0.578, 0.168, 1.0]
   map_kd: Plastic01_col_2048.png
   map_normal: Plastic01_nrm_2048.png
-  map_mrao: Plastic01_mrao
+  map_mras: Plastic01_mras
   map_displacement: Plastic01_displacement
   default_programs: true

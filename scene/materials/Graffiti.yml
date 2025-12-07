@@ -4,6 +4,6 @@ material:
   base: textures/Graffiti
   map_kd: Graffiti-basecolor.png
   map_normal: Graffiti-normal.png
-  map_mrao: Graffiti_mrao
+  map_mras: Graffiti_mras
   map_displacement: Graffiti_displacement
   default_programs: true

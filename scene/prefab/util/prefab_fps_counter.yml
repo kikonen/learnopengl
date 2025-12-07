@@ -6,7 +6,7 @@ prefab:
     material:
       kd: [0.0, 0.8, 0.0, 1.0]
       map_displacement: ""
-      xmrao: [1.0, 0.0, 1]
+      xmras: [1.0, 0.0, 1]
       alpha: true
       xblend: true
       render_back: true

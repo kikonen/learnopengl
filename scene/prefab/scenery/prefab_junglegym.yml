@@ -7,7 +7,7 @@ prefab:
         base: material
         map_kd: MI_JungleGym_01a_BaseColor.png
         map_normal: MI_JungleGym_01a_Normal.png
-        map_mrao: MI_JungleGym_01a_mrao
+        map_mras: MI_JungleGym_01a_mras
         map_displacement: MI_JungleGym_01a_displacement
         program: g_tex
       base_scale: 0.01

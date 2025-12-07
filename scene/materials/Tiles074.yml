@@ -4,6 +4,6 @@ material:
   base: textures/Tiles074_1K-PNG
   map_kd: Tiles074_1K_Color.png
   map_normal: Tiles074_1K_NormalGL.png
-  map_mrao: Tiles074_1K_mrao
+  map_mras: Tiles074_1K_mras
   map_displacement: Tiles074_1K_displacement
   default_programs: true

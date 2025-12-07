@@ -8,7 +8,7 @@ decal:
     base: decals/concrete_damage_tdildcjb_2k
     map_kd: Concrete_Damage_tdildcjb_2K_BaseColor.jpg
     map_normal: Concrete_Damage_tdildcjb_2K_Normal.jpg
-    map_mrao: Concrete_Damage_tdildcjb_2K_mrao
+    map_mras: Concrete_Damage_tdildcjb_2K_mras
     map_displacement: Concrete_Damage_tdildcjb_2K_displacement
     parallax_depth: 0.05
     texture_spec:

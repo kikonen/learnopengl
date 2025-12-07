@@ -30,7 +30,7 @@ types:
         xreflection: 0.5
         refraction: 0.9
         refraction_ratio: [1.0, 1.52]
-        mrao: [0, 0, 1]
+        mras: [0, 0, 1, 0]
         render_back: true
       program: g_tex
     flags:

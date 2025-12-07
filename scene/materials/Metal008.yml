@@ -4,6 +4,6 @@ material:
   base: textures/Metal008_1K-PNG
   map_kd: Metal008_1K_Color.png
   map_normal: Metal008_1K_NormalGL.png
-  map_mrao: Metal008_1K_mrao
+  map_mras: Metal008_1K_mras
   map_displacement: Metal008_1K_displacement
   default_programs: true

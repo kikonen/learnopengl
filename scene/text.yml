@@ -67,7 +67,7 @@ types:
       material:
         kd: [1, 1, 1, 1]
         #map_custom_1: fonts/blade_runner.png
-        #mrao: [1.0, 0.0, 0, 1]
+        #mras: [1.0, 0.0, 0, 1]
         #alpha: true
         render_back: true
         updater_id: font_atlas_1
@@ -187,7 +187,7 @@ types:
         prefab: materials/Planks09.yml
         #prefab: materials/Planks09_metal.yml
         kd: [0.8, 0.8, 0.0, 1.0]
-        xmrao: [1.0, 0.0, 0, 1]
+        xmras: [1.0, 0.0, 0, 1]
         tiling: 5
         render_back: true
       program: g_tex
@@ -200,7 +200,7 @@ types:
         name: wood_floor
         prefab: materials/Planks09.yml
         kd: [0.8, 0.8, 0.0, 1.0]
-        xmrao: [1.0, 0.0, 1]
+        xmras: [1.0, 0.0, 1]
         tiling: 20
       program: g_tex
     flags:

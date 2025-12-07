@@ -4,7 +4,8 @@ material:
   base: textures/Fence007A_4K-JPG
   map_kd: Fence007A_4K_Color_1024.jpg
   map_normal: Fence007A_4K_NormalGL_1024.jpg
-  map_mrao: Fence007A_4K_mrao
+  map_mras: Fence007A_4K_mras
+  map_opacity: Fence007A_4K_Opacity_1024.png
   map_displacement: Fence007A_4K_displacement
   alpha: true
   #blend: true

@@ -35,7 +35,7 @@ types:
       path: water_ball
       material:
         kd: [0.0, 0.2, 0.8, 1.0]
-        mrao: [0.2, 0.1, 1.0]
+        mras: [0.2, 0.1, 1.0, 0.0]
         program: g_tex
       scale: 0.05
   - id: plate
@@ -135,7 +135,7 @@ types:
           xkd: [0.2, 0.9, 0.2, 1]
           map_kd: material_0_albedo.jpg
           map_normal: material_0_normal.png
-          map_mrao: material_0_mrao
+          map_mras: material_0_mras
           blend: true
       base_scale: 0.01
       base_rot: [-45, 0, 0]

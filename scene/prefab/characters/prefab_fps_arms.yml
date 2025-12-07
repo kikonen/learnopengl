@@ -10,7 +10,7 @@ prefab:
       base: material
       map_kd: M_UE4Man_Body_BaseColor.png
       map_normal: M_UE4Man_Body_Normal.png
-      map_mrao: M_UE4Man_Body_mrao
+      map_mras: M_UE4Man_Body_mras
       map_displacement: M_UE4Man_Body_displacement
       program: g_tex
       shadow_program: shadow

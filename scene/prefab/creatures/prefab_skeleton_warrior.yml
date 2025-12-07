@@ -27,7 +27,7 @@ prefab:
         base: skeleton_pbr
         map_kd: Skeleton_Body_AlbedoTransparency.png
         map_normal: Skeleton_Body_Normal.png
-        map_mrao: Skeleton_Body_mrao
+        map_mras: Skeleton_Body_mras
         #aalpha: true
         program: g_tex
         shadow_program: shadow

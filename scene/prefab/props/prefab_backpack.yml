@@ -7,6 +7,6 @@ prefab:
         - alias: "*"
           map_kd: diffuse.jpg
           map_normal: normal.png
-          map_mrao: default_mrao
+          map_mras: default_mras
       default_programs: true
       base_scale: 0.25

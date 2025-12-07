@@ -8,7 +8,7 @@ decal:
     base:  decals/Torn Poster_tcgqltp
     map_kd: Albedo_2K__tcgqltp.jpg
     map_normal: Normal_2K__tcgqltp.jpg
-    map_mrao: default_mrao
+    map_mras: default_mras
     map_displacement: default_displacement
     parallax_depth: 0.05
     texture_spec:

@@ -468,7 +468,7 @@ types:
       material:
         name: default_ball
         kd: [0.8, 0.8, 0.0, 1.0]
-        mrao: [0.6, 0.3, 1]
+        mras: [0.6, 0.3, 1]
       program: g_tex
   - id: gold_ball
     mesh:
@@ -486,7 +486,7 @@ types:
       material:
         name: silver_ball
         kd: [0.5075, 0.5075, 0.5075, 1.0]
-        mrao: [1, 0.3, 1]
+        mras: [1, 0.3, 1]
       program: g_tex
     physics:
       body:
@@ -502,7 +502,7 @@ types:
       material:
         name: bronze_ball
         kd: [0.7140, 0.4284, 0.1814, 1.0]
-        mrao: [1, 0.3, 1]
+        mras: [1, 0.3, 1]
       program: g_tex
   - id: copper_ball
     mesh:
@@ -511,7 +511,7 @@ types:
         name: copper
         prefab: materials/Metal008.yml
         kd: [0.800000, 0.800000, 0.800000]
-        mrao: [1, 0.3, 1]
+        mras: [1, 0.3, 1]
       program: g_tex
   - id: plasma_ball
     mesh:
@@ -822,7 +822,7 @@ types:
       path: rock2/rock
       material_modifier:
         prefab: materials/Rock002.yml
-        mrao: [0.5, 0.0, 1]
+        mras: [0.5, 0.0, 1]
         tiling: 4
       program: g_tex
   - id: asteroid_belt

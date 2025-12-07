@@ -7,7 +7,7 @@ prefab:
         kd: [0.8, 0.8, 0]
         map_kd: T_Helmet_BaseColor.jpg
         map_normal: T_Helmet_Normal.jpg
-        map_mrao: T_Helmet_mrao
+        map_mras: T_Helmet_mras
         program: g_tex
         shadow_program: shadow
       flags:

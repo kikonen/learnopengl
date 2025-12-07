@@ -8,7 +8,7 @@ decal:
     base:  decals/hole_in_concrete_sfvodqg_2k
     map_kd: Hole_in_Concrete_sfvodqg_2K_BaseColor.jpg
     map_normal: Hole_in_Concrete_sfvodqg_2K_Normal.jpg
-    map_mrao: Hole_in_Concrete_sfvodqg_2K_mrao
+    map_mras: Hole_in_Concrete_sfvodqg_2K_mras
     map_displacement: Hole_in_Concrete_sfvodqg_2K_displacement
     parallax_depth: 0.05
     texture_spec:

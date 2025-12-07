@@ -47,7 +47,7 @@ types:
       material:
         name: skeleton_pbr
         map_pbr: skeleton_pbr
-        xmrao: [0.3, 0.4, 1]
+        xmras: [0.3, 0.4, 1]
         xtiling: 60
       xanimations:
         - name: walk
@@ -67,7 +67,7 @@ types:
       material:
         name: skeleton_pbr
         map_pbr: skeleton_pbr
-        xmrao: [0.3, 0.4, 1]
+        xmras: [0.3, 0.4, 1]
         xtiling: 60
       xanimations:
         - name: walk
@@ -87,7 +87,7 @@ types:
       material:
         name: skeleton_pbr
         map_pbr: skeleton_pbr
-        xmrao: [0.3, 0.4, 1]
+        xmras: [0.3, 0.4, 1]
         xtiling: 60
         program: g_tex
         shadow_program: shadow
@@ -188,7 +188,7 @@ types:
       material:
         name: lion_pbr
         map_pbr: lion_skin_pbr
-        xmrao: [0.3, 0.4, 1]
+        xmras: [0.3, 0.4, 1]
         xtiling: 60
       animations:
         - name: walk
@@ -220,7 +220,7 @@ types:
       material:
         name: lion_pbr
         map_pbr: lion_skin_pbr
-        xmrao: [0.3, 0.4, 1]
+        xmras: [0.3, 0.4, 1]
         xtiling: 60
       animations:
         - name: walk
@@ -252,7 +252,7 @@ types:
       material:
         name: lion_pbr
         map_pbr: lion_skin_pbr
-        xmrao: [0.3, 0.4, 1]
+        xmras: [0.3, 0.4, 1]
         xtiling: 60
       animations:
         - name: walk

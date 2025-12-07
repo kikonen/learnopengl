@@ -7,7 +7,7 @@ prefab:
         - name: 'default_material'
           map_kd: Albedo_2K__vkurdfd.jpg
           map_normal: Normal_2K_LOD0_vkurdfd.jpg
-          map_mrao: default_mrao
+          map_mras: default_mras
           map_displacement: default_displacement
           parallax_depth: 0.008
       scale: 0.01

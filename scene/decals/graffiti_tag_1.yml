@@ -7,6 +7,6 @@ decal:
   material:
     base:  decals/Graffiti Tag_uk2ief1l
     map_kd: Albedo_2K__uk2ief1l.jpg
-    map_mrao: default_mrao
+    map_mras: default_mras
     texture_spec:
       wrap: GL_CLAMP_TO_EDGE

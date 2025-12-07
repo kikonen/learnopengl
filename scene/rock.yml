@@ -24,7 +24,7 @@ types:
       path: rock2/rock
       material_modifier:
         #prefab: materials/Rock002.yml
-        mrao: [0.5, 0.0, 1]
+        mras: [0.5, 0.0, 1]
         tiling: 4
       program: g_tex
 

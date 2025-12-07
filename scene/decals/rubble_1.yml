@@ -8,7 +8,7 @@ decal:
     base: decals/rubble_tbcs3qo_2k
     map_kd: Rubble_tbcs3qo_2K_BaseColor.jpg
     map_normal: Rubble_tbcs3qo_2K_Normal.jpg
-    map_mrao: Rubble_tbcs3qo_2K_mrao
+    map_mras: Rubble_tbcs3qo_2K_mras
     map_displacement: Rubble_tbcs3qo_2K_displacement
     xparallax_depth: 0.05
     parallax_depth: 0.008

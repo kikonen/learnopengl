@@ -8,7 +8,7 @@ decal:
     base:  decals/Round Manhole Cover_uh4jedeg
     map_kd: Albedo_2K__uh4jedeg.jpg
     map_normal: Normal_2K__uh4jedeg.jpg
-    map_mrao: default_mrao
+    map_mras: default_mras
     map_displacement: default_displacement
     parallax_depth: 0.05
     texture_spec:

@@ -6,7 +6,7 @@ float alpha;
   float opacity = texture(sampler2D(u_materials[i].opacityMapTex), texCoord).a;
 
   alpha =
-    (u_materials[i].diffuse *
+    (u_materials[i].diffuse.a *
      texture(sampler2D(u_materials[i].diffuseTex), texCoord)).a *
     opacity;
 }

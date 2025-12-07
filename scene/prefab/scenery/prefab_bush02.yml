@@ -20,7 +20,7 @@ prefab:
         - name: 'Material #26'
           map_kd: T_Bush02_d.tga
           map_normal: T_Bush02_n.tga
-          map_mrao: T_Bush02_mrao
+          map_mras: T_Bush02_mras
           map_displacement: T_Bush02_displacement
           alpha: true
           xblend: true
