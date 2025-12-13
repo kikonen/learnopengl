@@ -15,32 +15,12 @@
 #include "VertexJoint.h"
 
 namespace {
-    std::pair<bool, std::string> reolveJointAlias(
-        const std::string& name,
-        std::vector<std::string> jointPrefixes)
-    {
-        for (const auto& prefix : jointPrefixes) {
-            if (util::startsWith(name, prefix)) {
-                const auto& alias = prefix.size() != name.size()
-                    ? name.substr(prefix.size(), name.size() - prefix.size())
-                    : "<ROOT>";
-                return { true, alias };
-                break;
-            }
-        }
-        return { false, "" };
-    }
 }
 
 namespace animation {
     RigContainer::RigContainer(const std::string& name)
         : m_name{ name }
     {
-        // TODO KI WTF IS THIS HACK!!!
-        m_nodePrefixes.push_back("Scavenger_ ");
-        m_nodePrefixes.push_back("Scavenger_");
-        m_nodePrefixes.push_back("humanoid_ ");
-        m_nodePrefixes.push_back("humanoid_");
     }
 
     RigContainer::~RigContainer() = default;
@@ -51,12 +31,6 @@ namespace animation {
 
         auto& rigNode = m_nodes.emplace_back(node);
         rigNode.m_index = static_cast<int16_t>(m_nodes.size() - 1);
-
-        const auto [foundAlias, alias] = reolveJointAlias(rigNode.m_name, m_nodePrefixes);
-        if (foundAlias) {
-            rigNode.m_hasAliasName = true;
-            rigNode.m_aliasName = alias;
-        }
 
         return rigNode;
     }
@@ -89,17 +63,11 @@ namespace animation {
 
     const animation::RigNode* RigContainer::findNode(const std::string& name) const noexcept
     {
-        const auto [foundAlias, alias] = reolveJointAlias(name, m_nodePrefixes);
-
         const auto& it = std::find_if(
             m_nodes.begin(),
             m_nodes.end(),
-            [&name, &foundAlias, &alias](const RigNode& j) {
-                if (j.m_name == name) return true;
-                if (j.m_hasAliasName && foundAlias) {
-                    return j.m_aliasName == alias;
-                }
-                return false;
+            [&name](const RigNode& j) {
+                return j.m_name == name;
             });
         return it != m_nodes.end() ? &m_nodes[it->m_index] : nullptr;
     }
@@ -314,12 +282,11 @@ namespace animation {
             const RigSocket* socket = rigNode.m_socketIndex >= 0 ? &m_sockets[rigNode.m_socketIndex] : nullptr;
 
             const auto& line = fmt::format(
-                "NODE: [{}{}.{}, name={}{}{}{}]",
+                "NODE: [{}{}.{}, name={}{}{}]",
                 rigNode.m_jointRequired ? "+" : "-",
                 rigNode.m_parentIndex,
                 rigNode.m_index,
                 rigNode.m_name,
-                rigNode.m_hasAliasName ? fmt::format(", alias={}", rigNode.m_aliasName) : "",
                 rigNode.m_jointIndex >= 0 ? fmt::format(", joint={}", rigNode.m_jointIndex) : "",
                 socket ? fmt::format(", socket={}.{}", socket->m_index, socket->m_name) : "");
 

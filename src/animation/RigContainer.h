@@ -138,7 +138,5 @@ namespace animation
 
         // NOTE KI for debug
         std::map<uint16_t, std::vector<MeshInfo>> m_nodeMeshes;
-
-        std::vector<std::string> m_nodePrefixes;
     };
 }
