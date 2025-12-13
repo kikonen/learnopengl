@@ -11,8 +11,6 @@ struct aiNode;
 struct aiMesh;
 struct aiFace;
 struct aiBone;
-struct aiSkeleton;
-struct aiSkeletonBone;
 struct aiMetadata;
 
 namespace animation

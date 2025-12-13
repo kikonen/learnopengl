@@ -105,8 +105,6 @@ namespace animation
         std::string getAnimationSummary(int16_t level) const;
         std::string getSocketSummary(int16_t level) const;
 
-        //void calculateInvTransforms() noexcept;
-
         const animation::ClipContainer& getClipContainer() const noexcept
         {
             return m_clipContainer;

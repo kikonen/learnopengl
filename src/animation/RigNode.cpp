@@ -17,9 +17,7 @@ namespace animation {
         m_index{ -1 },
         m_parentIndex{ -1 },
         m_transform{ assimp_util::toMat4(node->mTransformation) },
-        m_invTransform{ glm::inverse(m_transform)},
-        m_globalTransform{ 1.f },
-        m_globalInvTransform{ 1.f }
+        m_globalTransform{ 1.f }
     {
     }
 }

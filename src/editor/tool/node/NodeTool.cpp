@@ -684,6 +684,9 @@ namespace editor
             const auto& state = node->getState();
             const auto socketIndex = state.m_socketBaseIndex + socket->m_index;
 
+            // TODO KI rigNode->m_globalTransform is incorrect
+            // => works only for non-animated
+            // => for animated value must come from RigNodeRegistry
             auto socketPalette = socketRegistry.modifyRange(socketIndex , 1);
             socketPalette[0] = socket->calculateGlobalTransform(rigNode->m_globalTransform);
             socketRegistry.markDirty(socketIndex, 1);

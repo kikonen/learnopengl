@@ -41,7 +41,8 @@
 #include "LoadContext.h"
 #include "RigNodeTreeGenerator.h"
 
-namespace {
+namespace
+{
     std::mutex m_lock;
 
     const char EMBEDDED_NAME_PREFIX = '*';
@@ -260,11 +261,10 @@ namespace mesh_set
 
             globalTransform = parentTransform * rigNode.m_transform;
             rigNode.m_globalTransform = globalTransform;
-            rigNode.m_globalInvTransform = glm::inverse(globalTransform);
 
             if (m_debug) {
                 KI_INFO_OUT(fmt::format(
-                    "ASSIMP: NODE mesh_set={}, node={}.{}, name={}, children={}, meshes={}\nTRAN: {}\nGLOB: {}\nINVE: {}",
+                    "ASSIMP: NODE mesh_set={}, node={}.{}, name={}, children={}, meshes={}\nTRAN: {}\nGLOB: {}",
                     meshSet.m_name,
                     parentIndex,
                     nodeIndex,
@@ -272,8 +272,7 @@ namespace mesh_set
                     node->mNumChildren,
                     node->mNumMeshes,
                     rigNode.m_transform,
-                    rigNode.m_globalTransform,
-                    rigNode.m_globalInvTransform));
+                    rigNode.m_globalTransform));
             }
         }
 
@@ -449,7 +448,7 @@ namespace mesh_set
     void AssimpLoader::processMesh(
         LoadContext& ctx,
         mesh::MeshSet& meshSet,
-        animation::RigNode& RigNode,
+        animation::RigNode& rigNode,
         mesh::ModelMesh& modelMesh,
         size_t meshIndex,
         const aiMesh* mesh)
@@ -474,8 +473,8 @@ namespace mesh_set
         if (m_debug) {
             KI_INFO_OUT(fmt::format("ASSIMP: MESH mesh_set={}, node={}.{}, name={}, material={}, vertices={}, faces={}, bones={}",
                 meshSet.m_name,
-                RigNode.m_parentIndex,
-                RigNode.m_index,
+                rigNode.m_parentIndex,
+                rigNode.m_index,
                 modelMesh.m_name,
                 material ? material->m_name : fmt::format("{}", mesh->mMaterialIndex),
                 mesh->mNumVertices,

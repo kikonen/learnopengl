@@ -221,17 +221,15 @@ namespace animation {
                 const auto& joint = m_jointContainer.m_joints[rigNode.m_jointIndex];
 
                 KI_INFO_OUT(fmt::format(
-                    "PREPARE: name={}\njoin: {}\nnode: {}",
+                    "PREPARE: name={}\noffset: {}",
                     rigNode.m_name,
-                    joint.m_offsetMatrix,
-                    rigNode.m_globalInvTransform));
+                    joint.m_offsetMatrix));
             }
             else {
                 KI_INFO_OUT(fmt::format(
-                    "PREPARE: name={}\njoin: {}\nnode: {}",
+                    "PREPARE: name={}\offset: {}",
                     rigNode.m_name,
-                    "NA",
-                    rigNode.m_globalInvTransform));
+                    "NA"));
             }
         }
     }
@@ -386,11 +384,4 @@ namespace animation {
 
         return sb;
     }
-
-    //void RigContainer::calculateInvTransforms() noexcept
-    //{
-    //    for (auto& rigNode : m_joints) {
-    //        rigNode.m_globalInvTransform = glm::inverse(rigNode.m_globalTransform);
-    //    }
-    //}
 }
