@@ -1,7 +1,7 @@
 #include "Loaders.h"
 
 namespace loader {
-    Loaders::Loaders(std::shared_ptr<Context> ctx)
+    Loaders::Loaders(const std::shared_ptr<Context>& ctx)
       : m_rootLoader(ctx),
         m_includeLoader(ctx),
         m_scriptLoader(ctx),

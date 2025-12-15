@@ -30,7 +30,7 @@
 
 namespace loader {
     IncludeLoader::IncludeLoader(
-        std::shared_ptr<Context> ctx)
+        const std::shared_ptr<Context>& ctx)
         : BaseLoader(ctx)
     {
     }

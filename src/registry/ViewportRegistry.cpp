@@ -45,7 +45,8 @@ void ViewportRegistry::prepare()
     clear();
 }
 
-void ViewportRegistry::addViewport(std::shared_ptr<model::Viewport> viewport) noexcept
+void ViewportRegistry::addViewport(
+    const std::shared_ptr<model::Viewport>& viewport) noexcept
 {
     ASSERT_RT();
 

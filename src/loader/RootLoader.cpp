@@ -21,7 +21,7 @@
 namespace loader
 {
     RootLoader::RootLoader(
-        std::shared_ptr<Context> ctx)
+        const std::shared_ptr<Context>& ctx)
         : BaseLoader(ctx)
     {
     }

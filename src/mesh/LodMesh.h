@@ -35,7 +35,7 @@ namespace mesh {
     // TODO KI *REMOVE* "same VAO" req!
     struct LodMesh {
         LodMesh();
-        LodMesh(std::shared_ptr<Mesh> mesh);
+        LodMesh(const std::shared_ptr<Mesh>& mesh);
         LodMesh(LodMesh& o) = delete;
         LodMesh(const LodMesh& o) = delete;
         LodMesh(LodMesh&& o) noexcept;
@@ -57,7 +57,7 @@ namespace mesh {
             return dynamic_cast<T*>(m_mesh.get());
         }
 
-        void setMesh(std::shared_ptr<Mesh> mesh) noexcept;
+        void setMesh(const std::shared_ptr<Mesh>& mesh) noexcept;
 
         const Material* getMaterial() const noexcept;
         Material* modifyMaterial() noexcept;

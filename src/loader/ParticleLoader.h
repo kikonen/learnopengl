@@ -14,7 +14,7 @@ namespace loader {
     {
     public:
         ParticleLoader(
-            std::shared_ptr<Context> ctx);
+            const std::shared_ptr<Context>& ctx);
 
         void loadParticles(
             const loader::DocNode& node,

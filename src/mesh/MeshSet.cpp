@@ -72,7 +72,8 @@ namespace mesh {
         return builder.toAABB();
     }
 
-    mesh::Mesh* MeshSet::addMesh(std::shared_ptr<mesh::Mesh>&& mesh) noexcept
+    mesh::Mesh* MeshSet::addMesh(
+        const std::shared_ptr<mesh::Mesh>& mesh) noexcept
     {
         m_meshes.push_back(mesh);
         return m_meshes[m_meshes.size() - 1].get();

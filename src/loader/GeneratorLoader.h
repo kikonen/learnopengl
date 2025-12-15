@@ -21,7 +21,7 @@ namespace loader {
     {
     public:
         GeneratorLoader(
-            std::shared_ptr<Context> ctx);
+            const std::shared_ptr<Context>& ctx);
 
         void loadGenerator(
             const loader::DocNode& node,

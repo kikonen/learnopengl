@@ -50,8 +50,8 @@ namespace loader {
             const ki::node_id parentId,
             const ki::socket_id socketId,
             const NodeData& baseData,
-            std::shared_ptr<Context> ctx,
-            std::shared_ptr<Loaders> loaders);
+            const std::shared_ptr<Context>& ctx,
+            const std::shared_ptr<Loaders>& loaders);
 
     private:
         SceneLoader* const m_sceneLoader;

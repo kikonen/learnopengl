@@ -41,7 +41,8 @@ namespace physics {
         ~PhysicsSystem();
 
         void clear();
-        void prepare(std::shared_ptr<std::atomic_bool> alive);
+        void prepare(
+            const std::shared_ptr<std::atomic_bool>& alive);
 
         void updatePrepare(const UpdateContext& ctx);
         void updateObjects(const UpdateContext& ctx);

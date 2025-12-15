@@ -145,7 +145,7 @@ public:
 
     void addinlineTexture(
         TextureType type,
-        std::shared_ptr<InlineTexture> texture) noexcept;
+        const std::shared_ptr<InlineTexture>& texture) noexcept;
 
     bool hasRegisteredTex(TextureType type) const noexcept
     {

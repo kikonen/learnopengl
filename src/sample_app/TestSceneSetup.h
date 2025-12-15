@@ -13,8 +13,8 @@ class TestSceneSetup final
 public:
     TestSceneSetup(
         Engine& engine,
-        std::shared_ptr<std::atomic_bool> alive,
-        std::shared_ptr<AsyncLoader> asyncLoader);
+        const std::shared_ptr<std::atomic_bool>& alive,
+        const std::shared_ptr<AsyncLoader>& asyncLoader);
 
     void setup();
 

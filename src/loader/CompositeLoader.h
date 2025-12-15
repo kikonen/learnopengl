@@ -20,7 +20,7 @@ namespace loader {
     {
     public:
         CompositeLoader(
-            std::shared_ptr<Context> ctx);
+            const std::shared_ptr<Context>& ctx);
 
         void loadComposites(
             const loader::DocNode& node,

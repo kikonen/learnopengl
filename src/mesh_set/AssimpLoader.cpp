@@ -56,7 +56,7 @@ namespace
 namespace mesh_set
 {
     AssimpLoader::AssimpLoader(
-        std::shared_ptr<std::atomic_bool> alive,
+        const std::shared_ptr<std::atomic_bool>& alive,
         bool debug)
         : MeshSetLoader{ alive },
         m_debug{ debug }

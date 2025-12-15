@@ -503,7 +503,7 @@ void Material::addTexture(
 
 void Material::addinlineTexture(
     TextureType type,
-    std::shared_ptr<InlineTexture> texture) noexcept
+    const std::shared_ptr<InlineTexture>& texture) noexcept
 {
     m_inlineTextures.insert({ type, texture });
 }

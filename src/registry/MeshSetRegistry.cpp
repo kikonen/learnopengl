@@ -56,7 +56,8 @@ void MeshSetRegistry::clear()
     m_meshes.clear();
 }
 
-void MeshSetRegistry::prepare(std::shared_ptr<std::atomic_bool> alive)
+void MeshSetRegistry::prepare(
+    const std::shared_ptr<std::atomic_bool>& alive)
 {
     m_alive = alive;
 }

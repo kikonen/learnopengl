@@ -19,7 +19,9 @@ public:
     void clear();
     void prepare();
 
-    void addViewport(std::shared_ptr<model::Viewport> viewport) noexcept;
+    void addViewport(
+        const std::shared_ptr<model::Viewport>& viewport) noexcept;
+
     void removeViewport(ki::sid_t id) noexcept;
 
     inline std::vector<std::shared_ptr<model::Viewport>>& getViewports() noexcept

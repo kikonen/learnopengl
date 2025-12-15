@@ -8,7 +8,7 @@ namespace loader {
     {
     public:
         LightLoader(
-            std::shared_ptr<Context> ctx);
+            const std::shared_ptr<Context>& ctx);
 
         void loadLight(
             const loader::DocNode& node,

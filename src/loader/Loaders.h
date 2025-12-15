@@ -30,7 +30,7 @@ class Registry;
 namespace loader {
     class Loaders {
     public:
-        Loaders(std::shared_ptr<Context> ctx);
+        Loaders(const std::shared_ptr<Context>& ctx);
 
         void prepare(
             Registry* registry);

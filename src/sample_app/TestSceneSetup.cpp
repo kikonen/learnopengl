@@ -31,8 +31,8 @@ namespace {
 
 TestSceneSetup::TestSceneSetup(
     Engine& engine,
-    std::shared_ptr<std::atomic_bool> alive,
-    std::shared_ptr<AsyncLoader> asyncLoader)
+    const std::shared_ptr<std::atomic_bool>& alive,
+    const std::shared_ptr<AsyncLoader>& asyncLoader)
     : m_engine{ engine },
     m_alive(alive),
     m_asyncLoader(asyncLoader)

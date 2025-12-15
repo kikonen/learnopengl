@@ -41,7 +41,7 @@ namespace physics {
 
         std::shared_ptr<mesh::Mesh> saveMesh(
             const std::string& key,
-            std::shared_ptr<mesh::Mesh> mesh);
+            const std::shared_ptr<mesh::Mesh>& mesh);
 
     private:
         const PhysicsSystem& m_physicsSystem;

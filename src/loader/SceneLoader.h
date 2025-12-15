@@ -41,7 +41,7 @@ namespace loader {
     {
     public:
         SceneLoader(
-            std::shared_ptr<Context> ctx);
+            const std::shared_ptr<Context>& ctx);
 
         ~SceneLoader();
 

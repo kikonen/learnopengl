@@ -24,7 +24,7 @@ class Registry {
 public:
     Registry(
         Engine& engine,
-        std::shared_ptr<std::atomic_bool> alive);
+        const std::shared_ptr<std::atomic_bool>& alive);
 
     ~Registry();
 

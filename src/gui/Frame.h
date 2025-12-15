@@ -18,7 +18,7 @@ namespace gui
     class Frame
     {
     public:
-        Frame(std::shared_ptr<Window> window);
+        Frame(const std::shared_ptr<Window>& window);
         virtual ~Frame();
 
         virtual void prepare(const PrepareContext& ctx);

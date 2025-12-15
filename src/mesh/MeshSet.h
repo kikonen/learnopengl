@@ -39,7 +39,8 @@ namespace mesh {
         bool isRigged() const noexcept;
 
         // Take ownership of mesh
-        mesh::Mesh* addMesh(std::shared_ptr<mesh::Mesh>&& mesh) noexcept;
+        mesh::Mesh* addMesh(
+            const std::shared_ptr<mesh::Mesh>& mesh) noexcept;
 
         const std::vector<std::shared_ptr<mesh::Mesh>>& getMeshes() const noexcept;
 

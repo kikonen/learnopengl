@@ -23,7 +23,7 @@ namespace {
 
 namespace loader {
     ScriptLoader::ScriptLoader(
-        std::shared_ptr<Context> ctx)
+        const std::shared_ptr<Context>& ctx)
         : BaseLoader(ctx)
     {
     }

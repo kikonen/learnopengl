@@ -409,7 +409,7 @@ namespace physics {
 
     std::shared_ptr<mesh::Mesh> MeshGenerator::saveMesh(
         const std::string& key,
-        std::shared_ptr<mesh::Mesh> mesh)
+        const std::shared_ptr<mesh::Mesh>& mesh)
     {
         m_cache.insert({ key, mesh });
         return mesh;

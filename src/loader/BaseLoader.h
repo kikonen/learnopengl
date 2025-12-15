@@ -25,7 +25,7 @@ namespace loader
     {
     public:
         BaseLoader(
-            std::shared_ptr<Context>);
+            const std::shared_ptr<Context>& ctx);
 
         ~BaseLoader();
 

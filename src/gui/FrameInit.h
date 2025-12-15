@@ -9,7 +9,7 @@ struct PrepareContext;
 class FrameInit
 {
 public:
-    FrameInit(std::shared_ptr<Window> window);
+    FrameInit(const std::shared_ptr<Window>& window);
     ~FrameInit();
 
     void prepare(const PrepareContext& ctx);

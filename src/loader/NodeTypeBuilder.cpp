@@ -108,7 +108,8 @@ namespace {
 namespace loader
 {
     NodeTypeBuilder::NodeTypeBuilder(
-        std::shared_ptr<Context> ctx, std::shared_ptr<Loaders> loaders)
+        const std::shared_ptr<Context>& ctx,
+        const std::shared_ptr<Loaders>& loaders)
         : m_ctx{ ctx },
         m_loaders{ loaders }
     { }

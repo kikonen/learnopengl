@@ -19,7 +19,7 @@ namespace mesh_set
     {
     public:
         MeshSetLoader(
-            std::shared_ptr<std::atomic_bool> alive);
+            const std::shared_ptr<std::atomic_bool>& alive);
 
         virtual ~MeshSetLoader();
 

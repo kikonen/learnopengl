@@ -32,7 +32,7 @@ namespace {
 
 namespace editor
 {
-    ConsoleFrame::ConsoleFrame(std::shared_ptr<Window> window)
+    ConsoleFrame::ConsoleFrame(const std::shared_ptr<Window>& window)
         : Frame{ window },
         m_executor{ std::make_unique<Executor>() }
     {

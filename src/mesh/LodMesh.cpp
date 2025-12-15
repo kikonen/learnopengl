@@ -33,7 +33,7 @@ namespace mesh {
     LodMesh::LodMesh()
     {}
 
-    LodMesh::LodMesh(std::shared_ptr<Mesh> mesh)
+    LodMesh::LodMesh(const std::shared_ptr<Mesh>& mesh)
     {
         setMesh(mesh);
     }
@@ -212,7 +212,7 @@ namespace mesh {
     }
 
     void LodMesh::setMesh(
-        std::shared_ptr<Mesh> mesh) noexcept
+        const std::shared_ptr<Mesh>& mesh) noexcept
     {
         m_mesh = mesh;
         if (!m_mesh) return;

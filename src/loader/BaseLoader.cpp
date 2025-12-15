@@ -34,7 +34,7 @@ namespace loader
     //static const float DEF_ALPHA = 1.0;
 
     BaseLoader::BaseLoader(
-        std::shared_ptr<Context> ctx)
+        const std::shared_ptr<Context>& ctx)
         : m_ctx(ctx)
     {
     }

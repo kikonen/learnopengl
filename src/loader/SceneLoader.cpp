@@ -65,7 +65,7 @@ namespace {
 
 namespace loader {
     SceneLoader::SceneLoader(
-        std::shared_ptr<Context> ctx)
+        const std::shared_ptr<Context>& ctx)
         : BaseLoader(ctx),
         m_loaders{ std::make_shared<Loaders>(ctx) },
         m_sceneData{ std::make_unique<SceneData>() },

@@ -42,7 +42,7 @@ namespace {
 }
 
 namespace editor {
-    EditorFrame::EditorFrame(std::shared_ptr<Window> window)
+    EditorFrame::EditorFrame(const std::shared_ptr<Window>& window)
         : Frame(window),
         m_statusTool{ std::make_unique<StatusTool>(*this) },
         m_cameraTool{ std::make_unique<CameraTool>(*this) },

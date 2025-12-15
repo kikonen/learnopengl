@@ -10,7 +10,7 @@
 
 namespace loader {
     ControllerLoader::ControllerLoader(
-        std::shared_ptr<Context> ctx)
+        const std::shared_ptr<Context>& ctx)
         : BaseLoader(ctx)
     {
     }

@@ -304,7 +304,8 @@ namespace physics
         }
     }
 
-    void PhysicsSystem::prepare(std::shared_ptr<std::atomic_bool> alive)
+    void PhysicsSystem::prepare(
+        const std::shared_ptr<std::atomic_bool>& alive)
     {
         //ASSERT_WT();
 

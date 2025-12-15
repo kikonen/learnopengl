@@ -29,7 +29,8 @@ public:
 
     void clear();
 
-    void prepare(std::shared_ptr<std::atomic_bool> alive);
+    void prepare(
+        const std::shared_ptr<std::atomic_bool>& alive);
 
     std::shared_future<std::shared_ptr<mesh::MeshSet>> getMeshSet(
         std::string_view id,

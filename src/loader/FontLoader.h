@@ -12,7 +12,7 @@ namespace loader {
     {
     public:
         FontLoader(
-            std::shared_ptr<Context> ctx);
+            const std::shared_ptr<Context>& ctx);
 
         void loadFonts(
             const loader::DocNode& node,
