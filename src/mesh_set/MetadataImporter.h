@@ -16,7 +16,7 @@ namespace animation
 
 namespace mesh_set
 {
-    class MetadataLoader
+    class MetadataImporter
     {
     public:
         std::unique_ptr<animation::Metadata> load(const std::string& meshFilePath);

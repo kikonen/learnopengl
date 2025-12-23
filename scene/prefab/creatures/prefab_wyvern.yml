@@ -13,9 +13,9 @@ prefab:
           xline_mode: true
       animations:
         - name: fire
-          clip: Take 001
+          clip: Take-001
           path: anim/Wyvern@FlyStationarySpreadFire.FBX
         - name: fly
-          clip: Take 001
+          clip: Take-001
           path: anim/Wyvern@FlyStationary.FBX
       base_scale: 0.01

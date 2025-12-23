@@ -20,7 +20,8 @@
 
 #include "render/size.h"
 
-#include "animation/RigContainer.h"
+#include "animation/Rig.h"
+#include "animation/RigNode.h"
 
 #include "Mesh.h"
 #include "VaoMesh.h"
@@ -281,14 +282,10 @@ namespace mesh {
             glm::mat4(m_baseRotation) *
             glm::scale(glm::mat4{ 1.f }, m_scale * m_baseScale) *
             m_mesh->m_offset.toMatrix();
-            //*
-            //m_mesh->m_rigTransform;
 
         if (!m_flags.useJoints) {
-            if (auto* mesh = getMesh<mesh::VaoMesh>();  mesh && mesh->m_rigNodeIndex >= 0)
-            {
-                if (auto* rig = mesh->getRigContainer().get(); rig)
-                {
+            if (auto* mesh = getMesh<mesh::VaoMesh>();  mesh && mesh->m_rigNodeIndex >= 0) {
+                if (const auto* rig = mesh->getRig(); rig) {
                     m_baseTransform = m_baseTransform *
                         rig->getNode(mesh->m_rigNodeIndex)->m_globalTransform;
                 }

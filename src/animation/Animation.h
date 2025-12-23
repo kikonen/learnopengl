@@ -10,15 +10,15 @@ struct aiAnimation;
 
 namespace assimp
 {
-    class AnimationLoader;
+    class AnimationImporter;
 }
 
 namespace animation
 {
     struct Animation
     {
-        friend class mesh_set::AnimationLoader;
-        friend struct RigContainer;
+        friend class mesh_set::AnimationImporter;
+        friend struct Rig;
         friend struct ClipContainer;
 
         Animation(

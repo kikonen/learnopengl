@@ -11,8 +11,6 @@
 
 #include "VBO_impl.h"
 
-#include "animation/RigContainer.h"
-
 namespace mesh {
     SkinnedVAO::SkinnedVAO(std::string_view name)
         : TexturedVAO{ name },

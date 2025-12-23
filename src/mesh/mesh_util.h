@@ -6,7 +6,7 @@
 
 namespace animation
 {
-    struct RigContainer;
+    struct Rig;
 }
 
 namespace mesh {
@@ -16,9 +16,6 @@ namespace mesh {
     mesh::LodMesh* findLodMesh(
         const std::string& meshName,
         std::vector<mesh::LodMesh>& lodMeshes);
-
-    std::shared_ptr<animation::RigContainer> findRig(
-        const std::vector<mesh::LodMesh>& lodMeshes);
 
     std::vector<std::string> getLodMeshNames(
         const std::string& meshName,

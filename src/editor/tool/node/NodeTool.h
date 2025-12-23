@@ -9,7 +9,7 @@ namespace mesh {
 }
 
 namespace animation {
-    struct RigContainer;
+    struct Rig;
     struct RigSocket;
 }
 
@@ -74,7 +74,7 @@ namespace editor
         void updateSocket(
             model::Node* node,
             mesh::Mesh* mesh,
-            animation::RigContainer* rig,
+            animation::Rig* rig,
             animation::RigSocket* socket);
 
     private:

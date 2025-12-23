@@ -6,11 +6,13 @@
 
 #include "RigNodeChannel.h"
 
+#include "util/assimp_util.h"
+
 namespace animation {
     Animation::Animation(
         const aiAnimation* anim,
         const std::string& uniquePrefix)
-        : m_name{ anim->mName.C_Str() },
+        : m_name{ assimp_util::normalizeName(anim->mName) },
         m_uniqueName{ fmt::format(
             "{}:{}",
             uniquePrefix.empty() ? "<ANIM_NAME_MISSING>" : uniquePrefix,

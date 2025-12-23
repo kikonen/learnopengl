@@ -41,9 +41,6 @@ namespace mesh {
 
         int32_t m_rigNodeIndex{ -1 };
 
-        // NOTE KI for debug
-        std::string m_rigNodeName;
-
     protected:
         const kigl::GLVertexArray* m_vao{ nullptr };
 

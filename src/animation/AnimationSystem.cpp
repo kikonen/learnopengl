@@ -26,7 +26,9 @@
 
 #include "debug/DebugContext.h"
 
-#include "animation/RigContainer.h"
+#include "animation/Rig.h"
+#include "animation/RigNode.h"
+#include "animation/JointContainer.h"
 #include "animation/Joint.h"
 #include "animation/Animator.h"
 
@@ -124,7 +126,8 @@ namespace animation
     }
 
     std::tuple<uint32_t, uint32_t, uint32_t> AnimationSystem::registerInstance(
-        const animation::RigContainer& rig)
+        const animation::Rig& rig,
+        const animation::JointContainer& jointContainer)
     {
         std::lock_guard lock(m_pendingLock);
 
@@ -133,39 +136,41 @@ namespace animation
         auto& socketRegistry = *m_socketRegistry;
 
         uint32_t rigNodeBaseIndex = rigNodeRegistry.addInstance(rig.m_nodes.size());
-        uint32_t jointBaseIndex = jointRegistry.addInstance(rig.m_jointContainer.size());
+        uint32_t jointBaseIndex = jointRegistry.addInstance(jointContainer.size());
         uint32_t socketBaseIndex = socketRegistry.addInstance(rig.m_sockets.size());
 
         {
             std::lock_guard lockjoints(jointRegistry.m_lock);
 
             // Initialize joints
-            if (rigNodeBaseIndex) {
+            if (rigNodeBaseIndex)
+            {
                 auto rigNodeTransforms = rigNodeRegistry.modifyRange(rigNodeBaseIndex, rig.m_nodes.size());
 
-                for (const auto& rigNode : rig.m_nodes) {
+                for (const auto& rigNode : rig.m_nodes)
+                {
                     const auto& parentTransform = rigNode.m_index > 0 ? rigNodeTransforms[rigNode.m_parentIndex] : ID_MAT;
                     rigNodeTransforms[rigNode.m_index] = parentTransform * rigNode.m_transform;
                 }
 
-                jointRegistry.markDirty(jointBaseIndex, rig.m_jointContainer.size());
+                jointRegistry.markDirty(jointBaseIndex, jointContainer.size());
             }
 
             // Initialize joints
-            if (jointBaseIndex) {
+            if (jointBaseIndex)
+            {
                 const auto rigNodeTransforms = rigNodeRegistry.modifyRange(rigNodeBaseIndex, rig.m_nodes.size());
-                auto jointPalette = jointRegistry.modifyRange(jointBaseIndex, rig.m_jointContainer.size());
+                auto jointPalette = jointRegistry.modifyRange(jointBaseIndex, jointContainer.size());
 
                 glm::mat4 inverseMeshRigTransform{ 1.f };
 
-                for (const auto& rigNode : rig.m_nodes) {
-                    const auto* joint = rig.m_jointContainer.getJoint(rigNode.m_jointIndex);
-                    if (joint) {
-                        const auto& globalTransform = rigNodeTransforms[rigNode.m_index];
-                        jointPalette[joint->m_index] = inverseMeshRigTransform * globalTransform * joint->m_offsetMatrix;
-                    }
+                for (const auto& joint : jointContainer.m_joints) {
+                    const auto& globalTransform = joint.m_nodeIndex >= 0 ? rigNodeTransforms[joint.m_nodeIndex] : ID_MAT;
+
+                    jointPalette[joint.m_jointIndex] = inverseMeshRigTransform * globalTransform * joint.m_offsetMatrix;
                 }
-                jointRegistry.markDirty(jointBaseIndex, rig.m_jointContainer.size());
+
+                jointRegistry.markDirty(jointBaseIndex, jointContainer.size());
             }
         }
 
@@ -182,8 +187,7 @@ namespace animation
             auto socketPalette = socketRegistry.modifyRange(socketBaseIndex, rig.m_sockets.size());
             for (const auto& socket : rig.m_sockets) {
                 // NOTE KI see Animator::animate()
-                const auto& rigNode = rig.m_nodes[socket.m_nodeIndex];
-                const auto& globalTransform = rigNodeTransforms[rigNode.m_index];
+                const auto& globalTransform = socket.m_nodeIndex >= 0 ? rigNodeTransforms[socket.m_nodeIndex] : ID_MAT;
                 socketPalette[socket.m_index] = socket.calculateGlobalTransform(globalTransform);
             }
             socketRegistry.markDirty(socketBaseIndex, rig.m_sockets.size());
@@ -193,7 +197,8 @@ namespace animation
     }
 
     void AnimationSystem::unregisterInstance(
-        const animation::RigContainer& rig,
+        const animation::Rig& rig,
+        const animation::JointContainer& jointContainer,
         uint32_t rigNodeBaseIndex,
         uint32_t jointBaseIndex,
         uint32_t socketBaseIndex)
@@ -205,7 +210,7 @@ namespace animation
         auto& jointRegistry = *m_jointRegistry;
 
         rigNodeRegistry.removeInstance(rigNodeBaseIndex, rig.m_nodes.size());
-        jointRegistry.removeInstance(jointBaseIndex, rig.m_jointContainer.size());
+        jointRegistry.removeInstance(jointBaseIndex, jointContainer.size());
         socketRegistry.removeInstance(socketBaseIndex, rig.m_sockets.size());
     }
 
@@ -354,6 +359,8 @@ namespace animation
                 return;
         }
 
+        std::set<animation::Rig*> processedRigs;
+
         for (const auto& lodMesh : node->getLodMeshes()) {
             if (!lodMesh.m_flags.useAnimation) continue;
 
@@ -363,8 +370,16 @@ namespace animation
 
             // TDOO KI handle case when same rig is used for multiple
             // meshes (i.e. meshes possibly split due to material, etc.)
-            auto rig = mesh->getRigContainer().get();
+            auto rig = mesh->getRig();
+            auto jointContainer = mesh->getJointContainer();
+
             if (!rig) continue;
+            if (!jointContainer) continue;
+
+            if (processedRigs.contains(rig))
+                continue;
+
+            processedRigs.insert(rig);
 
             uint32_t rigNodeBaseIndex;
             uint32_t jointBaseIndex;
@@ -376,7 +391,7 @@ namespace animation
                 socketBaseIndex = nodeState.m_socketBaseIndex;
             }
 
-            auto nodeTransforms = rigNodeRegistry.modifyRange(rigNodeBaseIndex, rig->m_nodes.size());
+            auto rigNodeTransforms = rigNodeRegistry.modifyRange(rigNodeBaseIndex, rig->m_nodes.size());
 
             double currentTime = ctx.getClock().ts;
 
@@ -436,7 +451,7 @@ namespace animation
              if (!playB.m_active) {
                  changed = animator.animate(
                      *rig,
-                     nodeTransforms,
+                     rigNodeTransforms,
                      playA.m_clipIndex,
                      playA.m_startTime,
                      playA.m_speed,
@@ -446,7 +461,7 @@ namespace animation
             else {
                  changed = animator.animateBlended(
                      *rig,
-                     nodeTransforms,
+                     rigNodeTransforms,
                      playA.m_clipIndex,
                      playA.m_startTime,
                      playA.m_speed,
@@ -464,25 +479,27 @@ namespace animation
             }
 
             if (changed) {
-                auto jointPalette = jointRegistry.modifyRange(jointBaseIndex, rig->m_jointContainer.size());
+                auto jointPalette = jointRegistry.modifyRange(jointBaseIndex, jointContainer->size());
                 auto socketPalette = socketRegistry.modifyRange(socketBaseIndex, rig->m_sockets.size());
 
                 // STEP 2: update Joint Palette
-                for (const auto& joint : rig->m_jointContainer.m_joints)
+                for (const auto& joint : jointContainer->m_joints)
                 {
-                    const auto& globalTransform = nodeTransforms[joint.m_nodeIndex];
+                    const auto& globalTransform = joint.m_nodeIndex >= 0 ? rigNodeTransforms[joint.m_nodeIndex] : ID_MAT;
+
                     // NOTE KI m_offsetMatrix so that vertex is first converted to local space of joint
-                    jointPalette[joint.m_index] = globalTransform * joint.m_offsetMatrix;
+                    jointPalette[joint.m_jointIndex] = globalTransform * joint.m_offsetMatrix;
                 }
 
                 // STEP 3: update Socket Palette
                 for (const auto& socket : rig->m_sockets) {
                     // NOTE KI see AnimationSystem::registerInstance()
-                    socketPalette[socket.m_index] = socket.calculateGlobalTransform(
-                        nodeTransforms[socket.m_nodeIndex]);
+                    const auto& globalTransform = socket.m_nodeIndex >= 0 ? rigNodeTransforms[socket.m_nodeIndex] : ID_MAT;
+
+                    socketPalette[socket.m_index] = socket.calculateGlobalTransform(globalTransform);
                 }
 
-                rigNodeRegistry.markDirty(rigNodeBaseIndex, nodeTransforms.size());
+                rigNodeRegistry.markDirty(rigNodeBaseIndex, rigNodeTransforms.size());
 
                 jointRegistry.markDirty(jointBaseIndex, jointPalette.size());
                 socketRegistry.markDirty(socketBaseIndex, socketPalette.size());

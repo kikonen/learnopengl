@@ -23,6 +23,8 @@ namespace animation
             const glm::mat4& jointGlobalTransform) const;
 
         const std::string m_name;
+
+        // TODO KI *INCORRECT*: socket is bound to *rig_node* not *joint*
         const std::string m_jointName;
 
         util::Transform m_offset;

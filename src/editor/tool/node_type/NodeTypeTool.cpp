@@ -30,7 +30,7 @@
 #include "script/CommandEngine.h"
 #include "script/command/SelectNode.h"
 
-#include "animation/RigContainer.h"
+#include "animation/Rig.h"
 #include "animation/RigSocket.h"
 
 #include "mesh/LodMesh.h"

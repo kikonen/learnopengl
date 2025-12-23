@@ -1,4 +1,4 @@
-#include "MeshSetLoader.h"
+#include "MeshSetImporter.h"
 
 #include "util/util.h"
 
@@ -7,17 +7,17 @@
 
 namespace mesh_set
 {
-    MeshSetLoader::MeshSetLoader(
+    MeshSetImporter::MeshSetImporter(
         const std::shared_ptr<std::atomic_bool>& alive)
         : m_alive(alive)
     {
     }
 
-    MeshSetLoader::~MeshSetLoader()
+    MeshSetImporter::~MeshSetImporter()
     {
     }
 
-    bool MeshSetLoader::load(
+    bool MeshSetImporter::load(
         mesh::MeshSet& meshSet,
         Material* defaultMaterial,
         bool forceDefaultMaterial)
@@ -38,6 +38,6 @@ namespace mesh_set
 
         loadData(meshSet);
 
-        return !meshSet.isEmpty();
+        return !meshSet.empty();
     }
 }

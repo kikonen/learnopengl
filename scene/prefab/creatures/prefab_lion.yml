@@ -32,18 +32,18 @@ prefab:
       animations:
         - clips:
             - name: default
-              clip: Take 001
+              clip: Take-001
         - name: walk
-          clip: Take 001
+          clip: Take-001
           path: anim/Lion@Walk.FBX
         - name: jump
-          clip: Take 001
+          clip: Take-001
           path: anim/Lion@Jump.FBX
         - name: idle
-          clip: Take 001
+          clip: Take-001
           path: anim/Lion@IdleBreathe.FBX
         - name: roar
-          clip: Take 001
+          clip: Take-001
           path: anim/Lion@Roar.FBX
       base_scale: 0.0125
   audio:

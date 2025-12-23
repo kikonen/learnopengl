@@ -57,7 +57,7 @@ namespace render
 }
 
 namespace animation {
-    struct RigContainer;
+    struct Rig;
 }
 
 namespace mesh {
@@ -132,8 +132,6 @@ namespace model
         inline bool hasMesh() const noexcept {
             return !m_lodMeshes.empty() && m_lodMeshes[0].m_mesh.get();
         }
-
-        std::shared_ptr<animation::RigContainer> findRig() const;
 
         template<typename T>
         inline T* getCustomMaterial() const noexcept {

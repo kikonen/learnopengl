@@ -12,7 +12,7 @@
 #include "mesh/vao/TexturedVAO.h"
 #include "mesh/vao/SkinnedVAO.h"
 
-#include "mesh_set/AssimpLoader.h"
+#include "mesh_set/AssimpImporter.h"
 
 #include "render/RenderContext.h"
 
@@ -113,18 +113,18 @@ std::shared_future<std::shared_ptr<mesh::MeshSet>> MeshSetRegistry::startLoad(
             try {
                 const auto assets = Assets::get();
 
-                KI_DEBUG(fmt::format("START_LOADER: {}", meshSet->str()));
+                KI_DEBUG(fmt::format("START_Importer: {}", meshSet->str()));
 
-                std::unique_ptr<mesh_set::MeshSetLoader> loader;
+                std::unique_ptr<mesh_set::MeshSetImporter> importer;
 
-                if (assets.assimpLoaderEnabled) {
-                    loader = std::make_unique<mesh_set::AssimpLoader>(m_alive, assets.assimpDebug);
+                if (assets.assimpImporterEnabled) {
+                    importer = std::make_unique<mesh_set::AssimpImporter>(m_alive, assets.assimpDebug);
                 }
                 else {
-                    throw "no loader";
+                    throw "no Importer";
                 }
 
-                auto loaded = loader->load(*meshSet, m_defaultMaterial.get(), m_forceDefaultMaterial);
+                auto loaded = importer->load(*meshSet, m_defaultMaterial.get(), m_forceDefaultMaterial);
 
                 // NOTE KI if not valid then null; avoids internal errors in render logic
                 if (loaded) {

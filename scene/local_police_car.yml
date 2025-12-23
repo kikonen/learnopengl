@@ -58,4 +58,4 @@ nodes:
       z_step: -7
     xscript: |
       cmd:animationPlay(
-        { name = "walk:Take 001" } )
+        { name = "walk" } )

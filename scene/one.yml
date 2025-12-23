@@ -74,7 +74,7 @@ types:
       animations:
         - name: fly_backward
           path: ANIM_Griffon_FlyBackwardsStationary.FBX
-          clip: Unreal Take
+          clip: Unreal-Take
     script: |
       cmd:animation_play(
         self.handle,
@@ -93,7 +93,7 @@ types:
       animations:
         - name: fly_backward
           path: ANIM_Griffon_FlyBackwardsStationary.FBX
-          clip: Unreal Take
+          clip: Unreal-Take
     script: |
       cmd:animation_play(
         self.handle,
@@ -111,7 +111,7 @@ types:
       xanimations:
         - name: fly_backward
           path: ANIM_Griffon_FlyBackwardsStationary.FBX
-          clip: Unreal Take
+          clip: Unreal-Take
     xscript: |
       cmd:animation_play(
         self.handle,
@@ -129,7 +129,7 @@ types:
       xanimations:
         - name: walk
           path: Hydra@Walk.FBX
-          clip: Take 001
+          clip: Take-001
     script: |
       cmd:animation_play(
         self.handle,

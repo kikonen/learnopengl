@@ -12,7 +12,7 @@ namespace {
 
 namespace animation {
     RigNode::RigNode(const aiNode* node)
-        : m_name{ assimp_util::normalizeName(node->mName.C_Str()) },
+        : m_name{ assimp_util::normalizeName(node->mName) },
         m_assimpFbx{ std::regex_match(m_name, RE_ASSIMP_FBX) },
         m_index{ -1 },
         m_parentIndex{ -1 },

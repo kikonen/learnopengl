@@ -18,7 +18,7 @@
 
 #include "generator/NodeGenerator.h"
 
-#include "animation/RigContainer.h"
+#include "animation/Rig.h"
 #include "animation/AnimationSystem.h"
 
 #include "mesh/mesh_util.h"
@@ -106,13 +106,23 @@ namespace model
             // NOTE KI for now, allow only single Rig per mesh type
             // i.e. not possible to attach animated attachments
             // or have separate animations for LOD level meshes
-            const auto rig = mesh::findRig(type->modifyLodMeshes());
+            for (const auto& lodMesh : type->getLodMeshes()) {
+                auto* modelMesh = lodMesh.getMesh<mesh::ModelMesh>();
+                if (!modelMesh) continue;
 
-            if (rig) {
-                auto [rigNodeBaseIndex, jointBaseIndex, socketBaseIndex] = animation::AnimationSystem::get().registerInstance(*rig);
+                auto* rig = modelMesh->getRig();
+                if (!rig) continue;
+
+                auto* jointContainer = modelMesh->getJointContainer();
+                if (!jointContainer) continue;
+
+                auto [rigNodeBaseIndex, jointBaseIndex, socketBaseIndex] = animation::AnimationSystem::get().registerInstance(
+                    *rig,
+                    *jointContainer);
                 state.m_rigNodeBaseIndex = rigNodeBaseIndex;
                 state.m_jointBaseIndex = jointBaseIndex;
                 state.m_socketBaseIndex = socketBaseIndex;
+
                 //m_state.m_animationClipIndex = ;
             }
         }
@@ -147,11 +157,19 @@ namespace model
         auto* type = m_typeHandle.toType();
 
         {
-            const auto rig = mesh::findRig(type->modifyLodMeshes());
+            for (const auto& lodMesh : type->getLodMeshes()) {
+                auto* modelMesh = lodMesh.getMesh<mesh::ModelMesh>();
+                if (!modelMesh) continue;
 
-            if (rig) {
+                auto* rig = modelMesh->getRig();
+                if (!rig) continue;
+
+                auto* jointContainer = modelMesh->getJointContainer();
+                if (!jointContainer) continue;
+
                 animation::AnimationSystem::get().unregisterInstance(
                     *rig,
+                    *jointContainer,
                     state.m_rigNodeBaseIndex,
                     state.m_jointBaseIndex,
                     state.m_socketBaseIndex);

@@ -17,7 +17,7 @@ prefab:
       animations:
         - clips:
             - name: default
-              clip: Take 001
+              clip: Take-001
         - name: anim
           path: anim/Elf Animations.FBX
           clips:

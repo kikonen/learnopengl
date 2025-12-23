@@ -1,4 +1,4 @@
-#include "AssimpMaterialLoader.h"
+#include "AssimpMaterialImporter.h"
 
 #include <iostream>
 #include <fstream>
@@ -22,14 +22,6 @@
 #include "util/file.h"
 #include "util/Transform.h"
 
-#include "animation/RigContainer.h"
-#include "animation/RigNode.h"
-#include "animation/Animation.h"
-#include "animation/RigNodeChannel.h"
-#include "animation/JointContainer.h"
-#include "animation/Joint.h"
-#include "animation/MeshInfo.h"
-
 #include "mesh/MeshSet.h"
 #include "mesh/ModelMesh.h"
 
@@ -38,7 +30,7 @@
 
 #include "util/assimp_util.h"
 
-#include "AnimationLoader.h"
+#include "AnimationImporter.h"
 #include "LoadContext.h"
 #include "RigNodeTreeGenerator.h"
 
@@ -569,17 +561,17 @@ namespace
 
 namespace mesh_set
 {
-    AssimpMaterialLoader::AssimpMaterialLoader(
+    AssimpMaterialImporter::AssimpMaterialImporter(
         const bool debug)
         : m_debug{ debug}
     {
     }
 
-    AssimpMaterialLoader::~AssimpMaterialLoader()
+    AssimpMaterialImporter::~AssimpMaterialImporter()
     {
     }
 
-    void AssimpMaterialLoader::processMaterials(
+    void AssimpMaterialImporter::processMaterials(
         const mesh::MeshSet& meshSet,
         std::vector<Material>& materials,
         std::map<size_t, size_t>& materialMapping,
@@ -593,7 +585,7 @@ namespace mesh_set
         }
     }
 
-    Material AssimpMaterialLoader::processMaterial(
+    Material AssimpMaterialImporter::processMaterial(
         const mesh::MeshSet& meshSet,
         const aiScene* scene,
         const aiMaterial* src)
@@ -716,7 +708,7 @@ namespace mesh_set
         return material;
     }
 
-    std::string AssimpMaterialLoader::findTexturePath(
+    std::string AssimpMaterialImporter::findTexturePath(
         const mesh::MeshSet& meshSet,
         const std::string& origPath)
     {

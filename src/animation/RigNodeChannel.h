@@ -17,7 +17,7 @@ struct aiQuatKey;
 
 namespace mesh_set
 {
-    class AnimationLoader;
+    class AnimationImporter;
 }
 
 namespace animation
@@ -40,7 +40,7 @@ namespace animation
 
     // Animation sequence for RigNode
     struct RigNodeChannel {
-        friend class mesh_set::AnimationLoader;
+        friend class mesh_set::AnimationImporter;
         friend struct Animation;
 
         RigNodeChannel(const aiNodeAnim* channel);

@@ -8,21 +8,20 @@
 
 namespace animation
 {
-    struct RigContainer;
 }
 
 namespace mesh_set
 {
-    class AssimpLoader;
+    class AssimpImporter;
 }
 
 namespace mesh {
     class Mesh;
-    class MeshLoader;
+    class MeshImporter;
 
     class MeshSet {
-        friend class mesh_set::AssimpLoader;
-        friend class MeshLoader;
+        friend class mesh_set::AssimpImporter;
+        friend class MeshImporter;
 
     public:
         MeshSet(
@@ -35,7 +34,7 @@ namespace mesh {
 
         std::string str() const noexcept;
 
-        bool isEmpty() const noexcept;
+        bool empty() const noexcept;
         bool isRigged() const noexcept;
 
         // Take ownership of mesh
@@ -64,9 +63,6 @@ namespace mesh {
         const bool m_forceNormals{ false };
 
         std::string m_filePath;
-
-        // NOTE KI rig is set only for rigged (with joints) case
-        std::shared_ptr<animation::RigContainer> m_rig;
 
     private:
         std::vector<std::shared_ptr<mesh::Mesh>> m_meshes;

@@ -46,10 +46,11 @@
 #include "component/definition/ParticleGeneratorDefinition.h"
 
 #include "animation/RigContainer.h"
+#include "animation/Rig.h"
 #include "animation/RigSocket.h"
 #include "animation/Clip.h"
 
-#include "mesh_set/AnimationLoader.h"
+#include "mesh_set/AnimationImporter.h"
 
 #include "registry/Registry.h"
 #include "registry/MeshSetRegistry.h"
@@ -519,7 +520,7 @@ namespace loader
                 resolveLodMesh(type, typeData, meshData, lodMesh);
 
                 auto* mesh = lodMesh.getMesh<mesh::Mesh>();
-                const auto rig = mesh ? mesh->getRigContainer() : nullptr;
+                const auto* rig = mesh ? mesh->getRig() : nullptr;
                 if (rig) {
                     rig->dump();
                 }
@@ -656,28 +657,38 @@ namespace loader
         const MeshData& meshData,
         mesh::MeshSet& meshSet)
     {
-        if (!meshSet.m_rig) return;
+        for (const auto& mesh : meshSet.getMeshes()) {
+            auto* modelMesh = dynamic_cast<mesh::ModelMesh*>(mesh.get());
+            if (!modelMesh) continue;
 
-        auto& rig = *meshSet.m_rig;
-        for (const auto& socketData : meshData.sockets) {
-            if (!socketData.enabled) continue;
+            auto* rig = modelMesh->m_rig.get();
+            if (!rig) continue;
 
-            // TODO KI scale is in LodMesh level, but sockets in Mesh level
-            // => PROBLEM if same mesh is used for differently scaled LodMeshes
-            //glm::vec3 meshScale{ 0.01375f * 2.f };
-            auto meshScale = meshData.scale * meshData.baseScale;
+            for (const auto& socketData : meshData.sockets) {
+                if (!socketData.enabled) continue;
 
-            animation::RigSocket socket{
-                socketData.name,
-                socketData.joint,
-                socketData.offset.toTransform(),
-                meshScale
-            };
+                // TODO KI scale is in LodMesh level, but sockets in Mesh level
+                // => PROBLEM if same mesh is used for differently scaled LodMeshes
+                //glm::vec3 meshScale{ 0.01375f * 2.f };
+                auto meshScale = meshData.scale * meshData.baseScale;
 
-            rig.registerSocket(socket);
+                animation::RigSocket socket{
+                    socketData.name,
+                    socketData.joint,
+                    socketData.offset.toTransform(),
+                    meshScale
+                };
+
+                auto socketIndex = rig->registerSocket(socket);
+                if (socketIndex < 0) {
+                    KI_WARN_OUT(fmt::format(
+                        "SCENE_ERROR: SOCKET_NOT_FOUND - mesh={}, rig={}, node={}, socket={}",
+                        mesh->m_name, rig->getName(), socket.m_jointName, socket.m_name));
+                }
+            }
+
+            rig->prepareSockets();
         }
-
-        rig.prepare();
     }
 
     void NodeTypeBuilder::resolveAnimations(
@@ -698,55 +709,58 @@ namespace loader
         const AnimationData& data,
         mesh::MeshSet& meshSet)
     {
-        if (!meshSet.isRigged()) return;
-
         const auto& assets = Assets::get();
 
-        mesh_set::AnimationLoader loader{};
+        for (const auto& mesh : meshSet.getMeshes()) {
+            auto* modelMesh = dynamic_cast<mesh::ModelMesh*>(mesh.get());
+            if (!modelMesh) continue;
 
-        std::string filePath;
+            auto* rig = modelMesh->m_rig.get();
+            if (!rig) continue;
 
-        if (!data.path.empty()) {
-            {
-                filePath = util::joinPathExt(
-                    meshSet.m_rootDir,
-                    baseDir,
-                    data.path, "");
-            }
-
-            if (!util::fileExists(filePath)) {
-                filePath = util::joinPath(
-                    meshSet.m_rootDir,
-                    data.path);
-            }
-        }
-
-        try {
-            auto& rig = *meshSet.m_rig;
+            mesh_set::AnimationImporter importer{};
+            std::string filePath;
 
             if (!data.path.empty()) {
-                loader.loadAnimations(
-                    rig,
+                {
+                    filePath = util::joinPathExt(
+                        meshSet.m_rootDir,
+                        baseDir,
+                        data.path, "");
+                }
+
+                if (!util::fileExists(filePath)) {
+                    filePath = util::joinPath(
+                        meshSet.m_rootDir,
+                        data.path);
+                }
+            }
+
+            if (!data.path.empty()) {
+                importer.loadAnimations(
+                    *rig,
                     data.name,
                     filePath);
             }
 
-            // map clips
-            for (const auto& clipData : data.clips) {
-                const auto& uniqueName = clipData.getUniqueName(data.name);
-                auto* clip = rig.modifyClipContainer().findClipByUniqueName(uniqueName);
-                if (clip) {
-                    clip->m_id = SID(clipData.name);
-                }
-                else {
-                    KI_WARN_OUT(fmt::format("SCENE_ERROR: CLIP_NOT_FOUND - clip={}, uniq={}",
-                        clipData.name, uniqueName));
+            try {
+                // map clips
+                for (const auto& clipData : data.clips) {
+                    const auto& uniqueName = clipData.getUniqueName(data.name);
+                    auto* clip = rig->modifyClipContainer().findClipByUniqueName(uniqueName);
+                    if (clip) {
+                        clip->m_id = SID(clipData.name);
+                    }
+                    else {
+                        KI_WARN_OUT(fmt::format("SCENE_ERROR: CLIP_NOT_FOUND - clip={}, uniq={}",
+                            clipData.name, uniqueName));
+                    }
                 }
             }
-        }
-        catch (mesh_set::AnimationNotFoundError ex) {
-            KI_CRITICAL(fmt::format("SCENE_ERROR: LOAD_ANIMATION - {}", ex.what()));
-            //throw std::current_exception();
+            catch (mesh_set::AnimationNotFoundError ex) {
+                KI_CRITICAL(fmt::format("SCENE_ERROR: LOAD_ANIMATION - {}", ex.what()));
+                //throw std::current_exception();
+            }
         }
     }
 

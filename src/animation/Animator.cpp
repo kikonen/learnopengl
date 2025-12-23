@@ -15,7 +15,8 @@
 #include "util/util.h"
 #include "util/Transform.h"
 
-#include "RigContainer.h"
+#include "Rig.h"
+#include "RigNode.h"
 #include "Animation.h"
 #include "RigNodeChannel.h"
 #include "Joint.h"
@@ -110,7 +111,7 @@ namespace {
 
 namespace animation {
     bool Animator::animate(
-        const animation::RigContainer& rig,
+        const animation::Rig& rig,
         std::span<glm::mat4> rigNodeTransforms,
         uint16_t clipIndex,
         double animationStartTime,
@@ -143,32 +144,20 @@ namespace animation {
             const auto& rigNode = rig.m_nodes[nodeIndex];
             const auto& parentTransform = nodeIndex > 0 ? rigNodeTransforms[rigNode.m_parentIndex] : ID_MAT;
 
-            const bool accept = rigNode.m_jointRequired || rigNode.m_socketRequired;
+            const auto* channel = animation.findByNodeIndex(rigNode.m_index);
 
-            // NOTE KI skip joints not affecting animation/sockets
-            if (!accept) continue;
+            const glm::mat4& nodeTransform = channel
+                ? interpolate(channel, animationTimeTicks, firstFrame, lastFrame, clip.m_single)
+                : rigNode.m_transform;
 
-            if (rigNode.m_jointRequired) {
-                const auto* channel = animation.findByNodeIndex(rigNode.m_index);
-
-                const glm::mat4& nodeTransform = channel
-                    ? interpolate(channel, animationTimeTicks, firstFrame, lastFrame, clip.m_single)
-                    : rigNode.m_transform;
-
-                rigNodeTransforms[rigNode.m_index] = parentTransform * nodeTransform;
-            }
-            else {
-                if (rigNode.m_socketRequired) {
-                    rigNodeTransforms[rigNode.m_index] = parentTransform * rigNode.m_transform;
-                }
-            }
+            rigNodeTransforms[rigNode.m_index] = parentTransform * nodeTransform;
         }
 
         return true;
     }
 
     bool Animator::animateBlended(
-        const animation::RigContainer& rig,
+        const animation::Rig& rig,
         std::span<glm::mat4> rigNodeTransforms,
         uint16_t clipIndexA,
         double animationStartTimeA,
@@ -227,47 +216,35 @@ namespace animation {
             const auto& rigNode = rig.m_nodes[nodeIndex];
             const auto& parentTransform = nodeIndex > 0 ? rigNodeTransforms[rigNode.m_parentIndex] : ID_MAT;
 
-            bool accept = rigNode.m_jointRequired || rigNode.m_socketRequired;
+            const auto* channelA = animationA->findByNodeIndex(rigNode.m_index);
+            const auto* channelB = animationB->findByNodeIndex(rigNode.m_index);
 
-            // NOTE KI skip joints not affecting animation/sockets
-            if (!accept) continue;
-
-            if (rigNode.m_jointRequired) {
-                const auto* channelA = animationA->findByNodeIndex(rigNode.m_index);
-                const auto* channelB = animationB->findByNodeIndex(rigNode.m_index);
-
-                glm::mat4 nodeTransform;
-                if (channelA && channelB) {
-                    nodeTransform = interpolateBlended(
-                        channelA,
-                        channelB,
-                        blendFactor,
-                        animationTimeTicksA,
-                        clipA->m_firstFrame,
-                        clipA->m_lastFrame,
-                        clipA->m_single,
-                        animationTimeTicksB,
-                        clipB->m_firstFrame,
-                        clipB->m_lastFrame,
-                        clipB->m_single);
-                }
-                else if (channelA) {
-                    nodeTransform = interpolate(channelA, animationTimeTicksA, clipA->m_firstFrame, clipA->m_lastFrame, clipA->m_single);
-                }
-                else if (channelB) {
-                    nodeTransform = interpolate(channelB, animationTimeTicksB, clipB->m_firstFrame, clipB->m_lastFrame, clipB->m_single);
-                }
-                else {
-                    nodeTransform = rigNode.m_transform;
-                }
-
-                rigNodeTransforms[rigNode.m_index] = parentTransform * nodeTransform;
+            glm::mat4 nodeTransform;
+            if (channelA && channelB) {
+                nodeTransform = interpolateBlended(
+                    channelA,
+                    channelB,
+                    blendFactor,
+                    animationTimeTicksA,
+                    clipA->m_firstFrame,
+                    clipA->m_lastFrame,
+                    clipA->m_single,
+                    animationTimeTicksB,
+                    clipB->m_firstFrame,
+                    clipB->m_lastFrame,
+                    clipB->m_single);
+            }
+            else if (channelA) {
+                nodeTransform = interpolate(channelA, animationTimeTicksA, clipA->m_firstFrame, clipA->m_lastFrame, clipA->m_single);
+            }
+            else if (channelB) {
+                nodeTransform = interpolate(channelB, animationTimeTicksB, clipB->m_firstFrame, clipB->m_lastFrame, clipB->m_single);
             }
             else {
-                if (rigNode.m_socketRequired) {
-                    rigNodeTransforms[rigNode.m_index] = parentTransform * rigNode.m_transform;
-                }
+                nodeTransform = rigNode.m_transform;
             }
+
+            rigNodeTransforms[rigNode.m_index] = parentTransform * nodeTransform;
         }
 
         return true;

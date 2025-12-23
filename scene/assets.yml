@@ -39,7 +39,7 @@ assets:
   async_loader_enabled: true
   async_loader_delay: 0
 
-  assimp_loader_enabled: true
+  assimp_importer_enabled: true
   assimp_debug: true
 
   assets_dir: resources/assets

@@ -507,7 +507,7 @@
     <ClCompile Include="src\model\NodeType.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\mesh_set\MeshSetLoader.cpp">
+    <ClCompile Include="src\mesh_set\MeshSetImporter.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\mesh\ModelMesh.cpp">
@@ -585,7 +585,7 @@
     <ClCompile Include="src\material\ColorTexture.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\mesh_set\AssimpLoader.cpp">
+    <ClCompile Include="src\mesh_set\AssimpImporter.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\mesh\vao\VertexNormalVBO.cpp">
@@ -621,7 +621,7 @@
     <ClCompile Include="src\animation\RigNodeChannel.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\mesh_set\AnimationLoader.cpp">
+    <ClCompile Include="src\mesh_set\AnimationImporter.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\animation\Animation.cpp">
@@ -714,7 +714,7 @@
     <ClCompile Include="src\debug\DebugContext.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\mesh_set\MetadataLoader.cpp">
+    <ClCompile Include="src\mesh_set\MetadataImporter.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\animation\Metadata.cpp">
@@ -1314,10 +1314,22 @@
     <ClCompile Include="src\material\InlineTexture.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\mesh_set\AssimpMaterialLoader.cpp">
+    <ClCompile Include="src\mesh_set\AssimpMaterialImporter.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\mesh_set\AssimpLogger.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\mesh_set\SkeletonSet.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\animation\Rig.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\mesh_set\SceneMetaData.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\mesh_set\NodeTree.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -2006,7 +2018,7 @@
     <ClInclude Include="src\model\NodeType.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\mesh_set\MeshSetLoader.h">
+    <ClInclude Include="src\mesh_set\MeshSetImporter.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\mesh\ModelMesh.h">
@@ -2153,7 +2165,7 @@
     <ClInclude Include="src\material\ColorTexture.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\mesh_set\AssimpLoader.h">
+    <ClInclude Include="src\mesh_set\AssimpImporter.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\animation\JointTransform.h">
@@ -2201,7 +2213,7 @@
     <ClInclude Include="src\animation\RigNodeChannel.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\mesh_set\AnimationLoader.h">
+    <ClInclude Include="src\mesh_set\AnimationImporter.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\animation\Animator.h">
@@ -2357,7 +2369,7 @@
     <ClInclude Include="src\animation\MetaData.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\mesh_set\MetadataLoader.h">
+    <ClInclude Include="src\mesh_set\MetadataImporter.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\mesh\PrimitiveMesh.h">
@@ -2978,10 +2990,25 @@
     <ClInclude Include="src\material\InlineTexture.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\mesh_set\AssimpMaterialLoader.h">
+    <ClInclude Include="src\mesh_set\AssimpMaterialImporter.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\mesh_set\AssimpLogger.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\mesh_set\SkeletonSet.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\animation\Rig.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\mesh_set\SceneMetaData.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\util\util_join.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\mesh_set\NodeTree.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

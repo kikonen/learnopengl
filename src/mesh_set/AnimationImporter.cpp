@@ -1,4 +1,4 @@
-#include "AnimationLoader.h"
+#include "AnimationImporter.h"
 
 #include <fmt/format.h>
 
@@ -12,21 +12,22 @@
 #include "util/Log.h"
 #include "util/assimp_util.h"
 
-#include "animation/RigContainer.h"
+#include "animation/Rig.h"
+#include "animation/RigNode.h"
 #include "animation/Animation.h"
 #include "animation/RigNodeChannel.h"
 #include "animation/Clip.h"
 #include "animation/Metadata.h"
 
-#include "MetadataLoader.h"
+#include "MetadataImporter.h"
 
 namespace mesh_set
 {
-    AnimationLoader::AnimationLoader() = default;
-    AnimationLoader::~AnimationLoader() = default;
+    AnimationImporter::AnimationImporter() = default;
+    AnimationImporter::~AnimationImporter() = default;
 
-    void AnimationLoader::loadAnimations(
-        animation::RigContainer& rig,
+    void AnimationImporter::loadAnimations(
+        animation::Rig& rig,
         const std::string& uniquePrefix,
         const std::string& filePath)
     {
@@ -74,8 +75,8 @@ namespace mesh_set
         loadAnimations(rig, uniquePrefix, filePath, scene);
     }
 
-    void AnimationLoader::loadAnimations(
-        animation::RigContainer& rig,
+    void AnimationImporter::loadAnimations(
+        animation::Rig& rig,
         const std::string& uniquePrefix,
         const std::string& filePath,
         const aiScene* scene)
@@ -97,8 +98,8 @@ namespace mesh_set
             animationIndeces.push_back(animIndex);
         }
 
-        MetadataLoader metadataLoader{};
-        const auto metadata = metadataLoader.load(filePath);
+        MetadataImporter metadataImporter{};
+        const auto metadata = metadataImporter.load(filePath);
         if (metadata) {
             for (auto& clip : metadata->m_clips) {
                 clip.m_uniqueName = fmt::format(
@@ -148,8 +149,8 @@ namespace mesh_set
         }
     }
 
-    std::unique_ptr<animation::Animation> AnimationLoader::loadAnimation(
-        animation::RigContainer& rig,
+    std::unique_ptr<animation::Animation> AnimationImporter::loadAnimation(
+        animation::Rig& rig,
         int16_t animIndex,
         const std::string& uniquePrefix,
         const aiScene* scene,
@@ -176,7 +177,7 @@ namespace mesh_set
                 "ASSIMP: CHANNEL anim={}, channel={}, node={}, posKeys={}, rotKeys={}, scalingKeys={}",
                 animation->m_index,
                 channelIdx,
-                channel->mNodeName.C_Str(),
+                assimp_util::normalizeName(channel->mNodeName),
                 channel->mNumPositionKeys,
                 channel->mNumRotationKeys,
                 channel->mNumScalingKeys));

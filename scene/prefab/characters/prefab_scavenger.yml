@@ -36,7 +36,7 @@ prefab:
       animations:
         - clips:
             - name: default
-              clip: Take 001
+              clip: Take-001
             - name: walk
               clip: Scavenger_demo_walk
       program: g_tex

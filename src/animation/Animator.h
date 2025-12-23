@@ -12,14 +12,14 @@ namespace util
 }
 
 namespace animation {
-    struct RigContainer;
+    struct Rig;
 
     class Animator {
     public:
         // Update single palette with clipIndex animation clip
         // @return true if palette was changed
         bool animate(
-            const animation::RigContainer& rig,
+            const animation::Rig& rig,
             std::span<glm::mat4> rigNodeTransforms,
             uint16_t clipIndex,
             double animationStartTime,
@@ -30,7 +30,7 @@ namespace animation {
         // Update single palette with clipIndex animation clip
         // @return true if palette was changed
         bool animateBlended(
-            const animation::RigContainer& rig,
+            const animation::Rig& rig,
             std::span<glm::mat4> rigNodeTransforms,
             uint16_t clipIndexA,
             double animationStartTimeA,

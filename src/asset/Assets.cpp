@@ -75,7 +75,7 @@ Assets::Assets()
     asyncLoaderEnabled = true;
     asyncLoaderDelay = 1000;
 
-    assimpLoaderEnabled = false;
+    assimpImporterEnabled = true;
     assimpDebug = false;
 
     logFile = "log/development.log";

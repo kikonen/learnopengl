@@ -2,41 +2,31 @@
 
 #include <string>
 #include <vector>
-#include <map>
+#include <unordered_map>
 
 #include "ki/size.h"
+
+#include "Joint.h"
 
 struct aiBone;
 
 namespace animation {
-    struct Joint;
-
     // Manage joints shared based into their node name
     struct JointContainer {
         bool empty() const noexcept;
 
-        // NOTE KI sorting breaks m_index references
-        //void sort() noexcept;
+        inline int16_t size() const noexcept {
+            return static_cast<int16_t>(m_joints.size());
+        }
 
-        animation::Joint& registerJoint(const aiBone* bone) noexcept;
-        void bindNode(int16_t jointIndex, int16_t nodeIndex) noexcept;
-
-        const animation::Joint* getJoint(int16_t jointIndex) const noexcept;
+        animation::Joint& registerJoint(
+            const aiBone* bone,
+            int16_t nodeIndex) noexcept;
 
         // @return Joint, null if not found
-        const animation::Joint* findByNodeIndex(int16_t nodeIndex) const noexcept;
-
-        inline bool hasJoints() const noexcept {
-            return !m_nodeNameToIndex.empty();
-        }
-
-        inline int16_t size() const noexcept {
-            return static_cast<int16_t>(m_nodeNameToIndex.size());
-        }
+        const animation::Joint * findByNodeIndex(int16_t nodeIndex) const noexcept;
 
         std::vector<animation::Joint> m_joints;
-        std::map<std::string, int16_t> m_nodeNameToIndex;
-
-        std::map<int16_t, int16_t> m_nodeToJoint;
+        std::unordered_map<int16_t, int16_t> m_nodeToJoint;
     };
 }

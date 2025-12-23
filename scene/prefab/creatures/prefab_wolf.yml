@@ -18,7 +18,7 @@ prefab:
         default_programs: true
       animations:
         - name: walk
-          clip: Unreal Take
+          clip: Unreal-Take
           path: anim/ANIM_Wolf_Walk_RM.FBX
       base_scale: 0.0125
       #base_rotation: [-90, 0, 0]

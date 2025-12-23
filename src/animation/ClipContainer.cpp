@@ -60,7 +60,7 @@ namespace animation {
 
         assert(clip.m_firstFrame <= clip.m_lastFrame);
 
-        const auto* anim = findAnimation(clip.m_animationName);
+        const auto* anim = findAnimation(src.m_animationName);
         if (anim) {
             m_animations[anim->m_index]->m_clipCount++;
 

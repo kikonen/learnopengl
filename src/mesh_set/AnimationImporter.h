@@ -9,7 +9,7 @@ struct aiScene;
 struct aiAnimation;
 
 namespace animation {
-    struct RigContainer;
+    struct Rig;
     struct Animation;
 }
 
@@ -21,26 +21,26 @@ namespace mesh_set
             : std::runtime_error(msg.c_str())
         {}
     };
-
-    class AnimationLoader {
+    
+    class AnimationImporter {
     public:
-        AnimationLoader();
-        ~AnimationLoader();
+        AnimationImporter();
+        ~AnimationImporter();
 
         void loadAnimations(
-            animation::RigContainer& rig,
+            animation::Rig& rig,
             const std::string& uniquePrefix,
             const std::string& filePath);
 
         void loadAnimations(
-            animation::RigContainer& rig,
+            animation::Rig& rig,
             const std::string& uniquePrefix,
             const std::string& filePath,
             const aiScene* scene);
 
     private:
         std::unique_ptr<animation::Animation> loadAnimation(
-            animation::RigContainer& rig,
+            animation::Rig& rig,
             int16_t animIndex,
             const std::string& uniquePrefix,
             const aiScene* scene,

@@ -38,7 +38,8 @@
 #include "render/NodeDraw.h"
 #include "render/FrameBuffer.h"
 
-#include "animation/RigContainer.h"
+#include "animation/Rig.h"
+#include "animation/RigNode.h"
 #include "animation/RigSocket.h"
 
 #include "mesh/LodMesh.h"
@@ -274,7 +275,7 @@ namespace editor
         auto* node = m_state.m_selectedNode.toNode();
         auto* mesh = m_state.m_selectedMesh;
 
-        auto* rig = mesh->getRigContainer().get();
+        auto* rig = mesh->getRig();
         if (!rig) return;
 
         if (ImGui::CollapsingHeader("Rig", ImGuiTreeNodeFlags_DefaultOpen))
@@ -668,7 +669,7 @@ namespace editor
     void NodeTool::updateSocket(
         model::Node* node,
         mesh::Mesh* mesh,
-        animation::RigContainer* rig,
+        animation::Rig* rig,
         animation::RigSocket* socket)
     {
         socket->updateTransforms();
@@ -680,6 +681,7 @@ namespace editor
             std::lock_guard lockSockets(socketRegistry.m_lock);
 
             const auto* rigNode = rig->getNode(socket->m_nodeIndex);
+            if (!rigNode) return;
 
             const auto& state = node->getState();
             const auto socketIndex = state.m_socketBaseIndex + socket->m_index;

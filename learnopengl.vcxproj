@@ -291,15 +291,19 @@
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\animation\Rig.cpp" />
     <ClCompile Include="src\material\InlineTexture.cpp" />
     <ClCompile Include="src\mesh_set\AssimpLogger.cpp" />
-    <ClCompile Include="src\mesh_set\AssimpMaterialLoader.cpp" />
+    <ClCompile Include="src\mesh_set\AssimpMaterialImporter.cpp" />
+    <ClCompile Include="src\mesh_set\NodeTree.cpp" />
+    <ClCompile Include="src\mesh_set\SceneMetaData.cpp" />
+    <ClCompile Include="src\mesh_set\SkeletonSet.cpp" />
     <ClCompile Include="src\renderer\JointRenderer.cpp" />
     <ClCompile Include="src\animation\Animation.cpp" />
     <ClCompile Include="src\animation\animation_util.cpp" />
     <ClCompile Include="src\animation\JointBuffer.cpp" />
     <ClCompile Include="src\animation\ClipContainer.cpp" />
-    <ClCompile Include="src\mesh_set\AnimationLoader.cpp" />
+    <ClCompile Include="src\mesh_set\AnimationImporter.cpp" />
     <ClCompile Include="src\animation\Animator.cpp" />
     <ClCompile Include="src\animation\RigNodeChannel.cpp" />
     <ClCompile Include="src\animation\Joint.cpp" />
@@ -307,7 +311,7 @@
     <ClCompile Include="src\animation\RigNodeRegistry.cpp" />
     <ClCompile Include="src\animation\MeshInfo.cpp" />
     <ClCompile Include="src\animation\Metadata.cpp" />
-    <ClCompile Include="src\mesh_set\MetadataLoader.cpp" />
+    <ClCompile Include="src\mesh_set\MetadataImporter.cpp" />
     <ClCompile Include="src\animation\RigContainer.cpp" />
     <ClCompile Include="src\animation\JointTransform.cpp" />
     <ClCompile Include="src\animation\JointContainer.cpp" />
@@ -469,7 +473,7 @@
     <ClCompile Include="src\loader\PrefabLoader.cpp" />
     <ClCompile Include="src\loader\TextLoader.cpp" />
     <ClCompile Include="src\loader\VertexLoader.cpp" />
-    <ClCompile Include="src\mesh_set\AssimpLoader.cpp" />
+    <ClCompile Include="src\mesh_set\AssimpImporter.cpp" />
     <ClCompile Include="src\mesh\generator\PrimitiveGenerator.cpp" />
     <ClCompile Include="src\mesh\generator\PrimitiveGenerator.h" />
     <ClCompile Include="src\mesh_set\RigNodeTreeGenerator.cpp" />
@@ -660,7 +664,7 @@
     <ClCompile Include="src\material\Image.cpp" />
     <ClCompile Include="src\render\RenderContext.cpp" />
     <ClCompile Include="src\gui\Input.cpp" />
-    <ClCompile Include="src\mesh_set\MeshSetLoader.cpp" />
+    <ClCompile Include="src\mesh_set\MeshSetImporter.cpp" />
     <ClCompile Include="src\model\Node.cpp" />
     <ClCompile Include="src\component\Light.cpp" />
     <ClCompile Include="src\render\Camera.cpp" />
@@ -731,7 +735,8 @@
     <ClInclude Include="src\animation\JointBuffer.h" />
     <ClInclude Include="src\animation\animation_util.h" />
     <ClInclude Include="src\animation\ClipContainer.h" />
-    <ClInclude Include="src\mesh_set\AnimationLoader.h" />
+    <ClInclude Include="src\animation\Rig.h" />
+    <ClInclude Include="src\mesh_set\AnimationImporter.h" />
     <ClInclude Include="src\animation\Joint.h" />
     <ClInclude Include="src\animation\JointRegistry.h" />
     <ClInclude Include="src\animation\RigNodeRegistry.h" />
@@ -739,8 +744,8 @@
     <ClInclude Include="src\animation\Clip.h" />
     <ClInclude Include="src\animation\MetaData.h" />
     <ClInclude Include="src\mesh_set\AssimpLogger.h" />
-    <ClInclude Include="src\mesh_set\AssimpMaterialLoader.h" />
-    <ClInclude Include="src\mesh_set\MetadataLoader.h" />
+    <ClInclude Include="src\mesh_set\AssimpMaterialImporter.h" />
+    <ClInclude Include="src\mesh_set\MetadataImporter.h" />
     <ClInclude Include="src\animation\SocketBuffer.h" />
     <ClInclude Include="src\animation\SocketRegistry.h" />
     <ClInclude Include="src\asset\AABBBuilder.h" />
@@ -816,6 +821,9 @@
     <ClInclude Include="src\material\InlineTexture.h" />
     <ClInclude Include="src\material\ShaderMaterialUpdater.h" />
     <ClInclude Include="src\material\MaterialUpdater.h" />
+    <ClInclude Include="src\mesh_set\NodeTree.h" />
+    <ClInclude Include="src\mesh_set\SceneMetaData.h" />
+    <ClInclude Include="src\mesh_set\SkeletonSet.h" />
     <ClInclude Include="src\renderer\JointRenderer.h" />
     <ClInclude Include="src\render\CubeMapDebugTexture.h" />
     <ClInclude Include="src\sample_app\action\ActionContext.h" />
@@ -1001,7 +1009,7 @@
     <ClInclude Include="src\loader\TextData.h" />
     <ClInclude Include="src\animation\RigNode.h" />
     <ClInclude Include="src\animation\Animation.h" />
-    <ClInclude Include="src\mesh_set\AssimpLoader.h" />
+    <ClInclude Include="src\mesh_set\AssimpImporter.h" />
     <ClInclude Include="src\animation\JointTransform.h" />
     <ClInclude Include="src\mesh\vao\SkinnedVAO.h" />
     <ClInclude Include="src\animation\AnimationSystem.h" />
@@ -1251,7 +1259,7 @@
     <ClInclude Include="src\material\Image.h" />
     <ClInclude Include="src\render\RenderContext.h" />
     <ClInclude Include="src\gui\Input.h" />
-    <ClInclude Include="src\mesh_set\MeshSetLoader.h" />
+    <ClInclude Include="src\mesh_set\MeshSetImporter.h" />
     <ClInclude Include="src\model\Node.h" />
     <ClInclude Include="src\component\Light.h" />
     <ClInclude Include="src\render\Camera.h" />
@@ -1260,6 +1268,7 @@
     <ClInclude Include="src\util\thread.h" />
     <ClInclude Include="src\util\utf8_util.h" />
     <ClInclude Include="src\util\util.h" />
+    <ClInclude Include="src\util\util_join.h" />
     <ClInclude Include="vendor\glad\include\glad\glad.h" />
     <ClInclude Include="vendor\glad\include\KHR\khrplatform.h" />
     <ClInclude Include="vendor\stb_image\src\stb_image.h" />

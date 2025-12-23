@@ -10,6 +10,8 @@
 #include <assimp/matrix4x4.h>
 #include <assimp/quaternion.h>
 
+struct aiString;
+
 namespace assimp_util {
     glm::vec4 toVec4(const aiColor4D& v);
     glm::vec3 toVec3(const aiVector3D& v);
@@ -22,5 +24,6 @@ namespace assimp_util {
         std::string rootDir,
         std::string meshPath);
 
-    std::string normalizeName(const std::string name);
+    std::string normalizeName(const aiString& name);
+    std::string normalizeName(const std::string& name);
 }

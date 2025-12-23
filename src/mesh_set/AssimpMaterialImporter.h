@@ -4,7 +4,7 @@
 
 #include "material/Material.h"
 
-#include "MeshSetLoader.h"
+#include "MeshSetImporter.h"
 
 namespace mesh
 {
@@ -16,12 +16,12 @@ struct aiMaterial;
 
 namespace mesh_set
 {
-    class AssimpMaterialLoader
+    class AssimpMaterialImporter
     {
     public:
-        AssimpMaterialLoader(
+        AssimpMaterialImporter(
             bool debug);
-        ~AssimpMaterialLoader();
+        ~AssimpMaterialImporter();
 
         void processMaterials(
             const mesh::MeshSet& meshSet,

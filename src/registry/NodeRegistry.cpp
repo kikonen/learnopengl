@@ -23,6 +23,7 @@
 #include "util/DagSort_impl.h"
 
 #include "mesh/LodMesh.h"
+#include "mesh/ModelMesh.h"
 
 #include "component/definition/LightDefinition.h"
 #include "component/definition/CameraComponentDefinition.h"
@@ -44,7 +45,7 @@
 
 #include "generator/NodeGenerator.h"
 
-#include "animation/RigContainer.h"
+#include "animation/Rig.h"
 
 #include "audio/Listener.h"
 #include "audio/Source.h"
@@ -1163,29 +1164,30 @@ bool NodeRegistry::bindParentSocket(
     const auto& parentState = m_states[parent->getEntityIndex()];
     auto& state = m_states[node->getEntityIndex()];
 
-    const auto& rig = parentType->findRig();
-    if (!rig) {
+    bool found = false;
+    for (const auto& lodMesh : parentType->getLodMeshes()) {
+        auto* modelMesh = lodMesh.getMesh<mesh::ModelMesh>();
+        if (!modelMesh) continue;
+
+        auto* rig = modelMesh->getRig();
+        if (!rig) continue;
+
+        const auto* socket = rig->findSocket(socketName);
+
+        if (socket) {
+            // TODO KI resolve socketIndex from socketId
+            state.m_attachedSocketIndex = parentState.m_socketBaseIndex + socket->m_index;
+            found = true;
+        }
+    }
+
+    if (!found) {
         KI_INFO_OUT(fmt::format(
-            "PARENT_BIND_ERROR: rig_missing - parent={}, socket={}",
+            "PARENT_BIND_ERROR: rig_missing or socket_missing - parent={}, socket={}",
             parent->str(),
             socketName));
         return false;
     }
-
-    const auto* socket = rig->findSocket(socketName);
-    if (!socket) {
-        const auto& names = rig->getSocketNames();
-        KI_INFO_OUT(fmt::format(
-            "PARENT_BIND_ERROR: socket_missing - parent={}, rig={}, socket={}, socket_names=[{}]",
-            parent->str(),
-            rig->getName(),
-            socketName,
-            util::join(names, ", ")));
-        return false;
-    }
-
-    // TODO KI resolve socketIndex from socketId
-    state.m_attachedSocketIndex = parentState.m_socketBaseIndex + socket->m_index;
 
     return true;
 }

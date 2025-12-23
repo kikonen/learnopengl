@@ -6,18 +6,22 @@
 
 #include "shader/Shader.h"
 
-#include "animation/RigContainer.h"
+#include "animation/Rig.h"
+#include "animation/RigNode.h"
+#include "animation/JointContainer.h"
 #include "animation/Joint.h"
 
 #include "mesh/PrimitiveMesh.h"
 
 namespace mesh_set
 {
-    std::unique_ptr<mesh::VaoMesh> RigNodeTreeGenerator::generateTree(std::shared_ptr<animation::RigContainer> rigPtr) const
+    std::unique_ptr<mesh::VaoMesh> RigNodeTreeGenerator::generateTree(
+        const std::shared_ptr<animation::Rig>& rigPtr,
+        const std::shared_ptr<animation::JointContainer>& jointContainer) const
     {
-        auto& rig = *rigPtr;
-
         auto mesh = std::make_unique<mesh::PrimitiveMesh>("joint_tree");
+
+        auto& rig = *rigPtr;
 
         mesh->m_rig = rigPtr;
         mesh->m_type = mesh::PrimitiveType::lines;
@@ -39,26 +43,29 @@ namespace mesh_set
             return it != nodeToVertex.end() ? it->second : -1;
         };
 
-        // generate initial vertices
+            // generate initial vertices
         for (auto& rigNode : rig.m_nodes) {
-            if (rigNode.m_jointIndex < 0) continue;
+            const auto* joint = jointContainer->findByNodeIndex(rigNode.m_index);
+            if (!joint) continue;
 
             nodeToVertex.insert({ rigNode.m_index, static_cast<int16_t>(vertices.size()) });
+
             {
                 auto& vertex = vertices.emplace_back();
-                const auto* joint = rig.m_jointContainer.getJoint(rigNode.m_jointIndex);
                 vertex.pos = glm::inverse(joint->m_offsetMatrix) * glm::vec4{ 0, 0, 0, 1 };
             }
             {
                 auto& vertexJoint = vertexJoints.emplace_back();
-                vertexJoint.addJoint(rigNode.m_jointIndex, 1.f);
+                vertexJoint.addJoint(joint->m_jointIndex, 1.f);
             }
         }
 
         // generate lines: from child to parent
         for (auto& rigNode : rig.m_nodes) {
             if (rigNode.m_parentIndex < 0) continue;
-            if (rigNode.m_jointIndex < 0) continue;
+
+            const auto* joint = jointContainer->findByNodeIndex(rigNode.m_index);
+            if (!joint) continue;
 
             int16_t vertexIndex = findVertexIndex(rigNode.m_index);
             assert(vertexIndex >= 0);
@@ -68,7 +75,7 @@ namespace mesh_set
                 auto& parentNode = rig.m_nodes[parentIndex];
 
                 // NOTE KI MUST skip non joint parents
-                if (parentNode.m_jointIndex >= 0) {
+                if (parentNode.m_hasJoint) {
                     int16_t parentVertexIndex = findVertexIndex(parentNode.m_index);
                     assert(parentVertexIndex >= 0);
 
@@ -91,11 +98,13 @@ namespace mesh_set
         return mesh;
     }
 
-    std::unique_ptr<mesh::VaoMesh> RigNodeTreeGenerator::generatePoints(std::shared_ptr<animation::RigContainer> rigPtr) const
+    std::unique_ptr<mesh::VaoMesh> RigNodeTreeGenerator::generatePoints(
+        const std::shared_ptr<animation::Rig>& rigPtr,
+        const std::shared_ptr<animation::JointContainer>& jointContainer) const
     {
-        auto& rig = *rigPtr;
-
         auto mesh = std::make_unique<mesh::PrimitiveMesh>("joint_points");
+
+        auto& rig = *rigPtr;
 
         mesh->m_rig = rigPtr;
         mesh->m_type = mesh::PrimitiveType::points;
@@ -119,24 +128,26 @@ namespace mesh_set
 
         // generate initial vertices
         for (auto& rigNode : rig.m_nodes) {
-            if (rigNode.m_jointIndex < 0) continue;
+            const auto* joint = jointContainer->findByNodeIndex(rigNode.m_index);
+            if (!joint) continue;
 
             nodeToVertex.insert({ rigNode.m_index, static_cast<int16_t>(vertices.size()) });
             {
                 auto& vertex = vertices.emplace_back();
-                const auto* joint = rig.m_jointContainer.getJoint(rigNode.m_jointIndex);
                 vertex.pos = glm::inverse(joint->m_offsetMatrix) * glm::vec4{ 0, 0, 0, 1 };
             }
             {
                 auto& vertexJoint = vertexJoints.emplace_back();
-                vertexJoint.addJoint(rigNode.m_jointIndex, 1.f);
+                vertexJoint.addJoint(joint->m_jointIndex, 1.f);
             }
         }
 
         // generate points: one for each vertex
         for (auto& rigNode : rig.m_nodes) {
             if (rigNode.m_parentIndex < 0) continue;
-            if (rigNode.m_jointIndex < 0) continue;
+
+            const auto* joint = jointContainer->findByNodeIndex(rigNode.m_index);
+            if (!joint) continue;
 
             int16_t vertexIndex = findVertexIndex(rigNode.m_index);
             assert(vertexIndex >= 0);

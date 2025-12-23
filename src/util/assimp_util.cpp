@@ -1,5 +1,7 @@
 #pragma once
 
+#include <assimp/types.h>
+
 #include "assimp_util.h"
 #include <util/util.h>
 #include "util/file.h"
@@ -60,7 +62,12 @@ namespace assimp_util {
         return {};
     }
 
-    std::string normalizeName(const std::string name)
+    std::string normalizeName(const aiString& name)
+    {
+        return normalizeName(name.C_Str());
+    }
+
+    std::string normalizeName(const std::string& name)
     {
         const std::regex RE_SPACE{ " " };
 

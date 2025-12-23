@@ -148,11 +148,6 @@ namespace model
         assert(isReady());
     }
 
-    std::shared_ptr<animation::RigContainer> NodeType::findRig() const
-    {
-        return mesh::findRig(m_lodMeshes);
-    }
-
     void NodeType::setCustomMaterial(std::unique_ptr<CustomMaterial> customMaterial) noexcept
     {
         m_customMaterial = std::move(customMaterial);

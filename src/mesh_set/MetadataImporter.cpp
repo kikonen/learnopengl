@@ -1,4 +1,4 @@
-#include "MetadataLoader.h"
+#include "MetadataImporter.h"
 
 #include <fstream>
 
@@ -6,6 +6,7 @@
 
 #include "util/Log.h"
 #include "util/util.h"
+#include "util/assimp_util.h"
 #include "util/file.h"
 
 #include "ki/yaml.h"
@@ -61,7 +62,7 @@ namespace {
 
 namespace mesh_set
 {
-    std::unique_ptr<animation::Metadata> MetadataLoader::load(const std::string& meshFilePath)
+    std::unique_ptr<animation::Metadata> MetadataImporter::load(const std::string& meshFilePath)
     {
         const auto& filePath = meshFilePath + ".meta";
         if (!util::fileExists(filePath)) return nullptr;
@@ -86,7 +87,7 @@ namespace mesh_set
         return metadata;
     }
 
-    void MetadataLoader::loadClips(
+    void MetadataImporter::loadClips(
         const YAML::Node& node,
         std::vector<animation::Clip>& clips)
     {
@@ -96,7 +97,7 @@ namespace mesh_set
         }
     }
 
-    void MetadataLoader::loadClip(
+    void MetadataImporter::loadClip(
         const YAML::Node& node,
         animation::Clip& clip)
     {
@@ -105,10 +106,10 @@ namespace mesh_set
             const auto& v = pair.second;
 
             if (k == "name") {
-                clip.m_uniqueName = readString(v);
+                clip.m_uniqueName = assimp_util::normalizeName(readString(v));
             }
             else if (k == "takeName") {
-                clip.m_animationName = readString(v);
+                clip.m_animationName = assimp_util::normalizeName(readString(v));
             }
             else if (k == "firstFrame") {
                 // NOTE KI try to avoid errors due to weird cases like this

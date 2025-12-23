@@ -12,22 +12,29 @@
 #include "mesh/Vertex.h"
 
 namespace animation {
-    struct RigContainer;
+    struct Rig;
+    struct JointContainer;
     struct VertexJoint;
 }
 
 namespace mesh_set
 {
-    class ModelLoader;
-    class AssimpLoader;
+    class ModelImporter;
+    class AssimpImporter;
+}
+
+namespace loader
+{
+    class NodeTypeBuilder;
 }
 
 namespace mesh
 {
     class ModelMesh final : public VaoMesh
     {
-        friend class mesh_set::ModelLoader;
-        friend class mesh_set::AssimpLoader;
+        friend class mesh_set::ModelImporter;
+        friend class mesh_set::AssimpImporter;
+        friend class loader::NodeTypeBuilder;
 
     public:
         ModelMesh(
@@ -43,9 +50,14 @@ namespace mesh
 
         virtual backend::DrawOptions::Mode getDrawMode() override;
 
-        virtual std::shared_ptr<animation::RigContainer> getRigContainer() override
+        virtual animation::Rig* getRig() override
         {
-            return m_rig;
+            return m_rig.get();
+        }
+
+        virtual const animation::JointContainer* getJointContainer() const override
+        {
+            return m_jointContainer.get();
         }
 
         virtual size_t getDefinedVertexCount() const noexcept override
@@ -61,9 +73,11 @@ namespace mesh
     public:
         std::vector<animation::VertexJoint> m_vertexJoints;
 
-        std::shared_ptr<animation::RigContainer> m_rig;
-
         bool m_smoothNormals{ false };
         bool m_forceNormals{ false };
+
+    private:
+        std::shared_ptr<animation::Rig> m_rig;
+        std::shared_ptr<animation::JointContainer> m_jointContainer;
     };
 }

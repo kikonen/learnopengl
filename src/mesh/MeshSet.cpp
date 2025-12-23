@@ -49,14 +49,17 @@ namespace mesh {
             m_path, m_name);
     }
 
-    bool MeshSet::isEmpty() const noexcept
+    bool MeshSet::empty() const noexcept
     {
         return m_meshes.empty();
     }
 
     bool MeshSet::isRigged() const noexcept
     {
-        return !!m_rig;
+        for (const auto& mesh : m_meshes) {
+            if (mesh->getRig()) return true;
+        }
+        return false;
     }
 
     AABB MeshSet::calculateAABB(const glm::mat4& transform) const noexcept

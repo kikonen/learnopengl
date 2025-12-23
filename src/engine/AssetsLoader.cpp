@@ -222,8 +222,8 @@ void AssetsLoader::loadAssets(
                 data.asyncLoaderDelay = readInt(v);
                 continue;
             }
-            if (k == "assimp_loader_enabled") {
-                data.assimpLoaderEnabled = readBool(v);
+            if (k == "assimp_importer_enabled") {
+                data.assimpImporterEnabled = readBool(v);
                 continue;
             }
             if (k == "assimp_debug") {

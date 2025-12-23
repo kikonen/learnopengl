@@ -10,7 +10,8 @@
 #include "mesh/Vertex.h"
 
 namespace animation {
-    struct RigContainer;
+    struct Rig;
+    struct JointContainer;
     struct VertexJoint;
 }
 
@@ -32,9 +33,14 @@ namespace mesh {
         virtual const kigl::GLVertexArray* prepareVAO() override;
         virtual const kigl::GLVertexArray* setupVAO(mesh::TexturedVAO* vao, bool shared) override;
 
-        virtual std::shared_ptr<animation::RigContainer> getRigContainer() override
+        virtual animation::Rig* getRig() override
         {
-            return m_rig;
+            return m_rig.get();
+        }
+
+        virtual const animation::JointContainer* getJointContainer() const override
+        {
+            return m_jointContainer.get();
         }
 
         virtual void prepareLodMesh(
@@ -47,6 +53,7 @@ namespace mesh {
 
         std::vector<animation::VertexJoint> m_vertexJoints;
 
-        std::shared_ptr<animation::RigContainer> m_rig;
+        std::shared_ptr<animation::Rig> m_rig;
+        std::shared_ptr<animation::JointContainer> m_jointContainer;
     };
 }

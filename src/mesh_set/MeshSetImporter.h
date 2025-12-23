@@ -15,13 +15,13 @@ namespace mesh
 
 namespace mesh_set
 {
-    class MeshSetLoader
+    class MeshSetImporter
     {
     public:
-        MeshSetLoader(
+        MeshSetImporter(
             const std::shared_ptr<std::atomic_bool>& alive);
 
-        virtual ~MeshSetLoader();
+        virtual ~MeshSetImporter();
 
         // @return true if
         bool load(

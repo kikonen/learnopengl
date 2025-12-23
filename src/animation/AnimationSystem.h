@@ -39,7 +39,9 @@ namespace animation {
     class JointBuffer;
     class SocketBuffer;
 
-    struct RigContainer;
+    struct Rig;
+    struct RigNode;
+    struct JointContainer;
 
     class AnimationSystem {
         friend editor::NodeTool;
@@ -59,10 +61,13 @@ namespace animation {
 
         // Register node instance specific rig
         // @return [rigNodeBaseIndex, jointBaseIndex, socketBaseIndex]
-        std::tuple<uint32_t, uint32_t, uint32_t> registerInstance(const animation::RigContainer& rig);
+        std::tuple<uint32_t, uint32_t, uint32_t> registerInstance(
+            const animation::Rig& rig,
+            const animation::JointContainer& jointContainer);
 
         void unregisterInstance(
-            const animation::RigContainer& rig,
+            const animation::Rig& rig,
+            const animation::JointContainer& jointContainer,
             uint32_t rigNodeBaseIndex,
             uint32_t jointBaseIndex,
             uint32_t socketBaseIndex);

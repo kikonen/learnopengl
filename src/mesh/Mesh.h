@@ -24,7 +24,8 @@ struct PrepareContext;
 struct Material;
 
 namespace animation {
-    struct RigContainer;
+    struct Rig;
+    struct JointContainer;
 }
 
 namespace mesh {
@@ -74,7 +75,12 @@ namespace mesh {
         virtual void prepareLodMesh(
             mesh::LodMesh& lodMesh) = 0;
 
-        virtual std::shared_ptr<animation::RigContainer> getRigContainer()
+        virtual animation::Rig* getRig()
+        {
+            return nullptr;
+        }
+
+        virtual const animation::JointContainer* getJointContainer() const
         {
             return nullptr;
         }

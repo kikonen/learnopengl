@@ -6,7 +6,7 @@
 
 #include "model/Node.h"
 
-#include "animation/RigContainer.h"
+#include "animation/Rig.h"
 #include "animation/AnimationSystem.h"
 
 #include "mesh/Mesh.h"
@@ -38,9 +38,14 @@ namespace script
         auto* node = getNode();
         if (!node) return;
 
+        std::set<animation::Rig*> processedRigs;
+
         for (const auto& lodMesh : node->getLodMeshes()) {
-            auto rig = lodMesh.getMesh<mesh::Mesh>()->getRigContainer().get();
+            auto rig = lodMesh.getMesh<mesh::Mesh>()->getRig();
             if (!rig) continue;
+
+            if (processedRigs.contains(rig)) continue;
+            processedRigs.insert(rig);
 
             auto* clip = rig->getClipContainer().findClip(m_clipId);
             if (clip) {

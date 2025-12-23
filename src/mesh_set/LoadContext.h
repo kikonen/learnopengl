@@ -8,19 +8,12 @@
 
 #include "material/Material.h"
 
-namespace animation {
-    struct RigContainer;
-}
-
 namespace mesh_set
 {
     struct LoadContext
     {
-        LoadContext(std::shared_ptr<animation::RigContainer> rig)
-            : m_rig{ rig }
+        LoadContext()
         {}
-
-        std::shared_ptr<animation::RigContainer> m_rig;
 
         std::vector<Material> m_materials;
 
