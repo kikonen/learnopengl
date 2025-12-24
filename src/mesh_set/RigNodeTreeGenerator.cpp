@@ -16,12 +16,12 @@
 namespace mesh_set
 {
     std::unique_ptr<mesh::VaoMesh> RigNodeTreeGenerator::generateTree(
-        const std::shared_ptr<animation::Rig>& rigPtr,
-        const std::shared_ptr<animation::JointContainer>& jointContainer) const
+        const std::shared_ptr<animation::Rig>& rigPtr) const
     {
         auto mesh = std::make_unique<mesh::PrimitiveMesh>("joint_tree");
 
         auto& rig = *rigPtr;
+        const auto& jointContainer = rig.getJointContainer();
 
         mesh->m_rig = rigPtr;
         mesh->m_type = mesh::PrimitiveType::lines;
@@ -45,7 +45,7 @@ namespace mesh_set
 
             // generate initial vertices
         for (auto& rigNode : rig.m_nodes) {
-            const auto* joint = jointContainer->findByNodeIndex(rigNode.m_index);
+            const auto* joint = jointContainer.findByNodeIndex(rigNode.m_index);
             if (!joint) continue;
 
             nodeToVertex.insert({ rigNode.m_index, static_cast<int16_t>(vertices.size()) });
@@ -64,7 +64,7 @@ namespace mesh_set
         for (auto& rigNode : rig.m_nodes) {
             if (rigNode.m_parentIndex < 0) continue;
 
-            const auto* joint = jointContainer->findByNodeIndex(rigNode.m_index);
+            const auto* joint = jointContainer.findByNodeIndex(rigNode.m_index);
             if (!joint) continue;
 
             int16_t vertexIndex = findVertexIndex(rigNode.m_index);
@@ -99,12 +99,12 @@ namespace mesh_set
     }
 
     std::unique_ptr<mesh::VaoMesh> RigNodeTreeGenerator::generatePoints(
-        const std::shared_ptr<animation::Rig>& rigPtr,
-        const std::shared_ptr<animation::JointContainer>& jointContainer) const
+        const std::shared_ptr<animation::Rig>& rigPtr) const
     {
         auto mesh = std::make_unique<mesh::PrimitiveMesh>("joint_points");
 
         auto& rig = *rigPtr;
+        const auto& jointContainer = rig.getJointContainer();
 
         mesh->m_rig = rigPtr;
         mesh->m_type = mesh::PrimitiveType::points;
@@ -128,7 +128,7 @@ namespace mesh_set
 
         // generate initial vertices
         for (auto& rigNode : rig.m_nodes) {
-            const auto* joint = jointContainer->findByNodeIndex(rigNode.m_index);
+            const auto* joint = jointContainer.findByNodeIndex(rigNode.m_index);
             if (!joint) continue;
 
             nodeToVertex.insert({ rigNode.m_index, static_cast<int16_t>(vertices.size()) });
@@ -146,7 +146,7 @@ namespace mesh_set
         for (auto& rigNode : rig.m_nodes) {
             if (rigNode.m_parentIndex < 0) continue;
 
-            const auto* joint = jointContainer->findByNodeIndex(rigNode.m_index);
+            const auto* joint = jointContainer.findByNodeIndex(rigNode.m_index);
             if (!joint) continue;
 
             int16_t vertexIndex = findVertexIndex(rigNode.m_index);

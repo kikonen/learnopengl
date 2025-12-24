@@ -195,9 +195,12 @@ namespace mesh_set
             scene,
             scene->mRootNode);
 
-        std::set<animation::Rig*> processedRigs;
+        std::set<const animation::Rig*> processedRigs;
 
         std::vector<std::shared_ptr<mesh::Mesh>> additionalMeshes;
+
+        float xOffset = 0.f;
+        float zOffset = 0.f;
 
         for (auto& mesh : meshSet.getMeshes()) {
             auto* modelMesh = dynamic_cast<mesh::ModelMesh*>(mesh.get());
@@ -207,35 +210,36 @@ namespace mesh_set
             auto* rig = modelMesh->m_rig.get();
             if (!rig) continue;
 
-            auto* jointContainer = modelMesh->m_jointContainer.get();
-            if (!jointContainer) continue;
+            auto& jointContainer = rig->getJointContainer();
 
-            if (jointContainer && !jointContainer->empty())
+            if (!jointContainer.empty())
             {
-                loadAnimations(ctx, *rig, "master", meshSet.m_filePath, scene);
-
                 if (processedRigs.contains(rig)) continue;
                 processedRigs.insert(rig);
+
+                loadAnimations(ctx, *rig, "master", meshSet.m_filePath, scene);
 
                 if (assets.animationNodeTree)
                 {
                     auto* primaryMesh = meshSet.getMesh<mesh::VaoMesh>(0);
-                    const auto& node = rig->m_nodes[primaryMesh->m_rigNodeIndex];
+                    //const auto& rigNode = rig->m_nodes[primaryMesh->m_rigNodeIndex];
 
                     util::Transform offset{};
-                    offset.m_position = glm::vec3{ 20, 0, 0 };
+                    xOffset += 40.f;
+                    zOffset += 40.f;
+                    offset.m_position = glm::vec3{ xOffset, 0, zOffset };
 
                     //const auto offset = glm::translate(glm::mat4{ 1.f }, glm::vec3{ 20, 0, 0 }) *
                     //    rigNode.m_globalTransform;
 
                     RigNodeTreeGenerator generator;
-                    if (auto mesh = generator.generateTree(modelMesh->m_rig, modelMesh->m_jointContainer)) {
+                    if (auto mesh = generator.generateTree(modelMesh->m_rig)) {
                         mesh->m_offset = offset;
                         mesh->m_rigNodeIndex = primaryMesh->m_rigNodeIndex;
                         additionalMeshes.push_back(std::move(mesh));
                     }
 
-                    if (auto mesh = generator.generatePoints(modelMesh->m_rig, modelMesh->m_jointContainer)) {
+                    if (auto mesh = generator.generatePoints(modelMesh->m_rig)) {
                         mesh->m_offset = offset;
                         mesh->m_rigNodeIndex = primaryMesh->m_rigNodeIndex;
                         additionalMeshes.push_back(std::move(mesh));
@@ -244,7 +248,6 @@ namespace mesh_set
             }
             else {
                 modelMesh->m_rig.reset();
-                modelMesh->m_jointContainer.reset();
 
                 const auto& rigNode = modelMesh->m_rig->m_nodes[modelMesh->m_rigNodeIndex];
                 const auto& transform = rigNode.m_globalTransform;
@@ -301,7 +304,7 @@ namespace mesh_set
         const aiScene* scene,
         const aiNode* node)
     {
-        for (size_t meshIndex = 0; meshIndex < node->mNumMeshes; meshIndex++)
+        for (unsigned int meshIndex = 0; meshIndex < node->mNumMeshes; meshIndex++)
         {
             auto* mesh = scene->mMeshes[node->mMeshes[meshIndex]];
 
@@ -311,7 +314,7 @@ namespace mesh_set
             auto modelMesh = std::make_unique<mesh::ModelMesh>(nodeName);
             modelMesh->m_alias = aliasName;
 
-            auto rig = skeletonSet.findRig(mesh);
+            const auto& rig = skeletonSet.findRig(mesh);
 
             processMesh(
                 ctx,
@@ -322,27 +325,25 @@ namespace mesh_set
                 mesh);
 
             // NOTE KI without rig, no bones or animation
-            if (rig)
+            if (rig && mesh->mNumBones > 0)
             {
                 modelMesh->m_rig = rig;
 
-                // TODO KI this is 100% BOGUS
-                // => node containing mesh has NOTHING to do with RIG
-                auto* rootNode = rig ? &rig->m_nodes[0] : nullptr;
-                if (rootNode)
+                // NOTE KI for debugging/troubleshooting only
+                auto& rootNode = rig->m_nodes[0];
                 {
-                    modelMesh->m_rigNodeIndex = rootNode->m_index;
-                    rootNode->m_hasMesh = true;
+                    modelMesh->m_rigNodeIndex = rootNode.m_index;
+                    rootNode.m_hasMesh = true;
 
                     // NOTE KI for debug
-                    rig->registerMesh(rootNode->m_index, modelMesh.get());
+                    rig->registerMesh(rootNode.m_index, modelMesh.get());
                 }
             }
 
             meshSet.addMesh(std::move(modelMesh));
         }
 
-        for (int childIndex = 0; childIndex < node->mNumChildren; childIndex++) {
+        for (unsigned int childIndex = 0; childIndex < node->mNumChildren; childIndex++) {
             processMeshes(ctx, meshSet, skeletonSet, scene, node->mChildren[childIndex]);
         }
     }
@@ -382,7 +383,7 @@ namespace mesh_set
                 mesh->mNumBones));
         }
 
-        for (size_t vertexIndex = 0; vertexIndex < mesh->mNumVertices; vertexIndex++) {
+        for (unsigned int vertexIndex = 0; vertexIndex < mesh->mNumVertices; vertexIndex++) {
             glm::vec2 texCoord{ 0.f };
 
             if (mesh->HasTextureCoords(0))
@@ -406,19 +407,16 @@ namespace mesh_set
             modelMesh.m_vertices.emplace_back(pos, texCoord, normal, tangent);
         }
 
-        for (size_t faceIdx = 0; faceIdx < mesh->mNumFaces; faceIdx++) {
+        for (unsigned int faceIdx = 0; faceIdx < mesh->mNumFaces; faceIdx++) {
             processMeshFace(ctx, modelMesh,faceIdx, mesh, &mesh->mFaces[faceIdx]);
         }
 
         // NOTE KI without rig, no bones or animation
         if (rig && mesh->mNumBones > 0)
         {
-            modelMesh.m_jointContainer = std::make_unique<animation::JointContainer>();
-
-            for (size_t boneIdx = 0; boneIdx < mesh->mNumBones; boneIdx++) {
+            for (unsigned int boneIdx = 0; boneIdx < mesh->mNumBones; boneIdx++) {
                 processMeshBone(
                     *rig,
-                    *modelMesh.m_jointContainer,
                     modelMesh,
                     mesh->mBones[boneIdx]);
             }
@@ -436,7 +434,7 @@ namespace mesh_set
     {
         assert(face->mNumIndices <= 3);
 
-        for (uint32_t i = 0; i < face->mNumIndices; i++)
+        for (unsigned int i = 0; i < face->mNumIndices; i++)
         {
             modelMesh.m_indeces.push_back(face->mIndices[i]);
         }
@@ -444,11 +442,10 @@ namespace mesh_set
 
     void AssimpImporter::processMeshBone(
         animation::Rig& rig,
-        animation::JointContainer& jointContainer,
         mesh::ModelMesh& modelMesh,
         const aiBone* bone)
     {
-        const auto* joint = rig.registerJoint(jointContainer, bone);
+        const auto* joint = rig.registerJoint(bone);
 
         if (!joint) {
             return;
@@ -474,16 +471,16 @@ namespace mesh_set
         vertexJoints.reserve(modelMesh.m_vertices.size());
         vertexJoints.resize(modelMesh.m_vertices.size());
 
-        for (size_t i = 0; i < bone->mNumWeights; i++)
+        for (unsigned int i = 0; i < bone->mNumWeights; i++)
         {
             const auto& vw = bone->mWeights[i];
             //const auto mat = assimp_util::toMat4(bone->mOffsetMatrix);
 
-            size_t vertexIndex = vw.mVertexId;
+            unsigned int vertexIndex = vw.mVertexId;
 
             assert(vertexIndex < modelMesh.m_vertices.size());
 
-            vertexJoints.resize(std::max(vertexIndex + 1, vertexJoints.size()));
+            vertexJoints.resize(std::max(vertexIndex + 1, static_cast<unsigned int>(vertexJoints.size())));
             auto& vb = vertexJoints[vertexIndex];
 
             float weight = vw.mWeight;

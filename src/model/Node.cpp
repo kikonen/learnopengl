@@ -113,12 +113,9 @@ namespace model
                 auto* rig = modelMesh->getRig();
                 if (!rig) continue;
 
-                auto* jointContainer = modelMesh->getJointContainer();
-                if (!jointContainer) continue;
-
                 auto [rigNodeBaseIndex, jointBaseIndex, socketBaseIndex] = animation::AnimationSystem::get().registerInstance(
                     *rig,
-                    *jointContainer);
+                    rig->getJointContainer());
                 state.m_rigNodeBaseIndex = rigNodeBaseIndex;
                 state.m_jointBaseIndex = jointBaseIndex;
                 state.m_socketBaseIndex = socketBaseIndex;
@@ -164,12 +161,9 @@ namespace model
                 auto* rig = modelMesh->getRig();
                 if (!rig) continue;
 
-                auto* jointContainer = modelMesh->getJointContainer();
-                if (!jointContainer) continue;
-
                 animation::AnimationSystem::get().unregisterInstance(
                     *rig,
-                    *jointContainer,
+                    rig->getJointContainer(),
                     state.m_rigNodeBaseIndex,
                     state.m_jointBaseIndex,
                     state.m_socketBaseIndex);

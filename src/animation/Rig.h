@@ -6,6 +6,7 @@
 #include "ClipContainer.h"
 #include "MeshInfo.h"
 #include "RigSocket.h"
+#include "JointContainer.h"
 
 namespace mesh
 {
@@ -26,8 +27,12 @@ namespace animation
 {
     struct RigNode;
     struct Joint;
-    struct JointContainer;
 
+    // Rigged skeleton consisting of 
+    // - skeleton nodes (all nodes under specific root node)
+    // - joints
+    // 
+    // NOTE KI each separate set of joints with same skeleton root are same Rig
     struct Rig
     {
         friend struct mesh_set::Skeleton;
@@ -69,8 +74,7 @@ namespace animation
         animation::RigNode* findNode(const std::string& name) noexcept;
 
         animation::Joint* registerJoint(
-            animation::JointContainer& jointContainer,
-            const aiBone* bone) const;
+            const aiBone* bone);
 
         // @return registered index in m_sockets, -1 if joint not found
         int16_t registerSocket(const animation::RigSocket& socket);
@@ -100,6 +104,11 @@ namespace animation
             return m_clipContainer;
         }
 
+        animation::JointContainer& getJointContainer() noexcept
+        {
+            return m_jointContainer;
+        }
+
         // NOTE KI for debug
         void registerMesh(
             uint16_t nodeIndex,
@@ -123,5 +132,7 @@ namespace animation
         // NOTE KI for debug
         // { nodeIndex: [mesh, ...] }
         std::map<uint16_t, std::vector<MeshInfo>> m_nodeMeshes;
+
+        animation::JointContainer m_jointContainer;
     };
 }

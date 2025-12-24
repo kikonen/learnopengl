@@ -39,6 +39,7 @@ namespace mesh {
         std::vector<mesh::Vertex> m_vertices;
         std::vector<mesh::Index32> m_indeces;
 
+        // NOTE KI debug/troubleshoot only
         int32_t m_rigNodeIndex{ -1 };
 
     protected:

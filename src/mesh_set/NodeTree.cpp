@@ -22,7 +22,7 @@ namespace
     int calculateNeededSize(const aiNode* node)
     {
         int size = 0;
-        for (int childIndex = 0; childIndex < node->mNumChildren; childIndex++) {
+        for (unsigned int childIndex = 0; childIndex < node->mNumChildren; childIndex++) {
             size += calculateNeededSize(node->mChildren[childIndex]);
         }
 
@@ -40,6 +40,12 @@ namespace
         }
         else if (transformName == "PostRotation") {
             return mesh_set::FbxTransformType::post_rotation;
+        }
+        else if (transformName == "GeometricRotation") {
+            return mesh_set::FbxTransformType::geometric_rotation;
+        }
+        else if (transformName == "GeometricRotationInverse") {
+            return mesh_set::FbxTransformType::geometric_rotation_inverse;
         }
         else if (transformName == "Scaling") {
             return mesh_set::FbxTransformType::scaling;
@@ -129,9 +135,9 @@ namespace mesh_set
             -1,
             glm::mat4{1.f});
 
-        for (int meshIndex = 0; meshIndex < m_scene->mNumMeshes; meshIndex++) {
+        for (unsigned int meshIndex = 0; meshIndex < m_scene->mNumMeshes; meshIndex++) {
             const auto* mesh = m_scene->mMeshes[meshIndex];
-            for (int jointIndex = 0; jointIndex < mesh->mNumBones; jointIndex++) {
+            for (unsigned int jointIndex = 0; jointIndex < mesh->mNumBones; jointIndex++) {
                 const auto* joint = mesh->mBones[jointIndex];
                 const auto& nodeName = assimp_util::normalizeName(joint->mName);
 
@@ -149,7 +155,7 @@ namespace mesh_set
         int16_t parentIndex,
         const glm::mat4& parentTransform)
     {
-        int nodeIndex = m_treeNodes.size();
+        int nodeIndex = static_cast<int>(m_treeNodes.size());
         glm::mat4 globalTransform;
         {
             const auto& nodeName = assimp_util::normalizeName(node->mName);
@@ -166,7 +172,7 @@ namespace mesh_set
 
             {
                 treeNode.meshes.reserve(node->mNumMeshes);
-                for (int meshIndex = 0; meshIndex < node->mNumMeshes; meshIndex++) {
+                for (unsigned int meshIndex = 0; meshIndex < node->mNumMeshes; meshIndex++) {
                     const auto* mesh = m_scene->mMeshes[node->mMeshes[meshIndex]];
                     treeNode.meshes.push_back(mesh);
                 }
@@ -184,7 +190,7 @@ namespace mesh_set
             globalTransform = treeNode.globalTransform;
         }
 
-        for (int childIndex = 0; childIndex < node->mNumChildren; childIndex++) {
+        for (unsigned int childIndex = 0; childIndex < node->mNumChildren; childIndex++) {
             collectNodes(
                 node->mChildren[childIndex],
                 level + 1,

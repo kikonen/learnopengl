@@ -11,7 +11,6 @@
 
 namespace animation {
     struct Rig;
-    struct JointContainer;
     struct VertexJoint;
 }
 
@@ -38,11 +37,6 @@ namespace mesh {
             return m_rig.get();
         }
 
-        virtual const animation::JointContainer* getJointContainer() const override
-        {
-            return m_jointContainer.get();
-        }
-
         virtual void prepareLodMesh(
             mesh::LodMesh& lodMesh) override;
 
@@ -54,6 +48,5 @@ namespace mesh {
         std::vector<animation::VertexJoint> m_vertexJoints;
 
         std::shared_ptr<animation::Rig> m_rig;
-        std::shared_ptr<animation::JointContainer> m_jointContainer;
     };
 }

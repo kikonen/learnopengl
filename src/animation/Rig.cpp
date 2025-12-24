@@ -97,8 +97,7 @@ namespace animation
     }
 
     animation::Joint* Rig::registerJoint(
-        animation::JointContainer& jointContainer,
-        const aiBone* bone) const
+        const aiBone* bone)
     {
         std::string nodeName = assimp_util::normalizeName(bone->mName);
         auto* rigNode = findNode(nodeName);
@@ -111,7 +110,7 @@ namespace animation
             //return nullptr;
         }
 
-        return &jointContainer.registerJoint(bone, rigNode ? rigNode->m_index : -1);
+        return &m_jointContainer.registerJoint(bone, rigNode ? rigNode->m_index : -1);
     }
 
     int16_t Rig::registerSocket(const animation::RigSocket& a_socket)

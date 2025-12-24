@@ -17,6 +17,8 @@ namespace mesh_set
         none,
         pre_rotation,
         rotation,
+        geometric_rotation,
+        geometric_rotation_inverse,
         post_rotation,
         scaling,
         translation,

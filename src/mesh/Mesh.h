@@ -80,11 +80,6 @@ namespace mesh {
             return nullptr;
         }
 
-        virtual const animation::JointContainer* getJointContainer() const
-        {
-            return nullptr;
-        }
-
         virtual backend::DrawOptions::Mode getDrawMode()
         {
             return backend::DrawOptions::Mode::triangles;

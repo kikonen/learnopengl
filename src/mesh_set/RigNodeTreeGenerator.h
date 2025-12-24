@@ -5,7 +5,6 @@
 namespace animation
 {
     struct Rig;
-    struct JointContainer;
 }
 
 namespace mesh
@@ -21,12 +20,10 @@ namespace mesh_set
         RigNodeTreeGenerator() = default;
 
         std::unique_ptr<mesh::VaoMesh> generateTree(
-            const std::shared_ptr<animation::Rig>& rig,
-            const std::shared_ptr<animation::JointContainer>& jointContainer) const;
+            const std::shared_ptr<animation::Rig>& rig) const;
 
         std::unique_ptr<mesh::VaoMesh> generatePoints(
-            const std::shared_ptr<animation::Rig>& rig,
-            const std::shared_ptr<animation::JointContainer>& jointContainer) const;
+            const std::shared_ptr<animation::Rig>& rig) const;
 
     private:
     };

@@ -371,10 +371,10 @@ namespace animation
             // TDOO KI handle case when same rig is used for multiple
             // meshes (i.e. meshes possibly split due to material, etc.)
             auto rig = mesh->getRig();
-            auto jointContainer = mesh->getJointContainer();
 
             if (!rig) continue;
-            if (!jointContainer) continue;
+
+            auto& jointContainer = rig->getJointContainer();
 
             if (processedRigs.contains(rig))
                 continue;
@@ -479,11 +479,11 @@ namespace animation
             }
 
             if (changed) {
-                auto jointPalette = jointRegistry.modifyRange(jointBaseIndex, jointContainer->size());
+                auto jointPalette = jointRegistry.modifyRange(jointBaseIndex, jointContainer.size());
                 auto socketPalette = socketRegistry.modifyRange(socketBaseIndex, rig->m_sockets.size());
 
                 // STEP 2: update Joint Palette
-                for (const auto& joint : jointContainer->m_joints)
+                for (const auto& joint : jointContainer.m_joints)
                 {
                     const auto& globalTransform = joint.m_nodeIndex >= 0 ? rigNodeTransforms[joint.m_nodeIndex] : ID_MAT;
 

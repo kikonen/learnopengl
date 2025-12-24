@@ -17,7 +17,6 @@ namespace animation
 {
 	struct Rig;
     struct RigNode;
-	struct JointContainer;
 }
 
 namespace mesh
@@ -30,7 +29,7 @@ namespace mesh_set
 {
     struct LoadContext;
 
-    struct SkeletonSet;
+    class SkeletonSet;
 
     class AssimpImporter : public MeshSetImporter
     {
@@ -80,7 +79,6 @@ namespace mesh_set
 
         void processMeshBone(
 			animation::Rig& rig,
-			animation::JointContainer& jointContainer,
 			mesh::ModelMesh& modelMesh,
             const aiBone* bone);
 

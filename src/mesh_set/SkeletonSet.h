@@ -24,12 +24,20 @@ namespace mesh_set
 {
     struct NodeTree;
 
+    struct RiggedSkeleton
+    {
+        int index;
+        std::set<const aiNode*> jointNodes;
+        const aiNode* skeletonRoot;
+        const aiNode* rigRoot;
+
+        std::vector<const aiMesh*> meshes;
+    };
+
     struct SkeletonExtract
     {
-        std::unordered_map<const aiNode*, std::vector<const aiMesh*>> m_skeletonRoots;
-        std::unordered_map<const aiNode*, std::vector<const aiMesh*>> m_rigRoots;
-        std::unordered_map<const aiMesh*, const aiNode*> m_meshSkeletonRoots;
-        std::unordered_map<const aiMesh*, const aiNode*> m_meshRigRoots;
+        std::vector<RiggedSkeleton> m_riggedSkeletons;
+        std::unordered_map<const aiMesh*, int> m_meshRiggedSkeleton;
     };
 
     struct Skeleton

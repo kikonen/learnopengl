@@ -119,7 +119,7 @@ namespace
     {
         std::set<const aiNode*> jointNodes;
 
-        for (int j = 0; j < mesh->mNumBones; j++) {
+        for (unsigned int j = 0; j < mesh->mNumBones; j++) {
             const auto& nodeName = assimp_util::normalizeName(mesh->mBones[j]->mName);
             const auto* treeNode = tree.findByName(nodeName);
             if (treeNode) {
@@ -142,49 +142,64 @@ namespace mesh_set
     {
         std::shared_ptr<mesh_set::SkeletonExtract> result = std::make_shared<mesh_set::SkeletonExtract>();
 
+        std::map<std::set<const aiNode*>, int> foundSkeletons;
+
         for (unsigned int i = 0; i < scene->mNumMeshes; i++) {
             const aiMesh* mesh = scene->mMeshes[i];
-            const auto& jointNodes = collectJointNodes(scene, tree, mesh);
 
-            const auto* skeletonRoot = findSkeletonRoot(
-                scene,
-                tree,
-                jointNodes);
+            const auto jointNodes = collectJointNodes(scene, tree, mesh);
+            if (jointNodes.empty()) continue;
 
-            const auto* rigRoot = findAnimationRoot(
-                tree,
-                skeletonRoot);
+            int skeletonIndex;
 
-            result->m_skeletonRoots[skeletonRoot].push_back(mesh);
-            result->m_rigRoots[rigRoot].push_back(mesh);
+            const auto& it = foundSkeletons.find(jointNodes);
+            if (it == foundSkeletons.end()) {
+                skeletonIndex = static_cast<int>(result->m_riggedSkeletons.size());
+                auto& riggedSkeleton = result->m_riggedSkeletons.emplace_back();
 
-            result->m_skeletonRoots[skeletonRoot].push_back(mesh);
-            result->m_rigRoots[rigRoot].push_back(mesh);
+                riggedSkeleton.index = skeletonIndex;
+                riggedSkeleton.jointNodes = jointNodes;
 
-            result->m_meshSkeletonRoots[mesh] = skeletonRoot;
-            result->m_meshRigRoots[mesh] = rigRoot;
+                riggedSkeleton.skeletonRoot = findSkeletonRoot(
+                    scene,
+                    tree,
+                    riggedSkeleton.jointNodes);
+
+                riggedSkeleton.rigRoot = findAnimationRoot(
+                    tree,
+                    riggedSkeleton.skeletonRoot);
+
+                foundSkeletons.insert({ riggedSkeleton.jointNodes, skeletonIndex });
+
+                riggedSkeleton.meshes.push_back(mesh);
+            }
+            else {
+                skeletonIndex = it->second;
+
+                auto& riggedSkeleton = result->m_riggedSkeletons[skeletonIndex];
+                riggedSkeleton.meshes.push_back(mesh);
+            }
+
+            result->m_meshRiggedSkeleton.insert({ mesh, skeletonIndex });
         }
 
         {
-            const auto& formatEntry = [](const auto& prefix, const auto& it) {
-                const auto& meshesSb = util::join(
-                    it.second,
-                    ", ",
-                    [](const auto* mesh) { return assimp_util::normalizeName(mesh->mName); });
-
-                return fmt::format(
-                    "{}: {}: [{}]",
-                    prefix,
-                    assimp_util::normalizeName(it.first->mName),
-                    meshesSb);
-            };
-
-            for (const auto& it : result->m_skeletonRoots) {
-                KI_INFO_OUT(formatEntry("SKELETON", it));
+            for (const auto& riggedSkeleton : result->m_riggedSkeletons) {
+                KI_INFO_OUT(fmt::format(
+                    "RIGGED: index={}, root={}, rigRoot={}",
+                    riggedSkeleton.index,
+                    assimp_util::normalizeName(riggedSkeleton.skeletonRoot->mName),
+                    assimp_util::normalizeName(riggedSkeleton.rigRoot->mName)));
             }
 
-            for (const auto& it : result->m_rigRoots) {
-                KI_INFO_OUT(formatEntry("RIG", it));
+            for (const auto& [mesh, skeletonIndex] : result->m_meshRiggedSkeleton) {
+                const auto& riggedSkeleton = result->m_riggedSkeletons[skeletonIndex];
+
+                KI_INFO_OUT(fmt::format(
+                    "MESH: {}: skeleton={}, [{}]",
+                    assimp_util::normalizeName(mesh->mName),
+                    skeletonIndex,
+                    assimp_util::normalizeName(riggedSkeleton.rigRoot->mName)));
             }
         }
 
@@ -214,7 +229,6 @@ namespace mesh_set
 
         std::queue<QueueEntry> queue;
         queue.push({ -1, 0, rootTreeNode, glm::mat4{ 1.f } });
-
 
         while (!queue.empty()) {
             const auto entry = queue.front();
@@ -265,17 +279,18 @@ namespace mesh_set
 
     void SkeletonSet::buildSkeletons()
     {
-        m_skeletons.reserve(m_extract->m_meshRigRoots.size());
+        m_skeletons.reserve(m_extract->m_riggedSkeletons.size());
 
-        for (const auto& it : m_extract->m_rigRoots) {
+        for (const auto& riggedSkeleton : m_extract->m_riggedSkeletons) {
             auto skeletonIndex = static_cast<int>(m_skeletons.size());
+            {
+                auto& skeleton = m_skeletons.emplace_back();
+                skeleton.index = skeletonIndex;
+                skeleton.rigRoot = riggedSkeleton.rigRoot;
+                skeleton.name = assimp_util::normalizeName(skeleton.rigRoot->mName);
+            }
 
-            auto& skeleton = m_skeletons.emplace_back();
-            skeleton.index = skeletonIndex;
-            skeleton.rigRoot = it.first;
-            skeleton.name = assimp_util::normalizeName(skeleton.rigRoot->mName);
-
-            for (const auto* mesh : it.second) {
+            for (const auto* mesh : riggedSkeleton.meshes) {
                 auto& meshSkeleton = m_meshAssociations.emplace_back();
                 meshSkeleton.mesh = mesh;
                 meshSkeleton.skeletonIndex = skeletonIndex;
