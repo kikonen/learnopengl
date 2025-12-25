@@ -515,6 +515,8 @@ namespace loader
 
         // Resolve materials for newly added meshes
         if (meshCount > 0) {
+            std::set<const animation::Rig*> processedRigs;
+
             const auto& span = std::span{ type->modifyLodMeshes() }.subspan(startIndex, meshCount);
             for (auto& lodMesh : span) {
                 resolveLodMesh(type, typeData, meshData, lodMesh);
@@ -522,6 +524,9 @@ namespace loader
                 auto* mesh = lodMesh.getMesh<mesh::Mesh>();
                 const auto* rig = mesh ? mesh->getRig() : nullptr;
                 if (rig) {
+                    if (processedRigs.contains(rig)) continue;
+                    processedRigs.insert(rig);
+
                     rig->dump();
                 }
             }
@@ -711,12 +716,18 @@ namespace loader
     {
         const auto& assets = Assets::get();
 
+        std::set<const animation::Rig*> processedRigs;
+
+        // TODO KI this works incorrectly if same MeshSet is shared between types
         for (const auto& mesh : meshSet.getMeshes()) {
             auto* modelMesh = dynamic_cast<mesh::ModelMesh*>(mesh.get());
             if (!modelMesh) continue;
 
             auto* rig = modelMesh->m_rig.get();
             if (!rig) continue;
+
+            if (processedRigs.contains(rig)) continue;
+            processedRigs.insert(rig);
 
             mesh_set::AnimationImporter importer{};
             std::string filePath;

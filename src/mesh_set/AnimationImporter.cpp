@@ -42,20 +42,21 @@ namespace mesh_set
 
         Assimp::Importer importer;
 
+        // NOTE KI likely should match AssimpImporter on these
         const aiScene* scene = importer.ReadFile(
             filePath,
             //aiProcess_GenNormals |
-            aiProcess_GenSmoothNormals |
-            aiProcess_ForceGenNormals |
+            //aiProcess_GenSmoothNormals |
+            //aiProcess_ForceGenNormals |
             //aiProcess_FixInfacingNormals |
-            aiProcess_CalcTangentSpace |
+            //aiProcess_CalcTangentSpace |
             aiProcess_Triangulate |
             aiProcess_JoinIdenticalVertices |
             //aiProcess_ImproveCacheLocality |
             aiProcess_LimitBoneWeights |
             aiProcess_RemoveRedundantMaterials |
             aiProcess_GenUVCoords |
-            aiProcess_SortByPType |
+            //aiProcess_SortByPType |
             0);
 
         // If the import failed, report it

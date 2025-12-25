@@ -223,6 +223,7 @@ namespace mesh_set
     {
         auto rig = std::make_shared<animation::Rig>();
         rig->m_name = name;
+        rig->m_skeletonNode = assimp_util::normalizeName(skeletonRoot->mName);
 
         const auto* rootTreeNode = tree.findByNode(rigRoot);
         if (!rootTreeNode) return nullptr;
@@ -287,6 +288,7 @@ namespace mesh_set
                 auto& skeleton = m_skeletons.emplace_back();
                 skeleton.index = skeletonIndex;
                 skeleton.rigRoot = riggedSkeleton.rigRoot;
+                skeleton.skeletonRoot = riggedSkeleton.skeletonRoot;
                 skeleton.name = assimp_util::normalizeName(skeleton.rigRoot->mName);
             }
 

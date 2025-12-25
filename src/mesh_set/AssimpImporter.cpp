@@ -127,7 +127,7 @@ namespace mesh_set
 
         Assimp::Importer importer;
 
-        AssimpLogger::attach();
+        AssimpLogger::attach(m_debug);
 
         uint32_t flags =
             //aiProcess_FixInfacingNormals |
@@ -140,7 +140,7 @@ namespace mesh_set
             //aiProcess_GenUVCoords |
             //aiProcess_SortByPType |
             //aiProcess_GlobalScale |
-            aiProcess_PopulateArmatureData |
+            //aiProcess_PopulateArmatureData |
             //aiProcess_GenBoundingBoxes |
             // Validation
             //aiProcess_ValidateDataStructure |

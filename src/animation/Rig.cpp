@@ -210,8 +210,10 @@ namespace animation
     void Rig::dump() const
     {
         KI_INFO_OUT(fmt::format(
-            "\n=======================\n[RIG SUMMARY: {}]\nHIERARCHY:\n{}\nANIMATIONS:\n{}\nSOCKETS:\n{}\n=======================",
+            "\n=======================\n[RIG SUMMARY: {} ({}) - {} joints]\nHIERARCHY:\n{}\nANIMATIONS:\n{}\nSOCKETS:\n{}\n=======================",
             m_name,
+            m_skeletonNode,
+            m_jointContainer.size(),
             getHierarchySummary(0),
             getAnimationSummary(0),
             getSocketSummary(0)));

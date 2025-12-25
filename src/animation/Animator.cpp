@@ -137,6 +137,10 @@ namespace animation {
             forceFirstFrame ? animationStartTime : currentTime,
             speed);
 
+        for (auto& t : rigNodeTransforms) {
+            t = ID_MAT;
+        }
+
         // STEP 1: update RigNode transforms
         // TODO KI stop at "max needed nodeIndex"
         for (size_t nodeIndex = 0; nodeIndex < rig.m_nodes.size(); nodeIndex++)
@@ -208,6 +212,10 @@ namespace animation {
             animationStartTimeB,
             forceFirstFrame ? animationStartTimeB : currentTime,
             speedB);
+
+        for (auto& t : rigNodeTransforms) {
+            t = ID_MAT;
+        }
 
         // STEP 1: update RigNode transforms
         // TODO KI stop at "max needed nodeIndex"

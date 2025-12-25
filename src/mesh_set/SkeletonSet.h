@@ -44,6 +44,7 @@ namespace mesh_set
     {
         int index;
         std::string name;
+        const aiNode* skeletonRoot;
         const aiNode* rigRoot;
 
         std::shared_ptr<animation::Rig> toRig(

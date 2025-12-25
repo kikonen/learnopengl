@@ -12,6 +12,6 @@ namespace mesh_set
 
         void write(const char* message) override;
 
-        static void attach();
+        static void attach(bool debug);
     };
 }

@@ -21,7 +21,7 @@ namespace animation {
 
         animation::Joint& registerJoint(
             const aiBone* bone,
-            int16_t nodeIndex) noexcept;
+            int16_t nodeIndex);
 
         // @return Joint, null if not found
         const animation::Joint * findByNodeIndex(int16_t nodeIndex) const noexcept;

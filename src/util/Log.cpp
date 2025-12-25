@@ -100,6 +100,12 @@ void Log::trace(std::string_view msg) noexcept
     g_logger->trace(msg);
 }
 
+void Log::debug_out(std::string_view msg) noexcept
+{
+    Log::debug(msg);
+    std::cout << "I: " << msg << '\n';
+}
+
 void Log::info_out(std::string_view msg) noexcept
 {
     Log::info(msg);

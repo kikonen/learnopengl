@@ -121,6 +121,7 @@ namespace animation
 
     private:
         std::string m_name;
+        std::string m_skeletonNode;
         std::vector<animation::RigNode> m_nodes;
 
         std::vector<animation::RigSocket> m_sockets;
