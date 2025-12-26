@@ -25,13 +25,13 @@ namespace animation
         m_updateReady = false;
 
         m_transforms.clear();
-        m_dirtyTransform.clear();
+        m_dirtyTransforms.clear();
 
         m_snapshot.clear();
         m_dirtySnapshot.clear();
 
         m_transforms.reserve(INITIAL_SIZE);
-        m_dirtyTransform.reserve(INITIAL_SIZE);
+        m_dirtyTransforms.reserve(INITIAL_SIZE);
         m_snapshot.reserve(INITIAL_SIZE);
         m_dirtySnapshot.reserve(INITIAL_SIZE);
 
@@ -54,82 +54,91 @@ namespace animation
 
         if (count == 0) return 0;
 
-        size_t index;
+        uint32_t offset;
         {
             std::lock_guard lock(m_lock);
 
             auto it = m_freeSlots.find(count);
             if (it != m_freeSlots.end() && !it->second.empty()) {
-                index = it->second[it->second.size() - 1];
+                offset = it->second[it->second.size() - 1];
                 it->second.pop_back();
             }
             else {
-                index = m_transforms.size();
+                offset = static_cast<uint32_t>(m_transforms.size());
                 m_transforms.resize(m_transforms.size() + count);
             }
 
             for (int i = 0; i < count; i++) {
-                m_transforms[index + i] = glm::mat4{ 1.f };
+                m_transforms[offset + i] = glm::mat4{ 1.f };
             }
 
-            markDirty(index, count);
+            markDirty({ offset, static_cast<uint32_t>(count) });
         }
 
-        return static_cast<uint32_t>(index);
+        return static_cast<uint32_t>(offset);
     }
 
     void SocketRegistry::removeInstance(
-        uint32_t index,
-        size_t count)
+        util::BufferReference ref)
     {
         ASSERT_WT();
 
         // NOTE KI modifying null socket is not allowed
-        assert(index > 0);
+        if (ref.offset == 0) return;
 
         std::lock_guard lock(m_lock);
 
-        auto it = m_freeSlots.find(count);
+        auto it = m_freeSlots.find(ref.size);
         if (it == m_freeSlots.end()) {
-            m_freeSlots[count] = std::vector<uint32_t>{ index };
+            m_freeSlots[ref.size] = std::vector<uint32_t>{ ref.offset };
         }
         else {
-            it->second.push_back(index);
+            it->second.push_back(ref.offset);
         }
     }
 
-    std::span<glm::mat4> SocketRegistry::modifyRange(
-        uint32_t start,
-        size_t count) noexcept
+    std::span<const glm::mat4> SocketRegistry::getRange(
+        const util::BufferReference ref) const noexcept
     {
         // NOTE KI modifying null socket is not allowed
-        if (!start) return std::span<glm::mat4>{};
+        if (ref.offset == 0) return std::span<glm::mat4>{};
 
-        return std::span{ m_transforms }.subspan(start, count);
+        return std::span{ m_transforms }.subspan(ref.offset, ref.size);
+    }
+
+    std::span<glm::mat4> SocketRegistry::modifyRange(
+        util::BufferReference ref) noexcept
+    {
+        // NOTE KI modifying null socket is not allowed
+        if (!ref.offset) return std::span<glm::mat4>{};
+
+        return std::span{ m_transforms }.subspan(ref.offset, ref.size);
     }
 
     void SocketRegistry::markDirtyAll() noexcept
     {
-        markDirty(0, m_transforms.size());
+        markDirty({ 0, static_cast<uint32_t>(m_transforms.size()) });
     }
 
-    void SocketRegistry::markDirty(size_t start, size_t count) noexcept
+    void SocketRegistry::markDirty(
+        util::BufferReference ref) noexcept
     {
         //ASSERT_WT();
 
-        if (count == 0) return;
+        // NOTE KI modifying null socket is not allowed
+        if (ref.offset == 0) return;
 
         std::lock_guard lock(m_lockDirty);
 
         const auto& it = std::find_if(
-            m_dirtyTransform.begin(),
-            m_dirtyTransform.end(),
-            [&start, &count](const auto& pair) {
-                return pair.first == start && pair.second == count;
+            m_dirtyTransforms.begin(),
+            m_dirtyTransforms.end(),
+            [&ref](const auto& old) {
+                return old == ref;
             });
-        if (it != m_dirtyTransform.end()) return;
+        if (it != m_dirtyTransforms.end()) return;
 
-        m_dirtyTransform.emplace_back(static_cast<uint32_t>(start), static_cast<uint32_t>(count));
+        m_dirtyTransforms.push_back(ref);
     }
 
     uint32_t SocketRegistry::getActiveCount() const noexcept
@@ -154,11 +163,11 @@ namespace animation
         std::lock_guard lock(m_lock);
         std::lock_guard lockDirty(m_lockDirty);
 
-        if (m_dirtyTransform.empty()) return;
+        if (m_dirtyTransforms.empty()) return;
 
-        for (const auto& range : m_dirtyTransform) {
-            const auto baseIndex = range.first;
-            const auto updateCount = range.second;
+        for (const auto& range : m_dirtyTransforms) {
+            const auto baseIndex = range.offset;
+            const auto updateCount = range.size;
 
             const size_t totalCount = m_transforms.size();
             if (m_snapshot.size() != totalCount) {
@@ -172,7 +181,7 @@ namespace animation
             m_dirtySnapshot.emplace_back(static_cast<uint32_t>(baseIndex), static_cast<uint32_t>(updateCount));
         }
 
-        m_dirtyTransform.clear();
+        m_dirtyTransforms.clear();
         m_updateReady = true;
     }
 }

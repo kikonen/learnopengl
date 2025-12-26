@@ -21,8 +21,8 @@
 
 // NOTE KI u_boneBaseIndex == 0 is NULL entry
 // => this broke normal debug rendering
-if (entity.u_boneBaseIndex > 0) {
-  const uvec4 boneIndex = a_boneIndex + entity.u_boneBaseIndex;
+if (instance.u_boneBaseIndex > 0) {
+  const uvec4 boneIndex = a_boneIndex + instance.u_boneBaseIndex;
 
   // Skin the position
   const mat4 skinMat =

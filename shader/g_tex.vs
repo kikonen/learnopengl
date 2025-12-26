@@ -50,9 +50,9 @@ out VS_OUT {
   vec3 boneColor;
 #endif
 #endif
-#ifdef USE_DEBUG
-  flat uint socketIndex;
-#endif
+// #ifdef USE_DEBUG
+//   flat uint socketIndex;
+// #endif
 } vs_out;
 
 out float gl_ClipDistance[CLIP_COUNT];
@@ -159,7 +159,7 @@ void main() {
 #ifdef USE_BONES
 #ifdef USE_DEBUG
   if (Debug.u_boneWeight) {
-    vs_out.boneBaseIndex = entity.u_boneBaseIndex;
+    vs_out.boneBaseIndex = instance.u_boneBaseIndex;
     vs_out.boneIndex = a_boneIndex;
     vs_out.boneWeight = a_boneWeight;
 
@@ -193,9 +193,9 @@ void main() {
 #endif
 #endif
 
-#ifdef USE_DEBUG
-  vs_out.socketIndex = instance.u_socketIndex;
-#endif
+// #ifdef USE_DEBUG
+//   vs_out.socketIndex = instance.u_socketIndex;
+// #endif
 
 #ifdef USE_CUBE_MAP
   vs_out.worldPos = worldPos.xyz;

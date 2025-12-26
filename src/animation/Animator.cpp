@@ -13,6 +13,7 @@
 #include "util/glm_util.h"
 #include "util/glm_format.h"
 #include "util/util.h"
+#include "util/Log.h"
 #include "util/Transform.h"
 
 #include "Rig.h"
@@ -153,6 +154,12 @@ namespace animation {
             const glm::mat4& nodeTransform = channel
                 ? interpolate(channel, animationTimeTicks, firstFrame, lastFrame, clip.m_single)
                 : rigNode.m_transform;
+
+            if (0) {
+                KI_INFO_OUT(fmt::format(
+                    "NODE: {}.{}\nPARE: {}\nNODE: {}",
+                    rigNode.m_index, rigNode.m_name, parentTransform, nodeTransform));
+            }
 
             rigNodeTransforms[rigNode.m_index] = parentTransform * nodeTransform;
         }

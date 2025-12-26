@@ -3,12 +3,14 @@
 #include <string>
 #include <vector>
 #include <unordered_map>
+#include <set>
 
 #include <glm/glm.hpp>
 
 struct aiScene;
 struct aiMesh;
 struct aiNode;
+struct aiBone;
 
 namespace mesh_set
 {
@@ -39,7 +41,8 @@ namespace mesh_set
         glm::mat4 transform;
         glm::mat4 globalTransform;
         int treeSize;
-        int jointCount;
+
+        std::set<const aiBone*> joints;
 
         // Link to the actual bone node (for $AssimpFbx$ nodes)
         int linkedNodeIndex = -1;

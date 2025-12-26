@@ -25,10 +25,10 @@ namespace animation
         m_updateReady = false;
 
         m_transforms.clear();
-        m_dirtyTransform.clear();
+        m_dirtyTransforms.clear();
 
         m_transforms.reserve(INITIAL_SIZE);
-        m_dirtyTransform.reserve(INITIAL_SIZE);
+        m_dirtyTransforms.reserve(INITIAL_SIZE);
 
         // NOTE KI null entry
         addInstance(1);
@@ -47,80 +47,89 @@ namespace animation
 
         if (count == 0) return 0;
 
-        size_t index;
+        uint32_t offset;
         {
             std::lock_guard lock(m_lock);
 
             auto it = m_freeSlots.find(count);
             if (it != m_freeSlots.end() && !it->second.empty()) {
-                index = it->second[it->second.size() - 1];
+                offset = it->second[it->second.size() - 1];
                 it->second.pop_back();
             }
             else {
-                index = m_transforms.size();
+                offset = static_cast<uint32_t>(m_transforms.size());
                 m_transforms.resize(m_transforms.size() + count);
             }
 
             for (int i = 0; i < count; i++) {
-                m_transforms[index + i] = glm::mat4{ 1.f };
+                m_transforms[offset + i] = glm::mat4{ 1.f };
             }
 
-            markDirty(index, count);
+            markDirty({ offset, static_cast<uint32_t>(count) });
         }
 
-        return static_cast<uint32_t>(index);
+        return static_cast<uint32_t>(offset);
     }
 
     void RigNodeRegistry::removeInstance(
-        uint32_t index,
-        size_t count)
+        util::BufferReference ref)
     {
         ASSERT_WT();
 
         // NOTE KI modifying null socket is not allowed
-        assert(index > 0);
+        if (ref.offset == 0) return;
 
         std::lock_guard lock(m_lock);
 
-        auto it = m_freeSlots.find(count);
+        auto it = m_freeSlots.find(ref.size);
         if (it == m_freeSlots.end()) {
-            m_freeSlots[count] = std::vector<uint32_t>{ index };
+            m_freeSlots[ref.size] = std::vector<uint32_t>{ ref.offset };
         }
         else {
-            it->second.push_back(index);
+            it->second.push_back(ref.offset);
         }
     }
 
-    std::span<glm::mat4> RigNodeRegistry::modifyRange(
-        uint32_t start,
-        size_t count) noexcept
+    std::span<const glm::mat4> RigNodeRegistry::getRange(
+        const util::BufferReference ref) const noexcept
     {
         // NOTE KI modifying null socket is not allowed
-        assert(start > 0);
+        if (ref.offset == 0) return std::span<glm::mat4>{};
 
-        return std::span{ m_transforms }.subspan(start, count);
+        return std::span{ m_transforms }.subspan(ref.offset, ref.size);
+    }
+
+    std::span<glm::mat4> RigNodeRegistry::modifyRange(
+        util::BufferReference ref) noexcept
+    {
+        // NOTE KI modifying null socket is not allowed
+        if (ref.offset == 0) return std::span<glm::mat4>{};
+
+        return std::span{ m_transforms }.subspan(ref.offset, ref.size);
     }
 
     void RigNodeRegistry::markDirtyAll() noexcept
     {
-        markDirty(0, m_transforms.size());
+        markDirty({ 0, static_cast<uint32_t>(m_transforms.size()) });
     }
 
-    void RigNodeRegistry::markDirty(size_t start, size_t count) noexcept
+    void RigNodeRegistry::markDirty(
+        util::BufferReference ref) noexcept
     {
-        if (count == 0) return;
+        // NOTE KI modifying null socket is not allowed
+        if (ref.offset == 0) return;
 
         std::lock_guard lock(m_lockDirty);
 
         const auto& it = std::find_if(
-            m_dirtyTransform.begin(),
-            m_dirtyTransform.end(),
-            [&start, &count](const auto& pair) {
-                return pair.first == start && pair.second == count;
+            m_dirtyTransforms.begin(),
+            m_dirtyTransforms.end(),
+            [&ref](const auto& old) {
+                return old == ref;
             });
-        if (it != m_dirtyTransform.end()) return;
+        if (it != m_dirtyTransforms.end()) return;
 
-        m_dirtyTransform.emplace_back(static_cast<uint32_t>(start), static_cast<uint32_t>(count));
+        m_dirtyTransforms.push_back(ref);
     }
 
     uint32_t RigNodeRegistry::getActiveCount() const noexcept

@@ -689,9 +689,9 @@ namespace editor
             // TODO KI rigNode->m_globalTransform is incorrect
             // => works only for non-animated
             // => for animated value must come from RigNodeRegistry
-            auto socketPalette = socketRegistry.modifyRange(socketIndex , 1);
+            auto socketPalette = socketRegistry.modifyRange({ socketIndex, 1 });
             socketPalette[0] = socket->calculateGlobalTransform(rigNode->m_globalTransform);
-            socketRegistry.markDirty(socketIndex, 1);
+            socketRegistry.markDirty({ socketIndex, 1 });
         }
     }
 }

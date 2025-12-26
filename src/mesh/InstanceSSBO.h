@@ -12,7 +12,10 @@ namespace mesh {
 
         GLuint u_entityIndex;
         GLuint u_materialIndex;
-        GLuint u_socketIndex{ 0 };
+
+        GLuint u_jointBaseIndex{ 0 };
+        //GLuint u_socketIndex{ 0 };
+
         GLuint u_flags{ 0 };
 
         GLuint u_data{ 0 };
@@ -25,9 +28,14 @@ namespace mesh {
             u_materialIndex = materialIndex;
         }
 
-        inline void setSocketIndex(GLushort socketIndex) {
-            u_socketIndex = socketIndex;
-        }
+        inline void setJointBaseIndex(GLushort baseIndex)
+        {
+            u_jointBaseIndex = baseIndex;
+        };
+
+        //inline void setSocketIndex(GLushort socketIndex) {
+        //    u_socketIndex = socketIndex;
+        //}
 
         inline void setFlags(GLushort flags) {
             u_flags = flags;

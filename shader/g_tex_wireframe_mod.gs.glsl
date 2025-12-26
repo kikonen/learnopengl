@@ -44,9 +44,9 @@ in VS_OUT {
   vec3 boneColor;
 #endif
 #endif
-#ifdef USE_DEBUG
-  flat uint socketIndex;
-#endif
+// #ifdef USE_DEBUG
+//   flat uint socketIndex;
+// #endif
 } gs_in[];
 
 out VS_OUT {
@@ -77,9 +77,9 @@ out VS_OUT {
   vec3 boneColor;
 #endif
 #endif
-#ifdef USE_DEBUG
-  flat uint socketIndex;
-#endif
+// #ifdef USE_DEBUG
+//   flat uint socketIndex;
+// #endif
 
   noperspective vec3 edgeDistance;
 } gs_out;
@@ -121,9 +121,9 @@ void emitVertex(const uint i)
   gs_out.boneColor = gs_in[i].boneColor;
 #endif
 #endif
-#ifdef USE_DEBUG
-  gs_out.socketIndex = gs_in[i].socketIndex;
-#endif
+// #ifdef USE_DEBUG
+//   gs_out.socketIndex = gs_in[i].socketIndex;
+// #endif
 
   gl_Position = gl_in[i].gl_Position;
 

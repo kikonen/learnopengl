@@ -735,7 +735,9 @@
     <ClInclude Include="src\animation\JointBuffer.h" />
     <ClInclude Include="src\animation\animation_util.h" />
     <ClInclude Include="src\animation\ClipContainer.h" />
+    <ClInclude Include="src\util\BufferReference.h" />
     <ClInclude Include="src\animation\Rig.h" />
+    <ClInclude Include="src\mesh\LodMeshInstance.h" />
     <ClInclude Include="src\mesh_set\AnimationImporter.h" />
     <ClInclude Include="src\animation\Joint.h" />
     <ClInclude Include="src\animation\JointRegistry.h" />

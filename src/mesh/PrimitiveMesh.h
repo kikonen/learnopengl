@@ -32,7 +32,7 @@ namespace mesh {
         virtual const kigl::GLVertexArray* prepareVAO() override;
         virtual const kigl::GLVertexArray* setupVAO(mesh::TexturedVAO* vao, bool shared) override;
 
-        virtual animation::Rig* getRig() override
+        virtual animation::Rig* getRig() const override
         {
             return m_rig.get();
         }

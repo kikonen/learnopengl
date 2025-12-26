@@ -8,6 +8,8 @@
 
 #include <glm/glm.hpp>
 
+#include "util/BufferReference.h"
+
 namespace editor
 {
     class NodeTool;
@@ -35,16 +37,14 @@ namespace animation {
         // Register node instance specific rig
         // @return instance index into joint transform buffer
         uint32_t addInstance(size_t count);
-        void removeInstance(
-            uint32_t index,
-            size_t count);
+        void removeInstance(util::BufferReference ref);
 
-        std::span<glm::mat4> modifyRange(
-            uint32_t start,
-            size_t count) noexcept;
+        std::span<const glm::mat4> getRange(util::BufferReference ref) const noexcept;
+
+        std::span<glm::mat4> modifyRange(util::BufferReference ref) noexcept;
 
         void markDirtyAll() noexcept;
-        void markDirty(size_t start, size_t count) noexcept;
+        void markDirty(util::BufferReference ref) noexcept;
 
         void updateWT();
 
@@ -60,6 +60,6 @@ namespace animation {
         std::unordered_map<size_t, std::vector<uint32_t>> m_freeSlots;
 
         std::vector<glm::mat4> m_transforms;
-        std::vector<std::pair<uint32_t, size_t>> m_dirtyTransform;
+        std::vector<util::BufferReference> m_dirtyTransforms;
     };
 }

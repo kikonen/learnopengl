@@ -38,7 +38,7 @@ namespace mesh_set
 
         std::map<int16_t, int16_t> nodeToVertex;
 
-        auto findVertexIndex = [&nodeToVertex](uint16_t nodeIndex) {
+        auto findVertexIndex = [&nodeToVertex](int16_t nodeIndex) {
             const auto& it = nodeToVertex.find(nodeIndex);
             return it != nodeToVertex.end() ? it->second : -1;
         };

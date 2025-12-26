@@ -24,6 +24,7 @@
 #include "mesh/mesh_util.h"
 
 #include "mesh/LodMesh.h"
+#include "mesh/LodMeshInstance.h"
 #include "mesh/ModelMesh.h"
 
 #include "model/NodeType.h"
@@ -106,19 +107,40 @@ namespace model
             // NOTE KI for now, allow only single Rig per mesh type
             // i.e. not possible to attach animated attachments
             // or have separate animations for LOD level meshes
-            for (const auto& lodMesh : type->getLodMeshes()) {
-                auto* modelMesh = lodMesh.getMesh<mesh::ModelMesh>();
-                if (!modelMesh) continue;
+            auto& animationsystem = animation::AnimationSystem::get();
+            std::unordered_map<
+                animation::Rig*,
+                std::tuple<util::BufferReference, util::BufferReference>> rigPalettes;
 
-                auto* rig = modelMesh->getRig();
+            const auto& lodMeshes = type->getLodMeshes();
+
+            m_lodMeshInstances.reserve(lodMeshes.size());
+            for (int index = 0;  const auto& lodMesh : lodMeshes) {
+                auto& lod = m_lodMeshInstances.emplace_back();
+                lod.m_lodMeshIndex = index++;
+            }
+
+            for (auto& lod : m_lodMeshInstances) {
+                const auto& lodMesh = lodMeshes[lod.m_lodMeshIndex];
+
+                const auto* mesh = lodMesh.getMesh<mesh::VaoMesh>();
+                if (!mesh) continue;
+
+                auto* rig = mesh->getRig();
                 if (!rig) continue;
 
-                auto [rigNodeBaseIndex, jointBaseIndex, socketBaseIndex] = animation::AnimationSystem::get().registerInstance(
-                    *rig,
-                    rig->getJointContainer());
-                state.m_rigNodeBaseIndex = rigNodeBaseIndex;
-                state.m_jointBaseIndex = jointBaseIndex;
-                state.m_socketBaseIndex = socketBaseIndex;
+                if (!rigPalettes.contains(rig)) {
+                    auto rigRef = animationsystem.registerRig(*rig);
+                    rigPalettes.insert({ rig, {
+                        rigRef,
+                        animationsystem.registerSockets(rigRef, *rig) } });
+                }
+
+                const auto& rigPalette = rigPalettes[rig];
+                lod.m_rigRef = std::get<0>(rigPalette);
+                lod.m_socketRef = std::get<1>(rigPalette);
+
+                lod.m_jointRef = animationsystem.registerJoints( lod.m_rigRef, rig->getJointContainer());
 
                 //m_state.m_animationClipIndex = ;
             }
@@ -153,20 +175,21 @@ namespace model
     {
         auto* type = m_typeHandle.toType();
 
+        auto& animationSystem = animation::AnimationSystem::get();
+
+        for (auto& lod : m_lodMeshInstances) {
+            animationSystem.unregisterRig(lod.m_rigRef);
+            animationSystem.unregisterJoints(lod.m_jointRef);
+            animationSystem.unregisterRig(lod.m_rigRef);
+        }
+
         {
-            for (const auto& lodMesh : type->getLodMeshes()) {
-                auto* modelMesh = lodMesh.getMesh<mesh::ModelMesh>();
-                if (!modelMesh) continue;
+            std::set<uint32_t> processedRigs;
+            for (auto& lod : m_lodMeshInstances) {
+                if (processedRigs.contains(lod.m_rigRef.offset)) continue;
+                processedRigs.insert(lod.m_rigRef.offset);
 
-                auto* rig = modelMesh->getRig();
-                if (!rig) continue;
-
-                animation::AnimationSystem::get().unregisterInstance(
-                    *rig,
-                    rig->getJointContainer(),
-                    state.m_rigNodeBaseIndex,
-                    state.m_jointBaseIndex,
-                    state.m_socketBaseIndex);
+                animationSystem.unregisterRig(lod.m_rigRef);
             }
         }
 

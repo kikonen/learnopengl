@@ -10,6 +10,8 @@
 
 #include "AnimationState.h"
 
+#include "util/BufferReference.h"
+
 namespace pool {
     struct NodeHandle;
 }
@@ -31,7 +33,8 @@ namespace model
 
 struct UpdateContext;
 
-namespace animation {
+namespace animation
+{
     class RigNodeRegistry;
     class SocketRegistry;
     class JointRegistry;
@@ -43,7 +46,8 @@ namespace animation {
     struct RigNode;
     struct JointContainer;
 
-    class AnimationSystem {
+    class AnimationSystem
+    {
         friend editor::NodeTool;
 
     public:
@@ -60,17 +64,30 @@ namespace animation {
         void prepare();
 
         // Register node instance specific rig
-        // @return [rigNodeBaseIndex, jointBaseIndex, socketBaseIndex]
-        std::tuple<uint32_t, uint32_t, uint32_t> registerInstance(
-            const animation::Rig& rig,
+        util::BufferReference registerRig(
+            const animation::Rig& rig);
+
+        // Register node instance specific rig
+        util::BufferReference registerSockets(
+            util::BufferReference rigRef,
+            const animation::Rig& rig);
+
+        // Register node instance specific rig
+        util::BufferReference registerJoints(
+            util::BufferReference rigRef,
             const animation::JointContainer& jointContainer);
 
-        void unregisterInstance(
-            const animation::Rig& rig,
-            const animation::JointContainer& jointContainer,
-            uint32_t rigNodeBaseIndex,
-            uint32_t jointBaseIndex,
-            uint32_t socketBaseIndex);
+        // @return null ref
+        util::BufferReference unregisterRig(
+            util::BufferReference rigRef);
+
+        // @return null ref
+        util::BufferReference unregisterSockets(
+            util::BufferReference socketRef);
+
+        // @return null ref
+        util::BufferReference unregisterJoints(
+            util::BufferReference jointRef);
 
         glm::mat4 getSocketTransform(
             uint32_t index) const noexcept;

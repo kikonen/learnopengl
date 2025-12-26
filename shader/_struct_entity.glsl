@@ -23,7 +23,7 @@ struct Entity {
 
   // NOTE KI via instance "m_data" now
   // uint u_tileIndex;
-  uint u_boneBaseIndex;
+  // uint u_boneBaseIndex;
 
   // material tiling
   float tilingX;

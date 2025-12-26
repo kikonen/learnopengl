@@ -57,13 +57,14 @@ struct EntitySSBO {
     GLuint u_objectID{ 0 }; // 1 * 1 * 4 = 4
     GLuint u_flags{ 0 }; // 1 * 4 = 4
 
-    GLuint u_jointBaseIndex{ 0 };
+    //GLuint u_jointBaseIndex{ 0 };
 
     // material tiling
     float u_tilingX{ 1.f };
     float u_tilingY{ 1.f };
 
     int pad1;
+    int pad2;
 
     // NOTE KI M-T matrix needed *ONLY* if non uniform scale
     inline void setModelMatrix(

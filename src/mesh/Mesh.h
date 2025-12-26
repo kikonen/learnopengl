@@ -75,7 +75,7 @@ namespace mesh {
         virtual void prepareLodMesh(
             mesh::LodMesh& lodMesh) = 0;
 
-        virtual animation::Rig* getRig()
+        virtual animation::Rig* getRig() const
         {
             return nullptr;
         }

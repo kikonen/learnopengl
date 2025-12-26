@@ -42,9 +42,9 @@ in VS_OUT {
   vec3 boneColor;
 #endif
 #endif
-#ifdef USE_DEBUG
-  flat uint socketIndex;
-#endif
+// #ifdef USE_DEBUG
+//   flat uint socketIndex;
+// #endif
 
 #ifdef USE_WIREFRAME_MOD
   noperspective vec3 edgeDistance;

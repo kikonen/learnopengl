@@ -481,7 +481,7 @@ std::pair<int, int> NodeRegistry::updateEntity(const UpdateContext& ctx)
             }
         }
 
-        entity.u_jointBaseIndex = state.m_jointBaseIndex;
+        //entity.u_jointBaseIndex = state.m_jointBaseIndex;
 
         entity.u_tilingX = state.m_tilingX;
         entity.u_tilingY = state.m_tilingY;

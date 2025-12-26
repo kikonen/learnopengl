@@ -54,6 +54,11 @@ namespace render
     class RenderContext;
 }
 
+namespace mesh
+{
+    struct LodMeshInstance;
+}
+
 class Program;
 class CameraComponent;
 class Light;
@@ -101,6 +106,11 @@ namespace model
         inline model::NodeType* getType() const noexcept
         {
             return m_typeHandle.toType();
+        }
+
+        inline const std::vector<mesh::LodMeshInstance>& getLodMeshInstances() const noexcept
+        {
+            return m_lodMeshInstances;
         }
 
         inline const std::vector<mesh::LodMesh>& getLodMeshes() const noexcept
@@ -204,6 +214,8 @@ namespace model
         ki::node_id m_ignoredBy{ 0 };
 
         physics::object_id m_physicsObjectId{ 0 };
+
+        std::vector<mesh::LodMeshInstance> m_lodMeshInstances;
 
         TypeFlags m_typeFlags;
         uint8_t m_layer{ 0 };

@@ -246,7 +246,6 @@ namespace mesh_set
                 rigNode.m_index = nodeIndex;
                 rigNode.m_level = entry.level;
                 rigNode.m_parentIndex = entry.parentIndex;
-                rigNode.m_hasJoint = treeNode->jointCount > 0;
 
                 rigNode.m_globalTransform = entry.parentTransform * rigNode.m_transform;
                 globalTransform = rigNode.m_globalTransform;

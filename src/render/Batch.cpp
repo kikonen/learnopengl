@@ -156,7 +156,8 @@ namespace render {
                 dist2,
                 entityIndex,
                 static_cast<uint32_t>(lodMesh.m_materialIndex),
-                snapshot.m_attachedSocketIndex,
+                //snapshot.m_attachedSocketIndex,
+                jointBaseIndex,
                 0
                 });
 
@@ -300,7 +301,8 @@ namespace render {
                         dist2,
                         entityIndex,
                         static_cast<uint32_t>(lodMesh.m_materialIndex),
-                        snapshot.m_attachedSocketIndex,
+                        //snapshot.m_attachedSocketIndex,
+                        jointBaseIndex,
                         transforms[i].getData()
                         });
 
@@ -543,7 +545,8 @@ namespace render {
                             lodEntry.u_transformMatrixRow1,
                             lodEntry.u_transformMatrixRow2);
                         instance.setMaterialIndex(lodEntry.m_materialIndex);
-                        instance.setSocketIndex(lodEntry.m_socketIndex);
+                        //instance.setSocketIndex(lodEntry.m_socketIndex);
+                        instance.setJointBaseIndex(lodEntry.m_jointBaseIndex);
 
                         // NOTE KI BatchKey does not take in account m_flags
                         // => can draw different instances in same batch

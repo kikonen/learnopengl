@@ -143,7 +143,7 @@ namespace mesh_set
 
                 if (const auto& it = m_nameToNodeIndex.find(nodeName); it != m_nameToNodeIndex.end()) {
                     auto& treeNode = m_treeNodes[it->second];
-                    treeNode.jointCount++;
+                    treeNode.joints.insert(joint);
                 }
             }
         }
@@ -198,7 +198,7 @@ namespace mesh_set
                 globalTransform);
         }
 
-        m_treeNodes[nodeIndex].treeSize = m_treeNodes.size() - nodeIndex;
+        m_treeNodes[nodeIndex].treeSize = static_cast<int>(m_treeNodes.size()) - nodeIndex;
     }
 
     std::string NodeTree::formatTree()
@@ -225,7 +225,7 @@ namespace mesh_set
                 "[{}] {}.{}: {}, treeSize={}{}",
                 treeNode.level,
                 treeNode.parentIndex, treeNode.index, treeNode.name, treeNode.treeSize,
-                treeNode.jointCount == 0 ? "" : fmt::format(", joints={}", treeNode.jointCount),
+                treeNode.joints.empty() ? "" : fmt::format(", joints={}", treeNode.joints.size()),
                 treeNode.meshes.empty() ? "" : fmt::format(", meshes=[{}]", meshesSb)
             );
             appendLine(sb, treeNode.level, line);

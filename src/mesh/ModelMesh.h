@@ -49,7 +49,7 @@ namespace mesh
 
         virtual backend::DrawOptions::Mode getDrawMode() override;
 
-        virtual animation::Rig* getRig() override
+        virtual animation::Rig* getRig() const override
         {
             return m_rig.get();
         }

@@ -110,6 +110,10 @@ namespace animation
             //return nullptr;
         }
 
+        if (rigNode) {
+            rigNode->m_hasJoint = true;
+        }
+
         return &m_jointContainer.registerJoint(bone, rigNode ? rigNode->m_index : -1);
     }
 

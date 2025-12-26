@@ -43,9 +43,9 @@ in VS_OUT {
   vec3 boneColor;
 #endif
 #endif
-#ifdef USE_DEBUG
-  flat uint socketIndex;
-#endif
+// #ifdef USE_DEBUG
+//   flat uint socketIndex;
+// #endif
 } gs_in[];
 
 out VS_OUT {
@@ -76,9 +76,9 @@ out VS_OUT {
   vec3 boneColor;
 #endif
 #endif
-#ifdef USE_DEBUG
-  flat uint socketIndex;
-#endif
+// #ifdef USE_DEBUG
+//   flat uint socketIndex;
+// #endif
 } gs_out;
 
 out float gl_ClipDistance[CLIP_COUNT];
@@ -124,9 +124,9 @@ void sendVertex(in int i, in vec4 pos) {
   gs_out.boneColor = gs_in[i].boneColor;
 #endif
 #endif
-#ifdef USE_DEBUG
-  gs_out.socketIndex = gs_in[i].socketIndex;
-#endif
+// #ifdef USE_DEBUG
+//   gs_out.socketIndex = gs_in[i].socketIndex;
+// #endif
 
   for (int ci = 0; ci < u_clipCount; ci++) {
     gl_ClipDistance[ci] = gl_in[ci].gl_ClipDistance[ci];
