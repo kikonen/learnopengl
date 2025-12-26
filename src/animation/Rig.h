@@ -134,6 +134,10 @@ namespace animation
         // { nodeIndex: [mesh, ...] }
         std::map<uint16_t, std::vector<MeshInfo>> m_nodeMeshes;
 
+        // TODO KI need to change logic so that mesh_set can share
+        // same rig (and thus animate nodes only ONCE), but have separate
+        // joint containers *per mesh*
+        // => Makes huge difference especially with LODx meshes sharing same skeleton
         animation::JointContainer m_jointContainer;
     };
 }

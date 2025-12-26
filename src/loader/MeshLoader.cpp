@@ -347,18 +347,11 @@ namespace loader {
                 enabled = readEnabled(k, enabled);
 
                 data.name = readString(v);
-
-                // TODO KI should discard this hack
-                auto& clipData = data.clips.empty() ? data.clips.emplace_back() : data.clips[0];
-                clipData.name = data.name;
-                if (clipData.clip.empty()) {
-                    clipData.clip = "Unreal-Take";
-                }
-                clipData.enabled = readEnabled(k);
             }
             else if (k == "clip") {
                 auto& clipData = data.clips.empty() ? data.clips.emplace_back() : data.clips[0];
                 clipData.clip = readString(v);
+                clipData.enabled = readEnabled(k);
             }
             else if (k == "enabled") {
                 enabled = readBool(v);
