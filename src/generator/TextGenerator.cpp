@@ -158,6 +158,7 @@ void TextGenerator::bindBatch(
         ctx,
         container.getType(),
         container.getLodMeshes(),
+        container.getLodMeshInstances(),
         programSelector,
         programPrepare,
         kindBits,

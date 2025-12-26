@@ -23,6 +23,7 @@
 
 #include "mesh/Mesh.h"
 #include "mesh/LodMesh.h"
+#include "mesh/LodMeshInstance.h"
 #include "mesh/MeshInstance.h"
 #include "mesh/InstanceFlags.h"
 #include "mesh/Transform.h"
@@ -75,6 +76,7 @@ namespace render {
         const RenderContext& ctx,
         const model::NodeType* type,
         const std::vector<mesh::LodMesh>& lodMeshes,
+        const std::vector<mesh::LodMeshInstance>& lodMeshInstances,
         const std::function<ki::program_id (const mesh::LodMesh&)>& programSelector,
         const std::function<void(ki::program_id)>& programPrepare,
         uint8_t kindBits,
@@ -88,7 +90,9 @@ namespace render {
         const glm::vec3 pos{ 0.f };
         auto dist2 = glm::distance2(pos, ctx.m_camera->getWorldPosition());
 
-        for (const auto& lodMesh : lodMeshes) {
+        for (const auto& lod : lodMeshInstances) {
+            const auto& lodMesh = lodMeshes[lod.m_lodMeshIndex];
+
             if (lodMesh.m_minDistance2 > dist2) continue;
             if (lodMesh.m_maxDistance2 <= dist2) continue;
 
@@ -151,6 +155,7 @@ namespace render {
                 drawEntry.m_dirty = true;
             }
 
+            uint32_t jointBaseIndex = lod.m_jointRef.offset;
             commandEntry->addInstance({
                 lodMesh.m_baseTransform,
                 dist2,
@@ -168,6 +173,8 @@ namespace render {
     void Batch::addSnapshotsInstanced(
         const RenderContext& ctx,
         const model::NodeType* type,
+        const std::vector<mesh::LodMesh>& lodMeshes,
+        const std::vector<mesh::LodMeshInstance>& lodMeshInstances,
         const std::function<ki::program_id (const mesh::LodMesh&)>& programSelector,
         const std::function<void(ki::program_id)>& programPrepare,
         uint8_t kindBits,
@@ -253,7 +260,9 @@ namespace render {
 
                 const auto dist2 = s_distances2[i];
 
-                for (const auto& lodMesh : type->getLodMeshes()) {
+                for (const auto& lod : lodMeshInstances) {
+                    const auto& lodMesh = lodMeshes[lod.m_lodMeshIndex];
+
                     const auto  programId = resolveLodMeshProgram(i, dist2, lodMesh);
                     if (!programId) continue;
 
@@ -296,6 +305,8 @@ namespace render {
                     }
 
                     commandEntry->reserve(count);
+
+                    uint32_t jointBaseIndex = lod.m_jointRef.offset;
                     commandEntry->addInstance({
                         transforms[i].getMatrix() * lodMesh.m_baseTransform,
                         dist2,

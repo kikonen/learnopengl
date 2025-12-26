@@ -16,6 +16,7 @@ namespace backend {
 
 namespace mesh {
     struct LodMesh;
+    struct LodMeshInstance;
     struct Transform;
     struct MeshInstance;
 }
@@ -55,6 +56,7 @@ namespace render {
             const RenderContext& ctx,
             const model::NodeType* type,
             const std::vector<mesh::LodMesh>& lodMeshes,
+            const std::vector<mesh::LodMeshInstance>& lodMeshInstances,
             const std::function<ki::program_id (const mesh::LodMesh&)>& programSelector,
             const std::function<void(ki::program_id)>& programPrepare,
             uint8_t kindBits,
@@ -65,6 +67,8 @@ namespace render {
         void addSnapshotsInstanced(
             const RenderContext& ctx,
             const model::NodeType* type,
+            const std::vector<mesh::LodMesh>& lodMeshes,
+            const std::vector<mesh::LodMeshInstance>& lodMeshInstances,
             const std::function<ki::program_id (const mesh::LodMesh&)>& programSelector,
             const std::function<void(ki::program_id)>& programPrepare,
             uint8_t kindBits,

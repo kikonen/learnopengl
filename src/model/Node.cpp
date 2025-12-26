@@ -256,6 +256,7 @@ namespace model
                 ctx,
                 getType(),
                 getLodMeshes(),
+                getLodMeshInstances(),
                 programSelector,
                 programPrepare,
                 kindBits,

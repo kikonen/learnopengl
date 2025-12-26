@@ -21,6 +21,8 @@ void NodeGenerator::bindBatch(
     batch.addSnapshotsInstanced(
         ctx,
         container.getType(),
+        container.getLodMeshes(),
+        container.getLodMeshInstances(),
         programSelector,
         programPrepare,
         kindBits,
