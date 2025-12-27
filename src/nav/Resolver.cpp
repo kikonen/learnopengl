@@ -206,10 +206,12 @@ namespace nav
         const int maxPolys = query.m_maxPath > 0 ? std::min(query.m_maxPath + 1, MAX_POLYS) : MAX_POLYS;
 
         int findRet = navQuery->findPath(m_startRef, m_endRef, startPos, endPos, &m_filter, m_polys, &m_polysCount, maxPolys);
-        if (findRet) {
-            KI_WARN_OUT(fmt::format(
-                "NAV: path_fail: startPos={}, endPos={}",
-                query.m_startPos, query.m_endPos));
+        if (0) {
+            if (findRet) {
+                KI_WARN_OUT(fmt::format(
+                    "NAV: path_fail: startPos={}, endPos={}",
+                    query.m_startPos, query.m_endPos));
+            }
         }
 
         if (!m_polysCount) return {};

@@ -107,13 +107,13 @@ local function ray_caster(self)
   local cast_elapsed = 10
 
   local function path_callback(args)
-    print("NAV: PATH")
-    table_print(args)
+    -- print("NAV: PATH")
+    -- table_print(args)
 
     local node_front = node:get_front(self.handle)
     local node_pos = node:get_pos(self.handle)
 
-    debug("front: %s\n", node_front)
+    -- debug("front: %s\n", node_front)
 
     local prev_pos = node_pos
     local prev_cid = 0
