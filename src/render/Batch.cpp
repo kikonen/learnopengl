@@ -155,7 +155,7 @@ namespace render {
                 drawEntry.m_dirty = true;
             }
 
-            uint32_t jointBaseIndex = lod.m_jointRef.offset;
+            uint32_t jointBaseIndex = lod.m_jointBaseIndex;
             commandEntry->addInstance({
                 lodMesh.m_baseTransform,
                 dist2,
@@ -306,7 +306,7 @@ namespace render {
 
                     commandEntry->reserve(count);
 
-                    uint32_t jointBaseIndex = lod.m_jointRef.offset;
+                    uint32_t jointBaseIndex = lod.m_jointBaseIndex;
                     commandEntry->addInstance({
                         transforms[i].getMatrix() * lodMesh.m_baseTransform,
                         dist2,

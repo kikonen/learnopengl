@@ -104,7 +104,7 @@ namespace animation
             return m_clipContainer;
         }
 
-        animation::JointContainer& getJointContainer() noexcept
+        const animation::JointContainer& getJointContainer() const noexcept
         {
             return m_jointContainer;
         }

@@ -24,6 +24,7 @@
 #include "mesh/PrimitiveMesh.h"
 #include "mesh/LodMesh.h"
 #include "mesh/LodMeshInstance.h"
+#include "mesh/RegisteredRig.h"
 
 #include "pool/NodeHandle.h"
 
@@ -410,25 +411,16 @@ namespace animation
 
         std::unordered_map<animation::Rig*, bool> processedRigs;
         const auto& lodMeshInstances = node->getLodMeshInstances();
+        const auto& registeredRigs = node->getRegisteredRigs();
+
+        std::set<const animation::Rig*> changedRigs;
 
         // STEP 1 - animate rigs
-        for (int i = 0; i < lodMeshInstances.size(); i++) {
-            const auto& lod = lodMeshInstances[i];
-            const auto& lodMesh = *type->getLodMesh(lod.m_lodMeshIndex);
-            if (!lodMesh.m_flags.useAnimation) continue;
+        for (const auto& registeredRig : registeredRigs) {
+            //if (!lodMesh.m_flags.useAnimation) continue;
 
-            auto* mesh = lodMesh.getMesh<mesh::VaoMesh>();
-            if (!mesh) continue;
-            if (mesh->m_rigNodeIndex < 0) continue;
-
-            auto rig = mesh->getRig();
-            if (!rig) continue;
-
-            if (processedRigs.contains(rig)) {
-                continue;
-            }
-
-            auto rigNodeTransforms = rigNodeRegistry.modifyRange(lod.m_rigRef);
+            auto rigNodeTransforms = rigNodeRegistry.modifyRange(registeredRig.m_rigRef);
+            const auto* rig = registeredRig.m_rig;
 
             double currentTime = ctx.getClock().ts;
 
@@ -517,33 +509,25 @@ namespace animation
 
 
             if (changed) {
-                rigNodeRegistry.markDirty(lod.m_rigRef);
+                rigNodeRegistry.markDirty(registeredRig.m_rigRef);
+                changedRigs.insert(rig);
             }
-
-            processedRigs.insert({ rig, changed });
         }
 
         // STEP 2 - update changed joints/sockets
-        for (int i = 0; i < lodMeshInstances.size(); i++) {
-            const auto& lod = lodMeshInstances[i];
-            const auto& lodMesh = *type->getLodMesh(lod.m_lodMeshIndex);
-            if (!lodMesh.m_flags.useAnimation) continue;
+        for (const auto& registeredRig : registeredRigs) {
+            //if (!lodMesh.m_flags.useAnimation) continue;
 
-            auto* mesh = lodMesh.getMesh<mesh::VaoMesh>();
-            if (!mesh) continue;
-            if (mesh->m_rigNodeIndex < 0) continue;
+            const auto* rig = registeredRig.m_rig;
 
-            auto rig = mesh->getRig();
-            if (!rig) continue;
+            if (!changedRigs.contains(rig)) continue;
 
-            if (!processedRigs[rig]) continue;
-
-            auto rigNodeTransforms = rigNodeRegistry.getRange(lod.m_rigRef);
-            auto& jointContainer = rig->getJointContainer();
+            const auto& rigNodeTransforms = rigNodeRegistry.getRange(registeredRig.m_rigRef);
+            const auto& jointContainer = rig->getJointContainer();
 
             {
-                auto jointPalette = jointRegistry.modifyRange(lod.m_jointRef);
-                auto socketPalette = socketRegistry.modifyRange(lod.m_socketRef);
+                auto jointPalette = jointRegistry.modifyRange(registeredRig.m_jointRef);
+                auto socketPalette = socketRegistry.modifyRange(registeredRig.m_socketRef);
 
                 // STEP 2: update Joint Palette
                 for (const auto& joint : jointContainer.m_joints)
@@ -562,8 +546,8 @@ namespace animation
                     socketPalette[socket.m_index] = socket.calculateGlobalTransform(globalTransform);
                 }
 
-                jointRegistry.markDirty(lod.m_jointRef);
-                socketRegistry.markDirty(lod.m_socketRef);
+                jointRegistry.markDirty(registeredRig.m_jointRef);
+                socketRegistry.markDirty(registeredRig.m_socketRef);
             }
         }
     }

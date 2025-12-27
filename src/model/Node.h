@@ -38,6 +38,7 @@ namespace render {
 
 namespace mesh {
     struct LodMesh;
+    struct RegisteredRig;
 }
 
 namespace particle {
@@ -106,6 +107,12 @@ namespace model
         inline model::NodeType* getType() const noexcept
         {
             return m_typeHandle.toType();
+
+        }
+
+        inline const std::vector<mesh::RegisteredRig>& getRegisteredRigs() const noexcept
+        {
+            return m_registeredRigs;
         }
 
         inline const std::vector<mesh::LodMeshInstance>& getLodMeshInstances() const noexcept
@@ -216,6 +223,7 @@ namespace model
         physics::object_id m_physicsObjectId{ 0 };
 
         std::vector<mesh::LodMeshInstance> m_lodMeshInstances;
+        std::vector<mesh::RegisteredRig> m_registeredRigs;
 
         TypeFlags m_typeFlags;
         uint8_t m_layer{ 0 };

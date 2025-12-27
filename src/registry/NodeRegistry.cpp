@@ -1179,7 +1179,7 @@ bool NodeRegistry::bindParentSocket(
 
         if (socket) {
             const auto& lod = parent->getLodMeshInstances()[index];
-            state.m_attachedSocketIndex = lod.m_socketRef.offset + socket->m_index;
+            state.m_attachedSocketIndex = lod.m_socketBaseIndex + socket->m_index;
             found = true;
         }
     }

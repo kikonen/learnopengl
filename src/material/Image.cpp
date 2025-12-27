@@ -127,13 +127,13 @@ int Image::loadNormal()
 int Image::loadFromMememory(
     const std::vector<unsigned char>& data)
 {
-    m_is16Bbit = stbi_is_16_bit_from_memory(data.data(), data.size());
+    m_is16Bbit = stbi_is_16_bit_from_memory(data.data(), static_cast<int>(data.size()));
 
     stbi_set_flip_vertically_on_load_thread(m_flipped);
 
     m_data = (unsigned char*)stbi_load_from_memory(
         data.data(),
-        data.size(),
+        static_cast<int>(data.size()),
         &m_width,
         &m_height,
         &m_channels,
@@ -183,8 +183,8 @@ void Image::checkAlpha()
 
     const auto alphaIndex = m_channels == 4 ? 3 : 1;
     bool opaque = true;
-    for (size_t x = 0; x < m_height; x++) {
-        for (size_t y = 0; y < m_width; y++) {
+    for (int x = 0; x < m_height; x++) {
+        for (int y = 0; y < m_width; y++) {
             int srcIndex = y * (m_width * m_channels) + x * m_channels + alphaIndex;
             if (srcByteData) {
                 if (srcByteData[srcIndex] < 255) {

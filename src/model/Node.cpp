@@ -26,6 +26,7 @@
 #include "mesh/LodMesh.h"
 #include "mesh/LodMeshInstance.h"
 #include "mesh/ModelMesh.h"
+#include "mesh/RegisteredRig.h"
 
 #include "model/NodeType.h"
 #include "model/EntityFlags.h"
@@ -108,41 +109,37 @@ namespace model
             // i.e. not possible to attach animated attachments
             // or have separate animations for LOD level meshes
             auto& animationsystem = animation::AnimationSystem::get();
-            std::unordered_map<
-                animation::Rig*,
-                std::tuple<util::BufferReference, util::BufferReference>> rigPalettes;
+            std::unordered_map<const animation::Rig*, int> rigPalettes;
 
             const auto& lodMeshes = type->getLodMeshes();
 
-            m_lodMeshInstances.reserve(lodMeshes.size());
-            for (int index = 0;  const auto& lodMesh : lodMeshes) {
-                auto& lod = m_lodMeshInstances.emplace_back();
-                lod.m_lodMeshIndex = index++;
+            for (int index = 0;  auto& lodMesh : lodMeshes) {
+                const auto* mesh = lodMesh.getMesh<mesh::Mesh>();
+                const auto* rig = mesh->getRig();
+                if (!rig) continue;
+
+                if (rigPalettes.contains(rig)) continue;
+                rigPalettes.insert({ rig, index++ });
+
+                auto& registeredRig = m_registeredRigs.emplace_back();
+                registeredRig.m_rig = rig;
+                registeredRig.m_rigRef = animationsystem.registerRig(*rig);
+                registeredRig.m_socketRef = animationsystem.registerSockets(registeredRig.m_rigRef, *rig);
+                registeredRig.m_jointRef = animationsystem.registerJoints(registeredRig.m_rigRef, rig->getJointContainer());
             }
 
-            for (auto& lod : m_lodMeshInstances) {
-                const auto& lodMesh = lodMeshes[lod.m_lodMeshIndex];
+            m_lodMeshInstances.reserve(lodMeshes.size());
+            for (int index = 0;  auto& lodMesh : lodMeshes) {
+                auto& lod = m_lodMeshInstances.emplace_back();
+                lod.m_lodMeshIndex = index++;
 
-                const auto* mesh = lodMesh.getMesh<mesh::VaoMesh>();
-                if (!mesh) continue;
-
+                const auto* mesh = lodMesh.getMesh<mesh::Mesh>();
                 auto* rig = mesh->getRig();
                 if (!rig) continue;
 
-                if (!rigPalettes.contains(rig)) {
-                    auto rigRef = animationsystem.registerRig(*rig);
-                    rigPalettes.insert({ rig, {
-                        rigRef,
-                        animationsystem.registerSockets(rigRef, *rig) } });
-                }
-
-                const auto& rigPalette = rigPalettes[rig];
-                lod.m_rigRef = std::get<0>(rigPalette);
-                lod.m_socketRef = std::get<1>(rigPalette);
-
-                lod.m_jointRef = animationsystem.registerJoints( lod.m_rigRef, rig->getJointContainer());
-
-                //m_state.m_animationClipIndex = ;
+                const auto& registeredRig = m_registeredRigs[rigPalettes[rig]];
+                lod.m_socketBaseIndex = registeredRig.m_socketRef.offset;
+                lod.m_jointBaseIndex = registeredRig.m_jointRef.offset;
             }
         }
 
@@ -177,20 +174,10 @@ namespace model
 
         auto& animationSystem = animation::AnimationSystem::get();
 
-        for (auto& lod : m_lodMeshInstances) {
-            animationSystem.unregisterRig(lod.m_rigRef);
-            animationSystem.unregisterJoints(lod.m_jointRef);
-            animationSystem.unregisterRig(lod.m_rigRef);
-        }
-
-        {
-            std::set<uint32_t> processedRigs;
-            for (auto& lod : m_lodMeshInstances) {
-                if (processedRigs.contains(lod.m_rigRef.offset)) continue;
-                processedRigs.insert(lod.m_rigRef.offset);
-
-                animationSystem.unregisterRig(lod.m_rigRef);
-            }
+        for (auto& registeredRig : m_registeredRigs) {
+            animationSystem.unregisterJoints(registeredRig.m_jointRef);
+            animationSystem.unregisterSockets(registeredRig.m_socketRef);
+            animationSystem.unregisterRig(registeredRig.m_rigRef);
         }
 
         //if (m_generator) {

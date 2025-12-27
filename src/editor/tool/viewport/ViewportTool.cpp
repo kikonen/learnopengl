@@ -117,7 +117,7 @@ namespace editor
 
         ImGuiTreeNodeFlags tnFlags = ImGuiTreeNodeFlags_SpanAvailWidth;
 
-        auto imageTex = [&ctx, &renderCtx](GLuint textureId, const glm::ivec2 size, bool renderSize) {
+        auto imageTex = [&ctx, &renderCtx](ImTextureID textureId, const glm::ivec2 size, bool renderSize) {
             glm::ivec2 sz = size;
             if (sz.x <= 0) {
                 sz = { 512.f, 512.f };
