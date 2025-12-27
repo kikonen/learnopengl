@@ -8,6 +8,7 @@
 #include "util/glm_format.h"
 #include "util/Log.h"
 #include "util/util.h"
+#include "util/util_join.h"
 #include "util/assimp_util.h"
 
 #include "Animation.h"
@@ -30,43 +31,71 @@ namespace animation
         // TODO KI MUST pass socketnames to loader to shat they won't
         // be discarded from node tree (in case they are leaf nodes)
 
-        //// NOTE KI mesh required for calculating transforms for attached meshes
-        //for (auto& rigNode : m_nodes) {
-        //    const auto& it = std::find_if(
-        //        m_sockets.begin(),
-        //        m_sockets.end(),
-        //        [&rigNode](const auto& socket) { return socket.m_nodeIndex == rigNode.m_index; });
-        //    if (it == m_sockets.end()) continue;
+        // NOTE KI mesh required for calculating transforms for attached meshes
+        for (auto& rigNode : m_nodes) {
+            if (rigNode.m_hasJoint) {
+                rigNode.m_requiredForSocket = true;
+                for (auto jointIndex = rigNode.m_parentIndex; jointIndex >= 0;) {
+                    auto& parent = m_nodes[jointIndex];
+                    parent.m_requiredForJoint = true;
+                    jointIndex = parent.m_parentIndex;
+                }
+            }
 
-        //    rigNode.m_socketRequired = true;
+            if (rigNode.m_hasSocket) {
+                rigNode.m_requiredForSocket = true;
+                for (auto jointIndex = rigNode.m_parentIndex; jointIndex >= 0;) {
+                    auto& parent = m_nodes[jointIndex];
+                    parent.m_requiredForSocket = true;
+                    jointIndex = parent.m_parentIndex;
+                }
+            }
+        }
 
-        //    for (auto jointIndex = rigNode.m_parentIndex; jointIndex >= 0;) {
-        //        auto& parent = m_nodes[jointIndex];
-        //        // NOTE KI m_sockets is not sorted
-        //        //if (parent.m_socketRequired) break;
-        //        parent.m_socketRequired = true;
-        //        jointIndex = parent.m_parentIndex;
-        //    }
-        //}
+        // NOTE KI mesh required for calculating transforms for attached meshes
+        for (auto& rigNode : m_nodes) {
+            const auto& it = std::find_if(
+                m_sockets.begin(),
+                m_sockets.end(),
+                [&rigNode](const auto& socket) { return socket.m_nodeIndex == rigNode.m_index; });
+            if (it == m_sockets.end()) continue;
+
+            rigNode.m_requiredForSocket = true;
+
+            for (auto jointIndex = rigNode.m_parentIndex; jointIndex >= 0;) {
+                auto& parent = m_nodes[jointIndex];
+                // NOTE KI m_sockets is not sorted
+                //if (parent.m_socketRequired) break;
+                parent.m_requiredForSocket = true;
+                jointIndex = parent.m_parentIndex;
+            }
+        }
     }
 
     void Rig::validate() const
     {
+        std::vector<const animation::Joint*> unboundJoints;
+
         // NOTE KI check that all joints are related to some node
         // - every joint has node
         // - not every node has joint
-        //for (const auto& it : m_jointContainer.m_nodeNameToIndex) {
-        //    const auto& name = it.first;
+        for (const auto& joint : m_jointContainer.m_joints) {
+            if (joint.m_nodeIndex >= 0) continue;
 
-        //    const auto& nodeIt = std::find_if(
-        //        m_nodes.begin(),
-        //        m_nodes.end(),
-        //        [&name](const auto& rigNode) {
-        //            return rigNode.m_name == name;
-        //        });
+            unboundJoints.push_back(&joint);
+        }
 
-        //    if (nodeIt == m_nodes.end()) throw std::runtime_error(fmt::format("missing_joint_node: {}", name));
-        //}
+        if (unboundJoints.empty()) {
+            auto sb = util::join(
+                unboundJoints, ", ",
+                [](const auto* joint) {
+                return joint->m_nodeName;
+            });
+
+            throw std::runtime_error(fmt::format(
+                "missing_joint_nodes: {}",
+                sb));
+        }
     }
 
     const animation::RigNode* Rig::getNode(int16_t nodeIndex) const noexcept

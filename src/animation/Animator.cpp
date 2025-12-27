@@ -138,15 +138,25 @@ namespace animation {
             forceFirstFrame ? animationStartTime : currentTime,
             speed);
 
-        for (auto& t : rigNodeTransforms) {
-            t = ID_MAT;
+        if (0) {
+            for (auto& t : rigNodeTransforms) {
+                t = ID_MAT;
+            }
         }
+
+        int skipped = 0;
 
         // STEP 1: update RigNode transforms
         // TODO KI stop at "max needed nodeIndex"
         for (size_t nodeIndex = 0; nodeIndex < rig.m_nodes.size(); nodeIndex++)
         {
             const auto& rigNode = rig.m_nodes[nodeIndex];
+
+            if (!(rigNode.m_requiredForJoint || rigNode.m_requiredForSocket)) {
+                skipped++;
+                continue;
+            }
+
             const auto& parentTransform = nodeIndex > 0 ? rigNodeTransforms[rigNode.m_parentIndex] : ID_MAT;
 
             const auto* channel = animation.findByNodeIndex(rigNode.m_index);
@@ -162,6 +172,14 @@ namespace animation {
             }
 
             rigNodeTransforms[rigNode.m_index] = parentTransform * nodeTransform;
+        }
+
+        if (0) {
+            if (skipped > 0) {
+                KI_INFO_OUT(fmt::format(
+                    "ANIM: skipped={}",
+                    skipped));
+            }
         }
 
         return true;
@@ -220,15 +238,25 @@ namespace animation {
             forceFirstFrame ? animationStartTimeB : currentTime,
             speedB);
 
-        for (auto& t : rigNodeTransforms) {
-            t = ID_MAT;
+        if (0) {
+            for (auto& t : rigNodeTransforms) {
+                t = ID_MAT;
+            }
         }
+
+        int skipped = 0;
 
         // STEP 1: update RigNode transforms
         // TODO KI stop at "max needed nodeIndex"
         for (size_t nodeIndex = 0; nodeIndex < rig.m_nodes.size(); nodeIndex++)
         {
             const auto& rigNode = rig.m_nodes[nodeIndex];
+
+            if (!(rigNode.m_requiredForJoint || rigNode.m_requiredForSocket)) {
+                skipped++;
+                continue;
+            }
+
             const auto& parentTransform = nodeIndex > 0 ? rigNodeTransforms[rigNode.m_parentIndex] : ID_MAT;
 
             const auto* channelA = animationA->findByNodeIndex(rigNode.m_index);
@@ -260,6 +288,14 @@ namespace animation {
             }
 
             rigNodeTransforms[rigNode.m_index] = parentTransform * nodeTransform;
+        }
+
+        if (0) {
+            if (skipped > 0) {
+                KI_INFO_OUT(fmt::format(
+                    "ANIM: skipped={}",
+                    skipped));
+            }
         }
 
         return true;
