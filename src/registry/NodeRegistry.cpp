@@ -23,6 +23,7 @@
 #include "util/DagSort_impl.h"
 
 #include "mesh/LodMesh.h"
+#include "mesh/LodMeshInstance.h"
 #include "mesh/ModelMesh.h"
 
 #include "component/definition/LightDefinition.h"
@@ -1165,7 +1166,9 @@ bool NodeRegistry::bindParentSocket(
     auto& state = m_states[node->getEntityIndex()];
 
     bool found = false;
-    for (const auto& lodMesh : parentType->getLodMeshes()) {
+    for (int index = -1; const auto& lodMesh : parentType->getLodMeshes()) {
+        index++;
+
         auto* modelMesh = lodMesh.getMesh<mesh::ModelMesh>();
         if (!modelMesh) continue;
 
@@ -1175,8 +1178,8 @@ bool NodeRegistry::bindParentSocket(
         const auto* socket = rig->findSocket(socketName);
 
         if (socket) {
-            // TODO KI resolve socketIndex from socketId
-            state.m_attachedSocketIndex = parentState.m_socketBaseIndex + socket->m_index;
+            const auto& lod = parent->getLodMeshInstances()[index];
+            state.m_attachedSocketIndex = lod.m_socketRef.offset + socket->m_index;
             found = true;
         }
     }
