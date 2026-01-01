@@ -43,7 +43,7 @@ assets:
   assimp_debug: false
 
   assets_dir: resources/assets
-  assets_build_dir: resources/build/2048
+  assets_build_dir: resources/build/1024
   shaders_dir: shader
 
   placeholder_texture_always: false

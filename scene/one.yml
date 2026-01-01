@@ -7,6 +7,10 @@ skybox:
 script:
   scripts:
     - path: lib/common
+
+includes:
+  - xpath: prefab/creatures/include_skeleton_warrior.yml
+
 types:
   - id: player
     type: origo
@@ -34,12 +38,15 @@ types:
     mesh:
       #path: models/Orc_01/SK_Orc_01_Full.glb
       #path: models/unreal/SK_Griffon.glb
-      #path: models/unreal/SK_Ursag_Full.glb
+      path: models/unreal/SK_Ursag_Full.glb
       material_modifier:
         default_programs: true
         invert_occlusion: true
         #invert_metalness: true
         invert_roughness: true
+      flags:
+        use_bones: true
+        xuse_animation: true
     script: |
       cmd:rotate(
         self.handle,
@@ -70,7 +77,7 @@ types:
         #invert_roughness: true
       flags:
         use_bones: true
-        xuse_animation: true
+        use_animation: true
       animations:
         - name: fly_backward
           path: ANIM_Griffon_FlyBackwardsStationary.FBX
@@ -79,7 +86,7 @@ types:
       cmd:animation_play(
         self.handle,
         { name = "fly_backward" })
-  - id: griffon_55
+  - xid: griffon_55
     mesh:
       path: models/unreal/SK_Griffon_55.glb
       #scale: 10
@@ -89,7 +96,7 @@ types:
         invert_roughness: true
       flags:
         use_bones: true
-        xuse_animation: true
+        use_animation: true
       animations:
         - name: fly_backward
           path: ANIM_Griffon_FlyBackwardsStationary.FBX
@@ -100,7 +107,7 @@ types:
         { name = "fly_backward" })
   - xid: skeleton_knight
     mesh:
-      path: models/unity/SkeletonKnight_Legacy.glb
+      path: models/unity/skeleton_knight/SkeletonKnight_Legacy.glb
       material_modifier:
         default_programs: true
         invert_occlusion: false
@@ -108,17 +115,22 @@ types:
       flags:
         use_bones: true
         use_animation: true
-      xanimations:
-        - name: fly_backward
-          path: ANIM_Griffon_FlyBackwardsStationary.FBX
-          clip: Unreal-Take
-    xscript: |
+      animations:
+        - name: walk
+          path: anim/SkeletonKnight@2HandedWalk.FBX
+          clip: 2HandedWalk
+          #clip: Take-001
+        - name: run
+          path: anim/SkeletonKnight@1HandedRun.FBX
+          clip: 1HandedRun
+          #clip: Take-001
+    script: |
       cmd:animation_play(
         self.handle,
-        { name = "fly_backward" })
+        { name = "walk" })
   - xid: hydra
     mesh:
-      path: models/unity/Hydra_PBR.glb
+      path: models/unity/hydra/Hydra_PBR.glb
       material_modifier:
         default_programs: true
         invert_occlusion: false
@@ -128,7 +140,7 @@ types:
         use_animation: true
       xanimations:
         - name: walk
-          path: Hydra@Walk.FBX
+          path: anim/Hydra@Walk.FBX
           clip: Take-001
     script: |
       cmd:animation_play(
@@ -139,6 +151,67 @@ types:
       path: models/unity/SampleScene.glb
       material_modifier:
         default_programs: true
+  - xid: skeleton_guard
+    mesh:
+      path: models/unreal/SKM_Skeleton_Guard.glb
+      material_modifier:
+        default_programs: true
+  - xid: skeleton_warrior
+    xbase: prefab_skeleton_warrior
+    priority: 1
+    physics:
+      enabled: false
+    script: |
+      cmd:animation_play(
+        self.handle,
+        { tag = "body", name = "idle" });
+  - xid: skeleton
+    prefab:
+      path: prefab/creatures/prefab_skeleton.yml
+    priority: 1
+    physics:
+      enabled: false
+    script: |
+      cmd:animation_play(
+        self.handle,
+        { name = "idle" });
+  - xid: lion
+    prefab:
+      path: prefab/creatures/prefab_lion.yml
+    xscript_file: scripts/cow_audio
+    physics:
+      enabled: false
+    script: |
+      cmd:animation_play(
+        self.handle,
+        { name = "walk" })
+  - id: wolf
+    prefab:
+      path: prefab/creatures/prefab_wolf.yml
+    physics:
+      enabled: false
+    script: |
+      cmd:animation_play(
+        self.handle,
+        { name = "walk" })
+  - xid: elf
+    prefab:
+      path: prefab/characters/prefab_elf.yml
+    physics:
+      enabled: false
+    script: |
+      cmd:animation_play(
+        self.handle,
+        { name = "idle" })
+  - xid: scavenger
+    prefab:
+      path: prefab/characters/prefab_scavenger.yml
+    physics:
+      enabled: false
+    script: |
+      cmd:animation_play(
+        self.handle,
+        { name = "default" })
 
 nodes:
   - type: player
@@ -146,7 +219,27 @@ nodes:
     active: true
   - type: dir_light
     pos: [-15, 25, 25]
+  - type: orc_01
+    pos: [-3.0, 1, 0.0]
+  - type: griffon
+    pos: [-3.0, 1, 0.0]
   - type: griffon_55
     pos: [0.0, 1, 0.0]
-  - xtype: griffon
+  - type: skeleton_knight
+    pos: [0, 3.5, 0.0]
+  - type: hydra
     pos: [-3.0, 1, 0.0]
+  - type: skeleton_guard
+    pos: [0, 3.5, 0.0]
+  - type: skeleton_warrior
+    pos: [0, 3.5, 0.0]
+  - type: skeleton
+    pos: [0, 3.5, 0.0]
+  - type: lion
+    pos: [0, 3.5, 0.0]
+  - type: wolf
+    pos: [0, 3.5, 0.0]
+  - type: elf
+    pos: [0, 3.5, 0.0]
+  - type: scavenger
+    pos: [0, 3.5, 0.0]
