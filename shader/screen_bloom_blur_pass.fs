@@ -1,8 +1,8 @@
 #version 460 core
 
-#include uniform_matrices.glsl
-#include uniform_camera.glsl
-#include uniform_data.glsl
+#include include/uniform_matrices.glsl
+#include include/uniform_camera.glsl
+#include include/uniform_data.glsl
 
 // NOTE KI depth is *not* used
 // => for *stencil test

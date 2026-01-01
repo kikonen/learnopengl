@@ -1,6 +1,6 @@
 #version 460 core
 
-#include uniform_data.glsl
+#include include/uniform_data.glsl
 
 #ifndef USE_ALPHA
 // https://www.khronos.org/opengl/wiki/Early_Fragment_Test
@@ -23,7 +23,7 @@ layout (location = 0) out vec4 o_fragColor;
 //
 ////////////////////////////////////////////////////////////
 
-#include fn_effect_explosion.glsl
+#include include/fn_effect_explosion.glsl
 
 void main() {
 

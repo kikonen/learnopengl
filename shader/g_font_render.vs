@@ -8,15 +8,15 @@ layout (location = ATTR_TANGENT) in vec3 a_tangent;
 layout (location = ATTR_TEX) in vec2 a_texCoord;
 layout (location = ATTR_FONT_ATLAS_TEX) in vec2 a_atlasCoord;
 
-#include ssbo_entities.glsl
-#include ssbo_instance_indeces.glsl
-#include ssbo_socket_transforms.glsl
-#include ssbo_materials.glsl
+#include include/ssbo_entities.glsl
+#include include/ssbo_instance_indeces.glsl
+#include include/ssbo_socket_transforms.glsl
+#include include/ssbo_materials.glsl
 
-#include uniform_matrices.glsl
-#include uniform_camera.glsl
-#include uniform_data.glsl
-#include uniform_clip_planes.glsl
+#include include/uniform_matrices.glsl
+#include include/uniform_camera.glsl
+#include include/uniform_data.glsl
+#include include/uniform_clip_planes.glsl
 
 out VS_OUT {
 #ifdef USE_CUBE_MAP
@@ -54,15 +54,15 @@ const vec3 UP = vec3(0, 1, 0);
 Instance instance;
 Entity entity;
 
-#include fn_calculate_clipping.glsl
+#include include/fn_calculate_clipping.glsl
 
 void main() {
   instance = u_instances[gl_BaseInstance + gl_InstanceID];
   const uint entityIndex = instance.u_entityIndex;
   entity = u_entities[entityIndex];
 
-  #include var_entity_model_matrix.glsl
-  #include var_entity_normal_matrix.glsl
+  #include include/var_entity_model_matrix.glsl
+  #include include/var_entity_normal_matrix.glsl
 
   const uint materialIndex = instance.u_materialIndex;
 

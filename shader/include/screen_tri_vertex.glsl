@@ -1,4 +1,4 @@
-// #include texture_quad.glsl
+// #include include/texture_quad.glsl
 
 #ifdef SCREEN_TRI_VERTEX_OUT
 out VS_OUT {

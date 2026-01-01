@@ -1,11 +1,11 @@
 #version 460 core
 
-#include struct_material.glsl
+#include include/struct_material.glsl
 
-#include uniform_matrices.glsl
-#include uniform_data.glsl
-#include ssbo_materials.glsl
-#include uniform_textures.glsl
+#include include/uniform_matrices.glsl
+#include include/uniform_data.glsl
+#include include/ssbo_materials.glsl
+#include include/uniform_textures.glsl
 
 in VS_OUT {
   vec2 texCoord;
@@ -27,9 +27,9 @@ void main() {
   material = u_materials[fs_in.materialIndex];
 
   vec2 texCoord = fs_in.texCoord;
-  #include apply_parallax.glsl
+  #include include/apply_parallax.glsl
 
-  #include var_tex_material.glsl
+  #include include/var_tex_material.glsl
 
   sampler2D sampler = sampler2D(u_texture_handles[material.noiseMapTex]);
   vec4 noiseColor = texture(sampler, texCoord * 8.0);

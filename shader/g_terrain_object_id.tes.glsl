@@ -4,13 +4,13 @@ layout(triangles, fractional_odd_spacing, ccw) in;
 
 #undef USE_SOCKETS
 
-#include ssbo_entities.glsl
-#include ssbo_instance_indeces.glsl
+#include include/ssbo_entities.glsl
+#include include/ssbo_instance_indeces.glsl
 
-#include uniform_matrices.glsl
-#include uniform_camera.glsl
-#include uniform_clip_planes.glsl
-#include uniform_buffer_info.glsl
+#include include/uniform_matrices.glsl
+#include include/uniform_camera.glsl
+#include include/uniform_clip_planes.glsl
+#include include/uniform_buffer_info.glsl
 
 in TCS_OUT {
   flat uint entityIndex;
@@ -41,7 +41,7 @@ SET_FLOAT_PRECISION;
 Instance instance;
 Entity entity;
 
-#include fn_calculate_clipping.glsl
+#include include/fn_calculate_clipping.glsl
 
 vec2 interpolate2D(vec2 v0, vec2 v1, vec2 v2)
 {
@@ -68,7 +68,7 @@ void main()
 {
   instance = u_instances[tes_in[0].instanceIndex];
   entity = u_entities[tes_in[0].entityIndex];
-  #include var_entity_model_matrix.glsl
+  #include include/var_entity_model_matrix.glsl
 
   sampler2D heightMap = sampler2D(tes_in[0].heightMapTex);
 

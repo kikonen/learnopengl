@@ -1,9 +1,9 @@
 #version 460 core
 
-#include struct_material.glsl
+#include include/struct_material.glsl
 
-#include ssbo_materials.glsl
-#include uniform_textures.glsl
+#include include/ssbo_materials.glsl
+#include include/uniform_textures.glsl
 
 in GS_OUT {
   vec2 texCoord;
@@ -21,7 +21,7 @@ SET_FLOAT_PRECISION;
 
 void main() {
   const vec2 texCoord = fs_in.texCoord;
-  #include var_tex_material_alpha.glsl
+  #include include/var_tex_material_alpha.glsl
 
   if (alpha < 0.6)
     discard;

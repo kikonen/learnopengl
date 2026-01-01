@@ -4,15 +4,15 @@ layout (location = ATTR_POS) in vec3 a_pos;
 layout (location = ATTR_NORMAL) in vec3 a_normal;
 layout (location = ATTR_TANGENT) in vec3 a_tangent;
 
-#include tech_skinned_mesh_data.glsl
+#include include/tech_skinned_mesh_data.glsl
 
-#include ssbo_entities.glsl
-#include ssbo_instance_indeces.glsl
-#include ssbo_socket_transforms.glsl
+#include include/ssbo_entities.glsl
+#include include/ssbo_instance_indeces.glsl
+#include include/ssbo_socket_transforms.glsl
 
-#include uniform_matrices.glsl
-#include uniform_camera.glsl
-#include uniform_data.glsl
+#include include/uniform_matrices.glsl
+#include include/uniform_camera.glsl
+#include include/uniform_data.glsl
 
 out VS_OUT {
   vec3 normal;
@@ -32,15 +32,15 @@ const vec3 UP = vec3(0, 1, 0);
 Instance instance;
 Entity entity;
 
-#include fn_mod.glsl
+#include include/fn_mod.glsl
 
 void main() {
   instance = u_instances[gl_BaseInstance + gl_InstanceID];
   const uint entityIndex = instance.u_entityIndex;
   entity = u_entities[entityIndex];
 
-  #include var_entity_model_matrix.glsl
-  #include var_entity_normal_matrix.glsl
+  #include include/var_entity_model_matrix.glsl
+  #include include/var_entity_normal_matrix.glsl
 
   const uint materialIndex = instance.u_materialIndex;
   const mat3 viewNormalMatrix = mat3(transpose(inverse(u_viewMatrix * modelMatrix)));
@@ -68,8 +68,8 @@ void main() {
     normal = DECODE_A_NORMAL(a_normal);
     tangent = DECODE_A_TANGENT(a_tangent);
 
-    #include tech_skinned_mesh_skin.glsl
-    #include apply_mod.glsl
+    #include include/tech_skinned_mesh_skin.glsl
+    #include include/apply_mod.glsl
 
     worldPos = modelMatrix * pos;
 

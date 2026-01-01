@@ -1,6 +1,6 @@
 #version 460 core
 
-#include ssbo_materials.glsl
+#include include/ssbo_materials.glsl
 
 #ifndef USE_ALPHA
 // https://www.khronos.org/opengl/wiki/Early_Fragment_Test
@@ -35,7 +35,7 @@ void main() {
   {
     const vec2 texCoord = fs_in.texCoord;
 
-    #include var_tex_material_alpha.glsl
+    #include include/var_tex_material_alpha.glsl
 
     // NOTE KI this works badly for blended objects if threshold too big
     if (alpha < 0.1)

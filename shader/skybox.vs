@@ -1,10 +1,10 @@
 #version 460 core
 
-#include texture_quad.glsl
+#include include/texture_quad.glsl
 
-#include uniform_matrices.glsl
-#include uniform_camera.glsl
-#include uniform_data.glsl
+#include include/uniform_matrices.glsl
+#include include/uniform_camera.glsl
+#include include/uniform_data.glsl
 
 out VS_OUT {
   vec3 texCoord;

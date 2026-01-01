@@ -4,8 +4,8 @@ layout(points) in;
 layout(triangle_strip) out;
 layout(max_vertices = 4) out;
 
-#include uniform_data.glsl
-#include uniform_matrices.glsl
+#include include/uniform_data.glsl
+#include include/uniform_matrices.glsl
 
 in VS_OUT {
   flat vec4 objectID;

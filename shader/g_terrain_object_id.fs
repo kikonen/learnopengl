@@ -1,6 +1,6 @@
 #version 460 core
 
-#include ssbo_materials.glsl
+#include include/ssbo_materials.glsl
 
 // https://www.khronos.org/opengl/wiki/Early_Fragment_Test
 // https://www.gamedev.net/forums/topic/700517-performance-question-alpha-texture-vs-frag-shader-discard/5397906/

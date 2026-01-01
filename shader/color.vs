@@ -2,12 +2,12 @@
 
 layout (location = ATTR_POS) in vec3 a_pos;
 
-#include ssbo_entities.glsl
-#include ssbo_instance_indeces.glsl
+#include include/ssbo_entities.glsl
+#include include/ssbo_instance_indeces.glsl
 
-#include uniform_matrices.glsl
-#include uniform_camera.glsl
-#include uniform_data.glsl
+#include include/uniform_matrices.glsl
+#include include/uniform_camera.glsl
+#include include/uniform_data.glsl
 
 ////////////////////////////////////////////////////////////
 //
@@ -23,7 +23,7 @@ void main() {
   const uint entityIndex = instance.u_entityIndex;
   entity = u_entities[entityIndex];
 
-  #include var_entity_model_matrix.glsl
+  #include include/var_entity_model_matrix.glsl
 
   const vec4 pos = vec4(a_pos, 1.0);
   vec4 worldPos = modelMatrix * pos;

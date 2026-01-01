@@ -18,8 +18,8 @@
 #include "debug/DebugContext.h"
 
 namespace {
-    const std::string INC_GLOBALS{ "globals.glsl" };
-    const std::string INC_GLOBAL_UTILS{ "global_utils.glsl" };
+    const std::string INC_GLOBALS{ "include/globals.glsl" };
+    const std::string INC_GLOBAL_UTILS{ "include/global_utils.glsl" };
 
     std::string getTypeName(GLenum shaderType) {
         switch (shaderType) {
@@ -154,11 +154,7 @@ std::vector<std::string> ShaderSource::loadSourceLines(
         while (std::getline(file, line)) {
             std::stringstream ss(line);
             std::string k;
-            std::string v1;
-            std::string v2;
-            std::string v3;
             ss >> k;
-            ss >> v1 >> v2 >> v3;
 
             if (k == "#version") {
                 lines.push_back(line);
@@ -178,7 +174,15 @@ std::vector<std::string> ShaderSource::loadSourceLines(
                 //lines.push_back("#line " + std::to_string(lineNumber + 1) + " " + std::to_string(lineNumber + 1));
             }
             else if (k == "#include") {
-                for (auto& l : processInclude(shaderType, v1, lineNumber, program)) {
+                std::vector<std::string> parts;
+                while (!ss.eof()) {
+                    std::string part;
+                    ss >> part;
+                    parts.push_back(part);
+                }
+                const auto path = util::join(parts, "/");
+
+                for (auto& l : processInclude(shaderType, path, lineNumber, program)) {
                     lines.push_back(l);
                 }
                 //lines.push_back("#line " + std::to_string(lineNumber + 1) + " " + std::to_string(lineNumber + 1));
@@ -224,10 +228,8 @@ std::vector<std::string> ShaderSource::processInclude(
     if (simplifiedPath.ends_with('"'))
         simplifiedPath = simplifiedPath.substr(0, simplifiedPath.length() - 1);
 
-    const auto& path = util::joinPathExt(
+    const auto& path = util::joinPath(
         assets.shadersDir,
-        "",
-        "_",
         simplifiedPath);
 
     std::vector<std::string> lines = loadSourceLines(shaderType, path, false, program);

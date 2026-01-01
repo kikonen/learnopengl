@@ -1,6 +1,6 @@
 #version 460 core
 
-#include uniform_data.glsl
+#include include/uniform_data.glsl
 
 in VS_OUT {
   flat vec2 spriteCoord;
@@ -19,7 +19,7 @@ layout (location = 0) out vec4 o_fragColor;
 
 SET_FLOAT_PRECISION;
 
-#include fn_calculate_fog.glsl
+#include include/fn_calculate_fog.glsl
 
 void main() {
   vec4 texColor = fs_in.diffuse;
