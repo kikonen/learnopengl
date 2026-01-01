@@ -684,7 +684,9 @@ namespace editor
             if (!rigNode) return;
 
             const auto& state = node->getState();
-            const auto socketIndex = state.m_socketBaseIndex + socket->m_index;
+            // TODO KI this is broken
+            //const auto socketIndex = state.m_socketBaseIndex + socket->m_index;
+            const auto socketIndex = (uint32_t)0 + socket->m_index;
 
             // TODO KI rigNode->m_globalTransform is incorrect
             // => works only for non-animated
