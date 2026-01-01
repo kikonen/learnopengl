@@ -284,12 +284,7 @@ namespace mesh {
             m_mesh->m_offset.toMatrix();
 
         if (!m_flags.useJoints) {
-            if (auto* mesh = getMesh<mesh::VaoMesh>();  mesh && mesh->m_rigNodeIndex >= 0) {
-                if (const auto* rig = mesh->getRig(); rig) {
-                    m_baseTransform = m_baseTransform *
-                        rig->getNode(mesh->m_rigNodeIndex)->m_globalTransform;
-                }
-            }
+            m_baseTransform = m_baseTransform * m_mesh->getRigBaseTransform();
         }
     }
 

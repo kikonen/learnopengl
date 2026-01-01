@@ -17,14 +17,20 @@ prefab:
         use_sockets: true
       animations:
         - name: rifle_idle_aim
+          clip: Unreal-Take
           path: fbx/weapons/fab/FPS_Automatic_Rifle_01/Animations/Arms/Anim_Automatic_Rifle_01_Idle_Aim.FBX
         - name: rifle_fire
+          clip: Unreal-Take
           path: fbx/weapons/fab/FPS_Automatic_Rifle_01/Animations/Arms/Anim_Automatic_Rifle_01_Shot.FBX
         - name: rifle_fire_aim
+          clip: Unreal-Take
           path: fbx/weapons/fab/FPS_Automatic_Rifle_01/Animations/Arms/Anim_Automatic_Rifle_01_Shot_Aim.FBX
         - name: rifle_fire_sight
+          clip: Unreal-Take
           path: fbx/weapons/fab/FPS_Automatic_Rifle_01/Animations/Arms/Anim_Automatic_Rifle_01_Shot_Sight.FBX
         - name: rifle_action
+          clip: Unreal-Take
           path: fbx/weapons/fab/FPS_Automatic_Rifle_01/Animations/Arms/Anim_Automatic_Rifle_01_Attack_01.FBX
         - name: pistol_fire
+          clip: Unreal-Take
           path: fbx/weapons/fab/FPS_Pistol_Knife/Animations/Arms/Anim_Pistol_Knife_Shot.FBX

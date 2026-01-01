@@ -44,6 +44,7 @@
 #include "LoadContext.h"
 #include "RigNodeTreeGenerator.h"
 #include "SkeletonSet.h"
+#include "NodeTree.h"
 
 namespace
 {
@@ -315,6 +316,9 @@ namespace mesh_set
             modelMesh->m_alias = aliasName;
 
             const auto& rig = skeletonSet.findRig(mesh);
+
+            const auto& treeNode = skeletonSet.getTree().findByNode(node);
+            modelMesh->m_rigBaseTransform = treeNode->globalTransform;
 
             processMesh(
                 ctx,

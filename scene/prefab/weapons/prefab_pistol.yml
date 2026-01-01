@@ -16,4 +16,5 @@ prefab:
         use_sockets: true
       animations:
         - name: fire
+          clip: Unreal-Take
           path: fbx/weapons/fab/FPS_Pistol_Knife/Animations/Arms/Anim_Pistol_Knife_Shot.FBX

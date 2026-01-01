@@ -54,6 +54,11 @@ namespace mesh
             return m_rig.get();
         }
 
+        const glm::mat4& getRigBaseTransform() const override
+        {
+            return m_rigBaseTransform;
+        }
+
         virtual size_t getDefinedVertexCount() const noexcept override
         {
             return m_vertices.size();
@@ -72,5 +77,7 @@ namespace mesh
 
     private:
         std::shared_ptr<animation::Rig> m_rig;
+
+        glm::mat4 m_rigBaseTransform{ 1.f };
     };
 }

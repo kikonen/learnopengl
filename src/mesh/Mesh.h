@@ -80,6 +80,12 @@ namespace mesh {
             return nullptr;
         }
 
+        virtual const glm::mat4& getRigBaseTransform() const
+        {
+            static glm::mat4 ID_MAT{ 1.f };
+            return ID_MAT;
+        }
+
         virtual backend::DrawOptions::Mode getDrawMode()
         {
             return backend::DrawOptions::Mode::triangles;
