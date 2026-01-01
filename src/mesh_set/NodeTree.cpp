@@ -19,6 +19,8 @@ namespace
 {
     const std::string ASSIMP_FBX{"$AssimpFbx$"};
 
+    const glm::mat4 ID_MAT = glm::mat4{ 1.f };
+
     int calculateNeededSize(const aiNode* node)
     {
         int size = 0;
@@ -215,20 +217,28 @@ namespace mesh_set
         };
 
         for (const auto& treeNode : m_treeNodes) {
-            auto meshesSb = util::join(
+            const auto& meshesSb = util::join(
                 treeNode.meshes, ", ",
                 [](const auto* mesh) {
                 return assimp_util::normalizeName(mesh->mName);
             });
 
-            std::string line = fmt::format(
-                "[{}] {}.{}: {}, treeSize={}{}",
+            const auto& line = fmt::format(
+                "N: [{}] {}.{}: {}, treeSize={}{}{}",
                 treeNode.level,
                 treeNode.parentIndex, treeNode.index, treeNode.name, treeNode.treeSize,
                 treeNode.joints.empty() ? "" : fmt::format(", joints={}", treeNode.joints.size()),
                 treeNode.meshes.empty() ? "" : fmt::format(", meshes=[{}]", meshesSb)
             );
             appendLine(sb, treeNode.level, line);
+
+            const auto& line2 = treeNode.transform == ID_MAT
+                ? "T: [ID]"
+                : fmt::format(
+                    "T: {}",
+                    treeNode.transform);
+
+            appendLine(sb, treeNode.level, line2);
         }
 
         return sb;
