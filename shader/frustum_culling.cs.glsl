@@ -2,11 +2,11 @@
 
 layout (local_size_x = CS_GROUP_X, local_size_y = CS_GROUP_Y) in;
 
-#include ssbo_entities.glsl
-#include ssbo_instance_indeces.glsl
+#include include/ssbo_entities.glsl
+#include include/ssbo_instance_indeces.glsl
 
-#include uniform_matrices.glsl
-#include uniform_camera.glsl
+#include include/uniform_matrices.glsl
+#include include/uniform_camera.glsl
 
 // struct DrawElementsIndirectCommand
 // {

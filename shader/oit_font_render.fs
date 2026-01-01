@@ -1,8 +1,8 @@
 #version 460 core
 
-#include ssbo_materials.glsl
+#include include/ssbo_materials.glsl
 
-#include uniform_data.glsl
+#include include/uniform_data.glsl
 
 // NOTE KI depth is *not* updated in OIT pass
 // => testing against solid depth
@@ -28,20 +28,20 @@ LAYOUT_OIT_OUT;
 
 SET_FLOAT_PRECISION;
 
-#include fn_oit_util.glsl
+#include include/fn_oit_util.glsl
 
 ResolvedMaterial material;
 
-#include fn_shape_font.glsl
+#include include/fn_shape_font.glsl
 
 void main()
 {
   const uint materialIndex = fs_in.materialIndex;
 
   vec2 texCoord = fs_in.texCoord;
-  #include apply_parallax.glsl
+  #include include/apply_parallax.glsl
 
-  #include var_tex_material.glsl
+  #include include/var_tex_material.glsl
 
   vec4 color;
   shapeFont(fs_in.atlasHandle, fs_in.atlasCoord, true, color);

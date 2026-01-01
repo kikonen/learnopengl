@@ -2,7 +2,7 @@
 
 
 #ifdef USE_ALPHA
-#include ssbo_materials.glsl
+#include include/ssbo_materials.glsl
 
 in VS_OUT {
   flat vec4 objectID;
@@ -34,7 +34,7 @@ void main() {
 #ifdef USE_ALPHA
   {
     const vec2 texCoord = fs_in.texCoord;
-    #include var_tex_material_alpha.glsl
+    #include include/var_tex_material_alpha.glsl
 
     // NOtE KI experimental value; depends from few aspects in blended windows
     // NOTE KI this works badly for blended objects if threshold too big

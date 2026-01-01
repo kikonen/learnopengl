@@ -3,7 +3,7 @@
 layout (triangles) in;
 layout (triangle_strip, max_vertices = 3) out;
 
-#include uniform_data.glsl
+#include include/uniform_data.glsl
 
 in VS_OUT {
   vec2 texCoord;

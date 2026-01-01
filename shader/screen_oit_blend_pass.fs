@@ -1,15 +1,15 @@
 #version 460 core
 
-#include uniform_matrices.glsl
-#include uniform_camera.glsl
-#include uniform_data.glsl
-//#include uniform_buffer_info.glsl
+#include include/uniform_matrices.glsl
+#include include/uniform_camera.glsl
+#include include/uniform_data.glsl
+//#include include/uniform_buffer_info.glsl
 
 // NOTE KI depth is *not* used
 // => for *stencil test
 layout(early_fragment_tests) in;
 
-#include screen_tri_vertex_out.glsl
+#include include/screen_tri_vertex_out.glsl
 
 LAYOUT_OIT_SAMPLERS;
 
@@ -32,7 +32,7 @@ float max3(vec3 v)
 
 void main()
 {
-  #include screen_tri_tex_coord.glsl
+  #include include/screen_tri_tex_coord.glsl
 
   float revealage = textureLod(oit_reveal, texCoord, 0).r;
 

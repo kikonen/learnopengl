@@ -4,16 +4,16 @@ layout (location = ATTR_POS) in vec3 a_pos;
 layout (location = ATTR_TEX) in vec2 a_texCoord;
 layout (location = ATTR_FONT_ATLAS_TEX) in vec2 a_atlasCoord;
 
-#include tech_skinned_mesh_data.glsl
+#include include/tech_skinned_mesh_data.glsl
 
-#include ssbo_entities.glsl
-#include ssbo_instance_indeces.glsl
-#include ssbo_socket_transforms.glsl
-#include ssbo_materials.glsl
+#include include/ssbo_entities.glsl
+#include include/ssbo_instance_indeces.glsl
+#include include/ssbo_socket_transforms.glsl
+#include include/ssbo_materials.glsl
 
-#include uniform_matrices.glsl
-#include uniform_camera.glsl
-#include uniform_data.glsl
+#include include/uniform_matrices.glsl
+#include include/uniform_camera.glsl
+#include include/uniform_data.glsl
 
 out VS_OUT {
   flat vec4 objectID;
@@ -39,15 +39,15 @@ const vec3 UP = vec3(0, 1, 0);
 Instance instance;
 Entity entity;
 
-#include fn_convert_object_id.glsl
-#include fn_mod.glsl
+#include include/fn_convert_object_id.glsl
+#include include/fn_mod.glsl
 
 void main() {
   instance = u_instances[gl_BaseInstance + gl_InstanceID];
   const uint entityIndex = instance.u_entityIndex;
   entity = u_entities[entityIndex];
 
-  #include var_entity_model_matrix.glsl
+  #include include/var_entity_model_matrix.glsl
 
   vec4 pos = vec4(a_pos, 1.0);
 
@@ -64,8 +64,8 @@ void main() {
                     + UP * a_pos.y * entityScale.y,
                     1.0);
   } else {
-    #include tech_skinned_mesh_skin.glsl
-    #include apply_mod_simple.glsl
+    #include include/tech_skinned_mesh_skin.glsl
+    #include include/apply_mod_simple.glsl
 
     worldPos = modelMatrix * pos;
   }

@@ -2,16 +2,16 @@
 
 #define USE_BONES_NORMAL 1
 
-#include unit_cube.glsl
+#include include/unit_cube.glsl
 
-#include ssbo_decals.glsl
-#include ssbo_materials.glsl
+#include include/ssbo_decals.glsl
+#include include/ssbo_materials.glsl
 
-#include uniform_matrices.glsl
-#include uniform_camera.glsl
-#include uniform_data.glsl
-#include uniform_clip_planes.glsl
-#include uniform_debug.glsl
+#include include/uniform_matrices.glsl
+#include include/uniform_camera.glsl
+#include include/uniform_data.glsl
+#include include/uniform_clip_planes.glsl
+#include include/uniform_debug.glsl
 
 out VS_OUT {
   mat4 worlToLocalMatrix;
@@ -50,7 +50,7 @@ const vec3 UP = vec3(0, 1, 0);
 
 Decal decal;
 
-#include fn_calculate_clipping.glsl
+#include include/fn_calculate_clipping.glsl
 
 void main() {
   const uint vertexIndex = VERTEX_INDECES[gl_VertexID];

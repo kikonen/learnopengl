@@ -1,4 +1,4 @@
-#include texture_quad.glsl
+#include include/texture_quad.glsl
 
 out VS_OUT {
   vec2 texCoord;

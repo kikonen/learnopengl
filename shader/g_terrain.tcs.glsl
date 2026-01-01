@@ -2,13 +2,13 @@
 
 layout(vertices=3) out;
 
-#include ssbo_entities.glsl
-#include ssbo_instance_indeces.glsl
-#include ssbo_socket_transforms.glsl
+#include include/ssbo_entities.glsl
+#include include/ssbo_instance_indeces.glsl
+#include include/ssbo_socket_transforms.glsl
 
-#include uniform_matrices.glsl
-#include uniform_camera.glsl
-#include uniform_data.glsl
+#include include/uniform_matrices.glsl
+#include include/uniform_camera.glsl
+#include include/uniform_data.glsl
 
 in VS_OUT {
   flat uint entityIndex;
@@ -87,7 +87,7 @@ void main()
 {
   instance = u_instances[tcs_in[gl_InvocationID].instanceIndex];
   entity = u_entities[tcs_in[gl_InvocationID].entityIndex];
-  #include var_entity_model_matrix.glsl
+  #include include/var_entity_model_matrix.glsl
 
   gl_out[gl_InvocationID].gl_Position = gl_in[gl_InvocationID].gl_Position;
 

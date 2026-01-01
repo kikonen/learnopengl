@@ -3,8 +3,8 @@
 layout (triangles) in;
 layout (triangle_strip, max_vertices = 3) out;
 
-#include uniform_data.glsl
-#include uniform_clip_planes.glsl
+#include include/uniform_data.glsl
+#include include/uniform_clip_planes.glsl
 
 in gl_PerVertex
 {

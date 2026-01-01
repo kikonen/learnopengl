@@ -1,14 +1,14 @@
 #version 460 core
 
-#include struct_resolved_material.glsl
+#include include/struct_resolved_material.glsl
 
-#include uniform_matrices.glsl
-#include uniform_camera.glsl
-#include uniform_data.glsl
-#include uniform_shadow.glsl
-#include uniform_debug.glsl
-#include uniform_buffer_info.glsl
-#include uniform_lights.glsl
+#include include/uniform_matrices.glsl
+#include include/uniform_camera.glsl
+#include include/uniform_data.glsl
+#include include/uniform_shadow.glsl
+#include include/uniform_debug.glsl
+#include include/uniform_buffer_info.glsl
+#include include/uniform_lights.glsl
 
 // NOTE KI depth is *not* used
 // => for *stencil test
@@ -16,7 +16,7 @@
 // https://www.gamedev.net/forums/topic/700517-performance-question-alpha-texture-vs-frag-shader-discard/5397906/
 layout(early_fragment_tests) in;
 
-#include screen_tri_vertex_out.glsl
+#include include/screen_tri_vertex_out.glsl
 
 LAYOUT_G_BUFFER_SAMPLERS;
 
@@ -39,13 +39,13 @@ SET_FLOAT_PRECISION;
 
 ResolvedMaterial material;
 
-#include pbr.glsl
-#include fn_calculate_dir_light.glsl
-#include fn_calculate_point_light.glsl
-#include fn_calculate_spot_light.glsl
-#include fn_calculate_light.glsl
-#include fn_calculate_shadow_index.glsl
-#include fn_gbuffer_decode.glsl
+#include include/pbr.glsl
+#include include/fn_calculate_dir_light.glsl
+#include include/fn_calculate_point_light.glsl
+#include include/fn_calculate_spot_light.glsl
+#include include/fn_calculate_light.glsl
+#include include/fn_calculate_shadow_index.glsl
+#include include/fn_gbuffer_decode.glsl
 
 const vec4 CASCADE_COLORS[MAX_SHADOW_MAP_COUNT_ABS] =
   vec4[MAX_SHADOW_MAP_COUNT_ABS](
@@ -57,7 +57,7 @@ const vec4 CASCADE_COLORS[MAX_SHADOW_MAP_COUNT_ABS] =
 
 void main()
 {
-  #include screen_tri_tex_coord.glsl
+  #include include/screen_tri_tex_coord.glsl
 
   vec3 worldPos;
   vec3 viewPos;
@@ -70,7 +70,7 @@ void main()
   //   worldPos = (u_invViewMatrix * vec4(viewPos, 1)).xyz;
   // }
 
-  #include var_gbuffer_normal.glsl
+  #include include/var_gbuffer_normal.glsl
 
   const uint shadowIndex = calculateShadowIndex(viewPos);
 

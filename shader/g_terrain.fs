@@ -1,11 +1,11 @@
 #version 460 core
 
-#include ssbo_materials.glsl
+#include include/ssbo_materials.glsl
 
-#include uniform_matrices.glsl
-#include uniform_camera.glsl
-#include uniform_data.glsl
-#include uniform_debug.glsl
+#include include/uniform_matrices.glsl
+#include include/uniform_camera.glsl
+#include include/uniform_data.glsl
+#include include/uniform_debug.glsl
 
 // https://www.khronos.org/opengl/wiki/Early_Fragment_Test
 // https://www.gamedev.net/forums/topic/700517-performance-question-alpha-texture-vs-frag-shader-discard/5397906/
@@ -47,22 +47,22 @@ SET_FLOAT_PRECISION;
 
 ResolvedMaterial material;
 
-#include fn_gbuffer_encode.glsl
+#include include/fn_gbuffer_encode.glsl
 #ifdef USE_PARALLAX
-#include fn_calculate_parallax_mapping.glsl
+#include include/fn_calculate_parallax_mapping.glsl
 #endif
 
 void main() {
   const uint materialIndex = fs_in.materialIndex;
 
   vec2 texCoord = fs_in.texCoord;
-  #include apply_parallax.glsl
+  #include include/apply_parallax.glsl
 
-  #include var_tex_material.glsl
+  #include include/var_tex_material.glsl
 
   // NOTE KI interpolation from vs to fs denormalizes normal
   vec3 normal = normalize(fs_in.normal);
-  #include apply_normal_map.glsl
+  #include include/apply_normal_map.glsl
 
   // if (!gl_FrontFacing) {
   //   normal = -normal;
@@ -71,7 +71,7 @@ void main() {
 #ifdef USE_CUBE_MAP
   const vec3 viewDir = normalize(u_cameraPos.xyz - fs_in.worldPos);
 
-  #include var_calculate_cube_map_diffuse.glsl
+  #include include/var_calculate_cube_map_diffuse.glsl
 #endif
 
   vec4 texColor = material.diffuse;
@@ -84,7 +84,7 @@ void main() {
   o_fragMRAS = material.mras;
   o_fragEmission = material.emission;
 
-  #include encode_gbuffer_normal.glsl
-  #include encode_gbuffer_view_position.glsl
-  #include encode_gbuffer_view_z.glsl
+  #include include/encode_gbuffer_normal.glsl
+  #include include/encode_gbuffer_view_position.glsl
+  #include include/encode_gbuffer_view_z.glsl
 }
