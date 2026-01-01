@@ -6,9 +6,9 @@
 
 namespace mesh {
     constexpr size_t VERTEX_BLOCK_SIZE = 1024;
-    constexpr size_t VERTEX_BLOCK_COUNT = 10000;
+    constexpr size_t MAX_VERTEX_BLOCK_COUNT = 20000;
 
-    constexpr size_t MAX_VERTEX_COUNT = VERTEX_BLOCK_SIZE * VERTEX_BLOCK_COUNT;
+    constexpr size_t MAX_VERTEX_COUNT = VERTEX_BLOCK_SIZE * MAX_VERTEX_BLOCK_COUNT;
 
     template<typename T_Vertex, typename T_Entry>
     VBO<T_Vertex, T_Entry>::VBO(
@@ -65,7 +65,10 @@ namespace mesh {
     {
         size_t size = m_entries.size() + std::max(VERTEX_BLOCK_SIZE, count) + VERTEX_BLOCK_SIZE;
         size += VERTEX_BLOCK_SIZE - size % VERTEX_BLOCK_SIZE;
-        size = std::min(size, MAX_VERTEX_COUNT);
+        if (size > MAX_VERTEX_COUNT) {
+            KI_CRITICAL(fmt::format("ERROR: MAX_VERTEX_COUNT reached, size={}", size));
+            size = std::min(size, MAX_VERTEX_COUNT);
+        }
         m_entries.reserve(size);
     }
 

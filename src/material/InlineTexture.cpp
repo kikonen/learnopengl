@@ -177,7 +177,7 @@ void InlineTexture::prepareNormal()
 
         GLint compFlag;
         glGetTextureLevelParameteriv(m_textureID, 0, GL_TEXTURE_COMPRESSED, &compFlag);
-        KI_INFO_OUT(fmt::format(
+        KI_INFO(fmt::format(
             "TEX_UPLOAD: {}, compressed={}\n{}",
             m_name,
             compFlag,

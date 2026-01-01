@@ -4,9 +4,9 @@
 
 namespace {
     constexpr size_t INDEX_BLOCK_SIZE = 1000;
-    constexpr size_t INDEX_BLOCK_COUNT = 10000;
+    constexpr size_t MAX_INDEX_BLOCK_COUNT = 50000;
 
-    constexpr size_t MAX_INDEX_COUNT = INDEX_BLOCK_SIZE * INDEX_BLOCK_COUNT;
+    constexpr size_t MAX_INDEX_COUNT = INDEX_BLOCK_SIZE * MAX_INDEX_BLOCK_COUNT;
 }
 
 namespace mesh {
@@ -23,7 +23,6 @@ namespace mesh {
         m_ebo.markUsed(0);
     }
 
-
     uint32_t VertexIndexEBO::reserveIndeces(size_t count)
     {
         if (count == 0) return 0;
@@ -36,7 +35,10 @@ namespace mesh {
         {
             size_t size = m_entries.size() + std::max(INDEX_BLOCK_SIZE, static_cast<size_t>(count)) + INDEX_BLOCK_SIZE;
             size += INDEX_BLOCK_SIZE - size % INDEX_BLOCK_SIZE;
-            size = std::min(size, MAX_INDEX_COUNT);
+            if (size > MAX_INDEX_COUNT) {
+                KI_CRITICAL(fmt::format("ERROR: MAX_INDEX_COUNT reached, size={}", size));
+                size = std::min(size, MAX_INDEX_COUNT);
+            }
             m_entries.reserve(size);
         }
 

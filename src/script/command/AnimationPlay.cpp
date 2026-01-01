@@ -39,10 +39,21 @@ namespace script
         if (!node) return;
 
         std::set<animation::Rig*> processedRigs;
+        bool skipped = false;
 
         for (const auto& lodMesh : node->getLodMeshes()) {
-            auto rig = lodMesh.getMesh<mesh::Mesh>()->getRig();
+            const auto* mesh = lodMesh.getMesh<mesh::Mesh>();
+
+            auto rig = mesh->getRig();
             if (!rig) continue;
+
+            if (!lodMesh.m_flags.useAnimation) {
+                KI_INFO(fmt::format(
+                    "CMD::ANIM_PLAY: SKIP_DISABLED: mesh={}, sid={}, name={}",
+                    mesh->m_name, m_clipId, SID_NAME(m_clipId)));
+                skipped = true;
+                continue;
+            }
 
             if (processedRigs.contains(rig)) continue;
             processedRigs.insert(rig);
@@ -54,7 +65,7 @@ namespace script
             }
         }
 
-        if (m_clipIndex < 0) {
+        if (!skipped && m_clipIndex < 0) {
             KI_WARN_OUT(fmt::format("CMD::ANIM_PLAY: MISSING_CLIP: sid={}, name={}", m_clipId, SID_NAME(m_clipId)));
         }
 

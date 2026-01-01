@@ -105,7 +105,7 @@ namespace particle {
         const auto& assets = Assets::get();
 
         m_enabled = assets.particleEnabled;
-        m_maxCount = std::min<int>(assets.particleMaxCount, MAX_BLOCK_COUNT * BLOCK_SIZE);
+        m_maxCount = std::min<int>(assets.particleMaxCount, BLOCK_SIZE * MAX_BLOCK_COUNT);
 
         m_useMapped = assets.glUseMapped;
         m_useInvalidate = assets.glUseInvalidate;
@@ -128,7 +128,7 @@ namespace particle {
 
         if (!isEnabled()) return;
 
-        m_maxCount = std::min<int>(dbg.m_particleMaxCount, MAX_BLOCK_COUNT * BLOCK_SIZE);
+        m_maxCount = std::min<int>(dbg.m_particleMaxCount, BLOCK_SIZE * MAX_BLOCK_COUNT);
 
         preparePending();
 

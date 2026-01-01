@@ -13,10 +13,10 @@
 
 
 namespace {
-    constexpr size_t VERTEX_BLOCK_SIZE = 1000;
-    constexpr size_t VERTEX_BLOCK_COUNT = 10000;
+    //constexpr size_t VERTEX_BLOCK_SIZE = 1000;
+    //constexpr size_t MAX_VERTEX_BLOCK_COUNT = 10000;
 
-    constexpr size_t MAX_VERTEX_COUNT = VERTEX_BLOCK_SIZE * VERTEX_BLOCK_COUNT;
+    //constexpr size_t MAX_VERTEX_COUNT = VERTEX_BLOCK_SIZE * MAX_VERTEX_BLOCK_COUNT;
 }
 
 namespace mesh {

@@ -99,7 +99,7 @@ if not State.initialize then
   print("-------------")
 end)()
 else
-  print("Register STATE: ALREADY_DONE")
+  -- print("Register STATE: ALREADY_DONE")
 end
 
 local INITIAL_RAY_DEGREES = 50 - rnd(100)

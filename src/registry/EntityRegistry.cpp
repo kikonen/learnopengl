@@ -17,10 +17,12 @@
 
 
 namespace {
-    constexpr size_t ENTITY_BLOCK_SIZE = 128;
-    constexpr size_t ENTITY_BLOCK_COUNT = 40000;
+    constexpr size_t INITIAL_SIZE = 128;
 
-    constexpr size_t MAX_ENTITY_COUNT = ENTITY_BLOCK_SIZE * ENTITY_BLOCK_COUNT;
+    //constexpr size_t ENTITY_BLOCK_SIZE = 128;
+    //constexpr size_t MAX_ENTITY_BLOCK_COUNT = 40000;
+
+    //constexpr size_t MAX_ENTITY_COUNT = ENTITY_BLOCK_SIZE * MAX_ENTITY_BLOCK_COUNT;
 
     constexpr size_t MAX_SKIP = 20;
 
@@ -77,11 +79,11 @@ void EntityRegistry::prepare()
 
     if (m_useMapped) {
         // https://stackoverflow.com/questions/44203387/does-gl-map-invalidate-range-bit-require-glinvalidatebuffersubdata
-        m_ssbo.createEmpty(ENTITY_BLOCK_SIZE * sizeof(EntitySSBO), GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_DYNAMIC_STORAGE_BIT);
+        m_ssbo.createEmpty(INITIAL_SIZE * sizeof(EntitySSBO), GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_DYNAMIC_STORAGE_BIT);
         m_ssbo.map(GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_FLUSH_EXPLICIT_BIT);
     }
     else {
-        m_ssbo.createEmpty(ENTITY_BLOCK_SIZE * sizeof(EntitySSBO), GL_DYNAMIC_STORAGE_BIT);
+        m_ssbo.createEmpty(INITIAL_SIZE * sizeof(EntitySSBO), GL_DYNAMIC_STORAGE_BIT);
     }
 
     m_ssbo.bindSSBO(SSBO_ENTITIES);

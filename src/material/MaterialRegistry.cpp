@@ -15,9 +15,9 @@
 namespace {
     // NOTE KI int16_t
     constexpr size_t BLOCK_SIZE = 32;
-    constexpr size_t BLOCK_COUNT = 1000;
+    constexpr size_t MAX_BLOCK_COUNT = 1000;
 
-    constexpr size_t MAX_COUNT = BLOCK_SIZE * BLOCK_COUNT;
+    constexpr size_t MAX_COUNT = BLOCK_SIZE * MAX_BLOCK_COUNT;
 
     static MaterialRegistry* s_registry{ nullptr };
 }

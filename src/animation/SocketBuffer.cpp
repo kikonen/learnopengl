@@ -15,6 +15,8 @@ namespace {
     constexpr size_t BLOCK_SIZE = 1024;
     constexpr size_t MAX_BLOCK_COUNT = 5100;
 
+    constexpr size_t MAX_SOCKET_COUNT = BLOCK_SIZE * MAX_BLOCK_COUNT;
+
     constexpr size_t RANGE_COUNT = 3;
 }
 
@@ -93,6 +95,11 @@ namespace animation
         if (!m_queue || m_queue->getEntryCount() < totalCount) {
             size_t blocks = (totalCount / BLOCK_SIZE) + 2;
             size_t entryCount = blocks * BLOCK_SIZE;
+
+            if (entryCount > MAX_SOCKET_COUNT) {
+                KI_CRITICAL(fmt::format("ERROR: MAX_SOCKET_COUNT reached, size={}", entryCount));
+                entryCount = std::min(entryCount, MAX_SOCKET_COUNT);
+            }
 
             // NOTE KI OpenGL Insights - Chapter 28
             m_queue = std::make_unique<kigl::GLSyncQueue<SocketTransformSSBO>>(

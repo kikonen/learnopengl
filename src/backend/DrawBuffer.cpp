@@ -31,9 +31,9 @@ namespace {
     inline const std::string CS_FRUSTUM_CULLING{ "frustum_culling" };
 
     constexpr size_t INDEX_BLOCK_SIZE = 1000;
-    constexpr size_t INDEX_BLOCK_COUNT = 500;
+    constexpr size_t MAX_INDEX_BLOCK_COUNT = 500;
 
-    constexpr size_t MAX_INDEX_COUNT = INDEX_BLOCK_SIZE * INDEX_BLOCK_COUNT;
+    constexpr size_t MAX_INDEX_COUNT = INDEX_BLOCK_SIZE * MAX_INDEX_BLOCK_COUNT;
 
     constexpr size_t MAX_INSTANCE_BUFFERS = 64;
 }

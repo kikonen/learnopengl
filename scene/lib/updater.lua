@@ -17,7 +17,7 @@ function Updater:refresh(dt)
       end
     end
   end
-  printf("UPDATER: count=%d\n", #updaters)
+  -- printf("UPDATER: count=%d\n", #updaters)
 
   self.updaters = updaters
 end

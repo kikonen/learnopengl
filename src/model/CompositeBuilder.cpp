@@ -366,7 +366,7 @@ namespace model
             nodeData.m_typeId,
             nodeData.m_id);
 
-        KI_INFO_OUT("NODE_SID: " + resolvedSID);
+        KI_INFO("NODE_SID: " + resolvedSID);
 
         auto handle = pool::NodeHandle::allocate(nodeId);
         auto* node = handle.toNode();

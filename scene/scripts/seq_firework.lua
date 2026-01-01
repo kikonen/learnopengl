@@ -116,5 +116,5 @@ if not State.initialize then
   end
 end)()
 else
-  print("Register STATE: ALREADY_DONE")
+  -- print("Register STATE: ALREADY_DONE")
 end

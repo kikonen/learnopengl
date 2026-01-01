@@ -154,8 +154,8 @@ namespace loader {
         m_pendingCount--;
 
         KI_INFO_OUT(fmt::format(
-            "LOADED: node={}, success={}, pending={}",
-            nodeData.name, success, m_pendingCount));
+            "LOADED: type={}, node={}.{}, pending={}",
+            nodeData.typeId, nodeData.baseId.str(), nodeData.name, m_pendingCount));
 
         if (m_pendingCount > 0) return;
 
@@ -242,7 +242,9 @@ namespace loader {
             for (const auto& node : m_sceneData->m_nodes) {
                 if (m_nodeBuilder->resolveNode(root.rootId, 0, node, m_ctx, m_loaders)) {
                     m_pendingCount++;
-                    KI_INFO_OUT(fmt::format("START: node={}, pending={}", node.name, m_pendingCount));
+                    KI_INFO_OUT(fmt::format(
+                        "START: type={}, node={}.{}, pending={}",
+                        node.typeId, node.baseId.str(), node.name, m_pendingCount));
                 }
             }
 
@@ -431,7 +433,7 @@ namespace loader {
             }
             collectedIds[sid] = resolvedSID;
 
-            KI_INFO_OUT("NODE_SID: " + resolvedSID);
+            KI_INFO("NODE_SID: " + resolvedSID);
         }
 
         if (pass == 1) {

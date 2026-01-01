@@ -410,7 +410,7 @@ end)", fnName, scriptFile.m_source);
             fnName);
 
         lua.script(undef);
-        KI_INFO_OUT(fmt::format("SCRIPT::UNREGISTER: function={}", scriptEntry.m_signature));
+        KI_INFO(fmt::format("SCRIPT::UNREGISTER: function={}", scriptEntry.m_signature));
         return true;
     }
 
@@ -456,7 +456,7 @@ end)", fnName, scriptFile.m_source);
             const auto& scriptEntry = fnIt->second;
             const auto& fnName = scriptEntry.m_signature;
 
-            KI_INFO_OUT(fmt::format("SCRIPT::RUN: function={} - {}", fnName, node->getName()));
+            KI_INFO(fmt::format("SCRIPT::RUN: function={} - {}", fnName, node->getName()));
 
             sol::optional<sol::table> nodeState = getLua()[TABLE_STATES][nodeHandle.toId()];
             if (nodeState) {
@@ -582,7 +582,7 @@ end)", fnName, scriptFile.m_source);
     {
         std::string error;
         try {
-            KI_INFO_OUT(util::appendLineNumbers(script));
+            KI_INFO(util::appendLineNumbers(script));
             return getLua().safe_script(script);
         }
         catch (const std::exception& ex) {

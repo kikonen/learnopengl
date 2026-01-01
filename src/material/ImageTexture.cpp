@@ -186,7 +186,7 @@ void ImageTexture::prepareNormal()
 
         GLint compFlag;
         glGetTextureLevelParameteriv(m_textureID, 0, GL_TEXTURE_COMPRESSED, &compFlag);
-        KI_INFO_OUT(fmt::format(
+        KI_INFO(fmt::format(
             "TEX_UPLOAD: {}, compressed={}\n{}",
             m_path,
             compFlag,
@@ -242,7 +242,7 @@ void ImageTexture::prepareKtx()
 
     GLint compFlag;
     glGetTextureLevelParameteriv(m_textureID, 0, GL_TEXTURE_COMPRESSED, &compFlag);
-    KI_INFO_OUT(fmt::format(
+    KI_INFO(fmt::format(
         "TEX_UPLOAD: path={}, compressed={}\n{}",
         m_image->m_path,
         compFlag,
