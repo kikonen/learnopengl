@@ -8,6 +8,8 @@
 
 namespace {
     constexpr int INITIAL_SIZE = 10000;
+
+    const glm::mat4 ID_MAT{ 1.f };
 }
 
 namespace animation
@@ -53,22 +55,23 @@ namespace animation
 
             auto it = m_freeSlots.find(count);
             if (it != m_freeSlots.end() && !it->second.empty()) {
-                offset = it->second[it->second.size() - 1];
-                it->second.pop_back();
+                auto& offsets = it->second;
+                offset = offsets[offsets.size() - 1];
+                offsets.pop_back();
             }
             else {
                 offset = static_cast<uint32_t>(m_transforms.size());
                 m_transforms.resize(m_transforms.size() + count);
             }
 
-            for (int i = 0; i < count; i++) {
-                m_transforms[offset + i] = glm::mat4{ 1.f };
+            for (unsigned int i = 0; i < count; i++) {
+                m_transforms[offset + i] = ID_MAT;
             }
 
             markDirty({ offset, static_cast<uint32_t>(count) });
         }
 
-        return static_cast<uint32_t>(offset);
+        return offset;
     }
 
     void RigNodeRegistry::removeInstance(

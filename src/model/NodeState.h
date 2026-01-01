@@ -70,14 +70,6 @@ namespace model
         float m_tilingX{ 1.f };
         float m_tilingY{ 1.f };
 
-        //// NOTE KI static member fields are rather safe to access frmo anywhere
-        // per *rig* instance
-        //uint32_t m_rigNodeBaseIndex{ 0 };
-        // per *rig* instance
-        //uint32_t m_socketBaseIndex{ 0 };
-        // per *lod_mesh* instance
-        //uint32_t m_jointBaseIndex{ 0 };
-
         // parent socket
         uint32_t m_attachedSocketIndex{ 0 };
 

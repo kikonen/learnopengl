@@ -5,8 +5,8 @@
 #include "kigl/GLVertexArray.h"
 
 namespace mesh {
-    constexpr size_t VERTEX_BLOCK_SIZE = 1024;
-    constexpr size_t MAX_VERTEX_BLOCK_COUNT = 20000;
+    constexpr size_t VERTEX_BLOCK_SIZE = 1000;
+    constexpr size_t MAX_VERTEX_BLOCK_COUNT = 50000;
 
     constexpr size_t MAX_VERTEX_COUNT = VERTEX_BLOCK_SIZE * MAX_VERTEX_BLOCK_COUNT;
 

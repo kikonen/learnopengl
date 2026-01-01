@@ -46,7 +46,7 @@
 
 namespace {
     constexpr int ENTITY_COUNT = 100000;
-    constexpr int BATCH_RANGE_COUNT = 8;
+    //constexpr int BATCH_RANGE_COUNT = 8;
 
     inline glm::mat4 ID_MAT{ 1.f };
 

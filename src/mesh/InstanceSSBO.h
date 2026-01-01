@@ -28,8 +28,7 @@ namespace mesh {
             u_materialIndex = materialIndex;
         }
 
-        inline void setJointBaseIndex(GLushort baseIndex)
-        {
+        inline void setJointBaseIndex(GLuint baseIndex) {
             u_jointBaseIndex = baseIndex;
         };
 

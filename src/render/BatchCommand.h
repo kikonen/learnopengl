@@ -20,7 +20,6 @@ namespace render {
         float m_distance2;
         uint32_t m_entityIndex;
         uint32_t m_materialIndex;
-        //uint32_t m_socketIndex;
         uint32_t m_jointBaseIndex;
         uint32_t m_data;
 
@@ -31,13 +30,11 @@ namespace render {
             float distance2,
             uint32_t entityIndex,
             uint32_t materialIndex,
-            //uint32_t socketIndex,
             uint32_t jointBaseIndex,
             uint32_t data)
             : m_distance2{ distance2 },
             m_entityIndex{ entityIndex },
             m_materialIndex{ materialIndex },
-            //m_socketIndex{ socketIndex },
             m_jointBaseIndex{ jointBaseIndex },
             m_data{ data }
         {
