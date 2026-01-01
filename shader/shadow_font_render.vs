@@ -4,14 +4,14 @@ layout (location = ATTR_POS) in vec3 a_pos;
 layout (location = ATTR_FONT_ATLAS_TEX) in vec2 a_atlasCoord;
 layout (location = ATTR_TEX) in vec2 a_texCoord;
 
-#include ssbo_entities.glsl
-#include ssbo_instance_indeces.glsl
-#include ssbo_socket_transforms.glsl
-#include ssbo_materials.glsl
+#include include/ssbo_entities.glsl
+#include include/ssbo_instance_indeces.glsl
+#include include/ssbo_socket_transforms.glsl
+#include include/ssbo_materials.glsl
 
-#include uniform_matrices.glsl
-#include uniform_camera.glsl
-#include uniform_data.glsl
+#include include/uniform_matrices.glsl
+#include include/uniform_camera.glsl
+#include include/uniform_data.glsl
 
 out VS_OUT {
   vec2 texCoord;
@@ -39,7 +39,7 @@ void main()
   const uint entityIndex = instance.u_entityIndex;
   entity = u_entities[entityIndex];
 
-  #include var_entity_model_matrix.glsl
+  #include include/var_entity_model_matrix.glsl
 
   const uint materialIndex = instance.u_materialIndex;
 

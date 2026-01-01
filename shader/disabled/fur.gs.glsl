@@ -3,8 +3,8 @@
 layout (triangles) in;
 layout (triangle_strip, max_vertices = 128) out;
 
-#include uniform_matrices.glsl
-#include uniform_data.glsl
+#include include/uniform_matrices.glsl
+#include include/uniform_data.glsl
 
 in VS_OUT {
   flat mat4 modelMatrix;

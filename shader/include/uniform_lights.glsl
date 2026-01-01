@@ -1,4 +1,4 @@
-#include struct_lights.glsl
+#include include/struct_lights.glsl
 
 #define _UBO_LIGHTS
 layout(std140, binding = UBO_LIGHTS) uniform Lights {

@@ -1,6 +1,6 @@
 #version 460 core
 
-#include texture_quad.glsl
+#include include/texture_quad.glsl
 
 out VS_OUT {
   vec2 texCoord;

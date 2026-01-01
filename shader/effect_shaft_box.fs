@@ -1,11 +1,11 @@
 #version 460 core
 
-#include ssbo_materials.glsl
+#include include/ssbo_materials.glsl
 
-#include uniform_matrices.glsl
-#include uniform_camera.glsl
-#include uniform_data.glsl
-#include uniform_buffer_info.glsl
+#include include/uniform_matrices.glsl
+#include include/uniform_camera.glsl
+#include include/uniform_data.glsl
+#include include/uniform_buffer_info.glsl
 
 #ifndef USE_ALPHA
 // https://www.khronos.org/opengl/wiki/Early_Fragment_Test
@@ -142,9 +142,9 @@ void main() {
   const uint materialIndex = fs_in.materialIndex;
 
   vec2 texCoord = fs_in.texCoord;
-  #include apply_parallax.glsl
+  #include include/apply_parallax.glsl
 
-  #include var_tex_material.glsl
+  #include include/var_tex_material.glsl
 
   const vec2 pixCoord = gl_FragCoord.xy / u_bufferResolution;
 

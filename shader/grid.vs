@@ -2,13 +2,13 @@
 
 #undef USE_SOCKETS
 
-#include ssbo_entities.glsl
-#include ssbo_instance_indeces.glsl
+#include include/ssbo_entities.glsl
+#include include/ssbo_instance_indeces.glsl
 
-#include texture_plane.glsl
-#include uniform_matrices.glsl
-#include uniform_camera.glsl
-#include uniform_data.glsl
+#include include/texture_plane.glsl
+#include include/uniform_matrices.glsl
+#include include/uniform_camera.glsl
+#include include/uniform_data.glsl
 
 out VS_OUT {
   vec3 worldPos;
@@ -31,8 +31,8 @@ void main()
   const uint entityIndex = instance.u_entityIndex;
   entity = u_entities[entityIndex];
 
-  #include var_entity_model_matrix.glsl
-  #include var_entity_normal_matrix.glsl
+  #include include/var_entity_model_matrix.glsl
+  #include include/var_entity_normal_matrix.glsl
 
   const uint materialIndex = instance.u_materialIndex;
 

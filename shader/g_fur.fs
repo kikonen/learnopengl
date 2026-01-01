@@ -1,10 +1,10 @@
 #version 460 core
 
-#include ssbo_materials.glsl
+#include include/ssbo_materials.glsl
 
-#include uniform_matrices.glsl
-#include uniform_camera.glsl
-#include uniform_data.glsl
+#include include/uniform_matrices.glsl
+#include include/uniform_camera.glsl
+#include include/uniform_data.glsl
 
 in VS_OUT {
   vec3 worldPos;
@@ -27,15 +27,15 @@ SET_FLOAT_PRECISION;
 
 ResolvedMaterial material;
 
-#include fn_gbuffer_encode.glsl
+#include include/fn_gbuffer_encode.glsl
 
 void main() {
   const uint materialIndex = fs_in.materialIndex;
 
   vec2 texCoord = fs_in.texCoord;
-  #include apply_parallax.glsl
+  #include include/apply_parallax.glsl
 
-  #include var_tex_material.glsl
+  #include include/var_tex_material.glsl
 
   sampler2D sampler = sampler2D(u_materials[materialIndex].noiseMapTex);
   vec4 noiseColor = texture(sampler, texCoord * 8.0);
@@ -65,7 +65,7 @@ void main() {
   o_fragMRAS = material.mras;
   o_fragEmission = material.emission;
 
-  #include encode_gbuffer_normal.glsl
-  #include encode_gbuffer_view_position.glsl
-  #include encode_gbuffer_view_z.glsl
+  #include include/encode_gbuffer_normal.glsl
+  #include include/encode_gbuffer_view_position.glsl
+  #include include/encode_gbuffer_view_z.glsl
 }

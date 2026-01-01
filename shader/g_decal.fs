@@ -1,12 +1,12 @@
 #version 460 core
 
-#include ssbo_materials.glsl
+#include include/ssbo_materials.glsl
 
-#include uniform_matrices.glsl
-#include uniform_camera.glsl
-#include uniform_data.glsl
-#include uniform_debug.glsl
-#include uniform_buffer_info.glsl
+#include include/uniform_matrices.glsl
+#include include/uniform_camera.glsl
+#include include/uniform_data.glsl
+#include include/uniform_debug.glsl
+#include include/uniform_buffer_info.glsl
 
 #ifndef USE_ALPHA
 // https://www.khronos.org/opengl/wiki/Early_Fragment_Test
@@ -57,9 +57,9 @@ const float DIM_THRESHOLD = 0.49;
 ResolvedMaterial material;
 
 #ifdef USE_PARALLAX
-#include fn_calculate_parallax_mapping.glsl
+#include include/fn_calculate_parallax_mapping.glsl
 #endif
-#include fn_gbuffer_encode.glsl
+#include include/fn_gbuffer_encode.glsl
 
 
 void main() {
@@ -110,7 +110,7 @@ void main() {
       discard;
     }
 
-    #include apply_parallax.glsl
+    #include include/apply_parallax.glsl
   }
 
   texCoord.x *= u_materials[materialIndex].tilingX;
@@ -119,7 +119,7 @@ void main() {
   texCoord.x = fs_in.spriteCoord.x + texCoord.x * fs_in.spriteSize.x;
   texCoord.y = fs_in.spriteCoord.y + texCoord.y * fs_in.spriteSize.y;
 
-  #include var_tex_material.glsl
+  #include include/var_tex_material.glsl
 
 #ifdef USE_ALPHA
 #ifdef USE_BLEND
@@ -135,7 +135,7 @@ void main() {
 
   vec3 normal = surfaceNormal;
 
-  #include apply_normal_map.glsl
+  #include include/apply_normal_map.glsl
 
   if (!gl_FrontFacing) {
     normal = -normal;
@@ -144,7 +144,7 @@ void main() {
 #ifdef USE_CUBE_MAP
   const vec3 viewDir = normalize(u_cameraPos.xyz - fs_in.worldPos);
 
-  #include var_calculate_cube_map_diffuse.glsl
+  #include include/var_calculate_cube_map_diffuse.glsl
 #endif
 
   vec4 color = material.diffuse;
@@ -160,5 +160,5 @@ void main() {
   o_fragMRAS = material.mras;
   o_fragEmission = material.emission;
 
-  #include encode_gbuffer_normal.glsl
+  #include include/encode_gbuffer_normal.glsl
 }

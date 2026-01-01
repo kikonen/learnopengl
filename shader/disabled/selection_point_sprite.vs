@@ -1,9 +1,9 @@
 #version 460 core
 
-#include struct_entity.glsl
+#include include/struct_entity.glsl
 
-#include ssbo_entities.glsl
-#include uniform_matrices.glsl
+#include include/ssbo_entities.glsl
+#include include/uniform_matrices.glsl
 
 out VS_OUT {
   vec3 scale;
@@ -24,8 +24,8 @@ Entity entity;
 
 void main() {
   entity = u_entities[gl_BaseInstance + gl_InstanceID];
-  #include var_entity_model_matrix.glsl
-  #include var_entity_normal_matrix.glsl
+  #include include/var_entity_model_matrix.glsl
+  #include include/var_entity_normal_matrix.glsl
 
   const uint materialIndex = instance.u_materialIndex;
   const vec4 worldPos = modelMatrix * vec4(pos, 1.0);

@@ -1,8 +1,8 @@
 #version 460 core
 
-#include uniform_data.glsl
+#include include/uniform_data.glsl
 
-#include screen_tri_vertex_out.glsl
+#include include/screen_tri_vertex_out.glsl
 
 layout(binding = UNIT_EFFECT_ALBEDO) uniform sampler2D effect_albedo;
 
@@ -16,7 +16,7 @@ SET_FLOAT_PRECISION;
 
 void main()
 {
-  #include screen_tri_tex_coord.glsl
+  #include include/screen_tri_tex_coord.glsl
 
   vec3 hdrColor = texture(effect_albedo, texCoord).rgb;
 
