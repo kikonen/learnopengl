@@ -32,7 +32,7 @@ namespace physics
 
     Object::~Object() = default;
 
-    Object& Object::operator=(Object&& o)
+    Object& Object::operator=(Object&& o) noexcept
     {
         m_body = std::move(o.m_body);
         m_geom = std::move(o.m_geom);

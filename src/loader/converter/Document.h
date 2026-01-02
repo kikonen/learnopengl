@@ -9,7 +9,7 @@
 
 namespace loader {
     struct Document {
-        Document(std::unique_ptr<DocNode>&& root)
+        Document(std::unique_ptr<DocNode>&& root) noexcept
             : m_root{ std::move(root) }
         {}
 

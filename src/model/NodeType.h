@@ -109,9 +109,9 @@ namespace model
 
         // @return count of meshes added
         uint16_t addMeshSet(
-            const mesh::MeshSet& meshSet);
+            const mesh::MeshSet& meshSet) noexcept;
 
-        mesh::LodMesh* addLodMesh(mesh::LodMesh&& lodMesh);
+        mesh::LodMesh* addLodMesh(mesh::LodMesh&& lodMesh) noexcept;
 
         inline const mesh::LodMesh* getLodMesh(uint8_t lodIndex) const noexcept {
             return m_lodMeshes.empty() ? nullptr : &m_lodMeshes[lodIndex];

@@ -88,11 +88,11 @@ public:
     Material();
     Material(Material& o);
     Material(const Material& o);
-    Material(Material&& o);
+    Material(Material&& o) noexcept;
     ~Material();
 
     Material& operator=(const Material& o);
-    Material& operator=(Material&& o);
+    Material& operator=(Material&& o) noexcept;
 
     std::string str() const noexcept;
 

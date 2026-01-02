@@ -35,7 +35,7 @@ namespace physics {
 
         ~Object();
 
-        Object& operator=(Object&& o);
+        Object& operator=(Object&& o) noexcept;
 
         inline bool ready() const { return m_geom.physicId || m_body.physicId; }
 

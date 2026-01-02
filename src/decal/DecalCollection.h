@@ -22,8 +22,8 @@ namespace decal {
         DecalCollection();
         ~DecalCollection();
 
-        DecalCollection(DecalCollection&&);
-        //DecalCollection& operator=(DecalCollection&& o);
+        DecalCollection(DecalCollection&&) noexcept;
+        //DecalCollection& operator=(DecalCollection&& o) noexcept;
 
         void bind() const;
 
