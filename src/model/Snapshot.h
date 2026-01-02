@@ -54,7 +54,7 @@ namespace model
         //
         Snapshot() = default;
         //Snapshot(const NodeState& o);
-        //Snapshot(const NodeState&& o);
+        //Snapshot(const NodeState&& o) noexcept;
 
         void applyFrom(const NodeState& o) noexcept;
 

@@ -84,7 +84,7 @@ namespace model
     }
 
     uint16_t NodeType::addMeshSet(
-        const mesh::MeshSet& meshSet)
+        const mesh::MeshSet& meshSet) noexcept
     {
         uint16_t count = 0;
 
@@ -97,7 +97,7 @@ namespace model
     }
 
     mesh::LodMesh* NodeType::addLodMesh(
-        mesh::LodMesh&& lodmesh)
+        mesh::LodMesh&& lodmesh) noexcept
     {
         m_lodMeshes.push_back(std::move(lodmesh));
         return &m_lodMeshes[m_lodMeshes.size() - 1];

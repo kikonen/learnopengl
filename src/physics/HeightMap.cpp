@@ -16,7 +16,7 @@ namespace physics {
     HeightMap::HeightMap()
     {}
 
-    HeightMap::HeightMap(HeightMap&& o)
+    HeightMap::HeightMap(HeightMap&& o) noexcept
         : m_id{ o.m_id },
         //m_image{ std::move(o.m_image) },
         m_origin{ o.m_origin },

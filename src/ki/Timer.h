@@ -15,7 +15,8 @@ namespace ki {
         std::chrono::time_point<std::chrono::steady_clock> start, end;
         std::chrono::duration<float> duration{ 0.f };
 
-        Timer(std::string&& label) {
+        Timer(std::string&& label) noexcept
+        {
             this->label = label;
             start = std::chrono::high_resolution_clock::now();
         }

@@ -25,7 +25,7 @@ namespace physics {
 
     public:
         HeightMap();
-        HeightMap(HeightMap&& o);
+        HeightMap(HeightMap&& o) noexcept;
 
         ~HeightMap();
 

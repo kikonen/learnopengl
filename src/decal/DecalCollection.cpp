@@ -27,7 +27,7 @@ namespace decal {
 
     DecalCollection::~DecalCollection() = default;
 
-    DecalCollection::DecalCollection(DecalCollection&& o)
+    DecalCollection::DecalCollection(DecalCollection&& o) noexcept
         : m_decalBuffer{ std::move(o.m_decalBuffer) },
         m_static{ o.m_static },
         m_dirty{ o.m_dirty },
@@ -38,7 +38,7 @@ namespace decal {
         m_activeCount{ o.m_activeCount }
     { }
 
-    //DecalCollection& DecalCollection::operator=(DecalCollection&& o)
+    //DecalCollection& DecalCollection::operator=(DecalCollection&& o) noexcept
     //{
     //    m_decalBuffer = std::move(o.m_decalBuffer);
     //    return *this;

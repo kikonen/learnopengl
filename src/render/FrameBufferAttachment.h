@@ -152,10 +152,11 @@ namespace render {
     };
 
     struct FrameBufferSpecification {
-        FrameBufferSpecification(int width, int height, std::initializer_list<FrameBufferAttachment>&& attachments)
+        FrameBufferSpecification(int width, int height, std::initializer_list<FrameBufferAttachment>&& attachments) noexcept
             : width(width),
             height(height),
-            attachments(attachments) {
+            attachments(attachments)
+        {
         }
 
         glm::ivec2 getSize() const

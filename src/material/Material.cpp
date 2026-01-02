@@ -224,7 +224,7 @@ Material::Material()
 Material::Material(Material& o) = default;
 Material::Material(const Material& o) = default;
 
-Material::Material(Material&& o) = default;
+Material::Material(Material&& o) noexcept = default;
 //    : m_registeredIndex{ o.m_registeredIndex },
 //    textureSpec{ o.textureSpec },
 //    pattern{ o.pattern },
@@ -301,7 +301,7 @@ Material::~Material() = default;
 //}
 
 Material& Material::operator=(const Material& o) = default;
-Material& Material::operator=(Material&& o) = default;
+Material& Material::operator=(Material&& o) noexcept = default;
 
 std::string Material::str() const noexcept
 {
