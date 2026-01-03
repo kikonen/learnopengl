@@ -73,8 +73,8 @@ void AsteroidBeltGenerator::updateWT(
 
         std::for_each(
             std::execution::par_unseq,
-            m_indeces.cbegin(),
-            m_indeces.cend(),
+            m_transformIndeces.cbegin(),
+            m_transformIndeces.cend(),
             fn);
     }
 
@@ -104,13 +104,13 @@ void AsteroidBeltGenerator::createAsteroids(
 
     m_physics.reserve(m_asteroidCount);
     m_transforms.reserve(m_asteroidCount);
-    m_indeces.reserve(m_asteroidCount);
+    m_transformIndeces.reserve(m_asteroidCount);
 
-    for (size_t i = 0; i < m_asteroidCount; i++)
+    for (int i = 0; i < m_asteroidCount; i++)
     {
         m_physics.emplace_back();
         m_transforms.emplace_back();
-        m_indeces.push_back(static_cast<uint32_t>(i));
+        m_transformIndeces.push_back(static_cast<uint32_t>(i));
     }
 
     initAsteroids(ctx, container, m_transforms);
@@ -210,7 +210,7 @@ void AsteroidBeltGenerator::rotateAsteroids(
 
     std::for_each(
         std::execution::par_unseq,
-        m_indeces.cbegin(),
-        m_indeces.cend(),
+        m_transformIndeces.cbegin(),
+        m_transformIndeces.cend(),
         fn);
 }

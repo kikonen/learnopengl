@@ -14,12 +14,13 @@ constexpr GLuint SSBO_DRAW_COMMANDS = 5;
 constexpr GLuint SSBO_DRAW_PARAMETERS = 6;
 constexpr GLuint SSBO_PERFORMANCE_COUNTERS = 7;
 //constexpr GLuint SSBO_SHAPES = 8;
+constexpr GLuint SSBO_INSTANCES = 8;
 constexpr GLuint SSBO_INSTANCE_INDECES = 9;
 constexpr GLuint SSBO_PARTICLES = 10;
 constexpr GLuint SSBO_DECALS = 11;
 constexpr GLuint SSBO_TERRAIN_TILES = 12;
 constexpr GLuint SSBO_JOINT_TRANSFORMS = 13;
-constexpr GLuint SSBO_SOCKET_TRANSFORMS = 14;
+//constexpr GLuint SSBO_SOCKET_TRANSFORMS = 14;
 
 // NOTE KI align 16 for UBO struct
 // OpenGL Superbible, 7th Edition, page 552

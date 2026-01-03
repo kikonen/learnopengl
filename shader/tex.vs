@@ -8,6 +8,7 @@ layout (location = ATTR_TANGENT) in vec3 a_tangent;
 layout (location = ATTR_TEX) in vec2 a_texCoord;
 
 #include "include/ssbo_entities.glsl"
+#include "include/ssbo_instances.glsl"
 #include "include/ssbo_instance_indeces.glsl"
 #include "include/ssbo_socket_transforms.glsl"
 #include "include/ssbo_materials.glsl"
@@ -58,7 +59,7 @@ Entity entity;
 #include "include/fn_calculate_shadow_index.glsl"
 
 void main() {
-  instance = u_instances[gl_BaseInstance + gl_InstanceID];
+  instance = GET_INSTANCE;
   const uint entityIndex = instance.u_entityIndex;
   entity = u_entities[entityIndex];
 

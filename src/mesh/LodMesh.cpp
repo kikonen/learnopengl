@@ -19,13 +19,13 @@
 #include "kigl/GLVertexArray.h"
 
 #include "render/size.h"
+#include "render/InstanceFlags.h"
 
 #include "animation/Rig.h"
 #include "animation/RigNode.h"
 
 #include "Mesh.h"
 #include "VaoMesh.h"
-#include "InstanceFlags.h"
 
 namespace {
 }
@@ -195,7 +195,8 @@ namespace mesh {
 
         m_drawOptions.m_clip = m_flags.clip;
 
-        if (m_flags.billboard) m_drawOptions.m_flags |= INSTANCE_BILLBOARD_BIT;
+        if (m_flags.billboard) m_drawOptions.m_flags |= render::INSTANCE_BILLBOARD_BIT;
+        if (m_flags.tessellation) m_drawOptions.m_flags |= render::INSTANCE_TESSELATION_BIT;
 
         m_programId = material.getProgram(MaterialProgramType::shader);
         m_oitProgramId = material.getProgram(MaterialProgramType::oit);

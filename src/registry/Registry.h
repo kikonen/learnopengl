@@ -9,6 +9,11 @@ namespace event
     class Dispatcher;
 }
 
+namespace render
+{
+    class InstanceRegistry;
+}
+
 struct UpdateContext;
 
 class Engine;
@@ -53,5 +58,6 @@ public:
     event::Dispatcher* const m_dispatcherView;
 
     NodeRegistry* const m_nodeRegistry;
+    render::InstanceRegistry* const m_instanceRegistry;
     SelectionRegistry* const m_selectionRegistry;
 };

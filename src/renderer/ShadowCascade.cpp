@@ -25,6 +25,8 @@
 #include "render/FrameBuffer.h"
 #include "render/RenderContext.h"
 #include "render/Batch.h"
+#include "render/DrawableInfo.h"
+#include "render/InstanceFlags.h"
 #include "render/CollectionRender.h"
 #include "render/DrawContext.h"
 #include "render/NodeCollection.h"
@@ -273,12 +275,11 @@ void ShadowCascade::drawNodes(
         render::CollectionRender collectionRender;
         collectionRender.drawProgram(
             ctx,
-            [this](const mesh::LodMesh& lodMesh) {
-                if (lodMesh.m_flags.tessellation) return (ki::program_id)0;
-                if (lodMesh.m_shadowProgramId) return lodMesh.m_shadowProgramId;
-                return lodMesh.m_drawOptions.isAlpha() ? m_alphaShadowProgramId : m_solidShadowProgramId;
+            [this](const render::DrawableInfo& drawable) {
+                if (drawable.isFlag(render::INSTANCE_TESSELATION_BIT)) return (ki::program_id)0;
+                if (drawable.shadowProgramId) return drawable.shadowProgramId;
+                return drawable.drawOptions.isAlpha() ? m_alphaShadowProgramId : m_solidShadowProgramId;
             },
-            [](ki::program_id programId) {},
             drawContext.nodeSelector,
             drawContext.kindBits);
     }

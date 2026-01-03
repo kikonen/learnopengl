@@ -42,6 +42,7 @@
 
 #include "engine/UpdateContext.h"
 #include "render/RenderContext.h"
+#include "render/InstanceRegistry.h"
 
 #include "render/Batch.h"
 
@@ -209,6 +210,8 @@ namespace model
         if (m_camera) {
             m_camera->snapToIdeal(*snapshot);
         }
+
+        registerDrawables();
     }
 
     void Node::updateVAO(const render::RenderContext& ctx) noexcept
@@ -218,16 +221,75 @@ namespace model
         }
     }
 
+    void Node::registerDrawables() noexcept
+    {
+        auto& instanceRegistry = render::InstanceRegistry::get();
+
+        if (m_generator && m_generator->isLightWeight()) {
+            m_generator->registerDrawables(
+                instanceRegistry,
+                *this);
+        }
+        else {
+            const auto* snapshot = getSnapshotRT();
+
+            const auto* type = getType();
+            const auto& lodMeshes = type->getLodMeshes();
+            const auto& lodMeshInstances = m_lodMeshInstances;
+
+            for (int i = 0; i < lodMeshInstances.size(); i++) {
+                const auto& lod = lodMeshInstances[i];
+                const auto& lodMesh = lodMeshes[i];
+                if (!lodMesh.m_mesh)
+                    continue;
+
+                render::DrawableInfo drawable;
+                {
+                    drawable.lodMeshIndex = i;
+
+                    drawable.meshId = lodMesh.getMesh<mesh::Mesh>()->m_id;
+
+                    drawable.entityIndex = getEntityIndex();
+                    drawable.materialIndex = lodMesh.m_materialIndex;
+                    drawable.jointBaseIndex = lod.m_jointBaseIndex;
+
+                    drawable.baseVertex = lodMesh.m_baseVertex;
+                    drawable.baseIndex = lodMesh.m_baseIndex;
+                    drawable.indexCount = lodMesh.m_indexCount;
+
+                    drawable.volume = snapshot->getVolume();
+                    drawable.localTransform = lodMesh.m_baseTransform;
+                    drawable.minDistance2 = lodMesh.m_minDistance2;
+                    drawable.maxDistance2 = lodMesh.m_maxDistance2;
+
+                    drawable.vaoId = lodMesh.m_vaoId;
+                    drawable.drawOptions = lodMesh.m_drawOptions;
+
+                    drawable.programId = lodMesh.m_programId;
+                    drawable.oitProgramId = lodMesh.m_oitProgramId;
+                    drawable.shadowProgramId = lodMesh.m_shadowProgramId;
+                    drawable.preDepthProgramId = lodMesh.m_preDepthProgramId;
+                    drawable.selectionProgramId = lodMesh.m_selectionProgramId;
+                    drawable.idProgramId = lodMesh.m_idProgramId;
+                    drawable.normalProgramId = lodMesh.m_normalProgramId;
+                }
+
+                auto index = instanceRegistry.registerDrawable(drawable);
+                if (m_instanceRef.offset == 0) {
+                    m_instanceRef.offset = index;
+                }
+                m_instanceRef.size++;
+            }
+        }
+    }
+
     void Node::bindBatch(
         const render::RenderContext& ctx,
-        const std::function<ki::program_id(const mesh::LodMesh&)>& programSelector,
+        const std::function<ki::program_id(const render::DrawableInfo&)>& programSelector,
         const std::function<void(ki::program_id)>& programPrepare,
         uint8_t kindBits,
         render::Batch& batch) noexcept
     {
-        const auto* snapshot = getSnapshotRT();
-        if (!snapshot) return;
-
         if (m_generator && m_generator->isLightWeight()) {
             m_generator->bindBatch(
                 ctx,
@@ -235,20 +297,16 @@ namespace model
                 programPrepare,
                 kindBits,
                 batch,
-                *this,
-                *snapshot);
+                *this);
         }
         else {
             batch.addSnapshot(
                 ctx,
                 getType(),
-                getLodMeshes(),
-                getLodMeshInstances(),
+                m_instanceRef,
                 programSelector,
                 programPrepare,
-                kindBits,
-                *snapshot,
-                getEntityIndex());
+                kindBits);
         }
     }
 

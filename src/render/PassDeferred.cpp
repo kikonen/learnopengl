@@ -15,6 +15,8 @@
 #include "render/FrameBuffer.h"
 #include "render/NodeDraw.h"
 #include "render/Batch.h"
+#include "render/DrawableInfo.h"
+#include "render/InstanceFlags.h"
 #include "render/CollectionRender.h"
 
 namespace {
@@ -158,11 +160,10 @@ namespace render
         CollectionRender collectionRender;
         collectionRender.drawProgram(
             ctx,
-            [this](const mesh::LodMesh& lodMesh) {
-                if (!lodMesh.m_flags.preDepth) return (ki::program_id)0;
-                return lodMesh.m_drawOptions.m_gbuffer ? lodMesh.m_preDepthProgramId : (ki::program_id)0;
+            [this](const render::DrawableInfo& drawable) {
+                if (!drawable.isFlag(render::INSTANCE_PRE_DEPTH_BIT)) return (ki::program_id)0;
+                return drawable.drawOptions.m_gbuffer ? drawable.preDepthProgramId : (ki::program_id)0;
             },
-            [](ki::program_id programId) {},
             [&drawContext](const model::Node* node) {
                 return node->m_typeFlags.useDeferred &&
                     drawContext.nodeSelector(node);
@@ -189,12 +190,11 @@ namespace render
         state.setStencil(kigl::GLStencilMode::fill(STENCIL_SOLID | STENCIL_FOG));
 
         CollectionRender collectionRender;
-        collectionRender.drawNodesImpl(
+        collectionRender.drawProgram(
             ctx,
-            [](const mesh::LodMesh& lodMesh) {
-                return lodMesh.m_drawOptions.m_gbuffer ? lodMesh.m_programId : (ki::program_id)0;
+            [](const render::DrawableInfo& drawable) {
+                return drawable.drawOptions.m_gbuffer ? drawable.programId : (ki::program_id)0;
             },
-            [](ki::program_id programId) {},
             [&drawContext](const model::Node* node) {
                 return node->m_typeFlags.useDeferred &&
                     !node->m_typeFlags.effect &&

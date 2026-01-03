@@ -13,16 +13,24 @@
 #include "text/size.h"
 #include "text/Align.h"
 
-namespace mesh {
+namespace mesh
+{
     class TextMesh;
     struct LodMesh;
 }
 
-namespace text {
+namespace render
+{
+    struct DrawableInfo;
+}
+
+namespace text
+{
     class TextDraw;
 }
 
-class TextGenerator final : public NodeGenerator {
+class TextGenerator final : public NodeGenerator
+{
 public:
     TextGenerator();
 
@@ -44,14 +52,17 @@ public:
         const render::RenderContext& ctx,
         const model::Node& container) override;
 
+    void registerDrawables(
+        render::InstanceRegistry& instanceRegistry,
+        const model::Node& container) override;
+
     void bindBatch(
         const render::RenderContext& ctx,
-        const std::function<ki::program_id (const mesh::LodMesh&)>& programSelector,
+        const std::function<ki::program_id (const render::DrawableInfo&)>& programSelector,
         const std::function<void(ki::program_id)>& programPrepare,
         uint8_t kindBits,
         render::Batch& batch,
-        const model::Node& container,
-        const model::Snapshot& snapshot) override;
+        const model::Node& container) override;
 
     const std::vector<mesh::LodMesh>* getLodMeshes(const model::Node& container) const override
     {

@@ -5,18 +5,27 @@
 
 #include "backend/gl/PerformanceCounters.h"
 
+#include "util/BufferReference.h"
+
 #include "BatchCommand.h"
 #include "BatchRegistry.h"
 
-#include "mesh/InstanceSSBO.h"
+#include "render/InstanceIndexSSBO.h"
 
-namespace backend {
+namespace backend
+{
     class DrawBuffer;
 }
 
-namespace mesh {
+namespace render
+{
+    struct DrawableInfo;
+    struct InstanceSSBO;
+}
+
+namespace mesh
+{
     struct LodMesh;
-    struct LodMeshInstance;
     struct Transform;
     struct MeshInstance;
 }
@@ -33,8 +42,11 @@ class Program;
 struct PrepareContext;
 struct UpdateContext;
 
-namespace render {
+namespace render
+{
+    class InstanceRegistry;
     class RenderContext;
+    struct DrawableInfo;
 
     // NOTE KI use single shared UBO buffer for rendering
     // => less resources needed
@@ -55,26 +67,19 @@ namespace render {
         void addSnapshot(
             const RenderContext& ctx,
             const model::NodeType* type,
-            const std::vector<mesh::LodMesh>& lodMeshes,
-            const std::vector<mesh::LodMeshInstance>& lodMeshInstances,
-            const std::function<ki::program_id (const mesh::LodMesh&)>& programSelector,
+            const util::BufferReference instanceRef,
+            const std::function<ki::program_id (const render::DrawableInfo&)>& programSelector,
             const std::function<void(ki::program_id)>& programPrepare,
-            uint8_t kindBits,
-            const model::Snapshot& snapshot,
-            uint32_t entityIndex) noexcept;
+            uint8_t kindBits) noexcept;
 
         // NOTE KI lightweigtht "transform only" meshes
         void addSnapshotsInstanced(
             const RenderContext& ctx,
             const model::NodeType* type,
-            const std::vector<mesh::LodMesh>& lodMeshes,
-            const std::vector<mesh::LodMeshInstance>& lodMeshInstances,
-            const std::function<ki::program_id (const mesh::LodMesh&)>& programSelector,
+            const util::BufferReference instanceRef,
+            const std::function<ki::program_id (const render::DrawableInfo&)>& programSelector,
             const std::function<void(ki::program_id)>& programPrepare,
-            uint8_t kindBits,
-            const model::Snapshot& snapshot,
-            std::span<const mesh::Transform> transforms,
-            uint32_t entityIndex) noexcept;
+            uint8_t kindBits) noexcept;
 
         void addMesh(
             const RenderContext& ctx,
@@ -84,6 +89,11 @@ namespace render {
             uint32_t entityIndex) noexcept;
 
         void bind() noexcept;
+
+        void setInstanceRegistry(InstanceRegistry* registry)
+        {
+            m_instanceRegistry = registry;
+        }
 
         void prepareRT(
             const PrepareContext& ctx,
@@ -96,7 +106,7 @@ namespace render {
         void draw(
             const RenderContext& ctx,
             model::Node* node,
-            const std::function<ki::program_id (const mesh::LodMesh&)>& programSelector,
+            const std::function<ki::program_id (const render::DrawableInfo&)>& programSelector,
             const std::function<void(ki::program_id)>& programPrepare,
             uint8_t kindBits);
 
@@ -132,10 +142,12 @@ namespace render {
 
         BatchRegistry m_batchRegistry;
 
+        InstanceRegistry* m_instanceRegistry{ nullptr };
+
         std::vector<MultiDrawEntry> m_pending;
         size_t m_pendingCount{ 0 };
 
-        std::vector<mesh::InstanceSSBO> m_instances;
+        std::vector<render::InstanceIndexSSBO> m_instanceIndeces;
 
         std::unique_ptr<backend::DrawBuffer> m_draw;
 

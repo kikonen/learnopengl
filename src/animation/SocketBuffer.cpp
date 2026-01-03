@@ -135,7 +135,7 @@ namespace animation
             mappedData);
         m_queue->setFence();
 
-        m_queue->bindCurrentSSBO(SSBO_SOCKET_TRANSFORMS, false, totalCount);
+        //m_queue->bindCurrentSSBO(SSBO_SOCKET_TRANSFORMS, false, totalCount);
 
         m_queue->next();
 

@@ -4,6 +4,7 @@ layout (location = ATTR_POS) in vec3 a_pos;
 layout (location = ATTR_NORMAL) in vec3 a_normal;
 
 #include "include/ssbo_entities.glsl"
+#include "include/ssbo_instances.glsl"
 #include "include/ssbo_instance_indeces.glsl"
 
 #include "include/uniform_matrices.glsl"
@@ -31,7 +32,7 @@ Entity entity;
 #include "include/fn_calculate_clipping.glsl"
 
 void main() {
-  instance = u_instances[gl_BaseInstance + gl_InstanceID];
+  instance = GET_INSTANCE;
   const uint entityIndex = instance.u_entityIndex;
   entity = u_entities[entityIndex];
 

@@ -15,17 +15,16 @@
 #include "gl/DrawIndirectCommand.h"
 #include "gl/PerformanceCounters.h"
 
-#include "mesh/InstanceSSBO.h"
-
 #include "MultiDrawRange.h"
 #include "DrawOptions.h"
+
+#include "render/InstanceIndexSSBO.h"
 
 class Program;
 struct PrepareContext;
 
-namespace mesh
+namespace render
 {
-    struct InstanceSSBO;
 }
 
 namespace backend {
@@ -53,7 +52,7 @@ namespace backend {
         // - flush
         // - finish
         void sendInstanceIndeces(
-            std::span<mesh::InstanceSSBO> indeces);
+            std::span<render::InstanceIndexSSBO> indeces);
 
         void send(
             const backend::MultiDrawRange& sendRange,
@@ -96,7 +95,7 @@ namespace backend {
         ki::program_id m_cullingComputeId{ 0 };
         Program* m_cullingCompute{ nullptr };
 
-        std::unique_ptr<kigl::GLSyncQueue<mesh::InstanceSSBO>> m_instanceBuffers{ nullptr };
+        std::unique_ptr<kigl::GLSyncQueue<render::InstanceIndexSSBO>> m_instanceBuffers{ nullptr };
         std::unique_ptr<GLCommandQueue> m_commands{ nullptr };
 
         // (range-params, command-count)

@@ -19,6 +19,7 @@
 #include "render/Camera.h"
 #include "render/RenderContext.h"
 #include "render/Batch.h"
+#include "render/DrawableInfo.h"
 #include "render/FrameBuffer.h"
 #include "render/CollectionRender.h"
 #include "render/DrawContext.h"
@@ -200,11 +201,9 @@ void ObjectIdRenderer::drawNodes(const render::RenderContext& parentCtx)
         render::CollectionRender collectionRender;
         collectionRender.drawProgram(
             localCtx,
-            [this](const mesh::LodMesh& lodMesh) {
-                //if (lodMesh.m_flags.tessellation) return (ki::program_id)nullptr;
-                return lodMesh.m_idProgramId ? lodMesh.m_idProgramId : m_idProgramId;
+            [this](const render::DrawableInfo& drawable) {
+                return drawable.idProgramId ? drawable.idProgramId : m_idProgramId;
             },
-            [](ki::program_id programId) {},
             drawContext.nodeSelector,
             drawContext.kindBits);
     }

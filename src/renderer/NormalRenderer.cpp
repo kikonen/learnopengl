@@ -15,9 +15,10 @@
 #include "render/RenderContext.h"
 #include "render/FrameBuffer.h"
 #include "render/Batch.h"
+#include "render/DrawableInfo.h"
 #include "render/CollectionRender.h"
 #include "render/DrawContext.h"
-
+#include "render/InstanceFlags.h"
 #include "registry/Registry.h"
 #include "registry/NodeRegistry.h"
 
@@ -62,11 +63,10 @@ void NormalRenderer::drawNodes(const render::RenderContext& ctx)
         render::CollectionRender collectionRender;
         collectionRender.drawProgram(
             ctx,
-            [this](const mesh::LodMesh& lodMesh) {
-                if (lodMesh.m_flags.tessellation) return (ki::program_id)0;
-                return lodMesh.m_normalProgramId ? lodMesh.m_normalProgramId : m_normalProgramId;
+            [this](const render::DrawableInfo& drawable) {
+                if (drawable.isFlag(render::INSTANCE_TESSELATION_BIT)) return (ki::program_id)0;
+                return drawable.normalProgramId ? drawable.normalProgramId : m_normalProgramId;
             },
-            [](ki::program_id programId) {},
             drawContext.nodeSelector,
             drawContext.kindBits);
     }

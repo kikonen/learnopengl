@@ -33,6 +33,7 @@
 #include "scene/Scene.h"
 
 #include "render/Batch.h"
+#include "render/InstanceRegistry.h"
 #include "render/RenderData.h"
 #include "render/PassSsao.h"
 #include "render/WindowBuffer.h"
@@ -101,6 +102,7 @@ int Engine::setup() {
 
     m_batch = std::make_unique<render::Batch>();
     m_batch->prepareRT({ *this });
+    m_batch->setInstanceRegistry(m_registry->m_instanceRegistry);
 
     m_renderData = std::make_unique<render::RenderData>();
     m_renderData->prepare(
@@ -128,6 +130,10 @@ int Engine::update()
     ProgramRegistry::get().updateRT(ctx);
 
     getRegistry()->m_dispatcherView->dispatchEvents();
+
+    render::InstanceRegistry::get().updateInstances();
+    render::InstanceRegistry::get().upload();
+    render::InstanceRegistry::get().bind();
 
     {
         const glm::ivec2& size = getSize();

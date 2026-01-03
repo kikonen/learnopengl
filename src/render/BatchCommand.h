@@ -17,22 +17,25 @@ namespace render {
         glm::vec4 u_transformMatrixRow1{ 0.f, 1.f, 0.f, 0.f };
         glm::vec4 u_transformMatrixRow2{ 0.f, 0.f, 1.f, 0.f };
 
-        float m_distance2;
-        uint32_t m_entityIndex;
-        uint32_t m_materialIndex;
-        uint32_t m_jointBaseIndex;
-        uint32_t m_data;
+        float m_distance2{ 0.f };
+        uint32_t m_instanceIndex{ 0 };
+        uint32_t m_entityIndex{ 0 };
+        uint32_t m_materialIndex{ 0 };
+        uint32_t m_jointBaseIndex{ 0 };
+        uint32_t m_data{ 0 };
 
         InstanceEntry() {}
 
         InstanceEntry(
             const glm::mat4& transform,
             float distance2,
+            uint32_t instanceIndex,
             uint32_t entityIndex,
             uint32_t materialIndex,
             uint32_t jointBaseIndex,
             uint32_t data)
             : m_distance2{ distance2 },
+            m_instanceIndex{ instanceIndex },
             m_entityIndex{ entityIndex },
             m_materialIndex{ materialIndex },
             m_jointBaseIndex{ jointBaseIndex },
@@ -71,8 +74,8 @@ namespace render {
     };
 
     struct CommandKey {
-        uint32_t m_baseVertex;
-        uint32_t m_baseIndex;
+        const uint32_t m_baseVertex;
+        const uint32_t m_baseIndex;
 
         CommandKey(
             uint32_t baseVertex,
