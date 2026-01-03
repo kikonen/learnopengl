@@ -113,6 +113,8 @@ void Registry::clear()
 
     ViewportRegistry::get().clear();
     VaoRegistry::get().clear();
+
+    render::InstanceRegistry::get().clear();
 }
 
 void Registry::prepare(const PrepareContext& ctx)

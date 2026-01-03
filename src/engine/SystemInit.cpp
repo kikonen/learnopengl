@@ -113,4 +113,6 @@ void SystemInit::release() noexcept
     VaoRegistry::release();
     MaterialRegistry::release();
     ImageRegistry::release();
+
+    render::InstanceRegistry::release();
 }

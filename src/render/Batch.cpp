@@ -157,13 +157,7 @@ namespace render {
             }
 
             commandEntry->addInstance({
-                drawable.localTransform,
-                dist2,
-                instanceOffset + drawableIndex,
-                drawable.entityIndex,
-                drawable.materialIndex,
-                drawable.jointBaseIndex,
-                drawable.data,
+                instanceOffset + drawableIndex
                 });
 
             m_pendingCount++;
@@ -300,13 +294,7 @@ namespace render {
                 commandEntry->reserve(drawableCount);
 
                 commandEntry->addInstance({
-                    drawable.localTransform,
-                    dist2,
-                    instanceOffset + drawableIndex,
-                    drawable.entityIndex,
-                    drawable.materialIndex,
-                    drawable.jointBaseIndex,
-                    drawable.data,
+                    instanceOffset + drawableIndex
                     });
 
                 m_pendingCount++;
@@ -393,13 +381,7 @@ namespace render {
 
             /////////
             commandEntry->addInstance({
-                instance.getModelMatrix(),
-                dist2,
-                instanceIndex,
-                entityIndex,
-                static_cast<uint32_t>(instance.m_materialIndex),
-                0,
-                0
+                instanceIndex
                 });
 
             m_pendingCount++;
@@ -509,22 +491,22 @@ namespace render {
 
         // Sort instances
         // TODO KI this can slowdown things if lot of objects
-        if (false) {
-            for (auto& multiDraw : m_pending) {
-                if (multiDraw.empty()) continue;
+        //if (false) {
+        //    for (auto& multiDraw : m_pending) {
+        //        if (multiDraw.empty()) continue;
 
-                for (auto& command : multiDraw.m_commands) {
-                    if (command.m_instanceCount < 2) continue;
+        //        for (auto& command : multiDraw.m_commands) {
+        //            if (command.m_instanceCount < 2) continue;
 
-                    std::sort(
-                        command.m_instances,
-                        command.m_instances + command.m_instanceCount,
-                        [](const auto& a, const auto& b) {
-                            return a.m_distance2 < b.m_distance2;
-                        });
-                }
-            }
-        }
+        //            std::sort(
+        //                command.m_instances,
+        //                command.m_instances + command.m_instanceCount,
+        //                [](const auto& a, const auto& b) {
+        //                    return a.m_distance2 < b.m_distance2;
+        //                });
+        //        }
+        //    }
+        //}
 
         // Setup instances
         {

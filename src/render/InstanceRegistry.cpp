@@ -39,6 +39,11 @@ namespace render
         m_drawables.clear();
         m_instances.clear();
         m_lookupMap.clear();
+
+        m_uploadedCount = 0;
+        m_dirty = false;
+
+        m_ssbo.markUsed(0);
     }
 
     void InstanceRegistry::prepare()
@@ -160,7 +165,7 @@ namespace render
                     m_ssbo.map(GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_FLUSH_EXPLICIT_BIT);
                 }
                 else {
-                    m_ssbo.bindSSBO(SSBO_ENTITIES);
+                    m_ssbo.bindSSBO(SSBO_INSTANCES);
                 }
             }
         }
