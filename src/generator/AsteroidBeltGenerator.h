@@ -11,11 +11,11 @@ class AsteroidBeltGenerator final : public NodeGenerator
 public:
     AsteroidBeltGenerator(int asteroidCount);
 
-    virtual void prepareWT(
+    void prepareWT(
         const PrepareContext& ctx,
         model::Node& container) override;
 
-    virtual void updateWT(
+    void updateWT(
         const UpdateContext& ctx,
         const model::Node& container) override;
 

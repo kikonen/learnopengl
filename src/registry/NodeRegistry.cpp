@@ -368,7 +368,7 @@ void NodeRegistry::updateModelMatrices(const model::Node* node)
     m_states[index].updateModelMatrix(m_states[m_parentIndeces[index]]);
 }
 
-void NodeRegistry::snapshotPending()
+void NodeRegistry::makeSnapshotPending()
 {
     std::lock_guard lock(m_snapshotLock);
 
@@ -399,11 +399,11 @@ void NodeRegistry::snapshotPending()
     }
 }
 
-void NodeRegistry::snapshotRT()
+void NodeRegistry::makeSnapshotRT()
 {
     std::lock_guard lock(m_snapshotLock);
 
-    snapshot(m_snapshotsPending, m_snapshotsRT);
+    makeSnapshot(m_snapshotsPending, m_snapshotsRT);
     cacheNodes(m_cachedNodesRT, m_cachedNodeLevelRT);
 
     m_entities.resize(m_snapshotsRT.size());
@@ -420,7 +420,7 @@ void NodeRegistry::snapshotRT()
     }
 }
 
-void NodeRegistry::snapshot(
+void NodeRegistry::makeSnapshot(
     std::vector<model::Snapshot>& src,
     std::vector<model::Snapshot>& dst)
 {
@@ -441,11 +441,6 @@ std::vector<model::Node*>& NodeRegistry::getCachedNodesWT()
 {
     cacheNodes(m_cachedNodesWT, m_cachedNodeLevelWT);
     return m_cachedNodesWT;
-}
-
-void NodeRegistry::prepareUpdateRT(const UpdateContext& ctx)
-{
-    snapshotRT();
 }
 
 void NodeRegistry::updateRT(const UpdateContext& ctx)
@@ -619,6 +614,9 @@ void NodeRegistry::attachListeners()
 void NodeRegistry::handleNodeAdded(model::Node* node)
 {
     if (!node) return;
+
+    // NOTE KI ensure snapshot is in sync
+    makeSnapshotRT();
 
     auto nodeHandle = node->toHandle();
 
