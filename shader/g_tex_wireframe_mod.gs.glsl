@@ -3,9 +3,9 @@
 layout (triangles) in;
 layout (triangle_strip, max_vertices = 3) out;
 
-#include include/uniform_matrices.glsl
-#include include/uniform_camera.glsl
-#include include/uniform_data.glsl
+#include "include/uniform_matrices.glsl"
+#include "include/uniform_camera.glsl"
+#include "include/uniform_data.glsl"
 
 in gl_PerVertex
 {

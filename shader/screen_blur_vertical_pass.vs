@@ -1,8 +1,8 @@
 #version 460 core
 
-// #include include/screen_tri_vertex.glsl
+// #include "include/screen_tri_vertex.glsl"
 
-#include include/uniform_buffer_info.glsl
+#include "include/uniform_buffer_info.glsl"
 
 out VS_OUT {
   vec2 texCoords[9];

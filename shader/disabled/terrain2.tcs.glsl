@@ -2,14 +2,14 @@
 
 layout(vertices=3) out;
 
-#include include/struct_material.glsl
-#include include/struct_entity.glsl
-#include include/struct_clip_plane.glsl
+#include "include/struct_material.glsl"
+#include "include/struct_entity.glsl"
+#include "include/struct_clip_plane.glsl"
 
-#include include/ssbo_entities.glsl
-#include include/uniform_matrices.glsl
-#include include/ssbo_materials.glsl
-#include include/uniform_clip_planes.glsl
+#include "include/ssbo_entities.glsl"
+#include "include/uniform_matrices.glsl"
+#include "include/ssbo_materials.glsl"
+#include "include/uniform_clip_planes.glsl"
 
 in VS_OUT {
   flat uint entityIndex;
@@ -59,12 +59,12 @@ SET_FLOAT_PRECISION;
 
 Entity entity;
 
-//#include include/fn_calculate_clipping.glsl
+//#include "include/fn_calculate_clipping.glsl"
 
 void main()
 {
   entity = u_entities[tcs_in[gl_InvocationID].entityIndex];
-  #include include/var_entity_model_matrix.glsl
+  #include "include/var_entity_model_matrix.glsl"
 
   const uint materialIndex = instance.u_materialIndex;
 

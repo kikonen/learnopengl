@@ -1,8 +1,8 @@
 #version 460 core
 
-#include include/ssbo_materials.glsl
+#include "include/ssbo_materials.glsl"
 
-#include include/uniform_data.glsl
+#include "include/uniform_data.glsl"
 
 in VS_OUT {
   flat vec4 objectID;
@@ -25,12 +25,12 @@ layout (location = 0) out vec4 o_fragObjectID;
 
 ResolvedMaterial material;
 
-#include include/fn_shape_font.glsl
+#include "include/fn_shape_font.glsl"
 
 void main() {
   {
     const vec2 texCoord = fs_in.texCoord;
-    #include include/var_tex_material_alpha.glsl
+    #include "include/var_tex_material_alpha.glsl"
 
     material.diffuse = vec4(1, 1, 1, 1);
 

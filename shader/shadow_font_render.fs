@@ -1,8 +1,8 @@
 #version 460 core
 
-#include include/ssbo_materials.glsl
+#include "include/ssbo_materials.glsl"
 
-#include include/uniform_data.glsl
+#include "include/uniform_data.glsl"
 
 in VS_OUT {
   vec2 texCoord;
@@ -21,7 +21,7 @@ SET_FLOAT_PRECISION;
 
 ResolvedMaterial material;
 
-#include include/fn_shape_font.glsl
+#include "include/fn_shape_font.glsl"
 
 void main()
 {
@@ -29,7 +29,7 @@ void main()
     const uint materialIndex = fs_in.materialIndex;
 
     const vec2 texCoord = fs_in.texCoord;
-    #include include/var_tex_material_alpha.glsl
+    #include "include/var_tex_material_alpha.glsl"
 
     // NOtE KI experimental value; depends from few aspects in blended windows
     if (alpha < SHADOW_ALPHA_THRESHOLD)

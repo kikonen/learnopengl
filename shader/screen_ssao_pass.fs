@@ -1,16 +1,16 @@
 #version 460 core
 
-#include include/uniform_matrices.glsl
-#include include/uniform_camera.glsl
-#include include/uniform_data.glsl
-#include include/uniform_debug.glsl
-#include include/uniform_buffer_info.glsl
+#include "include/uniform_matrices.glsl"
+#include "include/uniform_camera.glsl"
+#include "include/uniform_data.glsl"
+#include "include/uniform_debug.glsl"
+#include "include/uniform_buffer_info.glsl"
 
 // NOTE KI depth is *not* used
 // => for *stencil test
 layout(early_fragment_tests) in;
 
-#include include/screen_tri_vertex_out.glsl
+#include "include/screen_tri_vertex_out.glsl"
 
 // parameters (you'd probably want to use them as uniforms to more easily tweak the effect)
 int kernelSize = 64;
@@ -35,7 +35,7 @@ layout (location = 0) out float o_fragColor;
 
 SET_FLOAT_PRECISION;
 
-#include include/fn_gbuffer_decode.glsl
+#include "include/fn_gbuffer_decode.glsl"
 
 float calculateSsao(
   const vec3 normal,
@@ -86,9 +86,9 @@ float calculateSsao(
 
 void main()
 {
-  #include include/screen_tri_tex_coord.glsl
+  #include "include/screen_tri_tex_coord.glsl"
 
-  #include include/var_gbuffer_normal.glsl
+  #include "include/var_gbuffer_normal.glsl"
 
   o_fragColor = calculateSsao(normal, texCoord);
 }

@@ -4,10 +4,10 @@ layout (triangles) in;
 // NOTE KI 73 == max what Nvidia GTX 1070 allowed
 layout (triangle_strip, max_vertices = 64) out;
 
-#include include/uniform_matrices.glsl
-#include include/uniform_camera.glsl
-#include include/uniform_data.glsl
-#include include/uniform_clip_planes.glsl
+#include "include/uniform_matrices.glsl"
+#include "include/uniform_camera.glsl"
+#include "include/uniform_data.glsl"
+#include "include/uniform_clip_planes.glsl"
 
 in VS_OUT {
   flat mat4 modelMatrix;
@@ -39,7 +39,7 @@ out float gl_ClipDistance[CLIP_COUNT];
 
 SET_FLOAT_PRECISION;
 
-#include include/fn_calculate_clipping.glsl
+#include "include/fn_calculate_clipping.glsl"
 
 void main() {
   const mat4 modelMatrix = vs_in[0].modelMatrix;

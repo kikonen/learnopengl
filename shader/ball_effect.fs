@@ -1,12 +1,12 @@
 #version 460 core
 
-#include include/ssbo_materials.glsl
+#include "include/ssbo_materials.glsl"
 
-#include include/uniform_matrices.glsl
-#include include/uniform_camera.glsl
-#include include/uniform_data.glsl
-#include include/uniform_shadow.glsl
-#include include/uniform_buffer_info.glsl
+#include "include/uniform_matrices.glsl"
+#include "include/uniform_camera.glsl"
+#include "include/uniform_data.glsl"
+#include "include/uniform_shadow.glsl"
+#include "include/uniform_buffer_info.glsl"
 
 #ifndef USE_ALPHA
 // https://www.khronos.org/opengl/wiki/Early_Fragment_Test
@@ -42,19 +42,19 @@ SET_FLOAT_PRECISION;
 ResolvedMaterial material;
 
 #ifdef EFFECT_SUN
-  #include include/effect_sun.glsl
+  #include "include/effect_sun.glsl"
 #endif
 #ifdef EFFECT_PLASMA
-  #include include/effect_plasma.glsl
+  #include "include/effect_plasma.glsl"
 #endif
 
 void main() {
   const uint materialIndex = fs_in.materialIndex;
 
   vec2 texCoord = fs_in.texCoord;
-  #include include/apply_parallax.glsl
+  #include "include/apply_parallax.glsl"
 
-  #include include/var_tex_material.glsl
+  #include "include/var_tex_material.glsl"
 
   iTime = u_time;
   iResolution = u_bufferResolution;

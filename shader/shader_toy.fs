@@ -1,12 +1,12 @@
 #version 460 core
 
-#include include/ssbo_materials.glsl
+#include "include/ssbo_materials.glsl"
 
-#include include/uniform_matrices.glsl
-#include include/uniform_camera.glsl
-#include include/uniform_data.glsl
-#include include/uniform_buffer_info.glsl
-#include include/uniform_lights.glsl
+#include "include/uniform_matrices.glsl"
+#include "include/uniform_camera.glsl"
+#include "include/uniform_data.glsl"
+#include "include/uniform_buffer_info.glsl"
+#include "include/uniform_lights.glsl"
 
 // NOTE KI depth is *not* used
 // => for *stencil test
@@ -29,15 +29,15 @@ layout (location = 0) out vec4 o_fragColor;
 
 SET_FLOAT_PRECISION;
 
-#include include/var_shader_toy.glsl
+#include "include/var_shader_toy.glsl"
 
 #ifdef SHADER_1
-#include include/shader_toy_main.glsl
+#include "include/shader_toy_main.glsl"
 #endif
 #ifdef SHADER_2
-#include include/shader_toy_ray_march_part_1.glsl
-//#include include/shader_toy_cloud_2.glsl
-//#include include/shader_toy_sdf_shapes.glsl
+#include "include/shader_toy_ray_march_part_1.glsl"
+//#include "include/shader_toy_cloud_2.glsl"
+//#include "include/shader_toy_sdf_shapes.glsl"
 #endif
 
 ResolvedMaterial material;
@@ -47,8 +47,8 @@ void main()
   const uint materialIndex = u_materialIndex;
   const vec2 texCoord = fs_in.texCoord;
 
-  #include include/var_tex_material.glsl
-  #include include/init_shader_toy.glsl
+  #include "include/var_tex_material.glsl"
+  #include "include/init_shader_toy.glsl"
 
   vec4 color = material.diffuse;
 

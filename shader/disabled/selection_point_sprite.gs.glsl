@@ -4,11 +4,11 @@ layout(points) in;
 layout(triangle_strip) out;
 layout(max_vertices = 4) out;
 
-#include include/struct_clip_plane.glsl
+#include "include/struct_clip_plane.glsl"
 
-#include include/uniform_data.glsl
-#include include/uniform_matrices.glsl
-#include include/uniform_clip_planes.glsl
+#include "include/uniform_data.glsl"
+#include "include/uniform_matrices.glsl"
+#include "include/uniform_clip_planes.glsl"
 
 layout(location = UNIFORM_STENCIL_MODE) uniform int u_stencilMode;
 
@@ -32,7 +32,7 @@ out float gl_ClipDistance[CLIP_COUNT];
 
 SET_FLOAT_PRECISION;
 
-#include include/fn_calculate_clipping.glsl
+#include "include/fn_calculate_clipping.glsl"
 
 void fillVertex(const int i)
 {

@@ -1,10 +1,10 @@
 #version 460 core
 
-#include include/uniform_matrices.glsl
-#include include/uniform_camera.glsl
-#include include/uniform_data.glsl
+#include "include/uniform_matrices.glsl"
+#include "include/uniform_camera.glsl"
+#include "include/uniform_data.glsl"
 
-#include include/screen_tri_vertex_out.glsl
+#include "include/screen_tri_vertex_out.glsl"
 
 layout(binding = UNIT_SOURCE) uniform sampler2D u_sourceTex;
 layout(binding = UNIT_G_EMISSION) uniform sampler2D g_emission;		\
@@ -19,7 +19,7 @@ SET_FLOAT_PRECISION;
 
 void main()
 {
-  #include include/screen_tri_tex_coord.glsl
+  #include "include/screen_tri_tex_coord.glsl"
 
   vec4 color = textureLod(u_sourceTex, texCoord, 0);
   vec3 emission = textureLod(g_emission, texCoord, 0).rgb;

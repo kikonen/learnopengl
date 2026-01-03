@@ -1,12 +1,12 @@
 #version 460 core
 
-#include include/ssbo_particles.glsl
-#include include/ssbo_materials.glsl
+#include "include/ssbo_particles.glsl"
+#include "include/ssbo_materials.glsl"
 
-#include include/uniform_matrices.glsl
-#include include/uniform_camera.glsl
-#include include/uniform_data.glsl
-#include include/uniform_clip_planes.glsl
+#include "include/uniform_matrices.glsl"
+#include "include/uniform_camera.glsl"
+#include "include/uniform_data.glsl"
+#include "include/uniform_clip_planes.glsl"
 
 out VS_OUT {
   flat vec2 spriteCoord;
@@ -29,7 +29,7 @@ const float MAX_SCALE = 5.0;
 
 Particle particle;
 
-#include include/fn_calculate_clipping.glsl
+#include "include/fn_calculate_clipping.glsl"
 
 void main() {
   const uint particleIndex = gl_BaseInstance + gl_InstanceID;
