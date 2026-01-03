@@ -1,12 +1,12 @@
 #version 460 core
 
-#include include/ssbo_entities.glsl
-#include include/ssbo_instance_indeces.glsl
+#include "include/ssbo_entities.glsl"
+#include "include/ssbo_instance_indeces.glsl"
 
-#include include/texture_plane.glsl
+#include "include/texture_plane.glsl"
 
-#include include/uniform_matrices.glsl
-#include include/uniform_camera.glsl
+#include "include/uniform_matrices.glsl"
+#include "include/uniform_camera.glsl"
 
 out VS_OUT {
   vec2 texCoord;
@@ -28,8 +28,8 @@ void main()
   const uint entityIndex = instance.u_entityIndex;
   entity = u_entities[entityIndex];
 
-  #include include/var_entity_model_matrix.glsl
-  #include include/var_entity_normal_matrix.glsl
+  #include "include/var_entity_model_matrix.glsl"
+  #include "include/var_entity_normal_matrix.glsl"
 
   const uint materialIndex = instance.u_materialIndex;
 

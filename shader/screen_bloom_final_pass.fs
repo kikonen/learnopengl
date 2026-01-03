@@ -1,8 +1,8 @@
 #version 460 core
 
-#include include/uniform_matrices.glsl
-#include include/uniform_camera.glsl
-#include include/uniform_data.glsl
+#include "include/uniform_matrices.glsl"
+#include "include/uniform_camera.glsl"
+#include "include/uniform_data.glsl"
 
 in VS_OUT {
   vec2 texCoord;

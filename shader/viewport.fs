@@ -7,7 +7,7 @@
 #define EFF_BLUR 4
 #define EFF_EDGE 5
 
-#include include/uniform_data.glsl
+#include "include/uniform_data.glsl"
 
 // https://www.khronos.org/opengl/wiki/Early_Fragment_Test
 // https://www.gamedev.net/forums/topic/700517-performance-question-alpha-texture-vs-frag-shader-discard/5397906/

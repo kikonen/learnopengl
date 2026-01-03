@@ -3,5 +3,5 @@ in VS_OUT {
   vec2 texCoord;
 } fs_in;
 #else
-#include include/uniform_buffer_info.glsl
+#include "include/uniform_buffer_info.glsl"
 #endif

@@ -1,10 +1,10 @@
 #version 460 core
 
-#include include/struct_entity.glsl
+#include "include/struct_entity.glsl"
 
-#include include/ssbo_entities.glsl
-#include include/uniform_matrices.glsl
-#include include/uniform_data.glsl
+#include "include/ssbo_entities.glsl"
+#include "include/uniform_matrices.glsl"
+#include "include/uniform_data.glsl"
 
 out VS_OUT {
   flat vec4 objectID;
@@ -24,12 +24,12 @@ SET_FLOAT_PRECISION;
 
 Entity entity;
 
-#include include/fn_convert_object_id.glsl
+#include "include/fn_convert_object_id.glsl"
 
 void main() {
   entity = u_entities[gl_BaseInstance + gl_InstanceID];
-  #include include/var_entity_model_matrix.glsl
-  #include include/var_entity_normal_matrix.glsl
+  #include "include/var_entity_model_matrix.glsl"
+  #include "include/var_entity_normal_matrix.glsl"
 
   const uint materialIndex = instance.u_materialIndex;
   const vec4 worldPos = modelMatrix * pos;

@@ -2,14 +2,14 @@
 
 layout(triangles, fractional_odd_spacing, ccw) in;
 
-#include include/struct_material.glsl
-#include include/struct_entity.glsl
+#include "include/struct_material.glsl"
+#include "include/struct_entity.glsl"
 
-#include include/ssbo_entities.glsl
-#include include/uniform_matrices.glsl
-#include include/uniform_data.glsl
-#include include/ssbo_materials.glsl
-#include include/uniform_textures.glsl
+#include "include/ssbo_entities.glsl"
+#include "include/uniform_matrices.glsl"
+#include "include/uniform_data.glsl"
+#include "include/ssbo_materials.glsl"
+#include "include/uniform_textures.glsl"
 
 in TCS_OUT {
   flat uint entityIndex;
@@ -60,7 +60,7 @@ SET_FLOAT_PRECISION;
 Entity entity;
 Material material;
 
-#include include/fn_calculate_shadow_index.glsl
+#include "include/fn_calculate_shadow_index.glsl"
 
 
 vec2 interpolate2D(vec2 v0, vec2 v1, vec2 v2)
@@ -80,7 +80,7 @@ vec3 interpolate3D(vec3 v0, vec3 v1, vec3 v2)
 void main()
 {
   entity = u_entities[tes_in[0].entityIndex];
-  #include include/var_entity_model_matrix.glsl
+  #include "include/var_entity_model_matrix.glsl"
 
   material = u_materials[tes_in[0].materialIndex];
   sampler2D heightMap = sampler2D(u_texture_handles[material.heightMapTex]);

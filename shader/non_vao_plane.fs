@@ -1,8 +1,8 @@
 #version 460 core
 
-#include include/ssbo_materials.glsl
+#include "include/ssbo_materials.glsl"
 
-#include include/uniform_data.glsl
+#include "include/uniform_data.glsl"
 
 #ifndef USE_ALPHA
 // https://www.khronos.org/opengl/wiki/Early_Fragment_Test
@@ -30,9 +30,9 @@ void main()
   const uint materialIndex = fs_in.materialIndex;
 
   vec2 texCoord = fs_in.texCoord;
-  #include include/apply_parallax.glsl
+  #include "include/apply_parallax.glsl"
 
-  #include include/var_tex_material.glsl
+  #include "include/var_tex_material.glsl"
 
   // if (fs_in.vertexID == 0) {
   //   o_fragColor = vec4(1, 0, 0, 1);

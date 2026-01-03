@@ -4,13 +4,13 @@ layout (location = ATTR_POS) in vec3 a_pos;
 layout (location = ATTR_NORMAL) in vec3 a_normal;
 layout (location = ATTR_TEX) in vec2 a_texCoord;
 
-#include include/struct_material.glsl
-#include include/struct_entity.glsl
+#include "include/struct_material.glsl"
+#include "include/struct_entity.glsl"
 
-#include include/ssbo_entities.glsl
-#include include/uniform_matrices.glsl
-#include include/ssbo_materials.glsl
-#include include/uniform_data.glsl
+#include "include/ssbo_entities.glsl"
+#include "include/uniform_matrices.glsl"
+#include "include/ssbo_materials.glsl"
+#include "include/uniform_data.glsl"
 
 
 out VS_OUT {
@@ -43,12 +43,12 @@ SET_FLOAT_PRECISION;
 
 Entity entity;
 
-#include include/fn_calculate_shadow_index.glsl
+#include "include/fn_calculate_shadow_index.glsl"
 
 void main() {
   entity = u_entities[gl_BaseInstance + gl_InstanceID];
-  #include include/var_entity_model_matrix.glsl
-  #include include/var_entity_normal_matrix.glsl
+  #include "include/var_entity_model_matrix.glsl"
+  #include "include/var_entity_normal_matrix.glsl"
 
   const uint materialIndex = instance.u_materialIndex;
   const vec4 pos = vec4(a_pos, 1.0);

@@ -3,9 +3,9 @@
 // NOTE KI window blit src and dst buffer are not same size
 #define SCREEN_TRI_VERTEX_OUT 1
 
-#include include/uniform_data.glsl
+#include "include/uniform_data.glsl"
 
-#include include/screen_tri_vertex_out.glsl
+#include "include/screen_tri_vertex_out.glsl"
 
 layout(binding = UNIT_VIEWPORT) uniform sampler2D u_viewportTex;
 
@@ -23,7 +23,7 @@ SET_FLOAT_PRECISION;
 
 void main()
 {
-  #include include/screen_tri_tex_coord.glsl
+  #include "include/screen_tri_tex_coord.glsl"
 
   vec4 orig = textureLod(u_viewportTex, texCoord, 0);
   vec3 color = orig.rgb;

@@ -1,1 +1,1 @@
-// NOTE KI moved to _globals.glsl
+// NOTE KI moved to "globals.glsl"

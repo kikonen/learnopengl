@@ -3,8 +3,8 @@
 layout (triangles) in;
 layout (line_strip, max_vertices = 16) out;
 
-#include include/uniform_matrices.glsl
-#include include/uniform_camera.glsl
+#include "include/uniform_matrices.glsl"
+#include "include/uniform_camera.glsl"
 
 in VS_OUT {
   vec3 normal;

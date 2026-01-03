@@ -1,12 +1,12 @@
 #version 460 core
 
-#include include/struct_material.glsl
-#include include/struct_entity.glsl
+#include "include/struct_material.glsl"
+#include "include/struct_entity.glsl"
 
-#include include/ssbo_entities.glsl
-#include include/uniform_matrices.glsl
-#include include/uniform_data.glsl
-#include include/ssbo_materials.glsl
+#include "include/ssbo_entities.glsl"
+#include "include/uniform_matrices.glsl"
+#include "include/uniform_data.glsl"
+#include "include/ssbo_materials.glsl"
 
 out VS_OUT {
   flat uint entityIndex;
@@ -38,8 +38,8 @@ Entity entity;
 
 void main() {
   entity = u_entities[gl_BaseInstance + gl_InstanceID];
-  #include include/var_entity_model_matrix.glsl
-  #include include/var_entity_normal_matrix.glsl
+  #include "include/var_entity_model_matrix.glsl"
+  #include "include/var_entity_normal_matrix.glsl"
 
   const uint materialIndex = instance.u_materialIndex;
   const vec4 worldPos = modelMatrix * pos;

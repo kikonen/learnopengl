@@ -1,6 +1,6 @@
 #version 460 core
 
-#include include/uniform_debug.glsl
+#include "include/uniform_debug.glsl"
 
 in VS_OUT {
   vec3 texCoord;

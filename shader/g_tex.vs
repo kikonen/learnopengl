@@ -9,18 +9,18 @@ layout (location = ATTR_TANGENT) in vec3 a_tangent;
 #endif
 layout (location = ATTR_TEX) in vec2 a_texCoord;
 
-#include include/tech_skinned_mesh_data.glsl
+#include "include/tech_skinned_mesh_data.glsl"
 
-#include include/ssbo_entities.glsl
-#include include/ssbo_instance_indeces.glsl
-#include include/ssbo_socket_transforms.glsl
-#include include/ssbo_materials.glsl
+#include "include/ssbo_entities.glsl"
+#include "include/ssbo_instance_indeces.glsl"
+#include "include/ssbo_socket_transforms.glsl"
+#include "include/ssbo_materials.glsl"
 
-#include include/uniform_matrices.glsl
-#include include/uniform_camera.glsl
-#include include/uniform_data.glsl
-#include include/uniform_clip_planes.glsl
-#include include/uniform_debug.glsl
+#include "include/uniform_matrices.glsl"
+#include "include/uniform_camera.glsl"
+#include "include/uniform_data.glsl"
+#include "include/uniform_clip_planes.glsl"
+#include "include/uniform_debug.glsl"
 
 out VS_OUT {
 #ifdef USE_CUBE_MAP
@@ -68,17 +68,17 @@ const vec3 UP = vec3(0, 1, 0);
 Instance instance;
 Entity entity;
 
-#include include/fn_calculate_clipping.glsl
-#include include/fn_calculate_custom_clipping.glsl
-#include include/fn_mod.glsl
+#include "include/fn_calculate_clipping.glsl"
+#include "include/fn_calculate_custom_clipping.glsl"
+#include "include/fn_mod.glsl"
 
 void main() {
   instance = u_instances[gl_BaseInstance + gl_InstanceID];
   const uint entityIndex = instance.u_entityIndex;
   entity = u_entities[entityIndex];
 
-  #include include/var_entity_model_matrix.glsl
-  #include include/var_entity_normal_matrix.glsl
+  #include "include/var_entity_model_matrix.glsl"
+  #include "include/var_entity_normal_matrix.glsl"
 
   const uint materialIndex = instance.u_materialIndex;
 
@@ -137,8 +137,8 @@ void main() {
     tangent = DECODE_A_TANGENT(a_tangent);
 #endif
 
-    #include include/tech_skinned_mesh_skin.glsl
-    #include include/apply_mod.glsl
+    #include "include/tech_skinned_mesh_skin.glsl"
+    #include "include/apply_mod.glsl"
 
     worldPos = modelMatrix * pos;
 

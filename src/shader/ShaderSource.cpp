@@ -228,6 +228,9 @@ std::vector<std::string> ShaderSource::processInclude(
     if (simplifiedPath.ends_with('"'))
         simplifiedPath = simplifiedPath.substr(0, simplifiedPath.length() - 1);
 
+    simplifiedPath = util::replace(simplifiedPath, "\"", "");
+    simplifiedPath = util::replace(simplifiedPath, "\"", "");
+
     const auto& path = util::joinPath(
         assets.shadersDir,
         simplifiedPath);

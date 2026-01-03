@@ -1,14 +1,14 @@
 #version 460 core
 
-#include include/uniform_matrices.glsl
-#include include/uniform_camera.glsl
-#include include/uniform_data.glsl
+#include "include/uniform_matrices.glsl"
+#include "include/uniform_camera.glsl"
+#include "include/uniform_data.glsl"
 
 // NOTE KI depth is *not* used
 // => for *stencil test
 layout(early_fragment_tests) in;
 
-#include include/screen_tri_vertex_out.glsl
+#include "include/screen_tri_vertex_out.glsl"
 
 layout(binding = UNIT_G_DEPTH) uniform sampler2D g_depth;
 
@@ -34,7 +34,7 @@ vec4 calculateFog(
 
 void main()
 {
-  #include include/screen_tri_tex_coord.glsl
+  #include "include/screen_tri_tex_coord.glsl"
 
   // https://ahbejarano.gitbook.io/lwjglgamedev/chapter-19
   vec3 viewPos;
