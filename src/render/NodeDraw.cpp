@@ -232,19 +232,4 @@ namespace render {
         //if (m_pipeline.m_debug) m_passDebug->cleanup(ctx);
         //if (m_pipeline.m_copy) m_passCopy->cleanup(ctx);
     }
-
-    void NodeDraw::drawProgram(
-        const RenderContext& ctx,
-        const DrawContext& drawContext,
-        const std::function<ki::program_id (const mesh::LodMesh&)>& programSelector,
-        const std::function<void(ki::program_id)>& programPrepare)
-    {
-        CollectionRender collectionRender;
-        collectionRender.drawProgram(
-            ctx,
-            programSelector,
-            programPrepare,
-            drawContext.nodeSelector,
-            drawContext.kindBits);
-    }
 }

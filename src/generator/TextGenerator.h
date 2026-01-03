@@ -28,23 +28,23 @@ public:
 
     ~TextGenerator();
 
-    virtual void prepareWT(
+    void prepareWT(
         const PrepareContext& ctx,
         model::Node& container) override;
 
-    virtual void prepareRT(
+    void prepareRT(
         const PrepareContext& ctx,
         model::Node& container) override;
 
-    virtual void updateWT(
+    void updateWT(
         const UpdateContext& ctx,
         const model::Node& container) override;
 
-    virtual void updateVAO(
+    void updateVAO(
         const render::RenderContext& ctx,
-        const model::Node& container);
+        const model::Node& container) override;
 
-    virtual void bindBatch(
+    void bindBatch(
         const render::RenderContext& ctx,
         const std::function<ki::program_id (const mesh::LodMesh&)>& programSelector,
         const std::function<void(ki::program_id)>& programPrepare,
@@ -53,7 +53,7 @@ public:
         const model::Node& container,
         const model::Snapshot& snapshot) override;
 
-    virtual const std::vector<mesh::LodMesh>* getLodMeshes(const model::Node& container) const
+    const std::vector<mesh::LodMesh>* getLodMeshes(const model::Node& container) const override
     {
         return &m_lodMeshes;
     }

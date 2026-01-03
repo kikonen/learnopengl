@@ -200,7 +200,7 @@ void SceneUpdater::update(const UpdateContext& ctx)
     // NOTE KI sync to RT
     {
         KI_TIMER("node4   ");
-        nodeRegistry.snapshotPending();
+        nodeRegistry.makeSnapshotPending();
         nodeRegistry.notifyPendingChanges();
     }
 

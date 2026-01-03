@@ -77,15 +77,14 @@ public:
     void updateModelMatrices();
     void updateModelMatrices(const model::Node* node);
 
-    void prepareUpdateRT(const UpdateContext& ctx);
     void updateRT(const UpdateContext& ctx);
     // @return [min-dirty, max-dirty]
     std::pair<int, int> updateEntity(const UpdateContext& ctx);
 
-    void snapshotPending();
-    void snapshotRT();
+    void makeSnapshotPending();
+    void makeSnapshotRT();
 
-    void snapshot(
+    void makeSnapshot(
         std::vector<model::Snapshot>& src,
         std::vector<model::Snapshot>& dst);
 

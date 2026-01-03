@@ -48,6 +48,7 @@ namespace backend {
 
         bool m_clip : 1 {false};
 
+        // @see render/InstanceFlags.h
         uint8_t m_flags : 3 { 0 };
 
         uint8_t m_kindBits : 3 { render::KIND_SOLID };

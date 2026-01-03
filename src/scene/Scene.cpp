@@ -393,7 +393,7 @@ void Scene::updateRT(const UpdateContext& ctx)
     const auto& assets = ctx.getAssets();
     const auto& dbg = ctx.getDebug();
 
-    NodeRegistry::get().prepareUpdateRT(ctx);
+    NodeRegistry::get().makeSnapshotRT();
 
     //m_engine.getRegistry()->m_dispatcherView->dispatchEvents();
 
