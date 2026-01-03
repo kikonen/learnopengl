@@ -1332,6 +1332,9 @@
     <ClCompile Include="src\mesh_set\NodeTree.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\render\InstanceRegistry.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h">
@@ -2108,7 +2111,7 @@
     <ClInclude Include="src\mesh\LodMesh.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\mesh\InstanceSSBO.h">
+    <ClInclude Include="src\render\InstanceSSBO.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\loader\LodData.h">
@@ -2303,7 +2306,7 @@
     <ClInclude Include="src\loader\MeshLoader.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\mesh\InstanceFlags.h">
+    <ClInclude Include="src\render\InstanceFlags.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\loader\TextLoader.h">
@@ -3018,6 +3021,15 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\mesh\RegisteredRig.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\render\InstanceRegistry.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\render\DrawableInfo.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\render\InstanceIndexSSBO.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

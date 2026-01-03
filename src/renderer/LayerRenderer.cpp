@@ -22,10 +22,12 @@
 #include "engine/UpdateViewContext.h"
 
 #include "debug/DebugContext.h"
+
 #include "render/Camera.h"
 #include "render/RenderContext.h"
 #include "render/FrameBuffer.h"
 #include "render/Batch.h"
+#include "render/DrawableInfo.h"
 #include "render/NodeDraw.h"
 #include "render/CollectionRender.h"
 #include "render/DrawContext.h"
@@ -229,10 +231,10 @@ void LayerRenderer::fillHighlightMask(
         };
 
         render::CollectionRender collectionRender;
-        collectionRender.drawProgram(
+        collectionRender.drawProgramWithPrepare(
             localCtx,
-            [this](const mesh::LodMesh& lodMesh) {
-                return lodMesh.m_selectionProgramId ? lodMesh.m_selectionProgramId : m_selectionProgram->m_id;
+            [this](const render::DrawableInfo& drawable) {
+                return drawable.selectionProgramId ? drawable.selectionProgramId : m_selectionProgram->m_id;
             },
             [this](ki::program_id programId) {
                 auto* program = Program::get(programId);
@@ -293,10 +295,10 @@ void LayerRenderer::renderHighlight(
 
         // draw all selected nodes with stencil
         render::CollectionRender collectionRender;
-        collectionRender.drawProgram(
+        collectionRender.drawProgramWithPrepare(
             localCtx,
-            [this, shift](const mesh::LodMesh& lodMesh) {
-                return lodMesh.m_selectionProgramId ? lodMesh.m_selectionProgramId : m_selectionProgram->m_id;
+            [this, shift](const render::DrawableInfo& drawable) {
+                return drawable.selectionProgramId ? drawable.selectionProgramId : m_selectionProgram->m_id;
             },
             [this, shift](ki::program_id programId) {
                 auto* program = Program::get(programId);

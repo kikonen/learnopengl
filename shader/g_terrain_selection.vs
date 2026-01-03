@@ -8,6 +8,7 @@ layout (location = ATTR_TEX) in vec2 a_texCoord;
 layout(location = UNIFORM_STENCIL_MODE) uniform int u_stencilMode;
 
 #include "include/ssbo_entities.glsl"
+#include "include/ssbo_instances.glsl"
 #include "include/ssbo_instance_indeces.glsl"
 #include "include/ssbo_materials.glsl"
 #include "include/ssbo_terrain_tiles.glsl"
@@ -46,7 +47,7 @@ ResolvedMaterial material;
 TerrainTile tile;
 
 void main() {
-  const uint instanceIndex = gl_BaseInstance + gl_InstanceID;
+  const uint instanceIndex = GET_INSTANCE_INDEX;
   instance = u_instances[instanceIndex];
 
   const uint entityIndex = instance.u_entityIndex;

@@ -13,6 +13,7 @@
 #include "render/FrameBuffer.h"
 #include "render/CollectionRender.h"
 #include "render/Batch.h"
+#include "render/DrawableInfo.h"
 
 namespace render
 {
@@ -71,14 +72,13 @@ namespace render
         state.setStencil(kigl::GLStencilMode::fill(STENCIL_SOLID | STENCIL_FOG));
 
         CollectionRender collectionRender;
-        collectionRender.drawNodesImpl(
+        collectionRender.drawProgram(
             ctx,
-            [](const mesh::LodMesh& lodMesh) {
-                return !lodMesh.m_drawOptions.isBlend() && !lodMesh.m_drawOptions.m_gbuffer
-                    ? lodMesh.m_programId
+            [](const render::DrawableInfo& drawable) {
+                return !drawable.drawOptions.isBlend() && !drawable.drawOptions.m_gbuffer
+                    ? drawable.programId
                     : (ki::program_id)0;
             },
-            [](ki::program_id programId) {},
             [&drawContext](const model::Node* node) {
                 return node->m_typeFlags.useForward &&
                     drawContext.nodeSelector(node);

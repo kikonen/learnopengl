@@ -143,27 +143,28 @@ void TextGenerator::updateVAO(
     //}
 }
 
+void TextGenerator::registerDrawables(
+    render::InstanceRegistry& instanceRegistry,
+    const model::Node& container)
+{}
+
 void TextGenerator::bindBatch(
     const render::RenderContext& ctx,
-    const std::function<ki::program_id (const mesh::LodMesh&)>& programSelector,
+    const std::function<ki::program_id (const render::DrawableInfo&)>& programSelector,
     const std::function<void(ki::program_id)>& programPrepare,
     uint8_t kindBits,
     render::Batch& batch,
-    const model::Node& container,
-    const model::Snapshot& snapshot)
+    const model::Node& container)
 {
     m_draw->updateRT();
 
     batch.addSnapshot(
         ctx,
         container.getType(),
-        container.getLodMeshes(),
-        container.getLodMeshInstances(),
+        container.m_instanceRef,
         programSelector,
         programPrepare,
-        kindBits,
-        snapshot,
-        container.getEntityIndex());
+        kindBits);
 }
 
 GLuint64 TextGenerator::getAtlasTextureHandle() const noexcept

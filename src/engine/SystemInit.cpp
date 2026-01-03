@@ -27,6 +27,7 @@
 
 #include "nav/NavigationSystem.h"
 
+#include "render/InstanceRegistry.h"
 
 #include "registry/NodeTypeRegistry.h"
 #include "registry/NodeRegistry.h"
@@ -52,6 +53,8 @@ void SystemInit::init() noexcept
     physics::PhysicsSystem::init();
 
     nav::NavigationSystem::init();
+
+    render::InstanceRegistry::init();
 
     particle::ParticleSystem::init();
 

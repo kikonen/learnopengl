@@ -3,6 +3,7 @@
 layout(vertices=3) out;
 
 #include "include/ssbo_entities.glsl"
+#include "include/ssbo_instances.glsl"
 #include "include/ssbo_instance_indeces.glsl"
 #include "include/ssbo_socket_transforms.glsl"
 

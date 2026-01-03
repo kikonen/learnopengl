@@ -18,17 +18,23 @@ namespace mesh {
         : m_vbo{ name },
         m_attr{ attr },
         m_binding{ binding }
-    {}
+    {
+        clear();
+    }
 
     template<typename T_Vertex, typename T_Entry>
     VBO<T_Vertex, T_Entry>::~VBO()
-    {}
+    {
+    }
 
     template<typename T_Vertex, typename T_Entry>
     void VBO<T_Vertex, T_Entry>::clear()
     {
         m_entries.clear();
         m_dirty.clear();
+
+        // NOTE KI reserve 0 for NULL
+        reserveVertices(1);
 
         m_vbo.markUsed(0);
     }

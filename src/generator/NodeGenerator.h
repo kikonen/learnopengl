@@ -9,6 +9,8 @@
 
 #include "kigl/kigl.h"
 
+#include "util/BufferReference.h"
+
 #include "GeneratorMode.h"
 
 namespace kigl {
@@ -22,6 +24,8 @@ namespace backend {
 
 namespace render {
     class Batch;
+    class InstanceRegistry;
+    struct DrawableInfo;
 }
 
 namespace mesh {
@@ -82,14 +86,17 @@ public:
         const UpdateContext& ctx,
         const model::Node& container) {}
 
+    virtual void registerDrawables(
+        render::InstanceRegistry& instanceRegistry,
+        const model::Node& container);
+
     virtual void bindBatch(
         const render::RenderContext& ctx,
-        const std::function<ki::program_id (const mesh::LodMesh&)>& programSelector,
+        const std::function<ki::program_id (const render::DrawableInfo&)>& programSelector,
         const std::function<void(ki::program_id)>& programPrepare,
         uint8_t kindBits,
         render::Batch& batch,
-        const model::Node& container,
-        const model::Snapshot& snapshot);
+        const model::Node& container);
 
     virtual void updateVAO(
         const render::RenderContext& ctx,
@@ -121,7 +128,10 @@ protected:
 
     glm::vec4 m_volume{ 0.f };
 
-    std::vector<uint32_t> m_indeces;
+    util::BufferReference m_instanceRef{ 0 };
+
     std::vector<mesh::Transform> m_transforms;
+    std::vector<uint32_t> m_transformIndeces;
+
     std::vector<pool::NodeHandle> m_nodes;
 };

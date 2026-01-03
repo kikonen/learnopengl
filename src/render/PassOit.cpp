@@ -11,8 +11,8 @@
 #include "debug/DebugContext.h"
 #include "render/RenderContext.h"
 #include "render/FrameBuffer.h"
-#include "render/CollectionRender.h"
 #include "render/Batch.h"
+#include "render/DrawableInfo.h"
 #include "render/CollectionRender.h"
 #include "render/PassDeferred.h"
 
@@ -135,14 +135,13 @@ namespace render
 
         // only "blend OIT" nodes
         CollectionRender collectionRender;
-        collectionRender.drawNodesImpl(
+        collectionRender.drawProgram(
             ctx,
-            [this](const mesh::LodMesh& lodMesh) {
-                if (!lodMesh.m_drawOptions.m_gbuffer) return (ki::program_id)0;
-                if (lodMesh.m_oitProgramId) return lodMesh.m_oitProgramId;
+            [this](const render::DrawableInfo& drawable) {
+                if (!drawable.drawOptions.m_gbuffer) return (ki::program_id)0;
+                if (drawable.oitProgramId) return drawable.oitProgramId;
                 return m_oitProgram->m_id;
             },
-            [](ki::program_id programId) {},
             [&drawContext](const model::Node* node) {
                 return node->m_typeFlags.useOit &&
                     drawContext.nodeSelector(node);

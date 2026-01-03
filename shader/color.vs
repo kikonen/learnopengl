@@ -3,6 +3,7 @@
 layout (location = ATTR_POS) in vec3 a_pos;
 
 #include "include/ssbo_entities.glsl"
+#include "include/ssbo_instances.glsl"
 #include "include/ssbo_instance_indeces.glsl"
 
 #include "include/uniform_matrices.glsl"
@@ -19,7 +20,7 @@ Instance instance;
 Entity entity;
 
 void main() {
-  instance = u_instances[gl_BaseInstance + gl_InstanceID];
+  instance = GET_INSTANCE;
   const uint entityIndex = instance.u_entityIndex;
   entity = u_entities[entityIndex];
 

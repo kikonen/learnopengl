@@ -21,6 +21,7 @@ namespace mesh {
 namespace render
 {
     class RenderContext;
+    struct DrawableInfo;
 
     // NOTE KI proramSelector != programPrrepare.
     // => selector is called from separate threads, prepare from RT only
@@ -29,20 +30,42 @@ namespace render
     public:
         void drawProgram(
             const RenderContext& ctx,
-            const std::function<ki::program_id(const mesh::LodMesh&)>& programSelector,
-            const std::function<void(ki::program_id)>& programPrepare,
+            const std::function<ki::program_id(const render::DrawableInfo&)>& programSelector,
             const std::function<bool(const model::Node*)>& nodeSelector,
-            uint8_t kindBits);
+            uint8_t kindBits)
+        {
+            drawNodesImpl(
+                ctx,
+                programSelector,
+                [](ki::program_id programId) {},
+                nodeSelector,
+                kindBits);
+        }
 
-        bool drawNodesImpl(
+        // NOTE KI special case render with prepare done for program
+        // => not safe for generic render, since assumes that same prepare applies to
+        //    all nodes consistently (if not then logic will fail), since prepare is done
+        //    before all draw commands are executed
+        void drawProgramWithPrepare(
             const RenderContext& ctx,
-            const std::function<ki::program_id(const mesh::LodMesh&)>& programSelector,
+            const std::function<ki::program_id(const render::DrawableInfo&)>& programSelector,
             const std::function<void(ki::program_id)>& programPrepare,
             const std::function<bool(const model::Node*)>& nodeSelector,
-            uint8_t kindBits);
+            uint8_t kindBits)
+        {
+            drawNodesImpl(ctx, programSelector, programPrepare, nodeSelector, kindBits);
+        }
 
         void drawBlendedImpl(
             const RenderContext& ctx,
             const std::function<bool(const model::Node*)>& nodeSelector);
+
+    private:
+        bool drawNodesImpl(
+            const RenderContext& ctx,
+            const std::function<ki::program_id(const render::DrawableInfo&)>& programSelector,
+            const std::function<void(ki::program_id)>& programPrepare,
+            const std::function<bool(const model::Node*)>& nodeSelector,
+            uint8_t kindBits);
     };
 }

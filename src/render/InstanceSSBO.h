@@ -2,9 +2,11 @@
 
 #include "kigl/kigl.h"
 
-namespace mesh {
+namespace render
+{
 #pragma pack(push, 1)
-    struct InstanceSSBO {
+    struct InstanceSSBO
+    {
         //glm::mat4x3 u_transformMatrix;
         glm::vec4 u_transformMatrixRow0{ 1.f, 0.f, 0.f, 0.f };
         glm::vec4 u_transformMatrixRow1{ 0.f, 1.f, 0.f, 0.f };
@@ -12,9 +14,8 @@ namespace mesh {
 
         GLuint u_entityIndex;
         GLuint u_materialIndex;
-
+    
         GLuint u_jointBaseIndex{ 0 };
-        //GLuint u_socketIndex{ 0 };
 
         GLuint u_flags{ 0 };
 
@@ -31,10 +32,6 @@ namespace mesh {
         inline void setJointBaseIndex(GLuint baseIndex) {
             u_jointBaseIndex = baseIndex;
         };
-
-        //inline void setSocketIndex(GLushort socketIndex) {
-        //    u_socketIndex = socketIndex;
-        //}
 
         inline void setFlags(GLushort flags) {
             u_flags = flags;

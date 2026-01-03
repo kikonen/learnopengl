@@ -395,6 +395,7 @@
     <ClCompile Include="src\render\BlurBuffer.cpp" />
     <ClCompile Include="src\render\CollectionRender.cpp" />
     <ClCompile Include="src\render\CubeMapDebugTexture.cpp" />
+    <ClCompile Include="src\render\InstanceRegistry.cpp" />
     <ClCompile Include="src\render\NodeCollection.cpp" />
     <ClCompile Include="src\render\Pass.cpp" />
     <ClCompile Include="src\render\PassBloom.cpp" />
@@ -736,6 +737,9 @@
     <ClInclude Include="src\animation\animation_util.h" />
     <ClInclude Include="src\animation\ClipContainer.h" />
     <ClInclude Include="src\mesh\RegisteredRig.h" />
+    <ClInclude Include="src\render\DrawableInfo.h" />
+    <ClInclude Include="src\render\InstanceIndexSSBO.h" />
+    <ClInclude Include="src\render\InstanceRegistry.h" />
     <ClInclude Include="src\util\BufferReference.h" />
     <ClInclude Include="src\animation\Rig.h" />
     <ClInclude Include="src\mesh\LodMeshInstance.h" />
@@ -941,7 +945,7 @@
     <ClInclude Include="src\loader\VertexLoader.h" />
     <ClInclude Include="src\mesh\MeshInstance.h" />
     <ClInclude Include="src\mesh_set\RigNodeTreeGenerator.h" />
-    <ClInclude Include="src\mesh\InstanceFlags.h" />
+    <ClInclude Include="src\render\InstanceFlags.h" />
     <ClInclude Include="src\mesh\PrimitiveMesh.h" />
     <ClInclude Include="src\mesh_set\LoadContext.h" />
     <ClInclude Include="src\loader\converter\Document.h" />
@@ -1029,7 +1033,7 @@
     <ClInclude Include="src\mesh\vao\VertexNormalVBO.h" />
     <ClInclude Include="src\text\vao\AtlasTextureVBO.h" />
     <ClInclude Include="src\mesh\Index.h" />
-    <ClInclude Include="src\mesh\InstanceSSBO.h" />
+    <ClInclude Include="src\render\InstanceSSBO.h" />
     <ClInclude Include="src\mesh\LodMesh.h" />
     <ClInclude Include="src\model\TypeFlags.h" />
     <ClInclude Include="src\mesh\vao\PositionEntry.h" />

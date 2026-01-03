@@ -27,6 +27,8 @@
 #include "backend/gl/PerformanceCounters.h"
 #include "DrawOptions.h"
 
+#include "render/InstanceIndexSSBO.h"
+
 namespace {
     inline const std::string CS_FRUSTUM_CULLING{ "frustum_culling" };
 
@@ -254,7 +256,7 @@ namespace backend {
     }
 
     void DrawBuffer::sendInstanceIndeces(
-        std::span<mesh::InstanceSSBO> indeces)
+        std::span<render::InstanceIndexSSBO> indeces)
     {
         const size_t totalCount = indeces.size();
         {
@@ -280,8 +282,8 @@ namespace backend {
             size_t blocks = static_cast<size_t>((totalCount * 1.25f / INDEX_BLOCK_SIZE) + 2);
             size_t entryCount = blocks * INDEX_BLOCK_SIZE;
 
-            m_instanceBuffers = std::make_unique<kigl::GLSyncQueue<mesh::InstanceSSBO>>(
-                "draw_instance",
+            m_instanceBuffers = std::make_unique<kigl::GLSyncQueue<render::InstanceIndexSSBO>>(
+                "instance_index",
                 entryCount,
                 MAX_INSTANCE_BUFFERS,
                 true,

@@ -8,6 +8,7 @@
 #include "render/RenderContext.h"
 #include "render/FrameBuffer.h"
 #include "render/Batch.h"
+#include "render/DrawableInfo.h"
 #include "render/Camera.h"
 #include "render/NodeCollection.h"
 
@@ -16,19 +17,9 @@
 
 namespace render
 {
-    void CollectionRender::drawProgram(
-        const RenderContext& ctx,
-        const std::function<ki::program_id(const mesh::LodMesh&)>& programSelector,
-        const std::function<void(ki::program_id)>& programPrepare,
-        const std::function<bool(const model::Node*)>& nodeSelector,
-        uint8_t kindBits)
-    {
-        drawNodesImpl(ctx, programSelector, programPrepare, nodeSelector, kindBits);
-    }
-
     bool CollectionRender::drawNodesImpl(
         const RenderContext& ctx,
-        const std::function<ki::program_id(const mesh::LodMesh&)>& programSelector,
+        const std::function<ki::program_id(const render::DrawableInfo&)>& programSelector,
         const std::function<void(ki::program_id)>& programPrepare,
         const std::function<bool(const model::Node*)>& nodeSelector,
         const uint8_t kindBits)
@@ -109,7 +100,7 @@ namespace render
             ctx.m_batch->draw(
                 ctx,
                 it->second,
-                [this](const mesh::LodMesh& lodMesh) { return lodMesh.m_programId; },
+                [this](const render::DrawableInfo& drawable) { return drawable.programId; },
                 [](ki::program_id) {},
                 render::KIND_BLEND);
         }

@@ -9,6 +9,8 @@
 
 #include "ki/limits.h"
 
+#include "util/BufferReference.h"
+
 #include "pool/NodeHandle.h"
 #include "pool/TypeHandle.h"
 
@@ -53,6 +55,7 @@ namespace audio {
 namespace render
 {
     class RenderContext;
+    struct DrawableInfo;
 }
 
 namespace mesh
@@ -153,9 +156,11 @@ namespace model
 
         void updateVAO(const render::RenderContext& ctx) noexcept;
 
+        void registerDrawables() noexcept;
+
         void bindBatch(
             const render::RenderContext& ctx,
-            const std::function<ki::program_id(const mesh::LodMesh&)>& programSelector,
+            const std::function<ki::program_id(const render::DrawableInfo&)>& programSelector,
             const std::function<void(ki::program_id)>& programPrepare,
             uint8_t kindBits,
             render::Batch& batch) noexcept;
@@ -222,6 +227,7 @@ namespace model
 
         physics::object_id m_physicsObjectId{ 0 };
 
+        util::BufferReference m_instanceRef{ 0 };
         std::vector<mesh::LodMeshInstance> m_lodMeshInstances;
         std::vector<mesh::RegisteredRig> m_registeredRigs;
 

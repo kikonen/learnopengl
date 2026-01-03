@@ -35,6 +35,8 @@
 #include "material/MaterialRegistry.h"
 #include "material/ImageRegistry.h"
 
+#include "render/InstanceRegistry.h"
+
 #include "nav/NavigationSystem.h"
 
 #include "registry/NodeRegistry.h"
@@ -59,7 +61,8 @@ Registry::Registry(
     m_dispatcherWorker(m_dispatcherWorkerImpl.get()),
     m_dispatcherView(m_dispatcherViewImpl.get()),
     m_nodeRegistry{ &NodeRegistry::get() },
-    m_selectionRegistry{ &SelectionRegistry::get() }
+    m_selectionRegistry{ &SelectionRegistry::get() },
+    m_instanceRegistry{ &render::InstanceRegistry::get() }
 {
 }
 
@@ -145,6 +148,8 @@ void Registry::prepare(const PrepareContext& ctx)
     VaoRegistry::get().prepare();
     ViewportRegistry::get().prepare();
     ControllerRegistry::get().prepare(&m_engine);
+
+    m_instanceRegistry->prepare();
 }
 
 void Registry::updateWT(const UpdateContext& ctx)

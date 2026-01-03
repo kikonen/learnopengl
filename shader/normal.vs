@@ -7,6 +7,7 @@ layout (location = ATTR_TANGENT) in vec3 a_tangent;
 #include "include/tech_skinned_mesh_data.glsl"
 
 #include "include/ssbo_entities.glsl"
+#include "include/ssbo_instances.glsl"
 #include "include/ssbo_instance_indeces.glsl"
 #include "include/ssbo_socket_transforms.glsl"
 
@@ -35,7 +36,7 @@ Entity entity;
 #include "include/fn_mod.glsl"
 
 void main() {
-  instance = u_instances[gl_BaseInstance + gl_InstanceID];
+  instance = GET_INSTANCE;
   const uint entityIndex = instance.u_entityIndex;
   entity = u_entities[entityIndex];
 

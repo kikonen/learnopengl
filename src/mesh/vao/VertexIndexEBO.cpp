@@ -13,12 +13,17 @@ namespace mesh {
     VertexIndexEBO::VertexIndexEBO(
         std::string_view name)
         : m_ebo{ name }
-    {}
+    {
+        clear();
+    }
 
     void VertexIndexEBO::clear()
     {
         m_entries.clear();
         m_dirty.clear();
+
+        // NOTE KI reserve 0 for NULL
+        reserveIndeces(1);
 
         m_ebo.markUsed(0);
     }
