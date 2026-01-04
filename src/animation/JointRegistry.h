@@ -41,8 +41,9 @@ namespace animation {
     protected:
         // Register node instance specific rig
         // @return instance index into joint transform buffer
-        uint32_t addInstance(size_t count);
-        void removeInstance(util::BufferReference ref);
+        util::BufferReference allocate(uint32_t count);
+        // @return null ref
+        util::BufferReference release(util::BufferReference ref);
 
 		std::span<const glm::mat4> getRange(
 			const util::BufferReference ref) const noexcept;
@@ -66,11 +67,11 @@ namespace animation {
 
         std::atomic_bool m_updateReady{ false };
 
+        std::vector<glm::mat4> m_transforms;
+
         // { size: [index, ...] }
         std::unordered_map<size_t, std::vector<uint32_t>> m_freeSlots;
-
-        std::vector<glm::mat4> m_transforms;
-        std::vector<util::BufferReference> m_dirtyTransforms;
+        std::vector<util::BufferReference> m_dirtySlots;
 
         std::vector<JointTransformSSBO> m_snapshot;
         std::vector<util::BufferReference> m_dirtySnapshot;

@@ -136,10 +136,8 @@ namespace animation
 
         auto& rigNodeRegistry = *m_rigNodeRegistry;
 
-        util::BufferReference rigRef{
-            .offset = rigNodeRegistry.addInstance(rig.m_nodes.size()),
-            .size = static_cast<uint32_t>(rig.m_nodes.size())
-        };
+        util::BufferReference rigRef = rigNodeRegistry.allocate(
+            static_cast<uint32_t>(rig.m_nodes.size()));
 
         if (rigRef.size > 0) {
             // Initialize joints
@@ -165,10 +163,8 @@ namespace animation
         auto& rigNodeRegistry = *m_rigNodeRegistry;
         auto& socketRegistry = *m_socketRegistry;
 
-        util::BufferReference socketRef{
-            .offset = socketRegistry.addInstance(rig.m_sockets.size()),
-            .size = static_cast<uint32_t>(rig.m_sockets.size())
-        };
+        util::BufferReference socketRef = socketRegistry.allocate(
+            static_cast<uint32_t>(rig.m_sockets.size()));
 
         // NOTE KI all joints are initially identity matrix
         // NOTE KI sockets need to be initialiazed to match initial static joint hierarchy
@@ -200,10 +196,8 @@ namespace animation
         auto& rigNodeRegistry = *m_rigNodeRegistry;
         auto& jointRegistry = *m_jointRegistry;
 
-        util::BufferReference jointRef{
-            .offset = jointRegistry.addInstance(jointContainer.size()),
-            .size = static_cast<uint32_t>(jointContainer.size())
-        };
+        util::BufferReference jointRef = jointRegistry.allocate(
+            static_cast<uint32_t>(jointContainer.size()));
 
         // Initialize joints
         if (jointRef.size > 0) {
@@ -233,7 +227,7 @@ namespace animation
 
         auto& rigNodeRegistry = *m_rigNodeRegistry;
 
-        rigNodeRegistry.removeInstance(rigRef);
+        rigNodeRegistry.release(rigRef);
 
         return { 0, 0 };
     }
@@ -245,7 +239,7 @@ namespace animation
 
         auto& socketRegistry = *m_socketRegistry;
 
-        socketRegistry.removeInstance(socketRef);
+        socketRegistry.release(socketRef);
 
         return { 0, 0 };
     }
@@ -257,7 +251,7 @@ namespace animation
 
         auto& jointRegistry = *m_jointRegistry;
 
-        jointRegistry.removeInstance(jointRef);
+        jointRegistry.release(jointRef);
 
         return { 0, 0 };
     }

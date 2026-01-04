@@ -30,18 +30,23 @@ namespace render
         void clear();
         void prepare();
 
-        // Called at load time when meshes are registered
-        // @return persistent instance index
-        uint32_t registerDrawable(const DrawableInfo& info);
+        // @return ref to buffer
+        util::BufferReference allocate(uint32_t count);
+        // @return null ref
+        util::BufferReference release(util::BufferReference ref);
 
-        // Called when entity is destroyed
-        void unregisterDrawable(uint32_t instanceIndex);
+        //// Called at load time when meshes are registered
+        //// @return persistent instance index
+        //uint32_t registerDrawable(const DrawableInfo& info);
 
         std::span<const render::DrawableInfo> getRange(
             const util::BufferReference ref) const noexcept;
 
         std::span<render::DrawableInfo> modifyRange(
             util::BufferReference ref) noexcept;
+
+        void markDirtyAll() noexcept;
+        void markDirty(util::BufferReference ref) noexcept;
 
         void updateInstances();
 
@@ -51,16 +56,7 @@ namespace render
         // Bind for rendering
         void bind();
 
-        // Accessors for Batch to build draw commands
-        const DrawableInfo& getDrawableInfo(uint32_t index) const
-        {
-            return m_drawables[index];
-        }
-
         size_t getDrawableCount() const { return m_drawables.size(); }
-
-        // Get instance index for a specific entity + mesh combination
-        uint32_t getInstanceIndex(uint32_t entityIndex, uint32_t meshId) const;
 
     private:
         kigl::GLBuffer m_ssbo{ "instance_ssbo" };
@@ -72,14 +68,14 @@ namespace render
 
         std::vector<DrawableInfo> m_drawables;
 
-        // CPU staging
+        // { size: [index, ...] }
+        std::unordered_map<size_t, std::vector<uint32_t>> m_freeSlots;
+        std::vector<util::BufferReference> m_dirtySlots;
+
         std::vector<render::InstanceSSBO> m_instances;
+        std::vector<util::BufferReference> m_dirtyInstances;
 
-
-        // Lookup: (entityIndex, meshId) → instance index
-        std::unordered_map<uint64_t, uint32_t> m_lookupMap;
-
-        bool m_dirty{ true };
+        //bool m_dirty{ true };
         size_t m_uploadedCount{ 0 };
     };
 }

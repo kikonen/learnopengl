@@ -30,12 +30,17 @@ void NodeGenerator::registerDrawables(
 
     uint32_t groupId = 0;
 
+    m_instanceRef = instanceRegistry.allocate(
+        static_cast<uint32_t>(m_transforms.size() * lodMeshes.size()));
+    auto drawables = instanceRegistry.modifyRange(m_instanceRef);
+    int drawableIndex = 0;
+
     for (auto& transform : m_transforms) {
         for (int i = 0; i < lodMeshInstances.size(); i++) {
             const auto& lod = lodMeshInstances[i];
             const auto& lodMesh = lodMeshes[i];
 
-            render::DrawableInfo drawable;
+            auto& drawable = drawables[drawableIndex++];
             {
                 drawable.lodMeshIndex = i;
                 drawable.meshId = lodMesh.getMesh<mesh::Mesh>()->m_id;
@@ -69,12 +74,6 @@ void NodeGenerator::registerDrawables(
                 drawable.worldVolume = transform.getWorldVolume();
                 drawable.localTransform = transform.getMatrix() * lodMesh.m_baseTransform;
             }
-
-            auto index = instanceRegistry.registerDrawable(drawable);
-            if (m_instanceRef.offset == 0) {
-                m_instanceRef.offset = index;
-            }
-            m_instanceRef.size++;
         }
 
         groupId++;
