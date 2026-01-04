@@ -92,6 +92,7 @@ namespace render {
 
         for (uint32_t drawableIndex = 0; drawableIndex < drawables.size(); drawableIndex++) {
             const auto& drawable = drawables[drawableIndex];
+            if (drawable.entityIndex == 0) continue;
 
             const auto& drawOptions = drawable.drawOptions;
             if (!drawOptions.isKind(kindBits)) continue;
@@ -255,6 +256,8 @@ namespace render {
                 }
 
                 const auto& drawable = drawables[drawableIndex];
+                if (drawable.entityIndex == 0) continue;
+
                 const auto dist2 = s_distances2[drawableIndex];
 
                 const auto  programId = resolveProgram(dist2, drawable);
