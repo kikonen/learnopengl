@@ -4,6 +4,7 @@
 #include <random>
 
 #include "util/debug.h"
+#include "util/thread.h"
 
 #include "ki/sid.h"
 
@@ -37,6 +38,8 @@ void GridGenerator::prepareWT(
     const PrepareContext& ctx,
     model::Node& container)
 {
+    ASSERT_WT();
+
     //container.m_visible = false;
     prepareInstances(
         ctx,
@@ -47,6 +50,8 @@ void GridGenerator::updateWT(
     const UpdateContext& ctx,
     const model::Node& container)
 {
+    ASSERT_WT();
+
     const auto& containerState = container.getState();
     const auto containerLevel = containerState.getMatrixLevel();
 

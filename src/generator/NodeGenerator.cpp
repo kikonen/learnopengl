@@ -1,5 +1,7 @@
 #include "NodeGenerator.h"
 
+#include "util/thread.h"
+
 #include "mesh/Transform.h"
 #include "mesh/Mesh.h"
 #include "mesh/LodMesh.h"
@@ -20,6 +22,8 @@ void NodeGenerator::registerDrawables(
     render::InstanceRegistry& instanceRegistry,
     const model::Node& container)
 {
+    ASSERT_RT();
+
     auto entityIndex = container.getEntityIndex();
 
     const auto* snapshot = container.getSnapshotRT();
@@ -30,8 +34,7 @@ void NodeGenerator::registerDrawables(
 
     uint32_t groupId = 0;
 
-    m_instanceRef = instanceRegistry.allocate(
-        static_cast<uint32_t>(m_transforms.size() * lodMeshes.size()));
+    m_instanceRef = instanceRegistry.allocate(m_transforms.size() * lodMeshes.size());
     auto drawables = instanceRegistry.modifyRange(m_instanceRef);
     int drawableIndex = 0;
 

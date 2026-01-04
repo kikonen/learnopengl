@@ -45,13 +45,13 @@ namespace animation
         clear();
     }
 
-    util::BufferReference RigNodeRegistry::allocate(uint32_t count)
+    util::BufferReference RigNodeRegistry::allocate(size_t count)
     {
         //ASSERT_WT();
 
         if (count == 0) return {};
 
-        uint32_t offset;
+        size_t offset;
         {
             std::lock_guard lock(m_lock);
 
@@ -62,7 +62,7 @@ namespace animation
                 offsets.pop_back();
             }
             else {
-                offset = static_cast<uint32_t>(m_transforms.size());
+                offset = m_transforms.size();
                 m_transforms.resize(m_transforms.size() + count);
             }
 
@@ -120,7 +120,7 @@ namespace animation
     void RigNodeRegistry::markDirtyAll() noexcept
     {
         m_dirtySlots.clear();
-        markDirty({ 0, static_cast<uint32_t>(m_transforms.size()) });
+        markDirty({ 0, m_transforms.size() });
     }
 
     void RigNodeRegistry::markDirty(
@@ -134,8 +134,9 @@ namespace animation
             m_dirtySlots.begin(),
             m_dirtySlots.end(),
             [&ref](const auto& old) {
-                return old == ref;
-            });
+            return old.contains(ref);
+        });
+
         if (it != m_dirtySlots.end()) return;
 
         m_dirtySlots.push_back(ref);

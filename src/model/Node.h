@@ -227,7 +227,7 @@ namespace model
 
         physics::object_id m_physicsObjectId{ 0 };
 
-        util::BufferReference m_instanceRef{ 0 };
+        util::BufferReference m_instanceRef;
         std::vector<mesh::LodMeshInstance> m_lodMeshInstances;
         std::vector<mesh::RegisteredRig> m_registeredRigs;
 

@@ -130,7 +130,7 @@ protected:
 
     SphereVolume m_localVolume{ 0.f };
 
-    util::BufferReference m_instanceRef{ 0 };
+    util::BufferReference m_instanceRef;
 
     std::vector<mesh::Transform> m_transforms;
     std::vector<uint32_t> m_transformIndeces;

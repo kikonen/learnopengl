@@ -50,13 +50,13 @@ namespace animation
         clear();
     }
 
-    util::BufferReference SocketRegistry::allocate(uint32_t count)
+    util::BufferReference SocketRegistry::allocate(size_t count)
     {
         //ASSERT_WT();
 
         if (count == 0) return {};
 
-        uint32_t offset;
+        size_t offset;
         {
             std::lock_guard lock(m_lock);
 
@@ -66,7 +66,7 @@ namespace animation
                 it->second.pop_back();
             }
             else {
-                offset = static_cast<uint32_t>(m_transforms.size());
+                offset = m_transforms.size();
                 m_transforms.resize(m_transforms.size() + count);
             }
 
@@ -124,7 +124,7 @@ namespace animation
     void SocketRegistry::markDirtyAll() noexcept
     {
         m_dirtySlots.clear();
-        markDirty({ 0, static_cast<uint32_t>(m_transforms.size()) });
+        markDirty({ 0, m_transforms.size() });
     }
 
     void SocketRegistry::markDirty(
@@ -139,8 +139,9 @@ namespace animation
             m_dirtySlots.begin(),
             m_dirtySlots.end(),
             [&ref](const auto& old) {
-                return old == ref;
-            });
+            return old.contains(ref);
+        });
+
         if (it != m_dirtySlots.end()) return;
 
         m_dirtySlots.push_back(ref);
@@ -183,7 +184,7 @@ namespace animation
                 m_snapshot[baseIndex + i] = m_transforms[baseIndex + i];
             }
 
-            m_dirtySnapshot.emplace_back(static_cast<uint32_t>(baseIndex), static_cast<uint32_t>(updateCount));
+            m_dirtySnapshot.emplace_back(baseIndex, updateCount);
         }
 
         m_dirtySlots.clear();

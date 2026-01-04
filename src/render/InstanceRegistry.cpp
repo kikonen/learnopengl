@@ -184,8 +184,9 @@ namespace render
             m_dirtySlots.begin(),
             m_dirtySlots.end(),
             [&ref](const auto& old) {
-            return old == ref;
+            return old.contains(ref);
         });
+
         if (it != m_dirtySlots.end()) return;
 
         m_dirtySlots.push_back(ref);
