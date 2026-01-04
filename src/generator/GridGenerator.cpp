@@ -67,7 +67,7 @@ void GridGenerator::updateWT(
     for (int i = 0; i < m_transforms.size(); i++) {
         auto& transform = m_transforms[i];
         transform.updateMatrix();
-        transform.updateVolume(parentMatrix, m_volume);
+        transform.updateWorldVolume(parentMatrix, m_localVolume);
 
         if (hasPhysics) {
             const glm::vec3& pos = transform.getWorldPosition();
@@ -98,7 +98,7 @@ void GridGenerator::prepareInstances(
     m_staticBounds = container.m_typeFlags.staticBounds;
     m_dynamicBounds = container.m_typeFlags.dynamicBounds;
 
-    m_volume = containerState.getVolume();
+    m_localVolume = containerState.getLocalVolume();
 
     size_t count = 0;
 
@@ -277,7 +277,7 @@ void GridGenerator::updateBounds(
     std::vector<glm::vec3> positions;
     for (auto& transform : m_transforms) {
         transform.updateMatrix();
-        transform.updateVolume(parentMatrix, m_volume);
+        transform.updateWorldVolume(parentMatrix, m_localVolume);
         positions.push_back(transform.getWorldPosition());
     }
 

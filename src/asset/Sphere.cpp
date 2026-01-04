@@ -10,6 +10,8 @@
 
 #include "Sphere.h"
 
+#include "SphereVolume_format.h"
+
 namespace {
     const glm::vec3 ZERO{ 0.f };
 }
@@ -18,7 +20,7 @@ Sphere::Sphere(const glm::vec3& center, float radius) noexcept
     : m_volume{ center, radius }
 {}
 
-Sphere::Sphere(const glm::vec4& volume) noexcept
+Sphere::Sphere(const SphereVolume& volume) noexcept
     : m_volume{ volume }
 {}
 
@@ -78,14 +80,14 @@ std::string Sphere::str() const noexcept
 //        isOnOrForwardPlane(frustum.farFace);
 //};
 
-glm::vec4 Sphere::calculateWorldVolume(
-    const glm::vec4& volume,
+SphereVolume Sphere::calculateWorldVolume(
+    const SphereVolume& localVolume,
     const glm::mat4& modelMatrix,
     const glm::vec3& worldPos,
     float maxScale) noexcept
 {
-    const auto& center = modelMatrix * glm::vec4(volume.x, volume.y, volume.z, 1.f);
-    const auto& radius = volume.w * maxScale;
+    const auto& center = modelMatrix * localVolume.getPosition();
+    const auto& radius = localVolume.radius * maxScale;
 
     return { center.x, center.y, center.z, radius };
 }

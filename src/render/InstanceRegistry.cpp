@@ -34,14 +34,27 @@ namespace render
         return *s_registry;
     }
 
+    InstanceRegistry::InstanceRegistry()
+    {
+        clear();
+    }
+
+    InstanceRegistry::~InstanceRegistry() = default;
+
     void InstanceRegistry::clear()
     {
         m_drawables.clear();
         m_instances.clear();
         m_lookupMap.clear();
 
+        m_drawables.reserve(INITIAL_SIZE);
+        m_instances.reserve(INITIAL_SIZE);
+
         m_uploadedCount = 0;
         m_dirty = false;
+
+        // NULL entry
+        registerDrawable({});
 
         m_ssbo.markUsed(0);
     }
@@ -60,9 +73,6 @@ namespace render
         m_useFence = false;
         //m_useFenceDebug = false;
 
-        m_drawables.reserve(INITIAL_SIZE);
-        m_instances.reserve(INITIAL_SIZE);
-
         //m_drawables.reserve(maxInstances);
         //m_instances.reserve(maxInstances);
 
@@ -71,9 +81,6 @@ namespace render
             GL_MAP_WRITE_BIT |
             GL_MAP_PERSISTENT_BIT |
             GL_DYNAMIC_STORAGE_BIT;
-
-        // NULL entry
-        registerDrawable({});
 
         if (m_useMapped) {
             // https://stackoverflow.com/questions/44203387/does-gl-map-invalidate-range-bit-require-glinvalidatebuffersubdata

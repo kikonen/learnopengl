@@ -3,6 +3,8 @@
 #include <glm/glm.hpp>
 #include <glm/gtx/quaternion.hpp>
 
+#include "asset/SphereVolume.h"
+
 #include "ki/size.h"
 
 namespace mesh {
@@ -24,10 +26,7 @@ namespace mesh {
         float m_worldPosZ{ 0.f };
 
         // NOTE KI volume center is not same as worldPos always
-        float m_volumeX{ 1.f };
-        float m_volumeY{ 1.f };
-        float m_volumeZ{ 1.f };
-        float m_volumeW{ 1.f };
+        SphereVolume m_worldVolume{};
 
         uint32_t m_data{ 0 };
 
@@ -83,17 +82,14 @@ namespace mesh {
             return m_rotation;
         }
 
-        inline glm::vec4 getVolume() const noexcept
+        inline const SphereVolume& getWorldVolume() const noexcept
         {
-            return glm::vec4{ m_volumeX, m_volumeY, m_volumeZ, m_volumeW };
+            return m_worldVolume;
         }
 
-        inline void setVolume(const glm::vec4& volume) noexcept
+        inline void setWorldVolume(const SphereVolume& worldVolume) noexcept
         {
-            m_volumeX = volume.x;
-            m_volumeY = volume.y;
-            m_volumeZ = volume.z;
-            m_volumeW = volume.w;
+            m_worldVolume = worldVolume;
         }
 
         inline glm::vec3 getWorldPosition() const noexcept
@@ -124,16 +120,16 @@ namespace mesh {
                 glm::scale(glm::mat4{ 1.f }, glm::vec3{ m_scaleX, m_scaleY, m_scaleZ });
         }
 
-        inline void updateVolume() noexcept
+        inline void updateWorldVolume() noexcept
         {
             const glm::mat4 ID_MAT{ 1.f };
-            const glm::vec4 ID_VOLUME{ 1.f, 1.f, 1.f, 1.f };
-            updateVolume(ID_MAT, ID_VOLUME);
+            const SphereVolume ID_VOLUME{ 0.f, 0.f, 0.f, 1.f };
+            updateWorldVolume(ID_MAT, ID_VOLUME);
         }
 
-        inline void updateVolume(
+        inline void updateWorldVolume(
             const glm::mat4& parentMatrix,
-            const glm::vec4& volume) noexcept
+            const SphereVolume& localVolume) noexcept
         {
             const auto& modelMatrix = parentMatrix * m_matrix;
             {
@@ -143,11 +139,10 @@ namespace mesh {
                 m_worldPosZ = wp.z;
             }
             {
-                auto v = modelMatrix * glm::vec4{ volume.x, volume.y, volume.z, 1.f };
-                m_volumeX = v.x;
-                m_volumeY = v.y;
-                m_volumeZ = v.z;
-                m_volumeW = volume.w * std::max(m_scaleX, std::max(m_scaleY, m_scaleZ));
+                auto v = modelMatrix * glm::vec4{ localVolume.x, localVolume.y, localVolume.z, 1.f };
+
+                m_worldVolume = v;
+                m_worldVolume.radius = localVolume.radius * std::max(m_scaleX, std::max(m_scaleY, m_scaleZ));
             }
         }
     };

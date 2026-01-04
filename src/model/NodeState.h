@@ -5,6 +5,8 @@
 #include <glm/glm.hpp>
 #include <glm/gtx/quaternion.hpp>
 
+#include "asset/SphereVolume.h"
+
 #include "ki/limits.h"
 #include "ki/size.h"
 
@@ -35,7 +37,7 @@ namespace model
         friend struct Snapshot;
 
     private:
-        glm::vec4 m_volume;
+        SphereVolume m_localVolume{};
 
         glm::vec3 m_position{ 0.f };
 
@@ -115,15 +117,15 @@ namespace model
             return m_invBaseRotation;
         }
 
-        inline const glm::vec4& getVolume() const noexcept
+        inline const SphereVolume& getLocalVolume() const noexcept
         {
-            return m_volume;
+            return m_localVolume;
         }
 
-        inline void setVolume(const glm::vec4& volume) noexcept
+        inline void setLocalVolume(const SphereVolume& localVolume) noexcept
         {
-            if (m_volume != volume) {
-                m_volume = volume;
+            if (m_localVolume != localVolume) {
+                m_localVolume = localVolume;
                 m_dirtySnapshot = true;
             }
         }

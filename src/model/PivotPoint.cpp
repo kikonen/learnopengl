@@ -10,7 +10,7 @@ namespace model
         glm::vec3 align{ 0.f };
 
         const auto& aabb = type->getAABB();
-        const auto& volume = aabb.toVolume();
+        const auto& localVolume = aabb.toLocalVolume();
         const auto& min = aabb.getMin();
         const auto& max = aabb.getMax();
 
@@ -20,7 +20,7 @@ namespace model
                 align[i] = 0.f;
                 break;
             case PivotAlignment::middle:
-                align[i] = volume[i];
+                align[i] = localVolume[i];
                 break;
             case PivotAlignment::top:
                 align[i] = max.y;

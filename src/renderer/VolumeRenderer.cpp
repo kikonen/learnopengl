@@ -89,8 +89,8 @@ void VolumeRenderer::render(
 
             for (auto& meshTransform : generator->getTransforms())
             {
-                const auto& volume = meshTransform.getVolume();
-                const auto& center = glm::vec3{ volume };
+                const auto& worldVolume = meshTransform.getWorldVolume();
+                const auto& center = worldVolume.getCenter();
 
                 backend::DrawOptions drawOptions;
                 {
@@ -103,13 +103,13 @@ void VolumeRenderer::render(
                 mesh::Transform transform;
                 transform.setPosition(center);
                 transform.setRotation(m_meshFixRotation);
-                transform.setScale(volume.w);
+                transform.setScale(worldVolume.radius);
                 transform.updateMatrix();
 
                 m_meshes.emplace_back(
                     m_mesh.get(),
                     transform.getMatrix(),
-                    volume,
+                    worldVolume,
                     drawOptions,
                     m_mesh->getMaterial()->m_registeredIndex,
                     m_programId,
@@ -120,13 +120,13 @@ void VolumeRenderer::render(
             const auto* snapshot = nodeRegistry.getSnapshotRT(node->getEntityIndex());
 
             if (snapshot) {
-                const auto& volume = snapshot->getVolume();
-                const auto& center = glm::vec3{ volume };
+                const auto& worldVolume = snapshot->getWorldVolume();
+                const auto& center = worldVolume.getCenter();
 
                 mesh::Transform transform;
                 transform.setPosition(center);
                 transform.setRotation(m_meshFixRotation);
-                transform.setScale(volume.w);
+                transform.setScale(worldVolume.radius);
                 transform.updateMatrix();
 
                 backend::DrawOptions drawOptions;
@@ -140,7 +140,7 @@ void VolumeRenderer::render(
                 auto& meshIntance = m_meshes.emplace_back(
                     m_mesh.get(),
                     transform.getMatrix(),
-                    volume,
+                    worldVolume,
                     drawOptions,
                     m_mesh->getMaterial()->m_registeredIndex,
                     m_programId,

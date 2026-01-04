@@ -10,7 +10,7 @@
 
 #include "backend/DrawOptions.h"
 
-#include "asset/Volume.h"
+#include "asset/SphereVolume.h"
 #include "asset/AABB.h"
 
 #include "util/Transform.h"
@@ -162,6 +162,6 @@ namespace mesh {
 
     protected:
         std::unique_ptr<Material> m_material;
-        std::unique_ptr<Volume> m_volume;
+        std::unique_ptr<SphereVolume> m_localVolume;
     };
 }

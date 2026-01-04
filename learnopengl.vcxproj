@@ -590,7 +590,7 @@
     <ClCompile Include="src\shader\ProgramRegistry.cpp" />
     <ClCompile Include="src\asset\FrustumNew.cpp" />
     <ClCompile Include="src\asset\Sphere.cpp" />
-    <ClCompile Include="src\asset\Volume.cpp" />
+    <ClCompile Include="src\asset\SphereVolume.cpp" />
     <ClCompile Include="src\script\command\Cancel.cpp" />
     <ClCompile Include="src\script\command\Command.cpp" />
     <ClCompile Include="src\script\api\NodeCommandAPI.cpp" />
@@ -736,6 +736,7 @@
     <ClInclude Include="src\animation\JointBuffer.h" />
     <ClInclude Include="src\animation\animation_util.h" />
     <ClInclude Include="src\animation\ClipContainer.h" />
+    <ClInclude Include="src\asset\SphereVolume_format.h" />
     <ClInclude Include="src\mesh\RegisteredRig.h" />
     <ClInclude Include="src\render\DrawableInfo.h" />
     <ClInclude Include="src\render\InstanceIndexSSBO.h" />
@@ -1179,7 +1180,7 @@
     <ClInclude Include="src\asset\OBB.h" />
     <ClInclude Include="src\asset\Sphere.h" />
     <ClInclude Include="src\asset\Plane.h" />
-    <ClInclude Include="src\asset\Volume.h" />
+    <ClInclude Include="src\asset\SphereVolume.h" />
     <ClInclude Include="src\shader\ProgramBind.h" />
     <ClInclude Include="src\engine\AssetsLoader.h" />
     <ClInclude Include="src\registry\EntitySSBO.h" />

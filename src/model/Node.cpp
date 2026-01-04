@@ -99,7 +99,7 @@ namespace model
         if (type->hasMesh()) {
             KI_DEBUG(fmt::format("ADD_ENTITY: {}", str()));
 
-            state.setVolume(type->getAABB().toVolume());
+            state.setLocalVolume(type->getAABB().toLocalVolume());
             {
                 state.m_flags = type->resolveEntityFlags();
             }
@@ -257,8 +257,6 @@ namespace model
                     drawable.baseIndex = lodMesh.m_baseIndex;
                     drawable.indexCount = lodMesh.m_indexCount;
 
-                    drawable.volume = snapshot->getVolume();
-                    drawable.localTransform = lodMesh.m_baseTransform;
                     drawable.minDistance2 = lodMesh.m_minDistance2;
                     drawable.maxDistance2 = lodMesh.m_maxDistance2;
 
@@ -272,6 +270,10 @@ namespace model
                     drawable.selectionProgramId = lodMesh.m_selectionProgramId;
                     drawable.idProgramId = lodMesh.m_idProgramId;
                     drawable.normalProgramId = lodMesh.m_normalProgramId;
+
+                    // TODO KI volume/transform can change per frame
+                    drawable.worldVolume = snapshot->getWorldVolume();
+                    drawable.localTransform = lodMesh.m_baseTransform;
                 }
 
                 auto index = instanceRegistry.registerDrawable(drawable);

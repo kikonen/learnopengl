@@ -161,7 +161,7 @@ namespace terrain {
             const auto& parentMatrix = containerState.getModelMatrix();
             for (auto& transform : m_transforms) {
                 transform.updateMatrix();
-                transform.updateVolume(parentMatrix, m_volume);
+                transform.updateWorldVolume(parentMatrix, m_localVolume);
             }
         }
     }
@@ -198,7 +198,7 @@ namespace terrain {
                 glm::vec3{ 0.f },
                 glm::vec3{ cubeRadius }
             };
-            m_volume = aabb.toVolume();
+            m_localVolume = aabb.toLocalVolume();
         }
 
         const int tileCount = m_worldTilesU * m_worldTilesV;

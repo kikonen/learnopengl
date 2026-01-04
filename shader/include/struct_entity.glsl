@@ -12,7 +12,7 @@ struct Entity {
   vec4 u_normalMatrix2;
 
   // center + radius
-  vec4 u_volume;
+  vec4 u_worldVolume;
 
   vec4 u_worldScale;
 

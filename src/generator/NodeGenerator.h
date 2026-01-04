@@ -3,6 +3,8 @@
 #include <span>
 #include <functional>
 
+#include "asset/SphereVolume.h"
+
 #include "model/NodeState.h"
 
 #include "pool/NodeHandle.h"
@@ -126,7 +128,7 @@ protected:
 
     ki::level_id m_containerMatrixLevel{ 0 };
 
-    glm::vec4 m_volume{ 0.f };
+    SphereVolume m_localVolume{ 0.f };
 
     util::BufferReference m_instanceRef{ 0 };
 
