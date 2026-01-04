@@ -71,8 +71,7 @@ namespace render {
 
     Batch::~Batch() = default;
 
-
-    void Batch::addSnapshot(
+    void Batch::addDrawablesSingleNode(
         const RenderContext& ctx,
         const model::NodeType* type,
         const util::BufferReference instanceRef,
@@ -99,13 +98,15 @@ namespace render {
             if (drawOptions.m_type == backend::DrawOptions::Type::none) continue;
 
             {
-                auto dist2 = glm::distance2(drawable.worldVolume.getCenter(), cameraPos);
-                if (drawable.minDistance2 > dist2) continue;
-                if (drawable.maxDistance2 <= dist2) continue;
+                const auto dist2 = glm::distance2(drawable.worldVolume.getCenter(), cameraPos);
+                if (drawable.minDistance2 > dist2 ||
+	                drawable.maxDistance2 <= dist2)
+                {
+	                m_skipCount++;
+	                return;
+                }
             }
 
-            // NOTE KI frustum need to be checked only one of the lods
-            // => Makes *STRONG* assumption about drawables
             if (!frustumChecked) {
                 const auto& frustum = ctx.m_camera->getFrustum();
                 // TODO KI wrong volume; assumes that every lodMesh have same
@@ -168,7 +169,7 @@ namespace render {
         }
     }
 
-    void Batch::addSnapshotsInstanced(
+    void Batch::addDrawablesInstanced(
         const RenderContext& ctx,
         const model::NodeType* type,
         const util::BufferReference instanceRef,
@@ -235,8 +236,8 @@ namespace render {
             const auto resolveProgram = [&kindBits, &programSelector](
                 const float dist2,
                 const auto& drawable) -> ki::program_id {
-                if (drawable.minDistance2 > dist2) return 0;
-                if (drawable.maxDistance2 <= dist2) return 0;
+                if (drawable.minDistance2 > dist2 ||
+                    drawable.maxDistance2 <= dist2) return 0;
 
                 const auto& drawOptions = drawable.drawOptions;
                 if (drawOptions.m_type == backend::DrawOptions::Type::none) return 0;

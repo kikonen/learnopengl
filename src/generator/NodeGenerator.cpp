@@ -28,6 +28,8 @@ void NodeGenerator::registerDrawables(
     const auto& lodMeshes = type->getLodMeshes();
     const auto& lodMeshInstances = container.getLodMeshInstances();
 
+    uint32_t groupId = 0;
+
     for (auto& transform : m_transforms) {
         for (int i = 0; i < lodMeshInstances.size(); i++) {
             const auto& lod = lodMeshInstances[i];
@@ -37,6 +39,7 @@ void NodeGenerator::registerDrawables(
             {
                 drawable.lodMeshIndex = i;
                 drawable.meshId = lodMesh.getMesh<mesh::Mesh>()->m_id;
+                drawable.groupId = groupId;
 
                 drawable.entityIndex = entityIndex;
                 drawable.materialIndex = lodMesh.m_materialIndex;
@@ -73,6 +76,8 @@ void NodeGenerator::registerDrawables(
             }
             m_instanceRef.size++;
         }
+
+        groupId++;
     }
 }
 
@@ -84,7 +89,7 @@ void NodeGenerator::bindBatch(
     render::Batch& batch,
     const model::Node& container)
 {
-    batch.addSnapshotsInstanced(
+    batch.addDrawablesInstanced(
         ctx,
         container.getType(),
         m_instanceRef,

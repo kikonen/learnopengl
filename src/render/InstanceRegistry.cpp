@@ -149,6 +149,7 @@ namespace render
             instance.u_entityIndex = drawable.entityIndex;
             instance.u_materialIndex = drawable.materialIndex;
             instance.u_jointBaseIndex = drawable.jointBaseIndex;
+            instance.u_data = drawable.data;
             instance.u_flags = drawable.drawOptions.m_flags;
         }
 
