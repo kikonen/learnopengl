@@ -158,7 +158,7 @@ void TextGenerator::bindBatch(
 {
     m_draw->updateRT();
 
-    batch.addSnapshot(
+    batch.addDrawablesSingleNode(
         ctx,
         container.getType(),
         container.m_instanceRef,

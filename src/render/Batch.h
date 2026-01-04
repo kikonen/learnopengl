@@ -64,7 +64,9 @@ namespace render
         Batch(const Batch&) = delete;
         Batch& operator=(const Batch&) = delete;
 
-        void addSnapshot(
+        // Optimized drawing for "single node" case
+        // => makes assumptions about frustum etc.
+        void addDrawablesSingleNode(
             const RenderContext& ctx,
             const model::NodeType* type,
             const util::BufferReference instanceRef,
@@ -72,8 +74,9 @@ namespace render
             const std::function<void(ki::program_id)>& programPrepare,
             uint8_t kindBits) noexcept;
 
-        // NOTE KI lightweigtht "transform only" meshes
-        void addSnapshotsInstanced(
+        // Drwables for "instanced" drawing
+        // => every drawable is separate
+        void addDrawablesInstanced(
             const RenderContext& ctx,
             const model::NodeType* type,
             const util::BufferReference instanceRef,

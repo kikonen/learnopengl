@@ -302,7 +302,7 @@ namespace model
                 *this);
         }
         else {
-            batch.addSnapshot(
+            batch.addDrawablesSingleNode(
                 ctx,
                 getType(),
                 m_instanceRef,

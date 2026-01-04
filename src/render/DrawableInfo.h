@@ -16,6 +16,9 @@ namespace render
         uint32_t lodMeshIndex;
         uint32_t meshId;
 
+        // drawables with same groupId go with same culling
+        uint32_t groupId;
+
         uint32_t entityIndex;
         uint32_t materialIndex;
         uint32_t jointBaseIndex;
