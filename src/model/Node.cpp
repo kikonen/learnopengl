@@ -237,8 +237,7 @@ namespace model
             const auto& lodMeshes = type->getLodMeshes();
             const auto& lodMeshInstances = m_lodMeshInstances;
 
-            m_instanceRef = instanceRegistry.allocate(
-                static_cast<uint32_t>(lodMeshes.size()));
+            m_instanceRef = instanceRegistry.allocate(lodMeshes.size());
             auto drawables = instanceRegistry.modifyRange(m_instanceRef);
 
             for (int i = 0; i < lodMeshInstances.size(); i++) {

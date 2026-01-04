@@ -43,7 +43,7 @@ namespace animation {
     protected:
         // Register node instance specific rig
         // @return instance index into socket transform buffer
-        util::BufferReference allocate(uint32_t count);
+        util::BufferReference allocate(size_t count);
         // @return null ref
         util::BufferReference release(util::BufferReference ref);
 

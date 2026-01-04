@@ -9,6 +9,8 @@
 
 #include "ki/sid.h"
 
+#include "util/thread.h"
+
 #include "mesh/LodMesh.h"
 #include "mesh/Transform.h"
 
@@ -40,6 +42,8 @@ void AsteroidBeltGenerator::prepareWT(
     const PrepareContext& ctx,
     model::Node& container)
 {
+    ASSERT_WT();
+
     NodeGenerator::prepareWT(ctx, container);
 
     //container.m_visible = false;
@@ -51,6 +55,8 @@ void AsteroidBeltGenerator::updateWT(
     const UpdateContext& ctx,
     const model::Node& container)
 {
+    ASSERT_WT();
+
     const auto containerLevel = container.getState().getMatrixLevel();
     const auto parentChanged = containerLevel != m_containerMatrixLevel;
     const bool needUpdate = (m_updateIndex % m_updateStep) == 0;

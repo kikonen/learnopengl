@@ -5,6 +5,8 @@
 
 #include <fmt/format.h>
 
+#include "util/thread.h"
+
 #include "model/Node.h"
 #include "model/Snapshot.h"
 
@@ -39,6 +41,7 @@ void TextGenerator::prepareWT(
     const PrepareContext& ctx,
     model::Node& container)
 {
+    ASSERT_WT();
 }
 
 void TextGenerator::prepareRT(
@@ -66,6 +69,7 @@ void TextGenerator::updateWT(
     const UpdateContext& ctx,
     const model::Node& container)
 {
+    ASSERT_WT();
 }
 
 //void TextGenerator::updateEntity(
