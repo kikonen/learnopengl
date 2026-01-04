@@ -60,6 +60,7 @@ struct SphereVolume {
         y = o.y;
         z = o.z;
         radius = o.w;
+        return *this;
     }
 
     SphereVolume& operator=(const glm::vec3& o)
@@ -68,6 +69,7 @@ struct SphereVolume {
         y = o.y;
         z = o.z;
         radius = 0.f;
+        return *this;
     }
 
     bool operator==(const SphereVolume& o)

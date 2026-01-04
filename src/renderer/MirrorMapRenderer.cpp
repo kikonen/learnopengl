@@ -255,13 +255,13 @@ bool MirrorMapRenderer::render(
             const auto* snapshot = closest->getSnapshotRT();
             if (!snapshot) return false;
 
-            const glm::vec3& planePos = snapshot->getWorldPosition();
+            const auto& planePos = snapshot->getWorldPosition();
 
             const auto* parentCamera = parentCtx.m_camera;
 
-            const auto& volume = snapshot->getVolume();
-            const glm::vec3 volumeCenter = glm::vec3(volume);
-            const float volumeRadius = volume.w;
+            const auto& worldVolume = snapshot->getWorldVolume();
+            const auto& volumeCenter = worldVolume.getCenter();
+            const float volumeRadius = worldVolume.radius;
 
             const auto& mirrorSize = volumeRadius;
             const auto& eyePos = parentCamera->getWorldPosition();
