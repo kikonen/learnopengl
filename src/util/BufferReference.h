@@ -6,8 +6,8 @@ namespace util
 {
     struct BufferReference
     {
-        uint32_t offset;
-        uint32_t size;
+        uint32_t offset{ 0 };
+        uint32_t size{ 0 };
 
         bool operator==(const BufferReference& o) const
         {

@@ -27,19 +27,21 @@ namespace animation
         m_updateReady = false;
 
         m_transforms.clear();
-        m_dirtyTransforms.clear();
+        m_freeSlots.clear();
+        m_dirtySlots.clear();
 
         m_snapshot.clear();
         m_dirtySnapshot.clear();
 
         m_transforms.reserve(INITIAL_SIZE);
-        m_dirtyTransforms.reserve(INITIAL_SIZE);
+        m_freeSlots.reserve(INITIAL_SIZE);
+        m_dirtySlots.reserve(INITIAL_SIZE);
 
         m_snapshot.reserve(INITIAL_SIZE);
         m_dirtySnapshot.reserve(INITIAL_SIZE);
 
         // NOTE KI null entry
-        addInstance(1);
+        allocate(1);
     }
 
     void JointRegistry::prepare()
@@ -49,11 +51,11 @@ namespace animation
         clear();
     }
 
-    uint32_t JointRegistry::addInstance(size_t count)
+    util::BufferReference JointRegistry::allocate(uint32_t count)
     {
         //ASSERT_WT();
 
-        if (count == 0) return 0;
+        if (count == 0) return {};
 
         uint32_t offset;
         {
@@ -73,19 +75,21 @@ namespace animation
                 m_transforms[offset + i] = ID_MAT;
             }
 
-            markDirty({ offset, static_cast<uint32_t>(count) });
+            markDirty({ offset, count });
         }
 
-        return static_cast<uint32_t>(offset);
+        return { offset, count };
     }
 
-    void JointRegistry::removeInstance(
+    util::BufferReference JointRegistry::release(
         util::BufferReference ref)
     {
         ASSERT_WT();
 
+        if (ref.size == 0) return {};
+
         // NOTE KI modifying null socket is not allowed
-        if (ref.offset == 0) return;
+        if (ref.offset == 0) return {};
 
         std::lock_guard lock(m_lock);
 
@@ -96,6 +100,8 @@ namespace animation
         else {
             it->second.push_back(ref.offset);
         }
+
+        return {};
     }
 
     std::span<const glm::mat4> JointRegistry::getRange(
@@ -118,6 +124,7 @@ namespace animation
 
     void JointRegistry::markDirtyAll() noexcept
     {
+        m_dirtySlots.clear();
         markDirty({ 0, static_cast<uint32_t>(m_transforms.size()) });
     }
 
@@ -126,20 +133,17 @@ namespace animation
     {
         if (ref.size == 0) return;
 
-        // NOTE KI modifying null socket is not allowed
-        if (ref.offset == 0) return;
-
         std::lock_guard lock(m_lockDirty);
 
         const auto& it = std::find_if(
-            m_dirtyTransforms.begin(),
-            m_dirtyTransforms.end(),
+            m_dirtySlots.begin(),
+            m_dirtySlots.end(),
             [&ref](const auto& old) {
                 return old == ref;
             });
-        if (it != m_dirtyTransforms.end()) return;
+        if (it != m_dirtySlots.end()) return;
 
-        m_dirtyTransforms.push_back(ref);
+        m_dirtySlots.push_back(ref);
     }
 
     uint32_t JointRegistry::getActiveCount() const noexcept
@@ -157,9 +161,9 @@ namespace animation
         std::lock_guard lock(m_lock);
         std::lock_guard lockDirty(m_lockDirty);
 
-        if (m_dirtyTransforms.empty()) return;
+        if (m_dirtySlots.empty()) return;
 
-        for (const auto& range : m_dirtyTransforms) {
+        for (const auto& range : m_dirtySlots) {
             const auto baseIndex = range.offset;
             const auto updateCount = range.size;
 
@@ -175,7 +179,7 @@ namespace animation
             m_dirtySnapshot.emplace_back(static_cast<uint32_t>(baseIndex), static_cast<uint32_t>(updateCount));
         }
 
-        m_dirtyTransforms.clear();
+        m_dirtySlots.clear();
         m_updateReady = true;
     }
 }

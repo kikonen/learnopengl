@@ -44,17 +44,21 @@ namespace render
     void InstanceRegistry::clear()
     {
         m_drawables.clear();
+        m_freeSlots.clear();
+        m_dirtySlots.clear();
+
         m_instances.clear();
-        m_lookupMap.clear();
 
         m_drawables.reserve(INITIAL_SIZE);
+        m_freeSlots.reserve(INITIAL_SIZE);
+        m_dirtySlots.reserve(INITIAL_SIZE);
         m_instances.reserve(INITIAL_SIZE);
 
         m_uploadedCount = 0;
-        m_dirty = false;
+        //m_dirty = false;
 
         // NULL entry
-        registerDrawable({});
+        allocate(1);
 
         m_ssbo.markUsed(0);
     }
@@ -91,21 +95,60 @@ namespace render
             m_ssbo.createEmpty(INITIAL_SIZE * sizeof(InstanceSSBO), GL_DYNAMIC_STORAGE_BIT);
         }
 
+        clear();
         bind();
     }
 
-    uint32_t InstanceRegistry::registerDrawable(const DrawableInfo& info)
+    util::BufferReference InstanceRegistry::allocate(uint32_t count)
     {
-        uint32_t index = static_cast<uint32_t>(m_drawables.size());
-        m_drawables.push_back(info);
+        //ASSERT_WT();
 
-        // Build lookup key
-        uint64_t key = (static_cast<uint64_t>(info.entityIndex) << 32) | info.meshId;
-        m_lookupMap[key] = index;
+        if (count == 0) return { 0, 0 };
 
-        m_dirty = true;
-        return index;
+        uint32_t offset;
+        {
+            auto it = m_freeSlots.find(count);
+            if (it != m_freeSlots.end() && !it->second.empty()) {
+                offset = it->second[it->second.size() - 1];
+                it->second.pop_back();
+            }
+            else {
+                offset = static_cast<uint32_t>(m_drawables.size());
+                m_drawables.resize(m_drawables.size() + count);
+            }
+
+            markDirty({ offset, count });
+        }
+
+        return { offset, count };
     }
+
+    util::BufferReference InstanceRegistry::release(util::BufferReference ref)
+    {
+        if (ref.size == 0) return {};
+
+        // NOTE KI modifying null socket is not allowed
+        if (ref.offset == 0) return {};
+
+        auto it = m_freeSlots.find(ref.size);
+        if (it == m_freeSlots.end()) {
+            m_freeSlots[ref.size] = std::vector<uint32_t>{ ref.offset };
+        }
+        else {
+            it->second.push_back(ref.offset);
+        }
+
+        return {};
+    }
+
+    //uint32_t InstanceRegistry::registerDrawable(const DrawableInfo& info)
+    //{
+    //    uint32_t index = static_cast<uint32_t>(m_drawables.size());
+    //    m_drawables.push_back(info);
+
+    //    m_dirty = true;
+    //    return index;
+    //}
 
     std::span<const DrawableInfo> InstanceRegistry::getRange(
         const util::BufferReference ref) const noexcept
@@ -125,40 +168,63 @@ namespace render
         return std::span{ m_drawables }.subspan(ref.offset, ref.size);
     }
 
-    void InstanceRegistry::unregisterDrawable(uint32_t instanceIndex)
+    void InstanceRegistry::markDirtyAll() noexcept
     {
-        // TODO KI add into freeList
+        m_dirtySlots.clear();
+        markDirty({ 0, static_cast<uint32_t>(m_drawables.size()) });
+    }
+
+    void InstanceRegistry::markDirty(
+        util::BufferReference ref) noexcept
+    {
+        //ASSERT_WT();
+        if (ref.size == 0) return;
+
+        const auto& it = std::find_if(
+            m_dirtySlots.begin(),
+            m_dirtySlots.end(),
+            [&ref](const auto& old) {
+            return old == ref;
+        });
+        if (it != m_dirtySlots.end()) return;
+
+        m_dirtySlots.push_back(ref);
     }
 
     void InstanceRegistry::updateInstances()
     {
-        // This is the ONLY per-frame work for instance data
+        if (m_dirtySlots.empty()) return;
 
-        const size_t count = m_drawables.size();
-
-        m_instances.resize(count);
+        m_instances.resize(m_drawables.size());
 
 #pragma omp parallel for schedule(static, 256)
-        for (size_t i = 0; i < count; i++) {
-            const auto& drawable = m_drawables[i];
+        for (const auto& slot : m_dirtySlots) {
+            for (size_t i = 0; i < slot.size; i++) {
+                const auto& drawable = m_drawables[slot.offset + i];
+                auto& instance = m_instances[slot.offset + i];
 
-            auto& instance = m_instances[i];
-
-            // Store in row-major format (matching your InstanceSSBO)
-            instance.setTransform(drawable.localTransform);
-            instance.u_entityIndex = drawable.entityIndex;
-            instance.u_materialIndex = drawable.materialIndex;
-            instance.u_jointBaseIndex = drawable.jointBaseIndex;
-            instance.u_data = drawable.data;
-            instance.u_flags = drawable.drawOptions.m_flags;
+                // Store in row-major format (matching your InstanceSSBO)
+                instance.setTransform(drawable.localTransform);
+                instance.u_entityIndex = drawable.entityIndex;
+                instance.u_materialIndex = drawable.materialIndex;
+                instance.u_jointBaseIndex = drawable.jointBaseIndex;
+                instance.u_data = drawable.data;
+                instance.u_flags = drawable.drawOptions.m_flags;
+            }
         }
 
-        m_dirty = true;
+        if (m_dirtyInstances.empty()) {
+            m_dirtyInstances = m_dirtySlots;
+        }
+        else {
+            m_dirtyInstances.push_back({ 0, static_cast<uint32_t>(m_dirtyInstances.size()) });
+        }
+        m_dirtySlots.clear();
     }
 
     void InstanceRegistry::upload()
     {
-        if (!m_dirty || m_instances.empty()) return;
+        if (m_dirtyInstances.empty()) return;
 
         constexpr size_t sz = sizeof(InstanceSSBO);
 
@@ -192,18 +258,11 @@ namespace render
         m_ssbo.markUsed(uploadCount * sz);
 
         m_uploadedCount = uploadCount;
-        m_dirty = false;
+        m_dirtyInstances.clear();
     }
 
     void InstanceRegistry::bind()
     {
         m_ssbo.bindSSBO(SSBO_INSTANCES);
-    }
-
-    uint32_t InstanceRegistry::getInstanceIndex(uint32_t entityIndex, uint32_t meshId) const
-    {
-        uint64_t key = (static_cast<uint64_t>(entityIndex) << 32) | meshId;
-        auto it = m_lookupMap.find(key);
-        return (it != m_lookupMap.end()) ? it->second : 0xFFFFFFFF;
     }
 }

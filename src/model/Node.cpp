@@ -237,13 +237,17 @@ namespace model
             const auto& lodMeshes = type->getLodMeshes();
             const auto& lodMeshInstances = m_lodMeshInstances;
 
+            m_instanceRef = instanceRegistry.allocate(
+                static_cast<uint32_t>(lodMeshes.size()));
+            auto drawables = instanceRegistry.modifyRange(m_instanceRef);
+
             for (int i = 0; i < lodMeshInstances.size(); i++) {
                 const auto& lod = lodMeshInstances[i];
                 const auto& lodMesh = lodMeshes[i];
                 if (!lodMesh.m_mesh)
                     continue;
 
-                render::DrawableInfo drawable;
+                auto& drawable = drawables[i];
                 {
                     drawable.lodMeshIndex = i;
 
@@ -275,12 +279,6 @@ namespace model
                     drawable.worldVolume = snapshot->getWorldVolume();
                     drawable.localTransform = lodMesh.m_baseTransform;
                 }
-
-                auto index = instanceRegistry.registerDrawable(drawable);
-                if (m_instanceRef.offset == 0) {
-                    m_instanceRef.offset = index;
-                }
-                m_instanceRef.size++;
             }
         }
     }
