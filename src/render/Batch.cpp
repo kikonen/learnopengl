@@ -81,16 +81,18 @@ namespace render {
         uint8_t kindBits) noexcept
     {
         const uint32_t drawableCount = instanceRef.size;
+        const uint32_t instanceOffset = instanceRef.offset;
+
         if (drawableCount == 0) return;
+
+        const auto& drawables = m_instanceRegistry->getRange(instanceRef);
 
         bool frustumChecked = type->m_flags.noFrustum;
 
         const auto& cameraPos = ctx.m_camera->getWorldPosition();
-        const uint32_t instanceOffset = instanceRef.offset;
 
-        uint32_t drawableIndex = 0;
-        for (const auto& drawable : m_instanceRegistry->getRange(instanceRef)) {
-            drawableIndex++;
+        for (uint32_t drawableIndex = 0; drawableIndex < drawables.size(); drawableIndex++) {
+            const auto& drawable = drawables[drawableIndex];
 
             const auto& drawOptions = drawable.drawOptions;
             if (!drawOptions.isKind(kindBits)) continue;
@@ -101,11 +103,6 @@ namespace render {
                 if (drawable.minDistance2 > dist2) continue;
                 if (drawable.maxDistance2 <= dist2) continue;
             }
-
-            auto programId = programSelector(drawable);
-            if (!programId) continue;
-
-            programPrepare(programId);
 
             // NOTE KI frustum need to be checked only one of the lods
             // => Makes *STRONG* assumption about drawables
@@ -119,8 +116,12 @@ namespace render {
                     return;
                 }
                 frustumChecked = true;
-                m_drawCount++;
             }
+
+            auto programId = programSelector(drawable);
+            if (!programId) continue;
+
+            programPrepare(programId);
 
             CommandEntry* commandEntry{ nullptr };
             {
@@ -162,6 +163,7 @@ namespace render {
                 instanceOffset + drawableIndex
                 });
 
+            m_drawCount++;
             m_pendingCount++;
         }
     }
@@ -175,9 +177,12 @@ namespace render {
         uint8_t kindBits) noexcept
     {
         const uint32_t drawableCount = instanceRef.size;
+        const uint32_t instanceOffset = instanceRef.offset;
+
         if (drawableCount == 0) return;
 
         const auto& drawables = m_instanceRegistry->getRange(instanceRef);
+
         const auto& cameraPos = ctx.m_camera->getWorldPosition();
 
         bool useFrustum = m_frustumCPU;
@@ -241,7 +246,6 @@ namespace render {
             };
 
             uint32_t skippedCount = 0;
-            const uint32_t instanceOffset = instanceRef.offset;
 
             for (uint32_t drawableIndex = 0; drawableIndex < drawableCount; drawableIndex++) {
                 if (useFrustum && s_accept[drawableIndex] == SKIP) {

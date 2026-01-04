@@ -63,18 +63,18 @@ namespace render {
     class BatchRegistry {
     public:
         // index, 0 == null
-        int16_t getMultiDrawIndex(const MultiDrawKey& multiDraw);
+        uint16_t getMultiDrawIndex(const MultiDrawKey& multiDraw);
 
         // index, 0 == null
-        int16_t getCommandIndex(const CommandKey& cmd);
+        uint16_t getCommandIndex(const CommandKey& cmd);
 
-        inline const MultiDrawKey* getMultiDraw(int16_t index) const noexcept
+        inline const MultiDrawKey* getMultiDraw(uint16_t index) const noexcept
         {
             return &m_multiDraws[index];
         }
 
         // index, 0 == null
-        const CommandKey* getCommand(int16_t index) const noexcept
+        const CommandKey* getCommand(uint16_t index) const noexcept
         {
             return &m_commands[index];
         }
@@ -95,7 +95,7 @@ namespace render {
         std::vector<MultiDrawKey> m_multiDraws;
         std::vector<CommandKey> m_commands;
 
-        std::unordered_map<MultiDrawKey, int16_t> m_multiDrawIndeces;
-        std::unordered_map<CommandKey, int16_t> m_commandIndeces;
+        std::unordered_map<MultiDrawKey, uint16_t> m_multiDrawIndeces;
+        std::unordered_map<CommandKey, uint16_t> m_commandIndeces;
     };
 }
