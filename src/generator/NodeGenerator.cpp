@@ -46,8 +46,6 @@ void NodeGenerator::registerDrawables(
                 drawable.baseIndex = lodMesh.m_baseIndex;
                 drawable.indexCount = lodMesh.m_indexCount;
 
-                drawable.volume = transform.getVolume();
-                drawable.localTransform = transform.getMatrix() * lodMesh.m_baseTransform;
                 drawable.minDistance2 = lodMesh.m_minDistance2;
                 drawable.maxDistance2 = lodMesh.m_maxDistance2;
 
@@ -63,6 +61,10 @@ void NodeGenerator::registerDrawables(
                 drawable.selectionProgramId = lodMesh.m_selectionProgramId;
                 drawable.idProgramId = lodMesh.m_idProgramId;
                 drawable.normalProgramId = lodMesh.m_normalProgramId;
+
+                // TODO KI volume/transform can change per frame
+                drawable.worldVolume = transform.getWorldVolume();
+                drawable.localTransform = transform.getMatrix() * lodMesh.m_baseTransform;
             }
 
             auto index = instanceRegistry.registerDrawable(drawable);

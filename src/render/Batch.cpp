@@ -56,13 +56,12 @@ namespace {
     std::vector<int32_t> s_accept;
     std::vector<float> s_distances2;
 
-    inline bool inFrustum(
-        const Frustum& frustum,
-        const glm::vec4& volume) noexcept
-    {
-        const Sphere sphere{ volume };
-        return sphere.isOnFrustum(frustum);
-    }
+    //inline bool inFrustum(
+    //    const Frustum& frustum,
+    //    const SphereVolume& worldVolume) noexcept
+    //{
+    //    worldVolume.isOnFrustum(frustum);
+    //}
 }
 
 namespace render {
@@ -92,14 +91,16 @@ namespace render {
         uint32_t drawableIndex = 0;
         for (const auto& drawable : m_instanceRegistry->getRange(instanceRef)) {
             drawableIndex++;
-            auto dist2 = glm::distance2(drawable.getWorldPosition(), cameraPos);
-
-            if (drawable.minDistance2 > dist2) continue;
-            if (drawable.maxDistance2 <= dist2) continue;
 
             const auto& drawOptions = drawable.drawOptions;
             if (!drawOptions.isKind(kindBits)) continue;
             if (drawOptions.m_type == backend::DrawOptions::Type::none) continue;
+
+            {
+                auto dist2 = glm::distance2(drawable.worldVolume.getCenter(), cameraPos);
+                if (drawable.minDistance2 > dist2) continue;
+                if (drawable.maxDistance2 <= dist2) continue;
+            }
 
             auto programId = programSelector(drawable);
             if (!programId) continue;
@@ -107,12 +108,13 @@ namespace render {
             programPrepare(programId);
 
             // NOTE KI frustum need to be checked only one of the lods
+            // => Makes *STRONG* assumption about drawables
             if (!frustumChecked) {
                 const auto& frustum = ctx.m_camera->getFrustum();
                 // TODO KI wrong volume; assumes that every lodMesh have same
                 // => not true in some more complex cases where node consists
                 //    from set of meshes (which are not LODn meshes)
-                if (m_frustumCPU && !inFrustum(frustum, drawable.volume)) {
+                if (m_frustumCPU && !drawable.worldVolume.isOnFrustum(frustum)) {
                     m_skipCount++;
                     return;
                 }
@@ -193,7 +195,7 @@ namespace render {
                 s_accept[i] = i; // store index
 
                 const auto& drawable = drawables[i];
-                s_distances2[i] = glm::distance2(drawable.getWorldPosition(), cameraPos);
+                s_distances2[i] = glm::distance2(drawable.worldVolume.getCenter(), cameraPos);
             }
         }
 
@@ -203,7 +205,7 @@ namespace render {
             const auto& checkFrustum = [&frustum, &drawables]
                 (int32_t& idx)
                 {
-                    if (!inFrustum(frustum, drawables[idx].volume)) {
+                    if (!drawables[idx].worldVolume.isOnFrustum(frustum)) {
                         idx = SKIP;
                     }
                 };
@@ -325,8 +327,8 @@ namespace render {
         const auto programId = instance.m_programId ? instance.m_programId  : defaultProgramId;
         if (!programId) return;
 
-        const auto& volume = instance.getVolume();
-        auto dist2 = glm::distance2(glm::vec3{ volume }, ctx.m_camera->getWorldPosition());
+        const SphereVolume& worldVolume = instance.getWorldVolume();
+        auto dist2 = glm::distance2(glm::vec3{ worldVolume.getCenter() }, ctx.m_camera->getWorldPosition());
 
         // NOTE KI frustum need to be checked only one of the lods
         //if (!type->m_flags.noFrustum)
@@ -335,7 +337,7 @@ namespace render {
             // TODO KI wrong volume; assumes that every lodMesh have same
             // => not true in some more complex cases where node consists
             //    from set of meshes (which are not LODn meshes)
-            if (m_frustumCPU && !inFrustum(frustum, volume)) {
+            if (m_frustumCPU && !worldVolume.isOnFrustum(frustum)) {
                 m_skipCount++;
                 return;
             }

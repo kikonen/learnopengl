@@ -5,14 +5,14 @@
 
 #include "ki/size.h"
 
-#include "Volume.h"
+#include "SphereVolume.h"
 
 
 struct Sphere final
 {
     Sphere() noexcept = default;
     Sphere(const glm::vec3& center, float radius) noexcept;
-    Sphere(const glm::vec4& volume) noexcept;
+    Sphere(const SphereVolume& volume) noexcept;
 
     ~Sphere() noexcept;
 
@@ -20,21 +20,28 @@ struct Sphere final
 
     std::string str() const noexcept;
 
-    inline const glm::vec4& getVolume() const noexcept {
+    inline const SphereVolume& getVolume() const noexcept {
         return m_volume;
     }
 
     inline glm::vec3 getCenter() const noexcept {
-        return m_volume;
+        return m_volume.getCenter();
     }
 
     inline float getRadius() const noexcept {
-        return m_volume.w;
+        return m_volume.radius;
     }
 
     inline bool isOnOrForwardPlane(const Plane& plane) const noexcept
     {
-        return plane.getSignedDistanceToPlane(m_volume) >= -m_volume.w;
+        return plane.getSignedDistanceToPlane(m_volume.getCenter()) >= -m_volume.radius;
+    }
+
+    inline bool isOnOrForwardPlane(
+        const glm::vec3& center,
+        const Plane& plane) const noexcept
+    {
+        return plane.getSignedDistanceToPlane(center) >= -m_volume.radius;
     }
 
     //bool isOnFrustum(
@@ -43,25 +50,27 @@ struct Sphere final
     inline bool isOnFrustum(
         const Frustum& frustum) const noexcept
     {
+        const auto& center = m_volume.getCenter();
+
         // Check Firstly the result that have the most chance to faillure to avoid to call all functions.
-        return isOnOrForwardPlane(frustum.nearFace) &&
-            isOnOrForwardPlane(frustum.farFace) &&
-            isOnOrForwardPlane(frustum.leftFace) &&
-            isOnOrForwardPlane(frustum.rightFace) &&
-            isOnOrForwardPlane(frustum.topFace) &&
-            isOnOrForwardPlane(frustum.bottomFace);
+        return isOnOrForwardPlane(center, frustum.nearFace) &&
+            isOnOrForwardPlane(center, frustum.farFace) &&
+            isOnOrForwardPlane(center, frustum.leftFace) &&
+            isOnOrForwardPlane(center, frustum.rightFace) &&
+            isOnOrForwardPlane(center, frustum.topFace) &&
+            isOnOrForwardPlane(center, frustum.bottomFace);
 
         //return isOnOrForwardPlane(frustum.nearFace) &&
         //    isOnOrForwardPlane(frustum.farFace);
     };
 
-    static glm::vec4 calculateWorldVolume(
-        const glm::vec4& volume,
+    static SphereVolume calculateWorldVolume(
+        const SphereVolume& localVolume,
         const glm::mat4& modelMatrix,
         const glm::vec3& worldPos,
         float maxScale) noexcept;
 
 private:
-    const glm::vec4 m_volume;
+    const SphereVolume m_volume;
 };
 

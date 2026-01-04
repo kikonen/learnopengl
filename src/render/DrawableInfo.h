@@ -4,6 +4,8 @@
 
 #include <glm/glm.hpp>
 
+#include "asset/SphereVolume.h"
+
 #include "backend/DrawOptions.h"
 
 namespace render
@@ -23,7 +25,7 @@ namespace render
         uint32_t indexCount{ 0 };
 
         // World volume
-        glm::vec4 volume;
+        SphereVolume worldVolume;
 
         // Mesh-relative transform (lodMesh.m_baseTransform)
         glm::mat4 localTransform;
@@ -48,11 +50,6 @@ namespace render
 
         ki::program_id idProgramId{ 0 };
         ki::program_id normalProgramId{ 0 };
-
-        glm::vec3 getWorldPosition() const
-        {
-            return localTransform[3];
-        }
 
         bool isFlag(uint32_t flag) const
         {

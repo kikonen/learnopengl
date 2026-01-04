@@ -82,7 +82,7 @@ void EnvironmentProbeRenderer::render(
         transform.setScale(2.5f);
 
         transform.updateMatrix();
-        transform.updateVolume();
+        transform.updateWorldVolume();
 
         backend::DrawOptions drawOptions;
         {
@@ -95,7 +95,7 @@ void EnvironmentProbeRenderer::render(
         m_meshes.emplace_back(
             m_mesh.get(),
             transform.getMatrix(),
-            transform.getVolume(),
+            transform.getWorldVolume(),
             drawOptions,
             m_mesh->getMaterial()->m_registeredIndex,
             m_programId,

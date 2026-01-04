@@ -24,6 +24,9 @@ namespace render
         static void release() noexcept;
         static InstanceRegistry& get() noexcept;
 
+        InstanceRegistry();
+        ~InstanceRegistry();
+
         void clear();
         void prepare();
 

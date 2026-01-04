@@ -68,7 +68,7 @@ void AsteroidBeltGenerator::updateWT(
             if (!parentChanged && (idx % STRIDES) != m_strideIndex) return;
             //if (m_strideIndex != 1) continue;
             m_transforms[idx].updateMatrix();
-            m_transforms[idx].updateVolume(parentMatrix, m_volume);
+            m_transforms[idx].updateWorldVolume(parentMatrix, m_localVolume);
             };
 
         std::for_each(
@@ -99,7 +99,7 @@ void AsteroidBeltGenerator::createAsteroids(
 {
     {
         const auto& containerState = container.getState();
-        m_volume = containerState.getVolume();
+        m_localVolume = containerState.getLocalVolume();
     }
 
     m_physics.reserve(m_asteroidCount);

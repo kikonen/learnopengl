@@ -5,6 +5,8 @@
 #include <glm/glm.hpp>
 #include <glm/gtx/quaternion.hpp>
 
+#include "asset/SphereVolume.h"
+
 #include "ki/size.h"
 #include "ki/limits.h"
 
@@ -30,7 +32,7 @@ namespace model
     //
     struct Snapshot {
     private:
-        glm::vec4 m_volume{ 0.f };
+        SphereVolume m_worldVolume{ 0.f };
 
         glm::vec3 m_viewUp{ 0.f };
         glm::vec3 m_viewFront{ 0.f };
@@ -68,7 +70,7 @@ namespace model
 
             m_flags = o.m_flags;
 
-            m_volume = o.m_volume;
+            m_worldVolume = o.m_worldVolume;
 
             m_viewUp = o.m_viewUp;
             m_viewFront = o.m_viewFront;
@@ -82,17 +84,17 @@ namespace model
             o.m_dirtyNormal = false;
         }
 
-        void setVolume(const glm::vec4& volume) noexcept
+        void setWorldVolume(const SphereVolume& worldVolume) noexcept
         {
-            if (m_volume != volume) {
+            if (m_worldVolume != worldVolume) {
+                m_worldVolume = worldVolume;
                 m_dirty = true;
-                m_volume = volume;
             }
         }
 
-        inline const glm::vec4& getVolume() const noexcept
+        inline const SphereVolume& getWorldVolume() const noexcept
         {
-            return m_volume;
+            return m_worldVolume;
         }
 
         inline const glm::vec3& getViewUp() const noexcept {

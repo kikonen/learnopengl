@@ -15,6 +15,8 @@
 #include "util/util.h"
 #include "util/glm_util.h"
 
+#include "asset/SphereVolume.h"
+
 #include "material/Material.h"
 
 #include "model/Node.h"
@@ -376,7 +378,7 @@ namespace physics {
         transform.setRotation(rot);
         transform.setScale(scale);
         transform.updateMatrix();
-        transform.updateVolume();
+        transform.updateWorldVolume();
 
         backend::DrawOptions drawOptions;
         if (mesh) {
@@ -393,7 +395,7 @@ namespace physics {
         return {
             mesh.get(),
             transform.getMatrix(),
-            transform.getVolume(),
+            transform.getWorldVolume(),
             drawOptions,
             -1,
             0,

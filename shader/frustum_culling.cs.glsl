@@ -85,10 +85,10 @@ bool isOnOrForwardPlane(in vec4 plane, in vec3 p, in float radius)
   return getSignedDistanceToPlane(plane, p) >= -radius;
 }
 
-bool isOnFrustum(in vec4 volume)
+bool isOnFrustum(in vec4 worldVolume)
 {
-  const vec3 p = volume.xyz;
-  const float radius = volume.w;
+  const vec3 p = worldVolume.xyz;
+  const float radius = worldVolume.w;
 
   return
     isOnOrForwardPlane(u_frustum[0], p, radius) &&
@@ -116,7 +116,7 @@ void main(void) {
   bool visible = (entity.u_flags & ENTITY_NO_FRUSTUM_BIT) == ENTITY_NO_FRUSTUM_BIT;
 
   if (!skip && !visible) {
-    visible = isOnFrustum(entity.u_volume);
+    visible = isOnFrustum(entity.u_worldVolume);
   }
 
 #ifdef FRUSTUM_DEBUG

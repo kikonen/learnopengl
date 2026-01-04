@@ -35,8 +35,8 @@ namespace model
 
         m_attachedSocketIndex = o.m_attachedSocketIndex;
 
-        m_volume = Sphere::calculateWorldVolume(
-            o.m_volume,
+        m_worldVolume = Sphere::calculateWorldVolume(
+            o.m_localVolume,
             o.m_modelMatrix,
             o.getWorldPosition(),
             o.getWorldMaxScale());
@@ -52,7 +52,7 @@ namespace model
 
         entity.u_flags = m_flags;
 
-        entity.u_volume = m_volume;
+        entity.u_worldVolume = m_worldVolume.toVec4();
 
         // NOTE KI M-T matrix needed *ONLY* if non uniform scale
         // NOTE KI flat planes are *always* uniform, since problem with normal scaling does

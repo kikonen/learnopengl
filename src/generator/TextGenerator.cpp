@@ -79,8 +79,8 @@ void TextGenerator::updateWT(
 //    //const glm::vec4 volume{ 0.f, 0.f, 0.f, m_aabb.getVolume().w };
 //    const glm::vec4& volume = m_aabb.getVolume();
 //
-//    state.setVolume(volume);
-//    snapshot.setVolume(volume);
+//    state.setLocalVolume(volume);
+//    snapshot.setLocalVolume(volume);
 //    entity->u_volume = volume;
 //}
 
@@ -126,7 +126,7 @@ void TextGenerator::updateVAO(
     lodMesh.m_indexCount = mesh->getIndexCount();
 
     // TODO KI threading violation
-    container.modifyState().setVolume(m_aabb.toVolume());
+    container.modifyState().setLocalVolume(m_aabb.toLocalVolume());
 
     //{
     //    m_vao.m_positionVbo.m_positionOffset = m_aabb.getVolume();

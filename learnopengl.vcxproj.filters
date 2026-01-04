@@ -162,7 +162,7 @@
     <ClCompile Include="src\engine\AssetsLoader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\asset\Volume.cpp">
+    <ClCompile Include="src\asset\SphereVolume.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\asset\Sphere.cpp">
@@ -1493,7 +1493,7 @@
     <ClInclude Include="src\shader\ProgramBind.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\asset\Volume.h">
+    <ClInclude Include="src\asset\SphereVolume.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\asset\Frustum.h">
@@ -3030,6 +3030,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\render\InstanceIndexSSBO.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\asset\SphereVolume_format.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

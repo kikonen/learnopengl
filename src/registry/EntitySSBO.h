@@ -47,7 +47,7 @@ struct EntitySSBO {
     //int pad3;
 
     // center + radius
-    glm::vec4 u_volume{ 0.f, 0.f, 0.f, 1.f }; // 3 * 1 * 4 = 12 => 16
+    glm::vec4 u_worldVolume{ 0.f, 0.f, 0.f, 1.f }; // 3 * 1 * 4 = 12 => 16
 
     glm::vec3 u_worldScale{ 1.f };
     //int pad4_1;

@@ -2,6 +2,8 @@
 
 #include <glm/glm.hpp>
 
+#include "asset/SphereVolume.h"
+
 // https://bruop.github.io/frustum_culling/
 struct AABB final
 {
@@ -27,7 +29,7 @@ struct AABB final
 
     ~AABB() noexcept = default;
     
-    glm::vec4 toVolume() const noexcept;
+    SphereVolume toLocalVolume() const noexcept;
 
     glm::vec3 getMin() const noexcept;
     glm::vec3 getMax() const noexcept;

@@ -79,8 +79,8 @@ void main() {
 
   // NOTE volume radius is from center of cube to corner
   // => halo radius is cube width / 2
-  // vs_out.radius = entity.u_volume.a * sin(PI / 4);
-  vs_out.radius = entity.u_volume.a / 1.7;
+  // vs_out.radius = entity.u_worldVolume.a * sin(PI / 4);
+  vs_out.radius = entity.u_worldVolume.a / 1.7;
 
   calculateClipping(worldPos);
 

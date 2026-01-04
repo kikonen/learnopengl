@@ -4,6 +4,8 @@
 
 #include <glm/glm.hpp>
 
+#include "asset/SphereVolume.h"
+
 #include "ki/size.h"
 
 #include "backend/DrawOptions.h"
@@ -17,7 +19,7 @@ namespace mesh {
         glm::vec4 m_transformMatrixRow1{ 0.f, 1.f, 0.f, 0.f };
         glm::vec4 m_transformMatrixRow2{ 0.f, 0.f, 1.f, 0.f };
 
-        glm::vec4 m_volume{ 0.f };
+        SphereVolume m_worldVolume{};
 
         mesh::Mesh* m_mesh{ nullptr };
         ki::material_index m_materialIndex{ 0 };
@@ -30,13 +32,13 @@ namespace mesh {
         MeshInstance(
             mesh::Mesh* mesh,
             const glm::mat4& modelMatrix,
-            const glm::vec4& volume,
+            const SphereVolume& worldVolume,
             backend::DrawOptions drawOptions,
             ki::material_index materialIndex,
             ki::program_id programId,
             bool shared)
             : m_mesh{ mesh },
-            m_volume{ volume },
+            m_worldVolume{ worldVolume },
             m_materialIndex{ materialIndex},
             m_drawOptions{ drawOptions },
             m_programId{ programId },
@@ -94,14 +96,14 @@ namespace mesh {
                 });
         }
 
-        void setVolume(const glm::vec4& volume)
+        void setVolume(const SphereVolume& worldVolume)
         {
-            m_volume = volume;
+            m_worldVolume = worldVolume;
         }
 
-        const glm::vec4& getVolume() const noexcept
+        const SphereVolume& getWorldVolume() const noexcept
         {
-            return m_volume;
+            return m_worldVolume;
         }
 
         ki::program_id getProgramId() const noexcept
