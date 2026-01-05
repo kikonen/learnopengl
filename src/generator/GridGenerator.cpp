@@ -44,6 +44,8 @@ void GridGenerator::prepareWT(
     prepareInstances(
         ctx,
         container);
+
+    markDirty({ 0, m_transforms.size() });
 }
 
 void GridGenerator::updateWT(
@@ -85,8 +87,11 @@ void GridGenerator::updateWT(
         }
     }
 
+    markDirty({ 0, m_transforms.size() });
+
     m_containerMatrixLevel = containerLevel;
 }
+
 
 void GridGenerator::updateInstances(
     const UpdateContext& ctx,

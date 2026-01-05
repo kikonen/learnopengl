@@ -81,6 +81,39 @@ void NodeGenerator::registerDrawables(
 
         groupId++;
     }
+
+    instanceRegistry.prepareInstances(m_instanceRef);
+}
+
+void NodeGenerator::updateDrawables(
+    render::InstanceRegistry& instanceRegistry,
+    const model::Node& container)
+{
+    ASSERT_RT();
+
+    if (m_instanceRef.empty()) return;
+    if (m_dirtySlots.empty()) return;
+
+    const auto* type = container.getType();
+    const auto& lodMeshes = type->getLodMeshes();
+
+    auto drawables = instanceRegistry.modifyRange(m_instanceRef);
+    int drawableIndex = 0;
+
+    for (auto& transform : m_transforms) {
+        for (int i = 0; i < lodMeshes.size(); i++) {
+            const auto& lodMesh = lodMeshes[i];
+            auto& drawable = drawables[drawableIndex++];
+
+            drawable.worldVolume = transform.getWorldVolume();
+            drawable.localTransform = transform.getMatrix() * lodMesh.m_baseTransform;
+        }
+    }
+
+    instanceRegistry.markDirty(m_instanceRef);
+    instanceRegistry.updateInstances(m_instanceRef);
+
+    m_dirtySlots.clear();
 }
 
 void NodeGenerator::bindBatch(
@@ -98,4 +131,20 @@ void NodeGenerator::bindBatch(
         programSelector,
         programPrepare,
         kindBits);
+}
+
+void NodeGenerator::markDirty(util::BufferReference ref)
+{
+    //ASSERT_WT();
+    if (ref.size == 0) return;
+
+    const auto& it = std::find_if(
+        m_dirtySlots.begin(),
+        m_dirtySlots.end(),
+        [&ref](const auto& old) {
+        return old.contains(ref);
+    });
+    if (it != m_dirtySlots.end()) return;
+
+    m_dirtySlots.push_back(ref);
 }

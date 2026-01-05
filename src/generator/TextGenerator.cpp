@@ -17,7 +17,8 @@
 #include "mesh/vao/VBO_impl.h"
 
 #include "render/Batch.h"
-
+#include "render/InstanceRegistry.h"
+#include "render/DrawableInfo.h"
 #include "render/RenderContext.h"
 
 #include "registry/Registry.h"
@@ -146,11 +147,6 @@ void TextGenerator::updateVAO(
     //    m_vao.updateRT();
     //}
 }
-
-void TextGenerator::registerDrawables(
-    render::InstanceRegistry& instanceRegistry,
-    const model::Node& container)
-{}
 
 void TextGenerator::bindBatch(
     const render::RenderContext& ctx,

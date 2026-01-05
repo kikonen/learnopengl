@@ -49,6 +49,8 @@ void AsteroidBeltGenerator::prepareWT(
     //container.m_visible = false;
 
     createAsteroids(ctx, container);
+
+    markDirty({ 0, m_transforms.size() });
 }
 
 void AsteroidBeltGenerator::updateWT(
@@ -82,6 +84,8 @@ void AsteroidBeltGenerator::updateWT(
             m_transformIndeces.cbegin(),
             m_transformIndeces.cend(),
             fn);
+
+        markDirty({ 0, m_transforms.size() });
     }
 
     m_strideIndex = (m_strideIndex + 1) % STRIDES;

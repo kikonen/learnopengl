@@ -52,10 +52,6 @@ public:
         const render::RenderContext& ctx,
         const model::Node& container) override;
 
-    void registerDrawables(
-        render::InstanceRegistry& instanceRegistry,
-        const model::Node& container) override;
-
     void bindBatch(
         const render::RenderContext& ctx,
         const std::function<ki::program_id (const render::DrawableInfo&)>& programSelector,

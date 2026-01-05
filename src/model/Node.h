@@ -36,6 +36,7 @@ namespace kigl {
 
 namespace render {
     class Batch;
+    class InstanceRegistry;
 }
 
 namespace mesh {
@@ -156,7 +157,13 @@ namespace model
 
         void updateVAO(const render::RenderContext& ctx) noexcept;
 
-        void registerDrawables() noexcept;
+        void registerDrawables(
+            render::InstanceRegistry& instanceRegistry,
+            const Snapshot& snapshot) noexcept;
+
+        void updateDrawables(
+            render::InstanceRegistry& instanceRegistry,
+            const Snapshot& snapshot) noexcept;
 
         void bindBatch(
             const render::RenderContext& ctx,

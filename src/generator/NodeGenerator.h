@@ -2,6 +2,7 @@
 
 #include <span>
 #include <functional>
+#include <mutex>
 
 #include "asset/SphereVolume.h"
 
@@ -92,6 +93,10 @@ public:
         render::InstanceRegistry& instanceRegistry,
         const model::Node& container);
 
+    virtual void updateDrawables(
+        render::InstanceRegistry& instanceRegistry,
+        const model::Node& container);
+
     virtual void bindBatch(
         const render::RenderContext& ctx,
         const std::function<ki::program_id (const render::DrawableInfo&)>& programSelector,
@@ -114,6 +119,8 @@ public:
         return m_transforms;
     }
 
+    void markDirty(util::BufferReference ref);
+
 public:
     GeneratorMode m_mode{ GeneratorMode::none };
 
@@ -134,6 +141,8 @@ protected:
 
     std::vector<mesh::Transform> m_transforms;
     std::vector<uint32_t> m_transformIndeces;
+
+    std::vector<util::BufferReference> m_dirtySlots;
 
     std::vector<pool::NodeHandle> m_nodes;
 };
