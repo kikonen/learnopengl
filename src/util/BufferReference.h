@@ -50,6 +50,11 @@ namespace util
             return *this;
         }
 
+        inline bool empty() const noexcept
+        {
+            return size == 0;
+        }
+
         inline uint32_t begin() const noexcept
         {
             return offset;

@@ -88,6 +88,8 @@ public:
         std::vector<model::Snapshot>& src,
         std::vector<model::Snapshot>& dst);
 
+    void updateDrawables();
+
     std::vector<model::Node*>& getCachedNodesWT();
 
     const std::vector<model::Node*> getCachedNodesRT() const noexcept

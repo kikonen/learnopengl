@@ -66,6 +66,7 @@ namespace terrain {
         auto heightMapId = prepareHeightMap(ctx, container);
 
         createTiles(ctx, container);
+        markDirty({ 0, m_transforms.size() });
     }
 
     void TerrainGenerator::updateWT(
@@ -76,6 +77,8 @@ namespace terrain {
         if (m_containerMatrixLevel == state.getMatrixLevel()) return;
 
         updateTiles(ctx, container);
+        markDirty({ 0, m_transforms.size() });
+
         state.m_dirtySnapshot = true;
         m_containerMatrixLevel = state.getMatrixLevel();
     }

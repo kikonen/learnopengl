@@ -4,8 +4,7 @@
 #include <unordered_map>
 #include <span>
 
-#include "kigl/GLBuffer.h"
-#include "kigl/GLFence.h"
+#include "kigl/GLSyncQueue.h"
 
 #include "util/BufferReference.h"
 
@@ -31,13 +30,9 @@ namespace render
         void prepare();
 
         // @return ref to buffer
-        util::BufferReference allocate(uint32_t count);
+        util::BufferReference allocate(size_t count);
         // @return null ref
         util::BufferReference release(util::BufferReference ref);
-
-        //// Called at load time when meshes are registered
-        //// @return persistent instance index
-        //uint32_t registerDrawable(const DrawableInfo& info);
 
         std::span<const render::DrawableInfo> getRange(
             const util::BufferReference ref) const noexcept;
@@ -48,7 +43,10 @@ namespace render
         void markDirtyAll() noexcept;
         void markDirty(util::BufferReference ref) noexcept;
 
-        void updateInstances();
+        void prepareInstances(util::BufferReference ref) noexcept;
+        void updateInstances(util::BufferReference ref) noexcept;
+
+        //void updateInstances();
 
         // Upload to GPU (call once per frame after updateTransforms)
         void upload();
@@ -59,12 +57,16 @@ namespace render
         size_t getDrawableCount() const { return m_drawables.size(); }
 
     private:
-        kigl::GLBuffer m_ssbo{ "instance_ssbo" };
-        kigl::GLFence m_fence{ "fence_entity" };
+        void createInstanceBuffers(size_t totalCount);
+
+    private:
+        std::unique_ptr<kigl::GLSyncQueue<render::InstanceSSBO>> m_instanceBuffers{ nullptr };
+
         bool m_useMapped{ false };
         bool m_useInvalidate{ false };
         bool m_useFence{ false };
         bool m_useFenceDebug{ false };
+        bool m_debug{ false };
 
         std::vector<DrawableInfo> m_drawables;
 
@@ -73,9 +75,8 @@ namespace render
         std::vector<util::BufferReference> m_dirtySlots;
 
         std::vector<render::InstanceSSBO> m_instances;
-        std::vector<util::BufferReference> m_dirtyInstances;
 
-        //bool m_dirty{ true };
+        bool m_needUpload{ false };
         size_t m_uploadedCount{ 0 };
     };
 }

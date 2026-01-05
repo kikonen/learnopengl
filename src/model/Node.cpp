@@ -210,8 +210,6 @@ namespace model
         if (m_camera) {
             m_camera->snapToIdeal(*snapshot);
         }
-
-        registerDrawables();
     }
 
     void Node::updateVAO(const render::RenderContext& ctx) noexcept
@@ -221,18 +219,16 @@ namespace model
         }
     }
 
-    void Node::registerDrawables() noexcept
+    void Node::registerDrawables(
+        render::InstanceRegistry& instanceRegistry,
+        const Snapshot& snapshot) noexcept
     {
-        auto& instanceRegistry = render::InstanceRegistry::get();
-
         if (m_generator && m_generator->isLightWeight()) {
             m_generator->registerDrawables(
                 instanceRegistry,
                 *this);
         }
         else {
-            const auto* snapshot = getSnapshotRT();
-
             const auto* type = getType();
             const auto& lodMeshes = type->getLodMeshes();
             const auto& lodMeshInstances = m_lodMeshInstances;
@@ -274,11 +270,35 @@ namespace model
                     drawable.idProgramId = lodMesh.m_idProgramId;
                     drawable.normalProgramId = lodMesh.m_normalProgramId;
 
-                    // TODO KI volume/transform can change per frame
-                    drawable.worldVolume = snapshot->getWorldVolume();
                     drawable.localTransform = lodMesh.m_baseTransform;
+
+                    // TODO KI volume can change per frame
+                    drawable.worldVolume = snapshot.getWorldVolume();
                 }
             }
+
+            instanceRegistry.prepareInstances(m_instanceRef);
+        }
+    }
+
+    void Node::updateDrawables(
+        render::InstanceRegistry& instanceRegistry,
+        const Snapshot& snapshot) noexcept
+    {
+        if (m_generator && m_generator->isLightWeight()) {
+            m_generator->updateDrawables(
+                instanceRegistry,
+                *this);
+        }
+        else {
+            if (m_instanceRef.empty()) return;
+
+            auto drawables = instanceRegistry.modifyRange(m_instanceRef);
+            for (auto& drawable : drawables) {
+                drawable.worldVolume = snapshot.getWorldVolume();
+            }
+            instanceRegistry.markDirty(m_instanceRef);
+            instanceRegistry.updateInstances(m_instanceRef);
         }
     }
 

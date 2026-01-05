@@ -131,7 +131,6 @@ int Engine::update()
 
     getRegistry()->m_dispatcherView->dispatchEvents();
 
-    render::InstanceRegistry::get().updateInstances();
     render::InstanceRegistry::get().upload();
     render::InstanceRegistry::get().bind();
 

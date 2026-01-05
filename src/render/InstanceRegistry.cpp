@@ -2,13 +2,18 @@
 
 #include "asset/Assets.h"
 
+#include "kigl/GLSyncQueue_impl.h"
+
 #include "render/InstanceSSBO.h"
 
 #include "shader/SSBO.h"
 
 namespace
 {
-    constexpr size_t INITIAL_SIZE = 128;
+    constexpr size_t BLOCK_SIZE = 1000;
+    constexpr size_t MAX_BLOCK_COUNT = 500;
+    constexpr size_t MAX_COUNT = BLOCK_SIZE * MAX_BLOCK_COUNT;
+    constexpr size_t MAX_INSTANCE_BUFFERS = 2;
 
     static render::InstanceRegistry* s_registry{ nullptr };
 }
@@ -49,18 +54,15 @@ namespace render
 
         m_instances.clear();
 
-        m_drawables.reserve(INITIAL_SIZE);
-        m_freeSlots.reserve(INITIAL_SIZE);
-        m_dirtySlots.reserve(INITIAL_SIZE);
-        m_instances.reserve(INITIAL_SIZE);
+        m_drawables.reserve(BLOCK_SIZE);
+        m_freeSlots.reserve(BLOCK_SIZE);
+        m_dirtySlots.reserve(BLOCK_SIZE);
+        m_instances.reserve(BLOCK_SIZE);
 
         m_uploadedCount = 0;
-        //m_dirty = false;
 
         // NULL entry
         allocate(1);
-
-        m_ssbo.markUsed(0);
     }
 
     void InstanceRegistry::prepare()
@@ -75,35 +77,16 @@ namespace render
         m_useMapped = false;
         m_useInvalidate = true;
         m_useFence = false;
-        //m_useFenceDebug = false;
-
-        //m_drawables.reserve(maxInstances);
-        //m_instances.reserve(maxInstances);
-
-        // Create persistent GPU buffer
-        constexpr GLbitfield storageFlags =
-            GL_MAP_WRITE_BIT |
-            GL_MAP_PERSISTENT_BIT |
-            GL_DYNAMIC_STORAGE_BIT;
-
-        if (m_useMapped) {
-            // https://stackoverflow.com/questions/44203387/does-gl-map-invalidate-range-bit-require-glinvalidatebuffersubdata
-            m_ssbo.createEmpty(INITIAL_SIZE * sizeof(InstanceSSBO), GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_DYNAMIC_STORAGE_BIT);
-            m_ssbo.map(GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_FLUSH_EXPLICIT_BIT);
-        }
-        else {
-            m_ssbo.createEmpty(INITIAL_SIZE * sizeof(InstanceSSBO), GL_DYNAMIC_STORAGE_BIT);
-        }
 
         clear();
         bind();
     }
 
-    util::BufferReference InstanceRegistry::allocate(uint32_t count)
+    util::BufferReference InstanceRegistry::allocate(size_t count)
     {
         //ASSERT_WT();
 
-        if (count == 0) return { 0, 0 };
+        if (count == 0) return {};
 
         uint32_t offset;
         {
@@ -119,6 +102,8 @@ namespace render
 
             markDirty({ offset, count });
         }
+
+        m_instances.resize(m_drawables.size());
 
         return { offset, count };
     }
@@ -140,15 +125,6 @@ namespace render
 
         return {};
     }
-
-    //uint32_t InstanceRegistry::registerDrawable(const DrawableInfo& info)
-    //{
-    //    uint32_t index = static_cast<uint32_t>(m_drawables.size());
-    //    m_drawables.push_back(info);
-
-    //    m_dirty = true;
-    //    return index;
-    //}
 
     std::span<const DrawableInfo> InstanceRegistry::getRange(
         const util::BufferReference ref) const noexcept
@@ -192,78 +168,109 @@ namespace render
         m_dirtySlots.push_back(ref);
     }
 
-    void InstanceRegistry::updateInstances()
+    void InstanceRegistry::prepareInstances(util::BufferReference ref) noexcept
     {
-        if (m_dirtySlots.empty()) return;
+        if (ref.size == 0) return;
 
-        m_instances.resize(m_drawables.size());
+        for (uint32_t i = 0; i < ref.size; i++) {
+            const auto drawableIndex = ref.offset + i;
+            const auto& drawable = m_drawables[drawableIndex];
+            auto& instance = m_instances[drawableIndex];
 
-#pragma omp parallel for schedule(static, 256)
-        for (const auto& slot : m_dirtySlots) {
-            for (size_t i = 0; i < slot.size; i++) {
-                const auto& drawable = m_drawables[slot.offset + i];
-                auto& instance = m_instances[slot.offset + i];
+            instance.u_entityIndex = drawable.entityIndex;
+            instance.u_materialIndex = drawable.materialIndex;
+            instance.u_jointBaseIndex = drawable.jointBaseIndex;
+            instance.u_data = drawable.data;
+            instance.u_flags = drawable.drawOptions.m_flags;
 
-                // Store in row-major format (matching your InstanceSSBO)
-                instance.setTransform(drawable.localTransform);
-                instance.u_entityIndex = drawable.entityIndex;
-                instance.u_materialIndex = drawable.materialIndex;
-                instance.u_jointBaseIndex = drawable.jointBaseIndex;
-                instance.u_data = drawable.data;
-                instance.u_flags = drawable.drawOptions.m_flags;
-            }
+            instance.setTransform(drawable.localTransform);
         }
-
-        if (m_dirtyInstances.empty()) {
-            m_dirtyInstances = m_dirtySlots;
-        }
-        else {
-            m_dirtyInstances.push_back({ 0, static_cast<uint32_t>(m_dirtyInstances.size()) });
-        }
-        m_dirtySlots.clear();
+        m_needUpload = true;
     }
+
+    void InstanceRegistry::updateInstances(util::BufferReference ref) noexcept
+    {
+        prepareInstances(ref);
+        //if (ref.size == 0) return;
+
+        //for (uint32_t i = 0; i < ref.size; i++) {
+        //    const auto drawableIndex = ref.offset + i;
+        //    const auto& drawable = m_drawables[drawableIndex];
+        //    auto& instance = m_instances[drawableIndex];
+
+        //    instance.setTransform(drawable.localTransform);
+        //}
+        //m_needUpload = true;
+    }
+
+//    void InstanceRegistry::updateInstances()
+//    {
+//        if (m_dirtySlots.empty()) return;
+//
+//        m_instances.resize(m_drawables.size());
+//
+//#pragma omp parallel for schedule(static, 256)
+//        for (const auto& slot : m_dirtySlots) {
+//            for (size_t i = 0; i < slot.size; i++) {
+//                updateInstances(slot);
+//            }
+//        }
+//
+//        m_dirtySlots.clear();
+//        m_needUpload = true;
+//    }
 
     void InstanceRegistry::upload()
     {
-        if (m_dirtyInstances.empty()) return;
+        if (!m_needUpload) return;
 
         constexpr size_t sz = sizeof(InstanceSSBO);
 
-        // Upload only changed portion (or all if structure changed)
-        const size_t uploadCount = m_instances.size();
-
+        const size_t totalCount = m_instances.size();
         {
-            // NOTE KI *reallocate* SSBO if needed
-            if (m_ssbo.m_size < uploadCount * sz) {
-                m_ssbo.resizeBuffer(m_instances.capacity() * sz, true);
-                if (m_useMapped) {
-                    m_ssbo.map(GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_FLUSH_EXPLICIT_BIT);
-                }
-                else {
-                    m_ssbo.bindSSBO(SSBO_INSTANCES);
-                }
-            }
-        }
+            createInstanceBuffers(totalCount);
 
-        if (m_useMapped) {
+            auto& current = m_instanceBuffers->current();
+            auto* __restrict mappedData = m_instanceBuffers->currentMapped();
+
+            m_instanceBuffers->waitFence();
             std::copy(
                 std::begin(m_instances),
-                std::begin(m_instances) + uploadCount,
-                m_ssbo.mapped<InstanceSSBO>(0));
-            m_ssbo.flushRange(0, uploadCount * sz);
-        }
-        else {
-            m_ssbo.update(0, uploadCount * sz, m_instances.data());
+                std::end(m_instances),
+                mappedData);
+            m_instanceBuffers->flush();
+            m_instanceBuffers->bindCurrentSSBO(SSBO_INSTANCES, false, totalCount);
         }
 
-        m_ssbo.markUsed(uploadCount * sz);
+        if (!m_instanceBuffers->setFenceIfNotSet()) {
+            KI_OUT(fmt::format("DUPLICATE_FENCE"));
+        }
+        m_instanceBuffers->next();
 
-        m_uploadedCount = uploadCount;
-        m_dirtyInstances.clear();
+        m_dirtySlots.clear();
+        m_uploadedCount = totalCount;
+        m_needUpload = false;
     }
 
     void InstanceRegistry::bind()
     {
-        m_ssbo.bindSSBO(SSBO_INSTANCES);
+    }
+
+    void InstanceRegistry::createInstanceBuffers(size_t totalCount)
+    {
+        if (!m_instanceBuffers || m_instanceBuffers->getEntryCount() < totalCount) {
+            size_t blocks = static_cast<size_t>((totalCount * 1.25f / BLOCK_SIZE) + 2);
+            size_t entryCount = blocks * BLOCK_SIZE;
+
+            m_instanceBuffers = std::make_unique<kigl::GLSyncQueue<render::InstanceSSBO>>(
+                "instance",
+                entryCount,
+                MAX_INSTANCE_BUFFERS,
+                true,
+                false,
+                true,
+                m_useFenceDebug);
+            m_instanceBuffers->prepare(1, m_debug);
+        }
     }
 }

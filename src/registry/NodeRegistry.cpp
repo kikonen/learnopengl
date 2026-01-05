@@ -66,6 +66,8 @@
 
 #include "script/ScriptSystem.h"
 
+#include "render/InstanceRegistry.h"
+
 #include "EntitySSBO.h"
 
 #include "Registry.h"
@@ -297,14 +299,14 @@ void NodeRegistry::postUpdateWT(const UpdateContext& ctx)
 {
     auto& cachedNodes = getCachedNodesWT();
 
-    for (int i = ID_ENTITY_INDEX + 1; i < m_states.size(); i++) {
+    for (int entityIndex = ID_ENTITY_INDEX + 1; entityIndex < m_states.size(); entityIndex++) {
         // NOTE KI skip free/root slot
-        if (m_parentIndeces[i] == 0) continue;
+        if (m_parentIndeces[entityIndex] == 0) continue;
 
-        auto* node = cachedNodes[i];
+        auto* node = cachedNodes[entityIndex];
         if (!node) continue;
 
-        auto& state = m_states[i];
+        auto& state = m_states[entityIndex];
 
         if (node->m_particleGenerator) {
             node->m_particleGenerator->updateWT(ctx, *node);
@@ -326,12 +328,12 @@ void NodeRegistry::postUpdateWT(const UpdateContext& ctx)
 
 int NodeRegistry::validateModelMatrices()
 {
-    for (auto i = ID_ENTITY_INDEX + 1; i < m_states.size(); i++) {
+    for (auto entityIndex = ID_ENTITY_INDEX + 1; entityIndex < m_states.size(); entityIndex++) {
         // NOTE KI skip free/root slot
-        if (m_parentIndeces[i] == 0) continue;
+        if (m_parentIndeces[entityIndex] == 0) continue;
 
-        const auto parentLevel = m_states[m_parentIndeces[i]].m_matrixLevel;
-        if (!m_states[i].valid(parentLevel)) return i;
+        const auto parentLevel = m_states[m_parentIndeces[entityIndex]].m_matrixLevel;
+        if (!m_states[entityIndex].valid(parentLevel)) return entityIndex;
     }
     return -1;
 }
@@ -378,12 +380,12 @@ void NodeRegistry::makeSnapshotPending()
 
         m_snapshotsPending.resize(sz);
 
-        for (int i = 0; i < sz; i++) {
-            const auto& state = m_states[i];
+        for (int entityIndex = 0; entityIndex < sz; entityIndex++) {
+            const auto& state = m_states[entityIndex];
             //assert(!state.m_dirty);
 
-            if (i >= forceFrom || state.m_dirtySnapshot) {
-                m_snapshotsPending[i].applyFrom(state);
+            if (entityIndex >= forceFrom || state.m_dirtySnapshot) {
+                m_snapshotsPending[entityIndex].applyFrom(state);
             }
         }
     }
@@ -437,6 +439,27 @@ void NodeRegistry::makeSnapshot(
     }
 }
 
+void NodeRegistry::updateDrawables()
+{
+    auto& cachedNodes = getCachedNodesWT();
+    const auto& snapshots = m_snapshotsRT;
+
+    auto& instanceRegistry = render::InstanceRegistry::get();
+
+    for (int entityIndex = ID_ENTITY_INDEX + 1; entityIndex < m_states.size(); entityIndex++) {
+        // NOTE KI skip free/root slot
+        if (m_parentIndeces[entityIndex] == 0) continue;
+
+        const auto& snapshot = snapshots[entityIndex];
+        if (!snapshot.m_dirty) continue;
+
+        auto* node = cachedNodes[entityIndex];
+        if (!node) continue;
+
+        node->updateDrawables(instanceRegistry, snapshot);
+    }
+}
+
 std::vector<model::Node*>& NodeRegistry::getCachedNodesWT()
 {
     cacheNodes(m_cachedNodesWT, m_cachedNodeLevelWT);
@@ -449,6 +472,8 @@ void NodeRegistry::updateRT(const UpdateContext& ctx)
 
     auto* root = getRootRT();
     m_rootPreparedRT = root && root->m_preparedRT;
+
+    updateDrawables();
 }
 
 std::pair<int, int> NodeRegistry::updateEntity(const UpdateContext& ctx)
@@ -457,16 +482,16 @@ std::pair<int, int> NodeRegistry::updateEntity(const UpdateContext& ctx)
     int minDirty = INT32_MAX;
     int maxDirty = INT32_MIN;
 
-    for (int i = 0; i < m_snapshotsRT.size(); i++) {
-        if (m_cachedNodesRT.size() < i + 1) continue;
+    for (int entityIndex = 0; entityIndex < m_snapshotsRT.size(); entityIndex++) {
+        if (m_cachedNodesRT.size() < entityIndex + 1) continue;
 
-        auto* node = m_cachedNodesRT[i];
-        const auto& state = m_states[i];
-        const auto& snapshot = m_snapshotsRT[i];
+        auto* node = m_cachedNodesRT[entityIndex];
+        const auto& state = m_states[entityIndex];
+        const auto& snapshot = m_snapshotsRT[entityIndex];
 
         if (!snapshot.m_dirty) continue;
 
-        auto& entity = m_entities[i];
+        auto& entity = m_entities[entityIndex];
 
         if (node) {
             entity.u_objectID = node->getId();
@@ -483,9 +508,9 @@ std::pair<int, int> NodeRegistry::updateEntity(const UpdateContext& ctx)
         snapshot.updateEntity(entity);
         snapshot.m_dirty = false;
 
-        m_dirtyEntities[i] = true;
-        if (i < minDirty) minDirty = i;
-        if (i > maxDirty) maxDirty = i;
+        m_dirtyEntities[entityIndex] = true;
+        if (entityIndex < minDirty) minDirty = entityIndex;
+        if (entityIndex > maxDirty) maxDirty = entityIndex;
     }
 
     return { minDirty, maxDirty };
@@ -626,6 +651,11 @@ void NodeRegistry::handleNodeAdded(model::Node* node)
         const PrepareContext ctx{ *m_engine };
         node->m_generator->prepareRT(ctx, *node);
     }
+
+    node->registerDrawables(
+        render::InstanceRegistry::get(),
+        m_snapshotsRT[node->getEntityIndex()]);
+
     node->m_preparedRT = true;
 }
 
