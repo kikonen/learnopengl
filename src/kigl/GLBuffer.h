@@ -11,9 +11,23 @@ namespace kigl {
         {
         }
 
+        GLBuffer(GLBuffer& o) = delete;
+        GLBuffer(const GLBuffer& o) = delete;
+        GLBuffer(GLBuffer&& o) noexcept;
+
         ~GLBuffer() {
             discard();
         }
+
+        GLBuffer& operator=(GLBuffer& o) = delete;
+        GLBuffer& operator=(GLBuffer&& o) noexcept;
+
+        bool operator==(const GLBuffer& o)
+        {
+            return this == &o;
+        }
+
+        void swap(GLBuffer& o) noexcept;
 
         operator int() const { return m_id; }
 
@@ -27,6 +41,11 @@ namespace kigl {
             m_mapped = false;
             m_created = false;
             m_id = 0;
+        }
+
+        size_t size() const noexcept
+        {
+            return m_size;
         }
 
         void create() {
@@ -242,7 +261,8 @@ namespace kigl {
             m_mapped = false;
         }
 
-        const std::string m_name;
+    private:
+        std::string m_name;
 
         GLuint m_id = 0;
         size_t m_size = 0;

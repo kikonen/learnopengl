@@ -210,7 +210,7 @@ void MaterialRegistry::updateMaterialBuffer()
         size_t updateIndex = index;
 
         // NOTE KI *reallocate* SSBO if needed
-        if (m_ssbo.m_size < totalCount * sz) {
+        if (m_ssbo.size() < totalCount * sz) {
             m_ssbo.resizeBuffer(m_materialEntries.capacity() * sz, true);
             m_ssbo.bindSSBO(SSBO_MATERIALS);
 
