@@ -53,8 +53,6 @@ namespace {
 }
 
 namespace backend {
-    constexpr size_t BUFFER_ALIGNMENT = 4;
-
     DrawBuffer::DrawBuffer()
     {
     }
@@ -66,20 +64,29 @@ namespace backend {
         m_batchDebug = assets.batchDebug;
 
         // Create instance ring allocator
-        m_instanceRing = std::make_unique<kigl::RingAllocator>(
-            "draw_instance_ring",
-            BUFFER_ALIGNMENT,
-            3,
-            1.5f);
-        m_instanceRing->create(estimateInstanceSizePerFrame());
+        {
+            GLint bufferAlignment;
+            glGetIntegerv(GL_SHADER_STORAGE_BUFFER_OFFSET_ALIGNMENT, &bufferAlignment);
+
+            m_instanceRing = std::make_unique<kigl::RingAllocator>(
+                "draw_instance_ring",
+                bufferAlignment,
+                3,
+                1.5f);
+            m_instanceRing->create(estimateInstanceSizePerFrame());
+        }
 
         // Create command ring allocator
-        m_commandRing = std::make_unique<kigl::RingAllocator>(
-            "draw_command_ring",
-            BUFFER_ALIGNMENT,
-            3,
-            1.5f);
-        m_commandRing->create(estimateCommandSizePerFrame());
+        {
+            constexpr size_t BUFFER_ALIGNMENT = 4;
+
+            m_commandRing = std::make_unique<kigl::RingAllocator>(
+                "draw_command_ring",
+                BUFFER_ALIGNMENT,
+                3,
+                1.5f);
+            m_commandRing->create(estimateCommandSizePerFrame());
+        }
     }
 
     void DrawBuffer::beginFrame()
