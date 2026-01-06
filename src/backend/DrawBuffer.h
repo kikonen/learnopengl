@@ -25,6 +25,11 @@ struct PrepareContext;
 
 
 namespace backend {
+    struct DrawRange {
+        uint32_t commandCount;
+        MultiDrawRange params;
+    };
+
     class DrawBuffer {
     public:
         DrawBuffer();
@@ -78,8 +83,7 @@ namespace backend {
         size_t m_commandCount = 0;
         size_t m_commandCapacity = 0;
 
-        // (command-count, range-params)
-        std::vector<std::pair<uint16_t, backend::MultiDrawRange>> m_drawRanges;
+        std::vector<DrawRange> m_drawRanges;
 
         size_t m_drawCounter = 0;
     };
