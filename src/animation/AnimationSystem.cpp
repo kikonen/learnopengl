@@ -129,6 +129,18 @@ namespace animation
         clear();
     }
 
+    void AnimationSystem::beginFrame()
+    {
+        m_jointBuffer->beginFrame();
+        m_socketBuffer->beginFrame();
+    }
+
+    void AnimationSystem::endFrame()
+    {
+        m_jointBuffer->endFrame();
+        m_socketBuffer->endFrame();
+    }
+
     util::BufferReference AnimationSystem::registerRig(
         const animation::Rig& rig)
     {

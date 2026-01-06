@@ -5,7 +5,10 @@
 #include <atomic>
 #include <span>
 
-#include "kigl/GLSyncQueue.h"
+#include "kigl/GLBuffer.h"
+#include "kigl/GLFence.h"
+
+#include "util/BufferReference.h"
 
 namespace animation {
     class AnimationSystem;
@@ -25,28 +28,27 @@ namespace animation {
         void clear();
         void prepare();
 
+        void beginFrame();
+        void endFrame();
+
     protected:
         void updateRT();
 
     private:
-        void updateBuffer();
-        void createBuffer(size_t totalCount);
-
-        bool updateSpan(
+        void upload();
+        void uploadSpan(
             const std::vector<SocketTransformSSBO>& snapshot,
-            size_t updateIndex,
-            size_t updateCount);
+            const util::BufferReference& range);
+
+        void resizeBuffer(size_t totalCount);
 
     private:
         SocketRegistry* const m_socketRegistry;
 
-        std::unique_ptr<kigl::GLSyncQueue<SocketTransformSSBO>> m_queue;
+        kigl::GLBuffer m_ssbo{ "socket_ssbo" };
+        kigl::GLFence m_fence{ "socket_fence" };
+        size_t m_entryCount{ 0 };
 
         size_t m_frameSkipCount{ 0 };
-
-        bool m_useMapped{ false };
-        bool m_useInvalidate{ false };
-        bool m_useFence{ false };
-        bool m_useFenceDebug{ false };
     };
 }

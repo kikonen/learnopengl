@@ -6,7 +6,10 @@
 #include <span>
 #include <memory>
 
-#include "kigl/GLSyncQueue.h"
+#include "kigl/GLBuffer.h"
+#include "kigl/GLFence.h"
+
+#include "util/BufferReference.h"
 
 namespace animation {
     class AnimationSystem;
@@ -26,29 +29,28 @@ namespace animation {
         void clear();
         void prepare();
 
+        void beginFrame();
+        void endFrame();
+
     protected:
         void updateRT();
 
     private:
-        void updateBuffer();
+        void upload();
 
-        void createBuffer(size_t totalCount);
+        void uploadSpan(
+            const std::vector<JointTransformSSBO>& snapshot,
+            const util::BufferReference& range);
 
-        bool updateSpan(
-            const std::vector<JointTransformSSBO>& m_snapshot,
-            size_t updateIndex,
-            size_t updateCount);
+        void resizeBuffer(size_t totalCount);
 
     private:
         JointRegistry* const m_jointRegistry;
 
-        std::unique_ptr<kigl::GLSyncQueue<JointTransformSSBO>> m_queue;
+        kigl::GLBuffer m_ssbo{ "joint_ssbo" };
+        kigl::GLFence m_fence{ "joint_fence" };
+        size_t m_entryCount{ 0 };
 
         size_t m_frameSkipCount{ 0 };
-
-        bool m_useMapped{ false };
-        bool m_useInvalidate{ false };
-        bool m_useFence{ false };
-        bool m_useFenceDebug{ false };
     };
 }
