@@ -52,10 +52,6 @@ inline const std::string DEF_EFFECT_PLASMA{ "EFFECT_PLASMA" };
 
 inline const std::string DEF_FRUSTUM_DEBUG{ "FRUSTUM_DEBUG" };
 
-inline const std::string DEF_CS_GROUP_X{ "CS_GROUP_X" };
-inline const std::string DEF_CS_GROUP_Y{ "CS_GROUP_Y" };
-inline const std::string DEF_CS_GROUP_Z{ "CS_GROUP_Z" };
-
 inline constexpr int ATTR_POS = 0;
 inline constexpr int ATTR_TEX = 1;
 inline constexpr int ATTR_NORMAL = 2;

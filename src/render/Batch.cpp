@@ -426,23 +426,8 @@ namespace render {
             bufferCount = 1;
         }
 
-        auto useMapped = assets.glUseMapped;
-        auto useInvalidate = assets.glUseInvalidate;
-        auto useFence = assets.glUseFence;
-        auto useFenceDebug = assets.glUseFenceDebug;
-
-        useMapped = true;
-        useInvalidate = false;
-        useFence = true;
-        //useFenceDebug = true;
-
-        m_draw = std::make_unique<backend::DrawBuffer>(
-            useMapped,
-            useInvalidate,
-            useFence,
-            useFenceDebug);
-
-        m_draw->prepareRT(ctx, entryCount, bufferCount);
+        m_draw = std::make_unique<backend::DrawBuffer>();
+        m_draw->prepareRT();
 
         m_frustumCPU = assets.frustumEnabled && assets.frustumCPU;
         m_frustumGPU = assets.frustumEnabled && assets.frustumGPU;
@@ -461,6 +446,16 @@ namespace render {
 
         m_batchRegistry.optimizeMultiDrawOrder();
         m_pending.resize(m_batchRegistry.getMaxMultDrawIndex() + 1);
+    }
+
+    void Batch::beginFrame()
+    {
+        m_draw->beginFrame();
+    }
+
+    void Batch::endFrame()
+    {
+        m_draw->endFrame();
     }
 
     void Batch::draw(
@@ -630,7 +625,6 @@ namespace render {
 
         {
             draw->flush();
-            draw->finish();
             clearBatches();
         }
 

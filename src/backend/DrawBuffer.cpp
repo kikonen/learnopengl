@@ -17,8 +17,6 @@
 #include "shader/uniform.h"
 #include "shader/ProgramRegistry.h"
 
-#include "kigl/GLSyncQueue_impl.h"
-
 #include "engine/PrepareContext.h"
 
 #include "registry/Registry.h"
@@ -37,188 +35,106 @@ namespace {
 
     constexpr size_t MAX_INDEX_COUNT = INDEX_BLOCK_SIZE * MAX_INDEX_BLOCK_COUNT;
 
-    constexpr size_t MAX_INSTANCE_BUFFERS = 64;
+    // Estimate sizes per frame
+    constexpr size_t INSTANCES_PER_FRAME = 50000;
+    constexpr size_t COMMANDS_PER_FRAME = 2000;
+
+    constexpr size_t estimateInstanceSizePerFrame()
+    {
+        return INSTANCES_PER_FRAME * sizeof(render::InstanceIndexSSBO)
+            + 16 * 256;  // alignment headroom
+    }
+
+    constexpr size_t estimateCommandSizePerFrame()
+    {
+        return COMMANDS_PER_FRAME * sizeof(backend::gl::DrawIndirectCommand)
+            + 16 * 256;  // alignment headroom
+    }
 }
 
 namespace backend {
-    constexpr int BUFFER_ALIGNMENT = 1;
+    constexpr size_t BUFFER_ALIGNMENT = 4;
 
-    DrawBuffer::DrawBuffer(
-        bool useMapped,
-        bool useInvalidate,
-        bool useFence,
-        bool useFenceDebug)
-        : m_useMapped{ useMapped },
-        m_useInvalidate{ useInvalidate },
-        m_useFence(useFence),
-        m_useFenceDebug{ useFenceDebug }
+    DrawBuffer::DrawBuffer()
     {
     }
 
-    void DrawBuffer::prepareRT(
-        const PrepareContext& ctx,
-        int batchCount,
-        int rangeCount)
+    void DrawBuffer::prepareRT()
     {
-        const auto info = kigl::GL::getInfo();
-
-        const auto& assets = ctx.getAssets();
-
-        m_frustumGPU = assets.frustumEnabled && assets.frustumGPU;
+        const auto& assets = Assets::get();
 
         m_batchDebug = assets.batchDebug;
-        m_batchCount = batchCount;
-        m_rangeCount = rangeCount;
 
-        int batchMultiplier = 1;
+        // Create instance ring allocator
+        m_instanceRing = std::make_unique<kigl::RingAllocator>(
+            "draw_instance_ring",
+            BUFFER_ALIGNMENT,
+            3,
+            1.5f);
+        m_instanceRing->create(estimateInstanceSizePerFrame());
 
-        //batchMultiplier = rangeCount;
-        //rangeCount = 1;
+        // Create command ring allocator
+        m_commandRing = std::make_unique<kigl::RingAllocator>(
+            "draw_command_ring",
+            BUFFER_ALIGNMENT,
+            3,
+            1.5f);
+        m_commandRing->create(estimateCommandSizePerFrame());
+    }
 
-        int commandBatchCount = batchCount * batchMultiplier;
-        int commandRangeCount = rangeCount;
+    void DrawBuffer::beginFrame()
+    {
+        m_instanceRing->beginFrame();
+        m_commandRing->beginFrame();
 
-        if (m_frustumGPU) {
-            m_computeGroups = assets.computeGroups;
-            m_cullingComputeId = ProgramRegistry::get().getComputeProgram(
-                CS_FRUSTUM_CULLING,
-                {
-                    { DEF_FRUSTUM_DEBUG, std::to_string(assets.frustumDebug) },
-                    { DEF_CS_GROUP_X, std::to_string(m_computeGroups[0])},
-                    { DEF_CS_GROUP_Y, std::to_string(m_computeGroups[1]) },
-                    { DEF_CS_GROUP_Z, std::to_string(m_computeGroups[2]) },
-                });
-            m_cullingCompute = Program::get(m_cullingComputeId);
-            m_cullingCompute->prepareRT();
-        }
+        // Pre-allocate command buffer for this frame
+        m_commandCapacity = COMMANDS_PER_FRAME;
+        m_currentCommandAlloc = m_commandRing->allocate<backend::gl::DrawIndirectCommand>(m_commandCapacity);
+        m_commandCount = 0;
+    }
 
-        if (m_frustumGPU) {
-            constexpr int storageFlags = GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_DYNAMIC_STORAGE_BIT;
-            constexpr int mapFlags = GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_FLUSH_EXPLICIT_BIT;
+    void DrawBuffer::endFrame()
+    {
+        m_instanceRing->endFrame();
+        m_commandRing->endFrame();
 
-            m_drawParameters.createEmpty(rangeCount * sizeof(gl::DrawIndirectParameters), storageFlags);
-            m_drawParameters.map(mapFlags);
-        }
-
-        if (m_frustumGPU) {
-            constexpr int storageFlags = GL_MAP_READ_BIT | GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_COHERENT_BIT;
-            constexpr int mapFlags = GL_MAP_READ_BIT | GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_COHERENT_BIT;
-
-            m_performanceCounters.createEmpty(rangeCount * sizeof(gl::PerformanceCounters), storageFlags);
-            m_performanceCounters.map(mapFlags);
-
-            auto* mappedData = m_performanceCounters.mapped<gl::PerformanceCounters>(0);
-            *mappedData = { 0, 0 };
-        }
-
-        m_commands = std::make_unique<GLCommandQueue>(
-            "draw_command",
-            commandBatchCount,
-            commandRangeCount,
-            m_useMapped,
-            m_useInvalidate,
-            m_useFence,
-            m_useFenceDebug);
-        m_commands->prepare(BUFFER_ALIGNMENT, m_batchDebug);
+        m_currentInstanceAlloc = {};
+        m_currentCommandAlloc = {};
+        m_commandCount = 0;
+        m_commandCapacity = 0;
     }
 
     void DrawBuffer::bind()
     {
         if (m_bound) return;
         m_bound = true;
-
-        if (m_frustumGPU) {
-            m_drawParameters.bindParameter();
-            m_drawParameters.bindSSBO(SSBO_DRAW_PARAMETERS);
-        }
-
-        if (m_frustumGPU) {
-            m_performanceCounters.bindSSBO(SSBO_PERFORMANCE_COUNTERS);
-        }
-
-        {
-            m_commands->m_buffer.bindDrawIndirect();
-        }
-        if (m_frustumGPU) {
-            m_commands->m_buffer.bindSSBO(SSBO_DRAW_COMMANDS);
-        }
     }
 
     void DrawBuffer::flushIfNeeded()
     {
-        if (!m_commands->full()) return;
+        if (m_commandCount < m_commandCapacity) return;
         flush();
     }
 
     void DrawBuffer::flush()
     {
-        const auto& cmdRange = m_commands->current();
-        const int drawCount = static_cast<int>(cmdRange.m_usedCount);
+        const int drawCount = static_cast<int>(m_commandCount);
 
         if (drawCount == 0) return;
-
-        m_commands->flush();
-
-        // NOTE KI
-        // - bind CS program
-        // - execute CS program
-        // - glMemoryBarrier
-        // - bind draw program
-        // - execute draw program
-
-        if (m_frustumGPU) {
-            auto* data = m_drawParameters.mapped< gl::DrawIndirectParameters>(0);
-            data += cmdRange.m_index;
-
-            data->u_baseIndex = static_cast<GLuint>(cmdRange.m_baseIndex);
-            // TODO KI broken
-            //data->u_drawType = static_cast<GLuint>(util::as_integer(drawRange.m_drawOptions.m_type));
-            data->u_drawCount = static_cast<GLuint>(drawCount);
-
-            constexpr size_t PARAMS_SZ = sizeof(gl::DrawIndirectParameters);
-            m_drawParameters.flushRange(
-                cmdRange.m_index * PARAMS_SZ,
-                PARAMS_SZ);
-        }
-
-        if (m_frustumGPU) {
-            m_cullingCompute->m_uniforms->u_drawParametersIndex.set(static_cast<GLuint>(cmdRange.m_index));
-
-            //const int maxX = m_computeGroups[0];
-            //int groupX = drawCount;
-            //int groupY = 1;
-            //if (drawCount > maxX) {
-            //    groupX = maxX;
-            //    groupY = drawCount / maxX;
-            //    if (drawCount % maxX != 0) groupY++;
-            //}
-            //glDispatchCompute(m_computeGroups[0], groupY, 1);
-
-            m_cullingCompute->bind();
-            glDispatchCompute(drawCount, 1, 1);
-        }
 
         m_drawCounter += drawCount;
 
         drawPending();
-        m_commands->next();
-    }
 
-    void DrawBuffer::finish()
-    {
-        // NOTE KI instances are fenced after their associated draw
-        if (!m_instanceBuffers->setFenceIfNotSet())
-        {
-            KI_OUT(fmt::format("DUPLICATE_FENCE"));
-        }
-        m_instanceBuffers->next();
+        // Allocate new command buffer for next batch
+        m_currentCommandAlloc = m_commandRing->allocate<backend::gl::DrawIndirectCommand>(m_commandCapacity);
+        m_commandCount = 0;
     }
 
     bool DrawBuffer::isSameMultiDraw(
         const backend::MultiDrawRange& sendRange)
     {
-        const auto& cmdRange = m_commands->current();
-        if (cmdRange.empty()) return false;
+        if (m_commandCount == 0) return false;
 
         auto& curr = m_drawRanges.back().second;
 
@@ -239,8 +155,6 @@ namespace backend {
         const backend::MultiDrawRange& sendRange,
         const backend::gl::DrawIndirectCommand& cmd)
     {
-        const auto& cmdRange = m_commands->current();
-
         if (isSameMultiDraw(sendRange)) {
             m_drawRanges.back().first++;
         }
@@ -249,9 +163,14 @@ namespace backend {
             m_drawRanges.push_back({ 1, sendRange });
         }
 
-        if (m_commands->send(cmd)) {
-            //KI_INFO_OUT("full: flush");
-            flush();
+        // Write command to ring buffer
+        if (m_currentCommandAlloc && m_commandCount < m_commandCapacity) {
+            m_currentCommandAlloc[m_commandCount] = cmd;
+            m_commandCount++;
+
+            if (m_commandCount >= m_commandCapacity) {
+                flush();
+            }
         }
     }
 
@@ -259,100 +178,60 @@ namespace backend {
         std::span<render::InstanceIndexSSBO> indeces)
     {
         const size_t totalCount = indeces.size();
-        {
-            createInstanceBuffers(totalCount);
 
-            auto& current = m_instanceBuffers->current();
-            auto* __restrict mappedData = m_instanceBuffers->currentMapped();
+        m_currentInstanceAlloc = m_instanceRing->allocate<render::InstanceIndexSSBO>(totalCount);
 
-            m_instanceBuffers->waitFence();
+        if (m_currentInstanceAlloc) {
             std::copy(
                 std::begin(indeces),
                 std::end(indeces),
-                mappedData);
-            m_instanceBuffers->bindCurrentSSBO(SSBO_INSTANCE_INDECES, false, totalCount);
+                m_currentInstanceAlloc.data);
 
-            // NOTE KI instances are fenced after their associated draw
-        }
-    }
-
-    void DrawBuffer::createInstanceBuffers(size_t totalCount)
-    {
-        if (!m_instanceBuffers || m_instanceBuffers->getEntryCount() < totalCount) {
-            size_t blocks = static_cast<size_t>((totalCount * 1.25f / INDEX_BLOCK_SIZE) + 2);
-            size_t entryCount = blocks * INDEX_BLOCK_SIZE;
-
-            m_instanceBuffers = std::make_unique<kigl::GLSyncQueue<render::InstanceIndexSSBO>>(
-                "instance_index",
-                entryCount,
-                MAX_INSTANCE_BUFFERS,
-                true,
-                false,
-                true,
-                m_useFenceDebug);
-            m_instanceBuffers->prepare(BUFFER_ALIGNMENT, m_batchDebug);
+            m_instanceRing->bindSSBO(SSBO_INSTANCE_INDECES, m_currentInstanceAlloc.ref);
         }
     }
 
     void DrawBuffer::drawPending()
     {
-        if (m_frustumGPU) {
-            glMemoryBarrier(GL_COMMAND_BARRIER_BIT);
-        }
+        m_commandRing->bindDrawIndirect();
 
         size_t tallyCount = 0;
-        auto handler = [this, &tallyCount](kigl::GLBufferRange& cmdRange) {
-            constexpr auto sz = sizeof(backend::gl::DrawIndirectCommand);
+        constexpr auto sz = sizeof(backend::gl::DrawIndirectCommand);
 
-            for (const auto& drawEntry : m_drawRanges) {
-                const auto& drawRange = drawEntry.second;
-                const auto& drawCount = drawEntry.first;
-                const auto& baseOffset = cmdRange.m_baseOffset + tallyCount * sz;
+        for (const auto& drawEntry : m_drawRanges) {
+            const auto& drawRange = drawEntry.second;
+            const auto& drawCount = drawEntry.first;
+            const auto baseOffset = m_currentCommandAlloc.ref.offset + tallyCount * sz;
 
-                const auto& drawOptions = drawRange.m_drawOptions;
+            const auto& drawOptions = drawRange.m_drawOptions;
 
-                bindMultiDrawRange(drawRange);
+            bindMultiDrawRange(drawRange);
 
-                if (drawOptions.m_type == backend::DrawOptions::Type::elements) {
-                    glMultiDrawElementsIndirect(
-                        drawOptions.toMode(),
-                        GL_UNSIGNED_INT,
-                        (void*)baseOffset,
-                        drawCount,
-                        sz);
-                }
-                else if (drawOptions.m_type == backend::DrawOptions::Type::arrays)
-                {
-                    glMultiDrawArraysIndirect(
-                        drawOptions.toMode(),
-                        (void*)baseOffset,
-                        drawCount,
-                        sz);
-                }
-                tallyCount += drawCount;
+            if (drawOptions.m_type == backend::DrawOptions::Type::elements) {
+                glMultiDrawElementsIndirect(
+                    drawOptions.toMode(),
+                    GL_UNSIGNED_INT,
+                    (void*)baseOffset,
+                    drawCount,
+                    sz);
             }
+            else if (drawOptions.m_type == backend::DrawOptions::Type::arrays)
+            {
+                glMultiDrawArraysIndirect(
+                    drawOptions.toMode(),
+                    (void*)baseOffset,
+                    drawCount,
+                    sz);
+            }
+            tallyCount += drawCount;
+        }
 
-            assert(cmdRange.m_usedCount == tallyCount);
-            if (cmdRange.m_usedCount != tallyCount) throw "CORRUPTED";
-        };
-
-        m_commands->processCurrent(handler);
         m_drawRanges.clear();
     }
 
     gl::PerformanceCounters DrawBuffer::getCounters(bool clear) const
     {
         gl::PerformanceCounters counters;
-
-        if (m_frustumGPU) {
-            auto* mappedData = m_performanceCounters.mapped<gl::PerformanceCounters>(0);
-            counters = *mappedData;
-
-            if (clear) {
-                *mappedData = { 0, 0 };
-            }
-        }
-
         return counters;
     }
 
@@ -404,13 +283,5 @@ namespace backend {
         }
 
         state.setEnabled(GL_CLIP_DISTANCE1, drawRange.m_drawOptions.m_clip);
-
-        // HACK KI for primitive GL_LINES
-        // OPENGL: API 0x7 (7) DEPRECATED MEDIUM - API_ID_LINE_WIDTH
-        // deprecated behavior warning has been generated.
-        // Wide lines have been deprecated. glLineWidth set to 1.500000.
-        // glLineWidth with width greater than 1.0 will generate GL_INVALID_VALUE
-        // error in future versions
-        //glLineWidth(1.5f);
     }
 }

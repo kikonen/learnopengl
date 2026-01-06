@@ -168,6 +168,7 @@ bool Engine::renderFrame()
 {
     getRegistry()->startFrame();
     getRenderData()->beginFrame();
+    getBatch()->beginFrame();
 
     bool close = false;
 
@@ -181,6 +182,7 @@ bool Engine::renderFrame()
         processInput();
     }
 
+    getBatch()->endFrame();
     getRenderData()->endFrame();
     getRegistry()->endFrame();
 
