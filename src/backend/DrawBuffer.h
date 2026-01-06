@@ -1,6 +1,7 @@
 #pragma once
 
 #include <span>
+#include <memory>
 
 #include <glm/glm.hpp>
 
@@ -9,8 +10,6 @@
 #include "kigl/GLBuffer.h"
 #include "kigl/GLVertexArray.h"
 
-#include "kigl/GLSyncQueue.h"
-#include "kigl/GLFence.h"
 #include "kigl/RingAllocator.h"
 
 #include "gl/DrawIndirectCommand.h"
@@ -24,28 +23,18 @@
 class Program;
 struct PrepareContext;
 
-namespace render
-{
-}
 
 namespace backend {
-    // WIP KI it seems that there was no corruption in NVidia even if sync is turned off
-    using GLCommandQueue = kigl::GLSyncQueue<backend::gl::DrawIndirectCommand>;
-
     class DrawBuffer {
     public:
-        DrawBuffer(
-            bool useMapped,
-            bool useInvalidate,
-            bool useFence,
-            bool useFenceDebug);
+        DrawBuffer();
 
-        void prepareRT(
-            const PrepareContext& ctx,
-            int batchCount,
-            int rangeCount);
+        void prepareRT();
 
         void bind();
+
+        void beginFrame();
+        void endFrame();
 
         // STEPS:
         // - sendInstanceIndeces
@@ -60,13 +49,10 @@ namespace backend {
             const backend::gl::DrawIndirectCommand& cmd);
 
         void flush();
-        void finish();
 
         gl::PerformanceCounters getCounters(bool clear) const;
 
     private:
-        void createInstanceBuffers(size_t totalCount);
-
         void flushIfNeeded();
 
         bool isSameMultiDraw(
@@ -78,32 +64,22 @@ namespace backend {
             const backend::MultiDrawRange& drawRange) const;
 
     private:
-        const bool m_useMapped;
-        const bool m_useInvalidate;
-        const bool m_useFence;
-        const bool m_useFenceDebug;
-
         bool m_batchDebug{ false };
-        int m_batchCount = 0;
-        int m_rangeCount = 0;
-
-        bool m_frustumGPU = false;
 
         bool m_bound = false;
 
-        glm::uvec3 m_computeGroups{ 0 };
+        // Separate ring allocators for instances and draw commands
+        std::unique_ptr<kigl::RingAllocator> m_instanceRing{ nullptr };
+        std::unique_ptr<kigl::RingAllocator> m_commandRing{ nullptr };
 
-        ki::program_id m_cullingComputeId{ 0 };
-        Program* m_cullingCompute{ nullptr };
+        // Current frame allocations
+        kigl::RingAllocation<render::InstanceIndexSSBO> m_currentInstanceAlloc{};
+        kigl::RingAllocation<backend::gl::DrawIndirectCommand> m_currentCommandAlloc{};
+        size_t m_commandCount = 0;
+        size_t m_commandCapacity = 0;
 
-        std::unique_ptr<kigl::GLSyncQueue<render::InstanceIndexSSBO>> m_instanceBuffers{ nullptr };
-        std::unique_ptr<GLCommandQueue> m_commands{ nullptr };
-
-        // (range-params, command-count)
+        // (command-count, range-params)
         std::vector<std::pair<uint16_t, backend::MultiDrawRange>> m_drawRanges;
-
-        kigl::GLBuffer m_drawParameters{ "draw_parameters" };
-        kigl::GLBuffer m_performanceCounters{ "draw_performance_counters" };
 
         size_t m_drawCounter = 0;
     };
