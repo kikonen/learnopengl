@@ -44,10 +44,12 @@ public:
 
     void run();
 
-    int init();
-    int setup();
-    int update();
-    int render();
+    bool renderFrame();
+
+    bool init();
+    bool setup();
+    bool update();
+    bool render();
     void processInput();
 
     inline Registry* getRegistry() const noexcept {
@@ -93,12 +95,11 @@ public:
     backend::gl::PerformanceCounters getCountersLocal(bool clear) const;
 
 protected:
-    virtual int onInit() = 0;
-    virtual int onSetup() = 0;
+    virtual bool onInit() = 0;
+    virtual bool onSetup() = 0;
 
-    virtual int onUpdate(const UpdateContext& ctx) = 0;
-    virtual int onRender(const ki::RenderClock& clock) = 0;
-    virtual int onPost(const UpdateContext& ctx) = 0;
+    virtual bool onUpdate(const UpdateContext& ctx) = 0;
+    virtual bool onRender(const ki::RenderClock& clock) = 0;
 
     virtual void onDestroy();
 

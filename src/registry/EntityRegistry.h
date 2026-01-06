@@ -38,13 +38,14 @@ public:
     void prepare();
 
     void updateRT(const UpdateContext& ctx);
-    void postRT(const UpdateContext& ctx);
+
+    void beginFrame();
+    void endFrame();
+
+private:
+    void resizeBuffer(size_t totalCount);
 
 private:
     kigl::GLBuffer m_ssbo{ "entity_ssbo" };
-    kigl::GLFence m_fence{ "fence_entity" };
-    bool m_useMapped{ false };
-    bool m_useInvalidate{ false };
-    bool m_useFence{ false };
-    bool m_useFenceDebug{ false };
+    kigl::GLFence m_fence{ "entity_fence" };
 };

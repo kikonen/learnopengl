@@ -36,7 +36,7 @@ namespace util
 
         ~BufferReference() = default;
 
-        BufferReference& operator=(BufferReference& o)
+        BufferReference& operator=(const BufferReference& o)
         {
             offset = o.offset;
             size = o.size;

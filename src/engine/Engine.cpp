@@ -61,7 +61,7 @@ Engine::~Engine() {
     *m_alive = false;
 }
 
-int Engine::init()
+bool Engine::init()
 {
     Assets::set(loadAssets());
 
@@ -76,7 +76,7 @@ int Engine::init()
     return m_window->create() ? 0 : -1;
 }
 
-int Engine::setup() {
+bool Engine::setup() {
     const auto& assets = Assets::get();
     auto& state = kigl::GLState::get();
 
@@ -105,12 +105,7 @@ int Engine::setup() {
     m_batch->setInstanceRegistry(m_registry->m_instanceRegistry);
 
     m_renderData = std::make_unique<render::RenderData>();
-    m_renderData->prepare(
-        false,
-        assets.glUseInvalidate,
-        assets.glUseFence,
-        assets.glUseFenceDebug,
-        assets.batchDebug);
+    m_renderData->prepare(assets.batchDebug);
 
     {
         m_windowBuffer = std::make_unique<render::WindowBuffer>(true);
@@ -119,7 +114,7 @@ int Engine::setup() {
     return onSetup();
 }
 
-int Engine::update()
+bool Engine::update()
 {
     UpdateContext ctx{ *this, m_clock };
 
@@ -132,7 +127,6 @@ int Engine::update()
     getRegistry()->m_dispatcherView->dispatchEvents();
 
     render::InstanceRegistry::get().upload();
-    render::InstanceRegistry::get().bind();
 
     {
         const glm::ivec2& size = getSize();
@@ -147,7 +141,7 @@ int Engine::update()
     return onUpdate(ctx);
 }
 
-int Engine::render()
+bool Engine::render()
 {
     prepareUBOs();
     updateUBOs();
@@ -156,7 +150,7 @@ int Engine::render()
 
     m_batch->bind();
     int result = onRender(m_clock);
-    getRenderData()->invalidateAll();
+
     return result;
 }
 
@@ -170,6 +164,28 @@ void Engine::processInput()
     m_window->processInput(ctx);
 }
 
+bool Engine::renderFrame()
+{
+    getRegistry()->startFrame();
+    getRenderData()->beginFrame();
+
+    bool close = false;
+
+    if (!close) {
+        close = update();
+    }
+    if (!close) {
+        close = render();
+    }
+    if (!close) {
+        processInput();
+    }
+
+    getRenderData()->endFrame();
+    getRegistry()->endFrame();
+
+    return close;
+}
 
 void Engine::run() {
     auto& assets = Assets::modify();
@@ -249,19 +265,8 @@ void Engine::run() {
                     glFinish();
                 }
 
-                if (!close) {
-                    close = update();
-                }
-                if (!close) {
-                    close = render();
-                }
-                {
-                    processInput();
-                }
-                if (!close) {
-                    UpdateContext ctx{ *this, m_clock };
-                    close = onPost(ctx);
-                }
+                close = renderFrame();
+
                 if (!close) {
                     ProgramRegistry::get().validate();
                 }

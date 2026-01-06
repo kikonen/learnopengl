@@ -1,10 +1,8 @@
 #pragma once
 
-#include "kigl/GLSyncQueue.h"
+#include <memory>
 
 #include "shader/LightsUBO.h"
-
-class Registry;
 
 struct CameraUBO;
 struct DataUBO;
@@ -14,19 +12,25 @@ struct BufferInfoUBO;
 struct ClipPlanesUBO;
 struct LightsUBO;
 
-namespace render {
+namespace kigl
+{
+    class RingAllocator;
+}
+
+namespace render
+{
     class NodeCollection;
 
-    class RenderData {
+    class RenderData
+    {
     public:
         RenderData();
+        ~RenderData();
 
-        void prepare(
-            bool useMapped,
-            bool useInvalidate,
-            bool useFence,
-            bool useFenceDebug,
-            bool debug);
+        void prepare(bool debug);
+
+        void beginFrame();
+        void endFrame();
 
         void updateCamera(const CameraUBO& data);
         void updateData(const DataUBO& data);
@@ -36,18 +40,9 @@ namespace render {
         void updateClipPlanes(const ClipPlanesUBO& data);
         void updateLights(NodeCollection* collection);
 
-        void invalidateAll();
-
     private:
-        LightsUBO m_lightsUBO;
+        std::unique_ptr<kigl::RingAllocator> m_ring;
 
-        // NOTE KI OpenGL Insights - Chapter 28
-        std::unique_ptr<kigl::GLSyncQueue<CameraUBO>> m_camera;
-        std::unique_ptr<kigl::GLSyncQueue<DataUBO>> m_data;
-        std::unique_ptr<kigl::GLSyncQueue<ShadowUBO>> m_shadow;
-        std::unique_ptr<kigl::GLSyncQueue<DebugUBO>> m_debug;
-        std::unique_ptr<kigl::GLSyncQueue<BufferInfoUBO>> m_bufferInfo;
-        std::unique_ptr<kigl::GLSyncQueue<ClipPlanesUBO>> m_clipPlanes;
-        std::unique_ptr<kigl::GLSyncQueue<LightsUBO>> m_lights;
+        LightsUBO m_lightsUBO{};
     };
 }

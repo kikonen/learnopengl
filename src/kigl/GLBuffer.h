@@ -52,6 +52,16 @@ namespace kigl {
             return m_size;
         }
 
+        bool isCreated() const noexcept
+        {
+            return m_created;
+        }
+
+        bool isMapped() const noexcept
+        {
+            return m_mapped;
+        }
+
         void create() {
             if (m_created) return;
 

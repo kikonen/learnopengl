@@ -104,17 +104,17 @@ SampleApp::~SampleApp()
 {
 }
 
-int SampleApp::onInit()
+bool SampleApp::onInit()
 {
     m_title = "OpenGL";
     //glfwWindowHint(GLFW_SAMPLES, 4);
 
     m_dbg.prepare();
 
-    return 0;
+    return false;
 }
 
-int SampleApp::onSetup()
+bool SampleApp::onSetup()
 {
     const auto& assets = Assets::get();
 
@@ -166,10 +166,10 @@ int SampleApp::onSetup()
 
     m_registry->clear();
 
-    return 0;
+    return false;
 }
 
-int SampleApp::onUpdate(const UpdateContext& ctx)
+bool SampleApp::onUpdate(const UpdateContext& ctx)
 {
 	const auto& assets = ctx.getAssets();
 	const auto& dbg = ctx.getDebug();
@@ -190,20 +190,10 @@ int SampleApp::onUpdate(const UpdateContext& ctx)
         glfwSwapInterval(dbg.m_glfwSwapInterval);
     }
 
-    return 0;
+    return false;
 }
 
-int SampleApp::onPost(const UpdateContext& ctx)
-{
-    if (auto* scene = m_currentScene.get(); scene)
-	{
-        scene->postRT(ctx);
-    }
-
-    return 0;
-}
-
-int SampleApp::onRender(const ki::RenderClock& clock)
+bool SampleApp::onRender(const ki::RenderClock& clock)
 {
     const auto& assets = Assets::get();
 
@@ -317,7 +307,7 @@ int SampleApp::onRender(const ki::RenderClock& clock)
 
     frustumDebug(clock);
 
-    return 0;
+    return false;
 }
 
 void SampleApp::processInput()
@@ -539,12 +529,7 @@ std::shared_ptr<Scene> SampleApp::loadScene(
         m_batch->prepareRT({ *this });
 
         m_renderData = std::make_unique<render::RenderData>();
-        m_renderData->prepare(
-            false,
-            assets.glUseInvalidate,
-            assets.glUseFence,
-            assets.glUseFenceDebug,
-            assets.batchDebug);
+        m_renderData->prepare(assets.batchDebug);
     }
 
     if (m_loader) {

@@ -294,6 +294,7 @@
     <ClCompile Include="src\animation\Rig.cpp" />
     <ClCompile Include="src\kigl\GLBuffer.cpp" />
     <ClCompile Include="src\kigl\GLFrameBufferHanddle.cpp" />
+    <ClCompile Include="src\kigl\RingAllocator.cpp" />
     <ClCompile Include="src\kigl\GLTextureHandle.cpp" />
     <ClCompile Include="src\kigl\GLVertexArray.cpp" />
     <ClCompile Include="src\material\InlineTexture.cpp" />
@@ -741,6 +742,7 @@
     <ClInclude Include="src\animation\animation_util.h" />
     <ClInclude Include="src\animation\ClipContainer.h" />
     <ClInclude Include="src\asset\SphereVolume_format.h" />
+    <ClInclude Include="src\kigl\RingAllocator.h" />
     <ClInclude Include="src\mesh\RegisteredRig.h" />
     <ClInclude Include="src\render\DrawableInfo.h" />
     <ClInclude Include="src\render\InstanceIndexSSBO.h" />

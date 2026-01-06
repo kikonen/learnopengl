@@ -68,7 +68,6 @@ public:
     void prepareRT();
 
     void updateRT(const UpdateContext& ctx);
-    void postRT(const UpdateContext& ctx);
     void updateViewRT(const UpdateViewContext& ctx);
 
     void bind(const render::RenderContext& ctx);
