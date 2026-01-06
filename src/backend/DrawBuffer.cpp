@@ -143,7 +143,7 @@ namespace backend {
     {
         if (m_commandCount == 0) return false;
 
-        auto& curr = m_drawRanges.back().second;
+        auto& curr = m_drawRanges.back().params;
 
         const auto& cd = curr.m_drawOptions;
         const auto& sd = sendRange.m_drawOptions;
@@ -163,11 +163,11 @@ namespace backend {
         const backend::gl::DrawIndirectCommand& cmd)
     {
         if (isSameMultiDraw(sendRange)) {
-            m_drawRanges.back().first++;
+            m_drawRanges.back().commandCount++;
         }
         else {
             // starting new range
-            m_drawRanges.push_back({ 1, sendRange });
+            m_drawRanges.push_back({ .commandCount = 1, .params = sendRange });
         }
 
         // Write command to ring buffer
@@ -206,8 +206,8 @@ namespace backend {
         constexpr auto sz = sizeof(backend::gl::DrawIndirectCommand);
 
         for (const auto& drawEntry : m_drawRanges) {
-            const auto& drawRange = drawEntry.second;
-            const auto& drawCount = drawEntry.first;
+            const auto& drawRange = drawEntry.params;
+            const auto& drawCount = drawEntry.commandCount;
             const auto baseOffset = m_currentCommandAlloc.ref.offset + tallyCount * sz;
 
             const auto& drawOptions = drawRange.m_drawOptions;
