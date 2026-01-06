@@ -1,14 +1,41 @@
 TARGET_SIZE ?= 1024
+MSBUILD ?= MSBuild.exe
+PROJECT = learnopengl.vcxproj
 
 default: help
 
 help:
-	@echo "make setup"
-	@echo "---------------"
-	@echo "make all TARGET_SIZE=${TARGET_SIZE}"
-	@echo "  OR"
-	@echo "make meta TARGET_SIZE=${TARGET_SIZE}"
-	@echo "make build TARGET_SIZE=${TARGET_SIZE}"
+	@echo "Build (from MSYS2):"
+	@echo "  make compile-debug"
+	@echo "  make compile-release"
+	@echo "  make compile          (both)"
+	@echo ""
+	@echo "Run:"
+	@echo "  make run-debug"
+	@echo "  make run-release"
+	@echo ""
+	@echo "Assets:"
+	@echo "  make setup"
+	@echo "  make all TARGET_SIZE=${TARGET_SIZE}"
+	@echo "    OR"
+	@echo "  make meta TARGET_SIZE=${TARGET_SIZE}"
+	@echo "  make build TARGET_SIZE=${TARGET_SIZE}"
+
+# Build targets (MSYS2)
+compile: compile-debug compile-release
+
+compile-debug:
+	cmd //c "${MSBUILD} ${PROJECT} /p:Configuration=Debug /p:Platform=x64 /m"
+
+compile-release:
+	cmd //c "${MSBUILD} ${PROJECT} /p:Configuration=Release /p:Platform=x64 /m"
+
+# Run targets
+run-debug:
+	./x64/Debug/learnopengl.exe
+
+run-release:
+	./x64/Release/learnopengl.exe
 
 all: meta build
 
