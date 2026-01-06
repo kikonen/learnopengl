@@ -196,9 +196,9 @@ namespace kigl {
             if (m_binding != binding) {
                 m_binding = binding;
 
-                KI_DEBUG(fmt::format(
-                    "BUFFER: bindBufferRange - name={}, id={}, size={}, binding={}, offset={}, len={}",
-                    m_name, m_id, m_size, m_binding, offset, length));
+                //KI_DEBUG(fmt::format(
+                //    "BUFFER: bindBufferRange - name={}, id={}, size={}, binding={}, offset={}, len={}",
+                //    m_name, m_id, m_size, m_binding, offset, length));
             }
 
             glBindBufferRange(target, binding, m_id, offset, length);
