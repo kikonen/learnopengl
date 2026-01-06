@@ -18,21 +18,22 @@ namespace kigl {
             glDeleteFramebuffers(1, &m_fbo);
         }
 
-        GLFrameBufferHandle(GLFrameBufferHandle& handle) = delete;
-        GLFrameBufferHandle& operator=(GLFrameBufferHandle& handle) = delete;
+        GLFrameBufferHandle(GLFrameBufferHandle& o) = delete;
+        GLFrameBufferHandle& operator=(GLFrameBufferHandle& o) = delete;
 
-        GLFrameBufferHandle(GLFrameBufferHandle&& handle) noexcept
-            : m_fbo(handle.m_fbo)
+        GLFrameBufferHandle(GLFrameBufferHandle&& o) noexcept
         {
-            handle.m_fbo = 0;
+            swap(o);
         }
 
-        GLFrameBufferHandle& operator=(GLFrameBufferHandle&& handle) noexcept
+        GLFrameBufferHandle& operator=(GLFrameBufferHandle&& o) noexcept
         {
-            m_fbo = handle.m_fbo;
-            handle.m_fbo = 0;
+            GLFrameBufferHandle tmp(std::move(o));
+            swap(tmp);
             return *this;
         }
+
+        void swap(GLFrameBufferHandle& o) noexcept;
 
         void create(std::string_view name) {
             if (m_fbo > 0) return;

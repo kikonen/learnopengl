@@ -24,19 +24,14 @@ namespace kigl {
         GLTextureHandle& operator=(GLTextureHandle& o) = delete;
 
         GLTextureHandle(GLTextureHandle&& o) noexcept
-            : m_textureID{ o.m_textureID },
-            m_width{ o.m_width },
-            m_height{ o.m_height }
         {
-            o.m_textureID = 0;
+            swap(o);
         }
 
         GLTextureHandle& operator=(GLTextureHandle&& o) noexcept
         {
-            m_textureID = o.m_textureID;
-            m_width = o.m_width;
-            m_height = o.m_height;
-            o.m_textureID = 0;
+            GLTextureHandle tmp(std::move(o));
+            swap(tmp);
             return *this;
         }
 
@@ -44,6 +39,8 @@ namespace kigl {
         {
             release();
         }
+
+        void swap(GLTextureHandle& o) noexcept;
 
         bool valid() const noexcept
         {

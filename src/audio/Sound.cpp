@@ -15,20 +15,8 @@ namespace {
 namespace audio
 {
     Sound::Sound(Sound&& o) noexcept
-        : m_id{ o.m_id },
-        m_bufferId{ o.m_bufferId },
-        m_sampleRate{ o.m_sampleRate },
-        m_bitDepth{ o.m_bitDepth },
-        m_sampleCount{ o.m_sampleCount },
-        m_lengthInSeconds{ o.m_lengthInSeconds },
-        m_channelCount{ o.m_channelCount },
-        m_isMono{ o.m_isMono },
-        m_isStereo{ o.m_isStereo },
-        m_format{ o.m_format },
-        m_data{ std::move(o.m_data) }
     {
-        // NOTE KI o is moved now
-        o.m_bufferId = 0;
+        swap(o);
     }
 
     Sound::~Sound()
@@ -40,23 +28,24 @@ namespace audio
 
     Sound& Sound::operator=(Sound&& o) noexcept
     {
-        if (&o == this) return *this;
-
-        m_id = o.m_id;
-        m_bufferId = o.m_bufferId;
-        m_sampleRate = o.m_sampleRate;
-        m_bitDepth = o.m_bitDepth;
-        m_sampleCount = o.m_sampleCount;
-        m_lengthInSeconds = o.m_lengthInSeconds;
-        m_channelCount = o.m_channelCount;
-        m_isMono = o.m_isMono;
-        m_isStereo = o.m_isStereo;
-        m_format = o.m_format;
-        m_data = std::move(o.m_data);
-
-        o.m_bufferId = 0;
-
+        Sound tmp(std::move(o));
+        swap(tmp);
         return *this;
+    }
+
+    void Sound::swap(Sound& o) noexcept
+    {
+        std::swap(m_id, o.m_id);
+        std::swap(m_bufferId, o.m_bufferId);
+        std::swap(m_sampleRate, o.m_sampleRate);
+        std::swap(m_bitDepth, o.m_bitDepth);
+        std::swap(m_sampleCount, o.m_sampleCount);
+        std::swap(m_lengthInSeconds, o.m_lengthInSeconds);
+        std::swap(m_channelCount, o.m_channelCount);
+        std::swap(m_isMono, o.m_isMono);
+        std::swap(m_isStereo, o.m_isStereo);
+        std::swap(m_format, o.m_format);
+        std::swap(m_data, o.m_data);
     }
 
     void Sound::prepare()

@@ -1,5 +1,7 @@
 #include "Source.h"
 
+#include <algorithm>
+
 #include <fmt/format.h>
 #include "al_call.h"
 
@@ -15,20 +17,8 @@ namespace {
 namespace audio
 {
     Source::Source(Source&& o) noexcept
-        : m_id{ o.m_id },
-        m_sourceId{ o.m_sourceId },
-        m_soundId{ o.m_soundId },
-        m_referenceDistance{ o.m_referenceDistance },
-        m_maxDistance{ o.m_maxDistance },
-        m_rolloffFactor{ o.m_rolloffFactor },
-        m_minGain{ o.m_minGain  },
-        m_maxGain{ o.m_maxGain },
-        m_looping{ o.m_looping },
-        m_pitch{ o.m_pitch },
-        m_gain{ o.m_gain }
     {
-        // NOTE KI o is moved now
-        o.m_sourceId = 0;
+        swap(o);
     }
 
     Source::~Source()
@@ -41,23 +31,24 @@ namespace audio
 
     Source& Source::operator=(Source&& o) noexcept
     {
-        if (&o == this) return *this;
-
-        m_id = o.m_id;
-        m_sourceId = o.m_sourceId;
-        m_soundId = o.m_soundId;
-        m_referenceDistance = o.m_referenceDistance;
-        m_maxDistance = o.m_maxDistance;
-        m_rolloffFactor = o.m_rolloffFactor;
-        m_minGain = o.m_minGain;
-        m_maxGain = o.m_maxGain;
-        m_looping = o.m_looping;
-        m_pitch = o.m_pitch;
-        m_gain = o.m_gain;
-
-        o.m_sourceId = 0;
-
+        Source tmp(std::move(o));
+        swap(tmp);
         return *this;
+    }
+
+    void Source::swap(Source& o) noexcept
+    {
+        std::swap(m_id, o.m_id);
+        std::swap(m_sourceId, o.m_sourceId);
+        std::swap(m_soundId, o.m_soundId);
+        std::swap(m_referenceDistance, o.m_referenceDistance);
+        std::swap(m_maxDistance, o.m_maxDistance);
+        std::swap(m_rolloffFactor, o.m_rolloffFactor);
+        std::swap(m_minGain, o.m_minGain);
+        std::swap(m_maxGain, o.m_maxGain);
+        std::swap(m_looping, o.m_looping);
+        std::swap(m_pitch, o.m_pitch);
+        std::swap(m_gain, o.m_gain);
     }
 
     void Source::prepare(const Sound* sound) {

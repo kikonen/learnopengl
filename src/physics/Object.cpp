@@ -1,5 +1,7 @@
 #include "Object.h"
 
+#include <algorithm>
+
 #include <glm/glm.hpp>
 #include <glm/gtx/quaternion.hpp>
 
@@ -23,21 +25,12 @@ namespace {
 namespace physics
 {
     Object::Object() = default;
-
-    Object::Object(Object&& o) noexcept
-        : m_body{ std::move(o.m_body) },
-        m_geom{ std::move(o.m_geom) }
-    {
-    }
-
     Object::~Object() = default;
 
-    Object& Object::operator=(Object&& o) noexcept
+    void Object::swap(Object& o) noexcept
     {
-        m_body = std::move(o.m_body);
-        m_geom = std::move(o.m_geom);
-
-        return *this;
+        std::swap(m_body, o.m_body);
+        std::swap(m_geom, o.m_geom);
     }
 
     void Object::create(

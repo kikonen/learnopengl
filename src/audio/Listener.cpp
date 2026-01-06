@@ -1,5 +1,7 @@
 #include "Listener.h"
 
+#include <algorithm>
+
 #include <fmt/format.h>
 
 #include "util/Log.h"
@@ -12,19 +14,23 @@ namespace {
 namespace audio
 {
     Listener::Listener(Listener&& o) noexcept
-        : m_gain{ o.m_gain }
-    {}
+    {
+        swap(o);
+    }
 
     Listener::~Listener()
     {}
 
     Listener& Listener::operator=(Listener&& o) noexcept
     {
-        if (&o == this) return *this;
-
-        m_gain = o.m_gain;
-
+        Listener tmp(std::move(o));
+        swap(tmp);
         return *this;
+    }
+
+    void Listener::swap(Listener& o) noexcept
+    {
+        std::swap(m_gain, o.m_gain);
     }
 
     void Listener::updateActive(const model::NodeState& state) const

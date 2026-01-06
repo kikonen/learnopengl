@@ -25,6 +25,8 @@ namespace audio
         Listener& operator=(Listener& o) = delete;
         Listener& operator=(Listener&& o) noexcept;
 
+        void swap(Listener& o) noexcept;
+
         void updateActive(const model::NodeState& state) const;
 
         float m_gain{ 1.f };

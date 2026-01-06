@@ -1,7 +1,5 @@
 #pragma once
 
-#include <algorithm>
-
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_inverse.hpp>
 
