@@ -183,15 +183,19 @@ void Registry::updateRT(const UpdateContext& ctx)
     VaoRegistry::get().updateRT(ctx);
 }
 
+// In startFrame():
 void Registry::startFrame()
 {
     render::InstanceRegistry::get().beginFrame();
     EntityRegistry::get().beginFrame();
     animation::AnimationSystem::get().beginFrame();
+    particle::ParticleSystem::get().beginFrame();
 }
 
+// In endFrame():
 void Registry::endFrame()
 {
+    particle::ParticleSystem::get().endFrame();
     animation::AnimationSystem::get().endFrame();
     render::InstanceRegistry::get().endFrame();
     EntityRegistry::get().endFrame();

@@ -4,8 +4,6 @@
 
 #include "asset/Assets.h"
 
-#include "kigl/GLSyncQueue_impl.h"
-
 #include "shader/SSBO.h"
 #include "shader/ProgramRegistry.h"
 
@@ -26,8 +24,6 @@
 namespace {
     constexpr size_t BLOCK_SIZE = 10000;
     constexpr size_t MAX_BLOCK_COUNT = 1100;
-
-    constexpr size_t RANGE_COUNT = 3;
 
     static particle::ParticleSystem* s_system{ nullptr };
 }
@@ -74,7 +70,6 @@ namespace particle {
 
         m_snapshotCount = 0;
         m_activeCount = 0;
-        m_lastParticleSize = 0;
     }
 
     bool ParticleSystem::isFull() const noexcept {
@@ -107,17 +102,24 @@ namespace particle {
         m_enabled = assets.particleEnabled;
         m_maxCount = std::min<int>(assets.particleMaxCount, BLOCK_SIZE * MAX_BLOCK_COUNT);
 
-        m_useMapped = assets.glUseMapped;
-        m_useInvalidate = assets.glUseInvalidate;
-        m_useFence = assets.glUseFence;
-        m_useFenceDebug = assets.glUseFenceDebug;
-
-        m_useMapped = true;
-        m_useInvalidate = false;
-        m_useFence = true;
-        m_useFenceDebug = true;
-
         if (!isEnabled()) return;
+
+        // https://stackoverflow.com/questions/44203387/does-gl-map-invalidate-range-bit-require-glinvalidatebuffersubdata
+        GLuint flags = GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_COHERENT_BIT;
+        m_ssbo.createEmpty(BLOCK_SIZE * sizeof(ParticleSSBO), flags);
+        m_ssbo.map(flags);
+
+        m_ssbo.bindSSBO(SSBO_PARTICLES);
+    }
+
+    void ParticleSystem::beginFrame()
+    {
+        m_fence.waitFence();
+    }
+
+    void ParticleSystem::endFrame()
+    {
+        m_fence.setFence();
     }
 
     void ParticleSystem::updateWT(const UpdateContext& ctx)
@@ -164,7 +166,7 @@ namespace particle {
         }
         m_frameSkipCount = 0;
 
-        updateParticleBuffer();
+        upload();
     }
 
     void ParticleSystem::preparePending()
@@ -176,7 +178,6 @@ namespace particle {
             m_maxCount - m_particles.size());
 
         if (count > 0 && isEnabled()) {
-            //KI_INFO_OUT(fmt::format("PS: pending={}, copy={}, size={}", m_pending.size(), count, m_particles.size()));
             m_particles.insert(m_particles.end(), m_pending.begin(), m_pending.begin() + count);
         }
         m_pending.clear();
@@ -199,14 +200,14 @@ namespace particle {
         }
 
         for (size_t i = 0; i < totalCount; i++) {
-             m_particles[i].updateSSBO(m_snapshot[i]);
+            m_particles[i].updateSSBO(m_snapshot[i]);
         }
 
         m_snapshotCount = totalCount;
         m_updateReady = true;
     }
 
-    void ParticleSystem::updateParticleBuffer()
+    void ParticleSystem::upload()
     {
         std::lock_guard lock(m_snapshotLock);
 
@@ -215,54 +216,36 @@ namespace particle {
             return;
         }
 
-        constexpr size_t sz = sizeof(ParticleSSBO);
         const size_t totalCount = m_snapshotCount;
 
-        createParticleBuffer();
+        resizeBuffer(totalCount);
 
-        //m_ssbo.invalidateRange(
-        //    0,
-        //    totalCount * sz);
+        auto* __restrict mappedData = m_ssbo.mapped<ParticleSSBO>(0);
 
-        //if (m_useInvalidate) {
-        //    m_ssbo.invalidateRange(0, totalCount * sz);
-        //}
-
-        auto& current = m_queue->current();
-        auto* __restrict mappedData = m_queue->currentMapped();
-
-        m_queue->waitFence();
         std::copy(
             std::begin(m_snapshot),
             std::end(m_snapshot),
             mappedData);
-        m_queue->setFence();
-        m_queue->bindCurrentSSBO(SSBO_PARTICLES, false, totalCount);
-        m_queue->next();
 
         m_activeCount = totalCount;
         m_updateReady = false;
     }
 
-    void ParticleSystem::createParticleBuffer()
+    void ParticleSystem::resizeBuffer(size_t totalCount)
     {
-        const size_t totalCount = m_snapshotCount;
+        if (m_entryCount >= totalCount) return;
 
-        if (!m_queue || m_queue->getEntryCount() < totalCount) {
-            size_t blocks = (totalCount / BLOCK_SIZE) + 2;
-            size_t entryCount = blocks * BLOCK_SIZE;
+        size_t blocks = (totalCount / BLOCK_SIZE) + 2;
+        size_t entryCount = blocks * BLOCK_SIZE;
 
-            // NOTE KI OpenGL Insights - Chapter 28
-            m_queue = std::make_unique<kigl::GLSyncQueue<ParticleSSBO>>(
-                "particle_ssbo",
-                entryCount,
-                RANGE_COUNT,
-                m_useMapped,
-                m_useInvalidate,
-                m_useFence,
-                m_useFenceDebug);
+        // NOTE KI *reallocate* SSBO if needed
+        m_ssbo.resizeBuffer(entryCount * sizeof(ParticleSSBO), true);
 
-            m_queue->prepare(1, false);
-        }
+        GLuint flags = GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_COHERENT_BIT;
+        m_ssbo.map(flags);
+
+        m_ssbo.bindSSBO(SSBO_PARTICLES);
+
+        m_entryCount = entryCount;
     }
 }

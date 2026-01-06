@@ -68,8 +68,9 @@ namespace render
         const auto& assets = Assets::get();
 
         // https://stackoverflow.com/questions/44203387/does-gl-map-invalidate-range-bit-require-glinvalidatebuffersubdata
-        m_ssbo.createEmpty(BLOCK_SIZE * sizeof(InstanceSSBO), GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_DYNAMIC_STORAGE_BIT);
-        m_ssbo.map(GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_FLUSH_EXPLICIT_BIT);
+        GLuint flags = GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_COHERENT_BIT;
+        m_ssbo.createEmpty(BLOCK_SIZE * sizeof(InstanceSSBO), flags);
+        m_ssbo.map(flags);
 
         m_ssbo.bindSSBO(SSBO_INSTANCES);
 
@@ -261,7 +262,9 @@ namespace render
         // NOTE KI *reallocate* SSBO if needed
         m_ssbo.resizeBuffer(bufferSize, true);
 
-        m_ssbo.map(GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_FLUSH_EXPLICIT_BIT);
+        GLuint flags = GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_COHERENT_BIT;
+        m_ssbo.map(flags);
+
         m_ssbo.bindSSBO(SSBO_INSTANCES);
     }
 }

@@ -65,8 +65,9 @@ void EntityRegistry::prepare()
     const auto& assets = Assets::get();
 
     // https://stackoverflow.com/questions/44203387/does-gl-map-invalidate-range-bit-require-glinvalidatebuffersubdata
-    m_ssbo.createEmpty(BLOCK_SIZE * sizeof(EntitySSBO), GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_DYNAMIC_STORAGE_BIT);
-    m_ssbo.map(GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_FLUSH_EXPLICIT_BIT);
+    GLuint flags = GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_COHERENT_BIT;
+    m_ssbo.createEmpty(BLOCK_SIZE * sizeof(EntitySSBO), flags);
+    m_ssbo.map(flags);
 
     m_ssbo.bindSSBO(SSBO_ENTITIES);
 }
@@ -148,7 +149,10 @@ void EntityRegistry::resizeBuffer(size_t totalCount)
     size_t bufferSize = blocks * BLOCK_SIZE * sz;
 
     m_ssbo.resizeBuffer(bufferSize, true);
-    m_ssbo.map(GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_FLUSH_EXPLICIT_BIT);
+
+    GLuint flags = GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_COHERENT_BIT;
+    m_ssbo.map(flags);
+
     m_ssbo.bindSSBO(SSBO_ENTITIES);
 }
 

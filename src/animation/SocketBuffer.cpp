@@ -35,6 +35,13 @@ namespace animation
         ASSERT_RT();
 
         m_frameSkipCount = 1;
+
+        // https://stackoverflow.com/questions/44203387/does-gl-map-invalidate-range-bit-require-glinvalidatebuffersubdata
+        GLuint flags = GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_COHERENT_BIT;
+        m_ssbo.createEmpty(BLOCK_SIZE * sizeof(SocketTransformSSBO), flags);
+        m_ssbo.map(flags);
+
+        //m_ssbo.bindSSBO(SSBO_SOCKET_TRANSFORMS);
     }
 
     void SocketBuffer::beginFrame()
@@ -111,7 +118,9 @@ namespace animation
         // NOTE KI *reallocate* SSBO if needed
         m_ssbo.resizeBuffer(entryCount * sizeof(SocketTransformSSBO), true);
 
-        m_ssbo.map(GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_FLUSH_EXPLICIT_BIT);
+        GLuint flags = GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_COHERENT_BIT;
+        m_ssbo.map(flags);
+
         //m_ssbo.bindSSBO(SSBO_SOCKET_TRANSFORMS);
 
         m_entryCount = entryCount;
