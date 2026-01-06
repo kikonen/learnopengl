@@ -187,10 +187,12 @@ void Registry::startFrame()
 {
     render::InstanceRegistry::get().beginFrame();
     EntityRegistry::get().beginFrame();
+    animation::AnimationSystem::get().beginFrame();
 }
 
 void Registry::endFrame()
 {
+    animation::AnimationSystem::get().endFrame();
     render::InstanceRegistry::get().endFrame();
     EntityRegistry::get().endFrame();
 }

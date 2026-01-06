@@ -2,8 +2,6 @@
 
 #include "asset/Assets.h"
 
-#include "kigl/GLSyncQueue_impl.h"
-
 #include "render/InstanceSSBO.h"
 
 #include "shader/SSBO.h"

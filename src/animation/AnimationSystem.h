@@ -63,6 +63,9 @@ namespace animation
         void clear();
         void prepare();
 
+        void beginFrame();
+        void endFrame();
+
         // Register node instance specific rig
         util::BufferReference registerRig(
             const animation::Rig& rig);

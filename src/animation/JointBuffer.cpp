@@ -4,8 +4,6 @@
 
 #include "util/thread.h"
 
-#include "kigl/GLSyncQueue_impl.h"
-
 #include "shader/SSBO.h"
 
 #include "JointRegistry.h"
@@ -16,8 +14,6 @@ namespace {
     constexpr size_t MAX_BLOCK_COUNT = 5100;
 
     constexpr size_t MAX_JOINT_COUNT = BLOCK_SIZE * MAX_BLOCK_COUNT;
-
-    constexpr size_t RANGE_COUNT = 3;
 }
 
 namespace animation
@@ -38,17 +34,21 @@ namespace animation
     {
         ASSERT_RT();
 
-        const auto& assets = Assets::get();
+        // https://stackoverflow.com/questions/44203387/does-gl-map-invalidate-range-bit-require-glinvalidatebuffersubdata
+        m_ssbo.createEmpty(BLOCK_SIZE * sizeof(JointTransformSSBO), GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_DYNAMIC_STORAGE_BIT);
+        m_ssbo.map(GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_FLUSH_EXPLICIT_BIT);
 
-        m_useMapped = assets.glUseMapped;
-        m_useInvalidate = assets.glUseInvalidate;
-        m_useFence = assets.glUseFence;
-        m_useFenceDebug = assets.glUseFenceDebug;
+        m_ssbo.bindSSBO(SSBO_JOINT_TRANSFORMS);
+    }
 
-        m_useMapped = true;
-        m_useInvalidate = false;
-        m_useFence = true;
-        //m_useFenceDebug = true;
+    void JointBuffer::beginFrame()
+    {
+        m_fence.waitFence();
+    }
+
+    void JointBuffer::endFrame()
+    {
+        m_fence.setFence();
     }
 
     void JointBuffer::updateRT()
@@ -61,82 +61,63 @@ namespace animation
         }
         m_frameSkipCount = 0;
 
-        updateBuffer();
+        upload();
     }
 
-    void JointBuffer::updateBuffer()
+    void JointBuffer::upload()
     {
         std::lock_guard lock(m_jointRegistry->m_lock);
 
         if (m_jointRegistry->m_dirtySnapshot.empty()) return;
 
-        //for (const auto& range : m_jointRegistry->m_dirtySnapshot) {
-        //    if (updateSpan(
-        //        m_jointRegistry->m_snapshot,
-        //        range.first,
-        //        range.second)) break;
-        //}
-
         auto totalCount = m_jointRegistry->m_snapshot.size();
-        createBuffer(totalCount);
-        updateSpan(
-            m_jointRegistry->m_snapshot,
-            0,
-            totalCount);
+        resizeBuffer(totalCount);
+
+        for (const auto& range : m_jointRegistry->m_dirtySnapshot) {
+            uploadSpan(m_jointRegistry->m_snapshot, range);
+        }
 
         m_jointRegistry->m_dirtySnapshot.clear();
         m_jointRegistry->m_updateReady = false;
     }
 
-    void JointBuffer::createBuffer(size_t totalCount)
+    void JointBuffer::uploadSpan(
+        const std::vector<JointTransformSSBO>& snapshot,
+        const util::BufferReference& range)
     {
-        if (!m_queue || m_queue->getEntryCount() < totalCount) {
-            size_t blocks = (totalCount / BLOCK_SIZE) + 2;
-            size_t entryCount = blocks * BLOCK_SIZE;
+        if (range.size == 0) return;
+        if (range.offset >= snapshot.size()) return;
 
-            if (entryCount > MAX_JOINT_COUNT) {
-                KI_CRITICAL(fmt::format("ERROR: MAX_JOINT_COUNT reached, size={}", entryCount));
-                entryCount = std::min(entryCount, MAX_JOINT_COUNT);
-            }
+        const size_t count = std::min(
+            static_cast<size_t>(range.size),
+            snapshot.size() - range.offset);
 
-            // NOTE KI OpenGL Insights - Chapter 28
-            m_queue = std::make_unique<kigl::GLSyncQueue<JointTransformSSBO>>(
-                "joint_ssbo",
-                entryCount,
-                RANGE_COUNT,
-                m_useMapped,
-                m_useInvalidate,
-                m_useFence,
-                m_useFenceDebug);
+        auto* __restrict mappedData = m_ssbo.mapped<JointTransformSSBO>(0);
 
-            m_queue->prepare(1, false);
-        }
+        std::copy_n(
+            snapshot.data() + range.offset,
+            count,
+            mappedData + range.offset);
     }
 
-    bool JointBuffer::updateSpan(
-        const std::vector<JointTransformSSBO>& snapshot,
-        size_t updateIndex,
-        size_t updateCount)
+    void JointBuffer::resizeBuffer(size_t totalCount)
     {
-        constexpr size_t sz = sizeof(JointTransformSSBO);
-        const size_t totalCount = snapshot.size();
+        if (m_entryCount >= totalCount) return;
 
-        if (totalCount == 0) return true;
+        size_t blocks = (totalCount / BLOCK_SIZE) + 2;
+        size_t entryCount = blocks * BLOCK_SIZE;
 
-        auto& current = m_queue->current();
-        auto* __restrict mappedData = m_queue->currentMapped();
+        if (entryCount > MAX_JOINT_COUNT) {
+            KI_CRITICAL(fmt::format("ERROR: MAX_JOINT_COUNT reached, size={}", entryCount));
+            entryCount = std::min(entryCount, MAX_JOINT_COUNT);
+        }
 
-        m_queue->waitFence();
-        std::copy(
-            std::begin(snapshot),
-            std::end(snapshot),
-            mappedData);
-        m_queue->setFence();
+        // NOTE KI *reallocate* SSBO if needed
+        m_ssbo.resizeBuffer(entryCount * sizeof(JointTransformSSBO), true);
 
-        m_queue->bindCurrentSSBO(SSBO_JOINT_TRANSFORMS, false, totalCount);
+        m_ssbo.map(GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_FLUSH_EXPLICIT_BIT);
+        m_ssbo.bindSSBO(SSBO_JOINT_TRANSFORMS);
 
-        m_queue->next();
-
-        return updateCount == totalCount;
+        m_entryCount = entryCount;
     }
 }

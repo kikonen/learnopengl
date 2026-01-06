@@ -4,8 +4,6 @@
 
 #include "asset/Assets.h"
 
-#include "kigl/GLSyncQueue_impl.h"
-
 #include "shader/SSBO.h"
 
 #include "SocketRegistry.h"
@@ -16,8 +14,6 @@ namespace {
     constexpr size_t MAX_BLOCK_COUNT = 5100;
 
     constexpr size_t MAX_SOCKET_COUNT = BLOCK_SIZE * MAX_BLOCK_COUNT;
-
-    constexpr size_t RANGE_COUNT = 3;
 }
 
 namespace animation
@@ -38,19 +34,17 @@ namespace animation
     {
         ASSERT_RT();
 
-        const auto& assets = Assets::get();
-
-        m_useMapped = assets.glUseMapped;
-        m_useInvalidate = assets.glUseInvalidate;
-        m_useFence = assets.glUseFence;
-        m_useFenceDebug = assets.glUseFenceDebug;
-
-        m_useMapped = true;
-        m_useInvalidate = false;
-        m_useFence = true;
-        //m_useFenceDebug = true;
-
         m_frameSkipCount = 1;
+    }
+
+    void SocketBuffer::beginFrame()
+    {
+        m_fence.waitFence();
+    }
+
+    void SocketBuffer::endFrame()
+    {
+        m_fence.setFence();
     }
 
     void SocketBuffer::updateRT()
@@ -63,82 +57,63 @@ namespace animation
         }
         m_frameSkipCount = 0;
 
-        updateBuffer();
+        upload();
     }
 
-    void SocketBuffer::updateBuffer()
+    void SocketBuffer::upload()
     {
         std::lock_guard lock(m_socketRegistry->m_lock);
 
         if (m_socketRegistry->m_dirtySnapshot.empty()) return;
 
-        //for (const auto& range : m_socketRegistry->m_dirtySnapshot) {
-        //    if (updateSpan(
-        //        m_socketRegistry->m_snapshot,
-        //        range.first,
-        //        range.second)) break;
-        //}
-
         auto totalCount = m_socketRegistry->m_snapshot.size();
-        createBuffer(totalCount);
-        updateSpan(
-            m_socketRegistry->m_snapshot,
-            0,
-            totalCount);
+        resizeBuffer(totalCount);
+
+        for (const auto& range : m_socketRegistry->m_dirtySnapshot) {
+            uploadSpan(m_socketRegistry->m_snapshot, range);
+        }
 
         m_socketRegistry->m_dirtySnapshot.clear();
         m_socketRegistry->m_updateReady = false;
     }
 
-    void SocketBuffer::createBuffer(size_t totalCount)
+    void SocketBuffer::uploadSpan(
+        const std::vector<SocketTransformSSBO>& snapshot,
+        const util::BufferReference& range)
     {
-        if (!m_queue || m_queue->getEntryCount() < totalCount) {
-            size_t blocks = (totalCount / BLOCK_SIZE) + 2;
-            size_t entryCount = blocks * BLOCK_SIZE;
+        if (range.size == 0) return;
+        if (range.offset >= snapshot.size()) return;
 
-            if (entryCount > MAX_SOCKET_COUNT) {
-                KI_CRITICAL(fmt::format("ERROR: MAX_SOCKET_COUNT reached, size={}", entryCount));
-                entryCount = std::min(entryCount, MAX_SOCKET_COUNT);
-            }
+        const size_t count = std::min(
+            static_cast<size_t>(range.size),
+            snapshot.size() - range.offset);
 
-            // NOTE KI OpenGL Insights - Chapter 28
-            m_queue = std::make_unique<kigl::GLSyncQueue<SocketTransformSSBO>>(
-                "socket_ssbo",
-                entryCount,
-                RANGE_COUNT,
-                m_useMapped,
-                m_useInvalidate,
-                m_useFence,
-                m_useFenceDebug);
+        auto* __restrict mappedData = m_ssbo.mapped<SocketTransformSSBO>(0);
 
-            m_queue->prepare(1, false);
-        }
+        std::copy_n(
+            snapshot.data() + range.offset,
+            count,
+            mappedData + range.offset);
     }
 
-    bool SocketBuffer::updateSpan(
-        const std::vector<SocketTransformSSBO>& snapshot,
-        size_t updateIndex,
-        size_t updateCount)
+    void SocketBuffer::resizeBuffer(size_t totalCount)
     {
-        constexpr size_t sz = sizeof(SocketTransformSSBO);
-        const size_t totalCount = snapshot.size();
+        if (m_entryCount >= totalCount) return;
 
-        if (totalCount == 0) return true;
+        size_t blocks = (totalCount / BLOCK_SIZE) + 2;
+        size_t entryCount = blocks * BLOCK_SIZE;
 
-        auto& current = m_queue->current();
-        auto* __restrict mappedData = m_queue->currentMapped();
+        if (entryCount > MAX_SOCKET_COUNT) {
+            KI_CRITICAL(fmt::format("ERROR: MAX_SOCKET_COUNT reached, size={}", entryCount));
+            entryCount = std::min(entryCount, MAX_SOCKET_COUNT);
+        }
 
-        m_queue->waitFence();
-        std::copy(
-            std::begin(snapshot),
-            std::end(snapshot),
-            mappedData);
-        m_queue->setFence();
+        // NOTE KI *reallocate* SSBO if needed
+        m_ssbo.resizeBuffer(entryCount * sizeof(SocketTransformSSBO), true);
 
-        //m_queue->bindCurrentSSBO(SSBO_SOCKET_TRANSFORMS, false, totalCount);
+        m_ssbo.map(GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_FLUSH_EXPLICIT_BIT);
+        //m_ssbo.bindSSBO(SSBO_SOCKET_TRANSFORMS);
 
-        m_queue->next();
-
-        return updateCount == totalCount;
+        m_entryCount = entryCount;
     }
 }
