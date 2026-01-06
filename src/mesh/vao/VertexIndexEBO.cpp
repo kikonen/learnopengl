@@ -101,7 +101,7 @@ namespace mesh {
             constexpr size_t sz = sizeof(IndexEntry32);
 
             // NOTE KI *reallocate* SSBO if needed
-            if (m_ebo.m_size < totalCount * sz) {
+            if (m_ebo.size() < totalCount * sz) {
                 m_ebo.resizeBuffer(m_entries.capacity() * sz, true);
                 glVertexArrayElementBuffer(vao, m_ebo);
 

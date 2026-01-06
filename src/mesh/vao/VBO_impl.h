@@ -104,7 +104,7 @@ namespace mesh {
             constexpr size_t sz = sizeof(T_Entry);
 
             // NOTE KI *reallocate* SSBO if needed
-            if (m_vbo.m_size < totalCount * sz) {
+            if (m_vbo.size() < totalCount * sz) {
                 m_vbo.resizeBuffer(m_entries.capacity() * sz, true);
                 glVertexArrayVertexBuffer(vao, m_binding, m_vbo, 0, sz);
 

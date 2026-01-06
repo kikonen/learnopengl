@@ -157,7 +157,7 @@ namespace terrain {
         constexpr size_t sz = sizeof(TerrainTileSSBO);
         const size_t totalCount = m_snapshotCount;
 
-        if (m_ssbo.m_size < totalCount * sz) {
+        if (m_ssbo.size() < totalCount * sz) {
             size_t blocks = (totalCount / BLOCK_SIZE) + 2;
             size_t bufferSize = blocks * BLOCK_SIZE * sz;
             m_ssbo.resizeBuffer(bufferSize, false);

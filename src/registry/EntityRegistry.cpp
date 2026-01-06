@@ -115,7 +115,7 @@ void EntityRegistry::updateRT(const UpdateContext& ctx)
     bool refreshAll = false;
     {
         // NOTE KI *reallocate* SSBO if needed
-        if (m_ssbo.m_size < totalCount * sz) {
+        if (m_ssbo.size() < totalCount * sz) {
             m_ssbo.resizeBuffer(entries.capacity() * sz, true);
             if (m_useMapped) {
                 m_ssbo.map(GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_FLUSH_EXPLICIT_BIT);

@@ -292,6 +292,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\animation\Rig.cpp" />
+    <ClCompile Include="src\kigl\GLBuffer.cpp" />
     <ClCompile Include="src\material\InlineTexture.cpp" />
     <ClCompile Include="src\mesh_set\AssimpLogger.cpp" />
     <ClCompile Include="src\mesh_set\AssimpMaterialImporter.cpp" />
