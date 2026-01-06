@@ -35,8 +35,9 @@ namespace animation
         ASSERT_RT();
 
         // https://stackoverflow.com/questions/44203387/does-gl-map-invalidate-range-bit-require-glinvalidatebuffersubdata
-        m_ssbo.createEmpty(BLOCK_SIZE * sizeof(JointTransformSSBO), GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_DYNAMIC_STORAGE_BIT);
-        m_ssbo.map(GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_FLUSH_EXPLICIT_BIT);
+        GLuint flags = GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_COHERENT_BIT;
+        m_ssbo.createEmpty(BLOCK_SIZE * sizeof(JointTransformSSBO), flags);
+        m_ssbo.map(flags);
 
         m_ssbo.bindSSBO(SSBO_JOINT_TRANSFORMS);
     }
@@ -115,7 +116,9 @@ namespace animation
         // NOTE KI *reallocate* SSBO if needed
         m_ssbo.resizeBuffer(entryCount * sizeof(JointTransformSSBO), true);
 
-        m_ssbo.map(GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_FLUSH_EXPLICIT_BIT);
+        GLuint flags = GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_COHERENT_BIT;
+        m_ssbo.map(flags);
+
         m_ssbo.bindSSBO(SSBO_JOINT_TRANSFORMS);
 
         m_entryCount = entryCount;

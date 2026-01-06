@@ -48,10 +48,12 @@ namespace kigl {
     {
         if (!m_sync) return;
 
-        glClientWaitSync(
-            m_sync,
-            GL_SYNC_FLUSH_COMMANDS_BIT,
-            GL_TIMEOUT_IGNORED);
+        GLenum res = GL_UNSIGNALED;
+        while (res != GL_ALREADY_SIGNALED && res != GL_CONDITION_SATISFIED)
+        {
+            // 1 million == 1 ms
+            res = glClientWaitSync(m_sync, GL_SYNC_FLUSH_COMMANDS_BIT, WAIT_DELAY);
+        }
 
         release();
     }

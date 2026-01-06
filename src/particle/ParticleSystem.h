@@ -4,7 +4,8 @@
 #include <mutex>
 #include <atomic>
 
-#include "kigl/GLSyncQueue.h"
+#include "kigl/GLBuffer.h"
+#include "kigl/GLFence.h"
 
 namespace render
 {
@@ -35,6 +36,9 @@ namespace particle {
 
         void prepare();
 
+        void beginFrame();
+        void endFrame();
+
         void updateWT(const UpdateContext& ctx);
 
         void updateRT(const UpdateContext& ctx);
@@ -62,8 +66,8 @@ namespace particle {
         void preparePending();
 
         void snapshotParticles();
-        void updateParticleBuffer();
-        void createParticleBuffer();
+        void upload();
+        void resizeBuffer(size_t totalCount);
 
     private:
         bool m_enabled{ false };
@@ -83,12 +87,8 @@ namespace particle {
         size_t m_snapshotCount{ 0 };
         size_t m_activeCount{ 0 };
 
-        std::unique_ptr<kigl::GLSyncQueue<ParticleSSBO>> m_queue;
-        size_t m_lastParticleSize{ 0 };
-
-        bool m_useMapped{ false };
-        bool m_useInvalidate{ false };
-        bool m_useFence{ false };
-        bool m_useFenceDebug{ false };
+        kigl::GLBuffer m_ssbo{ "particle_ssbo" };
+        kigl::GLFence m_fence{ "particle_fence" };
+        size_t m_entryCount{ 0 };
     };
 }
