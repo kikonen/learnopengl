@@ -9,6 +9,13 @@ namespace kigl {
         GLVertexArray() {
         }
 
+        GLVertexArray(GLVertexArray& o) = delete;
+
+        GLVertexArray(GLVertexArray&& o) noexcept
+        {
+            swap(o);
+        }
+
         ~GLVertexArray() {
             if (m_created) {
                 glDeleteVertexArrays(1, &m_id);
@@ -16,7 +23,17 @@ namespace kigl {
             }
         }
 
+        GLVertexArray& operator=(GLVertexArray& o) = delete;
+        GLVertexArray& operator=(GLVertexArray&& o) noexcept
+        {
+            GLVertexArray tmp(std::move(o));
+            swap(tmp);
+            return *this;
+        }
+
         operator int() const { return m_id; }
+
+        void swap(GLVertexArray& o) noexcept;
 
         void create(std::string_view name) {
             if (m_created) return;

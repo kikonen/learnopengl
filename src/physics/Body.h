@@ -12,11 +12,28 @@ struct BodyDefinition;
 namespace physics {
     struct Body {
         Body();
-        Body(Body&& o) noexcept;
+
+        Body(Body& o) = delete;
+        Body(const Body& o) = delete;
+        Body(Body&& o) noexcept
+        {
+            swap(o);
+        }
+        Body(const BodyDefinition& o) noexcept;
+
         ~Body();
 
-        Body& operator=(Body&& o) noexcept;
-        Body& operator=(const BodyDefinition& o);
+        Body& operator=(Body& o) = delete;
+        Body& operator=(Body&& o) noexcept
+        {
+            Body tmp(std::move(o));
+            swap(tmp);
+            return *this;
+        }
+
+        Body& operator=(const BodyDefinition& o) noexcept;
+
+        void swap(Body& o) noexcept;
 
         bool isValid() const noexcept {
             return type != BodyType::none;
@@ -94,7 +111,7 @@ namespace physics {
 
         physics::BodyType type{ physics::BodyType::none };
 
-        bool forceAxis : 1 { false };
-        bool kinematic : 1 { false };
+        bool forceAxis { false };
+        bool kinematic { false };
     };
 }

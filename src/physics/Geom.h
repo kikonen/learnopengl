@@ -15,11 +15,27 @@ namespace physics {
 
     struct Geom {
         Geom();
-        Geom(Geom&& o) noexcept;
+        Geom(Geom& o) = delete;
+        Geom(const Geom& o) = delete;
+        Geom(Geom&& o) noexcept
+        {
+            swap(o);
+        }
+        Geom(const GeomDefinition& o) noexcept;
+
         ~Geom();
 
-        Geom& operator=(Geom&& o) noexcept;
-        Geom& operator=(const GeomDefinition& o);
+        Geom& operator=(Geom& o) = delete;
+        Geom& operator=(Geom&& o) noexcept
+        {
+            Geom tmp(std::move(o));
+            swap(tmp);
+            return *this;
+        }
+
+        Geom& operator=(const GeomDefinition& o) noexcept;
+
+        void swap(Geom& o) noexcept;
 
         bool isValid() const noexcept {
             return type != GeomType::none;
@@ -113,6 +129,6 @@ namespace physics {
 
         physics::GeomType type{ physics::GeomType::none };
 
-        bool placeable : 1 { true };
+        bool placeable{ true };
     };
 }

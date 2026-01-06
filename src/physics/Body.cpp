@@ -1,5 +1,7 @@
 #include "Body.h"
 
+#include <algorithm>
+
 #include "util/glm_util.h"
 
 #include "component/definition/PhysicsDefinition.h"
@@ -14,61 +16,14 @@ namespace {
 }
 
 namespace physics {
-    Body::Body() {}
+    Body::Body() = default;
 
-    Body::Body(Body&& o) noexcept
-        : size{ o.size },
-        baseRotation{ o.baseRotation },
-        invBaseRotation{ o.invBaseRotation },
-        linearVelocity{ o.linearVelocity },
-        angularVelocity{ o.angularVelocity },
-        axis{ o.axis },
-        maxAngulerVelocity{ o.maxAngulerVelocity },
-        density { o.density },
-        physicId{ o.physicId },
-        type{ o.type },
-        forceAxis{ o.forceAxis },
-        kinematic{ o.kinematic }
+    Body::Body(const BodyDefinition& o) noexcept
     {
-        // NOTE KI o is moved now
-        o.physicId = nullptr;
-    }
-
-    Body::~Body()
-    {
-        release();
-    }
-
-    Body& Body::operator=(Body&& o) noexcept
-    {
-        release();
-
-        size = o.size;
-        baseRotation = o.baseRotation;
-        invBaseRotation = o.invBaseRotation;
-        linearVelocity = o.linearVelocity;
-        angularVelocity = o.angularVelocity;
-        axis = o.axis;
-        maxAngulerVelocity = o.maxAngulerVelocity;
-        density = o.density;
-        physicId = o.physicId;
-        type = o.type;
-        forceAxis = o.forceAxis;
-        kinematic = o.kinematic;
-
-        // NOTE KI o is moved now
-        o.physicId = nullptr;
-
-        return *this;
-    }
-
-    Body& Body::operator=(const BodyDefinition& o)
-    {
-        release();
-
         size = o.m_size;
 
         baseRotation = o.m_baseRotation;
+        invBaseRotation = glm::conjugate(baseRotation);
 
         linearVelocity = o.m_linearVelocity;
         angularVelocity = o.m_angularVelocity;
@@ -82,8 +37,34 @@ namespace physics {
 
         forceAxis = o.m_forceAxis;
         kinematic = o.m_kinematic;
+    }
 
+    Body::~Body()
+    {
+        release();
+    }
+
+    Body& Body::operator=(const BodyDefinition& o) noexcept
+    {
+        Body tmp(o);
+        swap(tmp);
         return *this;
+    }
+
+    void Body::swap(Body& o) noexcept
+    {
+        std::swap(size, o.size);
+        std::swap(baseRotation, o.baseRotation);
+        std::swap(invBaseRotation, o.invBaseRotation);
+        std::swap(linearVelocity, o.linearVelocity);
+        std::swap(angularVelocity, o.angularVelocity);
+        std::swap(axis, o.axis);
+        std::swap(maxAngulerVelocity, o.maxAngulerVelocity);
+        std::swap(density, o.density);
+        std::swap(physicId, o.physicId);
+        std::swap(type, o.type);
+        std::swap(forceAxis, o.forceAxis);
+        std::swap(kinematic, o.kinematic);
     }
 
     void Body::release()

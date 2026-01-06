@@ -13,18 +13,21 @@ namespace kigl {
 
         GLBuffer(GLBuffer& o) = delete;
         GLBuffer(const GLBuffer& o) = delete;
-        GLBuffer(GLBuffer&& o) noexcept;
+        GLBuffer(GLBuffer&& o) noexcept
+        {
+            swap(o);
+        }
 
         ~GLBuffer() {
             discard();
         }
 
         GLBuffer& operator=(GLBuffer& o) = delete;
-        GLBuffer& operator=(GLBuffer&& o) noexcept;
-
-        bool operator==(const GLBuffer& o)
+        GLBuffer& operator=(GLBuffer&& o) noexcept
         {
-            return this == &o;
+            GLBuffer tmp(std::move(o));
+            swap(tmp);
+            return *this;
         }
 
         void swap(GLBuffer& o) noexcept;

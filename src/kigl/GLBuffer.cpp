@@ -4,20 +4,6 @@
 
 namespace kigl
 {
-    GLBuffer::GLBuffer(GLBuffer&& o) noexcept
-    {
-        swap(o);
-    }
-
-    GLBuffer& GLBuffer::operator=(GLBuffer&& o) noexcept
-    {
-        if (&o == this) return *this;
-
-        GLBuffer tmp(std::move(o));
-        swap(tmp);
-        return *this;
-    }
-
     void GLBuffer::swap(GLBuffer& o) noexcept
     {
         std::swap(m_name, o.m_name);

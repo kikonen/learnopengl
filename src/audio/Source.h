@@ -36,6 +36,8 @@ namespace audio
         Source& operator=(Source& o) = delete;
         Source& operator=(Source&& o) noexcept;
 
+        void swap(Source& o) noexcept;
+
         void prepare(const Sound* sound);
 
         void update(const model::NodeState& state);

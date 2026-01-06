@@ -6,57 +6,18 @@
 
 #include "Body.h"
 
+#include <algorithm>
+
 namespace physics {
     Geom::Geom() {}
-
-    Geom::Geom(Geom&& o) noexcept
-        : size{ o.size },
-        rotation{ o.rotation },
-        offset{ o.offset },
-        physicId{ o.physicId },
-        heightDataId{ o.heightDataId },
-        categoryMask{ o.categoryMask },
-        collisionMask{ o.collisionMask },
-        materialId{ o.materialId },
-        type{ o.type },
-        placeable{ o.placeable }
-    {
-        // NOTE KI o is moved now
-        o.physicId = nullptr;
-        o.heightDataId = nullptr;
-    }
 
     Geom::~Geom()
     {
         release();
     }
 
-    Geom& Geom::operator=(Geom&& o) noexcept
+    Geom::Geom(const GeomDefinition& o) noexcept
     {
-        release();
-
-        size = o.size;
-        rotation = o.rotation;
-        offset = o.offset;
-        physicId = o.physicId;
-        heightDataId = o.heightDataId;
-        categoryMask = o.categoryMask;
-        collisionMask = o.collisionMask;
-        materialId = o.materialId;
-        type = o.type;
-        placeable = o.placeable;
-
-        // NOTE KI o is moved now
-        o.physicId = nullptr;
-        o.heightDataId = nullptr;
-
-        return *this;
-    }
-
-    Geom& Geom::operator=(const GeomDefinition& o)
-    {
-        release();
-
         size = o.m_size;
         rotation = o.m_rotation;
         offset = o.m_offset;
@@ -64,8 +25,27 @@ namespace physics {
         collisionMask = o.m_collisionMask;
         type = o.m_type;
         placeable = o.m_placeable;
+    }
 
+    Geom& Geom::operator=(const GeomDefinition& o) noexcept
+    {
+        Geom tmp(o);
+        swap(tmp);
         return *this;
+    }
+
+    void Geom::swap(Geom& o) noexcept
+    {
+        std::swap(size, o.size);
+        std::swap(rotation, o.rotation);
+        std::swap(offset, o.offset);
+        std::swap(physicId, o.physicId);
+        std::swap(heightDataId, o.heightDataId);
+        std::swap(categoryMask, o.categoryMask);
+        std::swap(collisionMask, o.collisionMask);
+        std::swap(materialId, o.materialId);
+        std::swap(type, o.type);
+        std::swap(placeable, o.placeable);
     }
 
     void Geom::release()

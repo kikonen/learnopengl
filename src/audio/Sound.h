@@ -19,6 +19,8 @@ namespace audio
         Sound& operator=(Sound& o) = delete;
         Sound& operator=(Sound&& o) noexcept;
 
+        void swap(Sound& o) noexcept;
+
         // main thread
         void prepare();
 

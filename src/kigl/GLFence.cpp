@@ -12,6 +12,24 @@ namespace kigl {
         : m_name(name)
     {}
 
+    GLFence::~GLFence()
+    {
+        discard();
+    }
+
+    void GLFence::swap(GLFence& o) noexcept
+    {
+        std::swap(m_sync, o.m_sync);
+        std::swap(m_name, o.m_name);
+    }
+
+    void GLFence::discard()
+    {
+        if (m_sync) {
+            glDeleteSync(m_sync);
+            m_sync = 0;
+        }
+    }
 
     void GLFence::setFence(bool debug)
     {
@@ -46,8 +64,7 @@ namespace kigl {
             }
         }
 
-        glDeleteSync(m_sync);
-        m_sync = 0;
+        discard();
     }
 
     void GLFence::waitFenceOnServer() const noexcept

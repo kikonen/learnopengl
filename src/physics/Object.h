@@ -31,11 +31,24 @@ namespace physics {
     // other objects).
     struct Object {
         Object();
-        Object(Object&& b) noexcept;
+        Object(Object& o) = delete;
+        Object(const Object& o) = delete;
+        Object(Object&& o) noexcept
+        {
+            swap(o);
+        }
 
         ~Object();
 
-        Object& operator=(Object&& o) noexcept;
+        Object& operator=(Object& o) = delete;
+        Object& operator=(Object&& o) noexcept
+        {
+            Object tmp(std::move(o));
+            swap(tmp);
+            return *this;
+        }
+
+        void swap(Object& o) noexcept;
 
         inline bool ready() const { return m_geom.physicId || m_body.physicId; }
 

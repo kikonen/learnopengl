@@ -11,6 +11,27 @@ namespace kigl {
 
         GLFence(std::string_view name);
 
+        GLFence(GLFence& o) = delete;
+        GLFence(const GLFence& o) = delete;
+        GLFence(GLFence&& o) noexcept
+        {
+            swap(o);
+        }
+
+        ~GLFence();
+
+        GLFence& operator=(GLFence& o) = delete;
+        GLFence& operator=(GLFence&& o) noexcept
+        {
+            GLFence tmp(std::move(o));
+            swap(tmp);
+            return *this;
+        }
+
+        void swap(GLFence& o) noexcept;
+
+        void discard();
+
         bool isSet() const noexcept { return m_sync; }
 
         void setFence(bool debug);
