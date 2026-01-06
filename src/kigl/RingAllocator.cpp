@@ -80,6 +80,9 @@ namespace kigl
             if (triggerResize) {
                 handleOverflow(aligned + bytes - m_frameStartOffset);
             }
+            KI_WARN(fmt::format(
+                "RingAllocator '{}': allocation failed - requested={} bytes, used={}/{}, remaining={}, resize_scheduled={}",
+                m_name, bytes, usedThisFrame(), m_sizePerFrame, remainingThisFrame(), triggerResize));
             return { nullptr, {} };
         }
 
