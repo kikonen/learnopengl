@@ -1347,6 +1347,9 @@
     <ClCompile Include="src\kigl\GLFrameBufferHanddle.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\kigl\RingAllocator.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h">
@@ -3045,6 +3048,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\asset\SphereVolume_format.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\kigl\RingAllocator.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

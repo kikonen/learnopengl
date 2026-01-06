@@ -183,10 +183,16 @@ void Registry::updateRT(const UpdateContext& ctx)
     VaoRegistry::get().updateRT(ctx);
 }
 
-void Registry::postRT(const UpdateContext& ctx)
+void Registry::startFrame()
 {
-    ASSERT_RT();
-    EntityRegistry::get().postRT(ctx);
+    render::InstanceRegistry::get().beginFrame();
+    EntityRegistry::get().beginFrame();
+}
+
+void Registry::endFrame()
+{
+    render::InstanceRegistry::get().endFrame();
+    EntityRegistry::get().endFrame();
 }
 
 void Registry::withLock(const std::function<void(Registry&)>& fn)

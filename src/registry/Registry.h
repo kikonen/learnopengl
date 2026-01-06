@@ -38,7 +38,9 @@ public:
 
     void updateWT(const UpdateContext& ctx);
     void updateRT(const UpdateContext& ctx);
-    void postRT(const UpdateContext& ctx);
+
+    void startFrame();
+    void endFrame();
 
     void withLock(const std::function<void(Registry&)>& fn);
 

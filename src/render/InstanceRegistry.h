@@ -4,7 +4,8 @@
 #include <unordered_map>
 #include <span>
 
-#include "kigl/GLSyncQueue.h"
+#include "kigl/GLBuffer.h"
+#include "kigl/GLFence.h"
 
 #include "util/BufferReference.h"
 
@@ -29,6 +30,9 @@ namespace render
         void clear();
         void prepare();
 
+        void beginFrame();
+        void endFrame();
+
         // @return ref to buffer
         util::BufferReference allocate(size_t count);
         // @return null ref
@@ -51,21 +55,12 @@ namespace render
         // Upload to GPU (call once per frame after updateTransforms)
         void upload();
 
-        // Bind for rendering
-        void bind();
-
         size_t getDrawableCount() const { return m_drawables.size(); }
 
     private:
-        void createInstanceBuffers(size_t totalCount);
+        void resizeBuffer(size_t totalCount);
 
     private:
-        std::unique_ptr<kigl::GLSyncQueue<render::InstanceSSBO>> m_instanceBuffers{ nullptr };
-
-        bool m_useMapped{ false };
-        bool m_useInvalidate{ false };
-        bool m_useFence{ false };
-        bool m_useFenceDebug{ false };
         bool m_debug{ false };
 
         std::vector<DrawableInfo> m_drawables;
@@ -75,6 +70,9 @@ namespace render
         std::vector<util::BufferReference> m_dirtySlots;
 
         std::vector<render::InstanceSSBO> m_instances;
+
+        kigl::GLBuffer m_ssbo{ "instances" };
+        kigl::GLFence m_fence{ "instances_fence" };
 
         bool m_needUpload{ false };
         size_t m_uploadedCount{ 0 };

@@ -1,6 +1,6 @@
 #include "RenderData.h"
 
-#include "kigl/GLSyncQueue_impl.h"
+#include "kigl/RingAllocator.h"
 
 #include "shader/UBO.h"
 #include "shader/CameraUBO.h"
@@ -21,156 +21,129 @@
 
 #include "NodeCollection.h"
 
-namespace {
-    constexpr int PER_FRAME_COUNT = 3;
-    constexpr int PER_CONTEXT_COUNT = 6;
+namespace
+{
+    // Estimate max UBO usage per frame:
+    // - Camera: updated per render pass (cubemap, water, mirror, main, shadows, etc.)
+    //   Estimate ~10 updates per frame
+    // - Data, Shadow, Debug, Lights: typically 1 per frame
+    // - BufferInfo, ClipPlanes: per context, ~6 per frame
+    //
+    // Conservative estimate per frame:
+    constexpr size_t MAX_CAMERA_PER_FRAME = 16;
+    constexpr size_t MAX_DATA_PER_FRAME = 2;
+    constexpr size_t MAX_SHADOW_PER_FRAME = 2;
+    constexpr size_t MAX_DEBUG_PER_FRAME = 2;
+    constexpr size_t MAX_BUFFER_INFO_PER_FRAME = 8;
+    constexpr size_t MAX_CLIP_PLANES_PER_FRAME = 8;
+    constexpr size_t MAX_LIGHTS_PER_FRAME = 2;
+
+    constexpr size_t estimateUboSizePerFrame()
+    {
+        return MAX_CAMERA_PER_FRAME * sizeof(CameraUBO)
+            + MAX_DATA_PER_FRAME * sizeof(DataUBO)
+            + MAX_SHADOW_PER_FRAME * sizeof(ShadowUBO)
+            + MAX_DEBUG_PER_FRAME * sizeof(DebugUBO)
+            + MAX_BUFFER_INFO_PER_FRAME * sizeof(BufferInfoUBO)
+            + MAX_CLIP_PLANES_PER_FRAME * sizeof(ClipPlanesUBO)
+            + MAX_LIGHTS_PER_FRAME * sizeof(LightsUBO)
+            // Add 50% headroom for alignment padding
+            + 16 * 256;  // ~16 allocations * 256 byte alignment worst case
+    }
 }
 
-namespace render {
+namespace render
+{
     RenderData::RenderData()
         : m_lightsUBO{}
+    {}
+
+    RenderData::~RenderData()
     {
     }
 
-    void RenderData::prepare(
-        bool useMapped,
-        bool useInvalidate,
-        bool useFence,
-        bool useFenceDebug,
-        bool debug)
+    void RenderData::prepare(bool debug)
     {
-        int bufferAlignment;
+        GLint bufferAlignment;
         glGetIntegerv(GL_UNIFORM_BUFFER_OFFSET_ALIGNMENT, &bufferAlignment);
 
-        m_camera = std::make_unique<kigl::GLSyncQueue<CameraUBO>>(
-            "camera_ubo",
-            1,
-            PER_CONTEXT_COUNT,
-            useMapped,
-            useInvalidate,
-            useFence,
-            useFenceDebug);
+        // Create ring allocator with UBO alignment
+        m_ring = std::make_unique<kigl::RingAllocator>(
+            "render_data_ubo",
+            static_cast<size_t>(bufferAlignment),
+            3,
+            1.5f);
 
-        m_data = std::make_unique<kigl::GLSyncQueue<DataUBO>>(
-            "data_ubo",
-            1,
-            PER_FRAME_COUNT,
-            useMapped,
-            useInvalidate,
-            useFence,
-            useFenceDebug);
+        m_ring->create(estimateUboSizePerFrame());
+    }
 
-        m_shadow = std::make_unique<kigl::GLSyncQueue<ShadowUBO>>(
-            "shadow_ubo",
-            1,
-            PER_FRAME_COUNT,
-            useMapped,
-            useInvalidate,
-            useFence,
-            useFenceDebug);
+    void RenderData::beginFrame()
+    {
+        m_ring->beginFrame();
+    }
 
-        m_debug = std::make_unique<kigl::GLSyncQueue<DebugUBO>>(
-            "debug_ubo",
-            1,
-            PER_FRAME_COUNT,
-            useMapped,
-            useInvalidate,
-            useFence,
-            useFenceDebug);
-
-        m_bufferInfo = std::make_unique<kigl::GLSyncQueue<BufferInfoUBO>>(
-            "buffer_info_ubo",
-            1,
-            PER_CONTEXT_COUNT,
-            useMapped,
-            useInvalidate,
-            useFence,
-            useFenceDebug);
-
-        m_clipPlanes = std::make_unique<kigl::GLSyncQueue<ClipPlanesUBO>>(
-            "cliplanes_ubo",
-            1,
-            PER_CONTEXT_COUNT,
-            useMapped,
-            useInvalidate,
-            useFence,
-            useFenceDebug);
-
-        m_lights = std::make_unique<kigl::GLSyncQueue<LightsUBO>>(
-            "lights_ubo",
-            1,
-            PER_FRAME_COUNT,
-            useMapped,
-            useInvalidate,
-            useFence,
-            useFenceDebug);
-
-        m_camera->prepare(bufferAlignment, debug);
-        m_data->prepare(bufferAlignment, debug);
-        m_shadow->prepare(bufferAlignment, debug);
-        m_debug->prepare(bufferAlignment, debug);
-        m_bufferInfo->prepare(bufferAlignment, debug);
-        m_clipPlanes->prepare(bufferAlignment, debug);
-        m_lights->prepare(bufferAlignment, debug);
+    void RenderData::endFrame()
+    {
+        m_ring->endFrame();
     }
 
     void RenderData::updateCamera(const CameraUBO& data)
     {
-        auto& buffer = *m_camera;
-        buffer.set(0, data);
-        buffer.flush();
-        buffer.bindCurrentUBO(UBO_CAMERA, false, 1);
-        buffer.next();
+        auto alloc = m_ring->allocate<CameraUBO>();
+        if (alloc) {
+            *alloc = data;
+            m_ring->bindUBO(UBO_CAMERA, alloc.ref);
+        }
     }
 
     void RenderData::updateData(const DataUBO& data)
     {
-        auto& buffer = *m_data;
-        buffer.set(0, data);
-        buffer.flush();
-        buffer.bindCurrentUBO(UBO_DATA, false, 1);
-        buffer.next();
+        auto alloc = m_ring->allocate<DataUBO>();
+        if (alloc) {
+            *alloc = data;
+            m_ring->bindUBO(UBO_DATA, alloc.ref);
+        }
     }
 
     void RenderData::updateShadow(const ShadowUBO& data)
     {
-        auto& buffer = *m_shadow;
-        buffer.set(0, data);
-        buffer.flush();
-        buffer.bindCurrentUBO(UBO_SHADOW, false, 1);
-        buffer.next();
+        auto alloc = m_ring->allocate<ShadowUBO>();
+        if (alloc) {
+            *alloc = data;
+            m_ring->bindUBO(UBO_SHADOW, alloc.ref);
+        }
     }
 
     void RenderData::updateDebug(const DebugUBO& data)
     {
-        auto& buffer = *m_debug;
-        buffer.set(0, data);
-        buffer.flush();
-        buffer.bindCurrentUBO(UBO_DEBUG, false, 1);
-        buffer.next();
+        auto alloc = m_ring->allocate<DebugUBO>();
+        if (alloc) {
+            *alloc = data;
+            m_ring->bindUBO(UBO_DEBUG, alloc.ref);
+        }
     }
 
     void RenderData::updateBufferInfo(const BufferInfoUBO& data)
     {
-        auto& buffer = *m_bufferInfo;
-        buffer.set(0, data);
-        buffer.flush();
-        buffer.bindCurrentUBO(UBO_BUFFER_INFO, false, 1);
-        buffer.next();
+        auto alloc = m_ring->allocate<BufferInfoUBO>();
+        if (alloc) {
+            *alloc = data;
+            m_ring->bindUBO(UBO_BUFFER_INFO, alloc.ref);
+        }
     }
 
     void RenderData::updateClipPlanes(const ClipPlanesUBO& data)
     {
-        auto& buffer = *m_clipPlanes;
-        buffer.set(0, data);
-        buffer.flush();
-        buffer.bindCurrentUBO(UBO_CLIP_PLANES, false, 1);
-        buffer.next();
+        auto alloc = m_ring->allocate<ClipPlanesUBO>();
+        if (alloc) {
+            *alloc = data;
+            m_ring->bindUBO(UBO_CLIP_PLANES, alloc.ref);
+        }
     }
 
     void RenderData::updateLights(NodeCollection* collection)
     {
-        auto & lightsUbo = m_lightsUBO;
+        auto& lightsUbo = m_lightsUBO;
 
         {
             auto& handle = collection->getDirLightNode();
@@ -227,15 +200,10 @@ namespace render {
             }
         }
 
-        auto& data = m_lightsUBO;
-        auto& buffer = *m_lights;
-        buffer.set(0, data);
-        buffer.flush();
-        buffer.bindCurrentUBO(UBO_LIGHTS, false, 1);
-        buffer.next();
-    }
-
-    void RenderData::invalidateAll()
-    {
+        auto alloc = m_ring->allocate<LightsUBO>();
+        if (alloc) {
+            *alloc = lightsUbo;
+            m_ring->bindUBO(UBO_LIGHTS, alloc.ref);
+        }
     }
 }

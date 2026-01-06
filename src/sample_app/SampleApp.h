@@ -37,12 +37,11 @@ public:
     ~SampleApp();
 
 protected:
-    int onInit() override;
-    int onSetup() override;
+    bool onInit() override;
+    bool onSetup() override;
 
-    int onUpdate(const UpdateContext& ctx) override;
-    int onRender(const ki::RenderClock& clock) override;
-    int onPost(const UpdateContext& ctx) override;
+    bool onUpdate(const UpdateContext& ctx) override;
+    bool onRender(const ki::RenderClock& clock) override;
 
     void onDestroy() override;
 

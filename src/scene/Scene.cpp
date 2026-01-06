@@ -401,11 +401,6 @@ void Scene::updateRT(const UpdateContext& ctx)
     m_engine.getRegistry()->updateRT(ctx);
 }
 
-void Scene::postRT(const UpdateContext& ctx)
-{
-    m_engine.getRegistry()->postRT(ctx);
-}
-
 void Scene::updateViewRT(const UpdateViewContext& ctx)
 {
     const auto& assets = ctx.getAssets();

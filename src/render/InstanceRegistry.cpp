@@ -69,17 +69,13 @@ namespace render
     {
         const auto& assets = Assets::get();
 
-        m_useMapped = assets.glUseMapped;
-        m_useInvalidate = assets.glUseInvalidate;
-        m_useFence = assets.glUseFence;
-        m_useFenceDebug = assets.glUseFenceDebug;
+        // https://stackoverflow.com/questions/44203387/does-gl-map-invalidate-range-bit-require-glinvalidatebuffersubdata
+        m_ssbo.createEmpty(BLOCK_SIZE * sizeof(InstanceSSBO), GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_DYNAMIC_STORAGE_BIT);
+        m_ssbo.map(GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_FLUSH_EXPLICIT_BIT);
 
-        m_useMapped = false;
-        m_useInvalidate = true;
-        m_useFence = false;
+        m_ssbo.bindSSBO(SSBO_INSTANCES);
 
         clear();
-        bind();
     }
 
     util::BufferReference InstanceRegistry::allocate(size_t count)
@@ -228,49 +224,46 @@ namespace render
 
         const size_t totalCount = m_instances.size();
         {
-            createInstanceBuffers(totalCount);
+            resizeBuffer(totalCount);
 
-            auto& current = m_instanceBuffers->current();
-            auto* __restrict mappedData = m_instanceBuffers->currentMapped();
+            auto* __restrict mappedData = m_ssbo.mapped<InstanceSSBO>(0);
 
-            m_instanceBuffers->waitFence();
             std::copy(
                 std::begin(m_instances),
                 std::end(m_instances),
                 mappedData);
-            m_instanceBuffers->flush();
-            m_instanceBuffers->bindCurrentSSBO(SSBO_INSTANCES, false, totalCount);
         }
 
-        if (!m_instanceBuffers->setFenceIfNotSet()) {
-            KI_OUT(fmt::format("DUPLICATE_FENCE"));
-        }
-        m_instanceBuffers->next();
+        m_ssbo.markUsed(totalCount * sz);
 
         m_dirtySlots.clear();
         m_uploadedCount = totalCount;
         m_needUpload = false;
     }
 
-    void InstanceRegistry::bind()
+    void InstanceRegistry::beginFrame()
     {
+        m_fence.waitFence();
     }
 
-    void InstanceRegistry::createInstanceBuffers(size_t totalCount)
+    void InstanceRegistry::endFrame()
     {
-        if (!m_instanceBuffers || m_instanceBuffers->getEntryCount() < totalCount) {
-            size_t blocks = static_cast<size_t>((totalCount * 1.25f / BLOCK_SIZE) + 2);
-            size_t entryCount = blocks * BLOCK_SIZE;
+        m_fence.setFence();
+    }
 
-            m_instanceBuffers = std::make_unique<kigl::GLSyncQueue<render::InstanceSSBO>>(
-                "instance",
-                entryCount,
-                MAX_INSTANCE_BUFFERS,
-                true,
-                false,
-                true,
-                m_useFenceDebug);
-            m_instanceBuffers->prepare(1, m_debug);
-        }
+    void InstanceRegistry::resizeBuffer(size_t totalCount)
+    {
+        constexpr auto sz = sizeof(InstanceSSBO);
+
+        if (m_ssbo.isCreated() && m_ssbo.size() >= totalCount * sz) return;
+
+        size_t blocks = (totalCount / BLOCK_SIZE) + 2;
+        size_t bufferSize = blocks * BLOCK_SIZE * sz;
+
+        // NOTE KI *reallocate* SSBO if needed
+        m_ssbo.resizeBuffer(bufferSize, true);
+
+        m_ssbo.map(GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_FLUSH_EXPLICIT_BIT);
+        m_ssbo.bindSSBO(SSBO_INSTANCES);
     }
 }

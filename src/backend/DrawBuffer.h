@@ -11,6 +11,7 @@
 
 #include "kigl/GLSyncQueue.h"
 #include "kigl/GLFence.h"
+#include "kigl/RingAllocator.h"
 
 #include "gl/DrawIndirectCommand.h"
 #include "gl/PerformanceCounters.h"
