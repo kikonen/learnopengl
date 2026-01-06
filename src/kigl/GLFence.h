@@ -9,6 +9,7 @@ namespace kigl {
         GLsync m_sync{ 0 };
         std::string m_name;
 
+        GLFence() {}
         GLFence(std::string_view name);
 
         GLFence(GLFence& o) = delete;
@@ -28,18 +29,24 @@ namespace kigl {
             return *this;
         }
 
+        bool opreator() const noexcept { return m_sync; }
+
         void swap(GLFence& o) noexcept;
 
-        void discard();
+        void release();
 
         bool isSet() const noexcept { return m_sync; }
 
-        void setFence(bool debug);
+        void setFence();
+        void setFence(bool debug) { setFence(); }
+
         // @return true if fence is set now
-        bool setFenceIfNotSet(bool debug);
+        bool setFenceIfNotSet();
+        bool setFenceIfNotSet(bool debug) { return setFenceIfNotSet(); }
 
         // https://www.cppstories.com/2015/01/persistent-mapped-buffers-in-opengl/
-        void waitFence(bool debug);
+        void waitFence();
+        void waitFence(bool) { waitFence(); }
 
         void waitFenceOnServer() const noexcept;
     };

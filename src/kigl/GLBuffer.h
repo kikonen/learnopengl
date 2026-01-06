@@ -30,9 +30,10 @@ namespace kigl {
             return *this;
         }
 
-        void swap(GLBuffer& o) noexcept;
-
         operator int() const { return m_id; }
+        GLuint id() const { return m_id; }
+
+        void swap(GLBuffer& o) noexcept;
 
         void discard() {
             if (m_mapped) {

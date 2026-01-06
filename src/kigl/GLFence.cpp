@@ -14,7 +14,7 @@ namespace kigl {
 
     GLFence::~GLFence()
     {
-        discard();
+        release();
     }
 
     void GLFence::swap(GLFence& o) noexcept
@@ -23,7 +23,7 @@ namespace kigl {
         std::swap(m_name, o.m_name);
     }
 
-    void GLFence::discard()
+    void GLFence::release()
     {
         if (m_sync) {
             glDeleteSync(m_sync);
@@ -31,40 +31,29 @@ namespace kigl {
         }
     }
 
-    void GLFence::setFence(bool debug)
+    void GLFence::setFence()
     {
-        waitFence(debug);
+        waitFence();
         m_sync = glFenceSync(GL_SYNC_GPU_COMMANDS_COMPLETE, 0);
     }
 
-    bool GLFence::setFenceIfNotSet(bool debug)
+    bool GLFence::setFenceIfNotSet()
     {
         if (isSet()) return false;
         m_sync = glFenceSync(GL_SYNC_GPU_COMMANDS_COMPLETE, 0);
         return true;
     }
 
-    void GLFence::waitFence(bool debug)
+    void GLFence::waitFence()
     {
         if (!m_sync) return;
 
-        size_t count = 0;
-        GLenum res = GL_UNSIGNALED;
-        while (res != GL_ALREADY_SIGNALED && res != GL_CONDITION_SATISFIED)
-        {
-            // 1 million == 1 ms
-            res = glClientWaitSync(m_sync, GL_SYNC_FLUSH_COMMANDS_BIT, WAIT_DELAY);
-            //res = glClientWaitSync(m_sync, 0, 2000000);
-            count++;
-        }
+        glClientWaitSync(
+            m_sync,
+            GL_SYNC_FLUSH_COMMANDS_BIT,
+            GL_TIMEOUT_IGNORED);
 
-        if (debug) {
-            if (count > 1) {
-                KI_OUT(fmt::format("[{}={}-{}ms]", m_name, count, WAIT_DELAY_MS * count));
-            }
-        }
-
-        discard();
+        release();
     }
 
     void GLFence::waitFenceOnServer() const noexcept
