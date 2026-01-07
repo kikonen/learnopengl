@@ -22,6 +22,8 @@ namespace mesh_set
 
 namespace animation
 {
+    class RigNodeChannelBuilder;
+
     // Vector transform/scale key frame
     struct VectorKey {
         VectorKey(const aiVectorKey& key);
@@ -41,6 +43,7 @@ namespace animation
     // Animation sequence for RigNode
     struct RigNodeChannel {
         friend class mesh_set::AnimationImporter;
+        friend class RigNodeChannelBuilder;
         friend struct Animation;
 
         RigNodeChannel(const aiNodeAnim* channel);
@@ -49,17 +52,6 @@ namespace animation
         {
             return static_cast<uint16_t>(m_keyTimes.size() - 1);
         }
-
-        void reservePositionKeys(uint16_t size);
-        void reserveRotationKeys(uint16_t size);
-        void reserveScaleKeys(uint16_t size);
-
-        void addPositionKey(const aiVectorKey& key);
-        void addeRotationKey(const aiQuatKey& key);
-        void addeScaleKey(const aiVectorKey& key);
-
-        // Unify position/rotation/scale to common timeline by resampling
-        void unifyKeyTimes();
 
         // Accessors for ClipChannelLUT generation
         int16_t getNodeIndex() const noexcept { return m_nodeIndex; }
@@ -82,17 +74,6 @@ namespace animation
             uint16_t firstFrame,
             uint16_t lastFrame) const noexcept;
 
-        // Helpers for resampling during unification
-        static glm::vec3 sampleVector(
-            const std::vector<glm::vec3>& values,
-            const std::vector<float>& times,
-            float t) noexcept;
-
-        static glm::quat sampleQuaternion(
-            const std::vector<glm::quat>& values,
-            const std::vector<float>& times,
-            float t) noexcept;
-
         const std::string m_nodeName;
 
         uint16_t m_index{ 0 };
@@ -105,11 +86,6 @@ namespace animation
         std::vector<glm::vec3> m_positionKeyValues;
         std::vector<glm::quat> m_rotationKeyValues;
         std::vector<glm::vec3> m_scaleKeyValues;
-
-        // Original key times (used during loading, cleared after unification)
-        std::vector<float> m_positionKeyTimes;
-        std::vector<float> m_rotationKeyTimes;
-        std::vector<float> m_scaleKeyTimes;
 
         // Cached frame index for sequential playback optimization
         mutable uint16_t m_cachedKeyIndex{ 0 };
