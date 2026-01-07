@@ -8,11 +8,13 @@ help:
 	@echo "Build (from MSYS2):"
 	@echo "  make compile-debug"
 	@echo "  make compile-release"
-	@echo "  make compile          (both)"
+	@echo "  make compile-build"
+	@echo "  make compile          (debug + release)"
 	@echo ""
 	@echo "Run:"
 	@echo "  make run-debug"
 	@echo "  make run-release"
+	@echo "  make run-build"
 	@echo ""
 	@echo "Assets:"
 	@echo "  make setup"
@@ -30,12 +32,18 @@ compile-debug:
 compile-release:
 	cmd //c "${MSBUILD} ${PROJECT} /p:Configuration=Release /p:Platform=x64 /m"
 
+compile-build:
+	cmd //c "${MSBUILD} ${PROJECT} /p:Configuration=Build /p:Platform=x64 /m"
+
 # Run targets
 run-debug:
 	./x64/Debug/learnopengl.exe
 
 run-release:
 	./x64/Release/learnopengl.exe
+
+run-build:
+	./x64/Build/learnopengl.exe
 
 all: meta build
 
