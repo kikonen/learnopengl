@@ -25,7 +25,23 @@
 namespace {
     static const glm::mat4 ID_MAT{ 1.f };
 
-   // @return interpolated transform matrix
+   // @return interpolated transform matrix using O(1) LUT sampling
+   glm::mat4 sampleFromLUT(
+       const animation::RigNodeChannel* channel,
+       float animationTimeTicks,
+       float clipDuration)
+   {
+       // Compute normalized time [0, 1]
+       const float normalizedTime = clipDuration > 0.f
+           ? animationTimeTicks / clipDuration
+           : 0.f;
+
+       util::Transform transform;
+       channel->sampleLUT(normalizedTime, transform);
+       return transform.toMatrix();
+   }
+
+   // @return interpolated transform matrix (fallback when no LUT)
    glm::mat4 interpolate(
        const animation::RigNodeChannel* channel,
        float animationTimeTicks,
@@ -79,7 +95,29 @@ namespace {
        return s_translateMatrix * rotateMatrix * s_scaleMatrix;
    }
 
-   // @return interpolated transform matrix
+   // @return interpolated transform matrix using LUT
+   glm::mat4 interpolateBlendedLUT(
+       const animation::RigNodeChannel* channelA,
+       const animation::RigNodeChannel* channelB,
+       float blendFactor,
+       float animationTimeTicksA,
+       float clipDurationA,
+       float animationTimeTicksB,
+       float clipDurationB)
+   {
+       util::Transform transformA;
+       util::Transform transformB;
+
+       const float normalizedTimeA = clipDurationA > 0.f ? animationTimeTicksA / clipDurationA : 0.f;
+       const float normalizedTimeB = clipDurationB > 0.f ? animationTimeTicksB / clipDurationB : 0.f;
+
+       channelA->sampleLUT(normalizedTimeA, transformA);
+       channelB->sampleLUT(normalizedTimeB, transformB);
+
+       return combineBlended(transformA, transformB, blendFactor);
+   }
+
+   // @return interpolated transform matrix (fallback)
    glm::mat4 interpolateBlended(
        const animation::RigNodeChannel* channelA,
        const animation::RigNodeChannel* channelB,
@@ -161,9 +199,17 @@ namespace animation {
 
             const auto* channel = animation.findByNodeIndex(rigNode.m_index);
 
-            const glm::mat4& nodeTransform = channel
-                ? interpolate(channel, animationTimeTicks, firstFrame, lastFrame, clip.m_single)
-                : rigNode.m_transform;
+            glm::mat4 nodeTransform;
+            if (channel) {
+                // Use O(1) LUT sampling when available, fallback to binary search interpolation
+                if (channel->hasLUT() && clip.m_single) {
+                    nodeTransform = sampleFromLUT(channel, animationTimeTicks, clip.m_duration);
+                } else {
+                    nodeTransform = interpolate(channel, animationTimeTicks, firstFrame, lastFrame, clip.m_single);
+                }
+            } else {
+                nodeTransform = rigNode.m_transform;
+            }
 
             if (0) {
                 KI_INFO_OUT(fmt::format(
@@ -264,24 +310,46 @@ namespace animation {
 
             glm::mat4 nodeTransform;
             if (channelA && channelB) {
-                nodeTransform = interpolateBlended(
-                    channelA,
-                    channelB,
-                    blendFactor,
-                    animationTimeTicksA,
-                    clipA->m_firstFrame,
-                    clipA->m_lastFrame,
-                    clipA->m_single,
-                    animationTimeTicksB,
-                    clipB->m_firstFrame,
-                    clipB->m_lastFrame,
-                    clipB->m_single);
+                // Use O(1) LUT sampling when both channels have LUT and clips are single
+                const bool useLUT = channelA->hasLUT() && channelB->hasLUT() &&
+                                    clipA->m_single && clipB->m_single;
+                if (useLUT) {
+                    nodeTransform = interpolateBlendedLUT(
+                        channelA,
+                        channelB,
+                        blendFactor,
+                        animationTimeTicksA,
+                        clipA->m_duration,
+                        animationTimeTicksB,
+                        clipB->m_duration);
+                } else {
+                    nodeTransform = interpolateBlended(
+                        channelA,
+                        channelB,
+                        blendFactor,
+                        animationTimeTicksA,
+                        clipA->m_firstFrame,
+                        clipA->m_lastFrame,
+                        clipA->m_single,
+                        animationTimeTicksB,
+                        clipB->m_firstFrame,
+                        clipB->m_lastFrame,
+                        clipB->m_single);
+                }
             }
             else if (channelA) {
-                nodeTransform = interpolate(channelA, animationTimeTicksA, clipA->m_firstFrame, clipA->m_lastFrame, clipA->m_single);
+                if (channelA->hasLUT() && clipA->m_single) {
+                    nodeTransform = sampleFromLUT(channelA, animationTimeTicksA, clipA->m_duration);
+                } else {
+                    nodeTransform = interpolate(channelA, animationTimeTicksA, clipA->m_firstFrame, clipA->m_lastFrame, clipA->m_single);
+                }
             }
             else if (channelB) {
-                nodeTransform = interpolate(channelB, animationTimeTicksB, clipB->m_firstFrame, clipB->m_lastFrame, clipB->m_single);
+                if (channelB->hasLUT() && clipB->m_single) {
+                    nodeTransform = sampleFromLUT(channelB, animationTimeTicksB, clipB->m_duration);
+                } else {
+                    nodeTransform = interpolate(channelB, animationTimeTicksB, clipB->m_firstFrame, clipB->m_lastFrame, clipB->m_single);
+                }
             }
             else {
                 nodeTransform = rigNode.m_transform;
