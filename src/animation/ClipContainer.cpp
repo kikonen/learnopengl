@@ -95,7 +95,67 @@ namespace animation {
             clip.m_firstFrame,
             clip.m_lastFrame));
 
+        // Generate per-clip LUTs for O(1) sampling
+        generateClipLUTs(index);
+
         return index;
+    }
+
+    void ClipContainer::generateClipLUTs(uint16_t clipIndex)
+    {
+        const auto& clip = m_clips[clipIndex];
+        if (clip.m_animationIndex < 0) return;
+
+        const auto& animation = *m_animations[clip.m_animationIndex];
+
+        // Ensure we have space for this clip's LUTs
+        if (m_clipLUTs.size() <= clipIndex) {
+            m_clipLUTs.resize(clipIndex + 1);
+        }
+
+        // Get max node index from animation's nodeToChannel mapping
+        const auto& channels = animation.m_channels;
+        if (channels.empty()) return;
+
+        // Find max node index
+        uint16_t maxNodeIndex = 0;
+        for (const auto& channel : channels) {
+            const auto nodeIndex = channel.getNodeIndex();
+            if (nodeIndex >= 0) {
+                maxNodeIndex = std::max(maxNodeIndex, static_cast<uint16_t>(nodeIndex));
+            }
+        }
+
+        // Resize to accommodate all node indices
+        m_clipLUTs[clipIndex].resize(maxNodeIndex + 1);
+
+        // Generate LUT for each channel
+        for (const auto& channel : channels) {
+            const auto nodeIndex = channel.getNodeIndex();
+            if (nodeIndex < 0) continue;
+
+            auto& lut = m_clipLUTs[clipIndex][nodeIndex];
+            lut.generate(channel, clip.m_firstFrame, clip.m_lastFrame);
+        }
+
+        KI_INFO_OUT(fmt::format(
+            "ASSIMP: CLIP_LUT: clip={}, channels={}, nodes={}",
+            clip.m_uniqueName,
+            channels.size(),
+            maxNodeIndex + 1));
+    }
+
+    const ClipChannelLUT* ClipContainer::getChannelLUT(
+        uint16_t clipIndex,
+        uint16_t nodeIndex) const noexcept
+    {
+        if (clipIndex >= m_clipLUTs.size()) return nullptr;
+
+        const auto& clipLUTs = m_clipLUTs[clipIndex];
+        if (nodeIndex >= clipLUTs.size()) return nullptr;
+
+        const auto& lut = clipLUTs[nodeIndex];
+        return lut.empty() ? nullptr : &lut;
     }
 
     const animation::Animation* ClipContainer::findAnimation(const std::string& name) const
