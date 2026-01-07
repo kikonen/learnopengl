@@ -308,6 +308,7 @@
     <ClCompile Include="src\animation\animation_util.cpp" />
     <ClCompile Include="src\animation\JointBuffer.cpp" />
     <ClCompile Include="src\animation\ClipContainer.cpp" />
+    <ClCompile Include="src\animation\ClipChannelLUT.cpp" />
     <ClCompile Include="src\mesh_set\AnimationImporter.cpp" />
     <ClCompile Include="src\animation\Animator.cpp" />
     <ClCompile Include="src\animation\RigNodeChannel.cpp" />
@@ -741,6 +742,7 @@
     <ClInclude Include="src\animation\JointBuffer.h" />
     <ClInclude Include="src\animation\animation_util.h" />
     <ClInclude Include="src\animation\ClipContainer.h" />
+    <ClInclude Include="src\animation\ClipChannelLUT.h" />
     <ClInclude Include="src\asset\SphereVolume_format.h" />
     <ClInclude Include="src\kigl\RingAllocator.h" />
     <ClInclude Include="src\mesh\RegisteredRig.h" />

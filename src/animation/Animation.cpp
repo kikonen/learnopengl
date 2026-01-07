@@ -57,7 +57,13 @@ namespace animation {
         uint16_t firstFrame,
         uint16_t lastFrame) const
     {
-        const auto& times = m_channels[0].m_positionKeyTimes;
+        if (m_channels.empty()) return 0.f;
+
+        // Use unified key times (m_positionKeyTimes is cleared after unifyKeyTimes())
+        const auto& times = m_channels[0].getKeyTimes();
+        if (times.empty() || lastFrame >= times.size()) {
+            return m_duration; // Fallback to full animation duration
+        }
         return times[lastFrame] - times[firstFrame];
     }
 }

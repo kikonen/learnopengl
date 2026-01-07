@@ -224,9 +224,6 @@ namespace mesh_set
 
             // Unify position/rotation/scale to common timeline for optimized interpolation
             bc.unifyKeyTimes();
-
-            // Generate lookup table for O(1) sampling (uses animation duration)
-            bc.generateLUT(animation->m_duration);
         }
 
         return animation;

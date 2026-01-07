@@ -22,9 +22,6 @@ namespace mesh_set
 
 namespace animation
 {
-    // Default LUT size (~1024 gives good quality vs memory trade-off)
-    constexpr size_t DEFAULT_LUT_SIZE = 1024;
-
     // Vector transform/scale key frame
     struct VectorKey {
         VectorKey(const aiVectorKey& key);
@@ -64,19 +61,12 @@ namespace animation
         // Unify position/rotation/scale to common timeline by resampling
         void unifyKeyTimes();
 
-        // Generate lookup table for O(1) sampling
-        // @param duration animation duration in ticks
-        // @param lutSize number of entries in LUT (default 1024)
-        void generateLUT(float duration, size_t lutSize = DEFAULT_LUT_SIZE);
-
-        // O(1) sample from pre-computed LUT
-        // @param normalizedTime time in range [0, 1] within clip
-        void sampleLUT(
-            float normalizedTime,
-            util::Transform& transform) const noexcept;
-
-        // @return true if LUT has been generated
-        bool hasLUT() const noexcept { return !m_lutPositions.empty(); }
+        // Accessors for ClipChannelLUT generation
+        int16_t getNodeIndex() const noexcept { return m_nodeIndex; }
+        const std::vector<float>& getKeyTimes() const noexcept { return m_keyTimes; }
+        const std::vector<glm::vec3>& getPositionValues() const noexcept { return m_positionKeyValues; }
+        const std::vector<glm::quat>& getRotationValues() const noexcept { return m_rotationKeyValues; }
+        const std::vector<glm::vec3>& getScaleValues() const noexcept { return m_scaleKeyValues; }
 
         // @param firstFrame..lastFrame range used for clip
         void interpolate(
@@ -123,11 +113,5 @@ namespace animation
 
         // Cached frame index for sequential playback optimization
         mutable uint16_t m_cachedKeyIndex{ 0 };
-
-        // Pre-computed lookup table for O(1) sampling
-        std::vector<glm::vec3> m_lutPositions;
-        std::vector<glm::quat> m_lutRotations;
-        std::vector<glm::vec3> m_lutScales;
-        float m_lutInvScaleFactor{ 0.f };  // Maps [0,1] -> LUT index
     };
 }

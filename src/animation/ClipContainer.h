@@ -7,6 +7,7 @@
 
 #include "Animation.h"
 #include "Clip.h"
+#include "ClipChannelLUT.h"
 
 namespace animation {
     struct Animation;
@@ -39,9 +40,21 @@ namespace animation {
             double currentTime,
             float speed) const;
 
+        // Get pre-computed LUT for a (clip, node) pair
+        // @return pointer to LUT or nullptr if not available
+        const ClipChannelLUT* getChannelLUT(
+            uint16_t clipIndex,
+            uint16_t nodeIndex) const noexcept;
+
     private:
         float animationTimeToSecs(
             uint16_t animationIndex,
             float animationTime) const;
+
+        void generateClipLUTs(uint16_t clipIndex);
+
+        // Per-clip LUTs: m_clipLUTs[clipIndex][nodeIndex]
+        // Uses nodeIndex for direct access (maps to m_nodeToChannel in Animation)
+        std::vector<std::vector<ClipChannelLUT>> m_clipLUTs;
     };
 }
