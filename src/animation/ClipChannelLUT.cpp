@@ -98,22 +98,12 @@ namespace animation
             return;
         }
 
-        // Clamp to valid range
-        normalizedTime = std::clamp(normalizedTime, 0.f, 1.f);
+        // O(1) direct lookup - no interpolation needed with 1024 entries
+        const size_t idx = static_cast<size_t>(
+            std::clamp(normalizedTime, 0.f, 1.f) * m_invScaleFactor);
 
-        // O(1) index calculation
-        const float exactIndex = normalizedTime * m_invScaleFactor;
-        const size_t idx0 = static_cast<size_t>(exactIndex);
-        const size_t idx1 = std::min(idx0 + 1, m_positions.size() - 1);
-        const float factor = exactIndex - static_cast<float>(idx0);
-
-        // Interpolate between adjacent LUT entries for smooth animation
-        transform.m_position = m_positions[idx0] +
-            factor * (m_positions[idx1] - m_positions[idx0]);
-
-        transform.m_rotation = glm::slerp(m_rotations[idx0], m_rotations[idx1], factor);
-
-        transform.m_scale = m_scales[idx0] +
-            factor * (m_scales[idx1] - m_scales[idx0]);
+        transform.m_position = m_positions[idx];
+        transform.m_rotation = m_rotations[idx];
+        transform.m_scale = m_scales[idx];
     }
 }
