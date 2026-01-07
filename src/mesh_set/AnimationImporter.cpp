@@ -16,6 +16,7 @@
 #include "animation/RigNode.h"
 #include "animation/Animation.h"
 #include "animation/RigNodeChannel.h"
+#include "animation/RigNodeChannelBuilder.h"
 #include "animation/Clip.h"
 #include "animation/Metadata.h"
 
@@ -207,23 +208,25 @@ namespace mesh_set
                 ));
             }
 
-            bc.reservePositionKeys(channel->mNumPositionKeys);
+            animation::RigNodeChannelBuilder builder{ bc };
+
+            builder.reservePositionKeys(channel->mNumPositionKeys);
             for (size_t i = 0; i < channel->mNumPositionKeys; i++) {
-                bc.addPositionKey(channel->mPositionKeys[i]);
+                builder.addPositionKey(channel->mPositionKeys[i]);
             }
 
-            bc.reserveRotationKeys(channel->mNumRotationKeys);
+            builder.reserveRotationKeys(channel->mNumRotationKeys);
             for (size_t i = 0; i < channel->mNumRotationKeys; i++) {
-                bc.addeRotationKey(channel->mRotationKeys[i]);
+                builder.addRotationKey(channel->mRotationKeys[i]);
             }
 
-            bc.reserveScaleKeys(channel->mNumScalingKeys);
+            builder.reserveScaleKeys(channel->mNumScalingKeys);
             for (size_t i = 0; i < channel->mNumScalingKeys; i++) {
-                bc.addeScaleKey(channel->mScalingKeys[i]);
+                builder.addScaleKey(channel->mScalingKeys[i]);
             }
 
             // Unify position/rotation/scale to common timeline for optimized interpolation
-            bc.unifyKeyTimes();
+            builder.unifyKeyTimes();
         }
 
         return animation;
