@@ -20,8 +20,8 @@ help:
 	@echo "  make setup"
 	@echo "  make all TARGET_SIZE=${TARGET_SIZE}"
 	@echo "    OR"
-	@echo "  make meta TARGET_SIZE=${TARGET_SIZE}"
-	@echo "  make build TARGET_SIZE=${TARGET_SIZE}"
+	@echo "  make assets-meta TARGET_SIZE=${TARGET_SIZE}"
+	@echo "  make assets-build TARGET_SIZE=${TARGET_SIZE}"
 
 # Build targets (MSYS2)
 compile: compile-debug compile-release
@@ -45,7 +45,7 @@ run-release:
 run-build:
 	./x64/Build/learnopengl.exe
 
-all: meta build
+all: assets-meta assets-build
 
 setup:
 	git submodule init
@@ -53,8 +53,8 @@ setup:
 	ruby --version
 	bundle install
 
-meta:
+assets-meta:
 	ruby script/encode_ktx.rb meta --src resources/assets --dry-run false --recursive true --target-size ${TARGET_SIZE}
 
-build:
+assets-build:
 	ruby script/encode_ktx.rb build --src resources/assets --dry-run false --recursive true --target-size ${TARGET_SIZE} --encode --combine
