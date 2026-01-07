@@ -221,6 +221,12 @@ namespace mesh_set
             for (size_t i = 0; i < channel->mNumScalingKeys; i++) {
                 bc.addeScaleKey(channel->mScalingKeys[i]);
             }
+
+            // Unify position/rotation/scale to common timeline for optimized interpolation
+            bc.unifyKeyTimes();
+
+            // Generate lookup table for O(1) sampling (uses animation duration)
+            bc.generateLUT(animation->m_duration);
         }
 
         return animation;
