@@ -441,12 +441,12 @@ void NodeRegistry::makeSnapshot(
 
 void NodeRegistry::updateDrawables()
 {
-    auto& cachedNodes = getCachedNodesWT();
+    auto& cachedNodes = getCachedNodesRT();
     const auto& snapshots = m_snapshotsRT;
 
     auto& instanceRegistry = render::InstanceRegistry::get();
 
-    for (int entityIndex = ID_ENTITY_INDEX + 1; entityIndex < m_states.size(); entityIndex++) {
+    for (int entityIndex = ID_ENTITY_INDEX + 1; entityIndex < snapshots.size(); entityIndex++) {
         // NOTE KI skip free/root slot
         if (m_parentIndeces[entityIndex] == 0) continue;
 
