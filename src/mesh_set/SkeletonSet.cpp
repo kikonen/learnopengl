@@ -44,8 +44,9 @@ namespace
         const auto* curr = tree.findByNode(skeletonRoot);
         if (!curr) return skeletonRoot;
 
-        // NOTE KI some models **REQUIRE** going upto root to find
+        // NOTE KI some models **REQUIRE** going upto assimp root to find
         // proper "root transform"
+        // 0 == assimp "RootNode"
         while (curr->parentIndex != -1 || curr->hasAssimpFbxNodeParent) {
             curr = tree.findParent(curr);
         }
