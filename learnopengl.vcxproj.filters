@@ -621,6 +621,9 @@
     <ClCompile Include="src\animation\RigNodeChannel.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\animation\RigNodeChannelBuilder.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="src\mesh_set\AnimationImporter.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -2229,6 +2232,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\animation\RigNodeChannel.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\animation\RigNodeChannelBuilder.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\mesh_set\AnimationImporter.h">

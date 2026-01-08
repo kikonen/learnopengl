@@ -27,7 +27,6 @@ namespace animation
         // @param channel source channel with keyframes
         // @param firstFrame clip's first frame index
         // @param lastFrame clip's last frame index
-        // @param lutSize number of entries in LUT
         void generate(
             const RigNodeChannel& channel,
             uint16_t firstFrame,
