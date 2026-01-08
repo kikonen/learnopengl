@@ -184,11 +184,11 @@ namespace mesh_set
                 channel->mNumRotationKeys,
                 channel->mNumScalingKeys));
 
-            auto& bc = animation->addChannel({ channel });
-            auto* rigNode = rig.findNode(bc.m_nodeName);
+            auto& rigNodeChannel = animation->addChannel({ channel });
+            auto* rigNode = rig.findNode(rigNodeChannel.m_nodeName);
 
             if (!rigNode) {
-                //if (bc.m_nodeName.starts_with("root_")) {
+                //if (rigNodeChannel.m_nodeName.starts_with("root_")) {
                 //    rigNode = rig.findNode("root");
                 //}
             }
@@ -196,19 +196,19 @@ namespace mesh_set
             if (rigNode) {
                 KI_INFO_OUT(fmt::format(
                     "ASSIMP: CHANNEL_BIND_NODE - channel={}, node={}",
-                    bc.m_nodeName,
+                    rigNodeChannel.m_nodeName,
                     rigNode->m_name
                 ));
-                animation->bindNode(bc.m_index, rigNode->m_index);
+                animation->bindNode(rigNodeChannel.m_index, rigNode->m_index);
             }
             else {
                 KI_WARN_OUT(fmt::format(
                     "ASSIMP: CHANNEL_MISSING_NODE - channel={}",
-                    bc.m_nodeName
+                    rigNodeChannel.m_nodeName
                 ));
             }
 
-            animation::RigNodeChannelBuilder builder{ bc };
+            animation::RigNodeChannelBuilder builder{ rigNodeChannel };
 
             builder.reservePositionKeys(channel->mNumPositionKeys);
             for (size_t i = 0; i < channel->mNumPositionKeys; i++) {
