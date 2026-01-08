@@ -77,16 +77,9 @@ namespace animation
             }
 
             // Interpolate and store in LUT
-            m_positions[i] = positions[currIdx] +
-                factor * (positions[nextIdx] - positions[currIdx]);
-
-            m_rotations[i] = glm::slerp(
-                rotations[currIdx],
-                rotations[nextIdx],
-                factor);
-
-            m_scales[i] = scales[currIdx] +
-                factor * (scales[nextIdx] - scales[currIdx]);
+            m_positions[i] = glm::mix(positions[currIdx], positions[nextIdx], factor);
+            m_rotations[i] = glm::slerp(rotations[currIdx], rotations[nextIdx], factor);
+            m_scales[i] = glm::mix(scales[currIdx], scales[nextIdx], factor);
         }
     }
 
