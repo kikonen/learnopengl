@@ -117,6 +117,7 @@ namespace render {
 
         size_t m_pendingCount{ 0 };
         size_t m_flushedTotalCount{ 0 };
+        size_t m_frameFlushCount{ 0 };
 
         mutable size_t m_drawCount{ 0 };
         mutable size_t m_skipCount{ 0 };
