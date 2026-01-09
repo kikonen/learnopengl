@@ -37,17 +37,18 @@ namespace {
 
     // Estimate sizes per frame
     constexpr size_t INSTANCES_PER_FRAME = 50000;
-    constexpr size_t COMMANDS_PER_FRAME = 2000;
+    constexpr size_t COMMANDS_PER_FRAME = 100;
+    constexpr size_t BATCHES_PER_FRAME = 20;
 
     constexpr size_t estimateInstanceSizePerFrame()
     {
-        return INSTANCES_PER_FRAME * sizeof(render::InstanceIndexSSBO)
+        return BATCHES_PER_FRAME * INSTANCES_PER_FRAME * sizeof(render::InstanceIndexSSBO)
             + 16 * 256;  // alignment headroom
     }
 
     constexpr size_t estimateCommandSizePerFrame()
     {
-        return COMMANDS_PER_FRAME * sizeof(backend::gl::DrawIndirectCommand)
+        return BATCHES_PER_FRAME * COMMANDS_PER_FRAME * sizeof(backend::gl::DrawIndirectCommand)
             + 16 * 256;  // alignment headroom
     }
 }
