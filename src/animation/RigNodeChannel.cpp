@@ -94,8 +94,7 @@ namespace animation {
         }
 
         // Interpolate position (lerp)
-        transform.m_position = m_positionKeyValues[currIndex] +
-            factor * (m_positionKeyValues[nextIndex] - m_positionKeyValues[currIndex]);
+        transform.m_position = glm::mix(m_positionKeyValues[currIndex], m_positionKeyValues[nextIndex], factor);
 
         // Interpolate rotation (slerp)
         transform.m_rotation = glm::slerp(
@@ -104,8 +103,7 @@ namespace animation {
             factor);
 
         // Interpolate scale (lerp)
-        transform.m_scale = m_scaleKeyValues[currIndex] +
-            factor * (m_scaleKeyValues[nextIndex] - m_scaleKeyValues[currIndex]);
+        transform.m_scale = glm::mix(m_scaleKeyValues[currIndex], m_scaleKeyValues[nextIndex], factor);
     }
 
     uint16_t RigNodeChannel::findKeyIndex(
