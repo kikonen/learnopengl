@@ -23,7 +23,7 @@ namespace script {
             {
                 CommandEntry* entry = handle.toCommand();
                 if (!entry) {
-                    std::cerr << "FATAL: pool full\n";
+                    std::cerr << "COMMAND_ENGINE - FATAL: command_handle pool full\n";
                     return 0;
                 }
                 entry->afterId = afterId;

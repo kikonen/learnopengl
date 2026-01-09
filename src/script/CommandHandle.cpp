@@ -12,7 +12,7 @@
 namespace {
     IdGenerator<script::command_id> ID_GENERATOR;
 
-    constexpr size_t MAX_POOL_SIZE{ 200000 };
+    constexpr size_t MAX_POOL_SIZE{ 500000 };
 
     //std::mutex m_lock;
     pool::Pool<script::CommandEntry> s_pool{ MAX_POOL_SIZE };

@@ -5,6 +5,8 @@
 namespace {
     constexpr long WAIT_DELAY_MS = 5;
     constexpr long WAIT_DELAY = WAIT_DELAY_MS * 1000 * 1000;
+
+    constexpr long MAX_WAIT_COUNT = 10;
 }
 
 namespace kigl {
@@ -48,11 +50,13 @@ namespace kigl {
     {
         if (!m_sync) return;
 
+        int count = 0;
         GLenum res = GL_UNSIGNALED;
-        while (res != GL_ALREADY_SIGNALED && res != GL_CONDITION_SATISFIED)
+        while (res != GL_ALREADY_SIGNALED && res != GL_CONDITION_SATISFIED && count < MAX_WAIT_COUNT)
         {
             // 1 million == 1 ms
             res = glClientWaitSync(m_sync, GL_SYNC_FLUSH_COMMANDS_BIT, WAIT_DELAY);
+            count++;
         }
 
         release();
