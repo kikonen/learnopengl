@@ -59,8 +59,10 @@ namespace animation {
 
         std::vector<glm::mat4> m_transforms;
 
+        std::unordered_map<util::BufferReference, bool> m_allocatedSlots;
+        std::unordered_map<util::BufferReference, bool> m_dirtySlots;
         // { size: [index, ...] }
-        std::unordered_map<size_t, std::vector<uint32_t>> m_freeSlots;
-        std::vector<util::BufferReference> m_dirtySlots;
+        std::unordered_map<uint32_t, std::vector<uint32_t>> m_freeSlots;
+
     };
 }

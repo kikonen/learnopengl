@@ -1,6 +1,7 @@
 #pragma once
 
 #include <stdint.h>
+#include <functional>
 
 namespace util
 {
@@ -73,6 +74,20 @@ namespace util
         bool contains(const BufferReference& o) const
         {
             return begin() <= o.begin() && o.end() <= end();
+        }
+    };
+}
+
+namespace std
+{
+    template<>
+    struct hash<util::BufferReference>
+    {
+        size_t operator()(const util::BufferReference& ref) const noexcept
+        {
+            size_t h1 = std::hash<uint32_t>{}(ref.offset);
+            size_t h2 = std::hash<uint32_t>{}(ref.size);
+            return h1 ^ (h2 << 1);
         }
     };
 }
