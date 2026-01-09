@@ -27,14 +27,14 @@ namespace animation
         m_updateReady = false;
 
         m_transforms.clear();
-        m_freeSlots.clear();
+        m_slotAllocator.clear();
         m_dirtySlots.clear();
 
         m_snapshot.clear();
         m_dirtySnapshot.clear();
 
         m_transforms.reserve(INITIAL_SIZE);
-        m_freeSlots.reserve(INITIAL_SIZE);
+        m_slotAllocator.reserve(INITIAL_SIZE);
         m_dirtySlots.reserve(INITIAL_SIZE);
 
         m_snapshot.reserve(INITIAL_SIZE);
@@ -57,25 +57,24 @@ namespace animation
 
         if (count == 0) return {};
 
-        size_t offset;
+        uint32_t offset;
         {
             std::lock_guard lock(m_lock);
 
-            auto it = m_freeSlots.find(static_cast<uint32_t>(count));
-            if (it != m_freeSlots.end() && !it->second.empty()) {
-                offset = it->second[it->second.size() - 1];
-                it->second.pop_back();
+            int32_t freeOffset = m_slotAllocator.tryAllocate(static_cast<uint32_t>(count));
+            if (freeOffset >= 0) {
+                offset = static_cast<uint32_t>(freeOffset);
             }
             else {
-                offset = m_transforms.size();
+                offset = static_cast<uint32_t>(m_transforms.size());
                 m_transforms.resize(m_transforms.size() + count);
+                m_slotAllocator.confirmAllocation(offset, static_cast<uint32_t>(count));
             }
 
-            for (int i = 0; i < count; i++) {
+            for (size_t i = 0; i < count; i++) {
                 m_transforms[offset + i] = ID_MAT;
             }
 
-            m_allocatedSlots[{ offset, count }] = true;
             markDirty({ offset, count });
         }
 
@@ -87,20 +86,9 @@ namespace animation
     {
         ASSERT_WT();
 
-        if (ref.size == 0) return {};
-
-        // NOTE KI modifying null socket is not allowed
-        if (ref.offset == 0) return {};
-
         std::lock_guard lock(m_lock);
 
-        {
-            auto it = m_allocatedSlots.find(ref);
-            if (it == m_allocatedSlots.end()) return {};
-        }
-
-        m_freeSlots[ref.size].push_back(ref.offset);
-        m_allocatedSlots[ref] = false;
+        if (!m_slotAllocator.release(ref)) return {};
 
         return {};
     }
@@ -125,22 +113,17 @@ namespace animation
 
     void JointRegistry::markDirtyAll() noexcept
     {
-        std::lock_guard lock(m_lockDirty);
         m_dirtySlots.clear();
-        for (const auto& [ref, allocated] : m_allocatedSlots) {
+        for (const auto& [ref, allocated] : m_slotAllocator.getAllocatedSlots()) {
             if (!allocated) continue;
-            markDirty(ref);
+            m_dirtySlots.markDirty(ref);
         }
     }
 
     void JointRegistry::markDirty(
         util::BufferReference ref) noexcept
     {
-        if (ref.size == 0) return;
-
-        std::lock_guard lock(m_lockDirty);
-
-        m_dirtySlots[ref] = true;
+        m_dirtySlots.markDirty(ref);
     }
 
     uint32_t JointRegistry::getActiveCount() const noexcept
@@ -156,13 +139,8 @@ namespace animation
     void JointRegistry::makeSnapshot()
     {
         std::lock_guard lock(m_lock);
-        std::lock_guard lockDirty(m_lockDirty);
 
-        if (m_dirtySlots.empty()) return;
-
-        for (const auto& [ref, dirty] : m_dirtySlots) {
-            if (!dirty) continue;
-
+        m_dirtySlots.processAndClear(m_dirtySnapshot, [this](const util::BufferReference& ref) {
             const auto baseIndex = ref.offset;
             const auto updateCount = ref.size;
 
@@ -174,11 +152,10 @@ namespace animation
             for (size_t i = 0; i < updateCount; i++) {
                 m_snapshot[baseIndex + i] = m_transforms[baseIndex + i];
             }
+        });
 
-            m_dirtySnapshot.emplace_back(baseIndex, updateCount);
+        if (!m_dirtySnapshot.empty()) {
+            m_updateReady = true;
         }
-
-        m_dirtySlots.clear();
-        m_updateReady = true;
     }
 }

@@ -1,7 +1,6 @@
 #pragma once
 
 #include <vector>
-#include <unordered_map>
 #include <mutex>
 #include <atomic>
 #include <span>
@@ -9,6 +8,8 @@
 #include <glm/glm.hpp>
 
 #include "util/BufferReference.h"
+#include "util/DirtySet.h"
+#include "util/SlotAllocator.h"
 
 namespace editor
 {
@@ -65,15 +66,12 @@ namespace animation {
         std::mutex m_lock{};
 
     private:
-        std::mutex m_lockDirty{};
-
         std::atomic_bool m_updateReady{ false };
 
         std::vector<glm::mat4> m_transforms;
 
-        // { size: [index, ...] }
-        std::unordered_map<size_t, std::vector<uint32_t>> m_freeSlots;
-        std::vector<util::BufferReference> m_dirtySlots;
+        util::SlotAllocator m_slotAllocator;
+        util::DirtySet<util::BufferReference> m_dirtySlots;
 
         std::vector<SocketTransformSSBO> m_snapshot;
         std::vector<util::BufferReference> m_dirtySnapshot;

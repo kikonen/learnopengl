@@ -1,13 +1,14 @@
 #pragma once
 
 #include <vector>
-#include <unordered_map>
 #include <span>
 
 #include "kigl/GLBuffer.h"
 #include "kigl/GLFence.h"
 
 #include "util/BufferReference.h"
+#include "util/DirtySet.h"
+#include "util/SlotAllocator.h"
 
 #include "backend/DrawOptions.h"
 
@@ -65,9 +66,8 @@ namespace render
 
         std::vector<DrawableInfo> m_drawables;
 
-        // { size: [index, ...] }
-        std::unordered_map<size_t, std::vector<uint32_t>> m_freeSlots;
-        std::vector<util::BufferReference> m_dirtySlots;
+        util::SlotAllocator m_slotAllocator;
+        util::DirtySet<util::BufferReference> m_dirtySlots;
 
         std::vector<render::InstanceSSBO> m_instances;
 
