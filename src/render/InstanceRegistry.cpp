@@ -1,5 +1,7 @@
 #include "InstanceRegistry.h"
 
+#include "util/thread.h"
+
 #include "asset/Assets.h"
 
 #include "render/InstanceSSBO.h"
@@ -47,13 +49,13 @@ namespace render
     void InstanceRegistry::clear()
     {
         m_drawables.clear();
-        m_freeSlots.clear();
+        m_slotAllocator.clear();
         m_dirtySlots.clear();
 
         m_instances.clear();
 
         m_drawables.reserve(BLOCK_SIZE);
-        m_freeSlots.reserve(BLOCK_SIZE);
+        m_slotAllocator.reserve(BLOCK_SIZE);
         m_dirtySlots.reserve(BLOCK_SIZE);
         m_instances.reserve(BLOCK_SIZE);
 
@@ -79,20 +81,20 @@ namespace render
 
     util::BufferReference InstanceRegistry::allocate(size_t count)
     {
-        //ASSERT_WT();
+        ASSERT_RT();
 
         if (count == 0) return {};
 
         uint32_t offset;
         {
-            auto it = m_freeSlots.find(count);
-            if (it != m_freeSlots.end() && !it->second.empty()) {
-                offset = it->second[it->second.size() - 1];
-                it->second.pop_back();
+            int32_t freeOffset = m_slotAllocator.tryAllocate(static_cast<uint32_t>(count));
+            if (freeOffset >= 0) {
+                offset = static_cast<uint32_t>(freeOffset);
             }
             else {
                 offset = static_cast<uint32_t>(m_drawables.size());
                 m_drawables.resize(m_drawables.size() + count);
+                m_slotAllocator.confirmAllocation(offset, static_cast<uint32_t>(count));
             }
 
             markDirty({ offset, count });
@@ -105,18 +107,9 @@ namespace render
 
     util::BufferReference InstanceRegistry::release(util::BufferReference ref)
     {
-        if (ref.size == 0) return {};
+        ASSERT_RT();
 
-        // NOTE KI modifying null socket is not allowed
-        if (ref.offset == 0) return {};
-
-        auto it = m_freeSlots.find(ref.size);
-        if (it == m_freeSlots.end()) {
-            m_freeSlots[ref.size] = std::vector<uint32_t>{ ref.offset };
-        }
-        else {
-            it->second.push_back(ref.offset);
-        }
+        if (!m_slotAllocator.release(ref)) return {};
 
         return {};
     }
@@ -142,25 +135,16 @@ namespace render
     void InstanceRegistry::markDirtyAll() noexcept
     {
         m_dirtySlots.clear();
-        markDirty({ 0, static_cast<uint32_t>(m_drawables.size()) });
+        for (const auto& [ref, allocated] : m_slotAllocator.getAllocatedSlots()) {
+            if (!allocated) continue;
+            m_dirtySlots.markDirty(ref);
+        }
     }
 
     void InstanceRegistry::markDirty(
         util::BufferReference ref) noexcept
     {
-        //ASSERT_WT();
-        if (ref.size == 0) return;
-
-        const auto& it = std::find_if(
-            m_dirtySlots.begin(),
-            m_dirtySlots.end(),
-            [&ref](const auto& old) {
-            return old.contains(ref);
-        });
-
-        if (it != m_dirtySlots.end()) return;
-
-        m_dirtySlots.push_back(ref);
+        m_dirtySlots.markDirty(ref);
     }
 
     void InstanceRegistry::prepareInstances(util::BufferReference ref) noexcept

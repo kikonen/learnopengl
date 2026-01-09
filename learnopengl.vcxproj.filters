@@ -3041,6 +3041,12 @@
     <ClInclude Include="src\util\BufferReference.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\util\DirtySet.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\util\SlotAllocator.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="src\mesh\RegisteredRig.h">
       <Filter>Header Files</Filter>
     </ClInclude>
