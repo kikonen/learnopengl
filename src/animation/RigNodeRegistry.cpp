@@ -1,10 +1,6 @@
 #include "RigNodeRegistry.h"
 
-#include "asset/Assets.h"
-
 #include "util/thread.h"
-
-#include "JointTransformSSBO.h"
 
 namespace {
     constexpr int INITIAL_SIZE = 10000;
@@ -55,7 +51,7 @@ namespace animation
         {
             std::lock_guard lock(m_lock);
 
-            auto it = m_freeSlots.find(count);
+            auto it = m_freeSlots.find(static_cast<uint32_t>(count));
             if (it != m_freeSlots.end() && !it->second.empty()) {
                 auto& offsets = it->second;
                 offset = offsets[offsets.size() - 1];
@@ -70,6 +66,7 @@ namespace animation
                 m_transforms[offset + i] = ID_MAT;
             }
 
+            m_allocatedSlots[{ offset, count }] = true;
             markDirty({ offset, count });
         }
 
@@ -88,13 +85,13 @@ namespace animation
 
         std::lock_guard lock(m_lock);
 
-        auto it = m_freeSlots.find(ref.size);
-        if (it == m_freeSlots.end()) {
-            m_freeSlots[ref.size] = std::vector<uint32_t>{ ref.offset };
+        {
+            auto it = m_allocatedSlots.find(ref);
+            if (it == m_allocatedSlots.end()) return {};
         }
-        else {
-            it->second.push_back(ref.offset);
-        }
+
+        m_freeSlots[ref.size].push_back(ref.offset);
+        m_allocatedSlots[ref] = false;
 
         return {};
     }
@@ -119,8 +116,12 @@ namespace animation
 
     void RigNodeRegistry::markDirtyAll() noexcept
     {
+        std::lock_guard lock(m_lockDirty);
         m_dirtySlots.clear();
-        markDirty({ 0, m_transforms.size() });
+        for (const auto& [ref, allocated] : m_allocatedSlots) {
+            if (!allocated) continue;
+            markDirty(ref);
+        }
     }
 
     void RigNodeRegistry::markDirty(
@@ -130,16 +131,7 @@ namespace animation
 
         std::lock_guard lock(m_lockDirty);
 
-        const auto& it = std::find_if(
-            m_dirtySlots.begin(),
-            m_dirtySlots.end(),
-            [&ref](const auto& old) {
-            return old.contains(ref);
-        });
-
-        if (it != m_dirtySlots.end()) return;
-
-        m_dirtySlots.push_back(ref);
+        m_dirtySlots[ref] = true;
     }
 
     uint32_t RigNodeRegistry::getActiveCount() const noexcept
