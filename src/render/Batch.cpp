@@ -456,7 +456,7 @@ namespace render {
 
     void Batch::endFrame()
     {
-        KI_INFO(fmt::format("BATCH: frame_batch_flushes={}", m_frameFlushCount));
+        //KI_INFO(fmt::format("BATCH: frame_batch_flushes={}", m_frameFlushCount));
         m_frameFlushCount = 0;
         m_draw->endFrame();
     }
