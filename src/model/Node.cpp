@@ -97,7 +97,7 @@ namespace model
         state.setBaseRotation(type->m_baseRotation);
 
         if (type->hasMesh()) {
-            KI_DEBUG(fmt::format("ADD_ENTITY: {}", str()));
+            //KI_DEBUG(fmt::format("ADD_ENTITY: {}", str()));
 
             state.setLocalVolume(type->getAABB().toLocalVolume());
             {

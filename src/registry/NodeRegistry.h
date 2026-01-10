@@ -330,6 +330,8 @@ private:
     ki::level_id m_cachedNodeLevelWT{ 0 };
     ki::level_id m_cachedNodeLevelRT{ 0 };
 
+    bool m_debug{ false };
+
     Engine* m_engine{ nullptr };
 
     pool::NodeHandle m_activeNode{};
