@@ -40,7 +40,7 @@ namespace {
     // Estimate sizes per frame
     constexpr size_t INSTANCES_PER_FRAME = 50000;
     constexpr size_t COMMANDS_PER_FRAME = 200;
-    constexpr size_t BATCHES_PER_FRAME = 10;
+    constexpr size_t BATCHES_PER_FRAME = 100;
 
     constexpr size_t estimateInstanceSizePerFrame()
     {
