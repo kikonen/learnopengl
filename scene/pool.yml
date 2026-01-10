@@ -553,7 +553,7 @@ nodes:
       x_count: 25
       z_count: 1
       x_step: 10
-      z_step: 0
+      z_step: -10
   - type: terrain_grass_v2
     pos: [-1024, 10, -1024]
   - type: grass
