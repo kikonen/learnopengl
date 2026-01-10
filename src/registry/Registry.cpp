@@ -81,7 +81,7 @@ void Registry::clear()
     // NOTE KI must first release commands
     // => they contain sol references
     script::CommandEngine::get().clear();
-    script::ScriptSystem::get().stop();
+    //script::ScriptSystem::get().stop();
 
     //FileEntryCache::get().clear();
 

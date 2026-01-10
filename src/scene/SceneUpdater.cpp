@@ -47,6 +47,10 @@ SceneUpdater::SceneUpdater(
 void SceneUpdater::shutdown()
 {
     if (!m_prepared) return;
+    {
+        script::CommandEngine::get().clear();
+        script::ScriptSystem::get().stop();
+    }
     Updater::shutdown();
 }
 
@@ -61,6 +65,11 @@ void SceneUpdater::prepare()
     std::lock_guard lock(m_prepareLock);
 
     auto* dispatcher = registry->m_dispatcherWorker;
+
+    {
+        auto& scriptSystem = script::ScriptSystem::get();
+        scriptSystem.start();
+    }
 
     m_listen_scene_loaded.listen(
         event::Type::scene_loaded,

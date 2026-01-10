@@ -88,19 +88,24 @@ namespace script
 
     void ScriptSystem::stop()
     {
-        ASSERT_RT();
+        ASSERT_WT();
 
         m_scriptEntries.clear();
         m_scripts.clear();
 
-        m_nodeCommandApi = nullptr;
+        if (m_lua) {
+            m_nodeCommandApi = nullptr;
 
-        m_lua = nullptr;
+            m_createStateFunc = sol::nil;
+            m_deleteStateFunc = sol::nil;
+
+            m_lua = nullptr;
+        }
     }
 
     void ScriptSystem::start()
     {
-        ASSERT_RT();
+        ASSERT_WT();
 
         const auto& assets = Assets::get();
 

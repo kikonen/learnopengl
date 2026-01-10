@@ -55,7 +55,7 @@ namespace script
 
     void CommandEngine::clear()
     {
-        ASSERT_RT();
+        //ASSERT_RT();
 
         {
             std::lock_guard lock{ m_pendingLock };
