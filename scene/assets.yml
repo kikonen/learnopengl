@@ -98,6 +98,9 @@ assets:
 
   draw_debug: false
 
+  node_registry_debug: false
+  node_registry_defer_sort: true
+
   near_plane: 0.1
   far_plane: 2000.0
 

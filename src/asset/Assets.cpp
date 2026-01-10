@@ -177,6 +177,9 @@ Assets::Assets()
 
     drawDebug = false;
 
+    nodeRegistryDebug = false;
+    nodeRegistryDeferSort = true;
+
     nearPlane = 0.1f;
     farPlane = 1000.0f;
 
