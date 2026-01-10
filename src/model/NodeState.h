@@ -81,10 +81,10 @@ namespace model
 
         ki::level_id m_parentMatrixLevel{ 0 };
         ki::level_id m_matrixLevel{ 0 };
+        ki::level_id m_normalLevel{ 0 };
 
         bool m_dirty : 1 {true};
 
-        mutable bool m_dirtyNormal : 1 {true};
         mutable bool m_dirtySnapshot : 1 {true};
 
         bool boundStaticDone : 1 { false };
@@ -171,7 +171,7 @@ namespace model
                 m_baseScale.z = scale.z;
 
                 m_dirty = true;
-                m_dirtyNormal = true;
+                m_normalLevel++;
             }
         }
 
@@ -191,7 +191,7 @@ namespace model
                 m_scale.z = scale.z;
 
                 m_dirty = true;
-                m_dirtyNormal = true;
+                m_normalLevel++;
             }
         }
 
@@ -239,7 +239,7 @@ namespace model
             if (m_scale.z < 0) m_scale.z = 0;
 
             m_dirty = true;
-            m_dirtyNormal = true;
+            m_normalLevel++;
         }
 
         inline void setAspectRatio(const glm::uvec2& aspectRatio) noexcept
@@ -248,7 +248,7 @@ namespace model
                 m_aspectRatio = aspectRatio;
 
                 m_dirty = true;
-                m_dirtyNormal = true;
+                m_normalLevel++;
             }
         }
 
@@ -257,7 +257,7 @@ namespace model
             if (m_rotation != quat) {
                 m_rotation = quat;
                 m_dirty = true;
-                m_dirtyNormal = true;
+                m_normalLevel++;
             }
         }
 

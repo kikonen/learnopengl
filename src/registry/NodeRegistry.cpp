@@ -166,6 +166,7 @@ void NodeRegistry::clear()
 
     m_cachedNodesWT.clear();
     m_cachedNodesRT.clear();
+    m_processedLevels.clear();
 
     m_nodeLevel = 0;
     m_cachedNodeLevelWT = 0;
@@ -185,6 +186,7 @@ void NodeRegistry::clear()
 
         m_cachedNodesWT.reserve(INITIAL_SIZE);
         m_cachedNodesRT.reserve(INITIAL_SIZE);
+        m_processedLevels.reserve(INITIAL_SIZE);
 
         m_freeIndeces.reserve(INITIAL_SIZE);
         m_pendingAdded.reserve(INITIAL_SIZE);
@@ -387,8 +389,11 @@ void NodeRegistry::syncSnapshots()
 {
     cacheNodes(m_cachedNodesRT, m_cachedNodeLevelRT);
 
-    m_entities.resize(m_snapshotBuffer.size());
-    m_dirtyEntities.resize(m_snapshotBuffer.size());
+    const auto sz = m_snapshotBuffer.size();
+    m_entities.resize(sz);
+    m_dirtyEntities.resize(sz);
+    m_processedLevels.resize(sz, 0);
+    m_processedNormalLevels.resize(sz, 0);
 
     auto& dbg = debug::DebugContext::modify();
     auto& physicsDbg = dbg.m_physics;
@@ -410,10 +415,20 @@ void NodeRegistry::updateDrawables()
 
     for (int entityIndex = ID_ENTITY_INDEX + 1; entityIndex < snapshots.size(); entityIndex++) {
         // NOTE KI skip free/root slot
-        if (m_parentIndeces[entityIndex] == 0) continue;
+        if (entityIndex >= m_parentIndeces.size() || m_parentIndeces[entityIndex] == 0) continue;
 
         const auto& snapshot = snapshots[entityIndex];
-        if (!snapshot.m_dirty) continue;
+
+        // NOTE KI detect slot reuse: if snapshot level < processed level, slot was reused
+        if (entityIndex < m_processedLevels.size() &&
+            snapshot.m_matrixLevel < m_processedLevels[entityIndex]) {
+            m_processedLevels[entityIndex] = 0;
+            m_processedNormalLevels[entityIndex] = 0;
+        }
+
+        // NOTE KI use level comparison instead of m_dirty flag
+        if (entityIndex >= m_processedLevels.size() ||
+            snapshot.m_matrixLevel <= m_processedLevels[entityIndex]) continue;
 
         auto* node = cachedNodes[entityIndex];
         if (!node) continue;
@@ -447,12 +462,20 @@ std::pair<int, int> NodeRegistry::updateEntity(const UpdateContext& ctx)
 
     for (int entityIndex = 0; entityIndex < snapshots.size(); entityIndex++) {
         if (m_cachedNodesRT.size() < entityIndex + 1) continue;
+        if (entityIndex >= m_processedLevels.size()) continue;
 
         auto* node = m_cachedNodesRT[entityIndex];
         const auto& state = m_states[entityIndex];
         const auto& snapshot = snapshots[entityIndex];
 
-        if (!snapshot.m_dirty) continue;
+        // NOTE KI detect slot reuse: if snapshot level < processed level, slot was reused
+        if (snapshot.m_matrixLevel < m_processedLevels[entityIndex]) {
+            m_processedLevels[entityIndex] = 0;
+            m_processedNormalLevels[entityIndex] = 0;
+        }
+
+        // NOTE KI use level comparison instead of m_dirty flag
+        if (snapshot.m_matrixLevel <= m_processedLevels[entityIndex]) continue;
 
         auto& entity = m_entities[entityIndex];
 
@@ -468,8 +491,13 @@ std::pair<int, int> NodeRegistry::updateEntity(const UpdateContext& ctx)
         entity.u_tilingX = state.m_tilingX;
         entity.u_tilingY = state.m_tilingY;
 
-        snapshot.updateEntity(entity);
-        snapshot.m_dirty = false;
+        // NOTE KI dirtyNormal based on normalLevel comparison
+        const bool dirtyNormal = snapshot.m_normalLevel > m_processedNormalLevels[entityIndex];
+        snapshot.updateEntity(entity, dirtyNormal);
+
+        // NOTE KI mark as processed for RT side tracking
+        m_processedLevels[entityIndex] = snapshot.m_matrixLevel;
+        m_processedNormalLevels[entityIndex] = snapshot.m_normalLevel;
 
         m_dirtyEntities[entityIndex] = true;
         if (entityIndex < minDirty) minDirty = entityIndex;
