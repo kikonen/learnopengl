@@ -46,7 +46,8 @@ namespace backend {
         // - send or sendDirect
         // - flush
         // - finish
-        void sendInstanceIndeces(
+        // @return true if sending succeeded (if not cannot do draws)
+        bool sendInstanceIndeces(
             std::span<render::InstanceIndexSSBO> indeces);
 
         void send(

@@ -3041,6 +3041,9 @@
     <ClInclude Include="src\util\BufferReference.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\util\BufferReferenceFormat.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="src\util\DirtySet.h">
       <Filter>Header Files</Filter>
     </ClInclude>

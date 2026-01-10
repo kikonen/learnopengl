@@ -751,6 +751,7 @@
     <ClInclude Include="src\render\InstanceIndexSSBO.h" />
     <ClInclude Include="src\render\InstanceRegistry.h" />
     <ClInclude Include="src\util\BufferReference.h" />
+    <ClInclude Include="src\util\BufferReference_format.h" />
     <ClInclude Include="src\util\DirtySet.h" />
     <ClInclude Include="src\util\SlotAllocator.h" />
     <ClInclude Include="src\animation\Rig.h" />
