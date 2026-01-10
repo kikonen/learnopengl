@@ -147,6 +147,10 @@ namespace script
         std::unordered_map<pool::TypeHandle, std::unordered_map<script::script_id, ScriptEntry>> m_scriptEntries;
         std::unordered_map<script::script_id, script::ScriptFile> m_scripts;
 
+        // Cached precompiled functions for performance
+        sol::protected_function m_createStateFunc;
+        sol::protected_function m_deleteStateFunc;
+
         std::mutex m_lock{};
     };
 }

@@ -159,6 +159,21 @@ namespace script
         lua[TABLE_SCENE] = std::ref(m_sceneApi);
         lua[API_NODE] = std::ref(m_nodeApi);
         lua[API_CMD] = std::ref(m_nodeCommandApi);
+
+        // Precompile helper functions for node state management
+        {
+            lua.script(R"(
+function _create_state(id, typeId)
+    states[id] = classes[typeId]:new()
+end
+
+function _delete_state(id)
+    if states[id] then states[id]:destroy() end
+end
+)");
+            m_createStateFunc = lua["_create_state"];
+            m_deleteStateFunc = lua["_delete_state"];
+        }
     }
 
     void ScriptSystem::prepare(
@@ -263,12 +278,11 @@ namespace script
         const auto id = node->getId();
         {
             const auto typeId = node->m_typeHandle.toId();
-            std::string scriptlet = fmt::format(
-                R"(-- {}
-states[{}] = classes[{}]:new())",
-node->getName(), id, typeId);
 
-            auto result = invokeLuaScript(scriptlet);
+            // Use precompiled function instead of parsing script each time
+            auto result = invokeLuaFunction([this, id, typeId]() {
+                return m_createStateFunc(id, typeId);
+            });
             if (!result.valid()) return;
         }
 
@@ -283,11 +297,11 @@ node->getName(), id, typeId);
     void ScriptSystem::deleteNodeState(
         const model::Node* node)
     {
-        auto scriptlet = fmt::format(
-            "if states[{}] then states[{}]:destroy() end",
-            node->getId(), node->getId());
-
-        execScript(scriptlet);
+        // Use precompiled function instead of parsing script each time
+        const auto id = node->getId();
+        invokeLuaFunction([this, id]() {
+            return m_deleteStateFunc(id);
+        });
 
         execScript("Updater:refresh()");
     }
