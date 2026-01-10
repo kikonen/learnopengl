@@ -42,7 +42,8 @@ public:
 
     void prepareRT(
         const PrepareContext& ctx,
-        model::Node& container) override;
+        model::Node& container,
+        const model::Snapshot& snapshot) override;
 
     void updateWT(
         const UpdateContext& ctx,

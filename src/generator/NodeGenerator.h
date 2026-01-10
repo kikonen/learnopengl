@@ -83,7 +83,8 @@ public:
 
     virtual void prepareRT(
         const PrepareContext& ctx,
-        model::Node& container) {}
+        model::Node& container,
+        const model::Snapshot& snapshot) {}
 
     virtual void updateWT(
         const UpdateContext& ctx,
@@ -91,7 +92,8 @@ public:
 
     virtual void registerDrawables(
         render::InstanceRegistry& instanceRegistry,
-        const model::Node& container);
+        const model::Node& container,
+        const model::Snapshot& snapshot);
 
     virtual void updateDrawables(
         render::InstanceRegistry& instanceRegistry,

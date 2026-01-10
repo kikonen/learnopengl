@@ -160,8 +160,7 @@ void NodeRegistry::clear()
     m_handles.clear();
     m_parentIndeces.clear();
     m_states.clear();
-    m_snapshotsPending.clear();
-    m_snapshotsRT.clear();
+    m_snapshotBuffer.clear();
     m_entities.clear();
     m_dirtyEntities.clear();
 
@@ -180,8 +179,7 @@ void NodeRegistry::clear()
         m_handles.reserve(INITIAL_SIZE);
         m_parentIndeces.reserve(INITIAL_SIZE);
         m_states.reserve(INITIAL_SIZE);
-        m_snapshotsPending.reserve(INITIAL_SIZE);
-        m_snapshotsRT.reserve(INITIAL_SIZE);
+        m_snapshotBuffer.reserve(INITIAL_SIZE);
         m_entities.reserve(INITIAL_SIZE);
         m_dirtyEntities.reserve(INITIAL_SIZE);
 
@@ -370,25 +368,9 @@ void NodeRegistry::updateModelMatrices(const model::Node* node)
     m_states[index].updateModelMatrix(m_states[m_parentIndeces[index]]);
 }
 
-void NodeRegistry::makeSnapshotPending()
+void NodeRegistry::publishSnapshots()
 {
-    std::lock_guard lock(m_snapshotLock);
-
-    {
-        const auto sz = m_states.size();
-        const auto forceFrom = m_snapshotsPending.size();
-
-        m_snapshotsPending.resize(sz);
-
-        for (int entityIndex = 0; entityIndex < sz; entityIndex++) {
-            const auto& state = m_states[entityIndex];
-            //assert(!state.m_dirty);
-
-            if (entityIndex >= forceFrom || state.m_dirtySnapshot) {
-                m_snapshotsPending[entityIndex].applyFrom(state);
-            }
-        }
-    }
+    m_snapshotBuffer.publish(m_states, m_parentIndeces);
 
     {
         auto& dbg = debug::DebugContext::modify();
@@ -401,15 +383,12 @@ void NodeRegistry::makeSnapshotPending()
     }
 }
 
-void NodeRegistry::makeSnapshotRT()
+void NodeRegistry::syncSnapshots()
 {
-    std::lock_guard lock(m_snapshotLock);
-
-    makeSnapshot(m_snapshotsPending, m_snapshotsRT);
     cacheNodes(m_cachedNodesRT, m_cachedNodeLevelRT);
 
-    m_entities.resize(m_snapshotsRT.size());
-    m_dirtyEntities.resize(m_snapshotsRT.size());
+    m_entities.resize(m_snapshotBuffer.size());
+    m_dirtyEntities.resize(m_snapshotBuffer.size());
 
     auto& dbg = debug::DebugContext::modify();
     auto& physicsDbg = dbg.m_physics;
@@ -422,27 +401,10 @@ void NodeRegistry::makeSnapshotRT()
     }
 }
 
-void NodeRegistry::makeSnapshot(
-    std::vector<model::Snapshot>& src,
-    std::vector<model::Snapshot>& dst)
-{
-    const auto sz = src.size();
-    const auto forceFrom = dst.size();
-
-    dst.resize(sz);
-
-    for (int i = 0; i < sz; i++) {
-        const auto& snapshot = src[i];
-        if (i >= forceFrom || snapshot.m_dirty) {
-            dst[i].applyFrom(snapshot);
-        }
-    }
-}
-
 void NodeRegistry::updateDrawables()
 {
     auto& cachedNodes = getCachedNodesRT();
-    const auto& snapshots = m_snapshotsRT;
+    const auto& snapshots = m_snapshotBuffer.getSnapshots();
 
     auto& instanceRegistry = render::InstanceRegistry::get();
 
@@ -478,16 +440,17 @@ void NodeRegistry::updateRT(const UpdateContext& ctx)
 
 std::pair<int, int> NodeRegistry::updateEntity(const UpdateContext& ctx)
 {
-    //std::lock_guard lock(m_lock);
     int minDirty = INT32_MAX;
     int maxDirty = INT32_MIN;
 
-    for (int entityIndex = 0; entityIndex < m_snapshotsRT.size(); entityIndex++) {
+    const auto& snapshots = m_snapshotBuffer.getSnapshots();
+
+    for (int entityIndex = 0; entityIndex < snapshots.size(); entityIndex++) {
         if (m_cachedNodesRT.size() < entityIndex + 1) continue;
 
         auto* node = m_cachedNodesRT[entityIndex];
         const auto& state = m_states[entityIndex];
-        const auto& snapshot = m_snapshotsRT[entityIndex];
+        const auto& snapshot = snapshots[entityIndex];
 
         if (!snapshot.m_dirty) continue;
 
@@ -641,20 +604,28 @@ void NodeRegistry::handleNodeAdded(model::Node* node)
     if (!node) return;
 
     // NOTE KI ensure snapshot is in sync
-    makeSnapshotRT();
+    syncSnapshots();
+
+    // NOTE KI use getSnapshotLatest to handle race condition
+    // when event arrives before atomic read index is visible to RT
+    const auto* snapshot = m_snapshotBuffer.getSnapshotLatest(node->getEntityIndex());
+    if (!snapshot) {
+        KI_CRITICAL(fmt::format("handleNodeAdded: missing snapshot - node={}", node->str()));
+        return;
+    }
 
     auto nodeHandle = node->toHandle();
 
-    node->prepareRT({ *m_engine });
+    node->prepareRT({ *m_engine }, *snapshot);
 
     if (node->m_generator) {
         const PrepareContext ctx{ *m_engine };
-        node->m_generator->prepareRT(ctx, *node);
+        node->m_generator->prepareRT(ctx, *node, *snapshot);
     }
 
     node->registerDrawables(
         render::InstanceRegistry::get(),
-        m_snapshotsRT[node->getEntityIndex()]);
+        *snapshot);
 
     node->m_preparedRT = true;
 }
@@ -1028,8 +999,6 @@ void NodeRegistry::bindNode(
             state.m_tagId = createState.m_tagId;
         }
 
-        std::lock_guard lock(m_snapshotLock);
-
         if (!reuse) {
             auto newSize = std::max(static_cast<size_t>(entityIndex + 1), m_handles.size());
             m_handles.resize(newSize);
@@ -1082,31 +1051,26 @@ void NodeRegistry::unbindNode(
     //}
 
     {
-        std::lock_guard lock(m_snapshotLock);
-
         const auto entityIndex = node->getEntityIndex();
 
         m_handles[entityIndex] = pool::NodeHandle::NULL_HANDLE;
+        // NOTE KI setting parentIndeces to 0 causes publish() to skip this slot
         m_parentIndeces[entityIndex] = 0;
         {
             m_states[entityIndex] = {};
             auto& state = m_states[entityIndex];
             state.m_dirty = false;
         }
-        {
-            m_snapshotsPending[entityIndex] = {};
-            auto& snapshot = m_snapshotsPending[entityIndex];
-            snapshot.m_dirty = false;
+        if (entityIndex < m_entities.size()) {
+            m_entities[entityIndex] = {};
+            m_dirtyEntities[entityIndex] = false;
         }
-        {
-            m_snapshotsRT[entityIndex] = {};
-            auto& snapshot = m_snapshotsRT[entityIndex];
-            snapshot.m_dirty = false;
+        if (entityIndex < m_cachedNodesWT.size()) {
+            m_cachedNodesWT[entityIndex] = nullptr;
         }
-        m_entities[entityIndex] = {};
-        m_dirtyEntities[entityIndex] = false;
-        m_cachedNodesWT[entityIndex] = nullptr;
-        m_cachedNodesRT[entityIndex] = nullptr;
+        if (entityIndex < m_cachedNodesRT.size()) {
+            m_cachedNodesRT[entityIndex] = nullptr;
+        }
 
         m_nodeLevel++;
     }

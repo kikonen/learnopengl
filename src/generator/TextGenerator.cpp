@@ -47,7 +47,8 @@ void TextGenerator::prepareWT(
 
 void TextGenerator::prepareRT(
     const PrepareContext& ctx,
-    model::Node& container)
+    model::Node& container,
+    const model::Snapshot& snapshot)
 {
     m_mesh = std::make_shared<mesh::TextMesh>();
     m_mesh->prepareVAO();

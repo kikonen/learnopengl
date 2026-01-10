@@ -153,7 +153,8 @@ namespace model
             NodeState& state);
 
         void prepareRT(
-            const PrepareContext& ctx);
+            const PrepareContext& ctx,
+            const Snapshot& snapshot);
 
         void updateVAO(const render::RenderContext& ctx) noexcept;
 
