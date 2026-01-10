@@ -40,16 +40,14 @@ namespace model
         glm::mat4 m_modelMatrix{ 1.f };
         glm::vec3 m_modelScale{ 1.f };
 
-    public:
         // parent socket
         uint32_t m_attachedSocketIndex{ 0 };
 
+    public:
         ki::size_t_entity_flags m_flags{ 0 }; // 1 * 4 = 4
 
         ki::level_id m_matrixLevel{ 0 };
-
-        mutable bool m_dirty : 1 { true };
-        mutable bool m_dirtyNormal : 1 { true };
+        ki::level_id m_normalLevel{ 0 };
 
     public:
         ///////////////////////////////////////
@@ -63,10 +61,8 @@ namespace model
         //Snapshot& operator=(Snapshot& o) = default;
         inline void applyFrom(const Snapshot& o) noexcept
         {
-            m_dirty |= o.m_dirty;
-            m_dirtyNormal |= o.m_dirtyNormal;
-
             m_matrixLevel = o.m_matrixLevel;
+            m_normalLevel = o.m_normalLevel;
 
             m_flags = o.m_flags;
 
@@ -79,17 +75,6 @@ namespace model
             m_modelScale = o.m_modelScale;
 
             m_attachedSocketIndex = o.m_attachedSocketIndex;
-
-            o.m_dirty = false;
-            o.m_dirtyNormal = false;
-        }
-
-        void setWorldVolume(const SphereVolume& worldVolume) noexcept
-        {
-            if (m_worldVolume != worldVolume) {
-                m_worldVolume = worldVolume;
-                m_dirty = true;
-            }
         }
 
         inline const SphereVolume& getWorldVolume() const noexcept
@@ -123,6 +108,7 @@ namespace model
         }
 
         void updateEntity(
-            EntitySSBO& entity) const;
+            EntitySSBO& entity,
+            bool dirtyNormal) const;
     };
 }
