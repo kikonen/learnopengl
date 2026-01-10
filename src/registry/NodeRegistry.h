@@ -65,6 +65,13 @@ public:
 
     void clear();
 
+    // Batch loading optimization: defer DAG sort until flushDeferredSort() is called
+    void setDeferSort(bool defer) noexcept { m_deferSort = defer; }
+    bool isDeferSort() const noexcept { return m_deferSort; }
+    void flushDeferredSort();
+
+    void setDebug(bool debug) noexcept { m_debug = debug; }
+
     void prepare(
         Engine* engine);
 
@@ -236,6 +243,11 @@ private:
         bool add,
         bool remove);
 
+    void performDagSort();
+
+    // Accessor that ensures deferred sort is flushed before returning sorted nodes
+    const std::vector<uint32_t>& getSortedNodes();
+
     void bindNode(
         const pool::NodeHandle nodeHandle,
         const model::CreateState& state);
@@ -331,6 +343,8 @@ private:
     ki::level_id m_cachedNodeLevelRT{ 0 };
 
     bool m_debug{ false };
+    bool m_deferSort{ false };
+    bool m_sortDirty{ false };
 
     Engine* m_engine{ nullptr };
 

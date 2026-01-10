@@ -487,6 +487,14 @@ void AssetsLoader::loadAssets(
                 data.drawDebug = readBool(v);
                 continue;
             }
+            if (k == "node_registry_debug") {
+                data.nodeRegistryDebug = readBool(v);
+                continue;
+            }
+            if (k == "node_registry_defer_sort") {
+                data.nodeRegistryDeferSort = readBool(v);
+                continue;
+            }
         }
         {
             if (k == "near_plane") {

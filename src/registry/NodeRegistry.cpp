@@ -228,6 +228,9 @@ void NodeRegistry::prepare(
 
     m_engine = engine;
 
+    m_debug = assets.nodeRegistryDebug;
+    m_deferSort = assets.nodeRegistryDeferSort;
+
     m_rootId = assets.rootId;
 
     {
@@ -243,6 +246,7 @@ void NodeRegistry::prepare(
 void NodeRegistry::updateWT(const UpdateContext& ctx)
 {
     auto& cachedNodes = getCachedNodesWT();
+    const auto& sortedNodes = getSortedNodes();
 
     {
         auto& physicsSystem = physics::PhysicsSystem::get();
@@ -262,9 +266,9 @@ void NodeRegistry::updateWT(const UpdateContext& ctx)
 
         //std::lock_guard lock(m_lock);
         // NOTE KI nodes are in DAG order
-        for (int sortedIndex = ID_NODE_INDEX + 1; sortedIndex < m_sortedNodes.size(); sortedIndex++)
+        for (int sortedIndex = ID_NODE_INDEX + 1; sortedIndex < sortedNodes.size(); sortedIndex++)
         {
-            auto entityIndex = m_sortedNodes[sortedIndex];
+            auto entityIndex = sortedNodes[sortedIndex];
 
             // NOTE KI skip free/root slot
             if (m_parentIndeces[entityIndex] == 0) continue;
@@ -354,9 +358,10 @@ void NodeRegistry::updateModelMatrices()
         state.updateRootMatrix();
     }
 
-    for (int sortedIndex = ID_NODE_INDEX + 1; sortedIndex < m_sortedNodes.size(); sortedIndex++)
+    const auto& sortedNodes = getSortedNodes();
+    for (int sortedIndex = ID_NODE_INDEX + 1; sortedIndex < sortedNodes.size(); sortedIndex++)
     {
-        auto entityIndex = m_sortedNodes[sortedIndex];
+        auto entityIndex = sortedNodes[sortedIndex];
         //for (auto i = m_rootIndex + 1; i < m_states.size(); i++) {
         // NOTE KI skip free/root slot
         if (m_parentIndeces[entityIndex] == 0) continue;
@@ -931,24 +936,49 @@ void NodeRegistry::sortNodes(
 	bool add,
 	bool remove)
 {
-	//m_sortedNodes.reserve(m_handles.size());
-	{
-		auto entityIndex = targetHandle.toIndex();
-		if (add) {
-			m_sortedNodes.push_back(entityIndex);
-		}
-		if (remove) {
-			// https://stackoverflow.com/questions/22729906/stdremove-if-not-working-properly
-			const auto& it = std::remove_if(
-				m_sortedNodes.begin(),
-				m_sortedNodes.end(),
-				[&entityIndex](auto& e) {
-					return e == entityIndex;
-				});
-			m_sortedNodes.erase(it, m_sortedNodes.end());
-		}
-	}
+    auto& sortedNodes = m_sortedNodes;
+    //sortedNodes.reserve(m_handles.size());
+    {
+	    auto entityIndex = targetHandle.toIndex();
+	    if (add) {
+		    sortedNodes.push_back(entityIndex);
+	    }
+	    if (remove) {
+		    // https://stackoverflow.com/questions/22729906/stdremove-if-not-working-properly
+		    const auto& it = std::remove_if(
+			    sortedNodes.begin(),
+			    sortedNodes.end(),
+			    [&entityIndex](auto& e) {
+				    return e == entityIndex;
+			    });
+		    sortedNodes.erase(it, sortedNodes.end());
+	    }
+    }
 
+    // Defer expensive DAG sort during batch loading
+    if (m_deferSort) {
+	    m_sortDirty = true;
+	    return;
+    }
+
+    performDagSort();
+}
+
+void NodeRegistry::flushDeferredSort()
+{
+	if (!m_sortDirty) return;
+	m_sortDirty = false;
+	performDagSort();
+}
+
+const std::vector<uint32_t>& NodeRegistry::getSortedNodes()
+{
+	flushDeferredSort();
+	return m_sortedNodes;
+}
+
+void NodeRegistry::performDagSort()
+{
 	std::vector<t_dag_item> sorted;
 	{
 		std::vector<t_dag_item> items;
@@ -1300,9 +1330,10 @@ void NodeRegistry::viewportChanged(
     auto& info = m_layerInfos[layer];
     info.m_aspectRatio = aspectRatio;
 
-    for (int sortedIndex = ID_NODE_INDEX + 1; sortedIndex < m_sortedNodes.size(); sortedIndex++)
+    const auto& sortedNodes = getSortedNodes();
+    for (int sortedIndex = ID_NODE_INDEX + 1; sortedIndex < sortedNodes.size(); sortedIndex++)
     {
-        auto entityIndex = m_sortedNodes[sortedIndex];
+        auto entityIndex = sortedNodes[sortedIndex];
         auto& state = m_states[entityIndex];
 
         auto* node = getCachedNodesWT()[entityIndex];
