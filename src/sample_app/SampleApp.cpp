@@ -539,7 +539,7 @@ std::shared_ptr<Scene> SampleApp::loadScene(
 
     if (m_loader) {
         nav::NavigationSystem::get().start();
-        script::ScriptSystem::get().start();
+        //script::ScriptSystem::get().start();
     }
 
     if (m_loader) {
