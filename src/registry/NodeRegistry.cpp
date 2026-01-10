@@ -387,6 +387,9 @@ void NodeRegistry::publishSnapshots()
 
 void NodeRegistry::syncSnapshots()
 {
+    // Swap RT's buffer with shared to get latest snapshots
+    m_snapshotBuffer.sync();
+
     cacheNodes(m_cachedNodesRT, m_cachedNodeLevelRT);
 
     const auto sz = m_snapshotBuffer.size();
@@ -630,9 +633,6 @@ void NodeRegistry::attachListeners()
 void NodeRegistry::handleNodeAdded(model::Node* node)
 {
     if (!node) return;
-
-    // NOTE KI ensure snapshot is in sync
-    syncSnapshots();
 
     // NOTE KI use getSnapshotLatest to handle race condition
     // when event arrives before atomic read index is visible to RT
