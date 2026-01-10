@@ -170,6 +170,9 @@ public:
 
     bool drawDebug;
 
+    bool nodeRegistryDebug;
+    bool nodeRegistryDeferSort;
+
     float nearPlane;
     float farPlane;
 
