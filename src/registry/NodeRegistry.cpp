@@ -87,7 +87,7 @@ namespace {
     constexpr int NULL_ENTITY_INDEX = 0;
     constexpr int ID_ENTITY_INDEX = 1;
 
-    constexpr int INITIAL_SIZE = 10000;
+    constexpr int INITIAL_SIZE = 30000;
 
     const ki::program_id NULL_PROGRAM_ID = 0;
 
@@ -187,6 +187,7 @@ void NodeRegistry::clear()
         m_cachedNodesWT.reserve(INITIAL_SIZE);
         m_cachedNodesRT.reserve(INITIAL_SIZE);
         m_processedLevels.reserve(INITIAL_SIZE);
+        m_processedNormalLevels.reserve(INITIAL_SIZE);
 
         m_freeIndeces.reserve(INITIAL_SIZE);
         m_pendingAdded.reserve(INITIAL_SIZE);
@@ -981,7 +982,7 @@ void NodeRegistry::bindNode(
     auto* node = nodeHandle.toNode();
     if (!node) return;
 
-    KI_INFO(fmt::format("BIND_NODE: {}", node->str()));
+    if (m_debug) KI_INFO(fmt::format("BIND_NODE: {}", node->str()));
 
     uint32_t entityIndex = node->getEntityIndex();
     bool reuse = false;
@@ -1051,7 +1052,7 @@ void NodeRegistry::bindNode(
         }
     }
 
-    KI_INFO(fmt::format("ATTACH_NODE: node={}", node->str()));
+    if (m_debug) KI_INFO(fmt::format("ATTACH_NODE: node={}", node->str()));
 }
 
 void NodeRegistry::unbindNode(
@@ -1060,7 +1061,7 @@ void NodeRegistry::unbindNode(
     auto* node = nodeHandle.toNode();
     if (!node) return;
 
-    KI_INFO(fmt::format("UNBIND_NODE: {}", node->str()));
+    if (m_debug) KI_INFO(fmt::format("UNBIND_NODE: {}", node->str()));
 
     // TODO KI controllers, etc.?!?
     //{
@@ -1128,7 +1129,7 @@ bool NodeRegistry::bindParent(
 
     m_parentIndeces[node->getEntityIndex()] = parent->getEntityIndex();
 
-    KI_INFO(fmt::format(
+    if (m_debug) KI_INFO(fmt::format(
         "BIND_PARENT: parent={}, child={}",
         parentHandle.str(),
         nodeHandle.str()));
@@ -1149,7 +1150,7 @@ bool NodeRegistry::unbindParent(
 
     m_parentIndeces[node->getEntityIndex()] = 0;
 
-    KI_INFO(fmt::format(
+    if (m_debug) KI_INFO(fmt::format(
         "UNBIND_PARENT: parent={}, child={}",
         parentHandle.str(),
         nodeHandle.str()));
