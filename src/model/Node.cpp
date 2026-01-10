@@ -202,13 +202,11 @@ namespace model
     }
 
     void Node::prepareRT(
-        const PrepareContext& ctx)
+        const PrepareContext& ctx,
+        const Snapshot& snapshot)
     {
-        const auto* snapshot = getSnapshotRT();
-        if (!snapshot) return;
-
         if (m_camera) {
-            m_camera->snapToIdeal(*snapshot);
+            m_camera->snapToIdeal(snapshot);
         }
     }
 
@@ -226,7 +224,8 @@ namespace model
         if (m_generator && m_generator->isLightWeight()) {
             m_generator->registerDrawables(
                 instanceRegistry,
-                *this);
+                *this,
+                snapshot);
         }
         else {
             const auto* type = getType();

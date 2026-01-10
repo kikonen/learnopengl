@@ -1988,6 +1988,9 @@
     <ClInclude Include="src\model\Snapshot.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\model\SnapshotBuffer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="src\loader\FontData.h">
       <Filter>Header Files</Filter>
     </ClInclude>

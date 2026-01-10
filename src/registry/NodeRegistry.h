@@ -4,7 +4,6 @@
 #include <unordered_map>
 #include <vector>
 #include <tuple>
-#include <mutex>
 #include <functional>
 
 #include <fmt/format.h>
@@ -20,6 +19,7 @@
 
 #include "model/NodeState.h"
 #include "model/Snapshot.h"
+#include "model/SnapshotBuffer.h"
 
 struct Material;
 
@@ -81,12 +81,8 @@ public:
     // @return [min-dirty, max-dirty]
     std::pair<int, int> updateEntity(const UpdateContext& ctx);
 
-    void makeSnapshotPending();
-    void makeSnapshotRT();
-
-    void makeSnapshot(
-        std::vector<model::Snapshot>& src,
-        std::vector<model::Snapshot>& dst);
+    void publishSnapshots();
+    void syncSnapshots();
 
     void updateDrawables();
 
@@ -197,15 +193,17 @@ public:
 
     const model::Snapshot* getSnapshotRT(uint32_t entityIndex) const noexcept
     {
-        if (m_snapshotsRT.size() <= entityIndex) {
-            logDebugInfo("MISSING_SNAPSHOT", entityIndex);
-        }
-        return m_snapshotsRT.size() > entityIndex ? &m_snapshotsRT[entityIndex] : nullptr;
+        return m_snapshotBuffer.getSnapshot(entityIndex);
     }
 
     bool hasSnapshotRT(uint32_t entityIndex) const noexcept
     {
-        return m_snapshotsRT.size() > entityIndex;
+        return m_snapshotBuffer.hasSnapshot(entityIndex);
+    }
+
+    const std::vector<model::Snapshot>& getSnapshotsRT() const noexcept
+    {
+        return m_snapshotBuffer.getSnapshots();
     }
 
     const std::vector<EntitySSBO>& getEntities() const noexcept
@@ -312,10 +310,8 @@ private:
     std::vector<uint32_t> m_parentIndeces;
     // INDEX = entityIndex
     std::vector<model::NodeState> m_states;
-    // INDEX = entityIndex
-    std::vector<model::Snapshot> m_snapshotsPending;
-    // INDEX = entityIndex
-    std::vector<model::Snapshot> m_snapshotsRT;
+    // Double-buffered snapshots (lock-free)
+    model::SnapshotBuffer m_snapshotBuffer;
     // INDEX = entityIndex
     std::vector<EntitySSBO> m_entities;
     // INDEX = entityIndex
@@ -331,8 +327,6 @@ private:
     ki::level_id m_cachedNodeLevelRT{ 0 };
 
     Engine* m_engine{ nullptr };
-
-    mutable std::mutex m_snapshotLock;
 
     pool::NodeHandle m_activeNode{};
 

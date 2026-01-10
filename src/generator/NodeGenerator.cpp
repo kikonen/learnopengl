@@ -8,6 +8,7 @@
 #include "mesh/LodMeshInstance.h"
 
 #include "model/Node.h"
+#include "model/Snapshot.h"
 
 #include "render/Batch.h"
 #include "render/RenderContext.h"
@@ -20,13 +21,12 @@ NodeGenerator::~NodeGenerator() = default;
 
 void NodeGenerator::registerDrawables(
     render::InstanceRegistry& instanceRegistry,
-    const model::Node& container)
+    const model::Node& container,
+    const model::Snapshot& snapshot)
 {
     ASSERT_RT();
 
     auto entityIndex = container.getEntityIndex();
-
-    const auto* snapshot = container.getSnapshotRT();
 
     const auto* type = container.getType();
     const auto& lodMeshes = type->getLodMeshes();

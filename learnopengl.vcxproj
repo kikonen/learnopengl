@@ -1091,6 +1091,7 @@
     <ClInclude Include="src\audio\AudioSystem.h" />
     <ClInclude Include="src\audio\Sound.h" />
     <ClInclude Include="src\model\Snapshot.h" />
+    <ClInclude Include="src\model\SnapshotBuffer.h" />
     <ClInclude Include="src\scene\SceneUpdater.h" />
     <ClInclude Include="src\engine\UpdateViewContext.h" />
     <ClInclude Include="src\component\NodeComponent.h" />
