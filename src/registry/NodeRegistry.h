@@ -321,6 +321,10 @@ private:
     std::vector<model::Node*> m_cachedNodesWT;
     // INDEX = entityIndex
     std::vector<model::Node*> m_cachedNodesRT;
+    // INDEX = entityIndex - RT side tracking of last processed snapshot level
+    std::vector<ki::level_id> m_processedLevels;
+    // INDEX = entityIndex - RT side tracking of last processed normal level
+    std::vector<ki::level_id> m_processedNormalLevels;
 
     ki::level_id m_nodeLevel{ 0 };
     ki::level_id m_cachedNodeLevelWT{ 0 };

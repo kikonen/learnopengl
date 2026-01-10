@@ -20,9 +20,7 @@ namespace model
     void Snapshot::applyFrom(const NodeState& o) noexcept
     {
         m_matrixLevel = o.m_matrixLevel;
-
-        m_dirty |= o.m_dirtySnapshot;
-        m_dirtyNormal |= o.m_dirtyNormal;
+        m_normalLevel = o.m_normalLevel;
 
         m_flags = o.m_flags;
 
@@ -42,11 +40,11 @@ namespace model
             o.getWorldMaxScale());
 
         o.m_dirtySnapshot = false;
-        o.m_dirtyNormal = false;
     }
 
     void Snapshot::updateEntity(
-        EntitySSBO& entity) const
+        EntitySSBO& entity,
+        bool dirtyNormal) const
     {
         ASSERT_RT();
 
@@ -61,10 +59,8 @@ namespace model
             || (m_modelScale.x == m_modelScale.y && m_modelScale.x == m_modelScale.z);
 
         // NOTE KI normal may change only if scale changes
-        entity.setModelMatrix(m_modelMatrix, uniformScale, m_dirtyNormal);
+        entity.setModelMatrix(m_modelMatrix, uniformScale, dirtyNormal);
 
         entity.u_worldScale = m_modelScale;
-
-        m_dirtyNormal = false;
     }
 }
