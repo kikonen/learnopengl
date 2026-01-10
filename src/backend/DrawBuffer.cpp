@@ -7,6 +7,8 @@
 #include "kigl/GLState.h"
 
 #include "util/util.h"
+#include "util/Log.h"
+#include "util/BufferReference_format.h"
 
 #include "asset/Assets.h"
 
@@ -37,8 +39,8 @@ namespace {
 
     // Estimate sizes per frame
     constexpr size_t INSTANCES_PER_FRAME = 50000;
-    constexpr size_t COMMANDS_PER_FRAME = 100;
-    constexpr size_t BATCHES_PER_FRAME = 70;
+    constexpr size_t COMMANDS_PER_FRAME = 200;
+    constexpr size_t BATCHES_PER_FRAME = 10;
 
     constexpr size_t estimateInstanceSizePerFrame()
     {
@@ -163,6 +165,14 @@ namespace backend {
         const backend::MultiDrawRange& sendRange,
         const backend::gl::DrawIndirectCommand& cmd)
     {
+        // NOTE KI drawing without instance/command buffer corrupts GPU state
+        if (!m_currentCommandAlloc || !m_currentInstanceAlloc) {
+            KI_WARN(fmt::format(
+                "DrawBuffer: allocation_failed - skip_send - instances={}, commands={}",
+                m_currentInstanceAlloc.ref, m_currentCommandAlloc.ref));
+            return;
+        }
+
         if (isSameMultiDraw(sendRange)) {
             m_drawRanges.back().commandCount++;
         }
@@ -182,21 +192,27 @@ namespace backend {
         }
     }
 
-    void DrawBuffer::sendInstanceIndeces(
+    bool DrawBuffer::sendInstanceIndeces(
         std::span<render::InstanceIndexSSBO> indeces)
     {
         const size_t totalCount = indeces.size();
 
         m_currentInstanceAlloc = m_instanceRing->allocate<render::InstanceIndexSSBO>(totalCount);
-
-        if (m_currentInstanceAlloc) {
-            std::copy(
-                std::begin(indeces),
-                std::end(indeces),
-                m_currentInstanceAlloc.data);
-
-            m_instanceRing->bindSSBO(SSBO_INSTANCE_INDECES, m_currentInstanceAlloc.ref);
+        if (!m_currentInstanceAlloc) {
+            KI_WARN(fmt::format(
+                "DrawBuffer: allocation_failed - skip_send_instances - indeces={}",
+                indeces.size()));
+            return false;
         }
+
+        std::copy(
+            std::begin(indeces),
+            std::end(indeces),
+            m_currentInstanceAlloc.data);
+
+        m_instanceRing->bindSSBO(SSBO_INSTANCE_INDECES, m_currentInstanceAlloc.ref);
+
+        return true;
     }
 
     void DrawBuffer::drawPending()
