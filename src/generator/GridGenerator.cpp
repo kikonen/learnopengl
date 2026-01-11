@@ -15,8 +15,11 @@
 
 #include "event/Dispatcher.h"
 
+#include "engine/Engine.h"
 #include "engine/PrepareContext.h"
 #include "engine/UpdateContext.h"
+
+#include "scene/Scene.h"
 
 #include "component/definition/PhysicsDefinition.h"
 
@@ -274,9 +277,11 @@ void GridGenerator::updateBounds(
     const model::Node& container)
 {
     if (!m_staticBounds && !m_dynamicBounds) return;
+    if (!ctx.getEngine().getCurrentScene()->isLoaded()) return;
 
     auto& physicsSystem = physics::PhysicsSystem::get();
     if (!physicsSystem.isEnabled()) return;
+    if (physicsSystem.hasPending()) return;
 
     if (m_boundsSetupDone) return;
 

@@ -435,12 +435,16 @@ void NodeRegistry::updateDrawables()
             m_processedNormalLevels[entityIndex] = 0;
         }
 
-        // NOTE KI use level comparison instead of m_dirty flag
-        if (entityIndex >= m_processedLevels.size() ||
-            snapshot.m_matrixLevel <= m_processedLevels[entityIndex]) continue;
-
         auto* node = cachedNodes[entityIndex];
         if (!node) continue;
+
+        bool isLightweight = node->m_generator && node->m_generator->isLightWeight();
+
+        // NOTE KI use level comparison instead of m_dirty flag
+        if (!isLightweight) {
+            if (entityIndex >= m_processedLevels.size() ||
+                snapshot.m_matrixLevel <= m_processedLevels[entityIndex]) continue;
+        }
 
         node->updateDrawables(instanceRegistry, snapshot);
     }
