@@ -87,7 +87,8 @@ void NodeGenerator::registerDrawables(
 
 void NodeGenerator::updateDrawables(
     render::InstanceRegistry& instanceRegistry,
-    const model::Node& container)
+    const model::Node& container,
+    const model::Snapshot& snapshot)
 {
     ASSERT_RT();
 

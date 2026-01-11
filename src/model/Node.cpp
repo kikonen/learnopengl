@@ -287,7 +287,8 @@ namespace model
         if (m_generator && m_generator->isLightWeight()) {
             m_generator->updateDrawables(
                 instanceRegistry,
-                *this);
+                *this,
+                snapshot);
         }
         else {
             if (m_instanceRef.empty()) return;
