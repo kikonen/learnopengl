@@ -6,13 +6,25 @@
 
 namespace util
 {
-    // Thread-safe dirty slot tracker using map for automatic deduplication.
+    // Dirty slot tracker using map for automatic deduplication.
     // Uses generation counter for O(1) clear - avoids memory churn when
     // same keys are marked dirty frame after frame.
     // Used by JointRegistry, SocketRegistry, and similar registries that need
     // to track dirty ranges for snapshot updates.
-    template<typename Key>
+    //
+    // Template parameters:
+    //   Key - the key type for dirty tracking
+    //   ThreadSafe - if true, uses mutex for thread safety (default: false)
+    template<typename Key, bool ThreadSafe = false>
     class DirtySet {
+    private:
+        struct NoLock {
+            void lock() noexcept {}
+            void unlock() noexcept {}
+        };
+
+        using LockType = std::conditional_t<ThreadSafe, std::mutex, NoLock>;
+
     public:
         DirtySet() = default;
         ~DirtySet() = default;
@@ -55,7 +67,6 @@ namespace util
 
         // Process dirty keys with callback and clear the dirty set.
         // Populates outSnapshot with processed keys for later use by Buffer classes.
-        // Thread-safe: acquires lock during processing.
         template<typename Func>
         void processAndClear(std::vector<Key>& outSnapshot, Func&& func)
         {
@@ -72,7 +83,7 @@ namespace util
         }
 
     private:
-        mutable std::mutex m_lock{};
+        mutable LockType m_lock{};
         uint32_t m_currentGen{ 0 };
         uint32_t m_dirtyCount{ 0 };
         std::unordered_map<Key, uint32_t> m_dirty;
