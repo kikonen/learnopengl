@@ -17,6 +17,8 @@ namespace editor
 }
 
 namespace animation {
+    inline const glm::mat4 ID_MAT{ 1.f };
+
     class AnimationSystem;
     class SocketBuffer;
 
@@ -38,8 +40,12 @@ namespace animation {
 
         uint32_t getActiveCount() const noexcept;
 
-        glm::mat4 getTransform(
-            uint32_t index) const noexcept;
+        const glm::mat4& getTransform(
+            uint32_t index) const noexcept
+        {
+            if (index <= 0 || index >= m_transforms.size()) return ID_MAT;
+            return m_transforms[index];
+        }
 
     protected:
         // Register node instance specific rig

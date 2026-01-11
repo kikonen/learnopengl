@@ -266,7 +266,7 @@ namespace animation
         return { 0, 0 };
     }
 
-    glm::mat4 AnimationSystem::getSocketTransform(
+    const glm::mat4& AnimationSystem::getSocketTransform(
         uint32_t index) const noexcept
     {
         return m_socketRegistry->getTransform(index);

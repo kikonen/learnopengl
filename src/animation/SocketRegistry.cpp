@@ -133,13 +133,6 @@ namespace animation
         return static_cast<uint32_t>(m_snapshot.size());
     }
 
-    glm::mat4 SocketRegistry::getTransform(
-        uint32_t index) const noexcept
-    {
-        if (index <= 0 || index >= m_transforms.size()) return glm::mat4{ 1.f };
-        return m_transforms[index];
-    }
-
     void SocketRegistry::updateWT()
     {
         makeSnapshot();
