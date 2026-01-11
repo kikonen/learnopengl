@@ -125,6 +125,11 @@ namespace physics {
             uint32_t collisionMask,
             pool::NodeHandle fromNode) const;
 
+        bool hasPending() const noexcept
+        {
+            return !m_pending.empty();
+        }
+
     private:
         void preparePending(const UpdateContext& ctx);
 

@@ -97,7 +97,8 @@ public:
 
     virtual void updateDrawables(
         render::InstanceRegistry& instanceRegistry,
-        const model::Node& container);
+        const model::Node& container,
+        const model::Snapshot& snapshot);
 
     virtual void bindBatch(
         const render::RenderContext& ctx,
