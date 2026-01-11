@@ -111,11 +111,6 @@ namespace model
 
         const auto& parentModelMatrix = parent.m_modelMatrix;
 
-        glm::mat4 socketTransform{ 1.f };
-        if (m_attachedSocketIndex)
-        {
-            socketTransform = animation::AnimationSystem::get().getSocketTransform(m_attachedSocketIndex);
-        }
 
         {
             //m_modelMatrix = parentModelMatrix *
@@ -126,11 +121,19 @@ namespace model
             scale.x = aspectScaleX;
             scale.y = aspectScaleY;
 
-            m_modelMatrix = parentModelMatrix *
-                glm::scale(
-                    g_translateMatrix * rotationMatrix,
-                    scale) *
-                socketTransform;
+            if (m_attachedSocketIndex) {
+                m_modelMatrix = parentModelMatrix *
+                    glm::scale(
+                        g_translateMatrix * rotationMatrix,
+                        scale) *
+                    animation::AnimationSystem::get().getSocketTransform(m_attachedSocketIndex);
+            }
+            else {
+                m_modelMatrix = parentModelMatrix *
+                    glm::scale(
+                        g_translateMatrix * rotationMatrix,
+                        scale);
+            }
         }
 
         {
