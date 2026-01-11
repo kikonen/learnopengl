@@ -13,6 +13,7 @@
 #include "util/Util.h"
 #include "util/Log.h"
 #include "util/glm_format.h"
+#include "util/preciseSleep.h"
 
 #include "engine/Engine.h"
 #include "sample_app/SampleApp.h"
@@ -75,6 +76,7 @@ int runEngine() {
 int main()
 {
     //testVolume();
+    util::initPreciseSleep();
 
     // https://isocpp.github.io/CppCoreGuidelines/CppCoreGuidelines#S-stdlib
     std::ios_base::sync_with_stdio(false);

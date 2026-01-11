@@ -681,6 +681,7 @@
     <ClCompile Include="src\sample_app\main.cpp" />
     <ClCompile Include="src\material\Material.cpp" />
     <ClCompile Include="src\shader\Program.cpp" />
+    <ClCompile Include="src\util\preciseSleep.cpp" />
     <ClCompile Include="src\util\Random.cpp" />
     <ClCompile Include="src\util\thread.cpp" />
     <ClCompile Include="src\util\utf8_util.cpp" />
@@ -750,6 +751,7 @@
     <ClInclude Include="src\render\DrawableInfo.h" />
     <ClInclude Include="src\render\InstanceIndexSSBO.h" />
     <ClInclude Include="src\render\InstanceRegistry.h" />
+    <ClInclude Include="src\util\preciseSleep.h" />
     <ClInclude Include="src\util\BufferReference.h" />
     <ClInclude Include="src\util\BufferReference_format.h" />
     <ClInclude Include="src\util\DirtySet.h" />
