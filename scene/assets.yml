@@ -4,7 +4,7 @@ assets:
   #scene_file: full.yml
   #scene_file: particle.yml
 
-  glfw_swap_interval: 1
+  glfw_swap_interval: 0
   gl_debug: true
   gl_no_error: false
   gl_use_mapped: false

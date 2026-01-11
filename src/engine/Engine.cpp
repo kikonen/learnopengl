@@ -11,6 +11,7 @@
 
 #include "util/util.h"
 #include "util/Log.h"
+#include "util/preciseSleep.h"
 
 #include "asset/Assets.h"
 
@@ -233,7 +234,8 @@ void Engine::run() {
     {
         // Calculate the target time per frame
         const double TARGET_FRAME_RATE = m_dbg.m_targetFrameRate;
-        const double TARGET_MS_PER_FRAME = 1000.0 / (TARGET_FRAME_RATE * 1.5);
+        //const double TARGET_MS_PER_FRAME = 1000.0 / (TARGET_FRAME_RATE * 1.5);
+        const double TARGET_MS_PER_FRAME = 1000.0 / (TARGET_FRAME_RATE * 1.0);
 
         fpsCounter.startFrame();
 
@@ -305,7 +307,8 @@ void Engine::run() {
             auto duration = std::chrono::duration_cast<std::chrono::milliseconds>(loopEnd - loopStart).count();
             if (duration < TARGET_MS_PER_FRAME) {
                 //KI_INFO_OUT(fmt::format("wait: {}", TARGET_MS_PER_FRAME - duration));
-                std::this_thread::sleep_for(std::chrono::milliseconds(static_cast<long long>(TARGET_MS_PER_FRAME - duration)));
+                //std::this_thread::sleep_for(std::chrono::milliseconds(static_cast<long long>(TARGET_MS_PER_FRAME - duration)));
+                util::preciseSleep((TARGET_MS_PER_FRAME - duration) / 1000.0);
             }
         }
 
