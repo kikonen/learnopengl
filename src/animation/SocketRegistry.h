@@ -77,7 +77,7 @@ namespace animation {
         std::vector<glm::mat4> m_transforms;
 
         util::SlotAllocator m_slotAllocator;
-        util::DirtySet<util::BufferReference> m_dirtySlots;
+        util::DirtySet<util::BufferReference, true> m_dirtySlots;
 
         std::vector<SocketTransformSSBO> m_snapshot;
         std::vector<util::BufferReference> m_dirtySnapshot;
