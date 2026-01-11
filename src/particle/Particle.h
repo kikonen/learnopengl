@@ -32,12 +32,16 @@ namespace particle {
         uint8_t m_spriteBaseIndex{ 0 };
         uint8_t m_spriteCount{ 1 };
 
+        bool m_alive{ true };
+
         bool valid() const noexcept
         {
             return m_scale > 0.f && m_lifetime > 0.f && m_materialIndex > 0;
         }
 
-        bool update(const UpdateContext& ctx) noexcept;
+        bool isAlive() const noexcept { return m_alive; }
+
+        void update(const UpdateContext& ctx) noexcept;
 
         void updateSSBO(ParticleSSBO& ssbo) const noexcept
         {
