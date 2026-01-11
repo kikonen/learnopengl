@@ -167,6 +167,11 @@ types:
         { tag = "body", name = "idle" });
     script: scripts/seq_skeleton_random_nav
     xscript: scripts/seq_skeleton_2
+  - id: rain
+    type: origo
+    #particle: rain_of_fire
+    particle: snow_storm
+    script_file: scripts/seq_particle_generator
   - id: world_plane
     type: origo
     physics:
@@ -216,10 +221,17 @@ nodes:
   - type: skeleton_army_2
     pos: [0, 100.5, 0.0]
     repeat:
-      x_count: 10
-      z_count: 10
+      x_count: 20
+      z_count: 20
       x_step: 4
       z_step: -4
+  - type: rain
+    pos: [20, 100, -00]
+    repeat:
+      x_count: 4
+      z_count: 4
+      x_step: 20
+      z_step: -20
   - type: world_x_minus
     pos: [-1200, 0, 0]
     rot: [0, 0, -90]
@@ -238,3 +250,63 @@ nodes:
   - type: world_z_plus
     pos: [0, 0, 1150]
     rot: [-90, 0, 0]
+
+particles:
+  - id: rain_of_fire
+    seed: 1
+    gravity: [0, -0.81, 0]
+    lifetime: 10
+    lifetime_variation: 5
+    area_type: point
+    area_radius: 10
+    area_variation: 0.1
+    dir: [0, 1, 0]
+    dir_variation: 0.5
+    speed: 3
+    speed_variation: 2
+    size: 0.1
+    size_variation: 0.1
+    rate: 50000
+    rate_variation: 50
+    sprite_base: 0
+    sprite_base_variation: 0
+    sprite_count: -1
+    sprite_speed: 10
+    sprite_speed_variation: 20
+    material:
+      kd: [1, 1, 1, 1]
+      map_kd: particles/7_firespin_spritesheet.png
+      sprites: 61
+      sprites_x: 8
+      texture_spec:
+        wrap: GL_CLAMP_TO_EDGE
+
+  - id: snow_storm
+    seed: 1
+    gravity: [0, -0.81, 0]
+    lifetime: 15
+    lifetime_variation: 5
+    area_type: point
+    area_radius: 10
+    area_variation: 0.1
+    dir: [0, 1, 0]
+    dir_variation: 0.5
+    speed: 3
+    speed_variation: 2
+    size: 0.1
+    size_variation: 0.1
+    rate: 50000
+    rate_variation: 50
+    sprite_base: 0
+    sprite_base_variation: 0
+    sprite_count: -1
+    sprite_speed: 10
+    sprite_speed_variation: 20
+    material:
+      name: particle_casting
+      kd: [1, 1, 1, 1]
+      map_kd: particles/4_casting_spritesheet.png
+      sprites: 73
+      sprites_x: 9
+      texture_spec:
+        wrap: GL_CLAMP_TO_EDGE
