@@ -92,7 +92,7 @@ namespace animation
         util::BufferReference unregisterJoints(
             util::BufferReference jointRef);
 
-        glm::mat4 getSocketTransform(
+        const glm::mat4& getSocketTransform(
             uint32_t index) const noexcept;
 
         animation::AnimationState* getState(

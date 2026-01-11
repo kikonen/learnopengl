@@ -7,6 +7,8 @@
 namespace util
 {
     // Thread-safe dirty slot tracker using map for automatic deduplication.
+    // Uses generation counter for O(1) clear - avoids memory churn when
+    // same keys are marked dirty frame after frame.
     // Used by JointRegistry, SocketRegistry, and similar registries that need
     // to track dirty ranges for snapshot updates.
     template<typename Key>
@@ -21,7 +23,8 @@ namespace util
         void clear() noexcept
         {
             std::lock_guard lock(m_lock);
-            m_dirty.clear();
+            m_currentGen++;
+            m_dirtyCount = 0;
         }
 
         void reserve(size_t count)
@@ -37,13 +40,17 @@ namespace util
             }
 
             std::lock_guard lock(m_lock);
-            m_dirty[key] = true;
+            auto& gen = m_dirty[key];
+            if (gen != m_currentGen) {
+                gen = m_currentGen;
+                m_dirtyCount++;
+            }
         }
 
         bool empty() const noexcept
         {
             std::lock_guard lock(m_lock);
-            return m_dirty.empty();
+            return m_dirtyCount == 0;
         }
 
         // Process dirty keys with callback and clear the dirty set.
@@ -54,19 +61,20 @@ namespace util
         {
             std::lock_guard lock(m_lock);
 
-            if (m_dirty.empty()) return;
-
-            for (const auto& [key, dirty] : m_dirty) {
-                if (!dirty) continue;
+            for (const auto& [key, gen] : m_dirty) {
+                if (gen != m_currentGen) continue;
                 func(key);
                 outSnapshot.push_back(key);
             }
 
-            m_dirty.clear();
+            m_currentGen++;
+            m_dirtyCount = 0;
         }
 
     private:
         mutable std::mutex m_lock{};
-        std::unordered_map<Key, bool> m_dirty;
+        uint32_t m_currentGen{ 0 };
+        uint32_t m_dirtyCount{ 0 };
+        std::unordered_map<Key, uint32_t> m_dirty;
     };
 }
