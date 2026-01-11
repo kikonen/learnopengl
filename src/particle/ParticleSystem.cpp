@@ -1,8 +1,11 @@
 #include "ParticleSystem.h"
 
 #include <algorithm>
+#include <execution>
 
 #include "asset/Assets.h"
+
+#include "util/thread.h"
 
 #include "shader/SSBO.h"
 #include "shader/ProgramRegistry.h"
@@ -24,6 +27,9 @@
 namespace {
     constexpr size_t BLOCK_SIZE = 10000;
     constexpr size_t MAX_BLOCK_COUNT = 1100;
+
+    // Threshold for parallel execution - below this, sequential is faster
+    constexpr size_t PARALLEL_THRESHOLD = 5000;
 
     static particle::ParticleSystem* s_system{ nullptr };
 }
@@ -79,6 +85,7 @@ namespace particle {
     uint32_t ParticleSystem::getFreespace() const noexcept
     {
         std::lock_guard lock(m_pendingLock);
+
         uint32_t sz = static_cast<uint32_t>(m_maxCount - m_snapshotCount + m_pending.size());
         return std::max((uint32_t)0, sz);
     }
@@ -134,20 +141,38 @@ namespace particle {
 
         preparePending();
 
-        size_t size = m_particles.size();
-        for (size_t i = 0; i < size; i++) {
-            auto& particle = m_particles[i];
-            if (!particle.update(ctx)) {
-                if (i < size - 1) {
-                    m_particles[i] = m_particles[size - 1];
-                }
-                size--;
-                i--;
-            }
-        }
+        const size_t size = m_particles.size();
 
-        if (size != m_particles.size()) {
-            m_particles.resize(size);
+        if (size >= PARALLEL_THRESHOLD) {
+            // Parallel update
+            std::for_each(
+                std::execution::par,
+                m_particles.begin(),
+                m_particles.end(),
+                [&ctx](Particle& p) { p.update(ctx); });
+
+            // Parallel partition - move alive particles to front
+            auto newEnd = std::partition(
+                std::execution::par,
+                m_particles.begin(),
+                m_particles.end(),
+                [](const Particle& p) { return p.isAlive(); });
+
+            m_particles.erase(newEnd, m_particles.end());
+        }
+        else {
+            // Sequential update for small counts
+            std::for_each(
+                m_particles.begin(),
+                m_particles.end(),
+                [&ctx](Particle& p) { p.update(ctx); });
+
+            auto newEnd = std::partition(
+                m_particles.begin(),
+                m_particles.end(),
+                [](const Particle& p) { return p.isAlive(); });
+
+            m_particles.erase(newEnd, m_particles.end());
         }
 
         snapshotParticles();

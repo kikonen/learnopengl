@@ -5,12 +5,15 @@
 #include "engine/UpdateContext.h"
 
 namespace particle {
-    bool Particle::update(const UpdateContext& ctx) noexcept
+    void Particle::update(const UpdateContext& ctx) noexcept
     {
         const auto dt = ctx.getClock().elapsedSecs;
 
         m_lifetime -= dt;
-        if (m_lifetime <= 0) return false;
+        if (m_lifetime <= 0) {
+            m_alive = false;
+            return;
+        }
 
         if (m_spriteSpeed >= 0) {
             m_spriteActiveIndex = std::fmodf(m_spriteActiveIndex + dt * m_spriteSpeed, (float)m_spriteCount);
@@ -22,12 +25,7 @@ namespace particle {
             }
         }
 
-        //KI_INFO_OUT(fmt::format(
-        //    "index={}, active={}, speed={}, count={}",
-        //    m_spriteBaseIndex + static_cast<uint8_t>(m_spriteActiveIndex), m_spriteActiveIndex, m_spriteSpeed, m_spriteCount));
-
         m_velocity += m_gravity * dt;
         m_pos += m_velocity * dt;
-        return true;
     }
 }
