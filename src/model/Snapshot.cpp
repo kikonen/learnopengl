@@ -33,10 +33,8 @@ namespace model
 
         m_attachedSocketIndex = o.m_attachedSocketIndex;
 
-        m_worldVolume = Sphere::calculateWorldVolume(
-            o.m_localVolume,
+        m_worldVolume = o.m_localVolume.calculateWorldVolume(
             o.m_modelMatrix,
-            o.getWorldPosition(),
             o.getWorldMaxScale());
 
         o.m_dirtySnapshot = false;
