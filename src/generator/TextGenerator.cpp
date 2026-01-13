@@ -132,7 +132,47 @@ void TextGenerator::updateVAO(
     lodMesh.m_indexCount = mesh->getIndexCount();
 
     // TODO KI threading violation
+    auto volume = m_aabb.toLocalVolume();
     container.modifyState().setLocalVolume(m_aabb.toLocalVolume());
+    
+    {
+        const auto& ref = container.m_instanceRef;
+        auto& instanceRegistry = render::InstanceRegistry::get();
+        auto drawables = instanceRegistry.modifyRange(ref);
+        auto& drawable = drawables[0];
+        {
+            drawable.lodMeshIndex = 0;
+
+            drawable.meshId = lodMesh.getMesh<mesh::Mesh>()->m_id;
+
+            drawable.entityIndex = 1;
+            drawable.materialIndex = lodMesh.m_materialIndex;
+            drawable.jointBaseIndex = 0;
+
+            drawable.baseVertex = lodMesh.m_baseVertex;
+            drawable.baseIndex = lodMesh.m_baseIndex;
+            drawable.indexCount = lodMesh.m_indexCount;
+
+            drawable.minDistance2 = lodMesh.m_minDistance2;
+            drawable.maxDistance2 = lodMesh.m_maxDistance2;
+
+            drawable.vaoId = lodMesh.m_vaoId;
+            drawable.drawOptions = lodMesh.m_drawOptions;
+
+            drawable.programId = lodMesh.m_programId;
+            drawable.oitProgramId = lodMesh.m_oitProgramId;
+            drawable.shadowProgramId = lodMesh.m_shadowProgramId;
+            drawable.preDepthProgramId = lodMesh.m_preDepthProgramId;
+            drawable.selectionProgramId = lodMesh.m_selectionProgramId;
+            drawable.idProgramId = lodMesh.m_idProgramId;
+            drawable.normalProgramId = lodMesh.m_normalProgramId;
+
+            drawable.localTransform = lodMesh.m_baseTransform;
+
+            drawable.worldVolume = volume;
+        }
+        instanceRegistry.upload(ref);
+    }
 
     //{
     //    m_vao.m_positionVbo.m_positionOffset = m_aabb.getVolume();
