@@ -73,12 +73,10 @@ namespace render {
             const std::function<void(ki::program_id)>& programPrepare,
             uint8_t kindBits) noexcept;
 
-        void addMesh(
+        void addMeshes(
             const RenderContext& ctx,
-            uint8_t kindBits,
-            const mesh::MeshInstance& instance,
-            ki::program_id defaultProgramId,
-            uint32_t entityIndex) noexcept;
+            const util::BufferReference instanceRef,
+            uint8_t kindBits) noexcept;
 
         void bind() noexcept;
 
