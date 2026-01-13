@@ -67,7 +67,6 @@ struct Sphere final
     static SphereVolume calculateWorldVolume(
         const SphereVolume& localVolume,
         const glm::mat4& modelMatrix,
-        const glm::vec3& worldPos,
         float maxScale) noexcept;
 
 private:

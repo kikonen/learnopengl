@@ -83,7 +83,6 @@ std::string Sphere::str() const noexcept
 SphereVolume Sphere::calculateWorldVolume(
     const SphereVolume& localVolume,
     const glm::mat4& modelMatrix,
-    const glm::vec3& worldPos,
     float maxScale) noexcept
 {
     const auto& center = modelMatrix * localVolume.getPosition();

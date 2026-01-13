@@ -117,5 +117,10 @@ struct SphereVolume {
     }
 
     bool isOnFrustum(const Frustum& frustum) const noexcept;
+
+
+    SphereVolume calculateWorldVolume(
+        const glm::mat4& modelMatrix,
+        float maxScale) const noexcept;
 };
 
