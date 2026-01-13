@@ -4,8 +4,11 @@
 
 #include "material/Material.h"
 
+#include "util/BufferReference.h"
+
 namespace render
 {
+    class InstanceRegistry;
     class RenderContext;
 }
 
@@ -39,6 +42,10 @@ protected:
         render::FrameBuffer* targetBuffer,
         const std::vector<mesh::MeshInstance>& meshes);
 
+    void registerDrawables(
+        const std::vector<mesh::MeshInstance>& meshes,
+        render::InstanceRegistry& instanceRegistry) noexcept;
+
 protected:
     Material m_fallbackMaterial;
 
@@ -50,4 +57,6 @@ private:
     int m_dynamicVaoIndex{ -1 };
 
     bool m_useFenceDebug{ false };
+
+    util::BufferReference m_instanceRef;
 };

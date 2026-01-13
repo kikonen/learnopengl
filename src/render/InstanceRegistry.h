@@ -56,6 +56,8 @@ namespace render
         // Upload to GPU (call once per frame after updateTransforms)
         void upload();
 
+        void upload(util::BufferReference ref);
+
         size_t getDrawableCount() const { return m_drawables.size(); }
 
     private:
