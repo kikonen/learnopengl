@@ -25,3 +25,13 @@ bool SphereVolume::isOnFrustum(const Frustum& frustum) const noexcept
         isOnOrForwardPlane(center, radius, frustum.topFace) &&
         isOnOrForwardPlane(center, radius, frustum.bottomFace);
 }
+
+SphereVolume SphereVolume::calculateWorldVolume(
+    const glm::mat4& modelMatrix,
+    float maxScale) const noexcept
+{
+    const auto& wc = modelMatrix * getPosition();
+    const auto wr = radius * maxScale;
+
+    return { wc.x, wc.y, wc.z, wr };
+}

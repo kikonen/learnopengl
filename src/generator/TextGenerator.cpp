@@ -131,10 +131,15 @@ void TextGenerator::updateVAO(
 
     lodMesh.m_indexCount = mesh->getIndexCount();
 
-    // TODO KI threading violation
-    auto volume = m_aabb.toLocalVolume();
-    container.modifyState().setLocalVolume(m_aabb.toLocalVolume());
-    
+    SphereVolume worldVolume;
+    {
+        const auto* snapshot = container.getSnapshotRT();
+        const auto& localVolume = m_aabb.toLocalVolume();
+        worldVolume = localVolume.calculateWorldVolume(
+            snapshot->getModelMatrix(),
+            snapshot->getMaxScale());
+    }
+
     {
         const auto& ref = container.m_instanceRef;
         auto& instanceRegistry = render::InstanceRegistry::get();
@@ -169,7 +174,7 @@ void TextGenerator::updateVAO(
 
             drawable.localTransform = lodMesh.m_baseTransform;
 
-            drawable.worldVolume = volume;
+            drawable.worldVolume = worldVolume;
         }
         instanceRegistry.upload(ref);
     }

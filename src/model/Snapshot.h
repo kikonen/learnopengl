@@ -77,9 +77,19 @@ namespace model
             m_attachedSocketIndex = o.m_attachedSocketIndex;
         }
 
+        inline float getMaxScale() const noexcept
+        {
+            return std::max(m_modelScale.x, std::max(m_modelScale.y, m_modelScale.z));
+        }
+
         inline const SphereVolume& getWorldVolume() const noexcept
         {
             return m_worldVolume;
+        }
+
+        inline const void setWorldVolume(const SphereVolume& worldVolume) noexcept
+        {
+            m_worldVolume = worldVolume;
         }
 
         inline const glm::vec3& getViewUp() const noexcept {

@@ -7,7 +7,6 @@
 #include "util/glm_format.h"
 
 #include "model/Node.h"
-#include "model/Snapshot.h"
 
 #include "mesh/generator/PrimitiveGenerator.h"
 #include "mesh/Mesh.h"
@@ -15,7 +14,9 @@
 #include "mesh/Transform.h"
 
 #include "debug/DebugContext.h"
+
 #include "render/RenderContext.h"
+#include "render/InstanceRegistry.h"
 
 #include "shader/Shader.h"
 #include "shader/Program.h"
@@ -83,7 +84,7 @@ void VolumeRenderer::render(
             node->m_typeFlags.skybox) continue;
         if (!dbg.m_showVolume && !selectionRegistry.isSelected(node->toHandle())) continue;
 
-        if (const auto* generator = node->m_generator.get(); generator)
+        if (const auto* generator = node->m_generator.get(); generator && generator->isLightWeight())
         {
             const auto& parentState = nodeRegistry.getParentState(node->getEntityIndex());
 
@@ -117,10 +118,11 @@ void VolumeRenderer::render(
             }
         }
         else {
-            const auto* snapshot = nodeRegistry.getSnapshotRT(node->getEntityIndex());
+            const auto& drawables = render::InstanceRegistry::get().getRange(node->m_instanceRef);
 
-            if (snapshot) {
-                const auto& worldVolume = snapshot->getWorldVolume();
+            if (drawables.size() > 0) {
+                const auto& drawable = drawables[0];
+                const auto& worldVolume = drawable.worldVolume;;
                 const auto& center = worldVolume.getCenter();
 
                 mesh::Transform transform;
