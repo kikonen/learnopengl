@@ -315,86 +315,136 @@ namespace render {
         }
     }
 
-    void Batch::addMesh(
+    void Batch::addMeshes(
         const RenderContext& ctx,
-        uint8_t kindBits,
-        const mesh::MeshInstance& instance,
-        ki::program_id defaultProgramId,
-        uint32_t entityIndex) noexcept
+        const util::BufferReference instanceRef,
+        uint8_t kindBits) noexcept
     {
-        if (entityIndex <= 0) return;
+        const uint32_t drawableCount = instanceRef.size;
+        const uint32_t instanceOffset = instanceRef.offset;
 
-        // TODO KI 
-        uint32_t instanceIndex = 0;
-        return;
+        if (drawableCount == 0) return;
 
-        const auto& drawOptions = instance.m_drawOptions;
-        if (!drawOptions.isKind(kindBits)) return;
-        if (drawOptions.m_type == backend::DrawOptions::Type::none) return;
+        const auto& drawables = m_instanceRegistry->getRange(instanceRef);
 
-        const auto programId = instance.m_programId ? instance.m_programId  : defaultProgramId;
-        if (!programId) return;
+        const auto& cameraPos = ctx.m_camera->getWorldPosition();
 
-        const SphereVolume& worldVolume = instance.getWorldVolume();
-        auto dist2 = glm::distance2(glm::vec3{ worldVolume.getCenter() }, ctx.m_camera->getWorldPosition());
+        bool useFrustum = true;
 
-        // NOTE KI frustum need to be checked only one of the lods
-        //if (!type->m_flags.noFrustum)
         {
-            const auto& frustum = ctx.m_camera->getFrustum();
-            // TODO KI wrong volume; assumes that every lodMesh have same
-            // => not true in some more complex cases where node consists
-            //    from set of meshes (which are not LODn meshes)
-            if (m_frustumCPU && !worldVolume.isOnFrustum(frustum)) {
-                m_skipCount++;
-                return;
+            if (s_accept.size() < drawableCount) {
+                s_accept.resize(drawableCount);
+                s_distances2.resize(drawableCount);
             }
-            m_drawCount++;
+            for (uint32_t i = 0; i < drawableCount; i++) {
+                s_accept[i] = i; // store index
+
+                const auto& drawable = drawables[i];
+                s_distances2[i] = glm::distance2(drawable.worldVolume.getCenter(), cameraPos);
+            }
         }
 
-        CommandEntry* commandEntry{ nullptr };
+        if (useFrustum) {
+            const auto& frustum = ctx.m_camera->getFrustum();
+
+            const auto& checkFrustum = [&frustum, &drawables]
+            (int32_t& idx) {
+                if (!drawables[idx].worldVolume.isOnFrustum(frustum)) {
+                    idx = SKIP;
+                }
+            };
+
+            if (drawableCount > m_frustumParallelLimit) {
+                std::for_each(
+                    std::execution::par_unseq,
+                    s_accept.begin(),
+                    s_accept.begin() + drawableCount,
+                    checkFrustum);
+            }
+            else {
+                std::for_each(
+                    std::execution::seq,
+                    s_accept.begin(),
+                    s_accept.begin() + drawableCount,
+                    checkFrustum);
+            }
+        }
+
         {
-            auto* mesh = instance.m_mesh;
+            const auto resolveProgram = [&kindBits](
+                const float dist2,
+                const auto& drawable) -> ki::program_id {
+                if (drawable.minDistance2 > dist2 ||
+                    drawable.maxDistance2 <= dist2) return 0;
 
-            MultiDrawKey drawKey{
-                programId,
-                mesh->getVaoId(),
-                drawOptions
+                const auto& drawOptions = drawable.drawOptions;
+                if (drawOptions.m_type == backend::DrawOptions::Type::none) return 0;
+                if (!drawOptions.isKind(kindBits)) return 0;
+
+                return drawable.programId;
             };
 
-            CommandKey commandKey{
-                mesh->getBaseVertex(),
-                mesh->getBaseIndex()
-            };
+            uint32_t skippedCount = 0;
 
-            const auto drawIndex = m_batchRegistry.getMultiDrawIndex(drawKey);
-            const auto commandIndex = m_batchRegistry.getCommandIndex(commandKey);
+            for (uint32_t drawableIndex = 0; drawableIndex < drawableCount; drawableIndex++) {
+                if (useFrustum && s_accept[drawableIndex] == SKIP) {
+                    skippedCount++;
+                    continue;
+                }
 
-            if (m_pending.size() < drawIndex + 1)
-            {
-                m_pending.resize(drawIndex + 1);
+                const auto& drawable = drawables[drawableIndex];
+                if (drawable.entityIndex == 0) continue;
+
+                const auto dist2 = s_distances2[drawableIndex];
+
+                const auto  programId = resolveProgram(dist2, drawable);
+                if (!programId) continue;
+
+                CommandEntry* commandEntry{ nullptr };
+                {
+                    MultiDrawKey drawKey{
+                        programId,
+                        drawable.vaoId,
+                        drawable.drawOptions
+                    };
+
+                    CommandKey commandKey{
+                        drawable.baseVertex,
+                        drawable.baseIndex,
+                    };
+
+                    const auto drawIndex = m_batchRegistry.getMultiDrawIndex(drawKey);
+                    const auto commandIndex = m_batchRegistry.getCommandIndex(commandKey);
+
+                    if (m_pending.size() < drawIndex + 1) {
+                        m_pending.resize(drawIndex + 1);
+                    }
+
+                    auto& drawEntry = m_pending[drawIndex];
+                    drawEntry.m_index = drawIndex;
+
+                    if (drawEntry.m_commands.size() < commandIndex + 1) {
+                        drawEntry.m_commands.resize(commandIndex + 1);
+                    }
+
+                    commandEntry = &drawEntry.m_commands[commandIndex];
+                    commandEntry->m_index = commandIndex;
+                    commandEntry->m_indexCount = drawable.indexCount;
+
+                    drawEntry.m_dirty = true;
+                }
+
+                commandEntry->reserve(drawableCount);
+
+                commandEntry->addInstance({
+                    instanceOffset + drawableIndex
+                    });
+
+                m_pendingCount++;
             }
 
-            auto& drawEntry = m_pending[drawIndex];
-            drawEntry.m_index = drawIndex;
-
-            if (drawEntry.m_commands.size() < commandIndex + 1)
-            {
-                drawEntry.m_commands.resize(commandIndex + 1);
-            }
-
-            commandEntry = &drawEntry.m_commands[commandIndex];
-            commandEntry->m_index = commandIndex;
-            commandEntry->m_indexCount = mesh->getIndexCount();
-
-            drawEntry.m_dirty = true;
-
-            /////////
-            commandEntry->addInstance({
-                instanceIndex
-                });
-
-            m_pendingCount++;
+            m_skipCount += skippedCount;
+            m_drawCount += drawableCount - skippedCount;
         }
     }
 

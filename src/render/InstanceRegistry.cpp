@@ -224,6 +224,25 @@ namespace render
         m_needUpload = false;
     }
 
+    void InstanceRegistry::upload(util::BufferReference ref)
+    {
+        constexpr size_t sz = sizeof(InstanceSSBO);
+
+        const size_t totalCount = m_instances.size();
+        {
+            resizeBuffer(totalCount);
+
+            auto* __restrict mappedData = m_ssbo.mapped<InstanceSSBO>(0);
+
+            std::copy(
+                std::begin(m_instances) + ref.begin(),
+                std::begin(m_instances) + ref.end(),
+                mappedData + ref.begin());
+        }
+
+        m_ssbo.markUsed(totalCount * sz);
+    }
+
     void InstanceRegistry::beginFrame()
     {
         m_fence.waitFence();

@@ -298,6 +298,7 @@
     <ClCompile Include="src\kigl\GLTextureHandle.cpp" />
     <ClCompile Include="src\kigl\GLVertexArray.cpp" />
     <ClCompile Include="src\material\InlineTexture.cpp" />
+    <ClCompile Include="src\mesh\MeshInstance.cpp" />
     <ClCompile Include="src\mesh_set\AssimpLogger.cpp" />
     <ClCompile Include="src\mesh_set\AssimpMaterialImporter.cpp" />
     <ClCompile Include="src\mesh_set\NodeTree.cpp" />
