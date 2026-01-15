@@ -1,0 +1,6 @@
+{
+  "name": "moodycamel-concurrentqueue",
+  "version": "1.0.4",
+  "description": "Lock-free concurrent queue",
+  "homepage": "https://github.com/cameron314/concurrentqueue"
+}

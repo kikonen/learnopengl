@@ -13,14 +13,19 @@
       "version>=": "6.0.2#1"
     },
     {
-      "name": "entt",
-      "platform": "windows & x64",
-      "version>=": "3.15.0"
-    },
-    {
       "name": "crc32c",
       "platform": "windows & x64",
       "version>=": "1.1.2#2"
+    },
+    {
+      "name": "enkits",
+      "platform": "windows & x64",
+      "version>=": "1.11#3"
+    },
+    {
+      "name": "entt",
+      "platform": "windows & x64",
+      "version>=": "3.15.0"
     },
     {
       "name": "eventpp",
@@ -65,6 +70,11 @@
       ]
     },
     {
+      "name": "joltphysics",
+      "platform": "windows & x64",
+      "version>=": "5.5.0"
+    },
+    {
       "name": "ktx",
       "platform": "windows & x64",
       "version>=": "4.3.2#2"
@@ -73,6 +83,11 @@
       "name": "luajit",
       "platform": "windows & x64",
       "version>=": "2023-01-04#7"
+    },
+    {
+      "name": "moodycamel-concurrentqueue",
+      "platform": "windows & x64",
+      "version>=": "1.0.4"
     },
     {
       "name": "nativefiledialog-extended",
