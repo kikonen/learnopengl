@@ -6,7 +6,8 @@
 #include <mutex>
 #include <memory>
 
-#include <ode/ode.h>
+#include <Jolt/Jolt.h>
+#include <Jolt/Physics/Body/BodyID.h>
 
 #include "mesh/MeshInstance.h"
 
@@ -23,6 +24,7 @@ namespace mesh {
 
 namespace physics {
     class PhysicsSystem;
+    struct Object;
 
     class MeshGenerator {
     public:
@@ -34,8 +36,8 @@ namespace physics {
 
     private:
         mesh::MeshInstance generateMesh(
-            physics::GeomType geomType,
-            dGeomID geomId);
+            const physics::Object& obj,
+            physics::object_id objectId);
 
         std::shared_ptr<mesh::Mesh> findMesh(const std::string& key);
 

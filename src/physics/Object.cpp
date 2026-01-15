@@ -5,6 +5,9 @@
 #include <glm/glm.hpp>
 #include <glm/gtx/quaternion.hpp>
 
+#include <Jolt/Physics/PhysicsSystem.h>
+#include <Jolt/Physics/Body/BodyInterface.h>
+
 #include <fmt/format.h>
 
 #include "util/glm_format.h"
@@ -15,6 +18,8 @@
 #include "model/Node.h"
 
 #include "registry/NodeRegistry.h"
+
+#include "jolt_util.h"
 
 namespace {
     inline glm::vec3 UP{ 0.f, 1.f, 0.f };
@@ -33,30 +38,48 @@ namespace physics
         std::swap(m_geom, o.m_geom);
     }
 
+    void Object::release(JPH::BodyInterface& bodyInterface)
+    {
+        m_body.release(bodyInterface);
+        m_geom.release(bodyInterface);
+    }
+
     void Object::create(
         physics::object_id objectId,
         uint32_t entityIndex,
-        dWorldID worldId,
-        dSpaceID spaceId,
+        JPH::PhysicsSystem& physicsSystem,
         NodeRegistry& nodeRegistry)
     {
         if (ready()) return;
 
         glm::vec3 scale{ 1.f };
 
-        // NOtE KI assumping that parent scale does not affect node
+        // NOTE KI assumping that parent scale does not affect node
         // => 99,9% true for physics nodes, i.e. does not make sense
         // for them to have parent node affecting scale
         const auto& state = nodeRegistry.getState(entityIndex);
         scale = state.getScale();
 
-        m_body.create(objectId, worldId, spaceId, scale);
-        m_geom.create(objectId, worldId, spaceId, scale, m_body.physicId);
+        // Create body first (if exists)
+        m_body.create(
+            objectId,
+            m_geom.categoryMask,
+            m_geom.collisionMask,
+            physicsSystem,
+            scale);
+
+        // Create geom (for standalone geoms, creates static body)
+        m_geom.create(
+            objectId,
+            physicsSystem,
+            scale,
+            m_body.m_bodyId);
     }
 
     bool Object::updateToPhysics(
         uint32_t entityIndex,
         ki::level_id& matrixLevel,
+        JPH::BodyInterface& bodyInterface,
         NodeRegistry& nodeRegistry)
     {
         const auto& state = nodeRegistry.getState(entityIndex);
@@ -70,18 +93,16 @@ namespace physics
         const glm::vec3& pivot = state.getWorldPivot();
         const auto& rot = state.getModelRotation() * m_body.baseRotation;
 
-        if (m_body.physicId) {
-            m_body.updatePhysic(pivot, pos, rot);
+        if (m_body.hasPhysicsBody()) {
+            m_body.updatePhysic(bodyInterface, pivot, pos, rot);
 
-            //dBodySetLinearVel(m_body.physicId, 0.f, 0.f, 0.f);
-            dBodySetAngularVel(m_body.physicId, 0.f, 0.f, 0.f);
-            //dBodySetForce(m_body.physicId, 0.f, 0.f, 0.f);
-            dBodySetTorque(m_body.physicId, 0.f, 0.f, 0.f);
+            // Reset angular velocity and torque for kinematic bodies
+            m_body.setAngularVelocity(bodyInterface, glm::vec3(0.f));
         }
-        else if (m_geom.physicId)
+        else if (m_geom.hasPhysicsBody())
         {
             // NOTE KI for "geom only" nodes
-            m_geom.updatePhysic(pivot, pos, rot);
+            m_geom.updatePhysic(bodyInterface, pivot, pos, rot);
         }
 
         return true;
@@ -89,10 +110,11 @@ namespace physics
 
     void Object::updateFromPhysics(
         uint32_t entityIndex,
+        const JPH::BodyInterface& bodyInterface,
         NodeRegistry& nodeRegistry) const
     {
         // NOTE KI "geom only" is not updated back to node
-        if (!m_body.physicId) return;
+        if (!m_body.hasPhysicsBody()) return;
         if (m_body.kinematic) return;
 
         auto& state = nodeRegistry.modifyState(entityIndex);
@@ -101,8 +123,8 @@ namespace physics
         glm::vec3 pos{ 0.f };
         glm::quat rot{ 1.f, 0.f, 0.f, 0.f };
         {
-            pos = m_body.getPhysicPosition();
-            rot = m_body.getPhysicRotation();
+            pos = m_body.getPhysicPosition(bodyInterface);
+            rot = m_body.getPhysicRotation(bodyInterface);
 
             // NOTE KI parent *SHOULD* be root (== null) for all physics nodes
             // => otherwise math does not make sense
@@ -112,32 +134,9 @@ namespace physics
 
             // https://danceswithcode.net/engineeringnotes/quaternions/quaternions.html
             rot = glm::normalize(rot * m_body.invBaseRotation);
-
-            //// NOTE KI project rotation to XZ plane to keep nodes UP
-            //// => nodes still travel backwards, but not rotating grazily
-            //if (false) {
-            //    // https://discourse.nphysics.org/t/projecting-a-unitquaternion-on-a-2d-plane/70/4
-            //    const auto rotated = glm::mat3(rot) * state.m_front;
-            //    //const auto front = glm::normalize(glm::vec3(rotated.x, 0, rotated.z));
-            //    const auto rads = glm::atan(rotated.x, rotated.z);
-            //    const auto degrees = glm::degrees(rads);
-            //    rot = util::radiansToQuat(glm::vec3(0, rads, 0));
-
-            //    dQuaternion quat{ rot.w, rot.x, rot.y, rot.z };
-            //    dBodySetQuaternion(m_body.physicId, quat);
-            //}
-            ////const auto rotatedFront = rotBase * state.m_front;
-
-            //if (m_geom.type == GeomType::box) {
-            //    auto degrees = util::quatToDegrees(rq);
-            //    KI_INFO_OUT(fmt::format(
-            //        "OBJ_BODY_2: id={}, type={}, pos={}, rot={}, degrees={}",
-            //        m_id, util::as_integer(m_geom.type), pos, rot, degrees));
-            //}
         }
 
         state.setPosition(pos);
         state.setRotation(rot * state.getInvBaseRotation());
-        //m_node->updateModelMatrix();
     }
 }

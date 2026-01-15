@@ -95,11 +95,6 @@
       "version>=": "1.2.1"
     },
     {
-      "name": "ode",
-      "platform": "windows & x64",
-      "version>=": "0.16.6"
-    },
-    {
       "name": "openal-soft",
       "platform": "windows & x64",
       "version>=": "1.24.3#1"

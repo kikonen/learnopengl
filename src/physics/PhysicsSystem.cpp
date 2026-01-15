@@ -1,9 +1,16 @@
 #include "PhysicsSystem.h"
-#include "PhysicsSystem.h"
 
 #include <iostream>
 
 #include <fmt/format.h>
+
+#include <Jolt/Physics/PhysicsSystem.h>
+#include <Jolt/Physics/Body/BodyInterface.h>
+#include <Jolt/Physics/Collision/RayCast.h>
+#include <Jolt/Physics/Collision/CastResult.h>
+#include <Jolt/Physics/Collision/CollisionCollectorImpl.h>
+#include <Jolt/Physics/Collision/ObjectLayer.h>
+#include <Jolt/Physics/Collision/BroadPhase/BroadPhaseQuery.h>
 
 #include "asset/Assets.h"
 
@@ -31,98 +38,47 @@
 #include "physics/MeshGenerator.h"
 #include "physics/RayHit.h"
 #include "physics/physics_util.h"
+#include "physics/jolt_util.h"
+#include "physics/JoltFoundation.h"
 
 namespace {
     constexpr float STEP_SIZE = 0.03f;
-
-    constexpr int MAX_CONTACTS = 4;
-    constexpr int CONTACT_GROUP_ID = 0;
+    constexpr int COLLISION_STEPS = 1;
 
     size_t debugCounter{ 0 };
 
     std::shared_ptr<std::vector<mesh::MeshInstance>> NO_MESHES;
 
-    dSurfaceParameters g_surfaceTemplate;
-
-    // NOTE KI shared, only single thread does checking
-    dContact g_contacts[MAX_CONTACTS]{};
-
-    struct HitData {
-        bool onlyClosest{ false };
-        dGeomID sourceGeomId{ nullptr };
-        dGeomID rayGeomId{ nullptr };
-        std::vector<physics::GeomHit> hits{};
-    };
-
-    void initSurface(dSurfaceParameters& surface)
-    {
-        auto& dbg = debug::DebugContext::modify();
-        auto& physicsDbg = dbg.m_physics;
-
-        // http://monsterden.net/software/ragdoll-pyode-tutorial
-        // c.setMu(500) # 0-5 = very slippery, 50-500 = normal, 5000 = very sticky
-
-        int mode = 0;
-        if (physicsDbg.m_dContactMu2) mode |= dContactMu2;
-        if (physicsDbg.m_dContactSlip1) mode |= dContactSlip1;
-        if (physicsDbg.m_dContactSlip2) mode |= dContactSlip2;
-        if (physicsDbg.m_dContactRolling) mode |= dContactRolling;
-        if (physicsDbg.m_dContactBounce) mode |= dContactBounce;
-        if (physicsDbg.m_dContactMotion1) mode |= dContactMotion1;
-        if (physicsDbg.m_dContactMotion2) mode |= dContactMotion2;
-        if (physicsDbg.m_dContactMotionN) mode |= dContactMotionN;
-        if (physicsDbg.m_dContactSoftCFM) mode |= dContactSoftCFM;
-        if (physicsDbg.m_dContactSoftERP) mode |= dContactSoftERP;
-        if (physicsDbg.m_dContactApprox1) mode |= dContactApprox1;
-        if (physicsDbg.m_dContactFDir1) mode |= dContactFDir1;
-
-        surface.mode = mode;
-
-        surface.mu = physicsDbg.m_mu;
-        surface.mu2 = physicsDbg.m_mu2;
-        surface.rho = physicsDbg.m_rho;
-        surface.rho2 = physicsDbg.m_rho2;
-        surface.rhoN = physicsDbg.m_rhoN;
-        surface.slip1 = physicsDbg.m_slip1;
-        surface.slip2 = physicsDbg.m_slip2;
-        surface.bounce = physicsDbg.m_bounce;
-        surface.bounce_vel = physicsDbg.m_bounce_vel;
-        surface.motion1 = physicsDbg.m_motion1;
-        surface.motion2 = physicsDbg.m_motion2;
-        surface.motionN = physicsDbg.m_motionN;
-        surface.soft_erp = physicsDbg.m_soft_erp;
-        surface.soft_cfm = physicsDbg.m_soft_cfm;
-    }
-
-    void initTemplates()
-    {
-        initSurface(g_surfaceTemplate);
-    }
-
-    inline void setContactSurface(dContact* contacts, size_t count)
-    {
-        for (int i = 0; i < count; i++)
-        {
-            contacts[i].surface = g_surfaceTemplate;
-        }
-    }
-
-    void odeDebugMessage(int errnum, const char* msg, va_list ap)
-    {
-        KI_DEBUG(fmt::format("PHYSICS: ODE_DEBUG={}, msg={}", errnum, msg));
-    }
-
-    void odeInfoMessage(int errnum, const char* msg, va_list ap)
-    {
-        KI_INFO_OUT(fmt::format("PHYSICS: ODE_INFO={}, msg={}", errnum, msg));
-    }
-
-    void odeErrorMessage(int errnum, const char* msg, va_list ap)
-    {
-        KI_CRITICAL(fmt::format("PHYSICS: ODE_ERROR={}, msg={}", errnum, msg));
-    }
-
     static physics::PhysicsSystem* s_system{ nullptr };
+
+    // Custom body filter that checks collision masks stored in user data
+    class CollisionMaskBodyFilter : public JPH::BodyFilter {
+    public:
+        CollisionMaskBodyFilter(uint32_t collisionMask, JPH::BodyID excludeBody = JPH::BodyID())
+            : m_collisionMask(collisionMask)
+            , m_excludeBody(excludeBody)
+        {}
+
+        virtual bool ShouldCollide(const JPH::BodyID& inBodyID) const override {
+            if (inBodyID == m_excludeBody) return false;
+            return true;
+        }
+
+        virtual bool ShouldCollideLocked(const JPH::Body& inBody) const override {
+            if (inBody.GetID() == m_excludeBody) return false;
+
+            // Check collision mask from user data
+            uint64_t userData = inBody.GetUserData();
+            uint32_t bodyCategoryMask = physics::unpackCategoryMask(userData);
+
+            // Body should collide if its category matches our collision mask
+            return (bodyCategoryMask & m_collisionMask) != 0;
+        }
+
+    private:
+        uint32_t m_collisionMask;
+        JPH::BodyID m_excludeBody;
+    };
 }
 
 namespace physics
@@ -130,6 +86,10 @@ namespace physics
     void PhysicsSystem::init() noexcept
     {
         assert(!s_system);
+
+        // Initialize Jolt foundation first
+        JoltFoundation::init();
+
         s_system = new PhysicsSystem();
     }
 
@@ -138,6 +98,9 @@ namespace physics
         auto* s = s_system;
         s_system = nullptr;
         delete s;
+
+        // Release Jolt foundation
+        JoltFoundation::release();
     }
 
     PhysicsSystem& PhysicsSystem::get() noexcept
@@ -149,79 +112,6 @@ namespace physics
 
 namespace physics
 {
-    static void rayCallback(void* data, dGeomID o1, dGeomID o2) {
-        dContactGeom contact;
-        if (dCollide(o1, o2, 1, &contact, sizeof(dContactGeom)) != 0) {
-            HitData& hitData = *static_cast<HitData*>(data);
-
-            if (o1 == hitData.sourceGeomId || o2 == hitData.sourceGeomId) {
-                return;
-            }
-
-            GeomHit* hit{ nullptr };
-
-            if (hitData.onlyClosest && !hitData.hits.empty()) {
-                hit = &hitData.hits[0];
-                if (contact.depth >= hit->depth) {
-                    // NOTE KI skip no need for update
-                    return;
-                }
-            }
-            else {
-                hit = &hitData.hits.emplace_back();
-            }
-
-            hit->geomId = o1 == hitData.rayGeomId ? o2 : o1;
-
-            hit->pos = {
-                static_cast<float>(contact.pos[0]),
-                static_cast<float>(contact.pos[1]),
-                static_cast<float>(contact.pos[2]) };
-
-            hit->normal = {
-                static_cast<float>(contact.normal[0]),
-                static_cast<float>(contact.normal[1]),
-                static_cast<float>(contact.normal[2]) };
-
-            hit->depth = static_cast<float>(contact.depth);
-        }
-    }
-
-    static void collisionCallback(void* data, dGeomID o1, dGeomID o2)
-    {
-        // exit without doing anything if the two bodies are connected by a joint
-        dBodyID b1 = dGeomGetBody(o1);
-        dBodyID b2 = dGeomGetBody(o2);
-        if (b1 && b2 && dAreConnectedExcluding(b1, b2, dJointTypeContact))
-            return;
-
-        PhysicsSystem* engine = (PhysicsSystem*)data;
-
-        const auto worldId = engine->m_worldId;
-        const auto groupId = engine->m_contactgroupId;
-
-        dContact* contacts = g_contacts;
-
-        if (int count = dCollide(o1, o2, MAX_CONTACTS, &contacts[0].geom, sizeof(dContact)))
-        {
-            //auto* obj1 = engine->m_geomToObject[o1];
-            //auto* obj2 = engine->m_geomToObject[o2];
-
-            //dMatrix3 RI;
-            //dRSetIdentity(RI);
-
-            setContactSurface(contacts, count);
-            for (int i = 0; i < count; i++) {
-                dJointID c = dJointCreateContact(
-                    worldId,
-                    groupId,
-                    contacts + i);
-
-                dJointAttach(c, b1, b2);
-            }
-        }
-    };
-
     PhysicsSystem::PhysicsSystem()
     {
         m_heightMaps.emplace_back();
@@ -230,26 +120,19 @@ namespace physics
 
     PhysicsSystem::~PhysicsSystem()
     {
-        m_objects.clear();
-        m_heightMaps.clear();
-
-        if (m_spaceId) {
-            dSpaceDestroy(m_spaceId);
-        }
-        if (m_worldId) {
-            dWorldDestroy(m_worldId);
-        }
-        if (m_contactgroupId) {
-            dJointGroupDestroy(m_contactgroupId);
-        }
-        if (m_prepared) {
-            dCloseODE();
-        }
+        // Clear objects first (releases Jolt bodies)
+        clear();
     }
 
     void PhysicsSystem::clear()
     {
         ASSERT_RT();
+
+        // Release all physics objects
+        auto& bodyInterface = getBodyInterface();
+        for (auto& obj : m_objects) {
+            obj.release(bodyInterface);
+        }
 
         m_elapsedTotal = 0.f;
         m_remainder = 0.f;
@@ -269,33 +152,23 @@ namespace physics
         m_matrixLevels.clear();
         m_updateObjects.clear();
 
-        m_rayId = 0;
-
         m_heightMaps.clear();
-        m_heightMapIds.clear();
-        m_bodyToObject.clear();
+        m_bodyIdToObject.clear();
         m_handleToId.clear();
 
         {
             // NOTE KI register NULL object
             registerObject({}, 0, false, {});
             m_heightMaps.emplace_back();
-
-            {
-                physics::Object obj{};
-                obj.m_geom.type = GeomType::ray;
-                obj.m_body.kinematic = true;
-                obj.m_geom.categoryMask = physics::mask(physics::Category::ray);
-                obj.m_geom.collisionMask = 0;
-                m_rayId = registerObject({}, 0, false, std::move(obj));
-            }
         }
 
         {
             auto& dbg = debug::DebugContext::modify();
             auto& physicsDbg = dbg.m_physics;
 
-            m_meshGenerator->clear();
+            if (m_meshGenerator) {
+                m_meshGenerator->clear();
+            }
 
             std::shared_ptr<std::vector<mesh::MeshInstance>> tmp;
             physicsDbg.m_meshesWT.store(tmp);
@@ -307,8 +180,6 @@ namespace physics
     void PhysicsSystem::prepare(
         const std::shared_ptr<std::atomic_bool>& alive)
     {
-        //ASSERT_WT();
-
         m_prepared = true;
         m_alive = alive;
 
@@ -317,23 +188,12 @@ namespace physics
         m_elapsedTotal = 0.f;
         m_initialDelay = assets.physicsInitialDelay;
 
-        dSetDebugHandler(odeDebugMessage);
-        dSetMessageHandler(odeInfoMessage);
-        dSetErrorHandler(odeErrorMessage);
+        // Prepare Jolt foundation
+        JoltFoundation::get().prepare();
 
-        dInitODE2(0);
-        m_worldId = dWorldCreate();
-        m_spaceId = dHashSpaceCreate(0);
-        if (false) {
-            dVector3 center{ 200, 0, 200 };
-            dVector3 extends{ 1024, 100, 1024 };
-            m_spaceId = dQuadTreeSpaceCreate(0, center, extends, 8);
-        }
-        m_contactgroupId = dJointGroupCreate(0);
-
+        // Set gravity
         m_gravity = { 0, -2.01f, 0 };
-
-        dWorldSetGravity(m_worldId, m_gravity.x, m_gravity.y, m_gravity.z);
+        getJoltPhysicsSystem().SetGravity(toJolt(m_gravity));
 
         m_meshGenerator = std::make_unique<physics::MeshGenerator>(*this);
     }
@@ -344,8 +204,6 @@ namespace physics
 
         if (!m_enabled) return;
 
-        //std::lock_guard lock{ m_lock };
-
         preparePending(ctx);
     }
 
@@ -355,23 +213,20 @@ namespace physics
 
         if (!m_enabled) return;
 
-        initTemplates();
-
         m_elapsedTotal += ctx.getClock().elapsedSecs;
         if (m_elapsedTotal < m_initialDelay) return;
 
         auto& dbg = debug::DebugContext::modify();
         auto& physicsDbg = dbg.m_physics;
 
-        //std::lock_guard lock{ m_lock };
-
         auto& nodeRegistry = NodeRegistry::get();
+        auto& bodyInterface = getBodyInterface();
 
         bool updatedPhysics = false;
         for (const auto id : m_updateObjects) {
             if (!id) continue;
             auto& obj = m_objects[id];
-            updatedPhysics |= obj.updateToPhysics(m_entityIndeces[id], m_matrixLevels[id], nodeRegistry);
+            updatedPhysics |= obj.updateToPhysics(m_entityIndeces[id], m_matrixLevels[id], bodyInterface, nodeRegistry);
         }
 
         const float dtTotal = ctx.getClock().elapsedSecs + m_remainder;
@@ -385,17 +240,22 @@ namespace physics
 
             if (physicsDbg.m_updateEnabled)
             {
+                auto& joltFoundation = JoltFoundation::get();
+
                 for (int i = 0; i < steps; i++) {
                     if (!*m_alive) return;
 
-                    dSpaceCollide(m_spaceId, this, &collisionCallback);
-                    dWorldQuickStep(m_worldId, STEP_SIZE);
-                    dJointGroupEmpty(m_contactgroupId);
+                    // Update physics simulation
+                    getJoltPhysicsSystem().Update(
+                        STEP_SIZE,
+                        COLLISION_STEPS,
+                        joltFoundation.getTempAllocator(),
+                        joltFoundation.getJobSystem());
                 }
 
-                for (int i = 0; i < m_objects.size(); i++) {
+                for (size_t i = 0; i < m_objects.size(); i++) {
                     auto& obj = m_objects[i];
-                    obj.updateFromPhysics(m_entityIndeces[i], nodeRegistry);
+                    obj.updateFromPhysics(m_entityIndeces[i], bodyInterface, nodeRegistry);
                 }
             }
 
@@ -403,7 +263,6 @@ namespace physics
         }
         else {
             if (updatedPhysics) {
-                //std::cout << "PHYSICS_UPDATE" << "\n";
                 generateObjectMeshes();
             }
         }
@@ -416,6 +275,9 @@ namespace physics
         if (m_pending.empty()) return;
 
         auto& nodeRegistry = NodeRegistry::get();
+        auto& joltPhysicsSystem = getJoltPhysicsSystem();
+        auto& bodyInterface = getBodyInterface();
+
         std::unordered_map<physics::object_id, bool> prepared;
 
         for (const auto& id : m_pending) {
@@ -424,23 +286,29 @@ namespace physics
 
             if (node) {
                 auto entityIndex = m_entityIndeces[id];
-                obj.create(id, entityIndex, m_worldId, m_spaceId, nodeRegistry);
+                obj.create(id, entityIndex, joltPhysicsSystem, nodeRegistry);
 
-                m_bodyToObject.insert({ obj.m_body.physicId, id});
+                // Map body ID to object ID
+                if (obj.m_body.hasPhysicsBody()) {
+                    m_bodyIdToObject.insert({ obj.m_body.m_bodyId.GetIndex(), id });
+                }
+                if (obj.m_geom.hasPhysicsBody()) {
+                    m_bodyIdToObject.insert({ obj.m_geom.m_staticBodyId.GetIndex(), id });
+                }
 
+                // Handle heightmaps
                 for (auto& heightMap : m_heightMaps) {
                     if (heightMap.m_origin == node) {
-                        heightMap.create(m_worldId, m_spaceId, obj);
-                        m_heightMapIds.insert({ obj.m_geom.heightDataId, heightMap.m_id});
+                        heightMap.create(joltPhysicsSystem, obj);
                     }
                 }
 
-                obj.updateToPhysics(entityIndex, m_matrixLevels[id], nodeRegistry);
+                obj.updateToPhysics(entityIndex, m_matrixLevels[id], bodyInterface, nodeRegistry);
 
                 m_handleToId.insert({ m_nodeHandles[id], id });
             }
             else {
-                obj.create(id, 0, m_worldId, m_spaceId, nodeRegistry);
+                obj.create(id, 0, joltPhysicsSystem, nodeRegistry);
             }
 
             m_level++;
@@ -449,7 +317,6 @@ namespace physics
         }
 
         if (!prepared.empty()) {
-            // https://stackoverflow.com/questions/22729906/stdremove-if-not-working-properly
             const auto& it = std::remove_if(
                 m_pending.begin(),
                 m_pending.end(),
@@ -484,35 +351,47 @@ namespace physics
         return id;
     }
 
-     void PhysicsSystem::unregisterObject(
-         physics::object_id objectId)
+    void PhysicsSystem::unregisterObject(
+        physics::object_id objectId)
     {
-         if (objectId < 1 || objectId > m_objects.size()) return;
+        if (objectId < 1 || objectId > m_objects.size()) return;
 
-         const auto objectIndex = objectId;
+        const auto objectIndex = objectId;
 
-         // delete physics objects via overriding by empty data
-         m_objects[objectIndex] = std::move(physics::Object{});
+        auto& obj = m_objects[objectIndex];
 
-         m_nodeHandles[objectIndex] = pool::NodeHandle::NULL_HANDLE;
-         m_entityIndeces[objectIndex] = 0;
-         m_matrixLevels[objectIndex] = 0;
-         m_updateObjects[objectIndex] = 0;
+        // Remove body mappings
+        if (obj.m_body.hasPhysicsBody()) {
+            m_bodyIdToObject.erase(obj.m_body.m_bodyId.GetIndex());
+        }
+        if (obj.m_geom.hasPhysicsBody()) {
+            m_bodyIdToObject.erase(obj.m_geom.m_staticBodyId.GetIndex());
+        }
 
-         m_freeIndeces.push_back(objectIndex);
+        // Release physics objects
+        obj.release(getBodyInterface());
 
-         // Discard possible stale references
-         {
-             // https://stackoverflow.com/questions/22729906/stdremove-if-not-working-properly
-             const auto& it = std::remove_if(
-                 m_pending.begin(),
-                 m_pending.end(),
-                 [objectId](auto& id) {
-                     return id == objectId;
-                 });
-             m_pending.erase(it, m_pending.end());
-         }
-     }
+        // Clear slot
+        m_objects[objectIndex] = std::move(physics::Object{});
+
+        m_nodeHandles[objectIndex] = pool::NodeHandle::NULL_HANDLE;
+        m_entityIndeces[objectIndex] = 0;
+        m_matrixLevels[objectIndex] = 0;
+        m_updateObjects[objectIndex] = 0;
+
+        m_freeIndeces.push_back(objectIndex);
+
+        // Discard possible stale references
+        {
+            const auto& it = std::remove_if(
+                m_pending.begin(),
+                m_pending.end(),
+                [objectId](auto& id) {
+                    return id == objectId;
+                });
+            m_pending.erase(it, m_pending.end());
+        }
+    }
 
     const Object* PhysicsSystem::getObject(physics::object_id id) const
     {
@@ -548,16 +427,6 @@ namespace physics
         return &m_heightMaps[id];
     }
 
-    const HeightMap* PhysicsSystem::getHeightMap(dHeightfieldDataID heighgtDataId) const
-    {
-        ASSERT_WT();
-
-        const auto& it = m_heightMapIds.find(heighgtDataId);
-        if (it == m_heightMapIds.end()) return nullptr;
-
-        return &m_heightMaps[it->second];
-    }
-
     HeightMap* PhysicsSystem::modifyHeightMap(physics::height_map_id id)
     {
         ASSERT_WT();
@@ -574,10 +443,9 @@ namespace physics
 
         geom.create(
             0,
-            m_worldId,
-            m_spaceId,
+            getJoltPhysicsSystem(),
             scale,
-            nullptr);
+            JPH::BodyID());
     }
 
     std::pair<bool, float> PhysicsSystem::getWorldSurfaceLevel(
@@ -639,13 +507,11 @@ namespace physics
     void PhysicsSystem::generateObjectMeshes()
     {
         debugCounter++;
-        //if (debugCounter < 2) return;
         debugCounter = 0;
 
         auto& dbg = debug::DebugContext::modify();
         auto& physicsDbg = dbg.m_physics;
 
-        // https://stackoverflow.com/questions/29541387/is-shared-ptr-swap-thread-safe
         if (physicsDbg.m_showObjects) {
             auto meshes = m_meshGenerator->generateMeshes(false);
             physicsDbg.m_meshesWT.store(meshes);
@@ -667,54 +533,74 @@ namespace physics
 
         if (!m_enabled) return {};
 
-        //std::lock_guard lock{ m_lock };
+        auto& joltPhysicsSystem = const_cast<JPH::PhysicsSystem&>(getJoltPhysicsSystem());
 
-        const auto* ray = getObject(m_rayId);
-        if (!ray || !ray->m_geom.physicId) return {};
-
-        //KI_INFO_OUT(fmt::format(
-        //    "RAY: origin={}, dir={}, dist={}, cat={}, col={}",
-        //    origin, dir, distance, categoryMask, collisionMask));
-
-        const auto rayGeomId = ray->m_geom.physicId;
-
-        const physics::Object* sourceObject{ nullptr };
-
+        // Find the body to exclude
+        JPH::BodyID excludeBodyId;
         {
             const auto& it = m_handleToId.find(fromNode);
             if (it != m_handleToId.end()) {
-                sourceObject = &m_objects[it->second];
+                const auto& obj = m_objects[it->second];
+                if (obj.m_body.hasPhysicsBody()) {
+                    excludeBodyId = obj.m_body.m_bodyId;
+                }
             }
         }
 
-        HitData hitData;
-        if (sourceObject) {
-            hitData.sourceGeomId = sourceObject->m_geom.physicId;
+        // Create ray
+        JPH::RRayCast ray;
+        ray.mOrigin = toJoltR(origin);
+        ray.mDirection = toJolt(glm::normalize(dir) * distance);
+
+        // Create filter
+        CollisionMaskBodyFilter bodyFilter(collisionMask, excludeBodyId);
+
+        // Cast ray
+        JPH::RayCastResult result;
+        bool hit = joltPhysicsSystem.GetNarrowPhaseQuery().CastRay(
+            ray,
+            result,
+            JPH::SpecifiedBroadPhaseLayerFilter(BroadPhaseLayers::NON_MOVING),
+            JPH::SpecifiedObjectLayerFilter(ObjectLayers::NON_MOVING),
+            bodyFilter);
+
+        if (!hit) {
+            // Try moving layer
+            hit = joltPhysicsSystem.GetNarrowPhaseQuery().CastRay(
+                ray,
+                result,
+                JPH::SpecifiedBroadPhaseLayerFilter(BroadPhaseLayers::MOVING),
+                JPH::SpecifiedObjectLayerFilter(ObjectLayers::MOVING),
+                bodyFilter);
         }
-        hitData.rayGeomId = rayGeomId;
-        hitData.onlyClosest = true;
 
-        dGeomRaySet(rayGeomId, origin.x, origin.y, origin.z, dir.x, dir.y, dir.z);
-        dGeomRaySetLength(rayGeomId, distance);
-        dGeomSetCollideBits(rayGeomId, collisionMask);
+        if (hit) {
+            // Get hit position
+            JPH::RVec3 hitPos = ray.GetPointOnRay(result.mFraction);
 
-        dSpaceCollide2(rayGeomId, (dGeomID)m_spaceId, &hitData, &rayCallback);
+            // Get body and lookup node handle
+            const auto& bodyLockInterface = joltPhysicsSystem.GetBodyLockInterface();
+            JPH::BodyLockRead lock(bodyLockInterface, result.mBodyID);
 
-        // NOTE KI set mask to "none" to prevent collisions after casting
-        dGeomSetCategoryBits(rayGeomId, util::as_integer(physics::Category::none));
-        dGeomSetCollideBits(rayGeomId, util::as_integer(physics::Category::none));
+            if (lock.Succeeded()) {
+                const JPH::Body& body = lock.GetBody();
 
-        if (!hitData.hits.empty())
-        {
-            const auto& geomHit = hitData.hits[0];
-            dBodyID bodyId = dGeomGetBody(geomHit.geomId);
-            const auto& it = m_bodyToObject.find(bodyId);
-            if (it != m_bodyToObject.end()) {
+                // Get normal at hit point
+                JPH::Vec3 normal = body.GetWorldSpaceSurfaceNormal(result.mSubShapeID2, hitPos);
+
+                // Lookup object ID from body's user data
+                physics::object_id objectId = unpackObjectId(body.GetUserData());
+
+                pool::NodeHandle nodeHandle = pool::NodeHandle::NULL_HANDLE;
+                if (objectId > 0 && objectId < m_nodeHandles.size()) {
+                    nodeHandle = m_nodeHandles[objectId];
+                }
+
                 return {
-                    geomHit.pos,
-                    geomHit.normal,
-                    m_nodeHandles[it->second],
-                    geomHit.depth,
+                    fromJolt(hitPos),
+                    fromJolt(normal),
+                    nodeHandle,
+                    result.mFraction * distance,
                     true
                 };
             }
@@ -734,68 +620,14 @@ namespace physics
 
         if (!m_enabled) return {};
 
-        std::vector<physics::RayHit> result;
-        result.reserve(dirs.size());
-
-        //std::lock_guard lock{ m_lock };
-
-        const auto* ray = getObject(m_rayId);
-        if (!ray || !ray->m_geom.physicId) return {};
-
-        const auto rayGeomId = ray->m_geom.physicId;
-
-        const physics::Object* sourceObject{ nullptr };
-
-        {
-            const auto& it = m_handleToId.find(fromNode);
-            if (it != m_handleToId.end()) {
-                sourceObject = &m_objects[it->second];
-            }
-        }
-
-        dGeomRaySetLength(rayGeomId, distance);
-        dGeomSetCollideBits(rayGeomId, collisionMask);
-
-        HitData hitData;
-        if (sourceObject) {
-            hitData.sourceGeomId = sourceObject->m_geom.physicId;
-        }
-        hitData.rayGeomId = rayGeomId;
-        hitData.onlyClosest = true;
+        std::vector<physics::RayHit> results;
+        results.reserve(dirs.size());
 
         for (const auto& dir : dirs) {
-            //KI_INFO_OUT(fmt::format(
-            //    "RAY: origin={}, dir={}, dist={}, cat={}, col={}",
-            //    origin, dir, distance, categoryMask, collisionMask));
-
-            dGeomRaySet(rayGeomId, origin.x, origin.y, origin.z, dir.x, dir.y, dir.z);
-            dSpaceCollide2(rayGeomId, (dGeomID)m_spaceId, &hitData, &rayCallback);
-
-            if (hitData.hits.empty()) {
-                result.emplace_back();
-            }
-            else {
-                const auto& geomHit = hitData.hits[0];
-                dBodyID bodyId = dGeomGetBody(geomHit.geomId);
-                const auto& it = m_bodyToObject.find(bodyId);
-                if (it != m_bodyToObject.end()) {
-                    result.emplace_back(
-                        geomHit.pos,
-                        geomHit.normal,
-                        m_nodeHandles[it->second],
-                        geomHit.depth,
-                        true);
-
-                }
-            }
-            hitData.hits.clear();
+            results.push_back(rayCastClosest(origin, dir, distance, collisionMask, fromNode));
         }
 
-        // NOTE KI set mask to "none" to prevent collisions after casting
-        dGeomSetCategoryBits(rayGeomId, util::as_integer(physics::Category::none));
-        dGeomSetCollideBits(rayGeomId, util::as_integer(physics::Category::none));
-
-        return result;
+        return results;
     }
 
     std::vector<physics::RayHit> PhysicsSystem::rayCastClosestFromMultiple(
@@ -809,67 +641,33 @@ namespace physics
 
         if (!m_enabled) return {};
 
-        std::vector<physics::RayHit> result;
-        result.reserve(origins.size());
-
-        //std::lock_guard lock{ m_lock };
-
-        const auto* ray = getObject(m_rayId);
-        if (!ray || !ray->m_geom.physicId) return {};
-
-        const auto rayGeomId = ray->m_geom.physicId;
-
-        const physics::Object* sourceObject{ nullptr };
-
-        {
-            const auto& it = m_handleToId.find(fromNode);
-            if (it != m_handleToId.end()) {
-                sourceObject = &m_objects[it->second];
-            }
-        }
-
-        dGeomRaySetLength(rayGeomId, distance);
-        dGeomSetCollideBits(rayGeomId, collisionMask);
-
-        HitData hitData;
-        if (sourceObject) {
-            hitData.sourceGeomId = sourceObject->m_geom.physicId;
-        }
-        hitData.rayGeomId = rayGeomId;
-        hitData.onlyClosest = true;
+        std::vector<physics::RayHit> results;
+        results.reserve(origins.size());
 
         for (const auto& origin : origins) {
-            //KI_INFO_OUT(fmt::format(
-            //    "RAY: origin={}, dir={}, dist={}, cat={}, col={}",
-            //    origin, dir, distance, categoryMask, collisionMask));
-
-            dGeomRaySet(rayGeomId, origin.x, origin.y, origin.z, dir.x, dir.y, dir.z);
-            dSpaceCollide2(rayGeomId, (dGeomID)m_spaceId, &hitData, &rayCallback);
-
-            if (hitData.hits.empty()) {
-                result.emplace_back();
-            }
-            else {
-                const auto& geomHit = hitData.hits[0];
-                dBodyID bodyId = dGeomGetBody(geomHit.geomId);
-                const auto& it = m_bodyToObject.find(bodyId);
-                if (it != m_bodyToObject.end()) {
-                    result.emplace_back(
-                        geomHit.pos,
-                        geomHit.normal,
-                        m_nodeHandles[it->second],
-                        geomHit.depth,
-                        true);
-
-                }
-            }
-            hitData.hits.clear();
+            results.push_back(rayCastClosest(origin, dir, distance, collisionMask, fromNode));
         }
 
-        // NOTE KI set mask to "none" to prevent collisions after casting
-        dGeomSetCategoryBits(rayGeomId, util::as_integer(physics::Category::none));
-        dGeomSetCollideBits(rayGeomId, util::as_integer(physics::Category::none));
+        return results;
+    }
 
-        return result;
+    JPH::PhysicsSystem& PhysicsSystem::getJoltPhysicsSystem()
+    {
+        return JoltFoundation::get().getPhysicsSystem();
+    }
+
+    const JPH::PhysicsSystem& PhysicsSystem::getJoltPhysicsSystem() const
+    {
+        return JoltFoundation::get().getPhysicsSystem();
+    }
+
+    JPH::BodyInterface& PhysicsSystem::getBodyInterface()
+    {
+        return JoltFoundation::get().getBodyInterface();
+    }
+
+    const JPH::BodyInterface& PhysicsSystem::getBodyInterface() const
+    {
+        return JoltFoundation::get().getBodyInterface();
     }
 }

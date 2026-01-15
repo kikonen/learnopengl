@@ -1,19 +1,30 @@
 #include "Geom.h"
 
+#include <algorithm>
+
+#include <Jolt/Physics/PhysicsSystem.h>
+#include <Jolt/Physics/Body/BodyCreationSettings.h>
+#include <Jolt/Physics/Body/BodyInterface.h>
+#include <Jolt/Physics/Collision/Shape/BoxShape.h>
+#include <Jolt/Physics/Collision/Shape/SphereShape.h>
+#include <Jolt/Physics/Collision/Shape/CapsuleShape.h>
+#include <Jolt/Physics/Collision/Shape/CylinderShape.h>
+#include <Jolt/Physics/Collision/Shape/PlaneShape.h>
+
 #include "util/debug.h"
 
 #include "component/definition/PhysicsDefinition.h"
 
+#include "jolt_util.h"
+#include "JoltFoundation.h"
 #include "Body.h"
-
-#include <algorithm>
 
 namespace physics {
     Geom::Geom() {}
 
     Geom::~Geom()
     {
-        release();
+        // Note: release() must be called explicitly with BodyInterface
     }
 
     Geom::Geom(const GeomDefinition& o) noexcept
@@ -39,8 +50,8 @@ namespace physics {
         std::swap(size, o.size);
         std::swap(rotation, o.rotation);
         std::swap(offset, o.offset);
-        std::swap(physicId, o.physicId);
-        std::swap(heightDataId, o.heightDataId);
+        std::swap(m_staticBodyId, o.m_staticBodyId);
+        std::swap(m_heightFieldShape, o.m_heightFieldShape);
         std::swap(categoryMask, o.categoryMask);
         std::swap(collisionMask, o.collisionMask);
         std::swap(materialId, o.materialId);
@@ -48,150 +59,179 @@ namespace physics {
         std::swap(placeable, o.placeable);
     }
 
-    void Geom::release()
+    void Geom::release(JPH::BodyInterface& bodyInterface)
     {
-        if (physicId) {
-            dGeomDestroy(physicId);
-            physicId = nullptr;
+        if (!m_staticBodyId.IsInvalid()) {
+            bodyInterface.RemoveBody(m_staticBodyId);
+            bodyInterface.DestroyBody(m_staticBodyId);
+            m_staticBodyId = JPH::BodyID();
         }
-        if (heightDataId) {
-            dGeomHeightfieldDataDestroy(heightDataId);
-            heightDataId = nullptr;
-        }
+        m_heightFieldShape = nullptr;
     }
 
     void Geom::create(
         physics::object_id objectId,
-        dWorldID worldId,
-        dSpaceID spaceId,
+        JPH::PhysicsSystem& physicsSystem,
         const glm::vec3& scale,
-        dBodyID bodyPhysicId)
+        JPH::BodyID attachedBodyId)
     {
         if (type == GeomType::none) return;
 
+        // If attached to a body, the shape is part of that body
+        // We only create standalone bodies for geom-only objects
+        if (!attachedBodyId.IsInvalid()) {
+            // Geom is attached to a body - nothing to create here
+            // The body already has the shape
+            return;
+        }
+
         auto sz = scale * size;
         float radius = sz.x;
-        float length = sz.y * 2.f;
+        float halfLength = sz.y;
+
+        JPH::RefConst<JPH::Shape> shape;
 
         switch (type) {
         case GeomType::ray: {
-            physicId = dCreateRay(spaceId, 0);
-            dGeomRaySet(physicId, 0, 0, 0, 0, 0, 1);
-            break;
+            // Rays in Jolt are NOT shapes - they're query operations
+            // Don't create any body for rays
+            return;
         }
         case GeomType::plane: {
-            // TODO KI updateToPhysics() *WILL* override this
-            glm::vec3 normal{ 0, 1.f, 0 };
-            float dist = 0.f;
-            auto plane = rotation * glm::vec4(normal, 1.f);
-
-            physicId = dCreatePlane(spaceId, plane.x, plane.y, plane.z, dist);
+            // Create a plane shape
+            // Note: Jolt planes are infinite
+            glm::vec3 normal = rotation * glm::vec3(0, 1, 0);
+            JPH::Plane plane(toJolt(normal), 0.0f);
+            shape = new JPH::PlaneShape(plane);
             break;
         }
         case GeomType::height_field: {
-            heightDataId = dGeomHeightfieldDataCreate();
-            // NOTE KI placeable to allow setting origin
-            physicId = dCreateHeightfield(spaceId, heightDataId, placeable);
-            break;
+            // HeightField is handled separately via HeightMap class
+            // The shape will be set later when HeightMap::create is called
+            return;
         }
         case GeomType::box: {
-            physicId = dCreateBox(spaceId, sz.x * 2.f, sz.y * 2.f, sz.z * 2.f);
+            shape = new JPH::BoxShape(JPH::Vec3(sz.x, sz.y, sz.z));
             break;
         }
         case GeomType::sphere: {
-            physicId = dCreateSphere(spaceId, radius);
+            shape = new JPH::SphereShape(radius);
             break;
         }
         case GeomType::capsule: {
-            physicId = dCreateCapsule(spaceId, radius, length);
+            shape = new JPH::CapsuleShape(halfLength, radius);
             break;
         }
         case GeomType::cylinder: {
-            physicId = dCreateCylinder(spaceId, radius, length);
+            shape = new JPH::CylinderShape(halfLength, radius);
             break;
         }
+        default:
+            return;
         }
 
-        if (!physicId) return;
+        if (!shape) return;
 
-        // NOTE KI node updates only if body
-        if (bodyPhysicId) {
-            const auto& so = scale * offset;
-            dGeomSetBody(physicId, bodyPhysicId);
-            dGeomSetOffsetPosition(physicId, so.x, so.y, so.z);
-        }
+        // Create static body for standalone geom
+        JPH::ObjectLayer objectLayer = toObjectLayer(categoryMask, false, false);
 
-        {
-            //KI_INFO_OUT(fmt::format("GEOM: cat={}, col={}", categoryMask, collisionMask));
-            dGeomSetCategoryBits(physicId, categoryMask);
-            dGeomSetCollideBits(physicId, collisionMask);
+        JPH::BodyCreationSettings settings(
+            shape,
+            JPH::RVec3::sZero(),
+            JPH::Quat::sIdentity(),
+            JPH::EMotionType::Static,
+            objectLayer);
 
-            //if (const auto& q = m_geom.quat;
-            //    rotation != NULL_QUAT)
-            //{
-            //    dQuaternion quat{ q.w, q.x, q.y, q.z };
-            //    dGeomSetQuaternion(physicId, quat);
+        // Set friction and restitution
+        settings.mFriction = 0.5f;
+        settings.mRestitution = 0.3f;
 
-            //    dQuaternion quat2;
-            //    dGeomGetQuaternion(physicId, quat2);
-            //    int x = 0;
-            //}
-        }
+        // Pack user data
+        settings.mUserData = packUserData(objectId, categoryMask, collisionMask);
 
-        dGeomSetData(physicId, (void*)objectId);
+        JPH::BodyInterface& bodyInterface = physicsSystem.GetBodyInterface();
+        m_staticBodyId = bodyInterface.CreateAndAddBody(settings, JPH::EActivation::DontActivate);
     }
 
     void Geom::updatePhysic(
+        JPH::BodyInterface& bodyInterface,
         const glm::vec3& nodePivot,
         const glm::vec3& nodePos,
         const glm::quat& nodeRot) const
     {
         if (type == GeomType::none) return;
-
-        // NOTE KI handle bodiless geoms separately
-        //const auto& sz = size;
-        //const float radius = sz.x;
-        //const float length = sz.y * 2.f;
+        if (type == GeomType::ray) return;
 
         bool handled = false;
         switch (type) {
         case GeomType::plane: {
-            setPlane(nodePivot, nodeRot * rotation);
+            setPlane(bodyInterface, nodePivot, nodeRot * rotation);
             handled = true;
             break;
         }
         case GeomType::height_field: {
-            setHeightField(nodePivot, nodeRot * rotation);
+            setHeightField(bodyInterface, nodePivot, nodeRot * rotation);
             handled = true;
             break;
         }
         }
 
         if (!handled) {
-            setPhysicPosition(nodePos);
-            setPhysicRotation(nodeRot);
+            setPhysicPosition(bodyInterface, nodePos);
+            setPhysicRotation(bodyInterface, nodeRot);
         }
     }
 
-    void Geom::setPlane(const glm::vec3& pos, const glm::quat& rot) const
+    void Geom::setPlane(JPH::BodyInterface& bodyInterface, const glm::vec3& pos, const glm::quat& rot) const
     {
-        const glm::vec3 UP{ 0.f, 1.f, 0.f };
+        if (m_staticBodyId.IsInvalid()) return;
 
-        auto normal = rot * UP;
-
-        // NOTE KI distance into direction of plane normal
-        auto dist = glm::dot(normal, pos);
-
-        dGeomPlaneSetParams(physicId, normal.x, normal.y, normal.z, dist);
+        // For planes, we need to recreate the shape since Jolt planes are defined at creation
+        // For now, just update position/rotation
+        bodyInterface.SetPositionAndRotation(
+            m_staticBodyId,
+            toJoltR(pos),
+            toJolt(rot),
+            JPH::EActivation::DontActivate);
     }
 
-    void Geom::setHeightField(const glm::vec3& pos, const glm::quat& rot) const
+    void Geom::setHeightField(JPH::BodyInterface& bodyInterface, const glm::vec3& pos, const glm::quat& rot) const
     {
+        if (m_staticBodyId.IsInvalid()) return;
+
         if (placeable) {
             // HACK KI match current terrain placement logic
-            // => would be better to change terrain to use "center point"?!?
-            setPhysicPosition(pos + size * 0.5f);
-            setPhysicRotation(rot);
+            setPhysicPosition(bodyInterface, pos + size * 0.5f);
+            setPhysicRotation(bodyInterface, rot);
         }
+    }
+
+    void Geom::setPhysicPosition(JPH::BodyInterface& bodyInterface, const glm::vec3& pos) const
+    {
+        if (m_staticBodyId.IsInvalid()) return;
+        if (!placeable) return;
+
+        bodyInterface.SetPosition(m_staticBodyId, toJoltR(pos), JPH::EActivation::DontActivate);
+    }
+
+    glm::vec3 Geom::getPhysicPosition(const JPH::BodyInterface& bodyInterface) const
+    {
+        if (m_staticBodyId.IsInvalid()) return glm::vec3(0.f);
+        return fromJolt(bodyInterface.GetPosition(m_staticBodyId));
+    }
+
+    void Geom::setPhysicRotation(JPH::BodyInterface& bodyInterface, const glm::quat& nodeRot) const
+    {
+        if (m_staticBodyId.IsInvalid()) return;
+        if (!placeable) return;
+
+        const auto& rot = nodeRot * rotation;
+        bodyInterface.SetRotation(m_staticBodyId, toJolt(rot), JPH::EActivation::DontActivate);
+    }
+
+    glm::quat Geom::getPhysicRotation(const JPH::BodyInterface& bodyInterface) const
+    {
+        if (m_staticBodyId.IsInvalid()) return glm::quat(1.f, 0.f, 0.f, 0.f);
+        return fromJolt(bodyInterface.GetRotation(m_staticBodyId));
     }
 }

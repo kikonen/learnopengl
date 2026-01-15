@@ -98,6 +98,8 @@ types:
         density: 0.1
       geom:
         type: box
+        category: [scenery]
+        collision: [world, player]
         size: [0.5]
 
 nodes:

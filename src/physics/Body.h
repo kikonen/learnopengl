@@ -1,6 +1,7 @@
 #pragma once
 
-#include <ode/ode.h>
+#include <Jolt/Jolt.h>
+#include <Jolt/Physics/Body/BodyID.h>
 
 #include <glm/glm.hpp>
 #include <glm/gtx/quaternion.hpp>
@@ -8,6 +9,11 @@
 #include "size.h"
 
 struct BodyDefinition;
+
+namespace JPH {
+    class BodyInterface;
+    class PhysicsSystem;
+}
 
 namespace physics {
     struct Body {
@@ -39,49 +45,33 @@ namespace physics {
             return type != BodyType::none;
         }
 
-        void release();
+        bool hasPhysicsBody() const noexcept {
+            return !m_bodyId.IsInvalid();
+        }
+
+        void release(JPH::BodyInterface& bodyInterface);
 
         void create(
             physics::object_id objectId,
-            dWorldID worldId,
-            dSpaceID spaceId,
+            uint32_t categoryMask,
+            uint32_t collisionMask,
+            JPH::PhysicsSystem& physicsSystem,
             const glm::vec3& scale);
 
         void updatePhysic(
+            JPH::BodyInterface& bodyInterface,
             const glm::vec3& nodePivot,
             const glm::vec3& nodePos,
             const glm::quat& nodeRot) const;
 
-        void setPhysicPosition(const glm::vec3& pos) const
-        {
-            dBodySetPosition(physicId, pos.x, pos.y, pos.z);
-        }
+        void setPhysicPosition(JPH::BodyInterface& bodyInterface, const glm::vec3& pos) const;
+        glm::vec3 getPhysicPosition(const JPH::BodyInterface& bodyInterface) const;
 
-        glm::vec3 getPhysicPosition() const
-        {
-            const dReal* dpos = dBodyGetPosition(physicId);
-            return {
-                static_cast<float>(dpos[0]),
-                static_cast<float>(dpos[1]),
-                static_cast<float>(dpos[2]) };
-        }
+        void setPhysicRotation(JPH::BodyInterface& bodyInterface, const glm::quat& rot) const;
+        glm::quat getPhysicRotation(const JPH::BodyInterface& bodyInterface) const;
 
-        void setPhysicRotation(const glm::quat& rot) const
-        {
-            dQuaternion dquat{ rot.w, rot.x, rot.y, rot.z };
-            dBodySetQuaternion(physicId, dquat);
-        }
-
-        glm::quat getPhysicRotation() const
-        {
-            const dReal* dquat = dBodyGetQuaternion(physicId);
-
-            return {
-                static_cast<float>(dquat[0]),
-                static_cast<float>(dquat[1]),
-                static_cast<float>(dquat[2]),
-                static_cast<float>(dquat[3]) };
-        }
+        void setLinearVelocity(JPH::BodyInterface& bodyInterface, const glm::vec3& vel) const;
+        void setAngularVelocity(JPH::BodyInterface& bodyInterface, const glm::vec3& vel) const;
 
     public:
         // NOTE KI *SCALED* using scale of node
@@ -107,7 +97,7 @@ namespace physics {
 
         float density{ 1.f };
 
-        dBodyID physicId{ nullptr };
+        JPH::BodyID m_bodyId;
 
         physics::BodyType type{ physics::BodyType::none };
 

@@ -7,7 +7,8 @@
 #include <tuple>
 #include <span>
 
-#include <ode/ode.h>
+#include <Jolt/Jolt.h>
+#include <Jolt/Physics/Body/BodyID.h>
 
 #include "ki/size.h"
 
@@ -23,9 +24,15 @@ namespace model
     class NodeType;
 }
 
+namespace JPH {
+    class PhysicsSystem;
+    class BodyInterface;
+}
+
 namespace physics {
     struct RayHit;
     class MeshGenerator;
+    class JoltFoundation;
 
     class PhysicsSystem {
         friend class MeshGenerator;
@@ -74,7 +81,6 @@ namespace physics {
 
         physics::height_map_id registerHeightMap();
         const HeightMap* getHeightMap(physics::height_map_id id) const;
-        const HeightMap* getHeightMap(dHeightfieldDataID heighgtDataId) const;
         HeightMap* modifyHeightMap(physics::height_map_id id);
 
         // Register geom into world
@@ -103,14 +109,6 @@ namespace physics {
             uint32_t collisionMask,
             pool::NodeHandle fromNode) const;
 
-        //std::vector<physics::RayHit> rayCastWithLimit(
-        //    const glm::vec3& origin,
-        //    const glm::vec3& dir,
-        //    float distance,
-        //    uint32_t collisionMask,
-        //    pool::NodeHandle fromNode,
-        //    int maxHits) const;
-
         std::vector<physics::RayHit> rayCastClosestToMultiple(
             const glm::vec3& origin,
             const std::vector<glm::vec3>& dirs,
@@ -130,17 +128,16 @@ namespace physics {
             return !m_pending.empty();
         }
 
+        // Access to Jolt systems
+        JPH::PhysicsSystem& getJoltPhysicsSystem();
+        const JPH::PhysicsSystem& getJoltPhysicsSystem() const;
+        JPH::BodyInterface& getBodyInterface();
+        const JPH::BodyInterface& getBodyInterface() const;
+
     private:
         void preparePending(const UpdateContext& ctx);
 
         void generateObjectMeshes();
-
-    public:
-        dWorldID m_worldId{ nullptr };
-        dSpaceID m_spaceId{ nullptr };
-        dJointGroupID m_contactgroupId{ nullptr };
-
-        std::unordered_map<dGeomID, Object*> m_geomToObject;
 
     private:
         std::shared_ptr<std::atomic_bool> m_alive;
@@ -179,13 +176,10 @@ namespace physics {
         // INDEX = objectId
         std::vector<physics::object_id> m_updateObjects;
 
-        physics::object_id m_rayId{ 0 };
-
         std::vector<HeightMap> m_heightMaps;
 
-        std::unordered_map<dHeightfieldDataID, physics::height_map_id> m_heightMapIds;
-
-        std::unordered_map<dBodyID, physics::object_id> m_bodyToObject;
+        // Map from Jolt BodyID to object_id
+        std::unordered_map<uint32_t, physics::object_id> m_bodyIdToObject;
 
         std::unordered_map<pool::NodeHandle, physics::object_id> m_handleToId;
 

@@ -6,11 +6,18 @@
 #include "util/Log.h"
 #include <fmt/format.h>
 
+#include <Jolt/Physics/PhysicsSystem.h>
+#include <Jolt/Physics/Body/BodyCreationSettings.h>
+#include <Jolt/Physics/Body/BodyInterface.h>
+#include <Jolt/Physics/Collision/Shape/HeightFieldShape.h>
+
 #include "material/Image.h"
 
 #include "model/Node.h"
 
 #include "physics/Object.h"
+#include "physics/jolt_util.h"
+#include "physics/JoltFoundation.h"
 
 namespace physics {
     HeightMap::HeightMap()
@@ -18,7 +25,6 @@ namespace physics {
 
     HeightMap::HeightMap(HeightMap&& o) noexcept
         : m_id{ o.m_id },
-        //m_image{ std::move(o.m_image) },
         m_origin{ o.m_origin },
         m_worldTileSize{ o.m_worldTileSize },
         m_worldSizeU{ o.m_worldSizeU },
@@ -27,10 +33,13 @@ namespace physics {
         m_horizontalScale{ o.m_horizontalScale },
         m_dataDepth{ o.m_dataDepth },
         m_dataWidth{ o.m_dataWidth },
-        m_heightData{ o.m_heightData }
+        m_heightData{ o.m_heightData },
+        m_bodyId{ o.m_bodyId },
+        m_heightFieldShape{ std::move(o.m_heightFieldShape) }
     {
         // NOTE KI o is moved now
         o.m_heightData = nullptr;
+        o.m_bodyId = JPH::BodyID();
     }
 
     HeightMap::~HeightMap()
@@ -38,6 +47,8 @@ namespace physics {
         if (m_heightData) {
             delete[] m_heightData;
         }
+
+        // Body cleanup handled by PhysicsSystem
     }
 
     void HeightMap::prepare(
@@ -73,15 +84,10 @@ namespace physics {
         const unsigned char* ptr = image.m_data;
         for (int vi = 0; vi < imageH; vi++) {
             const int v = m_flipH ? imageH - vi - 1 : vi;
-            //const int v = vi;
 
             for (int u = 0; u < imageW; u++) {
                 unsigned short heightValue = *((unsigned short*)ptr);
                 float y = rangeYmin + ((float)heightValue / entryScale) * rangeY;
-                //y = rangeYmin;
-
-                //float t = (float)u / (float)imageW;
-                //y = rangeYmin + t * rangeY;
 
                 if (heightValue < minH) minH = heightValue;
                 if (heightValue > maxH) maxH = heightValue;
@@ -109,33 +115,75 @@ namespace physics {
     }
 
     void HeightMap::create(
-        dWorldID worldId,
-        dSpaceID spaceId,
-        physics::Object& object) const
+        JPH::PhysicsSystem& physicsSystem,
+        physics::Object& object)
     {
+        if (!m_prepared || !m_heightData) return;
+
         auto& geom = object.m_geom;
 
-        dGeomHeightfieldDataBuildSingle(
-            geom.heightDataId,
+        // Calculate scale factors
+        // Jolt HeightFieldShape expects samples in a grid where spacing is determined by scale
+        float scaleX = static_cast<float>(m_worldSizeU) / static_cast<float>(m_dataWidth - 1);
+        float scaleZ = static_cast<float>(m_worldSizeV) / static_cast<float>(m_dataDepth - 1);
+
+        // Create height field shape settings
+        // Note: Jolt HeightFieldShape constructor wants:
+        // - samples: height data (row-major order)
+        // - offset: world space offset for the shape
+        // - scale: scale in X, Y (height), Z directions
+        // - sampleCount: must be power of 2 + 1 for optimal performance, but others work
+
+        JPH::HeightFieldShapeSettings settings(
             m_heightData,
-            true,    // copy
-            m_worldSizeU, // width
-            m_worldSizeV, // depth
-            m_dataWidth,      // widthSamples
-            m_dataDepth,      // depthSamples
-            1.f,     // scale
-            0.f,     // dReal offset,
-            10.1f,    //dReal thickness,
-            false);
-        // NOTE KI offset affects these & ODE seems to calculate this
-        //dGeomHeightfieldDataSetBounds(geom.heightDataId, m_minY, m_maxY);
+            JPH::Vec3::sZero(),  // Offset (position set via body)
+            JPH::Vec3(scaleX, 1.0f, scaleZ),  // Scale - height is already in world units
+            m_dataWidth);  // Sample count (assumes square for Jolt, uses width)
+
+        // Set some additional settings
+        settings.mBitsPerSample = 8;  // 8 bits per sample for reasonable precision
+        settings.mBlockSize = 4;  // Block size for compression
+
+        // Create the shape
+        JPH::Shape::ShapeResult result = settings.Create();
+
+        if (result.HasError()) {
+            KI_CRITICAL(fmt::format("HMAP: Failed to create HeightFieldShape: {}", result.GetError().c_str()));
+            return;
+        }
+
+        m_heightFieldShape = result.Get();
+
+        // Create static body for the terrain
+        JPH::BodyCreationSettings bodySettings(
+            m_heightFieldShape,
+            JPH::RVec3::sZero(),  // Position will be set below
+            JPH::Quat::sIdentity(),
+            JPH::EMotionType::Static,
+            ObjectLayers::NON_MOVING);
+
+        bodySettings.mFriction = 0.5f;
+        bodySettings.mRestitution = 0.0f;
+
+        // Pack user data
+        bodySettings.mUserData = packUserData(0, geom.categoryMask, geom.collisionMask);
+
+        JPH::BodyInterface& bodyInterface = physicsSystem.GetBodyInterface();
+        m_bodyId = bodyInterface.CreateAndAddBody(bodySettings, JPH::EActivation::DontActivate);
+
+        // Store the body ID in the geom for position updates
+        geom.m_staticBodyId = m_bodyId;
+        geom.m_heightFieldShape = m_heightFieldShape;
+
+        KI_INFO_OUT(fmt::format(
+            "HMAP: Created Jolt HeightFieldShape {}x{}, world size {}x{}, scale {:.2f}x{:.2f}",
+            m_dataWidth, m_dataDepth, m_worldSizeU, m_worldSizeV, scaleX, scaleZ
+        ));
     }
 
     float HeightMap::getTerrainHeight(float u, float v) const noexcept
     {
         if (m_dataDepth == 0 || m_dataWidth == 0) return 0;
-
-        //if (m_flipH) v = 1.f - v;
 
         // NOTE KI use bilinear interpolation
         // use "clamp to edge"

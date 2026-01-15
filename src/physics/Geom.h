@@ -1,6 +1,9 @@
 #pragma once
 
-#include <ode/ode.h>
+#include <Jolt/Jolt.h>
+#include <Jolt/Physics/Body/BodyID.h>
+#include <Jolt/Core/Reference.h>
+#include <Jolt/Physics/Collision/Shape/Shape.h>
 
 #include <glm/glm.hpp>
 #include <glm/gtx/quaternion.hpp>
@@ -9,6 +12,11 @@
 #include "size.h"
 
 struct GeomDefinition;
+
+namespace JPH {
+    class BodyInterface;
+    class PhysicsSystem;
+}
 
 namespace physics {
     struct Body;
@@ -41,65 +49,38 @@ namespace physics {
             return type != GeomType::none;
         }
 
-        void release();
+        bool hasPhysicsBody() const noexcept {
+            return !m_staticBodyId.IsInvalid();
+        }
 
+        bool isRay() const noexcept {
+            return type == GeomType::ray;
+        }
+
+        void release(JPH::BodyInterface& bodyInterface);
+
+        // Create standalone geom (no body attached)
+        // For geom-only objects, creates a static body
         void create(
             physics::object_id objectId,
-            dWorldID worldId,
-            dSpaceID spaceId,
+            JPH::PhysicsSystem& physicsSystem,
             const glm::vec3& scale,
-            dBodyID bodyPhysicId);
+            JPH::BodyID attachedBodyId);
 
         void updatePhysic(
+            JPH::BodyInterface& bodyInterface,
             const glm::vec3& nodePivot,
             const glm::vec3& nodePos,
             const glm::quat& nodeRot) const;
 
-        void setPlane(const glm::vec3& pos, const glm::quat& rot) const;
-        void setHeightField(const glm::vec3& pos, const glm::quat& rot) const;
+        void setPlane(JPH::BodyInterface& bodyInterface, const glm::vec3& pos, const glm::quat& rot) const;
+        void setHeightField(JPH::BodyInterface& bodyInterface, const glm::vec3& pos, const glm::quat& rot) const;
 
-        void setPhysicPosition(const glm::vec3& pos) const
-        {
-            if (placeable) {
-                dGeomSetPosition(physicId, pos.x, pos.y, pos.z);
-            }
-        }
+        void setPhysicPosition(JPH::BodyInterface& bodyInterface, const glm::vec3& pos) const;
+        glm::vec3 getPhysicPosition(const JPH::BodyInterface& bodyInterface) const;
 
-        // NOTE KI  If the geom is attached to a body,
-        // the body's position / rotation pointers will be returned, i.e. the result
-        // will be identical to calling dBodyGetPosition or dBodyGetRotation.
-        glm::vec3 getPhysicPosition() const
-        {
-            const dReal* dpos = dGeomGetPosition(physicId);
-            return {
-                static_cast<float>(dpos[0]),
-                static_cast<float>(dpos[1]),
-                static_cast<float>(dpos[2]) };
-        }
-
-        void setPhysicRotation(const glm::quat& nodeRot) const
-        {
-            if (placeable) {
-                const auto& rot = nodeRot * rotation;
-                dQuaternion dquat{ rot.w, rot.x, rot.y, rot.z };
-                dGeomSetQuaternion(physicId, dquat);
-            }
-        }
-
-        // NOTE KI  If the geom is attached to a body,
-        // the body's position / rotation pointers will be returned, i.e. the result
-        // will be identical to calling dBodyGetPosition or dBodyGetRotation.
-        glm::quat getPhysicRotation() const
-        {
-            dQuaternion dquat;
-            dGeomGetQuaternion(physicId, dquat);
-
-            return {
-                static_cast<float>(dquat[0]),
-                static_cast<float>(dquat[1]),
-                static_cast<float>(dquat[2]),
-                static_cast<float>(dquat[3]) };
-        }
+        void setPhysicRotation(JPH::BodyInterface& bodyInterface, const glm::quat& nodeRot) const;
+        glm::quat getPhysicRotation(const JPH::BodyInterface& bodyInterface) const;
 
     public:
         // NOTE KI *SCALED* using scale of node
@@ -115,16 +96,17 @@ namespace physics {
         glm::quat rotation{ 1.f, 0.f, 0.f, 0.f };
         glm::vec3 offset{ 0.f };
 
-        //glm::vec4 plane{ 0.f, 1.f, 0.f, 0.f };
+        // For standalone geoms (without Body), we create a static body
+        // For attached geoms (with Body), this remains invalid and shape is part of body
+        mutable JPH::BodyID m_staticBodyId;
 
-        mutable dGeomID physicId{ nullptr };
-        mutable dHeightfieldDataID heightDataId{ nullptr };
+        // Shape reference for heightfield (kept alive)
+        JPH::RefConst<JPH::Shape> m_heightFieldShape;
 
         uint32_t categoryMask{ UINT_MAX };
         uint32_t collisionMask{ UINT_MAX };
 
-        // dContactXX flags for geom
-        // TODO KI define "PhysicsMaterial" and refer to it from geom
+        // Material ID for physics material lookup
         physics::material_id materialId{ 0 };
 
         physics::GeomType type{ physics::GeomType::none };

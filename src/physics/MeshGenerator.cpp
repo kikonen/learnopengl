@@ -8,6 +8,15 @@
 #include <glm/gtx/quaternion.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
+#include <Jolt/Physics/PhysicsSystem.h>
+#include <Jolt/Physics/Body/BodyInterface.h>
+#include <Jolt/Physics/Body/BodyLock.h>
+#include <Jolt/Physics/Collision/Shape/BoxShape.h>
+#include <Jolt/Physics/Collision/Shape/SphereShape.h>
+#include <Jolt/Physics/Collision/Shape/CapsuleShape.h>
+#include <Jolt/Physics/Collision/Shape/CylinderShape.h>
+#include <Jolt/Physics/Collision/Shape/HeightFieldShape.h>
+
 #include <fmt/format.h>
 
 #include "util/glm_format.h"
@@ -30,7 +39,9 @@
 #include "mesh/MeshInstance.h"
 
 #include "PhysicsSystem.h"
-#include "ode_util.h"
+#include "jolt_util.h"
+#include "JoltFoundation.h"
+#include "HeightMap.h"
 
 
 namespace {
@@ -109,28 +120,39 @@ namespace physics {
 
     std::shared_ptr<std::vector<mesh::MeshInstance>> MeshGenerator::generateMeshes(bool onlyNavMesh)
     {
-        const auto spaceId = m_physicsSystem.m_spaceId;
-        auto geomCount = dSpaceGetNumGeoms(spaceId);
-
         auto meshes = std::make_shared<std::vector<mesh::MeshInstance>>();
-        meshes->reserve(geomCount);
 
-        for (int i = 0; i < geomCount; i++) {
-            auto geomId = dSpaceGetGeom(spaceId, i);
-            auto geomType = getGeomType(dGeomGetClass(geomId));
+        // Iterate over our physics objects
+        const auto objectCount = m_physicsSystem.getObjectCount();
+        meshes->reserve(objectCount);
+
+        for (physics::object_id id = 1; id < objectCount; id++) {
+            const auto* obj = m_physicsSystem.getObject(id);
+            if (!obj) continue;
+            if (!obj->ready()) continue;
 
             bool isNavMesh = false;
             {
-                auto objectId = (physics::object_id)dGeomGetData(geomId);
-                const auto* node = m_physicsSystem.getNodeHandle(objectId).toNode();
+                const auto* node = m_physicsSystem.getNodeHandle(id).toNode();
                 if (node) {
                     isNavMesh = node->m_typeFlags.navPhysics;
                 }
             }
 
             if (!onlyNavMesh || isNavMesh) {
-                auto instance = generateMesh(geomType, geomId);
+                auto instance = generateMesh(*obj, id);
                 if (instance.m_mesh) {
+                    auto geomType = obj->m_geom.type;
+                    if (geomType == GeomType::none && obj->m_body.type != BodyType::none) {
+                        // Use body type for material if geom type is none
+                        switch (obj->m_body.type) {
+                        case BodyType::box: geomType = GeomType::box; break;
+                        case BodyType::sphere: geomType = GeomType::sphere; break;
+                        case BodyType::capsule: geomType = GeomType::capsule; break;
+                        case BodyType::cylinder: geomType = GeomType::cylinder; break;
+                        default: break;
+                        }
+                    }
                     instance.m_materialIndex = getMaterial(geomType).m_registeredIndex;
                     meshes->push_back(instance);
                 }
@@ -141,10 +163,24 @@ namespace physics {
     }
 
     mesh::MeshInstance MeshGenerator::generateMesh(
-        physics::GeomType geomType,
-        dGeomID geomId)
+        const physics::Object& obj,
+        physics::object_id objectId)
     {
-        if (geomType == physics::GeomType::none) return {};
+        const auto& body = obj.m_body;
+        const auto& geom = obj.m_geom;
+
+        // Determine which type to use (prefer geom, fall back to body)
+        physics::GeomType geomType = geom.type;
+        physics::BodyType bodyType = body.type;
+
+        if (geomType == GeomType::none && bodyType == BodyType::none) {
+            return {};
+        }
+
+        // Skip rays - they're not visualized via bodies
+        if (geomType == GeomType::ray) {
+            return {};
+        }
 
         glm::vec3 pos{ 0.f };
         glm::vec3 scale{ 1.f };
@@ -152,70 +188,29 @@ namespace physics {
         glm::vec3 offset{ 0.f };
 
         std::string cacheKey;
-
         std::shared_ptr<mesh::Mesh> mesh;
-        {
+
+        // Get position and rotation from Jolt body
+        JPH::BodyID joltBodyId;
+        if (body.hasPhysicsBody()) {
+            joltBodyId = body.m_bodyId;
+        } else if (geom.hasPhysicsBody()) {
+            joltBodyId = geom.m_staticBodyId;
+        }
+
+        if (!joltBodyId.IsInvalid()) {
+            const auto& bodyInterface = m_physicsSystem.getBodyInterface();
+            pos = fromJolt(bodyInterface.GetPosition(joltBodyId));
+            rot = fromJolt(bodyInterface.GetRotation(joltBodyId));
+        }
+
+        // Generate mesh based on type
+        if (geomType != GeomType::none) {
             switch (geomType) {
-            case physics::GeomType::ray: {
-                dVector3 startOde;
-                dVector3 dirOde;
-
-                dGeomRayGet(geomId, startOde, dirOde);
-                float length = static_cast<float>(dGeomRayGetLength(geomId));
-
-                pos = glm::vec3{
-                    static_cast<float>(startOde[0]),
-                    static_cast<float>(startOde[1]),
-                    static_cast<float>(startOde[2]) };
-
-                const glm::vec3 normal{
-                    static_cast<float>(dirOde[0]),
-                    static_cast<float>(dirOde[1]),
-                    static_cast<float>(dirOde[2]) };
-
-                rot = util::normalToQuat(normal, UP);
-                scale = glm::vec3{ length };
-
-                cacheKey = fmt::format(
-                    "ray-{}",
-                    1);
-
-                mesh = findMesh(cacheKey);
-                if (!mesh) {
-                    auto generator = mesh::PrimitiveGenerator::ray();
-                    generator.name = cacheKey;
-                    generator.origin = glm::vec3{ 0 };
-                    generator.dir = UP;
-                    generator.length = length;
-                    mesh = saveMesh(cacheKey, generator.create());
-                }
-
-                break;
-            }
-            case physics::GeomType::plane: {
-                dVector4 result;
-                dGeomPlaneGetParams(geomId, result);
-                const glm::vec4 plane{
-                    static_cast<float>(result[0]),
-                    static_cast<float>(result[1]),
-                    static_cast<float>(result[2]),
-                    static_cast<float>(result[3]) };
-                glm::vec3 normal{ plane };
-                float dist = plane.w;
-
-                rot = util::normalToQuat(normal, glm::vec3{0, 1.f, 0});
-
-                //glm::vec3 degrees = util::quatToDegrees(rot);
-                //KI_INFO_OUT(fmt::format(
-                //    "GET_PLANE: n={}, d={}, rot={}, degrees={}",
-                //    normal, dist, rot, degrees));
-
-                pos = normal * dist;
+            case GeomType::plane: {
                 scale = glm::vec3{ PLANE_SIZE, PLANE_SIZE, PLANE_SIZE };
 
-                cacheKey = fmt::format(
-                    "plane-{}",
-                    1);
+                cacheKey = fmt::format("plane-{}", 1);
 
                 mesh = findMesh(cacheKey);
                 if (!mesh) {
@@ -224,18 +219,15 @@ namespace physics {
                     generator.size = glm::vec3{ 1.f, 1.f, 0.f };
                     mesh = saveMesh(cacheKey, generator.create());
                 }
-
                 break;
             }
-            case physics::GeomType::height_field: {
-                auto heightDataId = dGeomHeightfieldGetHeightfieldData(geomId);
-                const auto* heightMap = m_physicsSystem.getHeightMap(heightDataId);
-                if (heightMap) {
-                    //dxHeightfieldData& data = *dGeomHeightfieldGetHeightfieldData(geomId);
+            case GeomType::height_field: {
+                // Find the height map for this object
+                for (physics::height_map_id hid = 1; hid < 100; hid++) {
+                    const auto* heightMap = m_physicsSystem.getHeightMap(hid);
+                    if (!heightMap) continue;
 
-                    cacheKey = fmt::format(
-                        "height-{}",
-                        heightMap->m_id);
+                    cacheKey = fmt::format("height-{}", heightMap->m_id);
 
                     mesh = findMesh(cacheKey);
                     if (!mesh) {
@@ -255,22 +247,13 @@ namespace physics {
                     }
 
                     offset = { -heightMap->m_worldSizeU * 0.5f, 0.f + OFFSET, -heightMap->m_worldSizeV * 0.5f };
+                    break;
                 }
                 break;
             }
-            case physics::GeomType::box: {
-                dVector3 lengths;
-                dGeomBoxGetLengths(geomId, lengths);
-                glm::vec3 size{
-                    static_cast<float>(lengths[0]) * 0.5f,
-                    static_cast<float>(lengths[1]) * 0.5f,
-                    static_cast<float>(lengths[2]) * 0.5f
-                };
-
-                scale = size;
-                cacheKey = fmt::format(
-                    "box-{}",
-                    1);
+            case GeomType::box: {
+                scale = geom.size;
+                cacheKey = fmt::format("box-{}", 1);
 
                 mesh = findMesh(cacheKey);
                 if (!mesh) {
@@ -279,18 +262,13 @@ namespace physics {
                     generator.size = glm::vec3{ 1.f };
                     mesh = saveMesh(cacheKey, generator.create());
                 }
-
                 break;
             }
-            case physics::GeomType::sphere: {
-                dReal dRadius = dGeomSphereGetRadius(geomId);
-                float radius = static_cast<float>(dRadius);
-
+            case GeomType::sphere: {
+                float radius = geom.size.x;
                 scale = glm::vec3{ radius };
 
-                cacheKey = fmt::format(
-                    "sphere-{}",
-                    1);
+                cacheKey = fmt::format("sphere-{}", 1);
 
                 mesh = findMesh(cacheKey);
                 if (!mesh) {
@@ -301,23 +279,16 @@ namespace physics {
                     generator.segments = { 8, 0, 0 };
                     mesh = saveMesh(cacheKey, generator.create());
                 }
-
                 break;
             }
-            case physics::GeomType::capsule: {
-                dReal dRadius;
-                dReal dLength;
-                dGeomCapsuleGetParams(geomId, &dRadius, &dLength);
-
-                float radius = static_cast<float>(dRadius);
-                float length = static_cast<float>(dLength);
+            case GeomType::capsule: {
+                float radius = geom.size.x;
+                float length = geom.size.y * 2.f;
                 float ratio = 1.f / radius;
 
-                scale = glm::vec3{1.f / ratio};
+                scale = glm::vec3{ 1.f / ratio };
 
-                cacheKey = fmt::format(
-                    "capsule-{}-{}",
-                    1, length * ratio);
+                cacheKey = fmt::format("capsule-{}-{}", 1, length * ratio);
 
                 mesh = findMesh(cacheKey);
                 if (!mesh) {
@@ -329,23 +300,15 @@ namespace physics {
                     generator.segments = { 4, 0, 0 };
                     mesh = saveMesh(cacheKey, generator.create());
                 }
-
                 break;
             }
-            case physics::GeomType::cylinder: {
-                dReal radius;
-                dReal length;
-                dGeomCylinderGetParams(geomId, &radius, &length);
+            case GeomType::cylinder: {
+                float radius = geom.size.x;
+                float length = geom.size.y * 2.f;
 
-                scale = glm::vec3{
-                    static_cast<float>(radius),
-                    static_cast<float>(radius),
-                    static_cast<float>(length)
-                    };
+                scale = glm::vec3{ radius, radius, length };
 
-                cacheKey = fmt::format(
-                    "cylinder-{}-{}",
-                    1, 0.5);
+                cacheKey = fmt::format("cylinder-{}-{}", 1, 0.5);
 
                 mesh = findMesh(cacheKey);
                 if (!mesh) {
@@ -357,21 +320,92 @@ namespace physics {
                     generator.segments = { 4, 0, 0 };
                     mesh = saveMesh(cacheKey, generator.create());
                 }
-
                 break;
             }
+            default:
+                break;
+            }
+        }
+        else if (bodyType != BodyType::none) {
+            // Use body type if geom type is none
+            switch (bodyType) {
+            case BodyType::box: {
+                scale = body.size;
+                cacheKey = fmt::format("box-{}", 1);
+
+                mesh = findMesh(cacheKey);
+                if (!mesh) {
+                    auto generator = mesh::PrimitiveGenerator::box();
+                    generator.name = cacheKey;
+                    generator.size = glm::vec3{ 1.f };
+                    mesh = saveMesh(cacheKey, generator.create());
+                }
+                break;
+            }
+            case BodyType::sphere: {
+                float radius = body.size.x;
+                scale = glm::vec3{ radius };
+
+                cacheKey = fmt::format("sphere-{}", 1);
+
+                mesh = findMesh(cacheKey);
+                if (!mesh) {
+                    auto generator = mesh::PrimitiveGenerator::sphere();
+                    generator.name = cacheKey;
+                    generator.radius = 1.f;
+                    generator.slices = 16;
+                    generator.segments = { 8, 0, 0 };
+                    mesh = saveMesh(cacheKey, generator.create());
+                }
+                break;
+            }
+            case BodyType::capsule: {
+                float radius = body.size.x;
+                float length = body.size.y * 2.f;
+                float ratio = 1.f / radius;
+
+                scale = glm::vec3{ 1.f / ratio };
+
+                cacheKey = fmt::format("capsule-{}-{}", 1, length * ratio);
+
+                mesh = findMesh(cacheKey);
+                if (!mesh) {
+                    auto generator = mesh::PrimitiveGenerator::capsule();
+                    generator.name = cacheKey;
+                    generator.radius = 1.f;
+                    generator.length = 0.5f * length * ratio;
+                    generator.slices = 8;
+                    generator.segments = { 4, 0, 0 };
+                    mesh = saveMesh(cacheKey, generator.create());
+                }
+                break;
+            }
+            case BodyType::cylinder: {
+                float radius = body.size.x;
+                float length = body.size.y * 2.f;
+
+                scale = glm::vec3{ radius, radius, length };
+
+                cacheKey = fmt::format("cylinder-{}-{}", 1, 0.5);
+
+                mesh = findMesh(cacheKey);
+                if (!mesh) {
+                    auto generator = mesh::PrimitiveGenerator::capped_cylinder();
+                    generator.name = cacheKey;
+                    generator.radius = 1.f;
+                    generator.length = 0.5f;
+                    generator.slices = 8;
+                    generator.segments = { 4, 0, 0 };
+                    mesh = saveMesh(cacheKey, generator.create());
+                }
+                break;
+            }
+            default:
+                break;
             }
         }
 
-        if (mesh && geomId
-            && geomType != physics::GeomType::ray
-            && geomType != physics::GeomType::plane)
-        {
-            pos = getPhysicPosition(geomId);
-            rot = getPhysicRotation(geomId);
-
-            pos += offset;
-        }
+        pos += offset;
 
         mesh::Transform transform;
         transform.setPosition(pos);

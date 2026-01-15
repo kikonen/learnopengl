@@ -2,8 +2,6 @@
 
 #include <unordered_map>
 
-#include <ode/ode.h>
-
 #include "util/debug.h"
 #include "util/Log.h"
 #include "util/util.h"

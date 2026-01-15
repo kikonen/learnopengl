@@ -1,7 +1,5 @@
 #include "PhysicsMaterial.h"
 
-#include "ode/ode.h"
-
 namespace physics {
     PhysicsMaterial::PhysicsMaterial()
     {

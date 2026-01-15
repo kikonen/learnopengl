@@ -2,8 +2,6 @@
 
 #include <unordered_map>
 
-#include <ode/ode.h>
-
 #include "util/debug.h"
 
 #include "physics/Category.h"
@@ -15,7 +13,6 @@
 namespace {
     std::unordered_map<std::string, physics::Category> g_categoryMapping;
     std::unordered_map<std::string, uint32_t> g_maskMapping;
-    std::unordered_map<std::string, uint32_t> g_contactMapping;
 
     const std::unordered_map<std::string, physics::Category>& getCategoryMapping()
     {
@@ -57,30 +54,6 @@ namespace {
                 });
         }
         return g_maskMapping;
-    }
-
-    const std::unordered_map<std::string, uint32_t>& getContactMapping()
-    {
-        if (g_contactMapping.empty()) {
-            g_contactMapping.insert({
-                { "mu2", dContactMu2 },
-                { "fdir1", dContactFDir1 },
-                { "bounce", dContactBounce },
-                { "soft_erp", dContactSoftERP },
-                { "soft_cfm", dContactSoftCFM },
-                { "motion1", dContactMotion1 },
-                { "motion2", dContactMotion2 },
-                { "motionn", dContactMotionN },
-                { "slip1", dContactSlip1 },
-                { "slip2", dContactSlip2 },
-                { "rolling", dContactRolling },
-                { "approx1_!", dContactApprox1_1 },
-                { "approax1_2", dContactApprox1_2 },
-                { "approx1_n", dContactApprox1_N },
-                { "approx1", dContactApprox1 },
-                });
-        }
-        return g_contactMapping;
     }
 
     uint32_t readCategoryMask(std::string v)

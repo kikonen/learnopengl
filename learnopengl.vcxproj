@@ -204,7 +204,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions);GLM_ENABLE_EXPERIMENTAL;GLM_FORCE_INLINE;GLM_FORCE_INTRINSICS_NOPE;GLM_FORCE_SSE42;GLM_FORCE_ALIGNED;WIN32;GENERATOR_USE_GLM</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions);GLM_ENABLE_EXPERIMENTAL;GLM_FORCE_INLINE;GLM_FORCE_INTRINSICS_NOPE;GLM_FORCE_SSE42;GLM_FORCE_ALIGNED;WIN32;GENERATOR_USE_GLM;JPH_FLOATING_POINT_EXCEPTIONS_ENABLED;JPH_OBJECT_STREAM</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(ProjectDir)\src;$(ProjectDir)\include;$(ProjectDir)\vendor\stb_image\src;$(ProjectDir)\vendor\glad\include;$(ProjectDir)\vendor\luajit_wrapper\include;$(ProjectDir)\vendor\generator\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
@@ -231,7 +231,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>false</SDLCheck>
-      <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions);GLM_ENABLE_EXPERIMENTAL;GLM_FORCE_INLINE;GLM_FORCE_INTRINSICS_NOPE;GLM_FORCE_SSE42;GLM_FORCE_ALIGNED;WIN32;GENERATOR_USE_GLM</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions);GLM_ENABLE_EXPERIMENTAL;GLM_FORCE_INLINE;GLM_FORCE_INTRINSICS_NOPE;GLM_FORCE_SSE42;GLM_FORCE_ALIGNED;WIN32;GENERATOR_USE_GLM;JPH_FLOATING_POINT_EXCEPTIONS_ENABLED;JPH_OBJECT_STREAM</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(ProjectDir)\src;$(ProjectDir)\include;$(ProjectDir)\vendor\stb_image\src;$(ProjectDir)\vendor\glad\include;$(ProjectDir)\vendor\luajit_wrapper\include;$(ProjectDir)\vendor\generator\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
@@ -264,7 +264,7 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <SDLCheck>false</SDLCheck>
-      <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions);GLM_ENABLE_EXPERIMENTAL;GLM_FORCE_INLINE;GLM_FORCE_INTRINSICS_NOPE;GLM_FORCE_SSE42;GLM_FORCE_ALIGNED;WIN32;GENERATOR_USE_GLM</PreprocessorDefinitions>
+      <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions);GLM_ENABLE_EXPERIMENTAL;GLM_FORCE_INLINE;GLM_FORCE_INTRINSICS_NOPE;GLM_FORCE_SSE42;GLM_FORCE_ALIGNED;WIN32;GENERATOR_USE_GLM;JPH_FLOATING_POINT_EXCEPTIONS_ENABLED;JPH_OBJECT_STREAM</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <AdditionalIncludeDirectories>$(ProjectDir)\src;$(ProjectDir)\include;$(ProjectDir)\vendor\stb_image\src;$(ProjectDir)\vendor\glad\include;$(ProjectDir)\vendor\luajit_wrapper\include;$(ProjectDir)\vendor\generator\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
@@ -587,6 +587,7 @@
     <ClCompile Include="src\physics\HeightMap.cpp" />
     <ClCompile Include="src\physics\Surface.cpp" />
     <ClCompile Include="src\physics\PhysicsSystem.cpp" />
+    <ClCompile Include="src\physics\JoltFoundation.cpp" />
     <ClCompile Include="src\registry\ControllerRegistry.cpp" />
     <ClCompile Include="src\material\ImageRegistry.cpp" />
     <ClCompile Include="src\material\MaterialRegistry.cpp" />
@@ -884,7 +885,8 @@
     <ClInclude Include="src\mesh\VaoMesh.h" />
     <ClInclude Include="src\asset\LayerInfo.h" />
     <ClInclude Include="src\particle\AreaType.h" />
-    <ClInclude Include="src\physics\ode_util.h" />
+    <ClInclude Include="src\physics\jolt_util.h" />
+    <ClInclude Include="src\physics\JoltFoundation.h" />
     <ClInclude Include="src\physics\PhysicsMaterial.h" />
     <ClInclude Include="src\renderer\EnvironmentProbeRenderer.h" />
     <ClInclude Include="src\renderer\MeshRenderer.h" />

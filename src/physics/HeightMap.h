@@ -2,16 +2,21 @@
 
 #include <glm/glm.hpp>
 
-#include <ode/ode.h>
+#include <Jolt/Jolt.h>
+#include <Jolt/Physics/Body/BodyID.h>
+#include <Jolt/Core/Reference.h>
 
 #include "size.h"
 #include "asset/AABB.h"
 
-#include "size.h"
-
 namespace model
 {
     class Node;
+}
+
+namespace JPH {
+    class PhysicsSystem;
+    class Shape;
 }
 
 class Image;
@@ -39,9 +44,8 @@ namespace physics {
             bool flip);
 
         void create(
-            dWorldID worldId,
-            dSpaceID spaceId,
-            physics::Object& object) const;
+            JPH::PhysicsSystem& physicsSystem,
+            physics::Object& object);
 
         const AABB& getAABB() const noexcept { return m_aabb; }
         void setAABB(const AABB& aabb) { m_aabb = aabb; }
@@ -68,8 +72,6 @@ namespace physics {
     public:
         physics::height_map_id m_id{ 0 };
 
-        //const std::unique_ptr<Image> m_image;
-
         const model::Node* m_origin{ nullptr };
 
         int m_worldTileSize{ 0 };
@@ -80,6 +82,12 @@ namespace physics {
 
         glm::vec2 m_verticalRange{ 0.f, 32.f };
         float m_horizontalScale{ 1.f };
+
+        // Jolt body ID for the heightfield
+        JPH::BodyID m_bodyId;
+
+        // Shape reference (kept alive)
+        JPH::RefConst<JPH::Shape> m_heightFieldShape;
 
     private:
         bool m_prepared{ false };

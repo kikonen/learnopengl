@@ -1,6 +1,7 @@
 #pragma once
 
-#include <ode/ode.h>
+#include <Jolt/Jolt.h>
+#include <Jolt/Physics/Body/BodyID.h>
 
 #include "ki/size.h"
 
@@ -8,6 +9,11 @@
 #include "Geom.h"
 
 class NodeRegistry;
+
+namespace JPH {
+    class PhysicsSystem;
+    class BodyInterface;
+}
 
 namespace physics {
     class PhysicsSystem;
@@ -50,22 +56,27 @@ namespace physics {
 
         void swap(Object& o) noexcept;
 
-        inline bool ready() const { return m_geom.physicId || m_body.physicId; }
+        inline bool ready() const {
+            return m_body.hasPhysicsBody() || m_geom.hasPhysicsBody();
+        }
+
+        void release(JPH::BodyInterface& bodyInterface);
 
         void create(
             physics::object_id objectId,
             uint32_t entityIndex,
-            dWorldID worldId,
-            dSpaceID spaceId,
+            JPH::PhysicsSystem& physicsSystem,
             NodeRegistry& nodeRegistry);
 
         bool updateToPhysics(
             uint32_t entityIndex,
             ki::level_id& matrixLevel,
+            JPH::BodyInterface& bodyInterface,
             NodeRegistry& nodeRegistry);
 
         void updateFromPhysics(
             uint32_t entityIndex,
+            const JPH::BodyInterface& bodyInterface,
             NodeRegistry& nodeRegistry) const;
 
     public:

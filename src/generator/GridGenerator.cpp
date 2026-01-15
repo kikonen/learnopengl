@@ -85,8 +85,8 @@ void GridGenerator::updateWT(
             const auto& rot = transform.getRotation();
 
             auto& geom = m_geometries[i];
-            //geom.setPhysicPosition(transform.getWorldPosition());
-            geom.updatePhysic(pivot, pos, rot);
+            auto& bodyInterface = physics::PhysicsSystem::get().getBodyInterface();
+            geom.updatePhysic(bodyInterface, pivot, pos, rot);
         }
     }
 

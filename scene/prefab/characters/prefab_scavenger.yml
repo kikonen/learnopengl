@@ -51,5 +51,7 @@ prefab:
       force_axis: true
     geom:
       type: capsule
+      category: [npc]
+      collision: [world, player]
       size: [0.25, 0.6, 0]
       offset: [0, 0, -0.85]
