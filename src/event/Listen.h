@@ -13,18 +13,17 @@ namespace event
         Listen();
         ~Listen();
 
-        template <typename Callback>
         void listen(
             event::Type type,
             event::Dispatcher* dispatcher,
-            Callback&& cb)
+            Handler handler)
         {
             if (type == event::Type::none) return;
             if (m_type != event::Type::none) throw "duplicate event register";
 
             m_type = type;
             m_dispatcher = dispatcher;
-            m_handle = dispatcher->addListener(m_type, std::forward<Callback>(cb));
+            m_handle = dispatcher->addListener(m_type, std::move(handler));
         }
 
     private:

@@ -2,26 +2,22 @@
 
 #include <atomic>
 #include <vector>
+#include <unordered_map>
+#include <functional>
+#include <algorithm>
 
-#include "eventpp/eventqueue.h"
-#include "eventpp/eventdispatcher.h"
+#include <moodycamel/concurrentqueue.h>
 
 #include "Event.h"
 
-
 namespace event {
-    using Queue = eventpp::EventQueue<
-        Type,
-        void(const event::Event&),
-        EventPolicies
-    >;
-    using Handle = Queue::Handle;
+    using Handler = std::function<void(const Event&)>;
+    using Handle = uint32_t;
+    using Entry = std::pair<Handle, Handler>;
 
     class Dispatcher final {
     public:
         Dispatcher();
-
-        void prepare();
 
         void dispatchEvents();
 
@@ -30,18 +26,38 @@ namespace event {
             m_queue.enqueue(evt);
         }
 
-        template <typename Callback>
-        Handle addListener(event::Type type, Callback&& callback)
+        Handle addListener(event::Type type, Handler handler)
         {
-            return m_queue.appendListener(type, std::forward<Callback>(callback));
+            auto handle = m_handleIndex.fetch_add(1, std::memory_order_relaxed);
+            m_pendingAdds.enqueue({ type, handle, std::move(handler) });
+            return handle;
         }
 
         void removeListener(event::Type type, Handle handle)
         {
-            m_queue.removeListener(type, handle);
+            m_pendingRemoves.enqueue({ type, handle });
         }
 
     private:
-        Queue m_queue;
+        void applyPendingChanges();
+
+    private:
+        struct PendingAdd {
+            event::Type type;
+            Handle handle;
+            Handler handler;
+        };
+
+        struct PendingRemove {
+            event::Type type;
+            Handle handle;
+        };
+
+        std::atomic<uint32_t> m_handleIndex{ 1 };
+        std::unordered_map<event::Type, std::vector<Entry>> m_handlers;
+
+        moodycamel::ConcurrentQueue<Event> m_queue;
+        moodycamel::ConcurrentQueue<PendingAdd> m_pendingAdds;
+        moodycamel::ConcurrentQueue<PendingRemove> m_pendingRemoves;
     };
 }
