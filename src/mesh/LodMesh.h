@@ -104,8 +104,6 @@ namespace mesh {
         uint32_t m_baseIndex{ 0 };
         uint32_t m_indexCount{ 0 };
 
-        uint32_t m_socketIndex{ 0 };
-
         ki::vao_id m_vaoId{ 0 };
 
         ki::program_id m_programId{ 0 };

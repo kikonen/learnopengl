@@ -124,10 +124,6 @@ void Registry::prepare(const PrepareContext& ctx)
     if (m_prepared) return;
     m_prepared = true;
 
-    m_dispatcherWorker->prepare();
-    m_dispatcherWorker->prepare();
-    m_dispatcherView->prepare();
-
     MaterialRegistry::get().prepare();
     EntityRegistry::get().prepare();
     MeshSetRegistry::get().prepare(m_alive);

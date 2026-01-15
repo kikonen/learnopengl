@@ -44,7 +44,6 @@ namespace mesh {
         m_priority = o.m_priority;
 
         m_mesh = o.m_mesh;
-        m_socketIndex = o.m_socketIndex;
 
         m_scale = o.m_scale;
         m_baseScale = o.m_baseScale;
@@ -87,7 +86,6 @@ namespace mesh {
         m_priority = o.m_priority;
 
         m_mesh = o.m_mesh;
-        m_socketIndex = o.m_socketIndex;
 
         m_scale = o.m_scale;
         m_baseScale = o.m_baseScale;
@@ -125,13 +123,12 @@ namespace mesh {
     std::string LodMesh::str() const noexcept
     {
         return fmt::format(
-            "<LOD_MESH: min={}, max={}, vao={}, mesh={}, material={}, socket={}>",
+            "<LOD_MESH: min={}, max={}, vao={}, mesh={}, material={}>",
             sqrt(m_minDistance2),
             sqrt(m_maxDistance2),
             m_vaoId,
             m_mesh ? m_mesh->str() : "N/A",
-            m_materialIndex,
-            m_socketIndex);
+            m_materialIndex);
     }
 
     const Material* LodMesh::getMaterial() const noexcept

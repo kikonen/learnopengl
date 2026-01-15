@@ -190,7 +190,6 @@ namespace animation
             rigNode.m_parentIndex,
             rigNode.m_index,
             rigNode.m_name,
-            //rigNode.m_jointIndex,
             socketIndex,
             a_socket.m_name);
 

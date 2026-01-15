@@ -13,6 +13,9 @@ namespace render
     // Registered at load time - doesn't change during frame
     struct DrawableInfo
     {
+        // Mesh-relative transform (lodMesh.m_baseTransform)
+        glm::mat4 localTransform;
+
         uint32_t lodMeshIndex;
         uint32_t meshId;
 
@@ -29,9 +32,6 @@ namespace render
 
         // World volume
         SphereVolume worldVolume;
-
-        // Mesh-relative transform (lodMesh.m_baseTransform)
-        glm::mat4 localTransform;
 
         // For LOD selection
         float minDistance2;
