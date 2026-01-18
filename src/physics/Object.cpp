@@ -35,13 +35,13 @@ namespace physics
     void Object::swap(Object& o) noexcept
     {
         std::swap(m_body, o.m_body);
-        std::swap(m_geom, o.m_geom);
+        std::swap(m_shape, o.m_shape);
     }
 
     void Object::release(JPH::BodyInterface& bodyInterface)
     {
         m_body.release(bodyInterface);
-        m_geom.release(bodyInterface);
+        m_shape.release(bodyInterface);
     }
 
     void Object::create(
@@ -52,27 +52,27 @@ namespace physics
     {
         if (ready()) return;
 
-        glm::vec3 scale{ 1.f };
+        //glm::vec3 scale{ 1.f };
 
         // NOTE KI assumping that parent scale does not affect node
         // => 99,9% true for physics nodes, i.e. does not make sense
         // for them to have parent node affecting scale
         const auto& state = nodeRegistry.getState(entityIndex);
-        scale = state.getScale();
+        m_scale = state.getScale();
 
         // Create body first (if exists)
         m_body.create(
             objectId,
-            m_geom.categoryMask,
-            m_geom.collisionMask,
+            m_shape.category,
+            m_shape.collisionMask,
             physicsSystem,
-            scale);
+            m_scale);
 
-        // Create geom (for standalone geoms, creates static body)
-        m_geom.create(
+        // Create shape (for standalone shapes, creates static body)
+        m_shape.create(
             objectId,
             physicsSystem,
-            scale,
+            m_scale,
             m_body.m_bodyId);
     }
 
@@ -99,10 +99,10 @@ namespace physics
             // Reset angular velocity and torque for kinematic bodies
             m_body.setAngularVelocity(bodyInterface, glm::vec3(0.f));
         }
-        else if (m_geom.hasPhysicsBody())
+        else if (m_shape.hasPhysicsBody())
         {
-            // NOTE KI for "geom only" nodes
-            m_geom.updatePhysic(bodyInterface, pivot, pos, rot);
+            // NOTE KI for "shape only" nodes
+            m_shape.updatePhysics(bodyInterface, pivot, pos, rot);
         }
 
         return true;
@@ -113,7 +113,7 @@ namespace physics
         const JPH::BodyInterface& bodyInterface,
         NodeRegistry& nodeRegistry) const
     {
-        // NOTE KI "geom only" is not updated back to node
+        // NOTE KI "shape only" is not updated back to node
         if (!m_body.hasPhysicsBody()) return;
         if (m_body.kinematic) return;
 

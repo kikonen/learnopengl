@@ -17,7 +17,7 @@
 #include "loader_util.h"
 
 #include "value/PhysicsCategoryValue.h"
-#include "value/PhysicsGeomValue.h"
+#include "value/PhysicsShapeValue.h"
 
 namespace {
 }
@@ -56,23 +56,22 @@ namespace loader {
                 data.enabled = true;
                 loadBody(v, data.body);
             }
-            else if (k == "geom") {
+            else if (k == "geom" || k == "shape") {
                 data.enabled = true;
-                PhysicsGeomValue loader;
-                loader.loadGeom(v, data.geom);
+                PhysicsShapeValue loader;
+                loader.loadShape(v, data.shape);
             }
             else {
                 reportUnknown("physics_entry", k, v);
             }
         }
 
-        if (data.body.type == physics::BodyType::none && data.geom.type == physics::GeomType::none)
+        if (data.body.type == physics::BodyType::none && data.shape.type == physics::ShapeType::none)
         {
             data.enabled = false;
         }
 
-
-        // NOTE KI physics needs body or gem
+        // NOTE KI physics needs body or shape
         if (useExplicitEnable) {
             data.enabled = explicitEnable;
         }
@@ -175,20 +174,20 @@ namespace loader {
         }
 
         {
-            auto& geomData = data.geom;
-            auto& geom = df.m_geom;
+            auto& shapeData = data.shape;
+            auto& shape = df.m_shape;
 
-            geom.m_size = geomData.size;
+            shape.m_size = shapeData.size;
 
-            geom.m_rotation = util::degreesToQuat(geomData.rotation);
-            geom.m_offset = geomData.offset;
+            shape.m_rotation = util::degreesToQuat(shapeData.rotation);
+            shape.m_offset = shapeData.offset;
 
-            geom.m_categoryMask = geomData.categoryMask;
-            geom.m_collisionMask = geomData.collisionMask;
+            shape.m_category = shapeData.category;
+            shape.m_collisionMask = shapeData.collisionMask;
 
-            geom.m_type = geomData.type;
+            shape.m_type = shapeData.type;
 
-            geom.m_placeable = geomData.placeable;
+            shape.m_placeable = shapeData.placeable;
         }
 
         return definition;

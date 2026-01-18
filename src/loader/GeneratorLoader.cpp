@@ -22,7 +22,7 @@
 
 #include "loader/Loaders.h"
 #include "value/PhysicsCategoryValue.h"
-#include "value/PhysicsGeomValue.h"
+#include "value/PhysicsShapeValue.h"
 
 namespace {
     std::unordered_map<std::string, GeneratorMode> g_modeMapping;
@@ -132,9 +132,9 @@ namespace loader {
             else if (k == "material") {
                 loaders.m_materialLoader.loadMaterial(v, data.materialData, loaders);
             }
-            else if (k == "geom") {
-                PhysicsGeomValue loader;
-                loader.loadGeom(v, data.geom);
+            else if (k == "geom" || k == "shape") {
+                PhysicsShapeValue loader;
+                loader.loadShape(v, data.shape);
             }
             else if (k == "terrain") {
                 loadTerrain(v, data.terrainData);
@@ -194,22 +194,22 @@ namespace loader {
         df.m_heightMap = data.terrainData.map_height;
 
         {
-            auto& geomData = data.geom;
-            auto& geom = df.m_geom;
+            auto& shapeData = data.shape;
+            auto& shape = df.m_shape;
 
-            geom.m_enabled = data.enabled;
+            shape.m_enabled = data.enabled;
 
-            geom.m_size = geomData.size;
+            shape.m_size = shapeData.size;
 
-            geom.m_rotation = util::degreesToQuat(geomData.rotation);
-            geom.m_offset = geomData.offset;
+            shape.m_rotation = util::degreesToQuat(shapeData.rotation);
+            shape.m_offset = shapeData.offset;
 
-            geom.m_categoryMask = geomData.categoryMask;
-            geom.m_collisionMask = geomData.collisionMask;
+            shape.m_category = shapeData.category;
+            shape.m_collisionMask = shapeData.collisionMask;
 
-            geom.m_type = geomData.type;
+            shape.m_type = shapeData.type;
 
-            geom.m_placeable = geomData.placeable;
+            shape.m_placeable = shapeData.placeable;
         }
 
         df.m_boundsDir = data.boundsDir;

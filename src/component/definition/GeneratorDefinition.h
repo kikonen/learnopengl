@@ -53,7 +53,7 @@ struct GeneratorDefinition {
 
     std::unique_ptr<Material> m_material;
 
-    GeomDefinition m_geom;
+    ShapeDefinition m_shape;
 
     glm::vec3 m_boundsDir{ 0.f, -1.f, 0.f };
     uint32_t m_boundsMask{ UINT_MAX };

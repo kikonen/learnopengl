@@ -6,7 +6,7 @@
 #include "ki/size.h"
 
 #include "Body.h"
-#include "Geom.h"
+#include "Shape.h"
 
 class NodeRegistry;
 
@@ -57,7 +57,7 @@ namespace physics {
         void swap(Object& o) noexcept;
 
         inline bool ready() const {
-            return m_body.hasPhysicsBody() || m_geom.hasPhysicsBody();
+            return m_body.hasPhysicsBody() || m_shape.hasPhysicsBody();
         }
 
         void release(JPH::BodyInterface& bodyInterface);
@@ -81,6 +81,8 @@ namespace physics {
 
     public:
         Body m_body{};
-        Geom m_geom{};
+        Shape m_shape{};
+
+        glm::vec3 m_scale;
     };
 }

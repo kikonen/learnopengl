@@ -828,7 +828,7 @@ void NodeRegistry::attachNode(
         physics::Object obj;
         {
             obj.m_body = df.m_body;
-            obj.m_geom = df.m_geom;
+            obj.m_shape = df.m_shape;
         }
 
         auto& physicsSystem = physics::PhysicsSystem::get();

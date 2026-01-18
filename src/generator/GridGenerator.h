@@ -4,9 +4,9 @@
 
 #include "NodeGenerator.h"
 
-#include "physics/Geom.h"
+#include "physics/Shape.h"
 
-struct GeomDefinition;
+struct ShapeDefinition;
 
 //
 // Instance node entities based into grid
@@ -62,12 +62,12 @@ public:
     float m_yStep{ 0 };
     float m_zStep{ 0 };
 
-    std::unique_ptr<GeomDefinition> m_geometryTemplate;
+    std::unique_ptr<ShapeDefinition> m_shapeTemplate;
 
 private:
     bool m_boundsSetupDone{ false };
     bool m_dynamicBounds{ false };
     bool m_staticBounds{ false };
 
-    std::vector<physics::Geom> m_geometries;
+    std::vector<physics::Shape> m_shapes;
 };

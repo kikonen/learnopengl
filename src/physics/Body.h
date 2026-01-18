@@ -6,6 +6,7 @@
 #include <glm/glm.hpp>
 #include <glm/gtx/quaternion.hpp>
 
+#include "Category.h"
 #include "size.h"
 
 struct BodyDefinition;
@@ -53,7 +54,7 @@ namespace physics {
 
         void create(
             physics::object_id objectId,
-            uint32_t categoryMask,
+            physics::Category category,
             uint32_t collisionMask,
             JPH::PhysicsSystem& physicsSystem,
             const glm::vec3& scale);

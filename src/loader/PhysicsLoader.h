@@ -8,7 +8,7 @@
 #include "pool/NodeHandle.h"
 
 #include "physics/Body.h"
-#include "physics/Geom.h"
+#include "physics/Shape.h"
 
 #include "BaseLoader.h"
 

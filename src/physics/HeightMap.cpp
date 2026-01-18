@@ -120,7 +120,7 @@ namespace physics {
     {
         if (!m_prepared || !m_heightData) return;
 
-        auto& geom = object.m_geom;
+        auto& shape = object.m_shape;
 
         // Calculate scale factors
         // Jolt HeightFieldShape expects samples in a grid where spacing is determined by scale
@@ -166,14 +166,14 @@ namespace physics {
         bodySettings.mRestitution = 0.0f;
 
         // Pack user data
-        bodySettings.mUserData = packUserData(0, geom.categoryMask, geom.collisionMask);
+        bodySettings.mUserData = packUserData(0, shape.category, shape.collisionMask);
 
         JPH::BodyInterface& bodyInterface = physicsSystem.GetBodyInterface();
         m_bodyId = bodyInterface.CreateAndAddBody(bodySettings, JPH::EActivation::DontActivate);
 
-        // Store the body ID in the geom for position updates
-        geom.m_staticBodyId = m_bodyId;
-        geom.m_heightFieldShape = m_heightFieldShape;
+        // Store the body ID in the shape for position updates
+        shape.m_staticBodyId = m_bodyId;
+        shape.m_heightFieldShape = m_heightFieldShape;
 
         KI_INFO_OUT(fmt::format(
             "HMAP: Created Jolt HeightFieldShape {}x{}, world size {}x{}, scale {:.2f}x{:.2f}",

@@ -3,6 +3,7 @@
 #include <unordered_map>
 
 #include "util/debug.h"
+#include "util/util.h"
 
 #include "physics/Category.h"
 #include "physics/physics_util.h"
@@ -56,7 +57,19 @@ namespace {
         return g_maskMapping;
     }
 
-    uint32_t readCategoryMask(std::string v)
+    physics::Category readCategory(const std::string& v)
+    {
+        {
+            const auto& mapping = getCategoryMapping();
+            const auto& it = mapping.find(v);
+            if (it != mapping.end()) return it->second;
+        }
+
+        KI_WARN_OUT(fmt::format("PHYSICS: INVALID_CATEGORY_MASK - category={}", v));
+        return physics::Category::invalid;
+    }
+
+    uint32_t readCategoryMask(const std::string& v)
     {
         {
             const auto& mapping = getCategoryMapping();
@@ -76,6 +89,17 @@ namespace {
 }
 
 namespace loader {
+    physics::Category PhysicsCategoryValue::loadCategory(
+        const loader::DocNode& value) const
+    {
+        if (value.isSequence()) {
+            for (const auto& entry : value.getNodes()) {
+                return readCategory(readString(entry));
+            }
+        }
+        return readCategory(readString(value));
+    }
+
     void PhysicsCategoryValue::loadMask(
         const loader::DocNode& node,
         uint32_t& result) const
