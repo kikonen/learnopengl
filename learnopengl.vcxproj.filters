@@ -1335,6 +1335,9 @@
     <ClCompile Include="src\mesh_set\NodeTree.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\render\GPUCuller.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="src\render\InstanceRegistry.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -3054,6 +3057,18 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\mesh\RegisteredRig.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\render\GPUCuller.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\render\VisibleInstanceSSBO.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\render\InstanceDataSSBO.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\render\MeshInfoSSBO.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\render\InstanceRegistry.h">

@@ -403,6 +403,7 @@
     <ClCompile Include="src\render\BlurBuffer.cpp" />
     <ClCompile Include="src\render\CollectionRender.cpp" />
     <ClCompile Include="src\render\CubeMapDebugTexture.cpp" />
+    <ClCompile Include="src\render\GPUCuller.cpp" />
     <ClCompile Include="src\render\InstanceRegistry.cpp" />
     <ClCompile Include="src\render\NodeCollection.cpp" />
     <ClCompile Include="src\render\Pass.cpp" />
@@ -751,9 +752,13 @@
     <ClInclude Include="src\kigl\RingAllocator.h" />
     <ClInclude Include="src\mesh\RegisteredRig.h" />
     <ClInclude Include="src\render\DrawableInfo.h" />
+    <ClInclude Include="src\render\GPUCuller.h" />
+    <ClInclude Include="src\render\InstanceDataSSBO.h" />
     <ClInclude Include="src\render\InstanceIndexSSBO.h" />
     <ClInclude Include="src\render\InstanceRegistry.h" />
     <ClInclude Include="src\util\preciseSleep.h" />
+    <ClInclude Include="src\render\MeshInfoSSBO.h" />
+    <ClInclude Include="src\render\VisibleInstanceSSBO.h" />
     <ClInclude Include="src\util\BufferReference.h" />
     <ClInclude Include="src\util\BufferReference_format.h" />
     <ClInclude Include="src\util\DirtySet.h" />
