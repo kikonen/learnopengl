@@ -56,20 +56,22 @@ bool PawnController::updateWT(
     const UpdateContext& ctx,
     model::Node& node)
 {
+    const float angularVelocity = m_angularVelocity;
+    const auto velocity = m_velocity;
+
     const auto dt = ctx.getClock().elapsedSecs;
 
     auto& state = NodeRegistry::get().modifyState(node.getEntityIndex());
     bool changed = false;
 
-    float angularVelocity = m_angularVelocity;
     if (angularVelocity != 0.f) {
         auto rot = util::axisRadiansToQuat(state.getViewUp(), angularVelocity * dt);
         state.adjustRotation(rot);
         changed = true;
     }
 
-    if (m_velocity != glm::vec3{ 0.f }) {
-        auto adjust = m_velocity * dt;
+    if (velocity != glm::vec3{ 0.f }) {
+        auto adjust = velocity * dt;
         state.setPosition(state.getPosition() + adjust);
         changed = true;
     }
