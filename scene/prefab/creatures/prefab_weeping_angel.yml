@@ -8,4 +8,4 @@ prefab:
         map_normal: normal.png
         default_programs: true
       base_scale: 0.5
-      base_rotation: [-90, 0, 0]
+      axis: z

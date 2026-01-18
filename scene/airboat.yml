@@ -12,7 +12,6 @@ script:
 types:
   - id: player
     type: origo
-    front: [0, 0, -1]
     audio:
       listener:
         default: true
@@ -52,6 +51,7 @@ nodes:
   - id: player
     type: player
     pos: [0, 1, 15]
+    rotation: [0, 180, 0]
     active: true
   - xtype: other
     pos: [0.0, 0.0, -20.0]

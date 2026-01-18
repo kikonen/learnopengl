@@ -81,7 +81,6 @@ nodes:
           path: anim/Lion@Roar.FBX
       program: g_tex
       shadow_program: simple_depth
-      xbase_rotation: [90, 0, 0]
       base_scale: 0.025
     lod_levels:
       - level: 0

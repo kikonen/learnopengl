@@ -1251,6 +1251,7 @@
     <ClInclude Include="src\util\file.h" />
     <ClInclude Include="src\util\glm_format.h" />
     <ClInclude Include="src\util\glm_util.h" />
+    <ClInclude Include="src\util\Axis.h" />
     <ClInclude Include="src\pool\IdGenerator.h" />
     <ClInclude Include="src\util\Log.h" />
     <ClInclude Include="src\material\ImageTexture.h" />

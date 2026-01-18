@@ -47,7 +47,9 @@ namespace mesh {
 
         m_scale = o.m_scale;
         m_baseScale = o.m_baseScale;
-        m_baseRotation = o.m_baseRotation;
+        m_baseAxis = o.m_baseAxis;
+        m_baseFront = o.m_baseFront;
+        m_baseAdjust = o.m_baseAdjust;
 
         //m_animationRigTransform = o.m_animationRigTransform;
         m_baseTransform = o.m_baseTransform;
@@ -275,9 +277,13 @@ namespace mesh {
 
     void LodMesh::updateTransform() const
     {
-        // TODO KI rotate here causes very weird artifacts
+        // Order: axis (fix up) -> front (fix facing) -> adjust (fine-tune)
+        const auto baseRotation =
+            util::degreesToQuat(m_baseAdjust) *
+            util::frontToRotation(m_baseFront) *
+            util::axisToRotation(m_baseAxis);
         m_baseTransform =
-            glm::mat4(m_baseRotation) *
+            glm::mat4(baseRotation) *
             glm::scale(glm::mat4{ 1.f }, m_scale * m_baseScale) *
             m_mesh->m_offset.toMatrix();
 

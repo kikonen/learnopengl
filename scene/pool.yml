@@ -137,7 +137,7 @@ types:
         map_kd: textures/Marble White_VH_512.PNG
         program: g_tex
       scale: 10.0
-      base_rotation: [0, 180, 0]
+      front: -z
       flags:
         pre_depth: true
   - id: pool_floor

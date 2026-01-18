@@ -9,6 +9,8 @@
 #include <glm/glm.hpp>
 #include <glm/gtx/quaternion.hpp>
 
+#include "util/Axis.h"
+
 #include "asset/AABB.h"
 
 #include "backend/DrawOptions.h"
@@ -88,7 +90,9 @@ namespace mesh {
 
         glm::vec3 m_scale{ 1.f };
         glm::vec3 m_baseScale{ 1.f };
-        glm::quat m_baseRotation{ 1.f, 0.f, 0.f, 0.f };
+        util::Axis m_baseAxis{ util::Axis::y };
+        util::Front m_baseFront{ util::Front::z };
+        glm::vec3 m_baseAdjust{ 0.f };  // additional rotation in degrees
 
         mutable glm::mat4 m_baseTransform{ 1.f };
 

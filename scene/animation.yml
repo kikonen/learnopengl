@@ -12,7 +12,6 @@ types:
       path: prefab/util/prefab_grid.yml
   - id: player
     type: origo
-    front: [0, 0, -1]
     audio:
       listener:
         default: true
@@ -106,6 +105,7 @@ nodes:
   - type: grid
   - id: player
     type: player
+    rotation: [0, 180, 0]
     pos: [0, 1, 15]
     active: true
   - type: dir_light

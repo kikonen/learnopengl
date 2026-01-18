@@ -230,7 +230,6 @@ entities:
     xpos: [0.0, 3.0, 0.0]
     pos: [0.0, 0.0, 0.0]
     xrotation: [0, 0, 0]
-    xbase_rotation: [-180, 0, 0]
     scale: 0.01
     xbase_scale: 0.01
     xrepeat:

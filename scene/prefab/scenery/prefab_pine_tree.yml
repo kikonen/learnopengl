@@ -19,7 +19,6 @@ prefab:
           render_back: true
       default_programs: true
       base_scale: 0.01
-      #base_rotation: [-90, 0, 0]
     - path: fbx/scenery/trees/SM_TreePine_01b.FBX
       lod:
         min: 200
@@ -37,7 +36,6 @@ prefab:
           render_back: true
       default_programs: true
       base_scale: 0.01
-      #base_rotation: [-90, 0, 0]
     - path: fbx/scenery/trees/SM_TreePine_01b.FBX
       lod:
         min: 300
@@ -53,7 +51,6 @@ prefab:
           render_back: true
       default_programs: true
       base_scale: 0.01
-      #base_rotation: [-90, 0, 0]
     - path: fbx/scenery/trees/SM_TreePine_01b.FBX
       lod:
         min: 500
@@ -68,7 +65,6 @@ prefab:
           alpha: true
       default_programs: true
       base_scale: 0.01
-      #base_rotation: [-90, 0, 0]
     - path: fbx/scenery/trees/SM_TreePine_01b.FBX
       lod:
         min: 800
@@ -82,4 +78,3 @@ prefab:
           map_kd: T_PineBranch_01a_A.PNG
       default_programs: true
       base_scale: 0.01
-      #base_rotation: [-90, 0, 0]

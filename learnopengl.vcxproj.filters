@@ -1907,6 +1907,9 @@
     <ClInclude Include="src\util\glm_util.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\util\Axis.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="src\audio\AudioSystem.h">
       <Filter>Header Files</Filter>
     </ClInclude>

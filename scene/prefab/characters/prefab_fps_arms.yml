@@ -22,6 +22,7 @@ prefab:
       - name: fire
         path: anim/FirstPerson_Fire.FBX
     base_scale: 0.01
-    base_rotation: [0, 90, 0]
+    #base_rotation: [0, 90, 0]
+    front: -x
   flags:
     no_frustum: true

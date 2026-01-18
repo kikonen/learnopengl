@@ -325,7 +325,7 @@ types:
         map_kd: textures/Marble White_VH_512.PNG
         program: g_tex
       base_scale: 15.0
-      base_rotation: [0, 180, 0]
+      front: -z
       flags:
         pre_depth: true
   - id: big_mirror_1_origo

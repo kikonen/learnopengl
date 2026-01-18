@@ -14,7 +14,6 @@ types:
       material_modifier:
         tiling: 5
       program: g_tex
-    front: [0, 0, -1]
     flags:
       allow_normals: false
     controllers:
@@ -94,8 +93,9 @@ types:
 nodes:
   - type: player
     id: player
+    rotation: [0, 180, 0]
     pos: [0, 2, 0.0]
-    rot: [0, 45, 0]
+    #rot: [0, 45, 0]
     scale: 0.5
     active: true
   - type: origo_marker

@@ -146,7 +146,7 @@ types:
         type: capped_cylinder
         radius: 0.08
         length: 2
-      base_rotation: [90, 0, 0]
+      axis: z
       material:
         kd: [0.4, 0.4, 0.6]
         mras: [0.2, 0.1, 1.0]

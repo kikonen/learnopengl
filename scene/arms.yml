@@ -30,7 +30,6 @@ types:
         mras: [0.2, 0.1, 1.0, 0.0]
         program: g_tex
       scale: 0.05
-    front: [0, 0, -1]
     audio:
       listener:
         xdefault: true
@@ -98,10 +97,12 @@ nodes:
     pos: [0, 5, 10]
   - type: player
     id: player
+    rotation: [0, 180, 0]
     pos: [0, 1, 15]
     active: true
   - type: prefab_player_fps
     pos: [0, 0, 15]
+    rotation: [0, 180, 0]
     xactive: true
   - type: scale
     pos: [0, 0.5, 13]

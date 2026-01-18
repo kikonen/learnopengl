@@ -19,7 +19,6 @@ types:
       cube_map: true
   - id: player
     type: origo
-    front: [0, 0, -1]
     audio:
       listener:
         default: true
@@ -97,6 +96,7 @@ types:
 nodes:
   - type: player
     id: player
+    rotation: [0, 180, 0]
     pos: [0, 0, 20]
     active: true
   - type: prefab_fps_counter

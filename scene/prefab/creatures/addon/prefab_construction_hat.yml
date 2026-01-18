@@ -11,4 +11,3 @@ prefab:
       flags:
         use_sockets: true
       base_scale: 0.01
-      xbase_rotation: [-90, 0, 0]

@@ -3,6 +3,8 @@
 #include <string>
 #include <vector>
 
+#include "util/Axis.h"
+
 #include "FlagContainer.h"
 
 #include "LodData.h"
@@ -34,7 +36,9 @@ namespace loader {
         glm::vec3 scale{ 1.f };
         glm::vec3 baseScale{ 1.f };
 
-        glm::vec3 baseRotation{ 0.f };
+        util::Axis baseAxis{ util::Axis::y };
+        util::Front baseFront{ util::Front::z };
+        glm::vec3 baseAdjust{ 0.f };  // additional rotation in degrees
 
         std::vector<LodData> lods;
         std::vector<SocketData> sockets;

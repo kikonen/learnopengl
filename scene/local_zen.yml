@@ -207,7 +207,6 @@ nodes:
         program: g_tex
         shadow_program: simple_depth
         base_scale: 0.01
-        xbase_rotation: [-180, 0, 0]
       - name: construction hat
         path: fbx\props\construction_hat\construction hat.fbx
         material:
@@ -217,7 +216,6 @@ nodes:
         program: g_tex
         shadow_program: simple_depth
         base_scale: 0.01
-        xbase_rotation: [-180, 0, 0]
       - name: helmet
         xpath: fbx\creatures\skeleton_knight\helmet.fbx
         lod:
@@ -230,7 +228,6 @@ nodes:
         program: g_tex
         shadow_program: simple_depth
         base_scale: 0.01
-        xbase_rotation: [-180, 0, 0]
     attachments:
       - xname: SM_Helmet
         socket: head
@@ -381,7 +378,6 @@ nodes:
           xwireframe: true
         program: g_tex
         shadow_program: simple_depth
-        xbase_rotation: [0, 0, 0]
         base_scale: 0.05
       - name: helmet
         path: fbx\creatures\skeleton_knight\Helmet.fbx
@@ -393,7 +389,6 @@ nodes:
           map_metalness: textures\T_Helmet_MetallicSmoothness_1024.png
         program: g_tex
         shadow_program: simple_depth
-        xbase_rotation: [0, 0, 0]
         base_scale: 0.05
       - name: armor
         path: fbx\creatures\skeleton_knight\Armor.fbx
@@ -405,7 +400,6 @@ nodes:
           map_metalness: textures\T_ChestArmor_MetallicSmoothness_1024.png
         program: g_tex
         shadow_program: simple_depth
-        xbase_rotation: [0, 0, 0]
         base_scale: 0.05
       - name: 2HandedSword
         path: fbx\creatures\skeleton_knight\2HandedSword.fbx
@@ -417,7 +411,6 @@ nodes:
           map_metalness: textures\T_2HandedSword_MetallicSmoothness_1024.png
         program: g_tex
         shadow_program: simple_depth
-        xbase_rotation: [0, 0, 0]
         base_scale: 0.05
       - name: shield
         path: fbx\creatures\skeleton_knight\Shield.fbx
@@ -429,7 +422,6 @@ nodes:
           map_metalness: textures\T_Shield_MetallicSmoothness_2048.png
         program: g_tex
         shadow_program: simple_depth
-        xbase_rotation: [0, 0, 0]
         base_scale: 0.05
     attachments:
       - name: Helmet

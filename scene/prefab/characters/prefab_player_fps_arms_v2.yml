@@ -40,7 +40,6 @@ prefab:
           path: fbx/weapons/fab/FPS_Pistol_Knife/Animations/Arms/Anim_Pistol_Knife_Shot.FBX
       default_programs: true
       base_scale: 0.0175
-      base_rotation: [0, 180, 0]
       flags:
         use_bones: true
         use_animation: true

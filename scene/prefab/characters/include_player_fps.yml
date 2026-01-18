@@ -3,7 +3,7 @@ types:
   - id: prefab_player_fps
     type: composite
     composite: prefab_player_fps_composite
-    front: [0, 0, -1]
+    #front: [0, 0, -1]
     audio:
       listener:
         default: true
@@ -58,7 +58,7 @@ types:
         kd: [1, 1, 0, 1]
         program: g_tex
       scale: 0.03
-    front: [0, 0, -1]
+    #front: [0, 0, -1]
     camera:
       type: fps
       pitch: -12
@@ -102,10 +102,10 @@ composites:
         pos: [0.0, 1.0, 0]
       - type: prefab_player_fps_camera
         pos: [0.0, 1.65, 0.0]
-        rot: [0, 0, 0]
+        #rot: [0, 0, 0]
       - type: prefab_player_fps_arms_v2
         pos: [0, -1.5, 0]
-        rot: [0, 0, 0]
+        #rot: [0, 0, 0]
         xchildren:
           - type: automatic_rifle
             attach:

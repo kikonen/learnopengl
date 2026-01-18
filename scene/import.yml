@@ -71,7 +71,8 @@ types:
       program: g_tex
       shadow_program: shadow
       base_scale: 0.01
-      #base_rotation: [-90, 0, 0]
+      #axis: y
+      #front: z
 
 nodes:
   - type: player
