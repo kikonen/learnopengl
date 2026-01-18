@@ -24,6 +24,8 @@
 
 #include "loader/document.h"
 #include "loader_util.h"
+#include "value/AxisValue.h"
+#include "value/FrontValue.h"
 
 namespace loader {
     MeshLoader::MeshLoader(
@@ -160,46 +162,10 @@ namespace loader {
                 data.baseScale = readScale3(v);
             }
             else if (k == "axis") {
-                std::string axis = readString(v);
-                if (axis == "y") {
-                    data.baseAxis = util::Axis::y;
-                }
-                else if (axis == "z") {
-                    data.baseAxis = util::Axis::z;
-                }
-                else if (axis == "x") {
-                    data.baseAxis = util::Axis::x;
-                }
-                else if (axis == "-y") {
-                    data.baseAxis = util::Axis::neg_y;
-                }
-                else if (axis == "-z") {
-                    data.baseAxis = util::Axis::neg_z;
-                }
-                else if (axis == "-x") {
-                    data.baseAxis = util::Axis::neg_x;
-                }
-                else {
-                    reportUnknown("axis", k, v);
-                }
+                data.baseAxis = AxisValue::load(v);
             }
             else if (k == "front") {
-                std::string front = readString(v);
-                if (front == "z") {
-                    data.baseFront = util::Front::z;
-                }
-                else if (front == "x") {
-                    data.baseFront = util::Front::x;
-                }
-                else if (front == "-x") {
-                    data.baseFront = util::Front::neg_x;
-                }
-                else if (front == "-z") {
-                    data.baseFront = util::Front::neg_z;
-                }
-                else {
-                    reportUnknown("front", k, v);
-                }
+                data.baseFront = FrontValue::load(v);
             }
             else if (k == "adjust") {
                 data.baseAdjust = readVec3(v);

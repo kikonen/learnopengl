@@ -8,6 +8,9 @@
 #include <glm/glm.hpp>
 #include <glm/gtx/quaternion.hpp>
 
+#include "util/Axis.h"
+#include "util/glm_util.h"
+
 #include "Category.h"
 #include "size.h"
 
@@ -20,20 +23,6 @@ namespace JPH {
 
 namespace physics {
     struct Body;
-
-    // Base rotation to align shapes from Z-axis convention to Jolt's Y-axis convention
-    // Jolt capsules/cylinders are aligned along Y-axis
-    // Our convention (matching mesh generator): Z-axis
-    inline glm::quat getAxisAlignmentRotation(ShapeType type) {
-        switch (type) {
-        case ShapeType::capsule:
-        case ShapeType::cylinder:
-            // Rotate -90 degrees around X to transform Z-up to Y-up
-            return glm::angleAxis(glm::radians(-90.f), glm::vec3(1.f, 0.f, 0.f));
-        default:
-            return glm::quat{1.f, 0.f, 0.f, 0.f}; // identity
-        }
-    }
 
     struct Shape {
         Shape();
@@ -71,14 +60,16 @@ namespace physics {
             return type == ShapeType::ray;
         }
 
-        // Get the base rotation for axis alignment (Z-axis -> Jolt Y-axis)
+        // Get base rotation from axis/front/adjust
         glm::quat getBaseRotation() const noexcept {
-            return getAxisAlignmentRotation(type);
+            return util::degreesToQuat(baseAdjust) *
+                   util::frontToRotation(baseFront) *
+                   util::axisToRotation(baseAxis);
         }
 
-        // Get full physics rotation: nodeRot * userRotation * baseRotation
+        // Get full physics rotation: nodeRot * baseRotation
         glm::quat getPhysicsRotation(const glm::quat& nodeRot) const noexcept {
-            return nodeRot * rotation * getBaseRotation();
+            return nodeRot * getBaseRotation();
         }
 
         void release(JPH::BodyInterface& bodyInterface);
@@ -117,8 +108,10 @@ namespace physics {
         // - size.y == half length along primary axis
         glm::vec3 size{ 0.5f };
 
-        // User-specified rotation offset (applied on top of base rotation)
-        glm::quat rotation{ 1.f, 0.f, 0.f, 0.f };
+        // Base rotation components
+        util::Axis baseAxis{ util::Axis::y };
+        util::Front baseFront{ util::Front::z };
+        glm::vec3 baseAdjust{ 0.f };
         glm::vec3 offset{ 0.f };
 
         // For standalone shapes (without Body), we create a static body

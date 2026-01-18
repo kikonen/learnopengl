@@ -3,6 +3,8 @@
 #include <glm/glm.hpp>
 #include <glm/gtx/quaternion.hpp>
 
+#include "util/Axis.h"
+
 #include "physics/Category.h"
 #include "physics/size.h"
 
@@ -10,7 +12,9 @@
 struct BodyDefinition {
     glm::vec3 m_size{ 1.f };
 
-    glm::quat m_baseRotation{ 1.f, 0.f, 0.f, 0.f };
+    util::Axis m_baseAxis{ util::Axis::y };
+    util::Front m_baseFront{ util::Front::z };
+    glm::vec3 m_baseAdjust{ 0.f };
 
     glm::vec3 m_linearVelocity{ 0.f };
     glm::vec3 m_angularVelocity{ 0.f };
@@ -32,7 +36,9 @@ struct ShapeDefinition {
 
     glm::vec3 m_size{ 0.5f };
 
-    glm::quat m_rotation{ 1.f, 0.f, 0.f, 0.f };
+    util::Axis m_baseAxis{ util::Axis::y };
+    util::Front m_baseFront{ util::Front::z };
+    glm::vec3 m_baseAdjust{ 0.f };
     glm::vec3 m_offset{ 0.f };
 
     physics::Category m_category{ physics::Category::none };

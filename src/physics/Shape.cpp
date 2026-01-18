@@ -30,7 +30,9 @@ namespace physics {
     Shape::Shape(const ShapeDefinition& o) noexcept
     {
         size = o.m_size;
-        rotation = o.m_rotation;
+        baseAxis = o.m_baseAxis;
+        baseFront = o.m_baseFront;
+        baseAdjust = o.m_baseAdjust;
         offset = o.m_offset;
         category = o.m_category;
         collisionMask = o.m_collisionMask;
@@ -48,7 +50,9 @@ namespace physics {
     void Shape::swap(Shape& o) noexcept
     {
         std::swap(size, o.size);
-        std::swap(rotation, o.rotation);
+        std::swap(baseAxis, o.baseAxis);
+        std::swap(baseFront, o.baseFront);
+        std::swap(baseAdjust, o.baseAdjust);
         std::swap(offset, o.offset);
         std::swap(m_staticBodyId, o.m_staticBodyId);
         std::swap(m_heightFieldShape, o.m_heightFieldShape);
@@ -100,7 +104,7 @@ namespace physics {
         case ShapeType::plane: {
             // Create a plane shape
             // Note: Jolt planes are infinite
-            glm::vec3 normal = rotation * glm::vec3(0, 1, 0);
+            glm::vec3 normal = getBaseRotation() * glm::vec3(0, 1, 0);
             JPH::Plane plane(toJolt(normal), 0.0f);
             shape = new JPH::PlaneShape(plane);
             break;
@@ -137,8 +141,8 @@ namespace physics {
         // Create static body for standalone shape
         JPH::ObjectLayer objectLayer = toObjectLayer(category, false, false);
 
-        // Apply base rotation for axis alignment
-        glm::quat initialRot = rotation * getBaseRotation();
+        // Apply base rotation (axis + front + adjust)
+        glm::quat initialRot = getBaseRotation();
 
         JPH::BodyCreationSettings settings(
             shape,

@@ -18,6 +18,8 @@
 
 #include "value/PhysicsCategoryValue.h"
 #include "value/PhysicsShapeValue.h"
+#include "value/AxisValue.h"
+#include "value/FrontValue.h"
 
 namespace {
 }
@@ -126,8 +128,14 @@ namespace loader {
             else if (k == "max_angular_velocity" || k == "max_angular_vel") {
                 data.maxAngulerVelocity = readFloat(v);
             }
-            else if (k == "rot" || k == "rotation") {
-                data.baseRotation = readDegreesRotation(v);
+            else if (k == "base_axis") {
+                data.baseAxis = AxisValue::load(v);
+            }
+            else if (k == "front") {
+                data.baseFront = FrontValue::load(v);
+            }
+            else if (k == "adjust") {
+                data.baseAdjust = readVec3(v);
             }
             else if (k == "axis") {
                 data.axis = readVec3(v);
@@ -157,7 +165,9 @@ namespace loader {
 
             body.m_size = bodyData.size;
 
-            body.m_baseRotation = util::degreesToQuat(bodyData.baseRotation);
+            body.m_baseAxis = bodyData.baseAxis;
+            body.m_baseFront = bodyData.baseFront;
+            body.m_baseAdjust = bodyData.baseAdjust;
 
             body.m_linearVelocity = bodyData.linearVelocity;
             body.m_angularVelocity = bodyData.angularVelocity;
@@ -179,7 +189,9 @@ namespace loader {
 
             shape.m_size = shapeData.size;
 
-            shape.m_rotation = util::degreesToQuat(shapeData.rotation);
+            shape.m_baseAxis = shapeData.baseAxis;
+            shape.m_baseFront = shapeData.baseFront;
+            shape.m_baseAdjust = shapeData.baseAdjust;
             shape.m_offset = shapeData.offset;
 
             shape.m_category = shapeData.category;

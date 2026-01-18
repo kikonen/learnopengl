@@ -2,6 +2,8 @@
 
 #include <glm/glm.hpp>
 
+#include "util/Axis.h"
+
 #include "physics/Category.h"
 #include "physics/size.h"
 
@@ -10,7 +12,9 @@ namespace loader {
     struct BodyData {
         glm::vec3 size{ 1.f };
 
-        glm::vec3 baseRotation{ 0.f };
+        util::Axis baseAxis{ util::Axis::y };
+        util::Front baseFront{ util::Front::z };
+        glm::vec3 baseAdjust{ 0.f };
 
         glm::vec3 linearVelocity{ 0.f };
         glm::vec3 angularVelocity{ 0.f };
@@ -32,7 +36,9 @@ namespace loader {
 
         glm::vec3 size{ 0.5f };
 
-        glm::vec3 rotation{ 0.f };
+        util::Axis baseAxis{ util::Axis::y };
+        util::Front baseFront{ util::Front::z };
+        glm::vec3 baseAdjust{ 0.f };
         glm::vec3 offset{ 0.f };
 
         physics::Category category{ physics::Category::none };

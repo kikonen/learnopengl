@@ -201,7 +201,9 @@ namespace loader {
 
             shape.m_size = shapeData.size;
 
-            shape.m_rotation = util::degreesToQuat(shapeData.rotation);
+            shape.m_baseAxis = shapeData.baseAxis;
+            shape.m_baseFront = shapeData.baseFront;
+            shape.m_baseAdjust = shapeData.baseAdjust;
             shape.m_offset = shapeData.offset;
 
             shape.m_category = shapeData.category;

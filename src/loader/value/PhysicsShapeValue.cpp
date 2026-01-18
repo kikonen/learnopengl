@@ -7,6 +7,8 @@
 #include "loader/loader_util.h"
 
 #include "PhysicsCategoryValue.h"
+#include "AxisValue.h"
+#include "FrontValue.h"
 
 namespace loader {
     void PhysicsShapeValue::loadShape(
@@ -49,8 +51,14 @@ namespace loader {
             else if (k == "size") {
                 data.size = readVec3(v);
             }
-            else if (k == "rot" || k == "rotation") {
-                data.rotation = readDegreesRotation(v);
+            else if (k == "axis") {
+                data.baseAxis = AxisValue::load(v);
+            }
+            else if (k == "front") {
+                data.baseFront = FrontValue::load(v);
+            }
+            else if (k == "adjust") {
+                data.baseAdjust = readVec3(v);
             }
             else if (k == "offset") {
                 data.offset = readVec3(v);

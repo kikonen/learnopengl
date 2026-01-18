@@ -32,7 +32,15 @@ namespace physics {
     {
         size = o.m_size;
 
-        baseRotation = o.m_baseRotation;
+        baseAxis = o.m_baseAxis;
+        baseFront = o.m_baseFront;
+        baseAdjust = o.m_baseAdjust;
+
+        // Compute base rotation: axis -> front -> adjust
+        baseRotation =
+            util::degreesToQuat(baseAdjust) *
+            util::frontToRotation(baseFront) *
+            util::axisToRotation(baseAxis);
         invBaseRotation = glm::conjugate(baseRotation);
 
         linearVelocity = o.m_linearVelocity;
@@ -65,6 +73,9 @@ namespace physics {
     void Body::swap(Body& o) noexcept
     {
         std::swap(size, o.size);
+        std::swap(baseAxis, o.baseAxis);
+        std::swap(baseFront, o.baseFront);
+        std::swap(baseAdjust, o.baseAdjust);
         std::swap(baseRotation, o.baseRotation);
         std::swap(invBaseRotation, o.invBaseRotation);
         std::swap(linearVelocity, o.linearVelocity);

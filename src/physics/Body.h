@@ -6,6 +6,8 @@
 #include <glm/glm.hpp>
 #include <glm/gtx/quaternion.hpp>
 
+#include "util/Axis.h"
+
 #include "Category.h"
 #include "size.h"
 
@@ -81,9 +83,13 @@ namespace physics {
         // capsule/cylinder = radiux, half-length
         glm::vec3 size{ 1.f };
 
-        // NOTE KI base rotation to match base rotation of node
+        // Base rotation components
+        util::Axis baseAxis{ util::Axis::y };
+        util::Front baseFront{ util::Front::z };
+        glm::vec3 baseAdjust{ 0.f };
+
+        // Computed base rotation (from axis/front/adjust)
         glm::quat baseRotation{ 1.f, 0.f, 0.f, 0.f };
-        // reverse rotation of baseRotation
         glm::quat invBaseRotation{ 1.f, 0.f, 0.f, 0.f };
 
         // initial values for physics

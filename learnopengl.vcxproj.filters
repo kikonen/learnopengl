@@ -2516,6 +2516,12 @@
     <ClInclude Include="src\loader\value\PhysicsGeomValue.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\loader\value\AxisValue.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\loader\value\FrontValue.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="src\event\actions.h">
       <Filter>Header Files</Filter>
     </ClInclude>

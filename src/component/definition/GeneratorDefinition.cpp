@@ -85,7 +85,9 @@ std::unique_ptr<NodeGenerator> GeneratorDefinition::createGenerator(
 
             shape.m_size = shapeData.m_size;
 
-            shape.m_rotation = shapeData.m_rotation;
+            shape.m_baseAxis = shapeData.m_baseAxis;
+            shape.m_baseFront = shapeData.m_baseFront;
+            shape.m_baseAdjust = shapeData.m_baseAdjust;
             shape.m_offset = shapeData.m_offset;
 
             shape.m_category = shapeData.m_category;

@@ -841,6 +841,8 @@
     <ClInclude Include="src\loader\Value.h" />
     <ClInclude Include="src\loader\value\PhysicsCategoryValue.h" />
     <ClInclude Include="src\loader\value\PhysicsShapeValue.h" />
+    <ClInclude Include="src\loader\value\AxisValue.h" />
+    <ClInclude Include="src\loader\value\FrontValue.h" />
     <ClInclude Include="src\material\FontAtlasMaterialUpdater.h" />
     <ClInclude Include="src\material\InlineTexture.h" />
     <ClInclude Include="src\material\ShaderMaterialUpdater.h" />
