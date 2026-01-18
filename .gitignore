@@ -30,3 +30,5 @@ vcpkg_installed/*
 *_BACKUP_*
 *_LOCAL_*
 *_REMOTE_*
+
+.claude/*
