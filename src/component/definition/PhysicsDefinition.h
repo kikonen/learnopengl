@@ -26,8 +26,8 @@ struct BodyDefinition {
     bool m_kinematic : 1 { false };
 };
 
-// @see physics/Geom.h
-struct GeomDefinition {
+// @see physics/Shape.h
+struct ShapeDefinition {
     bool m_enabled{ false };
 
     glm::vec3 m_size{ 0.5f };
@@ -35,10 +35,10 @@ struct GeomDefinition {
     glm::quat m_rotation{ 1.f, 0.f, 0.f, 0.f };
     glm::vec3 m_offset{ 0.f };
 
-    uint32_t m_categoryMask{ UINT_MAX };
+    physics::Category m_category{ physics::Category::none };
     uint32_t m_collisionMask{ UINT_MAX };
 
-    physics::GeomType m_type{ physics::GeomType::none };
+    physics::ShapeType m_type{ physics::ShapeType::none };
 
     bool m_placeable : 1 { true };
 };
@@ -46,5 +46,5 @@ struct GeomDefinition {
 struct PhysicsDefinition {
     bool m_update{ false };
     BodyDefinition m_body;
-    GeomDefinition m_geom;
+    ShapeDefinition m_shape;
 };

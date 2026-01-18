@@ -6,11 +6,11 @@
 namespace physics
 {
     typedef uint32_t object_id;
-    typedef uint32_t geom_id;
+    typedef uint32_t shape_id;
     typedef uint16_t height_map_id;
     typedef uint16_t material_id;
 
-    enum class GeomType : std::underlying_type_t<std::byte> {
+    enum class ShapeType : std::underlying_type_t<std::byte> {
         none = 0,
         ray,
         plane,

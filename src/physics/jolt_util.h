@@ -10,6 +10,7 @@
 
 #include "JoltFoundation.h"
 #include "Category.h"
+#include "physics_util.h"
 #include "size.h"
 
 namespace physics {
@@ -53,9 +54,12 @@ inline glm::quat fromJolt(const JPH::Quat& q) {
 }
 
 // Determine object layer based on motion type and category mask
-inline JPH::ObjectLayer toObjectLayer(uint32_t categoryMask, bool isKinematic, bool isDynamic) {
+inline JPH::ObjectLayer toObjectLayer(
+    physics::Category category,
+    bool isKinematic,
+    bool isDynamic) {
     // Sensors (rays) go to sensor layer
-    if (categoryMask & static_cast<uint32_t>(Category::ray)) {
+    if (category == Category::ray) {
         return ObjectLayers::SENSOR;
     }
 
@@ -65,9 +69,9 @@ inline JPH::ObjectLayer toObjectLayer(uint32_t categoryMask, bool isKinematic, b
     }
 
     // Static/kinematic terrain, scenery, ground -> non-moving
-    if (categoryMask & (static_cast<uint32_t>(Category::terrain) |
-                        static_cast<uint32_t>(Category::ground) |
-                        static_cast<uint32_t>(Category::scenery))) {
+    if (category == Category::terrain ||
+        category == Category::ground ||
+        category == Category::scenery) {
         return ObjectLayers::NON_MOVING;
     }
 
@@ -96,9 +100,13 @@ inline JPH::EMotionType toMotionType(bool isKinematic, bool isDynamic) {
 // Layout: [32-bit object_id][16-bit category mask (low bits)][16-bit collision mask (low bits)]
 // Note: Full 32-bit masks are not fully preserved, but top bits are rarely used
 
-inline uint64_t packUserData(physics::object_id objectId, uint32_t categoryMask, uint32_t collisionMask) {
+inline uint64_t packUserData(
+    physics::object_id objectId,
+    physics::Category category,
+    uint32_t collisionMask)
+{
     uint64_t data = static_cast<uint64_t>(objectId) << 32;
-    data |= (static_cast<uint64_t>(categoryMask & 0xFFFF) << 16);
+    data |= (static_cast<uint64_t>(mask(category) & 0xFFFF) << 16);
     data |= static_cast<uint64_t>(collisionMask & 0xFFFF);
     return data;
 }
@@ -107,8 +115,8 @@ inline physics::object_id unpackObjectId(uint64_t userData) {
     return static_cast<physics::object_id>(userData >> 32);
 }
 
-inline uint32_t unpackCategoryMask(uint64_t userData) {
-    return static_cast<uint32_t>((userData >> 16) & 0xFFFF);
+inline physics::Category unpackCategory(uint64_t userData) {
+    return static_cast<physics::Category>((userData >> 16) & 0xFFFF);
 }
 
 inline uint32_t unpackCollisionMask(uint64_t userData) {

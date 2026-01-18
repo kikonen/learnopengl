@@ -77,23 +77,23 @@ std::unique_ptr<NodeGenerator> GeneratorDefinition::createGenerator(
         generator->m_yStep = repeat.yStep;
         generator->m_zStep = repeat.zStep;
 
-        if (data.m_geom.m_enabled)
+        if (data.m_shape.m_enabled)
         {
-            auto& geomData = data.m_geom;
-            generator->m_geometryTemplate = std::make_unique<GeomDefinition>();
-            auto& geom = *generator->m_geometryTemplate;
+            auto& shapeData = data.m_shape;
+            generator->m_shapeTemplate = std::make_unique<ShapeDefinition>();
+            auto& shape = *generator->m_shapeTemplate;
 
-            geom.m_size = geomData.m_size;
+            shape.m_size = shapeData.m_size;
 
-            geom.m_rotation = geomData.m_rotation;
-            geom.m_offset = geomData.m_offset;
+            shape.m_rotation = shapeData.m_rotation;
+            shape.m_offset = shapeData.m_offset;
 
-            geom.m_categoryMask = geomData.m_categoryMask;
-            geom.m_collisionMask = geomData.m_collisionMask;
+            shape.m_category = shapeData.m_category;
+            shape.m_collisionMask = shapeData.m_collisionMask;
 
-            geom.m_type = geomData.m_type;
+            shape.m_type = shapeData.m_type;
 
-            geom.m_placeable = geomData.m_placeable;
+            shape.m_placeable = shapeData.m_placeable;
         }
 
         return generator;

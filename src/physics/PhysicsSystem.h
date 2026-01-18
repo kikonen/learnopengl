@@ -83,9 +83,9 @@ namespace physics {
         const HeightMap* getHeightMap(physics::height_map_id id) const;
         HeightMap* modifyHeightMap(physics::height_map_id id);
 
-        // Register geom into world
-        void registerGeom(
-            physics::Geom& geom,
+        // Register shape into world
+        void registerShape(
+            physics::Shape& shape,
             const glm::vec3& scale);
 
         std::pair<bool, float> getWorldSurfaceLevel(

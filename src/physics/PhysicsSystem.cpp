@@ -69,10 +69,10 @@ namespace {
 
             // Check collision mask from user data
             uint64_t userData = inBody.GetUserData();
-            uint32_t bodyCategoryMask = physics::unpackCategoryMask(userData);
+            auto bodyCategory = physics::unpackCategory(userData);
 
             // Body should collide if its category matches our collision mask
-            return (bodyCategoryMask & m_collisionMask) != 0;
+            return (mask(bodyCategory) & m_collisionMask) != 0;
         }
 
     private:
@@ -292,8 +292,8 @@ namespace physics
                 if (obj.m_body.hasPhysicsBody()) {
                     m_bodyIdToObject.insert({ obj.m_body.m_bodyId.GetIndex(), id });
                 }
-                if (obj.m_geom.hasPhysicsBody()) {
-                    m_bodyIdToObject.insert({ obj.m_geom.m_staticBodyId.GetIndex(), id });
+                if (obj.m_shape.hasPhysicsBody()) {
+                    m_bodyIdToObject.insert({ obj.m_shape.m_staticBodyId.GetIndex(), id });
                 }
 
                 // Handle heightmaps
@@ -364,8 +364,8 @@ namespace physics
         if (obj.m_body.hasPhysicsBody()) {
             m_bodyIdToObject.erase(obj.m_body.m_bodyId.GetIndex());
         }
-        if (obj.m_geom.hasPhysicsBody()) {
-            m_bodyIdToObject.erase(obj.m_geom.m_staticBodyId.GetIndex());
+        if (obj.m_shape.hasPhysicsBody()) {
+            m_bodyIdToObject.erase(obj.m_shape.m_staticBodyId.GetIndex());
         }
 
         // Release physics objects
@@ -435,13 +435,13 @@ namespace physics
         return &m_heightMaps[id];
     }
 
-    void PhysicsSystem::registerGeom(
-        physics::Geom& geom,
+    void PhysicsSystem::registerShape(
+        physics::Shape& shape,
         const glm::vec3& scale)
     {
         ASSERT_WT();
 
-        geom.create(
+        shape.create(
             0,
             getJoltPhysicsSystem(),
             scale,

@@ -26,8 +26,8 @@ namespace loader {
         bool kinematic : 1 { false };
     };
 
-    // @see physics/Geom.h
-    struct GeomData {
+    // @see physics/Shape.h
+    struct ShapeData {
         bool enabled{ false };
 
         glm::vec3 size{ 0.5f };
@@ -35,10 +35,10 @@ namespace loader {
         glm::vec3 rotation{ 0.f };
         glm::vec3 offset{ 0.f };
 
-        uint32_t categoryMask{ UINT_MAX };
+        physics::Category category{ physics::Category::none };
         uint32_t collisionMask{ UINT_MAX };
 
-        physics::GeomType type{ physics::GeomType::none };
+        physics::ShapeType type{ physics::ShapeType::none };
 
         bool placeable : 1 { true };
     };
@@ -48,6 +48,6 @@ namespace loader {
 
         bool update{ false };
         BodyData body;
-        GeomData geom;
+        ShapeData shape;
     };
 }

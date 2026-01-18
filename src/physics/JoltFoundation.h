@@ -35,8 +35,9 @@ namespace BroadPhaseLayers {
 namespace ObjectLayers {
     static constexpr JPH::ObjectLayer NON_MOVING = 0;  // Static geometry (terrain, scenery)
     static constexpr JPH::ObjectLayer MOVING = 1;      // Dynamic bodies
-    static constexpr JPH::ObjectLayer SENSOR = 2;      // Sensors/triggers (no collision response)
-    static constexpr uint32_t NUM_LAYERS = 3;
+    static constexpr JPH::ObjectLayer NONE = 2;        // Undefined
+    static constexpr JPH::ObjectLayer SENSOR = 3;      // Sensors/triggers (no collision response)
+    static constexpr uint32_t NUM_LAYERS = 4;
 }
 
 // Maps object layer to broadphase layer

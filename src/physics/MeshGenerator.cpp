@@ -48,12 +48,12 @@ namespace {
     constexpr float SCALE = 1.0f;
     constexpr float OFFSET = 0.0f;
 
-    constexpr float PLANE_SIZE = 100.f;
+    constexpr float PLANE_SIZE = 1.f;
 
     const glm::vec3 UP{ 0.f, 1.f, 0.f };
 
     std::mutex g_materialLock;
-    std::map<physics::GeomType, Material> g_materials;
+    std::map<physics::ShapeType, Material> g_materials;
 
     void setupMaterials()
     {
@@ -68,14 +68,14 @@ namespace {
             const auto matGold = Material::createMaterial(BasicMaterial::gold);
 
             g_materials.insert({
-                { physics::GeomType::none, matWhite },
-                { physics::GeomType::ray, matRed },
-                { physics::GeomType::plane, matBlue },
-                { physics::GeomType::height_field, matYellow },
-                { physics::GeomType::box, matGreen },
+                { physics::ShapeType::none, matWhite },
+                { physics::ShapeType::ray, matRed },
+                { physics::ShapeType::plane, matBlue },
+                { physics::ShapeType::height_field, matYellow },
+                { physics::ShapeType::box, matGreen },
             });
 
-            for (auto& [geom, material] : g_materials) {
+            for (auto& [shapeType, material] : g_materials) {
                 material.registerMaterial();
             }
         }
@@ -88,7 +88,7 @@ namespace {
         g_materials.clear();
     }
 
-    const Material& getMaterial(physics::GeomType type)
+    const Material& getMaterial(physics::ShapeType type)
     {
         setupMaterials();
         {
@@ -96,7 +96,7 @@ namespace {
             if (it != g_materials.end()) return it->second;
         }
         {
-            const auto& it = g_materials.find(physics::GeomType::none);
+            const auto& it = g_materials.find(physics::ShapeType::none);
             return it->second;
         }
     }
@@ -142,18 +142,18 @@ namespace physics {
             if (!onlyNavMesh || isNavMesh) {
                 auto instance = generateMesh(*obj, id);
                 if (instance.m_mesh) {
-                    auto geomType = obj->m_geom.type;
-                    if (geomType == GeomType::none && obj->m_body.type != BodyType::none) {
-                        // Use body type for material if geom type is none
+                    auto shapeType = obj->m_shape.type;
+                    if (shapeType == ShapeType::none && obj->m_body.type != BodyType::none) {
+                        // Use body type for material if shape type is none
                         switch (obj->m_body.type) {
-                        case BodyType::box: geomType = GeomType::box; break;
-                        case BodyType::sphere: geomType = GeomType::sphere; break;
-                        case BodyType::capsule: geomType = GeomType::capsule; break;
-                        case BodyType::cylinder: geomType = GeomType::cylinder; break;
+                        case BodyType::box: shapeType = ShapeType::box; break;
+                        case BodyType::sphere: shapeType = ShapeType::sphere; break;
+                        case BodyType::capsule: shapeType = ShapeType::capsule; break;
+                        case BodyType::cylinder: shapeType = ShapeType::cylinder; break;
                         default: break;
                         }
                     }
-                    instance.m_materialIndex = getMaterial(geomType).m_registeredIndex;
+                    instance.m_materialIndex = getMaterial(shapeType).m_registeredIndex;
                     meshes->push_back(instance);
                 }
             }
@@ -167,23 +167,23 @@ namespace physics {
         physics::object_id objectId)
     {
         const auto& body = obj.m_body;
-        const auto& geom = obj.m_geom;
+        const auto& shape = obj.m_shape;
 
-        // Determine which type to use (prefer geom, fall back to body)
-        physics::GeomType geomType = geom.type;
+        // Determine which type to use (prefer shape, fall back to body)
+        physics::ShapeType shapeType = shape.type;
         physics::BodyType bodyType = body.type;
 
-        if (geomType == GeomType::none && bodyType == BodyType::none) {
+        if (shapeType == ShapeType::none && bodyType == BodyType::none) {
             return {};
         }
 
         // Skip rays - they're not visualized via bodies
-        if (geomType == GeomType::ray) {
+        if (shapeType == ShapeType::ray) {
             return {};
         }
 
         glm::vec3 pos{ 0.f };
-        glm::vec3 scale{ 1.f };
+        glm::vec3 scale = obj.m_scale;
         glm::quat rot{ 1.f, 0.f, 0.f, 0.f };
         glm::vec3 offset{ 0.f };
 
@@ -194,8 +194,8 @@ namespace physics {
         JPH::BodyID joltBodyId;
         if (body.hasPhysicsBody()) {
             joltBodyId = body.m_bodyId;
-        } else if (geom.hasPhysicsBody()) {
-            joltBodyId = geom.m_staticBodyId;
+        } else if (shape.hasPhysicsBody()) {
+            joltBodyId = shape.m_staticBodyId;
         }
 
         if (!joltBodyId.IsInvalid()) {
@@ -205,10 +205,10 @@ namespace physics {
         }
 
         // Generate mesh based on type
-        if (geomType != GeomType::none) {
-            switch (geomType) {
-            case GeomType::plane: {
-                scale = glm::vec3{ PLANE_SIZE, PLANE_SIZE, PLANE_SIZE };
+        if (shapeType != ShapeType::none) {
+            switch (shapeType) {
+            case ShapeType::plane: {
+                scale *= glm::vec3{ PLANE_SIZE, PLANE_SIZE, PLANE_SIZE };
 
                 cacheKey = fmt::format("plane-{}", 1);
 
@@ -221,7 +221,7 @@ namespace physics {
                 }
                 break;
             }
-            case GeomType::height_field: {
+            case ShapeType::height_field: {
                 // Find the height map for this object
                 for (physics::height_map_id hid = 1; hid < 100; hid++) {
                     const auto* heightMap = m_physicsSystem.getHeightMap(hid);
@@ -251,8 +251,8 @@ namespace physics {
                 }
                 break;
             }
-            case GeomType::box: {
-                scale = geom.size;
+            case ShapeType::box: {
+                scale *= shape.size;
                 cacheKey = fmt::format("box-{}", 1);
 
                 mesh = findMesh(cacheKey);
@@ -264,9 +264,9 @@ namespace physics {
                 }
                 break;
             }
-            case GeomType::sphere: {
-                float radius = geom.size.x;
-                scale = glm::vec3{ radius };
+            case ShapeType::sphere: {
+                float radius = shape.size.x;
+                scale *= glm::vec3{ radius };
 
                 cacheKey = fmt::format("sphere-{}", 1);
 
@@ -281,12 +281,12 @@ namespace physics {
                 }
                 break;
             }
-            case GeomType::capsule: {
-                float radius = geom.size.x;
-                float length = geom.size.y * 2.f;
+            case ShapeType::capsule: {
+                float radius = shape.size.x;
+                float length = shape.size.y * 2.f;
                 float ratio = 1.f / radius;
 
-                scale = glm::vec3{ 1.f / ratio };
+                scale *= glm::vec3{ 1.f / ratio };
 
                 cacheKey = fmt::format("capsule-{}-{}", 1, length * ratio);
 
@@ -302,11 +302,11 @@ namespace physics {
                 }
                 break;
             }
-            case GeomType::cylinder: {
-                float radius = geom.size.x;
-                float length = geom.size.y * 2.f;
+            case ShapeType::cylinder: {
+                float radius = shape.size.x;
+                float length = shape.size.y * 2.f;
 
-                scale = glm::vec3{ radius, radius, length };
+                scale *= glm::vec3{ radius, radius, length };
 
                 cacheKey = fmt::format("cylinder-{}-{}", 1, 0.5);
 
@@ -327,10 +327,10 @@ namespace physics {
             }
         }
         else if (bodyType != BodyType::none) {
-            // Use body type if geom type is none
+            // Use body type if shape type is none
             switch (bodyType) {
             case BodyType::box: {
-                scale = body.size;
+                scale *= body.size;
                 cacheKey = fmt::format("box-{}", 1);
 
                 mesh = findMesh(cacheKey);
@@ -344,7 +344,7 @@ namespace physics {
             }
             case BodyType::sphere: {
                 float radius = body.size.x;
-                scale = glm::vec3{ radius };
+                scale *= glm::vec3{ radius };
 
                 cacheKey = fmt::format("sphere-{}", 1);
 
@@ -364,7 +364,7 @@ namespace physics {
                 float length = body.size.y * 2.f;
                 float ratio = 1.f / radius;
 
-                scale = glm::vec3{ 1.f / ratio };
+                scale *= glm::vec3{ 1.f / ratio };
 
                 cacheKey = fmt::format("capsule-{}-{}", 1, length * ratio);
 
@@ -384,7 +384,7 @@ namespace physics {
                 float radius = body.size.x;
                 float length = body.size.y * 2.f;
 
-                scale = glm::vec3{ radius, radius, length };
+                scale *= glm::vec3{ radius, radius, length };
 
                 cacheKey = fmt::format("cylinder-{}-{}", 1, 0.5);
 
@@ -423,7 +423,7 @@ namespace physics {
             drawOptions.m_mode = mesh->getDrawMode();
             drawOptions.m_type = backend::DrawOptions::Type::elements;
             drawOptions.m_lineMode = true;
-            drawOptions.m_renderBack = geomType == GeomType::plane || geomType == GeomType::height_field;
+            drawOptions.m_renderBack = shapeType == ShapeType::plane || shapeType == ShapeType::height_field;
         }
 
         return {

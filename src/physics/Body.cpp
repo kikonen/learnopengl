@@ -89,7 +89,7 @@ namespace physics {
 
     void Body::create(
         physics::object_id objectId,
-        uint32_t categoryMask,
+        physics::Category category,
         uint32_t collisionMask,
         JPH::PhysicsSystem& physicsSystem,
         const glm::vec3& scale)
@@ -134,7 +134,7 @@ namespace physics {
             ? JPH::EMotionType::Kinematic
             : JPH::EMotionType::Dynamic;
 
-        JPH::ObjectLayer objectLayer = toObjectLayer(categoryMask, kinematic, true);
+        JPH::ObjectLayer objectLayer = toObjectLayer(category, kinematic, true);
 
         // Create body settings
         JPH::BodyCreationSettings settings(
@@ -171,7 +171,7 @@ namespace physics {
         settings.mRestitution = 0.3f;
 
         // Pack user data: object_id and masks
-        settings.mUserData = packUserData(objectId, categoryMask, collisionMask);
+        settings.mUserData = packUserData(objectId, category, collisionMask);
 
         // Create and add body
         JPH::BodyInterface& bodyInterface = physicsSystem.GetBodyInterface();

@@ -25,7 +25,7 @@
 
 #include "physics/PhysicsSystem.h"
 #include "physics/physics_util.h"
-#include "physics/Geom.h"
+#include "physics/Shape.h"
 
 #include "registry/Registry.h"
 #include "registry/NodeRegistry.h"
@@ -70,7 +70,7 @@ void GridGenerator::updateWT(
     updateBounds(ctx, container);
     updateInstances(ctx, container);
 
-    const auto hasPhysics = !m_geometries.empty();
+    const auto hasPhysics = !m_shapes.empty();
     //auto& physicsSystem = physics::PhysicsSystem::get();
 
     const auto& parentMatrix = containerState.getModelMatrix();
@@ -84,9 +84,9 @@ void GridGenerator::updateWT(
             const glm::vec3 pivot{ 0.f };
             const auto& rot = transform.getRotation();
 
-            auto& geom = m_geometries[i];
+            auto& shape = m_shapes[i];
             auto& bodyInterface = physics::PhysicsSystem::get().getBodyInterface();
-            geom.updatePhysic(bodyInterface, pivot, pos, rot);
+            shape.updatePhysics(bodyInterface, pivot, pos, rot);
         }
     }
 
@@ -126,8 +126,8 @@ void GridGenerator::prepareInstances(
 
     m_transforms.reserve(count);
 
-    if (m_geometryTemplate) {
-        m_geometries.reserve(count);
+    if (m_shapeTemplate) {
+        m_shapes.reserve(count);
     }
 
     auto& physicsSystem = physics::PhysicsSystem::get();
@@ -137,14 +137,14 @@ void GridGenerator::prepareInstances(
         transform.setPosition(m_offset);
         transform.setScale(m_scale);
 
-        if (m_geometryTemplate) {
+        if (m_shapeTemplate) {
             physics::Object obj;
-            obj.m_geom = *m_geometryTemplate;
+            obj.m_shape = *m_shapeTemplate;
 
-            m_geometries.push_back(std::move(obj.m_geom));
-            auto& geom = m_geometries[m_geometries.size() - 1];
+            m_shapes.push_back(std::move(obj.m_shape));
+            auto& shape = m_shapes[m_shapes.size() - 1];
 
-            physicsSystem.registerGeom(geom, glm::vec3{ m_scale });
+            physicsSystem.registerShape(shape, glm::vec3{ m_scale });
         }
     }
 

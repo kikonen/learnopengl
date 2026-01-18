@@ -373,7 +373,7 @@
     <ClCompile Include="src\loader\SceneData.cpp" />
     <ClCompile Include="src\loader\TransformData.cpp" />
     <ClCompile Include="src\loader\value\PhysicsCategoryValue.cpp" />
-    <ClCompile Include="src\loader\value\PhysicsGeomValue.cpp" />
+    <ClCompile Include="src\loader\value\PhysicsShapeValue.cpp" />
     <ClCompile Include="src\material\ColorTexture.cpp" />
     <ClCompile Include="src\material\CustomMaterial.cpp" />
     <ClCompile Include="src\material\FontAtlasMaterialUpdater.cpp" />
@@ -500,7 +500,7 @@
     <ClCompile Include="src\mesh\vao\VertexVBO.cpp" />
     <ClCompile Include="src\model\PivotPoint.cpp" />
     <ClCompile Include="src\physics\Body.cpp" />
-    <ClCompile Include="src\physics\Geom.cpp" />
+    <ClCompile Include="src\physics\Shape.cpp" />
     <ClCompile Include="src\physics\MeshGenerator.cpp" />
     <ClCompile Include="src\physics\physics_util.cpp" />
     <ClCompile Include="src\registry\VaoRegistry.cpp" />
@@ -840,7 +840,7 @@
     <ClInclude Include="src\loader\TransformData.h" />
     <ClInclude Include="src\loader\Value.h" />
     <ClInclude Include="src\loader\value\PhysicsCategoryValue.h" />
-    <ClInclude Include="src\loader\value\PhysicsGeomValue.h" />
+    <ClInclude Include="src\loader\value\PhysicsShapeValue.h" />
     <ClInclude Include="src\material\FontAtlasMaterialUpdater.h" />
     <ClInclude Include="src\material\InlineTexture.h" />
     <ClInclude Include="src\material\ShaderMaterialUpdater.h" />
@@ -1141,7 +1141,7 @@
     <ClInclude Include="src\loader\ScriptLoader.h" />
     <ClInclude Include="src\loader\SkyboxData.h" />
     <ClInclude Include="src\loader\SkyboxLoader.h" />
-    <ClInclude Include="src\physics\Geom.h" />
+    <ClInclude Include="src\physics\Shape.h" />
     <ClInclude Include="src\physics\Object.h" />
     <ClInclude Include="src\query\Query.h" />
     <ClInclude Include="src\kigl\GLFrameBufferHandle.h" />
