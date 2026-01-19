@@ -189,7 +189,7 @@ nodes:
       geom:
         type: capsule
         size: [1, 1.5, 0]
-        category: [npc]
+        category: npc
         collision: [ground, ray_player_fire]
   - id: wooden_floor
     prefab:

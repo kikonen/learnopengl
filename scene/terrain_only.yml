@@ -64,7 +64,7 @@ types:
     physics:
       geom:
         type: height_field
-        category: [ground, terrain]
+        category: terrain
         collide: [can_terrain]
         size: [2048, 0, 2048]
 

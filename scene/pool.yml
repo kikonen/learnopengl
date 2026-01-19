@@ -75,7 +75,7 @@ types:
         rot: [0, 0, 0]
       geom:
         type: box
-        category: [prop, can_float]
+        category: can_float
         collision: [world]
         size: [2.5]
   - id: mirror_ball
@@ -92,7 +92,7 @@ types:
         rot: [0, 0, 0]
       geom:
         type: sphere
-        category: [prop, can_float]
+        category: can_float
         collision: [world]
         size: [5]
   - id: mirror_ball_halo
@@ -283,7 +283,7 @@ types:
     physics:
       geom:
         type: height_field
-        category: [ground, terrain]
+        category: terrain
         collide: [can_terrain]
         size: [2048, 0, 2048]
   - id: grass

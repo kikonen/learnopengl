@@ -12,6 +12,6 @@ prefab:
   physics:
     geom:
       type: plane
-      category: [terrain]
+      category: terrain
       collision: [npc, player, prop]
       size: [1000, 0.2, 1000]

@@ -54,13 +54,14 @@ prefab:
       gain: 0.5
   physics:
     body:
-      type: capsule
       density: 0.01
       max_angular_velocity: 0
       force_axis: true
+      base_axis: z
     geom:
       type: capsule
-      category: [npc]
+      category: npc
       collision: [world, player]
       size: [0.75, 0.5, 0]
       offset: [0, 0.75, 0.25]
+      axis: z

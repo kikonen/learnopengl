@@ -91,7 +91,7 @@ types:
         program: g_tex
         shadow_program: shadow
       base_scale: 0.5
-    xphysics:
+    physics:
       body:
         type: box
         density: 0.1
@@ -110,7 +110,7 @@ nodes:
     active: true
   - type: dir_light
     pos: [-20, 25, 25]
-  - xtype: cube_map
+  - type: cube_map
     pos: [0, 5, 10]
   - type: wooden_floor
     scale: 100
@@ -161,6 +161,6 @@ nodes:
     pos: [0.0, 0.5, 0.0]
     clone_position_offset: [1.5, 0, 0]
     clones:
-      - pos: [0.0, 0.5, 0.0]
-      - pos: [0.5, 1.5, 0.0]
+      - pos: [0.1, 0.5, 0.0]
+      - pos: [0.7, 1.5, 0.0]
       - pos: [0, 2.5, 0.0]

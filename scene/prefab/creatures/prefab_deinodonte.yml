@@ -33,13 +33,14 @@ prefab:
       base_scale: 0.004
   physics:
     body:
-      type: capsule
       density: 0.01
       max_angular_velocity: 0
       force_axis: true
+      base_axis: z
     geom:
       type: capsule
-      category: [npc]
+      category: npc
       collision: [world, player]
       size: [0.85, 0.15, 0]
       offset: [0, 0.8, 0]
+      axis: z

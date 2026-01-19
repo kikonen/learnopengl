@@ -69,14 +69,12 @@ prefab:
   physics:
     enabled: false
     body:
-      type: capsule
       density: 0.01
-      rot: [90, 0, 0]
       max_angular_velocity: 0
       force_axis: true
     geom:
       type: capsule
-      category: [npc]
+      category: npc
       collision: [world, player]
       size: [0.25, 0.75, 0]
       offset: [0, 0, -0.35]

@@ -345,7 +345,7 @@ types:
         size: [4, 2.5, 2]
       geom:
         type: box
-        category: [prop, can_float, can_terrain]
+        category: can_float
         collision: [prop, npc]
         size: [4, 2.5, 2]
   - id: spyro
@@ -494,7 +494,7 @@ types:
         density: 0.07
       geom:
         type: sphere
-        category: [prop, can_float, can_terrain]
+        category: can_float
         collision: [prop, npc]
   - id: bronze_ball
     mesh:
@@ -1013,7 +1013,7 @@ types:
       body:
         kinematic: true
       geom:
-        category: [npc, can_terrain]
+        category: npc
         collision: [prop, npc]
     script_file: scripts/seq_skeleton_random_nav
   - id: giant_wooden_box

@@ -159,7 +159,7 @@ types:
         density: 0.0001
       geom:
         type: sphere
-        category: [prop, can_float]
+        category: prop
         collision: [world]
         size: [1]
   - id: ball_2

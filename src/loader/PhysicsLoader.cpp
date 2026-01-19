@@ -22,6 +22,17 @@
 #include "value/FrontValue.h"
 
 namespace {
+    // Map shape type to body type for inheritance
+    physics::BodyType shapeTypeToBodyType(physics::ShapeType shapeType)
+    {
+        switch (shapeType) {
+        case physics::ShapeType::box:      return physics::BodyType::box;
+        case physics::ShapeType::sphere:   return physics::BodyType::sphere;
+        case physics::ShapeType::capsule:  return physics::BodyType::capsule;
+        case physics::ShapeType::cylinder: return physics::BodyType::cylinder;
+        default:                           return physics::BodyType::none;
+        }
+    }
 }
 
 namespace loader {
@@ -200,6 +211,16 @@ namespace loader {
             shape.m_type = shapeData.type;
 
             shape.m_placeable = shapeData.placeable;
+        }
+
+        // Inherit body type from shape if not explicitly set
+        if (df.m_body.m_type == physics::BodyType::none) {
+            df.m_body.m_type = shapeTypeToBodyType(df.m_shape.m_type);
+        }
+
+        // Inherit body size from shape if not explicitly set
+        if (df.m_body.m_size == glm::vec3{ 0.f } && df.m_shape.m_size != glm::vec3{ 0.f }) {
+            df.m_body.m_size = df.m_shape.m_size;
         }
 
         return definition;

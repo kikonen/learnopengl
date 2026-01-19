@@ -336,7 +336,7 @@ types:
     physics:
       geom:
         type: height_field
-        category: [ground, terrain]
+        category: terrain
         collision: [can_terrain]
         size: [2048, 0, 2048]
         xrotation: [0, 180, 0]

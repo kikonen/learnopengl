@@ -46,7 +46,7 @@ types:
         force_axis: true
       geom:
         type: box
-        category: [player, can_terrain]
+        category: player
         size: [0.25]
   - id: dir_light
     type: origo
@@ -109,7 +109,7 @@ types:
         density: 0.1
       geom:
         type: box
-        category: [prop, can_terrain]
+        category: prop
         collision: [prop, player]
         size: [0.5]
   - id: wooden_floor

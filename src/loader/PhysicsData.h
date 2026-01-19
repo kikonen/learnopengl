@@ -10,7 +10,8 @@
 namespace loader {
     // @see physics/Body.h
     struct BodyData {
-        glm::vec3 size{ 1.f };
+        // NOTE KI default {0} means "inherit from shape"
+        glm::vec3 size{ 0.f };
 
         util::Axis baseAxis{ util::Axis::y };
         util::Front baseFront{ util::Front::z };

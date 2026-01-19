@@ -52,6 +52,11 @@ namespace {
 
     const glm::vec3 UP{ 0.f, 1.f, 0.f };
 
+    // Generator creates capsules/cylinders along Z-axis
+    // Jolt uses Y-axis for capsules/cylinders
+    // This rotation aligns generator mesh (Z) to Jolt convention (Y)
+    const glm::quat GENERATOR_Z_TO_Y = glm::angleAxis(glm::radians(-90.f), glm::vec3(1.f, 0.f, 0.f));
+
     std::mutex g_materialLock;
     std::map<physics::ShapeType, Material> g_materials;
 
@@ -192,16 +197,26 @@ namespace physics {
 
         // Get position and rotation from Jolt body
         JPH::BodyID joltBodyId;
+        bool needsGeneratorRotation = false;
         if (body.hasPhysicsBody()) {
             joltBodyId = body.m_bodyId;
+            // Capsules/cylinders need generator Z->Y rotation
+            needsGeneratorRotation = (bodyType == BodyType::capsule || bodyType == BodyType::cylinder);
         } else if (shape.hasPhysicsBody()) {
             joltBodyId = shape.m_staticBodyId;
+            needsGeneratorRotation = (shapeType == ShapeType::capsule || shapeType == ShapeType::cylinder);
         }
 
         if (!joltBodyId.IsInvalid()) {
             const auto& bodyInterface = m_physicsSystem.getBodyInterface();
             pos = fromJolt(bodyInterface.GetPosition(joltBodyId));
             rot = fromJolt(bodyInterface.GetRotation(joltBodyId));
+
+            // Generator creates capsules/cylinders along Z-axis
+            // Jolt uses Y-axis, so we need to rotate the visualization mesh
+            if (needsGeneratorRotation) {
+                rot = rot * GENERATOR_Z_TO_Y;
+            }
         }
 
         // Generate mesh based on type

@@ -10,7 +10,8 @@
 
 // @see physics/Body.h
 struct BodyDefinition {
-    glm::vec3 m_size{ 1.f };
+    // NOTE KI default {0} means "inherit from shape" - handled in PhysicsLoader
+    glm::vec3 m_size{ 0.f };
 
     util::Axis m_baseAxis{ util::Axis::y };
     util::Front m_baseFront{ util::Front::z };

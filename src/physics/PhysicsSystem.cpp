@@ -343,7 +343,9 @@ namespace physics
 
         m_nodeHandles.push_back(nodeHandle);
         m_entityIndeces.push_back(entityIndex);
-        m_matrixLevels.push_back(0);
+        // NOTE KI use max value to ensure first updateToPhysics sync always runs
+        // (node's matrixLevel starts at 0, so 0 == 0 would skip the initial sync)
+        m_matrixLevels.push_back(static_cast<ki::level_id>(0));
         m_updateObjects.push_back(update ? id : 0);
 
         m_pending.push_back(id);

@@ -53,7 +53,7 @@ types:
         program: g_tex
         blend: true
       base_scale: 0.25
-      base_rot: [90, 0, 0]
+      axis: z
     camera:
       xdefault: true
       type: fps
@@ -67,14 +67,12 @@ types:
       update: true
       body:
         kinematic: true
-        type: capsule
         density: 0.01
-        rot: [90, 0, 0]
         max_angular_velocity: 0
         force_axis: true
-      geom:
+      shape:
         type: capsule
-        category: [player]
+        category: player
         size: [0.25, 0.5, 0]
   - id: player_3rd_person
     base: prefab_skeleton_warrior
@@ -88,14 +86,18 @@ types:
     audio:
       listener:
         default: true
+    flags:
+      dynamic_bounds: true
     physics:
       enabled: true
       update: true
       body:
-        xkinematic: true
+        kinematic: true
         density: 0.01
-      geom:
-        category: [player]
+      shape:
+        type: capsule
+        category: player
+        size: [0.25, 0.5, 0]
     script: |
       local wid = cmd:wait({ time=2 })
       cmd:animation_play(
@@ -160,10 +162,10 @@ types:
       program: g_tex
     physics:
       body:
-        type: sphere
         density: 0.01
-      geom:
+      shape:
         type: sphere
+        category: prop
         size: 1
   - id: gold_ball
     mesh:
@@ -179,10 +181,10 @@ types:
       type: pawn
     physics:
       body:
-        type: sphere
         density: 0.1
-      geom:
+      shape:
         type: sphere
+        category: prop
         size: 1
   - id: fence_cylinder
     mesh:
@@ -198,33 +200,36 @@ types:
         alpha: true
         xblend: true
         render_back: true
-      program: g_tex
+        program: g_tex
     physics:
       body:
-        type: cylinder
         density: 0.05
-      geom:
+        base_axis: z
+      shape:
         type: cylinder
+        category: prop
+        axis: z
         size: [1, 2, 0]
   - id: plastic_cylinder
     mesh:
       vertex:
         type: capped_cylinder
         radius: 1
-        length: 1
+        length: 2
       material:
         prefab: materials/Plastic01.yml
         kd: [0.7140, 0.4284, 0.1814, 1.0]
         xreflection: 0.05
         xparallax_depth: 0.01
-      program: g_tex
+        program: g_tex
+      axis: z
     physics:
       body:
-        type: cylinder
         density: 0.01
-      geom:
+      shape:
         type: cylinder
-        size: [1, 1, 0]
+        category: prop
+        size: [1, 2, 0]
   - id: rusted_iron_ball
     mesh:
       path: water_ball
@@ -237,10 +242,10 @@ types:
       program: g_tex
     physics:
       body:
-        type: sphere
         density: 0.07
-      geom:
+      shape:
         type: sphere
+        category: prop
         size: 1
   - id: old_gold_capsule
     mesh:
@@ -257,19 +262,19 @@ types:
         xparallax_depth: 0.0
         program: g_tex
         xblend: true
-    base_rot: [90, 0, 0]
+      axis: z
     physics:
       body:
-        type: capsule
         density: 0.05
-      geom:
+      shape:
         type: capsule
+        category: prop
         size: [1, 1, 0]
   - id: wooden_floor
     prefab:
       path: prefab/scenery/prefab_wooden_floor.yml
     physics:
-      geom:
+      shape:
         type: plane
   - id: cube_origo
     type: origo
@@ -277,14 +282,13 @@ types:
     mesh:
       path: texture_cube_3
       program: g_tex
-    base_rot: [-90, 0, 0]
+      axis: -y
     physics:
       body:
+        density: 0.01
+      shape:
         type: box
-        density: 0.1
-        rot: [0, 0, 0]
-      geom:
-        type: box
+        category: prop
         size: [1]
   - id: fence
     mesh:
@@ -299,13 +303,14 @@ types:
         xxblend: true
         render_back: true
         program: g_tex
-      base_rotation: [0, -90, 0]
+      #base_rotation: [0, -90, 0]
+      front: x
     physics:
       body:
-        type: box
         kinematic: true
-      geom:
+      shape:
         type: box
+        category: prop
         size: [0.0001, 0.5, 0.5]
   - id: world_plane
     xtype: origo
@@ -321,8 +326,9 @@ types:
       no_shadow: true
       no_select: true
     physics:
-      geom:
+      shape:
         type: plane
+        category: world
   - id: world_plane_x_minus
     base: world_plane
     mesh:
