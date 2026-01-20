@@ -15,11 +15,10 @@ prefab:
       base_scale: 0.0001
   xphysics:
     body:
-      type: capsule
       density: 0.01
       max_angular_velocity: 0
       force_axis: true
+      offset: [0, 0.8, 0]
     geom:
       type: capsule
       size: [0.85, 0.15, 0]
-      offset: [0, 0.8, 0]

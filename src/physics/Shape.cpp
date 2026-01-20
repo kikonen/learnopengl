@@ -33,7 +33,6 @@ namespace physics {
         baseAxis = o.m_baseAxis;
         baseFront = o.m_baseFront;
         baseAdjust = o.m_baseAdjust;
-        offset = o.m_offset;
         category = o.m_category;
         collisionMask = o.m_collisionMask;
         type = o.m_type;
@@ -53,7 +52,6 @@ namespace physics {
         std::swap(baseAxis, o.baseAxis);
         std::swap(baseFront, o.baseFront);
         std::swap(baseAdjust, o.baseAdjust);
-        std::swap(offset, o.offset);
         std::swap(m_staticBodyId, o.m_staticBodyId);
         std::swap(m_heightFieldShape, o.m_heightFieldShape);
         std::swap(category, o.category);

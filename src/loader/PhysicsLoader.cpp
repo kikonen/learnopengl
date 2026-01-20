@@ -139,7 +139,10 @@ namespace loader {
             else if (k == "max_angular_velocity" || k == "max_angular_vel") {
                 data.maxAngulerVelocity = readFloat(v);
             }
-            else if (k == "base_axis") {
+            else if (k == "angular_axis") {
+                data.angularAxis = readVec3(v);
+            }
+            else if (k == "axis") {
                 data.baseAxis = AxisValue::load(v);
             }
             else if (k == "front") {
@@ -148,8 +151,8 @@ namespace loader {
             else if (k == "adjust") {
                 data.baseAdjust = readVec3(v);
             }
-            else if (k == "axis") {
-                data.axis = readVec3(v);
+            else if (k == "offset") {
+                data.offset = readVec3(v);
             }
             else if (k == "force_axis") {
                 data.forceAxis = readBool(v);
@@ -179,11 +182,12 @@ namespace loader {
             body.m_baseAxis = bodyData.baseAxis;
             body.m_baseFront = bodyData.baseFront;
             body.m_baseAdjust = bodyData.baseAdjust;
+            body.m_offset = bodyData.offset;
 
             body.m_linearVelocity = bodyData.linearVelocity;
             body.m_angularVelocity = bodyData.angularVelocity;
 
-            body.m_axis = bodyData.axis;
+            body.m_angularAxis = bodyData.angularAxis;
 
             body.m_maxAngulerVelocity = bodyData.maxAngulerVelocity;
             body.m_density = bodyData.density;
@@ -221,6 +225,11 @@ namespace loader {
         // Inherit body size from shape if not explicitly set
         if (df.m_body.m_size == glm::vec3{ 0.f } && df.m_shape.m_size != glm::vec3{ 0.f }) {
             df.m_body.m_size = df.m_shape.m_size;
+        }
+
+        // Inherit body offset from shape if not explicitly set
+        if (df.m_body.m_offset == glm::vec3{ 0.f } && df.m_shape.m_offset != glm::vec3{ 0.f }) {
+            df.m_body.m_offset = df.m_shape.m_offset;
         }
 
         return definition;

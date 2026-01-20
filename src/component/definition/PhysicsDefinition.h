@@ -16,11 +16,12 @@ struct BodyDefinition {
     util::Axis m_baseAxis{ util::Axis::y };
     util::Front m_baseFront{ util::Front::z };
     glm::vec3 m_baseAdjust{ 0.f };
+    glm::vec3 m_offset{ 0.f };
 
     glm::vec3 m_linearVelocity{ 0.f };
     glm::vec3 m_angularVelocity{ 0.f };
 
-    glm::vec3 m_axis{ 0.f, 1.f, 0.f };
+    glm::vec3 m_angularAxis{ 0.f, 1.f, 0.f };
 
     float m_maxAngulerVelocity{ 100.f };
     float m_density{ 1.f };

@@ -88,6 +88,10 @@ namespace physics {
         util::Front baseFront{ util::Front::z };
         glm::vec3 baseAdjust{ 0.f };
 
+        // Local space offset from node position to physics body center
+        // e.g., for capsule at feet: offset = (0, halfHeight + radius, 0)
+        glm::vec3 offset{ 0.f };
+
         // Computed base rotation (from axis/front/adjust)
         glm::quat baseRotation{ 1.f, 0.f, 0.f, 0.f };
         glm::quat invBaseRotation{ 1.f, 0.f, 0.f, 0.f };
@@ -96,7 +100,7 @@ namespace physics {
         glm::vec3 linearVelocity{ 0.f };
         glm::vec3 angularVelocity{ 0.f };
 
-        glm::vec3 axis{ 0.f, 1.f, 0.f };
+        glm::vec3 angularAxis{ 0.f, 1.f, 0.f };
 
         // default = dInfinity
         // 0 = don't allow rotate

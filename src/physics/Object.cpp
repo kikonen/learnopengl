@@ -90,11 +90,15 @@ namespace physics
         }
 
         const glm::vec3& pos = state.getWorldPosition();
-        const glm::vec3& pivot = state.getWorldPivot();
-        const auto& rot = state.getModelRotation() * m_body.baseRotation;
+        const auto& nodeRot = state.getModelRotation();
+        const auto& rot = nodeRot * m_body.baseRotation;
+
+        // Apply offset in visual space (after base rotation)
+        // offset.y = up in final visual result
+        const glm::vec3 physicsPos = pos + nodeRot * m_body.offset;
 
         if (m_body.hasPhysicsBody()) {
-            m_body.updatePhysic(bodyInterface, pivot, pos, rot);
+            m_body.updatePhysic(bodyInterface, physicsPos, pos, rot);
 
             // Reset angular velocity and torque for kinematic bodies
             m_body.setAngularVelocity(bodyInterface, glm::vec3(0.f));
@@ -102,7 +106,7 @@ namespace physics
         else if (m_shape.hasPhysicsBody())
         {
             // NOTE KI for "shape only" nodes
-            m_shape.updatePhysics(bodyInterface, pivot, pos, rot);
+            m_shape.updatePhysics(bodyInterface, pos, pos, rot);
         }
 
         return true;
@@ -126,14 +130,19 @@ namespace physics
             pos = m_body.getPhysicPosition(bodyInterface);
             rot = m_body.getPhysicRotation(bodyInterface);
 
+            // https://danceswithcode.net/engineeringnotes/quaternions/quaternions.html
+            // Extract node rotation (without base rotation)
+            const auto nodeRot = glm::normalize(rot * m_body.invBaseRotation);
+
+            // Remove offset in visual space (after base rotation)
+            pos -= nodeRot * m_body.offset;
+
             // NOTE KI parent *SHOULD* be root (== null) for all physics nodes
             // => otherwise math does not make sense
             // => for NodeGenerator based nodes parent is generator container
             pos -= parentState.getWorldPosition();
-            pos -= (state.getWorldPivot() - state.getWorldPosition());
 
-            // https://danceswithcode.net/engineeringnotes/quaternions/quaternions.html
-            rot = glm::normalize(rot * m_body.invBaseRotation);
+            rot = nodeRot;
         }
 
         state.setPosition(pos);

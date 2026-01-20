@@ -36,11 +36,11 @@ prefab:
       density: 0.01
       max_angular_velocity: 0
       force_axis: true
-      base_axis: z
+      axis: z
+      offset: [0, 3.9, 0]
     geom:
       type: capsule
       category: npc
       collision: [world, player]
-      size: [0.85, 0.15, 0]
-      offset: [0, 0.8, 0]
+      size: [0.95, 0.25, 0]
       axis: z

@@ -204,7 +204,7 @@ types:
     physics:
       body:
         density: 0.05
-        base_axis: z
+        axis: z
       shape:
         type: cylinder
         category: prop

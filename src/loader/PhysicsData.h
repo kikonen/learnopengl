@@ -16,11 +16,12 @@ namespace loader {
         util::Axis baseAxis{ util::Axis::y };
         util::Front baseFront{ util::Front::z };
         glm::vec3 baseAdjust{ 0.f };
+        glm::vec3 offset{ 0.f };
 
         glm::vec3 linearVelocity{ 0.f };
         glm::vec3 angularVelocity{ 0.f };
 
-        glm::vec3 axis{ 0.f, 1.f, 0.f };
+        glm::vec3 angularAxis{ 0.f, 1.f, 0.f };
 
         float maxAngulerVelocity{ 100.f };
         float density{ 1.f };

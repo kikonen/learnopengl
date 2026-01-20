@@ -112,7 +112,6 @@ namespace physics {
         util::Axis baseAxis{ util::Axis::y };
         util::Front baseFront{ util::Front::z };
         glm::vec3 baseAdjust{ 0.f };
-        glm::vec3 offset{ 0.f };
 
         // For standalone shapes (without Body), we create a static body
         // For attached shapes (with Body), this remains invalid and shape is part of body

@@ -35,6 +35,7 @@ namespace physics {
         baseAxis = o.m_baseAxis;
         baseFront = o.m_baseFront;
         baseAdjust = o.m_baseAdjust;
+        offset = o.m_offset;
 
         // Compute base rotation: axis -> front -> adjust
         baseRotation =
@@ -46,7 +47,7 @@ namespace physics {
         linearVelocity = o.m_linearVelocity;
         angularVelocity = o.m_angularVelocity;
 
-        axis = o.m_axis;
+        angularAxis = o.m_angularAxis;
         maxAngulerVelocity = o.m_maxAngulerVelocity;
 
         density = o.m_density;
@@ -76,11 +77,12 @@ namespace physics {
         std::swap(baseAxis, o.baseAxis);
         std::swap(baseFront, o.baseFront);
         std::swap(baseAdjust, o.baseAdjust);
+        std::swap(offset, o.offset);
         std::swap(baseRotation, o.baseRotation);
         std::swap(invBaseRotation, o.invBaseRotation);
         std::swap(linearVelocity, o.linearVelocity);
         std::swap(angularVelocity, o.angularVelocity);
-        std::swap(axis, o.axis);
+        std::swap(angularAxis, o.angularAxis);
         std::swap(maxAngulerVelocity, o.maxAngulerVelocity);
         std::swap(density, o.density);
         std::swap(m_bodyId, o.m_bodyId);
