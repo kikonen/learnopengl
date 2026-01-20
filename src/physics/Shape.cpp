@@ -207,8 +207,9 @@ namespace physics {
         if (m_staticBodyId.IsInvalid()) return;
 
         if (placeable) {
-            // HACK KI match current terrain placement logic
-            setPhysicsPosition(bodyInterface, pos + size * 0.5f);
+            // Jolt HeightFieldShape origin is at body position, extends in +X/+Z
+            // So body position should match the terrain node's world position
+            setPhysicsPosition(bodyInterface, pos);
             setPhysicsRotation(bodyInterface, glm::quat{1.f, 0.f, 0.f, 0.f}); // HeightField doesn't need base rotation
         }
     }

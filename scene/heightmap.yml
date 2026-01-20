@@ -158,8 +158,8 @@ types:
     physics:
       geom:
         type: height_field
-        category: [terrain]
-        collision: [can_terrain]
+        category: terrain
+        collision: [world, player, npc]
         xplaceable: true
         size: [64, 0, 64]
         xrotation: [0, 180, 0]

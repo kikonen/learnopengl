@@ -288,19 +288,19 @@ namespace physics
                 auto entityIndex = m_entityIndeces[id];
                 obj.create(id, entityIndex, joltPhysicsSystem, nodeRegistry);
 
-                // Map body ID to object ID
+                // Handle heightmaps (must be before body ID mapping since it creates the body)
+                for (auto& heightMap : m_heightMaps) {
+                    if (heightMap.m_origin == node) {
+                        heightMap.create(joltPhysicsSystem, obj);
+                    }
+                }
+
+                // Map body ID to object ID (after heightmap creation)
                 if (obj.m_body.hasPhysicsBody()) {
                     m_bodyIdToObject.insert({ obj.m_body.m_bodyId.GetIndex(), id });
                 }
                 if (obj.m_shape.hasPhysicsBody()) {
                     m_bodyIdToObject.insert({ obj.m_shape.m_staticBodyId.GetIndex(), id });
-                }
-
-                // Handle heightmaps
-                for (auto& heightMap : m_heightMaps) {
-                    if (heightMap.m_origin == node) {
-                        heightMap.create(joltPhysicsSystem, obj);
-                    }
                 }
 
                 obj.updateToPhysics(entityIndex, m_matrixLevels[id], bodyInterface, nodeRegistry);
