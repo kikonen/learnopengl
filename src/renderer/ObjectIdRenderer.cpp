@@ -169,6 +169,7 @@ void ObjectIdRenderer::render(
         m_idBuffer->m_spec.height);
 
     localCtx.m_forceSolid = true;
+    localCtx.m_forceLineMode = false;
 
     localCtx.updateUBOs();
     localCtx.bindDefaults();

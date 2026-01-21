@@ -89,14 +89,24 @@ namespace render {
         bool frustumChecked = type->m_flags.noFrustum;
 
         const auto& cameraPos = ctx.m_camera->getWorldPosition();
+        const bool forceLineMode = ctx.m_forceLineMode && ctx.m_allowLineMode;
+        const bool forceSolid = ctx.m_forceSolid;
 
         for (uint32_t drawableIndex = 0; drawableIndex < drawables.size(); drawableIndex++) {
             const auto& drawable = drawables[drawableIndex];
             if (drawable.entityIndex == 0) continue;
 
-            const auto& drawOptions = drawable.drawOptions;
-            if (!drawOptions.isKind(kindBits)) continue;
-            if (drawOptions.m_type == backend::DrawOptions::Type::none) continue;
+            const auto& srcDrawOptions = drawable.drawOptions;
+            if (!srcDrawOptions.isKind(kindBits)) continue;
+            if (srcDrawOptions.m_type == backend::DrawOptions::Type::none) continue;
+
+            auto drawOptions = srcDrawOptions;
+            if (forceLineMode) {
+                drawOptions.m_lineMode = true;
+            }
+            if (forceSolid) {
+                drawOptions.m_kindBits &= ~render::KIND_BLEND;
+            }
 
             {
                 const auto dist2 = glm::distance2(drawable.worldVolume.getCenter(), cameraPos);
@@ -186,6 +196,8 @@ namespace render {
         const auto& drawables = m_instanceRegistry->getRange(instanceRef);
 
         const auto& cameraPos = ctx.m_camera->getWorldPosition();
+        const bool forceLineMode = ctx.m_forceLineMode && ctx.m_allowLineMode;
+        const bool forceSolid = ctx.m_forceSolid;
 
         bool useFrustum = m_frustumCPU;
         {
@@ -267,10 +279,18 @@ namespace render {
 
                 CommandEntry* commandEntry{ nullptr };
                 {
+                    auto drawOptions = drawable.drawOptions;
+                    if (forceLineMode) {
+                        drawOptions.m_lineMode = true;
+                    }
+                    if (forceSolid) {
+                        drawOptions.m_kindBits &= ~render::KIND_BLEND;
+                    }
+
                     MultiDrawKey drawKey{
                         programId,
                         drawable.vaoId,
-                        drawable.drawOptions
+                        drawOptions
                     };
 
                     CommandKey commandKey{
@@ -328,6 +348,8 @@ namespace render {
         const auto& drawables = m_instanceRegistry->getRange(instanceRef);
 
         const auto& cameraPos = ctx.m_camera->getWorldPosition();
+        const bool forceLineMode = ctx.m_forceLineMode && ctx.m_allowLineMode;
+        const bool forceSolid = ctx.m_forceSolid;
 
         bool useFrustum = m_frustumCPU;
 
@@ -402,10 +424,18 @@ namespace render {
 
                 CommandEntry* commandEntry{ nullptr };
                 {
+                    auto drawOptions = drawable.drawOptions;
+                    if (forceLineMode) {
+                        drawOptions.m_lineMode = true;
+                    }
+                    if (forceSolid) {
+                        drawOptions.m_kindBits &= ~render::KIND_BLEND;
+                    }
+
                     MultiDrawKey drawKey{
                         programId,
                         drawable.vaoId,
-                        drawable.drawOptions
+                        drawOptions
                     };
 
                     CommandKey commandKey{
@@ -547,25 +577,6 @@ namespace render {
 
         size_t flushCount = 0;
 
-        // Sort instances
-        // TODO KI this can slowdown things if lot of objects
-        //if (false) {
-        //    for (auto& multiDraw : m_pending) {
-        //        if (multiDraw.empty()) continue;
-
-        //        for (auto& command : multiDraw.m_commands) {
-        //            if (command.m_instanceCount < 2) continue;
-
-        //            std::sort(
-        //                command.m_instances,
-        //                command.m_instances + command.m_instanceCount,
-        //                [](const auto& a, const auto& b) {
-        //                    return a.m_distance2 < b.m_distance2;
-        //                });
-        //        }
-        //    }
-        //}
-
         // Setup instances
         {
             m_instanceIndeces.clear();
@@ -610,9 +621,6 @@ namespace render {
 
         backend::gl::DrawIndirectCommand indirect{};
 
-        const bool forceSolid = ctx.m_forceSolid;
-        const bool forceLineMode = ctx.m_forceLineMode && ctx.m_allowLineMode;
-
         for (const auto& multiDraw : m_pending) {
             if (multiDraw.empty()) continue;
 
@@ -623,12 +631,6 @@ namespace render {
                 multiDrawKey.m_vaoId,
                 multiDrawKey.m_programId,
             };
-            if (forceSolid) {
-                drawRange.m_drawOptions.m_kindBits &= ~render::KIND_BLEND;
-            }
-            if (forceLineMode) {
-                drawRange.m_drawOptions.m_lineMode = true;
-            }
 
             const auto drawType = drawRange.m_drawOptions.m_type;
 

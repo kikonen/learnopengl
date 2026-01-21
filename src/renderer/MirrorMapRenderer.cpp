@@ -318,6 +318,7 @@ bool MirrorMapRenderer::render(
         localCtx.m_useFog = false;
         localCtx.m_useEmission = false;
         localCtx.m_useBloom = false;
+        localCtx.m_forceLineMode = false;
 
         //ClipPlaneUBO& clip = localCtx.m_clipPlanes.clipping[0];
         ////clip.enabled = true;

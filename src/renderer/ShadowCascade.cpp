@@ -247,6 +247,7 @@ void ShadowCascade::render(
     localCtx.m_defaults.m_cullFace = GL_FRONT;
     localCtx.m_shadow = true;
     localCtx.m_forceSolid = true;
+    localCtx.m_forceLineMode = false;
 
     localCtx.updateUBOs();
     localCtx.bindDefaults();

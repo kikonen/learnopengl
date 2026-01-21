@@ -11,8 +11,8 @@ namespace kigl {
 namespace backend {
     struct MultiDrawRange
     {
-        DrawOptions m_drawOptions;
-        ki::vao_id m_vaoId{ 0 };
-        ki::program_id m_programId{ 0 };
+        const DrawOptions m_drawOptions;
+        const ki::vao_id m_vaoId{ 0 };
+        const ki::program_id m_programId{ 0 };
     };
 }

@@ -264,6 +264,7 @@ bool CubeMapRenderer::render(
         localCtx.m_useFog = false;
         localCtx.m_useEmission = false;
         localCtx.m_useBloom = false;
+        localCtx.m_forceLineMode = false;
 
         bindTexture(localCtx.getGLState());
 
