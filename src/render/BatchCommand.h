@@ -138,5 +138,46 @@ namespace render {
         {
             return !m_dirty;
         }
+
+        CommandEntry* addCommandEntry(
+            uint16_t commandIndex,
+            uint32_t indexCount)
+        {
+            if (m_commands.size() < commandIndex + 1) {
+                m_commands.resize(commandIndex + 1);
+            }
+
+            CommandEntry& entry = m_commands[commandIndex];
+            entry.m_index = commandIndex;
+            entry.m_indexCount = indexCount;
+
+            m_dirty = true;
+
+            return &entry;
+        }
+    };
+
+    struct MultiDrawEntryContainer
+    {
+        std::vector<MultiDrawEntry> m_pending;
+
+        void clear()
+        {
+            for (auto& entry : m_pending) {
+                entry.clear();
+            }
+        }
+
+        MultiDrawEntry* addDrawEntry(uint16_t drawIndex)
+        {
+            if (m_pending.size() < drawIndex + 1) {
+                m_pending.resize(drawIndex + 1);
+            }
+
+            auto& entry = m_pending[drawIndex];
+            entry.m_index = drawIndex;
+
+            return &entry;
+        }
     };
 }

@@ -111,7 +111,7 @@ namespace render {
 
         BatchRegistry m_batchRegistry;
 
-        std::vector<MultiDrawEntry> m_pending;
+        MultiDrawEntryContainer m_drawEntryContainer;
 
         std::vector<render::InstanceIndexSSBO> m_instanceIndeces;
 

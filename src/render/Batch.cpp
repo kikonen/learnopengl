@@ -137,38 +137,25 @@ namespace render {
 
             CommandEntry* commandEntry{ nullptr };
             {
-                MultiDrawKey drawKey{
-                    programId,
-                    drawable.vaoId,
-                    drawOptions
-                };
-
-                CommandKey commandKey{
-                    drawable.baseVertex,
-                    drawable.baseIndex,
-                };
-
-                const auto drawIndex = m_batchRegistry.getMultiDrawIndex(drawKey);
-                const auto commandIndex = m_batchRegistry.getCommandIndex(commandKey);
-
-                if (m_pending.size() < drawIndex + 1)
+                MultiDrawEntry* drawEntry;
                 {
-                    m_pending.resize(drawIndex + 1);
+                    MultiDrawKey drawKey{
+                        programId,
+                        drawable.vaoId,
+                        drawOptions
+                    };
+
+                    const auto drawIndex = m_batchRegistry.getMultiDrawIndex(drawKey);
+                    drawEntry = m_drawEntryContainer.addDrawEntry(drawIndex);
                 }
-
-                auto& drawEntry = m_pending[drawIndex];
-                drawEntry.m_index = drawIndex;
-
-                if (drawEntry.m_commands.size() < commandIndex + 1)
                 {
-                    drawEntry.m_commands.resize(commandIndex + 1);
+                    CommandKey commandKey{
+                        drawable.baseVertex,
+                        drawable.baseIndex,
+                    };
+                    const auto commandIndex = m_batchRegistry.getCommandIndex(commandKey);
+                    commandEntry = drawEntry->addCommandEntry(commandIndex, drawable.indexCount);
                 }
-
-                commandEntry = &drawEntry.m_commands[commandIndex];
-                commandEntry->m_index = commandIndex;
-                commandEntry->m_indexCount = drawable.indexCount;
-
-                drawEntry.m_dirty = true;
             }
 
             commandEntry->addInstance({
@@ -213,8 +200,10 @@ namespace render {
             for (uint32_t i = 0; i < drawableCount; i++) {
                 s_accept[i] = i; // store index
 
-                const auto& drawable = drawables[i];
-                s_distances2[i] = glm::distance2(drawable.worldVolume.getCenter(), cameraPos);
+                if (m_lodDistanceEnabled) {
+                    const auto& drawable = drawables[i];
+                    s_distances2[i] = glm::distance2(drawable.worldVolume.getCenter(), cameraPos);
+                }
             }
         }
 
@@ -273,9 +262,7 @@ namespace render {
                 const auto& drawable = drawables[drawableIndex];
                 if (drawable.entityIndex == 0) continue;
 
-                const auto dist2 = s_distances2[drawableIndex];
-
-                const auto  programId = resolveProgram(dist2, drawable);
+                const auto  programId = resolveProgram(s_distances2[drawableIndex], drawable);
                 if (!programId) continue;
 
                 programPrepare(programId);
@@ -290,38 +277,25 @@ namespace render {
                         drawOptions.m_kindBits &= ~render::KIND_BLEND;
                     }
 
-                    MultiDrawKey drawKey{
-                        programId,
-                        drawable.vaoId,
-                        drawOptions
-                    };
-
-                    CommandKey commandKey{
-                        drawable.baseVertex,
-                        drawable.baseIndex,
-                    };
-
-                    const auto drawIndex = m_batchRegistry.getMultiDrawIndex(drawKey);
-                    const auto commandIndex = m_batchRegistry.getCommandIndex(commandKey);
-
-                    if (m_pending.size() < drawIndex + 1)
+                    MultiDrawEntry* drawEntry;
                     {
-                        m_pending.resize(drawIndex + 1);
+                        MultiDrawKey drawKey{
+                            programId,
+                            drawable.vaoId,
+                            drawOptions
+                        };
+
+                        const auto drawIndex = m_batchRegistry.getMultiDrawIndex(drawKey);
+                        drawEntry = m_drawEntryContainer.addDrawEntry(drawIndex);
                     }
-
-                    auto& drawEntry = m_pending[drawIndex];
-                    drawEntry.m_index = drawIndex;
-
-                    if (drawEntry.m_commands.size() < commandIndex + 1)
                     {
-                        drawEntry.m_commands.resize(commandIndex + 1);
+                        CommandKey commandKey{
+                            drawable.baseVertex,
+                            drawable.baseIndex,
+                        };
+                        const auto commandIndex = m_batchRegistry.getCommandIndex(commandKey);
+                        commandEntry = drawEntry->addCommandEntry(commandIndex, drawable.indexCount);
                     }
-
-                    commandEntry = &drawEntry.m_commands[commandIndex];
-                    commandEntry->m_index = commandIndex;
-                    commandEntry->m_indexCount = drawable.indexCount;
-
-                    drawEntry.m_dirty = true;
                 }
 
                 commandEntry->reserve(drawableCount);
@@ -364,8 +338,10 @@ namespace render {
             for (uint32_t i = 0; i < drawableCount; i++) {
                 s_accept[i] = i; // store index
 
-                const auto& drawable = drawables[i];
-                s_distances2[i] = glm::distance2(drawable.worldVolume.getCenter(), cameraPos);
+                if (m_lodDistanceEnabled) {
+                    const auto& drawable = drawables[i];
+                    s_distances2[i] = glm::distance2(drawable.worldVolume.getCenter(), cameraPos);
+                }
             }
         }
 
@@ -423,9 +399,7 @@ namespace render {
                 const auto& drawable = drawables[drawableIndex];
                 if (drawable.entityIndex == 0) continue;
 
-                const auto dist2 = s_distances2[drawableIndex];
-
-                const auto  programId = resolveProgram(dist2, drawable);
+                const auto  programId = resolveProgram(s_distances2[drawableIndex], drawable);
                 if (!programId) continue;
 
                 CommandEntry* commandEntry{ nullptr };
@@ -438,36 +412,25 @@ namespace render {
                         drawOptions.m_kindBits &= ~render::KIND_BLEND;
                     }
 
-                    MultiDrawKey drawKey{
-                        programId,
-                        drawable.vaoId,
-                        drawOptions
-                    };
+                    MultiDrawEntry* drawEntry;
+                    {
+                        MultiDrawKey drawKey{
+                            programId,
+                            drawable.vaoId,
+                            drawOptions
+                        };
 
-                    CommandKey commandKey{
-                        drawable.baseVertex,
-                        drawable.baseIndex,
-                    };
-
-                    const auto drawIndex = m_batchRegistry.getMultiDrawIndex(drawKey);
-                    const auto commandIndex = m_batchRegistry.getCommandIndex(commandKey);
-
-                    if (m_pending.size() < drawIndex + 1) {
-                        m_pending.resize(drawIndex + 1);
+                        const auto drawIndex = m_batchRegistry.getMultiDrawIndex(drawKey);
+                        drawEntry = m_drawEntryContainer.addDrawEntry(drawIndex);
                     }
-
-                    auto& drawEntry = m_pending[drawIndex];
-                    drawEntry.m_index = drawIndex;
-
-                    if (drawEntry.m_commands.size() < commandIndex + 1) {
-                        drawEntry.m_commands.resize(commandIndex + 1);
+                    {
+                        CommandKey commandKey{
+                            drawable.baseVertex,
+                            drawable.baseIndex,
+                        };
+                        const auto commandIndex = m_batchRegistry.getCommandIndex(commandKey);
+                        commandEntry = drawEntry->addCommandEntry(commandIndex, drawable.indexCount);
                     }
-
-                    commandEntry = &drawEntry.m_commands[commandIndex];
-                    commandEntry->m_index = commandIndex;
-                    commandEntry->m_indexCount = drawable.indexCount;
-
-                    drawEntry.m_dirty = true;
                 }
 
                 commandEntry->reserve(drawableCount);
@@ -535,8 +498,7 @@ namespace render {
         m_frustumGPU = dbg.m_frustumEnabled && assets.frustumGPU;
         m_lodDistanceEnabled = dbg.m_lodDistanceEnabled;
 
-        m_batchRegistry.optimizeMultiDrawOrder();
-        m_pending.resize(m_batchRegistry.getMaxMultDrawIndex() + 1);
+        //m_batchRegistry.optimizeMultiDrawOrder();
     }
 
     void Batch::beginFrame()
@@ -572,11 +534,7 @@ namespace render {
 
     void Batch::clearBatches() noexcept
     {
-        int pendingIndex = -1;
-        for (auto& multiDraw : m_pending) {
-            pendingIndex++;
-            multiDraw.clear();
-        }
+        m_drawEntryContainer.clear();
         m_instanceIndeces.clear();
         m_pendingCount = 0;
     }
@@ -592,11 +550,11 @@ namespace render {
         {
             m_instanceIndeces.clear();
 
-            for (auto& multiDraw : m_pending)
+            for (auto& multiDraw : m_drawEntryContainer.m_pending)
             {
                 if (multiDraw.empty()) continue;
 
-                const auto& multiDrawKey = *m_batchRegistry.getMultiDraw(multiDraw.m_index);
+                //const auto& multiDrawKey = *m_batchRegistry.getMultiDraw(multiDraw.m_index);
 
                 for (auto& command : multiDraw.m_commands)
                 {
@@ -632,7 +590,7 @@ namespace render {
 
         backend::gl::DrawIndirectCommand indirect{};
 
-        for (const auto& multiDraw : m_pending) {
+        for (const auto& multiDraw : m_drawEntryContainer.m_pending) {
             if (multiDraw.empty()) continue;
 
             const auto& multiDrawKey = *m_batchRegistry.getMultiDraw(multiDraw.m_index);
