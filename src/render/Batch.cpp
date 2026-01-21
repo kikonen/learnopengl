@@ -114,7 +114,7 @@ namespace render {
 	                drawable.maxDistance2 <= dist2)
                 {
 	                m_skipCount++;
-	                return;
+	                continue;
                 }
             }
 
@@ -125,7 +125,7 @@ namespace render {
                 //    from set of meshes (which are not LODn meshes)
                 if (m_frustumCPU && !drawable.worldVolume.isOnFrustum(frustum)) {
                     m_skipCount++;
-                    return;
+                    continue;
                 }
                 frustumChecked = true;
             }
