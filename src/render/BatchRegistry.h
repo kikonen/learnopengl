@@ -22,13 +22,17 @@ struct std::hash<backend::DrawOptions>
     size_t operator()(const backend::DrawOptions& k) const
     {
         // https://stackoverflow.com/questions/17016175/c-unordered-map-using-a-custom-class-type-as-the-key
+        // NOTE KI hash must be consistent with isSameMultiDraw equality
+        // - uses isBlend() not m_kindBits (KIND_SOLID & KIND_ALPHA can be in same multidraw)
+        // - includes m_clip
         return (std::hash<backend::DrawOptions::Mode>()(k.m_mode) << 1)
             ^ (std::hash<backend::DrawOptions::Type>()(k.m_type) << 1)
             ^ ((std::hash<int>()(k.m_renderBack)
             ^ (std::hash<int>()(k.m_lineMode) << 1)
-            ^ (std::hash<int>()(k.m_kindBits) << 1)
+            ^ (std::hash<int>()(k.isBlend()) << 1)
             ^ (std::hash<int>()(k.m_reverseFrontFace) << 1)
             ^ (std::hash<int>()(k.m_noDepth) << 1)
+            ^ (std::hash<int>()(k.m_clip) << 1)
             ) >> 1);
     }
 };
