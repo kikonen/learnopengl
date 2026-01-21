@@ -363,9 +363,15 @@ void AssetsLoader::loadAssets(
             data.useDebugColor = readBool(v);
             continue;
         }
-        if (k == "use_lod_debug") {
-            data.useLodDebug = readBool(v);
-            continue;
+        {
+            if (k == "lod_debug_enabled") {
+                data.lodDebugEnabled = readBool(v);
+                continue;
+            }
+            if (k == "lod_distance_enabled") {
+                data.lodDistanceEnabled = readBool(v);
+                continue;
+            }
         }
         {
             if (k == "frustum_enabled") {

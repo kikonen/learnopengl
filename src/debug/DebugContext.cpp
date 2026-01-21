@@ -44,6 +44,8 @@ namespace debug
         dbg.m_layers = assets.layers;
 
         dbg.m_frustumEnabled = assets.frustumEnabled;
+        dbg.m_lodDistanceEnabled = assets.lodDistanceEnabled;
+
         dbg.m_forceLineMode = assets.forceLineMode;
         dbg.m_showNormals = assets.showNormals;
         dbg.m_shadowVisual = assets.shadowVisual;

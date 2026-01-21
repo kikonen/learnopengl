@@ -125,6 +125,10 @@ namespace editor
             ImGui::InputFloat("GBuffer scale", &dbg.m_gBufferScale, 0.125f, 0.25f);
 
             ImGui::Checkbox("Frustum enabled", &dbg.m_frustumEnabled);
+
+            ImGui::Checkbox("LOD debug enabled", &dbg.m_lodDebugEnabled);
+            ImGui::Checkbox("LOD distance enabled", &dbg.m_lodDistanceEnabled);
+
             ImGui::Checkbox("Draw debug", &dbg.m_drawDebug);
 
             ImGui::Checkbox("LineMode", &dbg.m_forceLineMode);

@@ -247,7 +247,7 @@ namespace mesh {
             throw "missing material";
         }
 
-        //if (assets.useLodDebug) {
+        //if (assets.lodDebugEnabled) {
         //    if (m_levelMask >= 1 << 0)
         //        material->kd = glm::vec4{ 0.5f, 0.f, 0.f, 1.f };
         //    if (m_levelMask >= 1 << 1)

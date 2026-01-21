@@ -31,6 +31,9 @@ namespace debug {
 
         bool m_frustumEnabled{ true };
 
+        bool m_lodDebugEnabled{ true };
+        bool m_lodDistanceEnabled{ true };
+
         int m_entityId{ 0 };
 
         int m_showFontId{ 1 };

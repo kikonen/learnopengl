@@ -77,7 +77,8 @@ assets:
 
   use_debug_color: true
 
-  use_lod_debug: false
+  lod_debug_enabled: false
+  lod_distance_enabled: true
 
   frustum_enabled: true
   frustum_cpu: true

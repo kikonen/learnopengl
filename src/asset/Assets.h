@@ -120,7 +120,8 @@ public:
 
     bool useDebugColor;
 
-    bool useLodDebug;
+    bool lodDebugEnabled;
+    bool lodDistanceEnabled;
 
     bool frustumEnabled;
     bool frustumCPU;

@@ -108,7 +108,7 @@ namespace render {
                 drawOptions.m_kindBits &= ~render::KIND_BLEND;
             }
 
-            {
+            if (m_lodDistanceEnabled) {
                 const auto dist2 = glm::distance2(drawable.worldVolume.getCenter(), cameraPos);
                 if (drawable.minDistance2 > dist2 ||
 	                drawable.maxDistance2 <= dist2)
@@ -246,11 +246,14 @@ namespace render {
         }
 
         {
-            const auto resolveProgram = [&kindBits, &programSelector](
+            const auto resolveProgram = [&kindBits, &programSelector, this](
                 const float dist2,
-                const auto& drawable) -> ki::program_id {
-                if (drawable.minDistance2 > dist2 ||
-                    drawable.maxDistance2 <= dist2) return 0;
+                const auto& drawable) -> ki::program_id
+            {
+                if (m_lodDistanceEnabled) {
+                    if (drawable.minDistance2 > dist2 ||
+                        drawable.maxDistance2 <= dist2) return 0;
+                }
 
                 const auto& drawOptions = drawable.drawOptions;
                 if (drawOptions.m_type == backend::DrawOptions::Type::none) return 0;
@@ -393,11 +396,14 @@ namespace render {
         }
 
         {
-            const auto resolveProgram = [&kindBits](
+            const auto resolveProgram = [&kindBits, this](
                 const float dist2,
-                const auto& drawable) -> ki::program_id {
-                if (drawable.minDistance2 > dist2 ||
-                    drawable.maxDistance2 <= dist2) return 0;
+                const auto& drawable) -> ki::program_id
+            {
+                if (m_lodDistanceEnabled) {
+                    if (drawable.minDistance2 > dist2 ||
+                        drawable.maxDistance2 <= dist2) return 0;
+                }
 
                 const auto& drawOptions = drawable.drawOptions;
                 if (drawOptions.m_type == backend::DrawOptions::Type::none) return 0;
@@ -509,8 +515,11 @@ namespace render {
         m_draw = std::make_unique<backend::DrawBuffer>();
         m_draw->prepareRT();
 
-        m_frustumCPU = assets.frustumEnabled && assets.frustumCPU;
-        m_frustumGPU = assets.frustumEnabled && assets.frustumGPU;
+        const auto& dbg = ctx.getDebug();
+
+        m_frustumCPU = dbg.m_frustumEnabled && assets.frustumCPU;
+        m_frustumGPU = dbg.m_frustumEnabled && assets.frustumGPU;
+        m_lodDistanceEnabled = dbg.m_lodDistanceEnabled;
         m_frustumParallelLimit = assets.frustumParallelLimit;
 
         m_instanceRegistry = &render::InstanceRegistry::get();
@@ -522,7 +531,9 @@ namespace render {
         const auto& assets = ctx.getAssets();
         const auto& dbg = ctx.getDebug();
 
-        m_frustumCPU = assets.frustumEnabled && assets.frustumCPU && dbg.m_frustumEnabled;
+        m_frustumCPU = dbg.m_frustumEnabled && assets.frustumCPU;
+        m_frustumGPU = dbg.m_frustumEnabled && assets.frustumGPU;
+        m_lodDistanceEnabled = dbg.m_lodDistanceEnabled;
 
         m_batchRegistry.optimizeMultiDrawOrder();
         m_pending.resize(m_batchRegistry.getMaxMultDrawIndex() + 1);

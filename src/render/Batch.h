@@ -99,8 +99,10 @@ namespace render {
     private:
         bool m_prepared{ false };
 
-        bool m_frustumCPU{ false };
         bool m_frustumGPU{ false };
+        bool m_frustumCPU{ false };
+        bool m_lodDistanceEnabled{ false };
+
         uint32_t m_frustumParallelLimit{ 100 };
 
         InstanceRegistry* m_instanceRegistry{ nullptr };
