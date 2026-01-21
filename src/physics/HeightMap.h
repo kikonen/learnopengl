@@ -61,14 +61,6 @@ namespace physics {
                 pos.y <= max.y;
         }
 
-        float getLevel(const glm::vec3& pos) const noexcept;
-
-        // Using texture coordinates
-        //
-        // @param u [0, 1]
-        // @param v [0, 1]
-        float getTerrainHeight(float u, float v) const noexcept;
-
     public:
         physics::height_map_id m_id{ 0 };
 

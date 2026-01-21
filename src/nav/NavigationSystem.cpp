@@ -95,8 +95,8 @@ namespace nav
         auto* physicsSystem = &physics::PhysicsSystem::get();
         if (!physicsSystem) return;
 
-        if (m_physicsLevel == physicsSystem->getLevel()) return;
-        m_physicsLevel = physicsSystem->getLevel();
+        if (m_physicsLevel == physicsSystem->getPhysicsLevel()) return;
+        m_physicsLevel = physicsSystem->getPhysicsLevel();
 
         m_generator->clearMeshInstances();
 

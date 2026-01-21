@@ -62,9 +62,9 @@ namespace physics {
             m_enabled = enabled;
         }
 
-        ki::level_id getLevel() const noexcept
+        ki::level_id getPhysicsLevel() const noexcept
         {
-            return m_level;
+            return m_physicsLevel;
         }
 
         physics::object_id registerObject(
@@ -170,7 +170,7 @@ namespace physics {
         // INDEX = objectId
         std::vector<physics::Object> m_objects;
 
-        ki::level_id m_level{ 0 };
+        ki::level_id m_physicsLevel{ 0 };
         // INDEX = objectId
         std::vector<ki::level_id> m_matrixLevels;
         // INDEX = objectId

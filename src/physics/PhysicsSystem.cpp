@@ -148,7 +148,7 @@ namespace physics
         m_entityIndeces.clear();
         m_objects.clear();
 
-        m_level = 0;
+        m_physicsLevel = 0;
         m_matrixLevels.clear();
         m_updateObjects.clear();
 
@@ -311,7 +311,7 @@ namespace physics
                 obj.create(id, 0, joltPhysicsSystem, nodeRegistry);
             }
 
-            m_level++;
+            m_physicsLevel++;
 
             prepared.insert({ id, true });
         }

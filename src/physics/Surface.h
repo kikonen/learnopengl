@@ -26,8 +26,6 @@ namespace physics {
                 pos.y <= max.y;
         }
 
-        virtual float getLevel(const glm::vec3& pos) const noexcept = 0;
-
     protected:
         AABB m_aabb{};
     };
