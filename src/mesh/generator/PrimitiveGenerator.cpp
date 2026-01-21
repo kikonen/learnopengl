@@ -277,15 +277,15 @@ namespace {
         for (int vz = 1; vz < verticesZ; vz++) {
             for (int vx = 1; vx < verticesX; vx++) {
                 glm::ivec3 tri1{
-                    vx + vz * verticesZ,
-                    vx + (vz - 1) * verticesZ,
-                    (vx - 1) + (vz - 1) * verticesZ
+                    vx + vz * verticesX,
+                    vx + (vz - 1) * verticesX,
+                    (vx - 1) + (vz - 1) * verticesX
                 };
 
                 glm::ivec3 tri2{
-                    vx + vz * verticesZ,
-                    (vx - 1) + (vz - 1) * verticesZ,
-                    (vx - 1) + vz * verticesZ
+                    vx + vz * verticesX,
+                    (vx - 1) + (vz - 1) * verticesX,
+                    (vx - 1) + vz * verticesX
                 };
 
                 indeces.push_back(tri1.x);

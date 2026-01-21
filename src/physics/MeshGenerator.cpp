@@ -191,6 +191,7 @@ namespace physics {
         glm::vec3 scale = obj.m_scale;
         glm::quat rot{ 1.f, 0.f, 0.f, 0.f };
         glm::vec3 offset{ 0.f };
+        SphereVolume localVolume{ 0.f, 0.f, 0.f, 1.f };
 
         std::string cacheKey;
         std::shared_ptr<mesh::Mesh> mesh;
@@ -261,7 +262,19 @@ namespace physics {
                         mesh = saveMesh(cacheKey, generator.create());
                     }
 
-                    offset = { -heightMap->m_worldSizeU * 0.5f, 0.f + OFFSET, -heightMap->m_worldSizeV * 0.5f };
+                    // Jolt HeightFieldShape and generator both start at origin and extend in +X/+Z
+                    // Small Y offset to lift visualization slightly above terrain for visibility
+                    offset = { 0.f, OFFSET, 0.f };
+
+                    // Set bounding volume to encompass the entire heightfield
+                    float halfX = heightMap->m_worldSizeU * 0.5f;
+                    float halfZ = heightMap->m_worldSizeV * 0.5f;
+                    float halfY = (heightMap->m_maxY - heightMap->m_minY) * 0.5f;
+                    float centerY = (heightMap->m_maxY + heightMap->m_minY) * 0.5f;
+                    localVolume = SphereVolume{
+                        halfX, centerY, halfZ,
+                        std::sqrt(halfX * halfX + halfY * halfY + halfZ * halfZ)
+                    };
                     break;
                 }
                 break;
@@ -427,7 +440,7 @@ namespace physics {
         transform.setRotation(rot);
         transform.setScale(scale);
         transform.updateMatrix();
-        transform.updateWorldVolume();
+        transform.updateWorldVolume(glm::mat4{ 1.f }, localVolume);
 
         backend::DrawOptions drawOptions;
         if (mesh) {

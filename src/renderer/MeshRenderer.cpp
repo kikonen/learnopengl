@@ -147,7 +147,7 @@ void MeshRenderer::registerDrawables(
             drawable.indexCount = mesh->getIndexCount();
 
             drawable.minDistance2 = 0.f;
-            drawable.maxDistance2 = 600.f * 600.f;
+            drawable.maxDistance2 = 10000.f * 10000.f;
 
             drawable.vaoId = mesh->getVaoId();
             drawable.drawOptions = meshInstance.m_drawOptions;

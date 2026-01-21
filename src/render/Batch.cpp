@@ -329,7 +329,7 @@ namespace render {
 
         const auto& cameraPos = ctx.m_camera->getWorldPosition();
 
-        bool useFrustum = true;
+        bool useFrustum = m_frustumCPU;
 
         {
             if (s_accept.size() < drawableCount) {
