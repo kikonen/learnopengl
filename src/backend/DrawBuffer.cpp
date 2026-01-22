@@ -182,13 +182,15 @@ namespace backend {
         }
 
         // Write command to ring buffer
-        if (m_currentCommandAlloc && m_commandCount < m_commandCapacity) {
+        if (m_commandCount < m_commandCapacity) {
             m_currentCommandAlloc[m_commandCount] = cmd;
             m_commandCount++;
+        } else {
+            flush();
 
-            if (m_commandCount >= m_commandCapacity) {
-                flush();
-            }
+            // NOTE KI flush clears m_drawRanges
+            // => recurse to re-trigger logic
+            send(sendRange, cmd);
         }
     }
 
