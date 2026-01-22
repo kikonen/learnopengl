@@ -158,7 +158,10 @@ namespace backend {
             cd.m_lineMode == sd.m_lineMode &&
             cd.isBlend() == sd.isBlend() &&
             cd.m_mode == sd.m_mode &&
-            cd.m_type == sd.m_type;
+            cd.m_type == sd.m_type &&
+            cd.m_reverseFrontFace == sd.m_reverseFrontFace &&
+            cd.m_noDepth == sd.m_noDepth &&
+            cd.m_clip == sd.m_clip;
     }
 
     void DrawBuffer::send(
@@ -173,6 +176,17 @@ namespace backend {
             return;
         }
 
+        // NOTE KI check capacity BEFORE updating draw ranges to avoid buffer overread
+        // If we update ranges first, flush() would draw with count > actual commands in buffer
+        if (m_commandCount >= m_commandCapacity) {
+            flush();
+
+            // NOTE KI flush clears m_drawRanges
+            // => recurse to re-trigger logic
+            send(sendRange, cmd);
+            return;
+        }
+
         if (isSameMultiDraw(sendRange)) {
             m_drawRanges.back().commandCount++;
         }
@@ -182,16 +196,8 @@ namespace backend {
         }
 
         // Write command to ring buffer
-        if (m_commandCount < m_commandCapacity) {
-            m_currentCommandAlloc[m_commandCount] = cmd;
-            m_commandCount++;
-        } else {
-            flush();
-
-            // NOTE KI flush clears m_drawRanges
-            // => recurse to re-trigger logic
-            send(sendRange, cmd);
-        }
+        m_currentCommandAlloc[m_commandCount] = cmd;
+        m_commandCount++;
     }
 
     bool DrawBuffer::sendInstanceIndeces(

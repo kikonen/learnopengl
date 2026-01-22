@@ -117,6 +117,7 @@ namespace render {
 
         inline const Frustum& getFrustum() const noexcept
         {
+            if (m_dirty) updateCamera();
             if (m_dirtyFrustum) updateFrustum();
             return m_frustum;
         }

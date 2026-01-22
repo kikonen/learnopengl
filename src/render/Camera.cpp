@@ -69,6 +69,7 @@ namespace render {
 
         m_projectionLevel++;
         m_dirtyProjected = true;
+        m_dirtyFrustum = true;
     }
 
     const glm::mat4& Camera::getProjection() const noexcept
