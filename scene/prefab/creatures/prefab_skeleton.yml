@@ -16,6 +16,16 @@ prefab:
         shadow_program: shadow
       base_scale: 0.01375
       scale: 2
+      sockets:
+        - name: ground_back
+          joint: Bip01_Spine
+          role: ground
+        - name: foot_right
+          joint: Bip01_R_Foot
+          role: foot_right
+        - name: foot_left
+          joint: Bip01_L_Foot
+          role: foot_left
       animations:
         - clips:
           - name: death
@@ -69,6 +79,7 @@ prefab:
   physics:
     enabled: false
     body:
+      kinematic: true
       density: 0.01
       max_angular_velocity: 0
       force_axis: true

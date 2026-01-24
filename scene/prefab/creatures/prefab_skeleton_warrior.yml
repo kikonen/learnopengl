@@ -20,6 +20,12 @@ prefab:
           joint: Bip01_R_Hand
           offset: [3, -1, 0]
           rotation: [-67, -7, 0]
+        - name: foot_right
+          joint: Bip01_R_Foot
+          role: foot_right
+        - name: foot_left
+          joint: Bip01_L_Foot
+          role: foot_left
       flags:
         use_bones: true
         use_animation: true

@@ -406,14 +406,19 @@ namespace animation
         std::lock_guard lock(m_volumeLock);
 
         for (auto& animState : m_states) {
-            if (!animState.m_volumeDirty) continue;
-
-            //auto* node = animState.m_handle.toNode();
-            //if (!node) continue;
+            if (!animState.m_volumeDirty && !animState.m_groundOffsetDirty) continue;
 
             auto& nodeState = nodeRegistry.modifyState(animState.m_handle.m_handleIndex);
-            nodeState.setLocalVolume(animState.m_animatedVolume);
-            animState.m_volumeDirty = false;
+
+            if (animState.m_volumeDirty) {
+                nodeState.setLocalVolume(animState.m_animatedVolume);
+                animState.m_volumeDirty = false;
+            }
+
+            if (animState.m_groundOffsetDirty) {
+                nodeState.m_groundOffsetY = animState.m_groundOffsetY;
+                animState.m_groundOffsetDirty = false;
+            }
         }
     }
 
@@ -436,10 +441,23 @@ namespace animation
         if (!m_pendingNodes.empty())
         {
             for (auto& handle : m_pendingNodes) {
+                auto* node = handle.toNode();
+                if (!node) continue;
+
                 uint16_t index = static_cast<uint16_t>(m_states.size());
                 auto& state = m_states.emplace_back(handle);
                 state.m_index = index;
                 m_nodeToState.insert({ handle, state.m_index });
+
+                // NOTE KI initial base pose values
+                {
+                    m_animateNode->updateAnimatedVolume(
+                        state,
+                        node);
+                    m_animateNode->updateGroundOffset(
+                        state,
+                        node);
+                }
             }
             m_pendingNodes.clear();
         }

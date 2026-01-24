@@ -30,5 +30,10 @@ namespace animation {
         // Animated bounding volume calculated from rig node positions
         SphereVolume m_animatedVolume{ 0.f };
         bool m_volumeDirty{ false };
+
+        // Ground contact Y offset from foot sockets (local model space)
+        // Represents lowest foot position for terrain placement
+        float m_groundOffsetY{ 0.f };
+        bool m_groundOffsetDirty{ false };
     };
 }

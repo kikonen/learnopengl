@@ -9,6 +9,14 @@
 
 namespace animation
 {
+    enum class SocketRole : uint8_t
+    {
+        general,
+        foot_left,
+        foot_right,
+        ground_sensor,
+    };
+
     struct RigSocket
     {
         RigSocket(
@@ -32,6 +40,8 @@ namespace animation
 
         int16_t m_index{ -1 };
         int16_t m_nodeIndex{ -1 };
+
+        SocketRole m_role{ SocketRole::general };
 
     private:
         glm::mat4 m_offsetTransform;

@@ -12,6 +12,7 @@ namespace loader {
 
         std::string name;
         std::string joint;
+        std::string role;
 
         TransformData offset;
     };

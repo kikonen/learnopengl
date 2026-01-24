@@ -1378,9 +1378,9 @@ void NodeRegistry::updateBounds(
         if (node->m_typeFlags.staticBounds) {
             state.boundStaticDone = true;
         }
-        const auto y = level - parentState.getWorldPosition().y;
+        const auto parentLevelY = level - parentState.getWorldPosition().y;
         glm::vec3 newPos = state.getPosition();
-        newPos.y = y + 0.75f - 0.35f;
+        newPos.y = parentLevelY - state.m_groundOffsetY + 0.05f;
         //KI_INFO(fmt::format("NODE_LEVEL: node={}, level={}", node.m_name, y));
         state.setPosition(newPos);
     }

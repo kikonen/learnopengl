@@ -308,6 +308,9 @@ namespace loader {
             else if (k == "joint") {
                 data.joint = readString(v);
             }
+            else if (k == "role") {
+                data.role = readString(v);
+            }
             else if (k == "position" || k == "offset") {
                 data.offset.position = readVec3(v);
             }

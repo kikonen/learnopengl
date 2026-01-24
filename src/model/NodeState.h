@@ -83,6 +83,10 @@ namespace model
         ki::level_id m_matrixLevel{ 0 };
         ki::level_id m_normalLevel{ 0 };
 
+        // Ground contact Y offset from foot sockets (local model space)
+        // Used for terrain placement of animated characters
+        float m_groundOffsetY{ 0.f };
+
         bool m_dirty : 1 {true};
 
         mutable bool m_dirtySnapshot : 1 {true};

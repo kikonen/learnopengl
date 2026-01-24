@@ -22,6 +22,8 @@ namespace animation
 
     class AnimateNode
     {
+        friend class AnimationSystem;
+
     public:
         AnimateNode(
             RigNodeRegistry& rigNodeRegistry,
@@ -48,8 +50,11 @@ namespace animation
 
         void updateAnimatedVolume(
             AnimationState& state,
-            model::Node* node,
-            const std::set<const Rig*>& changedRigs);
+            model::Node* node);
+
+        void updateGroundOffset(
+            AnimationState& state,
+            model::Node* node);
 
     private:
         RigNodeRegistry& m_rigNodeRegistry;

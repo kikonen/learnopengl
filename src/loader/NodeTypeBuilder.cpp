@@ -686,6 +686,17 @@ namespace loader
                     meshScale
                 };
 
+                // Set socket role for ground contact tracking
+                if (socketData.role == "foot_left") {
+                    socket.m_role = animation::SocketRole::foot_left;
+                }
+                else if (socketData.role == "foot_right") {
+                    socket.m_role = animation::SocketRole::foot_right;
+                }
+                else if (socketData.role == "ground_sensor" || socketData.role == "ground") {
+                    socket.m_role = animation::SocketRole::ground_sensor;
+                }
+
                 auto socketIndex = rig->registerSocket(socket);
                 if (socketIndex < 0) {
                     KI_WARN_OUT(fmt::format(

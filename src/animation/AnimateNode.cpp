@@ -23,6 +23,7 @@
 #include "animation/RigNodeRegistry.h"
 #include "animation/SocketRegistry.h"
 #include "animation/JointRegistry.h"
+#include "animation/RigSocket.h"
 
 namespace {
     const glm::mat4 ID_MAT{ 1.f };
@@ -73,7 +74,10 @@ namespace animation
 
         animateRigs(ctx, state, node, changedRigs);
         updateJointsAndSockets(node, changedRigs);
-        updateAnimatedVolume(state, node, changedRigs);
+        if (!changedRigs.empty()) {
+            updateAnimatedVolume(state, node);
+            updateGroundOffset(state, node);
+        }
     }
 
     void AnimateNode::animateRigs(
@@ -228,11 +232,8 @@ namespace animation
 
     void AnimateNode::updateAnimatedVolume(
         AnimationState& state,
-        model::Node* node,
-        const std::set<const Rig*>& changedRigs)
+        model::Node* node)
     {
-        if (changedRigs.empty()) return;
-
         auto* type = node->getType();
         const auto& lodMeshes = type->getLodMeshes();
         if (lodMeshes.empty()) return;
@@ -263,7 +264,8 @@ namespace animation
                 if (joint.m_nodeIndex < 0) continue;
 
                 // Position in raw mesh space
-                glm::vec4 rawPos = glm::vec4(glm::vec3(rigNodeTransforms[joint.m_nodeIndex][3]), 1.f);
+                //glm::vec4 rawPos = glm::vec4(glm::vec3(rigNodeTransforms[joint.m_nodeIndex][3]), 1.f);
+                glm::vec4 rawPos = rigNodeTransforms[joint.m_nodeIndex][3];
 
                 // Transform to match AABB space (with baseScale, rotation, etc.)
                 glm::vec3 jointPos = glm::vec3(*baseTransform * rawPos);
@@ -290,6 +292,60 @@ namespace animation
             std::lock_guard lock(m_volumeLock);
             state.m_animatedVolume = SphereVolume{ center, radius };
             state.m_volumeDirty = true;
+        }
+    }
+
+    void AnimateNode::updateGroundOffset(
+        AnimationState& state,
+        model::Node* node)
+    {
+        auto* type = node->getType();
+        const auto& lodMeshes = type->getLodMeshes();
+        if (lodMeshes.empty()) return;
+
+        const auto& registeredRigs = node->getRegisteredRigs();
+
+        float minFootY = std::numeric_limits<float>::max();
+
+        for (const auto& registeredRig : registeredRigs) {
+            const auto* rig = registeredRig.m_rig;
+
+            // Find LodMesh matching this rig to get correct baseTransform
+            const glm::mat4* baseTransform = nullptr;
+            for (const auto& lodMesh : lodMeshes) {
+                if (lodMesh.m_mesh && lodMesh.m_mesh->getRig() == rig) {
+                    baseTransform = &lodMesh.m_baseTransform;
+                    break;
+                }
+            }
+            if (!baseTransform) continue;
+
+            const auto& rigNodeTransforms = m_rigNodeRegistry.getRange(registeredRig.m_rigRef);
+
+            // Find ground contact sockets and track lowest Y
+            for (const auto& socket : rig->m_sockets) {
+                if (socket.m_nodeIndex < 0) continue;
+                if (socket.m_role != SocketRole::foot_left &&
+                    socket.m_role != SocketRole::foot_right &&
+                    socket.m_role != SocketRole::ground_sensor) continue;
+
+                // Socket transform is in raw mesh space, apply baseTransform
+                //glm::vec4 rawPos = glm::vec4(glm::vec3(rigNodeTransforms[socket.m_nodeIndex][3]), 1.f);
+                glm::vec4 rawPos = rigNodeTransforms[socket.m_nodeIndex][3];
+                glm::vec3 footPos = glm::vec3(*baseTransform * rawPos);
+                minFootY = std::min(minFootY, footPos.y);
+            }
+        }
+
+        // Only update if we found foot sockets
+        if (minFootY < std::numeric_limits<float>::max()) {
+            std::lock_guard lock(m_volumeLock);
+            state.m_groundOffsetY = minFootY;
+            state.m_groundOffsetDirty = true;
+        }
+        else {
+            state.m_groundOffsetY = 0.f;
+            state.m_groundOffsetDirty = true;
         }
     }
 }
