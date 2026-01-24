@@ -4,6 +4,7 @@
 #include <algorithm>
 #include <execution>
 #include <unordered_map>
+#include <limits>
 
 #include <fmt/format.h>
 
@@ -554,6 +555,66 @@ namespace animation
                 socketRegistry.markDirty(registeredRig.m_socketRef);
             }
         }
+
+        // STEP 4 - update animated bounding volume
+        // NOTE KI store in AnimationState for thread-safe sync to NodeState later
+        if (!changedRigs.empty()) {
+            const auto& lodMeshes = type->getLodMeshes();
+            if (lodMeshes.empty()) return;
+
+            glm::vec3 minPos{ std::numeric_limits<float>::max() };
+            glm::vec3 maxPos{ std::numeric_limits<float>::lowest() };
+
+            // Collect positions from joint nodes
+            for (const auto& registeredRig : registeredRigs) {
+                const auto* rig = registeredRig.m_rig;
+
+                // Find LodMesh matching this rig to get correct baseTransform
+                const glm::mat4* baseTransform = nullptr;
+                for (const auto& lodMesh : lodMeshes) {
+                    if (lodMesh.m_mesh && lodMesh.m_mesh->getRig() == rig) {
+                        baseTransform = &lodMesh.m_baseTransform;
+                        break;
+                    }
+                }
+                if (!baseTransform) continue;
+
+                const auto& rigNodeTransforms = rigNodeRegistry.getRange(registeredRig.m_rigRef);
+                const auto& jointContainer = rig->getJointContainer();
+
+                for (const auto& joint : jointContainer.m_joints) {
+                    if (joint.m_nodeIndex < 0) continue;
+
+                    // Position in raw mesh space
+                    glm::vec4 rawPos = glm::vec4(glm::vec3(rigNodeTransforms[joint.m_nodeIndex][3]), 1.f);
+
+                    // Transform to match AABB space (with baseScale, rotation, etc.)
+                    glm::vec3 jointPos = glm::vec3(*baseTransform * rawPos);
+                    minPos = glm::min(minPos, jointPos);
+                    maxPos = glm::max(maxPos, jointPos);
+                }
+            }
+
+            // Skip if no valid joint positions found
+            if (minPos.x < std::numeric_limits<float>::max()) {
+                // Calculate center and radius of bounding sphere
+                glm::vec3 center = (minPos + maxPos) * 0.5f;
+                float radius = glm::length(maxPos - center);
+
+                // Add margin for mesh geometry around joints
+                const auto& nodeState = node->getState();
+                const auto& originalVolume = nodeState.getLocalVolume();
+                float meshMargin = std::max(0.25f, originalVolume.getRadius() * 0.125f);
+                radius += meshMargin;
+
+                // Store in AnimationState for SceneUpdater to apply
+                {
+                    std::lock_guard lock(m_volumeLock);
+                    state.m_animatedVolume = SphereVolume{ center, radius };
+                    state.m_volumeDirty = true;
+                }
+            }
+        }
     }
 
     void AnimationSystem::updateRT(const UpdateContext& ctx)
@@ -565,6 +626,24 @@ namespace animation
 
         jointBuffer.updateRT();
         //socketBuffer.updateRT();
+    }
+
+    void AnimationSystem::applyAnimatedVolumes()
+    {
+        auto& nodeRegistry = NodeRegistry::get();
+
+        std::lock_guard lock(m_volumeLock);
+
+        for (auto& animState : m_states) {
+            if (!animState.m_volumeDirty) continue;
+
+            //auto* node = animState.m_handle.toNode();
+            //if (!node) continue;
+
+            auto& nodeState = nodeRegistry.modifyState(animState.m_handle.m_handleIndex);
+            nodeState.setLocalVolume(animState.m_animatedVolume);
+            animState.m_volumeDirty = false;
+        }
     }
 
     void AnimationSystem::waitForPrepared()

@@ -209,6 +209,8 @@ void SceneUpdater::update(const UpdateContext& ctx)
     // NOTE KI sync to RT
     {
         KI_TIMER("node4   ");
+        // Apply animated bounding volumes before snapshot publish
+        animation::AnimationSystem::get().applyAnimatedVolumes();
         nodeRegistry.publishSnapshots();
         nodeRegistry.notifyPendingChanges();
     }

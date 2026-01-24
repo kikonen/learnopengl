@@ -3,6 +3,8 @@
 #include <array>
 #include <stdint.h>
 
+#include "asset/SphereVolume.h"
+
 #include "pool/NodeHandle.h"
 
 namespace animation {
@@ -24,5 +26,9 @@ namespace animation {
         Play m_current;
         Play m_next;
         Play m_pending;
+
+        // Animated bounding volume calculated from rig node positions
+        SphereVolume m_animatedVolume{ 0.f };
+        bool m_volumeDirty{ false };
     };
 }

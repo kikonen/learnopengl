@@ -120,6 +120,10 @@ namespace animation
         void updateWT(const UpdateContext& ctx);
         void updateRT(const UpdateContext& ctx);
 
+        // Apply pending animated volumes to NodeStates
+        // Called from SceneUpdater before publishSnapshots
+        void applyAnimatedVolumes();
+
         void handleNodeAdded(model::Node* node);
         void handleNodeRemoved(model::Node* node);
 
@@ -145,6 +149,9 @@ namespace animation
         std::condition_variable m_pendingWait;
 
         std::vector<pool::NodeHandle> m_pendingNodes;
+
+        // Lock for animated volume sync between AnimationUpdater and SceneUpdater
+        std::mutex m_volumeLock{};
 
         std::unique_ptr<RigNodeRegistry> m_rigNodeRegistry;
         std::unique_ptr<SocketRegistry> m_socketRegistry;

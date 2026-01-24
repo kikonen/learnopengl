@@ -126,6 +126,7 @@ namespace model
         {
             if (m_localVolume != localVolume) {
                 m_localVolume = localVolume;
+                m_matrixLevel++;
                 m_dirtySnapshot = true;
             }
         }
