@@ -40,6 +40,7 @@ namespace animation
         friend class mesh_set::AnimationImporter;
         friend class mesh_set::RigNodeTreeGenerator;
         friend class AnimationSystem;
+        friend class AnimateNode;
         friend class Animator;
 
         bool empty() const noexcept

@@ -41,6 +41,7 @@ namespace animation
 
     class JointBuffer;
     class SocketBuffer;
+    class AnimateNode;
 
     struct Rig;
     struct RigNode;
@@ -128,12 +129,6 @@ namespace animation
         void handleNodeRemoved(model::Node* node);
 
     private:
-        // @return true if joint palette was updated
-        void animateNode(
-            const UpdateContext& ctx,
-            animation::AnimationState& state,
-            model::Node* node);
-
         void waitForPrepared();
         void prepareNodes();
 
@@ -159,5 +154,7 @@ namespace animation
 
         std::unique_ptr<JointBuffer> m_jointBuffer;
         std::unique_ptr<SocketBuffer> m_socketBuffer;
+
+        std::unique_ptr<AnimateNode> m_animateNode;
     };
 }

@@ -20,12 +20,14 @@ namespace animation {
     inline const glm::mat4 ID_MAT{ 1.f };
 
     class AnimationSystem;
+    class AnimateNode;
     class SocketBuffer;
 
     struct SocketTransformSSBO;
 
     class SocketRegistry {
         friend AnimationSystem;
+        friend AnimateNode;
         friend SocketBuffer;
         friend editor::NodeTool;
 

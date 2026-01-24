@@ -17,9 +17,11 @@ namespace editor
 
 namespace animation {
     class AnimationSystem;
+    class AnimateNode;
 
     class RigNodeRegistry {
         friend AnimationSystem;
+        friend AnimateNode;
         friend editor::NodeTool;
 
     public:

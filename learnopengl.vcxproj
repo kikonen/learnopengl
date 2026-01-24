@@ -496,6 +496,7 @@
     <ClCompile Include="src\mesh\vao\VertexPositionVBO.cpp" />
     <ClCompile Include="src\mesh\TextMesh.cpp" />
     <ClCompile Include="src\animation\AnimationSystem.cpp" />
+    <ClCompile Include="src\animation\AnimateNode.cpp" />
     <ClCompile Include="src\mesh\MeshSet.cpp" />
     <ClCompile Include="src\mesh\vao\VertexVBO.cpp" />
     <ClCompile Include="src\model\PivotPoint.cpp" />
@@ -1040,6 +1041,7 @@
     <ClInclude Include="src\animation\JointTransform.h" />
     <ClInclude Include="src\mesh\vao\SkinnedVAO.h" />
     <ClInclude Include="src\animation\AnimationSystem.h" />
+    <ClInclude Include="src\animation\AnimateNode.h" />
     <ClInclude Include="src\animation\JointTransformSSBO.h" />
     <ClInclude Include="src\scene\Updater.h" />
     <ClInclude Include="src\script\command\AnimationPlay.h" />

@@ -18,6 +18,7 @@ namespace editor
 
 namespace animation {
     class AnimationSystem;
+    class AnimateNode;
     class JointBuffer;
     struct PaletteReference;
 
@@ -26,6 +27,7 @@ namespace animation {
     class JointRegistry {
         friend JointBuffer;
         friend AnimationSystem;
+        friend AnimateNode;
         friend editor::NodeTool;
 
     public:
