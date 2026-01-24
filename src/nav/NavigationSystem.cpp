@@ -101,7 +101,7 @@ namespace nav
         m_generator->clearMeshInstances();
 
         if (!m_physicsMeshGenerator) {
-            m_physicsMeshGenerator = std::make_unique<physics::MeshGenerator>(*physicsSystem);
+            m_physicsMeshGenerator = std::make_unique<physics::MeshGenerator>(*physicsSystem, 16);
         }
 
         m_physicsMeshes = m_physicsMeshGenerator->generateMeshes(true);

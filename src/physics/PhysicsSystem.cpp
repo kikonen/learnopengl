@@ -195,7 +195,7 @@ namespace physics
         m_gravity = { 0, -2.01f, 0 };
         getJoltPhysicsSystem().SetGravity(toJolt(m_gravity));
 
-        m_meshGenerator = std::make_unique<physics::MeshGenerator>(*this);
+        m_meshGenerator = std::make_unique<physics::MeshGenerator>(*this, 2);
     }
 
     void PhysicsSystem::updatePrepare(const UpdateContext& ctx)

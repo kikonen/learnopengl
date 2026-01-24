@@ -28,7 +28,9 @@ namespace physics {
 
     class MeshGenerator {
     public:
-        MeshGenerator(const PhysicsSystem& physicsSystem);
+        MeshGenerator(
+            const PhysicsSystem& physicsSystem,
+            int heightMapDivide);
         ~MeshGenerator();
 
         void clear();
@@ -49,5 +51,7 @@ namespace physics {
         const PhysicsSystem& m_physicsSystem;
 
         std::map<std::string, std::shared_ptr<mesh::Mesh>> m_cache;
+
+        const int m_heightMapDivide;
     };
 }

@@ -108,8 +108,11 @@ namespace {
 }
 
 namespace physics {
-    MeshGenerator::MeshGenerator(const PhysicsSystem& physicsSystem)
-        : m_physicsSystem{ physicsSystem }
+    MeshGenerator::MeshGenerator(
+        const PhysicsSystem& physicsSystem,
+        int heightMapDivide)
+        : m_physicsSystem{ physicsSystem },
+        m_heightMapDivide{ heightMapDivide }
     {}
 
     MeshGenerator::~MeshGenerator()
@@ -257,8 +260,8 @@ namespace physics {
                         };
                         generator.heightSamplesWidth = heightMap->m_dataWidth;
                         generator.heightSamplesDepth = heightMap->m_dataDepth;
-                        generator.p = 8;
-                        generator.q = 8;
+                        generator.p = m_heightMapDivide;
+                        generator.q = m_heightMapDivide;
                         mesh = saveMesh(cacheKey, generator.create());
                     }
 
