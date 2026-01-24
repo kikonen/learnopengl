@@ -100,11 +100,9 @@ namespace render
         FrameBuffer* prev = nullptr;
         for (int i = 0; i < BlurBuffer::BUFFER_COUNT; i++)
         {
-            // NOTE KI barrier required - compute shader writes to image,
-            // subsequent passes read from it as texture/framebuffer
+            // NOTE KI barrier for image writes -> texture sampling
             glMemoryBarrier(
                 GL_SHADER_IMAGE_ACCESS_BARRIER_BIT |
-                GL_FRAMEBUFFER_BARRIER_BIT |
                 GL_TEXTURE_FETCH_BARRIER_BIT);
 
             auto* buffer = m_blurBuffer.m_buffers[i].get();
@@ -159,11 +157,9 @@ namespace render
             {
                 if (!m_blurFinalProgramCS->isReady()) return;
 
-                // NOTE KI barrier required - compute shader writes to image,
-                // subsequent passes read from it as texture/framebuffer
+                // NOTE KI barrier for image writes -> texture sampling
                 glMemoryBarrier(
                     GL_SHADER_IMAGE_ACCESS_BARRIER_BIT |
-                    GL_FRAMEBUFFER_BARRIER_BIT |
                     GL_TEXTURE_FETCH_BARRIER_BIT);
 
                 // NOTE KI image textures cannot be bound into high units for some reason
