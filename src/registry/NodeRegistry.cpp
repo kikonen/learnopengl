@@ -1284,11 +1284,19 @@ std::vector<pool::NodeHandle> NodeRegistry::findTaggedAll(
 
 pool::NodeHandle NodeRegistry::findTaggedChild(
     pool::NodeHandle handle,
-    ki::tag_id tagId)
+    ki::tag_id tagId,
+    bool includeSelf)
 {
     const auto* node = handle.toNode();
     if (!node) return pool::NodeHandle::NULL_HANDLE;
     const auto parentIndex = node->getEntityIndex();
+
+    {
+        const auto& state = m_states[parentIndex];
+        if (state.m_tagId == tagId) {
+            return handle;
+        }
+    }
 
     for (int childEntityIndex = 0; childEntityIndex < m_parentIndeces.size(); childEntityIndex++) {
         if (m_parentIndeces[childEntityIndex] == parentIndex) {

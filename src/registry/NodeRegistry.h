@@ -231,7 +231,8 @@ public:
 
     pool::NodeHandle findTaggedChild(
         pool::NodeHandle handle,
-        ki::tag_id tagId);
+        ki::tag_id tagId,
+        bool includeSelf);
 
 private:
     void setActiveNode(pool::NodeHandle node);

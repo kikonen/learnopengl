@@ -154,7 +154,7 @@ namespace script {
             handle = nodeHandle;
         }
         if (tagId > 0) {
-            handle = NodeRegistry::get().findTaggedChild(handle, tagId);
+            handle = NodeRegistry::get().findTaggedChild(handle, tagId, true);
         }
         return handle;
     }
@@ -164,7 +164,7 @@ namespace script {
         ki::tag_id tagId) noexcept
     {
         if (tagId > 0) {
-            handle = NodeRegistry::get().findTaggedChild(handle, tagId);
+            handle = NodeRegistry::get().findTaggedChild(handle, tagId, true);
         }
         return handle;
     }
