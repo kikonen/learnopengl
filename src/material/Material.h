@@ -34,7 +34,8 @@ enum class BasicMaterial : std::underlying_type_t<std::byte> {
     silver,
     bronze,
     highlight,
-    selection
+    selection,
+    wireframe
 };
 
 enum class MaterialProgramType : std::underlying_type_t<std::byte> {

@@ -76,6 +76,13 @@ void SelectionRegistry::clear()
         m_tagMaterial->registerMaterial();
         m_tagMaterialIndex = m_tagMaterial->m_registeredIndex;
     }
+
+    {
+        m_wireframeMaterial = std::make_unique<Material>();
+        *m_wireframeMaterial = Material::createMaterial(BasicMaterial::wireframe);
+        m_wireframeMaterial->registerMaterial();
+        m_wireframeMaterialIndex = m_wireframeMaterial->m_registeredIndex;
+    }
 }
 
 void SelectionRegistry::prepare(Registry* registry)

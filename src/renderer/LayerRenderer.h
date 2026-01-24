@@ -47,6 +47,10 @@ private:
         const render::RenderContext& ctx,
         render::FrameBuffer* targetBuffer);
 
+    void renderSelectionWireframe(
+        const render::RenderContext& ctx,
+        render::FrameBuffer* targetBuffer);
+
 public:
     std::unique_ptr<render::FrameBuffer> m_buffer{ nullptr };
 

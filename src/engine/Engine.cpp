@@ -367,6 +367,7 @@ void Engine::prepareUBOs()
 
         selectionRegistry.getSelectionMaterialIndex(),
         selectionRegistry.getTagMaterialIndex(),
+        selectionRegistry.getWireframeMaterialIndex(),
 
         dbg.m_cubeMapEnabled,
         assets.skyboxEnabled,

@@ -26,6 +26,7 @@ in VS_OUT {
 
   flat uint highlightIndex;
   flat int stencilMode;
+  flat int wireframeMode;
 } tcs_in[];
 
 out TCS_OUT {
@@ -41,6 +42,7 @@ out TCS_OUT {
 
   flat uint highlightIndex;
   flat int stencilMode;
+  flat int wireframeMode;
 } tcs_out[];
 
 
@@ -72,6 +74,7 @@ void main()
 
   tcs_out[gl_InvocationID].highlightIndex = tcs_in[gl_InvocationID].highlightIndex;
   tcs_out[gl_InvocationID].stencilMode = tcs_in[gl_InvocationID].stencilMode;
+  tcs_out[gl_InvocationID].wireframeMode = tcs_in[gl_InvocationID].wireframeMode;
 
   if (gl_InvocationID == 0) {
     // NOTE ratio scaling to retain more-or-less consistent level

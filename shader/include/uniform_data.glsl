@@ -4,6 +4,7 @@ layout(std140, binding = UBO_DATA) uniform Data {
 
   uint u_selectionMaterialIndex;
   uint u_tagMaterialIndex;
+  uint u_wireframeMaterialIndex;
 
   bool u_cubeMapEnabled;
 
@@ -33,7 +34,6 @@ layout(std140, binding = UBO_DATA) uniform Data {
 
   int data_pad1;
   int data_pad2;
-  int data_pad3;
 
   vec4 u_ssaoSamples[64];
 };

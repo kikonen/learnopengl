@@ -11,6 +11,7 @@ ProgramUniforms::ProgramUniforms(Program& program)
     u_modelMatrix{ "u_modelMatrix", UNIFORM_MODEL_MATRIX },
     u_materialIndex{ "u_materialIndex", UNIFORM_MATERIAL_INDEX },
     u_stencilMode{ "u_stencilMode", UNIFORM_STENCIL_MODE },
+    u_wireframeMode{ "u_wireframeMode", UNIFORM_WIREFRAME_MODE },
     u_blendFactor{ "u_blendFactor", UNIFORM_BLEND_FACTOR },
     u_viewport{ "u_viewport", UNIFORM_VIEWPORT},
     u_effectBloomHorizontal{ "u_effectBloomHorizontal", UNIFORM_EFFECT_BLOOM_HORIZONTAL}
@@ -26,6 +27,7 @@ ProgramUniforms::ProgramUniforms(Program& program)
     u_modelMatrix.init(&program);
     u_materialIndex.init(&program);
     u_stencilMode.init(&program);
+    u_wireframeMode.init(&program);
     u_blendFactor.init(&program);
     u_viewport.init(&program);
     u_effectBloomHorizontal.init(&program);

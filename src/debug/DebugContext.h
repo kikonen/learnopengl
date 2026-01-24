@@ -122,6 +122,9 @@ namespace debug {
         glm::vec3 m_wireframeLineColor{ 1, 1, 0 };
         bool m_wireframeOnly{ false };
 
+        // When true, show selected objects in wireframe instead of stencil highlight
+        bool m_selectionWireframe{ false };
+
         bool m_showVolume{ false };
         bool m_showSelectionVolume{ false };
         bool m_showEnvironmentProbe{ false };

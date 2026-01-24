@@ -101,6 +101,13 @@ namespace {
         return mat;
     }
 
+    Material createWireframeMaterial() {
+        Material mat;
+        mat.m_name = "<wireframe>";
+        mat.kd = glm::vec4(0.0f, 0.8f, 0.0f, 1.f);
+        return mat;
+    }
+
     std::string selectTexturePath(
         std::string_view path,
         bool useCompressed)
@@ -177,6 +184,7 @@ Material Material::createMaterial(BasicMaterial type)
     case BasicMaterial::bronze: return createBronzeMaterial();
     case BasicMaterial::highlight: return createHighlightMaterial();
     case BasicMaterial::selection: return createSelectionMaterial();
+    case BasicMaterial::wireframe: return createWireframeMaterial();
     }
 
     return createDefaultMaterial();

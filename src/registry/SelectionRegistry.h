@@ -75,6 +75,11 @@ public:
         return m_selectionMaterialIndex;
     }
 
+    inline uint8_t getWireframeMaterialIndex() const noexcept
+    {
+        return m_wireframeMaterialIndex;
+    }
+
     void setTagMaterialIndex(uint8_t index)
     {
         m_tagMaterialIndex = index;
@@ -95,6 +100,7 @@ private:
 
     std::unique_ptr<Material> m_selectionMaterial;
     std::unique_ptr<Material> m_tagMaterial;
+    std::unique_ptr<Material> m_wireframeMaterial;
 
     std::vector<pool::NodeHandle> m_selected;
     std::vector<pool::NodeHandle> m_tagged;
@@ -102,4 +108,5 @@ private:
     // special materials are in range 0..255
     uint8_t m_tagMaterialIndex{ 0 };
     uint8_t m_selectionMaterialIndex{ 0 };
+    uint8_t m_wireframeMaterialIndex{ 0 };
 };

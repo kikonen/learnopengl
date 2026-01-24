@@ -2,6 +2,7 @@
 
 #include <memory>
 
+#include "shader/DataUBO.h"
 #include "shader/LightsUBO.h"
 
 struct CameraUBO;
@@ -34,6 +35,7 @@ namespace render
 
         void updateCamera(const CameraUBO& data);
         void updateData(const DataUBO& data);
+        const DataUBO& getLastDataUBO() const { return m_lastDataUBO; }
         void updateShadow(const ShadowUBO& data);
         void updateDebug(const DebugUBO& data);
         void updateBufferInfo(const BufferInfoUBO& data);
@@ -43,6 +45,7 @@ namespace render
     private:
         std::unique_ptr<kigl::RingAllocator> m_ring;
 
+        DataUBO m_lastDataUBO{};
         LightsUBO m_lightsUBO{};
     };
 }

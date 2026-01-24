@@ -78,6 +78,7 @@ namespace debug
 
         dbg.m_showVolume = assets.showVolume;
         dbg.m_showSelectionVolume = assets.showSelectionVolume;
+        dbg.m_selectionWireframe = assets.selectionWireframe;
         dbg.m_showEnvironmentProbe = assets.showEnvironmentProbe;
 
         dbg.m_normalMapEnabled = assets.normalMapEnabled;

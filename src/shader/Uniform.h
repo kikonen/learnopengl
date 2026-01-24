@@ -28,6 +28,7 @@ constexpr int UNIFORM_MATERIAL_INDEX = 17;
 constexpr int UNIFORM_BLEND_FACTOR = 20;
 
 constexpr int UNIFORM_VIEWPORT = 21;
+constexpr int UNIFORM_WIREFRAME_MODE = 22;
 
 // NOTE KI subroutine uniform locations overlap other uniforms
 constexpr int SUBROUTINE_EFFECT = 0;

@@ -26,6 +26,7 @@ in TCS_OUT {
 
   flat uint highlightIndex;
   flat int stencilMode;
+  flat int wireframeMode;
 } tes_in[];
 
 out TES_OUT {
@@ -93,7 +94,10 @@ void main()
   calculateClipping(worldPos);
 
   gl_Position = u_projectedMatrix * worldPos;
-  renderOutline(tes_in[0].stencilMode);
+
+  if (tes_in[0].wireframeMode == 0) {
+    renderOutline(tes_in[0].stencilMode);
+  }
 
   tes_out.highlightIndex = tes_in[0].highlightIndex;
 }

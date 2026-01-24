@@ -25,12 +25,15 @@
 
 #include "render/Camera.h"
 #include "render/RenderContext.h"
+#include "render/RenderData.h"
 #include "render/FrameBuffer.h"
 #include "render/Batch.h"
 #include "render/DrawableInfo.h"
 #include "render/NodeDraw.h"
 #include "render/CollectionRender.h"
 #include "render/DrawContext.h"
+
+#include "shader/DataUBO.h"
 
 #include "kigl/GLStencilMode.h"
 
@@ -166,17 +169,32 @@ void LayerRenderer::render(
         m_selectedCount = assets.showSelection ? selectionRegistry.getSelectedCount() : 0;
     }
 
+    auto& dbg = debug::DebugContext::get();
+    const bool useWireframeSelection = m_useHighlight && dbg.m_selectionWireframe;
+
     {
         state.setStencil({});
         targetBuffer->clearAll();
 
-        if (m_useHighlight) {
+        // NOTE KI skip stencil mask when using wireframe selection
+        if (m_useHighlight && !useWireframeSelection) {
             fillHighlightMask(ctx, targetBuffer);
         }
 
         {
             render::DrawContext drawContext{
-                [](const model::Node* node) { return true; },
+                // NOTE KI when using wireframe selection, exclude selected objects from normal draw
+                [useWireframeSelection, &selectionRegistry, &assets](const model::Node* node) {
+                    if (useWireframeSelection) {
+                        bool isSelected = false;
+                        if (assets.showTagged)
+                            isSelected |= selectionRegistry.isTagged(node->toHandle());
+                        if (assets.showSelection)
+                            isSelected |= selectionRegistry.isSelected(node->toHandle());
+                        return !isSelected;
+                    }
+                    return true;
+                },
                 render::KIND_ALL,
                 // NOTE KI nothing to clear; keep stencil, depth copied from gbuffer
                 GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT
@@ -189,7 +207,11 @@ void LayerRenderer::render(
         }
 
         if (m_useHighlight) {
-            renderHighlight(ctx, targetBuffer);
+            if (useWireframeSelection) {
+                renderSelectionWireframe(ctx, targetBuffer);
+            } else {
+                renderHighlight(ctx, targetBuffer);
+            }
         }
     }
 }
@@ -239,6 +261,7 @@ void LayerRenderer::fillHighlightMask(
             [this](ki::program_id programId) {
                 auto* program = Program::get(programId);
                 program->m_uniforms->u_stencilMode.set(STENCIL_MODE_SHIFT_NONE);
+                program->m_uniforms->u_wireframeMode.set(false);
             },
             drawContext.nodeSelector,
             drawContext.kindBits);
@@ -303,6 +326,7 @@ void LayerRenderer::renderHighlight(
             [this, shift](ki::program_id programId) {
                 auto* program = Program::get(programId);
                 program->m_uniforms->u_stencilMode.set(shift);
+                program->m_uniforms->u_wireframeMode.set(false);
             },
             drawContext.nodeSelector,
             drawContext.kindBits);
@@ -310,4 +334,46 @@ void LayerRenderer::renderHighlight(
     }
 
     state.setEnabled(GL_DEPTH_TEST, true);
+}
+
+// Render selected nodes in wireframe mode
+void LayerRenderer::renderSelectionWireframe(
+    const render::RenderContext& parentCtx,
+    render::FrameBuffer* targetBuffer)
+{
+    render::RenderContext localCtx{ "wireframe_selection", &parentCtx };
+
+    const auto& assets = localCtx.getAssets();
+
+    if (m_taggedCount == 0 && m_selectedCount == 0) return;
+
+    auto& selectionRegistry = *localCtx.getRegistry()->m_selectionRegistry;
+
+    // NOTE KI force line mode for selected objects
+    localCtx.m_forceLineMode = true;
+    localCtx.m_allowLineMode = true;
+
+    targetBuffer->bind(localCtx);
+
+    render::CollectionRender collectionRender;
+    collectionRender.drawProgramWithPrepare(
+        localCtx,
+        [this](const render::DrawableInfo& drawable) {
+            return drawable.selectionProgramId ? drawable.selectionProgramId : m_selectionProgram->m_id;
+        },
+        [](ki::program_id programId) {
+            auto* program = Program::get(programId);
+            program->m_uniforms->u_stencilMode.set(STENCIL_MODE_SHIFT_NONE);
+            program->m_uniforms->u_wireframeMode.set(true);
+        },
+        [&selectionRegistry, &assets](const model::Node* node) {
+            if (assets.showSelection && selectionRegistry.isSelected(node->toHandle()))
+                return true;
+            if (assets.showTagged && selectionRegistry.isTagged(node->toHandle()))
+                return true;
+            return false;
+        },
+        render::KIND_ALL);
+
+    localCtx.m_batch->flush(localCtx);
 }

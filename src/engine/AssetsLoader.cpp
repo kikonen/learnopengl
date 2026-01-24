@@ -344,6 +344,10 @@ void AssetsLoader::loadAssets(
                 data.showTagged = readBool(v);
                 continue;
             }
+            if (k == "selection_wireframe") {
+                data.selectionWireframe = readBool(v);
+                continue;
+            }
         }
         if (k == "rasterizer_discard") {
             data.rasterizerDiscard = readBool(v);

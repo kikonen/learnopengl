@@ -117,6 +117,7 @@ public:
     bool showHighlight;
     bool showSelection;
     bool showTagged;
+    bool selectionWireframe;
 
     bool rasterizerDiscard;
 

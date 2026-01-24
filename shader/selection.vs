@@ -22,6 +22,7 @@ layout (location = ATTR_TEX) in vec2 a_texCoord;
 #include "include/uniform_buffer_info.glsl"
 
 layout(location = UNIFORM_STENCIL_MODE) uniform int u_stencilMode;
+layout(location = UNIFORM_WIREFRAME_MODE) uniform bool u_wireframeMode;
 
 #ifdef USE_ALPHA
 out VS_OUT {
@@ -80,7 +81,11 @@ void main() {
   }
 
   gl_Position = u_projectedMatrix * worldPos;
-  renderOutline(u_stencilMode);
+
+  // NOTE KI skip outline shift in wireframe mode
+  if (!u_wireframeMode) {
+    renderOutline(u_stencilMode);
+  }
 
 #ifdef USE_ALPHA
   const uint materialIndex = instance.u_materialIndex;
@@ -92,6 +97,6 @@ void main() {
   vs_out.texCoord.y = a_texCoord.y * u_materials[materialIndex].tilingY * entity.tilingY;
 #endif
 
-  vs_out.highlightIndex = u_selectionMaterialIndex;
-  // vs_out.highlightIndex = 8;
+  // NOTE KI use wireframe material when in wireframe mode
+  vs_out.highlightIndex = u_wireframeMode ? u_wireframeMaterialIndex : u_selectionMaterialIndex;
 }

@@ -6,6 +6,7 @@ layout (location = ATTR_POS) in vec3 a_pos;
 layout (location = ATTR_TEX) in vec2 a_texCoord;
 
 layout(location = UNIFORM_STENCIL_MODE) uniform int u_stencilMode;
+layout(location = UNIFORM_WIREFRAME_MODE) uniform bool u_wireframeMode;
 
 #include "include/ssbo_entities.glsl"
 #include "include/ssbo_instances.glsl"
@@ -31,6 +32,7 @@ out VS_OUT {
 
   flat uint highlightIndex;
   flat int stencilMode;
+  flat int wireframeMode;
 } vs_out;
 
 ////////////////////////////////////////////////////////////
@@ -89,6 +91,7 @@ void main() {
 
   vs_out.vertexPos = a_pos;
 
-  vs_out.highlightIndex = u_selectionMaterialIndex;
+  vs_out.highlightIndex = u_wireframeMode ? u_wireframeMaterialIndex : u_selectionMaterialIndex;
   vs_out.stencilMode = u_stencilMode;
+  vs_out.wireframeMode = u_wireframeMode ? 1 : 0;
 }

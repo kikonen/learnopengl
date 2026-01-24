@@ -123,6 +123,7 @@ Assets::Assets()
     showHighlight = false;
     showSelection = false;
     showTagged = false;
+    selectionWireframe = false;
 
     useDebugColor = false;
 

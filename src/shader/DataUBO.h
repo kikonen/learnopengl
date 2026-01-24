@@ -11,6 +11,7 @@ struct DataUBO {
 
     GLuint u_selectionMaterialIndex;
     GLuint u_tagMaterialIndex;
+    GLuint u_wireframeMaterialIndex;
 
     int u_cubeMapEnabled; // bool as 4 bytes
     int u_skyboxExist; // bool as 4 bytes
@@ -37,7 +38,6 @@ struct DataUBO {
 
     int pad1;
     int pad2;
-    int pad3;
 
     glm::vec3 u_ssaoSamples[64];
 };

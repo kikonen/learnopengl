@@ -99,6 +99,7 @@ namespace render
 
     void RenderData::updateData(const DataUBO& data)
     {
+        m_lastDataUBO = data;
         auto alloc = m_ring->allocate<DataUBO>();
         if (alloc) {
             *alloc = data;

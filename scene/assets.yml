@@ -74,6 +74,7 @@ assets:
   show_highlight: true
   show_selection: true
   show_tagged: false
+  selection_wireframe: false
 
   rasterizer_discard: false
 

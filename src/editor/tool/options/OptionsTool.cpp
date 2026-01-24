@@ -112,6 +112,7 @@ namespace editor
         {
             ImGui::Checkbox("Show volume", &dbg.m_showVolume);
             ImGui::Checkbox("Show selection volume", &dbg.m_showSelectionVolume);
+            ImGui::Checkbox("Selection wireframe", &dbg.m_selectionWireframe);
             ImGui::Checkbox("Show environment probes", &dbg.m_showEnvironmentProbe);
         }
 
