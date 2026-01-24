@@ -551,6 +551,9 @@ void Scene::render(const render::RenderContext& ctx)
     if (m_shadowMapRenderer->render(ctx)) {
         renderCount++;
     }
+    // NOTE KI barrier to ensure shadow map rendering is complete
+    // before binding texture for reading in main pass
+    glMemoryBarrier(GL_FRAMEBUFFER_BARRIER_BIT | GL_TEXTURE_FETCH_BARRIER_BIT);
     m_shadowMapRenderer->bindTexture(ctx.getGLState());
 
     updateShadowUBO();
@@ -558,6 +561,7 @@ void Scene::render(const render::RenderContext& ctx)
     state.setEnabled(GL_TEXTURE_CUBE_MAP_SEAMLESS, assets.cubeMapSeamless);
 
     if (m_cubeMapRenderer->render(ctx)) {
+        glMemoryBarrier(GL_FRAMEBUFFER_BARRIER_BIT | GL_TEXTURE_FETCH_BARRIER_BIT);
         m_cubeMapRenderer->bindTexture(ctx.getGLState());
         m_waterMapRenderer->bindTexture(ctx.getGLState());
         m_mirrorMapRenderer->bindTexture(ctx.getGLState());
@@ -567,6 +571,7 @@ void Scene::render(const render::RenderContext& ctx)
     wasCubeMap = false;
 
     if (!wasCubeMap && m_waterMapRenderer->render(ctx)) {
+        glMemoryBarrier(GL_FRAMEBUFFER_BARRIER_BIT | GL_TEXTURE_FETCH_BARRIER_BIT);
         m_cubeMapRenderer->bindTexture(ctx.getGLState());
         m_waterMapRenderer->bindTexture(ctx.getGLState());
         m_mirrorMapRenderer->bindTexture(ctx.getGLState());
@@ -575,6 +580,7 @@ void Scene::render(const render::RenderContext& ctx)
     }
 
     if (!wasCubeMap && m_mirrorMapRenderer->render(ctx)) {
+        glMemoryBarrier(GL_FRAMEBUFFER_BARRIER_BIT | GL_TEXTURE_FETCH_BARRIER_BIT);
         m_cubeMapRenderer->bindTexture(ctx.getGLState());
         m_waterMapRenderer->bindTexture(ctx.getGLState());
         m_mirrorMapRenderer->bindTexture(ctx.getGLState());

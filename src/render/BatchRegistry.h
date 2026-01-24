@@ -66,6 +66,8 @@ namespace render {
     // Track unique indexes for multidraws and draw mesh commands
     class BatchRegistry {
     public:
+        void clear();
+
         // index, 0 == null
         uint16_t getMultiDrawIndex(const MultiDrawKey& multiDraw);
 

@@ -2,9 +2,16 @@
 prefab:
   meshes:
     - path: fbx/scenery/trees/Palm_01.fbx
-      lod:
-        min: 0
-        max: 100
+      lods:
+        - name: Tree_0
+          min: 0
+          max: 700
+        - name: Tree_1
+          min: 0
+          max: 500
+        - name: Tree_2
+          min: 0
+          max: 100
       materials:
         - name: palm_trunk
           alias: Tree_0Mat
@@ -22,51 +29,5 @@ prefab:
           base: textures
           map_kd: palm02.png
           map_normal: palm02_normal.png
-      base_scale: 0.05
-      default_programs: true
-    - path: fbx/scenery/trees/Palm_01.fbx
-      lod:
-        min: 100
-        max: 300
-      lods:
-        - name: Tree_2
-          max: -1
-      materials:
-        - name: palm_trunk
-          alias: Tree_0Mat
-          base: textures
-          map_kd: palm02.png
-        - name: palm_leaf
-          alias: Tree_1Mat
-          base: textures
-          map_kd: coconut palm leaf.png
-          render_back: true
-        - name: palm_branch
-          alias: Tree_2Mat
-          base: textures
-          map_kd: palm02.png
-      base_scale: 0.05
-      default_programs: true
-    - path: fbx/scenery/trees/Palm_01.fbx
-      lod:
-        min: 300
-        max: 700
-      lods:
-        - name: Tree_2
-          max: -1
-      materials:
-        - name: palm_trunk
-          alias: Tree_0Mat
-          base: textures
-          map_kd: palm02.png
-        - name: palm_leaf
-          base: textures
-          alias: Tree_1Mat
-          map_kd: coconut palm leaf.png
-          render_back: true
-        - name: palm_branch
-          alias: Tree_2Mat
-          base: textures
-          map_kd: palm02.png
       base_scale: 0.05
       default_programs: true

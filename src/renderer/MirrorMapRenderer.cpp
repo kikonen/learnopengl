@@ -366,6 +366,12 @@ void MirrorMapRenderer::drawNodes(
         }
     }
 
+    // NOTE KI memory barrier to ensure nested renders complete before
+    // binding their textures for reading in the main mirror render
+    if (renderedWater || renderedMirror) {
+        glMemoryBarrier(GL_FRAMEBUFFER_BARRIER_BIT | GL_TEXTURE_FETCH_BARRIER_BIT);
+    }
+
     if (m_waterMapRenderer && m_waterMapRenderer->isEnabled() /*&& renderedWater*/) {
         m_waterMapRenderer->bindTexture(ctx.getGLState());
     }

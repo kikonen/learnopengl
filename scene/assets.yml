@@ -13,6 +13,8 @@ assets:
   #gl_use_single_fence: false
   gl_use_fence_debug: false
   gl_use_finish: false
+  gl_use_explicit_flush: true
+  gl_use_direct_draw: false
 
   glsl_use_debug: true
 

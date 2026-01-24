@@ -92,6 +92,7 @@ namespace render
         auto alloc = m_ring->allocate<CameraUBO>();
         if (alloc) {
             *alloc = data;
+            m_ring->flushRange(alloc.ref);
             m_ring->bindUBO(UBO_CAMERA, alloc.ref);
         }
     }
@@ -101,6 +102,7 @@ namespace render
         auto alloc = m_ring->allocate<DataUBO>();
         if (alloc) {
             *alloc = data;
+            m_ring->flushRange(alloc.ref);
             m_ring->bindUBO(UBO_DATA, alloc.ref);
         }
     }
@@ -110,6 +112,7 @@ namespace render
         auto alloc = m_ring->allocate<ShadowUBO>();
         if (alloc) {
             *alloc = data;
+            m_ring->flushRange(alloc.ref);
             m_ring->bindUBO(UBO_SHADOW, alloc.ref);
         }
     }
@@ -119,6 +122,7 @@ namespace render
         auto alloc = m_ring->allocate<DebugUBO>();
         if (alloc) {
             *alloc = data;
+            m_ring->flushRange(alloc.ref);
             m_ring->bindUBO(UBO_DEBUG, alloc.ref);
         }
     }
@@ -128,6 +132,7 @@ namespace render
         auto alloc = m_ring->allocate<BufferInfoUBO>();
         if (alloc) {
             *alloc = data;
+            m_ring->flushRange(alloc.ref);
             m_ring->bindUBO(UBO_BUFFER_INFO, alloc.ref);
         }
     }
@@ -137,6 +142,7 @@ namespace render
         auto alloc = m_ring->allocate<ClipPlanesUBO>();
         if (alloc) {
             *alloc = data;
+            m_ring->flushRange(alloc.ref);
             m_ring->bindUBO(UBO_CLIP_PLANES, alloc.ref);
         }
     }
@@ -203,6 +209,7 @@ namespace render
         auto alloc = m_ring->allocate<LightsUBO>();
         if (alloc) {
             *alloc = lightsUbo;
+            m_ring->flushRange(alloc.ref);
             m_ring->bindUBO(UBO_LIGHTS, alloc.ref);
         }
     }

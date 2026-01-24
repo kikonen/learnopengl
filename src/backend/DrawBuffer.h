@@ -69,6 +69,10 @@ namespace backend {
         void bindMultiDrawRange(
             const backend::MultiDrawRange& drawRange) const;
 
+    public:
+        // NOTE KI set to true to test Intel driver issues with indirect drawing
+        bool m_useDirectDraw{ false };
+
     private:
         bool m_batchDebug{ false };
 

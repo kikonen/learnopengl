@@ -2,11 +2,14 @@
 
 #include <fmt/format.h>
 
+#include "util/Log.h"
+
 namespace {
-    constexpr long WAIT_DELAY_MS = 5;
+    constexpr long WAIT_DELAY_MS = 10;
     constexpr long WAIT_DELAY = WAIT_DELAY_MS * 1000 * 1000;
 
-    constexpr long MAX_WAIT_COUNT = 10;
+    // NOTE KI warn if wait exceeds this threshold, but keep waiting
+    constexpr long WARN_WAIT_COUNT = 10;
 }
 
 namespace kigl {
@@ -52,11 +55,26 @@ namespace kigl {
 
         int count = 0;
         GLenum res = GL_UNSIGNALED;
-        while (res != GL_ALREADY_SIGNALED && res != GL_CONDITION_SATISFIED && count < MAX_WAIT_COUNT)
+        bool warned = false;
+
+        // NOTE KI must wait until signaled - giving up causes GPU/CPU race conditions
+        // that manifest as flickering/disappearing meshes
+        while (res != GL_ALREADY_SIGNALED && res != GL_CONDITION_SATISFIED)
         {
             // 1 million == 1 ms
             res = glClientWaitSync(m_sync, GL_SYNC_FLUSH_COMMANDS_BIT, WAIT_DELAY);
             count++;
+
+            if (!warned && count >= WARN_WAIT_COUNT) {
+                KI_WARN(fmt::format("GLFence '{}': long wait - {}ms so far", m_name, count * WAIT_DELAY_MS));
+                warned = true;
+            }
+
+            // NOTE KI handle wait failure - should not happen in normal operation
+            if (res == GL_WAIT_FAILED) {
+                KI_ERROR(fmt::format("GLFence '{}': wait failed!", m_name));
+                break;
+            }
         }
 
         release();

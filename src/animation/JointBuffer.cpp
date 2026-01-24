@@ -6,6 +6,8 @@
 
 #include "shader/SSBO.h"
 
+#include "kigl/GLBuffer.h"
+
 #include "JointRegistry.h"
 #include "JointTransformSSBO.h"
 
@@ -35,9 +37,8 @@ namespace animation
         ASSERT_RT();
 
         // https://stackoverflow.com/questions/44203387/does-gl-map-invalidate-range-bit-require-glinvalidatebuffersubdata
-        GLuint flags = GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_COHERENT_BIT;
-        m_ssbo.createEmpty(BLOCK_SIZE * sizeof(JointTransformSSBO), flags);
-        m_ssbo.map(flags);
+        m_ssbo.createEmpty(BLOCK_SIZE * sizeof(JointTransformSSBO), kigl::getBufferStorageFlags());
+        m_ssbo.map(kigl::getBufferMapFlags());
 
         m_ssbo.bindSSBO(SSBO_JOINT_TRANSFORMS);
     }
@@ -99,6 +100,9 @@ namespace animation
             snapshot.data() + range.offset,
             count,
             mappedData + range.offset);
+
+        // NOTE KI flush for explicit mode (no-op if using coherent mapping)
+        m_ssbo.flushRange(range.offset * sizeof(JointTransformSSBO), count * sizeof(JointTransformSSBO));
     }
 
     void JointBuffer::resizeBuffer(size_t totalCount)
@@ -116,8 +120,7 @@ namespace animation
         // NOTE KI *reallocate* SSBO if needed
         m_ssbo.resizeBuffer(entryCount * sizeof(JointTransformSSBO), true);
 
-        GLuint flags = GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_COHERENT_BIT;
-        m_ssbo.map(flags);
+        m_ssbo.map(kigl::getBufferMapFlags());
 
         m_ssbo.bindSSBO(SSBO_JOINT_TRANSFORMS);
 

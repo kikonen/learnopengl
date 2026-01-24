@@ -85,6 +85,10 @@ namespace render
         if (!m_enabled) return src;
         if (m_flushedCount == 0) return src;
 
+        // NOTE KI ensure OIT buffer writes from render() are complete
+        // before reading as texture in blend pass
+        glMemoryBarrier(GL_FRAMEBUFFER_BARRIER_BIT | GL_TEXTURE_FETCH_BARRIER_BIT);
+
         startScreenPass(
             ctx,
             true,

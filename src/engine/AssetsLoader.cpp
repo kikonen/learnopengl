@@ -166,6 +166,14 @@ void AssetsLoader::loadAssets(
                 data.glUseFinish = readBool(v);
                 continue;
             }
+            if (k == "gl_use_explicit_flush") {
+                data.glUseExplicitFlush = readBool(v);
+                continue;
+            }
+            if (k == "gl_use_direct_draw") {
+                data.glUseDirectDraw = readBool(v);
+                continue;
+            }
             if (k == "glsl_use_debug") {
                 data.glslUseDebug = readBool(v);
                 continue;

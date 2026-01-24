@@ -92,6 +92,9 @@ namespace kigl
         void bindSSBO(GLuint binding, const util::BufferReference& ref);
         void bindDrawIndirect();
 
+        // Flush written data (only needed when g_useExplicitFlush is true)
+        void flushRange(const util::BufferReference& ref);
+
         // Get pointer from reference (for deferred access)
         template<typename T>
         T* mapped(const util::BufferReference& ref);

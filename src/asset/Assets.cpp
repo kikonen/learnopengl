@@ -50,6 +50,8 @@ Assets::Assets()
     glUseFence = false;
     glUseFenceDebug = false;
     glUseFinish = false;
+    glUseExplicitFlush = true;
+    glUseDirectDraw = false;
 
     glslUseDebug = false;
 

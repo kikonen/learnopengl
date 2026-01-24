@@ -204,6 +204,11 @@ namespace render
 
         ctx.m_batch->flush(ctx);
 
+        // NOTE KI memory barrier required before copying framebuffer data
+        // Without this, glCopyImageSubData may read incomplete depth buffer
+        // when line mode renders faster than fill mode
+        glMemoryBarrier(GL_FRAMEBUFFER_BARRIER_BIT);
+
         m_gBuffer.updateDepthCopy();
         m_gBuffer.bindTexture(ctx.getGLState());
     }

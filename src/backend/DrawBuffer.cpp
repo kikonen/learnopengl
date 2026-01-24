@@ -90,6 +90,8 @@ namespace backend {
                 1.5f);
             m_commandRing->create(estimateCommandSizePerFrame());
         }
+
+        m_useDirectDraw = assets.glUseDirectDraw;
     }
 
     void DrawBuffer::beginFrame()
@@ -218,6 +220,9 @@ namespace backend {
             std::end(indeces),
             m_currentInstanceAlloc.data);
 
+        // NOTE KI flush for explicit mode (no-op if using coherent mapping)
+        m_instanceRing->flushRange(m_currentInstanceAlloc.ref);
+
         m_instanceRing->bindSSBO(SSBO_INSTANCE_INDECES, m_currentInstanceAlloc.ref);
 
         return true;
@@ -225,7 +230,24 @@ namespace backend {
 
     void DrawBuffer::drawPending()
     {
+        // NOTE KI flush command buffer for explicit mode (no-op if using coherent mapping)
+        {
+            util::BufferReference cmdRef{
+                m_currentCommandAlloc.ref.offset,
+                m_commandCount * sizeof(backend::gl::DrawIndirectCommand)
+            };
+            m_commandRing->flushRange(cmdRef);
+        }
+
         m_commandRing->bindDrawIndirect();
+
+        // NOTE KI memory barrier to ensure buffer writes are visible to GPU
+        // GL_COMMAND_BARRIER_BIT: ensures indirect draw command buffer is visible
+        // GL_SHADER_STORAGE_BARRIER_BIT: ensures instance index SSBO is visible
+        // GL_UNIFORM_BARRIER_BIT: ensures UBO updates are visible
+        glMemoryBarrier(GL_COMMAND_BARRIER_BIT | GL_UNIFORM_BARRIER_BIT | GL_SHADER_STORAGE_BARRIER_BIT);
+
+        //glFinish();
 
         size_t tallyCount = 0;
         constexpr auto sz = sizeof(backend::gl::DrawIndirectCommand);
@@ -240,20 +262,51 @@ namespace backend {
             bindMultiDrawRange(drawRange);
 
             if (drawOptions.m_type == backend::DrawOptions::Type::elements) {
-                glMultiDrawElementsIndirect(
-                    drawOptions.toMode(),
-                    GL_UNSIGNED_INT,
-                    (void*)baseOffset,
-                    drawCount,
-                    sz);
+                // NOTE KI test: use direct draws instead of indirect to test Intel driver issues
+                if (m_useDirectDraw) {
+                    auto* cmds = m_currentCommandAlloc.data + tallyCount;
+                    for (int i = 0; i < drawCount; i++) {
+                        const auto& cmd = cmds[i].element;
+                        glDrawElementsInstancedBaseVertexBaseInstance(
+                            drawOptions.toMode(),
+                            cmd.u_count,
+                            GL_UNSIGNED_INT,
+                            (void*)(cmd.u_firstIndex * sizeof(GLuint)),
+                            cmd.u_instanceCount,
+                            cmd.u_baseVertex,
+                            cmd.u_baseInstance);
+                    }
+                }
+                else {
+                    glMultiDrawElementsIndirect(
+                        drawOptions.toMode(),
+                        GL_UNSIGNED_INT,
+                        (void*)baseOffset,
+                        drawCount,
+                        sz);
+                }
             }
             else if (drawOptions.m_type == backend::DrawOptions::Type::arrays)
             {
-                glMultiDrawArraysIndirect(
-                    drawOptions.toMode(),
-                    (void*)baseOffset,
-                    drawCount,
-                    sz);
+                if (m_useDirectDraw) {
+                    auto* cmds = m_currentCommandAlloc.data + tallyCount;
+                    for (int i = 0; i < drawCount; i++) {
+                        const auto& cmd = cmds[i].array;
+                        glDrawArraysInstancedBaseInstance(
+                            drawOptions.toMode(),
+                            cmd.u_firstVertex,
+                            cmd.u_vertexCount,
+                            cmd.u_instanceCount,
+                            cmd.u_baseInstance);
+                    }
+                }
+                else {
+                    glMultiDrawArraysIndirect(
+                        drawOptions.toMode(),
+                        (void*)baseOffset,
+                        drawCount,
+                        sz);
+                }
             }
             tallyCount += drawCount;
         }
@@ -273,6 +326,16 @@ namespace backend {
         auto& state = kigl::GLState::get();
         const auto& drawOptions = drawRange.m_drawOptions;
 
+        bool lineMode = drawOptions.m_lineMode;
+        uint8_t kindBits = drawOptions.m_kindBits;
+
+        if (drawRange.m_forceLineMode) {
+            lineMode = true;
+        }
+        if (drawRange.m_forceSolid) {
+            kindBits &= ~render::KIND_BLEND;
+        }
+
         // NOTE KI bind vao only if used for this draw
         if (drawRange.m_vaoId) {
             state.bindVAO(drawRange.m_vaoId);
@@ -282,8 +345,6 @@ namespace backend {
         state.useProgram(*program);
 
         state.setEnabled(GL_CULL_FACE, !drawOptions.m_renderBack);
-
-        const bool lineMode = drawOptions.m_lineMode;
 
         if (drawOptions.m_reverseFrontFace) {
             state.frontFace(GL_CW);

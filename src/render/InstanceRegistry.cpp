@@ -8,6 +8,8 @@
 
 #include "shader/SSBO.h"
 
+#include "kigl/GLBuffer.h"
+
 namespace
 {
     constexpr size_t BLOCK_SIZE = 1000;
@@ -67,12 +69,9 @@ namespace render
 
     void InstanceRegistry::prepare()
     {
-        const auto& assets = Assets::get();
-
         // https://stackoverflow.com/questions/44203387/does-gl-map-invalidate-range-bit-require-glinvalidatebuffersubdata
-        GLuint flags = GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_COHERENT_BIT;
-        m_ssbo.createEmpty(BLOCK_SIZE * sizeof(InstanceSSBO), flags);
-        m_ssbo.map(flags);
+        m_ssbo.createEmpty(BLOCK_SIZE * sizeof(InstanceSSBO), kigl::getBufferStorageFlags());
+        m_ssbo.map(kigl::getBufferMapFlags());
 
         m_ssbo.bindSSBO(SSBO_INSTANCES);
 
@@ -219,6 +218,13 @@ namespace render
 
         m_ssbo.markUsed(totalCount * sz);
 
+        // NOTE KI flush for explicit mode (no-op if using coherent mapping)
+        m_ssbo.flushRange(0, totalCount * sz);
+
+        // NOTE KI memory barrier to ensure instance data writes are visible
+        // to GPU before rendering, even with GL_MAP_COHERENT_BIT
+        glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
+
         m_dirtySlots.clear();
         m_uploadedCount = totalCount;
         m_needUpload = false;
@@ -241,6 +247,9 @@ namespace render
         }
 
         m_ssbo.markUsed(totalCount * sz);
+
+        // NOTE KI flush for explicit mode (no-op if using coherent mapping)
+        m_ssbo.flushRange(ref.offset * sz, ref.size * sz);
     }
 
     void InstanceRegistry::beginFrame()
@@ -265,8 +274,7 @@ namespace render
         // NOTE KI *reallocate* SSBO if needed
         m_ssbo.resizeBuffer(bufferSize, true);
 
-        GLuint flags = GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_COHERENT_BIT;
-        m_ssbo.map(flags);
+        m_ssbo.map(kigl::getBufferMapFlags());
 
         m_ssbo.bindSSBO(SSBO_INSTANCES);
     }

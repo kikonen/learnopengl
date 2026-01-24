@@ -15,6 +15,7 @@
 #include "registry/Registry.h"
 #include "registry/NodeRegistry.h"
 
+#include "kigl/GLBuffer.h"
 
 namespace {
     constexpr size_t BLOCK_SIZE = 1000;
@@ -62,12 +63,9 @@ void EntityRegistry::prepare()
 {
     ASSERT_RT();
 
-    const auto& assets = Assets::get();
-
     // https://stackoverflow.com/questions/44203387/does-gl-map-invalidate-range-bit-require-glinvalidatebuffersubdata
-    GLuint flags = GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_COHERENT_BIT;
-    m_ssbo.createEmpty(BLOCK_SIZE * sizeof(EntitySSBO), flags);
-    m_ssbo.map(flags);
+    m_ssbo.createEmpty(BLOCK_SIZE * sizeof(EntitySSBO), kigl::getBufferStorageFlags());
+    m_ssbo.map(kigl::getBufferMapFlags());
 
     m_ssbo.bindSSBO(SSBO_ENTITIES);
 }
@@ -132,6 +130,13 @@ void EntityRegistry::updateRT(const UpdateContext& ctx)
 
     m_ssbo.markUsed(totalCount * sz);
 
+    // NOTE KI flush for explicit mode (no-op if using coherent mapping)
+    m_ssbo.flushRange(0, totalCount * sz);
+
+    // NOTE KI memory barrier to ensure entity data writes are visible
+    // to GPU before rendering, even with GL_MAP_COHERENT_BIT
+    glMemoryBarrier(GL_SHADER_STORAGE_BARRIER_BIT);
+
     for (int i = 0; i < totalCount; i++) {
         dirtyEntries[i] = false;
     }
@@ -150,8 +155,7 @@ void EntityRegistry::resizeBuffer(size_t totalCount)
 
     m_ssbo.resizeBuffer(bufferSize, true);
 
-    GLuint flags = GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_COHERENT_BIT;
-    m_ssbo.map(flags);
+    m_ssbo.map(kigl::getBufferMapFlags());
 
     m_ssbo.bindSSBO(SSBO_ENTITIES);
 }

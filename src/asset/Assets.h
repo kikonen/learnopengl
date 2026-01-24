@@ -46,6 +46,8 @@ public:
     bool glUseFence;
     bool glUseFenceDebug;
     bool glUseFinish;
+    bool glUseExplicitFlush;
+    bool glUseDirectDraw;
 
     bool glslUseDebug;
 

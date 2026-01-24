@@ -6,6 +6,8 @@
 
 #include "shader/SSBO.h"
 
+#include "kigl/GLBuffer.h"
+
 #include "SocketRegistry.h"
 #include "SocketTransformSSBO.h"
 
@@ -37,9 +39,8 @@ namespace animation
         m_frameSkipCount = 1;
 
         // https://stackoverflow.com/questions/44203387/does-gl-map-invalidate-range-bit-require-glinvalidatebuffersubdata
-        GLuint flags = GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_COHERENT_BIT;
-        m_ssbo.createEmpty(BLOCK_SIZE * sizeof(SocketTransformSSBO), flags);
-        m_ssbo.map(flags);
+        m_ssbo.createEmpty(BLOCK_SIZE * sizeof(SocketTransformSSBO), kigl::getBufferStorageFlags());
+        m_ssbo.map(kigl::getBufferMapFlags());
 
         //m_ssbo.bindSSBO(SSBO_SOCKET_TRANSFORMS);
     }
@@ -101,6 +102,9 @@ namespace animation
             snapshot.data() + range.offset,
             count,
             mappedData + range.offset);
+
+        // NOTE KI flush for explicit mode (no-op if using coherent mapping)
+        m_ssbo.flushRange(range.offset * sizeof(SocketTransformSSBO), count * sizeof(SocketTransformSSBO));
     }
 
     void SocketBuffer::resizeBuffer(size_t totalCount)
@@ -118,8 +122,7 @@ namespace animation
         // NOTE KI *reallocate* SSBO if needed
         m_ssbo.resizeBuffer(entryCount * sizeof(SocketTransformSSBO), true);
 
-        GLuint flags = GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_COHERENT_BIT;
-        m_ssbo.map(flags);
+        m_ssbo.map(kigl::getBufferMapFlags());
 
         //m_ssbo.bindSSBO(SSBO_SOCKET_TRANSFORMS);
 

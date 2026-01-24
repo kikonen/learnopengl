@@ -402,6 +402,10 @@ bool WaterMapRenderer::render(
         drawNodes(localCtx, reflectionBuffer.get(), closest, true);
     }
 
+    // NOTE KI memory barrier to ensure reflection render completes before
+    // starting refraction render (both use same nodeDraw/batch resources)
+    glMemoryBarrier(GL_FRAMEBUFFER_BARRIER_BIT);
+
     // refraction map
     {
         auto& camera = m_cameras[1];

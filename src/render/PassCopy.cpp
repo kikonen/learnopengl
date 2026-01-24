@@ -46,6 +46,13 @@ namespace render
     {
         if (!m_enabled) return src;
 
+        // NOTE KI memory barrier to ensure all rendering to source buffer is complete
+        // before glCopyImageSubData or glBlitFramebuffer reads from it
+        glMemoryBarrier(
+            GL_SHADER_IMAGE_ACCESS_BARRIER_BIT |
+            GL_FRAMEBUFFER_BARRIER_BIT |
+            GL_TEXTURE_FETCH_BARRIER_BIT);
+
         src.buffer->bind(ctx);
 
         passCopy(ctx, src, dstBuffer, drawContext.copyMask);

@@ -24,6 +24,8 @@
 #include "ParticleSSBO.h"
 #include "ParticleGenerator.h"
 
+#include "kigl/GLBuffer.h"
+
 namespace {
     constexpr size_t BLOCK_SIZE = 10000;
     constexpr size_t MAX_BLOCK_COUNT = 1100;
@@ -112,9 +114,8 @@ namespace particle {
         if (!isEnabled()) return;
 
         // https://stackoverflow.com/questions/44203387/does-gl-map-invalidate-range-bit-require-glinvalidatebuffersubdata
-        GLuint flags = GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_COHERENT_BIT;
-        m_ssbo.createEmpty(BLOCK_SIZE * sizeof(ParticleSSBO), flags);
-        m_ssbo.map(flags);
+        m_ssbo.createEmpty(BLOCK_SIZE * sizeof(ParticleSSBO), kigl::getBufferStorageFlags());
+        m_ssbo.map(kigl::getBufferMapFlags());
 
         m_ssbo.bindSSBO(SSBO_PARTICLES);
     }
@@ -252,6 +253,9 @@ namespace particle {
             std::end(m_snapshot),
             mappedData);
 
+        // NOTE KI flush for explicit mode (no-op if using coherent mapping)
+        m_ssbo.flushRange(0, totalCount * sizeof(ParticleSSBO));
+
         m_activeCount = totalCount;
         m_updateReady = false;
     }
@@ -266,8 +270,7 @@ namespace particle {
         // NOTE KI *reallocate* SSBO if needed
         m_ssbo.resizeBuffer(entryCount * sizeof(ParticleSSBO), true);
 
-        GLuint flags = GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_COHERENT_BIT;
-        m_ssbo.map(flags);
+        m_ssbo.map(kigl::getBufferMapFlags());
 
         m_ssbo.bindSSBO(SSBO_PARTICLES);
 

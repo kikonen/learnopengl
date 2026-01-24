@@ -7,6 +7,15 @@ namespace
 }
 
 namespace render {
+    void BatchRegistry::clear()
+    {
+        m_multiDraws.clear();
+        m_commands.clear();
+
+        m_multiDrawIndeces.clear();
+        m_commandIndeces.clear();
+    }
+
     uint16_t BatchRegistry::getMultiDrawIndex(const MultiDrawKey& multiDraw)
     {
         const auto& it = m_multiDrawIndeces.find(multiDraw);

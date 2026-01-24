@@ -4,7 +4,33 @@
 
 #include "kigl/kigl.h"
 
+#include "asset/Assets.h"
+
 namespace kigl {
+    // Returns flags for glNamedBufferStorage
+    // GL_MAP_FLUSH_EXPLICIT_BIT is NOT valid for storage, only for mapping
+    inline GLuint getBufferStorageFlags()
+    {
+        GLuint flags = GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT;
+        if (!Assets::get().glUseExplicitFlush) {
+            flags |= GL_MAP_COHERENT_BIT;
+        }
+        return flags;
+    }
+
+    // Returns flags for glMapNamedBufferRange
+    // Use GL_MAP_FLUSH_EXPLICIT_BIT for Intel driver compatibility,
+    // GL_MAP_COHERENT_BIT for simpler code on other drivers
+    inline GLuint getBufferMapFlags()
+    {
+        GLuint flags = GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT;
+        if (Assets::get().glUseExplicitFlush) {
+            flags |= GL_MAP_FLUSH_EXPLICIT_BIT;
+        } else {
+            flags |= GL_MAP_COHERENT_BIT;
+        }
+        return flags;
+    }
     struct GLBuffer {
         GLBuffer(std::string_view name)
             : m_name{ name }
@@ -246,9 +272,10 @@ namespace kigl {
 
         void flushRange(size_t offset, size_t length) const
         {
+            if (length == 0) return;
+
             assert(m_mapped);
-            assert(offset >= 0);
-            assert(length > 0 && length <= m_size);
+            assert(length <= m_size);
 
             // NOTE KI flush only for explicit
             // https://registry.khronos.org/OpenGL-Refpages/gl4/html/glFlushMappedBufferRange.xhtml

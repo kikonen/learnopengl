@@ -89,8 +89,6 @@ namespace render {
         bool frustumChecked = type->m_flags.noFrustum;
 
         const auto& cameraPos = ctx.m_camera->getWorldPosition();
-        const bool forceLineMode = ctx.m_forceLineMode && ctx.m_allowLineMode;
-        const bool forceSolid = ctx.m_forceSolid;
 
         for (uint32_t drawableIndex = 0; drawableIndex < drawables.size(); drawableIndex++) {
             const auto& drawable = drawables[drawableIndex];
@@ -100,13 +98,7 @@ namespace render {
             if (!srcDrawOptions.isKind(kindBits)) continue;
             if (srcDrawOptions.m_type == backend::DrawOptions::Type::none) continue;
 
-            auto drawOptions = srcDrawOptions;
-            if (forceLineMode) {
-                drawOptions.m_lineMode = true;
-            }
-            if (forceSolid) {
-                drawOptions.m_kindBits &= ~render::KIND_BLEND;
-            }
+            const auto drawOptions = srcDrawOptions;
 
             if (m_lodDistanceEnabled) {
                 const auto dist2 = glm::distance2(drawable.worldVolume.getCenter(), cameraPos);
@@ -183,8 +175,6 @@ namespace render {
         const auto& drawables = m_instanceRegistry->getRange(instanceRef);
 
         const auto& cameraPos = ctx.m_camera->getWorldPosition();
-        const bool forceLineMode = ctx.m_forceLineMode && ctx.m_allowLineMode;
-        const bool forceSolid = ctx.m_forceSolid;
 
         bool useFrustum = m_frustumCPU;
         {
@@ -241,7 +231,8 @@ namespace render {
             {
                 if (m_lodDistanceEnabled) {
                     if (drawable.minDistance2 > dist2 ||
-                        drawable.maxDistance2 <= dist2) return 0;
+                        drawable.maxDistance2 <= dist2)
+                    return 0;
                 }
 
                 const auto& drawOptions = drawable.drawOptions;
@@ -269,13 +260,7 @@ namespace render {
 
                 CommandEntry* commandEntry{ nullptr };
                 {
-                    auto drawOptions = drawable.drawOptions;
-                    if (forceLineMode) {
-                        drawOptions.m_lineMode = true;
-                    }
-                    if (forceSolid) {
-                        drawOptions.m_kindBits &= ~render::KIND_BLEND;
-                    }
+                    const auto drawOptions = drawable.drawOptions;
 
                     MultiDrawEntry* drawEntry;
                     {
@@ -325,8 +310,6 @@ namespace render {
         const auto& drawables = m_instanceRegistry->getRange(instanceRef);
 
         const auto& cameraPos = ctx.m_camera->getWorldPosition();
-        const bool forceLineMode = ctx.m_forceLineMode && ctx.m_allowLineMode;
-        const bool forceSolid = ctx.m_forceSolid;
 
         bool useFrustum = m_frustumCPU;
 
@@ -404,13 +387,7 @@ namespace render {
 
                 CommandEntry* commandEntry{ nullptr };
                 {
-                    auto drawOptions = drawable.drawOptions;
-                    if (forceLineMode) {
-                        drawOptions.m_lineMode = true;
-                    }
-                    if (forceSolid) {
-                        drawOptions.m_kindBits &= ~render::KIND_BLEND;
-                    }
+                    const auto drawOptions = drawable.drawOptions;
 
                     MultiDrawEntry* drawEntry;
                     {
@@ -505,6 +482,7 @@ namespace render {
     {
         m_frameFlushCount = 0;
         m_draw->beginFrame();
+        clearBatches();
     }
 
     void Batch::endFrame()
@@ -512,6 +490,7 @@ namespace render {
         //KI_INFO(fmt::format("BATCH: frame_batch_flushes={}", m_frameFlushCount));
         m_frameFlushCount = 0;
         m_draw->endFrame();
+        clearBatches();
     }
 
     void Batch::draw(
@@ -534,6 +513,7 @@ namespace render {
 
     void Batch::clearBatches() noexcept
     {
+        //m_batchRegistry.clear();
         m_drawEntryContainer.clear();
         m_instanceIndeces.clear();
         m_pendingCount = 0;
@@ -588,6 +568,9 @@ namespace render {
 
         draw->sendInstanceIndeces(m_instanceIndeces);
 
+        const bool forceLineMode = ctx.m_forceLineMode && ctx.m_allowLineMode;
+        const bool forceSolid = ctx.m_forceSolid;
+
         backend::gl::DrawIndirectCommand indirect{};
 
         for (const auto& multiDraw : m_drawEntryContainer.m_pending) {
@@ -599,6 +582,8 @@ namespace render {
                 multiDrawKey.m_drawOptions,
                 multiDrawKey.m_vaoId,
                 multiDrawKey.m_programId,
+                forceLineMode,
+                forceSolid
             };
 
             const auto drawType = drawRange.m_drawOptions.m_type;
@@ -651,6 +636,10 @@ namespace render {
             draw->flush();
             clearBatches();
         }
+
+        //// In Batch::flush, after line 579 (flushCount = m_instanceIndeces.size();)
+        //KI_INFO_OUT(fmt::format("BATCH_FLUSH: instances={}, multiDraws={}",
+        //    flushCount, m_drawEntryContainer.m_pending.size()));
 
         m_frameFlushCount++;
 

@@ -5,6 +5,8 @@
 
 #include <fmt/format.h>
 
+#include "kigl/GLBuffer.h"
+
 namespace kigl
 {
 
@@ -38,9 +40,8 @@ namespace kigl
     void RingAllocator::createBuffer()
     {
         size_t totalSize = m_sizePerFrame * m_ringFrames;
-        GLuint flags = GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_COHERENT_BIT;
-        m_buffer.createEmpty(totalSize, flags);
-        m_buffer.map(flags);
+        m_buffer.createEmpty(totalSize, getBufferStorageFlags());
+        m_buffer.map(getBufferMapFlags());
     }
 
     void RingAllocator::beginFrame()
@@ -139,8 +140,7 @@ namespace kigl
 
         m_buffer.resizeBuffer(newTotalSize, m_preserveOnResize);
 
-        GLuint flags = GL_MAP_WRITE_BIT | GL_MAP_PERSISTENT_BIT | GL_MAP_COHERENT_BIT;
-        m_buffer.map(flags);
+        m_buffer.map(getBufferMapFlags());
 
         m_sizePerFrame = m_requestedSize;
 
@@ -166,6 +166,12 @@ namespace kigl
     void RingAllocator::bindDrawIndirect()
     {
         m_buffer.bindDrawIndirect();
+    }
+
+    void RingAllocator::flushRange(const util::BufferReference& ref)
+    {
+        // NOTE KI GLBuffer::flushRange handles size==0 and checks GL_MAP_FLUSH_EXPLICIT_BIT
+        m_buffer.flushRange(ref.offset, ref.size);
     }
 
     size_t RingAllocator::usedThisFrame() const
