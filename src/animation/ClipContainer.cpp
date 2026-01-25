@@ -1,11 +1,43 @@
 #include "ClipContainer.h"
 
+#include <algorithm>
+
 #include <fmt/format.h>
 
 #include "util/Log.h"
 
 namespace {
     constexpr float DEF_FPS = 25.f;
+
+    // Convert tick value to index in unified keyTimes
+    // For start: returns first keyTime >= tickValue
+    // For end: returns last keyTime <= tickValue
+    uint16_t tickToStartIndex(
+        const std::vector<float>& keyTimes,
+        float tickValue)
+    {
+        if (keyTimes.empty()) return 0;
+
+        auto it = std::lower_bound(keyTimes.begin(), keyTimes.end(), tickValue);
+        if (it == keyTimes.end()) {
+            return static_cast<uint16_t>(keyTimes.size() - 1);
+        }
+        return static_cast<uint16_t>(std::distance(keyTimes.begin(), it));
+    }
+
+    // Returns exclusive end index (first frame NOT in clip)
+    // This matches the convention in RigNodeChannel where lastFrame is exclusive
+    uint16_t tickToEndIndex(
+        const std::vector<float>& keyTimes,
+        float tickValue)
+    {
+        if (keyTimes.empty()) return 0;
+
+        // upper_bound finds first element > tickValue
+        // This gives us the exclusive end (first frame after the clip)
+        auto it = std::upper_bound(keyTimes.begin(), keyTimes.end(), tickValue);
+        return static_cast<uint16_t>(std::distance(keyTimes.begin(), it));
+    }
 }
 
 namespace animation {
@@ -66,7 +98,61 @@ namespace animation {
 
             clip.m_animationIndex = anim->m_index;
 
-            if (auto max = anim->getMaxFrame(); clip.m_lastFrame > max) {
+            // Convert tick-based frame numbers to unified timeline indices
+            // Clip firstFrame/lastFrame from metadata are tick values, not array indices
+            if (!anim->m_channels.empty() && !clip.m_single) {
+                const auto& keyTimes = anim->m_channels[0].getKeyTimes();
+
+                // Store original tick values for debug
+                uint16_t tickFirst = clip.m_firstFrame;
+                uint16_t tickLast = clip.m_lastFrame;
+
+                // Convert ticks to indices
+                clip.m_firstFrame = tickToStartIndex(keyTimes, static_cast<float>(tickFirst));
+                clip.m_lastFrame = tickToEndIndex(keyTimes, static_cast<float>(tickLast));
+
+                // Ensure lastFrame doesn't exceed max
+                // NOTE KI getMaxFrame() returns inclusive max (size-1), but lastFrame is exclusive
+                // so valid lastFrame range is [firstFrame+1, size]
+                uint16_t maxExclusive = static_cast<uint16_t>(keyTimes.size());
+                if (clip.m_lastFrame > maxExclusive) {
+                    clip.m_lastFrame = maxExclusive;
+                }
+                if (clip.m_firstFrame >= clip.m_lastFrame) {
+                    clip.m_firstFrame = clip.m_lastFrame > 0 ? clip.m_lastFrame - 1 : 0;
+                }
+
+                // Set tick values from unified timeline for LUT generation
+                // These must match how clipDuration is calculated (from unified timeline)
+                // so that runtime normalizedTime maps correctly to LUT entries
+                clip.m_firstTick = keyTimes[clip.m_firstFrame];
+                clip.m_lastTick = clip.m_lastFrame > 0 ? keyTimes[clip.m_lastFrame - 1] : keyTimes[clip.m_firstFrame];
+
+                // Debug: show actual keyTime values at boundaries
+                float nextKeyTime = clip.m_lastFrame < keyTimes.size() ? keyTimes[clip.m_lastFrame] : -1.f;
+
+                KI_INFO_OUT(fmt::format(
+                    "ASSIMP: CLIP_TICK_TO_INDEX: name={}, ticks=[{},{}] -> indices=[{},{}) keyTimes=[{:.1f},{:.1f}] next={:.1f}, size={}",
+                    clip.m_uniqueName,
+                    tickFirst, tickLast,
+                    clip.m_firstFrame, clip.m_lastFrame,
+                    clip.m_firstTick, clip.m_lastTick, nextKeyTime,
+                    keyTimes.size()));
+            }
+            else if (clip.m_single && !anim->m_channels.empty()) {
+                // Single clip uses entire animation - set tick range from original tracks
+                const auto& channel = anim->m_channels[0];
+                const auto& origTimes = channel.getOrigPositionTimes();
+                if (!origTimes.empty()) {
+                    clip.m_firstTick = origTimes.front();
+                    clip.m_lastTick = origTimes.back();
+                } else {
+                    // Fallback to animation duration
+                    clip.m_firstTick = 0.f;
+                    clip.m_lastTick = anim->m_duration;
+                }
+            }
+            else if (auto max = anim->getMaxFrame(); clip.m_lastFrame > max) {
                 KI_WARN_OUT(fmt::format(
                     "ASSIMP: CLIP_OUT_OF_BOUNDS: name={}, index={}, animName={}, animIndex={}, range=[{},{}], max={}",
                     clip.m_uniqueName,
@@ -135,7 +221,7 @@ namespace animation {
             if (nodeIndex < 0) continue;
 
             auto& lut = m_clipLUTs[clipIndex][nodeIndex];
-            lut.generate(channel, clip.m_firstFrame, clip.m_lastFrame);
+            lut.generate(channel, clip.m_uniqueName, clip.m_firstTick, clip.m_lastTick);
         }
 
         KI_INFO_OUT(fmt::format(

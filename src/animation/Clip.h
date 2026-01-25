@@ -89,6 +89,10 @@ namespace animation
         uint16_t m_firstFrame{ 0 };
         uint16_t m_lastFrame{ 0 };
 
+        // Original tick values for LUT generation (tick-based sampling)
+        float m_firstTick{ 0.f };
+        float m_lastTick{ 0.f };
+
         float m_duration{ 0 };
         float m_durationSecs{ 0 };
 

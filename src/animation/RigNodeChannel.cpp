@@ -60,7 +60,8 @@ namespace animation {
     {
         if (single) {
             firstFrame = 0;
-            lastFrame = static_cast<uint16_t>(m_keyTimes.size() - 1);
+            // NOTE KI lastFrame is exclusive, so use size (not size - 1)
+            lastFrame = static_cast<uint16_t>(m_keyTimes.size());
         }
 
         if (m_keyTimes.size() == 1) {
@@ -125,5 +126,218 @@ namespace animation {
 
         m_cachedKeyIndex = binarySearchIndex(m_keyTimes, animationTimeTicks, firstFrame, lastFrame);
         return m_cachedKeyIndex;
+    }
+
+    glm::vec3 RigNodeChannel::sampleOrigPosition(float tickTime) const noexcept
+    {
+        const auto& values = m_origPositionValues;
+        const auto& times = m_origPositionTimes;
+
+        if (values.empty()) return glm::vec3(0.f);
+        if (values.size() == 1) return values[0];
+
+        // Find surrounding keyframes
+        size_t i = 0;
+        while (i < times.size() - 1 && times[i + 1] <= tickTime) {
+            ++i;
+        }
+
+        if (i >= values.size() - 1) {
+            return values.back();
+        }
+
+        const float t0 = times[i];
+        const float t1 = times[i + 1];
+        const float deltaTime = t1 - t0;
+
+        if (deltaTime <= 0.0f) {
+            return values[i];
+        }
+
+        const float factor = (tickTime - t0) / deltaTime;
+        return values[i] + factor * (values[i + 1] - values[i]);
+    }
+
+    glm::quat RigNodeChannel::sampleOrigRotation(float tickTime) const noexcept
+    {
+        const auto& values = m_origRotationValues;
+        const auto& times = m_origRotationTimes;
+
+        if (values.empty()) return glm::quat(1.f, 0.f, 0.f, 0.f);
+        if (values.size() == 1) return values[0];
+
+        // Find surrounding keyframes
+        size_t i = 0;
+        while (i < times.size() - 1 && times[i + 1] <= tickTime) {
+            ++i;
+        }
+
+        if (i >= values.size() - 1) {
+            return values.back();
+        }
+
+        const float t0 = times[i];
+        const float t1 = times[i + 1];
+        const float deltaTime = t1 - t0;
+
+        if (deltaTime <= 0.0f) {
+            return values[i];
+        }
+
+        const float factor = (tickTime - t0) / deltaTime;
+        return glm::slerp(values[i], values[i + 1], factor);
+    }
+
+    glm::vec3 RigNodeChannel::sampleOrigScale(float tickTime) const noexcept
+    {
+        const auto& values = m_origScaleValues;
+        const auto& times = m_origScaleTimes;
+
+        if (values.empty()) return glm::vec3(1.f);
+        if (values.size() == 1) return values[0];
+
+        // Find surrounding keyframes
+        size_t i = 0;
+        while (i < times.size() - 1 && times[i + 1] <= tickTime) {
+            ++i;
+        }
+
+        if (i >= values.size() - 1) {
+            return values.back();
+        }
+
+        const float t0 = times[i];
+        const float t1 = times[i + 1];
+        const float deltaTime = t1 - t0;
+
+        if (deltaTime <= 0.0f) {
+            return values[i];
+        }
+
+        const float factor = (tickTime - t0) / deltaTime;
+        return values[i] + factor * (values[i + 1] - values[i]);
+    }
+
+    glm::vec3 RigNodeChannel::sampleOrigPositionClamped(float tickTime, float clipLastTick) const noexcept
+    {
+        const auto& values = m_origPositionValues;
+        const auto& times = m_origPositionTimes;
+
+        if (values.empty()) return glm::vec3(0.f);
+        if (values.size() == 1) return values[0];
+
+        // Find surrounding keyframes
+        size_t i = 0;
+        while (i < times.size() - 1 && times[i + 1] <= tickTime) {
+            ++i;
+        }
+
+        if (i >= values.size() - 1) {
+            return values.back();
+        }
+
+        const float t0 = times[i];
+        const float t1 = times[i + 1];
+
+        // If next keyframe is at or beyond clip boundary, don't interpolate with it
+        // clipLastTick is exclusive (first tick NOT in clip), so use >=
+        if (t1 >= clipLastTick) {
+            // Also check if current keyframe is within clip
+            if (t0 < clipLastTick) {
+                return values[i];
+            }
+            // Current keyframe is also at/beyond boundary - use previous if available
+            return i > 0 ? values[i - 1] : values[0];
+        }
+
+        const float deltaTime = t1 - t0;
+        if (deltaTime <= 0.0f) {
+            return values[i];
+        }
+
+        const float factor = (tickTime - t0) / deltaTime;
+        return values[i] + factor * (values[i + 1] - values[i]);
+    }
+
+    glm::quat RigNodeChannel::sampleOrigRotationClamped(float tickTime, float clipLastTick) const noexcept
+    {
+        const auto& values = m_origRotationValues;
+        const auto& times = m_origRotationTimes;
+
+        if (values.empty()) return glm::quat(1.f, 0.f, 0.f, 0.f);
+        if (values.size() == 1) return values[0];
+
+        // Find surrounding keyframes
+        size_t i = 0;
+        while (i < times.size() - 1 && times[i + 1] <= tickTime) {
+            ++i;
+        }
+
+        if (i >= values.size() - 1) {
+            return values.back();
+        }
+
+        const float t0 = times[i];
+        const float t1 = times[i + 1];
+
+        // If next keyframe is at or beyond clip boundary, don't interpolate with it
+        // clipLastTick is exclusive (first tick NOT in clip), so use >=
+        if (t1 >= clipLastTick) {
+            // Also check if current keyframe is within clip
+            if (t0 < clipLastTick) {
+                return values[i];
+            }
+            // Current keyframe is also at/beyond boundary - use previous if available
+            return i > 0 ? values[i - 1] : values[0];
+        }
+
+        const float deltaTime = t1 - t0;
+        if (deltaTime <= 0.0f) {
+            return values[i];
+        }
+
+        const float factor = (tickTime - t0) / deltaTime;
+        return glm::slerp(values[i], values[i + 1], factor);
+    }
+
+    glm::vec3 RigNodeChannel::sampleOrigScaleClamped(float tickTime, float clipLastTick) const noexcept
+    {
+        const auto& values = m_origScaleValues;
+        const auto& times = m_origScaleTimes;
+
+        if (values.empty()) return glm::vec3(1.f);
+        if (values.size() == 1) return values[0];
+
+        // Find surrounding keyframes
+        size_t i = 0;
+        while (i < times.size() - 1 && times[i + 1] <= tickTime) {
+            ++i;
+        }
+
+        if (i >= values.size() - 1) {
+            return values.back();
+        }
+
+        const float t0 = times[i];
+        const float t1 = times[i + 1];
+
+        // If next keyframe is at or beyond clip boundary, don't interpolate with it
+        // clipLastTick is exclusive (first tick NOT in clip), so use >=
+        if (t1 >= clipLastTick) {
+            // Also check if current keyframe is within clip
+            if (t0 < clipLastTick) {
+                return values[i];
+            }
+            // Current keyframe is also at/beyond boundary - use previous if available
+            return i > 0 ? values[i - 1] : values[0];
+        }
+
+        const float deltaTime = t1 - t0;
+        if (deltaTime <= 0.0f) {
+            return values[i];
+        }
+
+        const float factor = (tickTime - t0) / deltaTime;
+        return values[i] + factor * (values[i + 1] - values[i]);
     }
 }

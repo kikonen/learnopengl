@@ -114,12 +114,21 @@ namespace animation
 
     void RigNodeChannelBuilder::unifyKeyTimes()
     {
+        // Preserve original tracks for tick-based clip LUT generation
+        // These are needed to sample without cross-clip interpolation artifacts
+        m_channel.m_origPositionTimes = std::move(m_positionKeyTimes);
+        m_channel.m_origRotationTimes = std::move(m_rotationKeyTimes);
+        m_channel.m_origScaleTimes = std::move(m_scaleKeyTimes);
+        m_channel.m_origPositionValues = std::move(m_positionValues);
+        m_channel.m_origRotationValues = std::move(m_rotationValues);
+        m_channel.m_origScaleValues = std::move(m_scaleValues);
+
         // Collect all unique time points from position, rotation, scale
         std::set<float> uniqueTimes;
 
-        for (float t : m_positionKeyTimes) uniqueTimes.insert(t);
-        for (float t : m_rotationKeyTimes) uniqueTimes.insert(t);
-        for (float t : m_scaleKeyTimes) uniqueTimes.insert(t);
+        for (float t : m_channel.m_origPositionTimes) uniqueTimes.insert(t);
+        for (float t : m_channel.m_origRotationTimes) uniqueTimes.insert(t);
+        for (float t : m_channel.m_origScaleTimes) uniqueTimes.insert(t);
 
         // Build unified timeline directly into channel
         m_channel.m_keyTimes.assign(uniqueTimes.begin(), uniqueTimes.end());
@@ -134,9 +143,9 @@ namespace animation
         m_channel.m_scaleKeyValues.reserve(m_channel.m_keyTimes.size());
 
         for (float t : m_channel.m_keyTimes) {
-            m_channel.m_positionKeyValues.push_back(sampleVector(m_positionValues, m_positionKeyTimes, t));
-            m_channel.m_rotationKeyValues.push_back(sampleQuaternion(m_rotationValues, m_rotationKeyTimes, t));
-            m_channel.m_scaleKeyValues.push_back(sampleVector(m_scaleValues, m_scaleKeyTimes, t));
+            m_channel.m_positionKeyValues.push_back(sampleVector(m_channel.m_origPositionValues, m_channel.m_origPositionTimes, t));
+            m_channel.m_rotationKeyValues.push_back(sampleQuaternion(m_channel.m_origRotationValues, m_channel.m_origRotationTimes, t));
+            m_channel.m_scaleKeyValues.push_back(sampleVector(m_channel.m_origScaleValues, m_channel.m_origScaleTimes, t));
         }
     }
 }

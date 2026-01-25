@@ -101,6 +101,9 @@ namespace mesh_set
         const YAML::Node& node,
         animation::Clip& clip)
     {
+        float firstFrame = -1.f;
+        float lastFrame = -1.f;
+
         for (const auto& pair : node) {
             const std::string& k = pair.first.as<std::string>();
             const auto& v = pair.second;
@@ -115,15 +118,21 @@ namespace mesh_set
                 // NOTE KI try to avoid errors due to weird cases like this
                 //firstFrame: 1969.9999
                 //lastFrame : 2020.0001
-                clip.m_firstFrame = static_cast<uint16_t>(round(readFloat(v)));
+                firstFrame = readFloat(v);
+                clip.m_firstFrame = static_cast<uint16_t>(round(firstFrame));
             }
             else if (k == "lastFrame") {
-                clip.m_lastFrame = static_cast<uint16_t>(round(readFloat(v)));
+                lastFrame = readFloat(v);
+                clip.m_lastFrame = static_cast<uint16_t>(round(lastFrame));
             }
             else if (k == "loop") {
                 clip.m_loop = readInt(v) == 1;
             }
         }
+
+        KI_DEBUG(fmt::format(
+            "CLIP: {}, clipFirstFrame={}, clipLastFrame={}, firstFrame={}, lastFrame={}",
+            clip.m_uniqueName, clip.m_firstFrame, clip.m_lastFrame, firstFrame, lastFrame));
 
         clip.m_single = false;
     }

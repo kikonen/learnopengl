@@ -61,9 +61,10 @@ namespace animation {
 
         // Use unified key times (m_positionKeyTimes is cleared after unifyKeyTimes())
         const auto& times = m_channels[0].getKeyTimes();
-        if (times.empty() || lastFrame >= times.size()) {
+        // NOTE KI lastFrame is exclusive, so use lastFrame - 1 for actual last frame
+        if (times.empty() || lastFrame < 1 || lastFrame > times.size()) {
             return m_duration; // Fallback to full animation duration
         }
-        return times[lastFrame] - times[firstFrame];
+        return times[lastFrame - 1] - times[firstFrame];
     }
 }

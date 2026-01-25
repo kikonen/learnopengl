@@ -60,6 +60,25 @@ namespace animation
         const std::vector<glm::quat>& getRotationValues() const noexcept { return m_rotationKeyValues; }
         const std::vector<glm::vec3>& getScaleValues() const noexcept { return m_scaleKeyValues; }
 
+        // Original (non-unified) track accessors for tick-based LUT sampling
+        const std::vector<float>& getOrigPositionTimes() const noexcept { return m_origPositionTimes; }
+        const std::vector<float>& getOrigRotationTimes() const noexcept { return m_origRotationTimes; }
+        const std::vector<float>& getOrigScaleTimes() const noexcept { return m_origScaleTimes; }
+        const std::vector<glm::vec3>& getOrigPositionValues() const noexcept { return m_origPositionValues; }
+        const std::vector<glm::quat>& getOrigRotationValues() const noexcept { return m_origRotationValues; }
+        const std::vector<glm::vec3>& getOrigScaleValues() const noexcept { return m_origScaleValues; }
+
+        // Sample from original tracks at a given tick time
+        glm::vec3 sampleOrigPosition(float tickTime) const noexcept;
+        glm::quat sampleOrigRotation(float tickTime) const noexcept;
+        glm::vec3 sampleOrigScale(float tickTime) const noexcept;
+
+        // Sample with clip boundary clamping to avoid cross-clip interpolation
+        // If next keyframe is beyond clipLastTick, returns current keyframe without interpolation
+        glm::vec3 sampleOrigPositionClamped(float tickTime, float clipLastTick) const noexcept;
+        glm::quat sampleOrigRotationClamped(float tickTime, float clipLastTick) const noexcept;
+        glm::vec3 sampleOrigScaleClamped(float tickTime, float clipLastTick) const noexcept;
+
         // @param firstFrame..lastFrame range used for clip
         void interpolate(
             float animationTimeTicks,
@@ -86,6 +105,15 @@ namespace animation
         std::vector<glm::vec3> m_positionKeyValues;
         std::vector<glm::quat> m_rotationKeyValues;
         std::vector<glm::vec3> m_scaleKeyValues;
+
+        // Original (non-unified) tracks - kept for tick-based clip LUT generation
+        // These preserve exact keyframe times without cross-clip interpolation
+        std::vector<float> m_origPositionTimes;
+        std::vector<float> m_origRotationTimes;
+        std::vector<float> m_origScaleTimes;
+        std::vector<glm::vec3> m_origPositionValues;
+        std::vector<glm::quat> m_origRotationValues;
+        std::vector<glm::vec3> m_origScaleValues;
 
         // Cached frame index for sequential playback optimization
         mutable uint16_t m_cachedKeyIndex{ 0 };

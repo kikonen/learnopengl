@@ -2,6 +2,9 @@
 
 #include <algorithm>
 
+#include <fmt/format.h>
+
+#include "util/Log.h"
 #include "RigNodeChannel.h"
 #include "util/Transform.h"
 
@@ -9,24 +12,19 @@ namespace animation
 {
     void ClipChannelLUT::generate(
         const RigNodeChannel& channel,
-        uint16_t firstFrame,
-        uint16_t lastFrame,
+        const std::string& clipName,
+        float firstTick,
+        float lastTick,
         size_t lutSize)
     {
-        const auto& keyTimes = channel.getKeyTimes();
-        const auto& positions = channel.getPositionValues();
-        const auto& rotations = channel.getRotationValues();
-        const auto& scales = channel.getScaleValues();
-
-        if (keyTimes.empty() || lutSize < 2 || firstFrame >= lastFrame || lastFrame < 1) {
+        if (lutSize < 2 || firstTick >= lastTick) {
             return;
         }
 
-        // Clamp frame indices to valid range
-        firstFrame = std::min(firstFrame, static_cast<uint16_t>(keyTimes.size() - 1));
-        lastFrame = std::min(lastFrame, static_cast<uint16_t>(keyTimes.size() - 1));
-
-        if (firstFrame >= lastFrame) {
+        // Check that original tracks exist
+        if (channel.getOrigPositionValues().empty() &&
+            channel.getOrigRotationValues().empty() &&
+            channel.getOrigScaleValues().empty()) {
             return;
         }
 
@@ -37,49 +35,48 @@ namespace animation
         // Compute scale factor: maps normalized time [0,1] to LUT index [0, lutSize-1]
         m_invScaleFactor = static_cast<float>(lutSize - 1);
 
-        const float startTime = keyTimes[firstFrame];
-        const float endTime = keyTimes[lastFrame];
-        const float timeRange = endTime - startTime;
+        const float tickRange = lastTick - firstTick;
 
-        if (timeRange <= 0.f) {
-            // Static pose - fill with first keyframe
+        if (tickRange <= 0.f) {
+            // Static pose - sample at firstTick
+            glm::vec3 pos = channel.sampleOrigPosition(firstTick);
+            glm::quat rot = channel.sampleOrigRotation(firstTick);
+            glm::vec3 scale = channel.sampleOrigScale(firstTick);
+
             for (size_t i = 0; i < lutSize; ++i) {
-                m_positions[i] = positions[firstFrame];
-                m_rotations[i] = rotations[firstFrame];
-                m_scales[i] = scales[firstFrame];
+                m_positions[i] = pos;
+                m_rotations[i] = rot;
+                m_scales[i] = scale;
             }
             return;
         }
 
-        // Sample at each LUT entry
-        size_t keyIndex = firstFrame;
+        // Debug: show keyframe times near clip boundaries
+        const auto& origTimes = channel.getOrigPositionTimes();
+        if (!origTimes.empty()) {
+            // Find keyframes near lastTick
+            float lastKeyBefore = -1.f, firstKeyAfter = -1.f;
+            for (size_t k = 0; k < origTimes.size(); ++k) {
+                if (origTimes[k] <= lastTick) lastKeyBefore = origTimes[k];
+                if (origTimes[k] > lastTick && firstKeyAfter < 0.f) firstKeyAfter = origTimes[k];
+            }
+
+            KI_DEBUG(fmt::format(
+                "LUT_GEN: clip={}, ticks=[{:.1f},{:.1f}] lastKeyBefore={:.1f} firstKeyAfter={:.1f} totalKeys={}",
+                clipName, firstTick, lastTick, lastKeyBefore, firstKeyAfter, origTimes.size()));
+        }
+
+        // Sample at each LUT entry using original tracks
+        // This avoids cross-clip interpolation artifacts from unified timeline
         for (size_t i = 0; i < lutSize; ++i) {
             // Normalized time for this LUT entry
             const float normalizedTime = static_cast<float>(i) / static_cast<float>(lutSize - 1);
-            const float sampleTime = startTime + normalizedTime * timeRange;
+            const float sampleTick = firstTick + normalizedTime * tickRange;
 
-            // Advance keyIndex to find surrounding keyframes
-            while (keyIndex + 1 < lastFrame && keyTimes[keyIndex + 1] < sampleTime) {
-                ++keyIndex;
-            }
-
-            const size_t currIdx = keyIndex;
-            const size_t nextIdx = std::min(keyIndex + 1, static_cast<size_t>(lastFrame));
-
-            const float t0 = keyTimes[currIdx];
-            const float t1 = keyTimes[nextIdx];
-            const float deltaTime = t1 - t0;
-
-            float factor = 0.f;
-            if (deltaTime > 0.f) {
-                factor = (sampleTime - t0) / deltaTime;
-                factor = std::clamp(factor, 0.f, 1.f);
-            }
-
-            // Interpolate and store in LUT
-            m_positions[i] = glm::mix(positions[currIdx], positions[nextIdx], factor);
-            m_rotations[i] = glm::slerp(rotations[currIdx], rotations[nextIdx], factor);
-            m_scales[i] = glm::mix(scales[currIdx], scales[nextIdx], factor);
+            // Sample with clip boundary clamping to prevent cross-clip interpolation
+            m_positions[i] = channel.sampleOrigPositionClamped(sampleTick, lastTick);
+            m_rotations[i] = channel.sampleOrigRotationClamped(sampleTick, lastTick);
+            m_scales[i] = channel.sampleOrigScaleClamped(sampleTick, lastTick);
         }
     }
 

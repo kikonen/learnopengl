@@ -1,6 +1,7 @@
 #pragma once
 
 #include <vector>
+#include <string>
 
 #include <glm/glm.hpp>
 #include <glm/gtx/quaternion.hpp>
@@ -23,14 +24,16 @@ namespace animation
     {
         ClipChannelLUT() = default;
 
-        // Generate LUT by sampling channel's keyframes for the clip's frame range
-        // @param channel source channel with keyframes
-        // @param firstFrame clip's first frame index
-        // @param lastFrame clip's last frame index
+        // Generate LUT by sampling channel's original tracks for the clip's tick range
+        // Uses original (non-unified) tracks to avoid cross-clip interpolation artifacts
+        // @param channel source channel with original keyframes
+        // @param firstTick clip's first tick value (inclusive)
+        // @param lastTick clip's last tick value (inclusive)
         void generate(
             const RigNodeChannel& channel,
-            uint16_t firstFrame,
-            uint16_t lastFrame,
+            const std::string& clipName,
+            float firstTick,
+            float lastTick,
             size_t lutSize = DEFAULT_LUT_SIZE);
 
         // O(1) sample from pre-computed LUT
