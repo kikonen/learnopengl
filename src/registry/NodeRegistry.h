@@ -83,6 +83,7 @@ public:
 
     void updateModelMatrices();
     void updateModelMatrices(const model::Node* node);
+    void updateModelMatrixTree(uint32_t rootEntityIndex);
 
     void updateRT(const UpdateContext& ctx);
     // @return [min-dirty, max-dirty]

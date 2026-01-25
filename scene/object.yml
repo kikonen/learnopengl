@@ -74,6 +74,8 @@ types:
         xreflection: 0.4
       base_scale: 0.2
   - id: prefab_skeleton_warrior
+    flags:
+      #dynamic_bounds: true
     script: |
       cmd:animation_play(
         self.handle,

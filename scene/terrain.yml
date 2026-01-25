@@ -148,14 +148,13 @@ types:
         z_count: 20
         x_step: -20
         z_step: 20
-  - id: skeleton_army_2
+  - id: skeleton_warrior
     base: prefab_skeleton_warrior
     xprefab:
       path: prefab/creatures/prefab_skeleton.yml
     priority: 1
-    type_flags:
+    flags:
       dynamic_bounds: true
-      xstatic_bounds: true
     physics:
       enabled: true
       update: true
@@ -228,7 +227,14 @@ nodes:
     pos: [0, -70, 0]
     scale: 1024
   - type: palm_tree_forest
-  - type: skeleton
+  - type: skeleton_warrior
+    pos: [0, 100.5, 0.0]
+    repeat:
+      x_count: 20
+      z_count: 20
+      x_step: 4
+      z_step: -4
+  - xtype: skeleton
     tag: body
     pos: [0, 100.5, 0.0]
     repeat:

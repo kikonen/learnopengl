@@ -172,6 +172,10 @@ void SceneUpdater::update(const UpdateContext& ctx)
                 ControllerRegistry::get().updateWT(ctx);
             }
             {
+                // Apply animated ground offsets before updateWT so updateBounds has correct values
+                animation::AnimationSystem::get().applyAnimatedVolumes();
+            }
+            {
                 KI_TIMER("node1   ");
                 nodeRegistry.updateWT(ctx);
             }
@@ -209,8 +213,6 @@ void SceneUpdater::update(const UpdateContext& ctx)
     // NOTE KI sync to RT
     {
         KI_TIMER("node4   ");
-        // Apply animated bounding volumes before snapshot publish
-        animation::AnimationSystem::get().applyAnimatedVolumes();
         nodeRegistry.publishSnapshots();
         nodeRegistry.notifyPendingChanges();
     }

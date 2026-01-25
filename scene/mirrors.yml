@@ -62,8 +62,10 @@ types:
     mesh:
       path: texture_cube_3
       program: g_tex
-  - id: skeleton_army_2
+  - id: skeleton_warrior
     base: prefab_skeleton_warrior
+    flags:
+      #dynamic_bounds: true
     physics:
       enabled: false
     script: |
@@ -171,7 +173,7 @@ nodes:
       - pos: [5.0, 0.0, -5.0]
       - pos: [-5.0, 0.0, 5.0]
       - pos: [5.0, 0.0, 5.0]
-  - type: skeleton_army_2
+  - type: skeleton_warrior
     pos: [15, 6.5, -20.0]
     rotation: [0, -180, 0]
     scale: 2

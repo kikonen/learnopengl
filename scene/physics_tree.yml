@@ -131,6 +131,8 @@ types:
     audio:
       listener:
         default: true
+    flags:
+      #dynamic_bounds: true
     xphysics:
       update: true
       body:

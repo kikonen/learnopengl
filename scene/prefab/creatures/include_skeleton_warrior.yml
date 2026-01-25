@@ -3,12 +3,6 @@ types:
   - id: prefab_skeleton
     prefab:
       path: prefab/creatures/prefab_skeleton_warrior.yml
-    flags:
-      dynamic_bounds: true
-    xflags:
-      static_bounds: true
-    xphysics:
-      update: true
   - id: prefab_helmet
     prefab:
       path: prefab/creatures/addon/prefab_helmet.yml
@@ -30,7 +24,8 @@ types:
   - id: prefab_skeleton_warrior
     type: composite
     composite: prefab_skeleton_warrior_composite
-    physics:
+    xphysics:
+      enabled: false
       body:
         kinematic: true
         density: 0.01

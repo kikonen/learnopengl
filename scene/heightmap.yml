@@ -86,11 +86,13 @@ types:
     controllers:
       - type: pawn
       - type: camera_zoom
+    flags:
+      dynamic_bounds: true
     physics:
       enabled: true
       update: true
       body:
-        xkinematic: true
+        kinematic: true
         density: 0.01
     script: |
       cmd:animation_play(

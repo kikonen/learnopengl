@@ -57,16 +57,16 @@ types:
   - id: four_cubes_4
     base: four_cubes
     particle: four_cubes_4
-  - id: skeleton_army
+  - id: skeleton_warrior
     base: prefab_skeleton_warrior
-    xflags:
-      static_bounds: true
     audio:
       sources:
         - name: explode
           path: audio/explosions/explode_rocket.wav
           reference_distance: 10
           gain: 0.8
+    flags:
+      dynamic_bounds: true
     physics:
       update: true
     script: scripts/seq_skeleton_2
@@ -375,7 +375,7 @@ nodes:
     xrepeat:
       x_count: 8
       x_step: -2
-  - type: skeleton_army
+  - type: skeleton_warrior
     pos: [20, 0.2, 20]
     rotation: [0, -90, 0]
     scale: 3

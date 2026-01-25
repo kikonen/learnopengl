@@ -222,6 +222,11 @@ namespace model
         pool::NodeHandle m_handle;
         pool::TypeHandle m_typeHandle{};
 
+        // For nodes that are children of a composite, this points to the composite root
+        // Used for world positioning (groundOffsetY, etc.) to affect the correct node
+        // Null handle means this node is its own root
+        pool::NodeHandle m_compositeRootHandle;
+
         std::unique_ptr<CameraComponent> m_camera{ nullptr };
         std::unique_ptr<Light> m_light{ nullptr };
         std::unique_ptr<particle::ParticleGenerator> m_particleGenerator{ nullptr };

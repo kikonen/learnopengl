@@ -86,8 +86,6 @@ prefab:
       program: g_tex
       shadow_program: shadow
       base_scale: 0.01
-  flags:
-    dynamic_bounds: true
   physics:
     body:
       kinematic: true

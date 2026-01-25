@@ -1001,12 +1001,11 @@ types:
         z_count: 35
         x_step: 40
         z_step: 40
-  - id: skeleton_army
+  - id: skeleton_warrior
     base: prefab_skeleton_warrior
     priority: -15
     type_flags:
       dynamic_bounds: true
-      xstatic_bounds: true
     physics:
       enabled: true
       update: true
@@ -1436,7 +1435,7 @@ nodes:
   - type: bush01
   - type: bush02
   - type: bush03
-  - type: skeleton_army
+  - type: skeleton_warrior
     pos: [35, 11.5, 60.0]
     scale: 3
     rotation: [0, -180, 0]

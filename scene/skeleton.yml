@@ -52,11 +52,13 @@ types:
     physics:
       update: true
     xscript: scripts/seq_shaky_ground
-  - id: skeleton_army
+  - id: skeleton_warrior
     base: prefab_skeleton_warrior
     xscript: scripts/seq_skeleton
+    flags:
+      dynamic_bounds: true
     physics:
-      update: true
+      xupdate: true
     script: |
       cmd:animation_play(
         self.handle,
@@ -122,7 +124,7 @@ nodes:
   - type: wooden_floor
     scale: 100
     xrot: [0, 0, 5]
-  - xtype: skeleton_army
+  - type: skeleton_warrior
     pos: [0, 0.5, 0]
     #rotation: [0, -90, 0]
     scale: 1
@@ -131,9 +133,9 @@ nodes:
       z_count: 2
       x_step: 10
       z_step: -10
-  - type: skeleton
+  - xtype: skeleton
     pos: [0, 0, 0.5]
-    scale: 1
+    scale: 0.5
   - xtype: helmet
     pos: [-0.2, 1.9, 0]
     scale: 1

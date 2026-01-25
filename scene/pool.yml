@@ -238,13 +238,12 @@ types:
         z_count: 4
         x_step: 20
         z_step: -40
-  - id: skeleton_army_2
+  - id: skeleton_warrior
     base: prefab_skeleton_warrior
     base_rot: [0, 180, 0]
-    type_flags:
+    flags:
       dynamic_bounds: true
-      xstatic_bounds: true
-    physics:
+    xphysics:
       enabled: true
       update: true
     script: scripts/seq_skeleton_random_nav
@@ -544,7 +543,7 @@ nodes:
       - pos: [30.0, 4, -40]
         scale: [60, 6, 0.3]
   - type: maple_tree_forest
-  - type: skeleton_army_2
+  - type: skeleton_warrior
     pos: [-20, 10.86, 80]
     scale: 4
     repeat:

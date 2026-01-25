@@ -80,8 +80,10 @@ types:
     priority: 1
     flags:
       static_bounds: true
-  - id: skeleton_army_1
+  - id: skeleton_warrior_1
     base: prefab_skeleton_warrior
+    flags:
+      dynamic_bounds: true
     script: |
       cmd:animation_play(
         self.handle,
@@ -98,9 +100,13 @@ types:
         shadow_program: shadow
         id_program: object_id
         selection_program: selection
-  - id: skeleton_army_2
+    flags:
+      dynamic_bounds: true
+  - id: skeleton_warrior_2
     prefab:
       path: prefab/creatures/prefab_skeleton.yml
+    flags:
+      dynamic_bounds: true
     physics:
       enabled: true
     script: |
@@ -173,7 +179,7 @@ nodes:
       z_count: 2
       x_step: 10
       z_step: -10
-  - type: skeleton_army_1
+  - type: skeleton_warrior_1
     pos: [20, 0.5, 20]
     xrotation: [0, 45, 0]
     rotation: [0, -90, 0]
@@ -183,7 +189,7 @@ nodes:
       z_count: 2
       x_step: 10
       z_step: -10
-  - type: skeleton_army_2
+  - type: skeleton_warrior_2
     pos: [20, 0.0, 50]
     rotation: [0, -90, 0]
     scale: 2

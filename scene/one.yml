@@ -159,6 +159,8 @@ types:
   - xid: skeleton_warrior
     xbase: prefab_skeleton_warrior
     priority: 1
+    flags:
+      #dynamic_bounds: true
     physics:
       enabled: false
     script: |

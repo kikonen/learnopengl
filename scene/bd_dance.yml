@@ -117,10 +117,12 @@ types:
       material:
         prefab: materials/Plastic01.yml
       program: g_tex
-  - id: skeleton_army_2
+  - id: skeleton_warrior
     prefab:
       path: prefab/creatures/prefab_skeleton.yml
     priority: 1
+    flags:
+      dynamic_bounds: true
     physics:
       enabled: true
     script_file: scripts/seq_skeleton_dance
@@ -150,7 +152,7 @@ nodes:
   - type: cow
     pos: [-5.0, 4.0, -5.0]
     scale: 0.8
-  - type: skeleton_army_2
+  - type: skeleton_warrior
     pos: [-10, 0.2, -8]
     scale: 2
     repeat:

@@ -55,7 +55,7 @@ types:
       base_scale: 0.25
       axis: z
     camera:
-      xdefault: true
+      default: true
       type: fps
     controllers:
       - type: pawn
@@ -112,6 +112,8 @@ types:
       cmd:animation_play(
         self.handle,
         { name = "idle_2" })
+    flags:
+      dynamic_bounds: true
     physics:
       enabled: true
   - id: skeleton_2
@@ -121,6 +123,8 @@ types:
       cmd:animation_play(
         self.handle,
         { name = "idle" });
+    flags:
+      dynamic_bounds: true
     physics:
       enabled: true
   - id: dir_light
@@ -274,6 +278,7 @@ types:
     prefab:
       path: prefab/scenery/prefab_wooden_floor.yml
     physics:
+      #xenabled: false
       shape:
         type: plane
   - id: cube_origo

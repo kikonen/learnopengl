@@ -220,7 +220,7 @@ types:
       effect: true
       no_select: true
       no_shadow: true
-  - id: skeleton_army
+  - id: skeleton_warrior
     base: prefab_skeleton_warrior
     particle: skeleton_hit
     audio:
@@ -229,6 +229,8 @@ types:
           path: audio/explosions/explode_rocket.wav
           reference_distance: 10
           gain: 0.8
+    flags:
+      dynamic_bounds: true
     physics:
       update: true
       geom:
@@ -288,7 +290,7 @@ nodes:
       - type: light
       - type: lamp
       - type: lamp_halo
-  - type: skeleton_army
+  - type: skeleton_warrior
     pos: [7, 1.5, 5]
     rot: [0, -90, 0]
     repeat:

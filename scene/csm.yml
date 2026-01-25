@@ -44,12 +44,16 @@ types:
     priority: 1
     xflags:
       static_bounds: true
-  - id: skeleton_army_grid_2
+  - id: skeleton_warrior
     base: prefab_skeleton_warrior
+    flags:
+      dynamic_bounds: true
     script: scripts/seq_skeleton
-  - id: skeleton_army_2
+  - id: skeleton
     prefab:
       path: prefab/creatures/prefab_skeleton.yml
+    flags:
+      dynamic_bounds: true
     priority: 1
     script: |
       cmd:animation_play(
@@ -109,7 +113,7 @@ nodes:
       z_count: 2
       x_step: 20
       z_step: -20
-  - type: skeleton_army_grid_2
+  - type: skeleton_warrior
     pos: [20, 0.0, 20]
     rotation: [0, -135, 0]
     scale: 3
@@ -118,10 +122,10 @@ nodes:
       z_count: 2
       x_step: 10
       z_step: -10
-  - type: skeleton_army_2
+  - type: skeleton
     pos: [20, 0.0, 50]
     rotation: [0, -90, 0]
-    scale: 3
+    scale: 2
     repeat:
       x_count: 2
       z_count: 2

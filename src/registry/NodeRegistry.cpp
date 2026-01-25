@@ -376,6 +376,31 @@ void NodeRegistry::updateModelMatrices(const model::Node* node)
     m_states[index].updateModelMatrix(m_states[m_parentIndeces[index]]);
 }
 
+void NodeRegistry::updateModelMatrixTree(uint32_t rootEntityIndex)
+{
+    // Update root first
+    m_states[rootEntityIndex].updateModelMatrix(m_states[m_parentIndeces[rootEntityIndex]]);
+
+    // Update all descendants by traversing sorted nodes
+    // Nodes are in DAG order, so children come after their ancestors
+    const auto& sortedNodes = getSortedNodes();
+    for (int sortedIndex = ID_NODE_INDEX + 1; sortedIndex < sortedNodes.size(); sortedIndex++)
+    {
+        auto entityIndex = sortedNodes[sortedIndex];
+        if (m_parentIndeces[entityIndex] == 0) continue;
+
+        // Check if this node is a descendant of root by walking up parent chain
+        uint32_t ancestor = entityIndex;
+        while (ancestor != 0 && ancestor != rootEntityIndex) {
+            ancestor = m_parentIndeces[ancestor];
+        }
+
+        if (ancestor == rootEntityIndex) {
+            m_states[entityIndex].updateModelMatrix(m_states[m_parentIndeces[entityIndex]]);
+        }
+    }
+}
+
 void NodeRegistry::publishSnapshots()
 {
     m_snapshotBuffer.publish(m_states, m_parentIndeces);
@@ -809,6 +834,24 @@ void NodeRegistry::attachNode(
             "IGNORE: MISSING parent - parentId={}, node={}",
             parentId, node->str()));
         return;
+    }
+
+    // Set composite root handle for world positioning
+    // If parent is part of a composite, inherit its root
+    // If parent IS a composite root, use parent as our root
+    {
+        auto* parent = node->getParent();
+        if (parent && parent->getEntityIndex() > 1) {
+            if (parent->m_compositeRootHandle) {
+                // Parent is part of a composite - inherit the same root
+                node->m_compositeRootHandle = parent->m_compositeRootHandle;
+            } else if (auto* parentType = parent->getType();
+                       parentType && parentType->m_compositeDefinition) {
+                // Parent IS a composite root - use parent as our root
+                node->m_compositeRootHandle = parent->toHandle();
+            }
+        }
+        // Otherwise compositeRootHandle stays null (node is its own root)
     }
 
     sortNodes(nodeHandle, true, false);

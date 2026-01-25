@@ -416,8 +416,20 @@ namespace animation
             }
 
             if (animState.m_groundOffsetDirty) {
-                auto scaleY = nodeState.getScale().y;
-                nodeState.m_groundOffsetY = animState.m_groundOffsetY * scaleY;
+                // Get world scale from animated node for correct ground offset calculation
+                // World scale accounts for cumulative scale in node hierarchy
+                auto scaleY = nodeState.getWorldScale().y;
+                float scaledOffset = animState.m_groundOffsetY * scaleY;
+
+                // Apply to composite root if set, else to animated node itself
+                auto* animNode = animState.m_handle.toNode();
+                if (animNode && animNode->m_compositeRootHandle) {
+                    auto& rootState = nodeRegistry.modifyState(
+                        animNode->m_compositeRootHandle.m_handleIndex);
+                    rootState.m_groundOffsetY = scaledOffset;
+                } else {
+                    nodeState.m_groundOffsetY = scaledOffset;
+                }
                 animState.m_groundOffsetDirty = false;
             }
         }

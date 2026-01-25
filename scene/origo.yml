@@ -62,7 +62,7 @@ types:
         render_back: true
         program: g_tex
         xxgeometry_type: explode_mod
-  - id: skeleton_army_2
+  - id: skeleton_warrior
     mesh:
       path: fbx/creatures/skeleton/skeleton_animated.FBX
       flags:
@@ -154,7 +154,7 @@ nodes:
       - pos: [-5.0, 0.0, 5.0]
       - pos: [5.0, 0.0, 5.0]
         rotation: [0, 180, 0]
-  - type: skeleton_army_2
+  - type: skeleton_warrior
     pos: [15, 6.5, -20.0]
     scale: 3
     repeat:
