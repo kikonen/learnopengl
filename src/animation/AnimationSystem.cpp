@@ -416,7 +416,8 @@ namespace animation
             }
 
             if (animState.m_groundOffsetDirty) {
-                nodeState.m_groundOffsetY = animState.m_groundOffsetY;
+                auto scaleY = nodeState.getScale().y;
+                nodeState.m_groundOffsetY = animState.m_groundOffsetY * scaleY;
                 animState.m_groundOffsetDirty = false;
             }
         }
