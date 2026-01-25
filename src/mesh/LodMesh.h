@@ -89,11 +89,6 @@ namespace mesh {
         std::shared_ptr<Mesh> m_mesh;
 
         glm::vec3 m_scale{ 1.f };
-        glm::vec3 m_baseScale{ 1.f };
-        util::Axis m_baseAxis{ util::Axis::y };
-        util::Front m_baseFront{ util::Front::z };
-        glm::vec3 m_baseAdjust{ 0.f };  // additional rotation in degrees
-
         mutable glm::mat4 m_baseTransform{ 1.f };
 
         std::unique_ptr<Material> m_material;
@@ -123,5 +118,10 @@ namespace mesh {
         int8_t m_priority{ 0 };
 
         MeshFlags m_flags;
+
+        glm::vec3 m_baseScale{ 1.f };
+        glm::vec3 m_baseAdjust{ 0.f };  // additional rotation in degrees
+        util::Axis m_baseAxis{ util::Axis::y };
+        util::Front m_baseFront{ util::Front::z };
     };
 }

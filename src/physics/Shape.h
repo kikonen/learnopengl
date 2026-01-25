@@ -16,15 +16,18 @@
 
 struct ShapeDefinition;
 
-namespace JPH {
+namespace JPH
+{
     class BodyInterface;
     class PhysicsSystem;
 }
 
-namespace physics {
+namespace physics
+{
     struct Body;
 
-    struct Shape {
+    struct Shape
+    {
         Shape();
         Shape(Shape& o) = delete;
         Shape(const Shape& o) = delete;
@@ -48,27 +51,32 @@ namespace physics {
 
         void swap(Shape& o) noexcept;
 
-        bool isValid() const noexcept {
+        bool isValid() const noexcept
+        {
             return type != ShapeType::none;
         }
 
-        bool hasPhysicsBody() const noexcept {
+        bool hasPhysicsBody() const noexcept
+        {
             return !m_staticBodyId.IsInvalid();
         }
 
-        bool isRay() const noexcept {
+        bool isRay() const noexcept
+        {
             return type == ShapeType::ray;
         }
 
         // Get base rotation from axis/front/adjust
-        glm::quat getBaseRotation() const noexcept {
+        glm::quat getBaseRotation() const noexcept
+        {
             return util::degreesToQuat(baseAdjust) *
-                   util::frontToRotation(baseFront) *
-                   util::axisToRotation(baseAxis);
+                util::frontToRotation(baseFront) *
+                util::axisToRotation(baseAxis);
         }
 
         // Get full physics rotation: nodeRot * baseRotation
-        glm::quat getPhysicsRotation(const glm::quat& nodeRot) const noexcept {
+        glm::quat getPhysicsRotation(const glm::quat& nodeRot) const noexcept
+        {
             return nodeRot * getBaseRotation();
         }
 
@@ -108,17 +116,12 @@ namespace physics {
         // - size.y == half length along primary axis
         glm::vec3 size{ 0.5f };
 
-        // Base rotation components
-        util::Axis baseAxis{ util::Axis::y };
-        util::Front baseFront{ util::Front::z };
-        glm::vec3 baseAdjust{ 0.f };
+        // Shape reference for heightfield (kept alive)
+        JPH::RefConst<JPH::Shape> m_heightFieldShape;
 
         // For standalone shapes (without Body), we create a static body
         // For attached shapes (with Body), this remains invalid and shape is part of body
         mutable JPH::BodyID m_staticBodyId;
-
-        // Shape reference for heightfield (kept alive)
-        JPH::RefConst<JPH::Shape> m_heightFieldShape;
 
         physics::Category category{ physics::Category::none };
         uint32_t collisionMask{ UINT_MAX };
@@ -129,5 +132,10 @@ namespace physics {
         physics::ShapeType type{ physics::ShapeType::none };
 
         bool placeable{ true };
+
+        // Base rotation components
+        util::Axis baseAxis{ util::Axis::y };
+        util::Front baseFront{ util::Front::z };
+        glm::vec3 baseAdjust{ 0.f };
     };
 }

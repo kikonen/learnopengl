@@ -83,11 +83,6 @@ namespace physics {
         // capsule/cylinder = radiux, half-length
         glm::vec3 size{ 1.f };
 
-        // Base rotation components
-        util::Axis baseAxis{ util::Axis::y };
-        util::Front baseFront{ util::Front::z };
-        glm::vec3 baseAdjust{ 0.f };
-
         // Local space offset from node position to physics body center
         // e.g., for capsule at feet: offset = (0, halfHeight + radius, 0)
         glm::vec3 offset{ 0.f };
@@ -114,5 +109,10 @@ namespace physics {
 
         bool forceAxis { false };
         bool kinematic { false };
+
+        // Base rotation components
+        glm::vec3 baseAdjust{ 0.f };
+        util::Axis baseAxis{ util::Axis::y };
+        util::Front baseFront{ util::Front::z };
     };
 }
