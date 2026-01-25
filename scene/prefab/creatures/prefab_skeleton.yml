@@ -21,10 +21,10 @@ prefab:
           joint: Bip01_Spine
           role: ground
         - name: foot_right
-          joint: Bip01_R_Foot
+          joint: RToeeff
           role: foot_right
         - name: foot_left
-          joint: Bip01_L_Foot
+          joint: LToeeff
           role: foot_left
       animations:
         - clips:

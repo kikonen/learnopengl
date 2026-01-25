@@ -63,6 +63,8 @@ types:
   - id: elf
     prefab:
       path: prefab/characters/prefab_elf.yml
+    flags:
+      dynamic_bounds: true
     script: |
       cmd:animation_play(
         self.handle,
@@ -70,6 +72,8 @@ types:
   - id: scavenger
     prefab:
       path: prefab/characters/prefab_scavenger.yml
+    flags:
+      dynamic_bounds: true
     script: |
       cmd:animation_play(
         self.handle,
@@ -78,6 +82,8 @@ types:
     prefab:
       path: prefab/creatures/prefab_skeleton.yml
       #path: prefab/creatures/prefab_skeleton_warrior.yml
+    flags:
+      dynamic_bounds: true
     physics:
       enabled: true
     script: |

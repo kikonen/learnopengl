@@ -167,6 +167,16 @@ types:
         { tag = "body", name = "idle" });
     script: scripts/seq_skeleton_random_nav
     xscript: scripts/seq_skeleton_2
+  - id: skeleton
+    prefab:
+      path: prefab/creatures/prefab_skeleton.yml
+    flags:
+      dynamic_bounds: true
+    script: |
+      cmd:animation_play(
+        self.handle,
+        { tag = "body", name = "idle" });
+    script: scripts/seq_skeleton_random_nav
   - id: rain
     type: origo
     #particle: rain_of_fire
@@ -218,7 +228,8 @@ nodes:
     pos: [0, -70, 0]
     scale: 1024
   - type: palm_tree_forest
-  - type: skeleton_army_2
+  - type: skeleton
+    tag: body
     pos: [0, 100.5, 0.0]
     repeat:
       x_count: 20

@@ -37,11 +37,13 @@ types:
     audio:
       listener:
         default: true
+    flags:
+      dynamic_bounds: true
     physics:
       #enabled: true
       update: true
       body:
-        xkinematic: true
+        kinematic: true
         density: 0.01
       geom:
         category: [player]

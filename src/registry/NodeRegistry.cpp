@@ -1380,7 +1380,7 @@ void NodeRegistry::updateBounds(
         }
         const auto parentLevelY = level - parentState.getWorldPosition().y;
         glm::vec3 newPos = state.getPosition();
-        newPos.y = parentLevelY - state.m_groundOffsetY + 0.05f;
+        newPos.y = parentLevelY - state.m_groundOffsetY;
         //KI_INFO(fmt::format("NODE_LEVEL: node={}, level={}", node.m_name, y));
         state.setPosition(newPos);
     }

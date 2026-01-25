@@ -3,7 +3,6 @@ types:
   - id: prefab_player_fps
     type: composite
     composite: prefab_player_fps_composite
-    #front: [0, 0, -1]
     audio:
       listener:
         default: true
@@ -37,15 +36,11 @@ types:
       update: true
       body:
         kinematic: true
-        type: capsule
         density: 0.1
-        size: [0.25, 0.825, 0]
-        rot: [90, 0, 0]
+        offset: [0, -0.875, 0]
       geom:
         type: capsule
         size: [0.25, 0.625, 0]
-        xoffset: [0, 0.625, 0]
-        offset: [0, 0, -0.875]
     script: |
       cmd:audio_play(
         self.handle,
@@ -102,10 +97,8 @@ composites:
         pos: [0.0, 1.0, 0]
       - type: prefab_player_fps_camera
         pos: [0.0, 1.65, 0.0]
-        #rot: [0, 0, 0]
       - type: prefab_player_fps_arms_v2
         pos: [0, -1.5, 0]
-        #rot: [0, 0, 0]
         xchildren:
           - type: automatic_rifle
             attach:

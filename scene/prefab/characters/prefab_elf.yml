@@ -14,6 +14,16 @@ prefab:
         xmras: [0.3, 0.4, 1]
         xrender_back: true
         xline_mode : true
+      sockets:
+        - name: ground_back
+          joint: Base-HumanSpine1
+          role: ground
+        - name: foot_right
+          joint: Base-HumanRToe11
+          role: foot_right
+        - name: foot_left
+          joint: Base-HumanLToe11
+          role: foot_left
       animations:
         - clips:
             - name: default
@@ -76,11 +86,12 @@ prefab:
       program: g_tex
       shadow_program: shadow
       base_scale: 0.01
+  flags:
+    dynamic_bounds: true
   physics:
     body:
-      type: capsule
+      kinematic: true
       density: 0.01
-      rot: [90, 0, 0]
       max_angular_velocity: 0
       force_axis: true
       offset: [0, 0.95, 0]

@@ -242,13 +242,11 @@ types:
     base: prefab_skeleton_warrior
     base_rot: [0, 180, 0]
     type_flags:
-      xdynamic_bounds: true
+      dynamic_bounds: true
       xstatic_bounds: true
     physics:
       enabled: true
       update: true
-      xbody:
-        kinematic: true
     script: scripts/seq_skeleton_random_nav
   - id: terrain_grass_v2
     mesh:

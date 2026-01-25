@@ -3,6 +3,8 @@ types:
   - id: prefab_skeleton
     prefab:
       path: prefab/creatures/prefab_skeleton_warrior.yml
+    flags:
+      dynamic_bounds: true
     xflags:
       static_bounds: true
     xphysics:

@@ -61,6 +61,17 @@ types:
       cmd:animation_play(
         self.handle,
         { tag = "body", name = "swing_normal" })
+  - id: skeleton
+    prefab:
+      path: prefab/creatures/prefab_skeleton.yml
+    xpivot:
+      alignment: [o, b, o]
+    flags:
+      dynamic_bounds: true
+    script: |
+      cmd:animation_play(
+        self.handle,
+        { name = "walk_1" })
   - xid: helmet
     meshes:
       - name: helmet
@@ -111,7 +122,7 @@ nodes:
   - type: wooden_floor
     scale: 100
     xrot: [0, 0, 5]
-  - type: skeleton_army
+  - xtype: skeleton_army
     pos: [0, 0.5, 0]
     #rotation: [0, -90, 0]
     scale: 1
@@ -120,6 +131,9 @@ nodes:
       z_count: 2
       x_step: 10
       z_step: -10
+  - type: skeleton
+    pos: [0, 0, 0.5]
+    scale: 1
   - xtype: helmet
     pos: [-0.2, 1.9, 0]
     scale: 1
