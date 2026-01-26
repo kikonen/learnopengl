@@ -191,7 +191,7 @@ types:
     prefab:
       path: prefab/creatures/prefab_wolf.yml
     physics:
-      enabled: false
+      #enabled: false
     script: |
       cmd:animation_play(
         self.handle,

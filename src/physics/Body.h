@@ -109,6 +109,7 @@ namespace physics {
 
         bool forceAxis { false };
         bool kinematic { false };
+        bool useAnimatedCenter { false };  // Use animated physics_center socket offset
 
         // Base rotation components
         glm::vec3 baseAdjust{ 0.f };

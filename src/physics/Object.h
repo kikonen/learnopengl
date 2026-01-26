@@ -84,5 +84,8 @@ namespace physics {
         Shape m_shape{};
 
         glm::vec3 m_scale;
+
+        // Cached animated center offset for change detection
+        glm::vec3 m_cachedAnimatedCenter{ 0.f };
     };
 }

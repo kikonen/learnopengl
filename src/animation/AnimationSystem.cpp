@@ -406,9 +406,10 @@ namespace animation
         std::lock_guard lock(m_volumeLock);
 
         for (auto& animState : m_states) {
-            if (!animState.m_volumeDirty && !animState.m_groundOffsetDirty) continue;
+            if (!animState.m_volumeDirty && !animState.m_groundOffsetDirty && !animState.m_physicsCenterDirty) continue;
 
             auto& nodeState = nodeRegistry.modifyState(animState.m_handle.m_handleIndex);
+            auto* animNode = animState.m_handle.toNode();
 
             if (animState.m_volumeDirty) {
                 nodeState.setLocalVolume(animState.m_animatedVolume);
@@ -422,7 +423,6 @@ namespace animation
                 float scaledOffset = animState.m_groundOffsetY * scaleY;
 
                 // Apply to composite root if set, else to animated node itself
-                auto* animNode = animState.m_handle.toNode();
                 if (animNode && animNode->m_compositeRootHandle) {
                     auto& rootState = nodeRegistry.modifyState(
                         animNode->m_compositeRootHandle.m_handleIndex);
@@ -431,6 +431,22 @@ namespace animation
                     nodeState.m_groundOffsetY = scaledOffset;
                 }
                 animState.m_groundOffsetDirty = false;
+            }
+
+            if (animState.m_physicsCenterDirty) {
+                // Get world scale from animated node for correct physics center calculation
+                auto scale = nodeState.getWorldScale();
+                glm::vec3 scaledOffset = animState.m_physicsCenterOffset * scale;
+
+                // Apply to composite root if set, else to animated node itself
+                if (animNode && animNode->m_compositeRootHandle) {
+                    auto& rootState = nodeRegistry.modifyState(
+                        animNode->m_compositeRootHandle.m_handleIndex);
+                    rootState.m_physicsCenterOffset = scaledOffset;
+                } else {
+                    nodeState.m_physicsCenterOffset = scaledOffset;
+                }
+                animState.m_physicsCenterDirty = false;
             }
         }
     }

@@ -77,6 +77,7 @@ namespace animation
         if (!changedRigs.empty()) {
             updateAnimatedVolume(state, node);
             updateGroundOffset(state, node);
+            updatePhysicsCenter(state, node);
         }
     }
 
@@ -346,6 +347,48 @@ namespace animation
         else {
             state.m_groundOffsetY = 0.f;
             state.m_groundOffsetDirty = true;
+        }
+    }
+
+    void AnimateNode::updatePhysicsCenter(
+        AnimationState& state,
+        model::Node* node)
+    {
+        auto* type = node->getType();
+        const auto& lodMeshes = type->getLodMeshes();
+        if (lodMeshes.empty()) return;
+
+        const auto& registeredRigs = node->getRegisteredRigs();
+
+        for (const auto& registeredRig : registeredRigs) {
+            const auto* rig = registeredRig.m_rig;
+
+            // Find LodMesh matching this rig to get correct baseTransform
+            const glm::mat4* baseTransform = nullptr;
+            for (const auto& lodMesh : lodMeshes) {
+                if (lodMesh.m_mesh && lodMesh.m_mesh->getRig() == rig) {
+                    baseTransform = &lodMesh.m_baseTransform;
+                    break;
+                }
+            }
+            if (!baseTransform) continue;
+
+            const auto& rigNodeTransforms = m_rigNodeRegistry.getRange(registeredRig.m_rigRef);
+
+            // Find physics_center socket
+            for (const auto& socket : rig->m_sockets) {
+                if (socket.m_nodeIndex < 0) continue;
+                if (socket.m_role != SocketRole::physics_center) continue;
+
+                // Socket transform is in raw mesh space, apply baseTransform
+                glm::vec4 rawPos = rigNodeTransforms[socket.m_nodeIndex][3];
+                glm::vec3 centerPos = glm::vec3(*baseTransform * rawPos);
+
+                std::lock_guard lock(m_volumeLock);
+                state.m_physicsCenterOffset = centerPos;
+                state.m_physicsCenterDirty = true;
+                return;  // Only use first physics_center socket found
+            }
         }
     }
 }

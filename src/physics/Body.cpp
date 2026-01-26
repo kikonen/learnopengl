@@ -56,6 +56,7 @@ namespace physics {
 
         forceAxis = o.m_forceAxis;
         kinematic = o.m_kinematic;
+        useAnimatedCenter = o.m_useAnimatedCenter;
     }
 
     Body::~Body()
@@ -89,6 +90,7 @@ namespace physics {
         std::swap(type, o.type);
         std::swap(forceAxis, o.forceAxis);
         std::swap(kinematic, o.kinematic);
+        std::swap(useAnimatedCenter, o.useAnimatedCenter);
     }
 
     void Body::release(JPH::BodyInterface& bodyInterface)

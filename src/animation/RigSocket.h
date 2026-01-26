@@ -15,6 +15,7 @@ namespace animation
         foot_left,
         foot_right,
         ground_sensor,
+        physics_center,  // Center point for physics capsule positioning
     };
 
     struct RigSocket

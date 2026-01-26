@@ -87,6 +87,10 @@ namespace model
         // Used for terrain placement of animated characters
         float m_groundOffsetY{ 0.f };
 
+        // Physics center offset from physics_center socket (local model space)
+        // Used to position physics capsule at animated center point
+        glm::vec3 m_physicsCenterOffset{ 0.f };
+
         bool m_dirty : 1 {true};
 
         mutable bool m_dirtySnapshot : 1 {true};

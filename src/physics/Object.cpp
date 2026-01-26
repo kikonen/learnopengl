@@ -36,6 +36,7 @@ namespace physics
     {
         std::swap(m_body, o.m_body);
         std::swap(m_shape, o.m_shape);
+        std::swap(m_cachedAnimatedCenter, o.m_cachedAnimatedCenter);
     }
 
     void Object::release(JPH::BodyInterface& bodyInterface)
@@ -83,9 +84,19 @@ namespace physics
         NodeRegistry& nodeRegistry)
     {
         const auto& state = nodeRegistry.getState(entityIndex);
+
+        // Check if animated center changed
+        bool animatedCenterChanged = false;
+        if (m_body.useAnimatedCenter) {
+            if (state.m_physicsCenterOffset != m_cachedAnimatedCenter) {
+                m_cachedAnimatedCenter = state.m_physicsCenterOffset;
+                animatedCenterChanged = true;
+            }
+        }
+
         {
             const auto level = state.getMatrixLevel();
-            if (matrixLevel == level) return false;
+            if (matrixLevel == level && !animatedCenterChanged) return false;
             matrixLevel = level;
         }
 
@@ -94,8 +105,12 @@ namespace physics
         const auto& rot = nodeRot * m_body.baseRotation;
 
         // Apply offset in visual space (after base rotation)
-        // offset.y = up in final visual result
-        const glm::vec3 physicsPos = pos + nodeRot * m_body.offset;
+        // Use animated physics center if available, otherwise use fixed offset
+        glm::vec3 offset = m_body.offset;
+        if (m_body.useAnimatedCenter) {
+            offset = m_cachedAnimatedCenter;
+        }
+        const glm::vec3 physicsPos = pos + nodeRot * offset;
 
         if (m_body.hasPhysicsBody()) {
             m_body.updatePhysic(bodyInterface, physicsPos, pos, rot);

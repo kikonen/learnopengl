@@ -53,7 +53,9 @@ prefab:
       reference_distance: 3
       gain: 0.5
   physics:
+    update: true
     body:
+      kinematic: true
       density: 0.01
       max_angular_velocity: 0
       force_axis: true

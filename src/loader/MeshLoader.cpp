@@ -26,6 +26,7 @@
 #include "loader_util.h"
 #include "value/AxisValue.h"
 #include "value/FrontValue.h"
+#include "value/SocketRoleValue.h"
 
 namespace loader {
     MeshLoader::MeshLoader(
@@ -309,7 +310,7 @@ namespace loader {
                 data.joint = readString(v);
             }
             else if (k == "role") {
-                data.role = readString(v);
+                data.role = SocketRoleValue::load(v);
             }
             else if (k == "position" || k == "offset") {
                 data.offset.position = readVec3(v);

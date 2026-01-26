@@ -4,6 +4,8 @@
 
 #include <glm/glm.hpp>
 
+#include "animation/RigSocket.h"
+
 #include "TransformData.h"
 
 namespace loader {
@@ -12,7 +14,7 @@ namespace loader {
 
         std::string name;
         std::string joint;
-        std::string role;
+        animation::SocketRole role{ animation::SocketRole::general };
 
         TransformData offset;
     };

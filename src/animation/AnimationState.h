@@ -3,6 +3,8 @@
 #include <array>
 #include <stdint.h>
 
+#include <glm/glm.hpp>
+
 #include "asset/SphereVolume.h"
 
 #include "pool/NodeHandle.h"
@@ -35,5 +37,10 @@ namespace animation {
         // Represents lowest foot position for terrain placement
         float m_groundOffsetY{ 0.f };
         bool m_groundOffsetDirty{ false };
+
+        // Physics center offset from physics_center socket (local model space)
+        // Used to position physics capsule at animated center point
+        glm::vec3 m_physicsCenterOffset{ 0.f };
+        bool m_physicsCenterDirty{ false };
     };
 }

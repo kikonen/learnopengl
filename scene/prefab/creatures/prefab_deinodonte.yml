@@ -33,6 +33,7 @@ prefab:
       base_scale: 0.004
   physics:
     body:
+      kinematic: true
       density: 0.01
       max_angular_velocity: 0
       force_axis: true

@@ -150,8 +150,6 @@ types:
         z_step: 20
   - id: skeleton_warrior
     base: prefab_skeleton_warrior
-    xprefab:
-      path: prefab/creatures/prefab_skeleton.yml
     priority: 1
     flags:
       dynamic_bounds: true

@@ -19,3 +19,17 @@ prefab:
           clip: Take-001
           path: anim/Wyvern@FlyStationary.FBX
       base_scale: 0.01
+  physics:
+    body:
+      kinematic: true
+      density: 0.01
+      max_angular_velocity: 0
+      force_axis: true
+      axis: z
+      offset: [0, 4, -2]
+    geom:
+      type: capsule
+      category: npc
+      collision: [world, player]
+      size: [1.4, 5, 0]
+      axis: z

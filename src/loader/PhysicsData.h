@@ -30,6 +30,7 @@ namespace loader {
 
         bool forceAxis : 1 { false };
         bool kinematic : 1 { false };
+        bool useAnimatedCenter : 1 { false };  // Use physics_center socket for capsule positioning
     };
 
     // @see physics/Shape.h

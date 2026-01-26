@@ -24,7 +24,7 @@ types:
   - id: prefab_skeleton_warrior
     type: composite
     composite: prefab_skeleton_warrior_composite
-    xphysics:
+    physics:
       enabled: false
       body:
         kinematic: true

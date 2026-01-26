@@ -56,6 +56,10 @@ namespace animation
             AnimationState& state,
             model::Node* node);
 
+        void updatePhysicsCenter(
+            AnimationState& state,
+            model::Node* node);
+
     private:
         RigNodeRegistry& m_rigNodeRegistry;
         JointRegistry& m_jointRegistry;

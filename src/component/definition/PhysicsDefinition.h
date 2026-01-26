@@ -30,6 +30,7 @@ struct BodyDefinition {
 
     bool m_forceAxis : 1 { false };
     bool m_kinematic : 1 { false };
+    bool m_useAnimatedCenter : 1 { false };  // Use physics_center socket for capsule positioning
 };
 
 // @see physics/Shape.h

@@ -157,6 +157,9 @@ namespace loader {
             else if (k == "force_axis") {
                 data.forceAxis = readBool(v);
             }
+            else if (k == "use_animated_center" || k == "animated_center") {
+                data.useAnimatedCenter = readBool(v);
+            }
             else {
                 reportUnknown("body_entry", k, v);
             }
@@ -196,6 +199,7 @@ namespace loader {
 
             body.m_forceAxis = bodyData.forceAxis;
             body.m_kinematic = bodyData.kinematic;
+            body.m_useAnimatedCenter = bodyData.useAnimatedCenter;
         }
 
         {
