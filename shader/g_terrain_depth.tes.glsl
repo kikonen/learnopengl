@@ -50,12 +50,7 @@ vec3 interpolate3D(vec3 v0, vec3 v1, vec3 v2)
     vec3(gl_TessCoord.z) * v2;
 }
 
-float fetchHeight(
-  in sampler2D heightMap,
-  in vec2 texCoord)
-{
-  return texture(heightMap, texCoord).r;
-}
+#include "include/fn_terrain_height.glsl"
 
 void main()
 {
