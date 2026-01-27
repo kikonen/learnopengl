@@ -122,11 +122,13 @@ namespace model
             scale.y = aspectScaleY;
 
             if (m_attachedSocketIndex) {
+                // Socket provides coordinate system, node transform is relative to socket
+                const auto& socketTransform = animation::AnimationSystem::get().getSocketTransform(m_attachedSocketIndex);
                 m_modelMatrix = parentModelMatrix *
+                    socketTransform *
                     glm::scale(
                         g_translateMatrix * rotationMatrix,
-                        scale) *
-                    animation::AnimationSystem::get().getSocketTransform(m_attachedSocketIndex);
+                        scale);
             }
             else {
                 m_modelMatrix = parentModelMatrix *

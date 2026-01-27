@@ -7,21 +7,7 @@
 #include <glm/gtc/matrix_inverse.hpp>
 
 namespace {
-    glm::mat4 calculateLocalTransform(
-        const util::Transform& offset,
-        glm::vec3 meshScale)
-    {
-        util::Transform local = offset;
-
-        //auto meshScaleTransform = glm::inverse(glm::scale(glm::mat4{ 1.f }, meshScale));
-        auto meshScaleTransform = glm::scale(glm::mat4{ 1.f }, meshScale);
-        local.m_position = meshScaleTransform * glm::vec4{ local.m_position, 1.f };
-
-        return local.toMatrix();
-    }
-
-    glm::mat4 calcMeshScaleTransform(
-        glm::vec3 meshScale)
+    glm::mat4 calcMeshScaleTransform(glm::vec3 meshScale)
     {
         return glm::scale(glm::mat4{ 1.f }, meshScale);
     }
@@ -45,16 +31,19 @@ namespace animation
     glm::mat4 RigSocket::calculateGlobalTransform(
         const glm::mat4& jointGlobalTransform) const
     {
+        // Scale-neutral socket transform: meshScale * joint * invMeshScale
+        // This cancels parent mesh scale so attached nodes aren't affected
+        // Then offset is applied in world-scaled space (intuitive units)
+        // i.e., offset of 0.1 means 0.1 actual units, regardless of mesh scale
         return m_meshScaleTransform *
             jointGlobalTransform *
-            m_offsetTransform *
-            m_invMeshScaleTransform;
-
-        //return jointWorldTransform * m_transform;
+            m_invMeshScaleTransform *
+            m_offsetTransform;
     }
 
     void RigSocket::updateTransforms() {
-        //m_transform = calculateLocalTransform(m_offset, m_meshScale);
+        // NOTE KI offset.scale is expected to be 1 (only position+rotation used)
+        // Scale comes from meshScale which converts mesh coords to world coords
         m_offsetTransform = m_offset.toMatrix();
         m_meshScaleTransform = calcMeshScaleTransform(m_meshScale);
         m_invMeshScaleTransform = glm::inverse(m_meshScaleTransform);

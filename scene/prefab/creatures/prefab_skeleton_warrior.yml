@@ -6,19 +6,21 @@ prefab:
       sockets:
         - name: head
           joint: Bip01_Head1
-          offset: [3.3, 1.0, 0]
+          offset: [0.12, 0.04, 0]
           rotation: [75, 90, 0]
         - name: neck
           joint: Bip01_Spine4
-          offset: [-1.9, 3, 0]
+          #offset: [-1.9, 3, 0]
+          offset: [-0.05, 0.08, 0]
           rotation: [0, -85, -110]
         - name: l_arm
           joint: Bip01_L_Forearm
-          offset: [9, 0, 1]
+          offset: [0.3, 0, 0.03]
           rotation: [0, 0, 0]
         - name: r_hand
           joint: Bip01_R_Hand
-          offset: [3, -1, 0]
+          #offset: [3, -1, 0]
+          offset: [0.08, 0, -0.1]
           rotation: [-67, -7, 0]
         - name: ground_back
           joint: Bip01_Spine
