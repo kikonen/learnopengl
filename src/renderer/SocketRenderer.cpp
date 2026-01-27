@@ -7,18 +7,18 @@
 
 #include "asset/SphereVolume.h"
 
+#include "util/glm_util.h"
+
 #include "backend/DrawOptions.h"
 
 #include "engine/PrepareContext.h"
 
 #include "model/Node.h"
-#include "model/NodeType.h"
 
 #include "mesh/generator/PrimitiveGenerator.h"
 #include "mesh/Mesh.h"
 #include "mesh/MeshInstance.h"
 #include "mesh/Transform.h"
-#include "mesh/LodMesh.h"
 #include "mesh/RegisteredRig.h"
 
 #include "debug/DebugContext.h"
@@ -45,11 +45,13 @@ namespace {
         float length,
         const glm::vec4& color)
     {
-        auto generator = mesh::PrimitiveGenerator::box();
+        auto generator = mesh::PrimitiveGenerator::capped_cylinder();
         generator.name = name;
         generator.origin = glm::vec3{ 0.f };
         generator.dir = dir;
-        generator.length = length;
+        generator.slices = 4;
+        generator.radius = 0.5f * length * 0.1f;
+        generator.length = 0.5f * length;
 
         auto mesh = generator.create();
 
@@ -73,11 +75,36 @@ void SocketRenderer::prepareRT(const PrepareContext& ctx)
 {
     MeshRenderer::prepareRT(ctx);
 
-    m_axisLength = 1.0;
+    // OpenGL RGB axis
+    // - Red(X)   - pointing right
+    // - Green(Y) - pointing up
+    // - Blue(Z)  - pointing forward(toward camera in default view)
+
+    //m_axisLength = 0.2f;
     // Create X, Y, Z axis meshes with distinct colors
-    m_axisMeshX = createAxisMesh("<socket_axis_x>", glm::vec3{ 1.f, 0.f, 0.f }, m_axisLength, glm::vec4{ 1.f, 0.f, 0.f, 1.f }); // Red
-    m_axisMeshY = createAxisMesh("<socket_axis_y>", glm::vec3{ 0.f, 1.f, 0.f }, m_axisLength, glm::vec4{ 0.f, 1.f, 0.f, 1.f }); // Green
-    m_axisMeshZ = createAxisMesh("<socket_axis_z>", glm::vec3{ 0.f, 0.f, 1.f }, m_axisLength, glm::vec4{ 0.f, 0.f, 1.f, 1.f }); // Blue
+    m_axisMeshX = createAxisMesh(
+        "<socket_axis_x>", glm::vec3{ 1.f, 0.f, 0.f }, m_axisLength,
+        glm::vec4{ 1.f, 0.f, 0.f, 1.f }); // Red
+
+    m_axisMeshY = createAxisMesh(
+        "<socket_axis_y>", glm::vec3{ 0.f, 1.f, 0.f }, m_axisLength,
+        glm::vec4{ 0.f, 1.f, 0.f, 1.f }); // Green
+
+    m_axisMeshZ = createAxisMesh(
+        "<socket_axis_z>", glm::vec3{ 0.f, 0.f, 1.f }, m_axisLength,
+        glm::vec4{ 0.f, 0.f, 1.f, 1.f }); // Blue
+
+    auto h = m_axisLength * 0.5f;
+    const auto& translateOrigin = glm::translate(glm::mat4{ 1.f }, { 0, 0, h });
+
+    m_axisXTransform = glm::toMat4(util::degreesToQuat({ 0, 90, 0 })) *
+        translateOrigin;
+
+    m_axisYTransform = glm::toMat4(util::degreesToQuat({ -90, 0, 0 })) *
+        translateOrigin;
+
+    m_axisZTransform = // * glm::toMat4(util::degreesToQuat({ 0, 0, 0 })) *
+        translateOrigin;
 
     m_programId = ProgramRegistry::get().getProgram(SHADER_VOLUME);
 }
@@ -106,22 +133,9 @@ void SocketRenderer::render(
 
         const auto& nodeModelMatrix = snapshot->getModelMatrix();
 
-        // Find matching LodMesh for baseTransform
-        auto* type = node->getType();
-        const auto& lodMeshes = type->getLodMeshes();
-
         for (const auto& registeredRig : registeredRigs) {
             const auto* rig = registeredRig.m_rig;
             if (!rig) continue;
-
-            // Find LodMesh matching this rig to get correct baseTransform
-            const glm::mat4* baseTransform = nullptr;
-            for (const auto& lodMesh : lodMeshes) {
-                if (lodMesh.m_mesh && lodMesh.m_mesh->getRig() == rig) {
-                    baseTransform = &lodMesh.m_baseTransform;
-                    break;
-                }
-            }
 
             // Draw axes for each socket in the rig
             for (const auto& socket : rig->getSockets()) {
@@ -132,13 +146,9 @@ void SocketRenderer::render(
                 const auto& socketTransform = animation::AnimationSystem::get().getSocketTransform(globalSocketIndex);
 
                 // Compute world transform for socket
-                // socketTransform is relative to mesh space, need to apply node transform
-                glm::mat4 worldSocketTransform;
-                if (baseTransform) {
-                    worldSocketTransform = nodeModelMatrix * (*baseTransform) * socketTransform;
-                } else {
-                    worldSocketTransform = nodeModelMatrix * socketTransform;
-                }
+                // socketTransform already includes mesh scale (via calculateGlobalTransform)
+                // so only apply nodeModelMatrix
+                glm::mat4 worldSocketTransform = nodeModelMatrix * socketTransform;
 
                 // Extract position from socket transform
                 glm::vec3 socketPos = glm::vec3(worldSocketTransform[3]);
@@ -147,14 +157,14 @@ void SocketRenderer::render(
                 {
                     drawOptions.m_mode = m_axisMeshX->getDrawMode();
                     drawOptions.m_type = backend::DrawOptions::Type::elements;
-                    drawOptions.m_lineMode = true;
-                    drawOptions.m_renderBack = true;
+                    drawOptions.m_lineMode = false;
+                    drawOptions.m_renderBack = false;
                 }
 
                 // Add X axis
                 m_meshes.emplace_back(
                     m_axisMeshX.get(),
-                    worldSocketTransform,
+                    worldSocketTransform * m_axisXTransform,
                     SphereVolume{ socketPos, m_axisLength },
                     drawOptions,
                     m_axisMeshX->getMaterial()->m_registeredIndex,
@@ -164,7 +174,7 @@ void SocketRenderer::render(
                 // Add Y axis
                 m_meshes.emplace_back(
                     m_axisMeshY.get(),
-                    worldSocketTransform,
+                    worldSocketTransform * m_axisYTransform,
                     SphereVolume{ socketPos, m_axisLength },
                     drawOptions,
                     m_axisMeshY->getMaterial()->m_registeredIndex,
@@ -174,7 +184,7 @@ void SocketRenderer::render(
                 // Add Z axis
                 m_meshes.emplace_back(
                     m_axisMeshZ.get(),
-                    worldSocketTransform,
+                    worldSocketTransform * m_axisZTransform,
                     SphereVolume{ socketPos, m_axisLength },
                     drawOptions,
                     m_axisMeshZ->getMaterial()->m_registeredIndex,

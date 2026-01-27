@@ -440,8 +440,8 @@ namespace editor
         auto& anim = dbg.m_animation;
 
         ImGui::Checkbox("Pause", &anim.m_paused);
-        ImGui::Checkbox("Animation debug", &anim.m_debugEnabled);
         ImGui::Checkbox("Show sockets", &anim.m_showSockets);
+        ImGui::Checkbox("Animation debug", &anim.m_debugEnabled);
 
         if (anim.m_debugEnabled) {
             ImGui::SeparatorText("Animation blending");

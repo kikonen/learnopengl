@@ -40,5 +40,9 @@ private:
 
     std::vector<mesh::MeshInstance> m_meshes;
 
+    glm::mat4 m_axisXTransform{ 1.f };
+    glm::mat4 m_axisYTransform{ 1.f };
+    glm::mat4 m_axisZTransform{ 1.f };
+
     float m_axisLength{ 0.15f };
 };
