@@ -44,6 +44,7 @@
 
 #include "mesh/LodMesh.h"
 #include "mesh/ModelMesh.h"
+#include "mesh/RegisteredRig.h"
 
 #include "render/RenderContext.h"
 
@@ -676,26 +677,34 @@ namespace editor
     {
         socket->updateTransforms();
 
+        // Find the RegisteredRig that matches the given rig
+        const mesh::RegisteredRig* registeredRig = nullptr;
+        for (const auto& reg : node->getRegisteredRigs()) {
+            if (reg.m_rig == rig) {
+                registeredRig = &reg;
+                break;
+            }
+        }
+        if (!registeredRig) return;
+
         // NOTE KI MUST update palette if animation is not playing
         {
             auto& animationSystem = animation::AnimationSystem::get();
+            auto& rigNodeRegistry = *animationSystem.m_rigNodeRegistry.get();
             auto& socketRegistry = *animationSystem.m_socketRegistry.get();
             std::lock_guard lockSockets(socketRegistry.m_lock);
 
-            const auto* rigNode = rig->getNode(socket->m_nodeIndex);
-            if (!rigNode) return;
+            // Get animated rig node transform (or static if not animating)
+            const glm::mat4 ID_MAT{ 1.f };
+            const auto rigNodeTransforms = rigNodeRegistry.getRange(registeredRig->m_rigRef);
+            const auto& nodeTransform = socket->m_nodeIndex >= 0
+                ? rigNodeTransforms[socket->m_nodeIndex]
+                : ID_MAT;
 
-            const auto& state = node->getState();
-            // TODO KI this is broken
-            //const auto socketIndex = state.m_socketBaseIndex + socket->m_index;
-            const auto socketIndex = (uint32_t)0 + socket->m_index;
-
-            // TODO KI rigNode->m_globalTransform is incorrect
-            // => works only for non-animated
-            // => for animated value must come from RigNodeRegistry
-            auto socketPalette = socketRegistry.modifyRange({ socketIndex, 1 });
-            socketPalette[0] = socket->calculateGlobalTransform(rigNode->m_globalTransform);
-            socketRegistry.markDirty({ socketIndex, 1 });
+            // Update socket in the palette using the correct reference
+            auto socketPalette = socketRegistry.modifyRange(registeredRig->m_socketRef);
+            socketPalette[socket->m_index] = socket->calculateGlobalTransform(nodeTransform);
+            socketRegistry.markDirty(registeredRig->m_socketRef);
         }
     }
 }
