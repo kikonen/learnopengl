@@ -272,6 +272,7 @@ namespace editor
         if (!m_state.m_selectedNode) return;
         if (!m_state.m_selectedMesh) return;
 
+
         auto* node = m_state.m_selectedNode.toNode();
         auto* mesh = m_state.m_selectedMesh;
 
@@ -440,6 +441,7 @@ namespace editor
 
         ImGui::Checkbox("Pause", &anim.m_paused);
         ImGui::Checkbox("Animation debug", &anim.m_debugEnabled);
+        ImGui::Checkbox("Show sockets", &anim.m_showSockets);
 
         if (anim.m_debugEnabled) {
             ImGui::SeparatorText("Animation blending");

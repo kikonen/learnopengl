@@ -414,6 +414,8 @@
     <ClCompile Include="src\render\PassDebugPhysics.cpp" />
     <ClCompile Include="src\render\PassDebugVolume.cpp" />
     <ClCompile Include="src\render\PassDebugVolume.h" />
+    <ClCompile Include="src\render\PassDebugSocket.cpp" />
+    <ClCompile Include="src\render\PassDebugSocket.h" />
     <ClCompile Include="src\render\PassDecal.cpp" />
     <ClCompile Include="src\render\PassEffect..cpp" />
     <ClCompile Include="src\render\PassFog.cpp" />
@@ -614,6 +616,7 @@
     <ClCompile Include="src\script\command\MoveNode.cpp" />
     <ClCompile Include="src\script\command\StartNode.cpp" />
     <ClCompile Include="src\renderer\VolumeRenderer.cpp" />
+    <ClCompile Include="src\renderer\SocketRenderer.cpp" />
     <ClCompile Include="src\registry\ViewportRegistry.cpp" />
     <ClCompile Include="src\registry\ViewportRegistry.h" />
     <ClCompile Include="src\renderer\ShadowCascade.cpp" />
@@ -1223,6 +1226,7 @@
     <ClInclude Include="src\script\command\StartNode.h" />
     <ClInclude Include="src\script\command\Wait.h" />
     <ClInclude Include="src\renderer\VolumeRenderer.h" />
+    <ClInclude Include="src\renderer\SocketRenderer.h" />
     <ClInclude Include="src\ki\uuid.h" />
     <ClInclude Include="src\render\BrdfLutTexture.h" />
     <ClInclude Include="src\render\EffectBuffer.h" />

@@ -197,6 +197,7 @@ Assets::Assets()
     animationFirstFrameOnly = false;
     animationOnceOnly = false;
     animationMaxCount = 1000;
+    animationShowSockets = false;
 
     physicsEnabled = true;
     physicsUpdateEnabled = true;

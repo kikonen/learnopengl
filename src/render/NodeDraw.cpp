@@ -34,6 +34,7 @@
 #include "render/PassDebugVolume.h"
 #include "render/PassDebugEnvironmentProbe.h"
 #include "render/PassDebugNormal.h"
+#include "render/PassDebugSocket.h"
 #include "render/PassCopy.h"
 
 #include "size.h"
@@ -62,6 +63,7 @@ namespace render {
         m_passDebugVolume{ std::make_unique<render::PassDebugVolume>() },
         m_passDebugEnvironmentProbe{ std::make_unique<render::PassDebugEnvironmentProbe>() },
         m_passDebugNormal{ std::make_unique<render::PassDebugNormal>() },
+        m_passDebugSocket{ std::make_unique<render::PassDebugSocket>() },
         m_passCopy{ std::make_unique<render::PassCopy>() }
     {
         //m_pipeline.m_forward = false;
@@ -92,6 +94,7 @@ namespace render {
         if (m_pipeline.m_debugVolume) m_passDebugVolume->prepare(ctx);
         if (m_pipeline.m_debugEnvironmentProbe) m_passDebugEnvironmentProbe->prepare(ctx);
         if (m_pipeline.m_debugNormal) m_passDebugNormal->prepare(ctx);
+        if (m_pipeline.m_debugSocket) m_passDebugSocket->prepare(ctx);
         if (m_pipeline.m_copy) m_passCopy->prepare(ctx);
 
         m_timeElapsedQuery.create();
@@ -116,6 +119,7 @@ namespace render {
         if (m_pipeline.m_debugVolume) m_passDebugVolume->updateRT(ctx, m_namePrefix, bufferScale);
         if (m_pipeline.m_debugEnvironmentProbe) m_passDebugEnvironmentProbe->updateRT(ctx, m_namePrefix, bufferScale);
         if (m_pipeline.m_debugNormal) m_passDebugNormal->updateRT(ctx, m_namePrefix, bufferScale);
+        if (m_pipeline.m_debugSocket) m_passDebugSocket->updateRT(ctx, m_namePrefix, bufferScale);
         if (m_pipeline.m_copy) m_passCopy->updateRT(ctx, m_namePrefix, bufferScale);
     }
 
@@ -149,10 +153,13 @@ namespace render {
             if (m_pipeline.m_debugVolume) m_passDebugVolume->initRender(ctx);
             if (m_pipeline.m_debugEnvironmentProbe) m_passDebugEnvironmentProbe->initRender(ctx);
             if (m_pipeline.m_debugNormal) m_passDebugNormal->initRender(ctx);
+            if (m_pipeline.m_debugSocket) m_passDebugSocket->initRender(ctx);
             if (m_pipeline.m_copy) m_passCopy->initRender(ctx);
         }
 
         // drawing
+
+        // Deferred passes
         {
             passContext = m_passDeferred->start(ctx, drawContext);
             if (m_pipeline.m_preDepth)
@@ -165,7 +172,10 @@ namespace render {
                 passContext = m_passSsao->render(ctx, drawContext, passContext);
             if (m_pipeline.m_deferred)
                 passContext = m_passDeferred->combine(ctx, drawContext, passContext);
+        }
 
+        // Forward passes
+        {
             if (m_pipeline.m_forward)
                 passContext = m_passForward->render(ctx, drawContext, passContext);
 
@@ -190,6 +200,8 @@ namespace render {
                 passContext = m_passDebugEnvironmentProbe->render(ctx, drawContext, passContext);
             if (m_pipeline.m_debugNormal)
                 passContext = m_passDebugNormal->render(ctx, drawContext, passContext);
+            if (m_pipeline.m_debugSocket)
+                passContext = m_passDebugSocket->render(ctx, drawContext, passContext);
         }
 
         // screeenspace

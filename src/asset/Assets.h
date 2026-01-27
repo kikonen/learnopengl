@@ -190,6 +190,7 @@ public:
     bool animationFirstFrameOnly;
     bool animationOnceOnly;
     int animationMaxCount;
+    bool animationShowSockets;
 
     bool physicsEnabled;
     bool physicsUpdateEnabled;

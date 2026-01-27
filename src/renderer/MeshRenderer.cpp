@@ -19,6 +19,7 @@
 #include "registry/VaoRegistry.h"
 #include "backend/DrawBuffer.h"
 
+#include "shader/Shader.h"
 #include "shader/Program.h"
 #include "shader/ProgramRegistry.h"
 
@@ -40,7 +41,8 @@ void MeshRenderer::prepareRT(const PrepareContext& ctx)
         m_fallbackMaterial.registerMaterial();
     }
 
-    m_programId = ProgramRegistry::get().getProgram("g_tex");
+    // NOTE KI this is *forward* pass
+    m_programId = ProgramRegistry::get().getProgram(SHADER_TEXTURE);
 
     m_useFenceDebug = assets.glUseFenceDebug;
 

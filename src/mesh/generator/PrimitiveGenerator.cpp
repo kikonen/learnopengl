@@ -107,6 +107,44 @@ namespace {
         return mesh;
     }
 
+    std::shared_ptr<mesh::Mesh> create_arrow(
+        mesh::PrimitiveGenerator generator)
+    {
+        if (generator.length == 0) return nullptr;
+
+        auto mesh = std::make_unique<mesh::PrimitiveMesh>(generator.name);
+        mesh->m_type = generator.type;
+        mesh->m_alias = generator.alias;
+
+        auto& vertices = mesh->m_vertices;
+        auto& indeces = mesh->m_indeces;
+
+        vertices.reserve(2);
+        indeces.reserve(2);
+
+        const auto& origin = generator.origin;
+        const auto& dir = generator.dir;
+        const auto& length = generator.length;
+
+        {
+            auto& v = vertices.emplace_back();
+            v.pos = origin;
+            v.normal = { 0, 1, 0 };
+            v.tangent = { 0, 0, 1 };
+        }
+        {
+            auto& v = vertices.emplace_back();
+            v.pos = origin + dir * length;
+            v.normal = { 0, 1, 0 };
+            v.tangent = { 0, 0, 1 };
+        }
+
+        indeces.push_back(0);
+        indeces.push_back(1);
+
+        return mesh;
+    }
+
     std::shared_ptr<mesh::Mesh> create_bezier(
         mesh::PrimitiveGenerator generator)
     {
@@ -995,6 +1033,8 @@ namespace mesh {
                 return createVertices(*this);
             case PrimitiveType::ray:
                 return create_ray(*this);
+            case PrimitiveType::arrow:
+                return create_arrow(*this);
             case PrimitiveType::bezier:
                 return create_bezier(*this);
             case PrimitiveType::plane:

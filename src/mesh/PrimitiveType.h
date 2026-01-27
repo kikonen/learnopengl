@@ -30,6 +30,7 @@ namespace mesh {
         lines,
         line_strip,
         ray,
+        arrow,
         bezier,
         plane,
         quad,

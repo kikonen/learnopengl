@@ -118,6 +118,7 @@ assets:
   animation_first_frame_only: false
   animation_once_only: false
   animation_max_count: 1000
+  animation_show_sockets: true
 
   physics_enabled: true
   physics_update_enabled: true

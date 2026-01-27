@@ -563,6 +563,10 @@ void AssetsLoader::loadAssets(
                 data.animationMaxCount = readInt(v);
                 continue;
             }
+            if (k == "animation_show_sockets") {
+                data.animationShowSockets = readBool(v);
+                continue;
+            }
         }
         {
             if (k == "physics_initial_delay") {

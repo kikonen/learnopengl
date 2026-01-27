@@ -33,6 +33,8 @@ namespace debug {
         int m_jointIndex{ 0 };
         bool m_debugJointWeight{ false };
 
+        bool m_showSockets{ false };
+
         void prepare();
     };
 }

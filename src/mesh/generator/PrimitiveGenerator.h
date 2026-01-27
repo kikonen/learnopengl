@@ -83,6 +83,18 @@ namespace mesh {
             };
         }
 
+        /// @param origin origin of arrow
+        /// @param dir dir of arrow
+        /// @param length length of arrow
+        static PrimitiveGenerator arrow()
+        {
+            return {
+                .type = PrimitiveType::arrow,
+                .name = "<arrow>",
+                .alias = "arrow"
+            };
+        }
+
         // NOTE KI 4 x 1 bezier control points
         // - passed via bezier_d0 and bezier_d1
         //
@@ -493,6 +505,8 @@ namespace mesh {
                 return lines();
             case PrimitiveType::ray:
                 return ray();
+            case PrimitiveType::arrow:
+                return arrow();
             case PrimitiveType::bezier:
                 return bezier();
             case PrimitiveType::plane:

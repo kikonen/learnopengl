@@ -204,6 +204,9 @@
     <ClCompile Include="src\renderer\VolumeRenderer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\renderer\SocketRenderer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="vendor\glad\src\glad.c">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -1116,6 +1119,12 @@
     <ClCompile Include="src\render\PassDebugVolume.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\render\PassDebugSocket.h">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\render\PassDebugSocket.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="src\render\PassDebugEnvironmentProbe.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -1563,6 +1572,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\renderer\VolumeRenderer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\renderer\SocketRenderer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="vendor\glad\include\glad\glad.h">

@@ -58,6 +58,7 @@ types:
     flags:
       dynamic_bounds: true
     physics:
+      enabled: true
       xupdate: true
     script: |
       cmd:animation_play(

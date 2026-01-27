@@ -21,6 +21,7 @@ namespace render
         bool m_debugVolume : 1 { false };
         bool m_debugEnvironmentProbe : 1 { false };
         bool m_debugNormal : 1 { false };
+        bool m_debugSocket : 1 { false };
         bool m_copy : 1 { true };
     };
 }
