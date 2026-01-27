@@ -280,7 +280,7 @@ types:
     physics:
       geom:
         type: height_field
-        category: terrain
+        category: [terrain]
         collide: [can_terrain]
         size: [2048, 0, 2048]
   - id: grass
@@ -468,7 +468,7 @@ types:
       mode: random
       offset: [-400, 0, -400]
       scale: 1.5
-      bounds: [ground]
+      bounds: [terrain]
       repeat:
         x_count: 20
         z_count: 20

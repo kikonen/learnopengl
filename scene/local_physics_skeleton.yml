@@ -100,7 +100,7 @@ nodes:
       geom:
         type: capsule
         category: [player]
-        collision: [ground]
+        collision: [terrain]
         size: [1, 1, 0]
   - id: player_2
     prefab:
@@ -146,7 +146,7 @@ nodes:
       geom:
         type: capsule
         category: [player]
-        collision: [ground, npc]
+        collision: [terrain, npc]
         size: [1, 2, 0]
     script: |
       local wid = cmd:wait({ time=2 })
@@ -190,7 +190,7 @@ nodes:
         type: capsule
         size: [1, 1.5, 0]
         category: npc
-        collision: [ground, ray_player_fire]
+        collision: [terrain, ray_player_fire]
   - id: wooden_floor
     prefab:
       path: prefab/scenery/prefab_wooden_floor.yml
@@ -202,6 +202,6 @@ nodes:
     physics:
       geom:
         type: plane
-        category: [ground]
+        category: [terrain]
         rot: [0, 0, 0]
     scale: 200
