@@ -33,10 +33,13 @@ public:
         render::FrameBuffer* targetBuffer) override;
 
 private:
-    // X, Y, Z axis meshes (colored rays)
+    // X, Y, Z axis meshes (colored cylinders)
     std::shared_ptr<mesh::Mesh> m_axisMeshX;
     std::shared_ptr<mesh::Mesh> m_axisMeshY;
     std::shared_ptr<mesh::Mesh> m_axisMeshZ;
+
+    // Gray offset indicator (shows where socket offset places attached node)
+    std::shared_ptr<mesh::Mesh> m_offsetIndicatorMesh;
 
     std::vector<mesh::MeshInstance> m_meshes;
 

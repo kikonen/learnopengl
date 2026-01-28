@@ -28,22 +28,30 @@ namespace animation
         updateTransforms();
     }
 
+    glm::mat4 RigSocket::calculateScaleNeutralGlobalTransform(
+        const glm::mat4& jointGlobalTransform) const
+    {
+        // Scale-neutral joint transform (converts joint from mesh coords to world coords)
+        // meshScale * joint * invMeshScale cancels scale for attached nodes
+        return m_meshScaleTransform *
+            jointGlobalTransform *
+            m_invMeshScaleTransform;
+    }
+
     glm::mat4 RigSocket::calculateGlobalTransform(
         const glm::mat4& jointGlobalTransform) const
     {
-        // Scale-neutral socket transform: meshScale * joint * invMeshScale
-        // This cancels parent mesh scale so attached nodes aren't affected
-        // Then offset is applied in world-scaled space (intuitive units)
-        // i.e., offset of 0.1 means 0.1 actual units, regardless of mesh scale
-        return m_meshScaleTransform *
-            jointGlobalTransform *
-            m_invMeshScaleTransform *
-            m_offsetTransform;
+        // Apply offset in joint-local space
+        // - Offset directions follow joint axes (visible in debug visualization)
+        // - Offset values are in world units (0.1 = 0.1 meters)
+        // - Attached nodes follow bone animation
+        return calculateScaleNeutralGlobalTransform(jointGlobalTransform) * m_offsetTransform;
     }
 
     void RigSocket::updateTransforms() {
         // NOTE KI offset.scale is expected to be 1 (only position+rotation used)
-        // Scale comes from meshScale which converts mesh coords to world coords
+        // Offset is applied in joint-local space (directions follow joint axes)
+        // Values are in world units due to scale-neutral joint transform
         m_offsetTransform = m_offset.toMatrix();
         m_meshScaleTransform = calcMeshScaleTransform(m_meshScale);
         m_invMeshScaleTransform = glm::inverse(m_meshScaleTransform);

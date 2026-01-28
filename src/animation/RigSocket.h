@@ -28,6 +28,9 @@ namespace animation
 
         void updateTransforms();
 
+        glm::mat4 calculateScaleNeutralGlobalTransform(
+            const glm::mat4& jointGlobalTransform) const;
+
         glm::mat4 calculateGlobalTransform(
             const glm::mat4& jointGlobalTransform) const;
 
@@ -47,7 +50,7 @@ namespace animation
     private:
         glm::mat4 m_offsetTransform;
 
-        // NOTE KI or scaling mesh attached into socket into
+        // NOTE KI for scaling mesh attached into socket into
         // scale of mesh owning socket, so that transforms happen
         // in correct scale
         glm::mat4 m_meshScaleTransform;

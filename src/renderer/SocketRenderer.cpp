@@ -39,6 +39,8 @@
 #include "registry/NodeRegistry.h"
 
 namespace {
+    inline const glm::mat4 ID_MAT{ 1.f };
+
     std::shared_ptr<mesh::Mesh> createAxisMesh(
         const std::string& name,
         const glm::vec3& dir,
@@ -58,6 +60,28 @@ namespace {
         auto material = Material::createMaterial(BasicMaterial::basic);
         material.m_name = name;
         material.kd = color;
+        material.registerMaterial();
+        mesh->setMaterial(&material);
+
+        return mesh;
+    }
+
+    std::shared_ptr<mesh::Mesh> createOffsetIndicatorMesh(
+        const std::string& name,
+        float size)
+    {
+        auto generator = mesh::PrimitiveGenerator::sphere();
+        generator.name = name;
+        generator.origin = glm::vec3{ 0.f };
+        generator.slices = 8;
+        generator.segments = { 6, 0, 0 };
+        generator.radius = size;
+
+        auto mesh = generator.create();
+
+        auto material = Material::createMaterial(BasicMaterial::basic);
+        material.m_name = name;
+        material.kd = glm::vec4{ 0.5f, 0.5f, 0.5f, 1.f }; // Gray color
         material.registerMaterial();
         mesh->setMaterial(&material);
 
@@ -106,6 +130,11 @@ void SocketRenderer::prepareRT(const PrepareContext& ctx)
     m_axisZTransform = // * glm::toMat4(util::degreesToQuat({ 0, 0, 0 })) *
         translateOrigin;
 
+    // Create gray sphere for offset indicator
+    m_offsetIndicatorMesh = createOffsetIndicatorMesh(
+        "<socket_offset_indicator>",
+        m_axisLength * 0.15f);
+
     m_programId = ProgramRegistry::get().getProgram(SHADER_VOLUME);
 }
 
@@ -116,7 +145,8 @@ void SocketRenderer::render(
     const auto& dbg = debug::DebugContext::get();
     if (!dbg.m_animation.m_showSockets) return;
 
-    auto& nodeRegistry = *ctx.getRegistry()->m_nodeRegistry;
+    const auto& nodeRegistry = *ctx.getRegistry()->m_nodeRegistry;
+    const auto& animationSystem = animation::AnimationSystem::get();
 
     m_meshes.clear();
     m_meshes.reserve(64);  // Reasonable initial capacity
@@ -137,21 +167,33 @@ void SocketRenderer::render(
             const auto* rig = registeredRig.m_rig;
             if (!rig) continue;
 
+            // Get rig node transforms for computing joint positions
+            const auto rigNodeTransforms = animationSystem.getRigNodeTransforms(registeredRig.m_rigRef);
+
             // Draw axes for each socket in the rig
             for (const auto& socket : rig->getSockets()) {
                 if (socket.m_index < 0) continue;
 
-                // Get socket transform from registry
-                uint32_t globalSocketIndex = registeredRig.m_socketRef.offset + socket.m_index;
-                const auto& socketTransform = animation::AnimationSystem::get().getSocketTransform(globalSocketIndex);
+                // Get socket transform from registry (includes offset)
+                const uint32_t globalSocketIndex = registeredRig.m_socketRef.offset + socket.m_index;
+                const auto& socketTransform = animationSystem.getSocketTransform(globalSocketIndex);
 
-                // Compute world transform for socket
-                // socketTransform already includes mesh scale (via calculateGlobalTransform)
-                // so only apply nodeModelMatrix
-                glm::mat4 worldSocketTransform = nodeModelMatrix * socketTransform;
+                // Compute world transform for socket (with offset - where attached node goes)
+                const glm::mat4 worldSocketTransform = nodeModelMatrix * socketTransform;
 
-                // Extract position from socket transform
-                glm::vec3 socketPos = glm::vec3(worldSocketTransform[3]);
+                // Compute joint-only transform (without offset - where joint is)
+                // This matches the logic in RigSocket::calculateGlobalTransform but without offset
+                const glm::mat4& jointGlobalTransform = socket.m_nodeIndex >= 0
+                    ? rigNodeTransforms[socket.m_nodeIndex]
+                    : ID_MAT;
+
+                // Scale-neutral joint transform (joint position in world coords without offset)
+                const glm::mat4 scaleNeutralJoint = socket.calculateScaleNeutralGlobalTransform(jointGlobalTransform);
+                const glm::mat4 worldJointTransform = nodeModelMatrix * scaleNeutralJoint;
+
+                // Extract positions
+                const glm::vec3 jointPos = glm::vec3(worldJointTransform[3]);
+                const glm::vec3 socketPos = glm::vec3(worldSocketTransform[3]);
 
                 backend::DrawOptions drawOptions;
                 {
@@ -161,11 +203,12 @@ void SocketRenderer::render(
                     drawOptions.m_renderBack = false;
                 }
 
+                // Draw RGB axes at JOINT position (shows joint coordinate system)
                 // Add X axis
                 m_meshes.emplace_back(
                     m_axisMeshX.get(),
-                    worldSocketTransform * m_axisXTransform,
-                    SphereVolume{ socketPos, m_axisLength },
+                    worldJointTransform * m_axisXTransform,
+                    SphereVolume{ jointPos, m_axisLength },
                     drawOptions,
                     m_axisMeshX->getMaterial()->m_registeredIndex,
                     m_programId,
@@ -174,8 +217,8 @@ void SocketRenderer::render(
                 // Add Y axis
                 m_meshes.emplace_back(
                     m_axisMeshY.get(),
-                    worldSocketTransform * m_axisYTransform,
-                    SphereVolume{ socketPos, m_axisLength },
+                    worldJointTransform * m_axisYTransform,
+                    SphereVolume{ jointPos, m_axisLength },
                     drawOptions,
                     m_axisMeshY->getMaterial()->m_registeredIndex,
                     m_programId,
@@ -184,10 +227,20 @@ void SocketRenderer::render(
                 // Add Z axis
                 m_meshes.emplace_back(
                     m_axisMeshZ.get(),
-                    worldSocketTransform * m_axisZTransform,
-                    SphereVolume{ socketPos, m_axisLength },
+                    worldJointTransform * m_axisZTransform,
+                    SphereVolume{ jointPos, m_axisLength },
                     drawOptions,
                     m_axisMeshZ->getMaterial()->m_registeredIndex,
+                    m_programId,
+                    true);
+
+                // Draw gray indicator at SOCKET position (shows where offset places attached node)
+                m_meshes.emplace_back(
+                    m_offsetIndicatorMesh.get(),
+                    worldSocketTransform,
+                    SphereVolume{ socketPos, m_axisLength * 0.15f },
+                    drawOptions,
+                    m_offsetIndicatorMesh->getMaterial()->m_registeredIndex,
                     m_programId,
                     true);
             }

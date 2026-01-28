@@ -5,6 +5,7 @@
 #include <mutex>
 #include <condition_variable>
 #include <tuple>
+#include <span>
 
 #include <glm/glm.hpp>
 
@@ -95,6 +96,9 @@ namespace animation
 
         const glm::mat4& getSocketTransform(
             uint32_t index) const noexcept;
+
+        std::span<const glm::mat4> getRigNodeTransforms(
+            util::BufferReference ref) const noexcept;
 
         animation::AnimationState* getState(
             pool::NodeHandle handle);

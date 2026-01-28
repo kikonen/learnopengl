@@ -279,6 +279,12 @@ namespace animation
         return m_socketRegistry->getTransform(index);
     }
 
+    std::span<const glm::mat4> AnimationSystem::getRigNodeTransforms(
+        util::BufferReference ref) const noexcept
+    {
+        return m_rigNodeRegistry->getRange(ref);
+    }
+
     animation::AnimationState* AnimationSystem::getState(
         pool::NodeHandle handle)
     {
