@@ -19,6 +19,7 @@ prefab:
       sockets:
         - name: physics_center
           joint: Wolf_-Spine1
+          offset: [0.1, 0.2, 0]
           role: physics_center
         - name: ground_back
           joint: Bip01_Spine
