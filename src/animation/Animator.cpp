@@ -24,7 +24,7 @@
 #include "Joint.h"
 
 namespace {
-    static const glm::mat4 ID_MAT{ 1.f };
+    inline const glm::mat4 ID_MAT{ 1.f };
 
    // @return interpolated transform matrix using O(1) LUT sampling
    glm::mat4 sampleFromLUT(

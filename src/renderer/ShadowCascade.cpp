@@ -48,7 +48,7 @@ namespace {
     //        glm::mat4(1),
     //        glm::vec3(0.5, 0.5, 0.5)),
     //    glm::vec3(0.5, 0.5, 0.5));
-    const glm::mat4 SCALE_BIAS_MATRIX = {
+    inline const glm::mat4 SCALE_BIAS_MATRIX = {
       {0.5f, 0.0f, 0.0f, 0.0f},
       {0.0f, 0.5f, 0.0f, 0.0f},
       {0.0f, 0.0f, 0.5f, 0.0f},

@@ -48,7 +48,7 @@ namespace {
     //constexpr size_t BLOCK_SIZE = 1000;
     //constexpr size_t MAX_BLOCK_COUNT = 5100;
 
-    static const glm::mat4 ID_MAT{ 1.f };
+    inline const glm::mat4 ID_MAT{ 1.f };
 
     struct ActiveNode {
         animation::AnimationState& m_state;

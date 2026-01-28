@@ -26,7 +26,7 @@
 #include "animation/RigSocket.h"
 
 namespace {
-    const glm::mat4 ID_MAT{ 1.f };
+    inline const glm::mat4 ID_MAT{ 1.f };
 }
 
 namespace animation

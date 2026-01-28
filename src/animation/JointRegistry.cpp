@@ -9,7 +9,7 @@
 namespace {
     constexpr int INITIAL_SIZE = 10000;
 
-    const glm::mat4 ID_MAT{ 1.f };
+    inline const glm::mat4 ID_MAT{ 1.f };
 }
 
 namespace animation

@@ -19,7 +19,7 @@ namespace
 {
     const std::string ASSIMP_FBX{"$AssimpFbx$"};
 
-    const glm::mat4 ID_MAT = glm::mat4{ 1.f };
+    inline const glm::mat4 ID_MAT{ 1.f };
 
     int calculateNeededSize(const aiNode* node)
     {
