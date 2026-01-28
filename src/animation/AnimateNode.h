@@ -40,6 +40,7 @@ namespace animation
     private:
         void animateRigs(
             const UpdateContext& ctx,
+            double currentTime,
             AnimationState& state,
             model::Node* node,
             std::set<const Rig*>& changedRigs);
@@ -66,5 +67,7 @@ namespace animation
         SocketRegistry& m_socketRegistry;
         std::mutex& m_volumeLock;
         bool m_onceOnly;
+
+        double m_lastCurrentTime{ 0.f };
     };
 }

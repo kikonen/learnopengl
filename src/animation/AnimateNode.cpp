@@ -52,10 +52,15 @@ namespace animation
         const auto& dbg = debug::DebugContext::modify();
         const auto& anim = dbg.m_animation;
 
-        if (anim.m_paused) return;
-
+        double currentTime = ctx.getClock().ts;
         auto& playA = state.m_current;
         auto& playB = state.m_next;
+
+        if (anim.m_paused) {
+            currentTime = m_lastCurrentTime;
+        }
+        m_lastCurrentTime = currentTime;
+
         {
             if (state.m_pending.m_active) {
                 playB = state.m_pending;
@@ -72,7 +77,7 @@ namespace animation
 
         std::set<const Rig*> changedRigs;
 
-        animateRigs(ctx, state, node, changedRigs);
+        animateRigs(ctx, currentTime, state, node, changedRigs);
         updateJointsAndSockets(node, changedRigs);
         if (!changedRigs.empty()) {
             updateAnimatedVolume(state, node);
@@ -83,6 +88,7 @@ namespace animation
 
     void AnimateNode::animateRigs(
         const UpdateContext& ctx,
+        double currentTime,
         AnimationState& state,
         model::Node* node,
         std::set<const Rig*>& changedRigs)
@@ -98,8 +104,6 @@ namespace animation
         for (const auto& registeredRig : registeredRigs) {
             auto rigNodeTransforms = m_rigNodeRegistry.modifyRange(registeredRig.m_rigRef);
             const auto* rig = registeredRig.m_rig;
-
-            double currentTime = ctx.getClock().ts;
 
             float blendFactor = -1.f;
 
@@ -325,15 +329,22 @@ namespace animation
 
             // Find ground contact sockets and track lowest Y
             for (const auto& socket : rig->m_sockets) {
-                if (socket.m_nodeIndex < 0) continue;
                 if (socket.m_role != SocketRole::foot_left &&
                     socket.m_role != SocketRole::foot_right &&
                     socket.m_role != SocketRole::ground_sensor) continue;
 
-                // Socket transform is in raw mesh space, apply baseTransform
-                //glm::vec4 rawPos = glm::vec4(glm::vec3(rigNodeTransforms[socket.m_nodeIndex][3]), 1.f);
-                glm::vec4 rawPos = rigNodeTransforms[socket.m_nodeIndex][3];
-                glm::vec3 footPos = glm::vec3(*baseTransform * rawPos);
+                // Get rig node transform for this socket's node
+                const glm::mat4& rigNodeTransform = socket.m_nodeIndex >= 0
+                    ? rigNodeTransforms[socket.m_nodeIndex]
+                    : ID_MAT;
+
+                // Calculate socket transform with offset applied
+                // This returns scale-compensated transform with offset in world units
+                glm::mat4 socketTransform = socket.calculateGlobalTransform(rigNodeTransform);
+
+                // Socket position is already in world units (scale-compensated)
+                // Don't apply baseTransform as it would double-scale
+                glm::vec3 footPos = glm::vec3(socketTransform[3]);
                 minFootY = std::min(minFootY, footPos.y);
             }
         }
@@ -377,12 +388,20 @@ namespace animation
 
             // Find physics_center socket
             for (const auto& socket : rig->m_sockets) {
-                if (socket.m_nodeIndex < 0) continue;
                 if (socket.m_role != SocketRole::physics_center) continue;
 
-                // Socket transform is in raw mesh space, apply baseTransform
-                glm::vec4 rawPos = rigNodeTransforms[socket.m_nodeIndex][3];
-                glm::vec3 centerPos = glm::vec3(*baseTransform * rawPos);
+                // Get rig node transform for this socket's node
+                const glm::mat4& rigNodeTransform = socket.m_nodeIndex >= 0
+                    ? rigNodeTransforms[socket.m_nodeIndex]
+                    : ID_MAT;
+
+                // Calculate socket transform with offset applied
+                // This returns scale-compensated transform with offset in world units
+                glm::mat4 socketTransform = socket.calculateGlobalTransform(rigNodeTransform);
+
+                // Socket position is already in world units (scale-compensated)
+                // Don't apply baseTransform as it would double-scale
+                glm::vec3 centerPos = glm::vec3(socketTransform[3]);
 
                 std::lock_guard lock(m_volumeLock);
                 state.m_physicsCenterOffset = centerPos;
