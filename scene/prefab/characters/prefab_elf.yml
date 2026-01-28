@@ -15,6 +15,30 @@ prefab:
         xrender_back: true
         xline_mode : true
       sockets:
+        - name: physics_center
+          joint: Base-HumanSpine1
+          offset: [0, 0.1, 0]
+          role: physics_center
+        - name: head
+          joint: Base-HumanHead
+          offset: [0.130, 0.040, 0.000]
+          rotation: [90, 90, 10]
+        - name: neck
+          joint: Base-HumanNeck
+          offset: [0.000, 0.000, -0.100]
+          rotation: [90.000, 0.000, 189.000]
+        - name: neck_rev
+          joint: Base-HumanNeck
+          offset: [0.000, 0.030, -0.120]
+          rotation: [90.000, 0.000, 0.000]
+        - name: l_arm
+          joint: Base-HumanLForearm3
+          offset: [0.020, 0.000, 0.000]
+          rotation: [90.000, 90.000, 90.000]
+        - name: r_hand
+          joint: HandBoneR
+          offset: [0.030, 0.080, 0.090]
+          rotation: [0.000, 90.000, 0.000]
         - name: ground_back
           joint: Base-HumanSpine1
           role: ground
@@ -87,6 +111,8 @@ prefab:
       shadow_program: shadow
       base_scale: 0.01
   physics:
+    enabled: false
+    update: true
     body:
       kinematic: true
       density: 0.01

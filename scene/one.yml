@@ -10,6 +10,7 @@ script:
 
 includes:
   - xpath: prefab/creatures/include_skeleton_warrior.yml
+  - path: prefab/characters/include_elf_warrior.yml
 
 types:
   - id: player
@@ -85,7 +86,7 @@ types:
     script: |
       cmd:animation_play(
         self.handle,
-        { name = "fly_backward" })
+        { tag="body", name = "fly_backward" })
   - xid: griffon_55
     mesh:
       path: models/unreal/SK_Griffon_55.glb
@@ -187,7 +188,7 @@ types:
       cmd:animation_play(
         self.handle,
         { name = "walk" })
-  - id: wolf
+  - xid: wolf
     prefab:
       path: prefab/creatures/prefab_wolf.yml
     physics:
@@ -196,15 +197,16 @@ types:
       cmd:animation_play(
         self.handle,
         { name = "walk" })
-  - xid: elf
-    prefab:
+  - id: elf
+    base: prefab_elf_warrior
+    xprefab:
       path: prefab/characters/prefab_elf.yml
     physics:
-      enabled: false
+      #enabled: false
     script: |
       cmd:animation_play(
         self.handle,
-        { name = "idle" })
+        { tag="body", name = "idle" })
   - xid: scavenger
     prefab:
       path: prefab/characters/prefab_scavenger.yml
