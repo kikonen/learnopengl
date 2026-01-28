@@ -60,13 +60,13 @@ Input::Input(Window* window)
         Key::UP,
         {
             GLFW_KEY_PAGE_UP,
-            GLFW_KEY_R,
+            GLFW_KEY_4,
         });
     addKeyMapping(
         Key::DOWN,
         {
             GLFW_KEY_PAGE_DOWN,
-            GLFW_KEY_F,
+            GLFW_KEY_3,
         });
 
     addKeyMapping(
