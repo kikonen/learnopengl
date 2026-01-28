@@ -27,6 +27,8 @@ namespace editor
 
         virtual void prepare(const PrepareContext& ctx) {}
 
+        virtual void clear() {}
+
         void drawMenu(const gui::FrameContext& ctx);
         void draw(const gui::FrameContext& ctx);
 

@@ -47,7 +47,7 @@
 #include "render/Batch.h"
 
 namespace {
-    const static glm::mat4 IDENTITY_MATRIX{ 1.f };
+    inline const glm::mat4 ID_MAT{ 1.f };
 }
 
 namespace model

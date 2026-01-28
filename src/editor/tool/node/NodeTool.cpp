@@ -95,6 +95,21 @@ namespace editor
             });
     }
 
+    void NodeTool::clear()
+    {
+        m_state.m_selectedNode = pool::NodeHandle::NULL_HANDLE;
+        m_state.m_selectedMesh = nullptr;
+
+        //m_state.m_selectedSocketIndex = -1;
+        //m_state.m_selectedAnimationIndex = -1;
+        //m_state.m_selectedClipIndex = -1;
+
+        m_state.m_wasMouseLeft = false;
+
+        m_state.m_nodeRotation;
+        m_state.m_socketRotation;
+    }
+
     void NodeTool::drawImpl(
         const gui::FrameContext& ctx)
     {

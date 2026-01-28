@@ -24,6 +24,9 @@ namespace gui
         virtual void prepare(const PrepareContext& ctx);
         virtual void bind(const gui::FrameContext& ctx);
 
+        virtual void clear()
+        {}
+
         virtual void processInputs(
             const InputContext& ctx) {
         }

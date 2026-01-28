@@ -16,9 +16,8 @@
 #include "animation/AnimationSystem.h"
 
 namespace {
-    const glm::vec3 ZERO_VEC{ 0.f };
-
-    const glm::mat4 ID_MAT{ 1.f };
+    inline const glm::vec3 ZERO_VEC{ 0.f };
+    inline const glm::mat4 ID_MAT{ 1.f };
 
     // NOTE KI only *SINGLE* thread is allowed to do model updates
     // => thus can use globally shared temp vars

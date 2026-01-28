@@ -165,6 +165,9 @@ bool SampleApp::onSetup()
     //m_currentScene = loadScene();
 
     m_registry->clear();
+    if (m_editorFrame) {
+        m_editorFrame->clear();
+    }
 
     return false;
 }
@@ -559,6 +562,9 @@ void SampleApp::unloadScene()
     if (!m_currentScene) return;
     m_currentScene->destroy();
     m_registry->clear();
+    if (m_editorFrame) {
+        m_editorFrame->clear();
+    }
     m_currentScene = nullptr;
 
     showFps(m_fpsCounter);

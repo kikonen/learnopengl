@@ -25,6 +25,8 @@ namespace editor {
 
         void prepare(const PrepareContext& ctx) override;
 
+        void clear() override;
+
         void processInputs(
             const InputContext& ctx) override;
 

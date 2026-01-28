@@ -73,6 +73,9 @@ namespace editor
             });
     }
 
+    void ConsoleFrame::clear()
+    {}
+
     void ConsoleFrame::draw(
         const gui::FrameContext& ctx)
     {

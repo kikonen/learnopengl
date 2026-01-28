@@ -76,6 +76,19 @@ namespace editor {
         //m_state.m_showConsole = true;
     }
 
+    void EditorFrame::clear()
+    {
+        m_consoleFrame->clear();
+
+        m_statusTool->clear();
+        m_cameraTool->clear();
+        m_nodeTypeTool->clear();
+        m_nodeTool->clear();
+        m_viewportTool->clear();
+        m_debugTool->clear();
+        m_optionsTool->clear();
+    }
+
     void EditorFrame::processInputs(
         const InputContext& ctx)
     {

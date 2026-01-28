@@ -13,7 +13,7 @@
 #include "SphereVolume_format.h"
 
 namespace {
-    const glm::vec3 ZERO{ 0.f };
+    inline const glm::vec3 ZERO{ 0.f };
 }
 
 Sphere::Sphere(const glm::vec3& center, float radius) noexcept

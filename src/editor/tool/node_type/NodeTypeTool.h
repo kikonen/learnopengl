@@ -12,6 +12,8 @@ namespace editor
         NodeTypeTool(EditorFrame& editor);
         ~NodeTypeTool() override;
 
+        void clear() override;
+
         void drawImpl(
             const gui::FrameContext& ctx) override;
 

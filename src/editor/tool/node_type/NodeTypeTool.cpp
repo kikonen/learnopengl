@@ -60,6 +60,16 @@ namespace editor
 
     NodeTypeTool::~NodeTypeTool() = default;
 
+    void NodeTypeTool::clear()
+    {
+        m_state.m_selectedType = pool::TypeHandle::NULL_HANDLE;
+        m_state.m_selectedMesh = nullptr;
+
+        //m_state.m_selectedSocketIndex = -1;
+        //m_state.m_selectedAnimationIndex = -1;
+        //m_state.m_selectedClipIndex = -1;
+    }
+
     void NodeTypeTool::processInputs(
         const InputContext& ctx)
     {

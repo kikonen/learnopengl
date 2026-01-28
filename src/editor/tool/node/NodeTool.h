@@ -27,6 +27,8 @@ namespace editor
 
         void prepare(const PrepareContext& ctx) override;
 
+        void clear() override;
+
         void drawImpl(
             const gui::FrameContext& ctx) override;
 
