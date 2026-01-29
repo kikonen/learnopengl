@@ -17,9 +17,9 @@ struct Material {
   uvec2 opacityMapTex;
 
   // MRAS: [ambient-occlusion, metalness, roughness, specular]
+  // - occlusion: 0 = fully occluded, 1 = no occlusion
   // - metalness: 0 = dielectric, 1 = metal
   // - roughness: 0 = smooth/shiny, 1 = rough/matte
-  // - occlusion: 0 = fully occluded, 1 = no occlusion
   // - specular:  0 = no reflection, 1 = strong reflection
   uvec2 mrasMapTex;
 

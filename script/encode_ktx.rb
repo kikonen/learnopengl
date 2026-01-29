@@ -1,5 +1,9 @@
 # frozen_string_literal: true
 
+# ENV['UBY_DEBUG_HISTORY_FILE'] = File.absolute_path(
+#   "#{File.dirname(__FILE__)}/../.rdbg_history")
+# ENV['RUBY_DEBUG_SAVE_HISTORY'] = "10000"
+
 require 'open3'
 require 'debug'
 require 'yaml'
@@ -170,6 +174,7 @@ class Converter < Thor
 
   BUILD_SUFFIX = '_build'
 
+  NONE = '_'
   RED = 'R'
   GREEN = 'G'
   BLUE = 'B'
@@ -187,6 +192,7 @@ class Converter < Thor
   RED_BLUE_GREEN = 'RBG'
 
   MAGICK_CHANNELS = {
+    NONE => nil,
     RED => Magick::RedChannel,
     GREEN => Magick::GreenChannel,
     BLUE => Magick::BlueChannel,
@@ -195,9 +201,9 @@ class Converter < Thor
 
   # MRA + KHR_materials_specular
   # MRAS: [ambient-occlusion, metalness, roughness, specular]
+  # - occlusion: 0 = fully occluded, 1 = no occlusion
   # - metalness: 0 = dielectric, 1 = metal
   # - roughness: 0 = smooth/shiny, 1 = rough/matte
-  # - occlusion: 0 = fully occluded, 1 = no occlusion
   # - specular:  0 = no reflection, 1 = strong reflection
   MODE_MRAS = :mras
   MODE_OPACITY = :opacity
@@ -855,7 +861,7 @@ class Converter < Thor
           tex_info = {
             group: 'default',
             type: :metal_roughness,
-            action: :skip,
+            action: :combine,
             mode: MODE_MRAS,
             target_name: MRAS_MAP,
             source_channel: RED_GREEN,
@@ -865,7 +871,7 @@ class Converter < Thor
           tex_info = {
             group: 'default',
             type: :metal_roughness_occlusion,
-            action: :skip,
+            action: :combine,
             mode: MODE_MRAS,
             target_name: MRAS_MAP,
             source_channel: RED_GREEN_BLUE,
@@ -875,7 +881,7 @@ class Converter < Thor
           tex_info = {
             group: 'default',
             type: :roughness_metal_occlusion,
-            action: :skip,
+            action: :combine,
             mode: MODE_MRAS,
             target_name: MRAS_MAP,
             source_channel: RED_GREEN_BLUE,
@@ -885,7 +891,7 @@ class Converter < Thor
           tex_info = {
             group: 'default',
             type: :roughness_occlusion_metal,
-            action: :skip,
+            action: :combine,
             mode: MODE_MRAS,
             target_name: MRAS_MAP,
             source_channel: RED_GREEN_BLUE,
@@ -895,7 +901,7 @@ class Converter < Thor
           tex_info = {
             group: 'default',
             type: :occlusion_roughness_metal,
-            action: :skip,
+            action: :combine,
             mode: MODE_MRAS,
             target_name: MRAS_MAP,
             source_channel: RED_GREEN_BLUE,
@@ -1230,18 +1236,22 @@ class Converter < Thor
       }}"
     end
 
-    channel_counts = {}
+    channel_id_counts = {}
     parts.each do |tex_info|
-      channel_counts[tex_info.target_channel] ||= 0
-      channel_counts[tex_info.target_channel] += 1
+      tex_info.target_channel.each_char do |channel_id|
+        channel_id_counts[channel_id] ||= 0
+        channel_id_counts[channel_id] += 1
+      end
     end
 
-    if channel_counts.any? { |k, v| v > 1 }
-      duplicates = channel_counts
+    if channel_id_counts.any? { |k, v| v > 1 }
+      duplicates = channel_id_counts
         .select { |k, v| v > 1 }
         .map(&:first)
-        .map do |e|
-          parts.select { |p| p.target_channel == e }.map(&:name)
+        .map do |channel_id|
+          parts.select do |part|
+            part.target_channel.chars.any?(channel_id)
+          end.map(&:name)
         end
 
       raise "ERROR: duplicate channel mapping: #{{
@@ -1301,33 +1311,38 @@ class Converter < Thor
     target_h = target_size
 
     parts.each do |tex_info|
-      src_channel = select_channel(tex_info.source_channel)
-      dst_channel = select_channel(tex_info.target_channel)
+      src_channel_ids = tex_info.source_channel.chars
+      dst_channel_ids = tex_info.target_channel.chars
 
-      next unless src_channel && dst_channel
+      src_channel_ids.zip(dst_channel_ids).each do |src_channel_id, dst_channel_id|
+        src_channel = select_channel(src_channel_id)
+        dst_channel = select_channel(dst_channel_id)
 
-      src_path = "#{src_dir}/#{tex_info.name}"
+        next unless src_channel && dst_channel
 
-      puts "LOAD: [#{group}] #{dst_channel} = #{src_channel} #{src_path}"
+        src_path = "#{src_dir}/#{tex_info.name}"
 
-      # https://imagemagick.org/script/command-line-options.php#separate
-      # NOTE KI *NOT* supporting non power-of-2 images
-      # => should be resonable restriction
-      channel_img = Magick::Image.read(src_path)
-        .first
+        puts "LOAD: [#{group}] #{dst_channel} = #{src_channel} #{src_path}"
 
-      channel_img = channel_img
-        .separate(src_channel)[0]
-        .set_channel_depth(Magick::AllChannels, target_depth)
-      channel_img = scale_image(channel_img, target_size)
+        # https://imagemagick.org/script/command-line-options.php#separate
+        # NOTE KI *NOT* supporting non power-of-2 images
+        # => should be resonable restriction
+        channel_img = Magick::Image.read(src_path)
+          .first
 
-      target_w = channel_img.columns
-      target_h = channel_img.rows
+        channel_img = channel_img
+          .separate(src_channel)[0]
+          .set_channel_depth(Magick::AllChannels, target_depth)
+        channel_img = scale_image(channel_img, target_size)
 
-      target_channels[dst_channel] = {
-        image: channel_img,
-        channel: src_channel,
-      }
+        target_w = channel_img.columns
+        target_h = channel_img.rows
+
+        target_channels[dst_channel] = {
+          image: channel_img,
+          channel: src_channel,
+        }
+      end
     end
 
     img_list = Magick::ImageList.new
@@ -1736,13 +1751,13 @@ class Converter < Thor
   ####################
   # metadata
   ####################
-  def select_channel(ch)
-    MAGICK_CHANNELS[ch&.upcase]
+  def select_channel(channel_id)
+    MAGICK_CHANNELS[channel_id&.upcase]
   end
 
-  def select_channels(channels)
-    channels.chars.map do |ch|
-      MAGICK_CHANNELS[ch&.upcase]
+  def select_channels(channel_ids)
+    channel_ids.chars.map do |channel_id|
+      MAGICK_CHANNELS[channel_id&.upcase]
     end
   end
 
