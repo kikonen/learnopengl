@@ -343,6 +343,25 @@ namespace loader {
         return glm::vec3{ scale };
     }
 
+    glm::vec3 decodeHexToVec3(const std::string& hex)
+    {
+        return glm::vec3(
+            std::stoul(hex.substr(0, 2), nullptr, 16) / 255.0f,
+            std::stoul(hex.substr(2, 2), nullptr, 16) / 255.0f,
+            std::stoul(hex.substr(4, 2), nullptr, 16) / 255.0f
+        );
+    }
+
+    glm::vec4 decodeHexToVec4(const std::string& hex)
+    {
+        return glm::vec4(
+            std::stoul(hex.substr(0, 2), nullptr, 16) / 255.0f,
+            std::stoul(hex.substr(2, 2), nullptr, 16) / 255.0f,
+            std::stoul(hex.substr(4, 2), nullptr, 16) / 255.0f,
+            std::stoul(hex.substr(6, 2), nullptr, 16) / 255.0f
+        );
+    }
+
     glm::vec3 readRGB(const loader::DocNode& node)
     {
         if (node.isSequence()) {
@@ -364,8 +383,23 @@ namespace loader {
             return glm::vec3{ a[0], a[1], a[2] };
         }
 
-        auto r = readFloat(node);
-        return glm::vec3{ r, r, r };
+        auto encoded = readString(node);
+        if (util::isFloat(encoded)) {
+            auto r = readFloat(node);
+            return glm::vec3{ r, r, r };
+        }
+        else {
+            if (encoded.size() == 6) {
+                auto a = decodeHexToVec3(encoded);
+                return glm::vec3{ a.r, a.g, a.b };
+            }
+            else if (encoded.size() == 8) {
+                return decodeHexToVec4(encoded);
+            }
+            else {
+                return glm::vec3{ 1, 1, 1 };
+            }
+        }
     }
 
     glm::vec4 readRGBA(const loader::DocNode& node)
@@ -394,8 +428,22 @@ namespace loader {
             return glm::vec4{ a[0], a[1], a[2], a[3] };
         }
 
-        auto r = readFloat(node);
-        return glm::vec4{ r, r, r, DEF_ALPHA };
+        auto encoded = readString(node);
+        if (util::isFloat(encoded)) {
+            auto r = readFloat(node);
+            return glm::vec4{ r, r, r, DEF_ALPHA };
+        }
+        else {
+            if (encoded.size() == 6) {
+                auto a = decodeHexToVec3(encoded);
+                return glm::vec4{ a.r, a.g, a.b, 1.f };
+            } else if (encoded.size() == 8) {
+                return decodeHexToVec4(encoded);
+            }
+            else {
+                return glm::vec4{1, 1, 1, 1};
+            }
+        }
     }
 
     glm::quat readQuat(const loader::DocNode& node)
