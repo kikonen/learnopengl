@@ -494,6 +494,8 @@ std::shared_ptr<Scene> SampleApp::loadScene(
 
     unloadScene();
 
+    Assets::set(loadAssets());
+
     auto scene = std::make_shared<Scene>(*this);
 
     {
