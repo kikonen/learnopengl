@@ -297,6 +297,8 @@ namespace editor
 
         if (ImGui::CollapsingHeader("Rig", ImGuiTreeNodeFlags_DefaultOpen))
         {
+            ImGui::Text(rig->getName().c_str());
+
             const auto& clipContainer = rig->getClipContainer();
 
             {
