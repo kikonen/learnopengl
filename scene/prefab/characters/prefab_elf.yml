@@ -7,13 +7,28 @@ prefab:
         use_bones: true
         xuse_bones_debug: true
         use_animation: true
-      material:
-        name: elf_pbr
-        base: elf_female_pbr
-        map_kd: Elf_Female_RIG_female_body_AlbedoOpacity.png
-        xmras: [0.3, 0.4, 1]
-        xrender_back: true
-        xline_mode : true
+      materials:
+        - name: female_body
+          base: material/Elf Female 1
+          map_kd: Elf_Female_RIG_female_body_AlbedoOpacity.png
+          map_normal: Elf_Female_RIG_female_body_Normal.png
+          map_mras: Elf_Female_mras
+          #invert_metalness: true
+          invert_roughness: true
+        - name: female_elf_eyebrows
+          base: material/Elf Female 1
+          #map_kd: Elf_Female_RIG_female_body_AlbedoOpacity.png
+          #kd: [0.26, 0.7, 0.38]
+          kd: 6c5150
+          #invert_metalness: true
+          invert_roughness: true
+        - name: eyeshine
+          base: material/Elf Female 1
+          #map_kd: Elf_Female_RIG_female_body_AlbedoOpacity.png
+          kd: 6c51ff
+          ke: 6c51ff
+          #invert_metalness: true
+          invert_roughness: true
       sockets:
         - name: physics_center
           joint: Base-HumanSpine1
