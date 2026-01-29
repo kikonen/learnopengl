@@ -373,6 +373,7 @@ namespace mesh_set
                 material = &m_defaultMaterial;
             }
             modelMesh.setMaterial(material);
+            modelMesh.m_name = fmt::format("{}-{}", modelMesh.m_name, material->m_name);
 
             //modelMesh.setMaterial(Material::createMaterial(BasicMaterial::blue));
         }

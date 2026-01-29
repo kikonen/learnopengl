@@ -226,7 +226,7 @@ namespace mesh_set
     {
         auto rig = std::make_shared<animation::Rig>();
         rig->m_name = name;
-        rig->m_skeletonNode = assimp_util::normalizeName(skeletonRoot->mName);
+        rig->m_skeletonRootNodeName = assimp_util::normalizeName(skeletonRoot->mName);
 
         const auto* rootTreeNode = tree.findByNode(rigRoot);
         if (!rootTreeNode) return nullptr;

@@ -244,7 +244,7 @@ namespace animation
         KI_INFO_OUT(fmt::format(
             "\n=======================\n[RIG SUMMARY: {} ({}) - {} joints]\nHIERARCHY:\n{}\nANIMATIONS:\n{}\nSOCKETS:\n{}\n=======================",
             m_name,
-            m_skeletonNode,
+            m_skeletonRootNodeName,
             m_jointContainer.size(),
             getHierarchySummary(0),
             getAnimationSummary(0),

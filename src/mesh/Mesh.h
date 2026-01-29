@@ -155,7 +155,7 @@ namespace mesh {
 
         bool m_preparedVAO : 1 { false };
 
-        const std::string m_name;
+        std::string m_name;
         std::string m_alias;
 
         util::Transform m_offset;

@@ -122,7 +122,8 @@ namespace animation
 
     private:
         std::string m_name;
-        std::string m_skeletonNode;
+        // skeleton_root = common ancestor of joints in rig
+        std::string m_skeletonRootNodeName;
         std::vector<animation::RigNode> m_nodes;
 
         std::vector<animation::RigSocket> m_sockets;
