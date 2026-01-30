@@ -113,7 +113,7 @@ std::shared_future<std::shared_ptr<mesh::MeshSet>> MeshSetRegistry::startLoad(
             try {
                 const auto assets = Assets::get();
 
-                KI_DEBUG(fmt::format("START_Importer: {}", meshSet->str()));
+                KI_DEBUG(fmt::format("MESH_SET::START_IMPORTER: {}", meshSet->str()));
 
                 std::unique_ptr<mesh_set::MeshSetImporter> importer;
 
@@ -121,7 +121,7 @@ std::shared_future<std::shared_ptr<mesh::MeshSet>> MeshSetRegistry::startLoad(
                     importer = std::make_unique<mesh_set::AssimpImporter>(m_alive, assets.assimpDebug);
                 }
                 else {
-                    throw "no Importer";
+                    throw "MESH_SET::NO_IMPORTER";
                 }
 
                 auto loaded = importer->load(*meshSet, m_defaultMaterial.get(), m_forceDefaultMaterial);
@@ -131,27 +131,27 @@ std::shared_future<std::shared_ptr<mesh::MeshSet>> MeshSetRegistry::startLoad(
                     p.set_value(meshSet);
                 }
                 else {
-                    KI_CRITICAL(fmt::format("MODEL_ERROR: Invalid mesh: {}", meshSet->str()));
+                    KI_CRITICAL(fmt::format("MESH_SET: Invalid mesh: {}", meshSet->str()));
                     p.set_value(nullptr);
                 }
             }
             catch (const std::exception& ex) {
-                KI_CRITICAL(fmt::format("MODEL_ERROR: {}", ex.what()));
+                KI_CRITICAL(fmt::format("MESH_SET: {}", ex.what()));
                 lastException = std::current_exception();
                 p.set_exception(lastException);
             }
             catch (const std::string& ex) {
-                KI_CRITICAL(fmt::format("MODEL_ERROR: {}", ex));
+                KI_CRITICAL(fmt::format("MESH_SET: {}", ex));
                 lastException = std::current_exception();
                 p.set_exception(lastException);
             }
             catch (const char* ex) {
-                KI_CRITICAL(fmt::format("MODEL_ERROR: {}", ex));
+                KI_CRITICAL(fmt::format("MESH_SET: {}", ex));
                 lastException = std::current_exception();
                 p.set_exception(lastException);
             }
             catch (...) {
-                KI_CRITICAL(fmt::format("MODEL_ERROR: {}", "UNKNOWN_ERROR"));
+                KI_CRITICAL(fmt::format("MESH_SET: {}", "UNKNOWN_ERROR"));
                 lastException = std::current_exception();
                 p.set_exception(lastException);
             }

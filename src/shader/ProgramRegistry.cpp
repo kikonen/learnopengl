@@ -44,11 +44,11 @@ ProgramRegistry::ProgramRegistry()
 
 ProgramRegistry::~ProgramRegistry()
 {
-    KI_INFO("PROGRAM_REGISTRY: delete");
+    KI_INFO("PROGRAM::REGISTRY: delete");
     for (auto& program : m_programs) {
         if (!program) continue;
         KI_INFO(fmt::format(
-            "PROGRAM_REGISTRY: delete PROGRAM {}",
+            "PROGRAM::REGISTRY: delete PROGRAM {}",
             program->m_key));
     }
     m_programs.clear();
@@ -61,7 +61,7 @@ void ProgramRegistry::updateRT(const UpdateContext& ctx)
     for (auto& program : m_programs) {
         if (!program) continue;
         if (program->isLoaded() && !program->isPrepared()) {
-            KI_INFO_OUT(fmt::format("PROGRAM_PREPARE: {}", program->m_key));
+            KI_INFO_OUT(fmt::format("PROGRAM::PREPARE: {}", program->m_key));
             program->prepareRT();
         }
     }
@@ -100,7 +100,7 @@ void ProgramRegistry::dirtyCheck(const UpdateContext& ctx)
 
             const auto isDirty = std::find(dirty.begin(), dirty.end(), program->m_id) != dirty.end();
             if (isDirty || program->isModified()) {
-                KI_INFO_OUT(fmt::format("PROGRAM_RELOAD: {}", program->m_key));
+                KI_INFO_OUT(fmt::format("PROGRAM::RELOAD: {}", program->m_key));
                 program->reload();
             }
         }

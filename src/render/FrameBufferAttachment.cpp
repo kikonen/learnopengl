@@ -49,7 +49,7 @@ namespace render {
                 kigl::setLabel(GL_TEXTURE, att.textureID, attName);
                 createdTexture = true;
 
-                KI_INFO(fmt::format("CREATE_TEX: name={}, TEX={}", attName, att.textureID));
+                KI_INFO(fmt::format("FBO::CREATE_TEX: name={}, TEX={}", attName, att.textureID));
 
                 glTextureStorage2D(att.textureID, 1, att.internalFormat, width, height);
 
@@ -66,7 +66,7 @@ namespace render {
                 kigl::setLabel(GL_RENDERBUFFER, att.rbo, attName);
                 createdRbo = true;
 
-                KI_INFO(fmt::format("CREATE_RBO: name={}, RBO={}", attName, att.rbo));
+                KI_INFO(fmt::format("FBO::CREATE_RBO: name={}, RBO={}", attName, att.rbo));
 
                 glNamedRenderbufferStorage(att.rbo, att.internalFormat, width, height);
             }
@@ -75,7 +75,7 @@ namespace render {
                 kigl::setLabel(GL_TEXTURE, att.textureID, attName);
                 createdTexture = true;
 
-                KI_INFO(fmt::format("CREATE_DEPTH: name={}, DEPTH={}", attName, att.textureID));
+                KI_INFO(fmt::format("FBO::CREATE_DEPTH: name={}, DEPTH={}", attName, att.textureID));
 
                 glTextureStorage2D(att.textureID, 1, att.internalFormat, width, height);
 
@@ -92,7 +92,7 @@ namespace render {
                 kigl::setLabel(GL_TEXTURE, att.textureID, attName);
                 createdTexture = true;
 
-                KI_INFO(fmt::format("CREATE_DEPTH_STENCIL: name={}, DEPTH={}", attName, att.textureID));
+                KI_INFO(fmt::format("FBO::CREATE_DEPTH_STENCIL: name={}, DEPTH={}", attName, att.textureID));
 
                 glTextureStorage2D(att.textureID, 1, att.internalFormat, width, height);
 
@@ -109,7 +109,7 @@ namespace render {
                 kigl::setLabel(GL_TEXTURE, att.textureID, attName);
                 createdTexture = true;
 
-                KI_INFO(fmt::format("CREATE_SHADOW: name={}, DEPTH={}", attName, att.textureID));
+                KI_INFO(fmt::format("FBO::CREATE_SHADOW: name={}, DEPTH={}", attName, att.textureID));
 
                 glTextureStorage2D(att.textureID, 1, att.internalFormat, width, height);
 

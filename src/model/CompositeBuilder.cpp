@@ -76,7 +76,7 @@ namespace
         }
         else {
             auto nodeId = SID(baseId);
-            KI_DEBUG(fmt::format("SID: sid={}, key={}", nodeId, baseId));
+            KI_DEBUG(fmt::format("MODEL::SID: sid={}, key={}", nodeId, baseId));
             return { nodeId, baseId };
         }
     }
@@ -152,7 +152,7 @@ namespace model
         std::vector<std::pair<std::string, ki::node_id>> aliases)
     {
         if (!compositeData.m_nodes) {
-            KI_WARN_OUT(fmt::format("IGNORE: COMPOSITE_NO_NODES - composite={} parentId={}", compositeData.m_id, parentId));
+            KI_WARN_OUT(fmt::format("MODEL::IGNORE: COMPOSITE_NO_NODES - composite={} parentId={}", compositeData.m_id, parentId));
             return false;
         }
 
@@ -253,19 +253,19 @@ namespace model
             }
         }
         catch (const std::runtime_error& ex) {
-            KI_CRITICAL(fmt::format("COMPOSITE_ERROR: RESOLVE_NODE - {}", ex.what()));
+            KI_CRITICAL(fmt::format("MODEL::COMPOSITE_ERROR: RESOLVE_NODE - {}", ex.what()));
         }
         catch (const std::exception& ex) {
-            KI_CRITICAL(fmt::format("COMPOSITE_ERROR: RESOLVE_NODE - {}", ex.what()));
+            KI_CRITICAL(fmt::format("MODEL::COMPOSITE_ERROR: RESOLVE_NODE - {}", ex.what()));
         }
         catch (const std::string& ex) {
-            KI_CRITICAL(fmt::format("COMPOSITE_ERROR: RESOLVE_NODE - {}", ex));
+            KI_CRITICAL(fmt::format("MODEL::COMPOSITE_ERROR: RESOLVE_NODE - {}", ex));
         }
         catch (const char* ex) {
-            KI_CRITICAL(fmt::format("COMPOSITE_ERROR: RESOLVE_NODE - {}", ex));
+            KI_CRITICAL(fmt::format("MODEL::COMPOSITE_ERROR: RESOLVE_NODE - {}", ex));
         }
         catch (...) {
-            KI_CRITICAL(fmt::format("COMPOSITE_ERROR: RESOLVE_NODE - {}", "UNKNOWN_ERROR"));
+            KI_CRITICAL(fmt::format("MODEL::COMPOSITE_ERROR: RESOLVE_NODE - {}", "UNKNOWN_ERROR"));
         }
     }
 
@@ -366,7 +366,7 @@ namespace model
             nodeData.m_typeId,
             nodeData.m_id);
 
-        KI_INFO("NODE_SID: " + resolvedSID);
+        KI_INFO("MODEL::NODE_SID: " + resolvedSID);
 
         auto handle = pool::NodeHandle::allocate(nodeId);
         auto* node = handle.toNode();

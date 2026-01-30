@@ -62,7 +62,7 @@ namespace animation
             }
 
             KI_DEBUG(fmt::format(
-                "LUT_GEN: clip={}, ticks=[{:.1f},{:.1f}] lastKeyBefore={:.1f} firstKeyAfter={:.1f} totalKeys={}",
+                "ASSIMP::LUT_GEN: clip={}, ticks=[{:.1f},{:.1f}] lastKeyBefore={:.1f} firstKeyAfter={:.1f} totalKeys={}",
                 clipName, firstTick, lastTick, lastKeyBefore, firstKeyAfter, origTimes.size()));
         }
 

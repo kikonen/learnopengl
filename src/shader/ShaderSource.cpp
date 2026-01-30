@@ -193,19 +193,19 @@ std::vector<std::string> ShaderSource::loadSourceLines(
             lineNumber++;
         }
 
-        KI_INFO(fmt::format("FILE_LOADED: {}", path));
+        KI_INFO(fmt::format("PROGRAMM::FILE_LOADED: {}", path));
 
         file.close();
     }
     catch (std::ifstream::failure e) {
         if (!optional) {
             KI_ERROR(fmt::format(
-                "PROGRAM_ERROR: FILE_NOT_SUCCESFULLY_READ program={}, path={}",
+                "PROGRAM::ERROR: FILE_NOT_SUCCESFULLY_READ program={}, path={}",
                 program.m_programName, path));
         }
         else {
             KI_DEBUG(fmt::format(
-                "PROGRAM_ERROR: FILE_NOT_SUCCESFULLY_READ program={}, path={}",
+                "PROGRAM::ERROR: FILE_NOT_SUCCESFULLY_READ program={}, path={}",
                 program.m_programName, path));
         }
         throw e;
