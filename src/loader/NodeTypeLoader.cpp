@@ -299,7 +299,7 @@ namespace loader {
 
         if (data.enabled) {
             if (data.type == NodeKind::none) {
-                auto msg = fmt::format("INVALID: type missing - id={}", data.baseId);
+                auto msg = fmt::format("LOADER::NODE::INVALID: type missing - id={}", data.baseId);
                 KI_INFO_OUT(msg);
                 data.enabled = false;
             }
@@ -347,11 +347,11 @@ namespace loader {
 
         const auto& fullPath = util::joinPath(m_ctx->m_dirName, path);
 
-        KI_INFO_OUT(fmt::format("node_prefab={}", fullPath));
+        KI_INFO_OUT(fmt::format("LOADER::NODE: prefab={}", fullPath));
 
         if (!util::fileExists(fullPath))
         {
-            throw fmt::format("INVALID: node_prefab missing - path={}", fullPath);
+            throw fmt::format("LOADER::NODE::INVALID: node_prefab missing - path={}", fullPath);
         }
 
         loader::YamlConverter converter;

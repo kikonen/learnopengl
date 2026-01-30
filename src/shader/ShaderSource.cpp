@@ -126,7 +126,7 @@ std::vector<std::string> ShaderSource::loadSourceLines(
 
     if (!fileEntry) {
         if (!optional) {
-            std::string msg = fmt::format("ERROR: FILE_NOT_EXIST: {}", path);
+            std::string msg = fmt::format("PROGRAM::ERROR::FILE_NOT_FOUND: {}", path);
             KI_WARN_OUT(msg);
             return {
                 fmt::format("// {}", msg)

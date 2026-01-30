@@ -49,7 +49,8 @@ namespace mesh_set
 
         std::shared_ptr<animation::Rig> toRig(
             const aiScene* scene,
-            const mesh_set::NodeTree& tree) const;
+            const mesh_set::NodeTree& tree,
+            const std::string& meshSetName) const;
     };
 
     struct MeshAssociation
@@ -63,6 +64,8 @@ namespace mesh_set
         friend class AssimpImporter;
 
     public:
+        SkeletonSet(const std::string& meshSetName);
+
         void resolve(const aiScene* scene);
         std::shared_ptr<animation::Rig> findRig(const aiMesh* mesh) const;
 
@@ -73,6 +76,8 @@ namespace mesh_set
         void buildRigs(const aiScene* scene);
 
     private:
+        std::string m_meshSetName;
+
         std::shared_ptr<NodeTree> m_tree;
 
         std::shared_ptr<mesh_set::SkeletonExtract> m_extract;

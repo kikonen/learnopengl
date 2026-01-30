@@ -539,7 +539,7 @@ namespace
                 meshSetName, materialName, texInfo.name, texIndex);
 
             KI_INFO_OUT(fmt::format(
-                "ASSIMP: TEXTURE mesh_set={}, material={}, name={}, index={}/{}",
+                "ASSIMP::TEXTURE mesh_set={}, material={}, name={}, index={}/{}",
                 meshSetName,
                 materialName,
                 texName,
@@ -593,7 +593,8 @@ namespace mesh_set
         const auto name = const_cast<aiMaterial*>(src)->GetName().C_Str();
 
         if (m_debug) {
-            KI_INFO_OUT(fmt::format("ASSIMP: MATERIAL mesh_set={}, name={}, properties={}, allocated={}",
+            KI_INFO_OUT(fmt::format(
+                "ASSIMP::MATERIAL mesh_set={}, name={}, properties={}, allocated={}",
                 meshSet.m_name,
                 name,
                 src->mNumProperties,
@@ -737,7 +738,7 @@ namespace mesh_set
         }
 
         if (m_debug) {
-            KI_INFO_OUT(fmt::format("ASSIMP: TEX mesh_set={}, path={}, was={}",
+            KI_INFO_OUT(fmt::format("ASSIMP::TEX mesh_set={}, path={}, was={}",
                 meshSet.m_name,
                 assetPath,
                 origPath));

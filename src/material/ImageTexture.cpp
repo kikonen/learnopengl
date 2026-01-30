@@ -143,7 +143,7 @@ void ImageTexture::prepareNormal()
     }
     else {
         KI_WARN(fmt::format(
-            "IMAGE: unsupported channels {}, image={}",
+            "TEX::PREPARE: unsupported channels {}, image={}",
             m_channels, str()));
         m_valid = false;
         if (!m_shared) {
@@ -187,7 +187,7 @@ void ImageTexture::prepareNormal()
         GLint compFlag;
         glGetTextureLevelParameteriv(m_textureID, 0, GL_TEXTURE_COMPRESSED, &compFlag);
         KI_INFO(fmt::format(
-            "TEX_UPLOAD: {}, compressed={}\n{}",
+            "TEX::UPLOAD: {}, compressed={}\n{}",
             m_path,
             compFlag,
             str()));
@@ -218,7 +218,7 @@ void ImageTexture::prepareKtx()
         &kTexture);
 
     if (result) {
-        KI_ERROR(fmt::format("Failed to open ktx: {}", m_image->m_path));
+        KI_ERROR(fmt::format("TEX::UPLOAD: Failed to open ktx: {}", m_image->m_path));
         if (!m_shared) {
             m_image.reset();
         }
@@ -233,7 +233,7 @@ void ImageTexture::prepareKtx()
     ktxTexture_Destroy(kTexture);
 
     if (result) {
-        KI_ERROR(fmt::format("Failed to upload ktx: {}", m_image->m_path));
+        KI_ERROR(fmt::format("TEX::UPLOAD: Failed to upload ktx: {}", m_image->m_path));
         if (!m_shared) {
             m_image.reset();
         }
@@ -243,7 +243,7 @@ void ImageTexture::prepareKtx()
     GLint compFlag;
     glGetTextureLevelParameteriv(m_textureID, 0, GL_TEXTURE_COMPRESSED, &compFlag);
     KI_INFO(fmt::format(
-        "TEX_UPLOAD: path={}, compressed={}\n{}",
+        "TEX::UPLOAD: path={}, compressed={}\n{}",
         m_image->m_path,
         compFlag,
         str()));

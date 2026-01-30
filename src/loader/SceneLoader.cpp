@@ -76,7 +76,7 @@ namespace loader {
 
     SceneLoader::~SceneLoader()
     {
-        //KI_INFO(fmt::format("SCENE_FILE: delete - ctx={}", m_ctx->str()));
+        //KI_INFO(fmt::format("LOADER::SCENE_FILE: delete - ctx={}", m_ctx->str()));
     }
 
     void SceneLoader::destroy()
@@ -104,7 +104,7 @@ namespace loader {
     void SceneLoader::load()
     {
         if (!util::fileExists(m_ctx->m_fullPath)) {
-            throw std::runtime_error{ fmt::format("FILE_NOT_EXIST: {}", m_ctx->str()) };
+            throw std::runtime_error{ fmt::format("FILE_NOT_FOUND: {}", m_ctx->str()) };
         }
 
         std::lock_guard lock(m_ready_lock);
@@ -126,19 +126,19 @@ namespace loader {
                 attach(*m_sceneData->m_root);
             }
             catch (const std::runtime_error& ex) {
-                KI_CRITICAL(fmt::format("SCENE_ERROR: LOAD - {}", ex.what()));
+                KI_CRITICAL(fmt::format("LOADER::SCENE_ERROR: LOAD - {}", ex.what()));
             }
             catch (const std::exception& ex) {
-                KI_CRITICAL(fmt::format("SCENE_ERROR: LOAD - {}", ex.what()));
+                KI_CRITICAL(fmt::format("LOADER::SCENE_ERROR: LOAD - {}", ex.what()));
             }
             catch (const std::string& ex) {
-                KI_CRITICAL(fmt::format("SCENE_ERROR: RESOLVE_NODE - {}", ex));
+                KI_CRITICAL(fmt::format("LOADER::SCENE_ERROR: RESOLVE_NODE - {}", ex));
             }
             catch (const char* ex) {
-                KI_CRITICAL(fmt::format("SCENE_ERROR: RESOLVE_NODE - {}", ex));
+                KI_CRITICAL(fmt::format("LOADER::SCENE_ERROR: RESOLVE_NODE - {}", ex));
             }
             catch (...) {
-                KI_CRITICAL(fmt::format("SCENE_ERROR: RESOLVE_NODE - {}", "UNKNOWN_ERROR"));
+                KI_CRITICAL(fmt::format("LOADER::SCENE_ERROR: RESOLVE_NODE - {}", "UNKNOWN_ERROR"));
             }
 
             std::lock_guard lock(m_ready_lock);
@@ -154,7 +154,7 @@ namespace loader {
         m_pendingCount--;
 
         KI_INFO_OUT(fmt::format(
-            "LOADED: type={}, node={}.{}, pending={}",
+            "LOADER::LOADED: type={}, node={}.{}, pending={}",
             nodeData.typeId, nodeData.baseId.str(), nodeData.name, m_pendingCount));
 
         if (m_pendingCount > 0) return;
@@ -169,23 +169,23 @@ namespace loader {
                 notifySceneLoaded();
             }
             catch (const std::runtime_error& ex) {
-                KI_CRITICAL(fmt::format("SCENE_ERROR: LOADED_NODE - {}", ex.what()));
+                KI_CRITICAL(fmt::format("LOADER::SCENE_ERROR: LOADED_NODE - {}", ex.what()));
                 throw ex;
             }
             catch (const std::exception& ex) {
-                KI_CRITICAL(fmt::format("SCENE_ERROR: LOADED_NODE - {}", ex.what()));
+                KI_CRITICAL(fmt::format("LOADER::SCENE_ERROR: LOADED_NODE - {}", ex.what()));
                 throw ex;
             }
             catch (const std::string& ex) {
-                KI_CRITICAL(fmt::format("SCENE_ERROR: LOADED_NODE - {}", ex));
+                KI_CRITICAL(fmt::format("LOADER::SCENE_ERROR: LOADED_NODE - {}", ex));
                 throw ex;
             }
             catch (const char* ex) {
-                KI_CRITICAL(fmt::format("SCENE_ERROR: LOADED_NODE - {}", ex));
+                KI_CRITICAL(fmt::format("LOADER::SCENE_ERROR: LOADED_NODE - {}", ex));
                 throw ex;
             }
             catch (...) {
-                KI_CRITICAL(fmt::format("SCENE_ERROR: LOADED_NODE - {}", "UNKNOWN_ERROR"));
+                KI_CRITICAL(fmt::format("LOADER::SCENE_ERROR: LOADED_NODE - {}", "UNKNOWN_ERROR"));
                 throw std::current_exception();
             }
         });
@@ -243,12 +243,12 @@ namespace loader {
                 if (m_nodeBuilder->resolveNode(root.rootId, 0, node, m_ctx, m_loaders)) {
                     m_pendingCount++;
                     KI_INFO_OUT(fmt::format(
-                        "START: type={}, node={}.{}, pending={}",
+                        "LOADER::START: type={}, node={}.{}, pending={}",
                         node.typeId, node.baseId.str(), node.name, m_pendingCount));
                 }
             }
 
-            KI_INFO_OUT(fmt::format("TOTAL: pending={}", m_pendingCount));
+            KI_INFO_OUT(fmt::format("LOADER::TOTAL: pending={}", m_pendingCount));
         }
     }
 
@@ -344,7 +344,7 @@ namespace loader {
         }
 
         if (pass1Errors > 0 || pass2Errors > 0) {
-            auto msg = fmt::format("SCENE_ERROR: VALIDATE: FAILED - pass1={}, pass2={}", pass1Errors, pass2Errors);
+            auto msg = fmt::format("LOADER::SCENE_ERROR: VALIDATE: FAILED - pass1={}, pass2={}", pass1Errors, pass2Errors);
             KI_CRITICAL(msg);
             throw std::runtime_error{ msg };
         }
@@ -427,13 +427,13 @@ namespace loader {
             }
 
             if (const auto& it = collectedIds.find(sid); it != collectedIds.end()) {
-                auto msg = fmt::format("SCENE_ERROR: SID CONFLICT: {} = {} (WAS: {})", sid, resolvedSID, it->second);
+                auto msg = fmt::format("LOADER::SCENE_ERROR: SID CONFLICT: {} = {} (WAS: {})", sid, resolvedSID, it->second);
                 KI_CRITICAL(msg);
                 errorCount++;
             }
             collectedIds[sid] = resolvedSID;
 
-            KI_INFO("NODE_SID: " + resolvedSID);
+            KI_INFO("LOADER::NODE_SID: " + resolvedSID);
         }
 
         if (pass == 1) {
@@ -446,7 +446,7 @@ namespace loader {
 
                 // TODO KI validate missing
                 if (collectedIds.find(sid) == collectedIds.end()) {
-                    auto msg = fmt::format("SCENE_ERROR: PARENT SID MISSING: {} = {}", sid, resolvedSID);
+                    auto msg = fmt::format("LOADER::SCENE_ERROR: PARENT SID MISSING: {} = {}", sid, resolvedSID);
                     KI_CRITICAL(msg);
                     errorCount++;
                 }

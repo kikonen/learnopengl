@@ -104,7 +104,7 @@ namespace mesh_set
             }
 
             KI_INFO_OUT(fmt::format(
-                "ASSIMP: META level={}, node={}, key={}, value={}",
+                "ASSIMP::META level={}, node={}, key={}, value={}",
                 level,
                 nodeName,
                 formattedKey,

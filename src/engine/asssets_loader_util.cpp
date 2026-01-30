@@ -184,7 +184,7 @@ namespace assets {
         const YAML::Node& v)
     {
         std::string prefix = k.starts_with("xx") ? "DISABLED" : "UNKNOWN";
-        KI_WARN_OUT(fmt::format("{} {}: {}={}", prefix, scope, k, renderNode(v)));
+        KI_WARN_OUT(fmt::format("ASSETS::{} {}: {}={}", prefix, scope, k, renderNode(v)));
     }
 
     std::string renderNode(

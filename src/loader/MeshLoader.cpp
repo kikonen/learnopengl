@@ -106,7 +106,7 @@ namespace loader {
             else if (k == "animations") {
                 loadAnimations(v, data.animations);
             }
-            else if (k == "default_programs") {
+            else if (k == "default_programs" || k == "default_program") {
                 data.defaultPrograms = readBool(v);
             }
             else if (k == "program") {
@@ -135,7 +135,7 @@ namespace loader {
                     data.materials.emplace_back();
                 }
                 auto& materialData = data.materials[0];
-                materialData.aliasName = "*";
+                materialData.aliasName = MATERIAL_ALIAS_ANY;
                 loaders.m_materialLoader.loadMaterial(v, materialData, loaders);
                 materialData.materialName = materialData.material.m_name;
             }
@@ -173,7 +173,7 @@ namespace loader {
             }
             else if (k == "lod") {
                 auto& lod = data.lods.emplace_back();
-                lod.name = "*";
+                lod.name = LOD_ALIAS_ANY;
                 loadLod(v, lod, loaders);
             }
             else if (k == "lods") {

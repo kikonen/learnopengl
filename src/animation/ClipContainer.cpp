@@ -75,7 +75,7 @@ namespace animation {
         anim->m_index = index;
 
         KI_INFO_OUT(fmt::format(
-            "ASSIMP: ADD_ANIMATION: name={}, index={}",
+            "ASSIMP::ADD_ANIMATION: name={}, index={}",
             anim->m_name,
             anim->m_index));
 
@@ -131,8 +131,8 @@ namespace animation {
                 // Debug: show actual keyTime values at boundaries
                 float nextKeyTime = clip.m_lastFrame < keyTimes.size() ? keyTimes[clip.m_lastFrame] : -1.f;
 
-                KI_INFO_OUT(fmt::format(
-                    "ASSIMP: CLIP_TICK_TO_INDEX: name={}, ticks=[{},{}] -> indices=[{},{}) keyTimes=[{:.1f},{:.1f}] next={:.1f}, size={}",
+                KI_DEBUG(fmt::format(
+                    "ASSIMP::CLIP_TICK_TO_INDEX: name={}, ticks=[{},{}] -> indices=[{},{}) keyTimes=[{:.1f},{:.1f}] next={:.1f}, size={}",
                     clip.m_uniqueName,
                     tickFirst, tickLast,
                     clip.m_firstFrame, clip.m_lastFrame,
@@ -154,7 +154,7 @@ namespace animation {
             }
             else if (auto max = anim->getMaxFrame(); clip.m_lastFrame > max) {
                 KI_WARN_OUT(fmt::format(
-                    "ASSIMP: CLIP_OUT_OF_BOUNDS: name={}, index={}, animName={}, animIndex={}, range=[{},{}], max={}",
+                    "ASSIMP::CLIP_OUT_OF_BOUNDS: name={}, index={}, animName={}, animIndex={}, range=[{},{}], max={}",
                     clip.m_uniqueName,
                     clip.m_index,
                     clip.m_animationName,
@@ -172,8 +172,8 @@ namespace animation {
             clip.m_durationSecs = animationTimeToSecs(clip.m_animationIndex, clip.m_duration);
         }
 
-        KI_INFO_OUT(fmt::format(
-            "ASSIMP: ADD_CLIP: name={}, index={}, animName={}, animIndex={}, range=[{},{}]",
+        KI_DEBUG(fmt::format(
+            "ASSIMP::ADD_CLIP: name={}, index={}, animName={}, animIndex={}, range=[{},{}]",
             clip.m_uniqueName,
             clip.m_index,
             clip.m_animationName,
@@ -224,8 +224,8 @@ namespace animation {
             lut.generate(channel, clip.m_uniqueName, clip.m_firstTick, clip.m_lastTick);
         }
 
-        KI_INFO_OUT(fmt::format(
-            "ASSIMP: CLIP_LUT: clip={}, channels={}, nodes={}",
+        KI_DEBUG(fmt::format(
+            "ASSIMP::CLIP_LUT: clip={}, channels={}, nodes={}",
             clip.m_uniqueName,
             channels.size(),
             maxNodeIndex + 1));

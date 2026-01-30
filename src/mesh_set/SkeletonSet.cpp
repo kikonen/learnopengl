@@ -67,7 +67,7 @@ namespace
 
             if (!treeNode) {
                 KI_INFO_OUT(fmt::format(
-                    "joint_node_missing={}",
+                    "ASSIMP::RIG: joint_node_missing={}",
                     assimp_util::normalizeName(node->mName)));
                 continue;
             }
@@ -109,7 +109,7 @@ namespace
         }
 
         KI_INFO_OUT(fmt::format(
-            "found_root={}",
+            "ASSIMP::RIG: found_root={}",
             rootTreeNode ? rootTreeNode->name : "<NULL>"));
 
         return rootTreeNode ? rootTreeNode->node : nullptr;
@@ -129,7 +129,7 @@ namespace
                 jointNodes.insert(treeNode->node);
             }
             else {
-                KI_INFO_OUT(fmt::format("ERROR: JOINT_NOT_FOUND: {}", nodeName));
+                KI_INFO_OUT(fmt::format("ASSIMP::ERROR: JOINT_NOT_FOUND: {}", nodeName));
             }
         }
 
@@ -189,7 +189,7 @@ namespace mesh_set
         {
             for (const auto& riggedSkeleton : result->m_riggedSkeletons) {
                 KI_INFO_OUT(fmt::format(
-                    "RIGGED: index={}, root={}, rigRoot={}",
+                    "ASSIMP::RIGGED: index={}, root={}, rigRoot={}",
                     riggedSkeleton.index,
                     assimp_util::normalizeName(riggedSkeleton.skeletonRoot->mName),
                     assimp_util::normalizeName(riggedSkeleton.rigRoot->mName)));
@@ -199,7 +199,7 @@ namespace mesh_set
                 const auto& riggedSkeleton = result->m_riggedSkeletons[skeletonIndex];
 
                 KI_INFO_OUT(fmt::format(
-                    "MESH: {}: skeleton={}, [{}]",
+                    "ASSIMP::MESH: {}: skeleton={}, [{}]",
                     assimp_util::normalizeName(mesh->mName),
                     skeletonIndex,
                     assimp_util::normalizeName(riggedSkeleton.rigRoot->mName)));
@@ -222,11 +222,14 @@ namespace mesh_set
 
     std::shared_ptr<animation::Rig> Skeleton::toRig(
         const aiScene* scene,
-        const mesh_set::NodeTree& tree) const
+        const mesh_set::NodeTree& tree,
+        const std::string& meshSetName) const
     {
         auto rig = std::make_shared<animation::Rig>();
         rig->m_skeletonRootNodeName = assimp_util::normalizeName(skeletonRoot->mName);
-        rig->m_name = fmt::format("{}-{}", name, rig->m_skeletonRootNodeName);
+        rig->m_name = fmt::format(
+            "{}-{}-{}",
+            meshSetName, name, rig->m_skeletonRootNodeName);
 
         const auto* rootTreeNode = tree.findByNode(rigRoot);
         if (!rootTreeNode) return nullptr;
@@ -265,6 +268,10 @@ namespace mesh_set
         return rig;
     }
 
+    SkeletonSet::SkeletonSet(const std::string& meshSetName)
+        : m_meshSetName{ meshSetName }
+    {}
+
     void SkeletonSet::resolve(const aiScene* scene)
     {
         m_tree = std::make_shared<mesh_set::NodeTree>(scene);
@@ -302,10 +309,11 @@ namespace mesh_set
         }
     }
 
-    void SkeletonSet::buildRigs(const aiScene* scene)
+    void SkeletonSet::buildRigs(
+        const aiScene* scene)
     {
         for (const auto& skeleton : m_skeletons) {
-            m_rigs.push_back(skeleton.toRig(scene, *m_tree));
+            m_rigs.push_back(skeleton.toRig(scene, *m_tree, m_meshSetName));
         }
     }
 

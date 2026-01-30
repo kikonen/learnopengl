@@ -115,13 +115,13 @@ namespace mesh_set
 
         const auto& assets = Assets::get();
 
-        KI_INFO_OUT(fmt::format("ASSIMP: LOAD_FILE mesh_set={}, path={}",
+        KI_INFO_OUT(fmt::format("ASSIMP::LOAD_FILE mesh_set={}, path={}",
             meshSet.m_name,
             meshSet.m_filePath));
 
         if (!util::fileExists(meshSet.m_filePath)) {
             throw std::runtime_error{ fmt::format(
-                "FILE_NOT_EXIST: mesh_set={}, path={}",
+                "ASSIMP::FILE_NOT_FOUND: mesh_set={}, path={}",
                 meshSet.m_name,
                 meshSet.m_filePath) };
         }
@@ -166,13 +166,13 @@ namespace mesh_set
 
         // If the import failed, report it
         if (!scene) {
-            KI_ERROR(importer.GetErrorString());
+            KI_ERROR(fmt::format("ASSIMP::ERROR: {}", importer.GetErrorString()));
             return;
         }
 
         if (m_debug) {
             KI_INFO_OUT(fmt::format(
-                "ASSIMP: SCENE scene={}, mesh_set={}, meshes={}, anims={}, materials={}, textures={}",
+                "ASSIMP::SCENE scene={}, mesh_set={}, meshes={}, anims={}, materials={}, textures={}",
                 meshSet.m_name,
                 meshSet.m_filePath,
                 scene->mNumMeshes,
@@ -186,7 +186,7 @@ namespace mesh_set
         AssimpMaterialImporter materialImporter{ m_debug };
         materialImporter.processMaterials(meshSet, ctx.m_materials, ctx.m_materialMapping, scene);
 
-        SkeletonSet skeletonSet;
+        SkeletonSet skeletonSet{ meshSet.m_name };
         skeletonSet.resolve(scene);
 
         processMeshes(
@@ -275,7 +275,8 @@ namespace mesh_set
 
         if (m_debug) {
             for (auto& mesh : meshSet.m_meshes) {
-                KI_INFO_OUT(fmt::format("MESH: mesh_set={}, mesh={}",
+                KI_INFO_OUT(fmt::format(
+                    "ASSIMP::MESH: mesh_set={}, mesh={}",
                     meshSet.m_name,
                     mesh->str()));
             }
@@ -312,7 +313,8 @@ namespace mesh_set
             const auto& nodeName = assimp_util::normalizeName(node->mName);
             const auto& aliasName = assimp_util::normalizeName(mesh->mName);
 
-            auto modelMesh = std::make_unique<mesh::ModelMesh>(nodeName);
+            const auto meshName = fmt::format("{}-{}", meshSet.m_name, nodeName);
+            auto modelMesh = std::make_unique<mesh::ModelMesh>(meshName);
             modelMesh->m_alias = aliasName;
 
             const auto& rig = skeletonSet.findRig(mesh);
@@ -379,7 +381,8 @@ namespace mesh_set
         }
 
         if (m_debug) {
-            KI_INFO_OUT(fmt::format("ASSIMP: MESH mesh_set={}, name={}, material={}, vertices={}, faces={}, bones={}",
+            KI_INFO_OUT(fmt::format(
+                "ASSIMP::MESH mesh_set={}, name={}, material={}, vertices={}, faces={}, bones={}",
                 meshSet.m_name,
                 modelMesh.m_name,
                 material ? material->m_name : fmt::format("{}", mesh->mMaterialIndex),
@@ -407,7 +410,7 @@ namespace mesh_set
                 tangent = assimp_util::toVec3(mesh->mTangents[vertexIndex]);
             }
 
-            //KI_INFO_OUT(fmt::format("ASSIMP: offset={}, pos={}", vertexOffset, pos));
+            //KI_INFO_OUT(fmt::format("ASSIMP::MESH: offset={}, pos={}", vertexOffset, pos));
 
             modelMesh.m_vertices.emplace_back(pos, texCoord, normal, tangent);
         }
@@ -467,8 +470,8 @@ namespace mesh_set
             bone->mNumWeights);
 
         if (true || m_debug) {
-            KI_INFO_OUT(fmt::format(
-                "ASSIMP: BONE {}",
+            KI_INFO(fmt::format(
+                "ASSIMP::BONE {}",
                 boneInfo))
         }
 
@@ -492,7 +495,7 @@ namespace mesh_set
             if (true) {
                 if (std::isnan(weight)) {
                     KI_ERROR_OUT(fmt::format(
-                        "ASSIMP: BONE_NAN_WEIGHT {}, vertex={}, weight_index={}, weight={}",
+                        "ASSIMP::BONE_NAN_WEIGHT {}, vertex={}, weight_index={}, weight={}",
                         boneInfo,
                         vertexIndex,
                         i,
@@ -502,7 +505,7 @@ namespace mesh_set
 
                 if (weight != 0 && std::fabsf(weight) < std::numeric_limits<float>::min()) {
                     //KI_ERROR_OUT(fmt::format(
-                    //    "ASSIMP: BONE_DEN_WEIGHT {}, vertex={}, weight_index={}, weight={}",
+                    //    "ASSIMP::BONE_DEN_WEIGHT {}, vertex={}, weight_index={}, weight={}",
                     //    boneInfo,
                     //    vertexIndex,
                     //    i,
@@ -512,7 +515,7 @@ namespace mesh_set
                 }
                 if (weight < 0) {
                     KI_ERROR_OUT(fmt::format(
-                        "ASSIMP: BONE_NEGATIVE_WEIGHT {}, vertex={}, weight_index={}, weight={}",
+                        "ASSIMP::BONE_NEGATIVE_WEIGHT {}, vertex={}, weight_index={}, weight={}",
                         boneInfo,
                         vertexIndex,
                         i,
@@ -522,7 +525,7 @@ namespace mesh_set
                 }
                 if (weight > 1) {
                     KI_ERROR_OUT(fmt::format(
-                        "ASSIMP: BONE_INF_WEIGHT {}, vertex={}, weight_index={}, weight={}",
+                        "ASSIMP::BONE_INF_WEIGHT {}, vertex={}, weight_index={}, weight={}",
                         boneInfo,
                         vertexIndex,
                         i,
@@ -534,7 +537,7 @@ namespace mesh_set
 
                 if (!weight) {
                     //KI_ERROR_OUT(fmt::format(
-                    //    "ASSIMP: BONE_SKIP_WEIGHT {}, vertex={}, weight_index={}, weight={}",
+                    //    "ASSIMP::BONE_SKIP_WEIGHT {}, vertex={}, weight_index={}, weight={}",
                     //    boneInfo,
                     //    vertexIndex,
                     //    i,
@@ -547,7 +550,7 @@ namespace mesh_set
 
             if (false && m_debug) {
                 KI_INFO_OUT(fmt::format(
-                    "ASSIMP: JOINT_VERTEX_BIND {}, vertex={}, vertexJoints={}, vertexWeights={}",
+                    "ASSIMP::JOINT_VERTEX_BIND {}, vertex={}, vertexJoints={}, vertexWeights={}",
                     boneInfo,
                     vertexIndex,
                     vb.m_jointIds,

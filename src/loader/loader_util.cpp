@@ -665,7 +665,7 @@ namespace loader {
         const loader::DocNode& v)
     {
         std::string prefix = k.starts_with("xx") ? "DISABLED" : "UNKNOWN";
-        KI_WARN_OUT(fmt::format("{} {}: {}={}", prefix, scope, k, renderNode(v)));
+        KI_WARN_OUT(fmt::format("LOADER::{} {}: {}={}", prefix, scope, k, renderNode(v)));
     }
 
     std::string renderNode(

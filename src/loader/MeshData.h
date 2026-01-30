@@ -59,11 +59,11 @@ namespace loader {
         {
             const LodData* any = nullptr;
             for (const auto& lod : lods) {
-                if (lod.name == "*") {
+                if (lod.isAny()) {
                     any = &lod;
                     continue;
                 }
-                if (lod.name == meshName) return &lod;
+                if (lod.match(meshName)) return &lod;
             }
 
             return any;

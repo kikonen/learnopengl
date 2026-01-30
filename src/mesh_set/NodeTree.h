@@ -24,6 +24,7 @@ namespace mesh_set
         post_rotation,
         scaling,
         translation,
+        geometric_translation
     };
 
     struct TreeNode

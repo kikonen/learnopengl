@@ -55,6 +55,9 @@ namespace
         else if (transformName == "Translation") {
             return mesh_set::FbxTransformType::translation;
         }
+        else if (transformName == "GeometricTranslation") {
+            return mesh_set::FbxTransformType::geometric_translation;
+        }
         else {
             throw fmt::format("unknown fbx_transform: {}", transformName);
         }

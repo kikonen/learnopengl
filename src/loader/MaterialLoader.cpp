@@ -27,8 +27,6 @@
 namespace {
     constexpr float DEF_ALPHA = 1.0f;
 
-    const std::string ANY = "*";
-
     const std::vector<std::regex> texturesMatchers{
         std::regex("textures"),
     };
@@ -63,7 +61,7 @@ namespace loader {
         Loaders& loaders) const
     {
         data.enabled = true;
-        data.aliasName = ANY;
+        data.aliasName = MATERIAL_ALIAS_ANY;
 
         loadMaterial(node, data, loaders);
 
@@ -81,7 +79,7 @@ namespace loader {
             loadMaterial(entry, data, loaders);
             data.materialName = data.material.m_name;
 
-            if (data.materialName.empty() && data.aliasName != ANY)
+            if (data.materialName.empty() && data.aliasName != MATERIAL_ALIAS_ANY)
             {
                 data.materialName = data.aliasName;
             }
@@ -334,7 +332,7 @@ namespace loader {
                 material.noDepth = readBool(v);
                 fields.noDepth = true;
             }
-            else if (k == "default_programs") {
+            else if (k == "default_programs" || k == "default_program") {
                 material.m_defaultPrograms = readBool(v);
                 fields.defaultPrograms = true;
             }
@@ -418,6 +416,9 @@ namespace loader {
                 reportUnknown("material_entry", k, v);
             }
         }
+
+        if (material.m_name == "female_elf_hooded_pants_set")
+            int x = 0;
 
         if (material.hasRegisteredTex(TextureType::map_displacement)) {
             if (!fields.parallaxDepth) {

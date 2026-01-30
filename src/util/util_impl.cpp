@@ -179,7 +179,7 @@ namespace util {
             filename);
 
         if (!util::fileExists(filePath)) {
-            throw std::runtime_error{ fmt::format("FILE_NOT_EXIST: {}", filePath) };
+            throw std::runtime_error{ fmt::format("PROGRAM::FILE_NOT_FOUND: {}", filePath) };
         }
 
         try {
@@ -192,7 +192,7 @@ namespace util {
         catch (std::ifstream::failure e) {
             std::string what{ e.what() };
             const auto msg = fmt::format(
-                "FILE_NOT_SUCCESFULLY_READ: {}\n{}",
+                "PROGRAM::FILE_NOT_SUCCESFULLY_READ: {}\n{}",
                 filePath, what);
 
             throw std::runtime_error{ msg };

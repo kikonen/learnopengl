@@ -32,13 +32,13 @@ namespace mesh_set
         const std::string& uniquePrefix,
         const std::string& filePath)
     {
-        KI_INFO_OUT(fmt::format("ASSIMP: LOAD_FILE path={}", filePath));
+        KI_INFO_OUT(fmt::format("ASSIMP::LOAD_FILE path={}", filePath));
 
         // NOTE KI animations cannot exist in empty rig
         if (rig.empty()) return;
 
         if (!util::fileExists(filePath)) {
-            throw AnimationNotFoundError{ fmt::format("FILE_NOT_EXIST: {}", filePath) };
+            throw AnimationNotFoundError{ fmt::format("ASSIMP::FILE_NOT_FOUND: {}", filePath) };
         }
 
         Assimp::Importer importer;
@@ -67,7 +67,7 @@ namespace mesh_set
         }
 
         KI_INFO_OUT(fmt::format(
-            "ASSIMP: SCENE scene={}, meshes={}, anims={}, materials={}, textures={}",
+            "ASSIMP::SCENE scene={}, meshes={}, anims={}, materials={}, textures={}",
             filePath,
             scene->mNumMeshes,
             scene->mNumAnimations,
@@ -164,7 +164,7 @@ namespace mesh_set
         animation->m_index = animIndex;
 
         KI_INFO_OUT(fmt::format(
-            "ASSIMP: ANIM anim={}, name={}, duration={}, ticksPerSec={}, channels={}",
+            "ASSIMP::ANIM anim={}, name={}, duration={}, ticksPerSec={}, channels={}",
             animation->m_index,
             animation->m_name,
             animation->m_duration,
@@ -175,8 +175,8 @@ namespace mesh_set
         for (size_t channelIdx = 0; channelIdx < anim->mNumChannels; ++channelIdx)
         {
             const aiNodeAnim* channel = anim->mChannels[channelIdx];
-            KI_INFO_OUT(fmt::format(
-                "ASSIMP: CHANNEL anim={}, channel={}, node={}, posKeys={}, rotKeys={}, scalingKeys={}",
+            KI_INFO(fmt::format(
+                "ASSIMP::CHANNEL anim={}, channel={}, node={}, posKeys={}, rotKeys={}, scalingKeys={}",
                 animation->m_index,
                 channelIdx,
                 assimp_util::normalizeName(channel->mNodeName),
@@ -194,8 +194,8 @@ namespace mesh_set
             }
 
             if (rigNode) {
-                KI_INFO_OUT(fmt::format(
-                    "ASSIMP: CHANNEL_BIND_NODE - channel={}, node={}",
+                KI_INFO(fmt::format(
+                    "ASSIMP::CHANNEL_BIND_NODE - channel={}, node={}",
                     rigNodeChannel.m_nodeName,
                     rigNode->m_name
                 ));
@@ -203,7 +203,7 @@ namespace mesh_set
             }
             else {
                 KI_WARN_OUT(fmt::format(
-                    "ASSIMP: CHANNEL_MISSING_NODE - channel={}",
+                    "ASSIMP::CHANNEL_MISSING_NODE - channel={}",
                     rigNodeChannel.m_nodeName
                 ));
             }

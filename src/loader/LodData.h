@@ -8,6 +8,8 @@
 #include "MaterialData.h"
 
 namespace loader {
+    inline const std::string LOD_ALIAS_ANY = "*";
+
     struct LodData {
         std::string name;
 
@@ -19,5 +21,15 @@ namespace loader {
         std::vector<MaterialData> materialModifiers;
 
         loader::FlagContainer meshFlags;
+
+        inline bool isAny() const noexcept
+        {
+            return name == LOD_ALIAS_ANY;
+        }
+
+        inline bool match(const std::string dstName) const noexcept
+        {
+            return name == dstName;
+        }
     };
 }

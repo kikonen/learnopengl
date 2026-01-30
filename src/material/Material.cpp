@@ -127,7 +127,7 @@ namespace {
                 ktxPath.string());
 
             if (util::fileExists(fullPath)) {
-                KI_INFO_OUT(fmt::format("FOUND: ktx_path={}", fullPath));
+                KI_INFO_OUT(fmt::format("TEX::FOUND: ktx_path={}", fullPath));
                 filePath = fullPath;
                 found = true;
             }
@@ -144,12 +144,10 @@ namespace {
                 buildPath.replace_filename(fmt::format("{}_build.{}", stem, "png"));
             }
 
-            const auto re = std::regex(".*scenery_build.png");
-            if (std::regex_match(buildPath.string(), re)) {
-                int x = 0;
-            }
-
-            KI_INFO_OUT(fmt::format("TEX_BUILD={}", buildPath.string()));
+            //const auto re = std::regex(".*scenery_build.png");
+            //if (std::regex_match(buildPath.string(), re)) {
+            //    int x = 0;
+            //}
 
             const auto fullPath = util::joinPath(
                 assets.assetsBuildDir,
@@ -159,6 +157,10 @@ namespace {
                 filePath = fullPath;
                 found = true;
             }
+
+            KI_INFO_OUT(fmt::format(
+                "TEX::RESOLVE_BUILD: found={}, src={}, build={}",
+                found, path, buildPath.string()));
         }
 
         if (!found) {
@@ -398,7 +400,7 @@ void Material::loadTexture(
 
     std::string texturePath = resolveTexturePath(info.path, info.compressed);
 
-    KI_INFO(fmt::format("MATERIAL: ID={}, name={}, texture={}", m_id, m_name, texturePath));
+    KI_INFO(fmt::format("TEX::LOAD: ID={}, name={}, texture={}", m_id, m_name, texturePath));
 
     const std::string& placeholderPath = util::joinPath(assets.assetsDir, assets.placeholderTexture);
 
@@ -502,7 +504,7 @@ void Material::addTexture(
 {
     if (path.empty()) {
         m_texturePaths.erase(type);
-        KI_INFO_OUT(fmt::format("TEX_CLEAR: type={}, path={}", util::as_integer(type), path));
+        KI_INFO_OUT(fmt::format("TEX::CLEAR: type={}, path={}", util::as_integer(type), path));
     }
     else {
         m_texturePaths[type] = { path, compressed };

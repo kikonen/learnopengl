@@ -64,9 +64,7 @@
 #include "ParticleData.h"
 
 namespace {
-    const std::string QUAD_MESH_NAME{ "quad" };
-
-    const std::string ANY_MATERIAL{ "*" };
+    inline const std::string QUAD_MESH_NAME{ "quad" };
 
     //void resolveNodeTypeData(
     //    loader::NodeTypeData& typeData,
@@ -177,7 +175,7 @@ namespace loader
             if (typeData.type != NodeKind::container) {
                 if (!type->hasMesh()) {
                     KI_WARN(fmt::format(
-                        "SCENE_FILEIGNORE: NO_MESH id={} ({})",
+                        "TYPE::SCENE_FILE_IGNORE: NO_MESH id={} ({})",
                         typeData.baseId, typeData.desc));
                     return pool::TypeHandle::NULL_HANDLE;
                 }
@@ -307,18 +305,14 @@ namespace loader
 
             // ASSIGN - ANY
             for (auto& materialData : meshData.materials) {
-                const auto& alias = materialData.aliasName;
-                const auto& name = materialData.materialName;
-
-                if (alias == ANY_MATERIAL)
-                {
+                if (materialData.isAny()) {
                     KI_INFO_OUT(fmt::format(
-                        "MAT_ASSIGN: model={}, mesh={}, material={}, name={}, alias={}",
+                        "TYPE::MAT_ASSIGN: model={}, mesh={}, material={}, src={}, alias={}",
                         type->getName(),
                         lodMesh.getMeshName(),
                         material.m_name,
-                        name,
-                        alias));
+                        materialData.materialName,
+                        materialData.aliasName));
 
                     material.assign(materialData.material);
                 }
@@ -326,18 +320,14 @@ namespace loader
 
             // ASSIGN - specific
             for (auto& materialData : meshData.materials) {
-                const auto& alias = materialData.aliasName;
-                const auto& name = materialData.materialName;
-
-                if (name == material.m_name || alias == material.m_name)
-                {
+                if (materialData.match(material.m_name)) {
                     KI_INFO_OUT(fmt::format(
-                        "MAT_ASSIGN: model={}, mesh={}, material={}, name={}, alias={}",
+                        "TYPE::MAT_ASSIGN: model={}, mesh={}, material={}, src={}, alias={}",
                         type->getName(),
                         lodMesh.getMeshName(),
                         material.m_name,
-                        name,
-                        alias));
+                        materialData.materialName,
+                        materialData.aliasName));
 
                     material.assign(materialData.material);
                 }
@@ -366,18 +356,14 @@ namespace loader
 
             // MODIFY - BASE - ANY
             for (auto& materialData : meshData.materialModifiers) {
-                const auto& alias = materialData.aliasName;
-                const auto& name = materialData.materialName;
-
-                if (alias == ANY_MATERIAL)
-                {
+                if (materialData.isAny()) {
                     KI_INFO_OUT(fmt::format(
-                        "MAT_MODIFY: model={}, mesh={}, material={}, name={}, alias={}",
+                        "TYPE::MAT_MODIFY: model={}, mesh={}, material={}, src={}, alias={}",
                         type->getName(),
                         lodMesh.getMeshName(),
                         material.m_name,
-                        name,
-                        alias));
+                        materialData.materialName,
+                        materialData.aliasName));
 
                     l.m_materialLoader.modifyMaterial(material, materialData);
                 }
@@ -385,18 +371,14 @@ namespace loader
 
             // MODIFY - specific material
             for (auto& materialData : meshData.materialModifiers) {
-                const auto& alias = materialData.aliasName;
-                const auto& name = materialData.materialName;
-
-                if (name == material.m_name || alias == material.m_name)
-                {
+                if (materialData.match(material.m_name)) {
                     KI_INFO_OUT(fmt::format(
-                        "MAT_MODIFY: model={}, mesh={}, material={}, name={}, alias={}",
+                        "TYPE::MAT_MODIFY: model={}, mesh={}, material={}, src={}, alias={}",
                         type->getName(),
                         lodMesh.getMeshName(),
                         material.m_name,
-                        name,
-                        alias));
+                        materialData.materialName,
+                        materialData.aliasName));
 
                     l.m_materialLoader.modifyMaterial(material, materialData);
                 }
@@ -409,10 +391,10 @@ namespace loader
                     const auto& alias = materialData.aliasName;
                     const auto& name = materialData.materialName;
 
-                    if (alias == "*")
+                    if (alias == LOD_ALIAS_ANY)
                     {
                         KI_INFO_OUT(fmt::format(
-                            "MAT_MODIFY: model={}, mesh={}, material={}, name={}, alias={}",
+                            "TYPE::MAT_MODIFY: model={}, mesh={}, material={}, name={}, alias={}",
                             type->getName(),
                             lodMesh.getMeshName(),
                             material.m_name,
@@ -432,7 +414,7 @@ namespace loader
                     if (name == material.m_name || alias == material.m_name)
                     {
                         KI_INFO_OUT(fmt::format(
-                            "MAT_MODIFY: model={}, mesh={}, material={}, name={}, alias={}",
+                            "TYPE::MAT_MODIFY: model={}, mesh={}, material={}, name={}, alias={}",
                             type->getName(),
                             lodMesh.getMeshName(),
                             material.m_name,
@@ -480,7 +462,7 @@ namespace loader
             meshCount += resolveModelMesh(type, typeData, meshData, index);
 
             KI_INFO(fmt::format(
-                "SCENE_FILE MESH: id={}, desc={}, type={}",
+                "TYPE::SCENE_FILE_MESH: id={}, desc={}, type={}",
                 typeData.baseId, typeData.desc, type->str()));
         }
         else if (typeData.type == NodeKind::text) {
@@ -647,7 +629,7 @@ namespace loader
         if (!lod) {
             // NOTE KI if lods defined then default to 0 mask
             if (!meshData.lods.empty()) {
-                KI_WARN_OUT(fmt::format("SCENE: MISSING_LOD : mesh={}", mesh->m_name));
+                KI_WARN_OUT(fmt::format("TYPE::SCENE: MISSING_LOD : mesh={}", mesh->m_name));
                 //lodMesh.m_levelMask = 0;
             }
             return nullptr;
@@ -690,7 +672,7 @@ namespace loader
                 auto socketIndex = rig->registerSocket(socket);
                 if (socketIndex < 0) {
                     KI_WARN_OUT(fmt::format(
-                        "SCENE_ERROR: SOCKET_NOT_FOUND - mesh={}, rig={}, node={}, socket={}",
+                        "TYPE::SCENE_ERROR: SOCKET_NOT_FOUND - mesh={}, rig={}, node={}, socket={}",
                         mesh->m_name, rig->getName(), socket.m_jointName, socket.m_name));
                 }
             }
@@ -766,13 +748,13 @@ namespace loader
                         clip->m_id = SID(clipData.name);
                     }
                     else {
-                        KI_WARN_OUT(fmt::format("SCENE_ERROR: CLIP_NOT_FOUND - clip={}, uniq={}",
+                        KI_WARN_OUT(fmt::format("TYPE::SCENE_ERROR: CLIP_NOT_FOUND - clip={}, uniq={}",
                             clipData.name, uniqueName));
                     }
                 }
             }
             catch (mesh_set::AnimationNotFoundError ex) {
-                KI_CRITICAL(fmt::format("SCENE_ERROR: LOAD_ANIMATION - {}", ex.what()));
+                KI_CRITICAL(fmt::format("TYPE::SCENE_ERROR: LOAD_ANIMATION - {}", ex.what()));
                 //throw std::current_exception();
             }
         }

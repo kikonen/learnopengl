@@ -90,7 +90,7 @@ Program::Program(
 
 Program::~Program()
 {
-    KI_INFO(fmt::format("PROGRAM: delete - {}", m_key));
+    KI_INFO(fmt::format("PROGRAM::DELETE: key={}", m_key));
     if (m_programId >= 0) {
         glDeleteProgram(m_programId);
         kigl::GLState::get().invalidateProgram();
@@ -134,19 +134,19 @@ void Program::reload()
     }
     catch (const std::exception& ex) {
         m_loaded = true;
-        KI_CRITICAL(fmt::format("PROGRAM_RELOAD: {}", ex.what()));
+        KI_CRITICAL(fmt::format("PROGRAM::RELOAD: {}", ex.what()));
     }
     catch (const std::string& ex) {
         m_loaded = true;
-        KI_CRITICAL(fmt::format("PROGRAM_RELOAD: {}", ex));
+        KI_CRITICAL(fmt::format("PROGRAM::RELOAD: {}", ex));
     }
     catch (const char* ex) {
         m_loaded = true;
-        KI_CRITICAL(fmt::format("PROGRAM_RELOAD: {}", ex));
+        KI_CRITICAL(fmt::format("PROGRAM::RELOAD: {}", ex));
     }
     catch (...) {
         m_loaded = true;
-        KI_CRITICAL("PROGRAM_RELOAD: UNKNOWN_ERROR");
+        KI_CRITICAL("PROGRAM::RELOAD: UNKNOWN_ERROR");
     }
 }
 
@@ -174,16 +174,16 @@ ki::program_id Program::prepareRT()
         }
     }
     catch (const std::exception& ex) {
-        KI_CRITICAL(fmt::format("PROGRAM_RELOAD: {}", ex.what()));
+        KI_CRITICAL(fmt::format("PROGRAM::RELOAD: {}", ex.what()));
     }
     catch (const std::string& ex) {
-        KI_CRITICAL(fmt::format("PROGRAM_RELOAD: {}", ex));
+        KI_CRITICAL(fmt::format("PROGRAM::RELOAD: {}", ex));
     }
     catch (const char* ex) {
-        KI_CRITICAL(fmt::format("PROGRAM_RELOAD: {}", ex));
+        KI_CRITICAL(fmt::format("PROGRAM::RELOAD: {}", ex));
     }
     catch (...) {
-        KI_CRITICAL("PROGRAM_RELOAD: UNKNOWN_ERROR");
+        KI_CRITICAL("PROGRAM::RELOAD: UNKNOWN_ERROR");
     }
 
     return m_id;
@@ -201,7 +201,7 @@ GLint Program::getUniformLoc(const std::string& name)
     m_uniformLocations.insert({ key, vi });
     if (vi < 0) {
         KI_DEBUG(fmt::format(
-            "PROGRAM_ERROR: MISSING_UNIFORM: {} - uniform={}",
+            "PROGRAM::ERROR: MISSING_UNIFORM: {} - uniform={}",
             m_programName, name));
     }
     return vi;
@@ -221,7 +221,7 @@ GLint Program::getUniformSubroutineLoc(const std::string& name, GLenum shaderTyp
 
     if (vi < 0) {
         KI_DEBUG(fmt::format(
-            "PROGRAM_ERROR: MISSING_SUBROUTINE: {} - type={}, subroutine={}",
+            "PROGRAM::ERROR: MISSING_SUBROUTINE: {} - type={}, subroutine={}",
             m_programName, shaderType, name));
     }
     return vi;
@@ -241,7 +241,7 @@ GLint Program::getSubroutineIndex(const std::string& name, GLenum shaderType)
 
     if (vi < 0) {
         KI_DEBUG(fmt::format(
-            "PROGRAM_ERROR: MISSING_SUBROUTINE: {} - type={}, subroutine={}",
+            "PROGRAM::ERROR: MISSING_SUBROUTINE: {} - type={}, subroutine={}",
             m_programName, shaderType, name));
     }
     return vi;
@@ -297,21 +297,21 @@ int Program::compileSource(
             char infoLog[LOG_SIZE];
             glGetShaderInfoLog(shaderId, LOG_SIZE, NULL, infoLog);
             KI_ERROR(fmt::format(
-                "PROGRAM_ERROR: SHADER_COMPILE_FAILED[{:#04x}] PROGRAM={}\nPATH={}\n{}",
+                "PROGRAM::ERROR: SHADER_COMPILE_FAILED[{:#04x}] PROGRAM={}\nPATH={}\n{}",
                 shaderType, m_programName, shaderPath, infoLog));
             KI_ERROR(fmt::format(
                 "FAILED_SOURCE: {}\n-------------------\n{}\n-------------------",
                 source.m_path,
                 util::appendLineNumbers(source.m_source)));
             KI_ERROR(fmt::format(
-                "PROGRAM_ERROR: SHADER_COMPILE_FAILED[{:#04x}] PROGRAM={}\nPATH={}\n{}",
+                "PROGRAM::ERROR: SHADER_COMPILE_FAILED[{:#04x}] PROGRAM={}\nPATH={}\n{}",
                 shaderType, m_programName, shaderPath, infoLog));
 
             glDeleteShader(shaderId);
             shaderId = -1;
 
             const auto msg = fmt::format(
-                "PROGRAM_ERROR: SHADER_COMPILE_FAILED[{:#04x}] PROGRAM={}, PATH={}",
+                "PROGRAM::ERROR: SHADER_COMPILE_FAILED[{:#04x}] PROGRAM={}, PATH={}",
                 shaderType, m_programName, shaderPath);
             throw std::runtime_error{ msg };
         }
@@ -321,7 +321,7 @@ int Program::compileSource(
 }
 
 void Program::createProgram() {
-    KI_INFO_OUT(fmt::format("[PROGRAM_CREATE - {}]", m_key));
+    KI_INFO_OUT(fmt::format("[PROGRAM::CREATE - {}]", m_key));
 
     // build and compile our shader program
     // ------------------------------------
@@ -337,7 +337,7 @@ void Program::createProgram() {
         programId = glCreateProgram();
 
         if (programId == 0)
-            throw std::runtime_error{ fmt::format("PROGRAM_ERROR: {}", m_key) };
+            throw std::runtime_error{ fmt::format("PROGRAM::ERROR: {}", m_key) };
 
         kigl::setLabel(GL_PROGRAM, programId, m_key);
 
@@ -357,7 +357,7 @@ void Program::createProgram() {
                 char infoLog[LOG_SIZE];
                 glGetProgramInfoLog(programId, LOG_SIZE, NULL, infoLog);
                 const auto msg = fmt::format(
-                    "PROGRAM_ERROR: PROGRAM::LINKING_FAILED program={}\n{}",
+                    "PROGRAM::ERROR: PROGRAM::LINKING_FAILED program={}\n{}",
                     m_programName, infoLog);
 
                 for (auto& [type, shaderId] : shaderIds) {
@@ -385,7 +385,7 @@ void Program::createProgram() {
             glDeleteShader(shaderId);
         }
 
-        KI_INFO_OUT(fmt::format("PROGRAM_CREATED: key={}, local_id={}, glsl_id={}", m_key, m_id, m_programId));
+        KI_INFO_OUT(fmt::format("PROGRAM::CREATED: key={}, local_id={}, glsl_id={}", m_key, m_id, m_programId));
     }
 
     for (auto& [type, source] : m_sources) {
@@ -412,7 +412,7 @@ void Program::validateProgram(int programId) const {
         glGetProgramInfoLog(programId, LOG_SIZE, NULL, infoLog);
 
         const auto msg = fmt::format(
-            "PROGRAM_ERROR: PROGRAM::VALIDATE_FAILED program={}\n{}",
+            "PROGRAM::ERROR: PROGRAM::VALIDATE_FAILED program={}\n{}",
             m_programName, infoLog);
 
         KI_ERROR(msg);
@@ -449,7 +449,7 @@ void Program::validateUBO(
     unsigned int blockIndex = glGetUniformBlockIndex(programId, name);
     if (blockIndex == GL_INVALID_INDEX) {
         KI_WARN(fmt::format(
-            "PROGRAM_ERROR: MISSING_UBO program={}, UBO={}",
+            "PROGRAM::ERROR: MISSING_UBO program={}, UBO={}",
             m_programName, name));
         return;
     }
@@ -468,7 +468,7 @@ void Program::validateUBO(
         }
 
         const auto msg = fmt::format(
-            "PROGRAM_ERROR: UBO_SIZE program={}. UBO={}. local_size={}. remote_size={}",
+            "PROGRAM::ERROR: UBO_SIZE program={}. UBO={}. local_size={}. remote_size={}",
             m_programName, name, localSize, remoteSize);
 
         KI_CRITICAL(msg);
