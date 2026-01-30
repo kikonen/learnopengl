@@ -21,6 +21,9 @@ types:
   - id: prefab_construction_hat
     prefab:
       path: prefab/creatures/addon/prefab_construction_hat.yml
+  - id: prefab_pants
+    prefab:
+      path: prefab/characters/elf/prefab_female_pants.yml
   - id: prefab_elf_warrior
     type: composite
     composite: prefab_elf_warrior_composite
@@ -46,6 +49,9 @@ composites:
       - type: prefab_elf
         tag: body
         children:
+          - type: prefab_pants
+            attach:
+              socket: pants
           - xtype: prefab_helmet
             attach:
               socket: head

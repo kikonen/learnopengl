@@ -57,6 +57,12 @@ prefab:
         - name: ground_back
           joint: Base-HumanSpine1
           role: ground
+        - name: pants
+          #joint: Base-HumanPelvis
+          #joint: HumanTassetRig1
+          joint: RootNode
+          #offset: [0.000, 0.10, -1.000]
+          #rotation: [90.000, 0.000, 180.000]
         - name: foot_right
           joint: Base-HumanRToe11
           role: foot_right
