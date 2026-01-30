@@ -587,6 +587,8 @@ namespace editor
                         });
 
                     m_state.m_selectedNode = handle;
+                    m_state.m_selectedMesh = nullptr;
+                    m_state.m_selectedSocketIndex = -1;
                 }
             }
             else {
