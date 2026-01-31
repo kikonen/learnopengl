@@ -42,7 +42,7 @@ namespace {
             if (node.isNull()) continue;
 
             auto id = readId(node);
-            idToType.insert({ id.m_path, &entry });
+            idToType.insert({ id.getId(), &entry });
         }
     }
 }
@@ -111,9 +111,9 @@ namespace loader {
             const auto& baseNode = node.findNode("base");
             if (!baseNode.isNull()) {
                 auto baseId = readId(baseNode);
-                const auto& it = idToType.find(baseId.m_path);
+                const auto& it = idToType.find(baseId.getId());
                 if (it == idToType.end()) {
-                    throw fmt::format("Missing base_type: {}", baseId.m_path);
+                    throw fmt::format("Missing base_type: {}", baseId.getId());
                 }
                 loadNodeType(*it->second, data, idToType, loaders);
             }

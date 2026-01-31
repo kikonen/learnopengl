@@ -530,14 +530,14 @@ namespace loader {
         if (baseId.empty()) {
             if (typeId.empty()) return {};
 
-            const auto& typeName = SID_NAME(SID(typeId.m_path));
+            const auto& typeName = SID_NAME(SID(typeId.getId()));
             const auto& nodeName = fmt::format(
                 "<{}>-{}",
                 typeName, ID_GENERATOR.nextId());
             return { SID(nodeName), nodeName };
         }
 
-        const std::string& key = baseId.m_path;
+        const std::string& key = baseId.getId();
 
         if (key == ROOT_ID) {
             return { assets.rootId, SID_NAME(assets.rootId) };
@@ -600,11 +600,7 @@ namespace loader {
 
     BaseId readId(const loader::DocNode& node)
     {
-        BaseId baseId;
-
-        baseId.m_path = readString(node);
-
-        return baseId;
+        return { readString(node) };
     }
 
     int readLayer(const loader::DocNode& node)
@@ -617,7 +613,7 @@ namespace loader {
     const model::NodeType* findNodeType(
         BaseId baseId)
     {
-        auto typeId = SID(baseId.m_path);
+        auto typeId = SID(baseId.getId());
         return pool::TypeHandle::toType(typeId);
     }
 

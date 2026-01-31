@@ -30,7 +30,7 @@ namespace loader
             if (node.isNull()) continue;
 
             auto id = readId(node);
-            idToParticle.insert({ id.m_path, &entry });
+            idToParticle.insert({ id.getId(), &entry });
         }
 
         for (const auto& entry : node.getNodes()) {
@@ -53,9 +53,9 @@ namespace loader
             const auto& baseNode = node.findNode("base");
             if (!baseNode.isNull()) {
                 auto baseId = readId(baseNode);
-                const auto& it = idToParticle.find(baseId.m_path);
+                const auto& it = idToParticle.find(baseId.getId());
                 if (it == idToParticle.end()) {
-                    throw fmt::format("Missing base_particle: {}", baseId.m_path);
+                    throw fmt::format("Missing base_particle: {}", baseId.getId());
                 }
                 loadParticle(*it->second, data, idToParticle, loaders);
             }

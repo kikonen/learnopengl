@@ -418,7 +418,7 @@ namespace loader {
             ki::node_id sid;
             std::string resolvedSID;
             {
-                bool automatic = cloneData.baseId.m_path == baseData.baseId.m_path;
+                bool automatic = cloneData.baseId.getId() == baseData.baseId.getId();
                 auto [k, v] = resolveNodeId(
                     cloneData.typeId,
                     cloneData.baseId);

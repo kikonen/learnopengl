@@ -11,20 +11,26 @@
 
 namespace loader {
     struct BaseId {
-        std::string m_path;
+        std::string m_id;
 
         const std::string& str() const noexcept
         {
-            return m_path;
+            return m_id;
         }
 
         bool empty() const {
-            return m_path.empty();
+            return m_id.empty();
         }
+
+        const std::string& getId() const noexcept
+        {
+            return m_id;
+        }
+
 
         bool operator==(const BaseId& o) const noexcept
         {
-            return m_path == o.m_path;
+            return m_id == o.m_id;
         }
 
         //operator const std::string&() const noexcept
@@ -42,7 +48,7 @@ template <> struct fmt::formatter<loader::BaseId> {
 
     template <typename FormatContext>
     auto format(const loader::BaseId& id, FormatContext& ctx) const -> decltype(ctx.out()) {
-        const auto& p = id.m_path;
+        const auto& p = id.getId();
 
         if (p.empty()) {
             return ctx.out();

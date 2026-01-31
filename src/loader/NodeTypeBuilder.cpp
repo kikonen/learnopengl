@@ -135,7 +135,7 @@ namespace loader
     {
         auto& l = *m_loaders;
 
-        std::string name = typeData.baseId.m_path;
+        std::string name = typeData.baseId.getId();
 
         if (name.empty()) {
             throw fmt::format("type_id missing: {}", typeData.str());

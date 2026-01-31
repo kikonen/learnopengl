@@ -48,7 +48,7 @@ namespace
         const auto& it = std::find_if(
             aliases.cbegin(),
             aliases.cend(),
-            [&aliasId](const auto& e) { return e.first == aliasId.m_path; });
+            [&aliasId](const auto& e) { return e.first == aliasId.getId(); });
         return it != aliases.end() ? &(*it).second : nullptr;
     }
 }

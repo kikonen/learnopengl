@@ -238,15 +238,15 @@ namespace loader {
         auto& df = definition;
 
         df.m_enabled = nodeData.enabled;
-        df.m_id = nodeData.baseId.m_path;
-        df.m_parentId = nodeData.parentBaseId.m_path;
-        df.m_aliasId = nodeData.aliasBaseId.m_path;
-        df.m_typeId = SID(nodeData.typeId.m_path);
-        df.m_ignoredById = nodeData.ignoredByBaseId.m_path;
-        df.m_tagId = nodeData.tagId.m_path;
+        df.m_id = nodeData.baseId.getId();
+        df.m_parentId = nodeData.parentBaseId.getId();
+        df.m_aliasId = nodeData.aliasBaseId.getId();
+        df.m_typeId = SID(nodeData.typeId.getId());
+        df.m_ignoredById = nodeData.ignoredByBaseId.getId();
+        df.m_tagId = nodeData.tagId.getId();
 
         if (nodeData.attachment.enabled) {
-            df.m_socketId = nodeData.attachment.socketId.m_path;
+            df.m_socketId = nodeData.attachment.socketId.getId();
         }
 
         df.m_position = nodeData.position;
