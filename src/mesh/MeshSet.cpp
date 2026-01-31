@@ -4,6 +4,7 @@
 
 #include "asset/AABBBuilder.h"
 
+#include "util/assimp_util.h"
 #include "util/glm_format.h"
 #include "util/Log.h"
 #include "util/util.h"
@@ -19,7 +20,7 @@ namespace {
         KI_INFO_OUT(fmt::format("MESH_SET::EXTRACT_NAME: path={}, mesh_set={}",
             std::string{ filePath },
             util::stem(filePath)));
-        return util::stem(filePath);
+        return assimp_util::normalizeName(util::stem(filePath));
     }
 }
 

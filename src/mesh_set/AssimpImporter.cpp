@@ -313,7 +313,8 @@ namespace mesh_set
             const auto& nodeName = assimp_util::normalizeName(node->mName);
             const auto& aliasName = assimp_util::normalizeName(mesh->mName);
 
-            const auto meshName = fmt::format("{}-{}", meshSet.m_name, nodeName);
+            const auto meshName = assimp_util::normalizeName(
+                fmt::format("{}-{}", meshSet.m_name, nodeName));
             auto modelMesh = std::make_unique<mesh::ModelMesh>(meshName);
             modelMesh->m_alias = aliasName;
 

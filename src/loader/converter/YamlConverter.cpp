@@ -22,12 +22,12 @@ namespace loader {
         }
         catch (const std::runtime_error& ex) {
             throw std::runtime_error{ fmt::format(
-                "PARSE_FAIL: {} - {}",
+                "LOADER::YAML::PARSE_FAILED: {} - {}",
                 filePath, ex.what()) };
         }
         catch (const std::exception& ex) {
             throw std::runtime_error{ fmt::format(
-                "PARSE_FAIL: {} - {}",
+                "LOADER::YAML::PARSE_FAILED: {} - {}",
                 filePath, ex.what()) };
         }
     }
@@ -63,7 +63,7 @@ namespace loader {
             node.m_type = DocNodeType::null;
         }
         else {
-            throw std::runtime_error("Unknown node type");
+            throw std::runtime_error("LOADER::YAML::UNKNOWN_NODE_TYPE");
         }
 
         return node;

@@ -135,18 +135,18 @@ namespace loader
     {
         auto& l = *m_loaders;
 
-        std::string name = typeData.baseId.getId();
+        std::string typeName = typeData.baseId.getId();
 
-        if (name.empty()) {
+        if (typeName.empty()) {
             throw fmt::format("type_id missing: {}", typeData.str());
         }
 
-        auto typeHandle = pool::TypeHandle::allocate(SID(name));
+        auto typeHandle = pool::TypeHandle::allocate(SID(typeName));
         auto* type = typeHandle.toType();
 
         NodeTypeRegistry::get().registerType(typeHandle);
 
-        type->setName(name);
+        type->setName(typeName);
         type->m_layer = typeData.layer;
 
         type->m_pivotPoint = typeData.pivot;
@@ -155,6 +155,15 @@ namespace loader
         type->m_baseRotation =util::degreesToQuat(typeData.baseRotation);
 
         assignTypeFlags(typeData, type->m_flags);
+
+        if (!typeData.enabled) {
+            KI_INFO_OUT(fmt::format(
+                "TYPE::NOT_ENABLED: type={}",
+                typeName));
+            type->m_flags.origo = true;
+            type->m_flags.invisible = true;
+            return typeHandle;
+        }
 
         if (typeData.type == NodeKind::origo) {
             type->m_flags.origo = true;
@@ -166,9 +175,7 @@ namespace loader
         }
         else
         {
-            if (typeData.enabled) {
-                resolveMeshes(type, typeData);
-            }
+            resolveMeshes(type, typeData);
 
             // NOTE KI container does not have mesh itself, but it can setup
             // material & program for contained nodes

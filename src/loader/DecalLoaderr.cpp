@@ -116,11 +116,11 @@ namespace loader {
             fullPath = util::joinPath(m_ctx->m_dirName, path);
         }
 
-        KI_INFO_OUT(fmt::format("decal_prefab={}", fullPath));
+        KI_INFO_OUT(fmt::format("LOADER::DECAL: decal_prefab={}", fullPath));
 
         if (!util::fileExists(fullPath))
         {
-            throw fmt::format("INVALID: decal_prefab missing - path={}", fullPath);
+            throw fmt::format("LOADER::DECAL::PREFAB_MISSING: path={}", fullPath);
         }
 
         loader::YamlConverter converter;

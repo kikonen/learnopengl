@@ -35,7 +35,7 @@ namespace animation {
 
                 if (oldMatrix != newMatrix) {
                     throw fmt::format(
-                        "offset_matrix_mismatch: node={}.{}, old={}.{}, new={}.{}",
+                        "ANIM::OFFSET_MATRIX_MISMATCH: node={}.{}, old={}.{}, new={}.{}",
                         nodeIndex, oldJoint.m_nodeName,
                         oldJoint.m_jointIndex, oldJoint.m_offsetMatrix,
                         jointIndex, newJoint.m_offsetMatrix);

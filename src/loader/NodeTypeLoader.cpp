@@ -299,7 +299,7 @@ namespace loader {
 
         if (data.enabled) {
             if (data.type == NodeKind::none) {
-                auto msg = fmt::format("LOADER::NODE::INVALID: type missing - id={}", data.baseId);
+                auto msg = fmt::format("LOADER::NODE::INVALID: type_missing - id={}", data.baseId);
                 KI_INFO_OUT(msg);
                 data.enabled = false;
             }

@@ -93,7 +93,7 @@ namespace animation
             });
 
             throw std::runtime_error(fmt::format(
-                "missing_joint_nodes: {}",
+                "ANIM::RIG::MISSING_JOINT_NODES: {}",
                 sb));
         }
     }
@@ -132,9 +132,9 @@ namespace animation
         auto* rigNode = findNode(nodeName);
 
         if (!rigNode) {
-            //throw fmt::format("rig_node_not_found: joint={}", nodeName);
+            //throw fmt::format("ANIM::RIG_NODE_NOT_FOUND: joint={}", nodeName);
             KI_ERROR(fmt::format(
-                "rig_node_not_found: rig={}, joint={}",
+                "ANIM::RIG::NODE_NOT_FOUND: rig={}, joint={}",
                 m_name, nodeName));
             //return nullptr;
         }
@@ -159,7 +159,7 @@ namespace animation
                 const auto& old = m_sockets[socketIt->second];
                 if (old.m_name != a_socket.m_name)
                     throw std::runtime_error(fmt::format(
-                        "RIG_ERROR: duplicate_socket: rig={}, joint={}, socket={} vs. {}",
+                        "ANIM::RIG:DUPLICATE_SOCKET: rig={}, joint={}, socket={} vs. {}",
                         m_name, old.m_jointName, old.m_name, a_socket.m_name));
                 return socketIt->second;
             }

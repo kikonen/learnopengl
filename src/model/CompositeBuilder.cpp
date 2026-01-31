@@ -358,7 +358,7 @@ namespace model
         const auto* type = pool::TypeHandle::toType(nodeData.m_typeId);
         if (!type) {
             throw fmt::format(
-                "type missing: node={}, type={}",
+                "MODEL::ERROR::TYPE_MISSING: node={}, type={}",
                 nodeData.m_id, SID_NAME(nodeData.m_typeId));
         }
 
@@ -366,7 +366,7 @@ namespace model
             nodeData.m_typeId,
             nodeData.m_id);
 
-        KI_INFO("MODEL::NODE_SID: " + resolvedSID);
+        KI_INFO(fmt::format("MODEL::NODE_SID: {}", resolvedSID));
 
         auto handle = pool::NodeHandle::allocate(nodeId);
         auto* node = handle.toNode();
@@ -382,7 +382,7 @@ namespace model
         {
             auto* ignoredBy = findAlias(nodeData.m_ignoredById, aliases);
             if (!ignoredBy) {
-                throw fmt::format("ignored_by missing: node={}, ignored_by={}", nodeData.m_id, nodeData.m_ignoredById);
+                throw fmt::format("MODEL::ERROR::IGNORED_BY_MISSING: node={}, ignored_by={}", nodeData.m_id, nodeData.m_ignoredById);
             }
             node->m_ignoredBy = *ignoredBy;
         }

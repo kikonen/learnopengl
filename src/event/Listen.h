@@ -19,7 +19,7 @@ namespace event
             Handler handler)
         {
             if (type == event::Type::none) return;
-            if (m_type != event::Type::none) throw "duplicate event register";
+            if (m_type != event::Type::none) throw "EVENT::DUPLICATE_LISTENER";
 
             m_type = type;
             m_dispatcher = dispatcher;
