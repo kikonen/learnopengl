@@ -1,8 +1,8 @@
 ---
 types:
-  - id: prefab_elf
+  - id: prefab_elf_female
     prefab:
-      path: prefab/characters/prefab_elf.yml
+      path: prefab/characters/elf/prefab_elf_female.yml
   - id: prefab_helmet
     prefab:
       path: prefab/creatures/addon/prefab_helmet.yml
@@ -21,15 +21,18 @@ types:
   - id: prefab_construction_hat
     prefab:
       path: prefab/creatures/addon/prefab_construction_hat.yml
-  - id: prefab_pants
+  - id: prefab_elf_female_pants
     prefab:
-      path: prefab/characters/elf/prefab_female_pants.yml
-  - id: prefab_shirt
+      path: prefab/characters/elf/prefab_elf_female_pants.yml
+  - id: prefab_elf_female_shirt
     prefab:
-      path: prefab/characters/elf/prefab_female_shirt.yml
-  - id: prefab_elf_warrior
+      path: prefab/characters/elf/prefab_elf_female_shirt.yml
+  - id: prefab_elf_female_long_hair
+    prefab:
+      path: prefab/characters/elf/prefab_elf_female_long_hair.yml
+  - id: prefab_elf_female_warrior
     type: composite
-    composite: prefab_elf_warrior_composite
+    composite: prefab_elf_female_warrior_composite
     physics:
       #enabled: false
       update: true
@@ -47,16 +50,14 @@ types:
         size: [0.25, 0.7, 0]
 
 composites:
-  - id: prefab_elf_warrior_composite
+  - id: prefab_elf_female_warrior_composite
     nodes:
-      - type: prefab_pants
-      - type: prefab_shirt
-      - type: prefab_elf
+      - type: prefab_elf_female_pants
+      - type: prefab_elf_female_shirt
+      - type: prefab_elf_female_long_hair
+      - type: prefab_elf_female
         tag: body
         children:
-          - xtype: prefab_pants
-            attach:
-              socket: pants
           - xtype: prefab_helmet
             attach:
               socket: head

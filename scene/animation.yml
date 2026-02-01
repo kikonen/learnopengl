@@ -9,7 +9,7 @@ script:
 
 includes:
   - xpath: prefab/creatures/include_skeleton_warrior.yml
-  #- path: prefab/characters/include_elf_warrior.yml
+  #- path: prefab/characters/include_elf_female_warrior.yml
 
 types:
   - id: grid
@@ -66,15 +66,15 @@ types:
         self.handle,
         { name = "idle" })
   - id: elf
-    xbase: prefab_elf_warrior
+    xbase: prefab_elf_female_warrior
     prefab:
-      path: prefab/characters/prefab_elf.yml
+      path: prefab/characters/prefab_elf_female.yml
     flags:
       dynamic_bounds: true
     script: |
       cmd:animation_play(
         self.handle,
-        { name = "idle" })
+        { tag="body", name = "idle" })
   - id: scavenger
     prefab:
       path: prefab/characters/prefab_scavenger.yml
@@ -148,7 +148,8 @@ nodes:
       z_count: 2
       x_step: 20
       z_step: -20
-  - type: elf
+  - type: elf_female
+    tag: body
     pos: [0.0, 0.5, 0.0]
     xrepeat:
       x_count: 2

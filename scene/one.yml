@@ -10,7 +10,7 @@ script:
 
 includes:
   - xpath: prefab/creatures/include_skeleton_warrior.yml
-  - path: prefab/characters/include_elf_warrior.yml
+  - path: prefab/characters/elf/include_elf_female_warrior.yml
 
 types:
   - id: player
@@ -197,17 +197,17 @@ types:
       cmd:animation_play(
         self.handle,
         { name = "walk" })
-  - id: elf_warrior
-    base: prefab_elf_warrior
+  - id: elf_female_warrior
+    base: prefab_elf_female_warrior
     physics:
       #enabled: false
     script: |
       cmd:animation_play(
         self.handle,
         { tag="body", name = "idle" })
-  - xid: elf
+  - xid: elf_female
     prefab:
-      path: prefab/characters/prefab_elf.yml
+      path: prefab/characters/elf/prefab_elf_female.yml
       #path: prefab/characters/elf/prefab_female_pants.yml
     physics:
       #enabled: false
@@ -251,9 +251,9 @@ nodes:
     pos: [0, 3.5, 0.0]
   - type: wolf
     pos: [0, 3.5, 0.0]
-  - type: elf_warrior
+  - type: elf_female_warrior
     pos: [0, 3.5, 0.0]
-  - type: elf
+  - type: elf_female
     tag: body
     pos: [0, 3.5, 0.0]
   - type: scavenger

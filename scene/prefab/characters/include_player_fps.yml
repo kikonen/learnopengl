@@ -78,7 +78,7 @@ types:
       material_modifier:
         map_kd: T_Hands_04_Albedo_06_2048.png
         xrender_back: true
-    pivot:
+    xpivot:
       offset: [0, 1.5, 0]
     xlayer: player
     script: |
