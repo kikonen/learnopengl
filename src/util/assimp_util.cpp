@@ -26,7 +26,7 @@ namespace assimp_util {
         return { v.x, v.y, v.z };
     }
 
-    glm::vec2 toVec2(const aiVector3D& v) {
+    glm::vec2 toVec2(const aiVector2D& v) {
         return { v.x, v.y };
     }
 
@@ -41,6 +41,16 @@ namespace assimp_util {
 
     glm::quat toQuat(const aiQuaternion& v) {
         return { v.w, v.x, v.y, v.z };
+    }
+
+    util::UVTransform toUVTransform(const aiUVTransform& src)
+    {
+        util::UVTransform dst;
+        dst.m_position = toVec2(src.mTranslation);
+        dst.m_scale = toVec2(src.mScaling);
+        dst.m_rotation = src.mRotation;
+
+        return dst;
     }
 
     std::string resolvePath(

@@ -16,6 +16,8 @@
 #include "TextureType.h"
 #include "TextureSpec.h"
 
+#include "util/UVTransform.h"
+
 //#include "MaterialSSBO.h"
 
 class Program;
@@ -293,6 +295,8 @@ private:
     std::map<TextureType, BoundTexture> m_boundTextures{};
     std::map<TextureType, TextureInfo> m_texturePaths{};
     std::map<TextureType, std::shared_ptr<InlineTexture>> m_inlineTextures{};
+
+    std::map<TextureType, util::UVTransform> m_textureTransforms;
 
     ki::material_id m_id;
 

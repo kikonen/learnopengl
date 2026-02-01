@@ -397,7 +397,7 @@ namespace mesh_set
 
             if (mesh->HasTextureCoords(0))
             {
-                texCoord = assimp_util::toVec2(mesh->mTextureCoords[0][vertexIndex]);
+                texCoord = assimp_util::toVec3(mesh->mTextureCoords[0][vertexIndex]);
             }
 
             const auto pos = assimp_util::toVec3(mesh->mVertices[vertexIndex]);

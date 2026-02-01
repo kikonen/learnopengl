@@ -1304,6 +1304,7 @@
     <ClInclude Include="src\util\utf8_util.h" />
     <ClInclude Include="src\util\util.h" />
     <ClInclude Include="src\util\util_join.h" />
+    <ClInclude Include="src\util\UVTransform.h" />
     <ClInclude Include="vendor\glad\include\glad\glad.h" />
     <ClInclude Include="vendor\glad\include\KHR\khrplatform.h" />
     <ClInclude Include="vendor\stb_image\src\stb_image.h" />

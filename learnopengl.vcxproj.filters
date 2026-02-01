@@ -3116,6 +3116,9 @@
     <ClInclude Include="src\loader\RigData.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\util\UVTransform.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="learnopengl.rc">

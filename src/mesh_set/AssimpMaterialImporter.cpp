@@ -50,11 +50,13 @@ namespace {
         // Base color / Albedo
         glm::vec4 baseColorFactor;      // RGBA multiplier
         int baseColorTexture;          // Texture index (-1 if none)
+        util::UVTransform m_baseColorTransform;
 
         // Metallic-Roughness
         float metallicFactor;          // Metallic multiplier (0-1)
         float roughnessFactor;         // Roughness multiplier (0-1)
         int metallicRoughnessTexture;  // Combined texture index (-1 if none)
+        util::UVTransform m_metallicTransform;
 
         // In glTF, metallic-roughness is a SINGLE texture with:
         // - Blue channel (B) = Metalness
@@ -64,6 +66,7 @@ namespace {
         // Normal mapping
         int normalTexture;             // Normal map index (-1 if none)
         float normalScale;             // Normal map strength
+        util::UVTransform m_normalTransform;
 
         // Occlusion
         int occlusionTexture;          // AO texture index (-1 if none)
@@ -340,6 +343,34 @@ namespace
         if (material->Get(AI_MATKEY_SPECULAR_FACTOR, specular) == AI_SUCCESS) {
             info.hasSpecularExtension = true;
             info.specularFactor = specular;
+        }
+
+        {
+            {
+                aiUVTransform uvTransform;
+                // Get base color factor
+                if (material->Get(AI_MATKEY_UVTRANSFORM(aiTextureType_BASE_COLOR, 0), uvTransform) == AI_SUCCESS) {
+                    info.m_baseColorTransform = assimp_util::toUVTransform(uvTransform);
+                }
+                // Fallback to diffuse color
+                else if (material->Get(AI_MATKEY_UVTRANSFORM(aiTextureType_DIFFUSE, 0), uvTransform) == AI_SUCCESS) {
+                    info.m_baseColorTransform = assimp_util::toUVTransform(uvTransform);
+                }
+            }
+            {
+                // For normal map
+                aiUVTransform uvTransform;
+                if (material->Get(AI_MATKEY_UVTRANSFORM(aiTextureType_NORMALS, 0), uvTransform) == AI_SUCCESS) {
+                    info.m_normalTransform = assimp_util::toUVTransform(uvTransform);
+                }
+            }
+            {
+                // For PBR metallic-roughness (Assimp 5.x+)
+                aiUVTransform uvTransform;
+                if (material->Get(AI_MATKEY_UVTRANSFORM(aiTextureType_METALNESS, 0), uvTransform) == AI_SUCCESS) {
+                    info.m_metallicTransform = assimp_util::toUVTransform(uvTransform);
+                }
+            }
         }
 
         return info;
