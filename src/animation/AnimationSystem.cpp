@@ -389,9 +389,8 @@ namespace animation
             }
         }
 
-        rigNodeRegistry.updateWT();
-        jointRegistry.updateWT();
-        socketRegistry.updateWT();
+        jointRegistry.makeSnapshot();
+        socketRegistry.makeSnapshot();
     }
 
     void AnimationSystem::updateRT(const UpdateContext& ctx)

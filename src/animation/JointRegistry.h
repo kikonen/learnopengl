@@ -57,8 +57,6 @@ namespace animation {
         void markDirtyAll() noexcept;
         void markDirty(util::BufferReference ref) noexcept;
 
-        void updateWT();
-
     private:
         void makeSnapshot();
 

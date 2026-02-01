@@ -133,11 +133,6 @@ namespace animation
         return static_cast<uint32_t>(m_snapshot.size());
     }
 
-    void SocketRegistry::updateWT()
-    {
-        makeSnapshot();
-    }
-
     void SocketRegistry::makeSnapshot()
     {
         std::lock_guard lock(m_lock);

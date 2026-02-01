@@ -138,8 +138,4 @@ namespace animation
     {
         return static_cast<uint32_t>(m_transforms.size());
     }
-
-    void RigNodeRegistry::updateWT()
-    {
-    }
 }

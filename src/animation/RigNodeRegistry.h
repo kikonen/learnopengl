@@ -49,8 +49,6 @@ namespace animation {
         void markDirtyAll() noexcept;
         void markDirty(util::BufferReference ref) noexcept;
 
-        void updateWT();
-
     protected:
         std::mutex m_lock{};
 

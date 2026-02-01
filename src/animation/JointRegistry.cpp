@@ -131,11 +131,6 @@ namespace animation
         return static_cast<uint32_t>(m_snapshot.size());
     }
 
-    void JointRegistry::updateWT()
-    {
-        makeSnapshot();
-    }
-
     void JointRegistry::makeSnapshot()
     {
         std::lock_guard lock(m_lock);
