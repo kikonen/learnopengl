@@ -1,5 +1,6 @@
 #include "PawnController.h"
 
+#include <cmath>
 #include <iostream>
 
 #include "asset/Assets.h"
@@ -27,6 +28,8 @@ namespace {
     const auto walkId = SID("walk_2");
     const auto runId = SID("run_2");
     const auto turnId = SID("turn_1");
+
+    constexpr float EPSILON = 0.00001f;
 }
 
 PawnController::PawnController()
@@ -56,25 +59,62 @@ bool PawnController::updateWT(
     const UpdateContext& ctx,
     model::Node& node)
 {
-    const float angularVelocity = m_angularVelocity;
-    const auto velocity = m_velocity;
-
+    const auto& intent = m_moveIntent;
     const auto dt = ctx.getClock().elapsedSecs;
 
     auto& state = NodeRegistry::get().modifyState(node.getEntityIndex());
     bool changed = false;
 
-    if (angularVelocity != 0.f) {
-        auto rot = util::axisRadiansToQuat(state.getViewUp(), angularVelocity * dt);
+    // Smooth towards target velocities using exponential decay: dx/dt = -k*(x - target)
+    // Solution: x_new = lerp(x_old, target, 1 - e^(-k*dt))
+    // Frame-rate independent: same result whether 1 frame at 32ms or 2 frames at 16ms
+    // https://www.youtube.com/watch?v=LSNQuFEDOyQ (Freya Holmér - spring/decay math)
+    const float t = 1.f - std::exp(-m_smoothing * dt);
+
+    m_moveState.angularVelocity = std::lerp(m_moveState.angularVelocity, intent.angularVelocity, t);
+    m_moveState.moveForward = std::lerp(m_moveState.moveForward, intent.moveForward * intent.moveSpeed.z, t);
+    m_moveState.moveRight = std::lerp(m_moveState.moveRight, intent.moveRight * intent.moveSpeed.x, t);
+    m_moveState.moveUp = std::lerp(m_moveState.moveUp, intent.moveUp * intent.moveSpeed.y, t);
+
+    const bool actionTurn = std::abs(m_moveState.angularVelocity) > EPSILON;
+    const bool hasMovement = std::abs(m_moveState.moveForward) > EPSILON ||
+                              std::abs(m_moveState.moveRight) > EPSILON ||
+                              std::abs(m_moveState.moveUp) > EPSILON;
+    const bool actionWalk = intent.moveForward != 0.f || intent.moveRight != 0.f || intent.moveUp != 0.f;
+    const bool actionRun = actionWalk && intent.running;
+
+    // Compute movement using MID-rotation view vectors for orbit-like behavior
+    if (hasMovement) {
+        const auto viewUp = glm::normalize(state.getViewUp());
+
+        // Apply half rotation to get mid-frame view vectors
+        glm::vec3 viewFront = glm::normalize(state.getViewFront());
+        glm::vec3 viewRight = glm::normalize(state.getViewRight());
+        if (actionTurn) {
+            auto halfRot = util::axisRadiansToQuat(viewUp, m_moveState.angularVelocity * dt * 0.5f);
+            viewFront = halfRot * viewFront;
+            viewRight = halfRot * viewRight;
+        }
+
+        glm::vec3 velocity =
+            viewFront * m_moveState.moveForward +
+            viewRight * m_moveState.moveRight +
+            viewUp * m_moveState.moveUp;
+
+        state.setPosition(state.getPosition() + velocity * dt);
+        changed = true;
+    }
+
+    // Apply full rotation
+    if (actionTurn) {
+        auto rot = util::axisRadiansToQuat(state.getViewUp(), m_moveState.angularVelocity * dt);
         state.adjustRotation(rot);
         changed = true;
     }
 
-    if (velocity != glm::vec3{ 0.f }) {
-        auto adjust = velocity * dt;
-        state.setPosition(state.getPosition() + adjust);
-        changed = true;
-    }
+    // Audio in sync with movement
+    toggleAudio(&node, actionWalk && !actionRun, actionRun, actionTurn && !actionWalk);
+
     return changed;
 }
 
@@ -91,10 +131,6 @@ void PawnController::processInput(
 
     const auto& input = ctx.getInput();
 
-    const float dt = ctx.getClock().elapsedSecs;
-
-    const auto& viewUp = glm::normalize(snapshot->getViewUp());
-
     glm::vec3 moveSpeed{ m_speedMoveNormal };
     glm::vec3 rotateSpeed{ glm::radians(m_speedRotateNormal) };
 
@@ -106,116 +142,66 @@ void PawnController::processInput(
         runningSpeed = true;
     }
     if (input.isModifierDown(Modifier::ALT)) {
-        moveSpeed *= 5.f;
+        moveSpeed *= 4.f;
         rotateSpeed *= 2.f;
         runningSpeed = true;
     }
     if (input.isHighPrecisionMode()) {
-        moveSpeed *= 0.1f;
-        rotateSpeed *= 0.25f;
+        moveSpeed *= 0.125f;
+        rotateSpeed *= 0.125f;
         runningSpeed = false;
     }
 
-    bool actionWalk = false;
-    bool actionRun = false;
-    bool actionTurn = false;
-
+    // Rotation from keyboard
     float angularVelocity = 0.f;
-
-    {
-        if (true) {
-            bool changed = false;
-
-            if (input.isKeyDown(Key::ROTATE_LEFT)) {
-                angularVelocity += rotateSpeed.y;
-                changed = true;
-            }
-            if (input.isKeyDown(Key::ROTATE_RIGHT)) {
-                angularVelocity += -rotateSpeed.y;
-                changed = true;
-            }
-
-            if (changed) {
-                actionTurn = true;
-            }
-        }
+    if (input.isKeyDown(Key::ROTATE_LEFT)) {
+        angularVelocity += rotateSpeed.y;
+    }
+    if (input.isKeyDown(Key::ROTATE_RIGHT)) {
+        angularVelocity -= rotateSpeed.y;
     }
 
-    {
-        bool changed = false;
-        glm::vec3 adjust{ 0.f };
-
-        {
-            const auto& viewFront = glm::normalize(snapshot->getViewFront());
-
-            if (input.isKeyDown(Key::FORWARD)) {
-                adjust += viewFront * dt * moveSpeed.z;
-                changed = true;
-            }
-            if (input.isKeyDown(Key::BACKWARD)) {
-                adjust -= viewFront * dt * moveSpeed.z;
-                changed = true;
-            }
-        }
-
-        {
-            const auto& viewRight = glm::normalize(snapshot->getViewRight());
-
-            if (input.isKeyDown(Key::LEFT)) {
-                adjust -= viewRight * dt * moveSpeed.x;
-                changed = true;
-            }
-            if (input.isKeyDown(Key::RIGHT)) {
-                adjust += viewRight * dt * moveSpeed.x;
-                changed = true;
-            }
-        }
-
-        {
-            if (input.isKeyDown(Key::UP)) {
-                adjust += viewUp * dt * moveSpeed.y;
-                changed = true;
-            }
-            if (input.isKeyDown(Key::DOWN)) {
-                adjust -= viewUp * dt * moveSpeed.y;
-                changed = true;
-            }
-
-        }
-
-        if (changed) {
-            m_velocity = adjust / dt;
-            actionWalk = true;
-            actionRun = runningSpeed;
-        } else{
-            m_velocity = { 0.f, 0.f, 0.f };
-        }
-    }
-
+    // Rotation from mouse
     if (input.isMouseCaptured()) {
         const float maxMouseSpeed = 500.f;
-        // Rotation/sec at maximum speed
         const float maxAngularSpeed = std::numbers::pi_v<float> * 8.f;
         const float x = input.mouseRelativeX;
 
-        if (x != 0.f) {
-            // Convert to ~[-1.0, 1.0]
-            float mouseAngularVelocity = -x / maxMouseSpeed;
-            // Multiply by rotation/sec
-            mouseAngularVelocity *= maxAngularSpeed;
-
+        if (std::abs(x) > EPSILON ) {
+            float mouseAngularVelocity = -x / maxMouseSpeed * maxAngularSpeed;
             if (input.isHighPrecisionMode()) {
                 mouseAngularVelocity *= 0.25f;
             }
-
             angularVelocity += mouseAngularVelocity;
-            actionTurn = true;
         }
     }
 
-    m_angularVelocity = angularVelocity;
+    // Movement intent - direction computed in updateWT after rotation
+    MoveIntent intent;
+    intent.angularVelocity = angularVelocity;  // Already in rad/s
+    intent.moveSpeed = moveSpeed;
+    intent.running = runningSpeed;
 
-    toggleAudio(node, actionWalk, actionRun, actionTurn);
+    if (input.isKeyDown(Key::FORWARD)) {
+        intent.moveForward += 1.f;
+    }
+    if (input.isKeyDown(Key::BACKWARD)) {
+        intent.moveForward -= 1.f;
+    }
+    if (input.isKeyDown(Key::RIGHT)) {
+        intent.moveRight += 1.f;
+    }
+    if (input.isKeyDown(Key::LEFT)) {
+        intent.moveRight -= 1.f;
+    }
+    if (input.isKeyDown(Key::UP)) {
+        intent.moveUp += 1.f;
+    }
+    if (input.isKeyDown(Key::DOWN)) {
+        intent.moveUp -= 1.f;
+    }
+
+    m_moveIntent = intent;
 }
 
 void PawnController::toggleAudio(
@@ -225,7 +211,7 @@ void PawnController::toggleAudio(
     bool actionTurn)
 {
     if (auto* src = node->getAudioSource(walkId); src) {
-        src->toggle(actionWalk && !actionRun);
+        src->toggle(actionWalk);
     }
 
     if (auto* src = node->getAudioSource(runId); src) {
@@ -233,6 +219,6 @@ void PawnController::toggleAudio(
     }
 
     if (auto* src = node->getAudioSource(turnId); src) {
-        src->toggle(actionTurn && !(actionWalk || actionRun));
+        src->toggle(actionTurn);
     }
 }

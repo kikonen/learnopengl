@@ -188,7 +188,7 @@ void AssetsLoader::loadAssets(
             }
         }
         {
-            if (k == "camera_move_mormal") {
+            if (k == "camera_move_normal") {
                 data.cameraMoveNormal = readVec3(v);
                 continue;
             }

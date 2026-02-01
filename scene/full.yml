@@ -1002,7 +1002,7 @@ types:
         x_step: 40
         z_step: 40
   - id: skeleton_warrior
-    base: prefab_skeleton_warrior
+    base: prefab_composite_skeleton_warrior
     priority: -15
     type_flags:
       dynamic_bounds: true
