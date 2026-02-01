@@ -158,7 +158,7 @@ types:
       material_modifier:
         default_programs: true
   - xid: skeleton_warrior
-    xbase: prefab_skeleton_warrior
+    #base: prefab_composite_skeleton_warrior
     priority: 1
     flags:
       #dynamic_bounds: true

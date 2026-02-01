@@ -80,8 +80,8 @@ types:
     priority: 1
     flags:
       static_bounds: true
-  - id: skeleton_warrior_1
-    base: prefab_skeleton_warrior
+  - id: skeleton_warrior
+    base: prefab_composite_skeleton_warrior
     flags:
       dynamic_bounds: true
     script: |
@@ -100,9 +100,7 @@ types:
         shadow_program: shadow
         id_program: object_id
         selection_program: selection
-    flags:
-      dynamic_bounds: true
-  - id: skeleton_warrior_2
+  - id: skeleton
     prefab:
       path: prefab/creatures/prefab_skeleton.yml
     flags:
@@ -179,7 +177,7 @@ nodes:
       z_count: 2
       x_step: 10
       z_step: -10
-  - type: skeleton_warrior_1
+  - type: skeleton_warrior
     pos: [20, 0.5, 20]
     xrotation: [0, 45, 0]
     rotation: [0, -90, 0]
@@ -189,7 +187,7 @@ nodes:
       z_count: 2
       x_step: 10
       z_step: -10
-  - type: skeleton_warrior_2
+  - type: skeleton
     pos: [20, 0.0, 50]
     rotation: [0, -90, 0]
     scale: 2

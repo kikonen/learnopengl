@@ -18,19 +18,20 @@ prefab:
         xrender_back: true
         xline_mode: true
         default_programs: true
-      animations:
-        - name: default
-          clip: Take-001
-        - name: idle
-          clip: Take-001
-          path: anim/Deinodonte@IdleBreathe.FBX
-        - name: walk
-          clip: Take-001
-          path: anim/Deinodonte@Walk_RM.FBX
-        - name: attack_claw_left
-          clip: Take-001
-          path: anim/Deinodonte@ClawsAttackLeft.FBX
       base_scale: 0.004
+      rig:
+        animations:
+          - name: default
+            clip: Take-001
+          - name: idle
+            clip: Take-001
+            path: anim/Deinodonte@IdleBreathe.FBX
+          - name: walk
+            clip: Take-001
+            path: anim/Deinodonte@Walk_RM.FBX
+          - name: attack_claw_left
+            clip: Take-001
+            path: anim/Deinodonte@ClawsAttackLeft.FBX
   physics:
     body:
       kinematic: true

@@ -25,8 +25,8 @@ types:
     controllers:
       - type: pawn
       - type: camera_zoom
-  - id: player_3rd_person
-    base: prefab_skeleton_warrior
+  - id: skeleton_warrior
+    base: prefab_composite_skeleton_warrior
     camera:
       type: follow
       distance: [5, 2.5, 10]

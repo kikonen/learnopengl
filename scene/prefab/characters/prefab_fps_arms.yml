@@ -14,15 +14,16 @@ prefab:
       map_displacement: M_UE4Man_Body_displacement
       program: g_tex
       shadow_program: shadow
-    animations:
-      - name: idle
-        path: anim/FirstPerson_Idle.FBX
-      - name: run
-        path: anim/FirstPerson_Run.FBX
-      - name: fire
-        path: anim/FirstPerson_Fire.FBX
     base_scale: 0.01
     #base_rotation: [0, 90, 0]
     front: -x
+    rig:
+      animations:
+        - name: idle
+          path: anim/FirstPerson_Idle.FBX
+        - name: run
+          path: anim/FirstPerson_Run.FBX
+        - name: fire
+          path: anim/FirstPerson_Fire.FBX
   flags:
     no_frustum: true

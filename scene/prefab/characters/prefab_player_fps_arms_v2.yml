@@ -10,36 +10,37 @@ prefab:
           map_normal: T_Hands_04_Normals_2048.png
           map_mras: T_Hands_04_mras
           map_displacement: T_Hands_04_displacement
-      sockets:
-        - name: rifle
-          joint: hand_l
-          position: [-2.5, 16, 5]
-          rotation: [-87, 20, -140]
-        - name: pistol
-          joint: hand_l
-          xposition: [-9, 14, 8]
-          xrotation: [-89, 0, -120]
-      animations:
-        - name: rifle_idle_aim
-          clip: Unreal-Take
-          path: fbx/weapons/fab/FPS_Automatic_Rifle_01/Animations/Arms/Anim_Automatic_Rifle_01_Idle_Aim.FBX
-        - name: rifle_fire
-          clip: Unreal-Take
-          path: fbx/weapons/fab/FPS_Automatic_Rifle_01/Animations/Arms/Anim_Automatic_Rifle_01_Shot.FBX
-        - name: rifle_fire_aim
-          clip: Unreal-Take
-          path: fbx/weapons/fab/FPS_Automatic_Rifle_01/Animations/Arms/Anim_Automatic_Rifle_01_Shot_Aim.FBX
-        - name: rifle_fire_sight
-          clip: Unreal-Take
-          path: fbx/weapons/fab/FPS_Automatic_Rifle_01/Animations/Arms/Anim_Automatic_Rifle_01_Shot_Sight.FBX
-        - name: rifle_action
-          clip: Unreal-Take
-          path: fbx/weapons/fab/FPS_Automatic_Rifle_01/Animations/Arms/Anim_Automatic_Rifle_01_Attack_01.FBX
-        - name: pistol_fire
-          clip: Unreal-Take
-          path: fbx/weapons/fab/FPS_Pistol_Knife/Animations/Arms/Anim_Pistol_Knife_Shot.FBX
       default_programs: true
       base_scale: 0.0175
       flags:
         use_bones: true
         use_animation: true
+      rig:
+        sockets:
+          - name: rifle
+            joint: hand_l
+            position: [-2.5, 16, 5]
+            rotation: [-87, 20, -140]
+          - name: pistol
+            joint: hand_l
+            xposition: [-9, 14, 8]
+            xrotation: [-89, 0, -120]
+        animations:
+          - name: rifle_idle_aim
+            clip: Unreal-Take
+            path: fbx/weapons/fab/FPS_Automatic_Rifle_01/Animations/Arms/Anim_Automatic_Rifle_01_Idle_Aim.FBX
+          - name: rifle_fire
+            clip: Unreal-Take
+            path: fbx/weapons/fab/FPS_Automatic_Rifle_01/Animations/Arms/Anim_Automatic_Rifle_01_Shot.FBX
+          - name: rifle_fire_aim
+            clip: Unreal-Take
+            path: fbx/weapons/fab/FPS_Automatic_Rifle_01/Animations/Arms/Anim_Automatic_Rifle_01_Shot_Aim.FBX
+          - name: rifle_fire_sight
+            clip: Unreal-Take
+            path: fbx/weapons/fab/FPS_Automatic_Rifle_01/Animations/Arms/Anim_Automatic_Rifle_01_Shot_Sight.FBX
+          - name: rifle_action
+            clip: Unreal-Take
+            path: fbx/weapons/fab/FPS_Automatic_Rifle_01/Animations/Arms/Anim_Automatic_Rifle_01_Attack_01.FBX
+          - name: pistol_fire
+            clip: Unreal-Take
+            path: fbx/weapons/fab/FPS_Pistol_Knife/Animations/Arms/Anim_Pistol_Knife_Shot.FBX

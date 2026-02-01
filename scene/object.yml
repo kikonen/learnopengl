@@ -73,7 +73,8 @@ types:
         kd: [0.160, 0.578, 0.168, 1.0]
         xreflection: 0.4
       base_scale: 0.2
-  - id: prefab_skeleton_warrior
+  - id: skeleton_warrior
+    #base: prefab_composite_skeleton_warrior
     flags:
       #dynamic_bounds: true
     script: |

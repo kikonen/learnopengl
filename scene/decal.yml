@@ -221,7 +221,7 @@ types:
       no_select: true
       no_shadow: true
   - id: skeleton_warrior
-    base: prefab_skeleton_warrior
+    base: prefab_composite_skeleton_warrior
     particle: skeleton_hit
     audio:
       sources:

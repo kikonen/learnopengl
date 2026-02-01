@@ -45,7 +45,7 @@ types:
     xflags:
       static_bounds: true
   - id: skeleton_warrior
-    base: prefab_skeleton_warrior
+    base: prefab_composite_skeleton_warrior
     flags:
       dynamic_bounds: true
     script: scripts/seq_skeleton

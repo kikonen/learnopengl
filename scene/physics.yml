@@ -74,8 +74,8 @@ types:
         type: capsule
         category: player
         size: [0.25, 0.5, 0]
-  - id: player_3rd_person
-    base: prefab_skeleton_warrior
+  - id: skeleton_warrior
+    base: prefab_composite_skeleton_warrior
     camera:
       type: follow
       distance: [5, 2.5, 10]

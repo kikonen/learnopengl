@@ -16,25 +16,26 @@ prefab:
         xrender_back: true
         xline_mode: true
         default_programs: true
-      sockets:
-        - name: physics_center
-          joint: Wolf_-Spine1
-          offset: [0.1, 0.2, 0]
-          role: physics_center
-        - name: ground_back
-          joint: Bip01_Spine
-          role: ground
-        - name: foot_right
-          joint: RToeeff
-          role: foot_right
-        - name: foot_left
-          joint: LToeeff
-          role: foot_left
-      animations:
-        - name: walk
-          clip: Unreal-Take
-          path: anim/ANIM_Wolf_Walk_RM.FBX
       base_scale: 0.0125
+      rig:
+        sockets:
+          - name: physics_center
+            joint: Wolf_-Spine1
+            offset: [0.1, 0.2, 0]
+            role: physics_center
+          - name: ground_back
+            joint: Bip01_Spine
+            role: ground
+          - name: foot_right
+            joint: RToeeff
+            role: foot_right
+          - name: foot_left
+            joint: LToeeff
+            role: foot_left
+        animations:
+          - name: walk
+            clip: Unreal-Take
+            path: anim/ANIM_Wolf_Walk_RM.FBX
   physics:
     update: true
     body:

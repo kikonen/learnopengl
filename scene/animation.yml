@@ -9,7 +9,7 @@ script:
 
 includes:
   - xpath: prefab/creatures/include_skeleton_warrior.yml
-  #- path: prefab/characters/include_elf_female_warrior.yml
+  - path: prefab/characters/elf/include_elf_female_warrior.yml
 
 types:
   - id: grid
@@ -65,10 +65,10 @@ types:
       cmd:animation_play(
         self.handle,
         { name = "idle" })
-  - id: elf
-    xbase: prefab_elf_female_warrior
-    prefab:
-      path: prefab/characters/prefab_elf_female.yml
+  - id: elf_female
+    base: prefab_elf_female_warrior
+    xprefab:
+      path: prefab/characters/elf/prefab_elf_female.yml
     flags:
       dynamic_bounds: true
     script: |

@@ -11,14 +11,15 @@ prefab:
         - prefab: prefab/creatures/prefab_wyvern_material
           alias: M_Wyvern
           xline_mode: true
-      animations:
-        - name: fire
-          clip: Take-001
-          path: anim/Wyvern@FlyStationarySpreadFire.FBX
-        - name: fly
-          clip: Take-001
-          path: anim/Wyvern@FlyStationary.FBX
       base_scale: 0.01
+      rig:
+        animations:
+          - name: fire
+            clip: Take-001
+            path: anim/Wyvern@FlyStationarySpreadFire.FBX
+          - name: fly
+            clip: Take-001
+            path: anim/Wyvern@FlyStationary.FBX
   physics:
     body:
       kinematic: true

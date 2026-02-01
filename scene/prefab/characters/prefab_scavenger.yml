@@ -33,15 +33,16 @@ prefab:
           alpha: true
           #render_back: true
           xline_mode: true
-      animations:
-        - clips:
-            - name: default
-              clip: Take-001
-            - name: walk
-              clip: Scavenger_demo_walk
       program: g_tex
       shadow_program: shadow
       base_scale: 0.01
+      rig:
+        animations:
+          - clips:
+              - name: default
+                clip: Take-001
+              - name: walk
+                clip: Scavenger_demo_walk
   physics:
     body:
       type: capsule
