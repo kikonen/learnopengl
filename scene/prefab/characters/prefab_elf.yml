@@ -29,105 +29,107 @@ prefab:
           ke: 6c51ff
           #invert_metalness: true
           invert_roughness: true
-      sockets:
-        - name: physics_center
-          joint: Base-HumanSpine1
-          offset: [0, 0.1, 0]
-          role: physics_center
-        - name: head
-          joint: Base-HumanHead
-          offset: [0.130, 0.040, 0.000]
-          rotation: [90, 90, 10]
-        - name: neck
-          joint: Base-HumanNeck
-          offset: [0.000, 0.000, -0.100]
-          rotation: [90.000, 0.000, 189.000]
-        - name: neck_rev
-          joint: Base-HumanNeck
-          offset: [0.000, 0.030, -0.120]
-          rotation: [90.000, 0.000, 0.000]
-        - name: l_arm
-          joint: Base-HumanLForearm3
-          offset: [0.020, 0.000, 0.000]
-          rotation: [90.000, 90.000, 90.000]
-        - name: r_hand
-          joint: HandBoneR
-          offset: [0.030, 0.080, 0.090]
-          rotation: [0.000, 90.000, 0.000]
-        - name: ground_back
-          joint: Base-HumanSpine1
-          role: ground
-        - name: pants
-          #joint: Base-HumanPelvis
-          #joint: HumanTassetRig1
-          joint: RootNode
-          #offset: [0.000, 0.10, -1.000]
-          #rotation: [90.000, 0.000, 180.000]
-        - name: foot_right
-          joint: Base-HumanRToe11
-          role: foot_right
-        - name: foot_left
-          joint: Base-HumanLToe11
-          role: foot_left
-      animations:
-        - clips:
-            - name: default
-              clip: Take-001
-        - name: anim
-          path: anim/Elf Animations.FBX
-          clips:
-            - name: walk
-              clip: Walk
-            - name: run
-              clip: Run
-            - name: walk_back
-              clip: WalkBack
-            - name: idle
-              clip: Idle
-            - name: idle_break
-              clip: IdleBreak
-            - name: idle_to_combat
-              clip: IdleToCombat
-            - name: combat_idle
-              clip: CombatIdle
-            - name: Combat_idle_break
-              clip: CombatIdleBreak
-            - name: combat_to_idle
-              clip: CombatToIdle
-            - name: dodge
-              clip: Dodge
-            - name: taunt
-              clip: Taunt
-            - name: attack_1
-              clip: Attack01
-            - name: 2ttack_2
-              clip: Attack02
-            - name: attack_3
-              clip: Attack03
-            - name: block_1_start
-              clip: Block1start
-            - name: block_1_loop
-              clip: Block1loop
-            - name: block_1_end
-              clip: Block1end
-            - name: block_2_start
-              clip: Block2start
-            - name: block_2_loop
-              clip: Block2loop
-            - name: block_2_end
-              clip: Block2end
-            - name: cast_1
-              clip: Cast1
-            - name: cast_2_start
-              clip: Cast2start
-            - name: cast_2_loop
-              clip: Cast2loop
-            - name: cast_2_end
-              clip: Cast2end
-            - name: death
-              clip: Death
-            - name: hit
-              clip: GotHit
+      rigs:
+        - name: Elf-Female-RootNode-Base-HumanPelvis
+          sockets:
+            - name: physics_center
+              joint: Base-HumanSpine1
+              offset: [0, 0.1, 0]
+              role: physics_center
+            - name: head
+              joint: Base-HumanHead
+              offset: [0.130, 0.040, 0.000]
+              rotation: [90, 90, 10]
+            - name: neck
+              joint: Base-HumanNeck
+              offset: [0.000, 0.000, -0.100]
+              rotation: [90.000, 0.000, 189.000]
+            - name: neck_rev
+              joint: Base-HumanNeck
+              offset: [0.000, 0.030, -0.120]
+              rotation: [90.000, 0.000, 0.000]
+            - name: l_arm
+              joint: Base-HumanLForearm3
+              offset: [0.020, 0.000, 0.000]
+              rotation: [90.000, 90.000, 90.000]
+            - name: r_hand
+              joint: HandBoneR
+              offset: [0.030, 0.080, 0.090]
+              rotation: [0.000, 90.000, 0.000]
+            - name: ground_back
+              joint: Base-HumanSpine1
+              role: ground
+            - name: pants
+              #joint: Base-HumanPelvis
+              #joint: HumanTassetRig1
+              joint: RootNode
+              #offset: [0.000, 0.10, -1.000]
+              #rotation: [90.000, 0.000, 180.000]
+            - name: foot_right
+              joint: Base-HumanRToe11
+              role: foot_right
+            - name: foot_left
+              joint: Base-HumanLToe11
+              role: foot_left
+          animations:
+            - clips:
+                - name: default
+                  clip: Take-001
+            - name: anim
+              path: anim/Elf Animations.FBX
+              clips:
+                - name: walk
+                  clip: Walk
+                - name: run
+                  clip: Run
+                - name: walk_back
+                  clip: WalkBack
+                - name: idle
+                  clip: Idle
+                - name: idle_break
+                  clip: IdleBreak
+                - name: idle_to_combat
+                  clip: IdleToCombat
+                - name: combat_idle
+                  clip: CombatIdle
+                - name: Combat_idle_break
+                  clip: CombatIdleBreak
+                - name: combat_to_idle
+                  clip: CombatToIdle
+                - name: dodge
+                  clip: Dodge
+                - name: taunt
+                  clip: Taunt
+                - name: attack_1
+                  clip: Attack01
+                - name: 2ttack_2
+                  clip: Attack02
+                - name: attack_3
+                  clip: Attack03
+                - name: block_1_start
+                  clip: Block1start
+                - name: block_1_loop
+                  clip: Block1loop
+                - name: block_1_end
+                  clip: Block1end
+                - name: block_2_start
+                  clip: Block2start
+                - name: block_2_loop
+                  clip: Block2loop
+                - name: block_2_end
+                  clip: Block2end
+                - name: cast_1
+                  clip: Cast1
+                - name: cast_2_start
+                  clip: Cast2start
+                - name: cast_2_loop
+                  clip: Cast2loop
+                - name: cast_2_end
+                  clip: Cast2end
+                - name: death
+                  clip: Death
+                - name: hit
+                  clip: GotHit
       program: g_tex
       shadow_program: shadow
       base_scale: 0.01

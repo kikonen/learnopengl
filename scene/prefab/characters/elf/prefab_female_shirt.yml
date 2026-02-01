@@ -1,7 +1,7 @@
 ---
 prefab:
   meshes:
-    - path: fbx/characters/Elf/Elf Wardrobe Female/Elf_Fem_Pants.FBX
+    - path: fbx/characters/Elf/Elf Wardrobe Female/Elf_Fem_Shirt.FBX
       flags:
         use_bones: true
         use_animation: true
@@ -9,9 +9,9 @@ prefab:
         name: female_elf_hooded_pants_set
         base: ../material/Wardrobe 1
         #kd: [1, 1, 1, 1]
-        map_kd: Elf_Pants_AlbedoOpacity.png
-        map_normal: Elf_Pants_Normal.png
-        map_mras: Elf_Pants_mras
+        map_kd: Elf_Shirt_AlbedoOpacity.png
+        map_normal: Elf_Shirt_Normal.png
+        map_mras: Elf_Shirt_mras
         render_back: true
         default_programs: true
       base_scale: 0.01

@@ -2,7 +2,7 @@
 types:
   - id: prefab_skeleton
     prefab:
-      path: prefab/creatures/prefab_skeleton_warrior.yml
+      path: prefab/creatures/prefab_skeleton.yml
   - id: prefab_helmet
     prefab:
       path: prefab/creatures/addon/prefab_helmet.yml
@@ -21,9 +21,9 @@ types:
   - id: prefab_construction_hat
     prefab:
       path: prefab/creatures/addon/prefab_construction_hat.yml
-  - id: prefab_skeleton_warrior
+  - id: prefab_composite_skeleton_warrior
     type: composite
-    composite: prefab_skeleton_warrior_composite
+    composite: prefab_composite_skeleton_warrior
     physics:
       enabled: false
       body:
@@ -39,7 +39,7 @@ types:
         size: [0.25, 0.75, 0]
 
 composites:
-  - id: prefab_skeleton_warrior_composite
+  - id: prefab_composite_skeleton_warrior
     nodes:
       - type: prefab_skeleton
         tag: body

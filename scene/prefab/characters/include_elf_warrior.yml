@@ -24,6 +24,9 @@ types:
   - id: prefab_pants
     prefab:
       path: prefab/characters/elf/prefab_female_pants.yml
+  - id: prefab_shirt
+    prefab:
+      path: prefab/characters/elf/prefab_female_shirt.yml
   - id: prefab_elf_warrior
     type: composite
     composite: prefab_elf_warrior_composite
@@ -46,10 +49,12 @@ types:
 composites:
   - id: prefab_elf_warrior_composite
     nodes:
+      - type: prefab_pants
+      - type: prefab_shirt
       - type: prefab_elf
         tag: body
         children:
-          - type: prefab_pants
+          - xtype: prefab_pants
             attach:
               socket: pants
           - xtype: prefab_helmet
@@ -61,10 +66,10 @@ composites:
           - type: prefab_shield
             attach:
               socket: l_arm
-          - type: prefab_armor
+          - xtype: prefab_armor
             attach:
               socket: neck
-          - type: prefab_armor
+          - xtype: prefab_armor
             attach:
               socket: neck_rev
           - type: prefab_2_handed_sword

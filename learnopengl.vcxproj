@@ -753,6 +753,7 @@
     <ClInclude Include="src\animation\ClipChannelLUT.h" />
     <ClInclude Include="src\asset\SphereVolume_format.h" />
     <ClInclude Include="src\kigl\RingAllocator.h" />
+    <ClInclude Include="src\loader\RigData.h" />
     <ClInclude Include="src\mesh\RegisteredRig.h" />
     <ClInclude Include="src\render\DrawableInfo.h" />
     <ClInclude Include="src\render\InstanceIndexSSBO.h" />

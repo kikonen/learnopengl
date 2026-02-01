@@ -6,6 +6,7 @@
 
 #include "MeshData.h"
 #include "LodData.h"
+#include "RigData.h"
 #include "SocketData.h"
 #include "AnimationData.h"
 
@@ -35,6 +36,14 @@ namespace loader {
             const loader::DocNode& node,
             LodData& data,
             Loaders& loaders) const;
+
+        void loadRigs(
+            const loader::DocNode& node,
+            std::vector<RigData>& rigs) const;
+
+        void loadRig(
+            const loader::DocNode& node,
+            RigData& data) const;
 
         void loadSockets(
             const loader::DocNode& node,

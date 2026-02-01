@@ -909,9 +909,6 @@
     <ClCompile Include="src\physics\Body.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\physics\Geom.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="src\decal\Decal.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -931,9 +928,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\loader\value\PhysicsCategoryValue.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="src\loader\value\PhysicsGeomValue.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\event\actions.cpp">
@@ -1362,6 +1356,27 @@
     <ClCompile Include="src\kigl\RingAllocator.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\mesh\MeshInstance.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\animation\ClipChannelLUT.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\loader\value\PhysicsShapeValue.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\animation\AnimateNode.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\physics\Shape.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\physics\JoltFoundation.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\util\preciseSleep.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h">
@@ -1646,9 +1661,6 @@
     <ClInclude Include="src\material\MaterialSSBO.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\kigl\GLSyncQueue.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\registry\EntitySSBO.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -1836,9 +1848,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\physics\Object.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\physics\Geom.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\loader\MaterialLoader.h">
@@ -2085,9 +2094,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\mesh\vao\TextureEntry.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\kigl\GLSyncQueue_impl.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\registry\TerrainTileSSBO.h">
@@ -2525,9 +2531,6 @@
     <ClInclude Include="src\loader\value\PhysicsCategoryValue.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\loader\value\PhysicsGeomValue.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\loader\value\AxisValue.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -2535,9 +2538,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\event\actions.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="src\physics\ode_util.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\renderer\MeshRenderer.h">
@@ -3065,9 +3065,6 @@
     <ClInclude Include="src\util\BufferReference.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\util\BufferReferenceFormat.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="src\util\DirtySet.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -3090,6 +3087,33 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\kigl\RingAllocator.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\animation\ClipChannelLUT.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\util\preciseSleep.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\util\BufferReference_format.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\loader\value\PhysicsShapeValue.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\physics\jolt_util.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\physics\JoltFoundation.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\animation\AnimateNode.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\physics\Shape.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\loader\RigData.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

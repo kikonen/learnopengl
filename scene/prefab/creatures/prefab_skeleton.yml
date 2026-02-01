@@ -1,8 +1,7 @@
 ---
 prefab:
   meshes:
-    - id: prefab_skeleton
-      path: fbx/creatures/skeleton/skeleton_animated.FBX
+    - path: fbx/creatures/skeleton/skeleton_animated.FBX
       flags:
         use_bones: true
         use_animation: true
@@ -16,66 +15,83 @@ prefab:
         shadow_program: shadow
       base_scale: 0.01375
       scale: 2
-      sockets:
-        - name: ground_back
-          joint: Bip01_Spine
-          role: ground
-        - name: foot_right
-          joint: RToeeff
-          role: foot_right
-        - name: foot_left
-          joint: LToeeff
-          role: foot_left
-      animations:
-        - clips:
-          - name: death
-            clip: Death
-          - name: hit
-            clip: Hit
-          - name: hit_2
-            clip: Hit2
-          - name: idle
-            clip: Idle
-          - name: idle_2
-            clip: Idle2
-          - name: idle_hold_sword
-            clip: IdleHoldSword
-          - name: jump
-            hit: Jump
-          - name: resurrection
-            clip: Resurrection
-          - name: run
-            clip: Run
-          - name: standup_1
-            clip: StandUp01
-          - name: standup_2
-            clip: StandUp02
-          - name: standup_3
-            clip: StandUp03
-          - name: swing_heavy
-            clip: SwingHeavy
-          - name: swing_normal
-            clip: SwingNormal
-          - name: swing_quick
-            clip: SwingQuick
-          - name: walk_1
-            clip: Walk01
-          - name: walk_2
-            clip: Walk02
-          - name: walk_back
-            clip: WalkBack
-          - name: walk_left
-            clip: WalkLeft
-          - name: walk_right
-            clip: WalkRight
-          - name: cast_spell
-            clip: CastSpell
-          - name: jump_begin
-            clip: BeginJump
-          - name: jump_lopp
-            clip: JumpLoop
-          - name: jump_land
-            clip: LandFromJump
+      rig:
+        sockets:
+          - name: head
+            joint: Bip01_Head1
+            offset: [0.130, 0.040, 0.000]
+            rotation: [90, 90, 10]
+          - name: neck
+            joint: Bip01_Spine4
+            offset: [-0.040, 0.090, 0.000]
+            rotation: [0.000, -90.000 ,-110.000]
+          - name: l_arm
+            joint: Bip01_L_Forearm
+            offset: [0.330, 0.040, 0.030]
+            rotation: [0.000, 2.000, 0.000]
+          - name: r_hand
+            joint: Bip01_R_Hand
+            offset: [0.080, -0.030, -0.050]
+            rotation: [-90, 0, 0]
+          - name: ground_back
+            joint: Bip01_Spine
+            role: ground
+          - name: foot_right
+            joint: RToeeff
+            role: foot_right
+          - name: foot_left
+            joint: LToeeff
+            role: foot_left
+        animations:
+          - clips:
+            - name: death
+              clip: Death
+            - name: hit
+              clip: Hit
+            - name: hit_2
+              clip: Hit2
+            - name: idle
+              clip: Idle
+            - name: idle_2
+              clip: Idle2
+            - name: idle_hold_sword
+              clip: IdleHoldSword
+            - name: jump
+              clip: Jump
+            - name: resurrection
+              clip: Resurrection
+            - name: run
+              clip: Run
+            - name: standup_1
+              clip: StandUp01
+            - name: standup_2
+              clip: StandUp02
+            - name: standup_3
+              clip: StandUp03
+            - name: swing_heavy
+              clip: SwingHeavy
+            - name: swing_normal
+              clip: SwingNormal
+            - name: swing_quick
+              clip: SwingQuick
+            - name: walk_1
+              clip: Walk01
+            - name: walk_2
+              clip: Walk02
+            - name: walk_back
+              clip: WalkBack
+            - name: walk_left
+              clip: WalkLeft
+            - name: walk_right
+              clip: WalkRight
+            - name: cast_spell
+              clip: CastSpell
+            - name: jump_begin
+              clip: BeginJump
+            - name: jump_lopp
+              clip: JumpLoop
+            - name: jump_land
+              clip: LandFromJump
   physics:
     enabled: false
     body:

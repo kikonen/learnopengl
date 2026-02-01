@@ -13,6 +13,11 @@ namespace model
 struct Material;
 struct TypeFlags;
 
+namespace animation
+{
+    struct Rig;
+}
+
 namespace pool {
     struct TypeHandle;
 }
@@ -100,12 +105,12 @@ namespace loader {
             mesh::MeshSet& meshSet);
 
         void resolveAnimations(
-            const std::string& baseDir,
-            const std::vector<AnimationData>& animations,
+            const MeshData& meshData,
             mesh::MeshSet& meshSet);
 
         void loadAnimation(
             const std::string& baseDir,
+            animation::Rig& rig,
             const AnimationData& data,
             mesh::MeshSet& meshSet);
 

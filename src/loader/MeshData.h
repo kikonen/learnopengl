@@ -8,8 +8,7 @@
 #include "FlagContainer.h"
 
 #include "LodData.h"
-#include "SocketData.h"
-#include "AnimationData.h"
+#include "RigData.h"
 #include "MaterialData.h"
 #include "VertexData.h"
 
@@ -41,14 +40,14 @@ namespace loader {
         glm::vec3 baseAdjust{ 0.f };  // additional rotation in degrees
 
         std::vector<LodData> lods;
-        std::vector<SocketData> sockets;
+
+        std::vector<RigData> rigs;
 
         bool defaultPrograms{ false };
         std::unordered_map<MaterialProgramType, std::string> programs;
 
         std::vector<MaterialData> materials;
         std::vector<MaterialData> materialModifiers;
-        std::vector<AnimationData> animations;
 
         loader::FlagContainer meshFlags;
 

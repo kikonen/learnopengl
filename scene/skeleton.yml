@@ -53,7 +53,7 @@ types:
       update: true
     xscript: scripts/seq_shaky_ground
   - id: skeleton_warrior
-    base: prefab_skeleton_warrior
+    base: prefab_composite_skeleton_warrior
     xscript: scripts/seq_skeleton
     flags:
       dynamic_bounds: true
@@ -64,7 +64,7 @@ types:
       cmd:animation_play(
         self.handle,
         { tag = "body", name = "swing_normal" })
-  - id: skeleton
+  - xid: skeleton
     prefab:
       path: prefab/creatures/prefab_skeleton.yml
     xpivot:
@@ -134,7 +134,7 @@ nodes:
       z_count: 2
       x_step: 10
       z_step: -10
-  - xtype: skeleton
+  - type: skeleton
     pos: [0, 0, 0.5]
     scale: 0.5
   - xtype: helmet

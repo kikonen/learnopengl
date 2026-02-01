@@ -549,8 +549,7 @@ namespace loader
                 );
 
                 resolveAnimations(
-                    meshData.baseDir,
-                    meshData.animations,
+                    meshData,
                     *meshSet);
 
                 {
@@ -660,57 +659,41 @@ namespace loader
             auto* rig = modelMesh->m_rig.get();
             if (!rig) continue;
 
-            for (const auto& socketData : meshData.sockets) {
-                if (!socketData.enabled) continue;
+            for (const auto& rigData : meshData.rigs) {
+                if (!rigData.match(rig->getName())) continue;
+ 
+                for (const auto& socketData : rigData.sockets) {
+                    if (!socketData.enabled) continue;
 
-                // TODO KI scale is in LodMesh level, but sockets in Mesh level
-                // => PROBLEM if same mesh is used for differently scaled LodMeshes
-                //glm::vec3 meshScale{ 0.01375f * 2.f };
-                auto meshScale = meshData.scale * meshData.baseScale;
+                    // TODO KI scale is in LodMesh level, but sockets in Mesh level
+                    // => PROBLEM if same mesh is used for differently scaled LodMeshes
+                    //glm::vec3 meshScale{ 0.01375f * 2.f };
+                    auto meshScale = meshData.scale * meshData.baseScale;
 
-                animation::RigSocket socket{
-                    socketData.name,
-                    socketData.joint,
-                    socketData.offset.toTransform(),
-                    meshScale
-                };
-                socket.m_role = socketData.role;
+                    animation::RigSocket socket{
+                        socketData.name,
+                        socketData.joint,
+                        socketData.offset.toTransform(),
+                        meshScale
+                    };
+                    socket.m_role = socketData.role;
 
-                auto socketIndex = rig->registerSocket(socket);
-                if (socketIndex < 0) {
-                    KI_WARN_OUT(fmt::format(
-                        "TYPE::SCENE_ERROR: SOCKET_NOT_FOUND - mesh={}, rig={}, node={}, socket={}",
-                        mesh->m_name, rig->getName(), socket.m_jointName, socket.m_name));
+                    auto socketIndex = rig->registerSocket(socket);
+                    if (socketIndex < 0) {
+                        KI_WARN_OUT(fmt::format(
+                            "TYPE::SCENE_ERROR: SOCKET_NOT_FOUND - mesh={}, rig={}, node={}, socket={}",
+                            mesh->m_name, rig->getName(), socket.m_jointName, socket.m_name));
+                    }
                 }
             }
-
             rig->prepareSockets();
         }
     }
 
     void NodeTypeBuilder::resolveAnimations(
-        const std::string& baseDir,
-        const std::vector<AnimationData>& animations,
+        const MeshData& meshData,
         mesh::MeshSet& meshSet)
     {
-        for (auto& animationData : animations) {
-            loadAnimation(
-                baseDir,
-                animationData,
-                meshSet);
-        }
-    }
-
-    void NodeTypeBuilder::loadAnimation(
-        const std::string& baseDir,
-        const AnimationData& data,
-        mesh::MeshSet& meshSet)
-    {
-        const auto& assets = Assets::get();
-
-        std::set<const animation::Rig*> processedRigs;
-
-        // TODO KI this works incorrectly if same MeshSet is shared between types
         for (const auto& mesh : meshSet.getMeshes()) {
             auto* modelMesh = dynamic_cast<mesh::ModelMesh*>(mesh.get());
             if (!modelMesh) continue;
@@ -718,52 +701,70 @@ namespace loader
             auto* rig = modelMesh->m_rig.get();
             if (!rig) continue;
 
-            if (processedRigs.contains(rig)) continue;
-            processedRigs.insert(rig);
+            for (const auto& rigData : meshData.rigs) {
+                if (!rigData.match(rig->getName())) continue;
 
-            mesh_set::AnimationImporter importer{};
-            std::string filePath;
-
-            if (!data.path.empty()) {
-                {
-                    filePath = util::joinPathExt(
-                        meshSet.m_rootDir,
-                        baseDir,
-                        data.path, "");
-                }
-
-                if (!util::fileExists(filePath)) {
-                    filePath = util::joinPath(
-                        meshSet.m_rootDir,
-                        data.path);
+                for (auto& animationData : rigData.animations) {
+                    loadAnimation(
+                        meshData.baseDir,
+                        *rig,
+                        animationData,
+                        meshSet);
                 }
             }
+        }
+    }
 
-            if (!data.path.empty()) {
-                importer.loadAnimations(
-                    *rig,
-                    data.name,
-                    filePath);
+    void NodeTypeBuilder::loadAnimation(
+        const std::string & baseDir,
+        animation::Rig & rig,
+        const AnimationData & data,
+        mesh::MeshSet & meshSet)
+    {
+        const auto& assets = Assets::get();
+
+        mesh_set::AnimationImporter importer{};
+        std::string filePath;
+
+        if (!data.path.empty()) {
+            {
+                filePath = util::joinPathExt(
+                    meshSet.m_rootDir,
+                    baseDir,
+                    data.path, "");
             }
 
-            try {
-                // map clips
-                for (const auto& clipData : data.clips) {
-                    const auto& uniqueName = clipData.getUniqueName(data.name);
-                    auto* clip = rig->modifyClipContainer().findClipByUniqueName(uniqueName);
-                    if (clip) {
-                        clip->m_id = SID(clipData.name);
-                    }
-                    else {
-                        KI_WARN_OUT(fmt::format("TYPE::SCENE_ERROR: CLIP_NOT_FOUND - clip={}, uniq={}",
-                            clipData.name, uniqueName));
-                    }
+            if (!util::fileExists(filePath)) {
+                filePath = util::joinPath(
+                    meshSet.m_rootDir,
+                    data.path);
+            }
+        }
+
+        if (!data.path.empty()) {
+            importer.loadAnimations(
+                rig,
+                data.name,
+                filePath);
+        }
+
+        try {
+            // map clips
+            for (const auto& clipData : data.clips) {
+                const auto& uniqueName = clipData.getUniqueName(data.name);
+                auto* clip = rig.modifyClipContainer().findClipByUniqueName(uniqueName);
+                if (clip) {
+                    clip->m_id = SID(clipData.name);
+                }
+                else {
+                    KI_WARN_OUT(fmt::format("TYPE::SCENE_ERROR: CLIP_NOT_FOUND - clip={}, uniq={}",
+                        clipData.name, uniqueName));
                 }
             }
-            catch (mesh_set::AnimationNotFoundError ex) {
-                KI_CRITICAL(fmt::format("TYPE::SCENE_ERROR: LOAD_ANIMATION - {}", ex.what()));
-                //throw std::current_exception();
-            }
+        }
+        catch (mesh_set::AnimationNotFoundError ex) {
+            KI_CRITICAL(fmt::format("TYPE::SCENE_ERROR: LOAD_ANIMATION - {}", ex.what()));
+            //throw std::current_exception();
         }
     }
 

@@ -103,9 +103,6 @@ namespace loader {
             else if (k == "force_normals") {
                 data.forceNormals= readBool(v);
             }
-            else if (k == "animations") {
-                loadAnimations(v, data.animations);
-            }
             else if (k == "default_programs" || k == "default_program") {
                 data.defaultPrograms = readBool(v);
             }
@@ -179,8 +176,13 @@ namespace loader {
             else if (k == "lods") {
                 loadLods(v, data.lods, loaders);
             }
-            else if (k == "sockets") {
-                loadSockets(v, data.sockets);
+            else if (k == "rig") {
+                auto& rigData = data.rigs.emplace_back();
+                rigData.name = RIG_ALIAS_ANY;
+                loadRig(v, rigData);
+            }
+            else if (k == "rigs") {
+                loadRigs(v, data.rigs);
             }
             else if (k == "vertex") {
                 loaders.m_vertexLoader.load(v, data.vertexData);
@@ -266,6 +268,43 @@ namespace loader {
             }
             else {
                 reportUnknown("lod_entry", k, v);
+            }
+        }
+    }
+
+    void MeshLoader::loadRigs(
+        const loader::DocNode& node,
+        std::vector<RigData>& rigs) const
+    {
+        for (const auto& entry : node.getNodes()) {
+            auto& data = rigs.emplace_back();
+            loadRig(entry, data);
+        }
+    }
+
+    void MeshLoader::loadRig(
+        const loader::DocNode& node,
+        RigData& data) const
+    {
+        data.name = RIG_ALIAS_ANY;
+
+        for (const auto& pair : node.getNodes()) {
+            const std::string& key = pair.getName();
+            const loader::DocNode& v = pair.getNode();
+
+            const auto k = util::toLower(key);
+
+            if (k == "name") {
+                data.name = readString(v);
+            }
+            else if (k == "animations") {
+                loadAnimations(v, data.animations);
+            }
+            else if (k == "sockets") {
+                loadSockets(v, data.sockets);
+            }
+            else {
+                reportUnknown("rig_entry", k, v);
             }
         }
     }
