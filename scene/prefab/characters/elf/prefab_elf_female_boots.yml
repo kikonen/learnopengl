@@ -1,0 +1,82 @@
+---
+prefab:
+  meshes:
+    - path: fbx/characters/Elf/Elf Wardrobe Female/Elf_Fem_Boots.FBX
+      flags:
+        use_bones: true
+        use_animation: true
+      material:
+        name: female_elf_boots_set
+        base: ../material/Wardrobe 1
+        #kd: [1, 1, 1, 1]
+        map_kd: Elf_Boots_AlbedoOpacity.png
+        map_normal: Elf_Boots_Normal.png
+        map_mras: Elf_Boots_mras
+        render_back: true
+        default_programs: true
+      base_scale: 0.01
+      rigs:
+        - name: "*"
+          animations:
+            - clips:
+                - name: default
+                  clip: Take-001
+            - name: anim
+              path: ../anim/Elf Animations.FBX
+              clips:
+                - name: walk
+                  clip: Walk
+                - name: run
+                  clip: Run
+                - name: walk_back
+                  clip: WalkBack
+                - name: idle
+                  clip: Idle
+                - name: idle_break
+                  clip: IdleBreak
+                - name: idle_to_combat
+                  clip: IdleToCombat
+                - name: combat_idle
+                  clip: CombatIdle
+                - name: Combat_idle_break
+                  clip: CombatIdleBreak
+                - name: combat_to_idle
+                  clip: CombatToIdle
+                - name: dodge
+                  clip: Dodge
+                - name: taunt
+                  clip: Taunt
+                - name: attack_1
+                  clip: Attack01
+                - name: 2ttack_2
+                  clip: Attack02
+                - name: attack_3
+                  clip: Attack03
+                - name: block_1_start
+                  clip: Block1start
+                - name: block_1_loop
+                  clip: Block1loop
+                - name: block_1_end
+                  clip: Block1end
+                - name: block_2_start
+                  clip: Block2start
+                - name: block_2_loop
+                  clip: Block2loop
+                - name: block_2_end
+                  clip: Block2end
+                - name: cast_1
+                  clip: Cast1
+                - name: cast_2_start
+                  clip: Cast2start
+                - name: cast_2_loop
+                  clip: Cast2loop
+                - name: cast_2_end
+                  clip: Cast2end
+                - name: death
+                  clip: Death
+                - name: hit
+                  clip: GotHit
+      script: |
+        cmd:animation_play(
+          self.handle,
+          { name = "idle" })

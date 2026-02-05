@@ -24,9 +24,15 @@ types:
   - id: prefab_elf_female_pants
     prefab:
       path: prefab/characters/elf/prefab_elf_female_pants.yml
+  - id: prefab_elf_female_waist_cloth
+    prefab:
+      path: prefab/characters/elf/prefab_elf_female_waist_cloth.yml
   - id: prefab_elf_female_shirt
     prefab:
       path: prefab/characters/elf/prefab_elf_female_shirt.yml
+  - id: prefab_elf_female_boots
+    prefab:
+      path: prefab/characters/elf/prefab_elf_female_boots.yml
   - id: prefab_elf_female_long_hair
     prefab:
       path: prefab/characters/elf/prefab_elf_female_long_hair.yml
@@ -53,7 +59,9 @@ composites:
   - id: prefab_elf_female_warrior_composite
     nodes:
       - type: prefab_elf_female_pants
+      - type: prefab_elf_female_waist_cloth
       - type: prefab_elf_female_shirt
+      - type: prefab_elf_female_boots
       - type: prefab_elf_female_long_hair
       - type: prefab_elf_female
         tag: body
