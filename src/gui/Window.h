@@ -68,8 +68,8 @@ protected:
     glm::ivec2 m_size{ 0 };
     glm::ivec2 m_safeSize{ 1 };
 
-    glm::uvec2 m_windowedPos{ 0 };
-    glm::uvec2 m_windowedSize{ 0 };
+    glm::u16vec2 m_windowedPos{ 0 };
+    glm::u16vec2 m_windowedSize{ 0 };
     bool m_windowedWasMaximized{ false };
 
     bool m_fullScreen{ false };

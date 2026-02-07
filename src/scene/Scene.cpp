@@ -182,7 +182,7 @@ void Scene::prepareRT()
         event::Type::camera_activate,
         dispatcherView,
         [this](const event::Event& e) {
-            auto& data = e.body.node;
+            auto& data = e.body.camera;
             auto nodeHandle = pool::NodeHandle::toHandle(data.target);
             m_collection->setActiveCameraNode(nodeHandle);
         });
@@ -191,7 +191,7 @@ void Scene::prepareRT()
         event::Type::camera_activate_next,
         dispatcherView,
         [this](const event::Event& e) {
-            auto& data = e.body.node;
+            auto& data = e.body.camera;
             auto nodeHandle = pool::NodeHandle::toHandle(data.target);
             auto nextCamera = m_collection->getNextCameraNode(nodeHandle, data.offset);
             m_collection->setActiveCameraNode(nextCamera);
@@ -465,7 +465,7 @@ void Scene::updateViewRT(const UpdateViewContext& ctx)
     //if (false)
     {
         const auto& spec = m_uiRenderer->m_buffer->m_spec;
-        const glm::uvec2 aspectRatio = { spec.width, spec.height };
+        const glm::u16vec2 aspectRatio = { spec.width, spec.height };
         if (aspectRatio != m_uiRenderer->m_aspectRatio) {
             m_uiRenderer->m_aspectRatio = aspectRatio;
 
@@ -488,7 +488,7 @@ void Scene::handleLoaded()
     m_loaded = true;
 
     //const auto& spec = m_uiRenderer->m_buffer->m_spec;
-    //const glm::uvec2 aspectRatio = { spec.width, spec.height };
+    //const glm::u16vec2 aspectRatio = { spec.width, spec.height };
     //m_uiRenderer->m_aspectRatio = aspectRatio;
 
     //const auto* layer = LayerInfo::findLayer(LAYER_UI);

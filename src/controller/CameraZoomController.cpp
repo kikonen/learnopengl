@@ -91,7 +91,7 @@ void CameraZoomController::processInput(
             m_cameraSwitchDown = true;
             // NOTE KI null == default camera
             event::Event evt { event::Type::camera_activate_next };
-            evt.body.node.target = m_nodeHandle;
+            evt.body.camera.target = m_nodeHandle;
             m_registry->m_dispatcherView->send(evt);
         }
     } else {

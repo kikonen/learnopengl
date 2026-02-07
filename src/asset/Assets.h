@@ -59,7 +59,7 @@ public:
     int targetFrameRate;
 
     std::string windowIcon;
-    glm::uvec2 windowSize;
+    glm::u16vec2 windowSize;
     bool windowMaximized;
     bool windowFullScreen;
 

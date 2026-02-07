@@ -55,6 +55,7 @@ namespace event {
 
         union Body {
             NodeAction node;
+            CameraAction camera;
             NodeTypeAction nodeType;
             ScriptAction script;
             SelectAction select;

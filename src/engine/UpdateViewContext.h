@@ -15,5 +15,5 @@ public:
         int height);
 
 public:
-    const glm::uvec2 m_resolution;
+    const glm::u16vec2 m_resolution;
 };

@@ -46,7 +46,7 @@ namespace mesh
 struct NodeLayerInfo
 {
     int m_index;
-    glm::uvec2 m_aspectRatio;
+    glm::u16vec2 m_aspectRatio;
 };
 
 class NodeRegistry final
@@ -137,7 +137,7 @@ public:
 
     void viewportChanged(
         uint8_t layer,
-        glm::uvec2 aspectRatio) noexcept;
+        glm::u16vec2 aspectRatio) noexcept;
 
     inline model::Node* getActiveNode() const noexcept { return m_activeNode.toNode(); }
 

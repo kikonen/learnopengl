@@ -111,7 +111,7 @@ namespace editor
                         ImGui::PushID((void*)node);
                         if (ImGui::Selectable(name, node == currNode)) {
                             event::Event evt{ event::Type::camera_activate };
-                            evt.body.node.target = node->getId();
+                            evt.body.camera.target = node->getId();
                             ctx.getRegistry()->m_dispatcherView->send(evt);
                         }
                         ImGui::PopID();

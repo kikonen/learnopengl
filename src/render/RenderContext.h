@@ -172,7 +172,7 @@ namespace render {
 
         RenderContextDefaults m_defaults;
 
-        const glm::uvec2 m_resolution;
+        const glm::u16vec2 m_resolution;
 
         const float m_nearPlane;
         const float m_farPlane;

@@ -56,7 +56,7 @@ public:
 
     std::unique_ptr<render::NodeDraw> m_nodeDraw;
 
-    glm::uvec2 m_aspectRatio{ 1, 1 };
+    glm::u16vec2 m_aspectRatio{ 1, 1 };
 
 private:
     Program* m_selectionProgram{ nullptr };

@@ -236,7 +236,7 @@ void NodeRegistry::prepare(
     {
         m_layerInfos.resize(assets.layers.size());
         for (int index = 0; auto& layerInfo : m_layerInfos) {
-            layerInfo = { index++, glm::uvec2{1, 1} };
+            layerInfo = { index++, glm::u16vec2{1, 1} };
         }
     }
 
@@ -1378,7 +1378,7 @@ void NodeRegistry::bindSkybox(
 
 void NodeRegistry::viewportChanged(
     uint8_t layer,
-    glm::uvec2 aspectRatio) noexcept
+    glm::u16vec2 aspectRatio) noexcept
 {
     if (layer >= m_layerInfos.size()) return;
 

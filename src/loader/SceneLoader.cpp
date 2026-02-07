@@ -307,7 +307,7 @@ namespace loader {
         // TODO KI default camera logic
         //if (nodeData.camera.isDefault) {
         //    event::Event evt { event::Type::camera_activate };
-        //    evt.body.node = {
+        //    evt.body.camera = {
         //        .target = handle.toId(),
         //    };
         //    m_dispatcherView->send(evt);

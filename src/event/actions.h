@@ -49,6 +49,11 @@ namespace event {
         ki::node_id target{ 0 };
         ki::node_id parentId{ 0 };
         ki::socket_id socketId{ 0 };
+    };
+
+    struct CameraAction
+    {
+        ki::node_id target{ 0 };
         int offset{ 0 };
     };
 
@@ -70,6 +75,6 @@ namespace event {
 
     struct ViewportAction {
         uint8_t layer{ 0 };
-        glm::uvec2 aspectRatio{ 1 };
+        glm::u16vec2 aspectRatio{ 1 };
     };
 }

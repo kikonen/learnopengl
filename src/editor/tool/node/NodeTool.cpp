@@ -612,7 +612,7 @@ namespace editor
         //else if (cameraMode) {
         //    // NOTE KI null == default camera
         //    event::Event evt { event::Type::camera_activate };
-        //    evt.body.node.target = node->getId();
+        //    evt.body.camera.target = node->getId();
         //    ctx.getRegistry()->m_dispatcherView->send(evt);
 
         //    node = nullptr;

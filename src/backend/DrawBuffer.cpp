@@ -265,7 +265,7 @@ namespace backend {
                 // NOTE KI test: use direct draws instead of indirect to test Intel driver issues
                 if (m_useDirectDraw) {
                     auto* cmds = m_currentCommandAlloc.data + tallyCount;
-                    for (int i = 0; i < drawCount; i++) {
+                    for (uint32_t i = 0; i < drawCount; i++) {
                         const auto& cmd = cmds[i].element;
                         glDrawElementsInstancedBaseVertexBaseInstance(
                             drawOptions.toMode(),
@@ -290,7 +290,7 @@ namespace backend {
             {
                 if (m_useDirectDraw) {
                     auto* cmds = m_currentCommandAlloc.data + tallyCount;
-                    for (int i = 0; i < drawCount; i++) {
+                    for (uint32_t i = 0; i < drawCount; i++) {
                         const auto& cmd = cmds[i].array;
                         glDrawArraysInstancedBaseInstance(
                             drawOptions.toMode(),

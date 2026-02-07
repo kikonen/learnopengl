@@ -66,7 +66,7 @@ namespace model
         glm::vec3 m_modelScale{ 1.f };
         glm::quat m_modelRotation{ 1.f, 0.f, 0.f, 0.f };
 
-        glm::uvec2 m_aspectRatio{ 1 };
+        glm::u16vec2 m_aspectRatio{ 1 };
 
     public:
         float m_tilingX{ 1.f };
@@ -251,7 +251,7 @@ namespace model
             m_normalLevel++;
         }
 
-        inline void setAspectRatio(const glm::uvec2& aspectRatio) noexcept
+        inline void setAspectRatio(const glm::u16vec2& aspectRatio) noexcept
         {
             if (m_aspectRatio != aspectRatio) {
                 m_aspectRatio = aspectRatio;
