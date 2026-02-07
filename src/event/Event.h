@@ -14,45 +14,44 @@ namespace event {
               body{}
         {}
 
-        Event(Event& o) noexcept
-            : type{ o.type },
-            attachment{ o.attachment },
-            body{ o.body }
-        {}
-
-        Event(const Event& o) noexcept
-            : type{ o.type },
-            attachment{ o.attachment },
-            body{ o.body }
-        {}
+        Event(Event& o) = delete;
+        Event(const Event& o) = delete;
 
         Event(Event&& o) noexcept
             : type{ o.type },
-            attachment{ o.attachment },
+            attachment{ std::move(o.attachment) },
             body{ o.body }
-        {}
+        {
+            o.attachment = nullptr;
+        }
 
         ~Event();
 
-        Event& operator=(const Event& o) noexcept
+        Event& operator=(const Event& o) noexcept = delete;
+        Event& operator=( Event& o) noexcept = delete;
+
+        Event& operator=(Event&& o) noexcept
         {
             if (&o == this) return *this;
 
             type = o.type;
-            attachment = o.attachment;
+            attachment = std::move(o.attachment);
             body = o.body;
+
+            o.attachment = nullptr;
+
             return *this;
         }
 
         event::Attachment* attach()
         {
             if (!attachment) {
-                attachment = std::make_shared<event::Attachment>();
+                attachment = std::make_unique<event::Attachment>();
             }
             return attachment.get();
         }
 
-        std::shared_ptr<event::Attachment> attachment;
+        std::unique_ptr<event::Attachment> attachment;
 
         union Body {
             NodeAction node;

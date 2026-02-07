@@ -23,7 +23,12 @@ namespace event {
 
         inline void send(Event& evt)
         {
-            m_queue.enqueue(evt);
+            m_queue.enqueue(std::move(evt));
+        }
+
+        inline void send(Event&& evt)
+        {
+            m_queue.enqueue(std::forward<Event>(evt));
         }
 
         Handle addListener(event::Type type, Handler handler)
