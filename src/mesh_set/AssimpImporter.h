@@ -17,6 +17,7 @@ namespace animation
 {
 	struct Rig;
     struct RigNode;
+    struct JointContainer;
 }
 
 namespace mesh
@@ -66,7 +67,8 @@ namespace mesh_set
             LoadContext& ctx,
             mesh::MeshSet& meshSet,
 			animation::Rig* rig,
-			mesh::ModelMesh& modelMesh,
+            animation::JointContainer* jointContainer,
+            mesh::ModelMesh& modelMesh,
 			const aiNode* node,
 			const aiMesh* mesh);
 
@@ -79,7 +81,8 @@ namespace mesh_set
 
         void processMeshBone(
 			animation::Rig& rig,
-			mesh::ModelMesh& modelMesh,
+            animation::JointContainer& jointContainer,
+            mesh::ModelMesh& modelMesh,
             const aiBone* bone);
 
     private:

@@ -86,6 +86,11 @@ namespace mesh {
             return ID_MAT;
         }
 
+        virtual animation::JointContainer* getJointContainer() const
+        {
+            return nullptr;
+        }
+
         virtual backend::DrawOptions::Mode getDrawMode()
         {
             return backend::DrawOptions::Mode::triangles;

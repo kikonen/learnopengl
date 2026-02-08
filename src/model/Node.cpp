@@ -116,17 +116,22 @@ namespace model
 
             for (int index = 0;  auto& lodMesh : lodMeshes) {
                 const auto* mesh = lodMesh.getMesh<mesh::Mesh>();
+
                 const auto* rig = mesh->getRig();
                 if (!rig) continue;
+
+                const auto* jointContainer = mesh->getJointContainer();
+                if (!jointContainer) continue;
 
                 if (rigPalettes.contains(rig)) continue;
                 rigPalettes.insert({ rig, index++ });
 
                 auto& registeredRig = m_registeredRigs.emplace_back();
                 registeredRig.m_rig = rig;
+                registeredRig.m_jointContainer = jointContainer;
                 registeredRig.m_rigRef = animationsystem.registerRig(*rig);
                 registeredRig.m_socketRef = animationsystem.registerSockets(registeredRig.m_rigRef, *rig);
-                registeredRig.m_jointRef = animationsystem.registerJoints(registeredRig.m_rigRef, rig->getJointContainer());
+                registeredRig.m_jointRef = animationsystem.registerJoints(registeredRig.m_rigRef, *jointContainer);
             }
 
             m_lodMeshInstances.reserve(lodMeshes.size());

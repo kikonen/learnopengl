@@ -7,15 +7,76 @@
 #include <fmt/format.h>
 
 #include "util/Log.h"
+#include "util/util_join.h"
 #include "util/glm_format.h"
 #include "util/assimp_util.h"
 
+#include "Rig.h"
+#include "RigNode.h"
 #include "Joint.h"
 
 namespace animation {
     bool JointContainer::empty() const noexcept
     {
         return m_joints.empty();
+    }
+
+    void JointContainer::dump() const
+    {
+        //KI_INFO_OUT(fmt::format(
+        //    "\n=======================\n[RIG SUMMARY: {} ({})]\nHIERARCHY:\n{}\nANIMATIONS:\n{}\nSOCKETS:\n{}\n=======================",
+        //    m_name,
+        //    m_skeletonRootNodeName,
+        //    getHierarchySummary(0),
+        //    getAnimationSummary(0),
+        //    getSocketSummary(0)));
+    }
+
+    void JointContainer::validate() const
+    {
+        std::vector<const animation::Joint*> unboundJoints;
+
+        // NOTE KI check that all joints are related to some node
+        // - every joint has node
+        // - not every node has joint
+        for (const auto& joint : m_joints) {
+            if (joint.m_nodeIndex >= 0) continue;
+
+            unboundJoints.push_back(&joint);
+        }
+
+        if (unboundJoints.empty()) {
+            auto sb = util::join(
+                unboundJoints, ", ",
+                [](const auto* joint) {
+                return joint->m_nodeName;
+            });
+
+            throw std::runtime_error(fmt::format(
+                "ANIM::RIG::MISSING_JOINT_NODES: {}",
+                sb));
+        }
+    }
+
+    animation::Joint* JointContainer::registerJoint(
+        const aiBone* bone)
+    {
+        std::string nodeName = assimp_util::normalizeName(bone->mName);
+        auto* rigNode = m_rig->findNode(nodeName);
+
+        if (!rigNode) {
+            //throw fmt::format("ANIM::RIG_NODE_NOT_FOUND: joint={}", nodeName);
+            KI_ERROR(fmt::format(
+                "ANIM::RIG::NODE_NOT_FOUND: rig={}, joint={}",
+                m_name, nodeName));
+            //return nullptr;
+        }
+
+        if (rigNode) {
+            rigNode->m_hasJoint = true;
+        }
+
+        return &registerJoint(bone, rigNode ? rigNode->m_index : -1);
     }
 
     Joint& JointContainer::registerJoint(

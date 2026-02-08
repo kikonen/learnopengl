@@ -6,7 +6,6 @@
 #include "ClipContainer.h"
 #include "MeshInfo.h"
 #include "RigSocket.h"
-#include "JointContainer.h"
 
 namespace mesh
 {
@@ -74,9 +73,6 @@ namespace animation
         const animation::RigNode* findNode(const std::string& name) const noexcept;
         animation::RigNode* findNode(const std::string& name) noexcept;
 
-        animation::Joint* registerJoint(
-            const aiBone* bone);
-
         // @return registered index in m_sockets, -1 if joint not found
         int16_t registerSocket(const animation::RigSocket& socket);
 
@@ -105,11 +101,6 @@ namespace animation
             return m_clipContainer;
         }
 
-        const animation::JointContainer& getJointContainer() const noexcept
-        {
-            return m_jointContainer;
-        }
-
         // NOTE KI for debug
         void registerMesh(
             uint16_t nodeIndex,
@@ -135,11 +126,5 @@ namespace animation
         // NOTE KI for debug
         // { nodeIndex: [mesh, ...] }
         std::map<uint16_t, std::vector<MeshInfo>> m_nodeMeshes;
-
-        // TODO KI need to change logic so that mesh_set can share
-        // same rig (and thus animate nodes only ONCE), but have separate
-        // joint containers *per mesh*
-        // => Makes huge difference especially with LODx meshes sharing same skeleton
-        animation::JointContainer m_jointContainer;
     };
 }

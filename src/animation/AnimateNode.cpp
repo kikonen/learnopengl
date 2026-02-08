@@ -203,18 +203,18 @@ namespace animation
 
         for (const auto& registeredRig : registeredRigs) {
             const auto* rig = registeredRig.m_rig;
+            const auto* jointContainer = registeredRig.m_jointContainer;
 
             if (!changedRigs.contains(rig)) continue;
 
             const auto& rigNodeTransforms = m_rigNodeRegistry.getRange(registeredRig.m_rigRef);
-            const auto& jointContainer = rig->getJointContainer();
 
             {
                 auto jointPalette = m_jointRegistry.modifyRange(registeredRig.m_jointRef);
                 auto socketPalette = m_socketRegistry.modifyRange(registeredRig.m_socketRef);
 
                 // Update Joint Palette
-                for (const auto& joint : jointContainer.m_joints)
+                for (const auto& joint : jointContainer->m_joints)
                 {
                     const auto& globalTransform = joint.m_nodeIndex >= 0 ? rigNodeTransforms[joint.m_nodeIndex] : ID_MAT;
 
@@ -251,6 +251,7 @@ namespace animation
         // Collect positions from joint nodes
         for (const auto& registeredRig : registeredRigs) {
             const auto* rig = registeredRig.m_rig;
+            const auto* jointContainer = registeredRig.m_jointContainer;
 
             // Find LodMesh matching this rig to get correct baseTransform
             const glm::mat4* baseTransform = nullptr;
@@ -263,9 +264,8 @@ namespace animation
             if (!baseTransform) continue;
 
             const auto& rigNodeTransforms = m_rigNodeRegistry.getRange(registeredRig.m_rigRef);
-            const auto& jointContainer = rig->getJointContainer();
 
-            for (const auto& joint : jointContainer.m_joints) {
+            for (const auto& joint : jointContainer->m_joints) {
                 if (joint.m_nodeIndex < 0) continue;
 
                 // Position in raw mesh space

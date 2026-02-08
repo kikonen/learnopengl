@@ -13,6 +13,7 @@
 
 namespace animation {
     struct Rig;
+    struct JointContainer;
     struct VertexJoint;
 }
 
@@ -41,15 +42,15 @@ namespace mesh
 
         virtual ~ModelMesh();
 
-        virtual const kigl::GLVertexArray* prepareVAO() override;
-        virtual const kigl::GLVertexArray* setupVAO(mesh::TexturedVAO* vao, bool shared) override;
+        const kigl::GLVertexArray* prepareVAO() override;
+        const kigl::GLVertexArray* setupVAO(mesh::TexturedVAO* vao, bool shared) override;
 
-        virtual void prepareLodMesh(
-            mesh::LodMesh& lodMesh);
+        void prepareLodMesh(
+            mesh::LodMesh& lodMesh) override;
 
-        virtual backend::DrawOptions::Mode getDrawMode() override;
+        backend::DrawOptions::Mode getDrawMode() override;
 
-        virtual animation::Rig* getRig() const override
+        animation::Rig* getRig() const override
         {
             return m_rig.get();
         }
@@ -59,12 +60,18 @@ namespace mesh
             return m_rigBaseTransform;
         }
 
-        virtual size_t getDefinedVertexCount() const noexcept override
+        animation::JointContainer* getJointContainer() const override
+        {
+            return m_jointContainer.get();
+        }
+
+
+        size_t getDefinedVertexCount() const noexcept override
         {
             return m_vertices.size();
         }
 
-        virtual size_t getDefinedIndexCount() const noexcept override
+        size_t getDefinedIndexCount() const noexcept override
         {
             return m_indeces.size();
         }
@@ -77,6 +84,7 @@ namespace mesh
 
     private:
         std::shared_ptr<animation::Rig> m_rig;
+        std::shared_ptr<animation::JointContainer> m_jointContainer;
 
         glm::mat4 m_rigBaseTransform{ 1.f };
     };

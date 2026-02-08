@@ -12,6 +12,7 @@ namespace mesh
     struct RegisteredRig
     {
         const animation::Rig* m_rig{ nullptr };
+        const animation::JointContainer* m_jointContainer{ nullptr };
 
         util::BufferReference m_rigRef{ 0, 0 };
         util::BufferReference m_socketRef{ 0, 0 };

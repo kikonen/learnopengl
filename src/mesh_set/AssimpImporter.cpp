@@ -211,9 +211,10 @@ namespace mesh_set
             auto* rig = modelMesh->m_rig.get();
             if (!rig) continue;
 
-            auto& jointContainer = rig->getJointContainer();
+            auto* jointContainer = modelMesh->getJointContainer();
+            if (!jointContainer) continue;
 
-            if (!jointContainer.empty())
+            if (!jointContainer->empty())
             {
                 if (processedRigs.contains(rig)) continue;
                 processedRigs.insert(rig);
@@ -234,13 +235,19 @@ namespace mesh_set
                     //    rigNode.m_globalTransform;
 
                     RigNodeTreeGenerator generator;
-                    if (auto mesh = generator.generateTree(modelMesh->m_rig)) {
+                    if (auto mesh = generator.generateTree(
+                        modelMesh->m_rig,
+                        modelMesh->m_jointContainer))
+                    {
                         mesh->m_offset = offset;
                         mesh->m_rigNodeIndex = primaryMesh->m_rigNodeIndex;
                         additionalMeshes.push_back(std::move(mesh));
                     }
 
-                    if (auto mesh = generator.generatePoints(modelMesh->m_rig)) {
+                    if (auto mesh = generator.generatePoints(
+                        modelMesh->m_rig,
+                        modelMesh->m_jointContainer))
+                    {
                         mesh->m_offset = offset;
                         mesh->m_rigNodeIndex = primaryMesh->m_rigNodeIndex;
                         additionalMeshes.push_back(std::move(mesh));
@@ -318,15 +325,18 @@ namespace mesh_set
             auto modelMesh = std::make_unique<mesh::ModelMesh>(meshName);
             modelMesh->m_alias = aliasName;
 
-            const auto& rig = skeletonSet.findRig(mesh);
+            auto rig = skeletonSet.findRig(mesh);
 
             const auto& treeNode = skeletonSet.getTree().findByNode(node);
             modelMesh->m_rigBaseTransform = treeNode->globalTransform;
+
+            auto jointContainer = std::make_shared<animation::JointContainer>(meshName, rig);
 
             processMesh(
                 ctx,
                 meshSet,
                 rig.get(),
+                jointContainer.get(),
                 *modelMesh,
                 node,
                 mesh);
@@ -335,6 +345,7 @@ namespace mesh_set
             if (rig && mesh->mNumBones > 0)
             {
                 modelMesh->m_rig = rig;
+                modelMesh->m_jointContainer = std::move(jointContainer);
 
                 // NOTE KI for debugging/troubleshooting only
                 auto& rootNode = rig->m_nodes[0];
@@ -359,6 +370,7 @@ namespace mesh_set
         LoadContext& ctx,
         mesh::MeshSet& meshSet,
         animation::Rig* rig,
+        animation::JointContainer* jointContainer,
         mesh::ModelMesh& modelMesh,
         const aiNode* node,
         const aiMesh* mesh)
@@ -426,6 +438,7 @@ namespace mesh_set
             for (unsigned int boneIdx = 0; boneIdx < mesh->mNumBones; boneIdx++) {
                 processMeshBone(
                     *rig,
+                    *jointContainer,
                     modelMesh,
                     mesh->mBones[boneIdx]);
             }
@@ -451,10 +464,11 @@ namespace mesh_set
 
     void AssimpImporter::processMeshBone(
         animation::Rig& rig,
+        animation::JointContainer& jointContainer,
         mesh::ModelMesh& modelMesh,
         const aiBone* bone)
     {
-        const auto* joint = rig.registerJoint(bone);
+        const auto* joint = jointContainer.registerJoint(bone);
 
         if (!joint) {
             return;
