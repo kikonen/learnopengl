@@ -509,15 +509,28 @@ namespace loader
             const auto& span = std::span{ type->modifyLodMeshes() }.subspan(startIndex, meshCount);
             for (auto& lodMesh : span) {
                 resolveLodMesh(type, typeData, meshData, lodMesh);
+            }
 
-                auto* mesh = lodMesh.getMesh<mesh::Mesh>();
-                const auto* rig = mesh ? mesh->getRig() : nullptr;
-                if (rig) {
-                    if (processedRigs.contains(rig)) continue;
-                    processedRigs.insert(rig);
+            // process rigs
+            for (auto& lodMesh : span) {
+                auto* mesh = lodMesh.getMesh<mesh::ModelMesh>();
+                if (!mesh) continue;
 
-                    rig->dump();
-                }
+                auto* rig = mesh->m_rig.get();
+                if (!rig) continue;
+
+                if (processedRigs.contains(rig)) continue;
+                processedRigs.insert(rig);
+
+                resolveSockets(
+                    meshData,
+                    rig);
+
+                resolveAnimations(
+                    meshData,
+                    rig);
+
+                rig->dump();
             }
         }
     }
@@ -543,23 +556,12 @@ namespace loader
             const auto& meshSet = future.get();
 
             if (meshSet) {
-                resolveSockets(
-                    meshData,
-                    *meshSet
-                );
-
-                resolveAnimations(
-                    meshData,
-                    *meshSet);
-
-                {
-                    KI_INFO_OUT(fmt::format(
-                        "\n=======================\n[MESH_SET SUMMARY: {}]\n{}\n=======================",
-                        meshSet->m_name,
-                        meshSet->getSummary()));
-                }
-
                 meshCount += type->addMeshSet(*meshSet);
+
+                KI_INFO_OUT(fmt::format(
+                    "\n=======================\n[MESH_SET SUMMARY: {}]\n{}\n=======================",
+                    meshSet->m_name,
+                    meshSet->getSummary()));
             }
             break;
         }
@@ -650,76 +652,66 @@ namespace loader
 
     void NodeTypeBuilder::resolveSockets(
         const MeshData& meshData,
-        mesh::MeshSet& meshSet)
+        animation::Rig* rig)
     {
-        for (const auto& mesh : meshSet.getMeshes()) {
-            auto* modelMesh = dynamic_cast<mesh::ModelMesh*>(mesh.get());
-            if (!modelMesh) continue;
+        if (!rig) return;
 
-            auto* rig = modelMesh->m_rig.get();
-            if (!rig) continue;
-
-            for (const auto& rigData : meshData.rigs) {
-                if (!rigData.match(rig->getName())) continue;
+        for (const auto& rigData : meshData.rigs) {
+            if (!rigData.match(rig->getName())) continue;
  
-                for (const auto& socketData : rigData.sockets) {
-                    if (!socketData.enabled) continue;
+            for (const auto& socketData : rigData.sockets) {
+                if (!socketData.enabled) continue;
 
-                    // TODO KI scale is in LodMesh level, but sockets in Mesh level
-                    // => PROBLEM if same mesh is used for differently scaled LodMeshes
-                    //glm::vec3 meshScale{ 0.01375f * 2.f };
-                    auto meshScale = meshData.scale * meshData.baseScale;
+                // TODO KI scale is in LodMesh level, but sockets in Mesh level
+                // => PROBLEM if same mesh is used for differently scaled LodMeshes
+                //glm::vec3 meshScale{ 0.01375f * 2.f };
+                auto meshScale = meshData.scale * meshData.baseScale;
 
-                    animation::RigSocket socket{
-                        socketData.name,
-                        socketData.joint,
-                        socketData.offset.toTransform(),
-                        meshScale
-                    };
-                    socket.m_role = socketData.role;
+                animation::RigSocket socket{
+                    socketData.name,
+                    socketData.joint,
+                    socketData.offset.toTransform(),
+                    meshScale
+                };
+                socket.m_role = socketData.role;
 
-                    auto socketIndex = rig->registerSocket(socket);
-                    if (socketIndex < 0) {
-                        KI_WARN_OUT(fmt::format(
-                            "TYPE::SCENE_ERROR: SOCKET_NOT_FOUND - mesh={}, rig={}, node={}, socket={}",
-                            mesh->m_name, rig->getName(), socket.m_jointName, socket.m_name));
-                    }
+                auto socketIndex = rig->registerSocket(socket);
+                if (socketIndex < 0) {
+                    KI_WARN_OUT(fmt::format(
+                        "TYPE::SCENE_ERROR: SOCKET_NOT_FOUND - rig={}, node={}, socket={}",
+                        rig->getName(), socket.m_jointName, socket.m_name));
                 }
             }
-            rig->prepareSockets();
         }
+        rig->prepareSockets();
     }
 
     void NodeTypeBuilder::resolveAnimations(
         const MeshData& meshData,
-        mesh::MeshSet& meshSet)
+        animation::Rig* rig)
     {
-        for (const auto& mesh : meshSet.getMeshes()) {
-            auto* modelMesh = dynamic_cast<mesh::ModelMesh*>(mesh.get());
-            if (!modelMesh) continue;
+        const auto& assets = Assets::get();
 
-            auto* rig = modelMesh->m_rig.get();
-            if (!rig) continue;
+        if (!rig) return;
 
-            for (const auto& rigData : meshData.rigs) {
-                if (!rigData.match(rig->getName())) continue;
+        for (const auto& rigData : meshData.rigs) {
+            if (!rigData.match(rig->getName())) continue;
 
-                for (auto& animationData : rigData.animations) {
-                    loadAnimation(
-                        meshData.baseDir,
-                        *rig,
-                        animationData,
-                        meshSet);
-                }
+            for (auto& animationData : rigData.animations) {
+                loadAnimation(
+                    assets.modelsDir,
+                    meshData.baseDir,
+                    *rig,
+                    animationData);
             }
         }
     }
 
     void NodeTypeBuilder::loadAnimation(
-        const std::string & baseDir,
+        const std::string rootDir,
+        const std::string& baseDir,
         animation::Rig & rig,
-        const AnimationData & data,
-        mesh::MeshSet & meshSet)
+        const AnimationData & data)
     {
         const auto& assets = Assets::get();
 
@@ -729,14 +721,14 @@ namespace loader
         if (!data.path.empty()) {
             {
                 filePath = util::joinPathExt(
-                    meshSet.m_rootDir,
+                    rootDir,
                     baseDir,
                     data.path, "");
             }
 
             if (!util::fileExists(filePath)) {
                 filePath = util::joinPath(
-                    meshSet.m_rootDir,
+                    rootDir,
                     data.path);
             }
         }

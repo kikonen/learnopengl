@@ -25,8 +25,8 @@ namespace mesh {
 
     public:
         MeshSet(
-            std::string_view path,
             std::string_view rootDir,
+            std::string_view path,
             bool smoothNormals,
             bool forceNormals);
 

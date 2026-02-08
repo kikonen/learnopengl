@@ -24,7 +24,7 @@ namespace pool {
 
 namespace mesh {
     struct MeshFlags;
-    class MeshSet;
+    class Mesh;
     struct LodMesh;
 }
 
@@ -102,17 +102,17 @@ namespace loader {
 
         void resolveSockets(
             const MeshData& meshData,
-            mesh::MeshSet& meshSet);
+            animation::Rig* rig);
 
         void resolveAnimations(
             const MeshData& meshData,
-            mesh::MeshSet& meshSet);
+            animation::Rig* rig);
 
         void loadAnimation(
+            const std::string rootDir,
             const std::string& baseDir,
             animation::Rig& rig,
-            const AnimationData& data,
-            mesh::MeshSet& meshSet);
+            const AnimationData& data);
 
         //void resolveAttachments(
         //    model::NodeTypeNodeType* type,
