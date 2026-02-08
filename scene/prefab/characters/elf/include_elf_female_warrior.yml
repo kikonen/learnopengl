@@ -18,6 +18,7 @@ types:
   - id: prefab_2_handed_sword_particle
     type: origo
     particle: prefab_2_handed_sword
+    script_file: scripts/seq_particle_generator
   - id: prefab_construction_hat
     prefab:
       path: prefab/creatures/addon/prefab_construction_hat.yml
@@ -85,6 +86,10 @@ composites:
             tag: sword
             attach:
               socket: r_hand
+            children:
+              - type: prefab_2_handed_sword_particle
+                tag: sword_particle
+                pos: [0, 0.75, 0]
 
 particles:
   - id: prefab_2_handed_sword
