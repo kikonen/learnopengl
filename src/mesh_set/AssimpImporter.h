@@ -66,8 +66,6 @@ namespace mesh_set
         void processMesh(
             LoadContext& ctx,
             mesh::MeshSet& meshSet,
-			animation::Rig* rig,
-            animation::JointContainer* jointContainer,
             mesh::ModelMesh& modelMesh,
 			const aiNode* node,
 			const aiMesh* mesh);
@@ -80,7 +78,6 @@ namespace mesh_set
             const aiFace* face);
 
         void processMeshBone(
-			animation::Rig& rig,
             animation::JointContainer& jointContainer,
             mesh::ModelMesh& modelMesh,
             const aiBone* bone);

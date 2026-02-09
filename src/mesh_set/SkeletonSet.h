@@ -64,7 +64,7 @@ namespace mesh_set
         friend class AssimpImporter;
 
     public:
-        SkeletonSet(const std::string& meshSetName);
+        SkeletonSet(const std::string& meshSetId);
 
         void resolve(const aiScene* scene);
         std::shared_ptr<animation::Rig> findRig(const aiMesh* mesh) const;
@@ -76,7 +76,7 @@ namespace mesh_set
         void buildRigs(const aiScene* scene);
 
     private:
-        std::string m_meshSetName;
+        std::string m_meshSetId;
 
         std::shared_ptr<NodeTree> m_tree;
 

@@ -89,6 +89,7 @@ std::shared_future<std::shared_ptr<mesh::MeshSet>> MeshSetRegistry::getMeshSet(
     }
 
     auto meshSet = std::make_shared<mesh::MeshSet>(
+        id,
         rootDir,
         meshPath,
         smoothNormals,

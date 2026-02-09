@@ -12,6 +12,7 @@ namespace animation {
 
         const std::string m_name;
         const std::string m_material;
+        const std::string m_rig;
         const uint32_t m_vertexCount;
         const uint32_t m_indexCount;
     };

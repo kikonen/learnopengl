@@ -223,13 +223,13 @@ namespace mesh_set
     std::shared_ptr<animation::Rig> Skeleton::toRig(
         const aiScene* scene,
         const mesh_set::NodeTree& tree,
-        const std::string& meshSetName) const
+        const std::string& meshSetId) const
     {
         auto rig = std::make_shared<animation::Rig>();
         rig->m_skeletonRootNodeName = assimp_util::normalizeName(skeletonRoot->mName);
         rig->m_name = assimp_util::normalizeName(fmt::format(
             "{}-{}-{}",
-            meshSetName, name, rig->m_skeletonRootNodeName));
+            meshSetId, name, rig->m_skeletonRootNodeName));
 
         const auto* rootTreeNode = tree.findByNode(rigRoot);
         if (!rootTreeNode) return nullptr;
@@ -268,8 +268,8 @@ namespace mesh_set
         return rig;
     }
 
-    SkeletonSet::SkeletonSet(const std::string& meshSetName)
-        : m_meshSetName{ meshSetName }
+    SkeletonSet::SkeletonSet(const std::string& meshSetId)
+        : m_meshSetId{ meshSetId }
     {}
 
     void SkeletonSet::resolve(const aiScene* scene)
@@ -313,12 +313,14 @@ namespace mesh_set
         const aiScene* scene)
     {
         for (const auto& skeleton : m_skeletons) {
-            m_rigs.push_back(skeleton.toRig(scene, *m_tree, m_meshSetName));
+            m_rigs.push_back(skeleton.toRig(scene, *m_tree, m_meshSetId));
         }
     }
 
     std::shared_ptr<animation::Rig> SkeletonSet::findRig(const aiMesh* mesh) const
     {
+        if (mesh->mNumBones == 0) return nullptr;
+
         for (const auto& assoc : m_meshAssociations)
         {
             if (assoc.mesh == mesh)

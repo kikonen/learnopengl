@@ -25,6 +25,7 @@ namespace mesh {
 
     public:
         MeshSet(
+            std::string_view id,
             std::string_view rootDir,
             std::string_view path,
             bool smoothNormals,
@@ -54,6 +55,7 @@ namespace mesh {
         std::string getSummary() const;
 
     public:
+        const std::string m_id;
         const std::string m_rootDir;
         const std::string m_dir;
         const std::string m_path;

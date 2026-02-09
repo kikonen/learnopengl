@@ -15,12 +15,11 @@ namespace animation {
     struct Joint {
         Joint(
             const aiBone* bone,
-            int16_t jointIndex,
-            int16_t nodeIndex);
+            int16_t jointIndex);
 
         std::string m_nodeName;
-        int16_t m_jointIndex;
-        int16_t m_nodeIndex;
-        glm::mat4 m_offsetMatrix;
+        int16_t m_jointIndex{ 0 };
+        int16_t m_nodeIndex{ 0 };
+        glm::mat4 m_offsetMatrix{ 1.f };
     };
 }

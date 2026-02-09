@@ -246,8 +246,8 @@ namespace animation
 
                 for (const auto& mi : it->second) {
                     std::string meshLine = fmt::format(
-                        "MATE: [mesh={}, material={}, vertices={}, indeces={}]",
-                        mi.m_name, mi.m_material, mi.m_vertexCount, mi.m_indexCount);
+                        "MATE: [mesh={}, material={}, rig={}, vertices={}, indeces={}]",
+                        mi.m_name, mi.m_material, mi.m_rig, mi.m_vertexCount, mi.m_indexCount);
 
                     appendLine(sb, rigNode.m_level, meshLine);
                 }

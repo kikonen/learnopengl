@@ -58,59 +58,28 @@ namespace animation {
         }
     }
 
+    void JointContainer::bindRig(animation::Rig& rig)
+    {
+        for (auto& joint : m_joints) {
+            auto* rigNode = rig.findNode(joint.m_nodeName);
+            if (!rigNode) {
+                KI_WARN_OUT(fmt::format(
+                    "ANIM::RIG::MISSING_JOINT_NODE: node={}, index={}",
+                    joint.m_nodeName, joint.m_jointIndex));
+                continue;
+            }
+
+            joint. m_nodeIndex = rigNode->m_index;
+            m_nodeToJoint.insert({ rigNode->m_index, joint.m_jointIndex });
+            rigNode->m_hasJoint = true;
+        }
+    }
+
     animation::Joint* JointContainer::registerJoint(
         const aiBone* bone)
     {
-        std::string nodeName = assimp_util::normalizeName(bone->mName);
-        auto* rigNode = m_rig->findNode(nodeName);
-
-        if (!rigNode) {
-            //throw fmt::format("ANIM::RIG_NODE_NOT_FOUND: joint={}", nodeName);
-            KI_ERROR(fmt::format(
-                "ANIM::RIG::NODE_NOT_FOUND: rig={}, joint={}",
-                m_name, nodeName));
-            //return nullptr;
-        }
-
-        if (rigNode) {
-            rigNode->m_hasJoint = true;
-        }
-
-        return &registerJoint(bone, rigNode ? rigNode->m_index : -1);
-    }
-
-    Joint& JointContainer::registerJoint(
-        const aiBone* bone,
-        int16_t nodeIndex)
-    {
         auto jointIndex = static_cast<int16_t>(m_joints.size());
-
-        {
-            const auto& it = m_nodeToJoint.find(nodeIndex);
-            if (it != m_nodeToJoint.end()) {
-                auto& oldJoint = m_joints[it->second];
-                Joint newJoint{ bone, jointIndex, nodeIndex };
-
-                const auto& oldMatrix = fmt::format("{}", oldJoint.m_offsetMatrix);
-                const auto& newMatrix = fmt::format("{}", newJoint.m_offsetMatrix);
-
-                if (oldMatrix != newMatrix) {
-                    throw fmt::format(
-                        "ANIM::OFFSET_MATRIX_MISMATCH: node={}.{}, old={}.{}, new={}.{}",
-                        nodeIndex, oldJoint.m_nodeName,
-                        oldJoint.m_jointIndex, oldJoint.m_offsetMatrix,
-                        jointIndex, newJoint.m_offsetMatrix);
-                }
-                return oldJoint;
-            }
-        }
-
-        // NOTE KI in the context of single container there should not be conflicts
-        if (nodeIndex >= 0) {
-            m_nodeToJoint.insert({nodeIndex, jointIndex});
-        }
-
-        return m_joints.emplace_back(bone, jointIndex, nodeIndex);
+        return &m_joints.emplace_back(bone, jointIndex);
     }
 
     const animation::Joint* JointContainer::findByNodeIndex(int16_t nodeIndex) const noexcept

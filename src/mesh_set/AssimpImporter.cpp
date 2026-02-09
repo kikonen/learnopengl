@@ -186,7 +186,7 @@ namespace mesh_set
         AssimpMaterialImporter materialImporter{ m_debug };
         materialImporter.processMaterials(meshSet, ctx.m_materials, ctx.m_materialMapping, scene);
 
-        SkeletonSet skeletonSet{ meshSet.m_name };
+        SkeletonSet skeletonSet{ meshSet.m_id };
         skeletonSet.resolve(scene);
 
         processMeshes(
@@ -321,40 +321,37 @@ namespace mesh_set
             const auto& aliasName = assimp_util::normalizeName(mesh->mName);
 
             const auto meshName = assimp_util::normalizeName(
-                fmt::format("{}-{}", meshSet.m_name, nodeName));
+                fmt::format("{}-{}", meshSet.m_id, nodeName));
             auto modelMesh = std::make_unique<mesh::ModelMesh>(meshName);
             modelMesh->m_alias = aliasName;
-
-            auto rig = skeletonSet.findRig(mesh);
 
             const auto& treeNode = skeletonSet.getTree().findByNode(node);
             modelMesh->m_rigBaseTransform = treeNode->globalTransform;
 
-            auto jointContainer = std::make_shared<animation::JointContainer>(meshName, rig);
-
             processMesh(
                 ctx,
                 meshSet,
-                rig.get(),
-                jointContainer.get(),
                 *modelMesh,
                 node,
                 mesh);
 
             // NOTE KI without rig, no bones or animation
-            if (rig && mesh->mNumBones > 0)
+            if (mesh->mNumBones > 0)
             {
-                modelMesh->m_rig = rig;
-                modelMesh->m_jointContainer = std::move(jointContainer);
+                auto rig = skeletonSet.findRig(mesh);
+                if (rig) {
+                    modelMesh->m_rig = rig;
+                    modelMesh->m_jointContainer->bindRig(*rig);
 
-                // NOTE KI for debugging/troubleshooting only
-                auto& rootNode = rig->m_nodes[0];
-                {
-                    modelMesh->m_rigNodeIndex = rootNode.m_index;
-                    rootNode.m_hasMesh = true;
+                    // NOTE KI for debugging/troubleshooting only
+                    auto& rootNode = rig->m_nodes[0];
+                    {
+                        modelMesh->m_rigNodeIndex = rootNode.m_index;
+                        rootNode.m_hasMesh = true;
 
-                    // NOTE KI for debug
-                    rig->registerMesh(rootNode.m_index, modelMesh.get());
+                        // NOTE KI for debug
+                        rig->registerMesh(rootNode.m_index, modelMesh.get());
+                    }
                 }
             }
 
@@ -369,8 +366,6 @@ namespace mesh_set
     void AssimpImporter::processMesh(
         LoadContext& ctx,
         mesh::MeshSet& meshSet,
-        animation::Rig* rig,
-        animation::JointContainer* jointContainer,
         mesh::ModelMesh& modelMesh,
         const aiNode* node,
         const aiMesh* mesh)
@@ -388,7 +383,7 @@ namespace mesh_set
                 material = &m_defaultMaterial;
             }
             modelMesh.setMaterial(material);
-            modelMesh.m_name = fmt::format("{}-{}", modelMesh.m_name, material->m_name);
+            modelMesh.m_name = fmt::format("{}[{}]", modelMesh.m_name, material->m_name);
 
             //modelMesh.setMaterial(Material::createMaterial(BasicMaterial::blue));
         }
@@ -433,12 +428,13 @@ namespace mesh_set
         }
 
         // NOTE KI without rig, no bones or animation
-        if (rig && mesh->mNumBones > 0)
+        if (mesh->mNumBones > 0)
         {
+            modelMesh.m_jointContainer = std::make_shared<animation::JointContainer>();
+
             for (unsigned int boneIdx = 0; boneIdx < mesh->mNumBones; boneIdx++) {
                 processMeshBone(
-                    *rig,
-                    *jointContainer,
+                    *modelMesh.m_jointContainer,
                     modelMesh,
                     mesh->mBones[boneIdx]);
             }
@@ -463,7 +459,6 @@ namespace mesh_set
     }
 
     void AssimpImporter::processMeshBone(
-        animation::Rig& rig,
         animation::JointContainer& jointContainer,
         mesh::ModelMesh& modelMesh,
         const aiBone* bone)
@@ -474,14 +469,10 @@ namespace mesh_set
             return;
         }
 
-        const auto* rigNode = rig.getNode(joint->m_nodeIndex);
-
         const auto& boneInfo = fmt::format(
-            "mesh={}, node={}.{}, joint={}, weights={}",
+            "mesh={}, joint={}, weights={}",
             modelMesh.m_name,
-            joint->m_nodeIndex,
-            rigNode ? rigNode->m_name : "NA",
-            joint->m_jointIndex,
+            joint->m_nodeName,
             bone->mNumWeights);
 
         if (true || m_debug) {

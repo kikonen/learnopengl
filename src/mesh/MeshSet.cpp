@@ -26,11 +26,13 @@ namespace {
 
 namespace mesh {
     MeshSet::MeshSet(
+        std::string_view id,
         std::string_view rootDir,
         std::string_view path,
         bool smoothNormals,
         bool forceNormals)
-        : m_rootDir{ rootDir },
+        : m_id{ id },
+        m_rootDir{ rootDir },
         m_path{ path },
         m_dir{ util::dirName(path) },
         m_name{ extractName(path) },
