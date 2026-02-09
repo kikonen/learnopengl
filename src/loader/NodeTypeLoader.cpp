@@ -283,6 +283,9 @@ namespace loader {
             else if (k == "meshes") {
                 loaders.m_meshLoader.loadMeshes(v, data.meshes, loaders);
             }
+            else if (k == "optional_meshes") {
+                loaders.m_meshLoader.loadMeshes(v, data.optionalMeshes, loaders);
+            }
             else {
                 reportUnknown("node_entry", k, v);
             }

@@ -68,5 +68,10 @@ namespace loader {
         void loadClip(
             const loader::DocNode& node,
             ClipData& data) const;
+
+        void loadPrefab(
+            const loader::DocNode& node,
+            MeshData& data,
+            Loaders& loaders) const;
     };
 }

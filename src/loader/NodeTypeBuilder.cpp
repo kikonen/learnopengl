@@ -188,23 +188,28 @@ namespace loader
                 }
             }
 
-            int deferredCount = 0;
-            int forwardCount = 0;
-            int oitCount = 0;
-            for (const auto& lodMesh : type->getLodMeshes()) {
-                if (lodMesh.m_material->gbuffer) {
-                    deferredCount++;
-                    if (lodMesh.m_drawOptions.isBlend()) {
-                        oitCount++;
+            resolveOptionalMeshes(type, typeData);
+
+            {
+                // TODO KI this is WRONG, this should be per drawable mesh, not per type
+                int deferredCount = 0;
+                int forwardCount = 0;
+                int oitCount = 0;
+                for (const auto& lodMesh : type->getLodMeshes()) {
+                    if (lodMesh.m_material->gbuffer) {
+                        deferredCount++;
+                        if (lodMesh.m_drawOptions.isBlend()) {
+                            oitCount++;
+                        }
+                    }
+                    else {
+                        forwardCount++;
                     }
                 }
-                else {
-                    forwardCount++;
-                }
+                type->m_flags.useDeferred |= deferredCount > 0;
+                type->m_flags.useForward |= forwardCount > 0;
+                type->m_flags.useOit |= oitCount > 0;
             }
-            type->m_flags.useDeferred |= deferredCount > 0;
-            type->m_flags.useForward |= forwardCount > 0;
-            type->m_flags.useOit |= oitCount > 0;
         }
 
         {
@@ -452,6 +457,20 @@ namespace loader
         type->prepareVolume();
     }
 
+    void NodeTypeBuilder::resolveOptionalMeshes(
+        model::NodeType* type,
+        const NodeTypeData& typeData)
+    {
+        uint16_t index = 0;
+        for (const auto& meshData : typeData.optionalMeshes) {
+            if (!meshData.enabled) continue;
+            resolveMesh(type, typeData, meshData, index);
+            index++;
+        }
+
+        // NOTE KI volume does not include optional meshes
+    }
+
     void NodeTypeBuilder::resolveMesh(
         model::NodeType* type,
         const NodeTypeData& typeData,
@@ -466,7 +485,7 @@ namespace loader
         // NOTE KI materials MUST be resolved before loading mesh
         if (typeData.type == NodeKind::model) {
             type->m_flags.model = true;
-            meshCount += resolveModelMesh(type, typeData, meshData, index);
+            meshCount += resolveModelMesh(type, typeData, meshData);
 
             KI_INFO(fmt::format(
                 "TYPE::SCENE_FILE_MESH: id={}, desc={}, type={}",
@@ -504,14 +523,13 @@ namespace loader
 
         // Resolve materials for newly added meshes
         if (meshCount > 0) {
-            std::set<const animation::Rig*> processedRigs;
-
             const auto& span = std::span{ type->modifyLodMeshes() }.subspan(startIndex, meshCount);
             for (auto& lodMesh : span) {
                 resolveLodMesh(type, typeData, meshData, lodMesh);
             }
 
             // process rigs
+            std::set<const animation::Rig*> processedRigs;
             for (auto& lodMesh : span) {
                 auto* mesh = lodMesh.getMesh<mesh::ModelMesh>();
                 if (!mesh) continue;
@@ -538,14 +556,19 @@ namespace loader
     int NodeTypeBuilder::resolveModelMesh(
         model::NodeType* type,
         const NodeTypeData& typeData,
-        const MeshData& meshData,
-        int index)
+        const MeshData& meshData)
     {
         const auto& assets = Assets::get();
         int meshCount = 0;
 
         switch (meshData.type) {
         case MeshDataType::mesh: {
+            if (!meshData.bindRig.empty()) {
+                for (const auto& lodMesh : type->getLodMeshes()) {
+                    int x = 0;
+                }
+            }
+
             auto future = MeshSetRegistry::get().getMeshSet(
                 meshData.id,
                 assets.modelsDir,

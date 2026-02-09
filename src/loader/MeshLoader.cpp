@@ -11,6 +11,8 @@
 #include "asset/Assets.h"
 
 #include "util/util.h"
+#include "util/util_join.h"
+#include "util/file.h"
 #include "util/assimp_util.h"
 #include "util/glm_format.h"
 
@@ -20,10 +22,13 @@
 
 #include "registry/Registry.h"
 
+#include "Context.h"
 #include "Loaders.h"
 
+#include "loader/converter/YamlConverter.h"
 #include "loader/document.h"
 #include "loader_util.h"
+
 #include "value/AxisValue.h"
 #include "value/FrontValue.h"
 #include "value/SocketRoleValue.h"
@@ -51,13 +56,17 @@ namespace loader {
         MeshData& data,
         Loaders& loaders) const
     {
+        loadPrefab(node.findNode("prefab"), data, loaders);
+
         for (const auto& pair : node.getNodes()) {
             const std::string& key = pair.getName();
             const loader::DocNode& v = pair.getNode();
 
             const auto k = util::toLower(key);
 
-            if (k == "enabled") {
+            if (k == "prefab") {
+                // NOTE KI loaded as "pre step"
+            } else if (k == "enabled") {
                 data.explicitEnabled = true;
                 data.enabled = readBool(v);
             }
@@ -66,6 +75,9 @@ namespace loader {
             }
             else if (k == "name") {
                 data.name = readString(v);
+            }
+            else if (k == "bind_rig") {
+                data.bindRig = readString(v);
             }
             else if (k == "type") {
                 std::string type = readString(v);
@@ -466,6 +478,63 @@ namespace loader {
             }
 
             data.enabled = enabled.has_value() && enabled.value();
+        }
+    }
+
+    void MeshLoader::loadPrefab(
+        const loader::DocNode& node,
+        MeshData& data,
+        Loaders& loaders) const
+    {
+        if (node.isNull()) return;
+
+        std::string path;
+
+        for (const auto& pair : node.getNodes()) {
+            const std::string& k = pair.getName();
+            const loader::DocNode& v = pair.getNode();
+
+            if (k == "path") {
+                path = readString(v);
+                break;
+            }
+        }
+
+        if (path.empty()) {
+            path = readString(node);
+        }
+
+        if (path.empty()) return;
+
+        {
+            std::filesystem::path filePath{ path };
+            if (filePath.extension().empty()) {
+                path += ".yml";
+            }
+        }
+
+        const auto& fullPath = util::joinPath(m_ctx->m_dirName, path);
+
+        KI_INFO_OUT(fmt::format("LOADER::NODE: prefab={}", fullPath));
+
+        if (!util::fileExists(fullPath)) {
+            throw fmt::format("LOADER::NODE::INVALID: node_prefab missing - path={}", fullPath);
+        }
+
+        loader::YamlConverter converter;
+        auto doc = converter.load(fullPath);
+
+        for (const auto& pair : doc.getNodes()) {
+            const std::string& k = pair.getName();
+            const loader::DocNode& v = pair.getNode();
+
+            if (k == "mesh") {
+                std::vector<NodeData> clones;
+                loadMesh(
+                    v,
+                    data,
+                    loaders);
+            }
         }
     }
 }

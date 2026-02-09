@@ -75,6 +75,10 @@ namespace loader {
             model::NodeType* type,
             const NodeTypeData& typeData);
 
+        void resolveOptionalMeshes(
+            model::NodeType* type,
+            const NodeTypeData& typeData);
+
         void resolveMesh(
             model::NodeType* type,
             const NodeTypeData& typeData,
@@ -85,8 +89,7 @@ namespace loader {
         int resolveModelMesh(
             model::NodeType* type,
             const NodeTypeData& typeData,
-            const MeshData& meshData,
-            int index);
+            const MeshData& meshData);
 
         void resolveLodMesh(
             model::NodeType* type,
