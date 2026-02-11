@@ -1,0 +1,16 @@
+---
+mesh:
+  path: fbx/characters/Elf/Elf Wardrobe Female/Elf_Fem_Leg_Straps.FBX
+  flags:
+    use_bones: true
+    use_animation: true
+  material:
+    base: ../material/Wardrobe 1
+    #kd: [1, 1, 1, 1]
+    map_kd: Elf_LegArmor_AlbedoOpacity.png
+    map_normal: Elf_LegArmor_Normal.png
+    map_mras: Elf_LegArmor_mras
+    unity: true
+    render_back: true
+    default_programs: true
+  base_scale: 0.01
