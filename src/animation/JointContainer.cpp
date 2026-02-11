@@ -45,16 +45,16 @@ namespace animation {
             unboundJoints.push_back(&joint);
         }
 
-        if (unboundJoints.empty()) {
+        if (!unboundJoints.empty()) {
             auto sb = util::join(
                 unboundJoints, ", ",
                 [](const auto* joint) {
                 return joint->m_nodeName;
             });
 
-            throw std::runtime_error(fmt::format(
-                "ANIM::RIG::MISSING_JOINT_NODES: {}",
-                sb));
+            KI_WARN_OUT(fmt::format(
+                "ANIM::RIG::MISSING_JOINT_NODES: container={}, missing=[{}]",
+                m_name, sb));
         }
     }
 
@@ -63,11 +63,13 @@ namespace animation {
         m_nodeToJoint.clear();
 
         for (auto& joint : m_joints) {
+            joint.m_nodeIndex = -1;
+
             auto* rigNode = rig.findNode(joint.m_nodeName);
             if (!rigNode) {
                 KI_WARN_OUT(fmt::format(
-                    "ANIM::RIG::MISSING_JOINT_NODE: node={}, index={}",
-                    joint.m_nodeName, joint.m_jointIndex));
+                    "ANIM::RIG::MISSING_JOINT_NODE: container={}, node={}, index={}",
+                    m_name, joint.m_nodeName, joint.m_jointIndex));
                 continue;
             }
 
@@ -75,6 +77,8 @@ namespace animation {
             m_nodeToJoint.insert({ rigNode->m_index, joint.m_jointIndex });
             rigNode->m_hasJoint = true;
         }
+
+        validate();
     }
 
     animation::Joint* JointContainer::registerJoint(

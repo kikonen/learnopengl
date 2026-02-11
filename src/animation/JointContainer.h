@@ -21,10 +21,12 @@ namespace animation {
     // joint containers *per mesh*
     // => Makes huge difference especially with LODx meshes sharing same skeleton
     struct JointContainer {
+        const std::string m_name;
         std::vector<animation::Joint> m_joints;
         std::unordered_map<int16_t, int16_t> m_nodeToJoint;
 
-        JointContainer()
+        JointContainer(const std::string& name)
+            : m_name{ name }
         {
         }
 

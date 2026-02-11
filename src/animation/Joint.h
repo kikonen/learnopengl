@@ -19,7 +19,7 @@ namespace animation {
 
         std::string m_nodeName;
         int16_t m_jointIndex{ 0 };
-        int16_t m_nodeIndex{ 0 };
+        int16_t m_nodeIndex{ -1 };
 
         /**
          * Matrix that transforms from mesh space to bone space in bind pose.

@@ -56,6 +56,7 @@ namespace loader {
         MeshData& data,
         Loaders& loaders) const
     {
+        std::optional<bool> enabled;
         loadPrefab(node.findNode("prefab"), data, loaders);
 
         for (const auto& pair : node.getNodes()) {
@@ -72,6 +73,13 @@ namespace loader {
             }
             else if (k == "id") {
                 data.id = readString(v);
+            }
+            else if (k == "xid") {
+                data.id = readString(v);
+                enabled = false;
+            }
+            else if (k == "enabled") {
+                enabled = readBool(v);
             }
             else if (k == "name") {
                 data.name = readString(v);
@@ -220,6 +228,10 @@ namespace loader {
             if (data.type == MeshDataType::non_vao) {
                 data.enabled = true;
             }
+        }
+
+        if (enabled.has_value() && !enabled.value()) {
+            data.enabled = false;
         }
     }
 

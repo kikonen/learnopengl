@@ -430,7 +430,7 @@ namespace mesh_set
         // NOTE KI without rig, no bones or animation
         if (mesh->mNumBones > 0)
         {
-            modelMesh.m_jointContainer = std::make_shared<animation::JointContainer>();
+            modelMesh.m_jointContainer = std::make_shared<animation::JointContainer>(modelMesh.m_name);
 
             for (unsigned int boneIdx = 0; boneIdx < mesh->mNumBones; boneIdx++) {
                 processMeshBone(
@@ -464,10 +464,6 @@ namespace mesh_set
         const aiBone* bone)
     {
         const auto* joint = jointContainer.registerJoint(bone);
-
-        if (!joint) {
-            return;
-        }
 
         const auto& boneInfo = fmt::format(
             "mesh={}, joint={}, weights={}",

@@ -96,7 +96,7 @@ namespace animation
         const std::string m_nodeName;
 
         uint16_t m_index{ 0 };
-        int16_t m_nodeIndex;
+        int16_t m_nodeIndex{ -1 };
 
         // Unified key times (populated by unifyKeyTimes())
         std::vector<float> m_keyTimes;
