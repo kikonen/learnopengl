@@ -835,6 +835,7 @@ namespace loader
 
         {
             flags.useJoints = container.getFlag("use_joints", flags.useJoints);
+            flags.useJoints = container.getFlag("use_bones", flags.useJoints);
 
             // NOTE KI Joints are *required* if using animation
             flags.useAnimation = container.getFlag("use_animation", flags.useAnimation);
@@ -844,11 +845,11 @@ namespace loader
 
             // NOTE KI no Joints debug if no Joints
             flags.useJointsDebug = container.getFlag("use_joints_debug", flags.useJointsDebug);
+            flags.useJointsDebug = container.getFlag("use_bones_debug", flags.useJointsDebug);
+
             if (!flags.useJoints) {
                 flags.useJointsDebug = false;
             }
-
-            //flags.useSockets = container.getFlag("use_sockets", flags.useSockets);
         }
 
         flags.clip = container.getFlag("clip", flags.clip);
