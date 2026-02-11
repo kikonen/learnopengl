@@ -106,15 +106,16 @@ namespace model
         }
 
         {
-            // NOTE KI for now, allow only single Rig per mesh type
-            // i.e. not possible to attach animated attachments
-            // or have separate animations for LOD level meshes
+            // NOTE KI rig (skeleton hierarchy + animations) is shared across meshes
+            // but each mesh can have its own joint container (bone ordering + offset matrices)
+            // => register rig once, but register joint palette per unique joint container
             auto& animationsystem = animation::AnimationSystem::get();
             std::unordered_map<const animation::Rig*, int> rigPalettes;
+            std::unordered_map<const animation::JointContainer*, util::BufferReference> jointPalettes;
 
             const auto& lodMeshes = type->getLodMeshes();
 
-            for (int index = 0;  auto& lodMesh : lodMeshes) {
+            for (auto& lodMesh : lodMeshes) {
                 const auto* mesh = lodMesh.getMesh<mesh::Mesh>();
 
                 const auto* rig = mesh->getRig();
@@ -123,15 +124,34 @@ namespace model
                 const auto* jointContainer = mesh->getJointContainer();
                 if (!jointContainer) continue;
 
-                if (rigPalettes.contains(rig)) continue;
-                rigPalettes.insert({ rig, index++ });
+                if (!rigPalettes.contains(rig)) {
+                    int rigIndex = static_cast<int>(m_registeredRigs.size());
+                    rigPalettes.insert({ rig, rigIndex });
 
-                auto& registeredRig = m_registeredRigs.emplace_back();
-                registeredRig.m_rig = rig;
-                registeredRig.m_jointContainer = jointContainer;
-                registeredRig.m_rigRef = animationsystem.registerRig(*rig);
-                registeredRig.m_socketRef = animationsystem.registerSockets(registeredRig.m_rigRef, *rig);
-                registeredRig.m_jointRef = animationsystem.registerJoints(registeredRig.m_rigRef, *jointContainer);
+                    auto& registeredRig = m_registeredRigs.emplace_back();
+                    registeredRig.m_rig = rig;
+                    registeredRig.m_jointContainer = jointContainer;
+                    registeredRig.m_ownsRig = true;
+                    registeredRig.m_rigRef = animationsystem.registerRig(*rig);
+                    registeredRig.m_socketRef = animationsystem.registerSockets(registeredRig.m_rigRef, *rig);
+                    registeredRig.m_jointRef = animationsystem.registerJoints(registeredRig.m_rigRef, *jointContainer);
+
+                    jointPalettes.insert({ jointContainer, registeredRig.m_jointRef });
+                }
+                else if (!jointPalettes.contains(jointContainer)) {
+                    // Accessory case: same rig but different joint container
+                    auto& owningRig = m_registeredRigs[rigPalettes[rig]];
+
+                    auto& registeredRig = m_registeredRigs.emplace_back();
+                    registeredRig.m_rig = rig;
+                    registeredRig.m_jointContainer = jointContainer;
+                    registeredRig.m_ownsRig = false;
+                    registeredRig.m_rigRef = owningRig.m_rigRef;
+                    registeredRig.m_socketRef = { 0, 0 };
+                    registeredRig.m_jointRef = animationsystem.registerJoints(owningRig.m_rigRef, *jointContainer);
+
+                    jointPalettes.insert({ jointContainer, registeredRig.m_jointRef });
+                }
             }
 
             m_lodMeshInstances.reserve(lodMeshes.size());
@@ -143,9 +163,12 @@ namespace model
                 auto* rig = mesh->getRig();
                 if (!rig) continue;
 
-                const auto& registeredRig = m_registeredRigs[rigPalettes[rig]];
-                lod.m_socketBaseIndex = registeredRig.m_socketRef.offset;
-                lod.m_jointBaseIndex = registeredRig.m_jointRef.offset;
+                auto* jointContainer = mesh->getJointContainer();
+                if (!jointContainer) continue;
+
+                const auto& owningRig = m_registeredRigs[rigPalettes[rig]];
+                lod.m_socketBaseIndex = owningRig.m_socketRef.offset;
+                lod.m_jointBaseIndex = jointPalettes[jointContainer].offset;
             }
         }
 
@@ -182,8 +205,10 @@ namespace model
 
         for (auto& registeredRig : m_registeredRigs) {
             animationSystem.unregisterJoints(registeredRig.m_jointRef);
-            animationSystem.unregisterSockets(registeredRig.m_socketRef);
-            animationSystem.unregisterRig(registeredRig.m_rigRef);
+            if (registeredRig.m_ownsRig) {
+                animationSystem.unregisterSockets(registeredRig.m_socketRef);
+                animationSystem.unregisterRig(registeredRig.m_rigRef);
+            }
         }
 
         //if (m_generator) {

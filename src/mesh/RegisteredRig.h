@@ -17,5 +17,9 @@ namespace mesh
         util::BufferReference m_rigRef{ 0, 0 };
         util::BufferReference m_socketRef{ 0, 0 };
         util::BufferReference m_jointRef{ 0, 0 };
+
+        // true if this entry owns the rig/socket registration
+        // false for accessory entries that share the rig but have their own joint palette
+        bool m_ownsRig{ true };
     };
 }

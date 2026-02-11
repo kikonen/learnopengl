@@ -102,6 +102,9 @@ namespace animation
         const auto& registeredRigs = node->getRegisteredRigs();
 
         for (const auto& registeredRig : registeredRigs) {
+            // Skip non-owning entries (accessories) - rig was already animated by the owning entry
+            if (!registeredRig.m_ownsRig) continue;
+
             auto rigNodeTransforms = m_rigNodeRegistry.modifyRange(registeredRig.m_rigRef);
             const auto* rig = registeredRig.m_rig;
 
@@ -211,7 +214,6 @@ namespace animation
 
             {
                 auto jointPalette = m_jointRegistry.modifyRange(registeredRig.m_jointRef);
-                auto socketPalette = m_socketRegistry.modifyRange(registeredRig.m_socketRef);
 
                 // Update Joint Palette
                 for (const auto& joint : jointContainer->m_joints)
@@ -222,15 +224,20 @@ namespace animation
                     jointPalette[joint.m_jointIndex] = globalTransform * joint.m_offsetMatrix;
                 }
 
-                // Update Socket Palette
-                for (const auto& socket : rig->m_sockets) {
-                    const auto& globalTransform = socket.m_nodeIndex >= 0 ? rigNodeTransforms[socket.m_nodeIndex] : ID_MAT;
-
-                    socketPalette[socket.m_index] = socket.calculateGlobalTransform(globalTransform);
-                }
-
                 m_jointRegistry.markDirty(registeredRig.m_jointRef);
-                m_socketRegistry.markDirty(registeredRig.m_socketRef);
+
+                // Update Socket Palette (only for rig-owning entries)
+                if (registeredRig.m_socketRef.size > 0) {
+                    auto socketPalette = m_socketRegistry.modifyRange(registeredRig.m_socketRef);
+
+                    for (const auto& socket : rig->m_sockets) {
+                        const auto& globalTransform = socket.m_nodeIndex >= 0 ? rigNodeTransforms[socket.m_nodeIndex] : ID_MAT;
+
+                        socketPalette[socket.m_index] = socket.calculateGlobalTransform(globalTransform);
+                    }
+
+                    m_socketRegistry.markDirty(registeredRig.m_socketRef);
+                }
             }
         }
     }
