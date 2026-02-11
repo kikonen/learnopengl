@@ -1,6 +1,6 @@
 ---
 mesh:
-  path: fbx/characters/Elf/Elf Hair Female/ElfHairLong.FBX
+  path: fbx/characters/Elf/Elf Hair Female/ElfHairLongHooded.FBX
   flags:
     use_bones: true
     use_animation: true

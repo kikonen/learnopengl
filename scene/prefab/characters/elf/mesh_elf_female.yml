@@ -11,8 +11,7 @@ mesh:
       map_kd: Elf_Female_RIG_female_body_AlbedoOpacity.png
       map_normal: Elf_Female_RIG_female_body_Normal.png
       map_mras: Elf_Female_mras
-      #invert_metalness: true
-      invert_roughness: true
+      unity: true
     - name: female_elf_eyebrows
       base: ../material/Elf Female Body/Elf Female 1
       map_kd: Elf_Female_RIG_female_body_AlbedoOpacity.png
@@ -20,8 +19,7 @@ mesh:
       map_mras: Elf_Female_mras
       #kd: [0.26, 0.7, 0.38]
       kd: 6c5150
-      #invert_metalness: true
-      invert_roughness: true
+      unity: true
     - name: eyeshine
       base: ../material/Elf Female Body/Elf Female 1
       map_kd: Elf_Female_RIG_female_body_AlbedoOpacity.png
@@ -29,8 +27,7 @@ mesh:
       map_mras: Elf_Female_mras
       #kd: 6c51ff
       ke: 6c51ff
-      #invert_metalness: true
-      invert_roughness: true
+      unity: true
       tiling: 1
   program: g_tex
   shadow_program: shadow

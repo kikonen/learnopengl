@@ -1,16 +1,15 @@
 ---
 mesh:
-  path: fbx/characters/Elf/Elf Wardrobe Female/Elf_Fem_Boots.FBX
+  path: fbx/characters/Elf/Elf Wardrobe Female/Elf_Fem_Hood_1.FBX
   flags:
     use_bones: true
     use_animation: true
   material:
-    name: female_elf_boots_set
     base: ../material/Wardrobe 1
     #kd: [1, 1, 1, 1]
-    map_kd: Elf_Boots_AlbedoOpacity.png
-    map_normal: Elf_Boots_Normal.png
-    map_mras: Elf_Boots_mras
+    map_kd: Elf_Hood_AlbedoOpacity.png
+    map_normal: Elf_Hood_Normal.png
+    map_mras: Elf_Hood_mras
     unity: true
     render_back: true
     default_programs: true

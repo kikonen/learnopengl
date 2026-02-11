@@ -35,6 +35,55 @@ types:
       type: directional
       diffuse: [0.7, 0.7, 0.7, 1.0]
       intensity: 30000
+  - id: ground
+    prefab:
+      path: prefab/scenery/prefab_grass_ground_1.yml
+  - id: dandelion
+    prefab:
+      path: prefab/scenery/prefab_SM_Desert_Dandelion_01e.yml
+    mesh:
+      material_modifier:
+        shared_definitions:
+          USE_TREE_WIND: 1
+    priority: -20
+    flags:
+      static_bounds: true
+      no_shadow: true
+    generator:
+      type: grid
+      mode: random
+      offset: [-100, 0, -100]
+      #scale: 5
+      seed: [12, 13, 14]
+      count: 2000
+      repeat:
+        x_count: 10
+        z_count: 10
+        x_step: 20
+        z_step: 20
+  - id: flower
+    prefab:
+      path: prefab/scenery/prefab_SM_Flower_01c.yml
+    mesh:
+      material_modifier:
+        shared_definitions:
+          USE_TREE_WIND: 1
+    priority: -20
+    flags:
+      static_bounds: true
+      no_shadow: true
+    generator:
+      type: grid
+      mode: random
+      offset: [-100, 0, -100]
+      #scale: 5
+      seed: [45, 67, 99]
+      count: 2000
+      repeat:
+        x_count: 10
+        z_count: 10
+        x_step: 20
+        z_step: 20
   - xid: orc_01
     mesh:
       #path: models/Orc_01/SK_Orc_01_Full.glb
@@ -42,11 +91,9 @@ types:
       path: models/unreal/SK_Ursag_Full.glb
       material_modifier:
         default_programs: true
-        invert_occlusion: true
-        #invert_metalness: true
-        invert_roughness: true
+        unreal: true
       flags:
-        use_bones: true
+        xuse_bones: true
         xuse_animation: true
     script: |
       cmd:rotate(
@@ -74,8 +121,6 @@ types:
           map_mras: T_GRIFFON_mras
       material_modifier:
         default_programs: true
-        #invert_occlusion: true
-        #invert_roughness: true
       flags:
         use_bones: true
         use_animation: true
@@ -93,8 +138,7 @@ types:
       #scale: 10
       material_modifier:
         default_programs: true
-        invert_occlusion: true
-        invert_roughness: true
+        unreal: true
       flags:
         use_bones: true
         use_animation: true
@@ -111,8 +155,6 @@ types:
       path: models/unity/skeleton_knight/SkeletonKnight_Legacy.glb
       material_modifier:
         default_programs: true
-        invert_occlusion: false
-        invert_roughness: false
       flags:
         use_bones: true
         use_animation: true
@@ -134,8 +176,6 @@ types:
       path: models/unity/hydra/Hydra_PBR.glb
       material_modifier:
         default_programs: true
-        invert_occlusion: false
-        invert_roughness: false
       flags:
         use_bones: true
         use_animation: true
@@ -227,10 +267,15 @@ types:
 
 nodes:
   - type: player
-    pos: [0, 3.5, 7]
+    pos: [0, 4, 7]
     active: true
   - type: dir_light
     pos: [-15, 25, 25]
+  - type: ground
+    position: [0, 3.5, 0]
+    scale: 100
+  - type: dandelion
+  - type: flower
   - type: orc_01
     pos: [-3.0, 1, 0.0]
   - type: griffon

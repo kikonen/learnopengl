@@ -11,6 +11,7 @@ mesh:
     map_kd: Elf_Pants_AlbedoOpacity.png
     map_normal: Elf_Pants_Normal.png
     map_mras: Elf_Pants_mras
+    unity: true
     render_back: true
     default_programs: true
   base_scale: 0.01

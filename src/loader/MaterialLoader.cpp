@@ -240,6 +240,30 @@ namespace loader {
                 material.mras = glm::vec4(vec[0], vec[1], vec[2], vec[3]);
                 fields.mras = true;
             }
+            else if (k == "unity") {
+                bool isUnity = readBool(v);
+                if (isUnity) {
+                    //material.m_invertOcclusion = true;
+                    //material.m_invertMetalness = true;
+                    material.m_invertRoughness = true;
+
+                    //fields.invertOcclusion = true;
+                    //fields.invertMetalness = true;
+                    fields.invertRoughness = true;
+                }
+            }
+            else if (k == "unreal") {
+                bool isUnreal = readBool(v);
+                if (isUnreal) {
+                    material.m_invertOcclusion = true;
+                    //material.m_invertMetalness = true;
+                    material.m_invertRoughness = true;
+
+                    fields.invertOcclusion = true;
+                    //fields.invertMetalness = true;
+                    fields.invertRoughness = true;
+                }
+            }
             else if (k == "invert_occlusion") {
                 material.m_invertOcclusion = readBool(v);
                 fields.invertOcclusion = true;
