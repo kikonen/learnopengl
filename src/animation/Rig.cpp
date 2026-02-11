@@ -34,20 +34,20 @@ namespace animation
         // NOTE KI mesh required for calculating transforms for attached meshes
         for (auto& rigNode : m_nodes) {
             if (rigNode.m_hasJoint) {
-                rigNode.m_requiredForSocket = true;
-                for (auto jointIndex = rigNode.m_parentIndex; jointIndex >= 0;) {
-                    auto& parent = m_nodes[jointIndex];
+                rigNode.m_requiredForJoint = true;
+                for (auto nodeIndex = rigNode.m_parentIndex; nodeIndex >= 0;) {
+                    auto& parent = m_nodes[nodeIndex];
                     parent.m_requiredForJoint = true;
-                    jointIndex = parent.m_parentIndex;
+                    nodeIndex = parent.m_parentIndex;
                 }
             }
 
             if (rigNode.m_hasSocket) {
                 rigNode.m_requiredForSocket = true;
-                for (auto jointIndex = rigNode.m_parentIndex; jointIndex >= 0;) {
-                    auto& parent = m_nodes[jointIndex];
+                for (auto nodeIndex = rigNode.m_parentIndex; nodeIndex >= 0;) {
+                    auto& parent = m_nodes[nodeIndex];
                     parent.m_requiredForSocket = true;
-                    jointIndex = parent.m_parentIndex;
+                    nodeIndex = parent.m_parentIndex;
                 }
             }
         }
@@ -62,12 +62,12 @@ namespace animation
 
             rigNode.m_requiredForSocket = true;
 
-            for (auto jointIndex = rigNode.m_parentIndex; jointIndex >= 0;) {
-                auto& parent = m_nodes[jointIndex];
+            for (auto nodeIndex = rigNode.m_parentIndex; nodeIndex >= 0;) {
+                auto& parent = m_nodes[nodeIndex];
                 // NOTE KI m_sockets is not sorted
                 //if (parent.m_socketRequired) break;
                 parent.m_requiredForSocket = true;
-                jointIndex = parent.m_parentIndex;
+                nodeIndex = parent.m_parentIndex;
             }
         }
     }

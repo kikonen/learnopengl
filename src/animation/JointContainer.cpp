@@ -60,6 +60,8 @@ namespace animation {
 
     void JointContainer::bindRig(animation::Rig& rig)
     {
+        m_nodeToJoint.clear();
+
         for (auto& joint : m_joints) {
             auto* rigNode = rig.findNode(joint.m_nodeName);
             if (!rigNode) {
@@ -69,7 +71,7 @@ namespace animation {
                 continue;
             }
 
-            joint. m_nodeIndex = rigNode->m_index;
+            joint.m_nodeIndex = rigNode->m_index;
             m_nodeToJoint.insert({ rigNode->m_index, joint.m_jointIndex });
             rigNode->m_hasJoint = true;
         }

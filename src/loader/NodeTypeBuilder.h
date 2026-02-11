@@ -82,8 +82,7 @@ namespace loader {
         void resolveMesh(
             model::NodeType* type,
             const NodeTypeData& typeData,
-            const MeshData& meshData,
-            int index);
+            const MeshData& meshData);
 
         // @return count of meshes added
         int resolveModelMesh(

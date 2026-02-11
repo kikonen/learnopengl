@@ -446,11 +446,39 @@ namespace loader
         model::NodeType* type,
         const NodeTypeData& typeData)
     {
-        uint16_t index = 0;
         for (const auto& meshData : typeData.meshes) {
             if (!meshData.enabled) continue;
-            resolveMesh(type, typeData, meshData, index);
-            index++;
+
+            const auto startIndex = type->getLodMeshes().size();
+            resolveMesh(type, typeData, meshData);
+            const auto meshCount = type->getLodMeshes().size() - startIndex;
+
+            if (meshCount > 0) {
+                const auto& span = std::span{ type->modifyLodMeshes() }.subspan(startIndex, meshCount);
+                std::set<const animation::Rig*> processedRigs;
+
+                // process rigs
+                for (auto& lodMesh : span) {
+                    auto* mesh = lodMesh.getMesh<mesh::ModelMesh>();
+                    if (!mesh) continue;
+
+                    auto* rig = mesh->m_rig.get();
+                    if (!rig) continue;
+
+                    if (processedRigs.contains(rig)) continue;
+                    processedRigs.insert(rig);
+
+                    resolveSockets(
+                        meshData,
+                        rig);
+
+                    resolveAnimations(
+                        meshData,
+                        rig);
+
+                    rig->dump();
+                }
+            }
         }
 
         // NOTE KI ensure volume is containing all meshes
@@ -461,11 +489,41 @@ namespace loader
         model::NodeType* type,
         const NodeTypeData& typeData)
     {
-        uint16_t index = 0;
         for (const auto& meshData : typeData.optionalMeshes) {
             if (!meshData.enabled) continue;
-            resolveMesh(type, typeData, meshData, index);
-            index++;
+
+            const auto startIndex = type->getLodMeshes().size();
+            resolveMesh(type, typeData, meshData);
+            const auto meshCount = type->getLodMeshes().size() - startIndex;
+
+            if (meshCount > 0) {
+                const auto& span = std::span{ type->modifyLodMeshes() }.subspan(startIndex, meshCount);
+                // bind rigs
+                for (auto& lodMesh : span) {
+                    auto* mesh = lodMesh.getMesh<mesh::ModelMesh>();
+                    if (!mesh) continue;
+
+                    if (mesh->m_jointContainer && !meshData.bindRig.empty()) {
+                        std::shared_ptr<animation::Rig> rig;
+                        for (const auto& lodMesh : type->getLodMeshes()) {
+                            auto* rigMesh = lodMesh.getMesh<mesh::ModelMesh>();
+                            if (!rigMesh) continue;
+
+                            if (!rigMesh->m_rig) continue;
+
+                            if (rigMesh->m_rig->getName() == meshData.bindRig) {
+                                rig = rigMesh->m_rig;
+                                break;
+                            }
+                        }
+
+                        if (rig) {
+                            mesh->m_rig = rig;
+                            mesh->m_jointContainer->bindRig(*rig);
+                        }
+                    }
+                }
+            }
         }
 
         // NOTE KI volume does not include optional meshes
@@ -474,8 +532,7 @@ namespace loader
     void NodeTypeBuilder::resolveMesh(
         model::NodeType* type,
         const NodeTypeData& typeData,
-        const MeshData& meshData,
-        int index)
+        const MeshData& meshData)
     {
         const auto& assets = Assets::get();
 
@@ -527,29 +584,6 @@ namespace loader
             for (auto& lodMesh : span) {
                 resolveLodMesh(type, typeData, meshData, lodMesh);
             }
-
-            // process rigs
-            std::set<const animation::Rig*> processedRigs;
-            for (auto& lodMesh : span) {
-                auto* mesh = lodMesh.getMesh<mesh::ModelMesh>();
-                if (!mesh) continue;
-
-                auto* rig = mesh->m_rig.get();
-                if (!rig) continue;
-
-                if (processedRigs.contains(rig)) continue;
-                processedRigs.insert(rig);
-
-                resolveSockets(
-                    meshData,
-                    rig);
-
-                resolveAnimations(
-                    meshData,
-                    rig);
-
-                rig->dump();
-            }
         }
     }
 
@@ -563,12 +597,6 @@ namespace loader
 
         switch (meshData.type) {
         case MeshDataType::mesh: {
-            if (!meshData.bindRig.empty()) {
-                for (const auto& lodMesh : type->getLodMeshes()) {
-                    int x = 0;
-                }
-            }
-
             auto future = MeshSetRegistry::get().getMeshSet(
                 meshData.id,
                 assets.modelsDir,
