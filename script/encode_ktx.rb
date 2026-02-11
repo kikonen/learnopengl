@@ -185,11 +185,13 @@ class Converter < Thor
   RED_GREEN = 'RG'
   GREEN_BLUE = 'GB'
   RED_GREEN_BLUE = 'RGB'
-  GREEN_RED_BLUE = 'GBB'
+  GREEN_RED_BLUE = 'GRB'
   GREEN_BLUE_RED = 'GBR'
   BLUE_GREEN_RED = 'BGR'
   BLUE_RED_GREEN = 'BRG'
   RED_BLUE_GREEN = 'RBG'
+  RED_GREEN_ALPHA = 'RGA'
+  RED_GREEN_BLUE_ALPHA = 'RGBA'
 
   MAGICK_CHANNELS = {
     NONE => nil,
@@ -340,6 +342,10 @@ class Converter < Thor
       ],
       occlusion_roughness_metal: [
         /occlusionroughnessmetal/,
+      ],
+      # Elf_LegArmor_MetalAOHeightRough.png.meta
+      metal_occlusion_height_roughness: [
+        /metalaoheightrough/,
       ],
       displacement: [
         /\Adisplacement\z/,
@@ -906,6 +912,16 @@ class Converter < Thor
             target_name: MRAS_MAP,
             source_channel: RED_GREEN_BLUE,
             target_channel: RED_BLUE_GREEN,
+          }
+        when :metal_occlusion_height_roughness
+          tex_info = {
+            group: 'default',
+            type: :metal_occlusion_height_roughness,
+            action: :combine,
+            mode: MODE_MRAS,
+            target_name: MRAS_MAP,
+            source_channel: RED_GREEN_ALPHA,
+            target_channel: GREEN_RED_BLUE,
           }
         when :displacement
           tex_info = {
