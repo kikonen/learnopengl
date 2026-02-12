@@ -1,0 +1,104 @@
+---
+types:
+  - id: prefab_elf_male
+    prefab:
+      path: prefab/characters/elf/male/prefab_elf_male.yml
+  - id: prefab_helmet
+    prefab:
+      path: prefab/creatures/addon/prefab_helmet.yml
+  - id: prefab_shield
+    prefab:
+      path: prefab/creatures/addon/prefab_shield.yml
+  - id: prefab_armor
+    prefab:
+      path: prefab/creatures/addon/prefab_armor.yml
+  - id: prefab_2_handed_sword
+    prefab:
+      path: prefab/creatures/addon/prefab_2_handed_sword.yml
+  - id: prefab_2_handed_sword_particle
+    type: origo
+    particle: prefab_2_handed_sword
+    script_file: scripts/seq_particle_generator
+  - id: prefab_construction_hat
+    prefab:
+      path: prefab/creatures/addon/prefab_construction_hat.yml
+  - id: prefab_elf_male_warrior
+    type: composite
+    composite: prefab_elf_male_warrior_composite
+    physics:
+      #enabled: false
+      update: true
+      body:
+        kinematic: true
+        animated_center: true
+        density: 0.01
+        max_angular_velocity: 0
+        force_axis: true
+        offset: [0, 0.95, 0]
+      geom:
+        type: capsule
+        category: npc
+        collision: [world, player]
+        size: [0.25, 0.7, 0]
+
+composites:
+  - id: prefab_elf_male_warrior_composite
+    nodes:
+      - type: prefab_elf_male
+        tag: body
+        children:
+          - xtype: prefab_helmet
+            attach:
+              socket: head
+          - xtype: prefab_construction_hat
+            attach:
+              socket: head
+          - type: prefab_shield
+            attach:
+              socket: l_arm
+          - xtype: prefab_armor
+            attach:
+              socket: neck
+          - xtype: prefab_armor
+            attach:
+              socket: neck_rev
+          - type: prefab_2_handed_sword
+            tag: sword
+            attach:
+              socket: r_hand
+            children:
+              - type: prefab_2_handed_sword_particle
+                tag: sword_particle
+                pos: [0, 0.75, 0]
+
+particles:
+  - id: prefab_2_handed_sword
+    seed: 1
+    #gravity: [0, -9.81, 0]
+    lifetime: 0.3
+    lifetime_variation: 0.1
+    area_type: point
+    area_radius: 0.1
+    area_size: [1, 1, 1]
+    area_variation: 0.01
+    dir: [0, 1, 0]
+    dir_variation: 0.5
+    speed: 0
+    speed_variation: 0
+    size: 0.05
+    size_variation: 0.1
+    rate: 500
+    rate_variation: 50
+    sprite_base: 0
+    sprite_base_variation: 0
+    sprite_count: -1
+    sprite_speed: 10
+    sprite_speed_variation: 20
+    material:
+      name: particle_casting
+      kd: [1, 1, 1, 1]
+      map_kd: particles/4_casting_spritesheet.png
+      sprites: 73
+      sprites_x: 9
+      texture_spec:
+        wrap: GL_CLAMP_TO_EDGE

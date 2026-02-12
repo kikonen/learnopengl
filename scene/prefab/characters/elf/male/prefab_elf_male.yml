@@ -1,0 +1,188 @@
+---
+prefab:
+  meshes:
+    - id: elf_male
+      prefab:
+        path: prefab/characters/elf/male/mesh_elf_male.yml
+  optional_meshes:
+    - id: hair_long
+      prefab:
+        path: prefab/characters/elf/male/mesh_elf_male_hair_long.yml
+      bind_rig: elf_male-RootNode-Base-HumanNeck
+
+    - id: shirt
+      prefab:
+        path: prefab/characters/elf/male/mesh_elf_male_shirt.yml
+      bind_rig: elf_male-RootNode-Base-HumanPelvis
+
+    - id: pants
+      prefab:
+        path: prefab/characters/elf/male/mesh_elf_male_pants.yml
+      bind_rig: elf_male-RootNode-Base-HumanPelvis
+
+  xoptional_meshes:
+    - xid: hair_long_hooded
+      prefab:
+        path: prefab/characters/elf/male/mesh_elf_male_hair_long_hooded.yml
+      bind_rig: elf_male-RootNode-Base-HumanSpine3
+    - xid: hair_pony_buzz
+      prefab:
+        path: prefab/characters/elf/male/mesh_elf_male_hair_pony_buzz.yml
+      bind_rig: elf_male-RootNode-Base-HumanSpine3
+    - xid: hair_pony_tail_hooded
+      prefab:
+        path: prefab/characters/elf/male/mesh_elf_male_hair_pony_tail_hooded.yml
+      bind_rig: elf_male-RootNode-Base-HumanSpine3
+    - id: hair_pony_tail
+      prefab:
+        path: prefab/characters/elf/male/mesh_elf_male_hair_pony_tail.yml
+      bind_rig: elf_male-RootNode-Base-HumanSpine3
+    - xid: hair_short
+      prefab:
+        path: prefab/characters/elf/male/mesh_elf_male_hair_short.yml
+      bind_rig: elf_male-RootNode-Base-HumanSpine3
+    - xid: orc_hair_long
+      prefab:
+        path: prefab/characters/elf/male/mesh_orc_male_hair_long.yml
+      bind_rig: elf_male-RootNode-Base-HumanSpine3
+    - xid: orc_hair_pony_tail
+      prefab:
+        path: prefab/characters/elf/male/mesh_orc_male_hair_pony_tail.yml
+      bind_rig: elf_male-RootNode-Base-HumanSpine3
+    - xid: orc_hair_short
+      prefab:
+        path: prefab/characters/elf/male/mesh_orc_male_hair_short.yml
+      bind_rig: elf_male-RootNode-Base-HumanSpine3
+
+    - xid: hood_1
+      prefab:
+        path: prefab/characters/elf/male/mesh_elf_male_hood_1.yml
+      bind_rig: elf_male-RootNode-Base-HumanSpine3
+    - xid: hood_2
+      prefab:
+        path: prefab/characters/elf/male/mesh_elf_male_hood_2.yml
+      bind_rig: elf_male-RootNode-Base-HumanSpine3
+    - xid: mask
+      prefab:
+        path: prefab/characters/elf/male/mesh_elf_male_mask.yml
+      bind_rig: elf_male-RootNode-Base-HumanSpine3
+
+    - id: jewelry
+      prefab:
+        path: prefab/characters/elf/male/mesh_elf_male_jewelry.yml
+      bind_rig: elf_male-RootNode-Base-HumanSpine3
+
+    - id: vest
+      prefab:
+        path: prefab/characters/elf/male/mesh_elf_male_vest.yml
+      bind_rig: elf_male-RootNode-Base-HumanSpine3
+    - xid: curlass
+      prefab:
+        path: prefab/characters/elf/male/mesh_elf_male_curlass.yml
+      bind_rig: elf_male-RootNode-Base-HumanSpine3
+    - xid: curlass_collar
+      prefab:
+        path: prefab/characters/elf/male/mesh_elf_male_curlass_collar.yml
+      bind_rig: elf_male-RootNode-Base-HumanSpine3
+    - xid: sleeves
+      prefab:
+        path: prefab/characters/elf/male/mesh_elf_male_sleeves.yml
+      bind_rig: elf_male-RootNode-Base-HumanSpine3
+    - id: vest_straps
+      prefab:
+        path: prefab/characters/elf/male/mesh_elf_male_vest_straps.yml
+      bind_rig: elf_male-RootNode-Base-HumanSpine3
+
+    - id: arms_armor
+      prefab:
+        path: prefab/characters/elf/male/mesh_elf_male_arms_armor.yml
+      bind_rig: elf_male-RootNode-Base-HumanSpine3
+    - id: arms_straps
+      prefab:
+        path: prefab/characters/elf/male/mesh_elf_male_arms_straps.yml
+      bind_rig: elf_male-RootNode-Base-HumanSpine3
+
+    - id: waist_cloth
+      prefab:
+        path: prefab/characters/elf/male/mesh_elf_male_waist_cloth.yml
+      bind_rig: elf_male-RootNode-Base-HumanSpine3
+
+    - id: belt_1
+      prefab:
+        path: prefab/characters/elf/male/mesh_elf_male_belt_1.yml
+      bind_rig: elf_male-RootNode-Base-HumanSpine3
+    - xid: belt_1a
+      prefab:
+        path: prefab/characters/elf/male/mesh_elf_male_belt_1a.yml
+      bind_rig: elf_male-RootNode-Base-HumanSpine3
+    - xid: belt_1b
+      prefab:
+        path: prefab/characters/elf/male/mesh_elf_male_belt_1b.yml
+      bind_rig: elf_male-RootNode-Base-HumanSpine3
+    - xid: buckle
+      prefab:
+        path: prefab/characters/elf/male/mesh_elf_male_belt_buckle.yml
+      bind_rig: elf_male-RootNode-Base-HumanSpine3
+    - xid: belt_2
+      prefab:
+        path: prefab/characters/elf/male/mesh_elf_male_belt_2.yml
+      bind_rig: elf_male-RootNode-Base-HumanSpine3
+
+    - xid: studs
+      prefab:
+        path: prefab/characters/elf/male/mesh_elf_male_studs.yml
+      bind_rig: elf_male-RootNode-Base-HumanSpine3
+    - xid: hip_armor_1
+      prefab:
+        path: prefab/characters/elf/male/mesh_elf_male_hip_armor_1.yml
+      bind_rig: elf_male-RootNode-Base-HumanSpine3
+    - id: hip_armor_2
+      prefab:
+        path: prefab/characters/elf/male/mesh_elf_male_hip_armor_2.yml
+      bind_rig: elf_male-RootNode-Base-HumanSpine3
+
+    - id: hangers
+      prefab:
+        path: prefab/characters/elf/male/mesh_elf_male_hangers.yml
+      bind_rig: elf_male-RootNode-Base-HumanSpine3
+    - id: manica_pair
+      prefab:
+        path: prefab/characters/elf/male/mesh_elf_male_manica_pair.yml
+      bind_rig: elf_male-RootNode-Base-HumanSpine3
+    - xid: poleyns
+      prefab:
+        path: prefab/characters/elf/male/mesh_elf_male_poleyns.yml
+      bind_rig: elf_male-RootNode-Base-HumanSpine3
+
+    - id: leg_armor_1
+      prefab:
+        path: prefab/characters/elf/male/mesh_elf_male_leg_armor_1.yml
+      bind_rig: elf_male-RootNode-Base-HumanSpine3
+    - id: leg_armor_2
+      prefab:
+        path: prefab/characters/elf/male/mesh_elf_male_leg_armor_2.yml
+      bind_rig: elf_male-RootNode-Base-HumanSpine3
+    - id: leg_straps
+      prefab:
+        path: prefab/characters/elf/male/mesh_elf_male_leg_straps.yml
+      bind_rig: elf_male-RootNode-Base-HumanSpine3
+
+    - id: boots
+      prefab:
+        path: prefab/characters/elf/male/mesh_elf_male_boots.yml
+      bind_rig: elf_male-RootNode-Base-HumanSpine3
+
+  physics:
+    enabled: false
+    update: true
+    body:
+      kinematic: true
+      density: 0.01
+      max_angular_velocity: 0
+      force_axis: true
+      offset: [0, 0.95, 0]
+    geom:
+      type: capsule
+      category: npc
+      collision: [world, player]
+      size: [0.25, 0.7, 0]
