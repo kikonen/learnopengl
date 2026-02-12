@@ -10,7 +10,7 @@ script:
 
 includes:
   - xpath: prefab/creatures/include_skeleton_warrior.yml
-  - path: prefab/characters/elf/include_elf_female_warrior.yml
+  - path: prefab/characters/elf/female/include_elf_female_warrior.yml
 
 types:
   - id: player
@@ -247,8 +247,7 @@ types:
         { tag="body", name = "idle" })
   - xid: elf_female
     prefab:
-      path: prefab/characters/elf/prefab_elf_female.yml
-      #path: prefab/characters/elf/prefab_female_pants.yml
+      path: prefab/characters/elf/female/prefab_elf_female.yml
     physics:
       #enabled: false
     script: |

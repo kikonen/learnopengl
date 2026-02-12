@@ -235,6 +235,7 @@ class Converter < Thor
         /\Adiffuse[-_ ]/,
         /[-_ ]diffuse[-_ ]/,
         /[-_ ]diffuse\z/,
+        /[-_ ]diffuse[\d]+[-_. ]/,
         ###
         /\Aalbedo\z/,
         /\Aalbedo[-_ ]/,
@@ -330,6 +331,7 @@ class Converter < Thor
       ],
       metal_roughness: [
         /metallicroughness/,
+        /metalrough/,
       ],
       metal_roughness_occlusion: [
         /metallicroughnessocclusion/,

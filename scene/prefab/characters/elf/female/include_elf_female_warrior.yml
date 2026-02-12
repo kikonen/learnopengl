@@ -2,7 +2,7 @@
 types:
   - id: prefab_elf_female
     prefab:
-      path: prefab/characters/elf/prefab_elf_female.yml
+      path: prefab/characters/elf/female/prefab_elf_female.yml
   - id: prefab_helmet
     prefab:
       path: prefab/creatures/addon/prefab_helmet.yml

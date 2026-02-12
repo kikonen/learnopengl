@@ -5,7 +5,7 @@ mesh:
     use_bones: true
     use_animation: true
   material:
-    base: ../material/hair
+    base: ../shared/material
     map_kd: Clumps1_color_w-alpha_03.png
     map_normal: Clumps1_normal.png
     unity: true

@@ -3,127 +3,127 @@ prefab:
   meshes:
     - id: elf_female
       prefab:
-        path: prefab/characters/elf/mesh_elf_female.yml
+        path: prefab/characters/elf/female/mesh_elf_female.yml
   optional_meshes:
     - id: long_hair
       prefab:
-        path: prefab/characters/elf/mesh_elf_female_long_hair_hooded.yml
+        path: prefab/characters/elf/female/mesh_elf_female_long_hair_hooded.yml
       bind_rig: elf_female-RootNode-Base-HumanSpine3
     - id: pants
       prefab:
-        path: prefab/characters/elf/mesh_elf_female_pants.yml
+        path: prefab/characters/elf/female/mesh_elf_female_pants.yml
       bind_rig: elf_female-RootNode-Base-HumanSpine3
     - id: waist_cloth
       prefab:
-        path: prefab/characters/elf/mesh_elf_female_waist_cloth.yml
+        path: prefab/characters/elf/female/mesh_elf_female_waist_cloth.yml
       bind_rig: elf_female-RootNode-Base-HumanSpine3
     - id: shirt
       prefab:
-        path: prefab/characters/elf/mesh_elf_female_shirt.yml
+        path: prefab/characters/elf/female/mesh_elf_female_shirt.yml
       bind_rig: elf_female-RootNode-Base-HumanSpine3
     - id: vest
       prefab:
-        path: prefab/characters/elf/mesh_elf_female_vest.yml
+        path: prefab/characters/elf/female/mesh_elf_female_vest.yml
       bind_rig: elf_female-RootNode-Base-HumanSpine3
     - xid: belt_1
       prefab:
-        path: prefab/characters/elf/mesh_elf_female_belt_1.yml
+        path: prefab/characters/elf/female/mesh_elf_female_belt_1.yml
       bind_rig: elf_female-RootNode-Base-HumanSpine3
     - id: belt_1a
       prefab:
-        path: prefab/characters/elf/mesh_elf_female_belt_1a.yml
+        path: prefab/characters/elf/female/mesh_elf_female_belt_1a.yml
       bind_rig: elf_female-RootNode-Base-HumanSpine3
     - id: belt_1b
       prefab:
-        path: prefab/characters/elf/mesh_elf_female_belt_1b.yml
+        path: prefab/characters/elf/female/mesh_elf_female_belt_1b.yml
       bind_rig: elf_female-RootNode-Base-HumanSpine3
     - id: buckle
       prefab:
-        path: prefab/characters/elf/mesh_elf_female_belt_buckle.yml
+        path: prefab/characters/elf/female/mesh_elf_female_belt_buckle.yml
       bind_rig: elf_female-RootNode-Base-HumanSpine3
     - id: belt_2
       prefab:
-        path: prefab/characters/elf/mesh_elf_female_belt_2.yml
+        path: prefab/characters/elf/female/mesh_elf_female_belt_2.yml
       bind_rig: elf_female-RootNode-Base-HumanSpine3
     - id: studs
       prefab:
-        path: prefab/characters/elf/mesh_elf_female_studs.yml
+        path: prefab/characters/elf/female/mesh_elf_female_studs.yml
       bind_rig: elf_female-RootNode-Base-HumanSpine3
     - xid: arms_armor
       prefab:
-        path: prefab/characters/elf/mesh_elf_female_arms_armor.yml
+        path: prefab/characters/elf/female/mesh_elf_female_arms_armor.yml
       bind_rig: elf_female-RootNode-Base-HumanSpine3
     - id: arms_straps
       prefab:
-        path: prefab/characters/elf/mesh_elf_female_arms_straps.yml
+        path: prefab/characters/elf/female/mesh_elf_female_arms_straps.yml
       bind_rig: elf_female-RootNode-Base-HumanSpine3
     - id: hip_armor_1
       prefab:
-        path: prefab/characters/elf/mesh_elf_female_hip_armor_1.yml
+        path: prefab/characters/elf/female/mesh_elf_female_hip_armor_1.yml
       bind_rig: elf_female-RootNode-Base-HumanSpine3
     - id: hip_armor_2
       prefab:
-        path: prefab/characters/elf/mesh_elf_female_hip_armor_2.yml
+        path: prefab/characters/elf/female/mesh_elf_female_hip_armor_2.yml
       bind_rig: elf_female-RootNode-Base-HumanSpine3
     - id: curlass
       prefab:
-        path: prefab/characters/elf/mesh_elf_female_curlass.yml
+        path: prefab/characters/elf/female/mesh_elf_female_curlass.yml
       bind_rig: elf_female-RootNode-Base-HumanSpine3
     - id: curlass_collar
       prefab:
-        path: prefab/characters/elf/mesh_elf_female_curlass_collar.yml
+        path: prefab/characters/elf/female/mesh_elf_female_curlass_collar.yml
       bind_rig: elf_female-RootNode-Base-HumanSpine3
     - id: boots
       prefab:
-        path: prefab/characters/elf/mesh_elf_female_boots.yml
+        path: prefab/characters/elf/female/mesh_elf_female_boots.yml
       bind_rig: elf_female-RootNode-Base-HumanSpine3
     - id: hood_1
       prefab:
-        path: prefab/characters/elf/mesh_elf_female_hood_1.yml
+        path: prefab/characters/elf/female/mesh_elf_female_hood_1.yml
       bind_rig: elf_female-RootNode-Base-HumanSpine3
     - id: hood_2
       prefab:
-        path: prefab/characters/elf/mesh_elf_female_hood_2.yml
+        path: prefab/characters/elf/female/mesh_elf_female_hood_2.yml
       bind_rig: elf_female-RootNode-Base-HumanSpine3
     - id: hangers
       prefab:
-        path: prefab/characters/elf/mesh_elf_female_hangers.yml
+        path: prefab/characters/elf/female/mesh_elf_female_hangers.yml
       bind_rig: elf_female-RootNode-Base-HumanSpine3
     - id: jewelry
       prefab:
-        path: prefab/characters/elf/mesh_elf_female_jewelry.yml
+        path: prefab/characters/elf/female/mesh_elf_female_jewelry.yml
       bind_rig: elf_female-RootNode-Base-HumanSpine3
     - id: leg_armor_1
       prefab:
-        path: prefab/characters/elf/mesh_elf_female_leg_armor_1.yml
+        path: prefab/characters/elf/female/mesh_elf_female_leg_armor_1.yml
       bind_rig: elf_female-RootNode-Base-HumanSpine3
     - id: leg_armor_2
       prefab:
-        path: prefab/characters/elf/mesh_elf_female_leg_armor_2.yml
+        path: prefab/characters/elf/female/mesh_elf_female_leg_armor_2.yml
       bind_rig: elf_female-RootNode-Base-HumanSpine3
     - id: leg_straps
       prefab:
-        path: prefab/characters/elf/mesh_elf_female_leg_straps.yml
+        path: prefab/characters/elf/female/mesh_elf_female_leg_straps.yml
       bind_rig: elf_female-RootNode-Base-HumanSpine3
     - id: manica_pair
       prefab:
-        path: prefab/characters/elf/mesh_elf_female_manica_pair.yml
+        path: prefab/characters/elf/female/mesh_elf_female_manica_pair.yml
       bind_rig: elf_female-RootNode-Base-HumanSpine3
     - id: mask
       prefab:
-        path: prefab/characters/elf/mesh_elf_female_mask.yml
+        path: prefab/characters/elf/female/mesh_elf_female_mask.yml
       bind_rig: elf_female-RootNode-Base-HumanSpine3
     - id: poleyns
       prefab:
-        path: prefab/characters/elf/mesh_elf_female_poleyns.yml
+        path: prefab/characters/elf/female/mesh_elf_female_poleyns.yml
       bind_rig: elf_female-RootNode-Base-HumanSpine3
     - id: sleeves
       prefab:
-        path: prefab/characters/elf/mesh_elf_female_sleeves.yml
+        path: prefab/characters/elf/female/mesh_elf_female_sleeves.yml
       bind_rig: elf_female-RootNode-Base-HumanSpine3
     - id: vest_straps
       prefab:
-        path: prefab/characters/elf/mesh_elf_female_vest_straps.yml
+        path: prefab/characters/elf/female/mesh_elf_female_vest_straps.yml
       bind_rig: elf_female-RootNode-Base-HumanSpine3
   physics:
     enabled: false

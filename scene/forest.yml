@@ -12,7 +12,7 @@ includes:
   - path: prefab/util/include_origo_marker.yml
   - path: prefab/util/include_fps_counter.yml
   - path: prefab/creatures/include_skeleton_warrior.yml
-  - path: prefab/characters/elf/include_elf_female_warrior.yml
+  - path: prefab/characters/elf/female/include_elf_female_warrior.yml
 
 types:
   - id: player
