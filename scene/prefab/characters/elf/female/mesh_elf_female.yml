@@ -13,13 +13,13 @@ mesh:
       map_mras: Elf_Female_mras
       unity: true
     - name: female_elf_eyebrows
-      base: ../material/Elf Female Body/Elf Female 1
-      map_kd: Elf_Female_RIG_female_body_AlbedoOpacity.png
-      map_normal: Elf_Female_RIG_female_body_Normal.png
-      map_mras: Elf_Female_mras
-      #kd: [0.26, 0.7, 0.38]
-      kd: 6c5150
+      base: ../shared/material
+      map_kd: Eyebrows_Lashes_diff.png
+      map_normal: Eyebrows_Lashes_normals.png
       unity: true
+      render_back: true
+      blend: true
+      default_programs: true
     - name: eyeshine
       base: ../shared/material/Eyes/
       map_kd: HumanEyes_Diffuse10.png
