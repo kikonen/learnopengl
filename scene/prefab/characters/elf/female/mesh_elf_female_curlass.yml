@@ -5,7 +5,7 @@ mesh:
     use_bones: true
     use_animation: true
   material:
-    base: ../material/Wardrobe 1
+    base: ../textures/Wardrobe 1
     #kd: [1, 1, 1, 1]
     map_kd: Elf_Curiass_AlbedoOpacity.png
     map_normal: Elf_Curiass_Normal.png

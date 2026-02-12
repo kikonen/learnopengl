@@ -1,0 +1,15 @@
+---
+mesh:
+  path: fbx/characters/Elf/Elf Hair Female/ElfHairPonytail.FBX
+  flags:
+    use_bones: true
+    use_animation: true
+  material:
+    base: ../shared/textures
+    map_kd: Clumps1_color_w-alpha_03.png
+    map_normal: Clumps1_normal.png
+    unity: true
+    render_back: true
+    blend: true
+    default_programs: true
+  base_scale: 0.01

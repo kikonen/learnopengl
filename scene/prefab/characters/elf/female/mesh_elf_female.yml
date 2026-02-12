@@ -7,7 +7,7 @@ mesh:
     use_animation: true
   materials:
     - name: female_body
-      base: ../material/Elf Female Body/Elf Female 1
+      base: ../textures/Elf Female Body/Elf Female 1
       map_kd: Elf_Female_RIG_female_body_AlbedoOpacity.png
       map_normal: Elf_Female_RIG_female_body_Normal.png
       map_mras: Elf_Female_mras
@@ -21,8 +21,8 @@ mesh:
       blend: true
       default_programs: true
     - name: eyeshine
-      base: ../shared/material/Eyes/
-      map_kd: HumanEyes_Diffuse10.png
+      base: ../shared/textures/Eyes/
+      map_kd: HumanEyes_Diffuse3.png
       map_normal: HumanEyes_Normal.png
       map_mras: HumanEyes_mras
       #kd: 6c51ff

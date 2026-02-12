@@ -1,11 +1,11 @@
 ---
 mesh:
-  path: fbx/characters/Elf/Elf Hair Female/ElfHairLongHooded.FBX
+  path: fbx/characters/Elf/Elf Hair Female/HumanHairShort.FBX
   flags:
     use_bones: true
     use_animation: true
   material:
-    base: ../shared/material
+    base: ../shared/textures
     map_kd: Clumps1_color_w-alpha_03.png
     map_normal: Clumps1_normal.png
     unity: true

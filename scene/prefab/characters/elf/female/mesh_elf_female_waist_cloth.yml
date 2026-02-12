@@ -6,7 +6,7 @@ mesh:
     use_animation: true
   material:
     name: female_elf_boots_set
-    base: ../material/Wardrobe 1
+    base: ../textures/Wardrobe 1
     #kd: [1, 1, 1, 1]
     map_kd: Elf_WaistCloth_AlbedoOpacity.png
     map_normal: Elf_WaistCloth_Normal.png
