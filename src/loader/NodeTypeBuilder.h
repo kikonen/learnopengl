@@ -75,7 +75,7 @@ namespace loader {
             model::NodeType* type,
             const NodeTypeData& typeData);
 
-        void resolveOptionalMeshes(
+        void resolveAddonMeshes(
             model::NodeType* type,
             const NodeTypeData& typeData);
 
@@ -101,6 +101,10 @@ namespace loader {
             const NodeTypeData& typeData,
             const MeshData& meshData,
             mesh::LodMesh& lodMesh);
+
+        void resolveRig(
+            const MeshData& meshData,
+            animation::Rig* rig);
 
         void resolveSockets(
             const MeshData& meshData,

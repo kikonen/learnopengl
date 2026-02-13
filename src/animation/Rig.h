@@ -52,6 +52,21 @@ namespace animation
             return m_name;
         }
 
+        const std::string& getAlias() const noexcept
+        {
+            return m_alias;
+        }
+
+        void setAlias(const std::string& alias) noexcept
+        {
+            m_alias = alias;
+        }
+
+        bool matchAlias(const std::string& alias) const noexcept
+        {
+            return m_alias == alias;
+        }
+
         // finalizes container; no changes after this
         void prepare();
         void prepareSockets();
@@ -113,6 +128,8 @@ namespace animation
 
     private:
         std::string m_name;
+        std::string m_alias;
+
         // skeleton_root = common ancestor of joints in rig
         std::string m_skeletonRootNodeName;
         std::vector<animation::RigNode> m_nodes;

@@ -42,7 +42,7 @@ namespace loader
         int8_t priority{ 0 };
 
         std::vector<MeshData> meshes;
-        std::vector<MeshData> optionalMeshes;
+        std::vector<MeshData> addons;
 
         std::unordered_map<MaterialProgramType, std::string> programs;
 

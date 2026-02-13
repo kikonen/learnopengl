@@ -188,7 +188,7 @@ namespace loader
                 }
             }
 
-            resolveOptionalMeshes(type, typeData);
+            resolveAddonMeshes(type, typeData);
 
             {
                 // TODO KI this is WRONG, this should be per drawable mesh, not per type
@@ -468,15 +468,7 @@ namespace loader
                     if (processedRigs.contains(rig)) continue;
                     processedRigs.insert(rig);
 
-                    resolveSockets(
-                        meshData,
-                        rig);
-
-                    resolveAnimations(
-                        meshData,
-                        rig);
-
-                    rig->dump();
+                    resolveRig(meshData, rig);
                 }
             }
         }
@@ -485,11 +477,11 @@ namespace loader
         type->prepareVolume();
     }
 
-    void NodeTypeBuilder::resolveOptionalMeshes(
+    void NodeTypeBuilder::resolveAddonMeshes(
         model::NodeType* type,
         const NodeTypeData& typeData)
     {
-        for (const auto& meshData : typeData.optionalMeshes) {
+        for (const auto& meshData : typeData.addons) {
             if (!meshData.enabled) continue;
 
             const auto startIndex = type->getLodMeshes().size();
@@ -511,7 +503,7 @@ namespace loader
 
                             if (!rigMesh->m_rig) continue;
 
-                            if (rigMesh->m_rig->getName() == meshData.bindRig) {
+                            if (rigMesh->m_rig->matchAlias(meshData.bindRig)) {
                                 rig = rigMesh->m_rig;
                                 break;
                             }
@@ -701,6 +693,28 @@ namespace loader
         return lod;
     }
 
+    void NodeTypeBuilder::resolveRig(
+        const MeshData& meshData,
+        animation::Rig* rig)
+    {
+        // Setup alias
+        for (const auto& rigData : meshData.rigs) {
+            if (rigData.isAny()) continue;
+            if (!rigData.match(rig->getName())) continue;
+            rig->setAlias(rigData.alias);
+        }
+
+        resolveSockets(
+            meshData,
+            rig);
+
+        resolveAnimations(
+            meshData,
+            rig);
+
+        rig->dump();
+    }
+
     void NodeTypeBuilder::resolveSockets(
         const MeshData& meshData,
         animation::Rig* rig)
@@ -709,7 +723,7 @@ namespace loader
 
         for (const auto& rigData : meshData.rigs) {
             if (!rigData.match(rig->getName())) continue;
- 
+
             for (const auto& socketData : rigData.sockets) {
                 if (!socketData.enabled) continue;
 

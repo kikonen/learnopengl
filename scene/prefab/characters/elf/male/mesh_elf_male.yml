@@ -33,8 +33,8 @@ mesh:
   shadow_program: shadow
   base_scale: 0.01
   rigs:
-    - name: "*"
-      ttname: Elf-Male-RootNode-Base-HumanPelvis
+    - name: elf_male-RootNode-Base-HumanPelvis
+      alias: body
       sockets:
         - name: physics_center
           joint: Base-HumanSpine1
@@ -75,6 +75,9 @@ mesh:
         - name: foot_left
           joint: Base-HumanLToe11
           role: foot_left
+    - name: elf_male-RootNode-Base-HumanNeck
+      alias: head
+    - alias: "*"
       animations:
         - clips:
             - name: default

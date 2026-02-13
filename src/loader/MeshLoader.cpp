@@ -321,6 +321,9 @@ namespace loader {
             if (k == "name") {
                 data.name = readString(v);
             }
+            else if (k == "alias") {
+                data.alias = readString(v);
+            }
             else if (k == "animations") {
                 loadAnimations(v, data.animations);
             }
