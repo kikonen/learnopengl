@@ -198,7 +198,7 @@ namespace loader {
             }
             else if (k == "rig") {
                 auto& rigData = data.rigs.emplace_back();
-                rigData.name = RIG_ALIAS_ANY;
+                rigData.alias = RIG_ALIAS_ANY;
                 loadRig(v, rigData);
             }
             else if (k == "rigs") {
