@@ -136,7 +136,7 @@ void MeshRenderer::registerDrawables(
 
         auto& drawable = drawables[i];
         {
-            drawable.lodMeshIndex = 0;
+            //drawable.lodMeshIndex = 0;
 
             drawable.meshId = mesh->m_id;
 

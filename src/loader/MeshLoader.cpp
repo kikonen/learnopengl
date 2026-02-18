@@ -84,7 +84,10 @@ namespace loader {
             else if (k == "name") {
                 data.name = readString(v);
             }
-            else if (k == "bind_rig") {
+            else if (k == "group") {
+                data.group = readString(v);
+            }
+            else if (k == "rig" || k == "bind_rig") {
                 data.bindRig = readString(v);
             }
             else if (k == "type") {

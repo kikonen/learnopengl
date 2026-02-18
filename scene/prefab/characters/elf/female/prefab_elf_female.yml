@@ -4,169 +4,210 @@ prefab:
     - id: elf_female
       prefab:
         path: prefab/characters/elf/female/mesh_elf_female.yml
-  addons:
+
+  available_addons:
     - xid: hair_long
       prefab:
         path: prefab/characters/elf/female/mesh_elf_hair_long.yml
-      bind_rig: body
+      rig: body
     - xid: hair_long_hooded
       prefab:
         path: prefab/characters/elf/female/mesh_elf_hair_long_hooded.yml
-      bind_rig: body
+      rig: body
     - xid: hair_pony_buzz
       prefab:
         path: prefab/characters/elf/female/mesh_elf_hair_pony_buzz.yml
-      bind_rig: body
+      rig: body
     - xid: hair_pony_tail_hooded
       prefab:
         path: prefab/characters/elf/female/mesh_elf_hair_pony_tail_hooded.yml
-      bind_rig: body
+      rig: body
     - id: hair_pony_tail
       prefab:
         path: prefab/characters/elf/female/mesh_elf_hair_pony_tail.yml
-      bind_rig: body
+      rig: body
     - xid: hair_short
       prefab:
         path: prefab/characters/elf/female/mesh_elf_hair_short.yml
-      bind_rig: body
+      rig: body
     - xid: orc_hair_long
       prefab:
         path: prefab/characters/elf/female/mesh_orc_hair_long.yml
-      bind_rig: body
+      rig: body
     - xid: orc_hair_pony_tail
       prefab:
         path: prefab/characters/elf/female/mesh_orc_hair_pony_tail.yml
-      bind_rig: body
+      rig: body
     - xid: orc_hair_short
       prefab:
         path: prefab/characters/elf/female/mesh_orc_hair_short.yml
-      bind_rig: body
+      rig: body
 
     - xid: hood_1
       prefab:
         path: prefab/characters/elf/female/mesh_elf_addon_hood_1.yml
-      bind_rig: body
+      rig: body
     - xid: hood_2
       prefab:
         path: prefab/characters/elf/female/mesh_elf_addon_hood_2.yml
-      bind_rig: body
+      rig: body
     - xid: mask
       prefab:
         path: prefab/characters/elf/female/mesh_elf_addon_mask.yml
-      bind_rig: body
+      rig: body
 
     - id: jewelry
       prefab:
         path: prefab/characters/elf/female/mesh_elf_addon_jewelry.yml
-      bind_rig: body
+      rig: body
 
     - id: shirt
       prefab:
         path: prefab/characters/elf/female/mesh_elf_addon_shirt.yml
-      bind_rig: body
+      rig: body
     - id: vest
       prefab:
         path: prefab/characters/elf/female/mesh_elf_addon_vest.yml
-      bind_rig: body
+      rig: body
     - xid: curlass
       prefab:
         path: prefab/characters/elf/female/mesh_elf_addon_curlass.yml
-      bind_rig: body
+      rig: body
     - xid: curlass_collar
       prefab:
         path: prefab/characters/elf/female/mesh_elf_addon_curlass_collar.yml
-      bind_rig: body
+      rig: body
     - xid: sleeves
       prefab:
         path: prefab/characters/elf/female/mesh_elf_addon_sleeves.yml
-      bind_rig: body
+      rig: body
     - id: vest_straps
       prefab:
         path: prefab/characters/elf/female/mesh_elf_addon_vest_straps.yml
-      bind_rig: body
+      rig: body
 
     - id: arms_armor
       prefab:
         path: prefab/characters/elf/female/mesh_elf_addon_arms_armor.yml
-      bind_rig: body
+      rig: body
     - id: arms_straps
       prefab:
         path: prefab/characters/elf/female/mesh_elf_addon_arms_straps.yml
-      bind_rig: body
+      rig: body
 
     - id: pants
       prefab:
         path: prefab/characters/elf/female/mesh_elf_addon_pants.yml
-      bind_rig: body
+      rig: body
     - id: waist_cloth
       prefab:
         path: prefab/characters/elf/female/mesh_elf_addon_waist_cloth.yml
-      bind_rig: body
+      rig: body
 
     - id: belt_1
       prefab:
         path: prefab/characters/elf/female/mesh_elf_addon_belt_1.yml
-      bind_rig: body
+      rig: body
     - xid: belt_1a
       prefab:
         path: prefab/characters/elf/female/mesh_elf_addon_belt_1a.yml
-      bind_rig: body
+      rig: body
     - xid: belt_1b
       prefab:
         path: prefab/characters/elf/female/mesh_elf_addon_belt_1b.yml
-      bind_rig: body
+      rig: body
     - xid: buckle
       prefab:
         path: prefab/characters/elf/female/mesh_elf_addon_belt_buckle.yml
-      bind_rig: body
+      rig: body
     - xid: belt_2
       prefab:
         path: prefab/characters/elf/female/mesh_elf_addon_belt_2.yml
-      bind_rig: body
+      rig: body
 
     - xid: studs
       prefab:
         path: prefab/characters/elf/female/mesh_elf_addon_studs.yml
-      bind_rig: body
+      rig: body
     - xid: hip_armor_1
       prefab:
         path: prefab/characters/elf/female/mesh_elf_addon_hip_armor_1.yml
-      bind_rig: body
+      rig: body
     - id: hip_armor_2
       prefab:
         path: prefab/characters/elf/female/mesh_elf_addon_hip_armor_2.yml
-      bind_rig: body
+      rig: body
 
     - id: hangers
       prefab:
         path: prefab/characters/elf/female/mesh_elf_addon_hangers.yml
-      bind_rig: body
+      rig: body
     - id: manica_pair
       prefab:
         path: prefab/characters/elf/female/mesh_elf_addon_manica_pair.yml
-      bind_rig: body
+      rig: body
     - xid: poleyns
       prefab:
         path: prefab/characters/elf/female/mesh_elf_addon_poleyns.yml
-      bind_rig: body
+      rig: body
 
     - id: leg_armor_1
       prefab:
         path: prefab/characters/elf/female/mesh_elf_addon_leg_armor_1.yml
-      bind_rig: body
+      rig: body
     - id: leg_armor_2
       prefab:
         path: prefab/characters/elf/female/mesh_elf_addon_leg_armor_2.yml
-      bind_rig: body
+      rig: body
     - id: leg_straps
       prefab:
         path: prefab/characters/elf/female/mesh_elf_addon_leg_straps.yml
-      bind_rig: body
+      rig: body
 
     - id: boots
       prefab:
         path: prefab/characters/elf/female/mesh_elf_addon_boots.yml
-      bind_rig: body
+      rig: body
+
+  addons:
+    - xid: hair_long
+    - xid: hair_long_hooded
+    - xid: hair_pony_buzz
+    - xid: hair_pony_tail_hooded
+    - id: hair_pony_tail
+    - xid: hair_short
+    - xid: orc_hair_long
+    - xid: orc_hair_pony_tail
+    - xid: orc_hair_short
+    - xid: hood_1
+    - xid: hood_2
+    - xid: mask
+    - id: jewelry
+    - id: shirt
+    - id: vest
+    - xid: curlass
+    - xid: curlass_collar
+    - xid: sleeves
+    - id: vest_straps
+    - id: arms_armor
+    - id: arms_straps
+    - id: pants
+    - id: waist_cloth
+    - id: belt_1
+    - xid: belt_1a
+    - xid: belt_1b
+    - xid: buckle
+    - xid: belt_2
+    - xid: studs
+    - xid: hip_armor_1
+    - id: hip_armor_2
+    - id: hangers
+    - id: manica_pair
+    - xid: poleyns
+    - id: leg_armor_1
+    - id: leg_armor_2
+    - id: leg_straps
+    - id: boots
 
   physics:
     enabled: false

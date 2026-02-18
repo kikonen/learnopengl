@@ -247,7 +247,7 @@ namespace animation
         model::Node* node)
     {
         auto* type = node->getType();
-        const auto& lodMeshes = type->getLodMeshes();
+        const auto& lodMeshes = node->getEnabledMeshes();
         if (lodMeshes.empty()) return;
 
         const auto& registeredRigs = node->getRegisteredRigs();
@@ -312,7 +312,7 @@ namespace animation
         model::Node* node)
     {
         auto* type = node->getType();
-        const auto& lodMeshes = type->getLodMeshes();
+        const auto& lodMeshes = node->getEnabledMeshes();
         if (lodMeshes.empty()) return;
 
         const auto& registeredRigs = node->getRegisteredRigs();
@@ -373,7 +373,7 @@ namespace animation
         model::Node* node)
     {
         auto* type = node->getType();
-        const auto& lodMeshes = type->getLodMeshes();
+        const auto& lodMeshes = node->getEnabledMeshes();
         if (lodMeshes.empty()) return;
 
         const auto& registeredRigs = node->getRegisteredRigs();
