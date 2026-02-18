@@ -57,7 +57,9 @@ namespace loader {
     glm::vec3 readVec3(const loader::DocNode& node);
     glm::vec4 readVec4(const loader::DocNode& node);
 
+    glm::uvec2 readUVec2(const loader::DocNode& node);
     glm::uvec3 readUVec3(const loader::DocNode& node);
+    glm::uvec4 readUVec4(const loader::DocNode& node);
 
     glm::vec3 readScale3(const loader::DocNode& node);
 

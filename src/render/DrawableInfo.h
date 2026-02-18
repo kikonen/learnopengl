@@ -16,7 +16,7 @@ namespace render
         // Mesh-relative transform (lodMesh.m_baseTransform)
         glm::mat4 localTransform;
 
-        uint32_t lodMeshIndex;
+        //uint32_t lodMeshIndex;
         uint32_t meshId;
 
         // drawables with same groupId go with same culling

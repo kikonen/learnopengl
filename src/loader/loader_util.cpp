@@ -286,6 +286,27 @@ namespace loader {
         return glm::vec4{ v };
     }
 
+    glm::uvec2 readUVec2(const loader::DocNode& node)
+    {
+        if (node.isSequence()) {
+            auto a = readIntVector(node, 2);
+
+            if (a.size() == 0) {
+                a.push_back(0);
+                a.push_back(0);
+            }
+            else if (a.size() == 1) {
+                // FILL x, x, x
+                a.push_back(a[0]);
+            }
+
+            return glm::uvec2{ a[0], a[1] };
+        }
+
+        auto v = static_cast<unsigned int>(readInt(node));
+        return glm::uvec2{ v };
+    }
+
     glm::uvec3 readUVec3(const loader::DocNode& node)
     {
         if (node.isSequence()) {
@@ -312,6 +333,39 @@ namespace loader {
 
         auto v = static_cast<unsigned int>(readInt(node));
         return glm::uvec3{ v };
+    }
+
+    glm::uvec4 readUVec4(const loader::DocNode& node)
+    {
+        if (node.isSequence()) {
+            auto a = readIntVector(node, 4);
+
+            if (a.size() == 0) {
+                a.push_back(0);
+                a.push_back(0);
+                a.push_back(0);
+                a.push_back(0);
+            }
+            else if (a.size() == 1) {
+                a.push_back(a[0]);
+                a.push_back(a[0]);
+            }
+            else if (a.size() == 2) {
+                // FilL: x, 0, z, 0
+                a.push_back(a[1]);
+                a[1] = 0;
+                a.push_back(0);
+            }
+            else if (a.size() == 3) {
+                // FILL x, y, z, 0
+                a.push_back(0);
+            }
+
+            return glm::uvec4{ a[0], a[1], a[2], a[3] };
+        }
+
+        auto v = static_cast<unsigned int>(readInt(node));
+        return glm::uvec4{ v };
     }
 
     glm::vec3 readScale3(const loader::DocNode& node)

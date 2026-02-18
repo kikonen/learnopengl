@@ -481,7 +481,7 @@ namespace loader
         model::NodeType* type,
         const NodeTypeData& typeData)
     {
-        for (const auto& meshData : typeData.addons) {
+        for (const auto& meshData : typeData.availableAddons) {
             if (!meshData.enabled) continue;
 
             const auto startIndex = type->getLodMeshes().size();

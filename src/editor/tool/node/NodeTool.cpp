@@ -262,7 +262,7 @@ namespace editor
 
             const auto currMesh = m_state.m_selectedMesh;
             if (ImGui::BeginCombo("Mesh", currMesh ? currMesh->m_name.c_str() : nullptr)) {
-                for (auto& lodMesh : node->getLodMeshes()) {
+                for (auto& lodMesh : node->getEnabledMeshes()) {
                     auto* mesh = lodMesh.getMesh<mesh::Mesh>();
 
                     const auto* name = mesh->m_name.c_str();

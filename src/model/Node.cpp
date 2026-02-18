@@ -113,7 +113,7 @@ namespace model
             std::unordered_map<const animation::Rig*, int> rigPalettes;
             std::unordered_map<const animation::JointContainer*, util::BufferReference> jointPalettes;
 
-            const auto& lodMeshes = type->getLodMeshes();
+            const auto& lodMeshes = getEnabledMeshes();
 
             for (auto& lodMesh : lodMeshes) {
                 const auto* mesh = lodMesh.getMesh<mesh::Mesh>();
@@ -157,7 +157,7 @@ namespace model
             m_lodMeshInstances.reserve(lodMeshes.size());
             for (int index = 0;  auto& lodMesh : lodMeshes) {
                 auto& lod = m_lodMeshInstances.emplace_back();
-                lod.m_lodMeshIndex = index++;
+                //lod.m_lodMeshIndex = index++;
 
                 const auto* mesh = lodMesh.getMesh<mesh::Mesh>();
                 auto* rig = mesh->getRig();
@@ -258,8 +258,8 @@ namespace model
                 snapshot);
         }
         else {
-            const auto* type = getType();
-            const auto& lodMeshes = type->getLodMeshes();
+            //const auto* type = getType();
+            const auto& lodMeshes = getEnabledMeshes();
             const auto& lodMeshInstances = m_lodMeshInstances;
 
             m_instanceRef = instanceRegistry.allocate(lodMeshes.size());
@@ -273,7 +273,7 @@ namespace model
 
                 auto& drawable = drawables[i];
                 {
-                    drawable.lodMeshIndex = i;
+                    //drawable.lodMeshIndex = i;
 
                     drawable.meshId = lodMesh.getMesh<mesh::Mesh>()->m_id;
 

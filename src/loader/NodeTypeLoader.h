@@ -32,5 +32,13 @@ namespace loader {
             NodeTypeData& data,
             const std::unordered_map<std::string, const loader::DocNode*>& idToType,
             Loaders& loaders) const;
+
+        void loadAddons(
+            const loader::DocNode& node,
+            std::vector<AddonData>& addons) const;
+
+        void loadAddon(
+            const loader::DocNode& node,
+            AddonData& data) const;
     };
 }

@@ -29,7 +29,7 @@ void NodeGenerator::registerDrawables(
     auto entityIndex = container.getEntityIndex();
 
     const auto* type = container.getType();
-    const auto& lodMeshes = type->getLodMeshes();
+    const auto& lodMeshes = container.getEnabledMeshes();
     const auto& lodMeshInstances = container.getLodMeshInstances();
 
     uint32_t groupId = 0;
@@ -45,7 +45,7 @@ void NodeGenerator::registerDrawables(
 
             auto& drawable = drawables[drawableIndex++];
             {
-                drawable.lodMeshIndex = i;
+                //drawable.lodMeshIndex = i;
                 drawable.meshId = lodMesh.getMesh<mesh::Mesh>()->m_id;
                 drawable.groupId = groupId;
 
@@ -96,7 +96,7 @@ void NodeGenerator::updateDrawables(
     if (m_dirtySlots.empty()) return;
 
     const auto* type = container.getType();
-    const auto& lodMeshes = type->getLodMeshes();
+    const auto& lodMeshes = container.getEnabledMeshes();
 
     auto drawables = instanceRegistry.modifyRange(m_instanceRef);
     int drawableIndex = 0;

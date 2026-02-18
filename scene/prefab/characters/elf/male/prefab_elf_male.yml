@@ -4,179 +4,288 @@ prefab:
     - id: elf_male
       prefab:
         path: prefab/characters/elf/male/mesh_elf_male.yml
-  addons:
-    - xid: hair_long_barbute
+
+  available_addons:
+    - id: hair_long_barbute
+      group: hair.hooded
+      rig: head
       prefab:
         path: prefab/characters/elf/male/mesh_elf_hair_long_barbute.yml
-      bind_rig: head
-    - xid: hair_long
+    - id: hair_long
+      group: hair.plain
+      rig: head
       prefab:
         path: prefab/characters/elf/male/mesh_elf_hair_long.yml
-      bind_rig: head
     - id: hair_pony_tail
+      group: hair.plain
+      rig: head
       prefab:
         path: prefab/characters/elf/male/mesh_elf_hair_pony_tail.yml
-      bind_rig: head
-    - xid: hair_short_barbute
+    - id: hair_short_barbute
+      group: hair.hooded
+      rig: head
       prefab:
         path: prefab/characters/elf/male/mesh_elf_hair_short_barbute.yml
-      bind_rig: head
-    - xid: hair_short
+    - id: hair_short
+      group: hair.plain
+      rig: head
       prefab:
         path: prefab/characters/elf/male/mesh_elf_hair_short.yml
-      bind_rig: head
 
-    - xid: human_hair_buzz
+    - id: human_hair_buzz
+      group: hair.hooded
+      rig: head
       prefab:
         path: prefab/characters/elf/male/mesh_human_hair_buzz.yml
-      bind_rig: head
-    - xid: human_hair_long
+    - id: human_hair_long
+      group: hair.plain
+      rig: head
       prefab:
         path: prefab/characters/elf/male/mesh_human_hair_long.yml
-      bind_rig: head
-    - xid: human_hair_short
+    - id: human_hair_short
+      group: hair.plain
+      rig: head
       prefab:
         path: prefab/characters/elf/male/mesh_human_hair_short.yml
-      bind_rig: head
 
-    - xid: orc_hair_hood
+    - id: orc_hair_hood
+      group: hair.plain
+      rig: head
       prefab:
         path: prefab/characters/elf/male/mesh_orc_hair_hood.yml
-      bind_rig: head
-    - xid: orc_hair_long
+    - id: orc_hair_long
+      group: hair.plain
+      rig: head
       prefab:
         path: prefab/characters/elf/male/mesh_orc_hair_long.yml
-      bind_rig: head
-    - xid: orc_hair_pony_tail
+    - id: orc_hair_pony_tail
+      group: hair.plain
+      rig: head
       prefab:
         path: prefab/characters/elf/male/mesh_orc_hair_pony_tail.yml
-      bind_rig: head
-    - xid: orc_hair_short
+    - id: orc_hair_short
+      group: hair.plain
+      rig: head
       prefab:
         path: prefab/characters/elf/male/mesh_orc_hair_short.yml
-      bind_rig: head
 
-    - xid: hood_1
+    - id: hood_1
+      group: hair.hooded
+      rig: head
       prefab:
         path: prefab/characters/elf/male/mesh_elf_addon_hood_1.yml
-      bind_rig: body
-    - xid: hood_2
+    - id: hood_2
+      group: hair.hooded
+      rig: head
       prefab:
         path: prefab/characters/elf/male/mesh_elf_addon_hood_2.yml
-      bind_rig: body
-    - xid: mask
+    - id: mask
+      group: decoration
+      rig: head
       prefab:
         path: prefab/characters/elf/male/mesh_elf_addon_mask.yml
-      bind_rig: body
 
     - id: jewelry
+      group: decoration
+      rig: head
       prefab:
         path: prefab/characters/elf/male/mesh_elf_addon_jewelry.yml
-      bind_rig: body
 
     - id: shirt
+      group: clothes.upper
+      rig: body
       prefab:
         path: prefab/characters/elf/male/mesh_elf_addon_shirt.yml
-      bind_rig: body
     - id: vest
+      group: armor.upper
+      rig: body
       prefab:
         path: prefab/characters/elf/male/mesh_elf_addon_vest.yml
-      bind_rig: body
     - id: curlass
+      group: armor.upper
+      rig: body
       prefab:
         path: prefab/characters/elf/male/mesh_elf_addon_curlass.yml
-      bind_rig: body
     - id: sleeves
+      group: clothes.arm
+      rig: body
       prefab:
         path: prefab/characters/elf/male/mesh_elf_addon_sleeves.yml
-      bind_rig: body
     - id: vest_straps
+      group: armor.upper
+      rig: body
       prefab:
         path: prefab/characters/elf/male/mesh_elf_addon_vest_straps.yml
-      bind_rig: body
 
     - id: arms_armor
+      group: armor.arm
+      rig: body
       prefab:
         path: prefab/characters/elf/male/mesh_elf_addon_arms_armor.yml
-      bind_rig: body
     - id: arms_straps
+      group: armor.arm
+      rig: body
       prefab:
         path: prefab/characters/elf/male/mesh_elf_addon_arms_straps.yml
-      bind_rig: body
 
     - id: pants
+      group: clothes.leg
+      rig: body
       prefab:
         path: prefab/characters/elf/male/mesh_elf_addon_pants.yml
-      bind_rig: body
     - id: waist_cloth
+      group: decoration
+      rig: body
       prefab:
         path: prefab/characters/elf/male/mesh_elf_addon_waist_cloth.yml
-      bind_rig: body
 
     - id: belt_1
+      group: decoration
+      rig: body
       prefab:
         path: prefab/characters/elf/male/mesh_elf_addon_belt_1.yml
-      bind_rig: body
     - id: belt_1a
+      group: decoration
+      rig: body
       prefab:
         path: prefab/characters/elf/male/mesh_elf_addon_belt_1a.yml
-      bind_rig: body
     - id: belt_1b
+      group: decoration
+      rig: body
       prefab:
         path: prefab/characters/elf/male/mesh_elf_addon_belt_1b.yml
-      bind_rig: body
     - id: buckle
+      group: decoration
+      rig: body
       prefab:
         path: prefab/characters/elf/male/mesh_elf_addon_belt_buckle.yml
-      bind_rig: body
     - id: belt_2
+      group: decoration
+      rig: body
       prefab:
         path: prefab/characters/elf/male/mesh_elf_addon_belt_2.yml
-      bind_rig: body
 
     - id: hip_armor_1
+      group: armor.middle
+      rig: body
       prefab:
         path: prefab/characters/elf/male/mesh_elf_addon_hip_armor_1.yml
-      bind_rig: body
     - id: hip_armor_2
+      group: armor.middle
+      rig: body
       prefab:
         path: prefab/characters/elf/male/mesh_elf_addon_hip_armor_2.yml
-      bind_rig: body
 
     - id: hangers
+      group: decoration
+      rig: body
       prefab:
         path: prefab/characters/elf/male/mesh_elf_addon_hangers.yml
-      bind_rig: body
     - id: manica_pair
+      group: armor.middle
+      rig: body
       prefab:
         path: prefab/characters/elf/male/mesh_elf_addon_manica_pair.yml
-      bind_rig: body
     - id: poleyns
+      group: armor.middle
+      rig: body
       prefab:
         path: prefab/characters/elf/male/mesh_elf_addon_poleyns.yml
-      bind_rig: body
 
     - id: leg_armor_1
+      group: armor.leg
+      rig: body
       prefab:
         path: prefab/characters/elf/male/mesh_elf_addon_leg_armor_1.yml
-      bind_rig: body
     - id: leg_armor_2
+      group: armor.leg
+      rig: body
       prefab:
         path: prefab/characters/elf/male/mesh_elf_addon_leg_armor_2.yml
-      bind_rig: body
     - id: leg_straps
+      group: armor.leg
+      rig: body
       prefab:
         path: prefab/characters/elf/male/mesh_elf_addon_leg_straps.yml
-      bind_rig: body
 
     - id: boot_cuffs
+      group: armor.feet
+      rig: body
       prefab:
         path: prefab/characters/elf/male/mesh_elf_addon_boot_cuffs.yml
-      bind_rig: body
     - id: boots
+      group: clothes.feet
+      rig: body
       prefab:
         path: prefab/characters/elf/male/mesh_elf_addon_boots.yml
-      bind_rig: body
+
+  addons:
+    # - xid: hair_long_barbute
+    # - xid: hair_long
+    # - id: hair_pony_tail
+    # - xid: hair_short_barbute
+    # - xid: hair_short
+    # - xid: human_hair_buzz
+    # - xid: human_hair_long
+    # - xid: human_hair_short
+    # - xid: orc_hair_hood
+    # - xid: orc_hair_long
+    # - xid: orc_hair_pony_tail
+    # - xid: orc_hair_short
+    # - xid: hood_1
+    # - xid: hood_2
+    # - xid: mask
+    # - id: jewelry
+    # - id: shirt
+    # - id: vest
+    # - id: curlass
+    # - id: sleeves
+    # - id: vest_straps
+    # - id: arms_armor
+    # - id: arms_straps
+    # - id: pants
+    # - id: waist_cloth
+    # - id: belt_1
+    # - id: belt_1a
+    # - id: belt_1b
+    # - id: buckle
+    # - id: belt_2
+    # - id: hip_armor_1
+    # - id: hip_armor_2
+    # - id: hangers
+    # - id: manica_pair
+    # - id: poleyns
+    # - id: leg_armor_1
+    # - id: leg_armor_2
+    # - id: leg_straps
+    # - id: boot_cuffs
+    # - id: boots
+    - group: hair.plain
+      seed: 1
+    - group: armor.upper
+      seed: 1
+      range: [0, -1]
+    - group: armor.middle
+      seed: 1
+      range: [0, -1]
+    - group: armor.arm
+      seed: 1
+      range: [0, -1]
+    - group: armor.leg
+      seed: 1
+    - group: clothes.upper
+      seed: 1
+      range: [0, -1]
+    - group: clothes.arm
+      seed: 1
+      range: [0, -1]
+    - group: clothes.leg
+      seed: 1
+    - group: clothes.feet
+      seed: 1
+    - group: decoration
+      seed: 1
+      range: [0, -1]
 
   physics:
     enabled: false
