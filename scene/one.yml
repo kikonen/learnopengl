@@ -275,6 +275,9 @@ types:
   - id: locomotive
     prefab:
       path: prefab/vehicles/prefab_outlaw_locomotive.yml
+  - id: stables
+    prefab:
+      path: prefab/vehicles/prefab_outlaw_stables.yml
 
 nodes:
   - type: player
@@ -321,3 +324,5 @@ nodes:
     pos: [0, 3.5, 0.0]
   - type: locomotive
     pos: [0, 3.5, 0.0]
+  - type: stables
+    pos: [20, 3.5, 0.0]
