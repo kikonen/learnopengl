@@ -169,6 +169,7 @@ class Converter < Thor
 
   OPACITY_MAP = 'opacity'
   MRAS_MAP = 'mras'
+  MADS_MAP = "mads"
   DISPLACEMENT_MAP = 'displacement'
   CAVITY_MAP = 'cavity'
 
@@ -203,15 +204,25 @@ class Converter < Thor
 
   # MRA + KHR_materials_specular
   # MRAS: [ambient-occlusion, metalness, roughness, specular]
-  # - occlusion: 0 = fully occluded, 1 = no occlusion
-  # - metalness: 0 = dielectric, 1 = metal
-  # - roughness: 0 = smooth/shiny, 1 = rough/matte
-  # - specular:  0 = no reflection, 1 = strong reflection
+  # - occlusion (Red):   0 = fully occluded, 1 = no occlusion
+  # - metalness (Green): 0 = dielectric, 1 = metal
+  # - roughness (Blue):  0 = smooth/shiny, 1 = rough/matte
+  # - specular  (Alpha): 0 = no reflection, 1 = strong reflection
   MODE_MRAS = :mras
+
+  # MADS is a channel-packed texture format used by KitBash3D where
+  # four grayscale maps are packed into the RGBA channels of a single texture:
+  #
+  # M (Red) — Metallic
+  # A (Green) — Ambient Occlusion
+  # D (Blue) — Detail / Displacement
+  # S (Alpha) — Smoothness (inverse of roughness)
+  MODE_MADS = :mads
+
   MODE_OPACITY = :opacity
   MODE_DISPLACEMENT = :displacement
 
-  COMBINE_VERSION = 1
+  COMBINE_VERSION = 2
   KTX_VERSION = 1
 
   # NOTE KI match against *basename" without *extension*
@@ -230,6 +241,7 @@ class Converter < Thor
         /[-_ ]basecolor[-_ ]/,
         /[-_ ]basecolor/,
         /[-_ ]basecolor\z/,
+        /[-_ ]basecolrgba\z/,
         ###
         /\Adiffuse\z/,
         /\Adiffuse[-_ ]/,
@@ -349,6 +361,10 @@ class Converter < Thor
       metal_occlusion_height_roughness: [
         /metalaoheightrough/,
       ],
+      # Kitbash MADS
+      metal_occlusion_height_smoothness: [
+        /_mads\z/,
+      ],
       displacement: [
         /\Adisplacement\z/,
         /\Adisplacement[-_ ]/,
@@ -360,6 +376,9 @@ class Converter < Thor
         /[-_ ]depth[-_ ]/,
         /[-_ ]depth\z/,
         ###
+      ],
+      height: [
+        /_height\z/,
       ],
       cavity: [
         /\Acavity\z/,
@@ -811,6 +830,7 @@ class Converter < Thor
             # NOTE KI only 3 channels in normal
             # => DROP alpha as redundant
             target_channel: RGB,
+            srgb: false,
           }
         when :bump
           tex_info = {
@@ -820,11 +840,13 @@ class Converter < Thor
             # NOTE KI only 1 channel in bump
             # i.e. not same as normal
             target_channel: RED,
+            srgb: false,
           }
         when :specular
           tex_info = {
             type: :specular,
             action: :skip,
+            srgb: false,
           }
         when :opacity
           tex_info = {
@@ -834,6 +856,7 @@ class Converter < Thor
             #target_name: OPACITY_MAP,
             #source_channel: RED,
             #target_channel: RED,
+            srgb: false,
           }
         when :metal
           tex_info = {
@@ -844,6 +867,7 @@ class Converter < Thor
             target_name: MRAS_MAP,
             source_channel: RED,
             target_channel: GREEN,
+            srgb: false,
           }
         when :roughness
           tex_info = {
@@ -854,6 +878,7 @@ class Converter < Thor
             target_name: MRAS_MAP,
             source_channel: RED,
             target_channel: BLUE,
+            srgb: false,
           }
         when :occlusion
           tex_info = {
@@ -864,6 +889,7 @@ class Converter < Thor
             target_name: MRAS_MAP,
             source_channel: RED,
             target_channel: RED,
+            srgb: false,
           }
         when :metal_roughness
           tex_info = {
@@ -873,7 +899,8 @@ class Converter < Thor
             mode: MODE_MRAS,
             target_name: MRAS_MAP,
             source_channel: RED_GREEN,
-            target_channel: GREEN_BLUE
+            target_channel: GREEN_BLUE,
+            srgb: false,
           }
         when :metal_roughness_occlusion
           tex_info = {
@@ -884,6 +911,7 @@ class Converter < Thor
             target_name: MRAS_MAP,
             source_channel: RED_GREEN_BLUE,
             target_channel: GREEN_BLUE_RED,
+            srgb: false,
           }
         when :roughness_metal_occlusion
           tex_info = {
@@ -894,6 +922,7 @@ class Converter < Thor
             target_name: MRAS_MAP,
             source_channel: RED_GREEN_BLUE,
             target_channel: BLUE_GREEN_RED,
+            srgb: false,
           }
         when :roughness_occlusion_metal
           tex_info = {
@@ -904,6 +933,7 @@ class Converter < Thor
             target_name: MRAS_MAP,
             source_channel: RED_GREEN_BLUE,
             target_channel: BLUE_RED_GREEN,
+            srgb: false,
           }
         when :occlusion_roughness_metal
           tex_info = {
@@ -914,6 +944,7 @@ class Converter < Thor
             target_name: MRAS_MAP,
             source_channel: RED_GREEN_BLUE,
             target_channel: RED_BLUE_GREEN,
+            srgb: false,
           }
         when :metal_occlusion_height_roughness
           tex_info = {
@@ -924,6 +955,18 @@ class Converter < Thor
             target_name: MRAS_MAP,
             source_channel: RED_GREEN_ALPHA,
             target_channel: GREEN_RED_BLUE,
+            srgb: false,
+          }
+        when :metal_occlusion_height_smoothness
+          tex_info = {
+            group: 'default',
+            type: :metal_occlusion_height_smoothness,
+            action: :combine,
+            mode: MODE_MRAS,
+            target_name: MRAS_MAP,
+            source_channel: RED_GREEN_ALPHA,
+            target_channel: GREEN_RED_BLUE,
+            srgb: false,
           }
         when :displacement
           tex_info = {
@@ -934,6 +977,18 @@ class Converter < Thor
             target_name: DISPLACEMENT_MAP,
             source_channel: RED,
             target_channel: RED,
+            srgb: false,
+          }
+        when :height
+          tex_info = {
+            group: 'default',
+            type: :displacement,
+            action: :combine,
+            mode: MODE_DISPLACEMENT,
+            target_name: DISPLACEMENT_MAP,
+            source_channel: RED,
+            target_channel: RED,
+            srgb: false,
           }
         when :cavity
           tex_info = {
@@ -944,6 +999,7 @@ class Converter < Thor
             target_name: CAVITY_MAP,
             source_channel: RED,
             target_channel: RED,
+            srgb: false,
           }
         when :gloss
           tex_info = {
@@ -954,6 +1010,7 @@ class Converter < Thor
           tex_info = {
             type: :noise,
             action: :copy,
+            srgb: false,
           }
         when :preview
           tex_info = {
@@ -1307,6 +1364,7 @@ class Converter < Thor
           name: tex_info.name,
           source_channel: tex_info.source_channel,
           target_channel: tex_info.target_channel,
+          srgb: tex_info.srgb,
         }
       end.sort_by { |e| e[:name] }
     }
@@ -1470,6 +1528,7 @@ class Converter < Thor
           name: part.name,
           source_channel: part.source_channel,
           target_channel: part.target_channel,
+          srgb: part.srgb,
         }
       ]
     }
@@ -1537,6 +1596,7 @@ class Converter < Thor
           name: tex_info.name,
           source_channel: tex_info.source_channel,
           target_channel: tex_info.target_channel,
+          srgb: tex_info.srgb,
         }
       ]
     }

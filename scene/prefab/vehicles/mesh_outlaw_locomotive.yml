@@ -1,0 +1,120 @@
+---
+mesh:
+  path: models/kitbash/outlaw/models/outlaw/KB3D_OUT_VehicleTrainLocomotive_A.fbx
+  base_scale: 0.01
+  material_modifier:
+    base: models/kitbash/outlaw/textures/2k
+    kitbash: true
+    default_programs: true
+  materials:
+    - alias: KB3D_OUT_MetalForgedDarkA
+      map_kd: KB3D_OUT_MetalForgedDarkA_basecolor.png
+      map_normal: KB3D_OUT_MetalForgedDarkA_normal.png
+      map_mras: KB3D_OUT_MetalForgedDarkA_mras
+    - alias: KB3D_OUT_MetalPGreen
+      map_kd: KB3D_OUT_MetalPGreen_basecolor.png
+      map_normal: KB3D_OUT_MetalPGreen_normal.png
+      map_mras: KB3D_OUT_MetalPGreen_mras
+    - alias: KB3D_OUT_MetalBlackA
+      map_kd: KB3D_OUT_MetalBlackA_basecolor.png
+      map_normal: KB3D_OUT_MetalBlackA_normal.png
+      map_mras: KB3D_OUT_MetalBlackA_mras
+    - alias: KB3D_OUT_MetalBlackOld
+      map_kd: KB3D_OUT_MetalBlackOld_basecolor.png
+      map_normal: KB3D_OUT_MetalBlackOld_normal.png
+      map_mras: KB3D_OUT_MetalBlackOld_mras
+    - alias: KB3D_OUT_MetalForgedA
+      map_kd: KB3D_OUT_MetalForgedA_basecolor.png
+      map_normal: KB3D_OUT_MetalForgedA_normal.png
+      map_mras: KB3D_OUT_MetalForgedA_mras
+    - alias: KB3D_OUT_WoodHeartwoodAtlas
+      map_kd: KB3D_OUT_WoodHeartwoodAtlas_basecolor.png
+      map_normal: KB3D_OUT_WoodHeartwoodAtlas_normal.png
+      map_mras: KB3D_OUT_WoodHeartwoodAtlas_mras
+    - alias: KB3D_OUT_GlassBrownW
+      map_kd: KB3D_OUT_GlassBrownW_basecolrgba.png
+      map_normal: KB3D_OUT_GlassBrownW_normal.png
+      map_mras: KB3D_OUT_GlassBrownW_mras
+      blend: true
+    - alias: KB3D_OUT_GlassDirtW
+      kd: [0, 0, 2.3, 1.5]
+      map_kd: KB3D_OUT_GlassDirtW_basecolrgba.png
+      map_normal: KB3D_OUT_GlassDirtW_normal.png
+      map_mras: KB3D_OUT_GlassDirtW_mras
+      blend: true
+    - alias: KB3D_OUT_MetalPolishedAnt
+      map_kd: KB3D_OUT_MetalPolishedAnt_basecolor.png
+      map_normal: KB3D_OUT_MetalPolishedAnt_normal.png
+      map_mras: KB3D_OUT_MetalPolishedAnt_mras
+    - alias: KB3D_OUT_DecalsWWF
+      map_kd: KB3D_OUT_DecalsWWF_basecolrgba.png
+      map_normal: KB3D_OUT_DecalsWWF_normal.png
+      map_mras: KB3D_OUT_DecalsWWF_mras
+      alpha: true
+      xmap_kd: KB3D_OUT_WoodGrayOldA_basecolor.png
+      xmap_normal: KB3D_OUT_WoodGrayOldA_normal.png
+      xmap_mras: KB3D_OUT_WoodGrayOldA_mras
+    - alias: KB3D_OUT_MetalPBronze
+      map_kd: KB3D_OUT_MetalPBronze_basecolor.png
+      map_normal: KB3D_OUT_MetalPBronze_normal.png
+      map_mras: KB3D_OUT_MetalPBronze_mras
+    - alias: KB3D_OUT_MetalPRed
+      map_kd: KB3D_OUT_MetalPRed_basecolor.png
+      map_normal: KB3D_OUT_MetalPRed_normal.png
+      map_mras: KB3D_OUT_MetalPRed_mras
+    - alias: KB3D_OUT_WoodOldPBlack
+      map_kd: KB3D_OUT_WoodOldPBlack_basecolor.png
+      map_normal: KB3D_OUT_WoodOldPBlack_normal.png
+      map_mras: KB3D_OUT_WoodOldPBlack_mras
+    - alias: KB3D_OUT_MetalDarkCorrugated
+      map_kd: KB3D_OUT_MetalDarkCorrugated_basecolor.png
+      map_normal: KB3D_OUT_MetalDarkCorrugated_normal.png
+      map_mras: KB3D_OUT_MetalDarkCorrugated_mras
+    - alias: KB3D_OUT_WoodDarkOldA
+      map_kd: KB3D_OUT_WoodDarkOldA_basecolor.png
+      map_normal: KB3D_OUT_WoodDarkOldA_normal.png
+      map_mras: KB3D_OUT_WoodDarkOldA_mras
+    - alias: KB3D_OUT_WoodPGreenA
+      map_kd: KB3D_OUT_WoodPGreenA_basecolor.png
+      map_normal: KB3D_OUT_WoodPGreenA_normal.png
+      map_mras: KB3D_OUT_WoodPGreenA_mras
+    - alias: KB3D_OUT_RopesTrimW
+      map_kd: KB3D_OUT_RopesTrimW_basecolor.png
+      map_normal: KB3D_OUT_RopesTrimW_normal.png
+      map_mras: KB3D_OUT_RopesTrimW_mras
+    - alias: KB3D_OUT_MetalPGreenOld
+      map_kd: KB3D_OUT_MetalPGreenOld_basecolor.png
+      map_normal: KB3D_OUT_MetalPGreenOld_normal.png
+      map_mras: KB3D_OUT_MetalPGreenOld_mras
+    - alias: KB3D_OUT_WoodPBlue
+      map_kd: KB3D_OUT_WoodPBlue_basecolor.png
+      map_normal: KB3D_OUT_WoodPBlue_normal.png
+      map_mras: KB3D_OUT_WoodPBlue_mras
+    - alias: KB3D_OUT_RubberHardDark
+      map_kd: KB3D_OUT_RubberHardDark_basecolor.png
+      map_normal: KB3D_OUT_RubberHardDark_normal.png
+      map_mras: KB3D_OUT_RubberHardDark_mras
+    - alias: KB3D_OUT_CopperYellowOld
+      map_kd: KB3D_OUT_CopperYellowOld_basecolor.png
+      map_normal: KB3D_OUT_CopperYellowOld_normal.png
+      map_mras: KB3D_OUT_CopperYellowOld_mras
+    - alias: KB3D_OUT_MetalRustedWA
+      map_kd: KB3D_OUT_MetalRustedWA_basecolor.png
+      map_normal: KB3D_OUT_MetalRustedWA_normal.png
+      map_mras: KB3D_OUT_MetalRustedWA_mras
+    - alias: KB3D_OUT_WoodDarkOldA
+      map_kd: KB3D_OUT_WoodDarkOldA_basecolor.png
+      map_normal: KB3D_OUT_WoodDarkOldA_normal.png
+      map_mras: KB3D_OUT_WoodDarkOldA_mras
+    - alias: KB3D_OUT_WoodChippedW
+      map_kd: KB3D_OUT_WoodChippedW_basecolor.png
+      map_normal: KB3D_OUT_WoodChippedW_normal.png
+      map_mras: KB3D_OUT_WoodChippedW_mras
+    - alias: KB3D_OUT_MetalBlackB
+      map_kd: KB3D_OUT_MetalBlackB_basecolor.png
+      map_normal: KB3D_OUT_MetalBlackB_normal.png
+      map_mras: KB3D_OUT_MetalBlackB_mras
+    - alias: x
+      map_kd: _basecolor.png
+      map_normal: _normal.png
+      map_mras: _mras

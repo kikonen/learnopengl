@@ -10,8 +10,8 @@ script:
 
 includes:
   - xpath: prefab/creatures/include_skeleton_warrior.yml
-  - path: prefab/characters/elf/female/include_elf_female_warrior.yml
-  - path: prefab/characters/elf/male/include_elf_male_warrior.yml
+  - xpath: prefab/characters/elf/female/include_elf_female_warrior.yml
+  - xpath: prefab/characters/elf/male/include_elf_male_warrior.yml
 
 types:
   - id: player
@@ -239,15 +239,15 @@ types:
         self.handle,
         { name = "walk" })
   - xid: elf_female_warrior
-    base: prefab_elf_female_warrior
+    xbase: prefab_elf_female_warrior
     physics:
       #enabled: false
     script: |
       cmd:animation_play(
         self.handle,
         { tag="body", name = "idle" })
-  - id: elf_male_warrior
-    base: prefab_elf_male_warrior
+  - xid: elf_male_warrior
+    xbase: prefab_elf_male_warrior
     physics:
       #enabled: false
     script: |
@@ -272,6 +272,9 @@ types:
       cmd:animation_play(
         self.handle,
         { name = "default" })
+  - id: locomotive
+    prefab:
+      path: prefab/vehicles/prefab_outlaw_locomotive.yml
 
 nodes:
   - type: player
@@ -309,10 +312,12 @@ nodes:
   - type: elf_female
     tag: body
     pos: [0, 3.5, 0.0]
-  - type: elf_male_warrior
+  - xtype: elf_male_warrior
     pos: [0, 3.5, 0.0]
-  - type: elf_male
+  - xtype: elf_male
     tag: body
     pos: [0, 3.5, 0.0]
   - type: scavenger
+    pos: [0, 3.5, 0.0]
+  - type: locomotive
     pos: [0, 3.5, 0.0]

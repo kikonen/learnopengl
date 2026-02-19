@@ -264,6 +264,18 @@ namespace loader {
                     fields.invertRoughness = true;
                 }
             }
+            else if (k == "kitbash") {
+                bool isKitbash = readBool(v);
+                if (isKitbash) {
+                    //material.m_invertOcclusion = true;
+                    //material.m_invertMetalness = true;
+                    material.m_invertRoughness = true;
+
+                    //fields.invertOcclusion = true;
+                    //fields.invertMetalness = true;
+                    fields.invertRoughness = true;
+                }
+            }
             else if (k == "invert_occlusion") {
                 material.m_invertOcclusion = readBool(v);
                 fields.invertOcclusion = true;
