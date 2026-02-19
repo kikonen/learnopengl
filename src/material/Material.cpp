@@ -493,6 +493,13 @@ std::string Material::resolveTexturePath(
             compressed);
     }
 
+    if (!util::fileExists(texturePath)) {
+        KI_WARN_OUT(fmt::format(
+            "TEX::MISSING: base_dir={}, name={}",
+            m_baseDir,
+            textureName));
+    }
+
     return texturePath;
 }
 
