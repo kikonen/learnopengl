@@ -20,6 +20,7 @@ namespace loader
 
     void ParticleLoader::loadParticles(
         const loader::DocNode& node,
+        const std::string& currentDir,
         std::vector<ParticleData>& particles,
         Loaders& loaders) const
     {
@@ -37,6 +38,7 @@ namespace loader
             auto& data = particles.emplace_back();
             loadParticle(
                 entry,
+                currentDir,
                 data,
                 idToParticle,
                 loaders);
@@ -45,6 +47,7 @@ namespace loader
 
     void ParticleLoader::loadParticle(
         const loader::DocNode& node,
+        const std::string& currentDir,
         ParticleData& data,
         const std::unordered_map<std::string, const loader::DocNode*>& idToParticle,
         Loaders& loaders) const
@@ -57,7 +60,7 @@ namespace loader
                 if (it == idToParticle.end()) {
                     throw fmt::format("Missing base_particle: {}", baseId.getId());
                 }
-                loadParticle(*it->second, data, idToParticle, loaders);
+                loadParticle(*it->second, currentDir, data, idToParticle, loaders);
             }
         }
 
@@ -81,7 +84,11 @@ namespace loader
                 data.enabled = readBool(v);
             }
             else if (k == "material") {
-                loaders.m_materialLoader.loadMaterial(v, data.materialData, loaders);
+                loaders.m_materialLoader.loadMaterial(
+                    v,
+                    currentDir,
+                    data.materialData,
+                    loaders);
             }
             else if (k == "seed") {
                 data.seed = readInt(v);

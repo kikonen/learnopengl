@@ -37,6 +37,7 @@ namespace loader {
 
     void IncludeLoader::loadIncludes(
         const loader::DocNode& node,
+        const std::string& currentDir,
         SceneData& sceneData,
         Loaders& loaders) const
     {
@@ -45,6 +46,7 @@ namespace loader {
         for (const auto& entry : node.getNodes()) {
             loadInclude(
                 entry,
+                currentDir,
                 sceneData,
                 loaders);
         }
@@ -52,6 +54,7 @@ namespace loader {
 
     void IncludeLoader::loadInclude(
         const loader::DocNode& node,
+        const std::string& currentDir,
         SceneData& sceneData,
         Loaders& loaders) const
     {
@@ -91,7 +94,19 @@ namespace loader {
             }
         }
 
-        const auto& fullPath = util::joinPath(m_ctx->m_dirName, path);
+        std::string fullPath = path;
+
+        if (!util::fileExists(fullPath)) {
+            std::string fullPath = util::joinPath(currentDir, path);
+        }
+
+        if (!util::fileExists(fullPath)) {
+            fullPath = util::joinPath(m_ctx->m_assetsDir, path);
+        }
+
+        if (!util::fileExists(fullPath)) {
+            fullPath = util::joinPath(m_ctx->m_dirName, path);
+        }
 
         if (disabled) {
             KI_INFO_OUT(fmt::format("SKIP: include={}", fullPath));
@@ -101,7 +116,7 @@ namespace loader {
         KI_INFO_OUT(fmt::format("LOAD: include={}", fullPath));
 
         {
-            auto* includeDoc = sceneData.findInclude(fullPath);
+            auto* includeDoc = sceneData.findInclude(currentDir, fullPath);
             if (includeDoc)
             {
                 throw fmt::format("INVALID: recursive_include- path={}", fullPath);
@@ -121,6 +136,7 @@ namespace loader {
 
         loadScene(
             doc,
+            util::dirName(fullPath),
             sceneData,
             loaders);
 
@@ -129,6 +145,7 @@ namespace loader {
 
     void IncludeLoader::loadScene(
         const loader::DocNode& node,
+        const std::string& currentDir,
         SceneData& sceneData,
         Loaders& loaders) const
     {
@@ -136,7 +153,7 @@ namespace loader {
 
         loadMeta(node.findNode("meta"), *sceneData.m_meta);
 
-        l.m_includeLoader.loadIncludes(node.findNode("includes"), sceneData, loaders);
+        l.m_includeLoader.loadIncludes(node.findNode("includes"), currentDir, sceneData, loaders);
 
         l.m_skyboxLoader.loadSkybox(node.findNode("skybox"), *sceneData.m_skybox);
 
@@ -144,22 +161,26 @@ namespace loader {
         l.m_scriptLoader.loadScriptSystem(node.findNode("script"), *sceneData.m_scriptSystemData);
         l.m_materialUpdaterLoader.loadMaterialUpdaters(
             node.findNode("material_updaters"),
+            currentDir,
             sceneData.m_materialUpdaters,
             loaders);
 
         l.m_nodeTypeLoader.loadNodeTypes(
             node.findNode("types"),
+            currentDir,
             sceneData,
             sceneData.m_nodeTypes,
             l);
 
         l.m_compositeLoader.loadComposites(
             node.findNode("composites"),
+            currentDir,
             sceneData.m_composites,
             l);
 
         l.m_particleLoader.loadParticles(
             node.findNode("particles"),
+            currentDir,
             sceneData.m_particles,
             l);
 
@@ -170,6 +191,7 @@ namespace loader {
 
         l.m_decalLoader.loadDecals(
             node.findNode("decals"),
+            currentDir,
             sceneData.m_decals,
             l);
     }

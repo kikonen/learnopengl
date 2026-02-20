@@ -56,6 +56,7 @@ namespace loader {
 
     void NodeTypeLoader::loadNodeTypes(
         const loader::DocNode& node,
+        const std::string& currentDir,
         SceneData& sceneData,
         std::vector<NodeTypeData>& nodeTypes,
         Loaders& loaders) const
@@ -87,6 +88,7 @@ namespace loader {
 
             loadNodeType(
                 entry,
+                currentDir,
                 *data,
                 idToType,
                 loaders);
@@ -95,6 +97,7 @@ namespace loader {
 
     void NodeTypeLoader::loadNodeType(
         const loader::DocNode& node,
+        const std::string& currentDir,
         NodeTypeData& data,
         const std::unordered_map<std::string, const loader::DocNode*>& idToType,
         Loaders& loaders) const
@@ -115,11 +118,11 @@ namespace loader {
                 if (it == idToType.end()) {
                     throw fmt::format("Missing base_type: {}", baseId.getId());
                 }
-                loadNodeType(*it->second, data, idToType, loaders);
+                loadNodeType(*it->second, currentDir, data, idToType, loaders);
             }
         }
 
-        loadPrefab(node.findNode("prefab"), data, idToType, loaders);
+        loadPrefab(node.findNode("prefab"), currentDir, data, idToType, loaders);
 
         for (const auto& pair : node.getNodes()) {
             const std::string& k = pair.getName();
@@ -184,7 +187,7 @@ namespace loader {
                 if (data.meshes.empty()) {
                     data.meshes.emplace_back();
                 }
-                loaders.m_meshLoader.loadMesh(v, data.meshes[0], loaders);
+                loaders.m_meshLoader.loadMesh(v, currentDir, data.meshes[0], loaders);
             }
             else if (k == "program") {
                 data.programs[MaterialProgramType::shader] = readString(v);
@@ -212,7 +215,11 @@ namespace loader {
                 data.front = readVec3(v);
             }
             else if (k == "text") {
-                loaders.m_textLoader.loadText(v, data.text, loaders);
+                loaders.m_textLoader.loadText(
+                    v,
+                    currentDir,
+                    data.text,
+                    loaders);
             }
             else if (k == "base_rot" || k == "base_rotation") {
                 data.baseRotation = readDegreesRotation(v);
@@ -239,7 +246,11 @@ namespace loader {
                 loaders.m_audioLoader.loadAudio(v, data.audio);
             }
             else if (k == "custom_material") {
-                loaders.m_customMaterialLoader.loadCustomMaterial(v, data.customMaterial, loaders);
+                loaders.m_customMaterialLoader.loadCustomMaterial(
+                    v,
+                    currentDir,
+                    data.customMaterial,
+                    loaders);
             }
             else if (k == "physics") {
                 loaders.m_physicsLoader.loadPhysics(v, data.physics);
@@ -254,7 +265,11 @@ namespace loader {
                 loaders.m_controllerLoader.loadController(v, data.controllers[0]);
             }
             else if (k == "generator") {
-                loaders.m_generatorLoader.loadGenerator(v, data.generator, loaders);
+                loaders.m_generatorLoader.loadGenerator(
+                    v,
+                    currentDir,
+                    data.generator,
+                    loaders);
             }
             else if (k == "particle") {
                 data.particleId = readId(v);
@@ -281,10 +296,10 @@ namespace loader {
                 loaders.m_scriptLoader.loadScripts(v, data.scripts, true);
             }
             else if (k == "meshes") {
-                loaders.m_meshLoader.loadMeshes(v, data.meshes, loaders);
+                loaders.m_meshLoader.loadMeshes(v, currentDir, data.meshes, loaders);
             }
             else if (k == "available_addons") {
-                loaders.m_meshLoader.loadMeshes(v, data.availableAddons, loaders);
+                loaders.m_meshLoader.loadMeshes(v, currentDir, data.availableAddons, loaders);
             }
             else if (k == "addons") {
                 loadAddons(v, data.addons);
@@ -320,6 +335,7 @@ namespace loader {
 
     void NodeTypeLoader::loadPrefab(
         const loader::DocNode& node,
+        const std::string& currentDir,
         NodeTypeData& data,
         const std::unordered_map<std::string, const loader::DocNode*>& idToType,
         Loaders& loaders) const
@@ -342,23 +358,13 @@ namespace loader {
             path = readString(node);
         }
 
-        if (path.empty()) return;
+        const auto [fullPath, exists] = resolveIncludePath(*m_ctx, currentDir, path);
 
-        {
-            std::filesystem::path filePath{ path };
-            if (filePath.extension().empty()) {
-                path += ".yml";
-            }
-        }
-
-        const auto& fullPath = util::joinPath(m_ctx->m_dirName, path);
-
-        KI_INFO_OUT(fmt::format("LOADER::NODE: prefab={}", fullPath));
-
-        if (!util::fileExists(fullPath))
-        {
+        if (!exists) {
             throw fmt::format("LOADER::NODE::INVALID: node_prefab missing - path={}", fullPath);
         }
+
+        KI_INFO_OUT(fmt::format("LOADER::NODE: prefab={}", fullPath));
 
         loader::YamlConverter converter;
         auto doc = converter.load(fullPath);
@@ -371,6 +377,7 @@ namespace loader {
                 std::vector<NodeData> clones;
                loadNodeType(
                    v,
+                   util::dirName(fullPath),
                    data,
                    idToType,
                    loaders);

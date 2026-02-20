@@ -16,16 +16,19 @@ namespace loader {
 
         void loadIncludes(
             const loader::DocNode& node,
+            const std::string& currentDir,
             SceneData& sceneData,
             Loaders& loaders) const;
 
         void loadInclude(
             const loader::DocNode& node,
+            const std::string& currentDir,
             SceneData& sceneData,
             Loaders& loaders) const;
 
         void loadScene(
             const loader::DocNode& node,
+            const std::string& currentDir,
             SceneData& sceneData,
             Loaders& loaders) const;
 

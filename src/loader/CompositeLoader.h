@@ -24,11 +24,13 @@ namespace loader {
 
         void loadComposites(
             const loader::DocNode& node,
+            const std::string& currentDir,
             std::vector<CompositeData>& composites,
             Loaders& loaders) const;
 
         void loadComposite(
             const loader::DocNode& node,
+            const std::string& currentDir,
             CompositeData& data,
             Loaders& loaders) const;
 

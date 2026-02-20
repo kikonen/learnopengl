@@ -3,6 +3,7 @@
 #include <string>
 #include <vector>
 #include <optional>
+#include <tuple>
 
 #include <glm/glm.hpp>
 #include <glm/gtx/quaternion.hpp>
@@ -24,10 +25,17 @@ namespace model
 struct Material;
 
 namespace loader {
+    struct Context;
+
     const std::string ROOT_ID{ "ROOT" };
 
     struct NodeTypeData;
     struct MaterialData;
+
+    std::pair<std::string, bool> resolveIncludePath(
+        const Context& ctx,
+        const std::string& currentDir,
+        const std::string& filePath);
 
     void loadRepeat(
         const loader::DocNode& node,

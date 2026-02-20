@@ -1,0 +1,9 @@
+---
+mesh:
+  path: models/kitbash/outlaw/models/outlaw/KB3D_OUT_BldgLGStables_A.fbx
+  base_scale: 0.01
+  material_modifier:
+    base: models/kitbash/outlaw/textures/2k
+    kitbash: true
+    default_programs: true
+  material_set: material_set_outlaw.yml

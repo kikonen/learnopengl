@@ -255,7 +255,7 @@ types:
         self.handle,
         { tag="body", name = "idle" })
   - xid: elf_female
-    prefab:
+    xprefab:
       path: prefab/characters/elf/female/prefab_elf_female.yml
     physics:
       #enabled: false
@@ -264,7 +264,7 @@ types:
         self.handle,
         { tag="body", name = "idle" })
   - xid: scavenger
-    prefab:
+    xprefab:
       path: prefab/characters/prefab_scavenger.yml
     physics:
       enabled: false
@@ -274,10 +274,10 @@ types:
         { name = "default" })
   - id: locomotive
     prefab:
-      path: prefab/vehicles/prefab_outlaw_locomotive.yml
+      path: prefab/outlaw/prefab_outlaw_locomotive.yml
   - id: stables
     prefab:
-      path: prefab/vehicles/prefab_outlaw_stables.yml
+      path: prefab/outlaw/prefab_outlaw_stables.yml
 
 nodes:
   - type: player

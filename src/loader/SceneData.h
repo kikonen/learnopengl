@@ -44,6 +44,7 @@ namespace loader {
         ~SceneData();
 
         const loader::DocNode* findInclude(
+            const std::string& currentDir,
             const std::string& filePath);
     };
 }
