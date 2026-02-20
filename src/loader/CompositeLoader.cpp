@@ -35,6 +35,7 @@ namespace loader {
 
     void CompositeLoader::loadComposites(
         const loader::DocNode& node,
+        const std::string& currentDir,
         std::vector<CompositeData>& composites,
         Loaders& loaders) const
     {
@@ -42,6 +43,7 @@ namespace loader {
             auto& compositeData = composites.emplace_back();
             loadComposite(
                 entry,
+                currentDir,
                 compositeData,
                 loaders);
         }
@@ -49,6 +51,7 @@ namespace loader {
 
     void CompositeLoader::loadComposite(
         const loader::DocNode& node,
+        const std::string& currentDir,
         CompositeData& compositeData,
         Loaders& loaders) const
     {

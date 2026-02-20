@@ -17,6 +17,7 @@ namespace loader {
 
     void CustomMaterialLoader::loadCustomMaterial(
         const loader::DocNode& node,
+        const std::string& currentDir,
         CustomMaterialData& data,
         Loaders& loaders) const
     {
@@ -37,7 +38,11 @@ namespace loader {
                 }
             }
             else if (k == "material") {
-                loaders.m_materialLoader.loadMaterial(v, data.materialData, loaders);
+                loaders.m_materialLoader.loadMaterial(
+                    v,
+                    currentDir,
+                    data.materialData,
+                    loaders);
             }
             else {
                 reportUnknown("custom_material_entry", k, v);

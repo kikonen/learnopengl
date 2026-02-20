@@ -38,6 +38,7 @@ namespace loader {
 
     void TextLoader::loadText(
         const loader::DocNode& node,
+        const std::string& currentDir,
         TextData& data,
         Loaders& loaders) const
     {
@@ -66,7 +67,11 @@ namespace loader {
                 data.alignVertical = readAlign(v);
             }
             else if (k == "material") {
-                loaders.m_materialLoader.loadMaterial(v, data.materialData, loaders);
+                loaders.m_materialLoader.loadMaterial(
+                    v,
+                    currentDir,
+                    data.materialData,
+                    loaders);
             }
             else {
                 reportUnknown("text_entry", k, v);

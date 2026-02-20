@@ -25,6 +25,7 @@ namespace loader {
 
         void loadGenerator(
             const loader::DocNode& node,
+            const std::string& currentDir,
             GeneratorData& data,
             Loaders& loaders) const;
 

@@ -116,7 +116,11 @@ namespace loader {
                     auto& l = *m_loaders;
                     YamlConverter converter;
                     auto doc = converter.load(m_ctx->m_fullPath);
-                    l.m_includeLoader.loadScene(doc, *m_sceneData, *m_loaders);
+                    l.m_includeLoader.loadScene(
+                        doc,
+                        util::dirName(m_ctx->m_fullPath),
+                        *m_sceneData,
+                        *m_loaders);
 
                     // NOTE KI include fiels not needed any longer
                     m_sceneData->m_includeFiles.clear();

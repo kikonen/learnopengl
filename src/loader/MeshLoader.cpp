@@ -42,22 +42,24 @@ namespace loader {
 
     void MeshLoader::loadMeshes(
         const loader::DocNode& node,
+        const std::string& currentDir,
         std::vector<MeshData>& meshes,
         Loaders& loaders) const
     {
         for (const auto& entry : node.getNodes()) {
             auto& data = meshes.emplace_back();
-            loadMesh(entry, data, loaders);
+            loadMesh(entry, currentDir, data, loaders);
         }
     }
 
     void MeshLoader::loadMesh(
         const loader::DocNode& node,
+        const std::string& currentDir,
         MeshData& data,
         Loaders& loaders) const
     {
         std::optional<bool> enabled;
-        loadPrefab(node.findNode("prefab"), data, loaders);
+        loadPrefab(node.findNode("prefab"), currentDir, data, loaders);
 
         for (const auto& pair : node.getNodes()) {
             const std::string& key = pair.getName();
@@ -147,8 +149,11 @@ namespace loader {
             else if (k == "id_program") {
                 data.programs[MaterialProgramType::object_id] = readString(v);
             }
+            else if (k == "material_set") {
+                loaders.m_materialLoader.loadMaterialSet(v, currentDir, data.materials, loaders);
+            }
             else if (k == "materials") {
-                loaders.m_materialLoader.loadMaterials(v, data.materials, loaders);
+                loaders.m_materialLoader.loadMaterials(v, currentDir, data.materials, loaders);
             }
             else if (k == "material") {
                 if (data.materials.empty()) {
@@ -156,7 +161,7 @@ namespace loader {
                 }
                 auto& materialData = data.materials[0];
                 materialData.aliasName = MATERIAL_ALIAS_ANY;
-                loaders.m_materialLoader.loadMaterial(v, materialData, loaders);
+                loaders.m_materialLoader.loadMaterial(v, currentDir, materialData, loaders);
                 materialData.materialName = materialData.material.m_name;
             }
             else if (k == "material_modifier") {
@@ -164,10 +169,18 @@ namespace loader {
                     data.materialModifiers.emplace_back();
                 }
                 auto& materialData = data.materialModifiers[0];
-                loaders.m_materialLoader.loadMaterialModifier(v, materialData, loaders);
+                loaders.m_materialLoader.loadMaterialModifier(
+                    v,
+                    currentDir,
+                    materialData,
+                    loaders);
             }
             else if (k == "material_modifiers") {
-                loaders.m_materialLoader.loadMaterialModifiers(v, data.materialModifiers, loaders);
+                loaders.m_materialLoader.loadMaterialModifiers(
+                    v,
+                    currentDir,
+                    data.materialModifiers,
+                    loaders);
             }
             else if (k == "flags") {
                 for (const auto& flagNode : v.getNodes()) {
@@ -194,10 +207,10 @@ namespace loader {
             else if (k == "lod") {
                 auto& lod = data.lods.emplace_back();
                 lod.name = LOD_ALIAS_ANY;
-                loadLod(v, lod, loaders);
+                loadLod(v, currentDir, lod, loaders);
             }
             else if (k == "lods") {
-                loadLods(v, data.lods, loaders);
+                loadLods(v, currentDir, data.lods, loaders);
             }
             else if (k == "rig") {
                 auto& rigData = data.rigs.emplace_back();
@@ -240,17 +253,19 @@ namespace loader {
 
     void MeshLoader::loadLods(
         const loader::DocNode& node,
+        const std::string& currentDir,
         std::vector<LodData>& lods,
         Loaders& loaders) const
     {
         for (const auto& entry : node.getNodes()) {
             LodData& data = lods.emplace_back();
-            loadLod(entry, data, loaders);
+            loadLod(entry, currentDir, data, loaders);
         }
     }
 
     void MeshLoader::loadLod(
         const loader::DocNode& node,
+        const std::string& currentDir,
         LodData& data,
         Loaders& loaders) const
     {
@@ -288,10 +303,18 @@ namespace loader {
                     data.materialModifiers.emplace_back();
                 }
                 auto& materialData = data.materialModifiers[0];
-                loaders.m_materialLoader.loadMaterialModifier(v, materialData, loaders);
+                loaders.m_materialLoader.loadMaterialModifier(
+                    v,
+                    currentDir,
+                    materialData,
+                    loaders);
             }
             else if (k == "material_modifiers") {
-                loaders.m_materialLoader.loadMaterialModifiers(v, data.materialModifiers, loaders);
+                loaders.m_materialLoader.loadMaterialModifiers(
+                    v,
+                    currentDir,
+                    data.materialModifiers,
+                    loaders);
             }
             else {
                 reportUnknown("lod_entry", k, v);
@@ -501,6 +524,7 @@ namespace loader {
 
     void MeshLoader::loadPrefab(
         const loader::DocNode& node,
+        const std::string& currentDir,
         MeshData& data,
         Loaders& loaders) const
     {
@@ -522,22 +546,13 @@ namespace loader {
             path = readString(node);
         }
 
-        if (path.empty()) return;
+        const auto [fullPath, exists] = resolveIncludePath(*m_ctx, currentDir, path);
 
-        {
-            std::filesystem::path filePath{ path };
-            if (filePath.extension().empty()) {
-                path += ".yml";
-            }
+        if (!exists) {
+            throw fmt::format("LOADER::MESH::INVALID: mesh_prefab missing - path={}", fullPath);
         }
 
-        const auto& fullPath = util::joinPath(m_ctx->m_dirName, path);
-
-        KI_INFO_OUT(fmt::format("LOADER::NODE: prefab={}", fullPath));
-
-        if (!util::fileExists(fullPath)) {
-            throw fmt::format("LOADER::NODE::INVALID: node_prefab missing - path={}", fullPath);
-        }
+        KI_INFO_OUT(fmt::format("LOADER::MESH: prefab={}", fullPath));
 
         loader::YamlConverter converter;
         auto doc = converter.load(fullPath);
@@ -550,6 +565,7 @@ namespace loader {
                 std::vector<NodeData> clones;
                 loadMesh(
                     v,
+                    util::dirName(fullPath),
                     data,
                     loaders);
             }

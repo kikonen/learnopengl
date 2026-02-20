@@ -46,24 +46,26 @@ namespace loader {
 
     void MaterialLoader::loadMaterialModifiers(
         const loader::DocNode& node,
+        const std::string& currentDir,
         std::vector<MaterialData>& materials,
         Loaders& loaders) const
     {
         for (const auto& entry : node.getNodes()) {
             MaterialData& data = materials.emplace_back();
-            loadMaterialModifier(entry, data, loaders);
+            loadMaterialModifier(entry, currentDir, data, loaders);
         }
     }
 
     void MaterialLoader::loadMaterialModifier(
         const loader::DocNode& node,
+        const std::string& currentDir,
         MaterialData& data,
         Loaders& loaders) const
     {
         data.enabled = true;
         data.aliasName = MATERIAL_ALIAS_ANY;
 
-        loadMaterial(node, data, loaders);
+        loadMaterial(node, currentDir, data, loaders);
 
         data.material.m_name = "<modifier>";
         data.materialName = data.material.m_name;
@@ -71,12 +73,13 @@ namespace loader {
 
     void MaterialLoader::loadMaterials(
         const loader::DocNode& node,
+        const std::string& currentDir,
         std::vector<MaterialData>& materials,
         Loaders& loaders) const
     {
         for (const auto& entry : node.getNodes()) {
             MaterialData& data = materials.emplace_back();
-            loadMaterial(entry, data, loaders);
+            loadMaterial(entry, currentDir, data, loaders);
             data.materialName = data.material.m_name;
 
             if (data.materialName.empty() && data.aliasName != MATERIAL_ALIAS_ANY)
@@ -88,13 +91,14 @@ namespace loader {
 
     void MaterialLoader::loadMaterial(
         const loader::DocNode& node,
+        const std::string& currentDir,
         MaterialData& data,
         Loaders& loaders) const
     {
         Material& material = data.material;
         auto& fields = data.fields;
 
-        loadMaterialPrefab(node.findNode("prefab"), data, loaders);
+        loadMaterialPrefab(node.findNode("prefab"), currentDir, data, loaders);
 
         for (const auto& pair : node.getNodes()) {
             const std::string& key = pair.getName();
@@ -468,37 +472,19 @@ namespace loader {
 
     void MaterialLoader::loadMaterialPrefab(
         const loader::DocNode& node,
+        const std::string& currentDir,
         MaterialData& data,
         Loaders& loaders) const
     {
         if (node.isNull()) return;
 
-        std::string path = readString(node);
-        if (path.empty()) return;
+        const auto [fullPath, exists] = resolveIncludePath(*m_ctx, currentDir, readString(node));
 
-        {
-            std::filesystem::path filePath{ path };
-            if (filePath.extension().empty()) {
-                path += ".yml";
-            }
-        }
-
-        std::string fullPath = path;
-
-        if (!util::fileExists(fullPath)) {
-            fullPath = util::joinPath(m_ctx->m_assetsDir, path);
-        }
-
-        if (!util::fileExists(fullPath)) {
-            fullPath = util::joinPath(m_ctx->m_dirName, path);
+        if (!exists) {
+            throw fmt::format("INVALID: material_prefab missing - path={}", fullPath);
         }
 
         KI_INFO_OUT(fmt::format("material_prefab={}", fullPath));
-
-        if (!util::fileExists(fullPath))
-        {
-            throw fmt::format("INVALID: material_prefab missing - path={}", fullPath);
-        }
 
         loader::YamlConverter converter;
         auto doc = converter.load(fullPath);
@@ -508,10 +494,43 @@ namespace loader {
             const loader::DocNode& v = pair.getNode();
 
             if (k == "material") {
-                std::vector<NodeData> clones;
                 loadMaterial(
                     v,
+                    util::dirName(fullPath),
                     data,
+                    loaders);
+            }
+        }
+    }
+
+    void MaterialLoader::loadMaterialSet(
+        const loader::DocNode& node,
+        const std::string& currentDir,
+        std::vector<MaterialData>& materials,
+        Loaders& loaders) const
+    {
+        if (node.isNull()) return;
+
+        const auto [fullPath, exists] = resolveIncludePath(*m_ctx, currentDir, readString(node));
+
+        if (!exists) {
+            throw fmt::format("LOADER::MESH::INVALID: material_set missing - path={}", fullPath);
+        }
+
+        KI_INFO_OUT(fmt::format("material_set={}", fullPath));
+
+        loader::YamlConverter converter;
+        auto doc = converter.load(fullPath);
+
+        for (const auto& pair : doc.getNodes()) {
+            const std::string& k = pair.getName();
+            const loader::DocNode& v = pair.getNode();
+
+            if (k == "materials") {
+                loadMaterials(
+                    v,
+                    util::dirName(fullPath),
+                    materials,
                     loaders);
             }
         }

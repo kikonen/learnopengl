@@ -27,21 +27,23 @@ namespace loader {
 
     void DecalLoader::loadDecals(
         const loader::DocNode& node,
+        const std::string& currentDir,
         std::vector<loader::DecalData>& decals,
         Loaders& loaders) const
     {
         for (const auto& entry : node.getNodes()) {
             auto& data = decals.emplace_back();
-            loadDecal(entry, data, loaders);
+            loadDecal(entry, currentDir, data, loaders);
         }
     }
 
     void DecalLoader::loadDecal(
         const loader::DocNode& node,
+        const std::string& currentDir,
         loader::DecalData& data,
         Loaders& loaders) const
     {
-        loadDecalPrefab(node.findNode("prefab"), data, loaders);
+        loadDecalPrefab(node.findNode("prefab"), currentDir, data, loaders);
 
         for (const auto& pair : node.getNodes()) {
             const std::string& k = pair.getName();
@@ -81,7 +83,11 @@ namespace loader {
                 data.isStatic = readBool(v);
             }
             else if (k == "material") {
-                loaders.m_materialLoader.loadMaterial(v, data.materialData, loaders);
+                loaders.m_materialLoader.loadMaterial(
+                    v,
+                    currentDir,
+                    data.materialData,
+                    loaders);
             }
             else {
                 reportUnknown("decal_entry", k, v);
@@ -91,37 +97,20 @@ namespace loader {
 
     void DecalLoader::loadDecalPrefab(
         const loader::DocNode& node,
+        const std::string& currentDir,
         DecalData& data,
         Loaders& loaders) const
     {
         if (node.isNull()) return;
 
-        std::string path = readString(node);
-        if (path.empty()) return;
+        const auto [fullPath, exists] = resolveIncludePath(*m_ctx, currentDir, readString(node));
 
-        {
-            std::filesystem::path filePath{ path };
-            if (filePath.extension().empty()) {
-                path += ".yml";
-            }
-        }
-
-        std::string fullPath = path;
-
-        if (!util::fileExists(fullPath)) {
-            fullPath = util::joinPath(m_ctx->m_assetsDir, path);
-        }
-
-        if (!util::fileExists(fullPath)) {
-            fullPath = util::joinPath(m_ctx->m_dirName, path);
+        if (!exists) {
+            throw fmt::format("LOADER::DECAL::PREFAB_MISSING: path={}", fullPath);
         }
 
         KI_INFO_OUT(fmt::format("LOADER::DECAL: decal_prefab={}", fullPath));
 
-        if (!util::fileExists(fullPath))
-        {
-            throw fmt::format("LOADER::DECAL::PREFAB_MISSING: path={}", fullPath);
-        }
 
         loader::YamlConverter converter;
         auto doc = converter.load(fullPath);
@@ -134,6 +123,7 @@ namespace loader {
                 std::vector<NodeData> clones;
                 loadDecal(
                     v,
+                    util::dirName(fullPath),
                     data,
                     loaders);
             }

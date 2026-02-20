@@ -19,21 +19,25 @@ namespace loader {
 
         void loadMeshes(
             const loader::DocNode& node,
+            const std::string& currentDir,
             std::vector<MeshData>& meshes,
             Loaders& loaders) const;
 
         void loadMesh(
             const loader::DocNode& node,
+            const std::string& currentDir,
             MeshData& data,
             Loaders& loaders) const;
 
         void loadLods(
             const loader::DocNode& node,
+            const std::string& currentDir,
             std::vector<LodData>& lods,
             Loaders& loaders) const;
 
         void loadLod(
             const loader::DocNode& node,
+            const std::string& currentDir,
             LodData& data,
             Loaders& loaders) const;
 
@@ -71,6 +75,7 @@ namespace loader {
 
         void loadPrefab(
             const loader::DocNode& node,
+            const std::string& currentDir,
             MeshData& data,
             Loaders& loaders) const;
     };

@@ -19,16 +19,19 @@ namespace loader {
 
         void loadDecals(
             const loader::DocNode& node,
+            const std::string& currentDir,
             std::vector<loader::DecalData>& decals,
             Loaders& loaders) const;
 
         void loadDecal(
             const loader::DocNode& node,
+            const std::string& currentDir,
             loader::DecalData& data,
             Loaders& loaders) const;
 
         void loadDecalPrefab(
             const loader::DocNode& node,
+            const std::string& currentDir,
             DecalData& data,
             Loaders& loaders) const;
 

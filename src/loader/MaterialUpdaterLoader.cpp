@@ -26,17 +26,19 @@ namespace loader {
 
     void MaterialUpdaterLoader::loadMaterialUpdaters(
         const loader::DocNode& node,
+        const std::string& currentDir,
         std::vector<MaterialUpdaterData>& updaters,
         Loaders& loaders) const
     {
         for (const auto& entry : node.getNodes()) {
             auto& data = updaters.emplace_back();
-            loadMaterialUpdater(entry, data, loaders);
+            loadMaterialUpdater(entry, currentDir, data, loaders);
         }
     }
 
     void MaterialUpdaterLoader::loadMaterialUpdater(
         const loader::DocNode& node,
+        const std::string& currentDir,
         MaterialUpdaterData& data,
         Loaders& loaders) const
     {
@@ -71,7 +73,11 @@ namespace loader {
                 data.frameSkip = readInt(v);
             }
             else if (k == "material") {
-                loaders.m_materialLoader.loadMaterial(v, data.materialData, loaders);
+                loaders.m_materialLoader.loadMaterial(
+                    v,
+                    currentDir,
+                    data.materialData,
+                    loaders);
             }
             else {
                 reportUnknown("updater_entry", k, v);
