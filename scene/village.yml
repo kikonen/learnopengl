@@ -275,6 +275,48 @@ types:
   - id: locomotive
     prefab:
       path: prefab/outlaw/prefab_vehicle_locomotive.yml
+  - id: stables
+    prefab:
+      path: prefab/outlaw/prefab_building_stables.yml
+  - id: blacksmith
+    prefab:
+      path: prefab/outlaw/prefab_building_blacksmith.yml
+  - id: church
+    prefab:
+      path: prefab/outlaw/prefab_building_church.yml
+  - id: townhall
+    prefab:
+      path: prefab/outlaw/prefab_building_townhall.yml
+  - id: general_store
+    prefab:
+      path: prefab/outlaw/prefab_building_general_store.yml
+  - id: barbershop
+    prefab:
+      path: prefab/outlaw/prefab_building_barbershop.yml
+  - id: sheriff_station
+    prefab:
+      path: prefab/outlaw/prefab_building_sheriff_station.yml
+  - id: train_station
+    prefab:
+      path: prefab/outlaw/prefab_building_train_station.yml
+  - id: post_office
+    prefab:
+      path: prefab/outlaw/prefab_building_post_office.yml
+  - id: gun_shop
+    prefab:
+      path: prefab/outlaw/prefab_building_gun_shop.yml
+  - id: apothecary
+    prefab:
+      path: prefab/outlaw/prefab_building_apothecary.yml
+  - id: shoe_store
+    prefab:
+      path: prefab/outlaw/prefab_building_shoe_store.yml
+  - id: saloon
+    prefab:
+      path: prefab/outlaw/prefab_building_saloon.yml
+  - id: cemetary
+    prefab:
+      path: prefab/outlaw/prefab_building_cemetary.yml
 
 nodes:
   - type: player
@@ -321,3 +363,40 @@ nodes:
     pos: [0, 3.5, 0.0]
   - type: locomotive
     pos: [0, 3.5, 0.0]
+  - type: stables
+    pos: [30, 3.5, 0.0]
+  - type: train_station
+    pos: [-6.6, 3.5, 20.0]
+    rot: [0, 90, 0]
+  - type: blacksmith
+    pos: [20, 3.5, -30.0]
+  - type: general_store
+    pos: [20, 3.5, -60.0]
+  - type: townhall
+    pos: [-20, 3.5, -60.0]
+  - type: church
+    pos: [-20, 3.5, -30.0]
+  - type: saloon
+    pos: [-20, 3.5, 0.0]
+    rot: [0, 90, 0]
+  - type: cemetary
+    pos: [-40, 3.5, -30.0]
+    rot: [0, 30, 0]
+  - type: sheriff_station
+    pos: [-20, 3.5, 40.0]
+    rot: [0, 90, 0]
+  - type: barbershop
+    pos: [10, 3.5, 40.0]
+    rot: [0, -90, 0]
+  - type: gun_shop
+    pos: [10, 3.5, 60.0]
+    rot: [0, -90, 0]
+  - type: post_office
+    pos: [-20, 3.5, 60.0]
+    rot: [0, 90, 0]
+  - type: apothecary
+    pos: [-20, 3.5, 80.0]
+    rot: [0, 90, 0]
+  - type: shoe_store
+    pos: [10, 3.5, 100.0]
+    rot: [0, 90, 0]
