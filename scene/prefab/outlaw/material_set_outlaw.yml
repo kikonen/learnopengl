@@ -1,185 +1,509 @@
 ---
 materials:
-  - alias: KB3D_OUT_MetalForgedDarkA
-    map_kd: KB3D_OUT_MetalForgedDarkA_basecolor.png
-    map_normal: KB3D_OUT_MetalForgedDarkA_normal.png
-    map_mras: KB3D_OUT_MetalForgedDarkA_mras
-  - alias: KB3D_OUT_MetalPGreen
-    map_kd: KB3D_OUT_MetalPGreen_basecolor.png
-    map_normal: KB3D_OUT_MetalPGreen_normal.png
-    map_mras: KB3D_OUT_MetalPGreen_mras
-  - alias: KB3D_OUT_MetalBlackA
-    map_kd: KB3D_OUT_MetalBlackA_basecolor.png
-    map_normal: KB3D_OUT_MetalBlackA_normal.png
-    map_mras: KB3D_OUT_MetalBlackA_mras
-  - alias: KB3D_OUT_MetalBlackOld
-    map_kd: KB3D_OUT_MetalBlackOld_basecolor.png
-    map_normal: KB3D_OUT_MetalBlackOld_normal.png
-    map_mras: KB3D_OUT_MetalBlackOld_mras
-  - alias: KB3D_OUT_MetalForgedA
-    map_kd: KB3D_OUT_MetalForgedA_basecolor.png
-    map_normal: KB3D_OUT_MetalForgedA_normal.png
-    map_mras: KB3D_OUT_MetalForgedA_mras
-  - alias: KB3D_OUT_WoodHeartwoodAtlas
-    map_kd: KB3D_OUT_WoodHeartwoodAtlas_basecolor.png
-    map_normal: KB3D_OUT_WoodHeartwoodAtlas_normal.png
-    map_mras: KB3D_OUT_WoodHeartwoodAtlas_mras
-  - alias: KB3D_OUT_GlassBrownW
-    map_kd: KB3D_OUT_GlassBrownW_basecolrgba.png
-    map_normal: KB3D_OUT_GlassBrownW_normal.png
-    map_mras: KB3D_OUT_GlassBrownW_mras
-    blend: true
-  - alias: KB3D_OUT_GlassDirtW
-    kd: [0, 0, 2.3, 1.5]
-    map_kd: KB3D_OUT_GlassDirtW_basecolrgba.png
-    map_normal: KB3D_OUT_GlassDirtW_normal.png
-    map_mras: KB3D_OUT_GlassDirtW_mras
-    blend: true
-  - alias: KB3D_OUT_MetalPolishedAnt
-    map_kd: KB3D_OUT_MetalPolishedAnt_basecolor.png
-    map_normal: KB3D_OUT_MetalPolishedAnt_normal.png
-    map_mras: KB3D_OUT_MetalPolishedAnt_mras
-  - alias: KB3D_OUT_DecalsWWF
-    map_kd: KB3D_OUT_DecalsWWF_basecolrgba.png
-    map_normal: KB3D_OUT_DecalsWWF_normal.png
-    map_mras: KB3D_OUT_DecalsWWF_mras
-    alpha: true
-    xmap_kd: KB3D_OUT_WoodGrayOldA_basecolor.png
-    xmap_normal: KB3D_OUT_WoodGrayOldA_normal.png
-    xmap_mras: KB3D_OUT_WoodGrayOldA_mras
-  - alias: KB3D_OUT_MetalPBronze
-    map_kd: KB3D_OUT_MetalPBronze_basecolor.png
-    map_normal: KB3D_OUT_MetalPBronze_normal.png
-    map_mras: KB3D_OUT_MetalPBronze_mras
-  - alias: KB3D_OUT_MetalPRed
-    map_kd: KB3D_OUT_MetalPRed_basecolor.png
-    map_normal: KB3D_OUT_MetalPRed_normal.png
-    map_mras: KB3D_OUT_MetalPRed_mras
-  - alias: KB3D_OUT_WoodOldPBlack
-    map_kd: KB3D_OUT_WoodOldPBlack_basecolor.png
-    map_normal: KB3D_OUT_WoodOldPBlack_normal.png
-    map_mras: KB3D_OUT_WoodOldPBlack_mras
-  - alias: KB3D_OUT_MetalDarkCorrugated
-    map_kd: KB3D_OUT_MetalDarkCorrugated_basecolor.png
-    map_normal: KB3D_OUT_MetalDarkCorrugated_normal.png
-    map_mras: KB3D_OUT_MetalDarkCorrugated_mras
-  - alias: KB3D_OUT_WoodDarkOldA
-    map_kd: KB3D_OUT_WoodDarkOldA_basecolor.png
-    map_normal: KB3D_OUT_WoodDarkOldA_normal.png
-    map_mras: KB3D_OUT_WoodDarkOldA_mras
-  - alias: KB3D_OUT_WoodPGreenA
-    map_kd: KB3D_OUT_WoodPGreenA_basecolor.png
-    map_normal: KB3D_OUT_WoodPGreenA_normal.png
-    map_mras: KB3D_OUT_WoodPGreenA_mras
-  - alias: KB3D_OUT_RopesTrimW
-    map_kd: KB3D_OUT_RopesTrimW_basecolor.png
-    map_normal: KB3D_OUT_RopesTrimW_normal.png
-    map_mras: KB3D_OUT_RopesTrimW_mras
-  - alias: KB3D_OUT_MetalPGreenOld
-    map_kd: KB3D_OUT_MetalPGreenOld_basecolor.png
-    map_normal: KB3D_OUT_MetalPGreenOld_normal.png
-    map_mras: KB3D_OUT_MetalPGreenOld_mras
-  - alias: KB3D_OUT_WoodPBlue
-    map_kd: KB3D_OUT_WoodPBlue_basecolor.png
-    map_normal: KB3D_OUT_WoodPBlue_normal.png
-    map_mras: KB3D_OUT_WoodPBlue_mras
-  - alias: KB3D_OUT_RubberHardDark
-    map_kd: KB3D_OUT_RubberHardDark_basecolor.png
-    map_normal: KB3D_OUT_RubberHardDark_normal.png
-    map_mras: KB3D_OUT_RubberHardDark_mras
-  - alias: KB3D_OUT_CopperYellowOld
-    map_kd: KB3D_OUT_CopperYellowOld_basecolor.png
-    map_normal: KB3D_OUT_CopperYellowOld_normal.png
-    map_mras: KB3D_OUT_CopperYellowOld_mras
-  - alias: KB3D_OUT_MetalRustedWA
-    map_kd: KB3D_OUT_MetalRustedWA_basecolor.png
-    map_normal: KB3D_OUT_MetalRustedWA_normal.png
-    map_mras: KB3D_OUT_MetalRustedWA_mras
-  - alias: KB3D_OUT_WoodDarkOldA
-    map_kd: KB3D_OUT_WoodDarkOldA_basecolor.png
-    map_normal: KB3D_OUT_WoodDarkOldA_normal.png
-    map_mras: KB3D_OUT_WoodDarkOldA_mras
-  - alias: KB3D_OUT_WoodChippedW
-    map_kd: KB3D_OUT_WoodChippedW_basecolor.png
-    map_normal: KB3D_OUT_WoodChippedW_normal.png
-    map_mras: KB3D_OUT_WoodChippedW_mras
-  - alias: KB3D_OUT_MetalBlackB
-    map_kd: KB3D_OUT_MetalBlackB_basecolor.png
-    map_normal: KB3D_OUT_MetalBlackB_normal.png
-    map_mras: KB3D_OUT_MetalBlackB_mras
-  - alias: KB3D_OUT_GroundGravelW
-    map_kd: KB3D_OUT_GroundGravelW_basecolor.png
-    map_normal: KB3D_OUT_GroundGravelW_normal.png
-    map_mras: KB3D_OUT_GroundGravelW_mras
-  - alias: KB3D_OUT_WoodGrayB
-    map_kd: KB3D_OUT_WoodGrayB_basecolor.png
-    map_normal: KB3D_OUT_WoodGrayB_normal.png
-    map_mras: KB3D_OUT_WoodGrayB_mras
-  - alias: KB3D_OUT_GrassTumble
-    map_kd: KB3D_OUT_GrassTumble_basecolrgba.png
-    map_normal: KB3D_OUT_GrassTumble_normal.png
-    map_mras: KB3D_OUT_GrassTumble_mras
-    render_back: true
-    blend: true
-  - alias: KB3D_OUT_WoodPBeige
-    map_kd: KB3D_OUT_WoodPBeige_basecolor.png
-    map_normal: KB3D_OUT_WoodPBeige_normal.png
-    map_mras: KB3D_OUT_WoodPBeige_mras
-  - alias: KB3D_OUT_WoodPRedOld
-    map_kd: KB3D_OUT_WoodPRedOld_basecolor.png
-    map_normal: KB3D_OUT_WoodPRedOld_normal.png
-    map_mras: KB3D_OUT_WoodPRedOld_mras
-  - alias: KB3D_OUT_FabricFeltTrimA
-    map_kd: KB3D_OUT_FabricFeltTrimA_basecolor.png
-    map_normal: KB3D_OUT_FabricFeltTrimA_normal.png
-    map_mras: KB3D_OUT_FabricFeltTrimA_mras
-    render_back: true
-    blend: true
-  - alias: KB3D_OUT_MetalRustedB
-    map_kd: KB3D_OUT_MetalRustedB_basecolor.png
-    map_normal: KB3D_OUT_MetalRustedB_normal.png
-    map_mras: KB3D_OUT_MetalRustedB_mras
-  - alias: KB3D_OUT_MetalRustedC
-    map_kd: KB3D_OUT_MetalRustedC_basecolor.png
-    map_normal: KB3D_OUT_MetalRustedC_normal.png
-    map_mras: KB3D_OUT_MetalRustedC_mras
-  - alias: KB3D_OUT_WoodLogsN
-    map_kd: KB3D_OUT_WoodLogsN_basecolor.png
-    map_normal: KB3D_OUT_WoodLogsN_normal.png
-    map_mras: KB3D_OUT_WoodLogsN_mras
-  - alias: KB3D_OUT_WoodBrightA
-    map_kd: KB3D_OUT_WoodBrightA_basecolor.png
-    map_normal: KB3D_OUT_WoodBrightA_normal.png
-    map_mras: KB3D_OUT_WoodBrightA_mras
-  - alias: KB3D_OUT_DetailsAtlasWA
-    map_kd: KB3D_OUT_DetailsAtlasWA_basecolrgba.png
-    map_normal: KB3D_OUT_DetailsAtlasWA_normal.png
-    map_mras: KB3D_OUT_DetailsAtlasWA_mras
+  - alias: KB3D_OUT_BonesHorn
+    map_kd: KB3D_OUT_BonesHorn_basecolor.png
+    map_normal: KB3D_OUT_BonesHorn_normal.png
+    map_di: KB3D_OUT_BonesHorn_height.png
+    map_mras: KB3D_OUT_BonesHorn_mras
+  - alias: KB3D_OUT_BrickworkOldW
+    map_kd: KB3D_OUT_BrickworkOldW_basecolor.png
+    map_normal: KB3D_OUT_BrickworkOldW_normal.png
+    map_di: KB3D_OUT_BrickworkOldW_height.png
+    map_mras: KB3D_OUT_BrickworkOldW_mras
+  - alias: KB3D_OUT_BurlapW
+    map_kd: KB3D_OUT_BurlapW_basecolrgba.png
+    map_normal: KB3D_OUT_BurlapW_normal.png
+    map_di: KB3D_OUT_BurlapW_height.png
+    map_mras: KB3D_OUT_BurlapW_mras
     alpha: true
   - alias: KB3D_OUT_CactiAtlas
     map_kd: KB3D_OUT_CactiAtlas_basecolrgba.png
     map_normal: KB3D_OUT_CactiAtlas_normal.png
+    map_di: KB3D_OUT_CactiAtlas_height.png
     map_mras: KB3D_OUT_CactiAtlas_mras
     alpha: true
+  - alias: KB3D_OUT_CopperYellowOld
+    map_kd: KB3D_OUT_CopperYellowOld_basecolor.png
+    map_normal: KB3D_OUT_CopperYellowOld_normal.png
+    map_di: KB3D_OUT_CopperYellowOld_height.png
+    map_mras: KB3D_OUT_CopperYellowOld_mras
+  - alias: KB3D_OUT_CorrugatedIronPRed
+    map_kd: KB3D_OUT_CorrugatedIronPRed_basecolor.png
+    map_normal: KB3D_OUT_CorrugatedIronPRed_normal.png
+    map_di: KB3D_OUT_CorrugatedIronPRed_height.png
+    map_mras: KB3D_OUT_CorrugatedIronPRed_mras
+  - alias: KB3D_OUT_DecalsWWA
+    map_kd: KB3D_OUT_DecalsWWA_basecolrgba.png
+    map_normal: KB3D_OUT_DecalsWWA_normal.png
+    map_ke: KB3D_OUT_DecalsWWA_emissive.png
+    map_di: KB3D_OUT_DecalsWWA_height.png
+    map_mras: KB3D_OUT_DecalsWWA_mras
+    alpha: true
+  - alias: KB3D_OUT_DecalsWWB
+    map_kd: KB3D_OUT_DecalsWWB_basecolrgba.png
+    map_normal: KB3D_OUT_DecalsWWB_normal.png
+    map_ke: KB3D_OUT_DecalsWWB_emissive.png
+    map_di: KB3D_OUT_DecalsWWB_height.png
+    map_mras: KB3D_OUT_DecalsWWB_mras
+    alpha: true
+  - alias: KB3D_OUT_DecalsWWC
+    map_kd: KB3D_OUT_DecalsWWC_basecolrgba.png
+    map_normal: KB3D_OUT_DecalsWWC_normal.png
+    map_ke: KB3D_OUT_DecalsWWC_emissive.png
+    map_di: KB3D_OUT_DecalsWWC_height.png
+    map_mras: KB3D_OUT_DecalsWWC_mras
+    alpha: true
+  - alias: KB3D_OUT_DecalsWWD
+    map_kd: KB3D_OUT_DecalsWWD_basecolrgba.png
+    map_normal: KB3D_OUT_DecalsWWD_normal.png
+    map_ke: KB3D_OUT_DecalsWWD_emissive.png
+    map_di: KB3D_OUT_DecalsWWD_height.png
+    map_mras: KB3D_OUT_DecalsWWD_mras
+    alpha: true
+  - alias: KB3D_OUT_DecalsWWE
+    map_kd: KB3D_OUT_DecalsWWE_basecolrgba.png
+    map_normal: KB3D_OUT_DecalsWWE_normal.png
+    map_ke: KB3D_OUT_DecalsWWE_emissive.png
+    map_di: KB3D_OUT_DecalsWWE_height.png
+    map_mras: KB3D_OUT_DecalsWWE_mras
+    alpha: true
+  - alias: KB3D_OUT_DecalsWWF
+    map_kd: KB3D_OUT_DecalsWWF_basecolrgba.png
+    map_normal: KB3D_OUT_DecalsWWF_normal.png
+    map_ke: KB3D_OUT_DecalsWWF_emissive.png
+    map_di: KB3D_OUT_DecalsWWF_height.png
+    map_mras: KB3D_OUT_DecalsWWF_mras
+    alpha: true
+  - alias: KB3D_OUT_DecalsWWG
+    map_kd: KB3D_OUT_DecalsWWG_basecolrgba.png
+    map_normal: KB3D_OUT_DecalsWWG_normal.png
+    map_ke: KB3D_OUT_DecalsWWG_emissive.png
+    map_di: KB3D_OUT_DecalsWWG_height.png
+    map_mras: KB3D_OUT_DecalsWWG_mras
+    alpha: true
+  - alias: KB3D_OUT_DetailsAtlasWA
+    map_kd: KB3D_OUT_DetailsAtlasWA_basecolrgba.png
+    map_normal: KB3D_OUT_DetailsAtlasWA_normal.png
+    map_ke: KB3D_OUT_DetailsAtlasWA_emissive.png
+    map_di: KB3D_OUT_DetailsAtlasWA_height.png
+    map_mras: KB3D_OUT_DetailsAtlasWA_mras
+    alpha: true
+  - alias: KB3D_OUT_DetailsAtlasWB
+    map_kd: KB3D_OUT_DetailsAtlasWB_basecolrgba.png
+    map_normal: KB3D_OUT_DetailsAtlasWB_normal.png
+    map_ke: KB3D_OUT_DetailsAtlasWB_emissive.png
+    map_di: KB3D_OUT_DetailsAtlasWB_height.png
+    map_mras: KB3D_OUT_DetailsAtlasWB_mras
+    alpha: true
+  - alias: KB3D_OUT_EmbankmentW
+    map_kd: KB3D_OUT_EmbankmentW_basecolor.png
+    map_normal: KB3D_OUT_EmbankmentW_normal.png
+    map_di: KB3D_OUT_EmbankmentW_height.png
+    map_mras: KB3D_OUT_EmbankmentW_mras
+  - alias: KB3D_OUT_EnameledIronWhite
+    map_kd: KB3D_OUT_EnameledIronWhite_basecolor.png
+    map_normal: KB3D_OUT_EnameledIronWhite_normal.png
+    map_di: KB3D_OUT_EnameledIronWhite_height.png
+    map_mras: KB3D_OUT_EnameledIronWhite_mras
   - alias: KB3D_OUT_FabricAtlasW
     map_kd: KB3D_OUT_FabricAtlasW_basecolor.png
     map_normal: KB3D_OUT_FabricAtlasW_normal.png
+    map_di: KB3D_OUT_FabricAtlasW_height.png
     map_mras: KB3D_OUT_FabricAtlasW_mras
     render_back: true
+    alpha: true
+  - alias: KB3D_OUT_FabricFeltTrimA
+    map_kd: KB3D_OUT_FabricFeltTrimA_basecolor.png
+    map_normal: KB3D_OUT_FabricFeltTrimA_normal.png
+    map_di: KB3D_OUT_FabricFeltTrimA_height.png
+    map_mras: KB3D_OUT_FabricFeltTrimA_mras
+    render_back: true
+    alpha: true
+  - alias: KB3D_OUT_FabricTentBrightA
+    map_kd: KB3D_OUT_FabricTentBrightA_basecolrgba.png
+    map_normal: KB3D_OUT_FabricTentBrightA_normal.png
+    map_di: KB3D_OUT_FabricTentBrightA_height.png
+    map_mras: KB3D_OUT_FabricTentBrightA_mras
+    render_back: true
+    alpha: true
     blend: true
+  - alias: KB3D_OUT_FabricTentBrightB
+    map_kd: KB3D_OUT_FabricTentBrightB_basecolrgba.png
+    map_normal: KB3D_OUT_FabricTentBrightB_normal.png
+    map_di: KB3D_OUT_FabricTentBrightB_height.png
+    map_mras: KB3D_OUT_FabricTentBrightB_mras
+    render_back: true
+    alpha: true
+    blend: true
+  - alias: KB3D_OUT_FabricTentLBeigeB
+    map_kd: KB3D_OUT_FabricTentLBeigeB_basecolrgba.png
+    map_normal: KB3D_OUT_FabricTentLBeigeB_normal.png
+    map_di: KB3D_OUT_FabricTentLBeigeB_height.png
+    map_mras: KB3D_OUT_FabricTentLBeigeB_mras
+    render_back: true
+    alpha: true
+    blend: true
+  - alias: KB3D_OUT_FlagsW
+    map_kd: KB3D_OUT_FlagsW_basecolor.png
+    map_normal: KB3D_OUT_FlagsW_normal.png
+    map_di: KB3D_OUT_FlagsW_height.png
+    map_mras: KB3D_OUT_FlagsW_mras
+  - alias: KB3D_OUT_FoodAtlasWA
+    map_kd: KB3D_OUT_FoodAtlasWA_basecolrgba.png
+    map_normal: KB3D_OUT_FoodAtlasWA_normal.png
+    map_di: KB3D_OUT_FoodAtlasWA_height.png
+    map_mras: KB3D_OUT_FoodAtlasWA_mras
+    alpha: true
+  - alias: KB3D_OUT_FurBearA
+    map_kd: KB3D_OUT_FurBearA_basecolor.png
+    map_normal: KB3D_OUT_FurBearA_normal.png
+    map_di: KB3D_OUT_FurBearA_height.png
+    map_mras: KB3D_OUT_FurBearA_mras
+  - alias: KB3D_OUT_FurBoarA
+    map_kd: KB3D_OUT_FurBoarA_basecolor.png
+    map_normal: KB3D_OUT_FurBoarA_normal.png
+    map_di: KB3D_OUT_FurBoarA_height.png
+    map_mras: KB3D_OUT_FurBoarA_mras
+  - alias: KB3D_OUT_FurCoyoteA
+    map_kd: KB3D_OUT_FurCoyoteA_basecolor.png
+    map_normal: KB3D_OUT_FurCoyoteA_normal.png
+    map_di: KB3D_OUT_FurCoyoteA_height.png
+    map_mras: KB3D_OUT_FurCoyoteA_mras
+  - alias: KB3D_OUT_FurDeerA
+    map_kd: KB3D_OUT_FurDeerA_basecolor.png
+    map_normal: KB3D_OUT_FurDeerA_normal.png
+    map_di: KB3D_OUT_FurDeerA_height.png
+    map_mras: KB3D_OUT_FurDeerA_mras
+  - alias: KB3D_OUT_GlassBrownW
+    map_kd: KB3D_OUT_GlassBrownW_basecolrgba.png
+    map_normal: KB3D_OUT_GlassBrownW_normal.png
+    map_di: KB3D_OUT_GlassBrownW_height.png
+    map_mras: KB3D_OUT_GlassBrownW_mras
+    render_back: true
+    alpha: true
+    blend: true
+  - alias: KB3D_OUT_GlassDirtW
+    map_kd: KB3D_OUT_GlassDirtW_basecolrgba.png
+    map_normal: KB3D_OUT_GlassDirtW_normal.png
+    map_di: KB3D_OUT_GlassDirtW_height.png
+    map_mras: KB3D_OUT_GlassDirtW_mras
+    render_back: true
+    alpha: true
+    blend: true
+  - alias: KB3D_OUT_GlassGreenW
+    map_kd: KB3D_OUT_GlassGreenW_basecolrgba.png
+    map_normal: KB3D_OUT_GlassGreenW_normal.png
+    map_di: KB3D_OUT_GlassGreenW_height.png
+    map_mras: KB3D_OUT_GlassGreenW_mras
+    render_back: true
+    alpha: true
+    blend: true
+  - alias: KB3D_OUT_GrassDryT
+    map_kd: KB3D_OUT_GrassDryT_basecolrgba.png
+    map_normal: KB3D_OUT_GrassDryT_normal.png
+    map_di: KB3D_OUT_GrassDryT_height.png
+    map_mras: KB3D_OUT_GrassDryT_mras
+    render_back: true
+    alpha: true
+    blend: true
+  - alias: KB3D_OUT_GrassTumble
+    map_kd: KB3D_OUT_GrassTumble_basecolrgba.png
+    map_normal: KB3D_OUT_GrassTumble_normal.png
+    map_di: KB3D_OUT_GrassTumble_height.png
+    map_mras: KB3D_OUT_GrassTumble_mras
+    render_back: true
+    alpha: true
+    blend: true
+  - alias: KB3D_OUT_GroundDryGrassW
+    map_kd: KB3D_OUT_GroundDryGrassW_basecolor.png
+    map_normal: KB3D_OUT_GroundDryGrassW_normal.png
+    map_di: KB3D_OUT_GroundDryGrassW_height.png
+    map_mras: KB3D_OUT_GroundDryGrassW_mras
+  - alias: KB3D_OUT_GroundGravelW
+    map_kd: KB3D_OUT_GroundGravelW_basecolor.png
+    map_normal: KB3D_OUT_GroundGravelW_normal.png
+    map_di: KB3D_OUT_GroundGravelW_height.png
+    map_mras: KB3D_OUT_GroundGravelW_mras
+  - alias: KB3D_OUT_GroundPebbledW
+    map_kd: KB3D_OUT_GroundPebbledW_basecolor.png
+    map_normal: KB3D_OUT_GroundPebbledW_normal.png
+    map_di: KB3D_OUT_GroundPebbledW_height.png
+    map_mras: KB3D_OUT_GroundPebbledW_mras
+  - alias: KB3D_OUT_HaleBaleA
+    map_kd: KB3D_OUT_HaleBaleA_basecolrgba.png
+    map_normal: KB3D_OUT_HaleBaleA_normal.png
+    map_di: KB3D_OUT_HaleBaleA_height.png
+    map_mras: KB3D_OUT_HaleBaleA_mras
+    alpha: true
+    blend: true
+  - alias: KB3D_OUT_LeatherBrownOldA
+    map_kd: KB3D_OUT_LeatherBrownOldA_basecolor.png
+    map_normal: KB3D_OUT_LeatherBrownOldA_normal.png
+    map_di: KB3D_OUT_LeatherBrownOldA_height.png
+    map_mras: KB3D_OUT_LeatherBrownOldA_mras
+  - alias: KB3D_OUT_LeatherBrownOldB
+    map_kd: KB3D_OUT_LeatherBrownOldB_basecolor.png
+    map_normal: KB3D_OUT_LeatherBrownOldB_normal.png
+    map_di: KB3D_OUT_LeatherBrownOldB_height.png
+    map_mras: KB3D_OUT_LeatherBrownOldB_mras
+  - alias: KB3D_OUT_MetalBlackA
+    map_kd: KB3D_OUT_MetalBlackA_basecolor.png
+    map_normal: KB3D_OUT_MetalBlackA_normal.png
+    map_di: KB3D_OUT_MetalBlackA_height.png
+    map_mras: KB3D_OUT_MetalBlackA_mras
+  - alias: KB3D_OUT_MetalBlackB
+    map_kd: KB3D_OUT_MetalBlackB_basecolor.png
+    map_normal: KB3D_OUT_MetalBlackB_normal.png
+    map_di: KB3D_OUT_MetalBlackB_height.png
+    map_mras: KB3D_OUT_MetalBlackB_mras
+  - alias: KB3D_OUT_MetalBlackOld
+    map_kd: KB3D_OUT_MetalBlackOld_basecolor.png
+    map_normal: KB3D_OUT_MetalBlackOld_normal.png
+    map_di: KB3D_OUT_MetalBlackOld_height.png
+    map_mras: KB3D_OUT_MetalBlackOld_mras
+  - alias: KB3D_OUT_MetalDarkCorrugated
+    map_kd: KB3D_OUT_MetalDarkCorrugated_basecolor.png
+    map_normal: KB3D_OUT_MetalDarkCorrugated_normal.png
+    map_di: KB3D_OUT_MetalDarkCorrugated_height.png
+    map_mras: KB3D_OUT_MetalDarkCorrugated_mras
+  - alias: KB3D_OUT_MetalForgedA
+    map_kd: KB3D_OUT_MetalForgedA_basecolor.png
+    map_normal: KB3D_OUT_MetalForgedA_normal.png
+    map_di: KB3D_OUT_MetalForgedA_height.png
+    map_mras: KB3D_OUT_MetalForgedA_mras
+  - alias: KB3D_OUT_MetalForgedDarkA
+    map_kd: KB3D_OUT_MetalForgedDarkA_basecolor.png
+    map_normal: KB3D_OUT_MetalForgedDarkA_normal.png
+    map_di: KB3D_OUT_MetalForgedDarkA_height.png
+    map_mras: KB3D_OUT_MetalForgedDarkA_mras
+  - alias: KB3D_OUT_MetalPBronze
+    map_kd: KB3D_OUT_MetalPBronze_basecolor.png
+    map_normal: KB3D_OUT_MetalPBronze_normal.png
+    map_di: KB3D_OUT_MetalPBronze_height.png
+    map_mras: KB3D_OUT_MetalPBronze_mras
+  - alias: KB3D_OUT_MetalPGreen
+    map_kd: KB3D_OUT_MetalPGreen_basecolor.png
+    map_normal: KB3D_OUT_MetalPGreen_normal.png
+    map_di: KB3D_OUT_MetalPGreen_height.png
+    map_mras: KB3D_OUT_MetalPGreen_mras
+  - alias: KB3D_OUT_MetalPGreenOld
+    map_kd: KB3D_OUT_MetalPGreenOld_basecolor.png
+    map_normal: KB3D_OUT_MetalPGreenOld_normal.png
+    map_di: KB3D_OUT_MetalPGreenOld_height.png
+    map_mras: KB3D_OUT_MetalPGreenOld_mras
+  - alias: KB3D_OUT_MetalPolishedAnt
+    map_kd: KB3D_OUT_MetalPolishedAnt_basecolor.png
+    map_normal: KB3D_OUT_MetalPolishedAnt_normal.png
+    map_di: KB3D_OUT_MetalPolishedAnt_height.png
+    map_mras: KB3D_OUT_MetalPolishedAnt_mras
+  - alias: KB3D_OUT_MetalPOrange
+    map_kd: KB3D_OUT_MetalPOrange_basecolor.png
+    map_normal: KB3D_OUT_MetalPOrange_normal.png
+    map_di: KB3D_OUT_MetalPOrange_height.png
+    map_mras: KB3D_OUT_MetalPOrange_mras
+  - alias: KB3D_OUT_MetalPRed
+    map_kd: KB3D_OUT_MetalPRed_basecolor.png
+    map_normal: KB3D_OUT_MetalPRed_normal.png
+    map_di: KB3D_OUT_MetalPRed_height.png
+    map_mras: KB3D_OUT_MetalPRed_mras
+  - alias: KB3D_OUT_MetalRustedB
+    map_kd: KB3D_OUT_MetalRustedB_basecolor.png
+    map_normal: KB3D_OUT_MetalRustedB_normal.png
+    map_di: KB3D_OUT_MetalRustedB_height.png
+    map_mras: KB3D_OUT_MetalRustedB_mras
+  - alias: KB3D_OUT_MetalRustedC
+    map_kd: KB3D_OUT_MetalRustedC_basecolor.png
+    map_normal: KB3D_OUT_MetalRustedC_normal.png
+    map_di: KB3D_OUT_MetalRustedC_height.png
+    map_mras: KB3D_OUT_MetalRustedC_mras
+  - alias: KB3D_OUT_MetalRustedWA
+    map_kd: KB3D_OUT_MetalRustedWA_basecolor.png
+    map_normal: KB3D_OUT_MetalRustedWA_normal.png
+    map_di: KB3D_OUT_MetalRustedWA_height.png
+    map_mras: KB3D_OUT_MetalRustedWA_mras
+  - alias: KB3D_OUT_PlasterDamaged
+    map_kd: KB3D_OUT_PlasterDamaged_basecolor.png
+    map_normal: KB3D_OUT_PlasterDamaged_normal.png
+    map_di: KB3D_OUT_PlasterDamaged_height.png
+    map_mras: KB3D_OUT_PlasterDamaged_mras
+  - alias: KB3D_OUT_PlasterGray
+    map_kd: KB3D_OUT_PlasterGray_basecolor.png
+    map_normal: KB3D_OUT_PlasterGray_normal.png
+    map_di: KB3D_OUT_PlasterGray_height.png
+    map_mras: KB3D_OUT_PlasterGray_mras
+  - alias: KB3D_OUT_PlasterWhite
+    map_kd: KB3D_OUT_PlasterWhite_basecolor.png
+    map_normal: KB3D_OUT_PlasterWhite_normal.png
+    map_di: KB3D_OUT_PlasterWhite_height.png
+    map_mras: KB3D_OUT_PlasterWhite_mras
+  - alias: KB3D_OUT_RockGrayW
+    map_kd: KB3D_OUT_RockGrayW_basecolor.png
+    map_normal: KB3D_OUT_RockGrayW_normal.png
+    map_di: KB3D_OUT_RockGrayW_height.png
+    map_mras: KB3D_OUT_RockGrayW_mras
+  - alias: KB3D_OUT_RocksBeige
+    map_kd: KB3D_OUT_RocksBeige_basecolor.png
+    map_normal: KB3D_OUT_RocksBeige_normal.png
+    map_di: KB3D_OUT_RocksBeige_height.png
+    map_mras: KB3D_OUT_RocksBeige_mras
+  - alias: KB3D_OUT_RocksWB
+    map_kd: KB3D_OUT_RocksWB_basecolor.png
+    map_normal: KB3D_OUT_RocksWB_normal.png
+    map_di: KB3D_OUT_RocksWB_height.png
+    map_mras: KB3D_OUT_RocksWB_mras
+  - alias: KB3D_OUT_RopesTrimW
+    map_kd: KB3D_OUT_RopesTrimW_basecolor.png
+    map_normal: KB3D_OUT_RopesTrimW_normal.png
+    map_di: KB3D_OUT_RopesTrimW_height.png
+    map_mras: KB3D_OUT_RopesTrimW_mras
+  - alias: KB3D_OUT_RubberHardDark
+    map_kd: KB3D_OUT_RubberHardDark_basecolor.png
+    map_normal: KB3D_OUT_RubberHardDark_normal.png
+    map_di: KB3D_OUT_RubberHardDark_height.png
+    map_mras: KB3D_OUT_RubberHardDark_mras
+  - alias: KB3D_OUT_Wicker
+    map_kd: KB3D_OUT_Wicker_basecolrgba.png
+    map_normal: KB3D_OUT_Wicker_normal.png
+    map_di: KB3D_OUT_Wicker_height.png
+    map_mras: KB3D_OUT_Wicker_mras
+    render_back: true
+    alpha: true
+    blend: true
+  - alias: KB3D_OUT_WoodBrightA
+    map_kd: KB3D_OUT_WoodBrightA_basecolor.png
+    map_normal: KB3D_OUT_WoodBrightA_normal.png
+    map_di: KB3D_OUT_WoodBrightA_height.png
+    map_mras: KB3D_OUT_WoodBrightA_mras
+  - alias: KB3D_OUT_WoodChippedW
+    map_kd: KB3D_OUT_WoodChippedW_basecolor.png
+    map_normal: KB3D_OUT_WoodChippedW_normal.png
+    map_di: KB3D_OUT_WoodChippedW_height.png
+    map_mras: KB3D_OUT_WoodChippedW_mras
   - alias: KB3D_OUT_WoodDarkB
     map_kd: KB3D_OUT_WoodDarkB_basecolor.png
     map_normal: KB3D_OUT_WoodDarkB_normal.png
+    map_di: KB3D_OUT_WoodDarkB_height.png
     map_mras: KB3D_OUT_WoodDarkB_mras
+  - alias: KB3D_OUT_WoodDarkOldA
+    map_kd: KB3D_OUT_WoodDarkOldA_basecolor.png
+    map_normal: KB3D_OUT_WoodDarkOldA_normal.png
+    map_di: KB3D_OUT_WoodDarkOldA_height.png
+    map_mras: KB3D_OUT_WoodDarkOldA_mras
+  - alias: KB3D_OUT_WoodGrayB
+    map_kd: KB3D_OUT_WoodGrayB_basecolor.png
+    map_normal: KB3D_OUT_WoodGrayB_normal.png
+    map_di: KB3D_OUT_WoodGrayB_height.png
+    map_mras: KB3D_OUT_WoodGrayB_mras
   - alias: KB3D_OUT_WoodGrayOldA
     map_kd: KB3D_OUT_WoodGrayOldA_basecolor.png
     map_normal: KB3D_OUT_WoodGrayOldA_normal.png
+    map_di: KB3D_OUT_WoodGrayOldA_height.png
     map_mras: KB3D_OUT_WoodGrayOldA_mras
-
-  - alias: x
-    map_kd: _basecolor.png
-    map_normal: _normal.png
-    map_mras: _mras
+  - alias: KB3D_OUT_WoodGrayW
+    map_kd: KB3D_OUT_WoodGrayW_basecolor.png
+    map_normal: KB3D_OUT_WoodGrayW_normal.png
+    map_di: KB3D_OUT_WoodGrayW_height.png
+    map_mras: KB3D_OUT_WoodGrayW_mras
+  - alias: KB3D_OUT_WoodHeartwoodAtlas
+    map_kd: KB3D_OUT_WoodHeartwoodAtlas_basecolor.png
+    map_normal: KB3D_OUT_WoodHeartwoodAtlas_normal.png
+    map_di: KB3D_OUT_WoodHeartwoodAtlas_height.png
+    map_mras: KB3D_OUT_WoodHeartwoodAtlas_mras
+  - alias: KB3D_OUT_WoodLogsN
+    map_kd: KB3D_OUT_WoodLogsN_basecolor.png
+    map_normal: KB3D_OUT_WoodLogsN_normal.png
+    map_di: KB3D_OUT_WoodLogsN_height.png
+    map_mras: KB3D_OUT_WoodLogsN_mras
+  - alias: KB3D_OUT_WoodLogsW
+    map_kd: KB3D_OUT_WoodLogsW_basecolor.png
+    map_normal: KB3D_OUT_WoodLogsW_normal.png
+    map_di: KB3D_OUT_WoodLogsW_height.png
+    map_mras: KB3D_OUT_WoodLogsW_mras
+  - alias: KB3D_OUT_WoodOldA
+    map_kd: KB3D_OUT_WoodOldA_basecolor.png
+    map_normal: KB3D_OUT_WoodOldA_normal.png
+    map_di: KB3D_OUT_WoodOldA_height.png
+    map_mras: KB3D_OUT_WoodOldA_mras
+  - alias: KB3D_OUT_WoodOldB
+    map_kd: KB3D_OUT_WoodOldB_basecolor.png
+    map_normal: KB3D_OUT_WoodOldB_normal.png
+    map_di: KB3D_OUT_WoodOldB_height.png
+    map_mras: KB3D_OUT_WoodOldB_mras
+  - alias: KB3D_OUT_WoodOldPBlack
+    map_kd: KB3D_OUT_WoodOldPBlack_basecolor.png
+    map_normal: KB3D_OUT_WoodOldPBlack_normal.png
+    map_di: KB3D_OUT_WoodOldPBlack_height.png
+    map_mras: KB3D_OUT_WoodOldPBlack_mras
+  - alias: KB3D_OUT_WoodOldPDarkRed
+    map_kd: KB3D_OUT_WoodOldPDarkRed_basecolor.png
+    map_normal: KB3D_OUT_WoodOldPDarkRed_normal.png
+    map_di: KB3D_OUT_WoodOldPDarkRed_height.png
+    map_mras: KB3D_OUT_WoodOldPDarkRed_mras
+  - alias: KB3D_OUT_WoodOldVarnished
+    map_kd: KB3D_OUT_WoodOldVarnished_basecolor.png
+    map_normal: KB3D_OUT_WoodOldVarnished_normal.png
+    map_di: KB3D_OUT_WoodOldVarnished_height.png
+    map_mras: KB3D_OUT_WoodOldVarnished_mras
+  - alias: KB3D_OUT_WoodOrange
+    map_kd: KB3D_OUT_WoodOrange_basecolor.png
+    map_normal: KB3D_OUT_WoodOrange_normal.png
+    map_di: KB3D_OUT_WoodOrange_height.png
+    map_mras: KB3D_OUT_WoodOrange_mras
+  - alias: KB3D_OUT_WoodPBeige
+    map_kd: KB3D_OUT_WoodPBeige_basecolor.png
+    map_normal: KB3D_OUT_WoodPBeige_normal.png
+    map_di: KB3D_OUT_WoodPBeige_height.png
+    map_mras: KB3D_OUT_WoodPBeige_mras
+  - alias: KB3D_OUT_WoodPBlue
+    map_kd: KB3D_OUT_WoodPBlue_basecolor.png
+    map_normal: KB3D_OUT_WoodPBlue_normal.png
+    map_di: KB3D_OUT_WoodPBlue_height.png
+    map_mras: KB3D_OUT_WoodPBlue_mras
+  - alias: KB3D_OUT_WoodPBlueOld
+    map_kd: KB3D_OUT_WoodPBlueOld_basecolor.png
+    map_normal: KB3D_OUT_WoodPBlueOld_normal.png
+    map_di: KB3D_OUT_WoodPBlueOld_height.png
+    map_mras: KB3D_OUT_WoodPBlueOld_mras
+  - alias: KB3D_OUT_WoodPCyanOld
+    map_kd: KB3D_OUT_WoodPCyanOld_basecolor.png
+    map_normal: KB3D_OUT_WoodPCyanOld_normal.png
+    map_di: KB3D_OUT_WoodPCyanOld_height.png
+    map_mras: KB3D_OUT_WoodPCyanOld_mras
+  - alias: KB3D_OUT_WoodPGreenA
+    map_kd: KB3D_OUT_WoodPGreenA_basecolor.png
+    map_normal: KB3D_OUT_WoodPGreenA_normal.png
+    map_di: KB3D_OUT_WoodPGreenA_height.png
+    map_mras: KB3D_OUT_WoodPGreenA_mras
+  - alias: KB3D_OUT_WoodPGreenOld
+    map_kd: KB3D_OUT_WoodPGreenOld_basecolor.png
+    map_normal: KB3D_OUT_WoodPGreenOld_normal.png
+    map_di: KB3D_OUT_WoodPGreenOld_height.png
+    map_mras: KB3D_OUT_WoodPGreenOld_mras
+  - alias: KB3D_OUT_WoodPOrange
+    map_kd: KB3D_OUT_WoodPOrange_basecolor.png
+    map_normal: KB3D_OUT_WoodPOrange_normal.png
+    map_di: KB3D_OUT_WoodPOrange_height.png
+    map_mras: KB3D_OUT_WoodPOrange_mras
+  - alias: KB3D_OUT_WoodPOrangeNew
+    map_kd: KB3D_OUT_WoodPOrangeNew_basecolor.png
+    map_normal: KB3D_OUT_WoodPOrangeNew_normal.png
+    map_di: KB3D_OUT_WoodPOrangeNew_height.png
+    map_mras: KB3D_OUT_WoodPOrangeNew_mras
+  - alias: KB3D_OUT_WoodPRedOld
+    map_kd: KB3D_OUT_WoodPRedOld_basecolor.png
+    map_normal: KB3D_OUT_WoodPRedOld_normal.png
+    map_di: KB3D_OUT_WoodPRedOld_height.png
+    map_mras: KB3D_OUT_WoodPRedOld_mras
+  - alias: KB3D_OUT_WoodPWhiteOld
+    map_kd: KB3D_OUT_WoodPWhiteOld_basecolor.png
+    map_normal: KB3D_OUT_WoodPWhiteOld_normal.png
+    map_di: KB3D_OUT_WoodPWhiteOld_height.png
+    map_mras: KB3D_OUT_WoodPWhiteOld_mras
+  - alias: KB3D_OUT_WoodPYellow
+    map_kd: KB3D_OUT_WoodPYellow_basecolor.png
+    map_normal: KB3D_OUT_WoodPYellow_normal.png
+    map_di: KB3D_OUT_WoodPYellow_height.png
+    map_mras: KB3D_OUT_WoodPYellow_mras
   - alias: x
     map_kd: _basecolor.png
     map_normal: _normal.png
