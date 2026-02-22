@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require "amazing_print"
+
 require_relative "shared"
 
 #

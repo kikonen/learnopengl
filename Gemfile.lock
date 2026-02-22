@@ -1,6 +1,7 @@
 GEM
   remote: https://rubygems.org/
   specs:
+    amazing_print (2.0.0)
     chunky_png (1.4.0)
     hashie (5.1.0)
       logger
@@ -18,6 +19,7 @@ PLATFORMS
   x64-mingw-ucrt
 
 DEPENDENCIES
+  amazing_print
   hashie
   mittsu
   rmagick (~> 6.2.0)
