@@ -179,8 +179,8 @@ module Encode
   MODE_OPACITY = :opacity
   MODE_DISPLACEMENT = :displacement
 
-  COMBINE_VERSION = 2
-  KTX_VERSION = 1
+  COMBINE_VERSION = 3
+  KTX_VERSION = 3
 
   ############################################################
   # UTILS
@@ -709,6 +709,10 @@ module Encode
       @extensions = extensions
       @recursive = recursive
       @dry_run = dry_run
+    end
+
+    def info(msg)
+      puts msg
     end
 
     def generate_metadata(
@@ -1316,7 +1320,7 @@ module Encode
       @dry_run = dry_run
     end
 
-    def encode(tid)
+    def encode(tid:)
       raise "NYI!"
     end
 
@@ -1344,7 +1348,7 @@ module Encode
       @tex_info = tex_info
     end
 
-    def encode(tid)
+    def encode(tid:)
       @tid = tid
 
       encode_image(
@@ -1462,9 +1466,7 @@ module Encode
       # NOTE KI workaround segmentation fault, which happens
       # if running without pause
       #GC.start
-      sleep 0.25
-
-      #debugger
+      #sleep 0.2
 
       # https://imagemagick.org/script/command-line-options.php#combine
       # Magick::RGBColorspace
@@ -1544,7 +1546,7 @@ module Encode
       @parts = parts
     end
 
-    def encode(tid)
+    def encode(tid:)
       @tid = tid
 
       create_combound_texture(
@@ -1764,9 +1766,8 @@ module Encode
 
       # NOTE KI workaround segmentation fault, which happens
       # if running without pause
-      GC.start
-      sleep 0.25
-      #debugger
+      #GC.start
+      #sleep 0.2
 
       # https://imagemagick.org/script/command-line-options.php#combine
       dst_img = img_list.combine(Magick::RGBColorspace)
@@ -1867,7 +1868,10 @@ module Encode
       img_list = Magick::ImageList.new
       img_list << src_img
 
-      #debugger
+      # NOTE KI workaround segmentation fault, which happens
+      # if running without pause
+      #GC.start
+      #sleep 0.2
 
       # https://imagemagick.org/script/command-line-options.php#combine
       dst_img = img_list.combine(Magick::RGBColorspace)
@@ -1916,7 +1920,7 @@ module Encode
       @normal_mode = normal_mode
     end
 
-    def encode(tid)
+    def encode(tid:)
       @tid = tid
 
       encode_ktx_image(
@@ -2028,6 +2032,33 @@ module Encode
   class AsyncProcessor
     attr_reader :queue
 
+    class Worker
+      attr_reader :tid
+
+      def initialize(
+        processor,
+        tid
+      )
+        @processor = processor
+        @tid = tid
+      end
+
+      def info(msg)
+        puts "TID[#{@tid}]: #{msg}"
+      end
+
+      def process_files
+        while @processor.alive?
+          entry = @processor.queue.pop
+          break if entry == :shutdown_worker
+
+          entry.encode(tid:)
+        end
+      ensure
+        @processor.worker_stopped
+      end
+    end
+
     def initialize(
       thread_count:
     )
@@ -2036,6 +2067,7 @@ module Encode
       @queue = Queue.new
       @workers = []
       @running = false
+      @remaining = 0
     end
 
     def enqueue(item)
@@ -2047,42 +2079,57 @@ module Encode
     end
 
     def alive?
-      @running
+      @mutex.synchronize {
+        @running
+      }
+    end
+
+    def worker_stopped
+      @mutex.synchronize {
+        @remaining -= 1
+      }
+    end
+
+    def remaining
+      @mutex.synchronize {
+        @remaining
+      }
     end
 
     def start
       @running = true
       @thread_count.times.each do |idx|
+        @mutex.synchronize {
+          @remaining += 1
+        }
+
         @workers << Thread.new do
-          process_files(idx)
+          worker = Worker.new(self, idx)
+          worker.process_files
         end
       end
     end
 
     def shutdown
       @running = false
-      @workers.each(&:join)
+
+      @thread_count.times.each do |idx|
+        @queue << :shutdown_worker
+      end
+
+      wait_remaining = 1
+      while wait_remaining > 0
+        wait_remaining = remaining
+        sleep 0.1 if wait_remaining > 0
+      end
+      @workers.clear
     end
 
     def wait
       while @running
-        sleep 1
+        sleep 0.2
+        return if @queue.empty?
       end
-    end
-
-    def process_files(tid)
-      while @running
-        entry = @queue.pop
-        if entry
-          entry.encode(tid)
-        else
-          sleep 1
-        end
-      end
-    end
-
-    def poll_entry
-
     end
   end
 
@@ -2281,7 +2328,6 @@ module Encode
 
       @processor.start
       @processor.wait
-      #sleep 5
       @processor.shutdown
       puts "REMAINING: #{@processor.size}"
     end
