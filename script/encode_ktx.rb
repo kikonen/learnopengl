@@ -5,12 +5,7 @@
 # ENV['RUBY_DEBUG_SAVE_HISTORY'] = "10000"
 
 require 'debug'
-require 'yaml'
-require 'digest'
-require 'pathname'
 require 'thor'
-require 'fileutils'
-require 'json'
 require 'logger'
 
 require_relative "encode/shared"
@@ -272,27 +267,32 @@ module Encode
         combine_textures.each do |target_name, parts|
           target_mode = parts.first.mode.to_sym
 
-          @processor.enqueue(CombineEncoder.new(
-            src_dir:,
-            dst_dir:,
-            target_name:,
-            target_mode:,
-            parts:,
-            target_size:,
-            force:,
-            dry_run:))
+          @processor.add_task(
+            class: 'Encode::CombineEncoder',
+            args: {
+              src_dir:,
+              dst_dir:,
+              target_name:,
+              target_mode:,
+              parts:,
+              target_size:,
+              force:,
+              dry_run:
+            })
         end
       end
 
       if encode_pass
         encode_textures.each do |tex_info|
-          @processor.enqueue(ImageEncoder.new(
-            src_dir:,
-            dst_dir:,
-            tex_info:,
-            target_size:,
-            force:,
-            dry_run:))
+          @processor.add_task(
+            class: "Encode::ImageEncoder",
+            args: {
+              src_dir:,
+              dst_dir:,
+              tex_info:,
+              target_size:,
+              force:,
+              dry_run:})
         end
       end
 
@@ -300,16 +300,18 @@ module Encode
         encode_textures.each do |tex_info|
           src_path = "#{src_dir}/#{name}"
 
-          @processor.enqueue(KtxEncoder.new(
-            src_path:,
-            dst_dir:,
-            type: tex_info.type,
-            target_type: tex_info.target_type || RGB,
-            srgb: tex_info.srgb || false,
-            normal_mode: tex_info.mode-to_sym == :normal,
-            target_size:,
-            force:,
-            dry_run:))
+          @processor.add_task(
+            class: "Encode::KtxEncoder",
+            args: {
+              src_path:,
+              dst_dir:,
+              type: tex_info.type,
+              target_type: tex_info.target_type || RGB,
+              srgb: tex_info.srgb || false,
+              normal_mode: tex_info.mode-to_sym == :normal,
+              target_size:,
+              force:,
+              dry_run:})
         end
       end
 

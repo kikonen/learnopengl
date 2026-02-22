@@ -15,8 +15,6 @@ require_relative "util"
 
 module Encode
   class AsyncProcessor
-    attr_reader :queue
-
     class Worker
       attr_reader :tid
 
@@ -34,10 +32,37 @@ module Encode
 
       def process_files
         while @processor.alive?
-          entry = @processor.queue.pop
-          break if entry == :shutdown_worker
+          json = @processor.poll_task
+          break if json == :shutdown_worker
 
-          entry.encode(tid:)
+          task = JSON.parse(json, symbolize_names: true)
+
+          cls = Object.const_get(task[:class])
+          args = task[:args]
+
+          if args[:type]
+            args[:type] = args[:type].to_sym
+          end
+
+          if args[:target_mode]
+            args[:target_mode] = args[:target_mode].to_sym
+          end
+
+          if args[:target_type]
+            args[:target_type] = args[:target_type].to_sym
+          end
+
+          if args[:parts]
+            args[:parts] = args[:parts].map { |e| TextureInfo.new(e) }
+          end
+
+          if args[:tex_info]
+            args[:tex_info] = TextureInfo.new(args[:tex_info])
+          end
+
+          encoder = cls.new(**args)
+
+          encoder.encode(tid:)
         end
       ensure
         @processor.worker_stopped
@@ -55,8 +80,12 @@ module Encode
       @remaining = 0
     end
 
-    def enqueue(item)
-      @queue << item
+    def add_task(**task)
+      @queue << task.to_json
+    end
+
+    def poll_task
+      @queue.pop
     end
 
     def size
