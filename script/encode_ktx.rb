@@ -7,16 +7,15 @@
 require 'debug'
 require 'thor'
 require 'logger'
+require 'etc'
 
 require_relative "encode/shared"
 require_relative "encode/util"
 require_relative "encode/meta_resolver"
 
-require_relative "encode/image_encoder"
-require_relative "encode/combine_encoder"
-require_relative "encode/ktx_encoder"
-
 require_relative "encode/async_processor"
+
+$stdout.sync = true
 
 module Encode
   ################################################################################
@@ -130,7 +129,7 @@ module Encode
       default: ['all']
     method_option :thread_count,
       type: :numeric,
-      default: 4
+      default: Etc.nprocessors
     def build
       src_dir = options[:src]
       extensions = options[:ext] || EXTENSIONS

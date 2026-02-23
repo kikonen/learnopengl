@@ -16,6 +16,9 @@ require_relative "util"
 module Encode
   class AsyncProcessor
     class Worker
+      EXIT = "__shutdown__"
+      DONE = "__done__"
+
       attr_reader :tid
 
       def initialize(
@@ -24,45 +27,90 @@ module Encode
       )
         @processor = processor
         @tid = tid
+        @wait_queue = Queue.new
       end
 
       def info(msg)
         puts "TID[#{@tid}]: #{msg}"
       end
 
-      def process_files
+      def create
+        stdin, stdin_w = IO.pipe
+        stdout_r, stdout = IO.pipe
+
+        thread = Thread.new do
+          pid = Process.spawn(
+            RbConfig.ruby,
+            "script/encode/async_worker.rb",
+            in: stdin,
+            out: stdout,
+            err: :err
+          )
+          stdin.close
+          stdout.close
+          Process.waitpid(pid)
+        rescue => e
+          stacktrace = e.backtrace.join("\n")
+          puts "ERROR: #{e.message}\n#{stacktrace}"
+        end
+
+        @pipe = [stdin_w, stdout_r, thread]
+      end
+
+      def start
+        @task_id_seq = 0
+        consume(@pipe[0], @pipe[1], @pipe[2])
+      end
+
+      def consume(stdin, stdout, thread)
+        Thread.new do
+          reader = Thread.new do
+            while (line = stdout.gets)
+              #handle_response(JSON.parse(line, symbolize_names: true))
+              handle_response(line)
+            end
+          end
+
+          process_tasks(stdin)
+          stdin.close
+
+          reader.join
+          thread.join
+        end
+      end
+
+      def handle_response(line)
+        response = JSON.parse(line, symbolize_names: true)
+        if response[:response] == DONE
+          @wait_queue << response
+        end
+      rescue
+        puts line
+      end
+
+      def process_tasks(stdin)
         while @processor.alive?
           json = @processor.poll_task
-          break if json == :shutdown_worker
 
-          task = JSON.parse(json, symbolize_names: true)
+          if json == :shutdown_worker
+            stdin.puts(JSON.generate({ action: EXIT, tid: tid }))
+          else
+            #puts json
+            task = JSON.parse(json, symbolize_names: true)
 
-          cls = Object.const_get(task[:class])
-          args = task[:args]
+            @task_id_seq += 1
+            task_id = "#{tid}-#{@task_id_seq}"
 
-          if args[:type]
-            args[:type] = args[:type].to_sym
+            task[:tid] = tid
+            task[:task_id] = task_id
+
+            stdin.puts(task.to_json)
+
+            response = @wait_queue.pop
+            if response[:task_id] != task_id
+              raise "MISMATCH: #{response}"
+            end
           end
-
-          if args[:target_mode]
-            args[:target_mode] = args[:target_mode].to_sym
-          end
-
-          if args[:target_type]
-            args[:target_type] = args[:target_type].to_sym
-          end
-
-          if args[:parts]
-            args[:parts] = args[:parts].map { |e| TextureInfo.new(e) }
-          end
-
-          if args[:tex_info]
-            args[:tex_info] = TextureInfo.new(args[:tex_info])
-          end
-
-          encoder = cls.new(**args)
-
-          encoder.encode(tid:)
         end
       ensure
         @processor.worker_stopped
@@ -85,6 +133,7 @@ module Encode
     end
 
     def poll_task
+      #puts "queue: #{@queue.size}"
       @queue.pop
     end
 
@@ -116,11 +165,13 @@ module Encode
         @mutex.synchronize {
           @remaining += 1
         }
+        worker = Worker.new(self, idx)
+        worker.create
+        @workers << worker
+      end
 
-        @workers << Thread.new do
-          worker = Worker.new(self, idx)
-          worker.process_files
-        end
+      @workers.each do |worker|
+        worker.start
       end
     end
 
