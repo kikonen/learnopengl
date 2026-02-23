@@ -53,7 +53,10 @@ module Encode
         {
           version: COMBINE_VERSION,
           size: target_size,
+          type: tex_info[:type],
           depth: target_depth,
+          channels: tex_info.target_channel,
+          srgb: tex_info.srgb,
           parts: [
             {
               name: tex_info.name,

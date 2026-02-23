@@ -14,43 +14,37 @@ module Encode
   # KTX
   ############################################################
   class KtxEncoder < FileEncoder
-    attr_reader:src_path,
-      :dst_dir,
-      :type,
-      :target_type,
-      :srgb,
-      :normal_mode
+    attr_reader:digest_path
 
     def initialize(
-      src_path:,
+      digest_path:,
       src_dir:,
       dst_dir:,
-      type:,
-      target_type: RGB,
-      srgb: true,
-      normal_mode: false,
-      target_size:,
-      force:
+      force:,
+      dry_run:
     )
-      super(src_dir:, dst_dir:, target_size:, force:)
+      super(src_dir:, dst_dir:, target_size:, force:, dry_run:)
 
-      @src_path = src_path
-      @type = type
-      @target_type = target_type
-      @srgb = srgb
-      @normal_mode = normal_mode
+      @digest_path = digest_path
     end
 
     def encode(tid:)
       @tid = tid
 
+      digest_data = YAML.load(File.read(digest_path), symbolize_names: true)
+      ap digest_data
+
+      src_path = digest_path.gsub(".digest", "")
+      salt = digest_data[:salt]
+      type = (salt[:type] || :color).to_sym
+
       encode_ktx_image(
         src_path:,
         dst_dir:,
         type:,
-        target_type:,
-        srgb:,
-        normal_mode:
+        target_type: salt[:channels] || RGB,
+        srgb: salt[:srgb] || false,
+        normal_mode: type == :normal
       )
     end
 
@@ -64,8 +58,6 @@ module Encode
       srgb: true,
       normal_mode: false
     )
-      return unless types.include?(type) || types.include?(:all)
-
       basename = File.basename(src_path, ".*")
       dst_path = "#{dst_dir}/#{basename}.ktx"
       dst_tmp_path = "#{dst_path}.tmp"
