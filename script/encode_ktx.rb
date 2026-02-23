@@ -180,54 +180,51 @@ module Encode
 
       if use_combine
         puts "[COMBINE]"
-        build_dir(
+        build_pass_2(
           src_dir:,
           extensions:,
-          combine_pass: true,
-          encode_pass: false,
-          encode_ktx_pass: false
-        )
+          pass: :combine)
       end
 
       if use_encode
         puts "[ENCODE]"
-        build_dir(
+        build_pass_2(
           src_dir:,
           extensions:,
-          combine_pass: false,
-          encode_pass: true,
-          encode_ktx_pass: false)
+          pass: :encode)
       end
 
+      puts "PASS_2: #{@processor.size}"
+      @processor.start
+      @processor.wait
+      puts "DONE_PASS_2: #{@processor.size}"
+
+      # NOTE KI need to ensure ktx processing is done
+      # after file encoding, otherwise there will be race condition
       if use_encode_ktx
-        puts "[ENCODE_KTX]"
-        build_dir(
-          src_dir:,
+        puts "[KTX]"
+        build_pass_3(
+          src_dir: "#{build_root_dir}/#{target_size}",
           extensions:,
-          combine_pass: false,
-          encode_pass: false,
-          encode_ktx_pass: true)
+          pass: :ktx)
       end
 
-      puts "ENCODE: #{@processor.size}"
-
+      puts "PASS_3: #{@processor.size}"
       @processor.start
       @processor.wait
       @processor.shutdown
-      puts "REMAINING: #{@processor.size}"
+      puts "DONE_PASS_3: #{@processor.size}"
     end
 
     private
 
     ############################################################
-    #
+    # PASS 2
     ############################################################
-    def build_dir(
+    def build_pass_2(
       src_dir:,
       extensions:,
-      combine_pass:,
-      encode_pass:,
-      encode_ktx_pass:)
+      pass:)
 
       plain_dir = src_dir[assets_root_dir.length + 1, src_dir.length]
       dst_dir = "#{build_root_dir}/#{target_size}/#{plain_dir}"
@@ -262,7 +259,7 @@ module Encode
         puts "IGNORE: #{type} #{src_dir} #{tex_info.name}"
       end
 
-      if combine_pass
+      if pass == :combine
         combine_textures.each do |target_name, parts|
           target_mode = parts.first.mode.to_sym
 
@@ -281,7 +278,7 @@ module Encode
         end
       end
 
-      if encode_pass
+      if pass == :encode
         encode_textures.each do |tex_info|
           @processor.add_task(
             class: "Encode::ImageEncoder",
@@ -289,25 +286,6 @@ module Encode
               src_dir:,
               dst_dir:,
               tex_info:,
-              target_size:,
-              force:,
-              dry_run:})
-        end
-      end
-
-      if encode_ktx_pass
-        encode_textures.each do |tex_info|
-          src_path = "#{src_dir}/#{name}"
-
-          @processor.add_task(
-            class: "Encode::KtxEncoder",
-            args: {
-              src_path:,
-              dst_dir:,
-              type: tex_info.type,
-              target_type: tex_info.target_type || RGB,
-              srgb: tex_info.srgb || false,
-              normal_mode: tex_info.mode-to_sym == :normal,
               target_size:,
               force:,
               dry_run:})
@@ -325,12 +303,54 @@ module Encode
         end
 
         sub_dirs.each do |sub_dir|
-          build_dir(
+          build_pass_2(
             src_dir: [src_dir, sub_dir].join('/'),
             extensions:,
-            combine_pass:,
-            encode_pass:,
-            encode_ktx_pass:)
+            pass:)
+        end
+      end
+    end
+
+    ############################################################
+    # PASS 3
+    ############################################################
+    def build_pass_3(
+      src_dir:,
+      extensions:,
+      pass:
+    )
+      plain_dir = src_dir[assets_root_dir.length + 1, src_dir.length]
+      dst_dir = "#{build_root_dir}/#{target_size}/#{plain_dir}"
+      puts "DIR: #{src_dir} => #{dst_dir}"
+
+      Dir["#{src_dir}/*.digest"].each do |src_path|
+        if pass == :ktx
+          @processor.add_task(
+            class: "Encode::KtxEncoder",
+            args: {
+              digest_path: src_path,
+              src_dir:,
+              dst_dir:,
+              force:,
+              dry_run:})
+        end
+      end
+
+      if recursive
+        sub_dirs = []
+
+        files = Util.list_files(src_dir)
+        files.sort_by(&:downcase).each do |f|
+          if File.directory?("#{src_dir}/#{f}")
+            sub_dirs << f
+          end
+        end
+
+        sub_dirs.each do |sub_dir|
+          build_pass_3(
+            src_dir: [src_dir, sub_dir].join('/'),
+            extensions:,
+            pass:)
         end
       end
     end

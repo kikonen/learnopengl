@@ -151,7 +151,10 @@ module Encode
         {
           version: COMBINE_VERSION,
           size: target_size,
+          type: :mras,
           depth: target_depth,
+          channels: RED,
+          srgb: false,
           parts: sorted_parts.map do |tex_info|
             {
               name: tex_info.name,
@@ -319,6 +322,10 @@ module Encode
         {
           version: COMBINE_VERSION,
           size: target_size,
+          type: :displacement,
+          depth: target_depth,
+          channels: RED,
+          srgb: false,
           parts: [
             {
               name: part.name,
