@@ -7,6 +7,7 @@ require 'fileutils'
 require 'json'
 require 'hashie'
 require 'logger'
+require 'rmagick'
 
 require_relative "shared"
 require_relative "util"

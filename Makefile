@@ -53,6 +53,8 @@ setup:
 	ruby --version
 	bundle install
 
+assets: assets-meta assets-build
+
 assets-meta:
 	ruby script/encode_ktx.rb meta --src resources/assets --dry-run false --recursive true --target-size ${TARGET_SIZE}
 

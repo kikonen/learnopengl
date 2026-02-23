@@ -153,6 +153,6 @@ module Encode
   MODE_OPACITY = :opacity
   MODE_DISPLACEMENT = :displacement
 
-  COMBINE_VERSION = 4
-  KTX_VERSION = 4
+  COMBINE_VERSION = 8
+  KTX_VERSION = 8
 end
