@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-require 'debug'
 require 'pathname'
 require 'thor'
 require 'fileutils'
@@ -32,7 +31,6 @@ module Encode
       @tid = tid
 
       digest_data = YAML.load(File.read(digest_path), symbolize_names: true)
-      ap digest_data
 
       src_path = digest_path.gsub(".digest", "")
       salt = digest_data[:salt]
@@ -68,6 +66,10 @@ module Encode
         {
           version: KTX_VERSION,
           target_size:,
+          type:,
+          target_type:,
+          srgb:,
+          normal_mode:,
           parts: [
             name: File.basename(src_path)
           ]

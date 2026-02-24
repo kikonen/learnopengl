@@ -60,3 +60,6 @@ assets-meta:
 
 assets-build:
 	ruby script/encode_ktx.rb build --src resources/assets --dry-run false --recursive true --target-size ${TARGET_SIZE} --encode --combine
+
+assets-ktx:
+	ruby script/encode_ktx.rb build --src resources/assets --dry-run false --recursive true --target-size ${TARGET_SIZE} --ktx

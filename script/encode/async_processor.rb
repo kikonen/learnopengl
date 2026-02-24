@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 require 'open3'
-require 'debug'
 require 'yaml'
 require 'digest'
 require 'pathname'
@@ -35,19 +34,25 @@ module Encode
       end
 
       def create
-        stdin, stdin_w = IO.pipe
-        stdout_r, stdout = IO.pipe
+        env = {}
+        env["RUBY_DEBUG_PORT"] = "21#{@tid.to_s.rjust(3, '0')}" if @tid == 0
+
+        stdin_r, stdin_w = IO.pipe
+        stdout_r, stdout_w = IO.pipe
+
+        pid = Process.spawn(
+          env,
+          RbConfig.ruby,
+          "script/encode/async_worker.rb",
+          in: stdin_r,
+          out: stdout_w,
+          err: :err,
+          close_others: true
+        )
+        stdin_r.close
+        stdout_w.close
 
         thread = Thread.new do
-          pid = Process.spawn(
-            RbConfig.ruby,
-            "script/encode/async_worker.rb",
-            in: stdin,
-            out: stdout,
-            err: :err
-          )
-          stdin.close
-          stdout.close
           Process.waitpid(pid)
         rescue => e
           stacktrace = e.backtrace.join("\n")
@@ -62,17 +67,17 @@ module Encode
         consume(@pipe[0], @pipe[1], @pipe[2])
       end
 
-      def consume(stdin, stdout, thread)
+      def consume(stdin_w, stdout_w, thread)
         Thread.new do
           reader = Thread.new do
-            while (line = stdout.gets)
+            while (line = stdout_w.gets)
               #handle_response(JSON.parse(line, symbolize_names: true))
               handle_response(line)
             end
           end
 
-          process_tasks(stdin)
-          stdin.close
+          process_tasks(stdin_w)
+          stdin_w.close
 
           reader.join
           thread.join
@@ -88,12 +93,12 @@ module Encode
         puts line
       end
 
-      def process_tasks(stdin)
+      def process_tasks(stdin_w)
         while @processor.alive?
           json = @processor.poll_task
 
           if json == :shutdown_worker
-            stdin.puts(JSON.generate({ action: EXIT, tid: tid }))
+            stdin_w.puts(JSON.generate({ action: EXIT, tid: tid }))
           else
             #puts json
             task = JSON.parse(json, symbolize_names: true)
@@ -104,7 +109,7 @@ module Encode
             task[:tid] = tid
             task[:task_id] = task_id
 
-            stdin.puts(task.to_json)
+            stdin_w.puts(task.to_json)
 
             response = @wait_queue.pop
             if response[:task_id] != task_id
