@@ -4,7 +4,8 @@
 #   "#{File.dirname(__FILE__)}/../.rdbg_history")
 # ENV['RUBY_DEBUG_SAVE_HISTORY'] = "10000"
 
-require 'debug'
+require "debug"
+require 'debug/open_nonstop'
 require 'thor'
 require 'logger'
 require 'etc'
@@ -176,44 +177,52 @@ module Encode
       puts "DRY_RUN:     #{dry_run}"
       puts "THREAD_COUNT:#{thread_count}"
 
-      @processor = AsyncProcessor.new(thread_count:)
+      if use_combine || use_encode
+        @processor = AsyncProcessor.new(thread_count:)
 
-      if use_combine
-        puts "[COMBINE]"
-        build_pass_2(
-          src_dir:,
-          extensions:,
-          pass: :combine)
+         if use_combine
+          puts "[COMBINE]"
+          build_pass_2(
+            src_dir:,
+            extensions:,
+            pass: :combine)
+        end
+
+        if use_encode
+          puts "[ENCODE]"
+          build_pass_2(
+            src_dir:,
+            extensions:,
+            pass: :encode)
+        end
+
+        puts "PASS_2: #{@processor.size}"
+        @processor.start
+        @processor.wait
+        @processor.shutdown
+        puts "DONE_PASS_2: #{@processor.size}"
       end
-
-      if use_encode
-        puts "[ENCODE]"
-        build_pass_2(
-          src_dir:,
-          extensions:,
-          pass: :encode)
-      end
-
-      puts "PASS_2: #{@processor.size}"
-      @processor.start
-      @processor.wait
-      puts "DONE_PASS_2: #{@processor.size}"
 
       # NOTE KI need to ensure ktx processing is done
       # after file encoding, otherwise there will be race condition
       if use_encode_ktx
+        @processor = AsyncProcessor.new(thread_count:)
+
+        plain_dir = src_dir[assets_root_dir.length + 1, src_dir.length]
+        ktx_src_dir = "#{build_root_dir}/#{target_size}/#{plain_dir}"
+
         puts "[KTX]"
         build_pass_3(
-          src_dir: "#{build_root_dir}/#{target_size}",
+          src_dir: ktx_src_dir,
           extensions:,
           pass: :ktx)
-      end
 
-      puts "PASS_3: #{@processor.size}"
-      @processor.start
-      @processor.wait
-      @processor.shutdown
-      puts "DONE_PASS_3: #{@processor.size}"
+        puts "PASS_3: #{@processor.size}"
+        @processor.start
+        @processor.wait
+        @processor.shutdown
+        puts "DONE_PASS_3: #{@processor.size}"
+      end
     end
 
     private
@@ -319,11 +328,12 @@ module Encode
       extensions:,
       pass:
     )
-      plain_dir = src_dir[assets_root_dir.length + 1, src_dir.length]
-      dst_dir = "#{build_root_dir}/#{target_size}/#{plain_dir}"
+      dst_dir = src_dir
       puts "DIR: #{src_dir} => #{dst_dir}"
 
       Dir["#{src_dir}/*.digest"].each do |src_path|
+        next if /\.ktx/.match?(src_path)
+
         if pass == :ktx
           @processor.add_task(
             class: "Encode::KtxEncoder",

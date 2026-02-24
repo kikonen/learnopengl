@@ -1,6 +1,5 @@
 # frozen_string_literal: true
 
-require 'debug'
 require 'yaml'
 require 'digest'
 require 'pathname'

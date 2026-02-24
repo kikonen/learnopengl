@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
-require 'debug'
+require "debug"
+require 'debug/open_nonstop'
+
 require 'json'
 require 'logger'
 
