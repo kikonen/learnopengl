@@ -6,6 +6,7 @@
 #include <sstream>
 #include <filesystem>
 #include <regex>
+#include <tuple>
 
 #include "fmt/format.h"
 
@@ -108,7 +109,7 @@ namespace {
         return mat;
     }
 
-    std::string selectTexturePath(
+    std::pair<std::string, bool> selectTexturePath(
         std::string_view path,
         bool useCompressed)
     {
@@ -118,22 +119,7 @@ namespace {
 
         bool found = false;
 
-        if (useCompressed && assets.compressedTexturesEnabled) {
-            std::filesystem::path ktxPath{ path };
-            ktxPath.replace_extension(".ktx");
-
-            const auto fullPath = util::joinPath(
-                assets.assetsBuildDir,
-                ktxPath.string());
-
-            if (util::fileExists(fullPath)) {
-                KI_INFO_OUT(fmt::format("TEX::FOUND: ktx_path={}", fullPath));
-                filePath = fullPath;
-                found = true;
-            }
-        }
-
-        if (!found) {
+        {
             std::filesystem::path buildPath{ path };
             const auto& stem = buildPath.stem().string();
 
@@ -144,30 +130,42 @@ namespace {
                 buildPath.replace_filename(fmt::format("{}_build.{}", stem, "png"));
             }
 
+            if (useCompressed && assets.compressedTexturesEnabled) {
+                std::filesystem::path ktxPath{ buildPath };
+                ktxPath.replace_extension(".ktx");
+
+                const auto fullPath = util::joinPath(
+                    assets.assetsBuildDir,
+                    ktxPath.string());
+
+                if (util::fileExists(fullPath)) {
+                    filePath = fullPath;
+                    found = true;
+                }
+            }
+
             //const auto re = std::regex(".*scenery_build.png");
             //if (std::regex_match(buildPath.string(), re)) {
             //    int x = 0;
             //}
 
-            const auto fullPath = util::joinPath(
-                assets.assetsBuildDir,
-                buildPath.string());
+            if (!found) {
+                const auto fullPath = util::joinPath(
+                    assets.assetsBuildDir,
+                    buildPath.string());
 
-            if (util::fileExists(fullPath)) {
-                filePath = fullPath;
-                found = true;
+                if (util::fileExists(fullPath)) {
+                    filePath = fullPath;
+                    found = true;
+                }
             }
-
-            KI_INFO_OUT(fmt::format(
-                "TEX::RESOLVE_BUILD: found={}, src={}, build={}",
-                found, path, buildPath.string()));
         }
 
         if (!found) {
             filePath = util::joinPath(assets.assetsDir, path);
         }
 
-        return filePath.string();
+        return { filePath.string(), found };
     }
 }
 
@@ -449,10 +447,9 @@ std::string Material::resolveTexturePath(
 
     const auto& assets = Assets::get();
 
-    std::string texturePath;
+    std::pair<std::string, bool> texturePath{ "", false };
 
-    if (!m_baseDir.empty())
-    {
+    if (!m_baseDir.empty()) {
         // NOTE KI MUST normalize path to avoid mismatches due to \ vs /
         texturePath = selectTexturePath(
             util::joinPathExt(
@@ -463,8 +460,7 @@ std::string Material::resolveTexturePath(
             compressed);
     }
 
-    if (!util::fileExists(texturePath))
-    {
+    if (!texturePath.second) {
         // NOTE KI MUST normalize path to avoid mismatches due to \ vs /
         texturePath = selectTexturePath(
             util::joinPathExt(
@@ -474,8 +470,7 @@ std::string Material::resolveTexturePath(
             compressed);
     }
 
-    if (!util::fileExists(texturePath) && !m_baseDir.empty())
-    {
+    if (!texturePath.second && !m_baseDir.empty()) {
         // NOTE KI MUST normalize path to avoid mismatches due to \ vs /
         texturePath = selectTexturePath(
             util::joinPathExt(
@@ -485,22 +480,28 @@ std::string Material::resolveTexturePath(
             compressed);
     }
 
-    if (!util::fileExists(texturePath) && m_baseDir.empty())
-    {
+    if (!texturePath.second && m_baseDir.empty()) {
         // NOTE KI MUST normalize path to avoid mismatches due to \ vs /
         texturePath = selectTexturePath(
             textureName,
             compressed);
     }
 
-    if (!util::fileExists(texturePath)) {
+    if (!texturePath.second) {
         KI_WARN_OUT(fmt::format(
             "TEX::MISSING: base_dir={}, name={}",
             m_baseDir,
             textureName));
     }
+    else {
+        KI_INFO_OUT(fmt::format(
+            "TEX::FOUND: base_dir={}, name={}, path={}",
+            m_baseDir,
+            textureName,
+            texturePath.first));
+    }
 
-    return texturePath;
+    return texturePath.first;
 }
 
 // @param compressed use compressed if possible
