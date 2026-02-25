@@ -19,6 +19,7 @@
 
 #include "util/util.h"
 #include "util/Log.h"
+#include "util/file.h"
 
 #include "kigl/kigl.h"
 
@@ -211,6 +212,14 @@ void ImageTexture::prepareKtx()
     //ktx_uint8_t* image;
     //ktx_uint32_t level, layer, faceSlice;
     GLenum target, glerror;
+
+    if (!util::fileExists(m_image->m_path)) {
+        KI_ERROR(fmt::format("TEX::UPLOAD::FILE_NOT_FOUND: ktx: {}", m_image->m_path));
+        if (!m_shared) {
+            m_image.reset();
+        }
+        return;
+    }
 
     result = ktxTexture_CreateFromNamedFile(
         m_image->m_path.c_str(),
