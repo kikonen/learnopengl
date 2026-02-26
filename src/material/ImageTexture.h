@@ -17,6 +17,7 @@ public:
         bool shared,
         bool grayScale,
         bool gammaCorrect,
+        bool normalMap,
         bool flipY,
         const TextureSpec& spec);
 
@@ -45,6 +46,7 @@ public:
     // NOTE KI shared == image data may be reused
     // => thus cannot automatically release after uploading to GPU
     const bool m_shared{ false };
+    const bool m_normalMap;
 
 private:
     std::unique_ptr<Image> m_image;

@@ -18,22 +18,27 @@ module Encode
   class TextureDigest
     attr_reader :dst_path,
       :source_paths,
+      :meta,
       :salt,
       :force,
+      :meta_digest,
       :salt_digest,
       :file_digest,
       :tid
 
+    # @param meta data, which does not affect file digest
     def initialize(
       dst_path,
       source_paths,
-      salt,
-      force,
-      tid
+      salt:,
+      meta:,
+      force:,
+      tid:
     )
       @dst_path = dst_path
       @source_paths = source_paths
       @salt = salt
+      @meta = meta
       @force = force
       @tid = tid
     end
@@ -47,6 +52,8 @@ module Encode
     #
     def changed?
       @data = read_digest
+
+      @meta_changed = meta_sha_changed?
 
       return true if force
       return true if salt_sha_changed?
@@ -73,11 +80,21 @@ module Encode
       {}
     end
 
+    def update_if_needed
+      return unless @meta_changed
+
+      puts "META:UPDATE: #{dst_path}"
+
+      write_digest
+    end
+
     def write_digest
       digest_path = "#{dst_path}.digest"
       data = {
+        meta_sha_digest: meta_digest || create_meta_digest,
         salt_sha_digest: salt_digest || create_salt_digest,
         file_sha_digest: file_digest || create_file_digest,
+        meta:,
         salt:,
         sources: source_paths.sort.map do |src_path|
           img = Magick::Image.ping(src_path).first
@@ -99,6 +116,20 @@ module Encode
       source_paths.any? do |path|
         File.mtime(path) > dst_mtime
       end
+    end
+
+    #
+    # @return SHA if sha changed, nil otherwise
+    #
+    def meta_sha_changed?
+      old_digest = @data[:meta_sha_digest]
+      sha_digest = create_meta_digest
+
+      if old_digest == sha_digest && File.exist?(dst_path) && !force
+        return
+      end
+
+      @meta_digest = sha_digest
     end
 
     #
@@ -127,6 +158,13 @@ module Encode
       end
 
       @file_digest = sha_digest
+    end
+
+    # https://stackoverflow.com/questions/64130698/sha256-value-for-large-binaries-when-using-ruby
+    def create_meta_digest
+      sha = Digest::SHA2.new
+      sha << JSON.parse(meta.to_json).to_yaml
+      sha.hexdigest
     end
 
     # https://stackoverflow.com/questions/64130698/sha256-value-for-large-binaries-when-using-ruby
