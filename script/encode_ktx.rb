@@ -244,7 +244,7 @@ module Encode
       combine_textures = {}
       encode_textures = []
 
-      metadata.textures&.each do |tex_info|
+      metadata.textures&.sort_by(&:name)&.each do |tex_info|
         name = tex_info.name.downcase
         next unless name
 
@@ -331,7 +331,7 @@ module Encode
       dst_dir = src_dir
       puts "DIR: #{src_dir} => #{dst_dir}"
 
-      Dir["#{src_dir}/*.digest"].each do |src_path|
+      Dir["#{src_dir}/*.digest"].sort.each do |src_path|
         next if /\.ktx/.match?(src_path)
 
         if pass == :ktx

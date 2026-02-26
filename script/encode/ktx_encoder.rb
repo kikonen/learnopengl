@@ -90,6 +90,30 @@ module Encode
 
       encoding = normal_mode ? GPU_NORMAL_FORMATS[gpu_type] : GPU_FORMATS[gpu_type]
 
+      # NOTE KI VK_FORMAT_ASTC_6x6_SRGB_BLOCK. That's ASTC 6x6 block size.
+      # Intel Arc does support ASTC, but check if it supports that
+      # specific block size. The most universally supported is 4x4.
+      base_cmd = [
+        "toktx.exe",
+        "--t2",
+        "--verbose",
+        "--genmipmap",
+        #"--automipmap",
+        "--encode",
+        encoding,
+        #"--astc_blk_d", "4x4",
+        "--target_type",
+        target_type,
+        "--assign_oetf",
+        srgb ? "srgb" : "linear",
+        "--lower_left_maps_to_s0t0",
+      ].compact
+
+      if normal_mode
+        base_cmd << "--normal_mode"
+        "--uastc_rdo_l"
+      end
+
       dst_digest = TextureDigest.new(
         dst_path,
         [src_path],
@@ -102,8 +126,7 @@ module Encode
           version: KTX_VERSION,
           size: target_size,
           type:,
-          encoding:,
-          normal_mode:,
+          cmd: base_cmd,
           parts: [
             name: File.basename(src_path),
             digests: src_digests,
@@ -129,31 +152,7 @@ module Encode
         end
       end
 
-      # NOTE KI VK_FORMAT_ASTC_6x6_SRGB_BLOCK. That's ASTC 6x6 block size.
-      # Intel Arc does support ASTC, but check if it supports that
-      # specific block size. The most universally supported is 4x4.
-
-      cmd = [
-        "toktx.exe",
-        "--t2",
-        "--verbose",
-        "--genmipmap",
-        #"--automipmap",
-        "--encode",
-        encoding,
-        "--astc_blk_d", "4x4",
-        "--target_type",
-        target_type,
-        "--assign_oetf",
-        srgb ? "srgb" : "linear",
-        "--lower_left_maps_to_s0t0",
-      ].compact
-
-      if normal_mode
-        cmd << "--normal_mode"
-        "--uastc_rdo_l"
-      end
-
+      cmd = base_cmd.dup
 
       src_pathname = Pathname.new(src_path)
       dst_pathname = Pathname.new(dst_tmp_path)
