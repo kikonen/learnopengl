@@ -13,6 +13,18 @@ module Encode
   # KTX
   ############################################################
   class KtxEncoder < FileEncoder
+    GPU_FORMATS = {
+      intel: "uastc",
+      # nvidia: "astc",
+      nvidia: "uastc",
+    }
+
+    GPU_NORMAL_FORMATS = {
+      intel: "uastc",
+      # nvidia: "astc",
+      nvidia: "uastc",
+    }
+
     attr_reader:digest_path
 
     def initialize(
@@ -33,16 +45,30 @@ module Encode
       digest_data = YAML.load(File.read(digest_path), symbolize_names: true)
 
       src_path = digest_path.gsub(".digest", "")
-      salt = digest_data[:salt]
-      type = (salt[:type] || :color).to_sym
+      meta = digest_data[:meta]
+      type = (meta[:type] || :color).to_sym
+
+      if meta[:no_ktx]
+        info "NO_KTX: #{src_path}"
+        return
+      end
+
+      gpu_type = :intel
 
       encode_ktx_image(
         src_path:,
+        src_digests: {
+          meta: digest_data[:meta_sha_digest],
+          salt: digest_data[:salt_sha_digest],
+          file: digest_data[:file_sha_digest],
+        },
         dst_dir:,
         type:,
-        target_type: salt[:channels] || RGB,
-        srgb: salt[:srgb] || false,
-        normal_mode: type == :normal
+        #target_type: meta[:target_channe] || RGBA,
+        target_type: RGBA,
+        srgb: meta[:srgb] || false,
+        normal_mode: type == :normal,
+        gpu_type:
       )
     end
 
@@ -50,34 +76,48 @@ module Encode
 
     def encode_ktx_image(
       src_path:,
+      src_digests:,
       dst_dir:,
       type:,
-      target_type: RGB,
+      target_type: RGBA,
       srgb: true,
-      normal_mode: false
+      normal_mode: false,
+      gpu_type:
     )
       basename = File.basename(src_path, ".*")
       dst_path = "#{dst_dir}/#{basename}.ktx"
       dst_tmp_path = "#{dst_path}.tmp"
 
+      encoding = normal_mode ? GPU_NORMAL_FORMATS[gpu_type] : GPU_FORMATS[gpu_type]
+
       dst_digest = TextureDigest.new(
         dst_path,
         [src_path],
-        {
-          version: KTX_VERSION,
-          target_size:,
+        meta: {
           type:,
-          target_type:,
+          target_channel: target_type,
           srgb:,
+        },
+        salt: {
+          version: KTX_VERSION,
+          size: target_size,
+          type:,
+          encoding:,
           normal_mode:,
           parts: [
-            name: File.basename(src_path)
+            name: File.basename(src_path),
+            digests: src_digests,
+            target_channel: target_type,
+            srgb:,
           ]
         },
-        force,
-        tid)
+        force:,
+        tid:)
 
-      return unless dst_digest.changed?
+      unless dst_digest.changed?
+        dst_digest.update_if_needed
+        return
+      end
 
       info "ENCODE[#{type.to_s.upcase}]: #{src_path}"
 
@@ -89,13 +129,19 @@ module Encode
         end
       end
 
+      # NOTE KI VK_FORMAT_ASTC_6x6_SRGB_BLOCK. That's ASTC 6x6 block size.
+      # Intel Arc does support ASTC, but check if it supports that
+      # specific block size. The most universally supported is 4x4.
+
       cmd = [
         "toktx.exe",
+        "--t2",
         "--verbose",
         "--genmipmap",
         #"--automipmap",
         "--encode",
-        normal_mode ? "astc" : "astc",
+        encoding,
+        "--astc_blk_d", "4x4",
         "--target_type",
         target_type,
         "--assign_oetf",

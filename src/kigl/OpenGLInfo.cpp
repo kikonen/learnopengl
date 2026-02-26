@@ -62,6 +62,28 @@ m_preferredFormatRGB8));
         for (const auto& ext : extensions) {
             KI_INFO(ext);
         }
+
+        {
+            //// Check ASTC support
+            //KI_INFO("[ASTC_SUPPORT]");
+            //const char* ext = (const char*)glGetString(GL_EXTENSIONS);
+            //KI_INFO_OUT(fmt::format(
+            //    "ASTC LDR: {}",
+            //    strstr(ext, "GL_KHR_texture_compression_astc_ldr") != nullptr));
+
+            //KI_INFO_OUT(fmt::format(
+            //    "ASTC HDR: {}",
+            //    strstr(ext, "GL_KHR_texture_compression_astc_hdr") != nullptr));
+
+            // Dump all compressed formats
+            KI_INFO("[COMPRESSED_FORMATS]");
+            GLint count;
+            glGetIntegerv(GL_NUM_COMPRESSED_TEXTURE_FORMATS, &count);
+            std::vector<GLint> formats(count);
+            glGetIntegerv(GL_COMPRESSED_TEXTURE_FORMATS, formats.data());
+            for (int i = 0; i < count; i++) {
+                KI_INFO_OUT(fmt::format("0x{:04X}", formats[i]));
+            }
+        }
     }
 }
-

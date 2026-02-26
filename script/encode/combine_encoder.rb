@@ -148,13 +148,16 @@ module Encode
       dst_digest = TextureDigest.new(
         dst_path,
         source_paths,
-        {
+        meta: {
+          type: :mras,
+          target_channel: RGBA,
+          srgb: false,
+        },
+        salt: {
           version: COMBINE_VERSION,
           size: target_size,
           type: :mras,
           depth: target_depth,
-          channels: RED,
-          srgb: false,
           parts: sorted_parts.map do |tex_info|
             {
               name: tex_info.name,
@@ -164,10 +167,12 @@ module Encode
             }
           end.sort_by { |e| e[:name] }
         },
-        force,
-        tid)
+        force:,
+        tid:)
 
-      return unless dst_digest.changed?
+      unless dst_digest.changed?
+        return dst_digest.update_if_needed
+      end
 
       info "MRAS: [#{group}] [size=#{target_size}] [depth=#{target_depth}] #{dst_path}"
 
@@ -319,13 +324,17 @@ module Encode
       dst_digest = TextureDigest.new(
         dst_path,
         [src_path],
-        {
+        meta: {
+          type: :displacement,
+          target_channel: RED,
+          srgb: part.srgb,
+          no_ktx: true,
+        },
+        salt: {
           version: COMBINE_VERSION,
           size: target_size,
           type: :displacement,
           depth: target_depth,
-          channels: RED,
-          srgb: false,
           parts: [
             {
               name: part.name,
@@ -335,10 +344,12 @@ module Encode
             }
           ]
         },
-        force,
-        tid)
+        force:,
+        tid:)
 
-      return unless dst_digest.changed?
+      unless dst_digest.changed?
+        return dst_digest.update_if_needed
+      end
 
       info "DISPLACEMENT: [#{group}] [size=#{target_size}] [depth=#{target_depth}] ]#{dst_path}"
 

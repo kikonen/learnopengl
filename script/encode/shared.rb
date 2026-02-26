@@ -154,5 +154,5 @@ module Encode
   MODE_DISPLACEMENT = :displacement
 
   COMBINE_VERSION = 8
-  KTX_VERSION = 8
+  KTX_VERSION = 11
 end

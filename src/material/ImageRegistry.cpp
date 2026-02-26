@@ -55,16 +55,20 @@ std::shared_future<std::shared_ptr<ImageTexture>> ImageRegistry::getTexture(
     bool shared,
     bool grayScale,
     bool gammaCorrect,
+    bool normalMap,
     bool flipY,
     const TextureSpec& spec)
 {
     const std::string cacheKey = fmt::format(
-        "{}_{}-{}_{}_{}-{}_{}-{}_{}_{}",
+        "{}_{}-{}_{}_{}_{}-{}_{}-{}_{}_{}",
         path,
         shared,
+        //
         grayScale,
         gammaCorrect,
+        normalMap,
         flipY,
+        //
         spec.wrapS, spec.wrapT,
         spec.minFilter, spec.magFilter, spec.mipMapLevels);
 
@@ -76,7 +80,7 @@ std::shared_future<std::shared_ptr<ImageTexture>> ImageRegistry::getTexture(
     }
 
     auto future = startLoad(
-        std::make_shared<ImageTexture>(name, path, shared, grayScale, gammaCorrect, flipY, spec));
+        std::make_shared<ImageTexture>(name, path, shared, grayScale, gammaCorrect, normalMap, flipY, spec));
 
     m_textures[cacheKey] = future;
 

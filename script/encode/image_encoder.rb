@@ -50,13 +50,16 @@ module Encode
       dst_digest = TextureDigest.new(
         dst_path,
         [src_path],
-        {
+        meta: {
+          type: tex_info[:type],
+          target_channel: tex_info.target_channel,
+          srgb: tex_info.srgb,
+        },
+        salt: {
           version: COMBINE_VERSION,
           size: target_size,
           type: tex_info[:type],
           depth: target_depth,
-          channels: tex_info.target_channel,
-          srgb: tex_info.srgb,
           parts: [
             {
               name: tex_info.name,
@@ -66,10 +69,12 @@ module Encode
             }
           ]
         },
-        force,
-        tid)
+        force:,
+        tid:)
 
-      return unless dst_digest.changed?
+      unless dst_digest.changed?
+        return dst_digest.update_if_needed
+      end
 
       info "ENCODE: [#{group}] [size=#{target_size}] [depth=#{target_depth}] [#{tex_info.target_channel}=#{tex_info.source_channel}] #{dst_path}"
 

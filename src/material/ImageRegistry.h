@@ -30,6 +30,7 @@ public:
         bool shared,
         bool grayScale,
         bool gammaCorrect,
+        bool normalMap,
         bool flipY,
         const TextureSpec& spec);
 

@@ -35,9 +35,11 @@ ImageTexture::ImageTexture(
     bool shared,
     bool grayScale,
     bool gammaCorrect,
+    bool normalMap,
     bool flipY,
     const TextureSpec& spec)
     : Texture{ name, grayScale, gammaCorrect, spec },
+    m_normalMap{ normalMap },
     m_shared{ shared },
     m_flipY{ flipY },
     m_path{ path }
@@ -206,7 +208,7 @@ void ImageTexture::prepareNormal()
 
 void ImageTexture::prepareKtx()
 {
-    ktxTexture* kTexture;
+    ktxTexture2* tex2{ nullptr };
     KTX_error_code result;
     //ktx_size_t offset;
     //ktx_uint8_t* image;
@@ -221,28 +223,65 @@ void ImageTexture::prepareKtx()
         return;
     }
 
-    result = ktxTexture_CreateFromNamedFile(
+    if (false) {
+        ktxTexture2_CreateFromMemory(
+            m_image->m_data,
+            m_image->m_width,
+            KTX_TEXTURE_CREATE_NO_FLAGS, &tex2);
+    }
+
+    result = ktxTexture2_CreateFromNamedFile(
         m_image->m_path.c_str(),
         KTX_TEXTURE_CREATE_NO_FLAGS,
-        &kTexture);
+        &tex2);
 
-    if (result) {
-        KI_ERROR(fmt::format("TEX::UPLOAD: Failed to open ktx: {}", m_image->m_path));
+    if (result != KTX_SUCCESS) {
+        KI_ERROR(fmt::format("TEX::UPLOAD::KTX::LOAD: ktx: {}", m_image->m_path));
         if (!m_shared) {
             m_image.reset();
         }
         return;
     }
 
+    KI_INFO_OUT(fmt::format(
+        "TEX::UPLOAD::KTX: vk_format={}, super_comp_scheme={}, needs_transcoding={}, width={}, height={}, mib_levels={}",
+        (int)tex2->vkFormat,
+        (int)tex2->supercompressionScheme,
+        (int)ktxTexture2_NeedsTranscoding(tex2),
+        (int)tex2->baseWidth,
+        (int)tex2->baseHeight,
+        (int)tex2->numLevels
+        ));
+
+    // Transcode BEFORE uploading
+    if (ktxTexture2_NeedsTranscoding(tex2)) {
+        const auto transcodeFormat = m_normalMap ? KTX_TTF_BC5_RG : KTX_TTF_BC7_RGBA;
+
+        result = ktxTexture2_TranscodeBasis(tex2, transcodeFormat, 0);
+        if (result != KTX_SUCCESS) {
+            KI_ERROR(fmt::format("TEX::UPLOAD::KTX::TRANSCODE: ktx: {}", m_image->m_path));
+            if (!m_shared) {
+                m_image.reset();
+            }
+            return;
+        }
+    }
+
     // https://computergraphics.stackexchange.com/questions/4479/how-to-do-texturing-with-opengl-direct-state-access
     glCreateTextures(GL_TEXTURE_2D, 1, &m_textureID);
     kigl::setLabel(GL_TEXTURE, m_textureID, m_name);
 
-    result = ktxTexture_GLUpload(kTexture, &m_textureID, &target, &glerror);
-    ktxTexture_Destroy(kTexture);
+    {
+        ktxTexture* tex = ktxTexture(tex2);
+        result = ktxTexture_GLUpload(tex, &m_textureID, &target, &glerror);
+        ktxTexture_Destroy(tex);
+    }
 
-    if (result) {
-        KI_ERROR(fmt::format("TEX::UPLOAD: Failed to upload ktx: {}", m_image->m_path));
+    if (result != KTX_SUCCESS) {
+        KI_ERROR(fmt::format(
+            "TEX::UPLOAD::KTX_UPLOAD: ktx: {}, result={}, GL error=0x{:04X}",
+            m_image->m_path, (int)result, (int)glerror));
+
         if (!m_shared) {
             m_image.reset();
         }
@@ -252,7 +291,7 @@ void ImageTexture::prepareKtx()
     GLint compFlag;
     glGetTextureLevelParameteriv(m_textureID, 0, GL_TEXTURE_COMPRESSED, &compFlag);
     KI_INFO(fmt::format(
-        "TEX::UPLOAD: path={}, compressed={}\n{}",
+        "TEX::UPLOAD::KTX: path={}, compressed={}\n{}",
         m_image->m_path,
         compFlag,
         str()));

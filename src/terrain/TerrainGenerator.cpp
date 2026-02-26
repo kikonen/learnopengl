@@ -132,6 +132,7 @@ namespace terrain {
                 true,
                 false,
                 false,
+                false,
                 true,
                 spec);
 
