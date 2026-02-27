@@ -255,7 +255,11 @@ void ImageTexture::prepareKtx()
 
     // Transcode BEFORE uploading
     if (ktxTexture2_NeedsTranscoding(tex2)) {
-        const auto transcodeFormat = m_type == TextureType::map_normal ? KTX_TTF_BC5_RG : KTX_TTF_BC7_RGBA;
+        // TODO KI KTX_TTF_BC5_RG for normal
+        // => will require extra work in shader side
+        const auto transcodeFormat = m_type == TextureType::map_normal
+            ? KTX_TTF_BC7_RGBA
+            : KTX_TTF_BC7_RGBA;
 
         result = ktxTexture2_TranscodeBasis(tex2, transcodeFormat, 0);
         if (result != KTX_SUCCESS) {
@@ -273,9 +277,8 @@ void ImageTexture::prepareKtx()
             (int)tex2->isCompressed));
     }
 
-    // https://computergraphics.stackexchange.com/questions/4479/how-to-do-texturing-with-opengl-direct-state-access
-    glCreateTextures(GL_TEXTURE_2D, 1, &m_textureID);
-    kigl::setLabel(GL_TEXTURE, m_textureID, m_name);
+    //// https://computergraphics.stackexchange.com/questions/4479/how-to-do-texturing-with-opengl-direct-state-access
+    //glCreateTextures(GL_TEXTURE_2D, 1, &m_textureID);
 
     {
         ktxTexture* tex = ktxTexture(tex2);
@@ -294,13 +297,32 @@ void ImageTexture::prepareKtx()
         return;
     }
 
-    GLint compFlag;
-    glGetTextureLevelParameteriv(m_textureID, 0, GL_TEXTURE_COMPRESSED, &compFlag);
-    KI_INFO(fmt::format(
-        "TEX::UPLOAD::KTX: path={}, compressed={}\n{}",
-        m_image->m_path,
-        compFlag,
-        str()));
+    {
+        kigl::setLabel(GL_TEXTURE, m_textureID, m_name);
+
+        glTextureParameteri(m_textureID, GL_TEXTURE_WRAP_S, m_spec.wrapS);
+        glTextureParameteri(m_textureID, GL_TEXTURE_WRAP_T, m_spec.wrapT);
+
+        // https://community.khronos.org/t/gl-nearest-mipmap-linear-or-gl-linear-mipmap-nearest/37648/5
+        // https://stackoverflow.com/questions/12363463/when-should-i-set-gl-texture-min-filter-and-gl-texture-mag-filter
+        glTextureParameteri(m_textureID, GL_TEXTURE_MIN_FILTER, m_spec.minFilter);
+        glTextureParameteri(m_textureID, GL_TEXTURE_MAG_FILTER, m_spec.magFilter);
+    }
+
+    {
+        GLint compFlag;
+        glGetTextureLevelParameteriv(m_textureID, 0, GL_TEXTURE_COMPRESSED, &compFlag);
+
+        GLint internalFormat;
+        glGetTextureLevelParameteriv(m_textureID, 0, GL_TEXTURE_INTERNAL_FORMAT, &internalFormat);
+
+        KI_INFO(fmt::format(
+            "TEX::UPLOAD::KTX: path={}, compressed={}, internal_format=0x{:04X}\n{}",
+            m_image->m_path,
+            compFlag,
+            internalFormat,
+            str()));
+    }
 
     m_handle = glGetTextureHandleARB(m_textureID);
     glMakeTextureHandleResidentARB(m_handle);

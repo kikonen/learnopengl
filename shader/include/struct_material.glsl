@@ -7,7 +7,7 @@ struct Material {
   vec4 diffuse;
   vec4 emission;
 
-  // MRAS: [ambient-occlusion, metalness, roughness, specular]
+  // MRAS: [metalness, roughness, ambient-occlusion, specular]
   vec4 mras;
 
   uvec2 diffuseTex;
@@ -16,11 +16,11 @@ struct Material {
 
   uvec2 opacityMapTex;
 
-  // MRAS: [ambient-occlusion, metalness, roughness, specular]
-  // - occlusion: 0 = fully occluded, 1 = no occlusion
-  // - metalness: 0 = dielectric, 1 = metal
-  // - roughness: 0 = smooth/shiny, 1 = rough/matte
-  // - specular:  0 = no reflection, 1 = strong reflection
+  // MRAS: [metalness, roughness, ambient-occlusion, specular]
+  // - metalness (Red):   0 = dielectric, 1 = metal
+  // - roughness (Green): 0 = smooth/shiny, 1 = rough/matte
+  // - occlusion (Blue):  0 = fully occluded, 1 = no occlusion
+  // - specular  (Alpha): 0 = no reflection, 1 = strong reflection
   uvec2 mrasMapTex;
 
   uvec2 displacementMapTex;

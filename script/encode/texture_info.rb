@@ -20,6 +20,8 @@ module Encode
     property :detected_channels
     property :source_channel
     property :target_channel
+    property :source_invert
+    property :target_invert
     property :source_depth
     property :target_depth
     property :source_size

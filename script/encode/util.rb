@@ -156,6 +156,9 @@ module Encode
         return
       end
 
+      data = JSON.parse(data.to_json, symbolize_names: true)
+      data[:textures] = data[:textures].map(&:compact)
+
       File.write(metadata_path, JSON.pretty_generate(data) + "\n")
     end
 

@@ -16,11 +16,11 @@ enum class TextureType : std::underlying_type_t<std::byte> {
     map_opacity,
     map_custom_1,
     // BUILD assets
-    // MRAS: [ambient-occlusion, metalness, roughness, specular]
-    // - occlusion: 0 = fully occluded, 1 = no occ5lusion
-    // - metalness: 0 = dielectric, 1 = metal
-    // - roughness: 0 = smooth/shiny, 1 = rough/matte
-    // - specular:  0 = no reflection, 1 = strong reflection
+    // MRAS: [metalness, roughness, ambient-occlusion, specular]
+    // - metalness (Red):   0 = dielectric, 1 = metal
+    // - roughness (Green): 0 = smooth/shiny, 1 = rough/matte
+    // - occlusion (Blue):  0 = fully occluded, 1 = no occlusion
+    // - specular  (Alpha): 0 = no reflection, 1 = strong reflection
     //
     // (KHR_materials_specular)
     //

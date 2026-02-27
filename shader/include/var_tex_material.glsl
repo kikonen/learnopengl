@@ -10,17 +10,17 @@
 
   vec4 mrasTex = texture(sampler2D(u_materials[i].mrasMapTex), texCoord).rgba;
 
-  if ((material.flags & MATERIAL_INVERT_OCCLUSION) != 0)
-  {
-    mrasTex.r = 1.0 - mrasTex.r;
-  }
   if ((material.flags & MATERIAL_INVERT_METALNESS) != 0)
   {
-    mrasTex.g = 1.0 - mrasTex.g;
+    MRA_TEX_METALNESS = 1.0 - MRA_TEX_METALNESS;
   }
   if ((material.flags & MATERIAL_INVERT_ROUGHNESS) != 0)
   {
-    mrasTex.b = 1.0 - mrasTex.b;
+    MRA_TEX_ROUGHNESS = 1.0 - MRA_TEX_ROUGHNESS;
+  }
+  if ((material.flags & MATERIAL_INVERT_OCCLUSION) != 0)
+  {
+    MRA_TEX_OCCLUSION = 1.0 - MRA_TEX_OCCLUSION;
   }
 
   vec4 mras = u_materials[i].mras.rgba * mrasTex.rgba;

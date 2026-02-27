@@ -110,8 +110,11 @@ module Encode
       ].compact
 
       if normal_mode
-        base_cmd << "--normal_mode"
-        "--uastc_rdo_l"
+        # NOTE KI for BC5
+        #base_cmd << "--normal_mode"
+      else
+        base_cmd << "--uastc_rdo_l"
+        base_cmd << "1.0"
       end
 
       dst_digest = TextureDigest.new(

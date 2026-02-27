@@ -552,8 +552,8 @@ const MaterialSSBO Material::toSSBO() const
     }
 
     const glm::vec4 mrasFactor{
-        m_occlusionFactor,
         m_metalnessFactor,
+        m_occlusionFactor,
         m_roughnessFactor,
         0.f };
 
