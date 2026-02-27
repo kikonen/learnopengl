@@ -546,6 +546,8 @@ namespace
             is16Bbit,
             hasAlpha,
             texInfo.gammaCorrect,
+            // TODO KI detect normalmap somehow
+            TextureType::diffuse,
             spec);
     }
 
