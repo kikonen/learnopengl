@@ -7,6 +7,7 @@
 #include <future>
 
 #include "TextureSpec.h"
+#include "TextureType.h"
 
 class ImageTexture;
 
@@ -30,8 +31,8 @@ public:
         bool shared,
         bool grayScale,
         bool gammaCorrect,
-        bool normalMap,
         bool flipY,
+        TextureType type,
         const TextureSpec& spec);
 
 private:

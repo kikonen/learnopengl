@@ -57,7 +57,7 @@ ColorTexture::ColorTexture(
     glm::vec4 color,
     GLenum internalFormat,
     bool usePrepare)
-    : Texture(name, false, false, getTextureSpec()),
+    : Texture(name, false, false, TextureType::diffuse, getTextureSpec()),
     m_color{ color }
 {
     m_internalFormat = internalFormat;

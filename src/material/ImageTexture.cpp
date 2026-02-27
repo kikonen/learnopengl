@@ -35,11 +35,10 @@ ImageTexture::ImageTexture(
     bool shared,
     bool grayScale,
     bool gammaCorrect,
-    bool normalMap,
     bool flipY,
+    TextureType type,
     const TextureSpec& spec)
-    : Texture{ name, grayScale, gammaCorrect, spec },
-    m_normalMap{ normalMap },
+    : Texture{ name, grayScale, gammaCorrect, type, spec },
     m_shared{ shared },
     m_flipY{ flipY },
     m_path{ path }
@@ -244,7 +243,8 @@ void ImageTexture::prepareKtx()
     }
 
     KI_INFO_OUT(fmt::format(
-        "TEX::UPLOAD::KTX: vk_format={}, super_comp_scheme={}, needs_transcoding={}, width={}, height={}, mib_levels={}",
+        "TEX::UPLOAD::KTX: path={}, vk_format={}, super_comp_scheme={}, needs_transcoding={}, width={}, height={}, mib_levels={}",
+        m_image->m_path,
         (int)tex2->vkFormat,
         (int)tex2->supercompressionScheme,
         (int)ktxTexture2_NeedsTranscoding(tex2),
@@ -255,7 +255,7 @@ void ImageTexture::prepareKtx()
 
     // Transcode BEFORE uploading
     if (ktxTexture2_NeedsTranscoding(tex2)) {
-        const auto transcodeFormat = m_normalMap ? KTX_TTF_BC5_RG : KTX_TTF_BC7_RGBA;
+        const auto transcodeFormat = m_type == TextureType::map_normal ? KTX_TTF_BC5_RG : KTX_TTF_BC7_RGBA;
 
         result = ktxTexture2_TranscodeBasis(tex2, transcodeFormat, 0);
         if (result != KTX_SUCCESS) {
@@ -265,6 +265,12 @@ void ImageTexture::prepareKtx()
             }
             return;
         }
+
+        KI_INFO_OUT(fmt::format(
+            "TEX::UPLOAD::KTX::TRANSCODE path={}, vk_format={}, compressed={}",
+            m_image->m_path,
+            (int)tex2->vkFormat,
+            (int)tex2->isCompressed));
     }
 
     // https://computergraphics.stackexchange.com/questions/4479/how-to-do-texturing-with-opengl-direct-state-access

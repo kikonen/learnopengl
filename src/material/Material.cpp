@@ -357,7 +357,6 @@ void Material::loadTextures()
         const auto type = it.first;
         bool grayScale = false;
         bool gammaCorrect = false;
-        bool normalMap = type == TextureType::map_normal;
         bool flipY = true;
         bool usePlaceholder = false;
 
@@ -371,7 +370,7 @@ void Material::loadTextures()
             gammaCorrect = true;
         }
 
-        loadTexture(type, grayScale, gammaCorrect, normalMap, flipY, usePlaceholder);
+        loadTexture(type, grayScale, gammaCorrect, flipY, usePlaceholder);
     }
 
     for (const auto& it : m_inlineTextures) {
@@ -387,7 +386,6 @@ void Material::loadTexture(
     TextureType type,
     bool grayScale,
     bool gammaCorrect,
-    bool normalMap,
     bool flipY,
     bool usePlaceholder)
 {
@@ -410,8 +408,8 @@ void Material::loadTexture(
         false,
         grayScale,
         gammaCorrect,
-        normalMap,
         flipY,
+        type,
         textureSpec);
 
     future.wait();
@@ -428,8 +426,8 @@ void Material::loadTexture(
             false,
             true,
             gammaCorrect,
-            false,
             flipY,
+            TextureType::diffuse,
             textureSpec);
 
         future.wait();

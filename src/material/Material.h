@@ -184,7 +184,6 @@ private:
         TextureType type,
         bool grayScale,
         bool gammaCorrect,
-        bool normalMap,
         bool flipY,
         bool usePlaceholder);
 
