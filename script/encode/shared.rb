@@ -131,13 +131,14 @@ module Encode
   BLUE_RED_GREEN = 'BRG'
   RED_BLUE_GREEN = 'RBG'
   RED_GREEN_ALPHA = 'RGA'
+  RED_ALPHA_GREEN = 'RAG'
   RED_GREEN_BLUE_ALPHA = 'RGBA'
 
   # MRA + KHR_materials_specular
-  # MRAS: [ambient-occlusion, metalness, roughness, specular]
-  # - occlusion (Red):   0 = fully occluded, 1 = no occlusion
-  # - metalness (Green): 0 = dielectric, 1 = metal
-  # - roughness (Blue):  0 = smooth/shiny, 1 = rough/matte
+  # MRAS: [metalness, roughness, ambient-occlusion, specular]
+  # - metalness (Red): 0 = dielectric, 1 = metal
+  # - roughness (Gren):  0 = smooth/shiny, 1 = rough/matte
+  # - occlusion (Blue):   0 = fully occluded, 1 = no occlusion
   # - specular  (Alpha): 0 = no reflection, 1 = strong reflection
   MODE_MRAS = :mras
 

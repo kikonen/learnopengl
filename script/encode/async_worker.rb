@@ -52,6 +52,9 @@ module Encode
     rescue => e
       stacktrace = e.backtrace.join("\n")
       info "ERROR: #{e.message}\n#{stacktrace}"
+    rescue Interrupt => e
+      stacktrace = e.backtrace.join("\n")
+      info "ERROR: #{e.message}\n#{stacktrace}"
     end
 
     def read_task

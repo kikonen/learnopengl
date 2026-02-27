@@ -495,7 +495,7 @@ module Encode
               mode: MODE_MRAS,
               target_name: MRAS_MAP,
               source_channel: RED,
-              target_channel: GREEN,
+              target_channel: RED,
               srgb: false,
             }
           when :roughness
@@ -506,7 +506,7 @@ module Encode
               mode: MODE_MRAS,
               target_name: MRAS_MAP,
               source_channel: RED,
-              target_channel: BLUE,
+              target_channel: GREEN,
               srgb: false,
             }
           when :occlusion
@@ -517,7 +517,7 @@ module Encode
               mode: MODE_MRAS,
               target_name: MRAS_MAP,
               source_channel: RED,
-              target_channel: RED,
+              target_channel: BLUE,
               srgb: false,
             }
           when :metal_roughness
@@ -528,7 +528,7 @@ module Encode
               mode: MODE_MRAS,
               target_name: MRAS_MAP,
               source_channel: RED_GREEN,
-              target_channel: GREEN_BLUE,
+              target_channel: RED_GREEN,
               srgb: false,
             }
           when :metal_roughness_occlusion
@@ -539,7 +539,7 @@ module Encode
               mode: MODE_MRAS,
               target_name: MRAS_MAP,
               source_channel: RED_GREEN_BLUE,
-              target_channel: GREEN_BLUE_RED,
+              target_channel: RED_GREEN_BLUE,
               srgb: false,
             }
           when :roughness_metal_occlusion
@@ -550,7 +550,7 @@ module Encode
               mode: MODE_MRAS,
               target_name: MRAS_MAP,
               source_channel: RED_GREEN_BLUE,
-              target_channel: BLUE_GREEN_RED,
+              target_channel: GREEN_RED_BLUE,
               srgb: false,
             }
           when :roughness_occlusion_metal
@@ -572,7 +572,7 @@ module Encode
               mode: MODE_MRAS,
               target_name: MRAS_MAP,
               source_channel: RED_GREEN_BLUE,
-              target_channel: RED_BLUE_GREEN,
+              target_channel: BLUE_GREEN_RED,
               srgb: false,
             }
           when :metal_occlusion_height_roughness
@@ -583,9 +583,10 @@ module Encode
               mode: MODE_MRAS,
               target_name: MRAS_MAP,
               source_channel: RED_GREEN_ALPHA,
-              target_channel: GREEN_RED_BLUE,
+              target_channel: RED_ALPHA_GREEN,
               srgb: false,
             }
+          # Kitbash MADS
           when :metal_occlusion_height_smoothness
             tex_info = {
               group: 'default',
@@ -594,7 +595,8 @@ module Encode
               mode: MODE_MRAS,
               target_name: MRAS_MAP,
               source_channel: RED_GREEN_ALPHA,
-              target_channel: GREEN_RED_BLUE,
+              target_channel: RED_ALPHA_GREEN,
+              source_invert: ALPHA,
               srgb: false,
             }
           when :displacement
@@ -692,7 +694,7 @@ module Encode
             info "**WARN** unknown type: #{src_dir}  #{tex_info[:name]} **"
           end
 
-          textures << tex_info
+          textures << tex_info.compact
         end
       end
 
@@ -736,7 +738,8 @@ module Encode
 
       if need_process
         metadata[:dir] = src_dir
-        metadata[:textures] = textures.sort_by { |e| e[:name].downcase }
+        metadata[:textures] = textures
+          .sort_by { |e| e[:name].downcase }
 
         Util.write_metadata(src_dir:, data: metadata, dry_run:)
       end

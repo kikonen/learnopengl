@@ -217,8 +217,14 @@
  layout(binding = UNIT_EFFECT_BRIGHT) uniform sampler2D effect_bright; \
  layout(binding = UNIT_EFFECT_WORK) uniform sampler2D effect_work;
 
-#define MATERIAL_MRA_OCCLUSION material.mras.r
-#define MATERIAL_MRA_METALNESS material.mras.g
-#define MATERIAL_MRA_ROUGHNESS material.mras.b
+#define MATERIAL_MRA_METALNESS material.mras.r
+#define MATERIAL_MRA_ROUGHNESS material.mras.g
+#define MATERIAL_MRA_OCCLUSION material.mras.b
+#define MATERIAL_MRA_SPECULAR  material.mras.a
+
+#define MRA_TEX_METALNESS mrasTex.r
+#define MRA_TEX_ROUGHNESS mrasTex.g
+#define MRA_TEX_OCCLUSION mrasTex.b
+#define MRA_TEX_SPECULAR  mrasTex.a
 
 #undef USE_SOCKETS
