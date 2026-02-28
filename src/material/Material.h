@@ -212,10 +212,10 @@ public:
 
     // GLB/GLTF order + KHR_materials_specular
     // MRAS: [metalness, roughness, ambient-occlusion, specular]
-    // - metalness: 0 = dielectric, 1 = metal
-    // - roughness: 0 = smooth/shiny, 1 = rough/matte
-    // - occlusion: 0 = fully occluded, 1 = no occlusion
-    // - specular:  0 = no reflection, 1 = strong reflection
+    // - metalness (Red):   0 = dielectric, 1 = metal
+    // - roughness (Green): 0 = smooth/shiny, 1 = rough/matte
+    // - occlusion (Blue):  0 = fully occluded, 1 = no occlusion
+    // - specular  (Alpha): 0 = no reflection, 1 = strong reflection
     glm::vec4 mras{ 0.f, 1.f, 1.f, 0.f };
 
     float m_occlusionFactor{ 1.f };

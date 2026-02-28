@@ -555,7 +555,7 @@ const MaterialSSBO Material::toSSBO() const
         m_metalnessFactor,
         m_occlusionFactor,
         m_roughnessFactor,
-        0.f };
+        1.f };
 
     return {
         kd,
