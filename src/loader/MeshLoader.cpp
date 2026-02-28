@@ -89,8 +89,8 @@ namespace loader {
             else if (k == "group") {
                 data.group = readString(v);
             }
-            else if (k == "rig" || k == "bind_rig") {
-                data.bindRig = readString(v);
+            else if (k == "use_rig") {
+                data.useRig = readString(v);
             }
             else if (k == "type") {
                 std::string type = readString(v);
