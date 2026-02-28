@@ -46,6 +46,9 @@ module Encode
 
       src_path = digest_path.gsub(".digest", "")
       meta = digest_data[:meta]
+      unless meta
+        ap digest_data
+      end
       type = (meta[:type] || :color).to_sym
 
       if meta[:no_ktx]
@@ -107,6 +110,8 @@ module Encode
         "--assign_oetf",
         srgb ? "srgb" : "linear",
         "--lower_left_maps_to_s0t0",
+        # TODO KI enable compression
+        #"--zcmp", "18",
       ].compact
 
       if normal_mode
@@ -121,6 +126,7 @@ module Encode
         dst_path,
         [src_path],
         meta: {
+          target: File.basename(dst_path),
           type:,
           target_channel: target_type,
           srgb:,

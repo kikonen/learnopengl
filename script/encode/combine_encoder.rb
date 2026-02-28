@@ -149,6 +149,7 @@ module Encode
         dst_path,
         source_paths,
         meta: {
+          target: File.basename(dst_path),
           type: :mras,
           target_channel: RGBA,
           srgb: false,
@@ -325,6 +326,7 @@ module Encode
         dst_path,
         [src_path],
         meta: {
+          target: File.basename(dst_path),
           type: :displacement,
           target_channel: RED,
           srgb: part.srgb,

@@ -51,6 +51,7 @@ module Encode
         dst_path,
         [src_path],
         meta: {
+          target: File.basename(dst_path),
           type: tex_info[:type],
           target_channel: tex_info.target_channel,
           srgb: tex_info.srgb,

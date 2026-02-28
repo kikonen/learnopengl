@@ -209,7 +209,10 @@ module Encode
         @processor = AsyncProcessor.new(thread_count:)
 
         plain_dir = src_dir[assets_root_dir.length + 1, src_dir.length]
-        ktx_src_dir = "#{build_root_dir}/#{target_size}/#{plain_dir}"
+        ktx_src_dir = "#{build_root_dir}/#{target_size}"
+        if plain_dir && plain_dir.size > 0
+          ktx_src_dir = "#{ktx_src_dir}/#{plain_dir}"
+        end
 
         puts "[KTX]"
         build_pass_3(
