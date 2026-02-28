@@ -1,19 +1,19 @@
 ---
 mesh:
-  path: fbx/characters/elf/Bodies/Elf Female.fbx
+  path: fbx/characters/Elf/Bodies/Elf Female.fbx
   flags:
     use_bones: true
     xuse_bones_debug: true
     use_animation: true
   materials:
     - name: female_body
-      base: ../textures/Elf Female Body/Elf Female 1
-      map_kd: Elf_Female_RIG_female_body_AlbedoOpacity.png
-      map_normal: Elf_Female_RIG_female_body_Normal.png
-      map_mras: Elf_Female_mras
+      #base: ../textures/Elf Female Body/Elf Female 8
+      map_kd: ../textures/Elf Female Body/Elf Female 1/Elf_Female_RIG_female_body_AlbedoOpacity.png
+      #map_normal: ../textures/Elf Female Body/Elf Female 1/Elf_Female_RIG_female_body_Normal.png
+      map_mras: ../textures/Elf Female Body/Elf Female 1/Elf_Female_mras
       unity: true
     - name: female_elf_eyebrows
-      base: ../shared/material
+      base: ../shared/textures
       map_kd: Eyebrows_Lashes_diff.png
       map_normal: Eyebrows_Lashes_normals.png
       unity: true

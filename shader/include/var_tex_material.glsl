@@ -8,19 +8,23 @@
 
   material.flags = u_materials[i].flags;
 
-  vec4 mrasTex = texture(sampler2D(u_materials[i].mrasMapTex), texCoord).rgba;
+  vec4 mrasTex = vec4(0, 1, 1, 0);
 
-  if ((material.flags & MATERIAL_INVERT_METALNESS) != 0)
-  {
-    MRA_TEX_METALNESS = 1.0 - MRA_TEX_METALNESS;
-  }
-  if ((material.flags & MATERIAL_INVERT_ROUGHNESS) != 0)
-  {
-    MRA_TEX_ROUGHNESS = 1.0 - MRA_TEX_ROUGHNESS;
-  }
-  if ((material.flags & MATERIAL_INVERT_OCCLUSION) != 0)
-  {
-    MRA_TEX_OCCLUSION = 1.0 - MRA_TEX_OCCLUSION;
+  if (u_materials[i].mrasMapTex.x > 0) {
+    mrasTex = texture(sampler2D(u_materials[i].mrasMapTex), texCoord).rgba;
+
+    if ((material.flags & MATERIAL_INVERT_METALNESS) != 0)
+    {
+      MRA_TEX_METALNESS = 1.0 - MRA_TEX_METALNESS;
+    }
+    if ((material.flags & MATERIAL_INVERT_ROUGHNESS) != 0)
+    {
+      MRA_TEX_ROUGHNESS = 1.0 - MRA_TEX_ROUGHNESS;
+    }
+    if ((material.flags & MATERIAL_INVERT_OCCLUSION) != 0)
+    {
+      MRA_TEX_OCCLUSION = 1.0 - MRA_TEX_OCCLUSION;
+    }
   }
 
   vec4 mras = u_materials[i].mras.rgba * mrasTex.rgba;

@@ -1,6 +1,6 @@
 ---
 mesh:
-  path: fbx/characters/elf/Bodies/Elf Male.fbx
+  path: fbx/characters/Elf/Bodies/Elf Male.fbx
   flags:
     use_bones: true
     xuse_bones_debug: true
@@ -13,7 +13,7 @@ mesh:
       map_mras: Elf_Male_RIG12_mras
       unity: true
     - name: eyebrows
-      base: ../shared/material
+      base: ../shared/textures
       map_kd: Eyebrows_Lashes_diff.png
       map_normal: Eyebrows_Lashes_normals.png
       unity: true
