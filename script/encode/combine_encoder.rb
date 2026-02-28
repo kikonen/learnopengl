@@ -155,7 +155,7 @@ module Encode
           srgb: false,
         },
         salt: {
-          version: COMBINE_VERSION,
+          version: MRAS_VERSION,
           size: target_size,
           type: :mras,
           depth: target_depth,
@@ -230,11 +230,16 @@ module Encode
       black = black_image(target_w, target_h, target_depth)
       white = white_image(target_w, target_h, target_depth)
 
+      metal_default = black
+      roughness_default = white
+      occlusion_default = white
+      specular_default = black
+
       target_placeholders = {
-        Magick::RedChannel => white,
-        Magick::GreenChannel => black,
-        Magick::BlueChannel => white,
-        Magick::AlphaChannel => black,
+        Magick::RedChannel => metal_default,
+        Magick::GreenChannel => roughness_default,
+        Magick::BlueChannel => occlusion_default,
+        Magick::AlphaChannel => specular_default,
       }
 
       target_channels.each do |dst_channel, image_info|
@@ -333,7 +338,7 @@ module Encode
           no_ktx: true,
         },
         salt: {
-          version: COMBINE_VERSION,
+          version: DISPLACEMENT_VERSION,
           size: target_size,
           type: :displacement,
           depth: target_depth,

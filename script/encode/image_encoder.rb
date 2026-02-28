@@ -57,7 +57,7 @@ module Encode
           srgb: tex_info.srgb,
         },
         salt: {
-          version: COMBINE_VERSION,
+          version: IMAGE_VERSION,
           size: target_size,
           type: tex_info[:type],
           depth: target_depth,
