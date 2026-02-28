@@ -19,7 +19,7 @@ module Encode
   ################################################################################
   class MetaResolver
     # NOTE KI match against *basename" without *extension*
-    # => this \z instead of \.
+    # => thus \z instead of \.
     REG_EX = [
       # Level 1: most accurate
       {
@@ -40,7 +40,8 @@ module Encode
           /\Adiffuse[-_ ]/,
           /[-_ ]diffuse[-_ ]/,
           /[-_ ]diffuse\z/,
-          /[-_ ]diffuse[\d]+[-_. ]/,
+          /[-_ ]diffuse[\d]+\z/,
+          /[-_ ]diffuse[\d]+[-_ ]/,
           ###
           /\Aalbedo\z/,
           /\Aalbedo[-_ ]/,

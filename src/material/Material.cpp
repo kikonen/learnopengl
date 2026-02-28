@@ -569,7 +569,8 @@ const MaterialSSBO Material::toSSBO() const
         getTexHandle(TextureType::map_normal, 0),
 
         getTexHandle(TextureType::map_opacity, whitePx),
-        getTexHandle(TextureType::map_mras, whitePx),
+        // NOTE KI whitePx fails due to "inverse" flags
+        getTexHandle(TextureType::map_mras, 0),
         getTexHandle(TextureType::map_displacement, blackPx),
 
         getTexHandle(TextureType::map_dudv, 0),
