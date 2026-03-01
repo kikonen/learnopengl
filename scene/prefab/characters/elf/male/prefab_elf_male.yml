@@ -6,33 +6,33 @@ prefab:
         path: prefab/characters/elf/male/mesh_elf_male.yml
 
   available_addons:
-    - id: hair_long_barbute
+    - xid: hair_long_barbute
       group: hair.hooded
       use_rig: head
       prefab:
         path: prefab/characters/elf/male/mesh_elf_hair_long_barbute.yml
-    - id: hair_long
+    - xid: hair_long
       group: hair.plain
       use_rig: head
       prefab:
         path: prefab/characters/elf/male/mesh_elf_hair_long.yml
-    - id: hair_pony_tail
+    - xid: hair_pony_tail
       group: hair.plain
       use_rig: head
       prefab:
         path: prefab/characters/elf/male/mesh_elf_hair_pony_tail.yml
-    - id: hair_short_barbute
+    - xid: hair_short_barbute
       group: hair.hooded
       use_rig: head
       prefab:
         path: prefab/characters/elf/male/mesh_elf_hair_short_barbute.yml
-    - id: hair_short
+    - xid: hair_short
       group: hair.plain
       use_rig: head
       prefab:
         path: prefab/characters/elf/male/mesh_elf_hair_short.yml
 
-    - id: human_hair_buzz
+    - xid: human_hair_buzz
       group: hair.hooded
       use_rig: head
       prefab:
@@ -42,46 +42,46 @@ prefab:
       use_rig: head
       prefab:
         path: prefab/characters/elf/male/mesh_human_hair_long.yml
-    - id: human_hair_short
+    - xid: human_hair_short
       group: hair.plain
       use_rig: head
       prefab:
         path: prefab/characters/elf/male/mesh_human_hair_short.yml
 
-    - id: orc_hair_hood
+    - xid: orc_hair_hood
       group: hair.plain
       use_rig: head
       prefab:
         path: prefab/characters/elf/male/mesh_orc_hair_hood.yml
-    - id: orc_hair_long
+    - xid: orc_hair_long
       group: hair.plain
       use_rig: head
       prefab:
         path: prefab/characters/elf/male/mesh_orc_hair_long.yml
-    - id: orc_hair_pony_tail
+    - xid: orc_hair_pony_tail
       group: hair.plain
       use_rig: head
       prefab:
         path: prefab/characters/elf/male/mesh_orc_hair_pony_tail.yml
-    - id: orc_hair_short
+    - xid: orc_hair_short
       group: hair.plain
       use_rig: head
       prefab:
         path: prefab/characters/elf/male/mesh_orc_hair_short.yml
 
-    - id: hood_1
+    - xid: hood_1
       group: hair.hooded
       use_rig: head
       prefab:
         path: prefab/characters/elf/male/mesh_elf_addon_hood_1.yml
     - id: hood_2
       group: hair.hooded
-      use_rig: head
+      use_rig: body
       prefab:
         path: prefab/characters/elf/male/mesh_elf_addon_hood_2.yml
-    - id: mask
+    - xid: mask
       group: decoration
-      use_rig: head
+      use_rig: body
       prefab:
         path: prefab/characters/elf/male/mesh_elf_addon_mask.yml
 
@@ -117,7 +117,7 @@ prefab:
       prefab:
         path: prefab/characters/elf/male/mesh_elf_addon_vest_straps.yml
 
-    - id: arms_armor
+    - xid: arms_armor
       group: armor.arm
       use_rig: body
       prefab:

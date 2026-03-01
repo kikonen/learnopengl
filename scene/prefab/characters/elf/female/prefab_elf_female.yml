@@ -108,24 +108,24 @@ prefab:
       prefab:
         path: prefab/characters/elf/female/mesh_elf_addon_belt_1.yml
       use_rig: body
-    - xid: belt_1a
+    - id: belt_1a
       prefab:
         path: prefab/characters/elf/female/mesh_elf_addon_belt_1a.yml
       use_rig: body
-    - xid: belt_1b
+    - id: belt_1b
       prefab:
         path: prefab/characters/elf/female/mesh_elf_addon_belt_1b.yml
       use_rig: body
-    - xid: buckle
+    - id: buckle
       prefab:
         path: prefab/characters/elf/female/mesh_elf_addon_belt_buckle.yml
       use_rig: body
-    - xid: belt_2
+    - id: belt_2
       prefab:
         path: prefab/characters/elf/female/mesh_elf_addon_belt_2.yml
       use_rig: body
 
-    - xid: studs
+    - id: studs
       prefab:
         path: prefab/characters/elf/female/mesh_elf_addon_studs.yml
       use_rig: body

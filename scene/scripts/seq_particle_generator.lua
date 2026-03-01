@@ -9,7 +9,7 @@ local function animation()
   local function animation_listener()
     cid = cmd:particle_emit(
       self.handle,
-      { after=cid, count=(30 + rnd(50)) * 1000 })
+      { after=cid, count=(30 + rnd(50)) * 10000 })
 
     wid = cmd:wait(
       { after=cid, time=3 })

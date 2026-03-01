@@ -58,7 +58,9 @@ namespace animation {
         }
     }
 
-    void JointContainer::bindRig(animation::Rig& rig)
+    void JointContainer::bindRig(
+        animation::Rig& rig,
+        bool silent)
     {
         m_nodeToJoint.clear();
 
@@ -75,6 +77,13 @@ namespace animation {
 
             joint.m_nodeIndex = rigNode->m_index;
             m_nodeToJoint.insert({ rigNode->m_index, joint.m_jointIndex });
+            if (!silent) {
+                if (!rigNode->m_hasJoint) {
+                    KI_INFO_OUT(fmt::format(
+                        "ANIM::RIG::NEW_BIND: container={}, node={}, index={}",
+                        m_name, joint.m_nodeName, joint.m_jointIndex));
+                }
+            }
             rigNode->m_hasJoint = true;
         }
 
