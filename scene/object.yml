@@ -54,7 +54,7 @@ types:
       #path: prefab/creatures/prefab_wyvern.yml
       #path: prefab/scenery/prefab_SM_Desert_Dandelion_01e.yml
       #path: prefab/scenery/prefab_grass.yml
-      #path: prefab/creatures/prefab_lion.yml
+      #path: prefab/creatures/prefab_lion_male.yml
       #path: prefab/scenery/prefab_asteroid.yml
       #path: prefab/scenery/prefab_palm_tree.yml
       path: prefab/scenery/prefab_bush01.yml

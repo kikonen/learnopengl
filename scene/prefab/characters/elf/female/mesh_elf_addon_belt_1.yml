@@ -2,6 +2,8 @@
 mesh:
   #path: fbx/characters/Elf/Elf Wardrobe Female/Elf_Fem_Belt_1.FBX
   path: fbx/characters/Elf/Elf Wardrobe Male/Belt_1.FBX
+  lod:
+    max: 20
   flags:
     use_bones: true
     use_animation: true

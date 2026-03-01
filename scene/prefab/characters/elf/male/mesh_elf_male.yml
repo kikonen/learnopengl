@@ -1,6 +1,8 @@
 ---
 mesh:
   path: fbx/characters/Elf/Bodies/Elf Male.fbx
+  lod:
+    max: 100
   flags:
     use_bones: true
     xuse_bones_debug: true
@@ -41,6 +43,12 @@ mesh:
           joint: Base-HumanSpine1
           offset: [0, 0.1, 0]
           role: physics_center
+        - name: foot_right
+          joint: Base-HumanRToe11
+          role: foot_right
+        - name: foot_left
+          joint: Base-HumanLToe11
+          role: foot_left
         - name: head
           joint: Base-HumanHead
           offset: [0.130, 0.040, 0.000]
@@ -70,12 +78,6 @@ mesh:
           joint: RootNode
           #offset: [0.000, 0.10, -1.000]
           #rotation: [90.000, 0.000, 180.000]
-        - name: foot_right
-          joint: Base-HumanRToe11
-          role: foot_right
-        - name: foot_left
-          joint: Base-HumanLToe11
-          role: foot_left
     - name: elf_male-RootNode-Base-HumanNeck
       alias: head
     - alias: "*"

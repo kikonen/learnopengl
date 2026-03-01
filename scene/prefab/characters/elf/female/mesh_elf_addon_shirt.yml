@@ -1,6 +1,8 @@
 ---
 mesh:
   path: fbx/characters/Elf/Elf Wardrobe Female/Elf_Fem_Shirt.FBX
+  lod:
+    max: 70
   flags:
     use_bones: true
     use_animation: true
