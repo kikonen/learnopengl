@@ -341,7 +341,7 @@ namespace mesh_set
                 auto rig = skeletonSet.findRig(mesh);
                 if (rig) {
                     modelMesh->m_rig = rig;
-                    modelMesh->m_jointContainer->bindRig(*rig);
+                    modelMesh->m_jointContainer->bindRig(*rig, true);
 
                     // NOTE KI for debugging/troubleshooting only
                     auto& rootNode = rig->m_nodes[0];

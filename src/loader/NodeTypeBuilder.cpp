@@ -511,7 +511,8 @@ namespace loader
 
                         if (rig) {
                             mesh->m_rig = rig;
-                            mesh->m_jointContainer->bindRig(*rig);
+                            mesh->m_jointContainer->bindRig(*rig, false);
+                            rig->prepareSockets();
                         }
                     }
                 }

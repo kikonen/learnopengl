@@ -1,6 +1,7 @@
 ---
 mesh:
-  path: fbx/characters/Elf/Elf Wardrobe Female/Elf_Fem_ManicaPair.FBX
+  #path: fbx/characters/Elf/Elf Wardrobe Female/Elf_Fem_ManicaPair.FBX
+  path: fbx/characters/Elf/Elf Wardrobe Male/ManicaPair.FBX
   flags:
     use_bones: true
     use_animation: true

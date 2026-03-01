@@ -187,7 +187,7 @@ namespace particle {
         if (!m_updateReady) return;
 
         m_frameSkipCount++;
-        if (m_frameSkipCount < 2) {
+        if (m_frameSkipCount < 1) {
             return;
         }
         m_frameSkipCount = 0;
