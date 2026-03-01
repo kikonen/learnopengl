@@ -1,6 +1,8 @@
 ---
 mesh:
   path: fbx/characters/Elf/Elf Wardrobe Male/Vest.FBX
+  lod:
+    max: 100
   flags:
     use_bones: true
     use_animation: true

@@ -50,9 +50,9 @@ types:
       cmd:animation_play(
         self.handle,
         { name = "walk" })
-  - id: lion
+  - id: lion_male
     prefab:
-      path: prefab/creatures/prefab_lion.yml
+      path: prefab/creatures/prefab_lion_male.yml
     xscript_file: scripts/cow_audio
     script: |
       cmd:animation_play(
@@ -65,7 +65,7 @@ types:
       cmd:animation_play(
         self.handle,
         { name = "idle" })
-  - id: elf_female
+  - id: elf_female_warrior
     base: prefab_elf_female_warrior
     xprefab:
       path: prefab/characters/elf/female/prefab_elf_female.yml
@@ -127,30 +127,29 @@ nodes:
   - type: wooden_floor
     scale: 100
   - type: wolf
-    pos: [-30.0, 0.5, 0.0]
+    pos: [-30.0, 0, 0.0]
     xrepeat:
       x_count: 2
       z_count: 2
       x_step: 4
       z_step: -7
-  - type: lion
-    pos: [-20.0, 0.5, 0.0]
+  - type: lion_male
+    pos: [-20.0, 0, 0.0]
     xrepeat:
       x_count: 2
       z_count: 2
       x_step: 4
       z_step: -7
   - type: deinodonte
-    pos: [-10.0, 0.5, -10.0]
+    pos: [-10.0, 0, -10.0]
     scale: 4
     xrepeat:
       x_count: 2
       z_count: 2
       x_step: 20
       z_step: -20
-  - type: elf_female
-    tag: body
-    pos: [0.0, 0.5, 0.0]
+  - type: elf_female_warrior
+    pos: [0.0, 0.0, 0.0]
     xrepeat:
       x_count: 2
       z_count: 2

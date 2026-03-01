@@ -10,8 +10,8 @@ script:
 
 includes:
   - xpath: prefab/creatures/include_skeleton_warrior.yml
-  - xpath: prefab/characters/elf/female/include_elf_female_warrior.yml
-  - xpath: prefab/characters/elf/male/include_elf_male_warrior.yml
+  - path: prefab/characters/elf/female/include_elf_female_warrior.yml
+  - path: prefab/characters/elf/male/include_elf_male_warrior.yml
 
 types:
   - id: player
@@ -219,9 +219,9 @@ types:
       cmd:animation_play(
         self.handle,
         { name = "idle" });
-  - xid: lion
+  - xid: lion_male
     prefab:
-      path: prefab/creatures/prefab_lion.yml
+      path: prefab/creatures/prefab_lion_male.yml
     xscript_file: scripts/cow_audio
     physics:
       enabled: false
@@ -238,16 +238,16 @@ types:
       cmd:animation_play(
         self.handle,
         { name = "walk" })
-  - xid: elf_female_warrior
-    xbase: prefab_elf_female_warrior
+  - id: elf_female_warrior
+    base: prefab_elf_female_warrior
     physics:
       #enabled: false
     script: |
       cmd:animation_play(
         self.handle,
         { tag="body", name = "idle" })
-  - xid: elf_male_warrior
-    xbase: prefab_elf_male_warrior
+  - id: elf_male_warrior
+    base: prefab_elf_male_warrior
     physics:
       #enabled: false
     script: |
@@ -272,7 +272,7 @@ types:
       cmd:animation_play(
         self.handle,
         { name = "default" })
-  - id: locomotive
+  - xid: locomotive
     prefab:
       path: prefab/outlaw/prefab_vehicle_locomotive.yml
 
@@ -303,16 +303,16 @@ nodes:
     pos: [0, 3.5, 0.0]
   - type: skeleton
     pos: [0, 3.5, 0.0]
-  - type: lion
+  - type: lion_male
     pos: [0, 3.5, 0.0]
   - type: wolf
     pos: [0, 3.5, 0.0]
   - type: elf_female_warrior
-    pos: [0, 3.5, 0.0]
+    pos: [-1, 3.5, 0.0]
   - type: elf_female
     tag: body
     pos: [0, 3.5, 0.0]
-  - xtype: elf_male_warrior
+  - type: elf_male_warrior
     pos: [0, 3.5, 0.0]
   - xtype: elf_male
     tag: body

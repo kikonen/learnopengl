@@ -55,9 +55,9 @@ types:
         type: plane
         category: [terrain]
         collision: [can_terrain]
-  - id: cube_1
+  - id: lion_male
     prefab:
-      path: prefab/creatures/prefab_lion.yml
+      path: prefab/creatures/prefab_lion_male.yml
     script: |
       cmd:animation_play(
         self.handle,

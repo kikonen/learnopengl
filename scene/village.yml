@@ -219,9 +219,9 @@ types:
       cmd:animation_play(
         self.handle,
         { name = "idle" });
-  - xid: lion
+  - xid: lion_male
     prefab:
-      path: prefab/creatures/prefab_lion.yml
+      path: prefab/creatures/prefab_lion_male.yml
     xscript_file: scripts/cow_audio
     physics:
       enabled: false
@@ -345,7 +345,7 @@ nodes:
     pos: [0, 3.5, 0.0]
   - type: skeleton
     pos: [0, 3.5, 0.0]
-  - type: lion
+  - type: lion_male
     pos: [0, 3.5, 0.0]
   - type: wolf
     pos: [0, 3.5, 0.0]

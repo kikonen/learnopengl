@@ -10,6 +10,8 @@ script:
 
 includes:
   - path: prefab/creatures/include_skeleton_warrior.yml
+  - path: prefab/characters/elf/female/include_elf_female_warrior.yml
+  - xpath: prefab/characters/elf/male/include_elf_male_warrior.yml
 
 types:
   - id: grid
@@ -148,6 +150,17 @@ types:
         z_count: 20
         x_step: -20
         z_step: 20
+  - id: elf_female_warrior
+    base: prefab_elf_female_warrior
+    flags:
+      dynamic_bounds: true
+    physics:
+      #enabled: false
+    script: |
+      cmd:animation_play(
+        self.handle,
+        { tag="body", name = "idle" })
+    script: scripts/seq_elf_random_nav
   - id: skeleton_warrior
     base: prefab_composite_skeleton_warrior
     priority: 1
@@ -225,7 +238,14 @@ nodes:
     pos: [0, -70, 0]
     scale: 1024
   - type: palm_tree_forest
-  - type: skeleton_warrior
+  - type: elf_female_warrior
+    pos: [0, 100.5, 0.0]
+    repeat:
+      x_count: 10
+      z_count: 10
+      x_step: 4
+      z_step: -4
+  - xtype: skeleton_warrior
     pos: [0, 100.5, 0.0]
     repeat:
       x_count: 20
