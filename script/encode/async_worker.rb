@@ -1,5 +1,10 @@
 # frozen_string_literal: true
 
+ENV["RUBY_DEBUG_NO_HINT"] = "true"
+ENV["RUBY_DEBUG_SHOW_FRAMES"] = "0"
+ENV["RUBY_DEBUG_USE_SHORT_PATH"] = "true"
+ENV["RUBY_DEBUG_NO_RELINE"] = "1"
+
 require "debug"
 require 'debug/open_nonstop'
 

@@ -162,15 +162,10 @@ module Encode
       File.write(metadata_path, JSON.pretty_generate(data) + "\n")
     end
 
-    def self.list_files(src_dir)
+    def self.list_files(src_dir, pattern = "*")
       return [] unless File.directory?(src_dir)
 
-       old_dir = Dir.pwd
-      Dir.chdir(src_dir)
-      files = Dir["*"]
-      Dir.chdir(old_dir)
-
-      files
+      Dir.glob(pattern, base: src_dir).sort
     end
 
     def self.clean_dir_path(path)
