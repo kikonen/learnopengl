@@ -189,7 +189,7 @@ void ImageTexture::prepareNormal()
         GLint compFlag;
         glGetTextureLevelParameteriv(m_textureID, 0, GL_TEXTURE_COMPRESSED, &compFlag);
         KI_INFO(fmt::format(
-            "TEX::UPLOAD: {}, compressed={}\n{}",
+            "TEX::UPLOAD::PLAIN: path={}, compressed={}\n{}",
             m_path,
             compFlag,
             str()));
@@ -215,7 +215,7 @@ void ImageTexture::prepareKtx()
     GLenum target, glerror;
 
     if (!util::fileExists(m_image->m_path)) {
-        KI_ERROR(fmt::format("TEX::UPLOAD::FILE_NOT_FOUND: ktx: {}", m_image->m_path));
+        KI_ERROR(fmt::format("TEX::UPLOAD::KTX::FILE_NOT_FOUND: path={}", m_image->m_path));
         if (!m_shared) {
             m_image.reset();
         }
@@ -235,7 +235,7 @@ void ImageTexture::prepareKtx()
         &tex2);
 
     if (result != KTX_SUCCESS) {
-        KI_ERROR(fmt::format("TEX::UPLOAD::KTX::LOAD: ktx: {}", m_image->m_path));
+        KI_ERROR(fmt::format("TEX::UPLOAD::KTX::LOAD: path={}", m_image->m_path));
         if (!m_shared) {
             m_image.reset();
         }
@@ -263,7 +263,7 @@ void ImageTexture::prepareKtx()
 
         result = ktxTexture2_TranscodeBasis(tex2, transcodeFormat, 0);
         if (result != KTX_SUCCESS) {
-            KI_ERROR(fmt::format("TEX::UPLOAD::KTX::TRANSCODE: ktx: {}", m_image->m_path));
+            KI_ERROR(fmt::format("TEX::UPLOAD::KTX::TRANSCODE: path={}", m_image->m_path));
             if (!m_shared) {
                 m_image.reset();
             }
@@ -288,7 +288,7 @@ void ImageTexture::prepareKtx()
 
     if (result != KTX_SUCCESS) {
         KI_ERROR(fmt::format(
-            "TEX::UPLOAD::KTX_UPLOAD: ktx: {}, result={}, GL error=0x{:04X}",
+            "TEX::UPLOAD::KTX: path={}, result={}, GL error=0x{:04X}",
             m_image->m_path, (int)result, (int)glerror));
 
         if (!m_shared) {

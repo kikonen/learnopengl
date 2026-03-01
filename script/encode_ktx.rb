@@ -4,8 +4,14 @@
 #   "#{File.dirname(__FILE__)}/../.rdbg_history")
 # ENV['RUBY_DEBUG_SAVE_HISTORY'] = "10000"
 
+ENV["RUBY_DEBUG_NO_HINT"] = "true"
+ENV["RUBY_DEBUG_SHOW_FRAMES"] = "0"
+ENV["RUBY_DEBUG_USE_SHORT_PATH"] = "true"
+ENV["RUBY_DEBUG_NO_RELINE"] = "1"
+
 require "debug"
 require 'debug/open_nonstop'
+
 require 'thor'
 require 'logger'
 require 'etc'
@@ -334,8 +340,10 @@ module Encode
       dst_dir = src_dir
       puts "DIR: #{src_dir} => #{dst_dir}"
 
-      Dir["#{src_dir}/*.digest"].sort.each do |src_path|
-        next if /\.ktx/.match?(src_path)
+      Util.list_files(src_dir, "*.digest").sort.each do |src_file|
+        next if /\.ktx/.match?(src_file)
+
+        src_path = "#{src_dir}/#{src_file}"
 
         if pass == :ktx
           @processor.add_task(
