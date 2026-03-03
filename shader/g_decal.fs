@@ -59,8 +59,7 @@ ResolvedMaterial material;
 #ifdef USE_PARALLAX
 #include "include/fn_calculate_parallax_mapping.glsl"
 #endif
-#include "include/fn_gbuffer_encode.glsl"
-
+#include "include/fn_gbuffer_normal_encode.glsl"
 
 void main() {
   const uint materialIndex = fs_in.materialIndex;

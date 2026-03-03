@@ -41,7 +41,7 @@ SET_FLOAT_PRECISION;
 ResolvedMaterial material;
 
 #include "include/fn_calculate_fog.glsl"
-#include "include/fn_gbuffer_encode.glsl"
+#include "include/fn_gbuffer_normal_encode.glsl"
 
 vec3 estimateWaveNormal(
   in sampler3D sampler,

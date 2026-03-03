@@ -69,7 +69,7 @@ local function animation_scale(self)
       scale)
 
     cid = cmd:emit(
-      self.handle
+      self.handle,
       { after=cid },
       { type=Event.SCRIPT_RESUME, listener=listener_id})
 

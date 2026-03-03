@@ -35,7 +35,8 @@ layout (location = 0) out float o_fragColor;
 
 SET_FLOAT_PRECISION;
 
-#include "include/fn_gbuffer_decode.glsl"
+#include "include/fn_gbuffer_normal_decode.glsl"
+#include "include/fn_gbuffer_depth_decode.glsl"
 
 float calculateSsao(
   const vec3 normal,
