@@ -36,12 +36,12 @@ void main() {
 
   #include "include/var_plain_material.glsl"
 
-  // NOTE KI interpolation from vs to fs denormalizes normal
-  const vec3 normal = normalize(fs_in.normal);
-
   // - Rim lighting
   vec4 rim;
   {
+    // NOTE KI interpolation from vs to fs denormalizes normal
+    const vec3 normal = normalize(fs_in.normal);
+
     const vec3 viewDir = normalize(-fs_in.viewPos);
 
     // The more orthogonal the camera is to the fragment, the stronger the rim light.
@@ -54,31 +54,28 @@ void main() {
     rim = vec4(rimFactor);
   }
 
-  // - Create the intersection line -
-  // Turn frag coord from screenspace -> NDC, which corresponds to the UV
-  const float bubbleDepth = linearizeDepthFromUniform(gl_FragCoord.z);
+  vec4 intersection;
+  {
+    // - Create the intersection line -
+    // Turn frag coord from screenspace -> NDC, which corresponds to the UV
+    const float bubbleDepth = linearizeDepthFromUniform(gl_FragCoord.z);
 
-  const vec2 pixCoord = gl_FragCoord.xy / u_bufferResolution;
-  const float sceneDepth = linearizeDepthFromUniform(getDepthFromGBuffer(pixCoord));
+    const vec2 pixCoord = gl_FragCoord.xy / u_bufferResolution;
+    const float sceneDepth = linearizeDepthFromUniform(getDepthFromGBuffer(pixCoord));
 
-  // linear difference in depth
-  const float distance = abs(bubbleDepth - sceneDepth);
+    // linear difference in depth
+    const float distance = abs(bubbleDepth - sceneDepth);
 
-  const float threshold = 0.0003;
+    const float threshold = 0.0003;
 
-  // [0, threshold] -> [0, 1]
-  const float normalizedDistance = clamp(distance / threshold, 0.0, 1.0);
+    // [0, threshold] -> [0, 1]
+    const float normalizedDistance = clamp(distance / threshold, 0.0, 1.0);
 
-  // white to transparent gradient
-  vec4 intersection = mix(vec4(1), vec4(0), normalizedDistance);
+    // white to transparent gradient
+    intersection = mix(vec4(1), vec4(0), normalizedDistance);
+  }
 
   vec4 bubbleBase = material.diffuse;
 
   o_fragColor = bubbleBase + intersection + rim;
-  // o_fragColor = bubbleBase + rim;
-
-  vec3 c;
-  // vec3 c = fs_in.worldPos / length(fs_in.worldPos);
-  c = vec3(distance);
-  // o_fragColor = vec4(c, 1 +material.diffuse.a);
 }

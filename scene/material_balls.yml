@@ -131,20 +131,14 @@ types:
         type: sphere
         radius: 0.5
       material:
-        #prefab: materials/Metal008.yml
         kd: [0.1, 0.8, 0.9, 0.2]
         blend: true
-        # render_back: true
+        render_back: true
         program: effect_bubble
     flags:
       effect: true
       no_select: true
       no_shadow: true
-    xscript: |
-      cmd:scale(
-        self.handle,
-        { time=200, relative=true },
-        vec3(100))
     script_file: scripts/anim_bubble.lua
   - id: wooden_floor
     prefab:
