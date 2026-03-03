@@ -97,6 +97,11 @@ vec4 calculateLightPbr(
   //Color = ambient;
   //color = material.diffuse.rgb;
 
+  float v = material.mras.g;
+  // color = vec3(v, v, v);
+  // color = material.mras.rgb;
+  // color = normal;
+
   // NOTE KI keep blending from material
   return vec4(color, material.diffuse.a);
 }

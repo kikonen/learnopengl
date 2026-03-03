@@ -27,6 +27,8 @@ includes:
   - path: prefab/util/include_origo_marker.yml
   - path: prefab/util/include_fps_counter.yml
   - path: prefab/creatures/include_skeleton_warrior.yml
+  - path: prefab/characters/elf/female/include_elf_female_warrior.yml
+  - xpath: prefab/characters/elf/male/include_elf_male_warrior.yml
 
 types:
   - id: grid
@@ -1001,6 +1003,17 @@ types:
         z_count: 35
         x_step: 40
         z_step: 40
+  - id: elf_female_warrior
+    base: prefab_elf_female_warrior
+    flags:
+      dynamic_bounds: true
+    physics:
+      enabled: true
+    script: |
+      cmd:animation_play(
+        self.handle,
+        { tag="body", name = "idle" })
+    script_file: scripts/seq_elf_random_nav
   - id: skeleton_warrior
     base: prefab_composite_skeleton_warrior
     priority: -15
@@ -1435,6 +1448,15 @@ nodes:
   - type: bush01
   - type: bush02
   - type: bush03
+  - type: elf_female_warrior
+    pos: [37, 11.5, 62.0]
+    scale: 3
+    rotation: [0, -180, 0]
+    repeat:
+      x_count: 10
+      z_count: 10
+      x_step: -10
+      z_step: 10
   - type: skeleton_warrior
     pos: [35, 11.5, 60.0]
     scale: 3

@@ -55,7 +55,7 @@ namespace script
         auto* node = getNode();
         if (!node) return;
 
-        node->modifyState().adjustPosition(adjust);
+        node->modifyState().adjustScale(adjust);
         node->updateModelMatrix();
 
         m_previous = scale;

@@ -146,7 +146,7 @@ void TextGenerator::updateVAO(
         auto drawables = instanceRegistry.modifyRange(ref);
         auto& drawable = drawables[0];
         {
-            drawable.lodMeshIndex = 0;
+            //drawable.lodMeshIndex = 0;
 
             drawable.meshId = lodMesh.getMesh<mesh::Mesh>()->m_id;
 

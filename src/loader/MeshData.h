@@ -26,8 +26,9 @@ namespace loader {
         std::string id;
         std::string name;
         std::string path;
+        std::string group;
 
-        std::string bindRig;
+        std::string useRig;
 
         // NOTE KI default to smooth normals (usually better)
         bool smoothNormals{ true };

@@ -89,25 +89,27 @@ mat4 getViewportMatrix(vec2 size) {
 	       vec4(w2+0, h2+0, 0.0f, 1.0f));
 }
 
-// https://stackoverflow.com/questions/21576367/reading-from-a-depth-texture-in-a-fragment-shader
-// @param depth [0, 1]
-// @return value linearized within [near, far] plane range
-float linearizeDepth(float d, float near, float far)
-{
-  return 2.0 * near * far / (far + near - d * (far - near));
-}
+// // https://stackoverflow.com/questions/21576367/reading-from-a-depth-texture-in-a-fragment-shader
+// // @param depth [0, 1]
+// // @return value linearized within [near, far] plane range
+// float linearizeDepth(float d, float near, float far)
+// {
+//   return 2.0 * near * far / (far + near - d * (far - near));
+// }
 
-// https://stackoverflow.com/questions/21576367/reading-from-a-depth-texture-in-a-fragment-shader
-// @param depth [0, 1]
-// @return value linearized within [near, far] plane range
-float linearizeDepth2(float d, float near, float far)
-{
-  float z = 2.0 * d - 1.0;
-  return 2.0 * near * far / (far + near - z * (far - near));
-}
+// // https://stackoverflow.com/questions/21576367/reading-from-a-depth-texture-in-a-fragment-shader
+// // @param depth [0, 1]
+// // @return value linearized within [near, far] plane range
+// float linearizeDepth2(float d, float near, float far)
+// {
+//   float z = 2.0 * d - 1.0;
+//   return 2.0 * near * far / (far + near - z * (far - near));
+// }
 
-#ifdef _UNIFORM_DATA_GLSL
-float linearizeDepth3(float depth) {
-  return linearizeDepth(depth, u_nearPlane, u_farPlane);
+float linearizeDepth(float depth, float near, float far)
+{
+  const float zNdc = 2 * depth - 1;
+  const float zEye = (2 * far * near) / ((far + near) - zNdc * (far - near));
+  const float linearDepth = (zEye - near) / (far - near);
+  return linearDepth;
 }
-#endif

@@ -18,6 +18,7 @@ public:
         bool grayScale,
         bool gammaCorrect,
         bool flipY,
+        TextureType type,
         const TextureSpec& spec);
 
     virtual ~ImageTexture();

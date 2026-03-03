@@ -1,0 +1,27 @@
+---
+prefab:
+  mesh:
+    id: lion_male
+    prefab:
+      path: mesh_lion_male.yml
+  audio:
+    source:
+      name: growl
+      path: audio/Lion Growl Fx_19237D66_normal_mono.wav
+      reference_distance: 3
+      gain: 0.5
+  physics:
+    update: true
+    body:
+      kinematic: true
+      density: 0.01
+      max_angular_velocity: 0
+      force_axis: true
+      axis: z
+      offset: [0, 0.8, 0]
+    geom:
+      type: capsule
+      category: npc
+      collision: [world, player]
+      size: [0.8, 0.75, 0]
+      axis: z

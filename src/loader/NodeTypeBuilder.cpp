@@ -481,7 +481,7 @@ namespace loader
         model::NodeType* type,
         const NodeTypeData& typeData)
     {
-        for (const auto& meshData : typeData.addons) {
+        for (const auto& meshData : typeData.availableAddons) {
             if (!meshData.enabled) continue;
 
             const auto startIndex = type->getLodMeshes().size();
@@ -495,7 +495,7 @@ namespace loader
                     auto* mesh = lodMesh.getMesh<mesh::ModelMesh>();
                     if (!mesh) continue;
 
-                    if (mesh->m_jointContainer && !meshData.bindRig.empty()) {
+                    if (mesh->m_jointContainer && !meshData.useRig.empty()) {
                         std::shared_ptr<animation::Rig> rig;
                         for (const auto& lodMesh : type->getLodMeshes()) {
                             auto* rigMesh = lodMesh.getMesh<mesh::ModelMesh>();
@@ -503,7 +503,7 @@ namespace loader
 
                             if (!rigMesh->m_rig) continue;
 
-                            if (rigMesh->m_rig->matchAlias(meshData.bindRig)) {
+                            if (rigMesh->m_rig->matchAlias(meshData.useRig)) {
                                 rig = rigMesh->m_rig;
                                 break;
                             }
@@ -511,7 +511,8 @@ namespace loader
 
                         if (rig) {
                             mesh->m_rig = rig;
-                            mesh->m_jointContainer->bindRig(*rig);
+                            mesh->m_jointContainer->bindRig(*rig, false);
+                            rig->prepareSockets();
                         }
                     }
                 }

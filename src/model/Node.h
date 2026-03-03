@@ -124,9 +124,9 @@ namespace model
             return m_lodMeshInstances;
         }
 
-        inline const std::vector<mesh::LodMesh>& getLodMeshes() const noexcept
+        inline const std::vector<mesh::LodMesh>& getEnabledMeshes() const noexcept
         {
-            auto lodMeshes = m_generator ? m_generator->getLodMeshes(*this) : nullptr;
+            auto lodMeshes = m_generator ? m_generator->getEnabledMeshes(*this) : nullptr;
             return lodMeshes ? *lodMeshes : getType()->getLodMeshes();
         }
 

@@ -44,10 +44,6 @@ SET_FLOAT_PRECISION;
 
 ResolvedMaterial material;
 
-float linearizeDepth(float depth) {
-  return linearizeDepth2(depth, u_nearPlane, u_farPlane);
-}
-
 float CalculateShaftBrightness(
   const in vec3 cameraObjectFront,
   const float pz,

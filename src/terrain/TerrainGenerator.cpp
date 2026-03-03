@@ -133,6 +133,7 @@ namespace terrain {
                 false,
                 false,
                 true,
+                TextureType::map_custom_1,
                 spec);
 
             future.wait();

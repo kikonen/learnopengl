@@ -1,6 +1,8 @@
 ---
 mesh:
   path: fbx/characters/Elf/Elf Hair Female/HumanHairShort.FBX
+  lod:
+    max: 40
   flags:
     use_bones: true
     use_animation: true

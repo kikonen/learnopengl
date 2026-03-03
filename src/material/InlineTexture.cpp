@@ -31,8 +31,9 @@ InlineTexture::InlineTexture(
     bool is16Bbit,
     bool hasAlpha,
     bool gammaCorrect,
+    TextureType type,
     const TextureSpec& spec)
-    : Texture{ name, false, gammaCorrect, spec },
+    : Texture{ name, false, gammaCorrect, type, spec },
     m_name{ name },
     m_data{ data },
     m_width{ width },

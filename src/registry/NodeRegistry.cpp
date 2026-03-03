@@ -1257,12 +1257,12 @@ bool NodeRegistry::bindParentSocket(
         return false;
     }
 
-    const auto* parentType = parent->getType();
-    const auto& parentState = m_states[parent->getEntityIndex()];
+    //const auto* parentType = parent->getType();
+    //const auto& parentState = m_states[parent->getEntityIndex()];
     auto& state = m_states[node->getEntityIndex()];
 
     bool found = false;
-    for (int index = -1; const auto& lodMesh : parentType->getLodMeshes()) {
+    for (int index = -1; const auto& lodMesh : parent->getEnabledMeshes()) {
         index++;
 
         auto* modelMesh = lodMesh.getMesh<mesh::ModelMesh>();

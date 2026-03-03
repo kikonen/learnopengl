@@ -2,7 +2,7 @@ struct ResolvedMaterial {
   vec4 diffuse;
   vec3 emission;
 
-  // MRAS: [ambient-occlusion, metalness, roughnessa, specular]
+  // MRAS: [metalness, roughnessa, ambient-occlusion, specular]
   vec4 mras;
 
   uint flags;

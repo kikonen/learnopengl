@@ -61,7 +61,7 @@ public:
         render::Batch& batch,
         const model::Node& container) override;
 
-    const std::vector<mesh::LodMesh>* getLodMeshes(const model::Node& container) const override
+    const std::vector<mesh::LodMesh>* getEnabledMeshes(const model::Node& container) const override
     {
         return &m_lodMeshes;
     }

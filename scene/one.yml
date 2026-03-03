@@ -219,9 +219,9 @@ types:
       cmd:animation_play(
         self.handle,
         { name = "idle" });
-  - xid: lion
+  - xid: lion_male
     prefab:
-      path: prefab/creatures/prefab_lion.yml
+      path: prefab/creatures/prefab_lion_male.yml
     xscript_file: scripts/cow_audio
     physics:
       enabled: false
@@ -238,7 +238,7 @@ types:
       cmd:animation_play(
         self.handle,
         { name = "walk" })
-  - xid: elf_female_warrior
+  - id: elf_female_warrior
     base: prefab_elf_female_warrior
     physics:
       #enabled: false
@@ -255,7 +255,7 @@ types:
         self.handle,
         { tag="body", name = "idle" })
   - xid: elf_female
-    prefab:
+    xprefab:
       path: prefab/characters/elf/female/prefab_elf_female.yml
     physics:
       #enabled: false
@@ -264,7 +264,7 @@ types:
         self.handle,
         { tag="body", name = "idle" })
   - xid: scavenger
-    prefab:
+    xprefab:
       path: prefab/characters/prefab_scavenger.yml
     physics:
       enabled: false
@@ -272,6 +272,9 @@ types:
       cmd:animation_play(
         self.handle,
         { name = "default" })
+  - xid: locomotive
+    prefab:
+      path: prefab/outlaw/prefab_vehicle_locomotive.yml
 
 nodes:
   - type: player
@@ -281,7 +284,7 @@ nodes:
     pos: [-15, 25, 25]
   - type: ground
     position: [0, 3.5, 0]
-    scale: 100
+    scale: 200
   - type: dandelion
   - type: flower
   - type: orc_01
@@ -300,19 +303,21 @@ nodes:
     pos: [0, 3.5, 0.0]
   - type: skeleton
     pos: [0, 3.5, 0.0]
-  - type: lion
+  - type: lion_male
     pos: [0, 3.5, 0.0]
   - type: wolf
     pos: [0, 3.5, 0.0]
   - type: elf_female_warrior
-    pos: [0, 3.5, 0.0]
+    pos: [-1, 3.5, 0.0]
   - type: elf_female
     tag: body
     pos: [0, 3.5, 0.0]
   - type: elf_male_warrior
     pos: [0, 3.5, 0.0]
-  - type: elf_male
+  - xtype: elf_male
     tag: body
     pos: [0, 3.5, 0.0]
   - type: scavenger
+    pos: [0, 3.5, 0.0]
+  - type: locomotive
     pos: [0, 3.5, 0.0]

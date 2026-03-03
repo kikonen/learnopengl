@@ -20,27 +20,38 @@ namespace loader {
 
         void loadMaterialModifiers(
             const loader::DocNode& node,
+            const std::string& currentDir,
             std::vector<MaterialData>& materials,
             Loaders& loaders) const;
 
         void loadMaterialModifier(
             const loader::DocNode& node,
+            const std::string& currentDir,
             MaterialData& data,
             Loaders& loaders) const;
 
         void loadMaterials(
             const loader::DocNode& node,
+            const std::string& currentDir,
             std::vector<MaterialData>& materials,
             Loaders& loaders) const;
 
         void loadMaterial(
             const loader::DocNode& node,
+            const std::string& currentDir,
             MaterialData& data,
             Loaders& loaders) const;
 
         void loadMaterialPrefab(
             const loader::DocNode& node,
+            const std::string& currentDir,
             MaterialData& data,
+            Loaders& loaders) const;
+
+        void loadMaterialSet(
+            const loader::DocNode& node,
+            const std::string& currentDir,
+            std::vector<MaterialData>& materials,
             Loaders& loaders) const;
 
         void loadTextureSpec(

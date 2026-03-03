@@ -17,11 +17,13 @@ namespace loader {
 
         void loadMaterialUpdaters(
             const loader::DocNode& node,
+            const std::string& currentDir,
             std::vector<MaterialUpdaterData>& updaters,
             Loaders& loaders) const;
 
         void loadMaterialUpdater(
             const loader::DocNode& node,
+            const std::string& currentDir,
             MaterialUpdaterData& data,
             Loaders& loaders) const;
 
