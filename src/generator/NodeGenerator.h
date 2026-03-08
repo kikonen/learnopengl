@@ -112,7 +112,7 @@ public:
         const render::RenderContext& ctx,
         const model::Node& container) {}
 
-    virtual const std::vector<mesh::LodMesh>* getLodMeshes(const model::Node& container) const
+    virtual const std::vector<mesh::LodMesh>* getEnabledMeshes(const model::Node& container) const
     {
         return nullptr;
     }

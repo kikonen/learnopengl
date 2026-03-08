@@ -15,10 +15,12 @@ Texture::Texture(
     std::string_view name,
     bool grayScale,
     bool gammaCorrect,
+    TextureType type,
     const TextureSpec& spec)
     : m_name(name),
     m_grayScale{ grayScale },
     m_gammaCorrect(gammaCorrect),
+    m_type{ type },
     m_spec(spec)
 {
 }

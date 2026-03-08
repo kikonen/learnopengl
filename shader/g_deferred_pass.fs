@@ -45,7 +45,8 @@ ResolvedMaterial material;
 #include "include/fn_calculate_spot_light.glsl"
 #include "include/fn_calculate_light.glsl"
 #include "include/fn_calculate_shadow_index.glsl"
-#include "include/fn_gbuffer_decode.glsl"
+#include "include/fn_gbuffer_normal_decode.glsl"
+#include "include/fn_gbuffer_depth_decode.glsl"
 
 const vec4 CASCADE_COLORS[MAX_SHADOW_MAP_COUNT_ABS] =
   vec4[MAX_SHADOW_MAP_COUNT_ABS](

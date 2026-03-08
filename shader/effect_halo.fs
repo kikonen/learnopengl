@@ -45,13 +45,10 @@ layout (location = 0) out vec4 o_fragColor;
 
 SET_FLOAT_PRECISION;
 
-#include "include/fn_gbuffer_decode.glsl"
+#include "include/fn_gbuffer_depth_decode.glsl"
+#include "include/fn_gbuffer_normal_decode.glsl"
 
 ResolvedMaterial material;
-
-float linearizeDepth(float depth) {
-  return linearizeDepth2(depth, u_nearPlane, u_farPlane);
-}
 
 // R = halo radius
 // R2 = R^2

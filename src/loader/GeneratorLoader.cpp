@@ -62,6 +62,7 @@ namespace loader {
 
     void GeneratorLoader::loadGenerator(
         const loader::DocNode& node,
+        const std::string& currentDir,
         GeneratorData& data,
         Loaders& loaders) const
     {
@@ -130,7 +131,11 @@ namespace loader {
                 loader.loadMask(v, data.boundsMask);
             }
             else if (k == "material") {
-                loaders.m_materialLoader.loadMaterial(v, data.materialData, loaders);
+                loaders.m_materialLoader.loadMaterial(
+                    v,
+                    currentDir,
+                    data.materialData,
+                    loaders);
             }
             else if (k == "geom" || k == "shape") {
                 PhysicsShapeValue loader;

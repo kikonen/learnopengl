@@ -69,7 +69,7 @@ composites:
             children:
               - type: prefab_2_handed_sword_particle
                 tag: sword_particle
-                pos: [0, 0.75, 0]
+                pos: [-0.015, 0.8, 0]
 
 particles:
   - id: prefab_2_handed_sword

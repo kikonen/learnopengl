@@ -18,11 +18,13 @@ namespace loader {
 
         void loadParticles(
             const loader::DocNode& node,
+            const std::string& currentDir,
             std::vector<ParticleData>& particles,
             Loaders& loaders) const;
 
         void loadParticle(
             const loader::DocNode& node,
+            const std::string& currentDir,
             ParticleData& data,
             const std::unordered_map<std::string, const loader::DocNode*>& idToParticle,
             Loaders& loaders) const;

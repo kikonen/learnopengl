@@ -1,0 +1,47 @@
+---
+mesh:
+  path: fbx/creatures/lion/SK_Lion.FBX
+  flags:
+    use_bones: true
+    xuse_bones_debug: true
+    use_animation: true
+  lods:
+    - name: SK_Lion_LOD0
+      min: 0
+      max: 20
+    - name: SK_Lion_LOD1
+      min: 20
+      max: 30
+    - name: SK_Lion_LOD2
+      min: 30
+      max: 40
+    - name: SK_Lion_LOD3
+      min: 40
+      max: 200
+  material:
+    name: lion_pbr
+    base: lion_skin_pbr
+    map_kd: T_Lion_BaseColor.tga
+    map_normal: T_Lion_Normal.jpg
+    xmras: [0.3, 0.4, 1]
+    xrender_back: true
+    xline_mode: true
+    default_programs: true
+  base_scale: 0.0125
+  rig:
+    animations:
+      - clips:
+          - name: default
+            clip: Take-001
+      - name: walk
+        clip: Take-001
+        path: anim/Lion@Walk.FBX
+      - name: jump
+        clip: Take-001
+        path: anim/Lion@Jump.FBX
+      - name: idle
+        clip: Take-001
+        path: anim/Lion@IdleBreathe.FBX
+      - name: roar
+        clip: Take-001
+        path: anim/Lion@Roar.FBX

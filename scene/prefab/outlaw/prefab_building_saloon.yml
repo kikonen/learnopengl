@@ -1,0 +1,5 @@
+---
+prefab:
+  mesh:
+    prefab:
+      path: mesh_building_saloon.yml

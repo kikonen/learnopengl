@@ -22,6 +22,7 @@ namespace loader {
 
         void loadText(
             const loader::DocNode& node,
+            const std::string& currentDir,
             TextData& data,
             Loaders& loaders) const;
 

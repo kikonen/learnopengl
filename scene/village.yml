@@ -1,0 +1,402 @@
+---
+meta:
+  name: One
+skybox:
+  program: g_skybox
+  material: skybox/polyhaven/drakensberg_solitary_mountain_4k.hdr
+script:
+  scripts:
+    - path: lib/common
+
+includes:
+  - xpath: prefab/creatures/include_skeleton_warrior.yml
+  - xpath: prefab/characters/elf/female/include_elf_female_warrior.yml
+  - xpath: prefab/characters/elf/male/include_elf_male_warrior.yml
+
+types:
+  - id: player
+    type: origo
+    front: [0, 0, -1]
+    audio:
+      listener:
+        default: true
+    camera:
+      default: true
+    controllers:
+      - type: pawn
+      - type: camera_zoom
+  - id: dir_light
+    type: origo
+    mesh:
+      path: light
+      program: g_light
+    flags:
+      no_shadow: true
+    light:
+      type: directional
+      diffuse: [0.7, 0.7, 0.7, 1.0]
+      intensity: 30000
+  - id: ground
+    prefab:
+      path: prefab/scenery/prefab_grass_ground_1.yml
+  - id: dandelion
+    prefab:
+      path: prefab/scenery/prefab_SM_Desert_Dandelion_01e.yml
+    mesh:
+      material_modifier:
+        shared_definitions:
+          USE_TREE_WIND: 1
+    priority: -20
+    flags:
+      static_bounds: true
+      no_shadow: true
+    generator:
+      type: grid
+      mode: random
+      offset: [-100, 0, -100]
+      #scale: 5
+      seed: [12, 13, 14]
+      count: 2000
+      repeat:
+        x_count: 10
+        z_count: 10
+        x_step: 20
+        z_step: 20
+  - id: flower
+    prefab:
+      path: prefab/scenery/prefab_SM_Flower_01c.yml
+    mesh:
+      material_modifier:
+        shared_definitions:
+          USE_TREE_WIND: 1
+    priority: -20
+    flags:
+      static_bounds: true
+      no_shadow: true
+    generator:
+      type: grid
+      mode: random
+      offset: [-100, 0, -100]
+      #scale: 5
+      seed: [45, 67, 99]
+      count: 2000
+      repeat:
+        x_count: 10
+        z_count: 10
+        x_step: 20
+        z_step: 20
+  - xid: orc_01
+    mesh:
+      #path: models/Orc_01/SK_Orc_01_Full.glb
+      #path: models/unreal/SK_Griffon.glb
+      path: models/unreal/SK_Ursag_Full.glb
+      material_modifier:
+        default_programs: true
+        unreal: true
+      flags:
+        xuse_bones: true
+        xuse_animation: true
+    script: |
+      cmd:rotate(
+        self.handle,
+        { time=10 * 100 },
+        vec3(0, 1, 0),
+        360 * 100)
+  - xid: griffon
+    mesh:
+      path: models/unreal/SK_Griffon.fbx
+      scale: 0.01
+      materials:
+        - name: M_Griffon_Feathers
+          base: griffon
+          map_kd: T_Griffon_Feathers
+          map_normal: T_Griffon_Feathers_nml
+          map_mras: T_Griffon_Feathers_mras
+          alpha: true
+          blend: true
+          render_back: true
+        - name: M_Griffon
+          base: griffon
+          map_kd: T_Griffon_BaseColor.PNG
+          map_normal: T_GRIFFON_nml.PNG
+          map_mras: T_GRIFFON_mras
+      material_modifier:
+        default_programs: true
+      flags:
+        use_bones: true
+        use_animation: true
+      animations:
+        - name: fly_backward
+          path: ANIM_Griffon_FlyBackwardsStationary.FBX
+          clip: Unreal-Take
+    script: |
+      cmd:animation_play(
+        self.handle,
+        { tag="body", name = "fly_backward" })
+  - xid: griffon_55
+    mesh:
+      path: models/unreal/SK_Griffon_55.glb
+      #scale: 10
+      material_modifier:
+        default_programs: true
+        unreal: true
+      flags:
+        use_bones: true
+        use_animation: true
+      animations:
+        - name: fly_backward
+          path: ANIM_Griffon_FlyBackwardsStationary.FBX
+          clip: Unreal-Take
+    script: |
+      cmd:animation_play(
+        self.handle,
+        { name = "fly_backward" })
+  - xid: skeleton_knight
+    mesh:
+      path: models/unity/skeleton_knight/SkeletonKnight_Legacy.glb
+      material_modifier:
+        default_programs: true
+      flags:
+        use_bones: true
+        use_animation: true
+      animations:
+        - name: walk
+          path: anim/SkeletonKnight@2HandedWalk.FBX
+          clip: 2HandedWalk
+          #clip: Take-001
+        - name: run
+          path: anim/SkeletonKnight@1HandedRun.FBX
+          clip: 1HandedRun
+          #clip: Take-001
+    script: |
+      cmd:animation_play(
+        self.handle,
+        { name = "walk" })
+  - xid: hydra
+    mesh:
+      path: models/unity/hydra/Hydra_PBR.glb
+      material_modifier:
+        default_programs: true
+      flags:
+        use_bones: true
+        use_animation: true
+      xanimations:
+        - name: walk
+          path: anim/Hydra@Walk.FBX
+          clip: Take-001
+    script: |
+      cmd:animation_play(
+        self.handle,
+        { name = "walk" })
+  - xid: sample_scene
+    mesh:
+      path: models/unity/SampleScene.glb
+      material_modifier:
+        default_programs: true
+  - xid: skeleton_guard
+    mesh:
+      path: models/unreal/SKM_Skeleton_Guard.glb
+      material_modifier:
+        default_programs: true
+  - xid: skeleton_warrior
+    #base: prefab_composite_skeleton_warrior
+    priority: 1
+    flags:
+      #dynamic_bounds: true
+    physics:
+      enabled: false
+    script: |
+      cmd:animation_play(
+        self.handle,
+        { tag = "body", name = "idle" });
+  - xid: skeleton
+    prefab:
+      path: prefab/creatures/prefab_skeleton.yml
+    priority: 1
+    physics:
+      enabled: false
+    script: |
+      cmd:animation_play(
+        self.handle,
+        { name = "idle" });
+  - xid: lion_male
+    prefab:
+      path: prefab/creatures/prefab_lion_male.yml
+    xscript_file: scripts/cow_audio
+    physics:
+      enabled: false
+    script: |
+      cmd:animation_play(
+        self.handle,
+        { name = "walk" })
+  - xid: wolf
+    prefab:
+      path: prefab/creatures/prefab_wolf.yml
+    physics:
+      #enabled: false
+    script: |
+      cmd:animation_play(
+        self.handle,
+        { name = "walk" })
+  - xid: elf_female_warrior
+    xbase: prefab_elf_female_warrior
+    physics:
+      #enabled: false
+    script: |
+      cmd:animation_play(
+        self.handle,
+        { tag="body", name = "idle" })
+  - xid: elf_male_warrior
+    xbase: prefab_elf_male_warrior
+    physics:
+      #enabled: false
+    script: |
+      cmd:animation_play(
+        self.handle,
+        { tag="body", name = "idle" })
+  - xid: elf_female
+    xprefab:
+      path: prefab/characters/elf/female/prefab_elf_female.yml
+    physics:
+      #enabled: false
+    script: |
+      cmd:animation_play(
+        self.handle,
+        { tag="body", name = "idle" })
+  - xid: scavenger
+    xprefab:
+      path: prefab/characters/prefab_scavenger.yml
+    physics:
+      enabled: false
+    script: |
+      cmd:animation_play(
+        self.handle,
+        { name = "default" })
+  - id: locomotive
+    prefab:
+      path: prefab/outlaw/prefab_vehicle_locomotive.yml
+  - id: stables
+    prefab:
+      path: prefab/outlaw/prefab_building_stables.yml
+  - id: blacksmith
+    prefab:
+      path: prefab/outlaw/prefab_building_blacksmith.yml
+  - id: church
+    prefab:
+      path: prefab/outlaw/prefab_building_church.yml
+  - id: townhall
+    prefab:
+      path: prefab/outlaw/prefab_building_townhall.yml
+  - id: general_store
+    prefab:
+      path: prefab/outlaw/prefab_building_general_store.yml
+  - id: barbershop
+    prefab:
+      path: prefab/outlaw/prefab_building_barbershop.yml
+  - id: sheriff_station
+    prefab:
+      path: prefab/outlaw/prefab_building_sheriff_station.yml
+  - id: train_station
+    prefab:
+      path: prefab/outlaw/prefab_building_train_station.yml
+  - id: post_office
+    prefab:
+      path: prefab/outlaw/prefab_building_post_office.yml
+  - id: gun_shop
+    prefab:
+      path: prefab/outlaw/prefab_building_gun_shop.yml
+  - id: apothecary
+    prefab:
+      path: prefab/outlaw/prefab_building_apothecary.yml
+  - id: shoe_store
+    prefab:
+      path: prefab/outlaw/prefab_building_shoe_store.yml
+  - id: saloon
+    prefab:
+      path: prefab/outlaw/prefab_building_saloon.yml
+  - id: cemetary
+    prefab:
+      path: prefab/outlaw/prefab_building_cemetary.yml
+
+nodes:
+  - type: player
+    pos: [0, 4, 7]
+    active: true
+  - type: dir_light
+    pos: [-15, 25, 25]
+  - type: ground
+    position: [0, 3.5, 0]
+    scale: 200
+  - type: dandelion
+  - type: flower
+  - type: orc_01
+    pos: [-3.0, 1, 0.0]
+  - type: griffon
+    pos: [-3.0, 1, 0.0]
+  - type: griffon_55
+    pos: [0.0, 1, 0.0]
+  - type: skeleton_knight
+    pos: [0, 3.5, 0.0]
+  - type: hydra
+    pos: [-3.0, 1, 0.0]
+  - type: skeleton_guard
+    pos: [0, 3.5, 0.0]
+  - type: skeleton_warrior
+    pos: [0, 3.5, 0.0]
+  - type: skeleton
+    pos: [0, 3.5, 0.0]
+  - type: lion_male
+    pos: [0, 3.5, 0.0]
+  - type: wolf
+    pos: [0, 3.5, 0.0]
+  - type: elf_female_warrior
+    pos: [0, 3.5, 0.0]
+  - type: elf_female
+    tag: body
+    pos: [0, 3.5, 0.0]
+  - xtype: elf_male_warrior
+    pos: [0, 3.5, 0.0]
+  - xtype: elf_male
+    tag: body
+    pos: [0, 3.5, 0.0]
+  - type: scavenger
+    pos: [0, 3.5, 0.0]
+  - type: locomotive
+    pos: [0, 3.5, 0.0]
+  - type: stables
+    pos: [30, 3.5, 0.0]
+  - type: train_station
+    pos: [-6.6, 3.5, 20.0]
+    rot: [0, 90, 0]
+  - type: blacksmith
+    pos: [20, 3.5, -30.0]
+  - type: general_store
+    pos: [20, 3.5, -60.0]
+  - type: townhall
+    pos: [-20, 3.5, -60.0]
+  - type: church
+    pos: [-20, 3.5, -30.0]
+  - type: saloon
+    pos: [-20, 3.5, 0.0]
+    rot: [0, 90, 0]
+  - type: cemetary
+    pos: [-40, 3.5, -30.0]
+    rot: [0, 30, 0]
+  - type: sheriff_station
+    pos: [-20, 3.5, 40.0]
+    rot: [0, 90, 0]
+  - type: barbershop
+    pos: [10, 3.5, 40.0]
+    rot: [0, -90, 0]
+  - type: gun_shop
+    pos: [10, 3.5, 60.0]
+    rot: [0, -90, 0]
+  - type: post_office
+    pos: [-20, 3.5, 60.0]
+    rot: [0, 90, 0]
+  - type: apothecary
+    pos: [-20, 3.5, 80.0]
+    rot: [0, 90, 0]
+  - type: shoe_store
+    pos: [10, 3.5, 100.0]
+    rot: [0, 90, 0]

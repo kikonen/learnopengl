@@ -16,6 +16,7 @@ namespace loader {
 
         void loadCustomMaterial(
             const loader::DocNode& node,
+            const std::string& currentDir,
             CustomMaterialData& data,
             Loaders& loaders) const;
 

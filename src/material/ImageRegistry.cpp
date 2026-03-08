@@ -1,7 +1,10 @@
 #include "imageRegistry.h"
 
+#include "util/util.h"
+
 #include "material/ImageTexture.h"
 #include "material/Image.h"
+
 
 namespace {
     thread_local std::exception_ptr lastException = nullptr;
@@ -56,16 +59,22 @@ std::shared_future<std::shared_ptr<ImageTexture>> ImageRegistry::getTexture(
     bool grayScale,
     bool gammaCorrect,
     bool flipY,
+    TextureType type,
     const TextureSpec& spec)
 {
     const std::string cacheKey = fmt::format(
-        "{}_{}-{}_{}_{}-{}_{}-{}_{}_{}",
+        "{}_{}-{}_{}_{}-{}_{}-{}-{}_{}_{}",
         path,
         shared,
+        //
         grayScale,
         gammaCorrect,
         flipY,
+        //
+        util::as_integer(type),
+        //
         spec.wrapS, spec.wrapT,
+        //
         spec.minFilter, spec.magFilter, spec.mipMapLevels);
 
     std::lock_guard lock(m_lock);
@@ -76,7 +85,7 @@ std::shared_future<std::shared_ptr<ImageTexture>> ImageRegistry::getTexture(
     }
 
     auto future = startLoad(
-        std::make_shared<ImageTexture>(name, path, shared, grayScale, gammaCorrect, flipY, spec));
+        std::make_shared<ImageTexture>(name, path, shared, grayScale, gammaCorrect, flipY, type, spec));
 
     m_textures[cacheKey] = future;
 

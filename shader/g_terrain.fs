@@ -47,7 +47,7 @@ SET_FLOAT_PRECISION;
 
 ResolvedMaterial material;
 
-#include "include/fn_gbuffer_encode.glsl"
+#include "include/fn_gbuffer_normal_encode.glsl"
 #ifdef USE_PARALLAX
 #include "include/fn_calculate_parallax_mapping.glsl"
 #endif

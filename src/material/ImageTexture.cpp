@@ -19,6 +19,7 @@
 
 #include "util/util.h"
 #include "util/Log.h"
+#include "util/file.h"
 
 #include "kigl/kigl.h"
 
@@ -35,8 +36,9 @@ ImageTexture::ImageTexture(
     bool grayScale,
     bool gammaCorrect,
     bool flipY,
+    TextureType type,
     const TextureSpec& spec)
-    : Texture{ name, grayScale, gammaCorrect, spec },
+    : Texture{ name, grayScale, gammaCorrect, type, spec },
     m_shared{ shared },
     m_flipY{ flipY },
     m_path{ path }
@@ -187,7 +189,7 @@ void ImageTexture::prepareNormal()
         GLint compFlag;
         glGetTextureLevelParameteriv(m_textureID, 0, GL_TEXTURE_COMPRESSED, &compFlag);
         KI_INFO(fmt::format(
-            "TEX::UPLOAD: {}, compressed={}\n{}",
+            "TEX::UPLOAD::PLAIN: path={}, compressed={}\n{}",
             m_path,
             compFlag,
             str()));
@@ -205,48 +207,122 @@ void ImageTexture::prepareNormal()
 
 void ImageTexture::prepareKtx()
 {
-    ktxTexture* kTexture;
+    ktxTexture2* tex2{ nullptr };
     KTX_error_code result;
     //ktx_size_t offset;
     //ktx_uint8_t* image;
     //ktx_uint32_t level, layer, faceSlice;
     GLenum target, glerror;
 
-    result = ktxTexture_CreateFromNamedFile(
+    if (!util::fileExists(m_image->m_path)) {
+        KI_ERROR(fmt::format("TEX::UPLOAD::KTX::FILE_NOT_FOUND: path={}", m_image->m_path));
+        if (!m_shared) {
+            m_image.reset();
+        }
+        return;
+    }
+
+    if (false) {
+        ktxTexture2_CreateFromMemory(
+            m_image->m_data,
+            m_image->m_width,
+            KTX_TEXTURE_CREATE_NO_FLAGS, &tex2);
+    }
+
+    result = ktxTexture2_CreateFromNamedFile(
         m_image->m_path.c_str(),
         KTX_TEXTURE_CREATE_NO_FLAGS,
-        &kTexture);
+        &tex2);
 
-    if (result) {
-        KI_ERROR(fmt::format("TEX::UPLOAD: Failed to open ktx: {}", m_image->m_path));
+    if (result != KTX_SUCCESS) {
+        KI_ERROR(fmt::format("TEX::UPLOAD::KTX::LOAD: path={}", m_image->m_path));
         if (!m_shared) {
             m_image.reset();
         }
         return;
     }
 
-    // https://computergraphics.stackexchange.com/questions/4479/how-to-do-texturing-with-opengl-direct-state-access
-    glCreateTextures(GL_TEXTURE_2D, 1, &m_textureID);
-    kigl::setLabel(GL_TEXTURE, m_textureID, m_name);
-
-    result = ktxTexture_GLUpload(kTexture, &m_textureID, &target, &glerror);
-    ktxTexture_Destroy(kTexture);
-
-    if (result) {
-        KI_ERROR(fmt::format("TEX::UPLOAD: Failed to upload ktx: {}", m_image->m_path));
-        if (!m_shared) {
-            m_image.reset();
-        }
-        return;
-    }
-
-    GLint compFlag;
-    glGetTextureLevelParameteriv(m_textureID, 0, GL_TEXTURE_COMPRESSED, &compFlag);
-    KI_INFO(fmt::format(
-        "TEX::UPLOAD: path={}, compressed={}\n{}",
+    KI_INFO_OUT(fmt::format(
+        "TEX::UPLOAD::KTX: path={}, vk_format={}, super_comp_scheme={}, needs_transcoding={}, width={}, height={}, mib_levels={}",
         m_image->m_path,
-        compFlag,
-        str()));
+        (int)tex2->vkFormat,
+        (int)tex2->supercompressionScheme,
+        (int)ktxTexture2_NeedsTranscoding(tex2),
+        (int)tex2->baseWidth,
+        (int)tex2->baseHeight,
+        (int)tex2->numLevels
+        ));
+
+    // Transcode BEFORE uploading
+    if (ktxTexture2_NeedsTranscoding(tex2)) {
+        // TODO KI KTX_TTF_BC5_RG for normal
+        // => will require extra work in shader side
+        const auto transcodeFormat = m_type == TextureType::map_normal
+            ? KTX_TTF_BC7_RGBA
+            : KTX_TTF_BC7_RGBA;
+
+        result = ktxTexture2_TranscodeBasis(tex2, transcodeFormat, 0);
+        if (result != KTX_SUCCESS) {
+            KI_ERROR(fmt::format("TEX::UPLOAD::KTX::TRANSCODE: path={}", m_image->m_path));
+            if (!m_shared) {
+                m_image.reset();
+            }
+            return;
+        }
+
+        KI_INFO_OUT(fmt::format(
+            "TEX::UPLOAD::KTX::TRANSCODE path={}, vk_format={}, compressed={}",
+            m_image->m_path,
+            (int)tex2->vkFormat,
+            (int)tex2->isCompressed));
+    }
+
+    //// https://computergraphics.stackexchange.com/questions/4479/how-to-do-texturing-with-opengl-direct-state-access
+    //glCreateTextures(GL_TEXTURE_2D, 1, &m_textureID);
+
+    {
+        ktxTexture* tex = ktxTexture(tex2);
+        result = ktxTexture_GLUpload(tex, &m_textureID, &target, &glerror);
+        ktxTexture_Destroy(tex);
+    }
+
+    if (result != KTX_SUCCESS) {
+        KI_ERROR(fmt::format(
+            "TEX::UPLOAD::KTX: path={}, result={}, GL error=0x{:04X}",
+            m_image->m_path, (int)result, (int)glerror));
+
+        if (!m_shared) {
+            m_image.reset();
+        }
+        return;
+    }
+
+    {
+        kigl::setLabel(GL_TEXTURE, m_textureID, m_name);
+
+        glTextureParameteri(m_textureID, GL_TEXTURE_WRAP_S, m_spec.wrapS);
+        glTextureParameteri(m_textureID, GL_TEXTURE_WRAP_T, m_spec.wrapT);
+
+        // https://community.khronos.org/t/gl-nearest-mipmap-linear-or-gl-linear-mipmap-nearest/37648/5
+        // https://stackoverflow.com/questions/12363463/when-should-i-set-gl-texture-min-filter-and-gl-texture-mag-filter
+        glTextureParameteri(m_textureID, GL_TEXTURE_MIN_FILTER, m_spec.minFilter);
+        glTextureParameteri(m_textureID, GL_TEXTURE_MAG_FILTER, m_spec.magFilter);
+    }
+
+    {
+        GLint compFlag;
+        glGetTextureLevelParameteriv(m_textureID, 0, GL_TEXTURE_COMPRESSED, &compFlag);
+
+        GLint internalFormat;
+        glGetTextureLevelParameteriv(m_textureID, 0, GL_TEXTURE_INTERNAL_FORMAT, &internalFormat);
+
+        KI_INFO(fmt::format(
+            "TEX::UPLOAD::KTX: path={}, compressed={}, internal_format=0x{:04X}\n{}",
+            m_image->m_path,
+            compFlag,
+            internalFormat,
+            str()));
+    }
 
     m_handle = glGetTextureHandleARB(m_textureID);
     glMakeTextureHandleResidentARB(m_handle);

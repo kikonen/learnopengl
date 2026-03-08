@@ -41,7 +41,7 @@ namespace script
         std::set<animation::Rig*> processedRigs;
         bool skipped = false;
 
-        for (const auto& lodMesh : node->getLodMeshes()) {
+        for (const auto& lodMesh : node->getEnabledMeshes()) {
             const auto* mesh = lodMesh.getMesh<mesh::Mesh>();
 
             auto rig = mesh->getRig();

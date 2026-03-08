@@ -26,7 +26,7 @@ SET_FLOAT_PRECISION;
 
 ResolvedMaterial material;
 
-#include "include/fn_gbuffer_encode.glsl"
+#include "include/fn_gbuffer_normal_encode.glsl"
 
 void main() {
   const uint materialIndex = fs_in.materialIndex;

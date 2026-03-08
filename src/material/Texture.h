@@ -2,9 +2,10 @@
 
 #include <string>
 
-#include "TextureSpec.h"
-
 #include "kigl/kigl.h"
+
+#include "TextureSpec.h"
+#include "TextureType.h"
 
 /*
 * https://learnopengl.com/Getting-started/Textures
@@ -16,6 +17,7 @@ public:
         std::string_view name,
         bool grayScale,
         bool gammaCorrect,
+        TextureType type,
         const TextureSpec& spec);
 
     virtual ~Texture();
@@ -29,6 +31,7 @@ public:
     const std::string m_name;
     const bool m_grayScale : 1;
     const bool m_gammaCorrect : 1;
+    const TextureType m_type;
     const TextureSpec m_spec;
 
     GLuint m_textureID{ 0 };

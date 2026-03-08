@@ -39,7 +39,9 @@ namespace animation {
         void dump() const;
         void validate() const;
 
-        void bindRig(animation::Rig& rig);
+        void bindRig(
+            animation::Rig& rig,
+            bool silent);
 
         animation::Joint* registerJoint(
             const aiBone* bone);
