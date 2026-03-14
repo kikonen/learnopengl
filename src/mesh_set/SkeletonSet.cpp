@@ -68,7 +68,7 @@ namespace
             if (!treeNode) {
                 KI_INFO_OUT(fmt::format(
                     "ASSIMP::RIG: joint_node_missing={}",
-                    assimp_util::normalizeName(node->mName)));
+                    util::assimp::normalizeName(node->mName)));
                 continue;
             }
 
@@ -123,7 +123,7 @@ namespace
         std::set<const aiNode*> jointNodes;
 
         for (unsigned int j = 0; j < mesh->mNumBones; j++) {
-            const auto& nodeName = assimp_util::normalizeName(mesh->mBones[j]->mName);
+            const auto& nodeName = util::assimp::normalizeName(mesh->mBones[j]->mName);
             const auto* treeNode = tree.findByName(nodeName);
             if (treeNode) {
                 jointNodes.insert(treeNode->node);
@@ -191,8 +191,8 @@ namespace mesh_set
                 KI_INFO_OUT(fmt::format(
                     "ASSIMP::RIGGED: index={}, root={}, rigRoot={}",
                     riggedSkeleton.index,
-                    assimp_util::normalizeName(riggedSkeleton.skeletonRoot->mName),
-                    assimp_util::normalizeName(riggedSkeleton.rigRoot->mName)));
+                    util::assimp::normalizeName(riggedSkeleton.skeletonRoot->mName),
+                    util::assimp::normalizeName(riggedSkeleton.rigRoot->mName)));
             }
 
             for (const auto& [mesh, skeletonIndex] : result->m_meshRiggedSkeleton) {
@@ -200,9 +200,9 @@ namespace mesh_set
 
                 KI_INFO_OUT(fmt::format(
                     "ASSIMP::MESH: {}: skeleton={}, [{}]",
-                    assimp_util::normalizeName(mesh->mName),
+                    util::assimp::normalizeName(mesh->mName),
                     skeletonIndex,
-                    assimp_util::normalizeName(riggedSkeleton.rigRoot->mName)));
+                    util::assimp::normalizeName(riggedSkeleton.rigRoot->mName)));
             }
         }
 
@@ -226,8 +226,8 @@ namespace mesh_set
         const std::string& meshSetId) const
     {
         auto rig = std::make_shared<animation::Rig>();
-        rig->m_skeletonRootNodeName = assimp_util::normalizeName(skeletonRoot->mName);
-        rig->m_name = assimp_util::normalizeName(fmt::format(
+        rig->m_skeletonRootNodeName = util::assimp::normalizeName(skeletonRoot->mName);
+        rig->m_name = util::assimp::normalizeName(fmt::format(
             "{}-{}-{}",
             meshSetId, name, rig->m_skeletonRootNodeName));
 
@@ -298,7 +298,7 @@ namespace mesh_set
                 skeleton.index = skeletonIndex;
                 skeleton.rigRoot = riggedSkeleton.rigRoot;
                 skeleton.skeletonRoot = riggedSkeleton.skeletonRoot;
-                skeleton.name = assimp_util::normalizeName(skeleton.rigRoot->mName);
+                skeleton.name = util::assimp::normalizeName(skeleton.rigRoot->mName);
             }
 
             for (const auto* mesh : riggedSkeleton.meshes) {

@@ -12,11 +12,11 @@ namespace {
 
 namespace animation {
     RigNode::RigNode(const aiNode* node)
-        : m_name{ assimp_util::normalizeName(node->mName) },
+        : m_name{ util::assimp::normalizeName(node->mName) },
         m_assimpFbx{ std::regex_match(m_name, RE_ASSIMP_FBX) },
         m_index{ -1 },
         m_parentIndex{ -1 },
-        m_transform{ assimp_util::toMat4(node->mTransformation) },
+        m_transform{ util::assimp::toMat4(node->mTransformation) },
         m_globalTransform{ 1.f }
     {
     }

@@ -455,7 +455,7 @@ namespace loader {
             }
             else if (k == "clip") {
                 auto& clipData = data.clips.empty() ? data.clips.emplace_back() : data.clips[0];
-                clipData.clip = assimp_util::normalizeName(readString(v));
+                clipData.clip = util::assimp::normalizeName(readString(v));
                 clipData.name = data.name;
                 clipData.enabled = readEnabled(k);
             }
@@ -509,7 +509,7 @@ namespace loader {
                 enabled = readEnabled(k, enabled);
             }
             else if (k == "clip") {
-                data.clip = assimp_util::normalizeName(readString(v));
+                data.clip = util::assimp::normalizeName(readString(v));
             }
             else if (k == "enabled") {
                 enabled = readBool(v);

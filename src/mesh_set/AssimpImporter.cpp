@@ -74,7 +74,7 @@ namespace mesh_set
     void AssimpImporter::loadData(
         mesh::MeshSet& meshSet)
     {
-        std::string filePath = assimp_util::resolvePath(
+        std::string filePath = util::assimp::resolvePath(
             meshSet.m_rootDir,
             meshSet.m_path);
 
@@ -317,10 +317,10 @@ namespace mesh_set
         {
             auto* mesh = scene->mMeshes[node->mMeshes[meshIndex]];
 
-            const auto& nodeName = assimp_util::normalizeName(node->mName);
-            const auto& aliasName = assimp_util::normalizeName(mesh->mName);
+            const auto& nodeName = util::assimp::normalizeName(node->mName);
+            const auto& aliasName = util::assimp::normalizeName(mesh->mName);
 
-            const auto meshName = assimp_util::normalizeName(
+            const auto meshName = util::assimp::normalizeName(
                 fmt::format("{}-{}", meshSet.m_id, nodeName));
             auto modelMesh = std::make_unique<mesh::ModelMesh>(meshName);
             modelMesh->m_alias = aliasName;
@@ -404,18 +404,18 @@ namespace mesh_set
 
             if (mesh->HasTextureCoords(0))
             {
-                texCoord = assimp_util::toVec3(mesh->mTextureCoords[0][vertexIndex]);
+                texCoord = util::assimp::toVec3(mesh->mTextureCoords[0][vertexIndex]);
             }
 
-            const auto pos = assimp_util::toVec3(mesh->mVertices[vertexIndex]);
+            const auto pos = util::assimp::toVec3(mesh->mVertices[vertexIndex]);
             glm::vec3 normal{ 0.f };
             glm::vec3 tangent{ 0.f };
 
             if (mesh->mNormals) {
-                normal = assimp_util::toVec3(mesh->mNormals[vertexIndex]);
+                normal = util::assimp::toVec3(mesh->mNormals[vertexIndex]);
             }
             if (mesh->mTangents) {
-                tangent = assimp_util::toVec3(mesh->mTangents[vertexIndex]);
+                tangent = util::assimp::toVec3(mesh->mTangents[vertexIndex]);
             }
 
             //KI_INFO_OUT(fmt::format("ASSIMP::MESH: offset={}, pos={}", vertexOffset, pos));
@@ -484,7 +484,7 @@ namespace mesh_set
         for (unsigned int i = 0; i < bone->mNumWeights; i++)
         {
             const auto& vw = bone->mWeights[i];
-            //const auto mat = assimp_util::toMat4(bone->mOffsetMatrix);
+            //const auto mat = util::assimp::toMat4(bone->mOffsetMatrix);
 
             unsigned int vertexIndex = vw.mVertexId;
 

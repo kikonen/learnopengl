@@ -38,16 +38,16 @@ namespace {
 namespace animation {
     VectorKey::VectorKey(const aiVectorKey& key)
         : m_time{ static_cast<float>(key.mTime) },
-        m_value{ assimp_util::toVec3(key.mValue) }
+        m_value{ util::assimp::toVec3(key.mValue) }
     {}
 
     QuaternionKey::QuaternionKey(const aiQuatKey& key)
         : m_time{ static_cast<float>(key.mTime) },
-        m_value{ assimp_util::toQuat(key.mValue) }
+        m_value{ util::assimp::toQuat(key.mValue) }
     {}
 
     RigNodeChannel::RigNodeChannel(const aiNodeAnim* channel)
-        : m_nodeName{ assimp_util::normalizeName(channel->mNodeName) },
+        : m_nodeName{ util::assimp::normalizeName(channel->mNodeName) },
         m_nodeIndex{ -1 }
     {}
 

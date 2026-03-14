@@ -144,7 +144,7 @@ namespace mesh_set
             const auto* mesh = m_scene->mMeshes[meshIndex];
             for (unsigned int jointIndex = 0; jointIndex < mesh->mNumBones; jointIndex++) {
                 const auto* joint = mesh->mBones[jointIndex];
-                const auto& nodeName = assimp_util::normalizeName(joint->mName);
+                const auto& nodeName = util::assimp::normalizeName(joint->mName);
 
                 if (const auto& it = m_nameToNodeIndex.find(nodeName); it != m_nameToNodeIndex.end()) {
                     auto& treeNode = m_treeNodes[it->second];
@@ -163,7 +163,7 @@ namespace mesh_set
         int nodeIndex = static_cast<int>(m_treeNodes.size());
         glm::mat4 globalTransform;
         {
-            const auto& nodeName = assimp_util::normalizeName(node->mName);
+            const auto& nodeName = util::assimp::normalizeName(node->mName);
 
             auto& treeNode = m_treeNodes.emplace_back();
             treeNode.index = nodeIndex;
@@ -171,7 +171,7 @@ namespace mesh_set
             treeNode.level = level;
             treeNode.name = nodeName;
             treeNode.node = node;
-            treeNode.transform = assimp_util::toMat4(node->mTransformation);
+            treeNode.transform = util::assimp::toMat4(node->mTransformation);
             treeNode.globalTransform = parentTransform * treeNode.transform;
             parseAssimpFbxInfo(treeNode);
 
@@ -223,7 +223,7 @@ namespace mesh_set
             const auto& meshesSb = util::join(
                 treeNode.meshes, ", ",
                 [](const auto* mesh) {
-                return assimp_util::normalizeName(mesh->mName);
+                return util::assimp::normalizeName(mesh->mName);
             });
 
             const auto& line = fmt::format(

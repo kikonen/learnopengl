@@ -12,7 +12,7 @@ namespace animation {
     Animation::Animation(
         const aiAnimation* anim,
         const std::string& uniquePrefix)
-        : m_name{ assimp_util::normalizeName(anim->mName) },
+        : m_name{ util::assimp::normalizeName(anim->mName) },
         m_uniqueName{ fmt::format(
             "{}:{}",
             uniquePrefix.empty() ? "<ANIM_NAME_MISSING>" : uniquePrefix,

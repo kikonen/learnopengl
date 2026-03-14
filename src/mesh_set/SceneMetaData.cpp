@@ -41,7 +41,7 @@ namespace mesh_set
         const aiNode* node,
         int level)
     {
-        const std::string nodeName{assimp_util::normalizeName(node->mName) };
+        const std::string nodeName{ util::assimp::normalizeName(node->mName) };
         const aiMetadata* meta = node->mMetaData;
         if (!meta) return;
 
