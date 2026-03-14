@@ -17,7 +17,8 @@ namespace {
     };
 }
 
-namespace assimp_util {
+namespace util::assimp
+{
     glm::vec4 toVec4(const aiColor4D& v) {
         return { v.r, v.g, v.b, v.a };
     }

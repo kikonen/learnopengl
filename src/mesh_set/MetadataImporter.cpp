@@ -109,10 +109,10 @@ namespace mesh_set
             const auto& v = pair.second;
 
             if (k == "name") {
-                clip.m_uniqueName = assimp_util::normalizeName(readString(v));
+                clip.m_uniqueName = util::assimp::normalizeName(readString(v));
             }
             else if (k == "takeName") {
-                clip.m_animationName = assimp_util::normalizeName(readString(v));
+                clip.m_animationName = util::assimp::normalizeName(readString(v));
             }
             else if (k == "firstFrame") {
                 // NOTE KI try to avoid errors due to weird cases like this

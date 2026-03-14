@@ -350,25 +350,25 @@ namespace
                 aiUVTransform uvTransform;
                 // Get base color factor
                 if (material->Get(AI_MATKEY_UVTRANSFORM(aiTextureType_BASE_COLOR, 0), uvTransform) == AI_SUCCESS) {
-                    info.m_baseColorTransform = assimp_util::toUVTransform(uvTransform);
+                    info.m_baseColorTransform = util::assimp::toUVTransform(uvTransform);
                 }
                 // Fallback to diffuse color
                 else if (material->Get(AI_MATKEY_UVTRANSFORM(aiTextureType_DIFFUSE, 0), uvTransform) == AI_SUCCESS) {
-                    info.m_baseColorTransform = assimp_util::toUVTransform(uvTransform);
+                    info.m_baseColorTransform = util::assimp::toUVTransform(uvTransform);
                 }
             }
             {
                 // For normal map
                 aiUVTransform uvTransform;
                 if (material->Get(AI_MATKEY_UVTRANSFORM(aiTextureType_NORMALS, 0), uvTransform) == AI_SUCCESS) {
-                    info.m_normalTransform = assimp_util::toUVTransform(uvTransform);
+                    info.m_normalTransform = util::assimp::toUVTransform(uvTransform);
                 }
             }
             {
                 // For PBR metallic-roughness (Assimp 5.x+)
                 aiUVTransform uvTransform;
                 if (material->Get(AI_MATKEY_UVTRANSFORM(aiTextureType_METALNESS, 0), uvTransform) == AI_SUCCESS) {
-                    info.m_metallicTransform = assimp_util::toUVTransform(uvTransform);
+                    info.m_metallicTransform = util::assimp::toUVTransform(uvTransform);
                 }
             }
         }

@@ -20,7 +20,7 @@ namespace {
         KI_INFO_OUT(fmt::format("MESH_SET::EXTRACT_NAME: path={}, mesh_set={}",
             std::string{ filePath },
             util::stem(filePath)));
-        return assimp_util::normalizeName(util::stem(filePath));
+        return util::assimp::normalizeName(util::stem(filePath));
     }
 }
 

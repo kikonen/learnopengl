@@ -16,7 +16,8 @@
 
 struct aiString;
 
-namespace assimp_util {
+namespace util::assimp
+{
     glm::vec4 toVec4(const aiColor4D& v);
     glm::vec3 toVec3(const aiVector3D& v);
     glm::vec2 toVec2(const aiVector2D& v);

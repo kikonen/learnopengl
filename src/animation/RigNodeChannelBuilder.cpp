@@ -34,19 +34,19 @@ namespace animation
 
     void RigNodeChannelBuilder::addPositionKey(const aiVectorKey& key)
     {
-        m_positionValues.push_back(assimp_util::toVec3(key.mValue));
+        m_positionValues.push_back(util::assimp::toVec3(key.mValue));
         m_positionKeyTimes.push_back(static_cast<float>(key.mTime));
     }
 
     void RigNodeChannelBuilder::addRotationKey(const aiQuatKey& key)
     {
-        m_rotationValues.push_back(assimp_util::toQuat(key.mValue));
+        m_rotationValues.push_back(util::assimp::toQuat(key.mValue));
         m_rotationKeyTimes.push_back(static_cast<float>(key.mTime));
     }
 
     void RigNodeChannelBuilder::addScaleKey(const aiVectorKey& key)
     {
-        m_scaleValues.push_back(assimp_util::toVec3(key.mValue));
+        m_scaleValues.push_back(util::assimp::toVec3(key.mValue));
         m_scaleKeyTimes.push_back(static_cast<float>(key.mTime));
     }
 

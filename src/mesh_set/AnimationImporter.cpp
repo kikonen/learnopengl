@@ -179,7 +179,7 @@ namespace mesh_set
                 "ASSIMP::CHANNEL anim={}, channel={}, node={}, posKeys={}, rotKeys={}, scalingKeys={}",
                 animation->m_index,
                 channelIdx,
-                assimp_util::normalizeName(channel->mNodeName),
+                util::assimp::normalizeName(channel->mNodeName),
                 channel->mNumPositionKeys,
                 channel->mNumRotationKeys,
                 channel->mNumScalingKeys));

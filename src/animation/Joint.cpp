@@ -8,8 +8,8 @@ namespace animation {
     Joint::Joint(
         const aiBone* bone,
         int16_t jointIndex)
-        : m_nodeName{assimp_util::normalizeName(bone->mName) },
-        m_offsetMatrix{assimp_util::toMat4(bone->mOffsetMatrix)},
+        : m_nodeName{ util::assimp::normalizeName(bone->mName) },
+        m_offsetMatrix{ util::assimp::toMat4(bone->mOffsetMatrix) },
         m_jointIndex{ jointIndex }
     {}
 }
