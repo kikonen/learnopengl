@@ -34,6 +34,7 @@ namespace model
     struct Snapshot;
 }
 
+struct AddonSelectorDefinition;
 struct CameraComponentDefinition;
 struct LightDefinition;
 struct TextGeneratorDefinition;
@@ -64,6 +65,7 @@ namespace mesh {
     class MeshSet;
     class Mesh;
     struct LodMesh;
+    class LodMeshContainer;
 }
 
 namespace model
@@ -107,31 +109,11 @@ namespace model
 
         std::string str() const noexcept;
 
-        // @return count of meshes added
-        uint16_t addMeshSet(
-            const mesh::MeshSet& meshSet) noexcept;
+        bool hasMeshes() const noexcept;
 
-        mesh::LodMesh* addLodMesh(mesh::LodMesh&& lodMesh) noexcept;
+        void setMeshContainer(std::unique_ptr<mesh::LodMeshContainer> meshContainer);
 
-        inline const mesh::LodMesh* getLodMesh(uint8_t lodIndex) const noexcept {
-            return m_lodMeshes.empty() ? nullptr : &m_lodMeshes[lodIndex];
-        }
-
-        inline const std::vector<mesh::LodMesh>& getLodMeshes() const noexcept {
-            return m_lodMeshes;
-        }
-
-        inline mesh::LodMesh* modifyLodMesh(uint8_t lodIndex) noexcept {
-            return m_lodMeshes.empty() ? nullptr : &m_lodMeshes[lodIndex];
-        }
-
-        inline std::vector<mesh::LodMesh>& modifyLodMeshes() noexcept {
-            return m_lodMeshes;
-        }
-
-        inline bool hasMesh() const noexcept {
-            return !m_lodMeshes.empty() && m_lodMeshes[0].m_mesh.get();
-        }
+        mesh::LodMeshContainer* getMeshContainer();
 
         template<typename T>
         inline T* getCustomMaterial() const noexcept {
@@ -170,7 +152,7 @@ namespace model
         AABB calculateAABB() const noexcept;
 
     private:
-        std::vector<mesh::LodMesh> m_lodMeshes;
+        std::unique_ptr<mesh::LodMeshContainer> m_meshContainer;
         std::unique_ptr<std::string> m_name{ nullptr };
         AABB m_aabb;
         std::unique_ptr<std::vector<script::script_id>> m_scripts;
@@ -178,6 +160,8 @@ namespace model
 
     public:
         pool::TypeHandle m_handle;
+
+        std::unique_ptr<AddonSelectorDefinition> m_addonSelectorDefinition{ nullptr };
 
         std::unique_ptr<CameraComponentDefinition> m_cameraComponentDefinition{ nullptr };
         std::unique_ptr<LightDefinition> m_lightDefinition{ nullptr };

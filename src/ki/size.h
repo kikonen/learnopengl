@@ -8,6 +8,7 @@ namespace ki
 
     typedef uint32_t node_id;
     typedef uint16_t mesh_id;
+    typedef uint32_t lod_mesh_id;
     typedef uint32_t type_id;
     typedef uint32_t composite_id;
     typedef uint32_t tag_id;

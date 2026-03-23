@@ -4,16 +4,19 @@
 #include <vector>
 #include <stdint.h>
 
+#include <glm/glm.hpp>
+
+#include "AddonData.h"
+
 namespace loader
 {
-    struct AddonData
+    struct AddonSelectorData
     {
         bool enabled{ true };
 
-        std::string id;
-        std::string group;
-
         uint32_t seed{ 0 };
         glm::uvec2 range{ 1, 1 };
+
+        std::vector<AddonData> addons;
     };
 }

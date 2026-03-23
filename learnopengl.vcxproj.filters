@@ -1377,6 +1377,12 @@
     <ClCompile Include="src\util\preciseSleep.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\mesh\LodMeshContainer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\loader\AddonSelectorLoader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h">
@@ -3119,7 +3125,25 @@
     <ClInclude Include="src\util\UVTransform.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="src\loader\AddonSelectorData.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\model\NodeAddon.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\mesh\LodMeshContainer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="src\loader\AddonData.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\loader\value\SocketRoleValue.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\loader\AddonSelectorLoader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\component\definition\AddonSelectorDefinition.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

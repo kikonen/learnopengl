@@ -23,6 +23,7 @@
 
 #include "mesh/mesh_util.h"
 
+#include "mesh/LodMeshContainer.h"
 #include "mesh/LodMesh.h"
 #include "mesh/LodMeshInstance.h"
 #include "mesh/ModelMesh.h"
@@ -48,6 +49,8 @@
 
 namespace {
     inline const glm::mat4 ID_MAT{ 1.f };
+
+    inline const std::vector<mesh::LodMesh> EMPTY_MESHES{};
 }
 
 namespace model
@@ -95,25 +98,24 @@ namespace model
         state.setPivotOffset(type->m_pivotPoint.m_offset);
         state.setFront(type->m_front);
         state.setBaseRotation(type->m_baseRotation);
-
-        if (type->hasMesh()) {
-            //KI_DEBUG(fmt::format("ADD_ENTITY: {}", str()));
-
-            state.setLocalVolume(type->getAABB().toLocalVolume());
-            {
-                state.m_flags = type->resolveEntityFlags();
-            }
-        }
-
+        
+        if (const auto& lodMeshes = getEnabledMeshes(); !lodMeshes.empty())
         {
+            if (type->m_flags.hasMeshes) {
+                //KI_DEBUG(fmt::format("ADD_ENTITY: {}", str()));
+
+                state.setLocalVolume(type->getAABB().toLocalVolume());
+                {
+                    state.m_flags = type->resolveEntityFlags();
+                }
+            }
+
             // NOTE KI rig (skeleton hierarchy + animations) is shared across meshes
             // but each mesh can have its own joint container (bone ordering + offset matrices)
             // => register rig once, but register joint palette per unique joint container
             auto& animationsystem = animation::AnimationSystem::get();
             std::unordered_map<const animation::Rig*, int> rigPalettes;
             std::unordered_map<const animation::JointContainer*, util::BufferReference> jointPalettes;
-
-            const auto& lodMeshes = getEnabledMeshes();
 
             for (auto& lodMesh : lodMeshes) {
                 const auto* mesh = lodMesh.getMesh<mesh::Mesh>();
@@ -245,6 +247,26 @@ namespace model
         if (m_generator) {
             m_generator->updateVAO(ctx, *this);
         }
+    }
+
+    const std::vector<mesh::LodMesh>& Node::getEnabledMeshes() const noexcept
+    {
+        auto* lodMeshes = m_generator ? m_generator->getEnabledMeshes(*this) : nullptr;
+        if (lodMeshes) return *lodMeshes;
+        auto* meshContainer = getType()->getMeshContainer();
+        return meshContainer ? meshContainer->getLodMeshes() : EMPTY_MESHES;
+    }
+
+    const mesh::LodMesh* Node::getLodMesh(uint8_t lodIndex) const noexcept
+    {
+        auto* meshContainer = getType()->getMeshContainer();
+        return meshContainer ? meshContainer->getLodMesh(lodIndex) : nullptr;
+    }
+
+    mesh::LodMesh* Node::modifyLodMesh(uint8_t lodIndex) const noexcept
+    {
+        auto* meshContainer = getType()->getMeshContainer();
+        return meshContainer ? meshContainer->modifyLodMesh(lodIndex) : nullptr;
     }
 
     void Node::registerDrawables(

@@ -169,7 +169,8 @@ prefab:
         path: mesh_elf_addon_boots.yml
       use_rig: body
 
-  addons:
+  addon_selector:
+    addons:
     - xid: hair_long
     - xid: hair_long_hooded
     - xid: hair_pony_buzz

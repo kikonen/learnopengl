@@ -111,7 +111,6 @@ namespace model
         inline model::NodeType* getType() const noexcept
         {
             return m_typeHandle.toType();
-
         }
 
         inline const std::vector<mesh::RegisteredRig>& getRegisteredRigs() const noexcept
@@ -124,20 +123,11 @@ namespace model
             return m_lodMeshInstances;
         }
 
-        inline const std::vector<mesh::LodMesh>& getEnabledMeshes() const noexcept
-        {
-            auto lodMeshes = m_generator ? m_generator->getEnabledMeshes(*this) : nullptr;
-            return lodMeshes ? *lodMeshes : getType()->getLodMeshes();
-        }
+        const std::vector<mesh::LodMesh>& getEnabledMeshes() const noexcept;
 
-        inline const mesh::LodMesh* getLodMesh(uint8_t lodIndex) const noexcept {
-            return getType()->getLodMesh(lodIndex);
-        }
+        const mesh::LodMesh* getLodMesh(uint8_t lodIndex) const noexcept;
 
-        inline mesh::LodMesh* modifyLodMesh(uint8_t lodIndex) const noexcept
-        {
-            return getType()->modifyLodMesh(lodIndex);
-        }
+        mesh::LodMesh* modifyLodMesh(uint8_t lodIndex) const noexcept;
 
         const std::string& getName() const noexcept { return m_name; }
         void setName(std::string_view name) noexcept {

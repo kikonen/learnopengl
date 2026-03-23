@@ -45,4 +45,6 @@ struct TypeFlags {
 
     bool navMesh : 1 {false};
     bool navPhysics : 1 {false};
+
+    bool hasMeshes : 1 {false};
 };

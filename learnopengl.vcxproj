@@ -297,7 +297,9 @@
     <ClCompile Include="src\kigl\RingAllocator.cpp" />
     <ClCompile Include="src\kigl\GLTextureHandle.cpp" />
     <ClCompile Include="src\kigl\GLVertexArray.cpp" />
+    <ClCompile Include="src\loader\AddonSelectorLoader.cpp" />
     <ClCompile Include="src\material\InlineTexture.cpp" />
+    <ClCompile Include="src\mesh\LodMeshContainer.cpp" />
     <ClCompile Include="src\mesh\MeshInstance.cpp" />
     <ClCompile Include="src\mesh_set\AssimpLogger.cpp" />
     <ClCompile Include="src\mesh_set\AssimpMaterialImporter.cpp" />
@@ -752,10 +754,16 @@
     <ClInclude Include="src\animation\ClipContainer.h" />
     <ClInclude Include="src\animation\ClipChannelLUT.h" />
     <ClInclude Include="src\asset\SphereVolume_format.h" />
+    <ClInclude Include="src\component\definition\AddonSelectorDefinition.h" />
     <ClInclude Include="src\kigl\RingAllocator.h" />
     <ClInclude Include="src\loader\AddonData.h" />
+    <ClInclude Include="src\loader\AddonSelectorData.h" />
+    <ClInclude Include="src\loader\AddonSelectorLoader.h" />
     <ClInclude Include="src\loader\RigData.h" />
+    <ClInclude Include="src\loader\value\SocketRoleValue.h" />
+    <ClInclude Include="src\mesh\LodMeshContainer.h" />
     <ClInclude Include="src\mesh\RegisteredRig.h" />
+    <ClInclude Include="src\model\NodeAddon.h" />
     <ClInclude Include="src\render\DrawableInfo.h" />
     <ClInclude Include="src\render\InstanceIndexSSBO.h" />
     <ClInclude Include="src\render\InstanceRegistry.h" />
