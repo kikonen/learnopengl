@@ -13,11 +13,13 @@
 
 #include "mesh/MeshSet.h"
 #include "mesh/LodMesh.h"
+#include "mesh/LodMeshContainer.h"
 #include "mesh/Mesh.h"
 #include "mesh/mesh_util.h"
 
 #include "engine/PrepareContext.h"
 
+#include "component/definition/AddonSelectorDefinition.h"
 #include "component/definition/CameraComponentDefinition.h"
 #include "component/definition/LightDefinition.h"
 #include "component/definition/AudioListenerDefinition.h"
@@ -56,7 +58,7 @@ namespace model
         m_layer{ o.m_layer },
         m_preparedWT{ o.m_preparedWT },
         m_preparedRT{ o.m_preparedRT },
-        m_lodMeshes{ std::move(o.m_lodMeshes) },
+        m_meshContainer{ std::move(o.m_meshContainer) },
         m_scripts{ std::move(o.m_scripts) },
         m_customMaterial{ std::move(o.m_customMaterial) },
         m_cameraComponentDefinition{ std::move(o.m_cameraComponentDefinition) },
@@ -76,31 +78,26 @@ namespace model
 
     std::string NodeType::str() const noexcept
     {
-        auto* lodMesh = getLodMesh(0);
+        auto* meshContainer = m_meshContainer.get();
 
         return fmt::format(
-            "<NODE_TYPE: id={}, name={}, lod={}>",
-            m_handle.str(), m_name ? *m_name : "N/A", lodMesh ? lodMesh->str() : "N/A");
+            "<NODE_TYPE: id={}, name={}, meshes={}>",
+            m_handle.str(), m_name ? *m_name : "N/A", meshContainer ? meshContainer->size() : 0);
     }
 
-    uint16_t NodeType::addMeshSet(
-        const mesh::MeshSet& meshSet) noexcept
+    bool NodeType::hasMeshes() const noexcept
     {
-        uint16_t count = 0;
-
-        for (auto& mesh : meshSet.getMeshes()) {
-            auto* lodMesh = addLodMesh({ mesh });
-            count++;
-        }
-
-        return count;
+        return m_meshContainer && !m_meshContainer->hasMeshes();
     }
 
-    mesh::LodMesh* NodeType::addLodMesh(
-        mesh::LodMesh&& lodmesh) noexcept
+    void NodeType::setMeshContainer(std::unique_ptr<mesh::LodMeshContainer> meshContainer)
     {
-        m_lodMeshes.push_back(std::move(lodmesh));
-        return &m_lodMeshes[m_lodMeshes.size() - 1];
+        m_meshContainer = std::move(meshContainer);
+    }
+
+    mesh::LodMeshContainer* NodeType::getMeshContainer()
+    {
+        return m_meshContainer.get();
     }
 
     void NodeType::prepareWT(
@@ -113,8 +110,10 @@ namespace model
             m_particleGeneratorDefinition->m_data.m_material->registerMaterial();
         }
 
-        for (auto& lodMesh : m_lodMeshes) {
-            lodMesh.registerMaterial();
+        if (m_meshContainer) {
+            for (auto& lodMesh : m_meshContainer->modifyLodMeshes()) {
+                lodMesh.registerMaterial();
+            }
         }
 
         if (m_scripts) {
@@ -133,8 +132,10 @@ namespace model
         if (m_preparedRT) return;
         m_preparedRT = true;
 
-        for (auto& lodMesh : m_lodMeshes) {
-            lodMesh.prepareRT(ctx);
+        if (m_meshContainer) {
+            for (auto& lodMesh : m_meshContainer->modifyLodMeshes()) {
+                lodMesh.prepareRT(ctx);
+            }
         }
 
         if (m_customMaterial) {
@@ -168,11 +169,11 @@ namespace model
 
     AABB NodeType::calculateAABB() const noexcept
     {
-        if (m_lodMeshes.empty()) return {};
+        if (!m_meshContainer) return {};
 
 		AABBBuilder builder;
 
-        for (auto& lodMesh : m_lodMeshes) {
+        for (auto& lodMesh : m_meshContainer->getLodMeshes()) {
             if (lodMesh.m_flags.noVolume) continue;
             builder.minmax(lodMesh.calculateAABB());
         }

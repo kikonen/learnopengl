@@ -29,6 +29,7 @@
 #include "mesh/mesh_util.h"
 
 #include "mesh/LodMesh.h"
+#include "mesh/LodMeshContainer.h"
 #include "mesh/MeshSet.h"
 #include "mesh/ModelMesh.h"
 #include "mesh/TextMesh.h"
@@ -154,6 +155,8 @@ namespace loader
         type->m_baseScale = typeData.baseScale;
         type->m_baseRotation =util::degreesToQuat(typeData.baseRotation);
 
+        auto meshContainer = std::make_unique<mesh::LodMeshContainer>();
+
         assignTypeFlags(typeData, type->m_flags);
 
         if (!typeData.enabled) {
@@ -175,12 +178,12 @@ namespace loader
         }
         else
         {
-            resolveMeshes(type, typeData);
+            resolveMeshes(type, *meshContainer, typeData);
 
             // NOTE KI container does not have mesh itself, but it can setup
             // material & program for contained nodes
             if (typeData.type != NodeKind::container) {
-                if (!type->hasMesh()) {
+                if (!meshContainer->hasMeshes()) {
                     KI_WARN(fmt::format(
                         "TYPE::SCENE_FILE_IGNORE: NO_MESH id={} ({})",
                         typeData.baseId, typeData.desc));
@@ -188,14 +191,14 @@ namespace loader
                 }
             }
 
-            resolveAddonMeshes(type, typeData);
+            resolveAddonMeshes(type, *meshContainer, typeData);
 
             {
                 // TODO KI this is WRONG, this should be per drawable mesh, not per type
                 int deferredCount = 0;
                 int forwardCount = 0;
                 int oitCount = 0;
-                for (const auto& lodMesh : type->getLodMeshes()) {
+                for (const auto& lodMesh : meshContainer->getLodMeshes()) {
                     if (lodMesh.m_material->gbuffer) {
                         deferredCount++;
                         if (lodMesh.m_drawOptions.isBlend()) {
@@ -212,15 +215,24 @@ namespace loader
             }
         }
 
-        {
+        if (meshContainer->hasMeshes()) {
             auto& flags = type->m_flags;
-            for (auto& lodMesh : type->getLodMeshes()) {
+
+            for (auto& lodMesh : meshContainer->getLodMeshes()) {
                 const auto& opt = lodMesh.m_drawOptions;
                 flags.anySolid |= opt.isSolid();
                 flags.anyAlpha |= opt.isAlpha();
                 flags.anyBlend |= opt.isBlend();
                 flags.anyAnimation |= lodMesh.m_flags.useAnimation;
             }
+
+            type->setMeshContainer(std::move(meshContainer));
+            type->m_flags.hasMeshes = true;
+
+            //type->m_addonSelectorDefinition = l.m_addonSelectorLoader.createDefinition(typeData.addonSelector);
+
+            // NOTE KI ensure volume is containing all meshes
+            type->prepareVolume();
         }
 
         {
@@ -444,17 +456,18 @@ namespace loader
 
     void NodeTypeBuilder::resolveMeshes(
         model::NodeType* type,
+        mesh::LodMeshContainer& meshContainer,
         const NodeTypeData& typeData)
     {
         for (const auto& meshData : typeData.meshes) {
             if (!meshData.enabled) continue;
 
-            const auto startIndex = type->getLodMeshes().size();
-            resolveMesh(type, typeData, meshData);
-            const auto meshCount = type->getLodMeshes().size() - startIndex;
+            const auto startIndex = meshContainer.getLodMeshes().size();
+            resolveMesh(type, meshContainer, typeData, meshData);
+            const auto meshCount = meshContainer.getLodMeshes().size() - startIndex;
 
             if (meshCount > 0) {
-                const auto& span = std::span{ type->modifyLodMeshes() }.subspan(startIndex, meshCount);
+                const auto& span = std::span{ meshContainer.modifyLodMeshes() }.subspan(startIndex, meshCount);
                 std::set<const animation::Rig*> processedRigs;
 
                 // process rigs
@@ -472,24 +485,22 @@ namespace loader
                 }
             }
         }
-
-        // NOTE KI ensure volume is containing all meshes
-        type->prepareVolume();
     }
 
     void NodeTypeBuilder::resolveAddonMeshes(
         model::NodeType* type,
+        mesh::LodMeshContainer& meshContainer,
         const NodeTypeData& typeData)
     {
         for (const auto& meshData : typeData.availableAddons) {
             if (!meshData.enabled) continue;
 
-            const auto startIndex = type->getLodMeshes().size();
-            resolveMesh(type, typeData, meshData);
-            const auto meshCount = type->getLodMeshes().size() - startIndex;
+            const auto startIndex = meshContainer.getLodMeshes().size();
+            resolveMesh(type, meshContainer, typeData, meshData);
+            const auto meshCount = meshContainer.getLodMeshes().size() - startIndex;
 
             if (meshCount > 0) {
-                const auto& span = std::span{ type->modifyLodMeshes() }.subspan(startIndex, meshCount);
+                const auto& span = std::span{ meshContainer.modifyLodMeshes() }.subspan(startIndex, meshCount);
                 // bind rigs
                 for (auto& lodMesh : span) {
                     auto* mesh = lodMesh.getMesh<mesh::ModelMesh>();
@@ -497,7 +508,7 @@ namespace loader
 
                     if (mesh->m_jointContainer && !meshData.useRig.empty()) {
                         std::shared_ptr<animation::Rig> rig;
-                        for (const auto& lodMesh : type->getLodMeshes()) {
+                        for (const auto& lodMesh : meshContainer.getLodMeshes()) {
                             auto* rigMesh = lodMesh.getMesh<mesh::ModelMesh>();
                             if (!rigMesh) continue;
 
@@ -524,18 +535,19 @@ namespace loader
 
     void NodeTypeBuilder::resolveMesh(
         model::NodeType* type,
+        mesh::LodMeshContainer& meshContainer,
         const NodeTypeData& typeData,
         const MeshData& meshData)
     {
         const auto& assets = Assets::get();
 
-        size_t startIndex = type->getLodMeshes().size();
+        size_t startIndex = meshContainer.getLodMeshes().size();
         size_t meshCount = 0;
 
         // NOTE KI materials MUST be resolved before loading mesh
         if (typeData.type == NodeKind::model) {
             type->m_flags.model = true;
-            meshCount += resolveModelMesh(type, typeData, meshData);
+            meshCount += resolveModelMesh(type, meshContainer, typeData, meshData);
 
             KI_INFO(fmt::format(
                 "TYPE::SCENE_FILE_MESH: id={}, desc={}, type={}",
@@ -552,7 +564,7 @@ namespace loader
 
             mesh::LodMesh lodMesh;
             lodMesh.setMesh(mesh);
-            type->addLodMesh(std::move(lodMesh));
+            meshContainer.addLodMesh(std::move(lodMesh));
             meshCount++;
         }
         else if (typeData.type == NodeKind::terrain) {
@@ -573,7 +585,7 @@ namespace loader
 
         // Resolve materials for newly added meshes
         if (meshCount > 0) {
-            const auto& span = std::span{ type->modifyLodMeshes() }.subspan(startIndex, meshCount);
+            const auto& span = std::span{ meshContainer.modifyLodMeshes() }.subspan(startIndex, meshCount);
             for (auto& lodMesh : span) {
                 resolveLodMesh(type, typeData, meshData, lodMesh);
             }
@@ -582,6 +594,7 @@ namespace loader
 
     int NodeTypeBuilder::resolveModelMesh(
         model::NodeType* type,
+        mesh::LodMeshContainer& meshContainer,
         const NodeTypeData& typeData,
         const MeshData& meshData)
     {
@@ -600,7 +613,7 @@ namespace loader
             const auto& meshSet = future.get();
 
             if (meshSet) {
-                meshCount += type->addMeshSet(*meshSet);
+                meshCount += meshContainer.addMeshSet(*meshSet);
 
                 KI_INFO_OUT(fmt::format(
                     "\n=======================\n[MESH_SET SUMMARY: {}]\n{}\n=======================",
@@ -614,7 +627,7 @@ namespace loader
 
             mesh::LodMesh lodMesh;
             lodMesh.setMesh(mesh);
-            type->addLodMesh(std::move(lodMesh));
+            meshContainer.addLodMesh(std::move(lodMesh));
 
             meshCount++;
             break;
@@ -633,7 +646,7 @@ namespace loader
 
             mesh::LodMesh lodMesh;
             lodMesh.setMesh(mesh);
-            type->addLodMesh(std::move(lodMesh));
+            meshContainer.addLodMesh(std::move(lodMesh));
 
             meshCount++;
             break;

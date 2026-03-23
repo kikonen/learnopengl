@@ -218,74 +218,82 @@ prefab:
       use_rig: body
       prefab:
         path: mesh_elf_addon_boots.yml
-
-  addons:
-    # - xid: hair_long_barbute
-    # - xid: hair_long
-    # - id: hair_pony_tail
-    # - xid: hair_short_barbute
-    # - xid: hair_short
-    # - xid: human_hair_buzz
-    # - xid: human_hair_long
-    # - xid: human_hair_short
-    # - xid: orc_hair_hood
-    # - xid: orc_hair_long
-    # - xid: orc_hair_pony_tail
-    # - xid: orc_hair_short
-    # - xid: hood_1
-    # - xid: hood_2
-    # - xid: mask
-    # - id: jewelry
-    # - id: shirt
-    # - id: vest
-    # - id: curlass
-    # - id: sleeves
-    # - id: vest_straps
-    # - id: arms_armor
-    # - id: arms_straps
-    # - id: pants
-    # - id: waist_cloth
-    # - id: belt_1
-    # - id: belt_1a
-    # - id: belt_1b
-    # - id: buckle
-    # - id: belt_2
-    # - id: hip_armor_1
-    # - id: hip_armor_2
-    # - id: hangers
-    # - id: manica_pair
-    # - id: poleyns
-    # - id: leg_armor_1
-    # - id: leg_armor_2
-    # - id: leg_straps
-    # - id: boot_cuffs
-    # - id: boots
-    - group: hair.plain
-      seed: 1
-    - group: armor.upper
-      seed: 1
-      range: [0, -1]
-    - group: armor.middle
-      seed: 1
-      range: [0, -1]
-    - group: armor.arm
-      seed: 1
-      range: [0, -1]
-    - group: armor.leg
-      seed: 1
-    - group: clothes.upper
-      seed: 1
-      range: [0, -1]
-    - group: clothes.arm
-      seed: 1
-      range: [0, -1]
-    - group: clothes.leg
-      seed: 1
-    - group: clothes.feet
-      seed: 1
-    - group: decoration
-      seed: 1
-      range: [0, -1]
+  xaddon_selector:
+    addons:
+      # - xid: hair_long_barbute
+      # - xid: hair_long
+      # - id: hair_pony_tail
+      # - xid: hair_short_barbute
+      # - xid: hair_short
+      # - xid: human_hair_buzz
+      # - xid: human_hair_long
+      # - xid: human_hair_short
+      # - xid: orc_hair_hood
+      # - xid: orc_hair_long
+      # - xid: orc_hair_pony_tail
+      # - xid: orc_hair_short
+      # - xid: hood_1
+      # - xid: hood_2
+      # - xid: mask
+      # - id: jewelry
+      # - id: shirt
+      # - id: vest
+      # - id: curlass
+      # - id: sleeves
+      # - id: vest_straps
+      # - id: arms_armor
+      # - id: arms_straps
+      # - id: pants
+      # - id: waist_cloth
+      # - id: belt_1
+      # - id: belt_1a
+      # - id: belt_1b
+      # - id: buckle
+      # - id: belt_2
+      # - id: hip_armor_1
+      # - id: hip_armor_2
+      # - id: hangers
+      # - id: manica_pair
+      # - id: poleyns
+      # - id: leg_armor_1
+      # - id: leg_armor_2
+      # - id: leg_straps
+      # - id: boot_cuffs
+      # - id: boots
+      - group: hair.plain
+        seed: 1
+      - group: armor.upper
+        seed: 1
+        range: [0, -1]
+      - group: armor.middle
+        seed: 1
+        range: [0, -1]
+      - group: armor.arm
+        seed: 1
+        range: [0, -1]
+      - group: armor.leg
+        seed: 1
+      - group: clothes.upper
+        seed: 1
+        range: [0, -1]
+      - group: clothes.arm
+        seed: 1
+        range: [0, -1]
+      - group: clothes.leg
+        seed: 1
+      - group: clothes.feet
+        seed: 1
+      - group: decoration
+        seed: 1
+        range: [0, -1]
+  addon_selector:
+    addons:
+      - id: orc_hair_pony_tail
+      - id: shirt
+      - id: vest
+      - id: pants
+      - id: boot_cuffs
+      - id: boots
 
   physics:
     enabled: false

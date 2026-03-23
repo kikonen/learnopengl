@@ -20,6 +20,7 @@ namespace loader {
         m_physicsLoader(ctx),
         m_nodeTypeLoader(ctx),
         m_nodeLoader(ctx),
+        m_addonSelectorLoader{ctx},
         m_compositeLoader(ctx),
         m_meshLoader(ctx),
         m_textLoader(ctx),

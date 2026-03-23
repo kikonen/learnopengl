@@ -26,6 +26,7 @@ namespace mesh {
     struct MeshFlags;
     class Mesh;
     struct LodMesh;
+    class LodMeshContainer;
 }
 
 namespace loader {
@@ -73,20 +74,24 @@ namespace loader {
 
         void resolveMeshes(
             model::NodeType* type,
+            mesh::LodMeshContainer& meshContainer,
             const NodeTypeData& typeData);
 
         void resolveAddonMeshes(
             model::NodeType* type,
+            mesh::LodMeshContainer& meshContainer,
             const NodeTypeData& typeData);
 
         void resolveMesh(
             model::NodeType* type,
+            mesh::LodMeshContainer& meshContainer,
             const NodeTypeData& typeData,
             const MeshData& meshData);
 
         // @return count of meshes added
         int resolveModelMesh(
             model::NodeType* type,
+            mesh::LodMeshContainer& meshContainer,
             const NodeTypeData& typeData,
             const MeshData& meshData);
 

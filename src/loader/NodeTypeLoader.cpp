@@ -301,8 +301,9 @@ namespace loader {
             else if (k == "available_addons") {
                 loaders.m_meshLoader.loadMeshes(v, currentDir, data.availableAddons, loaders);
             }
-            else if (k == "addons") {
-                loadAddons(v, data.addons);
+            else if (k == "addon_selector")
+            {
+                loaders.m_addonSelectorLoader.loadAddonSelector(v, data.addonSelector);
             }
             else {
                 reportUnknown("node_entry", k, v);
@@ -381,47 +382,6 @@ namespace loader {
                    data,
                    idToType,
                    loaders);
-            }
-        }
-    }
-
-    void NodeTypeLoader::loadAddons(
-        const loader::DocNode& node,
-        std::vector<AddonData>& addons) const
-    {
-        for (const auto& entry : node.getNodes()) {
-            auto& data = addons.emplace_back();
-            loadAddon(entry, data);
-        }
-    }
-
-    void NodeTypeLoader::loadAddon(
-        const loader::DocNode& node,
-        AddonData& data) const
-    {
-        for (const auto& pair : node.getNodes()) {
-            const std::string& k = pair.getName();
-            const loader::DocNode& v = pair.getNode();
-
-            if (k == "id") {
-                data.id = readString(v);
-            }
-            else if (k == "xid") {
-                data.id = readString(v);
-                data.enabled = false;
-            }
-            else if (k == "enabled") {
-                data.enabled = readBool(v);
-            }
-            else if (k == "group") {
-                data.group = readString(v);
-            }
-            else if (k == "seed") {
-                data.seed = readFloat(v);
-            }
-            else if (k == "range") {
-                data.range = readUVec2(v);
-                data.enabled = false;
             }
         }
     }

@@ -21,7 +21,7 @@
 #include "TextData.h"
 #include "MaterialData.h"
 #include "CustomMaterialData.h"
-#include "AddonData.h"
+#include "AddonSelectorData.h"
 
 namespace loader
 {
@@ -44,7 +44,8 @@ namespace loader
 
         std::vector<MeshData> meshes;
         std::vector<MeshData> availableAddons;
-        std::vector<AddonData> addons;
+
+        AddonSelectorData addonSelector;
 
         std::unordered_map<MaterialProgramType, std::string> programs;
 
