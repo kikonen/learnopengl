@@ -4,13 +4,15 @@
 
 #include "kigl/kigl.h"
 
+#include "util/Ref.h"
+
 #include "TextureSpec.h"
 #include "TextureType.h"
 
 /*
 * https://learnopengl.com/Getting-started/Textures
 */
-class Texture
+class Texture : public util::RefCounted<>
 {
 public:
     Texture(

@@ -3,6 +3,8 @@
 #include <string>
 #include <vector>
 
+#include "util/Ref.h"
+
 #include "material/Material.h"
 #include "asset/AABB.h"
 
@@ -117,7 +119,7 @@ private:
 
     AABB m_aabb;
 
-    std::shared_ptr<mesh::TextMesh> m_mesh;
+    util::Ref<mesh::TextMesh> m_mesh;
     std::vector<mesh::LodMesh> m_lodMeshes;
     std::unique_ptr<text::TextDraw> m_draw;
 

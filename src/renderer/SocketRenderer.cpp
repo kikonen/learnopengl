@@ -41,7 +41,7 @@
 namespace {
     inline const glm::mat4 ID_MAT{ 1.f };
 
-    std::shared_ptr<mesh::Mesh> createAxisMesh(
+    util::Ref<mesh::Mesh> createAxisMesh(
         const std::string& name,
         const glm::vec3& dir,
         float length,
@@ -66,7 +66,7 @@ namespace {
         return mesh;
     }
 
-    std::shared_ptr<mesh::Mesh> createOffsetIndicatorMesh(
+    util::Ref<mesh::Mesh> createOffsetIndicatorMesh(
         const std::string& name,
         float size)
     {

@@ -79,13 +79,18 @@ namespace mesh {
     }
 
     mesh::Mesh* MeshSet::addMesh(
-        const std::shared_ptr<mesh::Mesh>& mesh) noexcept
+        const util::Ref<mesh::Mesh>& mesh) noexcept
     {
         m_meshes.push_back(mesh);
         return m_meshes[m_meshes.size() - 1].get();
     }
 
-    const std::vector<std::shared_ptr<mesh::Mesh>>& MeshSet::getMeshes() const noexcept
+    const std::vector<util::Ref<mesh::Mesh>>& MeshSet::getMeshes() const noexcept
+    {
+        return m_meshes;
+    }
+
+    std::vector<util::Ref<mesh::Mesh>>& MeshSet::modifyMeshes() noexcept
     {
         return m_meshes;
     }

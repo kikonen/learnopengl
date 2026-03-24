@@ -14,6 +14,7 @@
 #include "mesh/LodMesh.h"
 
 #include "animation/RigContainer.h"
+#include "animation/Rig.h"
 
 #include "mesh/vao/TexturedVAO.h"
 #include "mesh/vao/SkinnedVAO.h"

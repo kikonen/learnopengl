@@ -19,6 +19,7 @@
 #include "model/NodeType.h"
 #include "model/CreateState.h"
 
+#include "util/Ref.h"
 #include "util/DagSort.h"
 #include "util/DagSort_impl.h"
 

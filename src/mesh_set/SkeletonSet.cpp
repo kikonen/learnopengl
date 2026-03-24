@@ -220,12 +220,12 @@ namespace mesh_set
         glm::mat4 parentTransform;
     };
 
-    std::shared_ptr<animation::Rig> Skeleton::toRig(
+    util::Ref<animation::Rig> Skeleton::toRig(
         const aiScene* scene,
         const mesh_set::NodeTree& tree,
         const std::string& meshSetId) const
     {
-        auto rig = std::make_shared<animation::Rig>();
+        auto rig = util::Ref<animation::Rig>::create();
         rig->m_skeletonRootNodeName = util::assimp::normalizeName(skeletonRoot->mName);
         rig->m_name = util::assimp::normalizeName(fmt::format(
             "{}-{}-{}",
@@ -317,7 +317,7 @@ namespace mesh_set
         }
     }
 
-    std::shared_ptr<animation::Rig> SkeletonSet::findRig(const aiMesh* mesh) const
+    util::Ref<animation::Rig> SkeletonSet::findRig(const aiMesh* mesh) const
     {
         if (mesh->mNumBones == 0) return nullptr;
 

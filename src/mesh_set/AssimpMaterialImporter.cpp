@@ -465,7 +465,7 @@ namespace
         return true;
     }
 
-    std::shared_ptr<InlineTexture> loadEmbeddedTexture(
+    util::Ref<InlineTexture> loadEmbeddedTexture(
         const std::string& name,
         const aiTexture* texture,
         TextureMapping texInfo,
@@ -537,7 +537,7 @@ namespace
             }
         }
 
-        return std::make_shared<InlineTexture>(
+        return util::Ref<InlineTexture>::create(
             name,
             data,
             width,
@@ -551,7 +551,7 @@ namespace
             spec);
     }
 
-    std::shared_ptr<InlineTexture> loadInlineTexture(
+    util::Ref<InlineTexture> loadInlineTexture(
         const std::string& meshSetName,
         const aiScene* scene,
         TextureMapping texInfo,
@@ -586,7 +586,7 @@ namespace
                 texInfo,
                 spec);
         }
-        //std::shared_ptr<InlineTexture> texture;
+        //util::Ref<InlineTexture> texture;
         //return texture;
         return {};
     }

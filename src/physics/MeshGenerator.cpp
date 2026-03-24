@@ -197,7 +197,7 @@ namespace physics {
         SphereVolume localVolume{ 0.f, 0.f, 0.f, 1.f };
 
         std::string cacheKey;
-        std::shared_ptr<mesh::Mesh> mesh;
+        util::Ref<mesh::Mesh> mesh;
 
         // Get position and rotation from Jolt body
         JPH::BodyID joltBodyId;
@@ -467,16 +467,16 @@ namespace physics {
             !cacheKey.empty()};
     }
 
-    std::shared_ptr<mesh::Mesh> MeshGenerator::findMesh(const std::string& key)
+    util::Ref<mesh::Mesh> MeshGenerator::findMesh(const std::string& key)
     {
         const auto& it = m_cache.find(key);
         if (it != m_cache.end()) return it->second;
         return nullptr;
     }
 
-    std::shared_ptr<mesh::Mesh> MeshGenerator::saveMesh(
+    util::Ref<mesh::Mesh> MeshGenerator::saveMesh(
         const std::string& key,
-        const std::shared_ptr<mesh::Mesh>& mesh)
+        const util::Ref<mesh::Mesh>& mesh)
     {
         m_cache.insert({ key, mesh });
         return mesh;

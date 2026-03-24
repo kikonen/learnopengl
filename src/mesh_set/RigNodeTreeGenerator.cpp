@@ -15,11 +15,11 @@
 
 namespace mesh_set
 {
-    std::unique_ptr<mesh::VaoMesh> RigNodeTreeGenerator::generateTree(
-        const std::shared_ptr<animation::Rig>& rigPtr,
-        const std::shared_ptr<animation::JointContainer>& jointContainerPtr) const
+    util::Ref<mesh::VaoMesh> RigNodeTreeGenerator::generateTree(
+        const util::Ref<animation::Rig>& rigPtr,
+        const util::Ref<animation::JointContainer>& jointContainerPtr) const
     {
-        auto mesh = std::make_unique<mesh::PrimitiveMesh>(
+        auto mesh = util::Ref<mesh::PrimitiveMesh>::create(
             fmt::format("joint_tree_{}", rigPtr->m_skeletonRootNodeName));
 
         auto& rig = *rigPtr;
@@ -100,11 +100,11 @@ namespace mesh_set
         return mesh;
     }
 
-    std::unique_ptr<mesh::VaoMesh> RigNodeTreeGenerator::generatePoints(
-        const std::shared_ptr<animation::Rig>& rigPtr,
-        const std::shared_ptr<animation::JointContainer>& jointContainerPtr) const
+    util::Ref<mesh::VaoMesh> RigNodeTreeGenerator::generatePoints(
+        const util::Ref<animation::Rig>& rigPtr,
+        const util::Ref<animation::JointContainer>& jointContainerPtr) const
     {
-        auto mesh = std::make_unique<mesh::PrimitiveMesh>(
+        auto mesh = util::Ref<mesh::PrimitiveMesh>::create(
             fmt::format("joint_points_{}", rigPtr->m_skeletonRootNodeName));
 
         auto& rig = *rigPtr;

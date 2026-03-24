@@ -9,6 +9,9 @@
 
 #include <glm/glm.hpp>
 
+#include "util/Ref.h"
+
+
 struct aiScene;
 struct aiNode;
 struct aiMesh;
@@ -47,7 +50,7 @@ namespace mesh_set
         const aiNode* skeletonRoot;
         const aiNode* rigRoot;
 
-        std::shared_ptr<animation::Rig> toRig(
+        util::Ref<animation::Rig> toRig(
             const aiScene* scene,
             const mesh_set::NodeTree& tree,
             const std::string& meshSetName) const;
@@ -67,7 +70,7 @@ namespace mesh_set
         SkeletonSet(const std::string& meshSetId);
 
         void resolve(const aiScene* scene);
-        std::shared_ptr<animation::Rig> findRig(const aiMesh* mesh) const;
+        util::Ref<animation::Rig> findRig(const aiMesh* mesh) const;
 
         const mesh_set::NodeTree& getTree() const;
 
@@ -85,6 +88,6 @@ namespace mesh_set
         std::vector<mesh_set::Skeleton> m_skeletons;
         std::vector<MeshAssociation> m_meshAssociations;
 
-        std::vector<std::shared_ptr<animation::Rig>> m_rigs;
+        std::vector<util::Ref<animation::Rig>> m_rigs;
     };
 }

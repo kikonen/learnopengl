@@ -198,12 +198,12 @@ namespace mesh_set
 
         std::set<const animation::Rig*> processedRigs;
 
-        std::vector<std::shared_ptr<mesh::Mesh>> additionalMeshes;
+        std::vector<util::Ref<mesh::Mesh>> additionalMeshes;
 
         float xOffset = 0.f;
         float zOffset = 0.f;
 
-        for (auto& mesh : meshSet.getMeshes()) {
+        for (auto& mesh : meshSet.modifyMeshes()) {
             auto* modelMesh = dynamic_cast<mesh::ModelMesh*>(mesh.get());
 
             if (!modelMesh) continue;
@@ -322,7 +322,7 @@ namespace mesh_set
 
             const auto meshName = util::assimp::normalizeName(
                 fmt::format("{}-{}", meshSet.m_id, nodeName));
-            auto modelMesh = std::make_unique<mesh::ModelMesh>(meshName);
+            auto modelMesh = util::Ref<mesh::ModelMesh>::create(meshName);
             modelMesh->m_alias = aliasName;
 
             const auto& treeNode = skeletonSet.getTree().findByNode(node);
@@ -430,7 +430,7 @@ namespace mesh_set
         // NOTE KI without rig, no bones or animation
         if (mesh->mNumBones > 0)
         {
-            modelMesh.m_jointContainer = std::make_shared<animation::JointContainer>(modelMesh.m_name);
+            modelMesh.m_jointContainer = util::Ref<animation::JointContainer>::create(modelMesh.m_name);
 
             for (unsigned int boneIdx = 0; boneIdx < mesh->mNumBones; boneIdx++) {
                 processMeshBone(

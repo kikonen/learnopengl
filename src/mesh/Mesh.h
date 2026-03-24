@@ -13,6 +13,7 @@
 #include "asset/SphereVolume.h"
 #include "asset/AABB.h"
 
+#include "util/Ref.h"
 #include "util/Transform.h"
 
 #include "registry/Registry.h"
@@ -32,7 +33,7 @@ namespace mesh {
     struct LodMesh;
     class TexturedVAO;
 
-    class Mesh
+    class Mesh : public util::RefCounted<>
     {
     public:
         Mesh(std::string_view name);
@@ -138,12 +139,17 @@ namespace mesh {
             return m_vertexCount;
         }
 
-        bool match(const std::string& name) {
+        bool match(const std::string& name) const noexcept {
             return name == m_name ||
                 name == m_alias;
         }
 
     public:
+        std::string m_name;
+        std::string m_alias;
+
+        util::Transform m_offset;
+
         // NOTE KI absolute index into VBO
         uint32_t m_vboIndex{ 0 };
 
@@ -156,17 +162,12 @@ namespace mesh {
         // index entries stored starting from m_eboIndex
         uint32_t m_indexCount{ 0 };
 
-        const ki::mesh_id m_id;
-
-        bool m_preparedVAO : 1 { false };
-
-        std::string m_name;
-        std::string m_alias;
-
-        util::Transform m_offset;
-
     protected:
         std::unique_ptr<Material> m_material;
         std::unique_ptr<SphereVolume> m_localVolume;
+
+        const ki::mesh_id m_id;
+
+        bool m_preparedVAO : 1 { false };
     };
 }

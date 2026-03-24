@@ -2,6 +2,8 @@
 
 #include <memory>
 
+#include "util/Ref.h"
+
 #include "BaseLoader.h"
 
 #include "MeshData.h"
@@ -31,13 +33,13 @@ namespace loader {
             const loader::DocNode& node,
             std::vector<int>& indeces) const;
 
-        std::shared_ptr<mesh::Mesh> createMesh(
+        util::Ref<mesh::Mesh> createMesh(
             const MeshData& meshData,
             const VertexData& data,
             Loaders& loaders) const;
 
     private:
-        std::shared_ptr<mesh::Mesh> createMesh(
+        util::Ref<mesh::Mesh> createMesh(
             std::string defaultName,
             const MeshData& meshData,
             const VertexData& data,

@@ -1,5 +1,7 @@
 #pragma once
 
+#include "util/Ref.h"
+
 #include "generator/NodeGenerator.h"
 
 #include "material/Material.h"
@@ -29,6 +31,7 @@ namespace terrain {
     {
     public:
         TerrainGenerator();
+        ~TerrainGenerator();
 
         void prepareWT(
             const PrepareContext& ctx,
@@ -47,7 +50,7 @@ namespace terrain {
             const PrepareContext& ctx,
             const model::Node& container);
 
-        std::shared_ptr<ImageTexture> loadTexture(bool flipY);
+        util::Ref<ImageTexture> loadTexture(bool flipY);
 
         void createTiles(
             const PrepareContext& ctx,
@@ -66,7 +69,7 @@ namespace terrain {
         float m_horizontalScale{ 1.f };
 
         std::string m_heightMapFile;
-        std::shared_ptr<ImageTexture> m_heightMapTex;
+        util::Ref<ImageTexture> m_heightMapTex;
 
         Material m_material;
 

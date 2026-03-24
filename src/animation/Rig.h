@@ -3,6 +3,8 @@
 #include <string>
 #include <vector>
 
+#include "util/Ref.h"
+
 #include "ClipContainer.h"
 #include "MeshInfo.h"
 #include "RigSocket.h"
@@ -32,7 +34,7 @@ namespace animation
     // - joints
     // 
     // NOTE KI each separate set of joints with same skeleton root are same Rig
-    struct Rig
+    struct Rig : public util::RefCounted<false>
     {
         friend struct mesh_set::Skeleton;
         friend class mesh_set::AssimpImporter;
@@ -41,6 +43,8 @@ namespace animation
         friend class AnimationSystem;
         friend class AnimateNode;
         friend class Animator;
+
+        ~Rig();
 
         bool empty() const noexcept
         {

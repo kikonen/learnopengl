@@ -2,6 +2,8 @@
 
 #include <memory>
 
+#include "util/Ref.h"
+
 #include "MeshRenderer.h"
 
 namespace mesh {
@@ -21,6 +23,6 @@ public:
         render::FrameBuffer* targetBuffer) override;
 
 private:
-    std::shared_ptr<mesh::Mesh> m_mesh;
+    util::Ref<mesh::Mesh> m_mesh;
     ki::material_index m_materialIndex{ 0 };
 };

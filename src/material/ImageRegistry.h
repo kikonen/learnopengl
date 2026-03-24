@@ -6,6 +6,8 @@
 #include <mutex>
 #include <future>
 
+#include "util/Ref.h"
+
 #include "TextureSpec.h"
 #include "TextureType.h"
 
@@ -25,7 +27,7 @@ public:
 
     void clear();
 
-    std::shared_future<std::shared_ptr<ImageTexture>> getTexture(
+    std::shared_future<util::Ref<ImageTexture>> getTexture(
         std::string_view name,
         std::string_view path,
         bool shared,
@@ -36,11 +38,11 @@ public:
         const TextureSpec& spec);
 
 private:
-    std::shared_future<std::shared_ptr<ImageTexture>> startLoad(
-        std::shared_ptr<ImageTexture> texture);
+    std::shared_future<util::Ref<ImageTexture>> startLoad(
+        util::Ref<ImageTexture> texture);
 
 private:
-    std::unordered_map<std::string, std::shared_future<std::shared_ptr<ImageTexture>>> m_textures;
+    std::unordered_map<std::string, std::shared_future<util::Ref<ImageTexture>>> m_textures;
 
     std::mutex m_lock{};
 };

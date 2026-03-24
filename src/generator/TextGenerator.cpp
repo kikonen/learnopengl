@@ -50,7 +50,7 @@ void TextGenerator::prepareRT(
     model::Node& container,
     const model::Snapshot& snapshot)
 {
-    m_mesh = std::make_shared<mesh::TextMesh>();
+    m_mesh = util::Ref<mesh::TextMesh>::create();
     m_mesh->prepareVAO();
 
     {

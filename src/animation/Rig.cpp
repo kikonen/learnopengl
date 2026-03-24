@@ -21,6 +21,9 @@
 
 namespace animation
 {
+    Rig::~Rig()
+    { }
+
     void Rig::prepare()
     {
         validate();

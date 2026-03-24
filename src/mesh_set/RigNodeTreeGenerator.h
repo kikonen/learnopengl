@@ -2,6 +2,8 @@
 
 #include <memory>
 
+#include "util/Ref.h"
+
 namespace animation
 {
     struct Rig;
@@ -20,13 +22,13 @@ namespace mesh_set
     public:
         RigNodeTreeGenerator() = default;
 
-        std::unique_ptr<mesh::VaoMesh> generateTree(
-            const std::shared_ptr<animation::Rig>& rig,
-            const std::shared_ptr<animation::JointContainer>& jointContainer) const;
+        util::Ref<mesh::VaoMesh> generateTree(
+            const util::Ref<animation::Rig>& rig,
+            const util::Ref<animation::JointContainer>& jointContainer) const;
 
-        std::unique_ptr<mesh::VaoMesh> generatePoints(
-            const std::shared_ptr<animation::Rig>& rig,
-            const std::shared_ptr<animation::JointContainer>& jointContainer) const;
+        util::Ref<mesh::VaoMesh> generatePoints(
+            const util::Ref<animation::Rig>& rig,
+            const util::Ref<animation::JointContainer>& jointContainer) const;
 
     private:
     };

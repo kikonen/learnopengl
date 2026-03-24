@@ -52,6 +52,8 @@ namespace terrain {
         m_lightWeightPhysics = false;
     }
 
+    TerrainGenerator::~TerrainGenerator() = default;
+
     void TerrainGenerator::prepareWT(
         const PrepareContext& ctx,
         model::Node& container)
@@ -116,7 +118,7 @@ namespace terrain {
         return heightMapId;
     }
 
-    std::shared_ptr<ImageTexture> TerrainGenerator::loadTexture(bool flipY) {
+    util::Ref<ImageTexture> TerrainGenerator::loadTexture(bool flipY) {
         const auto& texturePath = m_material.resolveTexturePath(m_heightMapFile, false);
         KI_INFO(fmt::format("TERRAIN: height={}", texturePath));
 

@@ -52,7 +52,7 @@ void ImageRegistry::clear()
     }
 }
 
-std::shared_future<std::shared_ptr<ImageTexture>> ImageRegistry::getTexture(
+std::shared_future<util::Ref<ImageTexture>> ImageRegistry::getTexture(
     std::string_view name,
     std::string_view path,
     bool shared,
@@ -85,15 +85,15 @@ std::shared_future<std::shared_ptr<ImageTexture>> ImageRegistry::getTexture(
     }
 
     auto future = startLoad(
-        std::make_shared<ImageTexture>(name, path, shared, grayScale, gammaCorrect, flipY, type, spec));
+        util::Ref<ImageTexture>::create(name, path, shared, grayScale, gammaCorrect, flipY, type, spec));
 
     m_textures[cacheKey] = future;
 
     return future;
 }
 
-std::shared_future<std::shared_ptr<ImageTexture>> ImageRegistry::startLoad(
-    std::shared_ptr<ImageTexture> texture)
+std::shared_future<util::Ref<ImageTexture>> ImageRegistry::startLoad(
+    util::Ref<ImageTexture> texture)
 {
     /*
 std::future<int> spawn_async_task(){
@@ -102,7 +102,7 @@ std::thread t([p=std::move(p)](){ p.set_value(find_the_answer());});
 t.detach();
 return f;
 }        */
-    std::promise<std::shared_ptr<ImageTexture>> promise;
+    std::promise<util::Ref<ImageTexture>> promise;
     auto future = promise.get_future().share();
 
     // NOTE KI use thread instead of std::async since std::future blocking/cleanup is problematic
