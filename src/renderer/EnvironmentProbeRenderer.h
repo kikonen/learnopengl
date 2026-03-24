@@ -6,6 +6,8 @@
 #include <glm/glm.hpp>
 #include <glm/gtx/quaternion.hpp>
 
+#include "util/Ref.h"
+
 #include "MeshRenderer.h"
 
 namespace mesh {
@@ -26,7 +28,7 @@ public:
         render::FrameBuffer* fbo) override;
 
 private:
-    std::shared_ptr<mesh::Mesh> m_mesh;
+    util::Ref<mesh::Mesh> m_mesh;
     glm::mat4 m_meshFixMatrix;
     glm::quat m_meshFixRotation;
 

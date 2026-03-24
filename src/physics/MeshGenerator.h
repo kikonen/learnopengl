@@ -9,6 +9,8 @@
 #include <Jolt/Jolt.h>
 #include <Jolt/Physics/Body/BodyID.h>
 
+#include "util/Ref.h"
+
 #include "mesh/MeshInstance.h"
 
 #include "size.h"
@@ -41,16 +43,16 @@ namespace physics {
             const physics::Object& obj,
             physics::object_id objectId);
 
-        std::shared_ptr<mesh::Mesh> findMesh(const std::string& key);
+        util::Ref<mesh::Mesh> findMesh(const std::string& key);
 
-        std::shared_ptr<mesh::Mesh> saveMesh(
+        util::Ref<mesh::Mesh> saveMesh(
             const std::string& key,
-            const std::shared_ptr<mesh::Mesh>& mesh);
+            const util::Ref<mesh::Mesh>& mesh);
 
     private:
         const PhysicsSystem& m_physicsSystem;
 
-        std::map<std::string, std::shared_ptr<mesh::Mesh>> m_cache;
+        std::map<std::string, util::Ref<mesh::Mesh>> m_cache;
 
         const int m_heightMapDivide;
     };

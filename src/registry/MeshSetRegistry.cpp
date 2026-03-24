@@ -3,6 +3,7 @@
 #include <fmt/format.h>
 
 #include "util/Log.h"
+#include "util/Ref.h"
 
 #include "asset/Assets.h"
 
@@ -62,7 +63,7 @@ void MeshSetRegistry::prepare(
     m_alive = alive;
 }
 
-std::shared_future<std::shared_ptr<mesh::MeshSet>> MeshSetRegistry::getMeshSet(
+std::shared_future<util::Ref<mesh::MeshSet>> MeshSetRegistry::getMeshSet(
     std::string_view id,
     std::string_view rootDir,
     std::string_view meshPath,
@@ -88,7 +89,7 @@ std::shared_future<std::shared_ptr<mesh::MeshSet>> MeshSetRegistry::getMeshSet(
             return e->second;
     }
 
-    auto meshSet = std::make_shared<mesh::MeshSet>(
+    auto meshSet = util::Ref<mesh::MeshSet>::create(
         id,
         rootDir,
         meshPath,
@@ -101,10 +102,10 @@ std::shared_future<std::shared_ptr<mesh::MeshSet>> MeshSetRegistry::getMeshSet(
     return future;
 }
 
-std::shared_future<std::shared_ptr<mesh::MeshSet>> MeshSetRegistry::startLoad(
-    std::shared_ptr<mesh::MeshSet> meshSet)
+std::shared_future<util::Ref<mesh::MeshSet>> MeshSetRegistry::startLoad(
+    util::Ref<mesh::MeshSet> meshSet)
 {
-    std::promise<std::shared_ptr<mesh::MeshSet>> promise;
+    std::promise<util::Ref<mesh::MeshSet>> promise;
     auto future = promise.get_future().share();
 
     // NOTE KI use thread instead of std::async since std::future blocking/cleanup is problematic

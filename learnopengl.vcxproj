@@ -771,6 +771,7 @@
     <ClInclude Include="src\util\BufferReference.h" />
     <ClInclude Include="src\util\BufferReference_format.h" />
     <ClInclude Include="src\util\DirtySet.h" />
+    <ClInclude Include="src\util\Ref.h" />
     <ClInclude Include="src\util\SlotAllocator.h" />
     <ClInclude Include="src\animation\Rig.h" />
     <ClInclude Include="src\mesh\LodMeshInstance.h" />

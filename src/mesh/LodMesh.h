@@ -10,6 +10,7 @@
 #include <glm/gtx/quaternion.hpp>
 
 #include "util/Axis.h"
+#include "util/Ref.h"
 
 #include "asset/AABB.h"
 
@@ -37,7 +38,7 @@ namespace mesh {
     // TODO KI *REMOVE* "same VAO" req!
     struct LodMesh {
         LodMesh();
-        LodMesh(const std::shared_ptr<Mesh>& mesh);
+        LodMesh(const util::Ref<Mesh>& mesh);
         LodMesh(LodMesh& o) = delete;
         LodMesh(const LodMesh& o) = delete;
         LodMesh(LodMesh&& o) noexcept;
@@ -59,7 +60,13 @@ namespace mesh {
             return dynamic_cast<T*>(m_mesh.get());
         }
 
-        void setMesh(const std::shared_ptr<Mesh>& mesh) noexcept;
+        template<typename T>
+        inline T* modifyMesh() noexcept
+        {
+            return dynamic_cast<T*>(m_mesh.get());
+        }
+
+        void setMesh(const util::Ref<Mesh>& mesh) noexcept;
 
         const Material* getMaterial() const noexcept;
         Material* modifyMaterial() noexcept;
@@ -86,13 +93,7 @@ namespace mesh {
         void updateTransform() const;
 
     public:
-        std::shared_ptr<Mesh> m_mesh;
-
-        glm::vec3 m_scale{ 1.f };
-
-        mutable glm::mat4 m_baseTransform{ 1.f };
-        glm::vec3 m_baseScale{ 1.f };
-        glm::vec3 m_baseAdjust{ 0.f };  // additional rotation in degrees
+        util::Ref<Mesh> m_mesh;
 
         std::unique_ptr<Material> m_material;
         ki::material_index m_materialIndex{ 0 };
@@ -126,5 +127,11 @@ namespace mesh {
 
         util::Axis m_baseAxis{ util::Axis::y };
         util::Front m_baseFront{ util::Front::z };
+
+        glm::vec3 m_scale{ 1.f };
+
+        mutable glm::mat4 m_baseTransform{ 1.f };
+        glm::vec3 m_baseScale{ 1.f };
+        glm::vec3 m_baseAdjust{ 0.f };  // additional rotation in degrees
     };
 }

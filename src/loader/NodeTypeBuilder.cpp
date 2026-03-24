@@ -12,6 +12,7 @@
 #include "util/file.h"
 #include "util/glm_format.h"
 #include "util/glm_util.h"
+#include "util/Ref.h"
 
 #include "ki/sid.h"
 
@@ -507,7 +508,7 @@ namespace loader
                     if (!mesh) continue;
 
                     if (mesh->m_jointContainer && !meshData.useRig.empty()) {
-                        std::shared_ptr<animation::Rig> rig;
+                        util::Ref<animation::Rig> rig;
                         for (const auto& lodMesh : meshContainer.getLodMeshes()) {
                             auto* rigMesh = lodMesh.getMesh<mesh::ModelMesh>();
                             if (!rigMesh) continue;
@@ -555,7 +556,7 @@ namespace loader
         }
         else if (typeData.type == NodeKind::text) {
             type->m_flags.text = true;
-            auto mesh = std::make_shared<mesh::TextMesh>();
+            auto mesh = util::Ref<mesh::TextMesh>::create();
 
             if (!mesh->getMaterial()) {
                 const auto& material = Material::createMaterial(BasicMaterial::yellow);
@@ -633,7 +634,7 @@ namespace loader
             break;
         }
         case MeshDataType::non_vao: {
-            auto mesh = std::make_shared<mesh::NonVaoMesh>(type->getName());
+            auto mesh = util::Ref<mesh::NonVaoMesh>::create(type->getName());
 
             if (meshData.materials.empty()) {
                 const auto& material = Material::createMaterial(BasicMaterial::yellow);

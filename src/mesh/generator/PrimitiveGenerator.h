@@ -6,6 +6,8 @@
 
 #include <glm/glm.hpp>
 
+#include "util/Ref.h"
+
 #include "mesh/PrimitiveType.h"
 
 namespace mesh {
@@ -558,6 +560,6 @@ namespace mesh {
             return none();
         }
 
-        std::shared_ptr<mesh::Mesh> create() const;
+        util::Ref<mesh::Mesh> create() const;
     };
 }

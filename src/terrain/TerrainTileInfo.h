@@ -4,6 +4,8 @@
 
 #include <stdint.h>
 
+#include "util/Ref.h"
+
 #include "TerrainTileSSBO.h"
 
 class ImageTexture;
@@ -16,7 +18,7 @@ namespace terrain {
         float u_rangeYmin{ 0.f };
         float u_rangeYmax{ 0.f };
 
-        std::shared_ptr<ImageTexture> m_heightMapTex;
+        util::Ref<ImageTexture> m_heightMapTex;
         GLuint64 m_heightMapTexHandle{ 0 };
 
         uint32_t m_registeredIndex{ 0 };

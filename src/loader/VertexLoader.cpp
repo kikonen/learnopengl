@@ -225,7 +225,7 @@ namespace loader {
 
     }
 
-    std::shared_ptr<mesh::Mesh> VertexLoader::createMesh(
+    util::Ref<mesh::Mesh> VertexLoader::createMesh(
         const MeshData& meshData,
         const VertexData& data,
         Loaders& loaders) const

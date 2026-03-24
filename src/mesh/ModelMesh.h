@@ -5,6 +5,8 @@
 #include <vector>
 #include <map>
 
+#include "util/Ref.h"
+
 #include "animation/VertexJoint.h"
 
 #include "mesh/VaoMesh.h"
@@ -83,8 +85,8 @@ namespace mesh
         bool m_forceNormals{ false };
 
     private:
-        std::shared_ptr<animation::Rig> m_rig;
-        std::shared_ptr<animation::JointContainer> m_jointContainer;
+        util::Ref<animation::Rig> m_rig;
+        util::Ref<animation::JointContainer> m_jointContainer;
 
         glm::mat4 m_rigBaseTransform{ 1.f };
     };

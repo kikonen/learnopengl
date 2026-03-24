@@ -7,6 +7,8 @@
 
 #include "ki/size.h"
 
+#include "util/Ref.h"
+
 #include "Joint.h"
 
 struct aiBone;
@@ -20,7 +22,8 @@ namespace animation {
     // same rig (and thus animate nodes only ONCE), but have separate
     // joint containers *per mesh*
     // => Makes huge difference especially with LODx meshes sharing same skeleton
-    struct JointContainer {
+    struct JointContainer : public util::RefCounted<false>
+    {
         const std::string m_name;
         std::vector<animation::Joint> m_joints;
         std::unordered_map<int16_t, int16_t> m_nodeToJoint;

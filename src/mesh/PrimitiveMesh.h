@@ -2,6 +2,8 @@
 
 #include <string>
 
+#include "util/Ref.h"
+
 #include "animation/VertexJoint.h"
 
 #include "mesh/VaoMesh.h"
@@ -47,6 +49,6 @@ namespace mesh {
 
         std::vector<animation::VertexJoint> m_vertexJoints;
 
-        std::shared_ptr<animation::Rig> m_rig;
+        util::Ref<animation::Rig> m_rig;
     };
 }

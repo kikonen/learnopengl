@@ -16,6 +16,7 @@
 #include "TextureType.h"
 #include "TextureSpec.h"
 
+#include "util/Ref.h"
 #include "util/UVTransform.h"
 
 //#include "MaterialSSBO.h"
@@ -84,7 +85,7 @@ struct Material final
 {
 public:
     struct BoundTexture {
-        std::shared_ptr<Texture> m_texture;
+        util::Ref<Texture> m_texture;
     };
 
 public:
@@ -148,7 +149,7 @@ public:
 
     void addinlineTexture(
         TextureType type,
-        const std::shared_ptr<InlineTexture>& texture) noexcept;
+        const util::Ref<InlineTexture>& texture) noexcept;
 
     bool hasRegisteredTex(TextureType type) const noexcept
     {
@@ -294,7 +295,7 @@ public:
 private:
     std::map<TextureType, BoundTexture> m_boundTextures{};
     std::map<TextureType, TextureInfo> m_texturePaths{};
-    std::map<TextureType, std::shared_ptr<InlineTexture>> m_inlineTextures{};
+    std::map<TextureType, util::Ref<InlineTexture>> m_inlineTextures{};
 
     std::map<TextureType, util::UVTransform> m_textureTransforms;
 

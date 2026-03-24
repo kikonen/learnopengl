@@ -6,6 +6,8 @@
 
 #include "asset/AABB.h"
 
+#include "util/Ref.h"
+
 namespace animation
 {
 }
@@ -15,11 +17,13 @@ namespace mesh_set
     class AssimpImporter;
 }
 
-namespace mesh {
+namespace mesh
+{
     class Mesh;
     class MeshImporter;
 
-    class MeshSet {
+    class MeshSet : public util::RefCounted<>
+    {
         friend class mesh_set::AssimpImporter;
         friend class MeshImporter;
 
@@ -40,14 +44,16 @@ namespace mesh {
 
         // Take ownership of mesh
         mesh::Mesh* addMesh(
-            const std::shared_ptr<mesh::Mesh>& mesh) noexcept;
+            const util::Ref<mesh::Mesh>& mesh) noexcept;
 
-        const std::vector<std::shared_ptr<mesh::Mesh>>& getMeshes() const noexcept;
+        const std::vector<util::Ref<mesh::Mesh>>& getMeshes() const noexcept;
+
+        std::vector<util::Ref<mesh::Mesh>>& modifyMeshes() noexcept;
 
         template<typename T>
         inline const T* getMesh(size_t index) const noexcept
         {
-            return dynamic_cast<T*>(m_meshes[index].get());
+            return dynamic_cast<const T*>(m_meshes[index].get());
         }
 
         AABB calculateAABB(const glm::mat4& transform) const noexcept;
@@ -67,6 +73,6 @@ namespace mesh {
         std::string m_filePath;
 
     private:
-        std::vector<std::shared_ptr<mesh::Mesh>> m_meshes;
+        std::vector<util::Ref<mesh::Mesh>> m_meshes;
     };
 }

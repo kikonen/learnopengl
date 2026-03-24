@@ -414,7 +414,7 @@ void Material::loadTexture(
 
     future.wait();
 
-    std::shared_ptr<ImageTexture> texture;
+    util::Ref<ImageTexture> texture;
     if (future.valid()) {
         texture = future.get();
     }
@@ -523,7 +523,7 @@ void Material::addTexture(
 
 void Material::addinlineTexture(
     TextureType type,
-    const std::shared_ptr<InlineTexture>& texture) noexcept
+    const util::Ref<InlineTexture>& texture) noexcept
 {
     m_inlineTextures.insert({ type, texture });
 }

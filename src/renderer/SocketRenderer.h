@@ -7,6 +7,8 @@
 
 #include "ki/size.h"
 
+#include "util/Ref.h"
+
 #include "MeshRenderer.h"
 
 namespace render {
@@ -34,12 +36,12 @@ public:
 
 private:
     // X, Y, Z axis meshes (colored cylinders)
-    std::shared_ptr<mesh::Mesh> m_axisMeshX;
-    std::shared_ptr<mesh::Mesh> m_axisMeshY;
-    std::shared_ptr<mesh::Mesh> m_axisMeshZ;
+    util::Ref<mesh::Mesh> m_axisMeshX;
+    util::Ref<mesh::Mesh> m_axisMeshY;
+    util::Ref<mesh::Mesh> m_axisMeshZ;
 
     // Gray offset indicator (shows where socket offset places attached node)
-    std::shared_ptr<mesh::Mesh> m_offsetIndicatorMesh;
+    util::Ref<mesh::Mesh> m_offsetIndicatorMesh;
 
     std::vector<mesh::MeshInstance> m_meshes;
 
