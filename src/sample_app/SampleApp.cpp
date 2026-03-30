@@ -17,6 +17,7 @@
 #include "pool/NodeHandle.h"
 
 #include "engine/InputContext.h"
+#include "engine/AsyncLoader.h"
 
 #include "editor/EditorFrame.h"
 
@@ -124,7 +125,7 @@ bool SampleApp::onSetup()
 
     if (assets.useEditor) {
         m_editorFrameInit = std::make_shared<FrameInit>(m_window);
-        m_editorFrame = std::make_unique<editor::EditorFrame>(m_window);
+        m_editorFrame = util::Ref<editor::EditorFrame>::create(m_window);
 
         PrepareContext ctx{ *this };
 
@@ -487,7 +488,7 @@ void SampleApp::onShoot()
     //shoot(ctx, m_currentScene.get(), input, inputState, m_lastInputState);
 }
 
-std::shared_ptr<Scene> SampleApp::loadScene(
+util::Ref<Scene> SampleApp::loadScene(
     const std::string& filePath)
 {
     const auto& assets = Assets::get();
@@ -496,7 +497,7 @@ std::shared_ptr<Scene> SampleApp::loadScene(
 
     Assets::set(loadAssets());
 
-    auto scene = std::make_shared<Scene>(*this);
+    auto scene = util::Ref<Scene>::create(*this);
 
     {
         if (!assets.sceneFile.empty()) {
@@ -515,13 +516,13 @@ std::shared_ptr<Scene> SampleApp::loadScene(
     }
 
     if (m_loader) {
-        m_sceneUpdater = std::make_shared<SceneUpdater>(
+        m_sceneUpdater = util::Ref<SceneUpdater>::create(
             *this);
 
-        m_particleUpdater = std::make_shared<ParticleUpdater>(
+        m_particleUpdater = util::Ref<ParticleUpdater>::create(
             *this);
 
-        m_animationUpdater = std::make_shared<AnimationUpdater>(
+        m_animationUpdater = util::Ref<AnimationUpdater>::create(
             *this);
 
         m_sceneUpdater->start();

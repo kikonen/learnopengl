@@ -32,7 +32,7 @@ namespace {
 TestSceneSetup::TestSceneSetup(
     Engine& engine,
     const std::shared_ptr<std::atomic_bool>& alive,
-    const std::shared_ptr<AsyncLoader>& asyncLoader)
+    const util::Ref<AsyncLoader>& asyncLoader)
     : m_engine{ engine },
     m_alive(alive),
     m_asyncLoader(asyncLoader)
@@ -99,7 +99,7 @@ void TestSceneSetup::setupViewport1()
     unsigned int color = 0x90ff2020;
     texture->setData(&color, sizeof(unsigned int));
 
-    auto viewport = std::make_shared<model::Viewport>(
+    auto viewport = util::Ref<model::Viewport>::create(
         "Viewport-1",
         glm::vec3(-1, -0.75, 0),
         glm::vec3(0, 0, 0),

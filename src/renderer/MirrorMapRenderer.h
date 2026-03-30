@@ -64,7 +64,7 @@ private:
     model::Node* findClosest(const render::RenderContext& ctx);
 
 public:
-    std::shared_ptr<model::Viewport> m_reflectionDebugViewport;
+    util::Ref<model::Viewport> m_reflectionDebugViewport;
 
     pool::NodeHandle m_sourceNode{};
 

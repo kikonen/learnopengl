@@ -2,7 +2,9 @@
 
 #include <memory>
 
-#include "glm/glm.hpp"
+#include <glm/glm.hpp>
+
+#include "util/Ref.h"
 
 class AsyncLoader;
 
@@ -14,7 +16,7 @@ public:
     TestSceneSetup(
         Engine& engine,
         const std::shared_ptr<std::atomic_bool>& alive,
-        const std::shared_ptr<AsyncLoader>& asyncLoader);
+        const util::Ref<AsyncLoader>& asyncLoader);
 
     void setup();
 
@@ -27,7 +29,7 @@ private:
     Engine& m_engine;
     std::shared_ptr<std::atomic_bool> m_alive;
 
-    std::shared_ptr<AsyncLoader> m_asyncLoader;
+    util::Ref<AsyncLoader> m_asyncLoader;
 
     std::shared_ptr<std::atomic<int>> m_runningCount;
 };

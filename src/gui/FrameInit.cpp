@@ -12,7 +12,7 @@
 #include "engine/Engine.h"
 
 FrameInit::FrameInit(
-    const std::shared_ptr<Window>& window)
+    const util::Ref<Window>& window)
     : m_window(window),
     m_fontSize{ 18 },
     m_fontPath{ "fonts/Vera.ttf" }

@@ -107,7 +107,7 @@ void ObjectIdRenderer::prepareRT(
 
     m_idProgramId = ProgramRegistry::get().getProgram(SHADER_OBJECT_ID, { { DEF_USE_ALPHA, "1"} });
 
-    m_debugViewport = std::make_shared<model::Viewport>(
+    m_debugViewport = util::Ref<model::Viewport>::create(
         "ObjectID",
         glm::vec3(-1.0, 1.0, 0),
         //glm::vec3(0.5, -0.5, 0),

@@ -297,7 +297,7 @@ namespace model
                 {
                     //drawable.lodMeshIndex = i;
 
-                    drawable.meshId = lodMesh.getMesh<mesh::Mesh>()->m_id;
+                    drawable.meshId = lodMesh.getMesh<mesh::Mesh>()->getId();
 
                     drawable.entityIndex = getEntityIndex();
                     drawable.materialIndex = lodMesh.m_materialIndex;

@@ -20,7 +20,7 @@ namespace editor {
     class EditorFrame : public gui::Frame
     {
     public:
-        EditorFrame(const std::shared_ptr<Window>& window);
+        EditorFrame(const util::Ref<Window>& window);
         virtual ~EditorFrame();
 
         void prepare(const PrepareContext& ctx) override;

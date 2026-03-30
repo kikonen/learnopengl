@@ -148,7 +148,7 @@ void TextGenerator::updateVAO(
         {
             //drawable.lodMeshIndex = 0;
 
-            drawable.meshId = lodMesh.getMesh<mesh::Mesh>()->m_id;
+            drawable.meshId = lodMesh.getMesh<mesh::Mesh>()->getId();
 
             drawable.entityIndex = 1;
             drawable.materialIndex = lodMesh.m_materialIndex;

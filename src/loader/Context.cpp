@@ -4,6 +4,8 @@
 
 #include "asset/Assets.h"
 
+#include "engine/AsyncLoader.h"
+
 #include "util/util.h"
 #include "util/file.h"
 
@@ -30,7 +32,7 @@ namespace {
 
 namespace loader {
     Context::Context(
-        std::shared_ptr<AsyncLoader> asyncLoader,
+        util::Ref<AsyncLoader> asyncLoader,
         const std::string& dirName,
         const std::string& fileName)
         : m_alive{ std::make_shared<std::atomic_bool>(true)},

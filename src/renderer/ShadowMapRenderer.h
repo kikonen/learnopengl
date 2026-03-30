@@ -43,7 +43,7 @@ public:
         const render::RenderContext& ctx);
 
 public:
-    std::shared_ptr<model::Viewport> m_debugViewport;
+    util::Ref<model::Viewport> m_debugViewport;
 
 private:
     // NOTE KI std::unique_ptr triggered exhaustive error loop

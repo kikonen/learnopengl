@@ -32,7 +32,7 @@ private:
     void drawNodes(const render::RenderContext& ctx);
 
 public:
-    std::shared_ptr<model::Viewport> m_debugViewport;
+    util::Ref<model::Viewport> m_debugViewport;
 
 private:
     ki::program_id m_idProgramId{ 0 };

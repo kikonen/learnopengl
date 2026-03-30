@@ -6,6 +6,8 @@
 #include "asset/ViewportEffect.h"
 #include "asset/LayerInfo.h"
 
+#include "util/Ref.h"
+
 #include "kigl/GLBuffer.h"
 
 namespace render {
@@ -22,7 +24,7 @@ struct UpdateViewContext;
 
 namespace model
 {
-    class Viewport final
+    class Viewport final : public util::RefCounted<false>
     {
     public:
         Viewport(

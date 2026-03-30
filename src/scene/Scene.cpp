@@ -235,7 +235,7 @@ void Scene::prepareRT()
     }
 
     {
-        auto vp = std::make_shared<model::Viewport>(
+        auto vp = util::Ref<model::Viewport>::create(
             "UI",
             //glm::vec3(-0.75, 0.75, 0),
             glm::vec3(-1.0f, 1.f, 0),
@@ -268,7 +268,7 @@ void Scene::prepareRT()
     }
 
     {
-        auto vp = std::make_shared<model::Viewport>(
+        auto vp = util::Ref<model::Viewport>::create(
             "player",
             //glm::vec3(-0.75, 0.75, 0),
             glm::vec3(-1.0f, 1.f, 0),
@@ -301,7 +301,7 @@ void Scene::prepareRT()
     }
 
     {
-        auto vp = std::make_shared<model::Viewport>(
+        auto vp = util::Ref<model::Viewport>::create(
             "Main",
             //glm::vec3(-0.75, 0.75, 0),
             glm::vec3(-1.0f, 1.f, 0),
@@ -335,7 +335,7 @@ void Scene::prepareRT()
     }
 
     if (assets.showRearView) {
-        auto vp = std::make_shared<model::Viewport>(
+        auto vp = util::Ref<model::Viewport>::create(
             "Rear",
             glm::vec3(-1.f, -0.5f, 0),
             glm::vec3(0, 0, 0),

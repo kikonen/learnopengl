@@ -4,7 +4,9 @@
 #include <atomic>
 #include <mutex>
 
-class AsyncLoader
+#include "util/Ref.h"
+
+class AsyncLoader : public util::RefCounted<>
 {
 public:
     AsyncLoader();

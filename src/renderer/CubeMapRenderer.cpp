@@ -13,6 +13,7 @@
 
 #include "model/Node.h"
 #include "model/Snapshot.h"
+#include "model/Viewport.h"
 
 #include "script/CommandEngine.h"
 #include "script/command/MoveNode.h"

@@ -4,6 +4,8 @@
 
 #include "asset/Assets.h"
 
+#include "util/Ref.h"
+
 #include "engine/Engine.h"
 
 #include "gui/FrameInit.h"
@@ -58,14 +60,14 @@ private:
     void onLoadScene(const std::string& filePath);
     void onUnloadScene();
 
-    std::shared_ptr<Scene> loadScene(const std::string& filePath);
+    util::Ref<Scene> loadScene(const std::string& filePath);
     void unloadScene();
     void stopLoader();
     void stopUpdaters();
 
 private:
     std::shared_ptr<FrameInit> m_editorFrameInit;
-    std::shared_ptr<editor::EditorFrame> m_editorFrame;
+    util::Ref<editor::EditorFrame> m_editorFrame;
 
     std::unique_ptr<loader::SceneLoader> m_loader;
     std::unique_ptr<TestSceneSetup> m_testSetup;

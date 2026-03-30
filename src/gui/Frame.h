@@ -6,6 +6,8 @@
 #include <imgui_impl_glfw.h>
 #include <imgui_impl_opengl3.h>
 
+#include "util/Ref.h"
+
 #include "gui/Window.h"
 #include "gui/FrameContext.h"
 
@@ -15,10 +17,10 @@ class Registry;
 
 namespace gui
 {
-    class Frame
+    class Frame : public util::RefCounted<>
     {
     public:
-        Frame(const std::shared_ptr<Window>& window);
+        Frame(const util::Ref<Window>& window);
         virtual ~Frame();
 
         virtual void prepare(const PrepareContext& ctx);
@@ -51,6 +53,6 @@ namespace gui
     protected:
         bool m_prepared = false;
 
-        std::shared_ptr<Window> m_window;
+        util::Ref<Window> m_window;
     };
 }

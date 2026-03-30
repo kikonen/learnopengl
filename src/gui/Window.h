@@ -3,6 +3,8 @@
 #include <functional>
 #include <string>
 
+#include "util/Ref.h"
+
 #include "gui/Input.h"
 
 #include "ki/RenderClock.h"
@@ -15,7 +17,7 @@ struct InputContext;
 
 class Engine;
 
-class Window final
+class Window final : public util::RefCounted<false>
 {
 public:
     Window(

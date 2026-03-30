@@ -100,7 +100,7 @@ void MirrorMapRenderer::prepareRT(
     }
 
     {
-        m_reflectionDebugViewport = std::make_shared<model::Viewport>(
+        m_reflectionDebugViewport = util::Ref<model::Viewport>::create(
             "MirrorReflect",
             glm::vec3(-1.0, 0.5, 0),
             glm::vec3(0, 0, 0),

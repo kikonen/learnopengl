@@ -9,6 +9,8 @@
 
 #include "event/Listen.h"
 
+#include "util/Ref.h"
+
 namespace render {
     class NodeCollection;
 }
@@ -50,7 +52,7 @@ namespace editor {
     class ViewportTool;
 }
 
-class Scene final
+class Scene final : public util::RefCounted<>
 {
     friend class editor::EditorFrame;
     friend class editor::CameraTool;
@@ -164,8 +166,8 @@ private:
 
     std::unique_ptr<ObjectIdRenderer> m_objectIdRenderer{ nullptr };
 
-    std::shared_ptr<model::Viewport> m_uiViewport{ nullptr };
-    std::shared_ptr<model::Viewport> m_playerViewport{ nullptr };
-    std::shared_ptr<model::Viewport> m_mainViewport{ nullptr };
-    std::shared_ptr<model::Viewport> m_rearViewport{ nullptr };
+    util::Ref<model::Viewport> m_uiViewport{ nullptr };
+    util::Ref<model::Viewport> m_playerViewport{ nullptr };
+    util::Ref<model::Viewport> m_mainViewport{ nullptr };
+    util::Ref<model::Viewport> m_rearViewport{ nullptr };
 };

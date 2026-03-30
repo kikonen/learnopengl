@@ -76,6 +76,11 @@ namespace mesh {
         virtual void prepareLodMesh(
             mesh::LodMesh& lodMesh) = 0;
 
+        const ki::mesh_id getId() const noexcept
+        {
+            return m_id;
+        }
+
         virtual animation::Rig* getRig() const
         {
             return nullptr;
