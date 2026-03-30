@@ -4,13 +4,15 @@
 #include <memory>
 #include <mutex>
 
+#include "util/Ref.h"
+
 #include "event/Listen.h"
 
 struct UpdateContext;
 class Engine;
 class Registry;
 
-class Updater
+class Updater : public util::RefCounted<>
 {
 public:
     Updater(

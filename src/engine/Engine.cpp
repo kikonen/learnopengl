@@ -32,6 +32,9 @@
 #include "shader/ProgramRegistry.h"
 
 #include "scene/Scene.h"
+#include "scene/SceneUpdater.h"
+#include "scene/AnimationUpdater.h"
+#include "scene/ParticleUpdater.h"
 
 #include "render/Batch.h"
 #include "render/InstanceRegistry.h"
@@ -71,10 +74,20 @@ bool Engine::init()
 
     m_registry = std::make_unique<Registry>(*this, m_alive);
 
-    m_asyncLoader = std::make_shared<AsyncLoader>();
+    m_asyncLoader = util::Ref<AsyncLoader>::create();
 
-    m_window = std::make_unique<Window>(*this);
+    m_window = util::Ref<Window>::create(*this);
     return m_window->create() ? 0 : -1;
+}
+
+util::Ref<Scene> Engine::getCurrentScene() const
+{
+    return m_currentScene;
+}
+
+util::Ref<Window> Engine::getWindow() const
+{
+    return m_window;
 }
 
 bool Engine::setup() {

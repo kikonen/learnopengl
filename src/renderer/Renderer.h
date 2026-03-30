@@ -2,6 +2,8 @@
 
 #include <string>
 
+#include "util/Ref.h"
+
 #include "pool/NodeHandle.h"
 
 namespace model

@@ -10,7 +10,7 @@
 
 namespace gui
 {
-    Frame::Frame(const std::shared_ptr<Window>& window)
+    Frame::Frame(const util::Ref<Window>& window)
         : m_window(window)
     {
     }

@@ -94,7 +94,7 @@ void WaterMapRenderer::prepareRT(
     //noiseTextureID = generator.generate();
 
     {
-        m_reflectionDebugViewport = std::make_shared<model::Viewport>(
+        m_reflectionDebugViewport = util::Ref<model::Viewport>::create(
             "WaterReflect",
             glm::vec3(0.5, 0.5, 0),
             glm::vec3(0, 0, 0),
@@ -115,7 +115,7 @@ void WaterMapRenderer::prepareRT(
     }
 
     {
-        m_refractionDebugViewport = std::make_shared<model::Viewport>(
+        m_refractionDebugViewport = util::Ref<model::Viewport>::create(
             "WaterRefract",
             glm::vec3(0.5, 0.0, 0),
             glm::vec3(0, 0, 0),

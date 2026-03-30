@@ -5,12 +5,14 @@
 #include <unordered_map>
 #include <atomic>
 
+#include "util/Ref.h"
+
 class AsyncLoader;
 
 namespace loader {
     struct Context {
         Context(
-            std::shared_ptr<AsyncLoader> asyncLoader,
+            util::Ref<AsyncLoader> asyncLoader,
             const std::string& sdirName,
             const std::string& fileName);
 
@@ -29,7 +31,7 @@ namespace loader {
 
         std::shared_ptr<std::atomic_bool> m_alive;
 
-        std::shared_ptr<AsyncLoader> m_asyncLoader;
+        util::Ref<AsyncLoader> m_asyncLoader;
         std::shared_ptr<std::atomic<int>> m_runningCount;
     };
 }

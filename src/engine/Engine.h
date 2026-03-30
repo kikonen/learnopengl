@@ -10,6 +10,8 @@
 
 #include "ki/FpsCounter.h"
 
+#include "util/Ref.h"
+
 #include "backend/gl/PerformanceCounters.h"
 
 #include "gui/Input.h"
@@ -64,10 +66,7 @@ public:
         return m_fpsCounter;
     }
 
-    std::shared_ptr<Scene> getCurrentScene() const
-    {
-        return m_currentScene;
-    }
+    util::Ref<Scene> getCurrentScene() const;
 
     render::Batch* getBatch() const noexcept
     {
@@ -79,10 +78,7 @@ public:
         return m_renderData.get();
     }
 
-    std::shared_ptr<Window> getWindow()
-    {
-        return m_window;
-    }
+    util::Ref<Window> getWindow() const;
 
     render::WindowBuffer* getWindowBuffer() const noexcept
     {
@@ -117,15 +113,15 @@ public:
 
     // NOTE KI MUST destroy async loaded *BEFORE* other registries
     // => alloes change for graceful exit for loaders
-    std::shared_ptr<AsyncLoader> m_asyncLoader;
+    util::Ref<AsyncLoader> m_asyncLoader;
 
     std::unique_ptr<Registry> m_registry;
 
-    std::shared_ptr<SceneUpdater> m_sceneUpdater;
-    std::shared_ptr<ParticleUpdater> m_particleUpdater;
-    std::shared_ptr<AnimationUpdater> m_animationUpdater;
+    util::Ref<SceneUpdater> m_sceneUpdater;
+    util::Ref<ParticleUpdater> m_particleUpdater;
+    util::Ref<AnimationUpdater> m_animationUpdater;
 
-    std::shared_ptr<Window> m_window;
+    util::Ref<Window> m_window;
     std::unique_ptr<render::WindowBuffer> m_windowBuffer{ nullptr };
 
     debug::DebugContext& m_dbg;
@@ -138,7 +134,7 @@ protected:
 
     std::string m_title;
 
-    std::shared_ptr<Scene> m_currentScene;
+    util::Ref<Scene> m_currentScene;
 
     std::unique_ptr<render::Batch> m_batch;
     std::unique_ptr<render::RenderData> m_renderData;

@@ -138,7 +138,7 @@ void MeshRenderer::registerDrawables(
         {
             //drawable.lodMeshIndex = 0;
 
-            drawable.meshId = mesh->m_id;
+            drawable.meshId = mesh->getId();
 
             drawable.entityIndex = m_entityIndex;
             drawable.materialIndex = meshInstance.m_materialIndex;

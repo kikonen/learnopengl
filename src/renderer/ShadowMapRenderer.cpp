@@ -69,7 +69,7 @@ void ShadowMapRenderer::prepareRT(
     m_activeCascade = 0;
 
     {
-        m_debugViewport = std::make_shared<model::Viewport>(
+        m_debugViewport = util::Ref<model::Viewport>::create(
             "ShadowMap",
             //glm::vec3(-1 + 0.01, 1 - 0.01, 0),
             glm::vec3(0.5, -0.5, 0),

@@ -2,6 +2,8 @@
 
 #include <vector>
 
+#include "util/Ref.h"
+
 #include "model/Viewport.h"
 
 class ViewportRegistry
@@ -20,16 +22,16 @@ public:
     void prepare();
 
     void addViewport(
-        const std::shared_ptr<model::Viewport>& viewport) noexcept;
+        const util::Ref<model::Viewport>& viewport) noexcept;
 
     void removeViewport(ki::sid_t id) noexcept;
 
-    inline std::vector<std::shared_ptr<model::Viewport>>& getViewports() noexcept
+    inline std::vector<util::Ref<model::Viewport>>& getViewports() noexcept
     {
         return m_viewports;
     }
 
 private:
-    std::vector<std::shared_ptr<model::Viewport>> m_viewports;
+    std::vector<util::Ref<model::Viewport>> m_viewports;
 
 };
