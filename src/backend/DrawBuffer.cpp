@@ -370,7 +370,7 @@ namespace backend {
         state.setEnabled(GL_BLEND, blend);
         if (blend) {
             // NOTE KI no blend mode with OIT blend
-            if (!drawOptions.m_gbuffer) {
+            if (!drawOptions.m_useDeferred) {
                 state.setBlendMode({ GL_FUNC_ADD, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ZERO, GL_ONE });
             }
         }

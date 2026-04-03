@@ -193,27 +193,6 @@ namespace loader
             }
 
             resolveAddonMeshes(type, *meshContainer, typeData);
-
-            {
-                // TODO KI this is WRONG, this should be per drawable mesh, not per type
-                int deferredCount = 0;
-                int forwardCount = 0;
-                int oitCount = 0;
-                for (const auto& lodMesh : meshContainer->getLodMeshes()) {
-                    if (lodMesh.m_material->gbuffer) {
-                        deferredCount++;
-                        if (lodMesh.m_drawOptions.isBlend()) {
-                            oitCount++;
-                        }
-                    }
-                    else {
-                        forwardCount++;
-                    }
-                }
-                type->m_flags.useDeferred |= deferredCount > 0;
-                type->m_flags.useForward |= forwardCount > 0;
-                type->m_flags.useOit |= oitCount > 0;
-            }
         }
 
         if (meshContainer->hasMeshes()) {
@@ -859,9 +838,8 @@ namespace loader
         flags.water = container.getFlag("water", flags.water);
         flags.cubeMap = container.getFlag("cube_map", flags.cubeMap);
 
-        flags.useDeferred = container.getFlag("use_deferred", flags.useDeferred);
-        flags.useForward = container.getFlag("use_forward", flags.useForward);
-        flags.useOit = container.getFlag("use_oit", flags.useOit);
+        //flags.useDeferred = container.getFlag("use_deferred", flags.useDeferred);
+        //flags.useOit = container.getFlag("use_oit", flags.useOit);
 
         flags.noFrustum = container.getFlag("no_frustum", flags.noFrustum);
         flags.noShadow = container.getFlag("no_shadow", flags.noShadow);

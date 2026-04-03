@@ -44,7 +44,8 @@ namespace backend {
         bool m_reverseFrontFace : 1 {false};
         bool m_noDepth : 1 {false};
 
-        bool m_gbuffer : 1 {false};
+        bool m_useDeferred : 1 {false};
+        bool m_useOit : 1 {false};
 
         bool m_clip : 1 {false};
 

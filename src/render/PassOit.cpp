@@ -141,13 +141,13 @@ namespace render
         collectionRender.drawProgram(
             ctx,
             [this](const render::DrawableInfo& drawable) {
-                if (!drawable.drawOptions.m_gbuffer) return (ki::program_id)0;
+                if (!drawable.drawOptions.m_useOit) return (ki::program_id)0;
+                if (!drawable.drawOptions.m_useDeferred) return (ki::program_id)0;
                 if (drawable.oitProgramId) return drawable.oitProgramId;
                 return m_oitProgram->m_id;
             },
             [&drawContext](const model::Node* node) {
-                return node->m_typeFlags.useOit &&
-                    drawContext.nodeSelector(node);
+                return drawContext.nodeSelector(node);
             },
             drawContext.kindBits & render::KIND_BLEND);
 

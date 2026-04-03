@@ -185,7 +185,9 @@ namespace mesh {
             m_drawOptions.m_kindBits = render::KIND_SOLID;
         }
 
-        m_drawOptions.m_gbuffer = material.gbuffer;
+        m_drawOptions.m_useDeferred = material.useDeferred;
+        // NOTE KI order; after resolving blend
+        m_drawOptions.m_useOit = material.useDeferred && m_drawOptions.isBlend();
 
         m_drawOptions.m_renderBack = material.renderBack;
         m_drawOptions.m_lineMode = material.lineMode;

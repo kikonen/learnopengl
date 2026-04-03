@@ -25,10 +25,6 @@ struct TypeFlags {
     bool effect : 1 {false};
     bool skybox : 1 {false};
 
-    bool useDeferred : 1 { false };
-    bool useOit : 1 { false };
-    bool useForward : 1 { false };
-
     bool noShadow : 1 {false};
     bool noSelect : 1 {false};
     bool noReflect : 1 {false};
