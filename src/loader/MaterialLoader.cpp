@@ -638,7 +638,7 @@ namespace loader {
         if (f.reverseFrontFace) m.reverseFrontFace = mod.reverseFrontFace;
         if (f.noDepth) m.noDepth = mod.noDepth;
 
-        if (f.gbuffer) m.gbuffer = mod.gbuffer;
+        if (f.useDeferred) m.useDeferred = mod.useDeferred;
 
         if (f.defaultPrograms) m.m_defaultPrograms = mod.m_defaultPrograms;
 
@@ -690,7 +690,7 @@ namespace loader {
                 material.m_defaultPrograms ? SHADER_G_TEX : "");
 
             if (shaderName.starts_with("g_")) {
-                material.gbuffer = true;
+                material.useDeferred = true;
             }
 
             if (material.blend) {

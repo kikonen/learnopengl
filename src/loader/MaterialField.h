@@ -49,7 +49,7 @@ namespace loader {
         bool reverseFrontFace : 1{false};
         bool noDepth : 1 {false};
 
-        bool gbuffer : 1 {false};
+        bool useDeferred : 1 {false};
 
         bool defaultPrograms : 1{false};
     };

@@ -268,7 +268,7 @@ public:
     bool reverseFrontFace : 1 {false};
     bool noDepth : 1 {false};
 
-    bool gbuffer : 1 {false};
+    bool useDeferred : 1 {false};
     bool inmutable : 1 {false};
 
     std::string m_geometryType;

@@ -161,12 +161,12 @@ namespace render
         collectionRender.drawProgram(
             ctx,
             [this](const render::DrawableInfo& drawable) {
+                if (!drawable.drawOptions.m_useDeferred) return (ki::program_id)0;
                 if (!drawable.isFlag(render::INSTANCE_PRE_DEPTH_BIT)) return (ki::program_id)0;
-                return drawable.drawOptions.m_gbuffer ? drawable.preDepthProgramId : (ki::program_id)0;
+                return drawable.preDepthProgramId;
             },
             [&drawContext](const model::Node* node) {
-                return node->m_typeFlags.useDeferred &&
-                    drawContext.nodeSelector(node);
+                return drawContext.nodeSelector(node);
             },
             drawContext.kindBits & render::KIND_SOLID);
 
@@ -193,11 +193,11 @@ namespace render
         collectionRender.drawProgram(
             ctx,
             [](const render::DrawableInfo& drawable) {
-                return drawable.drawOptions.m_gbuffer ? drawable.programId : (ki::program_id)0;
+                if (!drawable.drawOptions.m_useDeferred) return (ki::program_id)0;
+                return drawable.programId;
             },
             [&drawContext](const model::Node* node) {
-                return node->m_typeFlags.useDeferred &&
-                    !node->m_typeFlags.effect &&
+                return !node->m_typeFlags.effect &&
                     drawContext.nodeSelector(node);
             },
             drawContext.kindBits);

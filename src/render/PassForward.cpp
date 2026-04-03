@@ -75,13 +75,13 @@ namespace render
         collectionRender.drawProgram(
             ctx,
             [](const render::DrawableInfo& drawable) {
-                return !drawable.drawOptions.isBlend() && !drawable.drawOptions.m_gbuffer
+                if (drawable.drawOptions.m_useDeferred) return (ki::program_id)0;
+                return !drawable.drawOptions.isBlend() && !drawable.drawOptions.m_useDeferred
                     ? drawable.programId
                     : (ki::program_id)0;
             },
             [&drawContext](const model::Node* node) {
-                return node->m_typeFlags.useForward &&
-                    drawContext.nodeSelector(node);
+                return drawContext.nodeSelector(node);
             },
             // NOTE KI no blended
             drawContext.kindBits & ~render::KIND_BLEND);
