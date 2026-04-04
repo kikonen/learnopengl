@@ -34,8 +34,8 @@ namespace loader
 
             if (k == "type") {
             }
-            else if (k == "seed") {
-                data.seed = readInt(v);
+            else if (k == "enabled") {
+                data.enabled = readBool(v);
             }
             else if (k == "addons") {
                 loadAddons(v, data.addons);
@@ -43,6 +43,10 @@ namespace loader
             else {
                 reportUnknown("addon_selector_entry", k, v);
             }
+        }
+
+        if (data.addons.empty()) {
+            data.enabled = false;
         }
     }
 

@@ -39,6 +39,7 @@
 #include "model/NodeType.h"
 #include "model/CompositeDefinition.h"
 
+#include "component/definition/AddonSelectorDefinition.h"
 #include "component/definition/CameraComponentDefinition.h"
 #include "component/definition/LightDefinition.h"
 #include "component/definition/AudioListenerDefinition.h"
@@ -157,6 +158,7 @@ namespace loader
         type->m_baseRotation =util::degreesToQuat(typeData.baseRotation);
 
         auto meshContainer = std::make_unique<mesh::LodMeshContainer>();
+        auto addonMeshContainer = std::make_unique<mesh::LodMeshContainer>();
 
         assignTypeFlags(typeData, type->m_flags);
 
@@ -192,7 +194,7 @@ namespace loader
                 }
             }
 
-            resolveAddonMeshes(type, *meshContainer, typeData);
+            resolveAddonMeshes(type, *addonMeshContainer, typeData);
         }
 
         if (meshContainer->hasMeshes()) {
@@ -209,7 +211,9 @@ namespace loader
             type->setMeshContainer(std::move(meshContainer));
             type->m_flags.hasMeshes = true;
 
-            //type->m_addonSelectorDefinition = l.m_addonSelectorLoader.createDefinition(typeData.addonSelector);
+            if (addonMeshContainer->hasMeshes()) {
+                type->m_addonSelectorDefinition = l.m_addonSelectorLoader.createDefinition(typeData.addonSelector);
+            }
 
             // NOTE KI ensure volume is containing all meshes
             type->prepareVolume();

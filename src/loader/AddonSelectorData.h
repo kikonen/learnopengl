@@ -14,9 +14,6 @@ namespace loader
     {
         bool enabled{ true };
 
-        uint32_t seed{ 0 };
-        glm::uvec2 range{ 1, 1 };
-
         std::vector<AddonData> addons;
     };
 }

@@ -61,6 +61,7 @@ namespace model
         m_meshContainer{ std::move(o.m_meshContainer) },
         m_scripts{ std::move(o.m_scripts) },
         m_customMaterial{ std::move(o.m_customMaterial) },
+        m_addonSelectorDefinition{ std::move(o.m_addonSelectorDefinition) },
         m_cameraComponentDefinition{ std::move(o.m_cameraComponentDefinition) },
         m_generatorDefinition{ std::move(o.m_generatorDefinition) },
         m_controllerDefinitions{ std::move(o.m_controllerDefinitions) },
@@ -95,9 +96,29 @@ namespace model
         m_meshContainer = std::move(meshContainer);
     }
 
-    mesh::LodMeshContainer* NodeType::getMeshContainer()
+    const mesh::LodMeshContainer* NodeType::getMeshContainer() const
     {
         return m_meshContainer.get();
+    }
+
+    mesh::LodMeshContainer* NodeType::modifyMeshContainer()
+    {
+        return m_meshContainer.get();
+    }
+
+    void NodeType::setAddonMeshContainer(std::unique_ptr<mesh::LodMeshContainer> meshContainer)
+    {
+        m_addonMeshContainer = std::move(meshContainer);
+    }
+
+    const mesh::LodMeshContainer* NodeType::getAddonMeshContainer() const
+    {
+        return m_addonMeshContainer.get();
+    }
+
+    mesh::LodMeshContainer* NodeType::modifyAddonMeshContainer()
+    {
+        return m_addonMeshContainer.get();
     }
 
     void NodeType::prepareWT(
