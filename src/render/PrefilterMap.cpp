@@ -31,6 +31,12 @@ namespace {
 }
 
 namespace render {
+    //With 256 base size and 5 mip levels :
+    //mip 0 : 256x256  roughness 0.00
+    //    mip 1 : 128x128  roughness 0.25
+    //    mip 2 : 64x64   roughness 0.50
+    //    mip 3 : 32x32   roughness 0.75
+    //    mip 4 : 16x16   roughness 1.00
     void PrefilterMap::prepareRT(
         const PrepareContext& ctx)
     {
@@ -50,7 +56,7 @@ namespace render {
 
             // https://stackoverflow.com/questions/37232110/opengl-cubemap-writing-to-mipmap
             glTextureParameteri(m_cubeTexture, GL_TEXTURE_BASE_LEVEL, 0);
-            glTextureParameteri(m_cubeTexture, GL_TEXTURE_MAX_LEVEL, MAX_MIP_LEVELS);
+            glTextureParameteri(m_cubeTexture, GL_TEXTURE_MAX_LEVEL, MAX_MIP_LEVELS - 1);
 
             glTextureParameteri(m_cubeTexture, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
             glTextureParameteri(m_cubeTexture, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
@@ -59,9 +65,6 @@ namespace render {
             // be sure to set minification filter to mip_linear
             glTextureParameteri(m_cubeTexture, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
             glTextureParameteri(m_cubeTexture, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-            // generate mipmaps for the cubemap so OpenGL automatically allocates the required memory.
-            glGenerateTextureMipmap(m_cubeTexture);
         }
 
         {

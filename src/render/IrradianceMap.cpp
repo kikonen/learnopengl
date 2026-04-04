@@ -48,9 +48,10 @@ namespace render {
             glTextureParameteri(m_cubeTexture, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
             glTextureParameteri(m_cubeTexture, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
 
-            // be sure to set minification filter to mip_linear
-            glTextureParameteri(m_cubeTexture, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_NEAREST);
-            glTextureParameteri(m_cubeTexture, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+            // NOTE KI LINEAR *REQUIRED*
+            // => interpolation is needed to avoid square pattern
+            glTextureParameteri(m_cubeTexture, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+            glTextureParameteri(m_cubeTexture, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
         }
 
         {
@@ -65,11 +66,6 @@ namespace render {
 
             state.unbindTexture(UNIT_ENVIRONMENT_MAP, false);
             state.invalidateAll();
-        }
-
-        {
-            // generate mipmaps for the cubemap so OpenGL automatically allocates the required memory.
-            glGenerateTextureMipmap(m_cubeTexture);
         }
     }
 

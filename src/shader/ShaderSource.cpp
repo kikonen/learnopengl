@@ -291,6 +291,8 @@ void ShaderSource::appendDefines(
 
                 const auto key = util::toUpper(dbg.m_geometryType);
                 lines.push_back(fmt::format("#define USE_{} 1", key));
+                lines.push_back("#define USE_MOD 1");
+
                 if (dbg.m_wireframeOnly) {
                     lines.push_back("#define USE_ALPHA 1");
                 }
