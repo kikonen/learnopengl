@@ -1,7 +1,5 @@
 #version 460 core
 
-#undef USE_SOCKETS
-
 layout (location = ATTR_POS) in vec3 a_pos;
 layout (location = ATTR_TEX) in vec2 a_texCoord;
 

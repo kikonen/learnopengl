@@ -3,7 +3,7 @@
 // NOTE KI GL_RGB16 => thus encode into [0, 1] range
 // => *MUST* match FrameBufferAttachment::getGBufferNormal
 // => for some reason DOES NOT WORK in intel GPU
-vec3 decodeGNormal(in vec2 texCoord)
+vec3 decodeGNormal(const vec2 texCoord)
 {
   // return texture(g_normal, texCoord).xyz * 2.0 - 1.0;
   return textureLod(g_normal, texCoord, 0).xyz;
@@ -11,7 +11,7 @@ vec3 decodeGNormal(in vec2 texCoord)
 
 // https://aras-p.info/texts/CompactNormalStorage.html
 // https://gamedev.net/forums/topic/700478-g-buffer-2-channel-normal/5397776/
-vec3 decodeGNormal2(in vec2 texCoord)
+vec3 decodeGNormal2(const vec2 texCoord)
 {
   // TODO KI does NOT work propearly, corrupted possibly due to sign of Z-dir
   vec2 enc = textureLod(g_normal, texCoord, 0).xy;
@@ -27,8 +27,21 @@ vec3 decodeGNormal2(in vec2 texCoord)
   return n;
 }
 
+
+// Octahedral encoding
+// Decode normal from RG16_SNORM or RG16F
+vec3 decodeGNormal_RG(const vec2 texCoord)
+{
+  const vec2 enc = textureLod(g_normal, texCoord, 0).xy;
+  vec3 n = vec3(enc, 1.0 - abs(enc.x) - abs(enc.y));
+  if (n.z < 0.0) {
+    n.xy = (1.0 - abs(n.yx)) * signNotZero(n.xy);
+  }
+  return normalize(n);
+}
+
 // https://github.khronos.org/KTX-Software/ktxtools/ktx_encode.html
-vec3 decodeGNormalKtx(in vec2 texCoord)
+vec3 decodeGNormalKtx(const vec2 texCoord)
 {
   vec3 n;
 

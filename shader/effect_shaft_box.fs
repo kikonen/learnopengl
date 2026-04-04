@@ -16,7 +16,6 @@ layout(early_fragment_tests) in;
 in VS_OUT {
   flat uint entityIndex;
 
-  vec3 worldPos;
   vec3 normal;
   vec2 texCoord;
 
@@ -65,9 +64,9 @@ float CalculateShaftBrightness(
   // Read z0 from the structure buffer, calculate t0, and clamp to [t0,1].
   // const float depth = -textureLod(g_viewZ, pixCoord, 0).x;
   // const float depth = -textureLod(g_viewPosition, pixCoord, 0).z;
-  const float depth d = -getViewPosFromGBuffer(pixCoord).z;
+  const float viewZ = -getViewPosFromGBuffer(pixCoord).z;
 
-  const float t0 = 1.0 + depth / dot(cameraObjectFront, vdir);
+  const float t0 = 1.0 + viewZ / dot(cameraObjectFront, vdir);
   t1 = clamp(t1, t0, 1.0);
   t2 = clamp(t2, t0, 1.0);
 

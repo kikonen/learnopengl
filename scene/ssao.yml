@@ -93,7 +93,7 @@ nodes:
     scale: 2
   - type: buddha_2
     pos: [2.0, 0.0, 0.0]
-    rotation: [0, 0, 0]
+    rotation: [0, 180, 0]
     scale: 1
   - type: backpack
     pos: [-2.0, 0, 0.0]

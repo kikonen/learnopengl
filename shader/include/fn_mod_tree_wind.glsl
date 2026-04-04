@@ -4,8 +4,6 @@ void mod_tree_wind(
   inout vec3 normal,
   inout vec3 tangent)
 {
-  float time = u_time;
-
   float x = 0.5 + pos.x * 0.5;
   float y = pos.y;
 
@@ -22,11 +20,14 @@ void mod_tree_wind(
 
   pos = transform * pos;
 
-  mat3 normalMatrix = mat3(transpose(inverse(transform)));
+  // NOTE KI since just rotate is used no need for inverse
+  // => if doing scale/translate then needed
+  // mat3 normalMatrix = mat3(transpose(inverse(transform)));
+  mat3 normalMatrix = mat3(transform);
   normal =  normalMatrix * normal;
 
 #ifdef USE_TBN
-  normal = normalMatrix * tangent;
+  tangent = normalMatrix * tangent;
 #endif
 }
 

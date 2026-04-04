@@ -45,8 +45,7 @@ out VS_OUT {
   mat3 tbn;
 #endif
 #ifdef USE_PARALLAX
-  flat vec3 viewTangentPos;
-  vec3 tangentPos;
+  vec3 tangentViewPos;
 #endif
 } vs_out;
 
@@ -126,12 +125,11 @@ void main() {
 
   vs_out.vertexPos = a_pos;
 
-  // NOTE KI pointless to normalize vs side
-  vs_out.normal = normalMatrix * normal;
+  vs_out.normal = normalize(viewNormalMatrix * normal);
 
 #ifdef USE_TBN
-  if (u_materials[materialIndex].normalMapTex.x > 0) {
-     // NOTE KI Gram-Schmidt process to re-orthogonalize
+  {
+    // NOTE KI Gram-Schmidt process to re-orthogonalize
     // https://learnopengl.com/Advanced-Lighting/Normal-Mapping
     //tangent = normalize(tangent - dot(tangent, normal) * normal);
 
@@ -141,11 +139,8 @@ void main() {
 
 #ifdef USE_PARALLAX
     const mat3 invTBN = transpose(vs_out.tbn);
-    vs_out.viewTangentPos  = invTBN * u_cameraPos.xyz;
-    vs_out.tangentPos  = invTBN * worldPos.xyz;
+    vs_out.tangentViewPos  = invTBN * vs_out.viewPos.xyz;
 #endif
-  } else {
-    vs_out.tbn = mat3(1);
   }
 #endif
 }

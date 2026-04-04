@@ -16,9 +16,6 @@ in gl_PerVertex
 } gl_in[3];
 
 in VS_OUT {
-#ifdef USE_CUBE_MAP
-  vec3 worldPos;
-#endif
   vec3 objectPos;
   vec3 viewPos;
   vec3 normal;
@@ -31,8 +28,7 @@ in VS_OUT {
   mat3 tbn;
 #endif
 #ifdef USE_PARALLAX
-  flat vec3 viewTangentPos;
-  vec3 tangentPos;
+  vec3 tangentViewPos;
 #endif
 
 #ifdef USE_BONES
@@ -49,10 +45,6 @@ in VS_OUT {
 } gs_in[];
 
 out VS_OUT {
-#ifdef USE_CUBE_MAP
-  vec3 worldPos;
-#endif
-  vec3 objectPos;
   vec3 viewPos;
   vec3 normal;
   vec2 texCoord;
@@ -64,8 +56,7 @@ out VS_OUT {
   mat3 tbn;
 #endif
 #ifdef USE_PARALLAX
-  flat vec3 viewTangentPos;
-  vec3 tangentPos;
+  vec3 tangentViewPos;
 #endif
 
 #ifdef USE_BONES
@@ -97,10 +88,6 @@ void sendVertex(in int i, in vec4 pos) {
   gl_Position.x += cos(op.x) * sin(u_time * 2) * 0.3;
   // gl_Position.z += sin(op.x) * sin(u_time);
 
-#ifdef USE_CUBE_MAP
-  gs_out.worldPos = gs_in[i].worldPos;
-#endif
-  gs_out.objectPos = gs_in[i].objectPos;
   gs_out.viewPos = gs_in[i].viewPos;
   gs_out.normal = gs_in[i].normal;
   gs_out.texCoord = gs_in[i].texCoord;
@@ -112,8 +99,7 @@ void sendVertex(in int i, in vec4 pos) {
   gs_out.tbn = gs_in[i].tbn;
 #endif
 #ifdef USE_PARALLAX
-  gs_out.viewTangentPos = gs_in[i].viewTangentPos;
-  gs_out.tangentPos = gs_in[i].tangentPos;
+  gs_out.tangentViewPos = gs_in[i].tangentViewPos;
 #endif
 
 #ifdef USE_BONES

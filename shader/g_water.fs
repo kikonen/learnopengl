@@ -74,7 +74,7 @@ void main() {
 
   #include "include/var_tex_material.glsl"
 
-  const vec3 viewDir = normalize(u_mainCameraPos.xyz - fs_in.worldPos);
+  const vec3 viewDir = -normalize(fs_in.viewPos);
 
   vec2 distortedTexCoord = texCoord;
   vec2 totalDistortion = vec2(0);
@@ -98,7 +98,7 @@ void main() {
 
 #ifdef USE_NORMAL_TEX
   vec3 normal;
-  if (Debug.u_normalMapEnabled && u_materials[materialIndex].normalMapTex.x > 0) {
+  if (Debug.u_normalMapEnabled) {
     sampler2D sampler = sampler2D(u_materials[materialIndex].normalMapTex);
 
     normal = texture(sampler, distortedTexCoord).rgb;

@@ -89,8 +89,7 @@ void main() {
   vs_out.vertexPos = a_pos;
   vs_out.viewPos = (u_viewMatrix * worldPos).xyz;
 
-  // NOTE KI pointless to normalize vs side
-  vs_out.normal = normalMatrix * DECODE_A_NORMAL(a_normal);
+  vs_out.normal = normalize(viewNormalMatrix * DECODE_A_NORMAL(a_normal));
 
 //  calculateClipping(worldPos);
 
@@ -98,9 +97,9 @@ void main() {
   vs_out.shadowPos = u_shadowMatrix[shadowIndex] * worldPos;
 
 #ifdef USE_NORMAL_TEX
-  if (u_materials[materialIndex].normalMapTex.x > 0) {
+  {
     const vec3 N = normalize(vs_out.normal);
-    vec3 T = normalize((normalMatrix, a_tangent);
+    vec3 T = normalize((viewNormalMatrix, a_tangent);
 
     // NOTE KI Gram-Schmidt process to re-orthogonalize
     // https://learnopengl.com/Advanced-Lighting/Normal-Mapping
@@ -109,8 +108,6 @@ void main() {
     //const vec3 B = cross(N, T);
 
     vs_out.tangent = T;
-  } else {
-    vs_out.tangent = DECODE_A_TANGENT(a_tangent);
   }
 #endif
 }

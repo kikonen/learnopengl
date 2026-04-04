@@ -444,11 +444,11 @@ namespace render {
         // => cause "ring" arfifacts
         // => shadow artifacts on ball surface seem to be different issue
         //spec.internalFormat = GL_R11F_G11F_B10F;
-        spec.internalFormat = GL_RGB16F;
+        spec.internalFormat = GL_RG16_SNORM;
         spec.attachment = attachment;
         spec.useDrawBuffer = true;
         spec.clearMask = GL_COLOR_BUFFER_BIT;
-        spec.name = "normal_RGB16F";
+        spec.name = "normal_GL_RG16_SNORM";
 
         return spec;
     }

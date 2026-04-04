@@ -17,9 +17,6 @@ layout(early_fragment_tests) in;
 in VS_OUT {
   mat4 worlToLocalMatrix;
 
-#ifdef USE_CUBE_MAP
-  vec3 worldPos;
-#endif
   flat vec2 spriteCoord;
   flat vec2 spriteSize;
 
@@ -32,8 +29,7 @@ in VS_OUT {
   mat3 tbn;
 #endif
 #ifdef USE_PARALLAX
-  flat vec3 viewTangentPos;
-  vec3 tangentPos;
+  flat vec3 tangentViewPos;
 #endif
 } fs_in;
 
@@ -141,9 +137,10 @@ void main() {
   }
 
 #ifdef USE_CUBE_MAP
-  const vec3 viewDir = normalize(u_cameraPos.xyz - fs_in.worldPos);
-
-  #include "include/var_calculate_cube_map_diffuse.glsl"
+  {
+    const vec3 viewDir = -normalize(fs_in.viewPos);
+#include "include/var_calculate_cube_map_diffuse.glsl"
+  }
 #endif
 
   vec4 color = material.diffuse;

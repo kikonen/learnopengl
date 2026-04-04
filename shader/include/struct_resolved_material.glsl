@@ -9,9 +9,9 @@ struct ResolvedMaterial {
 
   float ssao;
 
-  float reflection;
-  float refraction;
-  float refractionRatio;
+  // float reflection;
+  // float refraction;
+  // float refractionRatio;
 
   float parallaxDepth;
 };

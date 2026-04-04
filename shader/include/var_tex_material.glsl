@@ -45,7 +45,7 @@
 
   material.mras = mras.rgba;
 
-  material.reflection = u_materials[i].reflection;
-  material.refraction = u_materials[i].refraction;
-  material.refractionRatio = u_materials[i].refractionRatio;
+  // material.reflection = u_materials[i].reflection;
+  // material.refraction = u_materials[i].refraction;
+  // material.refractionRatio = u_materials[i].refractionRatio;
 }

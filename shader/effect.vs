@@ -49,6 +49,5 @@ void main() {
   vs_out.entityIndex = gl_BaseInstance + gl_InstanceID;
   vs_out.worldPos = worldPos.xyz;
 
-  // NOTE KI pointless to normalize vs side
-  vs_out.normal = normalMatrix * DECODE_A_NORMAL(a_normal);
+  vs_out.normal = normalize(viewNormalMatrix * DECODE_A_NORMAL(a_normal));
 }

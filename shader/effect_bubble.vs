@@ -50,13 +50,12 @@ void main() {
 
   vs_out.viewPos = vec3(viewPos);
 
-  // NOTE KI pointless to normalize vs side
-  vs_out.normal = normalMatrix * DECODE_A_NORMAL(a_normal);
+  vs_out.normal = normalize(viewNormalMatrix * DECODE_A_NORMAL(a_normal));
 
   // NOTE KI normal in viewSpace
   // 1) this is same as 2
   // mat3 normalMat = mat3(transpose(inverse(u_viewMatrix * modelMatrix)));
   // vs_out.normal = normalize(normalMat * DECODE_A_NORMAL(a_normal));
   // 2)
-  vs_out.normal = normalize(mat3(u_viewMatrix) * normalMatrix * DECODE_A_NORMAL(a_normal));
+  vs_out.normal = normalize(viewNormalMatrix * DECODE_A_NORMAL(a_normal));
 }

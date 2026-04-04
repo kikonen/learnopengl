@@ -24,10 +24,9 @@ layout (location = ATTR_TEX) in vec2 a_texCoord;
 #include "include/uniform_debug.glsl"
 
 out VS_OUT {
-#ifdef USE_CUBE_MAP
-  vec3 worldPos;
-#endif
+#ifdef USE_MOD
   vec3 objectPos;
+#endif
   vec3 viewPos;
   vec3 normal;
   vec2 texCoord;
@@ -39,8 +38,7 @@ out VS_OUT {
   mat3 tbn;
 #endif
 #ifdef USE_PARALLAX
-  flat vec3 viewTangentPos;
-  vec3 tangentPos;
+  vec3 tangentViewPos;
 #endif
 
 #ifdef USE_BONES
@@ -143,9 +141,9 @@ void main() {
 
     worldPos = modelMatrix * pos;
 
-    normal = normalize(normalMatrix * normal);
+    normal = normalize(viewNormalMatrix * normal);
 #ifdef USE_TBN
-    tangent = normalize(normalMatrix * tangent);
+    tangent = normalize(viewNormalMatrix * tangent);
 #endif
   }
 
@@ -198,21 +196,18 @@ void main() {
 //   vs_out.socketIndex = instance.u_socketIndex;
 // #endif
 
-#ifdef USE_CUBE_MAP
-  vs_out.worldPos = worldPos.xyz;
-#endif
+#ifdef USE_MOD
   vs_out.objectPos = a_pos;
+#endif
+
   vs_out.viewPos = (u_viewMatrix * worldPos).xyz;
 
-  // NOTE KI pointless to normalize vs side
   vs_out.normal = normal;
 
   calculateClipping(worldPos);
   // calculateCustomClipping(worldPos);
 
 #ifdef USE_TBN
-
-  if (u_materials[materialIndex].normalMapTex.x > 0 || u_materials[materialIndex].parallaxDepth > 0)
   {
     // NOTE KI Gram-Schmidt process to re-orthogonalize
     // https://learnopengl.com/Advanced-Lighting/Normal-Mapping
@@ -224,11 +219,8 @@ void main() {
 
 #ifdef USE_PARALLAX
     const mat3 invTBN = transpose(vs_out.tbn);
-    vs_out.viewTangentPos  = invTBN * u_cameraPos.xyz;
-    vs_out.tangentPos  = invTBN * worldPos.xyz;
+    vs_out.tangentViewPos  = invTBN * vs_out.viewPos.xyz;
 #endif
-  } else {
-    vs_out.tbn = mat3(1);
   }
 #endif
 

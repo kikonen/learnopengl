@@ -13,13 +13,13 @@
 // parallaxDepth = 0.0;
 
   if (parallaxDepth > 0) {
-    const vec3 viewTangentDir = normalize(fs_in.viewTangentPos - fs_in.tangentPos);
+    const vec3 tangentViewDir = -normalize(fs_in.tangentViewPos);
     if (Debug.u_parallaxMethod == 1)
     {
       texCoord = calculateParallaxOcclusionMapping(
 	materialIndex,
 	texCoord,
-	viewTangentDir,
+	tangentViewDir,
 	parallaxDepth);
     }
 
@@ -28,7 +28,7 @@
     {
       texCoord = parallaxMapMarch(
 	materialIndex,
-	viewTangentDir,
+	tangentViewDir,
 	parallaxDepth,
 	texCoord);
     }

@@ -18,7 +18,6 @@ layout (location = ATTR_TEX) in vec2 a_texCoord;
 out VS_OUT {
   vec4 glp;
 
-  // vec3 worldPos;
   vec3 viewPos;
   vec3 normal;
   vec2 texCoord;
@@ -47,7 +46,7 @@ void main() {
   const uint materialIndex = instance.u_materialIndex;
   const vec4 pos = vec4(a_pos, 1.0);
   const vec4 worldPos = modelMatrix * pos;
-  const vec3 normal = normalize(normalMatrix * DECODE_A_NORMAL(a_normal));
+  const vec3 normal = normalize(viewNormalMatrix * DECODE_A_NORMAL(a_normal));
 
   vs_out.glp = u_projectedMatrix * worldPos;
   gl_Position = vs_out.glp;
@@ -57,7 +56,6 @@ void main() {
   vs_out.texCoord.x = a_texCoord.x * u_materials[materialIndex].tilingX * entity.tilingX;
   vs_out.texCoord.y = a_texCoord.y * u_materials[materialIndex].tilingY * entity.tilingY;
 
-  // vs_out.worldPos = worldPos.xyz;
   vs_out.viewPos = (u_viewMatrix * worldPos).xyz;
 
   vs_out.normal = normal;
