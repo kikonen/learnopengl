@@ -28,6 +28,7 @@
 #include "mesh/ModelMesh.h"
 
 #include "component/definition/LightDefinition.h"
+#include "component/definition/AddonSelectorDefinition.h"
 #include "component/definition/CameraComponentDefinition.h"
 #include "component/definition/ParticleGeneratorDefinition.h"
 #include "component/definition/GeneratorDefinition.h"
@@ -895,6 +896,10 @@ void NodeRegistry::attachNode(
             if (!controller) continue;
             ControllerRegistry::get().addController(node->m_handle, std::move(controller));
         }
+    }
+
+    if (auto* definition = type->m_addonSelectorDefinition.get(); definition) {
+        definition->selectAddons(type, node);
     }
 
     if (node->m_typeFlags.skybox) {

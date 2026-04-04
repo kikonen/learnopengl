@@ -1,10 +1,18 @@
 #pragma once
 
+#include <vector>
+
 #include <glm/glm.hpp>
 
 #include "ki/sid.h"
 
-struct Addon
+namespace model
+{
+    class NodeType;
+    class Node;
+}
+
+struct AddonDefinition
 {
     bool enabled{ true };
 
@@ -17,5 +25,9 @@ struct Addon
 
 struct AddonSelectorDefinition
 {
-    std::vector<Addon> addons;
+    std::vector<AddonDefinition> addons;
+
+    void selectAddons(
+        const model::NodeType* type,
+        model::Node* node);
 };

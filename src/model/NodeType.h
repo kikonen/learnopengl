@@ -112,8 +112,12 @@ namespace model
         bool hasMeshes() const noexcept;
 
         void setMeshContainer(std::unique_ptr<mesh::LodMeshContainer> meshContainer);
+        const mesh::LodMeshContainer* getMeshContainer() const;
+        mesh::LodMeshContainer* modifyMeshContainer();
 
-        mesh::LodMeshContainer* getMeshContainer();
+        void setAddonMeshContainer(std::unique_ptr<mesh::LodMeshContainer> meshContainer);
+        const mesh::LodMeshContainer* getAddonMeshContainer() const;
+        mesh::LodMeshContainer* modifyAddonMeshContainer();
 
         template<typename T>
         inline T* getCustomMaterial() const noexcept {
@@ -153,6 +157,8 @@ namespace model
 
     private:
         std::unique_ptr<mesh::LodMeshContainer> m_meshContainer;
+        std::unique_ptr<mesh::LodMeshContainer> m_addonMeshContainer;
+
         std::unique_ptr<std::string> m_name{ nullptr };
         AABB m_aabb;
         std::unique_ptr<std::vector<script::script_id>> m_scripts;

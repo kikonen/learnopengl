@@ -263,9 +263,9 @@ namespace model
         return meshContainer ? meshContainer->getLodMesh(lodIndex) : nullptr;
     }
 
-    mesh::LodMesh* Node::modifyLodMesh(uint8_t lodIndex) const noexcept
+    mesh::LodMesh* Node::modifyLodMesh(uint8_t lodIndex) noexcept
     {
-        auto* meshContainer = getType()->getMeshContainer();
+        auto* meshContainer = getType()->modifyMeshContainer();
         return meshContainer ? meshContainer->modifyLodMesh(lodIndex) : nullptr;
     }
 

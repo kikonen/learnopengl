@@ -292,6 +292,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\animation\Rig.cpp" />
+    <ClCompile Include="src\component\definition\AddonSelectorDefinition.cpp" />
     <ClCompile Include="src\kigl\GLBuffer.cpp" />
     <ClCompile Include="src\kigl\GLFrameBufferHanddle.cpp" />
     <ClCompile Include="src\kigl\RingAllocator.cpp" />
