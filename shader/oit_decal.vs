@@ -31,8 +31,7 @@ out VS_OUT {
   mat3 tbn;
 #endif
 #ifdef USE_PARALLAX
-  flat vec3 viewTangentPos;
-  vec3 tangentPos;
+  vec3 tangentViewPos;
 #endif
 } vs_out;
 
@@ -64,16 +63,16 @@ void main() {
       decal.u_transformRow1,
       decal.u_transformRow2,
       VEC_W));
-  const mat3 normalMatrix = mat3(modelMatrix);
+  const mat3 viewNormalMatrix = mat3(u_viewMatrix) * mat3(modelMatrix);
 
   const uint materialIndex = decal.u_materialIndex;
 
   vec4 pos = vec4(VERTEX_POS[vertexIndex], 1.0);
 
   vec4 worldPos = modelMatrix * pos;
-  vec3 normal = normalize(normalMatrix * QUAD_NORMAL);
+  vec3 normal = normalize(viewNormalMatrix * QUAD_NORMAL);
 #ifdef USE_TBN
-  vec3 tangent = normalize(normalMatrix * QUAD_TANGENT);
+  vec3 tangent = normalize(viewNormalMatrix * QUAD_TANGENT);
 #endif
 
   gl_Position = u_projectedMatrix * worldPos;
@@ -108,7 +107,6 @@ void main() {
 
   vs_out.viewPos = (u_viewMatrix * worldPos).xyz;
 
-  // NOTE KI pointless to normalize vs side
   vs_out.decalNormal = normal;
 
   calculateClipping(worldPos);
@@ -118,8 +116,6 @@ void main() {
   }
 
 #ifdef USE_TBN
-
-  if (u_materials[materialIndex].normalMapTex.x > 0 || u_materials[materialIndex].parallaxDepth > 0)
   {
     // NOTE KI Gram-Schmidt process to re-orthogonalize
     // https://learnopengl.com/Advanced-Lighting/Normal-Mapping
@@ -131,11 +127,8 @@ void main() {
 
 #ifdef USE_PARALLAX
     const mat3 invTBN = transpose(vs_out.tbn);
-    vs_out.viewTangentPos  = invTBN * u_cameraPos.xyz;
-    vs_out.tangentPos  = invTBN * worldPos.xyz;
+    vs_out.tangentViewPos  = invTBN * vs_out.viewPos.xyz;
 #endif
-  } else {
-    vs_out.tbn = mat3(1);
   }
 #endif
 

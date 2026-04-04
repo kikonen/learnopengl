@@ -1,5 +1,3 @@
-#include "include/fn_util.glsl"
-
 #define _UBO_CAMERA
 layout(std140, binding = UBO_CAMERA) uniform Camera {
   mat4 u_mainProjectedMatrix;
@@ -37,7 +35,3 @@ layout(std140, binding = UBO_CAMERA) uniform Camera {
   int camera_pad1;
   // int camera_pad2;
 };
-
-float linearizeDepthFromUniform(float depth) {
-  return linearizeDepth(depth, u_nearPlane, u_farPlane);
-}

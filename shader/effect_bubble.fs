@@ -42,7 +42,7 @@ void main() {
     // NOTE KI interpolation from vs to fs denormalizes normal
     const vec3 normal = normalize(fs_in.normal);
 
-    const vec3 viewDir = normalize(-fs_in.viewPos);
+    const vec3 viewDir = -normalize(fs_in.viewPos);
 
     // The more orthogonal the camera is to the fragment, the stronger the rim light.
     // abs() so that the back faces get treated the same as the front, giving a rim effect.

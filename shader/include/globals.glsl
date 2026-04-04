@@ -186,7 +186,7 @@
 #define LAYOUT_G_BUFFER_OUT\
  layout (location = 0) out vec3 o_fragColor;\
  layout (location = 1) out vec3 o_fragEmission;\
- layout (location = 2) out vec3 o_fragNormal;\
+ layout (location = 2) out vec2 o_fragNormal;\
  layout (location = 3) out vec4 o_fragMRAS;
 // layout (location = 4) out vec3 o_viewPosition;
 // layout (location = 5) out float o_fragViewZ;
@@ -202,6 +202,9 @@
 // layout(binding = UNIT_G_VIEW_POSITION) uniform sampler2D g_viewPosition;
 // layout(binding = UNIT_G_VIEW_Z) uniform sampler2D g_viewZ;\
 // layout(binding = UNIT_G_SPECULAR) uniform sampler2D g_specular;\
+
+#define ENCODE_G_NORMAL(normal) (encodeGNormal_RG(normal))
+#define DECODE_G_NORMAL(texCoord) (decodeGNormal_RG(texCoord))
 
 #define LAYOUT_OIT_OUT\
  layout (location = 0) out vec4 o_accum;\
@@ -226,5 +229,3 @@
 #define MRA_TEX_ROUGHNESS mrasTex.g
 #define MRA_TEX_OCCLUSION mrasTex.b
 #define MRA_TEX_SPECULAR  mrasTex.a
-
-#undef USE_SOCKETS

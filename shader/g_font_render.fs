@@ -14,9 +14,6 @@ layout(early_fragment_tests) in;
 #endif
 
 in VS_OUT {
-#ifdef USE_CUBE_MAP
-  vec3 worldPos;
-#endif
   vec3 viewPos;
   vec3 normal;
   vec2 texCoord;
@@ -31,8 +28,7 @@ in VS_OUT {
   mat3 tbn;
 #endif
 #ifdef USE_PARALLAX
-  vec3 viewTangentPos;
-  vec3 tangentPos;
+  vec3 tangentViewPos;
 #endif
 } fs_in;
 
@@ -72,8 +68,10 @@ void main()
   }
 
 #ifdef USE_CUBE_MAP
-  const vec3 viewDir = normalize(u_cameraPos.xyz - fs_in.worldPos);
-  #include "include/var_calculate_cube_map_diffuse.glsl"
+  {
+    const vec3 viewDir = -normalize(fs_in.viewPos);
+#include "include/var_calculate_cube_map_diffuse.glsl"
+  }
 #endif
 
   vec4 color;

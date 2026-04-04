@@ -74,7 +74,7 @@ void main() {
 
     worldPos = modelMatrix * pos;
 
-    normal = normalize(normalMatrix * normal);
+    normal = normalize(viewNormalMatrix * normal);
   }
 
   gl_Position = u_projectedMatrix * worldPos;

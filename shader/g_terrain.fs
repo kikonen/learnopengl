@@ -28,8 +28,7 @@ in TES_OUT {
   mat3 tbn;
 #endif
 #ifdef USE_PARALLAX
-  flat vec3 viewTangentPos;
-  vec3 tangentPos;
+  vec3 tangentViewPos;
 #endif
 
   float height;
@@ -69,15 +68,16 @@ void main() {
   // }
 
 #ifdef USE_CUBE_MAP
-  const vec3 viewDir = normalize(u_cameraPos.xyz - fs_in.worldPos);
-
-  #include "include/var_calculate_cube_map_diffuse.glsl"
+  {
+    const vec3 viewDir = -normalize(fs_in.viewPos);
+#include "include/var_calculate_cube_map_diffuse.glsl"
+  }
 #endif
 
   vec4 texColor = material.diffuse;
 
   if ((fs_in.tileX + fs_in.tileY) % 2 == 0) {
-    texColor *= vec4(3.5, 0.7, 0.7, 1);
+    // texColor *= vec4(3.5, 0.7, 0.7, 1);
   }
 
   o_fragColor = texColor.rgb;

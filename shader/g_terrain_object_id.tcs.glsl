@@ -2,8 +2,6 @@
 
 layout(vertices=3) out;
 
-#undef USE_SOCKETS
-
 #include "include/ssbo_entities.glsl"
 #include "include/ssbo_instances.glsl"
 #include "include/ssbo_instance_indeces.glsl"

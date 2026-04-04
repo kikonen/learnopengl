@@ -16,7 +16,6 @@ layout(early_fragment_tests) in;
 in VS_OUT {
   flat uint entityIndex;
 
-  vec3 worldPos;
   vec3 normal;
   vec2 texCoord;
 
@@ -77,7 +76,7 @@ float calculateHaloBrightness(
 
   // Read z0 from the structure buffer.
   // const vec2 depth = vec2(1, 1); //texture(structureBuffer, pixCoord).zw;
-  float d;
+  float viewZ;
   {
     // float depth = textureLod(g_depth, pixCoord, 0).x * 2.0 - 1.0;
 
@@ -88,10 +87,10 @@ float calculateHaloBrightness(
 
     // d = -textureLod(g_viewPosition, pixCoord, 0).z;
     // d = -textureLod(g_viewZ, pixCoord, 0).x;
-    d = -getViewPosFromGBuffer(pixCoord).z;
+    viewZ = -getViewPosFromGBuffer(pixCoord).z;
   }
-  float t0 = 1.0 + (d) / dot(cameraObjectFront, vdir);
-  if (d == 0) {
+  float t0 = 1.0 + (viewZ) / dot(cameraObjectFront, vdir);
+  if (viewZ == 0) {
     t0 = 0;
   }
 

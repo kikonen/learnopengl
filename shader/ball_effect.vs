@@ -19,7 +19,6 @@ layout (location = ATTR_TEX) in vec2 a_texCoord;
 out VS_OUT {
   flat uint entityIndex;
 
-  vec3 worldPos;
   vec3 normal;
   vec2 texCoord;
 
@@ -65,10 +64,7 @@ void main() {
   vs_out.texCoord.x = a_texCoord.x * u_materials[materialIndex].tilingX * entity.tilingX;
   vs_out.texCoord.y = a_texCoord.y * u_materials[materialIndex].tilingY * entity.tilingY;
 
-  vs_out.worldPos = worldPos.xyz;
-
-  // NOTE KI pointless to normalize vs side
-  vs_out.normal = normalMatrix * DECODE_A_NORMAL(a_normal);
+  vs_out.normal = normalize(viewNormalMatrix * DECODE_A_NORMAL(a_normal));
 
   calculateClipping(worldPos);
 

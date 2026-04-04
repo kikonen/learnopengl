@@ -1,19 +1,18 @@
 vec3 calculatePointLightPbr(
-  in PointLight light,
-  in vec3 normal,
-  in vec3 viewDir,
-  in vec3 worldPos,
-  in uint shadowIndex)
+  const PointLight light,
+  const vec3 viewNormal,
+  const vec3 viewDir,
+  const vec3 worldPos,
+  const uint shadowIndex)
 {
   const vec3 toLight = light.worldPos.xyz - worldPos;
-  const float dist = length(toLight);
+  const float lightDist = length(toLight);
 
-  if (dist > light.radius) return vec3(0.0);
+  if (lightDist > light.radius) return vec3(0.0);
 
-  const vec3 lightDir = normalize(toLight);
-  const vec3 lightPos = light.worldPos.xyz;
+  const vec3 lightDir = normalize(mat3(u_viewMatrix) * toLight);
 
-  const vec3 N = normal;
+  const vec3 N = viewNormal;
   const vec3 V = viewDir;
 
   const vec3 albedo = material.diffuse.rgb;
@@ -29,23 +28,24 @@ vec3 calculatePointLightPbr(
   vec3 Lo = vec3(0.0);
   {
     // calculate per-light radiance
-    vec3 L = lightDir; //normalize(light.worldPos - worldPos);
-    vec3 H = normalize(V + L);
-    float distance = length(lightPos - worldPos);
-    float attenuation = 1.0 / (distance * distance);
-    vec3 radiance = light.diffuse.rgb * light.diffuse.a * attenuation;
+    const vec3 L = lightDir; //normalize(light.worldPos - worldPos);
+    const vec3 H = normalize(V + L);
+    const float attenuation = 1.0 / (lightDist * lightDist);
+    const vec3 radiance = light.diffuse.rgb * light.diffuse.a * attenuation;
 
     // Cook-Torrance BRDF
-    float NDF = distributionGGX(N, H, roughness);
-    float G   = geometrySmith(N, V, L, roughness);
-    vec3 F    = fresnelSchlick(max(dot(H, V), 0.0), F0);
+    const float NDF = distributionGGX(N, H, roughness);
+    const float G   = geometrySmith(N, V, L, roughness);
+    const vec3 F    = fresnelSchlick(max(dot(H, V), 0.0), F0);
 
-    vec3 numerator    = NDF * G * F;
-    float denominator = 4.0 * max(dot(N, V), 0.0) * max(dot(N, L), 0.0) + 0.0001; // + 0.0001 to prevent divide by zero
-    vec3 specular = numerator / denominator;
+    const vec3 numerator    = NDF * G * F;
+    const float denominator = 4.0 *
+      max(dot(N, V), 0.0) *
+      max(dot(N, L), 0.0) + 0.0001; // + 0.0001 to prevent divide by zero
+    const vec3 specular = numerator / denominator;
 
     // kS is equal to Fresnel
-    vec3 kS = F;
+    const vec3 kS = F;
     // for energy conservation, the diffuse and specular light can't
     // be above 1.0 (unless the surface emits light); to preserve this
     // relationship the diffuse component (kD) should equal 1.0 - kS.
@@ -56,7 +56,7 @@ vec3 calculatePointLightPbr(
     kD *= 1.0 - metallic;
 
     // scale light by NdotL
-    float NdotL = max(dot(N, L), 0.0);
+    const float NdotL = max(dot(N, L), 0.0);
 
     // add to outgoing radiance Lo
     Lo += (kD * albedo / PI + specular) * radiance * NdotL; // note that we already multiplied the BRDF by the Fresnel (kS) so we won't multiply by kS again

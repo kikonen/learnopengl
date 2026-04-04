@@ -113,3 +113,12 @@ float linearizeDepth(float depth, float near, float far)
   const float linearDepth = (zEye - near) / (far - near);
   return linearDepth;
 }
+
+// Fix for octahedral encoding
+// returns -1 or +1, never 0
+vec2 signNotZero(vec2 v) {
+  return vec2(
+    v.x >= 0.0 ? 1.0 : -1.0,
+    v.y >= 0.0 ? 1.0 : -1.0
+    );
+}

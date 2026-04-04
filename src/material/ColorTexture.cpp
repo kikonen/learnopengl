@@ -52,6 +52,16 @@ const ColorTexture& ColorTexture::getBlackRGBA()
     return s_blackPixel;
 }
 
+const ColorTexture& ColorTexture::getFlatNormalRGBA()
+{
+    static ColorTexture s_flatNormalPixel{
+        "FLAT_NORMAL_RGBA",
+        glm::vec4{ 0.5f, 0.5f, 1.f, 1.f },
+        GL_RGBA8,
+        true };
+    return s_flatNormalPixel;
+}
+
 ColorTexture::ColorTexture(
     std::string_view name,
     glm::vec4 color,

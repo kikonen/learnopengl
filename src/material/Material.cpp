@@ -545,7 +545,10 @@ const MaterialSSBO Material::toSSBO() const
 {
     const auto& whitePx = ColorTexture::getWhiteRGBA().m_handle;
     const auto& blackPx = ColorTexture::getBlackRGBA().m_handle;
+    const auto& flatNormalPx = ColorTexture::getFlatNormalRGBA().m_handle;
 
+    // RGB8 = (128, 128, 255) = flat normal
+    uint8_t flatNormal[] = { 128, 128, 255 };
     uint8_t spritesY = spriteCount / spritesX;
     if (spriteCount % spritesX != 0) {
         spritesY++;
@@ -566,7 +569,7 @@ const MaterialSSBO Material::toSSBO() const
         getTexHandle(TextureType::diffuse, whitePx),
         getTexHandle(TextureType::emission, blackPx),
 
-        getTexHandle(TextureType::map_normal, 0),
+        getTexHandle(TextureType::map_normal, flatNormalPx),
 
         getTexHandle(TextureType::map_opacity, whitePx),
         // NOTE KI whitePx fails due to "inverse" flags

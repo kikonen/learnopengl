@@ -13,6 +13,8 @@ public:
 
     static const ColorTexture& getBlackRGBA();
 
+    static const ColorTexture& getFlatNormalRGBA();
+
     ColorTexture(
         std::string_view name,
         glm::vec4 color,

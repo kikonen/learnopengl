@@ -63,7 +63,7 @@ void main() {
 
   #include "include/var_tex_material.glsl"
 
-  const vec3 viewDir = normalize(u_cameraPos.xyz - fs_in.worldPos);
+    const vec3 viewDir = -normalize(fs_in.viewPos);
 
   vec3 normal = fs_in.normal;
 

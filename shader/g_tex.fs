@@ -15,10 +15,6 @@ layout(early_fragment_tests) in;
 #endif
 
 in VS_OUT {
-#ifdef USE_CUBE_MAP
-  vec3 worldPos;
-#endif
-  vec3 objectPos;
   vec3 viewPos;
   vec3 normal;
   vec2 texCoord;
@@ -30,8 +26,7 @@ in VS_OUT {
   mat3 tbn;
 #endif
 #ifdef USE_PARALLAX
-  flat vec3 viewTangentPos;
-  vec3 tangentPos;
+  vec3 tangentViewPos;
 #endif
 
 #ifdef USE_BONES
@@ -99,9 +94,10 @@ void main() {
   }
 
 #ifdef USE_CUBE_MAP
-  const vec3 viewDir = normalize(u_cameraPos.xyz - fs_in.worldPos);
-
-  #include "include/var_calculate_cube_map_diffuse.glsl"
+  {
+    const vec3 viewDir = -normalize(fs_in.viewPos);
+#include "include/var_calculate_cube_map_diffuse.glsl"
+  }
 #endif
 
   vec4 color = material.diffuse;
@@ -152,6 +148,7 @@ void main() {
   if (u_forceLineMode) {
     o_fragColor = vec3(0, 0, 1);
   }
+
   o_fragMRAS = material.mras;
   o_fragEmission = material.emission;
 

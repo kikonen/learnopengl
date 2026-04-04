@@ -39,11 +39,12 @@ SET_FLOAT_PRECISION;
 #include "include/fn_gbuffer_depth_decode.glsl"
 
 float calculateSsao(
+  float depth,
   const vec3 normal,
   const vec2 texCoord)
 {
   // get input for SSAO algorithm
-  const vec3 viewPos = getViewPosFromGBuffer(texCoord);
+  const vec3 viewPos = getViewPosFromTexCoord(depth, texCoord);
   const vec3 randomVec = normalize(texture(u_noiseTex, texCoord * u_noiseScale).xyz);
 
   // create TBN change-of-basis matrix: from tangent-space to view-space
@@ -91,5 +92,10 @@ void main()
 
   #include "include/var_gbuffer_normal.glsl"
 
-  o_fragColor = calculateSsao(normal, texCoord);
+  // NOTE KI pixCoord == texCoord in fullscreen quad
+  const float depth = textureLod(g_depth, texCoord, 0).x;
+  // NOTE KI skip calculations for skybox
+  if (depth >= 1.0) discard;
+
+  o_fragColor = calculateSsao(depth, normal, texCoord);
 }

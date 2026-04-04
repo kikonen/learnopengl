@@ -16,17 +16,3 @@ const mat4 meshMatrix = transpose(mat4(
 // const mat4 meshMatrix = mat4(instance.u_transform);
 
 modelMatrix *= meshMatrix;
-
-// // #undef USE_SOCKETS
-// #ifdef USE_SOCKETS
-// if (instance.u_socketIndex > 0) {
-//   modelMatrix =
-//     modelMatrix
-//     * resolveSocketMatrix(instance.u_socketIndex)
-//     * meshMatrix;
-// } else {
-//   modelMatrix *= meshMatrix;
-// }
-// #else
-//   modelMatrix *= meshMatrix;
-// #endif

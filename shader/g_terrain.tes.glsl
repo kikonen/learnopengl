@@ -37,8 +37,7 @@ in TCS_OUT {
   mat3 tbn;
 #endif
 #ifdef USE_PARALLAX
-  flat vec3 viewTangentPos;
-  vec3 tangentPos;
+  vec3 tangentViewPos;
 #endif
 } tes_in[];
 
@@ -59,8 +58,7 @@ out TES_OUT {
   mat3 tbn;
 #endif
 #ifdef USE_PARALLAX
-  flat vec3 viewTangentPos;
-  vec3 tangentPos;
+  vec3 tangentViewPos;
 #endif
 
   float height;
@@ -107,7 +105,7 @@ void main()
 
   // Interpolate the attributes of the output vertex using the barycentric coordinates
   vec2 texCoord = interpolate2D(tes_in[0].texCoord, tes_in[1].texCoord, tes_in[2].texCoord);
-  vec3 normal = interpolate3D(tes_in[0].normal, tes_in[1].normal, tes_in[2].normal);
+  vec3 normal = normalize(interpolate3D(tes_in[0].normal, tes_in[1].normal, tes_in[2].normal));
   vec3 vertexPos = interpolate3D(tes_in[0].vertexPos, tes_in[1].vertexPos, tes_in[2].vertexPos);
 
   const float rangeYmin = tes_in[0].rangeYmin;
@@ -137,8 +135,7 @@ void main()
   tes_out.tbn = tes_in[0].tbn;
 #endif
 #ifdef USE_PARALLAX
-  tes_out.viewTangentPos = tes_in[0].viewTangentPos;
-  tes_out.tangentPos = tes_in[0].tangentPos;
+  tes_out.tangentViewPos = tes_in[0].tangentViewPos;
 #endif
 
   tes_out.height = h;

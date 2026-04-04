@@ -1,10 +1,15 @@
 vec4 calculateLightPbr(
-  in vec3 normal,
-  in vec3 viewDir,
-  in vec3 worldPos,
-  in uint shadowIndex)
+  const vec3 viewNormal,
+  const vec3 viewDir,
+  const vec3 worldPos,
+  const uint shadowIndex)
 {
-  const vec3 N = normal;
+  const mat3 invViewMat3 = mat3(u_invViewMatrix);
+
+  // transform view-space normal to world-space for cubemap sampling
+  const vec3 worldNormal = normalize(invViewMat3 * viewNormal);
+
+  const vec3 N = viewNormal;
   const vec3 V = viewDir;
   const vec3 R = reflect(-V, N);
 
@@ -19,7 +24,7 @@ vec4 calculateLightPbr(
     //vec3 Lo = vec3(0.0);
     Lo += calculateDirLightPbr(
       u_dirLights[i],
-      normal,
+      viewNormal,
       viewDir,
       worldPos,
       shadowIndex);
@@ -28,7 +33,7 @@ vec4 calculateLightPbr(
   for (int i = 0; i < u_pointLightCount; i++) {
     Lo += calculatePointLightPbr(
       u_pointLights[i],
-      normal,
+      viewNormal,
       viewDir,
       worldPos,
       shadowIndex);
@@ -37,7 +42,7 @@ vec4 calculateLightPbr(
   for (int i = 0; i < u_spotLightCount; i++) {
     Lo += calculateSpotLightPbr(
       u_spotLights[i],
-      normal,
+      viewNormal,
       viewDir,
       worldPos,
       shadowIndex);
@@ -69,23 +74,25 @@ vec4 calculateLightPbr(
     F0 = mix(F0, albedo, metallic);
 
     // ambient lighting (we now use IBL as the ambient term)
-    vec3 F = fresnelSchlickRoughness(max(dot(N, V), 0.0), F0, roughness);
+    const vec3 F = fresnelSchlickRoughness(max(dot(N, V), 0.0), F0, roughness);
 
-    vec3 kS = F;
+    const vec3 kS = F;
     vec3 kD = 1.0 - kS;
     kD *= 1.0 - metallic;
 
-    vec3 irradiance = textureLod(u_irradianceMap, N, 0).rgb;
-    vec3 diffuse      = irradiance * albedo;
+    const vec3 irradiance = textureLod(u_irradianceMap, worldNormal, 0).rgb;
+    const vec3 diffuse = irradiance * albedo;
 
     // sample both the pre-filter map and the BRDF lut and combine them together
     // as per the Split-Sum approximation to get the IBL specular part.
     const float MAX_REFLECTION_LOD = 4.0;
-    vec3 prefilteredColor = textureLod(u_prefilterMap, R,  roughness * MAX_REFLECTION_LOD).rgb;
+    // transform to world space for prefilter sampling
+    const vec3 worldR = normalize(invViewMat3 * R);
+    const vec3 prefilteredColor = textureLod(u_prefilterMap, worldR,  roughness * MAX_REFLECTION_LOD).rgb;
 
-    vec2 brdf  = textureLod(u_brdfLut, vec2(max(dot(N, V), 0.0), roughness), 0).rg;
+    const vec2 brdf  = textureLod(u_brdfLut, vec2(max(dot(N, V), 0.0), roughness), 0).rg;
 
-    vec3 specular = prefilteredColor * (F * brdf.x + brdf.y);
+    const vec3 specular = prefilteredColor * (F * brdf.x + brdf.y);
 
     ambient = (kD * diffuse + specular) * ao;
   }
@@ -97,10 +104,10 @@ vec4 calculateLightPbr(
   //Color = ambient;
   //color = material.diffuse.rgb;
 
-  float v = material.mras.g;
+  // float v = material.mras.g;
   // color = vec3(v, v, v);
   // color = material.mras.rgb;
-  // color = normal;
+  // color = viewNormal;
 
   // NOTE KI keep blending from material
   return vec4(color, material.diffuse.a);

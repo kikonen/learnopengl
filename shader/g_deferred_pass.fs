@@ -60,10 +60,15 @@ void main()
 {
   #include "include/screen_tri_tex_coord.glsl"
 
+  // NOTE KI pixCoord == texCoord in fullscreen quad
+  const float depth = textureLod(g_depth, texCoord, 0).x;
+  // NOTE KI skip calculations for skybox
+  if (depth >= 1.0) discard;
+
   vec3 worldPos;
   vec3 viewPos;
   if (true) {
-    viewPos = getViewPosFromGBuffer(texCoord);
+    viewPos = getViewPosFromTexCoord(depth, texCoord);
     worldPos = getWorldPosFromViewPos(viewPos);
   }
   // if (false) {
@@ -74,8 +79,6 @@ void main()
   #include "include/var_gbuffer_normal.glsl"
 
   const uint shadowIndex = calculateShadowIndex(viewPos);
-
-  const vec3 viewDir = normalize(u_mainCameraPos.xyz - worldPos);
 
   {
     material.diffuse = textureLod(g_albedo, texCoord, 0);
@@ -89,8 +92,12 @@ void main()
   vec4 color;
   {
     if (Debug.u_lightEnabled) {
+      const vec3 viewDir = -normalize(viewPos);
+
       color = calculateLightPbr(
-	normal, viewDir, worldPos,
+	normal,
+	viewDir,
+	worldPos,
 	shadowIndex);
     } else {
       color = material.diffuse;

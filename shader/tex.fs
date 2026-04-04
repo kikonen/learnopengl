@@ -35,8 +35,7 @@ in VS_OUT {
   mat3 tbn;
 #endif
 #ifdef USE_PARALLAX
-  flat vec3 viewTangentPos;
-  vec3 tangentPos;
+  vec3 tangentViewPos;
 #endif
 } fs_in;
 
@@ -76,7 +75,7 @@ void main() {
 
   #include "include/var_tex_material.glsl"
 
-  const vec3 viewDir = normalize(u_cameraPos.xyz - fs_in.worldPos);
+  const vec3 viewDir = -normalize(fs_in.viewPos);
 
 #ifdef USE_ALPHA
   if (material.diffuse.a < ALPHA_THRESHOLD)
