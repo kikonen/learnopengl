@@ -24,6 +24,8 @@
 
 namespace {
     inline const std::string SHADER_HDRI_CUBE_MAP{ "hdri_cube_map" };
+
+    constexpr unsigned int MAX_MIP_LEVELS = 5;
 }
 
 namespace render {
@@ -42,14 +44,20 @@ namespace render {
         {
             m_cubeTexture.create(fmt::format("{}_env_map", m_name), GL_TEXTURE_CUBE_MAP, m_size, m_size);
 
-            glTextureStorage2D(m_cubeTexture, 1, GL_RGB16F, m_size, m_size);
+            glTextureStorage2D(m_cubeTexture, MAX_MIP_LEVELS, GL_RGB16F, m_size, m_size);
+
+            // https://stackoverflow.com/questions/37232110/opengl-cubemap-writing-to-mipmap
+            glTextureParameteri(m_cubeTexture, GL_TEXTURE_BASE_LEVEL, 0);
+            glTextureParameteri(m_cubeTexture, GL_TEXTURE_MAX_LEVEL, MAX_MIP_LEVELS - 1);
 
             glTextureParameteri(m_cubeTexture, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
             glTextureParameteri(m_cubeTexture, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
             glTextureParameteri(m_cubeTexture, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
 
-            glTextureParameteri(m_cubeTexture, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_NEAREST);
-            glTextureParameteri(m_cubeTexture, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+            // NOTE KI LINEAR *REQUIRED*
+            // => mipmap interpolation is needed to avoid square pattern
+            glTextureParameteri(m_cubeTexture, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+            glTextureParameteri(m_cubeTexture, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
         }
 
         {
@@ -63,6 +71,10 @@ namespace render {
             renderer.render(program, m_cubeTexture, m_size);
             state.unbindTexture(UNIT_HDR_TEXTURE, false);
             state.invalidateAll();
+        }
+
+        {
+            glGenerateTextureMipmap(m_cubeTexture);
         }
     }
 
