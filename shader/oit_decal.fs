@@ -89,8 +89,8 @@ void main() {
       // NOTE KI *MUST* calculate from depth, since g_normal
       // may point into *ANY* direction, thus checking against it
       // cannot work as expected
-      vec3 ddxWp = dFdx(worldPos);
-      vec3 ddyWp = dFdy(worldPos);
+      vec3 ddxWp = dFdx(viewPos);
+      vec3 ddyWp = dFdy(viewPos);
       surfaceNormal = normalize(cross(ddxWp, ddyWp));
     }
 
@@ -122,7 +122,7 @@ void main() {
 
   #include "include/var_tex_material.glsl"
 
-  OIT_DISCARD(material.diffuse.alpha);
+  OIT_DISCARD(material.diffuse.a);
 
   vec3 normal = surfaceNormal;
 

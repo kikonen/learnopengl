@@ -15,8 +15,9 @@ layout (location = ATTR_TEX) in vec2 a_texCoord;
 
 out VS_OUT {
   flat mat4 modelMatrix;
+  flat mat3 viewNormalMatrix;
 
-  vec3 normal;
+  vec3 objectNormal;
   vec2 texCoord;
 
   flat uint materialIndex;
@@ -44,6 +45,7 @@ void main() {
   #include "include/var_entity_normal_matrix.glsl"
 
   vs_out.modelMatrix = modelMatrix;
+  vs_out.viewNormalMatrix = viewNormalMatrix;
 
   const uint materialIndex = instance.u_materialIndex;
 
@@ -55,8 +57,7 @@ void main() {
   vs_out.texCoord.x = a_texCoord.x * u_materials[materialIndex].tilingX * entity.tilingX;
   vs_out.texCoord.y = a_texCoord.y * u_materials[materialIndex].tilingY * entity.tilingY;
 
-  // vs_out.normal = viewNormalMatrix * DECODE_A_NORMAL(a_normal);
-  vs_out.normal = normalize(DECODE_A_NORMAL(a_normal));
+  vs_out.objectNormal = DECODE_A_NORMAL(a_normal);
 
   gl_Position = vec4(a_pos, 1.0);
 }

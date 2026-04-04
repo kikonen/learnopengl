@@ -7,7 +7,6 @@
 #include "include/uniform_data.glsl"
 
 in VS_OUT {
-  vec3 worldPos;
   vec3 viewPos;
   vec3 normal;
   vec2 texCoord;

@@ -126,9 +126,11 @@ void main() {
                     + UP * pos.y * entityScale.y,
                     1.0);
 
-    normal = -u_mainCameraFront.xyz;
+    const mat3 viewMatrix3 = mat3(u_viewMatrix);
+
+    normal = -normalize(viewMatrix3 * u_mainCameraFront.xyz);
 #ifdef USE_TBN
-    tangent = u_mainCameraRight.xyz;
+    tangent = normalize(viewMatrix3 * u_mainCameraRight.xyz);
 #endif
   } else {
     normal = DECODE_A_NORMAL(a_normal);

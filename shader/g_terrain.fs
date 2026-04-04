@@ -12,9 +12,6 @@
 layout(early_fragment_tests) in;
 
 in TES_OUT {
-#ifdef USE_CUBE_MAP
-  vec3 worldPos;
-#endif
   vec3 viewPos;
   vec3 normal;
   vec2 texCoord;

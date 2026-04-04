@@ -15,9 +15,6 @@ in VS_OUT {
   flat uint entityIndex;
   flat uint instanceIndex;
 
-#ifdef USE_CUBE_MAP
-  vec3 worldPos;
-#endif
   vec3 viewPos;
   vec3 normal;
   vec2 texCoord;
@@ -46,9 +43,6 @@ out TCS_OUT {
   flat uint entityIndex;
   flat uint instanceIndex;
 
-#ifdef USE_CUBE_MAP
-  vec3 worldPos;
-#endif
   vec3 viewPos;
   vec3 normal;
   vec2 texCoord;
@@ -92,9 +86,7 @@ void main()
 
   tcs_out[gl_InvocationID].entityIndex = tcs_in[gl_InvocationID].entityIndex;
   tcs_out[gl_InvocationID].instanceIndex = tcs_in[gl_InvocationID].instanceIndex;
-#ifdef USE_CUBE_MAP
-  tcs_out[gl_InvocationID].worldPos = tcs_in[gl_InvocationID].worldPos;
-#endif
+
   tcs_out[gl_InvocationID].viewPos = tcs_in[gl_InvocationID].viewPos;
   tcs_out[gl_InvocationID].normal = tcs_in[gl_InvocationID].normal;
   tcs_out[gl_InvocationID].texCoord = tcs_in[gl_InvocationID].texCoord;
