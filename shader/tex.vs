@@ -85,9 +85,11 @@ void main() {
                     + UP * a_pos.y * entityScale.y,
                     1.0);
 
-    normal = -u_mainCameraFront.xyz;
+    // constant view-space answer vec3(0,0,1) for the billboard normal
+    // and vec3(1,0,0) for its tangent (since billboards face the camera by definition).
+    normal = vec3(0, 0, 1);
 #ifdef USE_TBN
-    tangent = u_mainCameraRight.xyz;
+    tangent = vec3(1, 0, 0);
 #endif
   } else {
     worldPos = modelMatrix * pos;

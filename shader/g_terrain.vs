@@ -22,9 +22,6 @@ out VS_OUT {
   flat uint entityIndex;
   flat uint instanceIndex;
 
-#ifdef USE_CUBE_MAP
-  vec3 worldPos;
-#endif
   vec3 viewPos;
   vec3 normal;
   vec2 texCoord;
@@ -86,6 +83,11 @@ void main() {
 
   worldPos = modelMatrix * pos;
 
+  normal = normalize(viewNormalMatrix * normal);
+#ifdef USE_TBN
+  tangent = normalize(viewNormalMatrix * tangent);
+#endif
+
 //  gl_Position = u_projectedMatrix * worldPos;
   gl_Position = pos;
 
@@ -118,14 +120,11 @@ void main() {
     vs_out.tilingX = tilingX;
   }
 
-#ifdef USE_CUBE_MAP
-  vs_out.worldPos = worldPos.xyz;
-#endif
   vs_out.viewPos = (u_viewMatrix * worldPos).xyz;
 
   vs_out.vertexPos = a_pos;
 
-  vs_out.normal = normalize(viewNormalMatrix * normal);
+  vs_out.normal = normal;
 
 #ifdef USE_TBN
   {

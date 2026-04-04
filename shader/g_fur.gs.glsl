@@ -11,8 +11,9 @@ layout (triangle_strip, max_vertices = 64) out;
 
 in VS_OUT {
   flat mat4 modelMatrix;
+  flat mat3 viewNormalMatrix;
 
-  vec3 normal;
+  vec3 objectNormal;
   vec2 texCoord;
 
   flat uint materialIndex;
@@ -22,7 +23,6 @@ in VS_OUT {
 } vs_in[];
 
 out VS_OUT {
-  vec3 worldPos;
   vec3 viewPos;
   vec3 normal;
   vec2 texCoord;
@@ -59,7 +59,7 @@ void main() {
     const float d = delta * layer;
 
     for (int i = 0; i < gl_in.length(); i++) {
-      vec3 normal = normalize(vs_in[i].normal);
+      vec3 normal = normalize(vs_in[i].objectNormal);
 
       vec4 pos = gl_in[i].gl_Position + vec4(normal * d * furDepth, 0.0);
       // float scale = 1.0 + d * furDepth;
@@ -86,9 +86,8 @@ void main() {
       vec4 worldPos = modelMatrix * pos;
 
       gs_out.furStrength = 1.0 - d;
-      gs_out.worldPos = worldPos.xyx;
       gs_out.viewPos = (u_viewMatrix * worldPos).xyz;
-      gs_out.normal = normal;
+      gs_out.normal = normalize(vs_in[i].viewNormalMatrix * normal);
       gs_out.texCoord = vs_in[i].texCoord;
       gs_out.materialIndex = vs_in[i].materialIndex;
       gl_Position = projectedModel * pos;

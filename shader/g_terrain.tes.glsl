@@ -15,9 +15,6 @@ in TCS_OUT {
   flat uint entityIndex;
   flat uint instanceIndex;
 
-#ifdef USE_CUBE_MAP
-  vec3 worldPos;
-#endif
   vec3 viewPos;
   vec3 normal;
   vec2 texCoord;
@@ -42,9 +39,6 @@ in TCS_OUT {
 } tes_in[];
 
 out TES_OUT {
-#ifdef USE_CUBE_MAP
-  vec3 worldPos;
-#endif
   vec3 viewPos;
   vec3 normal;
   vec2 texCoord;
@@ -119,9 +113,6 @@ void main()
 
   vec4 worldPos = modelMatrix * vec4(vertexPos, 1.0);
 
-#ifdef USE_CUBE_MAP
-  tes_out.worldPos = worldPos.xyz;
-#endif
   tes_out.viewPos = (u_viewMatrix * worldPos).xyz;
   tes_out.normal = normal;
   tes_out.texCoord = texCoord;

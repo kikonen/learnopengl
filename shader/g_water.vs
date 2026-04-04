@@ -71,7 +71,7 @@ void main() {
 
 #ifdef USE_NORMAL_TEX
   {
-    vec3 tangent = DECODE_A_TANGENT(a_tangent);
+    const vec3 tangent = normalize(viewNormalMatrix * DECODE_A_TANGENT(a_tangent));
     //tangent = normalize(tangent - dot(tangent, normal) * normal);
 
     const vec3 bitangent = cross(normal, tangent);

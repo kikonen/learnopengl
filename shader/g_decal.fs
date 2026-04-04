@@ -85,8 +85,8 @@ void main() {
       // may point into *ANY* direction, thus checking against it
       // cannot work as expected
       // https://irrlicht.sourceforge.io/forum/viewtopic.php?t=52284
-      vec3 ddxWp = dFdx(worldPos);
-      vec3 ddyWp = dFdy(worldPos);
+      vec3 ddxWp = dFdx(viewPos);
+      vec3 ddyWp = dFdy(viewPos);
       surfaceNormal = normalize(cross(ddxWp, ddyWp));
     }
 
