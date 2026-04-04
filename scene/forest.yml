@@ -72,7 +72,7 @@ types:
     script: |
       cmd:animation_play(
         self.handle,
-        { tag="body", name = walk" })
+        { tag="body", name = "walk" })
   - id: dir_light
     mesh:
       path: light
