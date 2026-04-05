@@ -2,7 +2,7 @@
 
 layout (location = ATTR_POS) in vec3 a_pos;
 layout (location = ATTR_NORMAL) in vec3 a_normal;
-#ifdef USE_TBN
+#ifdef USE_PARALLAX
 layout (location = ATTR_TANGENT) in vec3 a_tangent;
 #endif
 layout (location = ATTR_TEX) in vec2 a_texCoord;
@@ -38,9 +38,6 @@ out VS_OUT {
   flat float rangeYmax;
   flat uvec2 heightMapTex;
 
-#ifdef USE_TBN
-  mat3 tbn;
-#endif
 #ifdef USE_PARALLAX
   vec3 tangentViewPos;
 #endif
@@ -77,15 +74,12 @@ void main() {
   const vec4 pos = vec4(a_pos, 1.0);
   vec4 worldPos;
   vec3 normal = DECODE_A_NORMAL(a_normal);
-#ifdef USE_TBN
-  vec3 tangent = DECODE_A_TANGENT(a_tangent);
-#endif
 
   worldPos = modelMatrix * pos;
 
   normal = normalize(viewNormalMatrix * normal);
-#ifdef USE_TBN
-  tangent = normalize(viewNormalMatrix * tangent);
+#ifdef USE_PARALLAX
+  vec3 tangent = normalize(viewNormalMatrix * DECODE_A_TANGENT(a_tangent));
 #endif
 
 //  gl_Position = u_projectedMatrix * worldPos;
@@ -126,20 +120,12 @@ void main() {
 
   vs_out.normal = normal;
 
-#ifdef USE_TBN
-  {
-    // NOTE KI Gram-Schmidt process to re-orthogonalize
-    // https://learnopengl.com/Advanced-Lighting/Normal-Mapping
-    //tangent = normalize(tangent - dot(tangent, normal) * normal);
-
-    const vec3 bitangent = cross(normal, tangent);
-
-    vs_out.tbn = mat3(tangent, bitangent, normal);
-
 #ifdef USE_PARALLAX
-    const mat3 invTBN = transpose(vs_out.tbn);
-    vs_out.tangentViewPos  = invTBN * vs_out.viewPos.xyz;
-#endif
+  {
+    const vec3 bitangent = cross(normal, tangent);
+    const mat3 tbn = mat3(tangent, bitangent, normal);
+    const mat3 invTBN = transpose(tbn);
+    vs_out.tangentViewPos = invTBN * vs_out.viewPos.xyz;
   }
 #endif
 }

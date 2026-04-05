@@ -24,7 +24,7 @@ types:
       path: light
       material_modifier:
         kd: [0.8, 0.8, 0.6, 1.0]
-      program: g_Tex
+      program: g_tex
     flags:
       no_shadow: true
     light:
