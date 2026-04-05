@@ -17,9 +17,6 @@ int kernelSize = 64;
 float radius = 0.5;
 float bias = 0.025;
 
-// tile noise texture over screen based on screen dimensions divided by noise size
-const vec2 u_noiseScale = vec2(u_bufferResolution.x / 4.0, u_bufferResolution.y / 4.0);
-
 layout(binding = UNIT_G_NORMAL) uniform sampler2D g_normal;
 // layout(binding = UNIT_G_VIEW_POSITION) uniform sampler2D g_viewPosition;
 layout(binding = UNIT_G_DEPTH) uniform sampler2D g_depth;
@@ -45,7 +42,13 @@ float calculateSsao(
 {
   // get input for SSAO algorithm
   const vec3 viewPos = getViewPosFromTexCoord(depth, texCoord);
-  const vec3 randomVec = normalize(texture(u_noiseTex, texCoord * u_noiseScale).xyz);
+
+  // Per-pixel procedural noise for kernel rotation
+  // Unique rotation per pixel avoids banding from repeating 4x4 texture patterns
+  const vec3 randomVec = normalize(vec3(
+    fract(sin(dot(gl_FragCoord.xy, vec2(12.9898, 78.233))) * 43758.5453) * 2.0 - 1.0,
+    fract(sin(dot(gl_FragCoord.xy, vec2(39.3460, 11.135))) * 29816.1923) * 2.0 - 1.0,
+    fract(sin(dot(gl_FragCoord.xy, vec2(73.1560, 52.749))) * 17635.8493) * 2.0 - 1.0));
 
   // create TBN change-of-basis matrix: from tangent-space to view-space
   const vec3 tangent = normalize(randomVec - normal * dot(randomVec, normal));
@@ -77,9 +80,15 @@ float calculateSsao(
     // get depth value of kernel sample
     float sampleZ = getViewPosFromGBuffer(offset.xy).z;
 
-    // range check & accumulate
-    float rangeCheck = smoothstep(0.0, 1.0, radius / abs(viewPos.z - sampleZ));
-    occlusion += (sampleZ >= samplePos.z + bias ? 1.0 : 0.0) * rangeCheck;
+    // Smooth depth comparison instead of hard step
+    // depthDiff > 0: sample is closer to camera than geometry (no occlusion)
+    // depthDiff < 0: geometry is closer than sample (occlusion)
+    float depthDiff = samplePos.z - sampleZ;
+    float occFactor = 1.0 - smoothstep(-radius * 0.8, bias, depthDiff);
+
+    // range check: reject samples where geometry is too far from original surface
+    float rangeCheck = 1.0 - smoothstep(0.0, radius, abs(viewPos.z - sampleZ));
+    occlusion += occFactor * rangeCheck;
   }
   occlusion = 1.0 - (occlusion / kernelSize);
 
