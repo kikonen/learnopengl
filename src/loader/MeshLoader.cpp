@@ -110,6 +110,9 @@ namespace loader {
                     reportUnknown("mesh_data_type", k, v);
                 }
             }
+            else if (k == "draw_count") {
+                data.drawCount = readInt(v);
+            }
             else if (k == "path" || k == "mesh") {
                 data.path = readString(v);
                 data.enabled = k != "xpath";

@@ -6,8 +6,9 @@ namespace mesh {
     NonVaoMesh::NonVaoMesh(std::string_view name)
         : Mesh{ name }
     {
-        // NOTE KI default to indexed quad
-        m_vertexCount = 4;
+        // NOTE KI matches OGLDEV: glDrawArrays(GL_TRIANGLES, 0, 6)
+        // shader uses hardcoded vertex data + VERTEX_INDECES[gl_VertexID]
+        m_vertexCount = 0;
         m_indexCount = 6;
     }
 
@@ -28,7 +29,7 @@ namespace mesh {
         lodMesh.m_indexCount = getIndexCount();
 
         auto& drawOptions = lodMesh.m_drawOptions;
-        drawOptions.m_type = backend::DrawOptions::Type::elements;
+        drawOptions.m_type = backend::DrawOptions::Type::arrays;
         drawOptions.m_mode = lodMesh.m_flags.tessellation
             ? backend::DrawOptions::Mode::patches
             : backend::DrawOptions::Mode::triangles;

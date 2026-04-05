@@ -15,5 +15,6 @@ prefab:
     no_refract: true
     no_select: true
     effect: true
+    clip: false
   priority: -100
   base_scale: 100

@@ -618,6 +618,7 @@ namespace loader
         }
         case MeshDataType::non_vao: {
             auto mesh = util::Ref<mesh::NonVaoMesh>::create(type->getName());
+            mesh->setDrawCount(meshData.drawCount);
 
             if (meshData.materials.empty()) {
                 const auto& material = Material::createMaterial(BasicMaterial::yellow);
