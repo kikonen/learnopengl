@@ -277,7 +277,7 @@ void ShadowCascade::drawNodes(
         collectionRender.drawProgram(
             ctx,
             [this](const render::DrawableInfo& drawable) {
-                if (drawable.isFlag(render::INSTANCE_TESSELATION_BIT)) return (ki::program_id)0;
+                if (drawable.isTesselated()) return (ki::program_id)0;
                 if (drawable.shadowProgramId) return drawable.shadowProgramId;
                 return drawable.drawOptions.isAlpha() ? m_alphaShadowProgramId : m_solidShadowProgramId;
             },

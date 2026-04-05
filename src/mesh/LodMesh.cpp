@@ -197,7 +197,7 @@ namespace mesh {
         m_drawOptions.m_clip = m_flags.clip;
 
         if (m_flags.billboard) m_drawOptions.m_flags |= render::INSTANCE_BILLBOARD_BIT;
-        if (m_flags.tessellation) m_drawOptions.m_flags |= render::INSTANCE_TESSELATION_BIT;
+        //if (m_flags.tessellation) m_drawOptions.m_flags |= render::INSTANCE_TESSELATION_BIT;
 
         m_programId = material.getProgram(MaterialProgramType::shader);
         m_oitProgramId = material.getProgram(MaterialProgramType::oit);

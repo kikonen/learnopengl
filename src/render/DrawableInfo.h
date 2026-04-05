@@ -54,9 +54,14 @@ namespace render
         ki::program_id idProgramId{ 0 };
         ki::program_id normalProgramId{ 0 };
 
-        bool isFlag(uint32_t flag) const
+        bool isFlag(uint32_t flag) const noexcept
         {
             return drawOptions.m_flags && flag;
+        }
+
+        bool isTesselated() const noexcept
+        {
+            return drawOptions.isTesselated();
         }
     };
 }

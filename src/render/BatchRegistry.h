@@ -25,14 +25,18 @@ struct std::hash<backend::DrawOptions>
         // NOTE KI hash must be consistent with isSameMultiDraw equality
         // - uses isBlend() not m_kindBits (KIND_SOLID & KIND_ALPHA can be in same multidraw)
         // - includes m_clip
-        return (std::hash<backend::DrawOptions::Mode>()(k.m_mode) << 1)
+        return
+              (std::hash<int>()(k.m_patchVertexCount << 1))
+            ^ (std::hash<backend::DrawOptions::Mode>()(k.m_mode) << 1)
             ^ (std::hash<backend::DrawOptions::Type>()(k.m_type) << 1)
             ^ ((std::hash<int>()(k.m_renderBack)
-            ^ (std::hash<int>()(k.m_lineMode) << 1)
-            ^ (std::hash<int>()(k.isBlend()) << 1)
-            ^ (std::hash<int>()(k.m_reverseFrontFace) << 1)
-            ^ (std::hash<int>()(k.m_noDepth) << 1)
-            ^ (std::hash<int>()(k.m_clip) << 1)
+            ^ (std::hash<int>()(k.m_lineMode) << 2)
+            ^ (std::hash<int>()(k.m_reverseFrontFace) << 3)
+            ^ (std::hash<int>()(k.m_noDepth) << 4)
+            ^ (std::hash<int>()(k.m_useDeferred) << 5)
+            ^ (std::hash<int>()(k.m_useOit) << 6)
+            ^ (std::hash<int>()(k.m_clip) << 7)
+            ^ (std::hash<int>()(k.isBlend()) << 8)
             ) >> 1);
     }
 };
