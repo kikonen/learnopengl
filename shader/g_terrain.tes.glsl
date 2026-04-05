@@ -30,9 +30,6 @@ in TCS_OUT {
   flat float rangeYmax;
   flat uvec2 heightMapTex;
 
-#ifdef USE_TBN
-  mat3 tbn;
-#endif
 #ifdef USE_PARALLAX
   vec3 tangentViewPos;
 #endif
@@ -94,12 +91,12 @@ void main()
   instance = u_instances[tes_in[0].instanceIndex];
   entity = u_entities[tes_in[0].entityIndex];
   #include "include/var_entity_model_matrix.glsl"
+  #include "include/var_entity_normal_matrix.glsl"
 
   sampler2D heightMap = sampler2D(tes_in[0].heightMapTex);
 
   // Interpolate the attributes of the output vertex using the barycentric coordinates
   vec2 texCoord = interpolate2D(tes_in[0].texCoord, tes_in[1].texCoord, tes_in[2].texCoord);
-  vec3 normal = normalize(interpolate3D(tes_in[0].normal, tes_in[1].normal, tes_in[2].normal));
   vec3 vertexPos = interpolate3D(tes_in[0].vertexPos, tes_in[1].vertexPos, tes_in[2].vertexPos);
 
   const float rangeYmin = tes_in[0].rangeYmin;
@@ -111,10 +108,34 @@ void main()
 
   vertexPos.y += h;
 
+  // Compute normal from heightmap gradient
+  // Mesh is XZ plane [-1,1] with texCoord [0,1], so 1 texCoord unit = 2 object units
+  vec3 normal;
+  vec3 objTangent;
+  {
+    ivec2 texSize = textureSize(heightMap, 0);
+    vec2 texelSize = 1.0 / vec2(texSize);
+
+    float hL = fetchHeight(heightMap, texCoord + vec2(-texelSize.x, 0));
+    float hR = fetchHeight(heightMap, texCoord + vec2( texelSize.x, 0));
+    float hD = fetchHeight(heightMap, texCoord + vec2(0, -texelSize.y));
+    float hU = fetchHeight(heightMap, texCoord + vec2(0,  texelSize.y));
+
+    // Object-space tangent vectors for the displaced surface:
+    // T_u = (2, dh/du * rangeY, 0), T_v = (0, dh/dv * rangeY, 2)
+    // normal = normalize(cross(T_v, T_u)) to point up
+    float dhdx = (hR - hL) * rangeY * float(texSize.x) * 0.5;
+    float dhdz = (hU - hD) * rangeY * float(texSize.y) * 0.5;
+    normal = normalize(vec3(-dhdx, 2.0, -dhdz));
+    objTangent = normalize(vec3(1.0, dhdx / float(texSize.x), 0.0));
+  }
+
   vec4 worldPos = modelMatrix * vec4(vertexPos, 1.0);
 
+  vec3 viewNormal = normalize(viewNormalMatrix * normal);
+
   tes_out.viewPos = (u_viewMatrix * worldPos).xyz;
-  tes_out.normal = normal;
+  tes_out.normal = viewNormal;
   tes_out.texCoord = texCoord;
   tes_out.materialIndex = tes_in[0].materialIndex;
 
@@ -123,7 +144,11 @@ void main()
   tes_out.tileY = tes_in[0].tileY;
 
 #ifdef USE_TBN
-  tes_out.tbn = tes_in[0].tbn;
+  {
+    vec3 viewTangent = normalize(viewNormalMatrix * objTangent);
+    vec3 viewBitangent = cross(viewNormal, viewTangent);
+    tes_out.tbn = mat3(viewTangent, viewBitangent, viewNormal);
+  }
 #endif
 #ifdef USE_PARALLAX
   tes_out.tangentViewPos = tes_in[0].tangentViewPos;

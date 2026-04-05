@@ -52,7 +52,7 @@ void main() {
   const uint materialIndex = fs_in.materialIndex;
 
   vec2 texCoord = fs_in.texCoord;
-  #include "include/apply_parallax.glsl"
+  // #include "include/apply_parallax.glsl"
 
   #include "include/var_tex_material.glsl"
 
