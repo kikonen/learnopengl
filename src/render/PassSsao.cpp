@@ -20,7 +20,7 @@ namespace {
     const std::string U_SAMPLES{ "u_samples" };
 
     std::vector<glm::vec3> s_kernelValues;
-    std::vector<glm::vec3> s_noiseValues;
+    std::vector<glm::vec4> s_noiseValues;
 
     // generate sample kernel
     // ----------------------
@@ -52,7 +52,7 @@ namespace {
 
     // generate noise texture
     // ----------------------
-    void initNoise(std::vector<glm::vec3>& noiseValues)
+    void initNoise(std::vector<glm::vec4>& noiseValues)
     {
         std::uniform_real_distribution<GLfloat> randomFloats(0.0, 1.0); // generates random floats between 0.0 and 1.0
         std::default_random_engine generator;
@@ -61,8 +61,10 @@ namespace {
 
         for (unsigned int i = 0; i < 16; i++)
         {
-            // rotate around z-axis (in tangent space)
-            glm::vec3 noise(
+            // full 3D random vector to avoid degenerate TBN
+            // when view-space normal aligns with any axis
+            glm::vec4 noise(
+                randomFloats(generator) * 2.0 - 1.0,
                 randomFloats(generator) * 2.0 - 1.0,
                 randomFloats(generator) * 2.0 - 1.0,
                 0.0f);
@@ -79,7 +81,7 @@ namespace {
         return s_kernelValues;
     }
 
-    const std::vector<glm::vec3>& getNoiseValues()
+    const std::vector<glm::vec4>& getNoiseValues()
     {
         if (s_noiseValues.empty())
         {
@@ -94,7 +96,7 @@ namespace noise {
         int m_usageCount{ 0 };
         bool m_prepared{ false };
         kigl::GLTextureHandle m_tex;
-
+        
         void prepare() {
             if (m_prepared) return;
             m_prepared = true;
@@ -111,8 +113,21 @@ namespace noise {
             glTextureParameteri(texId, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
             glTextureStorage2D(texId, 1, GL_RGBA16F, w, h);
-            glTextureSubImage2D(texId, 0, 0, 0, w, h, GL_RGB, GL_FLOAT, getNoiseValues().data());
-            glGenerateTextureMipmap(texId);
+
+            const auto& noiseData = getNoiseValues();
+            KI_INFO(fmt::format("SSAO_NOISE: count={}, first=({}, {}, {}, {})",
+                noiseData.size(),
+                noiseData[0].x, noiseData[0].y, noiseData[0].z, noiseData[0].w));
+
+            glTextureSubImage2D(texId, 0, 0, 0, w, h, GL_RGBA, GL_FLOAT, noiseData.data());
+
+            // Verify upload - read back first 4 texels (first row)
+            float readback[16]; // 4 texels * 4 components
+            glGetTextureSubImage(texId, 0, 0, 0, 0, 4, 1, 1, GL_RGBA, GL_FLOAT, sizeof(readback), readback);
+            for (int t = 0; t < 4; t++) {
+                KI_INFO(fmt::format("SSAO_NOISE: texel[{}]=({}, {}, {}, {})",
+                    t, readback[t*4], readback[t*4+1], readback[t*4+2], readback[t*4+3]));
+            }
         }
     };
 
@@ -121,7 +136,6 @@ namespace noise {
     void reserveNoiseTexture() {
         if (!m_noiseTex) {
             m_noiseTex = std::make_unique<NoiseTexture>();
-            m_noiseTex->prepare();
         }
         m_noiseTex->m_usageCount++;
     }
@@ -213,7 +227,11 @@ namespace render
         m_ssaoProgram->bind();
         m_ssaoBuffer.m_buffer->setDrawBuffer(SsaoBuffer::ATT_SSAO_INDEX);
         m_ssaoBuffer.m_buffer->clearAttachment(SsaoBuffer::ATT_SSAO_INDEX);
-        noise::getNoiseTexture()->m_tex.bindTexture(UNIT_NOISE);
+        {
+            auto* noiseTex = noise::getNoiseTexture();
+            //KI_INFO(fmt::format("SSAO_NOISE: prepared={}, texId={}", noiseTex->m_prepared, (int)noiseTex->m_tex));
+            noiseTex->m_tex.bindTexture(UNIT_NOISE);
+        }
         m_screenTri.draw();
 
         m_ssaoBlurProgram->bind();
