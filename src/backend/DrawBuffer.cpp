@@ -156,14 +156,15 @@ namespace backend {
         // NOTE KI KIND_SOLID & KIND_ALPHA can be in same multidraw
         return curr.m_vaoId == sendRange.m_vaoId &&
             curr.m_programId == sendRange.m_programId &&
-            cd.m_renderBack == sd.m_renderBack &&
-            cd.m_lineMode == sd.m_lineMode &&
-            cd.isBlend() == sd.isBlend() &&
-            cd.m_mode == sd.m_mode &&
-            cd.m_type == sd.m_type &&
-            cd.m_reverseFrontFace == sd.m_reverseFrontFace &&
-            cd.m_noDepth == sd.m_noDepth &&
-            cd.m_clip == sd.m_clip;
+            cd.isSameMultiDraw(sd);
+            //cd.m_renderBack == sd.m_renderBack &&
+            //cd.m_lineMode == sd.m_lineMode &&
+            //cd.isBlend() == sd.isBlend() &&
+            //cd.m_mode == sd.m_mode &&
+            //cd.m_type == sd.m_type &&
+            //cd.m_reverseFrontFace == sd.m_reverseFrontFace &&
+            //cd.m_noDepth == sd.m_noDepth &&
+            //cd.m_clip == sd.m_clip;
     }
 
     void DrawBuffer::send(
@@ -363,7 +364,7 @@ namespace backend {
         state.polygonFrontAndBack(lineMode ? GL_LINE : GL_FILL);
 
         if (drawOptions.m_mode == DrawOptions::Mode::patches) {
-            glPatchParameteri(GL_PATCH_VERTICES, drawOptions.m_patchVertices);
+            glPatchParameteri(GL_PATCH_VERTICES, drawOptions.m_patchVertexCount);
         }
 
         const bool blend = !lineMode && drawOptions.isBlend();

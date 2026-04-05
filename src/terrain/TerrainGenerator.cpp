@@ -305,7 +305,7 @@ namespace terrain {
 
     //            lodMesh->m_flags.tessellation = true;
     //            lodMesh->m_drawOptions.m_mode = backend::DrawOptions::Mode::patches;
-    //            lodMesh->m_drawOptions.m_patchVertices = 3;
+    //            lodMesh->m_drawOptions.m_patchVertexCount = 3;
     //        }
     //    }
 

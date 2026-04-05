@@ -64,7 +64,7 @@ void NormalRenderer::drawNodes(const render::RenderContext& ctx)
         collectionRender.drawProgram(
             ctx,
             [this](const render::DrawableInfo& drawable) {
-                if (drawable.isFlag(render::INSTANCE_TESSELATION_BIT)) return (ki::program_id)0;
+                if (drawable.isTesselated()) return (ki::program_id)0;
                 return drawable.normalProgramId ? drawable.normalProgramId : m_normalProgramId;
             },
             drawContext.nodeSelector,

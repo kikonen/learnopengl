@@ -19,8 +19,6 @@
 #include "PivotPoint.h"
 
 namespace render {
-    //struct NodeTypeKey;
-    //struct NodeTypeComparator;
     class Batch;
 }
 
@@ -74,8 +72,6 @@ namespace model
     {
         friend struct pool::TypeHandle;
         friend class NodeTypeRegistry;
-        //friend struct render::NodeTypeComparator;
-        //friend struct render::NodeTypeKey;
 
     public:
         NodeType();

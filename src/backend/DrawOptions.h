@@ -30,7 +30,7 @@ namespace backend {
             arrays,
         };
 
-        uint8_t m_patchVertices{ 3 };
+        uint8_t m_patchVertexCount{ 3 };
 
         // - GL_TRIANGLES
         // - GL_TRIANGLE_STRIP
@@ -74,6 +74,11 @@ namespace backend {
             return 0;
         }
 
+        bool isTesselated() const noexcept
+        {
+            return m_mode == Mode::patches;
+        }
+
         inline bool isKind(
             uint8_t kindBits) const noexcept
         {
@@ -95,30 +100,41 @@ namespace backend {
             return isKind(render::KIND_BLEND);
         }
 
+        // Add a helper to get the packed bits as uint32_t
+        uint32_t packed() const noexcept
+        {
+            uint32_t v;
+            memcpy(&v, this, sizeof(v));
+            return v;
+        }
+
         inline bool isSameMultiDraw(
             const DrawOptions& o) const noexcept
         {
             // NOTE KI KIND_SOLID & KIND_ALPHA can be in same multidraw
-            return m_renderBack == o.m_renderBack &&
+            return
+                m_patchVertexCount == o.m_patchVertexCount &&
+                m_mode == o.m_mode &&
+                m_type == o.m_type &&
+                m_renderBack == o.m_renderBack &&
                 m_lineMode == o.m_lineMode &&
                 m_reverseFrontFace == o.m_reverseFrontFace &&
                 m_noDepth == o.m_noDepth &&
+                m_useDeferred == o.m_useDeferred &&
+                m_useOit == o.m_useOit &&
                 m_clip == o.m_clip &&
-                m_mode == o.m_mode &&
-                m_type == o.m_type &&
                 isBlend() == o.isBlend();
         }
 
-        // NOTE KI for NodeTypeKey
-        inline bool operator<(const DrawOptions& o) const noexcept {
-            return std::tie(m_kindBits, m_renderBack, m_clip, m_lineMode, m_noDepth, m_reverseFrontFace, m_type, m_mode) <
-                std::tie(o.m_kindBits, o.m_renderBack, o.m_clip, o.m_lineMode, o.m_noDepth, o.m_reverseFrontFace, o.m_type, o.m_mode);
-        }
+        //// NOTE KI for NodeTypeKey
+        //inline bool operator<(const DrawOptions& o) const noexcept {
+        //    return std::tie(m_kindBits, m_renderBack, m_clip, m_lineMode, m_noDepth, m_reverseFrontFace, m_type, m_mode) <
+        //        std::tie(o.m_kindBits, o.m_renderBack, o.m_clip, o.m_lineMode, o.m_noDepth, o.m_reverseFrontFace, o.m_type, o.m_mode);
+        //}
 
         // NOTE KI *strict* equality; MultiDraw is lesser than strict
         inline bool operator==(const DrawOptions& o) const noexcept {
-            return std::tie(m_kindBits, m_renderBack, m_clip, m_lineMode, m_noDepth, m_reverseFrontFace, m_type, m_mode) ==
-                std::tie(o.m_kindBits, o.m_renderBack, o.m_clip, o.m_lineMode, o.m_noDepth, o.m_reverseFrontFace, o.m_type, o.m_mode);
+            return std::bit_cast<uint32_t>(*this) == std::bit_cast<uint32_t>(o);
         }
     };
 }
