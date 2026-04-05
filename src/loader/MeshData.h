@@ -54,6 +54,9 @@ namespace loader {
 
         loader::FlagContainer meshFlags;
 
+        // draw count for non_vao meshes (glDrawArrays vertex count)
+        int drawCount{ 6 };
+
         VertexData vertexData;
 
         const LodData* findLod(

@@ -30,8 +30,8 @@ void main()
   const uint entityIndex = instance.u_entityIndex;
   entity = u_entities[entityIndex];
 
-  #include "include/var_entity_model_matrix.glsl"
-  #include "include/var_entity_normal_matrix.glsl"
+  // #include "include/var_entity_model_matrix.glsl"
+  // #include "include/var_entity_normal_matrix.glsl"
 
   const uint materialIndex = instance.u_materialIndex;
 

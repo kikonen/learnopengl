@@ -23,6 +23,10 @@ namespace mesh {
 
         virtual AABB calculateAABB(const glm::mat4& transform) const override;
 
+        void setDrawCount(int count) {
+            m_indexCount = count;
+        }
+
     public:
         AABB m_aabb;
     };

@@ -6,6 +6,10 @@ skybox:
 script:
   scripts:
     - path: lib/common
+
+includes:
+  - path: prefab/util/include_grid.yml
+
 types:
   - id: player_fps
     type: origo
@@ -31,46 +35,51 @@ types:
       intensity: 30000
   - id: origo_marker
     mesh:
-      xpath: water_ball
       vertex:
         type: box
-        size: [0.5]
+        size: [0.25, 0.25, 1]
         radius: 0.5
       material:
         name: default_ball
         kd: [0.0, 0.2, 0.8, 1.0]
         mras: [0.2, 0.1, 1.0]
         program: g_tex
-        render_back: true
-      flags:
+        xrender_back: true
+      xflags:
         clip: true
       xscale: 0.05
-    flags:
+    xflags:
+      no_frustum: true
+  - id: dir_marker
+    mesh:
+      vertex:
+        type: sphere
+        radius: 0.5
+      material:
+        name: default_ball
+        kd: [0.0, 0.8, 0.8, 1.0]
+        mras: [0.2, 0.1, 1.0]
+        program: g_tex
+        xrender_back: true
+      xflags:
+        clip: true
+    xflags:
       no_frustum: true
   - id: grid
-    mesh:
-      type: non_vao
-      material:
-        program: grid
-        blend: true
-        alpha: true
-        render_back: true
-    flags:
-      no_shadow: true
-      no_frustum: true
-      no_reflect: true
-      no_refract: true
-      effect: true
-    priority: -100
+    prefab:
+      path: prefab/util/prefab_grid.yml
 
 nodes:
   - type: player_fps
-    pos: [0, 0.25, 1]
+    pos: [0, 0.25, 4]
     active: true
     rotation: [0, 180, 0]
   - type: dir_light
     pos: [-15, 25, 25]
+  - type: grid
+    xscale: 100
   - type: origo_marker
     pos: [0.0, 0.0, 0.0]
-  - id: grid
-    scale: 100
+  - type: dir_marker
+    pos: [0.0, 0.0, -1.0]
+    scale: [0.5]

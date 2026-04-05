@@ -350,6 +350,7 @@ types:
         program: g_tex
 
 nodes:
+  - type: prefab_grid
   - type: prefab_fps_counter
     id: fps_counter
     pos: [2, -2, -1]
