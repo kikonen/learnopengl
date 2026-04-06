@@ -32,7 +32,7 @@ in VS_OUT {
   flat uvec2 heightMapTex;
 
 #ifdef USE_PARALLAX
-  vec3 tangentViewPos;
+  vec3 tangentPos;
 #endif
 } tcs_in[];
 
@@ -56,7 +56,7 @@ out TCS_OUT {
   flat uvec2 heightMapTex;
 
 #ifdef USE_PARALLAX
-  vec3 tangentViewPos;
+  vec3 tangentPos;
 #endif
 } tcs_out[];
 
@@ -96,7 +96,7 @@ void main()
   tcs_out[gl_InvocationID].heightMapTex = tcs_in[gl_InvocationID].heightMapTex;
 
 #ifdef USE_PARALLAX
-  tcs_out[gl_InvocationID].tangentViewPos = tcs_in[gl_InvocationID].tangentViewPos;
+  tcs_out[gl_InvocationID].tangentPos = tcs_in[gl_InvocationID].tangentPos;
 #endif
 
   if (gl_InvocationID == 0) {

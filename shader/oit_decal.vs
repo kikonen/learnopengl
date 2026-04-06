@@ -31,7 +31,7 @@ out VS_OUT {
   mat3 tbn;
 #endif
 #ifdef USE_PARALLAX
-  vec3 tangentViewPos;
+  vec3 tangentPos;
 #endif
 } vs_out;
 
@@ -127,7 +127,7 @@ void main() {
 
 #ifdef USE_PARALLAX
     const mat3 invTBN = transpose(vs_out.tbn);
-    vs_out.tangentViewPos  = invTBN * vs_out.viewPos.xyz;
+    vs_out.tangentPos  = invTBN * vs_out.viewPos.xyz;
 #endif
   }
 #endif

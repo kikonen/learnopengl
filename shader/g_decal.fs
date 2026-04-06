@@ -29,7 +29,7 @@ in VS_OUT {
   mat3 tbn;
 #endif
 #ifdef USE_PARALLAX
-  flat vec3 tangentViewPos;
+  flat vec3 tangentPos;
 #endif
 } fs_in;
 

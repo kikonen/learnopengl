@@ -39,7 +39,7 @@ out VS_OUT {
   flat uvec2 heightMapTex;
 
 #ifdef USE_PARALLAX
-  vec3 tangentViewPos;
+  vec3 tangentPos;
 #endif
 } vs_out;
 
@@ -129,7 +129,7 @@ void main() {
     const vec3 bitangent = cross(normal, tangent);
     const mat3 tbn = mat3(tangent, bitangent, normal);
     const mat3 invTBN = transpose(tbn);
-    vs_out.tangentViewPos = invTBN * vs_out.viewPos.xyz;
+    vs_out.tangentPos = invTBN * vs_out.viewPos.xyz;
   }
 #endif
 }
