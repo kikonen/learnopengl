@@ -19,10 +19,11 @@ layout(std140, binding = UBO_DEBUG) uniform DebugUBO {
   bool u_ssaoEnabled;
   bool u_ssaoBaseColorEnabled;
 
+  bool u_parallaxEnabled;
   float u_parallaxDepth;
   int u_parallaxMethod;
 
-  // int pad1;
-  // int pad2;
-  // int pad3;
+  int pad1;
+  int pad2;
+  int pad3;
 } Debug;

@@ -27,11 +27,12 @@ struct DebugUBO {
     int u_ssaoEnabled; // bool as 4 bytes
     int u_ssaoBaseColorEnabled; // bool as 4 bytes
 
+    int u_parallaxEnabled; // bool as 4 bytes
     float u_parallaxDepth;
     int u_parallaxMethod;
 
-    //int pad1;
-    //int pad2;
-    //int pad3;
+    int pad1;
+    int pad2;
+    int pad3;
 };
 #pragma pack(pop)

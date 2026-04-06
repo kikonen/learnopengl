@@ -1,11 +1,8 @@
 #ifdef USE_PARALLAX
-  float parallaxDepth = u_materials[materialIndex].parallaxDepth;
-  if (Debug.u_parallaxDepth >= 0) {
-    parallaxDepth = Debug.u_parallaxDepth;
-  }
-  if (u_forceLineMode) {
-    parallaxDepth = 0;
-  }
+if (Debug.u_parallaxEnabled && !u_forceLineMode) {
+  float parallaxDepth = Debug.u_parallaxDepth >= 0
+    ? Debug.u_parallaxDepth
+    : u_materials[materialIndex].parallaxDepth;
 
 #ifdef USE_DECAL
 // parallaxDepth = 0.1;
@@ -40,4 +37,5 @@
 //   if(texCoord.x > 1.0 || texCoord.y > 1.0 || texCoord.x < 0.0 || texCoord.y < 0.0)
 //     discard;
 // #endif
+}
 #endif
