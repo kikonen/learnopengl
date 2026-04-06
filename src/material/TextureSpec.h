@@ -19,5 +19,5 @@ struct TextureSpec {
     uint16_t magFilter = GL_LINEAR;
 
     // Max mipmap levels
-    uint8_t mipMapLevels = MIP_MAP_LEVELS;
+    uint8_t maxMipMapLevels = MIP_MAP_LEVELS;
 };

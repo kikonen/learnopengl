@@ -62,16 +62,5 @@ namespace loader {
         void modifyMaterial(
             Material& m,
             const MaterialData& data);
-
-        void resolveMaterial(
-            Material& material);
-
-        void resolveProgram(
-            Material& material);
-
-        std::string selectProgram(
-            MaterialProgramType type,
-            const std::map<MaterialProgramType, std::string> programs,
-            const std::string& defaultValue = "");
     };
 }

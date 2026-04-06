@@ -7,7 +7,7 @@ namespace {
         TextureSpec spec;
         spec.minFilter = GL_NEAREST;
         spec.magFilter = GL_NEAREST;
-        spec.mipMapLevels = 1;
+        spec.maxMipMapLevels = 1;
         return spec;
     }
 }
@@ -105,7 +105,7 @@ void ColorTexture::prepare()
         glTextureParameteri(m_textureID, GL_TEXTURE_MIN_FILTER, m_spec.minFilter);
         glTextureParameteri(m_textureID, GL_TEXTURE_MAG_FILTER, m_spec.magFilter);
 
-        const int mipMapLevels = m_spec.mipMapLevels;
+        const int mipMapLevels = m_spec.maxMipMapLevels;
 
         glTextureStorage2D(m_textureID, mipMapLevels, m_internalFormat, 1, 1);
 

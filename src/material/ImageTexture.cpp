@@ -159,14 +159,7 @@ void ImageTexture::prepareNormal()
 
     kigl::setLabel(GL_TEXTURE, m_textureID, m_name);
 
-    if (m_specialTexture) {
-        glTextureStorage2D(m_textureID, 1, m_internalFormat, m_width, m_height);
-        glTextureSubImage2D(m_textureID, 0, 0, 0, m_width, m_height, m_format, m_pixelFormat, m_image->m_data);
-
-        glTextureParameteri(m_textureID, GL_TEXTURE_WRAP_S, m_spec.wrapS);
-        glTextureParameteri(m_textureID, GL_TEXTURE_WRAP_T, m_spec.wrapT);
-    }
-    else {
+    {
         glTextureParameteri(m_textureID, GL_TEXTURE_WRAP_S, m_spec.wrapS);
         glTextureParameteri(m_textureID, GL_TEXTURE_WRAP_T, m_spec.wrapT);
 
@@ -175,9 +168,7 @@ void ImageTexture::prepareNormal()
         glTextureParameteri(m_textureID, GL_TEXTURE_MIN_FILTER, m_spec.minFilter);
         glTextureParameteri(m_textureID, GL_TEXTURE_MAG_FILTER, m_spec.magFilter);
 
-        const uint8_t mipMapLevels = std::min(
-            m_spec.mipMapLevels,
-            static_cast<uint8_t>(log2(std::max(m_width, m_height))));
+        const int mipMapLevels = resolveMixMapLevels();
 
         glTextureStorage2D(m_textureID, mipMapLevels, m_internalFormat, m_width, m_height);
         glTextureSubImage2D(m_textureID, 0, 0, 0, m_width, m_height, m_format, m_pixelFormat, m_image->m_data);

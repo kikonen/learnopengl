@@ -49,3 +49,10 @@ void Texture::release()
         glDeleteTextures(1, &m_textureID);
     }
 }
+
+int Texture::resolveMixMapLevels()
+{
+    return std::min(
+        m_spec.maxMipMapLevels,
+        static_cast<uint8_t>(log2(std::max(m_width, m_height))));
+}
