@@ -2,15 +2,16 @@ vec3 calculatePointLightPbr(
   const PointLight light,
   const vec3 viewNormal,
   const vec3 viewDir,
-  const vec3 worldPos,
+  const vec3 viewPos,
   const uint shadowIndex)
 {
-  const vec3 toLight = light.worldPos.xyz - worldPos;
+  const vec3 lightViewPos = (u_viewMatrix * vec4(light.worldPos.xyz, 1.0)).xyz;
+  const vec3 toLight = lightViewPos - viewPos;
   const float lightDist = length(toLight);
 
   if (lightDist > light.radius) return vec3(0.0);
 
-  const vec3 lightDir = normalize(mat3(u_viewMatrix) * toLight);
+  const vec3 lightDir = normalize(toLight);
 
   const vec3 N = viewNormal;
   const vec3 V = viewDir;
@@ -28,7 +29,7 @@ vec3 calculatePointLightPbr(
   vec3 Lo = vec3(0.0);
   {
     // calculate per-light radiance
-    const vec3 L = lightDir; //normalize(light.worldPos - worldPos);
+    const vec3 L = lightDir;
     const vec3 H = normalize(V + L);
     const float attenuation = 1.0 / (lightDist * lightDist);
     const vec3 radiance = light.diffuse.rgb * light.diffuse.a * attenuation;

@@ -1,65 +1,17 @@
-vec3 calculateSpotLight(
+vec3 calculateSpotLightPbr(
   const SpotLight light,
   const vec3 normal,
   const vec3 viewDir,
-  const vec3 worldPos)
+  const vec3 viewPos,
+  const uint shadowIndex)
 {
-  const vec3 toLight = light.worldPos.xyz - worldPos;
+  const vec3 lightViewPos = (u_viewMatrix * vec4(light.worldPos.xyz, 1.0)).xyz;
+  const vec3 toLight = lightViewPos - viewPos;
   const float lightDist = length(toLight);
 
   if (lightDist > light.radius) return vec3(0.0);
 
   const vec3 lightDir = normalize(toLight);
-
-  const float theta = dot(lightDir, normalize(-light.worldDir.xyz));
-  const bool shade = theta > light.cutoff;
-
-  vec3 diffuse = vec3(0);
-  vec3 specular = vec3(0);
-
-  if (shade) {
-    const float epsilon = light.cutoff - light.outerCutoff;
-    const float intensity = clamp((theta - light.outerCutoff) / epsilon, 0.0, 1.0);
-
-    // diffuse
-    const float diff = max(dot(normal, lightDir), 0.0);
-    diffuse = light.diffuse.rgb * (diff * material.diffuse.rgb);
-
-    // specular
-    // const float shininess = material.specular.a;
-    // if (shininess > 0) {
-    //   vec3 reflectDir = reflect(-lightDir, normal);
-    //   float spec = pow(max(dot(viewDir, reflectDir), 0.0), shininess);
-    //   specular = spec * light.diffuse.rgb * material.specular.rgb;
-    // }
-
-    diffuse  *= intensity;
-    specular *= intensity;
-  }
-
-  const float attenuation = 1.0 / (light.constant + light.linear * lightDist +
-				   light.quadratic * (lightDist * lightDist));
-  diffuse  *= attenuation;
-  specular *= attenuation;
-
-  return diffuse + specular;
-}
-
-vec3 calculateSpotLightPbr(
-  const SpotLight light,
-  const vec3 normal,
-  const vec3 viewDir,
-  const vec3 worldPos,
-  const uint shadowIndex)
-{
-  vec3 toLight = light.worldPos.xyz - worldPos;
-  const float lightDist = length(toLight);
-
-  toLight = normalize(toLight);
-
-  if (lightDist > light.radius) return vec3(0.0);
-
-  const vec3 lightPos = light.worldPos.xyz;
 
   const vec3 N = normal;
   const vec3 V = viewDir;
@@ -77,7 +29,7 @@ vec3 calculateSpotLightPbr(
   vec3 Lo = vec3(0.0);
   {
     // calculate per-light radiance
-    const vec3 L = toLight; //normalize(light.worldPos - worldPos);
+    const vec3 L = lightDir;
     const vec3 H = normalize(V + L);
     const float attenuation = 1.0 / (lightDist * lightDist);
     const vec3 radiance = light.diffuse.rgb * light.diffuse.a * attenuation;

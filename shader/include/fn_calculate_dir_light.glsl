@@ -86,6 +86,7 @@ vec3 calculateDirLightPbr(
   const float DIR_LIGHT_REF_DIST = 100.0;
   const float DIR_LIGHT_SCALE = 1.0 / (DIR_LIGHT_REF_DIST * DIR_LIGHT_REF_DIST);
 
+  // mat3 = only rotate, no translate for dir
   const vec3 toLight = -normalize(mat3(u_viewMatrix) * light.worldDir.xyz);
   // const float lightDistance = 100.0;
 

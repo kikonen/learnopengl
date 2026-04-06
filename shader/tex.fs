@@ -75,8 +75,6 @@ void main() {
 
   #include "include/var_tex_material.glsl"
 
-  const vec3 viewDir = -normalize(fs_in.viewPos);
-
 #ifdef USE_ALPHA
   if (material.diffuse.a < ALPHA_THRESHOLD)
     discard;
@@ -95,7 +93,9 @@ void main() {
 #endif
 
   vec4 texColor = calculateLightPbr(
-    normal, viewDir, fs_in.worldPos,
+    normal,
+    fs_in.viewPos,
+    fs_in.worldPos,
     fs_in.shadowIndex);
 
 #ifdef USE_ALPHA
