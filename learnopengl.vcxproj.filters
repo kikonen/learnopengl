@@ -1386,6 +1386,9 @@
     <ClCompile Include="src\component\definition\AddonSelectorDefinition.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\material\ImageArrayTexture.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="resource.h">
@@ -3150,6 +3153,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\util\Ref.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\material\ImageArrayTexture.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

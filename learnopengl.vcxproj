@@ -299,6 +299,7 @@
     <ClCompile Include="src\kigl\GLTextureHandle.cpp" />
     <ClCompile Include="src\kigl\GLVertexArray.cpp" />
     <ClCompile Include="src\loader\AddonSelectorLoader.cpp" />
+    <ClCompile Include="src\material\ImageArrayTexture.cpp" />
     <ClCompile Include="src\material\InlineTexture.cpp" />
     <ClCompile Include="src\mesh\LodMeshContainer.cpp" />
     <ClCompile Include="src\mesh\MeshInstance.cpp" />
@@ -762,6 +763,7 @@
     <ClInclude Include="src\loader\AddonSelectorLoader.h" />
     <ClInclude Include="src\loader\RigData.h" />
     <ClInclude Include="src\loader\value\SocketRoleValue.h" />
+    <ClInclude Include="src\material\ImageArrayTexture.h" />
     <ClInclude Include="src\mesh\LodMeshContainer.h" />
     <ClInclude Include="src\mesh\RegisteredRig.h" />
     <ClInclude Include="src\model\NodeAddon.h" />
