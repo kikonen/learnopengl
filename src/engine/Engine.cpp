@@ -412,14 +412,6 @@ void Engine::prepareUBOs()
     }
 
     {
-        float parallaxDepth = -1.f;
-        if (!dbg.m_parallaxEnabled) {
-            parallaxDepth = 0;
-        }
-        else if (dbg.m_parallaxDebugEnabled) {
-            parallaxDepth = dbg.m_parallaxDebugDepth;
-        }
-
         m_debugUBO = {
             dbg.m_wireframeLineColor,
             dbg.m_skyboxColor,
@@ -440,7 +432,8 @@ void Engine::prepareUBOs()
             dbg.m_effectSsaoEnabled,
             dbg.m_effectSsaoBaseColorEnabled,
 
-            parallaxDepth,
+            dbg.m_parallaxEnabled,
+            dbg.m_parallaxDebugDepth > 0 ? dbg.m_parallaxDebugDepth : 0.f,
             dbg.m_parallaxMethod,
         };
     }
