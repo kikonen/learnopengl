@@ -145,7 +145,7 @@ namespace model
 
             assert(m_modelScale.x >= 0 && m_modelScale.y >= 0 && m_modelScale.z >= 0);
 
-            m_modelRotation = parent.m_modelRotation * m_rotation * m_baseRotation;
+            m_modelRotation = glm::normalize(parent.m_modelRotation * m_rotation * m_baseRotation);
         }
 
         {

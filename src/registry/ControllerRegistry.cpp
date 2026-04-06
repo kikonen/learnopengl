@@ -68,14 +68,23 @@ void ControllerRegistry::prepare(Engine* engine)
 
 void ControllerRegistry::updateWT(const UpdateContext& ctx)
 {
+    auto& nodeRegistry = NodeRegistry::get();
+
     for (const auto& it : m_controllers) {
         auto* node = it.first.toNode();
         if (!node) continue;
+
+        {
+            auto& state = nodeRegistry.modifyState(node->getEntityIndex());
+            assert(!state.m_dirty);
+        }
 
         bool changed = false;
         for (auto& controller : it.second) {
             changed |= controller->updateWT(ctx, *node);
         }
+
+        nodeRegistry.updateModelMatrixTree(node->getEntityIndex());
     }
 }
 

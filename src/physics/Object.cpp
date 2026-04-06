@@ -102,7 +102,7 @@ namespace physics
 
         const glm::vec3& pos = state.getWorldPosition();
         const auto& nodeRot = state.getModelRotation();
-        const auto& rot = nodeRot * m_body.baseRotation;
+        const auto& rot = glm::normalize(nodeRot * m_body.baseRotation);
 
         // Apply offset in visual space (after base rotation)
         // Use animated physics center if available, otherwise use fixed offset
