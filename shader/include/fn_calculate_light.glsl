@@ -1,10 +1,11 @@
 vec4 calculateLightPbr(
   const vec3 viewNormal,
-  const vec3 viewDir,
+  const vec3 viewPos,
   const vec3 worldPos,
   const uint shadowIndex)
 {
   const mat3 invViewMat3 = mat3(u_invViewMatrix);
+  const vec3 viewDir = -normalize(viewPos);
 
   // transform view-space normal to world-space for cubemap sampling
   const vec3 worldNormal = normalize(invViewMat3 * viewNormal);
@@ -35,7 +36,7 @@ vec4 calculateLightPbr(
       u_pointLights[i],
       viewNormal,
       viewDir,
-      worldPos,
+      viewPos,
       shadowIndex);
   }
 
@@ -44,7 +45,7 @@ vec4 calculateLightPbr(
       u_spotLights[i],
       viewNormal,
       viewDir,
-      worldPos,
+      viewPos,
       shadowIndex);
   }
 

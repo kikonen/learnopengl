@@ -92,11 +92,9 @@ void main()
   vec4 color;
   {
     if (Debug.u_lightEnabled) {
-      const vec3 viewDir = -normalize(viewPos);
-
       color = calculateLightPbr(
 	normal,
-	viewDir,
+	viewPos,
 	worldPos,
 	shadowIndex);
     } else {
