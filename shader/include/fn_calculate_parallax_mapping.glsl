@@ -2,19 +2,19 @@
 vec2 calculateParallaxMapping(
   const uint materialIndex,
   const vec2 texCoord,
-  const vec3 tangentViewDir,
+  const vec3 tangentDir,
   float parallaxDepth)
 {
   sampler2D sampler = sampler2D(u_materials[materialIndex].displacementMapTex);
   float height = texture(sampler, texCoord).r;
-  vec2 p = tangentViewDir.xy / tangentViewDir.z * (height * parallaxDepth);
+  vec2 p = tangentDir.xy / tangentDir.z * (height * parallaxDepth);
   return texCoord - p;
 }
 
 vec2 calculateDeepParallaxMapping(
   const uint materialIndex,
   const vec2 texCoord,
-  const vec3 tangentViewDir,
+  const vec3 tangentDir,
   float parallaxDepth)
 {
   sampler2D sampler = sampler2D(u_materials[materialIndex].displacementMapTex);
@@ -22,14 +22,14 @@ vec2 calculateDeepParallaxMapping(
   // number of depth layers
   const float minLayers = 8.0;
   const float maxLayers = 32.0;
-  const float numLayers = mix(maxLayers, minLayers, max(dot(vec3(0.0, 0.0, 1.0), tangentViewDir), 0.0));
+  const float numLayers = mix(maxLayers, minLayers, max(dot(vec3(0.0, 0.0, 1.0), tangentDir), 0.0));
 
   // calculate the size of each layer
   float layerDepth = 1.0 / numLayers;
   // depth of current layer
   float currentLayerDepth = 0.0;
   // the amount to shift the texture coordinates per layer (from vector P)
-  vec2 P = tangentViewDir.xy * parallaxDepth;
+  vec2 P = tangentDir.xy * parallaxDepth;
   vec2 deltaTexCoord = P / numLayers;
 
   // get initial values
@@ -52,7 +52,7 @@ vec2 calculateDeepParallaxMapping(
 vec2 calculateParallaxOcclusionMapping(
   const uint materialIndex,
   const vec2 texCoord,
-  const vec3 tangentViewDir,
+  vec3 tangentDir,
   const float parallaxDepth)
 {
   sampler2D sampler = sampler2D(u_materials[materialIndex].displacementMapTex);
@@ -63,14 +63,14 @@ vec2 calculateParallaxOcclusionMapping(
   const float numLayers = mix(
     maxLayers,
     minLayers,
-    max(dot(vec3(0.0, 0.0, 1.0), tangentViewDir), 0.0));
+    max(dot(vec3(0.0, 0.0, 1.0), tangentDir), 0.0));
 
   // calculate the size of each layer
   float layerDepth = 1.0 / numLayers;
   // depth of current layer
   float currentLayerDepth = 0.0;
   // the amount to shift the texture coordinates per layer (from vector P)
-  vec2 P = -tangentViewDir.xy / max(tangentViewDir.z, 0.00001)  * parallaxDepth;
+  vec2 P = -tangentDir.xy / max(tangentDir.z, 0.00001)  * parallaxDepth;
   vec2 deltaTexCoord = P / numLayers;
 
   // get initial values
@@ -106,7 +106,7 @@ vec2 calculateParallaxOcclusionMapping(
 // https://www.reddit.com/r/GraphicsProgramming/comments/18qqz77/parallax_occlusion_mapping_revisited/
 vec2 parallaxMapMarch (
   const uint materialIndex,
-  const vec3 tangentViewDir,
+  const vec3 tangentDir,
   const float parallaxDepth,
   const vec2 texCoord)
 {
@@ -114,13 +114,13 @@ vec2 parallaxMapMarch (
 
   vec2 pomUV = texCoord, optimalUV = texCoord;
 
-  vec2 tanSpaceMarchDir = normalize(tangentViewDir.xy) / length(textureSize(sampler, 0).xy);
+  vec2 tanSpaceMarchDir = normalize(tangentDir.xy) / length(textureSize(sampler, 0).xy);
 
   // Smaller samples at oblique angles
-  tanSpaceMarchDir *= abs(normalize(tangentViewDir).z);
+  tanSpaceMarchDir *= abs(normalize(tangentDir).z);
 
   float marchLen = length(tanSpaceMarchDir);
-  float ratio = tangentViewDir.z / (length(tangentViewDir.xy) * parallaxDepth);
+  float ratio = tangentDir.z / (length(tangentDir.xy) * parallaxDepth);
   float queryHeight = 0.0, calcHeight = 0.0;
 
   for (uint i = 0; i <= 40; i++)

@@ -26,7 +26,7 @@ in VS_OUT {
   mat3 tbn;
 #endif
 #ifdef USE_PARALLAX
-  vec3 tangentViewPos;
+  vec3 tangentPos;
 #endif
 
 #ifdef USE_JOINTS

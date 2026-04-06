@@ -31,7 +31,7 @@ in TCS_OUT {
   flat uvec2 heightMapTex;
 
 #ifdef USE_PARALLAX
-  vec3 tangentViewPos;
+  vec3 tangentPos;
 #endif
 } tes_in[];
 
@@ -49,7 +49,7 @@ out TES_OUT {
   mat3 tbn;
 #endif
 #ifdef USE_PARALLAX
-  vec3 tangentViewPos;
+  vec3 tangentPos;
 #endif
 
   float height;
@@ -151,7 +151,7 @@ void main()
   }
 #endif
 #ifdef USE_PARALLAX
-  tes_out.tangentViewPos = tes_in[0].tangentViewPos;
+  tes_out.tangentPos = tes_in[0].tangentPos;
 #endif
 
   tes_out.height = h;

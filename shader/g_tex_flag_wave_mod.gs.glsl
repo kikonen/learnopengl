@@ -28,7 +28,7 @@ in VS_OUT {
   mat3 tbn;
 #endif
 #ifdef USE_PARALLAX
-  vec3 tangentViewPos;
+  vec3 tangentPos;
 #endif
 
 #ifdef USE_JOINTS
@@ -56,7 +56,7 @@ out VS_OUT {
   mat3 tbn;
 #endif
 #ifdef USE_PARALLAX
-  vec3 tangentViewPos;
+  vec3 tangentPos;
 #endif
 
 #ifdef USE_JOINTS
@@ -99,7 +99,7 @@ void sendVertex(in int i, in vec4 pos) {
   gs_out.tbn = gs_in[i].tbn;
 #endif
 #ifdef USE_PARALLAX
-  gs_out.tangentViewPos = gs_in[i].tangentViewPos;
+  gs_out.tangentPos = gs_in[i].tangentPos;
 #endif
 
 #ifdef USE_JOINTS
