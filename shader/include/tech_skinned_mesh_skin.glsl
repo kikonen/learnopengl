@@ -13,7 +13,7 @@
 // - pos
 // - normal
 // - tangent
-#ifdef USE_BONES
+#ifdef USE_JOINTS
 #define W1 a_boneWeight.x
 #define W2 a_boneWeight.y
 #define W3 a_boneWeight.z
@@ -37,7 +37,7 @@ if (instance.u_boneBaseIndex > 0) {
   // There is a risk that newVertex.w might not be exactly 1.0. Just to be safe
   pos = vec4(skinPos.xyz, 1.0);
 
-#ifdef USE_BONES_NORMAL
+#ifdef USE_JOINTS_NORMAL
   // NOTE KI w = 0.0 for w for normal
   normal = normalize(vec3(skinMat * vec4(normal, 0.0)));
 #endif

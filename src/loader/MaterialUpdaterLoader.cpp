@@ -112,7 +112,7 @@ namespace loader {
             cm->setMaterial(&data.materialData.material);
             cm->m_material->loadTextures();
 
-            loaders.m_materialLoader.resolveMaterial({}, *cm->m_material);
+            loaders.m_materialLoader.resolveMaterial(*cm->m_material);
 
             return cm;
         }
@@ -121,7 +121,7 @@ namespace loader {
 
             cm->setMaterial(&data.materialData.material);
 
-            loaders.m_materialLoader.resolveMaterial({}, *cm->m_material);
+            loaders.m_materialLoader.resolveMaterial(*cm->m_material);
 
             return cm;
         }

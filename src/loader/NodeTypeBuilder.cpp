@@ -435,7 +435,10 @@ namespace loader
             }
         }
 
-        m_loaders->m_materialLoader.resolveMaterial(lodMesh.m_flags, material);
+        material.usePreDepth = lodMesh.m_flags.usePreDepth;
+        material.useJoints = lodMesh.m_flags.useJoints;
+
+        m_loaders->m_materialLoader.resolveMaterial(material);
     }
 
     void NodeTypeBuilder::resolveMeshes(
@@ -869,7 +872,7 @@ namespace loader
         flags.billboard = container.getFlag("billboard", flags.billboard);
         flags.tessellation = container.getFlag("tessellation", flags.tessellation);
 
-        flags.preDepth = container.getFlag("pre_depth", flags.preDepth);
+        flags.usePreDepth = container.getFlag("pre_depth", flags.usePreDepth);
 
         flags.noVolume = container.getFlag("no_volume", flags.noVolume);
 

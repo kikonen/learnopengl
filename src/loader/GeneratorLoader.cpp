@@ -225,7 +225,7 @@ namespace loader {
         {
             df.m_material = std::make_unique<Material>();
             *df.m_material = data.materialData.material;
-            loaders.m_materialLoader.resolveMaterial({}, *df.m_material);
+            loaders.m_materialLoader.resolveMaterial(*df.m_material);
             df.m_material->loadTextures();
         }
 

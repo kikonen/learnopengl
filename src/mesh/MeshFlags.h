@@ -5,7 +5,7 @@ namespace mesh {
         bool billboard : 1 {false};
         bool tessellation : 1 {false};
 
-        bool preDepth : 1 {false};
+        bool usePreDepth : 1 {false};
 
         bool noVolume : 1{false};
 

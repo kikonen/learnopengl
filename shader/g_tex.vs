@@ -1,6 +1,6 @@
 #version 460 core
 
-#define USE_BONES_NORMAL 1
+#define USE_JOINTS_NORMAL 1
 
 layout (location = ATTR_POS) in vec3 a_pos;
 layout (location = ATTR_NORMAL) in vec3 a_normal;
@@ -41,7 +41,7 @@ out VS_OUT {
   vec3 tangentViewPos;
 #endif
 
-#ifdef USE_BONES
+#ifdef USE_JOINTS
 #ifdef USE_DEBUG
   flat uint boneBaseIndex;
   flat uvec4 boneIndex;
@@ -157,7 +157,7 @@ void main() {
   vs_out.texCoord.x = a_texCoord.x * u_materials[materialIndex].tilingX * entity.tilingX;
   vs_out.texCoord.y = a_texCoord.y * u_materials[materialIndex].tilingY * entity.tilingY;
 
-#ifdef USE_BONES
+#ifdef USE_JOINTS
 #ifdef USE_DEBUG
   if (Debug.u_boneWeight) {
     vs_out.boneBaseIndex = instance.u_boneBaseIndex;

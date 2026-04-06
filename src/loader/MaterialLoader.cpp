@@ -10,9 +10,6 @@
 
 #include "ki/sid.h"
 
-#include "mesh/LodMesh.h"
-#include "mesh/MeshFlags.h"
-
 #include "shader/ProgramRegistry.h"
 
 #include "loader/converter/YamlConverter.h"
@@ -680,7 +677,6 @@ namespace loader {
     }
 
     void MaterialLoader::resolveMaterial(
-        const mesh::MeshFlags& meshFlags,
         Material& material)
     {
         {
@@ -700,7 +696,7 @@ namespace loader {
         }
 
         material.loadTextures();
-        resolveProgram(meshFlags, material);
+        resolveProgram(material);
 
         {
             bool useParallax = material.hasBoundTex(TextureType::map_displacement) && material.parallaxDepth > 0;
@@ -711,7 +707,6 @@ namespace loader {
     }
 
     void MaterialLoader::resolveProgram(
-        const mesh::MeshFlags& meshFlags,
         Material& material)
     {
         const auto& assets = Assets::get();
@@ -805,10 +800,9 @@ namespace loader {
 
             std::map<std::string, std::string, std::less<>> preDepthDefinitions;
 
-            bool usePreDepth = meshFlags.preDepth;
-            bool useJoints = meshFlags.useJoints;
-            //bool useSockets = true; // meshFlags.useSockets;
-            bool useDebug = assets.glslUseDebug;
+            const bool useDebug = assets.glslUseDebug;
+            bool usePreDepth = material.usePreDepth;
+            bool useJoints = material.useJoints;
 
             if (material.alpha) {
                 definitions[DEF_USE_ALPHA] = "1";
