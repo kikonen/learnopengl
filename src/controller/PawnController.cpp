@@ -83,13 +83,15 @@ bool PawnController::updateWT(
     const bool actionWalk = intent.moveForward != 0.f || intent.moveRight != 0.f || intent.moveUp != 0.f;
     const bool actionRun = actionWalk && intent.running;
 
+    const auto& pos = state.getPosition();
+    const auto& viewUp = state.getViewUp();
+
     // Compute movement using MID-rotation view vectors for orbit-like behavior
     if (hasMovement) {
-        const auto viewUp = glm::normalize(state.getViewUp());
-
         // Apply half rotation to get mid-frame view vectors
-        glm::vec3 viewFront = glm::normalize(state.getViewFront());
-        glm::vec3 viewRight = glm::normalize(state.getViewRight());
+        glm::vec3 viewFront = state.getViewFront();
+        glm::vec3 viewRight = state.getViewRight();
+
         if (actionTurn) {
             auto halfRot = util::axisRadiansToQuat(viewUp, m_moveState.angularVelocity * dt * 0.5f);
             viewFront = halfRot * viewFront;
@@ -101,13 +103,14 @@ bool PawnController::updateWT(
             viewRight * m_moveState.moveRight +
             viewUp * m_moveState.moveUp;
 
-        state.setPosition(state.getPosition() + velocity * dt);
+        state.setPosition(pos + velocity * dt);
         changed = true;
     }
 
     // Apply full rotation
     if (actionTurn) {
-        auto rot = util::axisRadiansToQuat(state.getViewUp(), m_moveState.angularVelocity * dt);
+        const auto velocity = m_moveState.angularVelocity* dt;
+        auto rot = util::axisRadiansToQuat(viewUp, velocity);
         state.adjustRotation(rot);
         changed = true;
     }

@@ -168,16 +168,16 @@ void SceneUpdater::update(const UpdateContext& ctx)
 
         if (m_loaded) {
             {
-                KI_TIMER("node2   ");
-                ControllerRegistry::get().updateWT(ctx);
-            }
-            {
                 // Apply animated ground offsets before updateWT so updateBounds has correct values
                 animation::AnimationSystem::get().applyAnimatedVolumes();
             }
             {
                 KI_TIMER("node1   ");
                 nodeRegistry.updateWT(ctx);
+            }
+            {
+                KI_TIMER("node2   ");
+                ControllerRegistry::get().updateWT(ctx);
             }
             {
                 auto entityIndex = nodeRegistry.validateModelMatrices();
