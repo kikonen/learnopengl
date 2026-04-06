@@ -162,15 +162,15 @@ ki::program_id Program::prepareRT()
         createProgram();
 
         if (m_programId != oldProgramId) {
-            if (oldProgramId) {
-                glDeleteProgram(oldProgramId);
-            }
-
             m_uniforms = std::make_unique<ProgramUniforms>(*this);
 
             m_uniformLocations.clear();
             m_subroutineIndeces.clear();
             m_subroutineLocations.clear();
+
+            if (oldProgramId) {
+                glDeleteProgram(oldProgramId);
+            }
         }
     }
     catch (const std::exception& ex) {
