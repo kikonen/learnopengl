@@ -75,7 +75,7 @@ std::shared_future<util::Ref<ImageTexture>> ImageRegistry::getTexture(
         //
         spec.wrapS, spec.wrapT,
         //
-        spec.minFilter, spec.magFilter, spec.mipMapLevels);
+        spec.minFilter, spec.magFilter, spec.maxMipMapLevels);
 
     std::lock_guard lock(m_lock);
     {

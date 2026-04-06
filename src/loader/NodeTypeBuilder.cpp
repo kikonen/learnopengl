@@ -438,7 +438,7 @@ namespace loader
         material.usePreDepth = lodMesh.m_flags.usePreDepth;
         material.useJoints = lodMesh.m_flags.useJoints;
 
-        m_loaders->m_materialLoader.resolveMaterial(material);
+        material.resolveMaterial();
     }
 
     void NodeTypeBuilder::resolveMeshes(

@@ -180,6 +180,13 @@ public:
         return it != m_programs.end() ? it->second : (ki::program_id)0;
     }
 
+    void resolveMaterial();
+    void resolveProgram();
+    std::string selectProgram(
+        MaterialProgramType type,
+        const std::map<MaterialProgramType, std::string> programs,
+        const std::string& defaultValue);
+
 private:
     void loadTexture(
         TextureType type,

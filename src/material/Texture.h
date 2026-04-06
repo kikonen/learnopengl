@@ -29,6 +29,8 @@ public:
     virtual void release();
     virtual void prepare() = 0;
 
+    int resolveMixMapLevels();
+
 public:
     const std::string m_name;
     const bool m_grayScale : 1;
@@ -40,8 +42,6 @@ public:
     GLuint64 m_handle{ 0 };
 
     mutable bool m_sent : 1 { false };
-
-    bool m_specialTexture : 1 { false };
 
 protected:
     bool m_prepared : 1 { false };
