@@ -614,10 +614,10 @@ module Encode
           when :height
             tex_info = {
               group: 'default',
-              type: :displacement,
+              type: :height,
               action: :combine,
-              mode: MODE_DISPLACEMENT,
-              target_name: DISPLACEMENT_MAP,
+              mode: MODE_HEIGHT,
+              target_name: HEIGHT_MAP,
               source_channel: RED,
               target_channel: RED,
               srgb: false,

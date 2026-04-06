@@ -110,6 +110,7 @@ module Encode
   MRAS_MAP = 'mras'
   MADS_MAP = "mads"
   DISPLACEMENT_MAP = 'displacement'
+  HEIGHT_MAP = 'height'
   CAVITY_MAP = 'cavity'
 
   BUILD_SUFFIX = '_build'
@@ -153,9 +154,11 @@ module Encode
 
   MODE_OPACITY = :opacity
   MODE_DISPLACEMENT = :displacement
+  MODE_HEIGHT = :height
 
   IMAGE_VERSION = 8
   MRAS_VERSION = 9
   DISPLACEMENT_VERSION = 8
+  HEIGHT_VERSION = 8
   KTX_VERSION = 11
 end

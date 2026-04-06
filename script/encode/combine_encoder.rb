@@ -61,6 +61,14 @@ module Encode
           target_name,
           parts
         )
+      when MODE_HEIGHT
+        create_height_texture(
+          src_dir,
+          dst_dir,
+          parts.first.group,
+          target_name,
+          parts
+        )
       when MODE_DISPLACEMENT
         create_displacement_texture(
           src_dir,
@@ -299,6 +307,100 @@ module Encode
         dst_digest.write_digest
 
         info "DONE: [#{group}] #{dst_path}"
+      end
+    end
+
+    ########################################
+    # HEIGHT
+    ########################################
+    def create_height_texture(
+      src_dir,
+      dst_dir,
+      group,
+      target_name,
+      parts
+    )
+      if parts.size > 1
+        raise "ERROR: too many parts: #{{
+          src_dir:,
+          group:,
+          target_name:,
+          parts: parts.map(&:name),
+        }}"
+      end
+
+      dst_path = "#{dst_dir}/#{target_name}#{BUILD_SUFFIX}.png"
+
+      part = parts.first
+      src_path = "#{src_dir}/#{part.name}"
+      target_depth = part.target_depth
+
+      dst_digest = TextureDigest.new(
+        dst_path,
+        [src_path],
+        meta: {
+          target: File.basename(dst_path),
+          type: :height,
+          target_channel: RED,
+          srgb: part.srgb,
+          no_ktx: true,
+        },
+        salt: {
+          version: HEIGHT_VERSION,
+          size: target_size,
+          type: :height,
+          depth: target_depth,
+          parts: [
+            {
+              name: part.name,
+              source_channel: part.source_channel,
+              target_channel: part.target_channel,
+              srgb: part.srgb,
+            }
+          ]
+        },
+        force:,
+        tid:)
+
+      unless dst_digest.changed?
+        return dst_digest.update_if_needed
+      end
+
+      info "HEIGHT: [#{group}] [size=#{target_size}] [depth=#{target_depth}] ]#{dst_path}"
+
+      src_channel = select_channel(part.source_channel) || select_channel(RED)
+      dst_channel = select_channel(part.target_channel) || select_channel(RED)
+
+      # https://imagemagick.org/script/command-line-options.php#separate
+      src_path = part.src_path(src_dir)
+      src_img = Magick::Image.read(src_path)
+        .first
+        .separate(src_channel)[0]
+        .set_channel_depth(Magick::AllChannels, target_depth)
+      src_img = Util.scale_image(src_img, target_size)
+
+      info "#{dst_channel} = #{src_img.inspect}"
+
+      img_list = Magick::ImageList.new
+      img_list << src_img
+
+      # NOTE KI workaround segmentation fault, which happens
+      # if running without pause
+      #GC.start
+      #sleep 0.2
+
+      # https://imagemagick.org/script/command-line-options.php#combine
+      dst_img = img_list.combine(Magick::RGBColorspace)
+
+      unless dry_run
+        FileUtils.mkdir_p(dst_dir)
+
+        info "WRITE: #{dst_path}"
+        dst_img.write(dst_path)
+
+        dst_digest.write_digest
+
+        info "DONE:  #{dst_path}"
       end
     end
 
