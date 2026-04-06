@@ -72,7 +72,10 @@ void main() {
 #ifdef USE_NORMAL_TEX
   {
     const vec3 tangent = normalize(viewNormalMatrix * DECODE_A_TANGENT(a_tangent));
-    //tangent = normalize(tangent - dot(tangent, normal) * normal);
+
+    // NOTE KI Gram-Schmidt process to re-orthogonalize
+    // https://learnopengl.com/Advanced-Lighting/Normal-Mapping
+    tangent = normalize(tangent - dot(tangent, normal) * normal);
 
     const vec3 bitangent = cross(normal, tangent);
 

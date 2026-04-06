@@ -122,6 +122,10 @@ void main() {
 
 #ifdef USE_PARALLAX
   {
+    // NOTE KI Gram-Schmidt process to re-orthogonalize
+    // https://learnopengl.com/Advanced-Lighting/Normal-Mapping
+    tangent = normalize(tangent - dot(tangent, normal) * normal);
+
     const vec3 bitangent = cross(normal, tangent);
     const mat3 tbn = mat3(tangent, bitangent, normal);
     const mat3 invTBN = transpose(tbn);

@@ -80,6 +80,10 @@ void main() {
 
     normal = normalize(viewNormalMatrix * normal);
     tangent = normalize(viewNormalMatrix * tangent);
+
+    // NOTE KI Gram-Schmidt process to re-orthogonalize
+    // https://learnopengl.com/Advanced-Lighting/Normal-Mapping
+    tangent = normalize(tangent - dot(tangent, normal) * normal);
   }
 
   gl_Position = u_viewMatrix * worldPos;
