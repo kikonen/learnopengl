@@ -1,6 +1,6 @@
 #version 460 core
 
-#define USE_BONES_NORMAL 1
+#define USE_JOINTS_NORMAL 1
 
 #include "include/unit_cube_strip.glsl"
 

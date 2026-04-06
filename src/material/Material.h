@@ -271,6 +271,9 @@ public:
     bool useDeferred : 1 {false};
     bool inmutable : 1 {false};
 
+    bool usePreDepth : 1 {false};
+    bool useJoints : 1 {false};
+
     std::string m_geometryType;
     std::string m_baseDir;
     std::string m_modelDir;

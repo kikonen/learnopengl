@@ -31,7 +31,7 @@ in VS_OUT {
   vec3 tangentViewPos;
 #endif
 
-#ifdef USE_BONES
+#ifdef USE_JOINTS
 #ifdef USE_DEBUG
   flat uint boneBaseIndex;
   flat uvec4 boneIndex;
@@ -59,7 +59,7 @@ out VS_OUT {
   vec3 tangentViewPos;
 #endif
 
-#ifdef USE_BONES
+#ifdef USE_JOINTS
 #ifdef USE_DEBUG
   flat uint boneBaseIndex;
   flat uvec4 boneIndex;
@@ -102,7 +102,7 @@ void sendVertex(in int i, in vec4 pos) {
   gs_out.tangentViewPos = gs_in[i].tangentViewPos;
 #endif
 
-#ifdef USE_BONES
+#ifdef USE_JOINTS
 #ifdef USE_DEBUG
   gs_out.boneBaseIndex = gs_in[i].boneBaseIndex;
   gs_out.boneIndex = gs_in[i].boneIndex;

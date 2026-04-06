@@ -29,7 +29,7 @@ in VS_OUT {
   vec3 tangentViewPos;
 #endif
 
-#ifdef USE_BONES
+#ifdef USE_JOINTS
 #ifdef USE_DEBUG
   flat uint boneBaseIndex;
   flat uvec4 boneIndex;
@@ -152,7 +152,7 @@ void main() {
   o_fragMRAS = material.mras;
   o_fragEmission = material.emission;
 
-#ifdef USE_BONES
+#ifdef USE_JOINTS
   // o_fragColor = vec3(1.0, 0.0, 0.0);
 
   // if (fs_in.boneIndex.x > 150) {

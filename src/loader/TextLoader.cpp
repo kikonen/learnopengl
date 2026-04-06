@@ -102,7 +102,7 @@ namespace loader {
         auto& material = *df.m_material;
         material = data.materialData.material;
         material.loadTextures();
-        loaders.m_materialLoader.resolveProgram({}, material);
+        loaders.m_materialLoader.resolveProgram(material);
 
         df.m_fontId = loaders.m_fontLoader.resolveFont(data.fontData);
 

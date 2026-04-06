@@ -1,4 +1,4 @@
-#ifdef USE_BONES
+#ifdef USE_JOINTS
 layout (location = ATTR_BONE_INDEX) in uvec4 a_boneIndex;
 layout (location = ATTR_BONE_WEIGHT) in vec4 a_boneWeight;
 
