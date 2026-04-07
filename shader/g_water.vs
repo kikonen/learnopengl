@@ -71,7 +71,7 @@ void main() {
 
 #ifdef USE_NORMAL_TEX
   {
-    const vec3 tangent = normalize(viewNormalMatrix * DECODE_A_TANGENT(a_tangent));
+    vec3 tangent = normalize(viewNormalMatrix * DECODE_A_TANGENT(a_tangent));
 
     // NOTE KI Gram-Schmidt process to re-orthogonalize
     // https://learnopengl.com/Advanced-Lighting/Normal-Mapping
