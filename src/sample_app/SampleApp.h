@@ -33,6 +33,11 @@ namespace render
     class RenderContext;
 }
 
+namespace game
+{
+    class Player;
+}
+
 class SampleApp final : public Engine {
 public:
     SampleApp();
@@ -76,6 +81,8 @@ private:
     event::Listen m_listen_action_editor_scene_unload;
     event::Listen m_listen_scene_loaded;
     event::Listen m_listen_scene_unload;
+
+    util::Ref<game::Player> m_player;
 
     size_t m_drawCount = 0;
     size_t m_skipCount = 0;

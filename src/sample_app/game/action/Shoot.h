@@ -13,9 +13,12 @@ namespace action
 
     class Shoot
     {
+    public:
         void handle(const ActionContext& ctx);
 
+    private:
         void shootCallback(
+            const pool::NodeHandle& playerHandle,
             const physics::RayHit& hit);
     };
 }

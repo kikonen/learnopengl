@@ -431,9 +431,10 @@
     <ClCompile Include="src\render\PassSsao.cpp" />
     <ClCompile Include="src\render\ScreenTri.cpp" />
     <ClCompile Include="src\render\SSaoBuffer.cpp" />
-    <ClCompile Include="src\sample_app\action\ActionContext.cpp" />
-    <ClCompile Include="src\sample_app\action\RayCastPlayer.cpp" />
-    <ClCompile Include="src\sample_app\action\Shoot.cpp" />
+    <ClCompile Include="src\sample_app\game\action\ActionContext.cpp" />
+    <ClCompile Include="src\sample_app\game\action\RayCastPlayer.cpp" />
+    <ClCompile Include="src\sample_app\game\action\Shoot.cpp" />
+    <ClCompile Include="src\sample_app\game\Player.cpp" />
     <ClCompile Include="src\script\api\SceneAPI.cpp" />
     <ClCompile Include="src\script\binding\LuaNodeHandle.cpp" />
     <ClCompile Include="src\script\command\CancelMultiple.cpp" />
@@ -770,6 +771,7 @@
     <ClInclude Include="src\render\DrawableInfo.h" />
     <ClInclude Include="src\render\InstanceIndexSSBO.h" />
     <ClInclude Include="src\render\InstanceRegistry.h" />
+    <ClInclude Include="src\sample_app\game\Player.h" />
     <ClInclude Include="src\util\preciseSleep.h" />
     <ClInclude Include="src\util\BufferReference.h" />
     <ClInclude Include="src\util\BufferReference_format.h" />
@@ -870,9 +872,9 @@
     <ClInclude Include="src\mesh_set\SkeletonSet.h" />
     <ClInclude Include="src\renderer\JointRenderer.h" />
     <ClInclude Include="src\render\CubeMapDebugTexture.h" />
-    <ClInclude Include="src\sample_app\action\ActionContext.h" />
-    <ClInclude Include="src\sample_app\action\RayCastPlayer.h" />
-    <ClInclude Include="src\sample_app\action\Shoot.h" />
+    <ClInclude Include="src\sample_app\game\action\ActionContext.h" />
+    <ClInclude Include="src\sample_app\game\action\RayCastPlayer.h" />
+    <ClInclude Include="src\sample_app\game\action\Shoot.h" />
     <ClInclude Include="src\script\binding\LuaNodeHandle.h" />
     <ClInclude Include="src\util\Transform.h" />
     <ClInclude Include="src\mesh\PrimitiveRegistry.h" />

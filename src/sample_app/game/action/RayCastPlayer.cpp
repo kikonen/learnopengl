@@ -31,51 +31,36 @@ namespace action
 {
     void RayCastPlayer::handle(const ActionContext& ctx)
     {
-        auto* scene = ctx.getScene();
-        if (!scene) return;
-
-        auto* player = scene->getActiveNode();
-        if (!player) return;
-
         {
-            const auto* snapshot = player->getSnapshotRT();
-            if (!snapshot) return;
+            auto* player = ctx.m_handle.toNode();
+            if (player) {
+                const auto& state = player->getState();
+                const glm::vec3 startPos{ state.getWorldPosition() };
+                const glm::vec3 dir{ state.getViewFront() };
 
-            const auto& hit = physics::PhysicsSystem::get().rayCastClosest(
-                snapshot->getWorldPosition(),
-                snapshot->getViewFront(),
-                100.f,
-                physics::mask(physics::Category::npc),
-                player->toHandle());
+                const auto& hit = physics::PhysicsSystem::get().rayCastClosest(
+                    startPos,
+                    dir,
+                    100.f,
+                    physics::mask(physics::Category::npc),
+                    ctx.m_handle);
 
-            if (hit.isHit) {
-                auto* node = hit.handle.toNode();
+                if (hit.isHit) {
+                    auto* node = hit.handle.toNode();
 
-                KI_INFO_OUT(fmt::format(
-                    "PLAYER_HIT: node={}, pos={}, normal={}, depth={}",
-                    node ? node->getName() : "N/A",
-                    hit.pos,
-                    hit.normal,
-                    hit.depth));
+                    KI_INFO_OUT(fmt::format(
+                        "PLAYER_HIT: node={}, pos={}, normal={}, depth={}",
+                        node ? node->getName() : "N/A",
+                        hit.pos,
+                        hit.normal,
+                        hit.depth));
+                }
             }
         }
 
         {
-            const auto& input = ctx.getInput();
-
-            glm::vec2 screenPos{ input.mouseX, input.mouseY };
-
-            //const auto startPos = ctx.unproject(screenPos, .01f);
-            //const auto endPos = ctx.unproject(screenPos, .8f);
-            //const auto dir = glm::normalize(endPos - startPos);
-
-            const glm::vec3 startPos{ 0.f };
-            const glm::vec3 endPos{ 0.f };
-            const glm::vec3 dir{ 0.f };
-
-            KI_INFO_OUT(fmt::format(
-                "UNPROJECT: screenPos={}, z0={}, z1={}",
-                screenPos, startPos, endPos));
+            const glm::vec3 startPos{ ctx.m_pos };
+            const glm::vec3 dir{ ctx.m_dir };
 
             auto greenBall = pool::NodeHandle::toNode(SID("green_ball"));
             auto redBall = pool::NodeHandle::toNode(SID("red_ball"));
@@ -136,7 +121,7 @@ namespace action
                         redBall->toHandle(),
                         0.f,
                         false,
-                        endPos
+                        startPos + dir * 10.f
                     });
                 g_rayMarkers.push_back(cmdId);
             }
@@ -147,7 +132,7 @@ namespace action
                 400.f,
                 physics::mask(physics::Category::npc, physics::Category::prop),
                 //physics::mask(physics::Category::all),
-                player->toHandle());
+                ctx.m_handle);
         }
     }
 
