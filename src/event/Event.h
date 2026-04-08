@@ -60,6 +60,7 @@ namespace event {
             ScriptEvent script;
             SelectEvent select;
             ViewportEvent view;
+            ActionEvent action;
         } body;
 
         Type type;

@@ -77,4 +77,10 @@ namespace event {
         uint8_t layer{ 0 };
         glm::u16vec2 aspectRatio{ 1 };
     };
+
+    struct ActionEvent
+    {
+        glm::vec3 pos{ 0.f };
+        glm::vec3 dir{ 0.f };
+    };
 }
