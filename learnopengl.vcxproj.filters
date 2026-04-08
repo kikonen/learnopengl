@@ -1284,16 +1284,16 @@
     <ClCompile Include="src\util\DagSort_impl.h">
       <Filter>Header Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\sample_app\action\RayCastPlayer.cpp">
+    <ClCompile Include="src\sample_app\game\action\RayCastPlayer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\sample_app\action\ActionContext.cpp">
+    <ClCompile Include="src\sample_app\game\action\ActionContext.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\engine\InputContext.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\sample_app\action\Shoot.cpp">
+    <ClCompile Include="src\sample_app\game\action\Shoot.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\gui\FrameContext.cpp">
@@ -1387,6 +1387,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\material\ImageArrayTexture.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\sample_app\game\Player.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -3014,16 +3017,16 @@
     <ClInclude Include="src\asset\AABBBuilder.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\sample_app\action\RayCastPlayer.h">
+    <ClInclude Include="src\sample_app\game\action\RayCastPlayer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\sample_app\action\ActionContext.h">
+    <ClInclude Include="src\sample_app\game\action\ActionContext.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\engine\InputContext.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\sample_app\action\Shoot.h">
+    <ClInclude Include="src\sample_app\game\action\Shoot.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\gui\FrameContext.h">
@@ -3156,6 +3159,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\material\ImageArrayTexture.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\sample_app\game\Player.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

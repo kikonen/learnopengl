@@ -33,24 +33,12 @@ namespace action
 {
     void Shoot::handle(const ActionContext& ctx)
     {
-        Scene* scene = nullptr;
-
-        const auto& input = ctx.getInput();
-        auto* player = scene->getActiveNode();
-        if (!player) return;
-
         {
             const auto& dbg = debug::DebugContext::get();
 
-            glm::vec2 screenPos{ input.mouseX, input.mouseY };
-
-            //const auto startPos = ctx.unproject(screenPos, .01f);
-            //const auto endPos = ctx.unproject(screenPos, .8f);
-            //const auto dir = glm::normalize(endPos - startPos);
-
-            const glm::vec3 startPos{ 0.f };
-            const glm::vec3 endPos{ 0.f };
-            const glm::vec3 dir{ 0.f };
+            const auto handle = ctx.m_handle;
+            const glm::vec3 startPos{ctx.m_pos };
+            const glm::vec3 dir{ ctx.m_dir };
 
             //const auto& hits = physics::PhysicsSystem::get().rayCast(
             //    startPos,
@@ -62,15 +50,15 @@ namespace action
             //    player->toHandle(),
             //    true);
 
-            auto callback = [this](int cid, const physics::RayHit& hits) {
-                shootCallback(hits);
+            auto callback = [this, handle](int cid, const physics::RayHit& hits) {
+                shootCallback(handle, hits);
                 };
 
             auto& commandEngine = script::CommandEngine::get();
             commandEngine.addCommand(
                 0,
                 script::RayCast{
-                    player->toHandle(),
+                    handle,
                     dir,
                     400.f,
                     physics::mask(physics::Category::npc, physics::Category::prop, physics::Category::terrain),
@@ -78,19 +66,16 @@ namespace action
                     callback
                 });
 
-
             g_hitElapsed += ctx.getClock().elapsedSecs;
         }
     }
 
     void Shoot::shootCallback(
+        const pool::NodeHandle& playerHandle,
         const physics::RayHit& hit
     )
     {
-        Scene* scene = nullptr;
-        if (!scene) return;
-
-        auto* player = scene->getActiveNode();
+        auto* player = playerHandle.toNode();
         if (!player) return;
 
         {

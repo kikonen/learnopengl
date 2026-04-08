@@ -80,6 +80,7 @@ namespace event {
 
     struct ActionEvent
     {
+        ki::node_id target{ 0 };
         glm::vec3 pos{ 0.f };
         glm::vec3 dir{ 0.f };
     };

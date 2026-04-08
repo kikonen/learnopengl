@@ -85,8 +85,7 @@
 #include "physics/RayHit.h"
 #include "physics/physics_util.h"
 
-#include "action/ActionContext.h"
-#include "action/RayCastPlayer.h"
+#include "game/Player.h"
 
 namespace {
     const glm::vec4 BLACK_COLOR{ 0.f };
@@ -128,6 +127,9 @@ bool SampleApp::onSetup()
         m_editorFrame = util::Ref<editor::EditorFrame>::create(m_window);
 
         PrepareContext ctx{ *this };
+
+        m_player = util::Ref<game::Player>::create();
+        m_player->prepare(ctx);
 
         m_editorFrameInit->prepare(ctx);
         m_editorFrame->prepare(ctx);
@@ -328,6 +330,9 @@ void SampleApp::processInput()
         {
             if (inputState.ctrl)
             {
+                auto* player = NodeRegistry::get().getActiveNode();
+                if (!player) return;
+
                 const auto& input = ctx.getInput();
                 const auto& renderCtx = ctx.toRenderContext();
                 glm::vec2 screenPos{ input.mouseX, input.mouseY };
@@ -338,10 +343,11 @@ void SampleApp::processInput()
 
                 event::Event evt{ event::Type::action_game_shoot };
                 evt.body.action = {
+                    .target = player->getId(),
                     .pos = startPos,
                     .dir = dir
                 };
-                getRegistry()->m_dispatcherView->send(evt);
+                getRegistry()->m_dispatcherWorker->send(evt);
             }
         }
     }
