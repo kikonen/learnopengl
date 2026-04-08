@@ -930,7 +930,7 @@
     <ClCompile Include="src\loader\value\PhysicsCategoryValue.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="src\event\actions.cpp">
+    <ClCompile Include="src\event\events.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\renderer\MeshRenderer.cpp">
@@ -2549,7 +2549,7 @@
     <ClInclude Include="src\loader\value\FrontValue.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="src\event\actions.h">
+    <ClInclude Include="src\event\events.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\renderer\MeshRenderer.h">

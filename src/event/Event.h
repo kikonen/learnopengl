@@ -1,6 +1,6 @@
 #pragma once
 
-#include "actions.h"
+#include "events.h"
 
 namespace event {
     struct Event {
@@ -54,12 +54,12 @@ namespace event {
         std::unique_ptr<event::Attachment> attachment;
 
         union Body {
-            NodeAction node;
-            CameraAction camera;
-            NodeTypeAction nodeType;
-            ScriptAction script;
-            SelectAction select;
-            ViewportAction view;
+            NodeEvent node;
+            CameraEvent camera;
+            NodeTypeEvent nodeType;
+            ScriptEvent script;
+            SelectEvent select;
+            ViewportEvent view;
         } body;
 
         Type type;

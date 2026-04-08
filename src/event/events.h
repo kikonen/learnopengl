@@ -45,35 +45,35 @@ namespace event {
         Path pathEntry;
     };
 
-    struct NodeAction {
+    struct NodeEvent {
         ki::node_id target{ 0 };
         ki::node_id parentId{ 0 };
         ki::socket_id socketId{ 0 };
     };
 
-    struct CameraAction
+    struct CameraEvent
     {
         ki::node_id target{ 0 };
         int offset{ 0 };
     };
 
-    struct NodeTypeAction {
+    struct NodeTypeEvent {
         ki::type_id target{ 0 };
     };
 
-    struct ScriptAction {
+    struct ScriptEvent {
         ki::node_id target{ 0 };
         script::script_id id{ 0 };
         bool global{ false };
     };
 
-    struct SelectAction {
+    struct SelectEvent {
         ki::node_id target{ 0 };
         bool select{ false };
         bool append{ false };
     };
 
-    struct ViewportAction {
+    struct ViewportEvent {
         uint8_t layer{ 0 };
         glm::u16vec2 aspectRatio{ 1 };
     };

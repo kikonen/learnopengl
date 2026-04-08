@@ -362,7 +362,7 @@
     <ClCompile Include="src\editor\tool\viewport\ViewportTool.cpp" />
     <ClCompile Include="src\engine\asssets_loader_util.cpp" />
     <ClCompile Include="src\engine\SystemInit.cpp" />
-    <ClCompile Include="src\event\actions.cpp" />
+    <ClCompile Include="src\event\events.cpp" />
     <ClCompile Include="src\engine\InputContext.cpp" />
     <ClCompile Include="src\kigl\OpenGLInfo.cpp" />
     <ClCompile Include="src\loader\CompositeLoader.cpp" />
@@ -835,7 +835,7 @@
     <ClInclude Include="src\editor\tool\viewport\ViewportTool.h" />
     <ClInclude Include="src\engine\assets_loader_util.h" />
     <ClInclude Include="src\engine\SystemInit.h" />
-    <ClInclude Include="src\event\actions.h" />
+    <ClInclude Include="src\event\events.h" />
     <ClInclude Include="src\generator\GeneratorMode.h" />
     <ClInclude Include="src\component\definition\TextGeneratorDefinition.h" />
     <ClInclude Include="src\engine\InputContext.h" />
