@@ -328,7 +328,19 @@ void SampleApp::processInput()
         {
             if (inputState.ctrl)
             {
+                const auto& input = ctx.getInput();
+                const auto& renderCtx = ctx.toRenderContext();
+                glm::vec2 screenPos{ input.mouseX, input.mouseY };
+
+                const auto startPos = renderCtx.unproject(screenPos, .01f);
+                const auto endPos = renderCtx.unproject(screenPos, .8f);
+                const auto dir = glm::normalize(endPos - startPos);
+
                 event::Event evt{ event::Type::action_game_shoot };
+                evt.body.action = {
+                    .pos = startPos,
+                    .dir = dir
+                };
                 getRegistry()->m_dispatcherView->send(evt);
             }
         }
