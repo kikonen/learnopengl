@@ -626,8 +626,8 @@ module Encode
             tex_info = {
               group: 'default',
               type: :cavity,
-              action: :skip,
-              mode: :cavity,
+              action: :combine,
+              mode: :displacement,
               target_name: CAVITY_MAP,
               source_channel: RED,
               target_channel: RED,
