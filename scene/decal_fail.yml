@@ -1,0 +1,95 @@
+---
+meta:
+  name: Decal
+skybox:
+  material: skybox/polyhaven/wasteland_clouds_puresky_4k.hdr
+script:
+  scripts:
+    - path: lib/common
+
+includes:
+  - path: prefab/util/include_grid.yml
+  - path: prefab/util/include_origo_marker.yml
+  - path: prefab/characters/include_player_fps.yml
+
+types:
+  - id: origo
+    type: origo
+  - xid: player
+    mesh:
+      path: water_ball
+      material_modifier:
+        tiling: 5
+      program: g_tex
+    flags:
+      allow_normals: false
+    controllers:
+      - type: pawn
+    camera:
+      type: fps
+      distance: [4, 2, 10]
+      default: true
+    audio:
+      listener:
+        default: true
+  - id: wooden_floor
+    prefab:
+      path: prefab/scenery/prefab_wooden_floor.yml
+    physics:
+      geom:
+        collision: [world]
+  - id: brick_wall_1
+    mesh:
+      vertex:
+        type: box
+        size: [5, 3, 0.2]
+      material:
+        base: textures/Bricks007_1K-PNG
+        map_kd: Bricks007_1K_Color.png
+        map_normal: Bricks007_1K_NormalGL.png
+        map_mras: Bricks007_1K_mras
+        map_displacement: Bricks007_1K_displacement
+        parallax_depth: 0.02
+        tiling_x: 1.25
+        tiling_y: 0.75
+        program: g_tex
+      flags:
+        pre_depth: true
+    type_flags:
+      nav_mesh: true
+    physics:
+      update: true
+      body:
+        type: box
+        kinematic: true
+        density: 0.1
+      geom:
+        type: box
+        category: [terrain]
+        collision: [npc, player, prop]
+        size: [5, 3, 0.2]
+  - id: prefab_player_fps_camera
+    camera:
+      default: true
+
+nodes:
+  - type: wooden_floor
+    scale: 100
+  - type: prefab_player_fps
+    pos: [0, 0, 15]
+    xrotation: [0, 180, 0]
+    active: true
+  - xtype: player
+    pos: [0, 2, 0]
+    active: true
+  - type: brick_wall_1
+    pos: [0, 4, 10]
+  - type: brick_wall_1
+    pos: [-5, 1.5, 0]
+
+decals:
+  - name: firespin_1
+    prefab: decals/firespin_1.yml
+
+  - name: poster_1
+    prefab: decals/poster_1.yml

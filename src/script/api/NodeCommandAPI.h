@@ -112,9 +112,13 @@ namespace script::api
             pool::NodeHandle handle,
             const sol::table& lua_opt) noexcept;
 
+        // TODO KI add "cast_from_node_to_front"
+        // with degree of changes from front
+        // => need to calculate in command api side to keep dir relative to current front/pos
         int lua_ray_cast(
             pool::NodeHandle handle,
             const sol::table& lua_opt,
+            const glm::vec3& lua_origin,
             const glm::vec3& lua_dir,
             bool notifyMiss,
             const sol::function& lua_callback) noexcept;
@@ -122,6 +126,7 @@ namespace script::api
         int lua_ray_cast_multiple(
             pool::NodeHandle handle,
             const sol::table& lua_opt,
+            const glm::vec3& lua_origin,
             const sol::table& lua_dirs,
             const sol::function& lua_callback) noexcept;
 
