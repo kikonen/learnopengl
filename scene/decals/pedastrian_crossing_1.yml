@@ -7,6 +7,7 @@ decal:
   material:
     base:  decals/Painted Pedestrian Crossing Lines_veggehh
     map_kd: Albedo_2K__veggehh.jpg
+    map_opacity: Opacity_2K__veggehh.jpg
     map_normal: Normal_2K__veggehh.jpg
     map_mras: default_mras
     map_displacement: default_displacement

@@ -6,8 +6,9 @@ decal:
   rotation_variation: [-90, 90]
   material:
     base:  decals/Round Manhole Cover_uh4jedeg
-    map_kd: Albedo_2K__uh4jedeg.jpg
-    map_normal: Normal_2K__uh4jedeg.jpg
+    map_kd: Albedo_2K__uh4jedeg
+    map_opacity: Opacity_2K__uh4jedeg
+    map_normal: Normal_2K__uh4jedeg
     map_mras: default_mras
     map_displacement: default_displacement
     parallax_depth: 0.05

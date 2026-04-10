@@ -6,8 +6,9 @@ decal:
   rotation_variation: [-90, 90]
   material:
     base: decals/concrete_damage_tdildcjb_2k
-    map_kd: Concrete_Damage_tdildcjb_2K_BaseColor.jpg
-    map_normal: Concrete_Damage_tdildcjb_2K_Normal.jpg
+    map_kd: Concrete_Damage_tdildcjb_2K_BaseColor
+    map_opacity: Concrete_Damage_tdildcjb_2K_Opacity
+    map_normal: Concrete_Damage_tdildcjb_2K_Normal
     map_mras: Concrete_Damage_tdildcjb_2K_mras
     map_displacement: Concrete_Damage_tdildcjb_2K_displacement
     parallax_depth: 0.05
