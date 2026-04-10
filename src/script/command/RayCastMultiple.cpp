@@ -16,11 +16,13 @@ namespace script
 {
     RayCastMultiple::RayCastMultiple(
         pool::NodeHandle handle,
+        const glm::vec3& origin,
         const std::vector<glm::vec3>& dirs,
         float length,
         const uint32_t collisionMask,
         const std::function<void(int cid, const std::vector<physics::RayHit>&)>& callback) noexcept
         : NodeCommand(handle, 0, false),
+        m_origin{ origin },
         m_dirs{ dirs },
         m_length{ length },
         m_collisionMask{ collisionMask },
@@ -41,7 +43,7 @@ namespace script
             const auto& state = node->getState();
 
             const auto& hits = physics::PhysicsSystem::get().rayCastClosestToMultiple(
-                state.getWorldPosition(),
+                m_origin,
                 m_dirs,
                 m_length,
                 m_collisionMask,

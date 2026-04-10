@@ -404,6 +404,7 @@ namespace script::api
     int NodeCommandAPI::lua_ray_cast(
         pool::NodeHandle handle,
         const sol::table& lua_opt,
+        const glm::vec3& lua_origin,
         const glm::vec3& lua_dir,
         bool notifyMiss,
         const sol::function& lua_callback) noexcept
@@ -439,6 +440,7 @@ namespace script::api
             opt.afterId,
             RayCast{
                 selectHandle(handle, opt.tagId),
+                lua_origin,
                 lua_dir,
                 400.f,
                 collisionMask,
@@ -449,6 +451,7 @@ namespace script::api
     int NodeCommandAPI::lua_ray_cast_multiple(
         pool::NodeHandle handle,
         const sol::table& lua_opt,
+        const glm::vec3& lua_origin,
         const sol::table& lua_dirs,
         const sol::function& lua_callback) noexcept
     {
@@ -492,6 +495,7 @@ namespace script::api
             opt.afterId,
             RayCastMultiple{
                 handle,
+                lua_origin,
                 dirs,
                 400.f,
                 collisionMask,

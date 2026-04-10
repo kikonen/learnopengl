@@ -125,6 +125,7 @@ local function ray_caster()
   local function ray_cast()
     cid = cmd:wait({ after=cid, time=0.25 })
 
+    local origin = node:get_pos(self.handle)
     local rot = util.axis_degrees_to_quat(vec3(0, 1, 0), degrees)
     -- printf("front=%s, rot=%s\n", node:get_front(self.handle), rot)
     local dir = rot:to_mat4() * node:get_front(self.handle)
@@ -133,6 +134,7 @@ local function ray_caster()
     cid = cmd:ray_cast(
       self.handle,
       { after=cid },
+      origin,
       dir,
       false,
       ray_cast_hit)

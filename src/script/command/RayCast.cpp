@@ -16,12 +16,14 @@ namespace script
 {
     RayCast::RayCast(
         pool::NodeHandle handle,
+        const glm::vec3& origin,
         const glm::vec3& dir,
         float length,
         const uint32_t collisionMask,
         bool notifyMiss,
         const std::function<void(int cid, const physics::RayHit&)>& callback) noexcept
         : NodeCommand(handle, 0, false),
+        m_origin{ origin },
         m_dir{ dir },
         m_length{ length },
         m_collisionMask{ collisionMask },
@@ -43,7 +45,7 @@ namespace script
             const auto& state = node->getState();
 
             const auto& hit = physics::PhysicsSystem::get().rayCastClosest(
-                state.getWorldPosition(),
+                m_origin,
                 m_dir,
                 m_length,
                 m_collisionMask,

@@ -58,10 +58,10 @@ prefab:
       materials:
         - base: pine_trunk_pbr
           alias: MI_TreeBarkPine_01a
-          map_kd: T_TreePineBark_01a_A.PNG
+          map_kd: T_TreePineBark_01a_A
         - base: pine_leaf_pbr
           alias: MI_PineTree_01a
-          map_kd: T_PineBranch_01a_A.PNG
+          map_kd: T_PineBranch_01a_A
           alpha: true
       default_programs: true
       base_scale: 0.01

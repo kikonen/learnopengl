@@ -37,7 +37,7 @@ namespace action
             const auto& dbg = debug::DebugContext::get();
 
             const auto handle = ctx.m_handle;
-            const glm::vec3 startPos{ctx.m_pos };
+            const glm::vec3 origin{ctx.m_pos };
             const glm::vec3 dir{ ctx.m_dir };
 
             //const auto& hits = physics::PhysicsSystem::get().rayCast(
@@ -59,6 +59,7 @@ namespace action
                 0,
                 script::RayCast{
                     handle,
+                    origin,
                     dir,
                     400.f,
                     physics::mask(physics::Category::npc, physics::Category::prop, physics::Category::terrain),

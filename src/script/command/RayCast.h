@@ -15,6 +15,7 @@ namespace script
     public:
         RayCast(
             pool::NodeHandle handle,
+            const glm::vec3& origin,
             const glm::vec3& dir,
             float length,
             const uint32_t collisionMask,
@@ -30,6 +31,7 @@ namespace script
             const UpdateContext& ctx) noexcept override;
 
     private:
+        const glm::vec3 m_origin;
         const glm::vec3 m_dir;
         const uint32_t m_collisionMask;
         const float m_length;
