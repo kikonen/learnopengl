@@ -14,6 +14,8 @@
 
 #include "mesh/Index.h"
 
+#include "size.h"
+
 namespace mesh {
     class TexturedVAO {
     public:

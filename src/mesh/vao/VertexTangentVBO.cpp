@@ -14,7 +14,7 @@ namespace mesh {
     TangentEntry VertexTangentVBO::convertVertex(
         const Vertex& vertex)
     {
-        return { vertex.tangent };
+        return { vertex };
     }
 
     void VertexTangentVBO::prepareVAO(kigl::GLVertexArray& vao)
@@ -39,6 +39,11 @@ namespace mesh {
                 //
 
                 // Tangent attr
+#ifdef VAO_USE_NORMAL_VEC3_16N
+#elif VAO_USE_NORMAL_VEC10
+#else
+#endif
+
                 //glVertexArrayAttribFormat(vao, m_attr, 3, GL_UNSIGNED_SHORT, GL_TRUE, offsetof(NormalEntry, u_normal));
                 glVertexArrayAttribFormat(vao, m_attr, 4, GL_INT_2_10_10_10_REV, GL_TRUE, offsetof(TangentEntry, u_tangent));
 

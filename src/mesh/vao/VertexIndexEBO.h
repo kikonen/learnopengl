@@ -11,6 +11,8 @@
 
 #include "IndexEntry.h"
 
+#include "size.h"
+
 namespace kigl {
     struct GLVertexArray;
 }

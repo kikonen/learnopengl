@@ -4,6 +4,8 @@
 
 #include "kigl/kigl.h"
 
+#include "size.h"
+
 namespace mesh {
 #pragma pack(push, 1)
     struct PositionEntry {

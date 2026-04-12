@@ -73,6 +73,7 @@ namespace
 
             const glm::vec3 normal{ 0.f, 0.f, 1.f };
             const glm::vec3 tangent{ 1.f, 0.f, 0.f };
+            const glm::vec3 bitangent{ 0.f, 1.f, 0.f };
             const char* prev = nullptr;
 
             auto* font = fontAtlas->getFont()->m_font;
@@ -182,7 +183,7 @@ namespace
                 };
 
                 for (int i = 0; i < 4; i++) {
-                    mesh->m_vertices.emplace_back(positions[i], materialCoords[i], normal, tangent);
+                    mesh->m_vertices.emplace_back(positions[i], materialCoords[i], normal, tangent, bitangent);
                     mesh->m_atlasCoords.emplace_back(atlasCoords[i]);
                 }
 

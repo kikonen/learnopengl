@@ -14,22 +14,24 @@
 #include "TangentCalculator.h"
 
 namespace {
+    const glm::vec3 ZERO{ 0.f };
+
     // NOTE KI normal, tangent, tex stored to allow normal g_tex shader
     const float QUAD_VERTICES[] = {
-        // pos              // normal         // tangent        // tex
-        -1.0f,  1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f,
-        -1.0f, -1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f,
-         1.0f,  1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f,
-         1.0f, -1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f,
+        // pos              // normal         // tangent        bitangent         // tex
+        -1.0f,  1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f,
+        -1.0f, -1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f,
+         1.0f,  1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 1.0f,
+         1.0f, -1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f,
     };
 
     // NOTE KI normal, tangent, tex stored to allow normal g_tex shader
     const float PLANE_VERTICES[] = {
-        // pos              // normal         // tangent        // tex
-        -1.0f,  0.0f, -1.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f,
-        -1.0f,  0.0f,  1.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f,
-         1.0f,  0.0f, -1.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f,
-         1.0f,  0.0f,  1.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f,
+        // pos               // normal         // tangent        // bitangent      // tex
+        -1.0f,  0.0f, -1.0f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f,
+        -1.0f,  0.0f,  1.0f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f,
+         1.0f,  0.0f, -1.0f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f,
+         1.0f,  0.0f,  1.0f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 0.0f,
     };
 
     const int PLANE_INDECES[] = {
@@ -92,13 +94,15 @@ namespace {
             auto& v = vertices.emplace_back();
             v.pos = origin;
             v.normal = { 0, 1, 0 };
-            v.tangent = { 0, 0, 1 };
+            v.tangent = { 1, 0, 0 };
+            v.bitangent = { 0, 0, 1 };
         }
         {
             auto& v = vertices.emplace_back();
             v.pos = origin + dir * length;
             v.normal = { 0, 1, 0 };
-            v.tangent = { 0, 0, 1 };
+            v.tangent = { 1, 0, 0 };
+            v.bitangent = { 0, 0, 1 };
         }
 
         indeces.push_back(0);
@@ -131,12 +135,14 @@ namespace {
             v.pos = origin;
             v.normal = { 0, 1, 0 };
             v.tangent = { 0, 0, 1 };
+            v.bitangent = { 1, 0, 0 };
         }
         {
             auto& v = vertices.emplace_back();
             v.pos = origin + dir * length;
             v.normal = { 0, 1, 0 };
             v.tangent = { 0, 0, 1 };
+            v.bitangent = { 1, 0, 0 };
         }
 
         indeces.push_back(0);
@@ -171,7 +177,8 @@ namespace {
                 vertex.position,
                 vertex.texCoord,
                 vertex.normal,
-                vertex.normal);
+                ZERO,
+                ZERO);
         }
 
         for (const auto& tri : shape.triangles()) {
@@ -216,6 +223,9 @@ namespace {
             v.tangent = glm::vec3{ row[offset + 0], row[offset + 1] , row[offset + 2] };
 
             offset += 3;
+            v.bitangent = glm::vec3{ row[offset + 0], row[offset + 1], row[offset + 2] };
+
+            offset += 3;
             v.texCoord = glm::vec2{ row[offset + 0], row[offset + 1] };
         }
 
@@ -255,6 +265,9 @@ namespace {
 
             offset += 3;
             v.tangent = glm::vec3{ row[offset + 0], row[offset + 1] , row[offset + 2] };
+
+            offset += 3;
+            v.bitangent = glm::vec3{ row[offset + 0], row[offset + 1], row[offset + 2] };
 
             offset += 3;
             v.texCoord = glm::vec2{ row[offset + 0], row[offset + 1] };
@@ -308,6 +321,7 @@ namespace {
                 };
                 v.normal = { 0, 1, 0 };
                 v.tangent = { 1, 0, 0 };
+                v.bitangent = { 0, 0, 1 };
                 v.texCoord = {tx, tz};
             }
         }
@@ -363,6 +377,7 @@ namespace {
                 vertex.position,
                 vertex.texCoord,
                 glm::vec3{0, 0, 1 },
+                glm::vec3{ 1, 0, 0 },
                 glm::vec3{ 0, 1, 0 });
         }
 
@@ -396,7 +411,8 @@ namespace {
                 vertex.position,
                 vertex.texCoord,
                 vertex.normal,
-                vertex.normal);
+                ZERO,
+                ZERO);
         }
 
         for (const auto& tri : shape.triangles()) {
@@ -431,7 +447,8 @@ namespace {
                 vertex.position,
                 vertex.texCoord,
                 vertex.normal,
-                vertex.normal);
+                ZERO,
+                ZERO);
         }
 
         for (const auto& tri : shape.triangles()) {
@@ -465,7 +482,8 @@ namespace {
                 vertex.position,
                 vertex.texCoord,
                 vertex.normal,
-                vertex.normal);
+                ZERO,
+                ZERO);
         }
 
         for (const auto& tri : shape.triangles()) {
@@ -499,7 +517,8 @@ namespace {
                 vertex.position,
                 vertex.texCoord,
                 vertex.normal,
-                vertex.normal);
+                ZERO,
+                ZERO);
         }
 
         for (const auto& tri : shape.triangles()) {
@@ -533,7 +552,8 @@ namespace {
                 vertex.position,
                 vertex.texCoord,
                 vertex.normal,
-                vertex.normal);
+                ZERO,
+                ZERO);
         }
 
         for (const auto& tri : shape.triangles()) {
@@ -568,7 +588,8 @@ namespace {
                 vertex.position,
                 vertex.texCoord,
                 vertex.normal,
-                vertex.normal);
+                ZERO,
+                ZERO);
         }
 
         for (const auto& tri : shape.triangles()) {
@@ -605,7 +626,8 @@ namespace {
                 vertex.position,
                 vertex.texCoord,
                 vertex.normal,
-                vertex.normal);
+                ZERO,
+                ZERO);
         }
 
         for (const auto& tri : shape.triangles()) {
@@ -641,7 +663,8 @@ namespace {
                 vertex.position,
                 vertex.texCoord,
                 vertex.normal,
-                vertex.normal);
+                ZERO,
+                ZERO);
         }
 
         for (const auto& tri : shape.triangles()) {
@@ -677,7 +700,8 @@ namespace {
                 vertex.position,
                 vertex.texCoord,
                 vertex.normal,
-                vertex.normal);
+                ZERO,
+                ZERO);
         }
 
         for (const auto& tri : shape.triangles()) {
@@ -713,7 +737,8 @@ namespace {
                 vertex.position,
                 vertex.texCoord,
                 vertex.normal,
-                vertex.normal);
+                ZERO,
+                ZERO);
         }
 
         for (const auto& tri : shape.triangles()) {
@@ -750,7 +775,8 @@ namespace {
                 vertex.position,
                 vertex.texCoord,
                 vertex.normal,
-                vertex.normal);
+                ZERO,
+                ZERO);
         }
 
         for (const auto& tri : shape.triangles()) {
@@ -787,7 +813,8 @@ namespace {
                 vertex.position,
                 vertex.texCoord,
                 vertex.normal,
-                vertex.normal);
+                ZERO,
+                ZERO);
         }
 
         for (const auto& tri : shape.triangles()) {
@@ -824,7 +851,8 @@ namespace {
                 vertex.position,
                 vertex.texCoord,
                 vertex.normal,
-                vertex.normal);
+                ZERO,
+                ZERO);
         }
 
         for (const auto& tri : shape.triangles()) {
@@ -862,7 +890,8 @@ namespace {
                 vertex.position,
                 vertex.texCoord,
                 vertex.normal,
-                vertex.normal);
+                ZERO,
+                ZERO);
         }
 
         for (const auto& tri : shape.triangles()) {
@@ -898,7 +927,8 @@ namespace {
                 vertex.position,
                 vertex.texCoord,
                 vertex.normal,
-                vertex.normal);
+                ZERO,
+                ZERO);
         }
 
         for (const auto& tri : shape.triangles()) {
@@ -934,7 +964,8 @@ namespace {
                 vertex.position,
                 vertex.texCoord,
                 vertex.normal,
-                vertex.normal);
+                ZERO,
+                ZERO);
         }
 
         for (const auto& tri : shape.triangles()) {
@@ -970,7 +1001,8 @@ namespace {
                 vertex.position,
                 vertex.texCoord,
                 vertex.normal,
-                vertex.normal);
+                ZERO,
+                ZERO);
         }
 
         for (const auto& tri : shape.triangles()) {
@@ -1007,7 +1039,8 @@ namespace {
                 vertex.position,
                 vertex.texCoord,
                 vertex.normal,
-                vertex.normal);
+                ZERO,
+                ZERO);
         }
 
         for (const auto& tri : shape.triangles()) {

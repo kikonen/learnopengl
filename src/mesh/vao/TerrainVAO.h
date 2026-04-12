@@ -3,6 +3,8 @@
 #include "kigl/GLBuffer.h"
 #include "kigl/GLVertexArray.h"
 
+#include "size.h"
+
 namespace mesh {
     class TerrainVAO {
     public:
