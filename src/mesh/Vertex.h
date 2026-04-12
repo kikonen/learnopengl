@@ -5,41 +5,32 @@
 #include "material/Material.h"
 
 namespace mesh {
+    // NOTE KI have to either store tangent as glm::vec4 to retained
+    // handedness in w, or store tangent and bitangent separately
     struct Vertex final
     {
     public:
-        Vertex()
-        {}
+        Vertex() = default;
 
         Vertex(
             const glm::vec3& pos,
             const glm::vec2& texCoord,
             const glm::vec3& normal,
-            const glm::vec3& tangent)
+            const glm::vec3& tangent,
+            const glm::vec3& bitangent)
             : pos{ pos },
             texCoord{ texCoord },
             normal{ normal },
-            tangent{ tangent }
+            tangent{ tangent },
+            bitangent{ bitangent }
         {
         }
 
-        Vertex(const Vertex& b) noexcept
-            : pos{ b.pos },
-            texCoord{ b.texCoord },
-            normal{ b.normal },
-            tangent{ b.tangent }
-        {
-        }
+        Vertex(const Vertex& b) noexcept = default;
+        Vertex& operator=(const Vertex& b) = default;
 
-        Vertex& operator=(const Vertex& b)
-        {
-            pos = b.pos;
-            texCoord = b.texCoord;
-            normal = b.normal;
-            tangent = b.tangent;
-
-            return *this;
-        }
+        Vertex(Vertex&&) noexcept = default;
+        Vertex& operator=(Vertex&&) noexcept = default;
 
         bool operator==(const Vertex& b) const noexcept;
 
@@ -52,5 +43,6 @@ namespace mesh {
         glm::vec2 texCoord;
         glm::vec3 normal;
         glm::vec3 tangent;
+        glm::vec3 bitangent;
     };
 }

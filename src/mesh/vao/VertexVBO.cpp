@@ -62,17 +62,25 @@ namespace mesh {
                     glEnableVertexArrayAttrib(vao, ATTR_NORMAL);
 
                     // https://gamedev.stackexchange.com/questions/46304/how-does-gl-int-2-10-10-10-rev-work-for-color-data
-                    //glVertexArrayAttribFormat(vao, ATTR_NORMAL, 3, GL_FLOAT, GL_FALSE, offsetof(VertexEntry, u_normal));
-                    //glVertexArrayAttribFormat(vao, ATTR_NORMAL, 3, GL_UNSIGNED_SHORT, GL_TRUE, offsetof(VertexEntry, u_normal));
+#ifdef VAO_USE_NORMAL_VEC3_16N
+                    glVertexArrayAttribFormat(vao, ATTR_NORMAL, 3, GL_SHORT, GL_TRUE, offsetof(VertexEntry, u_normal));
+#elif VAO_USE_NORMAL_VEC10
                     glVertexArrayAttribFormat(vao, ATTR_NORMAL, 4, GL_INT_2_10_10_10_REV, GL_TRUE, offsetof(VertexEntry, u_normal));
+#else
+                    glVertexArrayAttribFormat(vao, ATTR_NORMAL, 3, GL_FLOAT, GL_FALSE, offsetof(VertexEntry, u_normal));
+#endif
                     glVertexArrayAttribBinding(vao, ATTR_NORMAL, m_binding);
                 }
                 {
                     glEnableVertexArrayAttrib(vao, ATTR_TANGENT);
 
-                    //glVertexArrayAttribFormat(vao, ATTR_TANGENT, 3, GL_FLOAT, GL_FALSE, offsetof(VertexEntry, u_tangent));
-                    //glVertexArrayAttribFormat(vao, ATTR_TANGENT, 3, GL_UNSIGNED_SHORT, GL_TRUE, offsetof(VertexEntry, u_tangent));
+#ifdef VAO_USE_NORMAL_VEC3_16N
+                    glVertexArrayAttribFormat(vao, ATTR_TANGENT, 4, GL_SHORT, GL_TRUE, offsetof(VertexEntry, u_tangent));
+#elif VAO_USE_NORMAL_VEC10
                     glVertexArrayAttribFormat(vao, ATTR_TANGENT, 4, GL_INT_2_10_10_10_REV, GL_TRUE, offsetof(VertexEntry, u_tangent));
+#else
+                    glVertexArrayAttribFormat(vao, ATTR_TANGENT, 4, GL_FLOAT, GL_FALSE, offsetof(VertexEntry, u_tangent));
+#endif
                     glVertexArrayAttribBinding(vao, ATTR_TANGENT, m_binding);
                 }
             }

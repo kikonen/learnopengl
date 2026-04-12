@@ -767,6 +767,7 @@
     <ClInclude Include="src\material\ImageArrayTexture.h" />
     <ClInclude Include="src\mesh\LodMeshContainer.h" />
     <ClInclude Include="src\mesh\RegisteredRig.h" />
+    <ClInclude Include="src\mesh\vao\size.h" />
     <ClInclude Include="src\model\NodeAddon.h" />
     <ClInclude Include="src\render\DrawableInfo.h" />
     <ClInclude Include="src\render\InstanceIndexSSBO.h" />

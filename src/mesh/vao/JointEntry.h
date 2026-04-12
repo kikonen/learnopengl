@@ -4,6 +4,8 @@
 
 #include "animation/VertexJoint.h"
 
+#include "size.h"
+
 namespace mesh {
 #pragma pack(push, 1)
     struct JointEntry {

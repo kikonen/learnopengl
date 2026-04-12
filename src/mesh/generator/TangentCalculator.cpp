@@ -12,6 +12,14 @@ namespace {
     inline float get_qnan() {
         return std::numeric_limits<float>::quiet_NaN();
     }
+
+    auto safeNormalize = [](
+        const glm::vec3& v,
+        const glm::vec3& fallback)
+    {
+        float len = glm::length(v);
+        return len > 1e-6f ? v / len : fallback;
+    };
 }
 
 namespace mesh {
@@ -67,13 +75,8 @@ namespace mesh {
 
             // tangent points in the direction where to positive X axis of the texture coord's would point in model space
             // bitangent's points along the positive Y axis of the texture coord's, respectively
-            glm::vec3 tangent, bitangent;
-            tangent.x = (w.x * sy - v.x * ty) * dirCorrection;
-            tangent.y = (w.y * sy - v.y * ty) * dirCorrection;
-            tangent.z = (w.z * sy - v.z * ty) * dirCorrection;
-            bitangent.x = (w.x * sx - v.x * tx) * dirCorrection;
-            bitangent.y = (w.y * sx - v.y * tx) * dirCorrection;
-            bitangent.z = (w.z * sx - v.z * tx) * dirCorrection;
+            glm::vec3 tangent = (w * sy - v * ty) * dirCorrection;
+            glm::vec3 bitangent = (w * sx - v * tx) * dirCorrection;
 
             // store for every vertex of that face
             for (unsigned int b = 0; b < 3; ++b) {
@@ -81,10 +84,11 @@ namespace mesh {
                 auto& v = vertices[p];
 
                 // project tangent and bitangent into the plane formed by the vertex' normal
-                glm::vec3 localTangent = tangent - v.normal * (tangent * v.normal);
-                glm::vec3 localBitangent = bitangent - v.normal * (bitangent * v.normal);
-                localTangent = glm::normalize(localTangent);
-                localBitangent = glm::normalize(localBitangent);
+                glm::vec3 localTangent = tangent - v.normal * glm::dot(tangent, v.normal);
+                glm::vec3 localBitangent = bitangent - v.normal * glm::dot(bitangent, v.normal);
+
+                localTangent = safeNormalize(localTangent, glm::vec3(1, 0, 0));
+                localBitangent = safeNormalize(localBitangent, glm::vec3(0, 1, 0));
 
                 //// reconstruct tangent/bitangent according to normal and bitangent/tangent when it's infinite or NaN.
                 //bool invalid_tangent = is_special_float(localTangent.x) || is_special_float(localTangent.y) || is_special_float(localTangent.z)
@@ -106,7 +110,7 @@ namespace mesh {
 
                 // and write it into the mesh.
                 v.tangent = localTangent;
-                //v.bitangent = localBitangent;
+                v.bitangent = localBitangent;
             }
         }
 

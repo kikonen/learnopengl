@@ -2,6 +2,8 @@
 
 #include "glm/glm.hpp"
 
+#include "size.h"
+
 namespace mesh {
     //struct IndexEntry {
     //    IndexEntry() {}

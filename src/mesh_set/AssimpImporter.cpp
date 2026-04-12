@@ -410,17 +410,19 @@ namespace mesh_set
             const auto pos = util::assimp::toVec3(mesh->mVertices[vertexIndex]);
             glm::vec3 normal{ 0.f };
             glm::vec3 tangent{ 0.f };
+            glm::vec3 bitangent{ 0.f };
 
             if (mesh->mNormals) {
                 normal = util::assimp::toVec3(mesh->mNormals[vertexIndex]);
             }
             if (mesh->mTangents) {
                 tangent = util::assimp::toVec3(mesh->mTangents[vertexIndex]);
+                bitangent = util::assimp::toVec3(mesh->mBitangents[vertexIndex]);
             }
 
             //KI_INFO_OUT(fmt::format("ASSIMP::MESH: offset={}, pos={}", vertexOffset, pos));
 
-            modelMesh.m_vertices.emplace_back(pos, texCoord, normal, tangent);
+            modelMesh.m_vertices.emplace_back(pos, texCoord, normal, tangent, bitangent);
         }
 
         for (unsigned int faceIdx = 0; faceIdx < mesh->mNumFaces; faceIdx++) {

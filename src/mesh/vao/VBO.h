@@ -10,6 +10,8 @@
 
 #include "kigl/GLBuffer.h"
 
+#include "size.h"
+
 namespace kigl {
     struct GLVertexArray;
 }
