@@ -70,18 +70,18 @@ namespace kigl {
         {}
 
         RGB10_A2& operator=(const glm::vec4& p) {
-            r = (unsigned int)(p.r * SCALE_RGB10);
-            g = (unsigned int)(p.g * SCALE_RGB10);
-            b = (unsigned int)(p.b * SCALE_RGB10);
-            a = (unsigned int)(p.a * SCALE_RGB10_A2);
+            r = (unsigned int)roundf(p.r * SCALE_RGB10);
+            g = (unsigned int)roundf(p.g * SCALE_RGB10);
+            b = (unsigned int)roundf(p.b * SCALE_RGB10);
+            a = (unsigned int)roundf(p.a * SCALE_RGB10_A2);
             return *this;
         }
 
         RGB10_A2(float a_r, float a_g, float a_b, float a_a) {
-            r = (unsigned int)(a_r * SCALE_RGB10);
-            g = (unsigned int)(a_g * SCALE_RGB10);
-            b = (unsigned int)(a_b * SCALE_RGB10);
-            a = (unsigned int)(a_a * SCALE_RGB10_A2);
+            r = (unsigned int)roundf(a_r * SCALE_RGB10);
+            g = (unsigned int)roundf(a_g * SCALE_RGB10);
+            b = (unsigned int)roundf(a_b * SCALE_RGB10);
+            a = (unsigned int)roundf(a_a * SCALE_RGB10_A2);
         }
     };
 
@@ -108,9 +108,10 @@ namespace kigl {
         {}
 
         VEC10& operator=(const glm::vec3& p) {
-            x = (int)(p.x * SCALE_VEC10);
-            y = (int)(p.y * SCALE_VEC10);
-            z = (int)(p.z * SCALE_VEC10);
+            x = (int)roundf(p.x * SCALE_VEC10);
+            y = (int)roundf(p.y * SCALE_VEC10);
+            z = (int)roundf(p.z * SCALE_VEC10);
+
             not_used = 0;
             return *this;
         }
@@ -120,9 +121,9 @@ namespace kigl {
         {}
 
         VEC10(float a_x, float a_y, float a_z)
-            : x{ (int)(a_x * SCALE_VEC10) },
-            y{ (int)(a_y * SCALE_VEC10) },
-            z{ (int)(a_z * SCALE_VEC10) },
+            : x{ (int)roundf(a_x * SCALE_VEC10) },
+            y{ (int)roundf(a_y * SCALE_VEC10) },
+            z{ (int)roundf(a_z * SCALE_VEC10) },
             not_used{ 0 }
         {}
     };
@@ -148,9 +149,9 @@ namespace kigl {
         }
 
         VEC3_16& operator=(const glm::vec3& p) {
-            x = (uint16_t)((p.x * 0.5f + 0.5f) * SCALE_VEC3_16);
-            y = (uint16_t)((p.y * 0.5f + 0.5f) * SCALE_VEC3_16);
-            z = (uint16_t)((p.z * 0.5f + 0.5f) * SCALE_VEC3_16);
+            x = (uint16_t)roundf((p.x * 0.5f + 0.5f) * SCALE_VEC3_16);
+            y = (uint16_t)roundf((p.y * 0.5f + 0.5f) * SCALE_VEC3_16);
+            z = (uint16_t)roundf((p.z * 0.5f + 0.5f) * SCALE_VEC3_16);
             return *this;
         }
 
@@ -160,9 +161,9 @@ namespace kigl {
         }
 
         VEC3_16(float a_x, float a_y, float a_z)
-            : x{ (uint16_t)((a_x * 0.5f + 0.5f) * SCALE_VEC3_16) },
-              y{ (uint16_t)((a_y * 0.5f + 0.5f) * SCALE_VEC3_16) },
-              z{ (uint16_t)((a_z * 0.5f + 0.5f) * SCALE_VEC3_16) }
+            : x{ (uint16_t)roundf((a_x * 0.5f + 0.5f) * SCALE_VEC3_16) },
+              y{ (uint16_t)roundf((a_y * 0.5f + 0.5f) * SCALE_VEC3_16) },
+              z{ (uint16_t)roundf((a_z * 0.5f + 0.5f) * SCALE_VEC3_16) }
         {
         }
     };
@@ -183,8 +184,8 @@ namespace kigl {
         {}
 
         UV16& operator=(const glm::vec2& t) {
-            u = (uint16_t)(t.x * SCALE_UV16);
-            v = (uint16_t)(t.y * SCALE_UV16);
+            u = (uint16_t)roundf(t.x * SCALE_UV16);
+            v = (uint16_t)roundf(t.y * SCALE_UV16);
             return *this;
         }
 
@@ -193,8 +194,8 @@ namespace kigl {
         {}
 
         UV16(float a_u, float a_v)
-            : u{ (uint16_t)(a_u * SCALE_UV16) },
-            v{ (uint16_t)(a_v * SCALE_UV16) }
+            : u{ (uint16_t)roundf(a_u * SCALE_UV16) },
+            v{ (uint16_t)roundf(a_v * SCALE_UV16) }
         {}
     };
 
