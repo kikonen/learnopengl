@@ -23,14 +23,7 @@ in VS_OUT {
   flat uint flags;
 
 #ifdef USE_TBN
-#ifdef USE_TBN_FS_RECONSTRUCT
   vec4 tangent;
-#else
-  mat3 tbn;
-#endif
-#endif
-#if defined(USE_PARALLAX) && !defined(USE_TBN_FS_RECONSTRUCT)
-  vec3 tangentPos;
 #endif
 
 #ifdef USE_JOINTS
@@ -80,16 +73,12 @@ void main() {
     normal = -normal;
   }
 
-#ifdef USE_TBN_FS_RECONSTRUCT
   // NOTE KI reconstruct tangent basis in FS to keep normal mapping
   // and parallax on the same basis (avoids interpolation drift
   // between VS-computed tangentPos and FS-computed tbn).
   #include "include/var_calculate_tbn.glsl"
 
-  #include "include/apply_parallax_local.glsl"
-#else
   #include "include/apply_parallax.glsl"
-#endif
 
   #include "include/var_tex_material.glsl"
 
@@ -107,11 +96,7 @@ void main() {
 #endif
   }
 
-#ifdef USE_TBN_FS_RECONSTRUCT
-  #include "include/apply_normal_map_local.glsl"
-#else
   #include "include/apply_normal_map.glsl"
-#endif
 
 #ifdef USE_CUBE_MAP
   {

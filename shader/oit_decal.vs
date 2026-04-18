@@ -28,14 +28,7 @@ out VS_OUT {
   flat uint materialIndex;
 
 #ifdef USE_TBN
-#ifdef USE_TBN_FS_RECONSTRUCT
   vec4 tangent;
-#else
-  mat3 tbn;
-#endif
-#endif
-#if defined(USE_PARALLAX) && !defined(USE_TBN_FS_RECONSTRUCT)
-  vec3 tangentPos;
 #endif
 } vs_out;
 
@@ -120,25 +113,8 @@ void main() {
   }
 
 #ifdef USE_TBN
-#ifdef USE_TBN_FS_RECONSTRUCT
   // QUAD_TANGENT is right-handed against QUAD_NORMAL, so handedness = 1.0.
   vs_out.tangent = vec4(tangent, 1.0);
-#else
-  {
-    // NOTE KI Gram-Schmidt process to re-orthogonalize
-    // https://learnopengl.com/Advanced-Lighting/Normal-Mapping
-    tangent = normalize(tangent - dot(tangent, normal) * normal);
-
-    const vec3 bitangent = cross(normal, tangent);
-
-    vs_out.tbn = mat3(tangent, bitangent, normal);
-
-#ifdef USE_PARALLAX
-    const mat3 invTBN = transpose(vs_out.tbn);
-    vs_out.tangentPos  = invTBN * vs_out.viewPos.xyz;
-#endif
-  }
-#endif
 #endif
 
 #ifdef USE_GL_POINTS
