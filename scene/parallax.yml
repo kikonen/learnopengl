@@ -23,13 +23,22 @@ types:
       - type: pawn
       - type: camera_zoom
   - id: other
-    mesh:
+    xmesh:
       path: texture_cube
       material_modifier:
         prefab: materials/Bricks007.yml
         tiling: 4
         parallax: 0.02
       program: g_tex
+    mesh:
+      vertex:
+        type: sphere
+        radius: 1
+      material_modifier:
+        prefab: materials/Bricks007.yml
+        tiling: 2
+        parallax: 0.02
+        default_programs: true
   - id: dir_light
     mesh:
       path: light
@@ -145,6 +154,7 @@ nodes:
     active: true
   - type: other
     pos: [0.0, 2.0, 0.0]
+    rot: [0, 90, 0]
     repeat:
       z_count: 20
       z_step: -10

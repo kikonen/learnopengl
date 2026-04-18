@@ -31,7 +31,7 @@ in VS_OUT {
   flat float rangeYmax;
   flat uvec2 heightMapTex;
 
-#ifdef USE_PARALLAX
+#if defined(USE_PARALLAX) && !defined(USE_TBN_FS_RECONSTRUCT)
   vec3 tangentPos;
 #endif
 } tcs_in[];
@@ -55,7 +55,7 @@ out TCS_OUT {
   flat float rangeYmax;
   flat uvec2 heightMapTex;
 
-#ifdef USE_PARALLAX
+#if defined(USE_PARALLAX) && !defined(USE_TBN_FS_RECONSTRUCT)
   vec3 tangentPos;
 #endif
 } tcs_out[];
@@ -95,7 +95,7 @@ void main()
   tcs_out[gl_InvocationID].rangeYmax = tcs_in[gl_InvocationID].rangeYmax;
   tcs_out[gl_InvocationID].heightMapTex = tcs_in[gl_InvocationID].heightMapTex;
 
-#ifdef USE_PARALLAX
+#if defined(USE_PARALLAX) && !defined(USE_TBN_FS_RECONSTRUCT)
   tcs_out[gl_InvocationID].tangentPos = tcs_in[gl_InvocationID].tangentPos;
 #endif
 

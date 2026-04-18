@@ -29,9 +29,13 @@ in VS_OUT {
   flat uint materialIndex;
 
 #ifdef USE_TBN
+#ifdef USE_TBN_FS_RECONSTRUCT
+  vec4 tangent;
+#else
   mat3 tbn;
 #endif
-#ifdef USE_PARALLAX
+#endif
+#if defined(USE_PARALLAX) && !defined(USE_TBN_FS_RECONSTRUCT)
   vec3 tangentPos;
 #endif
 } fs_in;
@@ -72,6 +76,13 @@ void main() {
   vec3 surfaceNormal;
   float depth;
 
+#ifdef USE_TBN_FS_RECONSTRUCT
+  // TBN's N axis = decal's geometric normal; tbn + tangentPos live at main
+  // scope so they're accessible both inside the block and at the normal-map site.
+  vec3 normal = fs_in.decalNormal;
+  #include "include/var_calculate_tbn.glsl"
+#endif
+
   {
     {
       vec2 pixCoord = gl_FragCoord.xy / u_bufferResolution;
@@ -111,7 +122,11 @@ void main() {
       return;
     }
 
+#ifdef USE_TBN_FS_RECONSTRUCT
+    #include "include/apply_parallax_local.glsl"
+#else
     #include "include/apply_parallax.glsl"
+#endif
   }
 
   texCoord.x *= u_materials[materialIndex].tilingX;
@@ -124,9 +139,13 @@ void main() {
 
   OIT_DISCARD(material.diffuse.a);
 
+#ifdef USE_TBN_FS_RECONSTRUCT
+  normal = surfaceNormal;
+  #include "include/apply_normal_map_local.glsl"
+#else
   vec3 normal = surfaceNormal;
-
   #include "include/apply_normal_map.glsl"
+#endif
 
   if (!gl_FrontFacing) {
     normal = -normal;

@@ -23,9 +23,13 @@ in VS_OUT {
   flat uint flags;
 
 #ifdef USE_TBN
+#ifdef USE_TBN_FS_RECONSTRUCT
+  vec4 tangent;
+#else
   mat3 tbn;
 #endif
-#ifdef USE_PARALLAX
+#endif
+#if defined(USE_PARALLAX) && !defined(USE_TBN_FS_RECONSTRUCT)
   vec3 tangentPos;
 #endif
 
@@ -67,7 +71,25 @@ void main() {
   const uint materialIndex = fs_in.materialIndex;
 
   vec2 texCoord = fs_in.texCoord;
+
+  // NOTE KI interpolation from vs to fs denormalizes normal.
+  // Declared early so var_calculate_tbn.glsl (and the old-path apply_parallax)
+  // can both consume the same oriented normal.
+  vec3 normal = normalize(fs_in.normal);
+  if (!gl_FrontFacing) {
+    normal = -normal;
+  }
+
+#ifdef USE_TBN_FS_RECONSTRUCT
+  // NOTE KI reconstruct tangent basis in FS to keep normal mapping
+  // and parallax on the same basis (avoids interpolation drift
+  // between VS-computed tangentPos and FS-computed tbn).
+  #include "include/var_calculate_tbn.glsl"
+
+  #include "include/apply_parallax_local.glsl"
+#else
   #include "include/apply_parallax.glsl"
+#endif
 
   #include "include/var_tex_material.glsl"
 
@@ -85,13 +107,11 @@ void main() {
 #endif
   }
 
-  // NOTE KI interpolation from vs to fs denormalizes normal
-  vec3 normal = normalize(fs_in.normal);
+#ifdef USE_TBN_FS_RECONSTRUCT
+  #include "include/apply_normal_map_local.glsl"
+#else
   #include "include/apply_normal_map.glsl"
-
-  if (!gl_FrontFacing) {
-    normal = -normal;
-  }
+#endif
 
 #ifdef USE_CUBE_MAP
   {

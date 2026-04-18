@@ -176,6 +176,11 @@
 #define SCREEN_TRI_VERTEX_OUT 1
 //#undef SCREEN_TRI_VERTEX_OUT
 
+// Toggle: reconstruct TBN in FS (new) vs ship mat3 tbn + tangentPos from VS (old).
+// Affects g_tex.vs / g_tex.fs. Comment the #define to restore the old VS-side path.
+#define USE_TBN_FS_RECONSTRUCT
+// #undef USE_TBN_FS_RECONSTRUCT
+
 #define MIN_CLAMP_COL_VALUE 0.0
 #define MAX_CLAMP_COL_VALUE 10000.0
 #define clamp_color(color)\

@@ -25,9 +25,15 @@ out VS_OUT {
   flat uint materialIndex;
 
 #ifdef USE_TBN
+#ifdef USE_TBN_FS_RECONSTRUCT
+  // xyz = tangent (view space), w = handedness. `flat` since the decal is a
+  // single quad with a constant tangent basis across all 4 vertices.
+  flat vec4 tangent;
+#else
   mat3 tbn;
 #endif
-#ifdef USE_PARALLAX
+#endif
+#if defined(USE_PARALLAX) && !defined(USE_TBN_FS_RECONSTRUCT)
   flat vec3 tangentPos;
 #endif
 } vs_out;
@@ -109,6 +115,10 @@ void main() {
   }
 
 #ifdef USE_TBN
+#ifdef USE_TBN_FS_RECONSTRUCT
+  // QUAD_TANGENT is right-handed against QUAD_NORMAL, so handedness = 1.0.
+  vs_out.tangent = vec4(tangent, 1.0);
+#else
   {
     // NOTE KI Gram-Schmidt process to re-orthogonalize
     // https://learnopengl.com/Advanced-Lighting/Normal-Mapping
@@ -123,6 +133,7 @@ void main() {
     vs_out.tangentPos  = invTBN * vs_out.viewPos.xyz;
 #endif
   }
+#endif
 #endif
 
 #ifdef USE_GL_POINTS
