@@ -37,6 +37,11 @@ namespace loader {
         const std::string& currentDir,
         const std::string& filePath);
 
+    void assertNotNull(
+        const std::string& context,
+        const std::string& key,
+        const loader::DocNode& value);
+
     void loadRepeat(
         const loader::DocNode& node,
         Repeat& data);

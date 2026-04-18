@@ -2,7 +2,7 @@
 
 layout (location = ATTR_POS) in vec3 a_pos;
 layout (location = ATTR_NORMAL) in vec3 a_normal;
-layout (location = ATTR_TANGENT) in vec3 a_tangent;
+layout (location = ATTR_TANGENT) in vec4 a_tangent;
 
 #include "include/tech_skinned_mesh_data.glsl"
 
@@ -51,6 +51,8 @@ void main() {
   vec4 worldPos;
   vec3 normal;
   vec3 tangent;
+  // handedness, default for billboard
+  float tangentW = 1.0;
 
   // https://gamedev.stackexchange.com/questions/5959/rendering-2d-sprites-into-a-3d-world
   // - "ogl" approach
@@ -72,6 +74,7 @@ void main() {
   } else {
     normal = DECODE_A_NORMAL(a_normal);
     tangent = DECODE_A_TANGENT(a_tangent);
+    tangentW = DECODE_A_TANGENT_W(a_tangent);
 
     #include "include/tech_skinned_mesh_skin.glsl"
     #include "include/apply_mod.glsl"
@@ -98,7 +101,7 @@ void main() {
     // https://learnopengl.com/Advanced-Lighting/Normal-Mapping
     T = normalize(T - dot(T, N) * N);
 
-    const vec3 B = cross(N, T);
+    const vec3 B = cross(N, T)  * tangentW;
 
     vs_out.tangent = T;
     vs_out.bitangent = B;

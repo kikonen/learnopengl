@@ -81,6 +81,17 @@ namespace loader {
         return { fullPath, true };
     }
 
+    void assertNotNull(
+        const std::string& context,
+        const std::string& key,
+        const loader::DocNode& value)
+    {
+        if (value.isNull()) {
+            throw std::runtime_error{
+                fmt::format("LOADER::NULL_VALUE: context={}, key={}", context, key) };
+        }
+    }
+
     void loadTerrainTiling(
         const loader::DocNode& node,
         TerrainTiling& data)

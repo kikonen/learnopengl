@@ -209,10 +209,12 @@ namespace {
         glm::mat4 scaleMat = glm::scale(glm::mat4{ 1.f }, glm::vec3{ size.x, 1.f, size.y });
 
         auto& row = PLANE_VERTICES;
+        constexpr int row_size = 3 + 3 + 3 + 3 + 2;
+
         for (int i = 0; i < 4; i++) {
             auto& v = vertices.emplace_back();
 
-            int offset = 11 * i;
+            int offset = row_size * i;
             v.pos = scaleMat * glm::vec4{ row[offset + 0], row[offset + 1] , row[offset + 2], 1.f };
             //v.pos *= 0.5;
 
@@ -253,10 +255,12 @@ namespace {
         glm::mat4 scaleMat = glm::scale(glm::mat4{ 1.f }, glm::vec3{ size, 1.f });
 
         auto& row = QUAD_VERTICES;
+        constexpr int row_size = 3 + 3 + 3 + 3 + 2;
+
         for (int i = 0; i < 4; i++) {
             auto& v = vertices.emplace_back();
 
-            int offset = 11 * i;
+            int offset = row_size * i;
             v.pos = scaleMat * glm::vec4{ row[offset + 0], row[offset + 1] , row[offset + 2], 1.f };
             //v.pos *= 0.5;
 

@@ -1,7 +1,8 @@
 ---
 prefab:
   mesh:
-    path: plane
+    vertex:
+      type: plane
     material:
       prefab: materials/Planks09
       tiling: 60
