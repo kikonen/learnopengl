@@ -433,7 +433,7 @@ void Engine::prepareUBOs()
             dbg.m_effectSsaoBaseColorEnabled,
 
             dbg.m_parallaxEnabled,
-            dbg.m_parallaxDebugDepth > 0 ? dbg.m_parallaxDebugDepth : 0.f,
+            dbg.m_parallaxDebugEnabled && dbg.m_parallaxDebugDepth > 0 ? dbg.m_parallaxDebugDepth : -1.f,
             dbg.m_parallaxMethod,
         };
     }
