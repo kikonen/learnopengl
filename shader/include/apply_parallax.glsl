@@ -10,7 +10,7 @@ if (Debug.u_parallaxEnabled && !u_forceLineMode) {
 // parallaxDepth = 0.0;
 
   if (parallaxDepth > 0) {
-    const vec3 tangentDir = -normalize(fs_in.tangentPos);
+    const vec3 tangentDir = -normalize(tangentPos);
     if (Debug.u_parallaxMethod == 1)
     {
       texCoord = calculateParallaxOcclusionMapping(

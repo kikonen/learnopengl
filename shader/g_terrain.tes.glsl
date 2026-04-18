@@ -30,9 +30,6 @@ in TCS_OUT {
   flat float rangeYmax;
   flat uvec2 heightMapTex;
 
-#if defined(USE_PARALLAX) && !defined(USE_TBN_FS_RECONSTRUCT)
-  vec3 tangentPos;
-#endif
 } tes_in[];
 
 out TES_OUT {
@@ -46,15 +43,8 @@ out TES_OUT {
   flat uint tileY;
 
 #ifdef USE_TBN
-#ifdef USE_TBN_FS_RECONSTRUCT
   // xyz = tangent (view space, built from heightmap gradient); w = handedness.
   vec4 tangent;
-#else
-  mat3 tbn;
-#endif
-#endif
-#if defined(USE_PARALLAX) && !defined(USE_TBN_FS_RECONSTRUCT)
-  vec3 tangentPos;
 #endif
 
   float height;
@@ -151,17 +141,9 @@ void main()
 #ifdef USE_TBN
   {
     vec3 viewTangent = normalize(viewNormalMatrix * objTangent);
-#ifdef USE_TBN_FS_RECONSTRUCT
     // Heightmap tangent is right-handed against the generated normal.
     tes_out.tangent = vec4(viewTangent, 1.0);
-#else
-    vec3 viewBitangent = cross(viewNormal, viewTangent);
-    tes_out.tbn = mat3(viewTangent, viewBitangent, viewNormal);
-#endif
   }
-#endif
-#if defined(USE_PARALLAX) && !defined(USE_TBN_FS_RECONSTRUCT)
-  tes_out.tangentPos = tes_in[0].tangentPos;
 #endif
 
   tes_out.height = h;

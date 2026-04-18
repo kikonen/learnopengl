@@ -25,14 +25,7 @@ in VS_OUT {
   flat uint flags;
 
 #ifdef USE_TBN
-#ifdef USE_TBN_FS_RECONSTRUCT
   vec4 tangent;
-#else
-  mat3 tbn;
-#endif
-#endif
-#if defined(USE_PARALLAX) && !defined(USE_TBN_FS_RECONSTRUCT)
-  vec3 tangentPos;
 #endif
 
 #ifdef USE_JOINTS
@@ -57,14 +50,7 @@ out VS_OUT {
   flat uint flags;
 
 #ifdef USE_TBN
-#ifdef USE_TBN_FS_RECONSTRUCT
   vec4 tangent;
-#else
-  mat3 tbn;
-#endif
-#endif
-#if defined(USE_PARALLAX) && !defined(USE_TBN_FS_RECONSTRUCT)
-  vec3 tangentPos;
 #endif
 
 #ifdef USE_JOINTS
@@ -104,14 +90,7 @@ void sendVertex(in int i, in vec4 pos) {
   gs_out.flags = gs_in[i].flags;
 
 #ifdef USE_TBN
-#ifdef USE_TBN_FS_RECONSTRUCT
   gs_out.tangent = gs_in[i].tangent;
-#else
-  gs_out.tbn = gs_in[i].tbn;
-#endif
-#endif
-#if defined(USE_PARALLAX) && !defined(USE_TBN_FS_RECONSTRUCT)
-  gs_out.tangentPos = gs_in[i].tangentPos;
 #endif
 
 #ifdef USE_JOINTS
