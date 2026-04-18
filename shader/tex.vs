@@ -3,7 +3,7 @@
 layout (location = ATTR_POS) in vec3 a_pos;
 layout (location = ATTR_NORMAL) in vec3 a_normal;
 #ifdef USE_TBN
-layout (location = ATTR_TANGENT) in vec3 a_tangent;
+layout (location = ATTR_TANGENT) in vec4 a_tangent;
 #endif
 layout (location = ATTR_TEX) in vec2 a_texCoord;
 
@@ -72,6 +72,8 @@ void main() {
   vec3 normal;
 #ifdef USE_TBN
   vec3 tangent;
+  // handedness, default for billboard
+  float tangentW = 1.0;
 #endif
 
   // https://gamedev.stackexchange.com/questions/5959/rendering-2d-sprites-into-a-3d-world
@@ -97,6 +99,7 @@ void main() {
     normal = normalize(viewNormalMatrix * DECODE_A_NORMAL(a_normal));
 #ifdef USE_TBN
     tangent = normalize(viewNormalMatrix * DECODE_A_TANGENT(a_tangent));
+    tangentW = DECODE_A_TANGENT_W(a_tangent);
 #endif
   }
 
@@ -128,7 +131,7 @@ void main() {
     // https://learnopengl.com/Advanced-Lighting/Normal-Mapping
     tangent = normalize(tangent - dot(tangent, normal) * normal);
 
-    const vec3 bitangent = cross(normal, tangent);
+    const vec3 bitangent = cross(normal, tangent) * tangentW;
 
     vs_out.tbn = mat3(tangent, bitangent, normal);
 

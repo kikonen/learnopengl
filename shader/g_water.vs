@@ -3,7 +3,7 @@
 layout (location = ATTR_POS) in vec3 a_pos;
 layout (location = ATTR_NORMAL) in vec3 a_normal;
 #ifdef USE_TBN
-layout (location = ATTR_TANGENT) in vec3 a_tangent;
+layout (location = ATTR_TANGENT) in vec4 a_tangent;
 #endif
 layout (location = ATTR_TEX) in vec2 a_texCoord;
 
@@ -72,12 +72,13 @@ void main() {
 #ifdef USE_NORMAL_TEX
   {
     vec3 tangent = normalize(viewNormalMatrix * DECODE_A_TANGENT(a_tangent));
+    float tangentW = DECODE_A_TANGENT_W(a_tangent);
 
     // NOTE KI Gram-Schmidt process to re-orthogonalize
     // https://learnopengl.com/Advanced-Lighting/Normal-Mapping
     tangent = normalize(tangent - dot(tangent, normal) * normal);
 
-    const vec3 bitangent = cross(normal, tangent);
+    const vec3 bitangent = cross(normal, tangent) * tangentW;
 
     vs_out.tbn = mat3(tangent, bitangent, normal);
   }

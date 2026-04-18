@@ -3,7 +3,7 @@
 layout (location = ATTR_POS) in vec3 a_pos;
 layout (location = ATTR_NORMAL) in vec3 a_normal;
 #ifdef USE_PARALLAX
-layout (location = ATTR_TANGENT) in vec3 a_tangent;
+layout (location = ATTR_TANGENT) in vec4 a_tangent;
 #endif
 layout (location = ATTR_TEX) in vec2 a_texCoord;
 
@@ -80,6 +80,7 @@ void main() {
   normal = normalize(viewNormalMatrix * normal);
 #ifdef USE_PARALLAX
   vec3 tangent = normalize(viewNormalMatrix * DECODE_A_TANGENT(a_tangent));
+  float tangentW = DECODE_A_TANGENT_W(a_tangent);
 #endif
 
 //  gl_Position = u_projectedMatrix * worldPos;
@@ -126,7 +127,7 @@ void main() {
     // https://learnopengl.com/Advanced-Lighting/Normal-Mapping
     tangent = normalize(tangent - dot(tangent, normal) * normal);
 
-    const vec3 bitangent = cross(normal, tangent);
+    const vec3 bitangent = cross(normal, tangent) * tangentW;
     const mat3 tbn = mat3(tangent, bitangent, normal);
     const mat3 invTBN = transpose(tbn);
     vs_out.tangentPos = invTBN * vs_out.viewPos.xyz;
