@@ -22,9 +22,13 @@ in TES_OUT {
   flat uint tileY;
 
 #ifdef USE_TBN
+#ifdef USE_TBN_FS_RECONSTRUCT
+  vec4 tangent;
+#else
   mat3 tbn;
 #endif
-#ifdef USE_PARALLAX
+#endif
+#if defined(USE_PARALLAX) && !defined(USE_TBN_FS_RECONSTRUCT)
   vec3 tangentPos;
 #endif
 
@@ -52,13 +56,24 @@ void main() {
   const uint materialIndex = fs_in.materialIndex;
 
   vec2 texCoord = fs_in.texCoord;
-  // #include "include/apply_parallax.glsl"
-
-  #include "include/var_tex_material.glsl"
 
   // NOTE KI interpolation from vs to fs denormalizes normal
   vec3 normal = normalize(fs_in.normal);
+
+#ifdef USE_TBN_FS_RECONSTRUCT
+  #include "include/var_calculate_tbn.glsl"
+  // #include "include/apply_parallax_local.glsl"
+#else
+  // #include "include/apply_parallax.glsl"
+#endif
+
+  #include "include/var_tex_material.glsl"
+
+#ifdef USE_TBN_FS_RECONSTRUCT
+  #include "include/apply_normal_map_local.glsl"
+#else
   #include "include/apply_normal_map.glsl"
+#endif
 
   // if (!gl_FrontFacing) {
   //   normal = -normal;

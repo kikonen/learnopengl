@@ -22,7 +22,11 @@ in VS_OUT {
   flat uint materialIndex;
 
 #ifdef USE_TBN
+#ifdef USE_TBN_FS_RECONSTRUCT
+  vec4 tangent;
+#else
   mat3 tbn;
+#endif
 #endif
 } fs_in;
 
@@ -70,6 +74,18 @@ void main() {
   const uint materialIndex = fs_in.materialIndex;
 
   vec2 texCoord = fs_in.texCoord;
+
+  // Water has no parallax; var_calculate_tbn.glsl still runs so the inline
+  // normal-map block below (which uses distortedTexCoord, not texCoord) can
+  // use the FS-reconstructed tbn. `normal` is declared here (unconditionally
+  // under new path) so later code can use it even when USE_TBN is off.
+#ifdef USE_TBN_FS_RECONSTRUCT
+  vec3 normal = normalize(fs_in.normal);
+#ifdef USE_TBN
+  #include "include/var_calculate_tbn.glsl"
+#endif
+#endif
+
   #include "include/apply_parallax.glsl"
 
   #include "include/var_tex_material.glsl"
@@ -96,6 +112,9 @@ void main() {
     }
   }
 
+#ifndef USE_TBN_FS_RECONSTRUCT
+  // Old path: declare `normal` here (new path already declared it early
+  // so var_calculate_tbn.glsl could build the basis).
 #ifdef USE_NORMAL_TEX
   vec3 normal;
   if (Debug.u_normalMapEnabled) {
@@ -109,6 +128,17 @@ void main() {
   }
 #else
   vec3 normal = normalize(fs_in.normal);
+#endif
+#else
+  // New path: `normal` was declared early. Re-apply normal map if present.
+#if defined(USE_NORMAL_TEX) && defined(USE_TBN)
+  if (Debug.u_normalMapEnabled) {
+    sampler2D sampler = sampler2D(u_materials[materialIndex].normalMapTex);
+
+    normal = texture(sampler, distortedTexCoord).rgb;
+    normal = normalize(tbn * normal);
+  }
+#endif
 #endif
 
   // estimate the normal using the noise texture

@@ -2,7 +2,7 @@
 
 layout (location = ATTR_POS) in vec3 a_pos;
 layout (location = ATTR_NORMAL) in vec3 a_normal;
-#ifdef USE_PARALLAX
+#if defined(USE_PARALLAX) && !defined(USE_TBN_FS_RECONSTRUCT)
 layout (location = ATTR_TANGENT) in vec4 a_tangent;
 #endif
 layout (location = ATTR_TEX) in vec2 a_texCoord;
@@ -38,7 +38,7 @@ out VS_OUT {
   flat float rangeYmax;
   flat uvec2 heightMapTex;
 
-#ifdef USE_PARALLAX
+#if defined(USE_PARALLAX) && !defined(USE_TBN_FS_RECONSTRUCT)
   vec3 tangentPos;
 #endif
 } vs_out;
@@ -78,7 +78,7 @@ void main() {
   worldPos = modelMatrix * pos;
 
   normal = normalize(viewNormalMatrix * normal);
-#ifdef USE_PARALLAX
+#if defined(USE_PARALLAX) && !defined(USE_TBN_FS_RECONSTRUCT)
   vec3 tangent = normalize(viewNormalMatrix * DECODE_A_TANGENT(a_tangent));
   float tangentW = DECODE_A_TANGENT_W(a_tangent);
 #endif
@@ -121,7 +121,7 @@ void main() {
 
   vs_out.normal = normal;
 
-#ifdef USE_PARALLAX
+#if defined(USE_PARALLAX) && !defined(USE_TBN_FS_RECONSTRUCT)
   {
     // NOTE KI Gram-Schmidt process to re-orthogonalize
     // https://learnopengl.com/Advanced-Lighting/Normal-Mapping

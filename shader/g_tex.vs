@@ -35,9 +35,15 @@ out VS_OUT {
   flat uint flags;
 
 #ifdef USE_TBN
+#ifdef USE_TBN_FS_RECONSTRUCT
+  // xyz = tangent (view space, not yet Gram-Schmidt'd against interpolated N);
+  // w   = handedness
+  vec4 tangent;
+#else
   mat3 tbn;
 #endif
-#ifdef USE_PARALLAX
+#endif
+#if defined(USE_PARALLAX) && !defined(USE_TBN_FS_RECONSTRUCT)
   vec3 tangentPos;
 #endif
 
@@ -136,8 +142,8 @@ void main() {
 #endif
   } else {
     normal = DECODE_A_NORMAL(a_normal);
-    // TODO KI *WHY* when rotated 180 aorund Y this makes it correct
-    normal = -normal;
+    // // TODO KI *WHY* when rotated 180 aorund Y this makes it correct
+    // normal = -normal;
 #ifdef USE_TBN
     tangent = DECODE_A_TANGENT(a_tangent);
     tangentW = DECODE_A_TANGENT_W(a_tangent);
@@ -215,6 +221,11 @@ void main() {
   // calculateCustomClipping(worldPos);
 
 #ifdef USE_TBN
+#ifdef USE_TBN_FS_RECONSTRUCT
+  // Ship raw tangent + handedness; FS reconstructs B and does Gram-Schmidt
+  // against the interpolated normal via var_calculate_tbn.glsl.
+  vs_out.tangent = vec4(tangent, tangentW);
+#else
   {
     // NOTE KI Gram-Schmidt process to re-orthogonalize
     // https://learnopengl.com/Advanced-Lighting/Normal-Mapping
@@ -229,6 +240,7 @@ void main() {
     vs_out.tangentPos  = invTBN * vs_out.viewPos.xyz;
 #endif
   }
+#endif
 #endif
 
 #ifdef USE_GL_POINTS

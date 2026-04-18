@@ -29,7 +29,11 @@ out VS_OUT {
   flat uint materialIndex;
 
 #ifdef USE_TBN
+#ifdef USE_TBN_FS_RECONSTRUCT
+  vec4 tangent;
+#else
   mat3 tbn;
+#endif
 #endif
 } vs_out;
 
@@ -74,6 +78,9 @@ void main() {
     vec3 tangent = normalize(viewNormalMatrix * DECODE_A_TANGENT(a_tangent));
     float tangentW = DECODE_A_TANGENT_W(a_tangent);
 
+#ifdef USE_TBN_FS_RECONSTRUCT
+    vs_out.tangent = vec4(tangent, tangentW);
+#else
     // NOTE KI Gram-Schmidt process to re-orthogonalize
     // https://learnopengl.com/Advanced-Lighting/Normal-Mapping
     tangent = normalize(tangent - dot(tangent, normal) * normal);
@@ -81,6 +88,7 @@ void main() {
     const vec3 bitangent = cross(normal, tangent) * tangentW;
 
     vs_out.tbn = mat3(tangent, bitangent, normal);
+#endif
   }
 #endif
 }
