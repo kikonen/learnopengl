@@ -2,6 +2,7 @@
 
 #include <fmt/format.h>
 
+#include "debug/DebugContext.h"
 #include "engine/UpdateContext.h"
 
 #include "ki/sid.h"
@@ -43,11 +44,13 @@ namespace text {
     FontRegistry::~FontRegistry()
     {
         m_fonts.clear();
+        m_fontIds.clear();
     }
 
     void FontRegistry::clear()
     {
         m_fonts.clear();
+        m_fontIds.clear();
 
         // NOTE KI reserve 0 for null font
         registerFont({});
@@ -60,6 +63,9 @@ namespace text {
 
             m_defaultFontId = registerFont(std::move(font));
         }
+
+        auto& dbg = debug::DebugContext::get().edit();
+        dbg.m_showFontId = m_defaultFontId;
     }
 
     void FontRegistry::prepareRT()
@@ -98,6 +104,8 @@ namespace text {
             src.m_id = fontId;
             m_fonts.insert({ fontId, std::move(src) });
         }
+
+        m_fontIds.push_back(fontId);
 
         return fontId;
     }

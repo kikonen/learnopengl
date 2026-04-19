@@ -100,7 +100,7 @@ public:
         const model::Node& container,
         const model::Snapshot& snapshot);
 
-    virtual void bindBatch(
+    virtual void addToBatch(
         const render::RenderContext& ctx,
         const std::function<ki::program_id (const render::DrawableInfo&)>& programSelector,
         const std::function<void(ki::program_id)>& programPrepare,
@@ -108,8 +108,8 @@ public:
         render::Batch& batch,
         const model::Node& container);
 
-    virtual void updateVAO(
-        const render::RenderContext& ctx,
+    virtual void updateRT(
+        const UpdateContext& ctx,
         const model::Node& container) {}
 
     virtual const std::vector<mesh::LodMesh>* getEnabledMeshes(const model::Node& container) const

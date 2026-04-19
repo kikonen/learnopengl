@@ -501,9 +501,7 @@ namespace render {
         uint8_t kindBits)
     {
         if (node->m_typeFlags.invisible || !node->m_visible || !node->m_alive) return;
-
-        node->updateVAO(ctx);
-        node->bindBatch(ctx, programSelector, programPrepare, kindBits, *this);
+        node->addToBatch(ctx, programSelector, programPrepare, kindBits, *this);
     }
 
     bool Batch::isFlushed() const noexcept

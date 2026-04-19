@@ -104,7 +104,7 @@ void Registry::clear()
     terrain::TerrainTileRegistry::get().clear();
 
     text::TextSystem::get().clear();
-    //text::FontRegistry::get().clear();
+    text::FontRegistry::get().clear();
 
     ControllerRegistry::get().clear();
     MeshSetRegistry::get().clear();
@@ -164,6 +164,9 @@ void Registry::updateRT(const UpdateContext& ctx)
     ProgramRegistry::get().dirtyCheck(ctx);
     ProgramRegistry::get().updateRT(ctx);
 
+    text::FontRegistry::get().updateRT(ctx);
+    text::TextSystem::get().updateRT(ctx);
+
     MaterialRegistry::get().updateRT(ctx);
     NodeRegistry::get().updateRT(ctx);
     //SelectionRegistry::get().updateRT(ctx);
@@ -172,9 +175,6 @@ void Registry::updateRT(const UpdateContext& ctx)
     decal::DecalSystem::get().updateRT(ctx);
     animation::AnimationSystem::get().updateRT(ctx);
     terrain::TerrainTileRegistry::get().updateRT(ctx);
-
-    text::FontRegistry::get().updateRT(ctx);
-    text::TextSystem::get().updateRT(ctx);
 
     VaoRegistry::get().updateRT(ctx);
 }

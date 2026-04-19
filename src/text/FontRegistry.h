@@ -39,10 +39,16 @@ namespace text {
         text::font_id registerFont(
             text::FontAtlas&& src);
 
+        const std::vector<text::font_id>& getFontIds() const noexcept
+        {
+            return m_fontIds;
+        }
+
     private:
         mutable std::shared_mutex m_lock{};
 
         std::unordered_map<text::font_id, text::FontAtlas> m_fonts;
+        std::vector<text::font_id> m_fontIds;
 
         text::font_id m_defaultFontId{ 0 };
     };

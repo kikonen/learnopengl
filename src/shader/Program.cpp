@@ -385,7 +385,7 @@ void Program::createProgram() {
             glDeleteShader(shaderId);
         }
 
-        KI_INFO_OUT(fmt::format("PROGRAM::CREATED: key={}, local_id={}, glsl_id={}", m_key, m_id, m_programId));
+        KI_INFO_OUT(fmt::format("PROGRAM::CREATED: key={}, local_id={}, glsl_id={}", m_key, m_id, programId));
     }
 
     for (auto& [type, source] : m_sources) {

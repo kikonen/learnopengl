@@ -90,8 +90,8 @@ void TextGenerator::updateWT(
 //    entity->u_volume = volume;
 //}
 
-void TextGenerator::updateVAO(
-    const render::RenderContext& ctx,
+void TextGenerator::updateRT(
+    const UpdateContext& ctx,
     const model::Node& container)
 {
     if (!m_dirty) return;
@@ -194,7 +194,7 @@ void TextGenerator::updateVAO(
     //}
 }
 
-void TextGenerator::bindBatch(
+void TextGenerator::addToBatch(
     const render::RenderContext& ctx,
     const std::function<ki::program_id (const render::DrawableInfo&)>& programSelector,
     const std::function<void(ki::program_id)>& programPrepare,

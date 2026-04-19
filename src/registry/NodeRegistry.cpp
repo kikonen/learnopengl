@@ -490,6 +490,21 @@ void NodeRegistry::updateRT(const UpdateContext& ctx)
     auto* root = getRootRT();
     m_rootPreparedRT = root && root->m_preparedRT;
 
+    {
+        const auto& snapshots = m_snapshotBuffer.getSnapshots();
+        auto& cachedNodes = getCachedNodesRT();
+     
+        for (int entityIndex = ID_ENTITY_INDEX + 1; entityIndex < snapshots.size(); entityIndex++) {
+            // NOTE KI skip free/root slot
+            if (entityIndex >= m_parentIndeces.size() || m_parentIndeces[entityIndex] == 0) continue;
+
+            auto* node = cachedNodes[entityIndex];
+            if (!node) continue;
+
+            node->updateRT(ctx);
+        }
+    }
+
     updateDrawables();
 }
 

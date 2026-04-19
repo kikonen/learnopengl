@@ -2,6 +2,7 @@
 
 #include <string>
 #include <vector>
+#include <mutex>
 
 #include "util/Ref.h"
 
@@ -51,11 +52,11 @@ public:
         const UpdateContext& ctx,
         const model::Node& container) override;
 
-    void updateVAO(
-        const render::RenderContext& ctx,
+    void updateRT(
+        const UpdateContext& ctx,
         const model::Node& container) override;
 
-    void bindBatch(
+    void addToBatch(
         const render::RenderContext& ctx,
         const std::function<ki::program_id (const render::DrawableInfo&)>& programSelector,
         const std::function<void(ki::program_id)>& programPrepare,
@@ -77,9 +78,13 @@ public:
         }
     }
 
-    std::string getText() const noexcept { return m_text; }
+    std::string getText() const noexcept {
+        std::lock_guard lock{ m_lock };
+        return m_text;
+    }
 
     void setText(std::string_view text) {
+        std::lock_guard lock{ m_lock };
         if (m_text != text) {
             m_text = text;
             m_dirty = true;
@@ -116,6 +121,7 @@ public:
 
 private:
     bool m_dirty{ true };
+    mutable std::mutex m_lock{};
 
     AABB m_aabb;
 
