@@ -1,0 +1,158 @@
+---
+meta:
+  name: Text
+skybox:
+  xmaterial: skybox/polyhaven/wasteland_clouds_puresky_4k.hdr
+  material: skybox/polyhaven/borghese_gardens_4k.hdr
+script:
+  scripts:
+    - path: lib/common
+
+includes:
+  - path: prefab/util/include_grid.yml
+  - path: prefab/util/include_origo_marker.yml
+
+types:
+  - id: player
+    type: origo
+    camera:
+      default: true
+    controllers:
+      - type: pawn
+      - type: camera_zoom
+    audio:
+      listener:
+        default: true
+  - id: font_atlas
+    mesh:
+      path: quad
+      base_scale: 0.5
+      material:
+        kd: [1, 1, 1, 1]
+        #map_custom_1: fonts/blade_runner.png
+        #mras: [1.0, 0.0, 0, 1]
+        #alpha: true
+        render_back: true
+        updater_id: font_atlas_1
+        default_programs: false
+        program: font_atlas_demo
+        shadow_program: font_atlas_demo
+    flags:
+      xeffect: true
+    #layer: ui
+    xscript: |
+      cmd:rotate(
+        self.handle,
+        { time=60 * 100 },
+        vec3(0, 1, 0),
+        360 * 100)
+  - id: hello_world_origo
+    xmesh:
+      vertex:
+        type: sphere
+        radius: 0.05
+      material:
+        prefab: materials/Plastic01.yml
+        tiling: 1
+        program: g_tex
+  - id: hello_world
+    layer: ui
+    type: text
+    mesh:
+      material:
+        #prefab: materials/Plastic01.yml
+        xprefab: materials/Fence007A.yml
+        #prefab: materials/Metal007.yml
+        #prefab: materials/PavingStones115C.yml
+        #map_displacement: ""
+        tiling: 3
+        alpha: true
+        xblend: true
+        render_back: true
+        default_programs: false
+        program: g_font_render
+        oit_program: oit_font_render
+        shadow_program: shadow_font_render
+        selection_program: selection_font_render
+        id_program: object_id_font_render
+        shared_definitions:
+          USE_GLOW: 1
+          USE_OUTLINE: 1
+      xflags:
+        billboard: true
+    text:
+      font:
+        path: fonts/LuckiestGuy.ttf
+        xpath: fonts/BLADRMF_.TTF
+        size: 32
+      text: "Hellö wörld\nSecond\nThird\nand last"
+      pivot: [0, 0]
+      align_horizontal: center
+      align_vertical: center
+    flags:
+      xeffect: true
+      no_shadow: true
+      no_frustum: true
+    base_scale: 0.01
+  - id: another_text
+    type: text
+    mesh:
+      xflags:
+        billboard: true
+      material:
+        name: another_text
+        prefab: materials/Leather037
+        map_displacement: ""
+        tiling: 1
+        alpha: true
+        blend: true
+        render_back: true
+        default_programs: false
+        program: g_font_render
+        oit_program: oit_font_render
+        shadow_program: shadow_font_render
+        selection_program: selection_font_render
+        id_program: object_id_font_render
+    text:
+      font:
+        path: fonts/Lobster-Regular.ttf
+      text: Look at ME
+      align_horizontal: center
+      align_vertical: center
+  - id: directional_light
+    mesh:
+      path: light
+      material_modifier:
+        kd: [0.8, 0.8, 0.6, 1.0]
+      program: g_light
+    flags:
+      no_shadow: true
+    light:
+      type: directional
+      diffuse: [0.4, 0.4, 0.4, 1.0]
+      xdiffuse: [0.0, 0.9, 0.0, 1.0]
+      intensity: 30000
+
+nodes:
+  - type: prefab_grid
+  - type: player
+    pos: [2, 2, 3]
+    rot: [0, 180, 0]
+    active: true
+  - type: font_atlas
+    pos: [4.0, 2.0, 0.2]
+    #pos: [1.5, 0.5, -4]
+  - type: hello_world_origo
+    pos: [0.0, 4.0, -3.0]
+  - type: hello_world
+    pos: [0.0, 0.0, -2]
+  - xtype: another_text
+    pos: [2, 5, -8.5]
+    scale: 0.01
+  - type: directional_light
+    pos: [-15, 25, 40]
+    scale: 2.5
+
+material_updaters:
+- id: font_atlas_1
+  type: font_atlas

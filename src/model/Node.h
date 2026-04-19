@@ -146,7 +146,8 @@ namespace model
             const PrepareContext& ctx,
             const Snapshot& snapshot);
 
-        void updateVAO(const render::RenderContext& ctx) noexcept;
+        void updateRT(
+            const UpdateContext& ctx) noexcept;
 
         void registerDrawables(
             render::InstanceRegistry& instanceRegistry,
@@ -156,7 +157,7 @@ namespace model
             render::InstanceRegistry& instanceRegistry,
             const Snapshot& snapshot) noexcept;
 
-        void bindBatch(
+        void addToBatch(
             const render::RenderContext& ctx,
             const std::function<ki::program_id(const render::DrawableInfo&)>& programSelector,
             const std::function<void(ki::program_id)>& programPrepare,
