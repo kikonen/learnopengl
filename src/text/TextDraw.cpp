@@ -287,15 +287,6 @@ namespace text
     TextDraw::~TextDraw()
     {}
 
-    void TextDraw::prepareRT(
-        const PrepareContext& ctx)
-    {
-    }
-
-    void TextDraw::updateRT()
-    {
-    }
-
     void TextDraw::render(
         text::font_id fontId,
         std::string_view text,
@@ -325,9 +316,5 @@ namespace text
 
         mesh->m_vertexCount = static_cast<uint32_t>(mesh->m_vertices.size());
         mesh->m_indexCount = static_cast<uint32_t>(mesh->m_indeces.size());
-    }
-
-    void TextDraw::clear()
-    {
     }
 }

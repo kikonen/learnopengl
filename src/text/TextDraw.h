@@ -28,11 +28,6 @@ namespace text
         TextDraw();
         ~TextDraw();
 
-        void prepareRT(
-            const PrepareContext& ctx);
-
-        void updateRT();
-
         void render(
             text::font_id fontId,
             std::string_view text,
@@ -40,7 +35,5 @@ namespace text
             text::Align alignHorizontal,
             text::Align alignVertical,
             mesh::TextMesh* mesh);
-
-        void clear();
     };
 }
