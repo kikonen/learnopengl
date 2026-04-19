@@ -74,31 +74,31 @@ namespace animation
 
         // Register node instance specific rig
         util::BufferReference registerSockets(
-            util::BufferReference rigRef,
+            const util::BufferReference rigRef,
             const animation::Rig& rig);
 
         // Register node instance specific rig
         util::BufferReference registerJoints(
-            util::BufferReference rigRef,
+            const util::BufferReference rigRef,
             const animation::JointContainer& jointContainer);
 
         // @return null ref
         util::BufferReference unregisterRig(
-            util::BufferReference rigRef);
+            const util::BufferReference rigRef);
 
         // @return null ref
         util::BufferReference unregisterSockets(
-            util::BufferReference socketRef);
+            const util::BufferReference socketRef);
 
         // @return null ref
         util::BufferReference unregisterJoints(
-            util::BufferReference jointRef);
+            const util::BufferReference jointRef);
 
         const glm::mat4& getSocketTransform(
             uint32_t index) const noexcept;
 
         std::span<const glm::mat4> getRigNodeTransforms(
-            util::BufferReference ref) const noexcept;
+            const util::BufferReference ref) const noexcept;
 
         animation::AnimationState* getState(
             pool::NodeHandle handle);

@@ -37,26 +37,30 @@ namespace render
         // @return ref to buffer
         util::BufferReference allocate(size_t count);
         // @return null ref
-        util::BufferReference release(util::BufferReference ref);
+        util::BufferReference release(const util::BufferReference ref);
 
         std::span<const render::DrawableInfo> getRange(
             const util::BufferReference ref) const noexcept;
 
         std::span<render::DrawableInfo> modifyRange(
-            util::BufferReference ref) noexcept;
+            const util::BufferReference ref) noexcept;
 
         void markDirtyAll() noexcept;
-        void markDirty(util::BufferReference ref) noexcept;
+        void markDirty(
+            const util::BufferReference ref) noexcept;
 
-        void prepareInstances(util::BufferReference ref) noexcept;
-        void updateInstances(util::BufferReference ref) noexcept;
+        void prepareInstances(
+            const util::BufferReference ref) noexcept;
+        void updateInstances(
+            const util::BufferReference ref) noexcept;
 
         //void updateInstances();
 
         // Upload to GPU (call once per frame after updateTransforms)
         void upload();
 
-        void upload(util::BufferReference ref);
+        void upload(
+            const util::BufferReference ref);
 
         size_t getDrawableCount() const { return m_drawables.size(); }
 

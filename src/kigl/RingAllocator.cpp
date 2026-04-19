@@ -153,12 +153,16 @@ namespace kigl
             m_name, m_sizePerFrame, totalSize()));
     }
 
-    void RingAllocator::bindUBO(GLuint binding, const util::BufferReference& ref)
+    void RingAllocator::bindUBO(
+        GLuint binding,
+        const util::BufferReference ref)
     {
         m_buffer.bindUBORange(binding, ref.offset, ref.size);
     }
 
-    void RingAllocator::bindSSBO(GLuint binding, const util::BufferReference& ref)
+    void RingAllocator::bindSSBO(
+        GLuint binding,
+        const util::BufferReference ref)
     {
         m_buffer.bindSSBORange(binding, ref.offset, ref.size);
     }
@@ -168,7 +172,8 @@ namespace kigl
         m_buffer.bindDrawIndirect();
     }
 
-    void RingAllocator::flushRange(const util::BufferReference& ref)
+    void RingAllocator::flushRange(
+        const util::BufferReference ref)
     {
         // NOTE KI GLBuffer::flushRange handles size==0 and checks GL_MAP_FLUSH_EXPLICIT_BIT
         m_buffer.flushRange(ref.offset, ref.size);

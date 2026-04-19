@@ -74,7 +74,7 @@ namespace animation
     }
 
     util::BufferReference RigNodeRegistry::release(
-        util::BufferReference ref)
+        const util::BufferReference ref)
     {
         ASSERT_WT();
 
@@ -106,7 +106,7 @@ namespace animation
     }
 
     std::span<glm::mat4> RigNodeRegistry::modifyRange(
-        util::BufferReference ref) noexcept
+        const util::BufferReference ref) noexcept
     {
         // NOTE KI modifying null socket is not allowed
         if (ref.offset == 0) return std::span<glm::mat4>{};
@@ -125,7 +125,7 @@ namespace animation
     }
 
     void RigNodeRegistry::markDirty(
-        util::BufferReference ref) noexcept
+        const util::BufferReference ref) noexcept
     {
         if (ref.size == 0) return;
 

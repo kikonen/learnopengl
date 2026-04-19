@@ -134,7 +134,8 @@ void NodeGenerator::addToBatch(
         kindBits);
 }
 
-void NodeGenerator::markDirty(util::BufferReference ref)
+void NodeGenerator::markDirty(
+    const util::BufferReference ref)
 {
     //ASSERT_WT();
     if (ref.size == 0) return;

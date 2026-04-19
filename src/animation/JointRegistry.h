@@ -46,16 +46,16 @@ namespace animation {
         // @return instance index into joint transform buffer
         util::BufferReference allocate(size_t count);
         // @return null ref
-        util::BufferReference release(util::BufferReference ref);
+        util::BufferReference release(const util::BufferReference ref);
 
 		std::span<const glm::mat4> getRange(
 			const util::BufferReference ref) const noexcept;
 
         std::span<glm::mat4> modifyRange(
-            util::BufferReference ref) noexcept;
+            const util::BufferReference ref) noexcept;
 
         void markDirtyAll() noexcept;
-        void markDirty(util::BufferReference ref) noexcept;
+        void markDirty(const util::BufferReference ref) noexcept;
 
     private:
         void makeSnapshot();

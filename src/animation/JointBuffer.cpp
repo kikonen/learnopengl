@@ -85,7 +85,7 @@ namespace animation
 
     void JointBuffer::uploadSpan(
         const std::vector<JointTransformSSBO>& snapshot,
-        const util::BufferReference& range)
+        const util::BufferReference range)
     {
         if (range.size == 0) return;
         if (range.offset >= snapshot.size()) return;

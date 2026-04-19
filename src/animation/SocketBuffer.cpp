@@ -87,7 +87,7 @@ namespace animation
 
     void SocketBuffer::uploadSpan(
         const std::vector<SocketTransformSSBO>& snapshot,
-        const util::BufferReference& range)
+        const util::BufferReference range)
     {
         if (range.size == 0) return;
         if (range.offset >= snapshot.size()) return;

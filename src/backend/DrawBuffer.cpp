@@ -233,7 +233,7 @@ namespace backend {
     {
         // NOTE KI flush command buffer for explicit mode (no-op if using coherent mapping)
         {
-            util::BufferReference cmdRef{
+            const util::BufferReference cmdRef{
                 m_currentCommandAlloc.ref.offset,
                 m_commandCount * sizeof(backend::gl::DrawIndirectCommand)
             };

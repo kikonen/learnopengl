@@ -82,7 +82,7 @@ namespace animation
     }
 
     util::BufferReference JointRegistry::release(
-        util::BufferReference ref)
+        const util::BufferReference ref)
     {
         ASSERT_WT();
 
@@ -103,7 +103,7 @@ namespace animation
     }
 
     std::span<glm::mat4> JointRegistry::modifyRange(
-        util::BufferReference ref) noexcept
+        const util::BufferReference ref) noexcept
     {
         // NOTE KI modifying null socket is not allowed
         if (ref.offset == 0) return std::span<glm::mat4>{};
@@ -121,7 +121,7 @@ namespace animation
     }
 
     void JointRegistry::markDirty(
-        util::BufferReference ref) noexcept
+        const util::BufferReference ref) noexcept
     {
         m_dirtySlots.markDirty(ref);
     }
@@ -135,7 +135,7 @@ namespace animation
     {
         std::lock_guard lock(m_lock);
 
-        m_dirtySlots.processAndClear(m_dirtySnapshot, [this](const util::BufferReference& ref) {
+        m_dirtySlots.processAndClear(m_dirtySnapshot, [this](const util::BufferReference ref) {
             const auto baseIndex = ref.offset;
             const auto updateCount = ref.size;
 

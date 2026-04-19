@@ -38,7 +38,7 @@ namespace animation {
         void upload();
         void uploadSpan(
             const std::vector<SocketTransformSSBO>& snapshot,
-            const util::BufferReference& range);
+            const util::BufferReference range);
 
         void resizeBuffer(size_t totalCount);
 
