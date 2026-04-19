@@ -34,62 +34,12 @@
 
 
 TextGenerator::TextGenerator()
+    : m_draw{ std::make_unique<text::TextDraw>() }
 {
-    //m_lightWeight = true;
+    m_updateDrawables = true;
 }
 
 TextGenerator::~TextGenerator() = default;
-
-void TextGenerator::prepareWT(
-    const PrepareContext& ctx,
-    model::Node& container)
-{
-    ASSERT_WT();
-}
-
-void TextGenerator::prepareRT(
-    const PrepareContext& ctx,
-    model::Node& container,
-    const model::Snapshot& snapshot)
-{
-    //m_mesh = util::Ref<mesh::TextMesh>::create();
-    //m_mesh->prepareVAO();
-
-    //{
-    //    auto& lodMesh = m_lodMeshes.emplace_back();
-    //    lodMesh.setMesh(m_mesh);
-
-    //    auto* src = container.modifyLodMesh(0);
-    //    lodMesh.setMaterial(src->getMaterial());
-    //    lodMesh.m_drawOptions = src->m_drawOptions;
-    //    lodMesh.prepareRT(ctx);
-    //}
-
-    m_draw = std::make_unique<text::TextDraw>();
-}
-
-void TextGenerator::updateWT(
-    const UpdateContext& ctx,
-    const model::Node& container)
-{
-    ASSERT_WT();
-}
-
-//void TextGenerator::updateEntity(
-//    EntityRegistry& entityRegistry,
-//    Node& container)
-//{
-//    auto& state = container.modifyState();
-//    auto& snapshot = snapshotRegistry.modifySnapshot(container.m_snapshotIndex);
-//    auto* entity = entityRegistry.modifyEntity(container.getEntityIndex(), true);
-//
-//    //const glm::vec4 volume{ 0.f, 0.f, 0.f, m_aabb.getVolume().w };
-//    const glm::vec4& volume = m_aabb.getVolume();
-//
-//    state.setLocalVolume(volume);
-//    snapshot.setLocalVolume(volume);
-//    entity->u_volume = volume;
-//}
 
 void TextGenerator::updateRT(
     const UpdateContext& ctx,
@@ -114,7 +64,7 @@ void TextGenerator::updateRT(
         m_alignVertical,
         mesh);
 
-    m_aabb = mesh->calculateAABB(glm::mat4{1.f});
+    const auto& aabb = mesh->calculateAABB(glm::mat4{1.f});
 
     text::TextVAO* vao = text::TextSystem::get().getTextVAO();
 
@@ -135,7 +85,7 @@ void TextGenerator::updateRT(
     SphereVolume worldVolume;
     {
         const auto* snapshot = container.getSnapshotRT();
-        const auto& localVolume = m_aabb.toLocalVolume();
+        const auto& localVolume = aabb.toLocalVolume();
         worldVolume = localVolume.calculateWorldVolume(
             snapshot->getModelMatrix(),
             snapshot->getMaxScale());
@@ -147,54 +97,20 @@ void TextGenerator::updateRT(
         auto drawables = instanceRegistry.modifyRange(ref);
         auto& drawable = drawables[0];
         {
-            //drawable.lodMeshIndex = 0;
-
-            //drawable.meshId = lodMesh.getMesh<mesh::TextMesh>()->getId();
-
-            //drawable.entityIndex = 1;
-            //drawable.materialIndex = lodMesh.m_materialIndex;
-            //drawable.jointBaseIndex = 0;
-
-            //drawable.baseVertex = lodMesh.m_baseVertex;
-            //drawable.baseIndex = lodMesh.m_baseIndex;
             drawable.indexCount = lodMesh.m_indexCount;
-
-            //drawable.minDistance2 = lodMesh.m_minDistance2;
-            //drawable.maxDistance2 = lodMesh.m_maxDistance2;
-
-            //drawable.vaoId = lodMesh.m_vaoId;
-            //drawable.drawOptions = lodMesh.m_drawOptions;
-
-            //drawable.programId = lodMesh.m_programId;
-            //drawable.oitProgramId = lodMesh.m_oitProgramId;
-            //drawable.shadowProgramId = lodMesh.m_shadowProgramId;
-            //drawable.preDepthProgramId = lodMesh.m_preDepthProgramId;
-            //drawable.selectionProgramId = lodMesh.m_selectionProgramId;
-            //drawable.idProgramId = lodMesh.m_idProgramId;
-            //drawable.normalProgramId = lodMesh.m_normalProgramId;
-
-            //drawable.localTransform = lodMesh.m_baseTransform;
-
             drawable.worldVolume = worldVolume;
         }
         instanceRegistry.markDirty(ref);
         instanceRegistry.updateInstances(ref);
         instanceRegistry.upload(ref);
     }
+}
 
-    //{
-    //    m_vao.m_positionVbo.m_positionOffset = m_aabb.getVolume();
-    //    mesh->m_positionVboOffset = m_vao.m_positionVbo.addEntries(mesh->m_positions);
-    //    mesh->m_indexEboOffset = m_vao.m_indexEbo.addIndeces(mesh->m_indeces);
-
-    //    m_vao.m_normalVbo.addEntries(mesh->m_normals);
-    //    m_vao.m_textureVbo.addEntries(mesh->m_texCoords);
-
-    //    m_vboAtlasTex.addEntries(mesh->m_atlasCoords);
-    //    m_vboAtlasTex.updateVAO(*m_vao.modifyVAO());
-
-    //    m_vao.updateRT();
-    //}
+void TextGenerator::updateDrawables(
+    render::InstanceRegistry& instanceRegistry,
+    const model::Node& container,
+    const model::Snapshot& snapshot)
+{
 }
 
 void TextGenerator::addToBatch(

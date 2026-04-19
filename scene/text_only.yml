@@ -61,7 +61,7 @@ types:
     mesh:
       material:
         #prefab: materials/Plastic01.yml
-        xprefab: materials/Fence007A.yml
+        prefab: materials/Fence007A.yml
         #prefab: materials/Metal007.yml
         #prefab: materials/PavingStones115C.yml
         #map_displacement: ""
@@ -120,13 +120,7 @@ types:
       align_horizontal: center
       align_vertical: center
   - id: directional_light
-    mesh:
-      path: light
-      material_modifier:
-        kd: [0.8, 0.8, 0.6, 1.0]
-      program: g_light
-    flags:
-      no_shadow: true
+    type: origo
     light:
       type: directional
       diffuse: [0.4, 0.4, 0.4, 1.0]
@@ -139,13 +133,14 @@ nodes:
     pos: [2, 2, 3]
     rot: [0, 180, 0]
     active: true
-  - type: font_atlas
+  - xtype: font_atlas
     pos: [4.0, 2.0, 0.2]
     #pos: [1.5, 0.5, -4]
   - type: hello_world_origo
     pos: [0.0, 4.0, -3.0]
   - type: hello_world
     pos: [0.0, 0.0, -2]
+    scale: 2
   - xtype: another_text
     pos: [2, 5, -8.5]
     scale: 0.01
