@@ -7,10 +7,12 @@ script:
   scripts:
     - path: lib/common
 
+includes:
+  - path: prefab/util/include_grid.yml
+
 types:
-  - id: grid
-    prefab:
-      path: prefab/util/prefab_grid.yml
+  - id: origo
+    type: origo
   - id: player
     type: origo
     audio:
@@ -76,13 +78,28 @@ types:
       program: g_tex
       shadow_program: shadow
       base_scale: 0.01
+  - id: elf_female_2
+    prefab:
+      path: prefab/characters/elf/female/prefab_elf_female.yml
+  - id: elf_female_3
+    type: composite
+    composite: elf_female_3_composite
+  - id: elf_female_3_body
+    prefab:
+      path: prefab/characters/elf/female/prefab_elf_female.yml
+
+composites:
+  - id: elf_female_3_composite
+    nodes:
+      - type: elf_female_3_body
+        tag: body
 
 nodes:
-  - type: grid
+  - type: prefab_grid
   - id: player
     type: player
     rotation: [0, 180, 0]
-    pos: [0, 1, 15]
+    pos: [0, 1, 5]
     active: true
   - type: dir_light
     pos: [-20, 25, 25]
@@ -90,6 +107,41 @@ nodes:
     pos: [0, 5, 10]
   - type: wooden_floor
     scale: 100
+
   - type: elf_female
-    pos: [0.0, 0.0, 0.0]
-    rot: [9, 180, 0]
+    pos: [0.0, 0.0, -4.0]
+  - type: elf_female
+    pos: [1.0, .0, -4.0]
+    rot: [0, 180, 0]
+
+  - type: origo
+    pos: [2.0, 0.0, -4.0]
+    children:
+      - type: elf_female
+  - type: origo
+    pos: [3.0, .0, -4.0]
+    rot: [0, 180, 0]
+    children:
+      - type: elf_female
+
+  # - type: elf_female_2
+  #   pos: [0.0, 0.0, -2.0]
+  # - type: elf_female_2
+  #   pos: [1.0, .0, -2.0]
+  #   rot: [0, 180, 0]
+
+  # - type: origo
+  #   pos: [2.0, 0.0, -2.0]
+  #   children:
+  #     - type: elf_female_2
+  # - type: origo
+  #   pos: [3.0, .0, -2.0]
+  #   rot: [0, 180, 0]
+  #   children:
+  #     - type: elf_female_2
+
+  # - type: elf_female_3
+  #   pos: [0.0, 0.0, 0.0]
+  # - type: elf_female_3
+  #   pos: [1.0, .0, 0.0]
+  #   rot: [0, 180, 0]

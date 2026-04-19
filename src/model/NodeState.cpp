@@ -157,6 +157,11 @@ namespace model
         {
             m_parentMatrixLevel = parent.m_matrixLevel;
             m_matrixLevel++;
+
+            if (parent.m_normalLevel != m_parentNormalLevel) {
+                m_parentNormalLevel = parent.m_normalLevel;
+                m_normalLevel++;
+            }
         }
 
         m_dirty = false;
