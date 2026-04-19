@@ -34,7 +34,9 @@
 
 
 TextGenerator::TextGenerator()
-{}
+{
+    //m_lightWeight = true;
+}
 
 TextGenerator::~TextGenerator() = default;
 
@@ -50,21 +52,20 @@ void TextGenerator::prepareRT(
     model::Node& container,
     const model::Snapshot& snapshot)
 {
-    m_mesh = util::Ref<mesh::TextMesh>::create();
-    m_mesh->prepareVAO();
+    //m_mesh = util::Ref<mesh::TextMesh>::create();
+    //m_mesh->prepareVAO();
 
-    {
-        auto& lodMesh = m_lodMeshes.emplace_back();
-        lodMesh.setMesh(m_mesh);
+    //{
+    //    auto& lodMesh = m_lodMeshes.emplace_back();
+    //    lodMesh.setMesh(m_mesh);
 
-        auto* src = container.modifyLodMesh(0);
-        lodMesh.setMaterial(src->getMaterial());
-        lodMesh.m_drawOptions = src->m_drawOptions;
-        lodMesh.prepareRT(ctx);
-    }
+    //    auto* src = container.modifyLodMesh(0);
+    //    lodMesh.setMaterial(src->getMaterial());
+    //    lodMesh.m_drawOptions = src->m_drawOptions;
+    //    lodMesh.prepareRT(ctx);
+    //}
 
     m_draw = std::make_unique<text::TextDraw>();
-    m_draw->prepareRT(ctx);
 }
 
 void TextGenerator::updateWT(
@@ -97,7 +98,7 @@ void TextGenerator::updateRT(
     if (!m_dirty) return;
     m_dirty = false;
 
-    auto& lodMesh = m_lodMeshes[0];
+    auto& lodMesh = *container.modifyLodMesh(0);
     auto* mesh = lodMesh.getMesh<mesh::TextMesh>();
 
     mesh->clear();
@@ -148,34 +149,36 @@ void TextGenerator::updateRT(
         {
             //drawable.lodMeshIndex = 0;
 
-            drawable.meshId = lodMesh.getMesh<mesh::Mesh>()->getId();
+            //drawable.meshId = lodMesh.getMesh<mesh::TextMesh>()->getId();
 
-            drawable.entityIndex = 1;
-            drawable.materialIndex = lodMesh.m_materialIndex;
-            drawable.jointBaseIndex = 0;
+            //drawable.entityIndex = 1;
+            //drawable.materialIndex = lodMesh.m_materialIndex;
+            //drawable.jointBaseIndex = 0;
 
-            drawable.baseVertex = lodMesh.m_baseVertex;
-            drawable.baseIndex = lodMesh.m_baseIndex;
+            //drawable.baseVertex = lodMesh.m_baseVertex;
+            //drawable.baseIndex = lodMesh.m_baseIndex;
             drawable.indexCount = lodMesh.m_indexCount;
 
-            drawable.minDistance2 = lodMesh.m_minDistance2;
-            drawable.maxDistance2 = lodMesh.m_maxDistance2;
+            //drawable.minDistance2 = lodMesh.m_minDistance2;
+            //drawable.maxDistance2 = lodMesh.m_maxDistance2;
 
-            drawable.vaoId = lodMesh.m_vaoId;
-            drawable.drawOptions = lodMesh.m_drawOptions;
+            //drawable.vaoId = lodMesh.m_vaoId;
+            //drawable.drawOptions = lodMesh.m_drawOptions;
 
-            drawable.programId = lodMesh.m_programId;
-            drawable.oitProgramId = lodMesh.m_oitProgramId;
-            drawable.shadowProgramId = lodMesh.m_shadowProgramId;
-            drawable.preDepthProgramId = lodMesh.m_preDepthProgramId;
-            drawable.selectionProgramId = lodMesh.m_selectionProgramId;
-            drawable.idProgramId = lodMesh.m_idProgramId;
-            drawable.normalProgramId = lodMesh.m_normalProgramId;
+            //drawable.programId = lodMesh.m_programId;
+            //drawable.oitProgramId = lodMesh.m_oitProgramId;
+            //drawable.shadowProgramId = lodMesh.m_shadowProgramId;
+            //drawable.preDepthProgramId = lodMesh.m_preDepthProgramId;
+            //drawable.selectionProgramId = lodMesh.m_selectionProgramId;
+            //drawable.idProgramId = lodMesh.m_idProgramId;
+            //drawable.normalProgramId = lodMesh.m_normalProgramId;
 
-            drawable.localTransform = lodMesh.m_baseTransform;
+            //drawable.localTransform = lodMesh.m_baseTransform;
 
             drawable.worldVolume = worldVolume;
         }
+        instanceRegistry.markDirty(ref);
+        instanceRegistry.updateInstances(ref);
         instanceRegistry.upload(ref);
     }
 
@@ -202,8 +205,6 @@ void TextGenerator::addToBatch(
     render::Batch& batch,
     const model::Node& container)
 {
-    m_draw->updateRT();
-
     batch.addDrawablesSingleNode(
         ctx,
         container.getType(),

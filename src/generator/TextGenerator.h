@@ -64,10 +64,10 @@ public:
         render::Batch& batch,
         const model::Node& container) override;
 
-    const std::vector<mesh::LodMesh>* getEnabledMeshes(const model::Node& container) const override
-    {
-        return &m_lodMeshes;
-    }
+    //const std::vector<mesh::LodMesh>* getEnabledMeshes(const model::Node& container) const override
+    //{
+    //    return &m_lodMeshes;
+    //}
 
     text::font_id getFontId() const noexcept { return m_fontId; }
 
@@ -125,8 +125,8 @@ private:
 
     AABB m_aabb;
 
-    util::Ref<mesh::TextMesh> m_mesh;
-    std::vector<mesh::LodMesh> m_lodMeshes;
+    //util::Ref<mesh::TextMesh> m_mesh;
+    //std::vector<mesh::LodMesh> m_lodMeshes;
     std::unique_ptr<text::TextDraw> m_draw;
 
     text::font_id m_fontId{ 0 };

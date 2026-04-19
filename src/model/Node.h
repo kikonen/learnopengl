@@ -127,7 +127,7 @@ namespace model
 
         const mesh::LodMesh* getLodMesh(uint8_t lodIndex) const noexcept;
 
-        mesh::LodMesh* modifyLodMesh(uint8_t lodIndex) noexcept;
+        mesh::LodMesh* modifyLodMesh(uint8_t lodIndex) const noexcept;
 
         const std::string& getName() const noexcept { return m_name; }
         void setName(std::string_view name) noexcept {
