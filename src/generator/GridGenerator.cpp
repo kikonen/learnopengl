@@ -35,6 +35,7 @@ GridGenerator::GridGenerator()
 {
     m_lightWeight = true;
     m_lightWeightPhysics = true;
+    m_updateDrawables = true;
 }
 
 void GridGenerator::prepareWT(

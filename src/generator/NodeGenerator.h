@@ -77,6 +77,11 @@ public:
         return m_lightWeightPhysics;
     }
 
+    inline bool isUpdateDrawables() const noexcept
+    {
+        return m_updateDrawables;
+    }
+
     virtual void prepareWT(
         const PrepareContext& ctx,
         model::Node& container) {}
@@ -134,6 +139,7 @@ public:
 protected:
     bool m_lightWeight{ false };
     bool m_lightWeightPhysics{ false };
+    bool m_updateDrawables{ false };
 
     uint32_t m_poolSize{ 0 };
 

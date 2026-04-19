@@ -336,7 +336,7 @@ namespace model
         render::InstanceRegistry& instanceRegistry,
         const Snapshot& snapshot) noexcept
     {
-        if (m_generator && m_generator->isLightWeight()) {
+        if (m_generator && m_generator->isUpdateDrawables()) {
             m_generator->updateDrawables(
                 instanceRegistry,
                 *this,

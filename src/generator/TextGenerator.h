@@ -39,22 +39,14 @@ public:
 
     ~TextGenerator();
 
-    void prepareWT(
-        const PrepareContext& ctx,
-        model::Node& container) override;
-
-    void prepareRT(
-        const PrepareContext& ctx,
-        model::Node& container,
-        const model::Snapshot& snapshot) override;
-
-    void updateWT(
-        const UpdateContext& ctx,
-        const model::Node& container) override;
-
     void updateRT(
         const UpdateContext& ctx,
         const model::Node& container) override;
+
+    void updateDrawables(
+        render::InstanceRegistry& instanceRegistry,
+        const model::Node& container,
+        const model::Snapshot& snapshot) override;
 
     void addToBatch(
         const render::RenderContext& ctx,
@@ -63,11 +55,6 @@ public:
         uint8_t kindBits,
         render::Batch& batch,
         const model::Node& container) override;
-
-    //const std::vector<mesh::LodMesh>* getEnabledMeshes(const model::Node& container) const override
-    //{
-    //    return &m_lodMeshes;
-    //}
 
     text::font_id getFontId() const noexcept { return m_fontId; }
 
@@ -123,10 +110,6 @@ private:
     bool m_dirty{ true };
     mutable std::mutex m_lock{};
 
-    AABB m_aabb;
-
-    //util::Ref<mesh::TextMesh> m_mesh;
-    //std::vector<mesh::LodMesh> m_lodMeshes;
     std::unique_ptr<text::TextDraw> m_draw;
 
     text::font_id m_fontId{ 0 };

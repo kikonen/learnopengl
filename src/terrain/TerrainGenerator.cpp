@@ -50,6 +50,7 @@ namespace terrain {
         m_material = Material::createMaterial(BasicMaterial::gold);
         m_lightWeight = true;
         m_lightWeightPhysics = false;
+        m_updateDrawables = true;
     }
 
     TerrainGenerator::~TerrainGenerator() = default;
