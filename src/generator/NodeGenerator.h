@@ -122,7 +122,8 @@ public:
         return m_transforms;
     }
 
-    void markDirty(util::BufferReference ref);
+    void markDirty(
+        const util::BufferReference ref);
 
 public:
     GeneratorMode m_mode{ GeneratorMode::none };

@@ -88,16 +88,16 @@ namespace kigl
         void requestResize(size_t newSizePerFrame);
 
         // Bindings
-        void bindUBO(GLuint binding, const util::BufferReference& ref);
-        void bindSSBO(GLuint binding, const util::BufferReference& ref);
+        void bindUBO(GLuint binding, const util::BufferReference ref);
+        void bindSSBO(GLuint binding, const util::BufferReference ref);
         void bindDrawIndirect();
 
         // Flush written data (only needed when g_useExplicitFlush is true)
-        void flushRange(const util::BufferReference& ref);
+        void flushRange(const util::BufferReference ref);
 
         // Get pointer from reference (for deferred access)
         template<typename T>
-        T* mapped(const util::BufferReference& ref);
+        T* mapped(const util::BufferReference ref);
 
         // Accessors
         GLuint id() const { return m_buffer.id(); }
@@ -172,7 +172,7 @@ namespace kigl
     }
 
     template<typename T>
-    T* RingAllocator::mapped(const util::BufferReference& ref)
+    T* RingAllocator::mapped(const util::BufferReference ref)
     {
         return m_buffer.mapped<T>(ref.offset);
     }

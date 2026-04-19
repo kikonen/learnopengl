@@ -156,7 +156,7 @@ namespace animation
 
         auto& rigNodeRegistry = *m_rigNodeRegistry;
 
-        util::BufferReference rigRef = rigNodeRegistry.allocate(rig.m_nodes.size());
+        const util::BufferReference rigRef = rigNodeRegistry.allocate(rig.m_nodes.size());
 
         if (rigRef.size > 0) {
             // Initialize joints
@@ -174,7 +174,7 @@ namespace animation
     }
 
     util::BufferReference AnimationSystem::registerSockets(
-        util::BufferReference rigRef,
+        const util::BufferReference rigRef,
         const animation::Rig& rig)
     {
         std::lock_guard lock(m_pendingLock);
@@ -182,7 +182,7 @@ namespace animation
         auto& rigNodeRegistry = *m_rigNodeRegistry;
         auto& socketRegistry = *m_socketRegistry;
 
-        util::BufferReference socketRef = socketRegistry.allocate(rig.m_sockets.size());
+        const util::BufferReference socketRef = socketRegistry.allocate(rig.m_sockets.size());
 
         // NOTE KI all joints are initially identity matrix
         // NOTE KI sockets need to be initialiazed to match initial static joint hierarchy
@@ -206,7 +206,7 @@ namespace animation
     }
 
     util::BufferReference AnimationSystem::registerJoints(
-        util::BufferReference rigRef,
+        const util::BufferReference rigRef,
         const animation::JointContainer& jointContainer)
     {
         std::lock_guard lock(m_pendingLock);
@@ -214,7 +214,7 @@ namespace animation
         auto& rigNodeRegistry = *m_rigNodeRegistry;
         auto& jointRegistry = *m_jointRegistry;
 
-        util::BufferReference jointRef = jointRegistry.allocate(jointContainer.size());
+        const util::BufferReference jointRef = jointRegistry.allocate(jointContainer.size());
 
         // Initialize joints
         if (jointRef.size > 0) {
@@ -238,7 +238,7 @@ namespace animation
     }
 
     util::BufferReference AnimationSystem::unregisterRig(
-        util::BufferReference rigRef)
+        const util::BufferReference rigRef)
     {
         std::lock_guard lock(m_pendingLock);
 
@@ -250,7 +250,7 @@ namespace animation
     }
 
     util::BufferReference AnimationSystem::unregisterSockets(
-        util::BufferReference socketRef)
+        const util::BufferReference socketRef)
     {
         std::lock_guard lock(m_pendingLock);
 
@@ -262,7 +262,7 @@ namespace animation
     }
 
     util::BufferReference AnimationSystem::unregisterJoints(
-        util::BufferReference jointRef)
+        const util::BufferReference jointRef)
     {
         std::lock_guard lock(m_pendingLock);
 
@@ -280,7 +280,7 @@ namespace animation
     }
 
     std::span<const glm::mat4> AnimationSystem::getRigNodeTransforms(
-        util::BufferReference ref) const noexcept
+        const util::BufferReference ref) const noexcept
     {
         return m_rigNodeRegistry->getRange(ref);
     }

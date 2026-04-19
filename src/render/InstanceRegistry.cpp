@@ -104,7 +104,8 @@ namespace render
         return { offset, count };
     }
 
-    util::BufferReference InstanceRegistry::release(util::BufferReference ref)
+    util::BufferReference InstanceRegistry::release(
+        const util::BufferReference ref)
     {
         ASSERT_RT();
 
@@ -123,7 +124,7 @@ namespace render
     }
 
     std::span<DrawableInfo> InstanceRegistry::modifyRange(
-        util::BufferReference ref) noexcept
+        const util::BufferReference ref) noexcept
     {
         // NOTE KI modifying null socket is not allowed
         if (ref.offset == 0) return std::span<DrawableInfo>{};
@@ -141,12 +142,13 @@ namespace render
     }
 
     void InstanceRegistry::markDirty(
-        util::BufferReference ref) noexcept
+        const util::BufferReference ref) noexcept
     {
         m_dirtySlots.markDirty(ref);
     }
 
-    void InstanceRegistry::prepareInstances(util::BufferReference ref) noexcept
+    void InstanceRegistry::prepareInstances(
+        const util::BufferReference ref) noexcept
     {
         if (ref.size == 0) return;
 
@@ -166,7 +168,8 @@ namespace render
         m_needUpload = true;
     }
 
-    void InstanceRegistry::updateInstances(util::BufferReference ref) noexcept
+    void InstanceRegistry::updateInstances(
+        const util::BufferReference ref) noexcept
     {
         prepareInstances(ref);
         //if (ref.size == 0) return;
@@ -230,7 +233,8 @@ namespace render
         m_needUpload = false;
     }
 
-    void InstanceRegistry::upload(util::BufferReference ref)
+    void InstanceRegistry::upload(
+        const util::BufferReference ref)
     {
         constexpr size_t sz = sizeof(InstanceSSBO);
 

@@ -40,7 +40,7 @@ namespace animation {
 
         void uploadSpan(
             const std::vector<JointTransformSSBO>& snapshot,
-            const util::BufferReference& range);
+            const util::BufferReference range);
 
         void resizeBuffer(size_t totalCount);
 
