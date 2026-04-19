@@ -66,9 +66,17 @@ namespace model
         glm::vec3 m_modelScale{ 1.f };
         glm::quat m_modelRotation{ 1.f, 0.f, 0.f, 0.f };
 
+    public:
+        // Physics center offset from physics_center socket (local model space)
+        // Used to position physics capsule at animated center point
+        glm::vec3 m_physicsCenterOffset{ 0.f };
+
+        // Ground contact Y offset from foot sockets (local model space)
+        // Used for terrain placement of animated characters
+        float m_groundOffsetY{ 0.f };
+
         glm::u16vec2 m_aspectRatio{ 1 };
 
-    public:
         float m_tilingX{ 1.f };
         float m_tilingY{ 1.f };
 
@@ -81,15 +89,8 @@ namespace model
 
         ki::level_id m_parentMatrixLevel{ 0 };
         ki::level_id m_matrixLevel{ 0 };
+        ki::level_id m_parentNormalLevel{ 0 };
         ki::level_id m_normalLevel{ 0 };
-
-        // Ground contact Y offset from foot sockets (local model space)
-        // Used for terrain placement of animated characters
-        float m_groundOffsetY{ 0.f };
-
-        // Physics center offset from physics_center socket (local model space)
-        // Used to position physics capsule at animated center point
-        glm::vec3 m_physicsCenterOffset{ 0.f };
 
         bool m_dirty : 1 {true};
 

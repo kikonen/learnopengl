@@ -1,0 +1,71 @@
+---
+name: Origo
+skybox:
+  program: g_skybox
+  material: skybox/polyhaven/drakensberg_solitary_mountain_4k.hdr
+script:
+  scripts:
+    - path: lib/common
+
+includes:
+  - path: prefab/util/include_grid.yml
+
+types:
+  - id: origo
+    type: origo
+  - id: player
+    type: origo
+    audio:
+      listener:
+        default: true
+    camera:
+      default: true
+    controllers:
+      - type: pawn
+      - type: camera_zoom
+  - id: dir_light
+    type: origo
+    light:
+      type: directional
+      diffuse: [0.7, 0.7, 0.7, 1.0]
+      intensity: 30000
+  - id: elf_female
+    mesh:
+      path: fbx/characters/Elf/Bodies/Elf Female.fbx
+      materials:
+        - name: female_body
+          #base: ../textures/Elf Female Body/Elf Female 1
+          map_kd: ../textures/Elf Female Body/Elf Female 4/Elf_Female_RIG_female_body_AlbedoOpacity.png
+          map_normal: ../textures/Elf Female Body/Elf Female 1/Elf_Female_RIG_female_body_Normal.png
+          map_mras: ../textures/Elf Female Body/Elf Female 1/Elf_Female_RIG_female_body_mras
+          default_programs: true
+          unity: true
+      program: g_tex
+      shadow_program: shadow
+      base_scale: 0.01
+
+nodes:
+  - type: prefab_grid
+  - id: player
+    type: player
+    rotation: [0, 180, 0]
+    pos: [1, 1, 1]
+    active: true
+  - type: dir_light
+    pos: [-20, 25, 25]
+
+  - type: elf_female
+    pos: [0.0, 0.0, -4.0]
+  - type: elf_female
+    pos: [1.0, .0, -4.0]
+    rot: [0, 180, 0]
+
+  - type: origo
+    pos: [2.0, 0.0, -4.0]
+    children:
+      - type: elf_female
+  - type: origo
+    pos: [3.0, .0, -4.0]
+    rot: [0, 180, 0]
+    children:
+      - type: elf_female
