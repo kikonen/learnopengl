@@ -41,6 +41,11 @@ TextGenerator::TextGenerator()
 
 TextGenerator::~TextGenerator() = default;
 
+void TextGenerator::setMesh(const util::Ref<mesh::TextMesh> mesh)
+{
+    m_mesh = mesh;
+}
+
 void TextGenerator::updateRT(
     const UpdateContext& ctx,
     const model::Node& container)
@@ -48,8 +53,7 @@ void TextGenerator::updateRT(
     if (!m_dirty) return;
     m_dirty = false;
 
-    auto& lodMesh = *container.modifyLodMesh(0);
-    auto* mesh = lodMesh.getMesh<mesh::TextMesh>();
+    mesh::TextMesh* mesh = m_mesh.get();
 
     mesh->clear();
 
@@ -80,8 +84,6 @@ void TextGenerator::updateRT(
         mesh->m_vboIndex,
         mesh->m_atlasCoords);
 
-    lodMesh.m_indexCount = mesh->getIndexCount();
-
     SphereVolume worldVolume;
     {
         const auto* snapshot = container.getSnapshotRT();
@@ -97,7 +99,7 @@ void TextGenerator::updateRT(
         auto drawables = instanceRegistry.modifyRange(ref);
         auto& drawable = drawables[0];
         {
-            drawable.indexCount = lodMesh.m_indexCount;
+            drawable.indexCount = mesh->getIndexCount();
             drawable.worldVolume = worldVolume;
         }
         instanceRegistry.markDirty(ref);

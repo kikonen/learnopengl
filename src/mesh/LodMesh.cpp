@@ -44,6 +44,7 @@ namespace mesh {
         m_priority = o.m_priority;
 
         m_mesh = o.m_mesh;
+        m_id = o.m_id;
 
         m_scale = o.m_scale;
         m_baseScale = o.m_baseScale;
@@ -55,16 +56,11 @@ namespace mesh {
         m_baseTransform = o.m_baseTransform;
 
         m_material = std::move(o.m_material);
-        m_materialIndex = o.m_materialIndex;
 
         m_vaoId = o.m_vaoId;
 
         m_minDistance2 = o.m_minDistance2;
         m_maxDistance2 = o.m_maxDistance2;
-
-        m_baseVertex = o.m_baseVertex;
-        m_baseIndex = o.m_baseIndex;
-        m_indexCount = o.m_indexCount;
 
         m_programId = o.m_programId;
         m_oitProgramId = o.m_oitProgramId;
@@ -88,21 +84,17 @@ namespace mesh {
         m_priority = o.m_priority;
 
         m_mesh = o.m_mesh;
+        m_id = o.m_id;
 
         m_scale = o.m_scale;
         m_baseScale = o.m_baseScale;
 
         m_material = std::move(o.m_material);
-        m_materialIndex = o.m_materialIndex;
 
         m_vaoId = o.m_vaoId;
 
         m_minDistance2 = o.m_minDistance2;
         m_maxDistance2 = o.m_maxDistance2;
-
-        m_baseVertex = o.m_baseVertex;
-        m_baseIndex = o.m_baseIndex;
-        m_indexCount = o.m_indexCount;
 
         m_programId = o.m_programId;
         m_oitProgramId = o.m_oitProgramId;
@@ -130,7 +122,27 @@ namespace mesh {
             sqrt(m_maxDistance2),
             m_vaoId,
             m_mesh ? m_mesh->str() : "N/A",
-            m_materialIndex);
+            m_material ? m_material->m_registeredIndex : 0);
+    }
+
+    uint32_t LodMesh::getBaseVertex() const noexcept
+    {
+        return m_mesh->getBaseVertex();
+    }
+
+    uint32_t LodMesh::getBaseIndex() const noexcept
+    {
+        return m_mesh->getBaseIndex();
+    }
+
+    uint32_t LodMesh::getVertexCount() const noexcept
+    {
+        return m_mesh->getVertexCount();
+    }
+
+    uint32_t LodMesh::getIndexCount() const noexcept
+    {
+        return m_mesh->getIndexCount();
     }
 
     const Material* LodMesh::getMaterial() const noexcept
@@ -158,14 +170,17 @@ namespace mesh {
         }
         *m_material = *src;
 
-        m_materialIndex = m_material->m_registeredIndex;
-
         setupDrawOptions();
     }
 
     void LodMesh::clearMaterial() noexcept
     {
         m_material.reset();
+    }
+
+    ki::material_index LodMesh::getMaterialIndex() const noexcept
+    {
+        return m_material ? m_material->m_registeredIndex : 0;
     }
 
     void LodMesh::setupDrawOptions()
@@ -260,7 +275,7 @@ namespace mesh {
         //        material->kd = glm::vec4{ 0.f, 0.5f, 0.f, 1.f };
         //}
 
-        m_materialIndex = material->registerMaterial();
+        material->registerMaterial();
 
         // TODO KI basically material could be deleted at this point
     }
@@ -271,7 +286,15 @@ namespace mesh {
             if (auto* vao = m_mesh->prepareVAO(); vao) {
                 m_vaoId = static_cast<ki::vao_id>(*vao);
             }
-            m_mesh->prepareLodMesh(*this);
+
+            auto& drawOptions = m_drawOptions;
+            drawOptions.m_type = m_mesh->getDrawType();
+            drawOptions.m_mode = m_mesh->getDrawMode();
+
+            // NOTE KI tessellation is always patches
+            if (m_flags.tessellation) {
+                drawOptions.m_mode = backend::DrawOptions::Mode::patches;
+            }
 
             updateTransform();
         }

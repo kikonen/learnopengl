@@ -31,18 +31,15 @@ namespace mesh {
 
         void clear();
 
-        virtual const kigl::GLVertexArray* prepareVAO() override;
-        virtual const kigl::GLVertexArray* setupVAO(mesh::TexturedVAO* vao, bool shared) override;
+        const kigl::GLVertexArray* prepareVAO() override;
+        const kigl::GLVertexArray* setupVAO(mesh::TexturedVAO* vao, bool shared) override;
 
-        virtual animation::Rig* getRig() const override
+        animation::Rig* getRig() const override
         {
             return m_rig.get();
         }
 
-        virtual void prepareLodMesh(
-            mesh::LodMesh& lodMesh) override;
-
-        virtual backend::DrawOptions::Mode getDrawMode() override;
+        backend::DrawOptions::Mode getDrawMode() const noexcept override;
 
     public:
         PrimitiveType m_type;

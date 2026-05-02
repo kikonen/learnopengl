@@ -88,23 +88,4 @@ namespace mesh {
         }
         return va;
     }
-
-    void ModelMesh::prepareLodMesh(
-        mesh::LodMesh& lodMesh)
-    {
-        lodMesh.m_baseVertex = getBaseVertex();
-        lodMesh.m_baseIndex = getBaseIndex();
-        lodMesh.m_indexCount = getIndexCount();
-
-        auto& drawOptions = lodMesh.m_drawOptions;
-        drawOptions.m_type = backend::DrawOptions::Type::elements;
-        drawOptions.m_mode = lodMesh.m_flags.tessellation
-            ? backend::DrawOptions::Mode::patches
-            : backend::DrawOptions::Mode::triangles;
-    }
-
-    backend::DrawOptions::Mode ModelMesh::getDrawMode()
-    {
-        return backend::DrawOptions::Mode::triangles;
-    }
 }

@@ -4,6 +4,9 @@
 
 #include "model/NodeType.h"
 
+#include "mesh/TextMesh.h"
+#include "mesh/LodMeshContainer.h"
+
 #include "generator/TextGenerator.h"
 
 std::unique_ptr<TextGenerator> TextGeneratorDefinition::createTextGenerator(
@@ -25,6 +28,12 @@ std::unique_ptr<TextGenerator> TextGeneratorDefinition::createTextGenerator(
 
     generator->m_material = *data.m_material;
 
+    {
+        // NOTE KI store direct mesh refesh to generator to avoid redundant querying
+        auto* lodMesh = type->getMeshContainer()->getLodMesh(0);
+        mesh::TextMesh* mesh = lodMesh->getMesh<mesh::TextMesh>();
+
+        generator->setMesh(mesh);
+    }
     return generator;
 }
-

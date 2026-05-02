@@ -142,15 +142,20 @@ namespace model
                 }
                 else if (!jointPalettes.contains(jointContainer)) {
                     // Accessory case: same rig but different joint container
-                    auto& owningRig = m_registeredRigs[rigPalettes[rig]];
+                    util::BufferReference owningRigRef;
+                    {
+                        const auto rigIndex = rigPalettes[rig];
+                        auto& owningRig = m_registeredRigs[rigIndex];
+                        owningRigRef = owningRig.m_rigRef;
+                    }
 
                     auto& registeredRig = m_registeredRigs.emplace_back();
                     registeredRig.m_rig = rig;
                     registeredRig.m_jointContainer = jointContainer;
                     registeredRig.m_ownsRig = false;
-                    registeredRig.m_rigRef = owningRig.m_rigRef;
+                    registeredRig.m_rigRef = owningRigRef;
                     registeredRig.m_socketRef = { 0, 0 };
-                    registeredRig.m_jointRef = animationsystem.registerJoints(owningRig.m_rigRef, *jointContainer);
+                    registeredRig.m_jointRef = animationsystem.registerJoints(owningRigRef, *jointContainer);
 
                     jointPalettes.insert({ jointContainer, registeredRig.m_jointRef });
                 }
@@ -257,18 +262,6 @@ namespace model
         return meshContainer ? meshContainer->getLodMeshes() : EMPTY_MESHES;
     }
 
-    const mesh::LodMesh* Node::getLodMesh(uint8_t lodIndex) const noexcept
-    {
-        auto* meshContainer = getType()->getMeshContainer();
-        return meshContainer ? meshContainer->getLodMesh(lodIndex) : nullptr;
-    }
-
-    mesh::LodMesh* Node::modifyLodMesh(uint8_t lodIndex) const noexcept
-    {
-        auto* meshContainer = getType()->modifyMeshContainer();
-        return meshContainer ? meshContainer->modifyLodMesh(lodIndex) : nullptr;
-    }
-
     void Node::registerDrawables(
         render::InstanceRegistry& instanceRegistry,
         const Snapshot& snapshot) noexcept
@@ -300,12 +293,12 @@ namespace model
                     drawable.meshId = lodMesh.getMesh<mesh::Mesh>()->getId();
 
                     drawable.entityIndex = getEntityIndex();
-                    drawable.materialIndex = lodMesh.m_materialIndex;
+                    drawable.materialIndex = lodMesh.getMaterialIndex();
                     drawable.jointBaseIndex = lod.m_jointBaseIndex;
 
-                    drawable.baseVertex = lodMesh.m_baseVertex;
-                    drawable.baseIndex = lodMesh.m_baseIndex;
-                    drawable.indexCount = lodMesh.m_indexCount;
+                    drawable.baseVertex = lodMesh.getBaseVertex();
+                    drawable.baseIndex = lodMesh.getBaseIndex();
+                    drawable.indexCount = lodMesh.getIndexCount();
 
                     drawable.minDistance2 = lodMesh.m_minDistance2;
                     drawable.maxDistance2 = lodMesh.m_maxDistance2;

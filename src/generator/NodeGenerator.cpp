@@ -50,12 +50,12 @@ void NodeGenerator::registerDrawables(
                 drawable.groupId = groupId;
 
                 drawable.entityIndex = entityIndex;
-                drawable.materialIndex = lodMesh.m_materialIndex;
+                drawable.materialIndex = lodMesh.getMaterialIndex();
                 drawable.jointBaseIndex = lod.m_jointBaseIndex;
 
-                drawable.baseVertex = lodMesh.m_baseVertex;
-                drawable.baseIndex = lodMesh.m_baseIndex;
-                drawable.indexCount = lodMesh.m_indexCount;
+                drawable.baseVertex = lodMesh.getBaseVertex();
+                drawable.baseIndex = lodMesh.getBaseIndex();
+                drawable.indexCount = lodMesh.getIndexCount();
 
                 drawable.minDistance2 = lodMesh.m_minDistance2;
                 drawable.maxDistance2 = lodMesh.m_maxDistance2;

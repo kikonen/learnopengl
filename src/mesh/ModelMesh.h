@@ -47,11 +47,6 @@ namespace mesh
         const kigl::GLVertexArray* prepareVAO() override;
         const kigl::GLVertexArray* setupVAO(mesh::TexturedVAO* vao, bool shared) override;
 
-        void prepareLodMesh(
-            mesh::LodMesh& lodMesh) override;
-
-        backend::DrawOptions::Mode getDrawMode() override;
-
         animation::Rig* getRig() const override
         {
             return m_rig.get();
@@ -67,16 +62,15 @@ namespace mesh
             return m_jointContainer.get();
         }
 
+        //size_t getDefinedVertexCount() const noexcept override
+        //{
+        //    return m_vertices.size();
+        //}
 
-        size_t getDefinedVertexCount() const noexcept override
-        {
-            return m_vertices.size();
-        }
-
-        size_t getDefinedIndexCount() const noexcept override
-        {
-            return m_indeces.size();
-        }
+        //size_t getDefinedIndexCount() const noexcept override
+        //{
+        //    return m_indeces.size();
+        //}
 
     public:
         std::vector<animation::VertexJoint> m_vertexJoints;

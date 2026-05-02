@@ -18,9 +18,6 @@ namespace mesh {
         virtual const kigl::GLVertexArray* prepareVAO() override;
         virtual const kigl::GLVertexArray* setupVAO(mesh::TexturedVAO* vao, bool shared) override;
 
-        virtual void prepareLodMesh(
-            mesh::LodMesh& lodMesh) override;
-
     public:
         std::vector<glm::vec2> m_atlasCoords;
 

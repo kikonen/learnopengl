@@ -30,7 +30,6 @@ namespace animation {
 }
 
 namespace mesh {
-    struct LodMesh;
     class TexturedVAO;
 
     class Mesh : public util::RefCounted<>
@@ -72,9 +71,6 @@ namespace mesh {
         // @return VAO for mesh
         virtual const kigl::GLVertexArray* prepareVAO();
         virtual const kigl::GLVertexArray* setupVAO(mesh::TexturedVAO* vao, bool shared) = 0;
-
-        virtual void prepareLodMesh(
-            mesh::LodMesh& lodMesh) = 0;
 
         const ki::mesh_id getId() const noexcept
         {
@@ -118,6 +114,16 @@ namespace mesh {
             return m_indexCount;
         }
 
+        virtual backend::DrawOptions::Type getDrawType() const noexcept
+        {
+            return backend::DrawOptions::Type::elements;
+        }
+
+        virtual backend::DrawOptions::Mode getDrawMode() const noexcept
+        {
+            return backend::DrawOptions::Mode::triangles;
+        }
+
         ki::vao_id getVaoId() const noexcept
         {
             const auto* vao = getVAO();
@@ -134,15 +140,15 @@ namespace mesh {
             return m_name == "joint_tree" || m_name == "joint_points";
         }
 
-        virtual size_t getDefinedVertexCount() const noexcept
-        {
-            return m_vertexCount;
-        }
+        //virtual size_t getDefinedVertexCount() const noexcept
+        //{
+        //    return m_vertexCount;
+        //}
 
-        virtual size_t getDefinedIndexCount() const noexcept
-        {
-            return m_vertexCount;
-        }
+        //virtual size_t getDefinedIndexCount() const noexcept
+        //{
+        //    return m_indexCount;
+        //}
 
         bool match(const std::string& name) const noexcept {
             return name == m_name ||

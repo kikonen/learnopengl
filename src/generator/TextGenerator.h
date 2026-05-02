@@ -6,8 +6,9 @@
 
 #include "util/Ref.h"
 
-#include "material/Material.h"
 #include "asset/AABB.h"
+
+#include "material/Material.h"
 
 #include "NodeGenerator.h"
 
@@ -15,6 +16,7 @@
 
 #include "text/size.h"
 #include "text/Align.h"
+
 
 namespace mesh
 {
@@ -38,6 +40,8 @@ public:
     TextGenerator();
 
     ~TextGenerator();
+
+    void setMesh(const util::Ref<mesh::TextMesh> mesh);
 
     void updateRT(
         const UpdateContext& ctx,
@@ -111,6 +115,8 @@ private:
     mutable std::mutex m_lock{};
 
     std::unique_ptr<text::TextDraw> m_draw;
+
+    util::Ref<mesh::TextMesh> m_mesh;
 
     text::font_id m_fontId{ 0 };
 

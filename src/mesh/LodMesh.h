@@ -49,6 +49,11 @@ namespace mesh {
 
         std::string str() const noexcept;
 
+        ki::lod_mesh_id getId() const noexcept
+        {
+            return m_id;
+        }
+
         void registerMaterial();
         void prepareRT(const PrepareContext& ctx);
 
@@ -73,7 +78,14 @@ namespace mesh {
         void setMaterial(const Material* material) noexcept;
         void clearMaterial() noexcept;
 
+        ki::material_index getMaterialIndex() const noexcept;
+
         void setupDrawOptions();
+
+        uint32_t getBaseVertex() const noexcept;
+        uint32_t getBaseIndex() const noexcept;
+        uint32_t getVertexCount() const noexcept;
+        uint32_t getIndexCount() const noexcept;
 
         inline ki::vao_id getVaoId() const noexcept {
             return m_vaoId;
@@ -96,16 +108,11 @@ namespace mesh {
         util::Ref<Mesh> m_mesh;
 
         std::unique_ptr<Material> m_material;
-        ki::material_index m_materialIndex{ 0 };
 
         backend::DrawOptions m_drawOptions;
 
         float m_minDistance2{ 0.f };
         float m_maxDistance2{ 0.f };
-
-        uint32_t m_baseVertex{ 0 };
-        uint32_t m_baseIndex{ 0 };
-        uint32_t m_indexCount{ 0 };
 
         ki::lod_mesh_id m_id;
 
