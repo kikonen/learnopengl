@@ -45,7 +45,6 @@ void NodeGenerator::registerDrawables(
 
             auto& drawable = drawables[drawableIndex++];
             {
-                //drawable.lodMeshIndex = i;
                 drawable.meshId = lodMesh.getMesh<mesh::Mesh>()->getId();
                 drawable.groupId = groupId;
 
