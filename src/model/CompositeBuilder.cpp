@@ -26,6 +26,7 @@
 
 #include "component/Light.h"
 #include "component/CameraComponent.h"
+#include "component/definition/AddonSelectorDefinition.h"
 
 #include "particle/ParticleGenerator.h"
 
@@ -34,6 +35,8 @@
 #include "model/ResolvedNode.h"
 #include "model/CompositeDefinition.h"
 #include "model/NodeDefinition.h"
+
+#include "mesh/LodMeshContainer.h"
 
 #include "util/DagSort.h"
 #include "util/DagSort_impl.h"

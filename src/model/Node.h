@@ -8,6 +8,7 @@
 #include <glm/glm.hpp>
 
 #include "ki/limits.h"
+#include "ki/size.h"
 
 #include "util/BufferReference.h"
 
@@ -125,10 +126,6 @@ namespace model
 
         const std::vector<mesh::LodMesh>& getEnabledMeshes() const noexcept;
 
-        const mesh::LodMesh* getLodMesh(uint8_t lodIndex) const noexcept;
-
-        mesh::LodMesh* modifyLodMesh(uint8_t lodIndex) const noexcept;
-
         const std::string& getName() const noexcept { return m_name; }
         void setName(std::string_view name) noexcept {
             m_name = name;
@@ -230,6 +227,8 @@ namespace model
         ki::node_id m_ignoredBy{ 0 };
 
         physics::object_id m_physicsObjectId{ 0 };
+
+        std::vector<ki::lod_mesh_id> m_enabledLodMeshes;
 
         util::BufferReference m_instanceRef;
         std::vector<mesh::LodMeshInstance> m_lodMeshInstances;

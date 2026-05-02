@@ -14,14 +14,16 @@ namespace mesh {
         NonVaoMesh(std::string_view name);
         virtual ~NonVaoMesh();
 
-        virtual const kigl::GLVertexArray* setupVAO(
+        const kigl::GLVertexArray* setupVAO(
             mesh::TexturedVAO* vao,
             bool shared) override;
 
-        virtual void prepareLodMesh(
-            mesh::LodMesh& lodMesh) override;
+        backend::DrawOptions::Type getDrawType() const noexcept override
+        {
+            return backend::DrawOptions::Type::arrays;
+        }
 
-        virtual AABB calculateAABB(const glm::mat4& transform) const override;
+        AABB calculateAABB(const glm::mat4& transform) const override;
 
         void setDrawCount(int count) {
             m_indexCount = count;

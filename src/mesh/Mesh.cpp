@@ -26,15 +26,23 @@ namespace mesh {
 
     std::string Mesh::str() const noexcept
     {
+        //return fmt::format(
+        //    "<MESH: id={}, name={}, alias={}, baseVertex={}, baseIndex={}, vertexCount={}, indexCount={}>",
+        //    m_id,
+        //    m_name,
+        //    m_alias,
+        //    getBaseVertex(),
+        //    getBaseIndex(),
+        //    getDefinedVertexCount(),
+        //    getDefinedIndexCount());
         return fmt::format(
-            "<MESH: id={}, name={}, alias={}, baseVertex={}, baseIndex={}, vertexCount={}, indexCount={}>",
+            "<MESH: id={}, name={}, alias={}, baseVertex={}, vertexCount={}, indexCount={}>",
             m_id,
             m_name,
             m_alias,
             getBaseVertex(),
             getBaseIndex(),
-            getDefinedVertexCount(),
-            getDefinedIndexCount());
+            getIndexCount());
     }
 
     const kigl::GLVertexArray* Mesh::prepareVAO()

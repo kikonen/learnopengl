@@ -67,16 +67,4 @@ namespace mesh {
         }
         return va;
     }
-
-    void TextMesh::prepareLodMesh(
-        mesh::LodMesh& lodMesh)
-    {
-        lodMesh.m_baseVertex = getBaseVertex();
-        lodMesh.m_baseIndex = getBaseIndex();
-        lodMesh.m_indexCount = getIndexCount();
-
-        auto& drawOptions = lodMesh.m_drawOptions;
-        drawOptions.m_type = backend::DrawOptions::Type::elements;
-        drawOptions.m_mode = backend::DrawOptions::Mode::triangles;
-    }
 }

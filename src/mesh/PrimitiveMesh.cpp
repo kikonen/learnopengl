@@ -97,20 +97,7 @@ namespace mesh {
         return va;
     }
 
-    void PrimitiveMesh::prepareLodMesh(
-        mesh::LodMesh& lodMesh)
-    {
-        lodMesh.m_baseVertex = getBaseVertex();
-        lodMesh.m_baseIndex = getBaseIndex();
-        lodMesh.m_indexCount = getIndexCount();
-
-        auto& drawOptions = lodMesh.m_drawOptions;
-        drawOptions.m_type = backend::DrawOptions::Type::elements;
-        drawOptions.m_mode = getDrawMode();
-
-    }
-
-    backend::DrawOptions::Mode PrimitiveMesh::getDrawMode()
+    backend::DrawOptions::Mode PrimitiveMesh::getDrawMode() const noexcept
     {
         switch (m_type) {
         case PrimitiveType::lines:
