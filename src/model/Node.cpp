@@ -164,7 +164,6 @@ namespace model
             m_lodMeshInstances.reserve(lodMeshes.size());
             for (int index = 0;  auto& lodMesh : lodMeshes) {
                 auto& lod = m_lodMeshInstances.emplace_back();
-                //lod.m_lodMeshIndex = index++;
 
                 const auto* mesh = lodMesh.getMesh<mesh::Mesh>();
                 auto* rig = mesh->getRig();
@@ -288,8 +287,6 @@ namespace model
 
                 auto& drawable = drawables[i];
                 {
-                    //drawable.lodMeshIndex = i;
-
                     drawable.meshId = lodMesh.getMesh<mesh::Mesh>()->getId();
 
                     drawable.entityIndex = getEntityIndex();
