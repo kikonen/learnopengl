@@ -116,7 +116,7 @@ namespace script
         void createNodeState(
             const model::Node* node);
 
-        void deleteNodeState(
+        void destroyNodeState(
             const model::Node* node);
 
         sol::protected_function_result invokeLuaFunction(
@@ -149,7 +149,7 @@ namespace script
 
         // Cached precompiled functions for performance
         sol::protected_function m_createStateFunc;
-        sol::protected_function m_deleteStateFunc;
+        sol::protected_function m_destroyStateFunc;
 
         std::mutex m_lock{};
     };
