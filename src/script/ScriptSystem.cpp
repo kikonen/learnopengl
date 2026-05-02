@@ -97,7 +97,7 @@ namespace script
             m_nodeCommandApi = nullptr;
 
             m_createStateFunc = sol::nil;
-            m_deleteStateFunc = sol::nil;
+            m_destroyStateFunc = sol::nil;
 
             m_lua = nullptr;
         }
@@ -162,17 +162,21 @@ namespace script
 
         // Precompile helper functions for node state management
         {
-            lua.script(R"(
-function _create_state(id, typeId)
-    states[id] = classes[typeId]:new()
-end
-
-function _delete_state(id)
-    if states[id] then states[id]:destroy() end
-end
-)");
+//            lua.script(R"(
+//function _create_state(id, typeId)
+//    states[id] = classes[typeId]:new()
+//end
+//
+//function _destroy_state(id)
+//    local state = states[id]
+//    if state then
+//        state:destroy()
+//        state = nil
+//     end
+//end
+//)");
             m_createStateFunc = lua["_create_state"];
-            m_deleteStateFunc = lua["_delete_state"];
+            m_destroyStateFunc = lua["_destroy_state"];
         }
     }
 
@@ -269,7 +273,7 @@ end
 
         auto nodeHandle = node->toHandle();
 
-        deleteNodeState(node);
+        destroyNodeState(node);
     }
 
     void ScriptSystem::createNodeState(
@@ -279,10 +283,15 @@ end
         {
             const auto typeId = node->m_typeHandle.toId();
 
+            //invokeLuaScript("print(_create_state)");
+
+            auto result = invokeLuaScript(fmt::format("_create_state({}, {})", id, typeId));
+
             // Use precompiled function instead of parsing script each time
-            auto result = invokeLuaFunction([this, id, typeId]() {
-                return m_createStateFunc(id, typeId);
-            });
+            //auto result = invokeLuaFunction([this, id, typeId]() {
+            //    return m_createStateFunc(id, typeId);
+            //});
+
             if (!result.valid()) return;
         }
 
@@ -294,14 +303,17 @@ end
         }
     }
 
-    void ScriptSystem::deleteNodeState(
+    void ScriptSystem::destroyNodeState(
         const model::Node* node)
     {
         // Use precompiled function instead of parsing script each time
         const auto id = node->getId();
-        invokeLuaFunction([this, id]() {
-            return m_deleteStateFunc(id);
-        });
+
+        auto result = invokeLuaScript(fmt::format("_destroy_state({})", id));
+
+        //invokeLuaFunction([this, id]() {
+        //    return m_destroyStateFunc(id);
+        //});
 
         execScript("Updater:refresh()");
     }
@@ -366,7 +378,7 @@ end
 
         if (!global) {
             std::string classScriptlet = fmt::format(
-            "classes[{}] = classes[{}] or State:new_class({{ type_id={} }})",
+            "classes[{}] = classes[{}] or BaseState:new_class({{ type_id={} }})",
             typeId, typeId, typeId);
 
             std::string inlineScriptlet;
