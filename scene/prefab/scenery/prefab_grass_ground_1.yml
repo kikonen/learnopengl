@@ -15,9 +15,10 @@ prefab:
       pre_depth: true
   flags:
     no_shadow: true
+    nav_mesh: true
   physics:
     geom:
       type: plane
-      category: [terrain]
+      category: terrain
       collision: [npc, player, prop]
       size: [1000, 0.2, 1000]

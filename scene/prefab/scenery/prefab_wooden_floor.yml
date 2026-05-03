@@ -10,6 +10,7 @@ prefab:
       pre_depth: true
   flags:
     no_shadow: true
+    nav_mesh: true
   physics:
     geom:
       type: plane
