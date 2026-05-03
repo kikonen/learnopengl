@@ -144,7 +144,7 @@ namespace loader
             throw fmt::format("type_id missing: {}", typeData.str());
         }
 
-        auto typeHandle = pool::TypeHandle::allocate(SID(typeName));
+        auto typeHandle = pool::TypeHandle::allocate(SID_REGISTER(typeName));
         auto* type = typeHandle.toType();
 
         NodeTypeRegistry::get().registerType(typeHandle);
@@ -813,7 +813,7 @@ namespace loader
                 const auto& uniqueName = clipData.getUniqueName(data.name);
                 auto* clip = rig.modifyClipContainer().findClipByUniqueName(uniqueName);
                 if (clip) {
-                    clip->m_id = SID(clipData.name);
+                    clip->m_id = SID_REGISTER(clipData.name);
                 }
                 else {
                     KI_WARN_OUT(fmt::format("TYPE::SCENE_ERROR: CLIP_NOT_FOUND - clip={}, uniq={}",

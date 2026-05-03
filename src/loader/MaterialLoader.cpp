@@ -445,7 +445,7 @@ namespace loader {
                 }
             }
             else if (k == "updater_id") {
-                material.m_updaterId = SID(readString(v));
+                material.m_updaterId = SID_REGISTER(readString(v));
             }
             else {
                 reportUnknown("material_entry", k, v);

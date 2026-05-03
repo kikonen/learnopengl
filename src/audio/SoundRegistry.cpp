@@ -34,7 +34,7 @@ namespace audio
     {
         std::unique_lock lock(m_lock);
 
-        const auto sid = SID(fullPath);
+        const auto sid = SID_REGISTER(fullPath);
 
         const auto& it = m_sidToId.find(sid);
         if (it != m_sidToId.end()) return it->second;

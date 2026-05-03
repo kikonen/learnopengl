@@ -22,7 +22,7 @@ namespace script::api
     double UtilAPI::lua_sid(
         std::string id) noexcept
     {
-        ki::StringID sid{ id };
+        ki::StringID sid{ id, false };
         return static_cast<double>(sid);
     }
 

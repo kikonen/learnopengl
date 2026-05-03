@@ -110,7 +110,7 @@ namespace loader {
         const auto& assets = Assets::get();
 
         std::string name = "<skybox>";
-        auto typeHandle = pool::TypeHandle::allocate(SID(name));
+        auto typeHandle = pool::TypeHandle::allocate(SID_REGISTER(name));
         auto* type = typeHandle.toType();
         type->setName(name);
 
