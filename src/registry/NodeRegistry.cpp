@@ -878,6 +878,11 @@ void NodeRegistry::attachNode(
     auto* type = node->m_typeHandle.toType();
 
     type->prepareWT({ *m_engine });
+
+    if (auto* definition = type->m_addonSelectorDefinition.get(); definition) {
+        definition->selectAddons(type, node);
+    }
+
     node->prepareWT({ *m_engine }, m_states[node->getEntityIndex()]);
 
     if (type->m_physicsDefinition &&
@@ -911,10 +916,6 @@ void NodeRegistry::attachNode(
             if (!controller) continue;
             ControllerRegistry::get().addController(node->m_handle, std::move(controller));
         }
-    }
-
-    if (auto* definition = type->m_addonSelectorDefinition.get(); definition) {
-        definition->selectAddons(type, node);
     }
 
     if (node->m_typeFlags.skybox) {
@@ -1283,9 +1284,10 @@ bool NodeRegistry::bindParentSocket(
     auto& state = m_states[node->getEntityIndex()];
 
     bool found = false;
-    for (int index = -1; const auto& lodMesh : parent->getEnabledMeshes()) {
+    for (int index = -1; const auto& lodMeshRef : parent->getEnabledMeshes()) {
         index++;
 
+        const auto& lodMesh = *lodMeshRef;
         auto* modelMesh = lodMesh.getMesh<mesh::ModelMesh>();
         if (!modelMesh) continue;
 

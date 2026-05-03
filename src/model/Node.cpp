@@ -50,7 +50,7 @@
 namespace {
     inline const glm::mat4 ID_MAT{ 1.f };
 
-    inline const std::vector<mesh::LodMesh> EMPTY_MESHES{};
+    inline const std::vector<util::Ref<mesh::LodMesh>> EMPTY_MESHES{};
 }
 
 namespace model
@@ -117,7 +117,8 @@ namespace model
             std::unordered_map<const animation::Rig*, int> rigPalettes;
             std::unordered_map<const animation::JointContainer*, util::BufferReference> jointPalettes;
 
-            for (auto& lodMesh : lodMeshes) {
+            for (auto& lodMeshRef : lodMeshes) {
+                const auto& lodMesh = *lodMeshRef;
                 const auto* mesh = lodMesh.getMesh<mesh::Mesh>();
 
                 const auto* rig = mesh->getRig();
@@ -162,9 +163,10 @@ namespace model
             }
 
             m_lodMeshInstances.reserve(lodMeshes.size());
-            for (int index = 0;  auto& lodMesh : lodMeshes) {
+            for (int index = 0;  auto& lodMeshRef : lodMeshes) {
                 auto& lod = m_lodMeshInstances.emplace_back();
 
+                const auto& lodMesh = *lodMeshRef;
                 const auto* mesh = lodMesh.getMesh<mesh::Mesh>();
                 auto* rig = mesh->getRig();
                 if (!rig) continue;
@@ -253,10 +255,12 @@ namespace model
         }
     }
 
-    const std::vector<mesh::LodMesh>& Node::getEnabledMeshes() const noexcept
+    const std::vector<util::Ref<mesh::LodMesh>>& Node::getEnabledMeshes() const noexcept
     {
-        auto* lodMeshes = m_generator ? m_generator->getEnabledMeshes(*this) : nullptr;
-        if (lodMeshes) return *lodMeshes;
+        if (m_generator) {
+            if (const auto* g = m_generator->getEnabledMeshes(*this)) return *g;
+        }
+        if (!m_enabledMeshes.empty()) return m_enabledMeshes;
         auto* meshContainer = getType()->getMeshContainer();
         return meshContainer ? meshContainer->getLodMeshes() : EMPTY_MESHES;
     }
@@ -281,7 +285,7 @@ namespace model
 
             for (int i = 0; i < lodMeshInstances.size(); i++) {
                 const auto& lod = lodMeshInstances[i];
-                const auto& lodMesh = lodMeshes[i];
+                const auto& lodMesh = *lodMeshes[i];
                 if (!lodMesh.m_mesh)
                     continue;
 

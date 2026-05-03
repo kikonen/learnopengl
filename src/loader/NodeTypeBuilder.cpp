@@ -200,7 +200,8 @@ namespace loader
         if (meshContainer->hasMeshes()) {
             auto& flags = type->m_flags;
 
-            for (auto& lodMesh : meshContainer->getLodMeshes()) {
+            for (auto& lodMeshRef : meshContainer->getLodMeshes()) {
+                const auto& lodMesh = *lodMeshRef;
                 const auto& opt = lodMesh.m_drawOptions;
                 flags.anySolid |= opt.isSolid();
                 flags.anyAlpha |= opt.isAlpha();
@@ -212,6 +213,7 @@ namespace loader
             type->m_flags.hasMeshes = true;
 
             if (addonMeshContainer->hasMeshes()) {
+                type->setAddonMeshContainer(std::move(addonMeshContainer));
                 type->m_addonSelectorDefinition = l.m_addonSelectorLoader.createDefinition(typeData.addonSelector);
             }
 
@@ -458,8 +460,8 @@ namespace loader
                 std::set<const animation::Rig*> processedRigs;
 
                 // process rigs
-                for (auto& lodMesh : span) {
-                    auto* mesh = lodMesh.getMesh<mesh::ModelMesh>();
+                for (auto& lodMeshRef : span) {
+                    auto* mesh = lodMeshRef->getMesh<mesh::ModelMesh>();
                     if (!mesh) continue;
 
                     auto* rig = mesh->m_rig.get();
@@ -489,14 +491,14 @@ namespace loader
             if (meshCount > 0) {
                 const auto& span = std::span{ meshContainer.modifyLodMeshes() }.subspan(startIndex, meshCount);
                 // bind rigs
-                for (auto& lodMesh : span) {
-                    auto* mesh = lodMesh.getMesh<mesh::ModelMesh>();
+                for (auto& lodMeshRef : span) {
+                    auto* mesh = lodMeshRef->getMesh<mesh::ModelMesh>();
                     if (!mesh) continue;
 
                     if (mesh->m_jointContainer && !meshData.useRig.empty()) {
                         util::Ref<animation::Rig> rig;
-                        for (const auto& lodMesh : meshContainer.getLodMeshes()) {
-                            auto* rigMesh = lodMesh.getMesh<mesh::ModelMesh>();
+                        for (const auto& rigLodMeshRef : meshContainer.getLodMeshes()) {
+                            auto* rigMesh = rigLodMeshRef->getMesh<mesh::ModelMesh>();
                             if (!rigMesh) continue;
 
                             if (!rigMesh->m_rig) continue;
@@ -551,7 +553,7 @@ namespace loader
 
             mesh::LodMesh lodMesh;
             lodMesh.setMesh(mesh);
-            meshContainer.addLodMesh(std::move(lodMesh));
+            meshContainer.addLodMesh(std::move(lodMesh), SID_REGISTER(meshData.id));
             meshCount++;
         }
         else if (typeData.type == NodeKind::terrain) {
@@ -573,8 +575,8 @@ namespace loader
         // Resolve materials for newly added meshes
         if (meshCount > 0) {
             const auto& span = std::span{ meshContainer.modifyLodMeshes() }.subspan(startIndex, meshCount);
-            for (auto& lodMesh : span) {
-                resolveLodMesh(type, typeData, meshData, lodMesh);
+            for (auto& lodMeshRef : span) {
+                resolveLodMesh(type, typeData, meshData, *lodMeshRef);
             }
         }
     }
@@ -587,6 +589,7 @@ namespace loader
     {
         const auto& assets = Assets::get();
         int meshCount = 0;
+        auto lodMeshSid = SID_REGISTER(meshData.id);
 
         switch (meshData.type) {
         case MeshDataType::mesh: {
@@ -600,7 +603,7 @@ namespace loader
             const auto& meshSet = future.get();
 
             if (meshSet) {
-                meshCount += meshContainer.addMeshSet(*meshSet);
+                meshCount += meshContainer.addMeshSet(*meshSet, lodMeshSid);
 
                 KI_INFO_OUT(fmt::format(
                     "\n=======================\n[MESH_SET SUMMARY: {}]\n{}\n=======================",
@@ -614,7 +617,7 @@ namespace loader
 
             mesh::LodMesh lodMesh;
             lodMesh.setMesh(mesh);
-            meshContainer.addLodMesh(std::move(lodMesh));
+            meshContainer.addLodMesh(std::move(lodMesh), lodMeshSid);
 
             meshCount++;
             break;
@@ -634,7 +637,7 @@ namespace loader
 
             mesh::LodMesh lodMesh;
             lodMesh.setMesh(mesh);
-            meshContainer.addLodMesh(std::move(lodMesh));
+            meshContainer.addLodMesh(std::move(lodMesh), lodMeshSid);
 
             meshCount++;
             break;

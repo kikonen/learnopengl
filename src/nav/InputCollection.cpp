@@ -75,7 +75,8 @@ namespace nav
 
             const auto& state = node->getState();
 
-            for (const auto& lodMesh : node->getEnabledMeshes()) {
+            for (const auto& lodMeshRef : node->getEnabledMeshes()) {
+                const auto& lodMesh = *lodMeshRef;
                 auto geom = std::make_unique<nav::InputGeom>(
                     lodMesh.m_mesh.get(),
                     state.getModelMatrix() *

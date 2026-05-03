@@ -36,7 +36,7 @@ namespace mesh {
     // - can be also "part of node" mesh
     // REQ: All Lods of Node use *SAME* VAO
     // TODO KI *REMOVE* "same VAO" req!
-    struct LodMesh {
+    struct LodMesh : public util::RefCounted<false> {
         LodMesh();
         LodMesh(const util::Ref<Mesh>& mesh);
         LodMesh(LodMesh& o) = delete;

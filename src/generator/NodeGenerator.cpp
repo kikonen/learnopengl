@@ -41,7 +41,7 @@ void NodeGenerator::registerDrawables(
     for (auto& transform : m_transforms) {
         for (int i = 0; i < lodMeshInstances.size(); i++) {
             const auto& lod = lodMeshInstances[i];
-            const auto& lodMesh = lodMeshes[i];
+            const auto& lodMesh = *lodMeshes[i];
 
             auto& drawable = drawables[drawableIndex++];
             {
@@ -102,7 +102,7 @@ void NodeGenerator::updateDrawables(
 
     for (auto& transform : m_transforms) {
         for (int i = 0; i < lodMeshes.size(); i++) {
-            const auto& lodMesh = lodMeshes[i];
+            const auto& lodMesh = *lodMeshes[i];
             auto& drawable = drawables[drawableIndex++];
 
             drawable.worldVolume = transform.getWorldVolume();

@@ -262,7 +262,8 @@ namespace animation
 
             // Find LodMesh matching this rig to get correct baseTransform
             const glm::mat4* baseTransform = nullptr;
-            for (const auto& lodMesh : lodMeshes) {
+            for (const auto& lodMeshRef : lodMeshes) {
+                const auto& lodMesh = *lodMeshRef;
                 if (lodMesh.m_mesh && lodMesh.m_mesh->getRig() == rig) {
                     baseTransform = &lodMesh.m_baseTransform;
                     break;
@@ -324,7 +325,8 @@ namespace animation
 
             // Find LodMesh matching this rig to get correct baseTransform
             const glm::mat4* baseTransform = nullptr;
-            for (const auto& lodMesh : lodMeshes) {
+            for (const auto& lodMeshRef : lodMeshes) {
+                const auto& lodMesh = *lodMeshRef;
                 if (lodMesh.m_mesh && lodMesh.m_mesh->getRig() == rig) {
                     baseTransform = &lodMesh.m_baseTransform;
                     break;
@@ -383,7 +385,8 @@ namespace animation
 
             // Find LodMesh matching this rig to get correct baseTransform
             const glm::mat4* baseTransform = nullptr;
-            for (const auto& lodMesh : lodMeshes) {
+            for (const auto& lodMeshRef : lodMeshes) {
+                const auto& lodMesh = *lodMeshRef;
                 if (lodMesh.m_mesh && lodMesh.m_mesh->getRig() == rig) {
                     baseTransform = &lodMesh.m_baseTransform;
                     break;

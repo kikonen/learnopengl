@@ -10,6 +10,8 @@
 
 #include "pool/NodeHandle.h"
 
+#include "util/Ref.h"
+
 #include "kigl/kigl.h"
 
 #include "util/BufferReference.h"
@@ -117,7 +119,7 @@ public:
         const UpdateContext& ctx,
         const model::Node& container) {}
 
-    virtual const std::vector<mesh::LodMesh>* getEnabledMeshes(const model::Node& container) const
+    virtual const std::vector<util::Ref<mesh::LodMesh>>* getEnabledMeshes(const model::Node& container) const
     {
         return nullptr;
     }
