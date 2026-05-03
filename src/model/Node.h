@@ -11,6 +11,7 @@
 #include "ki/size.h"
 
 #include "util/BufferReference.h"
+#include "util/Ref.h"
 
 #include "pool/NodeHandle.h"
 #include "pool/TypeHandle.h"
@@ -124,7 +125,7 @@ namespace model
             return m_lodMeshInstances;
         }
 
-        const std::vector<mesh::LodMesh>& getEnabledMeshes() const noexcept;
+        const std::vector<util::Ref<mesh::LodMesh>>& getEnabledMeshes() const noexcept;
 
         const std::string& getName() const noexcept { return m_name; }
         void setName(std::string_view name) noexcept {
@@ -228,7 +229,7 @@ namespace model
 
         physics::object_id m_physicsObjectId{ 0 };
 
-        std::vector<ki::lod_mesh_id> m_enabledLodMeshes;
+        std::vector<util::Ref<mesh::LodMesh>> m_enabledMeshes;
 
         util::BufferReference m_instanceRef;
         std::vector<mesh::LodMeshInstance> m_lodMeshInstances;

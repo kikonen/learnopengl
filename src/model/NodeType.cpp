@@ -133,7 +133,13 @@ namespace model
 
         if (m_meshContainer) {
             for (auto& lodMesh : m_meshContainer->modifyLodMeshes()) {
-                lodMesh.registerMaterial();
+                lodMesh->registerMaterial();
+            }
+        }
+
+        if (m_addonMeshContainer) {
+            for (auto& lodMesh : m_addonMeshContainer->modifyLodMeshes()) {
+                lodMesh->registerMaterial();
             }
         }
 
@@ -155,7 +161,13 @@ namespace model
 
         if (m_meshContainer) {
             for (auto& lodMesh : m_meshContainer->modifyLodMeshes()) {
-                lodMesh.prepareRT(ctx);
+                lodMesh->prepareRT(ctx);
+            }
+        }
+
+        if (m_addonMeshContainer) {
+            for (auto& lodMesh : m_addonMeshContainer->modifyLodMeshes()) {
+                lodMesh->prepareRT(ctx);
             }
         }
 
@@ -195,8 +207,8 @@ namespace model
 		AABBBuilder builder;
 
         for (auto& lodMesh : m_meshContainer->getLodMeshes()) {
-            if (lodMesh.m_flags.noVolume) continue;
-            builder.minmax(lodMesh.calculateAABB());
+            if (lodMesh->m_flags.noVolume) continue;
+            builder.minmax(lodMesh->calculateAABB());
         }
 
         return builder.toAABB();
