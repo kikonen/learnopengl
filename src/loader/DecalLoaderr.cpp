@@ -150,7 +150,7 @@ namespace loader {
         mat.registerMaterial();
 
         decal::DecalDefinition df;
-        df.m_sid = SID_REGISTER(data.name);
+        df.m_sid = SID_REGISTER(data.name).asSid();
         df.m_materialIndex = mat.m_registeredIndex;
         df.m_lifetime = data.lifetime;
         df.m_rotation = data.rotation;

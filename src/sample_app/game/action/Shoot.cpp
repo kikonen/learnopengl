@@ -96,7 +96,7 @@ namespace action
 
                     auto sid = dbg.m_decalId;
                     auto df = decal::DecalRegistry::get().getDecal(sid);
-                    KI_INFO_OUT(fmt::format("DECAL: name={}, valid={}", sid.str(), df ? true : false));
+                    KI_INFO_OUT(fmt::format("DECAL: name={}, valid={}", SID_NAME(sid), df.isValid() ? true : false));
 
                     auto decal = df.createForHit(hit.handle, hit.pos, glm::normalize(hit.normal));
 

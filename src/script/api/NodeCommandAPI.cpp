@@ -305,7 +305,7 @@ namespace script::api
         auto opt = readOptions(lua_opt);
 
         if (opt.sid == 0) {
-            opt.sid = SID(opt.name);
+            opt.sid = SID(opt.name).asSid();
         }
 
         return m_commandEngine->addCommand(
@@ -324,7 +324,7 @@ namespace script::api
         auto opt = readOptions(lua_opt);
 
         if (opt.sid == 0) {
-            opt.sid = SID(opt.name);
+            opt.sid = SID(opt.name).asSid();
         }
 
         return m_commandEngine->addCommand(
@@ -342,7 +342,7 @@ namespace script::api
         auto opt = readOptions(lua_opt);
 
         if (opt.sid == 0) {
-            opt.sid = SID(opt.name);
+            opt.sid = SID(opt.name).asSid();
         }
 
         return m_commandEngine->addCommand(
@@ -360,7 +360,7 @@ namespace script::api
         auto opt = readOptions(lua_opt);
 
         if (opt.sid == 0) {
-            opt.sid = SID(opt.name);
+            opt.sid = SID(opt.name).asSid();
         }
 
         return m_commandEngine->addCommand(

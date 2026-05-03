@@ -46,25 +46,25 @@ namespace decal {
     {
         std::lock_guard lock{ m_lock };
 
-        if (df.m_sid.empty()) return;
+        if (df.m_sid == 0) return;
 
         size_t index = m_definitions.size();
         m_definitions.push_back(df);
         m_nameToIndex.insert({ df.m_sid, index });
     }
 
-    decal::DecalDefinition DecalRegistry::getDecal(const ki::StringID& name)
+    decal::DecalDefinition DecalRegistry::getDecal(ki::decal_id id)
     {
         std::lock_guard lock{ m_lock };
 
-        const auto& it = m_nameToIndex.find(name);
+        const auto& it = m_nameToIndex.find(id);
         if (it == m_nameToIndex.end()) return {};
         return m_definitions[it->second];
     }
 
-    std::vector<ki::StringID> DecalRegistry::getDecalIds() const
+    std::vector<ki::decal_id> DecalRegistry::getDecalIds() const
     {
-        std::vector<ki::StringID> ids;
+        std::vector<ki::decal_id> ids;
 
         {
             std::lock_guard lock{ m_lock };

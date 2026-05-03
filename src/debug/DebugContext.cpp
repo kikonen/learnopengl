@@ -88,7 +88,7 @@ namespace debug
         dbg.m_parallaxDebugEnabled = assets.parallaxDebugEnabled;
         dbg.m_parallaxDebugDepth = assets.parallaxDebugDepth;
 
-        dbg.m_decalId = SID("graffiti_tag_1");
+        dbg.m_decalId = SID("graffiti_tag_1").asSid();
 
         dbg.m_drawDebug = assets.drawDebug;
 

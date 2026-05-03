@@ -68,6 +68,8 @@ namespace {
         "",
         "wireframe_mod",
     };
+
+    const auto audio_selectId = SID("select").asSid();
 }
 
 namespace editor
@@ -563,7 +565,7 @@ namespace editor
                         0,
                         script::AudioPause{
                             handle,
-                            SID("select")
+                            audio_selectId
                         });
 
                     m_state.m_selectedNode = 0;
@@ -582,7 +584,7 @@ namespace editor
                         0,
                         script::AudioPlay{
                             handle,
-                            SID("select"),
+                            audio_selectId,
                             false
                         });
 

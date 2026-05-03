@@ -2,6 +2,7 @@
 
 #include <string>
 #include <vector>
+#include <unordered_map>
 #include <mutex>
 
 #include "DecalDefinition.h"
@@ -22,14 +23,14 @@ namespace decal
         void addDecal(const decal::DecalDefinition& df);
 
         // @return decal with null id if not valid
-        decal::DecalDefinition getDecal(const ki::StringID& name);
+        decal::DecalDefinition getDecal(ki::decal_id sid);
 
-        std::vector<ki::StringID> getDecalIds() const;
+        std::vector<ki::decal_id> getDecalIds() const;
 
     private:
         mutable std::mutex m_lock{};
 
         std::vector<decal::DecalDefinition> m_definitions;
-        std::unordered_map<ki::StringID, size_t> m_nameToIndex;
+        std::unordered_map<ki::decal_id, size_t> m_nameToIndex;
     };
 }

@@ -1,7 +1,6 @@
 #pragma once
 
 #include <string>
-#include <unordered_map>
 
 #include <ki/size.h>
 
@@ -12,23 +11,21 @@ namespace ki
         static void registerSystemId(ki::sid_t sid, const std::string& name) noexcept;
 
         static const std::string& getName(ki::sid_t sid) noexcept;
+        static const std::string& getName(ki::StringID sid) noexcept;
 
-        ki::sid_t m_sid;
+        ki::sid_t m_sid{ 0 };
 
         // NULL ID
-        StringID()
-            : m_sid{ 0 }
-        {}
+        StringID() noexcept = default;
 
+        StringID(const StringID&) noexcept = default;
+        StringID(StringID&&) noexcept = default;
+        StringID& operator=(const StringID&) noexcept = default;
+        StringID& operator=(StringID&&) noexcept = default;
+        ~StringID() = default;
+
+        StringID(ki::sid_t sid) noexcept : m_sid{ sid } {}
         StringID(std::string_view s, bool add);
-
-        StringID(const StringID& o)
-            : m_sid{ o.m_sid }
-        {}
-
-        StringID(ki::sid_t sid)
-            : m_sid{ sid }
-        {}
 
         const std::string& getName() const noexcept;
 
@@ -39,15 +36,35 @@ namespace ki
 
         operator std::string() const noexcept;
 
-        operator uint32_t() const noexcept {
+        ki::sid_t asSid() const noexcept
+        {
             return m_sid;
         }
 
-        operator double() const noexcept {
+        uint32_t asInt() const noexcept
+        {
+            return m_sid;
+        }
+
+        bool asBool() const noexcept
+        {
+            return m_sid != 0;
+        }
+
+        double asDouble() const noexcept
+        {
             return static_cast<double>(m_sid);
         }
 
-        operator bool() const noexcept {
+        explicit operator uint32_t() const noexcept {
+            return m_sid;
+        }
+
+        explicit operator double() const noexcept {
+            return static_cast<double>(m_sid);
+        }
+
+        explicit operator bool() const noexcept {
             return m_sid != 0;
         }
 
@@ -61,9 +78,12 @@ namespace ki
             return m_sid == o.m_sid;
         }
 
-        static uint32_t nextID();
-        static uint32_t nextID(std::string_view base);
+        static StringID nextID();
+        static StringID nextID(std::string_view base);
     };
+
+    static_assert(std::is_trivially_copyable_v<ki::StringID>);
+    static_assert(sizeof(ki::StringID) == sizeof(ki::sid_t));
 }
 
 // @see https://stackoverflow.com/questions/17016175/c-unordered-map-using-a-custom-class-type-as-the-key

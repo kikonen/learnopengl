@@ -52,6 +52,11 @@ namespace ki {
         return findName(sid);
     }
 
+    const std::string& StringID::getName(ki::StringID sid) noexcept
+    {
+        return sid.getName();
+    }
+
     StringID::StringID(std::string_view s, bool add)
         : m_sid{ s.empty() ? NULL_ID : pool::IdHash::make32(s) }
     {
@@ -62,7 +67,7 @@ namespace ki {
 
     const std::string& StringID::getName() const noexcept
     {
-        return findName(*this);
+        return findName(m_sid);
     }
 
     StringID::operator std::string() const noexcept
@@ -70,15 +75,13 @@ namespace ki {
         return fmt::format("[SID:{}/{}]", m_sid, getName());
     }
 
-    uint32_t StringID::nextID()
+    StringID StringID::nextID()
     {
-        StringID sid{ fmt::format("auto-{}", seqNext()), true };
-        return sid;
+        return { fmt::format("auto-{}", seqNext()), true };
     }
 
-    uint32_t StringID::nextID(std::string_view base)
+    StringID StringID::nextID(std::string_view base)
     {
-        StringID sid{ fmt::format("auto-{}-{}", base, seqNext()), true };
-        return sid;
+        return { fmt::format("auto-{}-{}", base, seqNext()), true };
     }
 }

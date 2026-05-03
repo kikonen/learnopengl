@@ -25,9 +25,9 @@
 #include "registry/NodeRegistry.h"
 
 namespace {
-    const auto walkId = SID_REGISTER("walk_2");
-    const auto runId = SID_REGISTER("run_2");
-    const auto turnId = SID_REGISTER("turn_1");
+    const auto audio_walkId = SID_REGISTER("walk_2").asSid();
+    const auto audio_runId = SID_REGISTER("run_2").asSid();
+    const auto audio_turnId = SID_REGISTER("turn_1").asSid();
 
     constexpr float EPSILON = 0.00001f;
 }
@@ -213,15 +213,15 @@ void PawnController::toggleAudio(
     bool actionRun,
     bool actionTurn)
 {
-    if (auto* src = node->getAudioSource(walkId); src) {
+    if (auto* src = node->getAudioSource(audio_walkId); src) {
         src->toggle(actionWalk);
     }
 
-    if (auto* src = node->getAudioSource(runId); src) {
+    if (auto* src = node->getAudioSource(audio_runId); src) {
         src->toggle(actionRun);
     }
 
-    if (auto* src = node->getAudioSource(turnId); src) {
+    if (auto* src = node->getAudioSource(audio_turnId); src) {
         src->toggle(actionTurn);
     }
 }

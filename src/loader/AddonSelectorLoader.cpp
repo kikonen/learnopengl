@@ -101,8 +101,8 @@ namespace loader
         for (auto& addonData : data.addons) {
             auto& addon = df.addons.emplace_back();
             addon.enabled = addonData.enabled;
-            addon.id = SID_REGISTER(addonData.id);
-            addon.group = SID_REGISTER(addonData.group);
+            addon.id = SID_REGISTER(addonData.id).asSid();
+            addon.group = SID_REGISTER(addonData.group).asSid();
             addon.seed = addonData.seed;
             addon.range = addonData.range;
         }

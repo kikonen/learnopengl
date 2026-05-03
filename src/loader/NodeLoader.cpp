@@ -241,7 +241,7 @@ namespace loader {
         df.m_id = nodeData.baseId.getId();
         df.m_parentId = nodeData.parentBaseId.getId();
         df.m_aliasId = nodeData.aliasBaseId.getId();
-        df.m_typeId = SID_REGISTER(nodeData.typeId.getId());
+        df.m_typeId = SID_REGISTER(nodeData.typeId.getId()).asSid();
         df.m_ignoredById = nodeData.ignoredByBaseId.getId();
         df.m_tagId = nodeData.tagId.getId();
 

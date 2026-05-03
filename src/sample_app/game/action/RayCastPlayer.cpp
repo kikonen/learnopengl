@@ -25,6 +25,9 @@
 
 namespace {
     std::vector<script::command_id> g_rayMarkers;
+
+    const auto node_greenBallId = SID("green_ball").asSid();
+    const auto node_RedBallId = SID("red_ball").asSid();
 }
 
 namespace action
@@ -62,8 +65,8 @@ namespace action
             const glm::vec3 startPos{ ctx.m_pos };
             const glm::vec3 dir{ ctx.m_dir };
 
-            auto greenBall = pool::NodeHandle::toNode(SID("green_ball"));
-            auto redBall = pool::NodeHandle::toNode(SID("red_ball"));
+            auto greenBall = pool::NodeHandle::toNode(node_greenBallId);
+            auto redBall = pool::NodeHandle::toNode(node_RedBallId);
 
             for (auto& cmdId : g_rayMarkers) {
                 script::CommandEngine::get().cancelCommand(cmdId);

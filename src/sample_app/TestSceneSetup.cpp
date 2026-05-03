@@ -56,7 +56,7 @@ void TestSceneSetup::setupEffectExplosion()
         const auto& assets = Assets::get();
 
         std::string name = "<effect>";
-        auto typeHandle = pool::TypeHandle::allocate(SID_REGISTER(name));
+        auto typeHandle = pool::TypeHandle::allocate(SID_REGISTER(name).asSid());
         auto* type = typeHandle.toType();
         type->setName(name);
 
@@ -65,7 +65,7 @@ void TestSceneSetup::setupEffectExplosion()
         type->m_flags.noShadow = true;
 
         auto nodeId = SID_REGISTER("<effect>");
-        auto handle = pool::NodeHandle::allocate(nodeId);
+        auto handle = pool::NodeHandle::allocate(nodeId.asSid());
         auto* node = handle.toNode();
 
         node->setName("<effect>");

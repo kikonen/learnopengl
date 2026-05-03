@@ -144,7 +144,7 @@ namespace loader
             throw fmt::format("type_id missing: {}", typeData.str());
         }
 
-        auto typeHandle = pool::TypeHandle::allocate(SID_REGISTER(typeName));
+        auto typeHandle = pool::TypeHandle::allocate(SID_REGISTER(typeName).asSid());
         auto* type = typeHandle.toType();
 
         NodeTypeRegistry::get().registerType(typeHandle);
@@ -556,8 +556,8 @@ namespace loader
             lodMesh.setMesh(mesh);
             meshContainer.addLodMesh(
                 std::move(lodMesh),
-                SID_REGISTER(meshData.group),
-                SID_REGISTER(meshData.id));
+                SID_REGISTER(meshData.group).asSid(),
+                SID_REGISTER(meshData.id).asSid());
             meshCount++;
         }
         else if (typeData.type == NodeKind::terrain) {
@@ -593,8 +593,8 @@ namespace loader
     {
         const auto& assets = Assets::get();
         int meshCount = 0;
-        auto lodGroupId = SID_REGISTER(meshData.group);
-        auto lodMeshId = SID_REGISTER(meshData.id);
+        auto lodGroupId = SID_REGISTER(meshData.group).asSid();
+        auto lodMeshId = SID_REGISTER(meshData.id).asSid();
 
         switch (meshData.type) {
         case MeshDataType::mesh: {
@@ -821,7 +821,7 @@ namespace loader
                 const auto& uniqueName = clipData.getUniqueName(data.name);
                 auto* clip = rig.modifyClipContainer().findClipByUniqueName(uniqueName);
                 if (clip) {
-                    clip->m_id = SID_REGISTER(clipData.name);
+                    clip->m_id = SID_REGISTER(clipData.name).asSid();
                 }
                 else {
                     KI_WARN_OUT(fmt::format("TYPE::SCENE_ERROR: CLIP_NOT_FOUND - clip={}, uniq={}",

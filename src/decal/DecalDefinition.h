@@ -2,7 +2,6 @@
 
 #include <string>
 
-#include "ki/sid.h"
 #include "ki/size.h"
 
 #include "Decal.h"
@@ -10,7 +9,7 @@
 namespace decal
 {
     struct DecalDefinition {
-        ki::StringID m_sid;
+        ki::decal_id m_sid;
 
         // local rotation (radians) around normal axis
         float m_rotation{ 0.f };
@@ -31,8 +30,8 @@ namespace decal
 
         bool m_static : 1 { true };
 
-        operator bool() const noexcept {
-            return m_sid;
+        bool isValid() const noexcept {
+            return m_sid != 0;
         }
 
         Decal createForHit(

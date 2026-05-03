@@ -80,7 +80,7 @@ namespace debug {
         bool m_parallaxDebugEnabled{ true };
         float m_parallaxDebugDepth{ 0.01f };
 
-        ki::StringID m_decalId{ 0 };
+        ki::decal_id m_decalId{ 0 };
 
         bool m_drawDebug{ false };
 

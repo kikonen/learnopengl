@@ -112,10 +112,10 @@ namespace script {
         return ev;
     }
 
-    uint32_t readSID(const sol::object& value) noexcept
+    ki::sid_t readSID(const sol::object& value) noexcept
     {
         if (value.is<std::string>()) {
-            return SID(value.as<std::string>());
+            return SID(value.as<std::string>()).asSid();
         }
         return value.as<unsigned int>();
     }

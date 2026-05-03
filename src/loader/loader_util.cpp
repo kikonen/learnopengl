@@ -640,7 +640,7 @@ namespace loader {
             const auto& nodeName = fmt::format(
                 "<{}>-{}",
                 typeName, ID_GENERATOR.nextId());
-            return { SID_REGISTER(nodeName), nodeName };
+            return { SID_REGISTER(nodeName).asSid(), nodeName};
         }
 
         const std::string& key = baseId.getId();
@@ -651,7 +651,7 @@ namespace loader {
         else {
             auto nodeId = SID_REGISTER(key);
             KI_DEBUG(fmt::format("SID: sid={}, key={}", nodeId, key));
-            return { nodeId, key };
+            return { nodeId.asSid(), key};
         }
     }
 
@@ -719,7 +719,7 @@ namespace loader {
     const model::NodeType* findNodeType(
         BaseId baseId)
     {
-        auto typeId = SID_REGISTER(baseId.getId());
+        auto typeId = SID_REGISTER(baseId.getId()).asSid();
         return pool::TypeHandle::toType(typeId);
     }
 

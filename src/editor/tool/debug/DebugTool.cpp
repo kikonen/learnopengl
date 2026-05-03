@@ -172,9 +172,9 @@ namespace editor
                 ImGui::Spacing();
                 ImGui::Separator();
 
-                if (ImGui::BeginCombo("Decal", dbg.m_decalId.str().c_str())) {
+                if (ImGui::BeginCombo("Decal", SID_NAME(dbg.m_decalId).c_str())) {
                     for (const auto& decalId : decal::DecalRegistry::get().getDecalIds()) {
-                        const auto& name = decalId.str().c_str();
+                        const auto& name = SID_NAME(decalId).c_str();
 
                         ImGui::PushID((void*)name);
                         const bool isSelected = dbg.m_decalId == decalId;
