@@ -636,11 +636,11 @@ namespace loader {
         if (baseId.empty()) {
             if (typeId.empty()) return {};
 
-            const auto& typeName = SID_NAME(SID(typeId.getId()));
+            const auto& typeName = SID_NAME(SID_REGISTER(typeId.getId()));
             const auto& nodeName = fmt::format(
                 "<{}>-{}",
                 typeName, ID_GENERATOR.nextId());
-            return { SID(nodeName), nodeName };
+            return { SID_REGISTER(nodeName), nodeName };
         }
 
         const std::string& key = baseId.getId();
@@ -649,7 +649,7 @@ namespace loader {
             return { assets.rootId, SID_NAME(assets.rootId) };
         }
         else {
-            auto nodeId = SID(key);
+            auto nodeId = SID_REGISTER(key);
             KI_DEBUG(fmt::format("SID: sid={}, key={}", nodeId, key));
             return { nodeId, key };
         }
@@ -719,7 +719,7 @@ namespace loader {
     const model::NodeType* findNodeType(
         BaseId baseId)
     {
-        auto typeId = SID(baseId.getId());
+        auto typeId = SID_REGISTER(baseId.getId());
         return pool::TypeHandle::toType(typeId);
     }
 

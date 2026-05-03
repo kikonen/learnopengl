@@ -307,10 +307,10 @@ Assets::Assets()
 
     computeGroups = { 1, 1, 1 };
 
-    //rootId    = SID("<root>");
-    //volumeId  = SID("<volume>");
-    //cubeMapId = SID("<cube_map>");
-    //skyboxId  = SID("<skybox>");
+    //rootId    = SID_REGISTER("<root>");
+    //volumeId  = SID_REGISTER("<volume>");
+    //cubeMapId = SID_REGISTER("<cube_map>");
+    //skyboxId  = SID_REGISTER("<skybox>");
 
     rootId = 1;
     skyboxId = 4;

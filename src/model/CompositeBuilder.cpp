@@ -56,7 +56,7 @@ namespace
     const model::NodeType* findNodeType(
        const std::string& baseId)
     {
-        auto typeId = SID(baseId);
+        auto typeId = SID_REGISTER(baseId);
         return pool::TypeHandle::toType(typeId);
     }
 
@@ -71,14 +71,14 @@ namespace
             const auto& nodeName = fmt::format(
                 "<{}>-{}",
                 typeName, ID_GENERATOR.nextId());
-            return { SID(nodeName), nodeName };
+            return { SID_REGISTER(nodeName), nodeName };
         }
 
         if (baseId == ROOT_ID) {
             return { assets.rootId, SID_NAME(assets.rootId) };
         }
         else {
-            auto nodeId = SID(baseId);
+            auto nodeId = SID_REGISTER(baseId);
             KI_DEBUG(fmt::format("MODEL::SID: sid={}, key={}", nodeId, baseId));
             return { nodeId, baseId };
         }
@@ -325,7 +325,7 @@ namespace model
             parentId = id;
         }
 
-        ki::socket_id socketId = SID(cloneData.m_socketId);
+        ki::socket_id socketId = SID_REGISTER(cloneData.m_socketId);
 
         if (!cloneData.m_aliasId.empty())
         {
@@ -375,7 +375,7 @@ namespace model
         auto* node = handle.toNode();
         assert(node);
 
-        const ki::socket_id socketId = SID(nodeData.m_socketId);
+        const ki::socket_id socketId = SID_REGISTER(nodeData.m_socketId);
 
         node->setName(resolvedSID);
 
@@ -398,7 +398,7 @@ namespace model
         state.m_rotation = util::degreesToQuat(nodeData.m_rotation);
         state.m_tilingX = nodeData.m_tiling.x;
         state.m_tilingY = nodeData.m_tiling.y;
-        state.m_tagId = SID(nodeData.m_tagId);
+        state.m_tagId = SID_REGISTER(nodeData.m_tagId);
 
         if (type->m_compositeDefinition) {
             CompositeBuilder builder{ NodeRegistry::get() };

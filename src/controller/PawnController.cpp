@@ -25,9 +25,9 @@
 #include "registry/NodeRegistry.h"
 
 namespace {
-    const auto walkId = SID("walk_2");
-    const auto runId = SID("run_2");
-    const auto turnId = SID("turn_1");
+    const auto walkId = SID_REGISTER("walk_2");
+    const auto runId = SID_REGISTER("run_2");
+    const auto turnId = SID_REGISTER("turn_1");
 
     constexpr float EPSILON = 0.00001f;
 }

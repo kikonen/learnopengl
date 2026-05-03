@@ -168,7 +168,7 @@ namespace loader
             if (!soundId) return;
         }
 
-        source.m_sourceId = SID(data.name);
+        source.m_sourceId = SID_REGISTER(data.name);
         source.m_soundId = soundId;
 
         source.m_referenceDistance = data.referenceDistance;

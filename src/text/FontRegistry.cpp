@@ -95,7 +95,7 @@ namespace text {
                 src.m_fontPath,
                 src.m_fontSize);
 
-            fontId = SID(key);
+            fontId = SID_REGISTER(key);
         }
 
         const auto& it = m_fonts.find(fontId);

@@ -20,7 +20,7 @@ namespace ki
             : m_sid{ 0 }
         {}
 
-        StringID(std::string_view s);
+        StringID(std::string_view s, bool add);
 
         StringID(const StringID& o)
             : m_sid{ o.m_sid }
@@ -80,5 +80,6 @@ struct std::hash<ki::StringID>
     }
 };
 
-#define SID(x) ki::StringID{ x }
+#define SID(x) ki::StringID{ x, false }
+#define SID_REGISTER(x) ki::StringID{ x, true }
 #define SID_NAME(x) ki::StringID::getName(x)

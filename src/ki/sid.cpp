@@ -52,10 +52,12 @@ namespace ki {
         return findName(sid);
     }
 
-    StringID::StringID(std::string_view s)
+    StringID::StringID(std::string_view s, bool add)
         : m_sid{ s.empty() ? NULL_ID : pool::IdHash::make32(s) }
     {
-        registerName(*this, std::string{ s });
+        if (add) {
+            registerName(m_sid, std::string{ s });
+        }
     }
 
     const std::string& StringID::getName() const noexcept
@@ -70,13 +72,13 @@ namespace ki {
 
     uint32_t StringID::nextID()
     {
-        StringID sid{ fmt::format("auto-{}", seqNext()) };
+        StringID sid{ fmt::format("auto-{}", seqNext()), true };
         return sid;
     }
 
     uint32_t StringID::nextID(std::string_view base)
     {
-        StringID sid{ fmt::format("auto-{}-{}", base, seqNext()) };
+        StringID sid{ fmt::format("auto-{}-{}", base, seqNext()), true };
         return sid;
     }
 }
