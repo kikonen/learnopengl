@@ -194,7 +194,7 @@ namespace loader
                 }
             }
 
-            resolveAddonMeshes(type, *addonMeshContainer, typeData);
+            resolveAddonMeshes(type, *addonMeshContainer, *meshContainer, typeData);
         }
 
         if (meshContainer->hasMeshes()) {
@@ -478,26 +478,27 @@ namespace loader
 
     void NodeTypeBuilder::resolveAddonMeshes(
         model::NodeType* type,
-        mesh::LodMeshContainer& meshContainer,
+        mesh::LodMeshContainer& addonContainer,
+        const mesh::LodMeshContainer& baseContainer,
         const NodeTypeData& typeData)
     {
         for (const auto& meshData : typeData.availableAddons) {
             if (!meshData.enabled) continue;
 
-            const auto startIndex = meshContainer.getLodMeshes().size();
-            resolveMesh(type, meshContainer, typeData, meshData);
-            const auto meshCount = meshContainer.getLodMeshes().size() - startIndex;
+            const auto startIndex = addonContainer.getLodMeshes().size();
+            resolveMesh(type, addonContainer, typeData, meshData);
+            const auto meshCount = addonContainer.getLodMeshes().size() - startIndex;
 
             if (meshCount > 0) {
-                const auto& span = std::span{ meshContainer.modifyLodMeshes() }.subspan(startIndex, meshCount);
-                // bind rigs
+                const auto& span = std::span{ addonContainer.modifyLodMeshes() }.subspan(startIndex, meshCount);
+                // bind rigs — addon meshes inherit a rig from the base mesh container
                 for (auto& lodMeshRef : span) {
                     auto* mesh = lodMeshRef->getMesh<mesh::ModelMesh>();
                     if (!mesh) continue;
 
                     if (mesh->m_jointContainer && !meshData.useRig.empty()) {
                         util::Ref<animation::Rig> rig;
-                        for (const auto& rigLodMeshRef : meshContainer.getLodMeshes()) {
+                        for (const auto& rigLodMeshRef : baseContainer.getLodMeshes()) {
                             auto* rigMesh = rigLodMeshRef->getMesh<mesh::ModelMesh>();
                             if (!rigMesh) continue;
 

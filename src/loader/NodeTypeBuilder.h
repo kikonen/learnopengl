@@ -79,7 +79,8 @@ namespace loader {
 
         void resolveAddonMeshes(
             model::NodeType* type,
-            mesh::LodMeshContainer& meshContainer,
+            mesh::LodMeshContainer& addonContainer,
+            const mesh::LodMeshContainer& baseContainer,
             const NodeTypeData& typeData);
 
         void resolveMesh(
