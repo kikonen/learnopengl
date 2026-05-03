@@ -6,19 +6,19 @@ prefab:
         path: mesh_elf_female.yml
 
   available_addons:
-    - xid: hair_long
+    - id: hair_long
       prefab:
         path: mesh_elf_hair_long.yml
       use_rig: body
-    - xid: hair_long_hooded
+    - id: hair_long_hooded
       prefab:
         path: mesh_elf_hair_long_hooded.yml
       use_rig: body
-    - xid: hair_pony_buzz
+    - id: hair_pony_buzz
       prefab:
         path: mesh_elf_hair_pony_buzz.yml
       use_rig: body
-    - xid: hair_pony_tail_hooded
+    - id: hair_pony_tail_hooded
       prefab:
         path: mesh_elf_hair_pony_tail_hooded.yml
       use_rig: body
@@ -26,32 +26,32 @@ prefab:
       prefab:
         path: mesh_elf_hair_pony_tail.yml
       use_rig: body
-    - xid: hair_short
+    - id: hair_short
       prefab:
         path: mesh_elf_hair_short.yml
       use_rig: body
-    - xid: orc_hair_long
+    - id: orc_hair_long
       prefab:
         path: mesh_orc_hair_long.yml
       use_rig: body
-    - xid: orc_hair_pony_tail
+    - id: orc_hair_pony_tail
       prefab:
         path: mesh_orc_hair_pony_tail.yml
       use_rig: body
-    - xid: orc_hair_short
+    - id: orc_hair_short
       prefab:
         path: mesh_orc_hair_short.yml
       use_rig: body
 
-    - xid: hood_1
+    - id: hood_1
       prefab:
         path: mesh_elf_addon_hood_1.yml
       use_rig: body
-    - xid: hood_2
+    - id: hood_2
       prefab:
         path: mesh_elf_addon_hood_2.yml
       use_rig: body
-    - xid: mask
+    - id: mask
       prefab:
         path: mesh_elf_addon_mask.yml
       use_rig: body
@@ -69,15 +69,15 @@ prefab:
       prefab:
         path: mesh_elf_addon_vest.yml
       use_rig: body
-    - xid: curlass
+    - id: curlass
       prefab:
         path: mesh_elf_addon_curlass.yml
       use_rig: body
-    - xid: curlass_collar
+    - id: curlass_collar
       prefab:
         path: mesh_elf_addon_curlass_collar.yml
       use_rig: body
-    - xid: sleeves
+    - id: sleeves
       prefab:
         path: mesh_elf_addon_sleeves.yml
       use_rig: body
@@ -129,7 +129,7 @@ prefab:
       prefab:
         path: mesh_elf_addon_studs.yml
       use_rig: body
-    - xid: hip_armor_1
+    - id: hip_armor_1
       prefab:
         path: mesh_elf_addon_hip_armor_1.yml
       use_rig: body
@@ -146,7 +146,7 @@ prefab:
       prefab:
         path: mesh_elf_addon_manica_pair.yml
       use_rig: body
-    - xid: poleyns
+    - id: poleyns
       prefab:
         path: mesh_elf_addon_poleyns.yml
       use_rig: body

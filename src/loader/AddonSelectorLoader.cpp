@@ -86,7 +86,6 @@ namespace loader
             }
             else if (k == "range") {
                 data.range = readUVec2(v);
-                data.enabled = false;
             }
         }
     }

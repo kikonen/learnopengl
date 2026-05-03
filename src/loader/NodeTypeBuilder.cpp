@@ -554,7 +554,10 @@ namespace loader
 
             mesh::LodMesh lodMesh;
             lodMesh.setMesh(mesh);
-            meshContainer.addLodMesh(std::move(lodMesh), SID_REGISTER(meshData.id));
+            meshContainer.addLodMesh(
+                std::move(lodMesh),
+                SID_REGISTER(meshData.group),
+                SID_REGISTER(meshData.id));
             meshCount++;
         }
         else if (typeData.type == NodeKind::terrain) {
@@ -590,7 +593,8 @@ namespace loader
     {
         const auto& assets = Assets::get();
         int meshCount = 0;
-        auto lodMeshSid = SID_REGISTER(meshData.id);
+        auto lodGroupId = SID_REGISTER(meshData.group);
+        auto lodMeshId = SID_REGISTER(meshData.id);
 
         switch (meshData.type) {
         case MeshDataType::mesh: {
@@ -604,7 +608,7 @@ namespace loader
             const auto& meshSet = future.get();
 
             if (meshSet) {
-                meshCount += meshContainer.addMeshSet(*meshSet, lodMeshSid);
+                meshCount += meshContainer.addMeshSet(*meshSet, lodGroupId, lodMeshId);
 
                 KI_INFO_OUT(fmt::format(
                     "\n=======================\n[MESH_SET SUMMARY: {}]\n{}\n=======================",
@@ -618,7 +622,7 @@ namespace loader
 
             mesh::LodMesh lodMesh;
             lodMesh.setMesh(mesh);
-            meshContainer.addLodMesh(std::move(lodMesh), lodMeshSid);
+            meshContainer.addLodMesh(std::move(lodMesh), lodGroupId, lodMeshId);
 
             meshCount++;
             break;
@@ -638,7 +642,7 @@ namespace loader
 
             mesh::LodMesh lodMesh;
             lodMesh.setMesh(mesh);
-            meshContainer.addLodMesh(std::move(lodMesh), lodMeshSid);
+            meshContainer.addLodMesh(std::move(lodMesh), lodGroupId, lodMeshId);
 
             meshCount++;
             break;

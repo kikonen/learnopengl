@@ -6,33 +6,33 @@ prefab:
         path: mesh_elf_male.yml
 
   available_addons:
-    - xid: hair_long_barbute
+    - id: hair_long_barbute
       group: hair.hooded
       use_rig: head
       prefab:
         path: mesh_elf_hair_long_barbute.yml
-    - xid: hair_long
+    - id: hair_long
       group: hair.plain
       use_rig: head
       prefab:
         path: mesh_elf_hair_long.yml
-    - xid: hair_pony_tail
+    - id: hair_pony_tail
       group: hair.plain
       use_rig: head
       prefab:
         path: mesh_elf_hair_pony_tail.yml
-    - xid: hair_short_barbute
+    - id: hair_short_barbute
       group: hair.hooded
       use_rig: head
       prefab:
         path: mesh_elf_hair_short_barbute.yml
-    - xid: hair_short
+    - id: hair_short
       group: hair.plain
       use_rig: head
       prefab:
         path: mesh_elf_hair_short.yml
 
-    - xid: human_hair_buzz
+    - id: human_hair_buzz
       group: hair.hooded
       use_rig: head
       prefab:
@@ -42,34 +42,34 @@ prefab:
       use_rig: head
       prefab:
         path: mesh_human_hair_long.yml
-    - xid: human_hair_short
+    - id: human_hair_short
       group: hair.plain
       use_rig: head
       prefab:
         path: mesh_human_hair_short.yml
 
-    - xid: orc_hair_hood
+    - id: orc_hair_hood
       group: hair.plain
       use_rig: head
       prefab:
         path: mesh_orc_hair_hood.yml
-    - xid: orc_hair_long
+    - id: orc_hair_long
       group: hair.plain
       use_rig: head
       prefab:
         path: mesh_orc_hair_long.yml
-    - xid: orc_hair_pony_tail
+    - id: orc_hair_pony_tail
       group: hair.plain
       use_rig: head
       prefab:
         path: mesh_orc_hair_pony_tail.yml
-    - xid: orc_hair_short
+    - id: orc_hair_short
       group: hair.plain
       use_rig: head
       prefab:
         path: mesh_orc_hair_short.yml
 
-    - xid: hood_1
+    - id: hood_1
       group: hair.hooded
       use_rig: head
       prefab:
@@ -79,7 +79,7 @@ prefab:
       use_rig: body
       prefab:
         path: mesh_elf_addon_hood_2.yml
-    - xid: mask
+    - id: mask
       group: decoration
       use_rig: body
       prefab:
@@ -117,7 +117,7 @@ prefab:
       prefab:
         path: mesh_elf_addon_vest_straps.yml
 
-    - xid: arms_armor
+    - id: arms_armor
       group: armor.arm
       use_rig: body
       prefab:
@@ -218,7 +218,7 @@ prefab:
       use_rig: body
       prefab:
         path: mesh_elf_addon_boots.yml
-  xaddon_selector:
+  addon_selector:
     addons:
       # - xid: hair_long_barbute
       # - xid: hair_long
@@ -264,7 +264,7 @@ prefab:
         seed: 1
       - group: armor.upper
         seed: 1
-        range: [0, -1]
+        range: [2, -1]
       - group: armor.middle
         seed: 1
         range: [0, -1]
@@ -286,7 +286,7 @@ prefab:
       - group: decoration
         seed: 1
         range: [0, -1]
-  addon_selector:
+  xaddon_selector:
     addons:
       - id: orc_hair_pony_tail
       - id: shirt

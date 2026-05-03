@@ -20,6 +20,7 @@ namespace mesh
         // @return count of meshes added
         uint16_t addMeshSet(
             const mesh::MeshSet& meshSet,
+            ki::sid_t lodGroupId,
             ki::sid_t lodMeshId) noexcept;
 
         size_t size() const
@@ -29,6 +30,7 @@ namespace mesh
 
         mesh::LodMesh* addLodMesh(
             mesh::LodMesh&& lodMesh,
+            ki::sid_t lodGroupId,
             ki::sid_t lodMeshId) noexcept;
 
         inline const mesh::LodMesh* getLodMesh(uint8_t lodIndex) const noexcept

@@ -54,6 +54,11 @@ namespace mesh {
             return m_id;
         }
 
+        ki::lod_group_id getGroupId() const noexcept
+        {
+            return m_groupId;
+        }
+
         void registerMaterial();
         void prepareRT(const PrepareContext& ctx);
 
@@ -111,6 +116,7 @@ namespace mesh {
         float m_maxDistance2{ 0.f };
 
         ki::lod_mesh_id m_id;
+        ki::lod_group_id m_groupId;
 
         MeshFlags m_flags;
 
