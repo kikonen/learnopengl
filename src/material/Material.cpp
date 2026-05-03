@@ -703,7 +703,7 @@ void Material::resolveProgram()
         std::map<std::string, std::string, std::less<>> oitDefinitions;
         std::map<std::string, std::string, std::less<>> shadowDefinitions;
         std::map<std::string, std::string, std::less<>> selectionDefinitions;
-        std::map<std::string, std::string, std::less<>> idDefinitions;
+        std::map<std::string, std::string, std::less<>> objectIdDefinitions;
         std::map<std::string, std::string, std::less<>> normalDefinitions;
 
         for (const auto& [k, v] : material.m_sharedDefinitions) {
@@ -711,7 +711,7 @@ void Material::resolveProgram()
             oitDefinitions[k] = v;
             shadowDefinitions[k] = v;
             selectionDefinitions[k] = v;
-            idDefinitions[k] = v;
+            objectIdDefinitions[k] = v;
             normalDefinitions[k] = v;
         }
 
@@ -733,8 +733,8 @@ void Material::resolveProgram()
             selectionDefinitions[k] = v;
         }
 
-        for (const auto& [k, v] : material.m_idDefinitions) {
-            idDefinitions[k] = v;
+        for (const auto& [k, v] : material.m_objectIdDefinitions) {
+            objectIdDefinitions[k] = v;
         }
 
         for (const auto& [k, v] : material.m_normalDefinitions) {
@@ -752,7 +752,7 @@ void Material::resolveProgram()
             //oitDefinitions[DEF_USE_ALPHA] = "1";
             shadowDefinitions[DEF_USE_ALPHA] = "1";
             selectionDefinitions[DEF_USE_ALPHA] = "1";
-            idDefinitions[DEF_USE_ALPHA] = "1";
+            objectIdDefinitions[DEF_USE_ALPHA] = "1";
             usePreDepth = false;
         }
         if (material.blend) {
@@ -786,7 +786,7 @@ void Material::resolveProgram()
             oitDefinitions[DEF_USE_JOINTS] = "1";
             shadowDefinitions[DEF_USE_JOINTS] = "1";
             selectionDefinitions[DEF_USE_JOINTS] = "1";
-            idDefinitions[DEF_USE_JOINTS] = "1";
+            objectIdDefinitions[DEF_USE_JOINTS] = "1";
             normalDefinitions[DEF_USE_JOINTS] = "1";
         }
         //if (useSockets) {
@@ -852,7 +852,7 @@ void Material::resolveProgram()
                 objectIdName,
                 false,
                 "",
-                idDefinitions);
+                objectIdDefinitions);
         }
 
         if (!normalName.empty()) {

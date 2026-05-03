@@ -434,7 +434,7 @@ namespace loader {
                 for (const auto& defNode : v.getNodes()) {
                     const auto& defName = defNode.getName();
                     const auto& defValue = readString(defNode.getNode());
-                    material.m_idDefinitions[util::toUpper(defName)] = defValue;
+                    material.m_objectIdDefinitions[util::toUpper(defName)] = defValue;
                 }
             }
             else if (k == "normal_definitions") {
@@ -665,8 +665,8 @@ namespace loader {
             m.m_selectionDefinitions[progIt.first] = progIt.second;
         }
 
-        for (const auto& progIt : mod.m_idDefinitions) {
-            m.m_idDefinitions[progIt.first] = progIt.second;
+        for (const auto& progIt : mod.m_objectIdDefinitions) {
+            m.m_objectIdDefinitions[progIt.first] = progIt.second;
         }
 
         for (const auto& progIt : mod.m_normalDefinitions) {

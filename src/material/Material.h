@@ -293,7 +293,7 @@ public:
     std::map<std::string, std::string> m_oitDefinitions{};
     std::map<std::string, std::string> m_shadowDefinitions{};
     std::map<std::string, std::string> m_selectionDefinitions{};
-    std::map<std::string, std::string> m_idDefinitions{};
+    std::map<std::string, std::string> m_objectIdDefinitions{};
     std::map<std::string, std::string> m_normalDefinitions{};
 
     std::map<MaterialProgramType, ki::program_id> m_programs{};
