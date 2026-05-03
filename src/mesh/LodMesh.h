@@ -105,10 +105,6 @@ namespace mesh {
         void updateTransform() const;
 
     public:
-        util::Ref<Mesh> m_mesh;
-
-        std::unique_ptr<Material> m_material;
-
         backend::DrawOptions m_drawOptions;
 
         float m_minDistance2{ 0.f };
@@ -134,6 +130,9 @@ namespace mesh {
 
         util::Axis m_baseAxis{ util::Axis::y };
         util::Front m_baseFront{ util::Front::z };
+
+        util::Ref<Mesh> m_mesh;
+        std::unique_ptr<Material> m_material;
 
         glm::vec3 m_scale{ 1.f };
 
