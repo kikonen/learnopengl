@@ -28,7 +28,7 @@ namespace {
 }
 
 ShaderMaterialUpdater::ShaderMaterialUpdater(
-    ki::StringID id,
+    ki::material_updater_id id,
     const std::string& name)
     : MaterialUpdater{id, name},
     m_size{ 512, 512 }

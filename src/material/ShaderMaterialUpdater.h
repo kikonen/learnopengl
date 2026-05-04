@@ -8,7 +8,6 @@
 #include "kigl/kigl.h"
 
 #include "ki/size.h"
-#include "ki/sid.h"
 
 #include "material/MaterialUpdater.h"
 
@@ -22,7 +21,7 @@ class ShaderMaterialUpdater : public MaterialUpdater
 {
 public:
     ShaderMaterialUpdater(
-        ki::StringID id,
+        ki::material_updater_id id,
         const std::string& name);
 
     ~ShaderMaterialUpdater();

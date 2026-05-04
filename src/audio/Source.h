@@ -60,13 +60,13 @@ namespace audio
         float m_minGain{ audio::MIN_GAIN };
         float m_maxGain{ audio::MAX_GAIN };
 
-        bool m_looping{ false };
-
         float m_pitch{ 1.f };
         float m_gain{ 1.f };
 
         ALuint m_sourceId{ 0 };
 
         ki::level_id m_matrixLevel{ 0 };
+
+        bool m_looping{ false };
     };
 }

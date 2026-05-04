@@ -1,5 +1,7 @@
 #include "SoundRegistry.h"
 
+#include "ki/sid.h"
+
 #include "Sound.h"
 
 namespace audio
@@ -14,11 +16,7 @@ namespace audio
     void SoundRegistry::clear()
     {
         std::unique_lock lock(m_lock);
-        m_sounds.clear();
-        m_sidToId.clear();
-
-        // NOTE KI null entries to avoid need for "- 1" math
-        m_sounds.emplace_back<Sound>({});
+        m_idToSound.clear();
     }
 
     Sound* SoundRegistry::getSound(
@@ -26,29 +24,28 @@ namespace audio
     {
         std::shared_lock lock(m_lock);
 
-        if (id < 1 || id >= m_sounds.size()) return nullptr;
-        return &m_sounds[id];
+        const auto& it = m_idToSound.find(id);
+        return it != m_idToSound.end() ? it->second.get() : nullptr;
     }
 
-    audio::sound_id SoundRegistry::registerSound(std::string_view fullPath)
+    audio::sound_id SoundRegistry::registerSound(const std::string& fullPath)
     {
         std::unique_lock lock(m_lock);
 
-        const auto sid = SID_REGISTER(fullPath);
+        const auto sid = SID_REGISTER(fullPath).asSid();
 
-        const auto& it = m_sidToId.find(sid);
-        if (it != m_sidToId.end()) return it->second;
+        const auto& it = m_idToSound.find(sid);
+        if (it != m_idToSound.end()) return it->second->m_id;
 
-        audio::Sound& sound = m_sounds.emplace_back();
-        sound.m_id = static_cast<audio::sound_id>(m_sounds.size() - 1);
+        auto sound = util::Ref<audio::Sound>::create();
+        sound->m_id = sid;
 
-        if (!sound.load(std::string{ fullPath })) {
-            m_sounds.pop_back();
+        if (!sound->load(fullPath)) {
             return 0;
         }
 
-        m_sidToId.insert({ sid, sound.m_id});
+        m_idToSound.insert({ sid, sound});
 
-        return sound.m_id;
+        return sound->m_id;
     }
 }

@@ -70,5 +70,5 @@ private:
 
     kigl::GLBuffer m_ssbo{ "materials_ssbo" };
 
-    std::unordered_map<ki::StringID, std::unique_ptr<MaterialUpdater>> m_updaters;
+    std::unordered_map<ki::material_updater_id, std::unique_ptr<MaterialUpdater>> m_updaters;
 };

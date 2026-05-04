@@ -4,7 +4,6 @@
 #include <memory>
 
 #include "ki/size.h"
-#include "ki/sid.h"
 
 #include "kigl/kigl.h"
 
@@ -21,7 +20,7 @@ struct Material;
 class MaterialUpdater {
 public:
     MaterialUpdater(
-        ki::StringID id,
+        ki::material_updater_id id,
         const std::string& name);
 
     ~MaterialUpdater();
@@ -60,7 +59,7 @@ public:
     }
 
 public:
-    ki::StringID m_id{ 0 };
+    ki::material_updater_id m_id{ 0 };
 
     std::unique_ptr<Material> m_material;
     std::vector<ki::material_id> m_dependentMaterials;

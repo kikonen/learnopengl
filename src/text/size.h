@@ -1,9 +1,9 @@
 #pragma once
 
-#include <stdint.h>
+#include "ki/size.h"
 
 namespace text
 {
     // SID
-    typedef uint32_t font_id;
+    typedef ki::sid_t font_id;
 }

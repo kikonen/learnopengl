@@ -8,6 +8,8 @@
 #include "util/glm_util.h"
 #include "util/glm_format.h"
 
+#include "ki/sid.h"
+
 #include "gui/Input.h"
 
 #include "model/Node.h"

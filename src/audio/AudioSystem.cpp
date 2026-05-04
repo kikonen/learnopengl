@@ -121,7 +121,7 @@ namespace audio
         source.prepare(sound);
     }
 
-    audio::sound_id AudioSystem::registerSound(std::string_view fullPath)
+    audio::sound_id AudioSystem::registerSound(const std::string& fullPath)
     {
         return m_soundRegistry->registerSound(fullPath);
     }

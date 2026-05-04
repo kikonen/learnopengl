@@ -17,7 +17,7 @@ namespace {
 }
 
 FontAtlasMaterialUpdater::FontAtlasMaterialUpdater(
-    ki::StringID id,
+    ki::material_updater_id id,
     const std::string& name)
     : MaterialUpdater{ id, name }
 {

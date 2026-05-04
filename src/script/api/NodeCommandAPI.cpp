@@ -5,6 +5,7 @@
 #include "util/Log.h"
 #include "util/glm_format.h"
 
+#include "ki/sid.h"
 #include "ki/size.h"
 
 #include "model/Node.h"

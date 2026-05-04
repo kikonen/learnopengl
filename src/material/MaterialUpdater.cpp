@@ -3,7 +3,7 @@
 #include "Material.h"
 
 MaterialUpdater::MaterialUpdater(
-    ki::StringID id,
+    ki::material_updater_id id,
     const std::string& name)
     : m_id{ id },
     m_name{ name}

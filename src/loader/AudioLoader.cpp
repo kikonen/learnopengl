@@ -7,6 +7,8 @@
 #include "util/util.h"
 #include "util/file.h"
 
+#include "ki/sid.h"
+
 #include "audio/Source.h"
 #include "audio/Listener.h"
 #include "audio/AudioSystem.h"

@@ -16,7 +16,8 @@ namespace ki
 
     typedef sid_t socket_id;
 
-    typedef uint32_t material_id;
+    typedef sid_t material_id;
+    typedef sid_t material_updater_id;
     typedef int32_t material_index;
 
     typedef sid_t decal_id;

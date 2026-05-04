@@ -46,7 +46,7 @@ namespace audio
 
         void prepareSource(audio::Source& source);
 
-        audio::sound_id registerSound(std::string_view fullPath);
+        audio::sound_id registerSound(const std::string& fullPath);
 
     private:
         bool m_prepared{ false };

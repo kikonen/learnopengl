@@ -298,7 +298,7 @@ public:
 
     std::map<MaterialProgramType, ki::program_id> m_programs{};
 
-    ki::StringID m_updaterId;
+    ki::material_updater_id m_updaterId;
 
     MaterialUpdater* m_updater{ nullptr };
 

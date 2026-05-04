@@ -2,6 +2,8 @@
 
 #include "util/util.h"
 
+#include "ki/sid.h"
+
 #include "asset/Assets.h"
 
 #include "pool/NodeHandle.h"

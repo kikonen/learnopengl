@@ -105,7 +105,7 @@ namespace loader {
     {
         switch (data.type) {
         case MaterialUpdaterType::shader: {
-            auto cm = std::make_unique<ShaderMaterialUpdater>(SID_REGISTER(data.id), data.id);
+            auto cm = std::make_unique<ShaderMaterialUpdater>(SID_REGISTER(data.id).asSid(), data.id);
 
             cm->m_size = data.size;
             cm->m_frameSkip = data.frameSkip;
@@ -117,7 +117,7 @@ namespace loader {
             return cm;
         }
         case MaterialUpdaterType::font_atlas: {
-            auto cm = std::make_unique<FontAtlasMaterialUpdater>(SID_REGISTER(data.id), data.id);
+            auto cm = std::make_unique<FontAtlasMaterialUpdater>(SID_REGISTER(data.id).asSid(), data.id);
 
             cm->setMaterial(&data.materialData.material);
 

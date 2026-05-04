@@ -905,8 +905,9 @@ void NodeRegistry::attachNode(
     }
 
     if (auto& sources = node->m_audioSources; sources) {
+        auto& audioSystem = audio::AudioSystem::get();
         for (auto& src : *sources) {
-            audio::AudioSystem::get().prepareSource(src);
+            audioSystem.prepareSource(src);
         }
     }
 

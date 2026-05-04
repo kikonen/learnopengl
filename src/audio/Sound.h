@@ -5,11 +5,13 @@
 
 #include "al_call.h"
 
+#include "util/Ref.h"
+
 #include "size.h"
 
 namespace audio
 {
-    struct Sound {
+    struct Sound : util::RefCounted<false> {
         Sound() = default;
         Sound(Sound& o) = delete;
         Sound(const Sound& o) = delete;
@@ -27,8 +29,6 @@ namespace audio
         // worker thread
         bool load(const std::string& fullPath);
 
-        bool m_prepared{ false };
-
         audio::sound_id m_id{ 0 };
 
         ALuint m_bufferId{ 0 };
@@ -37,11 +37,13 @@ namespace audio
         int m_bitDepth{ 0 };
 
         int m_sampleCount{ 0 };
-        double m_lengthInSeconds{ 0 };
+        float m_lengthInSeconds{ 0 };
 
         int m_channelCount{ 0 };
         bool m_isMono{ false };
         bool m_isStereo{ false };
+
+        bool m_prepared{ false };
 
         ALenum m_format{ 0 };
         std::vector<ALint> m_data{};

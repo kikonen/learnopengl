@@ -4,6 +4,7 @@
 #include <mutex>
 #include <unordered_map>
 
+#include "ki/sid.h"
 #include "ki/size.h"
 
 #include "model/Node.h"
