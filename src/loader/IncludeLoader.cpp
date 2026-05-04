@@ -178,6 +178,12 @@ namespace loader {
             sceneData.m_composites,
             l);
 
+        l.m_materialLoader.loadMaterials(
+            node.findNode("materials"),
+            currentDir,
+            sceneData.m_materials,
+            l);
+
         l.m_particleLoader.loadParticles(
             node.findNode("particles"),
             currentDir,

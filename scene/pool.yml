@@ -606,3 +606,7 @@ particles:
       sprites_x: 9
       texture_spec:
         wrap: GL_CLAMP_TO_EDGE
+
+materials:
+  - alias: water_caustics
+    map_kd: textures/water_caustics/water_caustics_001.png

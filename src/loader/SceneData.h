@@ -19,6 +19,7 @@ namespace loader {
     struct CompositeData;
     struct DecalData;
     struct ParticleData;
+    struct MaterialData;
     struct MaterialUpdaterData;
 
     struct SceneData {
@@ -36,6 +37,7 @@ namespace loader {
 
         std::vector<ParticleData> m_particles;
         std::vector<DecalData> m_decals;
+        std::vector<MaterialData> m_materials;
         std::vector<MaterialUpdaterData> m_materialUpdaters;
 
         std::vector<std::pair<std::string, loader::DocNode>> m_includeFiles;

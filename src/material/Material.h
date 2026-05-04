@@ -100,6 +100,14 @@ public:
 
     std::string str() const noexcept;
 
+    ki::material_id getId() const noexcept {
+        return m_id;
+    }
+
+    void setId(ki::material_id id) {
+        m_id = id;
+    }
+
     // assign data from other material, but keep local ID
     // NOTE KI *MUST* keep original materialId
     // => it's referred by verteces

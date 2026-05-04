@@ -35,6 +35,8 @@ public:
 
     void clear();
 
+    ki::material_index findRegisteredIndex(ki::material_id id);
+
     // Updates m_registeredIndex of Material
     ki::material_index registerMaterial(Material& material);
 
@@ -71,4 +73,5 @@ private:
     kigl::GLBuffer m_ssbo{ "materials_ssbo" };
 
     std::unordered_map<ki::material_updater_id, std::unique_ptr<MaterialUpdater>> m_updaters;
+    std::unordered_map<ki::material_id, uint32_t> m_idToIndex;
 };

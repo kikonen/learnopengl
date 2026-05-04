@@ -223,6 +223,16 @@ namespace loader {
         }
 
         {
+            auto& materialRegistry = MaterialRegistry::get();
+            for (auto& materialData : m_sceneData->m_materials) {
+                auto& material = materialData.material;
+                material.resolveMaterial();
+                material.setId(SID_REGISTER(materialData.materialName).asSid());
+                materialRegistry.registerMaterial(material);
+            }
+        }
+
+        {
             const auto& decals = l.m_decalLoader.createDecals(
                 m_sceneData->m_decals,
                 l);

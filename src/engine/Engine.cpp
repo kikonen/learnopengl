@@ -22,6 +22,7 @@
 #include "kigl/OpenGLInfo.h"
 
 #include "material/MaterialSSBO.h"
+#include "material/MaterialRegistry.h"
 
 #include "engine/AsyncLoader.h"
 #include "engine/AssetsLoader.h"
@@ -53,6 +54,7 @@
 
 namespace
 {
+    const auto material_waterCausticId = SID("water_caustics").asSid();
 }
 
 Engine::Engine()
@@ -368,6 +370,7 @@ void Engine::prepareUBOs()
     const auto& assets = Assets::get();
     const auto& selectionRegistry = *getRegistry()->m_selectionRegistry;
 
+    uint32_t waterCausticMaterialIndex = MaterialRegistry::get().findRegisteredIndex(material_waterCausticId);
     //auto cubeMapEnabled = dbg.m_cubeMapEnabled &&
     //    m_cubeMapRenderer->isEnabled() &&
     //    m_cubeMapRenderer->isRendered();
@@ -381,6 +384,7 @@ void Engine::prepareUBOs()
         selectionRegistry.getSelectionMaterialIndex(),
         selectionRegistry.getTagMaterialIndex(),
         selectionRegistry.getWireframeMaterialIndex(),
+        waterCausticMaterialIndex,
 
         dbg.m_cubeMapEnabled,
         assets.skyboxEnabled,

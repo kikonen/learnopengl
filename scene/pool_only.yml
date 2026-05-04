@@ -222,3 +222,7 @@ nodes:
         scale: [60, 6, 0.3]
   - type: wooden_floor
     scale: 200
+
+materials:
+  - alias: water_caustics
+    map_kd: textures/water_caustics/water_caustics_001.png

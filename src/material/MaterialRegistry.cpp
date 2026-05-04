@@ -51,6 +51,8 @@ MaterialRegistry::~MaterialRegistry() = default;
 void MaterialRegistry::clear()
 {
     m_materials.clear();
+    m_idToIndex.clear();
+
     m_dirtyMaterials.clear();
     m_materialEntries.clear();
     m_updaters.clear();
@@ -70,6 +72,15 @@ void MaterialRegistry::clear()
     }
 
     m_ssbo.markUsed(0);
+}
+
+ki::material_index MaterialRegistry::findRegisteredIndex(ki::material_id id) 
+{
+    std::lock_guard lock(m_lock);
+
+    const auto& it = m_idToIndex.find(id);
+
+    return it != m_idToIndex.end() ? it->second : 0;
 }
 
 ki::material_index MaterialRegistry::registerMaterial(Material& material)
@@ -92,6 +103,8 @@ ki::material_index MaterialRegistry::registerMaterial(Material& material)
 
     material.m_registeredIndex = static_cast<ki::material_index>(m_materials.size());
     m_materials.emplace_back(material);
+
+    m_idToIndex.insert({ material.getId(), material.m_registeredIndex});
 
     m_dirtyFlag = true;
 
