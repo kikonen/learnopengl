@@ -18,6 +18,7 @@ layout (location = ATTR_TEX) in vec2 a_texCoord;
 #include "include/uniform_clip_planes.glsl"
 
 out VS_OUT {
+  vec3 viewPos;
   vec2 texCoord;
 
   flat uint materialIndex;
@@ -80,6 +81,8 @@ void main() {
   }
 
   gl_Position = u_projectedMatrix * worldPos;
+
+  vs_out.viewPos = (u_viewMatrix * worldPos).xyz;
 
   vs_out.materialIndex = materialIndex;
   vs_out.flags = instance.u_flags;

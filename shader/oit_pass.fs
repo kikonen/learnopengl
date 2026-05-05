@@ -2,6 +2,7 @@
 
 #include "include/ssbo_materials.glsl"
 
+#include "include/uniform_camera.glsl"
 #include "include/uniform_data.glsl"
 
 // NOTE KI depth is *not* updated in OIT pass
@@ -11,6 +12,7 @@
 //layout(early_fragment_tests) in;
 
 in VS_OUT {
+  vec3 viewPos;
   vec2 texCoord;
 
   flat uint materialIndex;
@@ -39,6 +41,15 @@ void main()
   #include "include/var_tex_material.glsl"
 
   vec4 color = material.diffuse;
+
+  vec3 worldPos = (u_invViewMatrix * vec4(fs_in.viewPos, 1)).xyz;
+  if (worldPos.y < 6.5 && u_waterCausticMaterialIndex > 0) {
+
+    vec2 causticTexCoord = (texCoord + vec2(sin(u_time * 0.2), cos(u_time * 0.1)) * 0.3) * 1.5;
+    vec3 causticColor = texture(sampler2D(u_materials[u_waterCausticMaterialIndex].diffuseTex), causticTexCoord).rgb;
+
+    color.rgb = mix(color.rgb, causticColor.rgb, 0.7);
+  }
 
   const float alpha = color.a;
 
