@@ -199,6 +199,10 @@ assets:
   water_map_near_plane: 0.1
   water_map_far_plane: 600
 
+  water_caustic_enabled: true
+  water_caustic_intensity: 0.5
+  water_caustic_world_level: 6.5
+
   cube_map_enabled: true
   cube_map_buffer_scale: 0.5
   cube_map_seamless: true

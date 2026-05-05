@@ -206,6 +206,16 @@ namespace editor
 
         {
             ImGui::Spacing();
+            ImGui::SeparatorText("Water caustic");
+            ImGui::Spacing();
+
+            ImGui::Checkbox("Water caustic enabled", &dbg.m_waterCausticEnabled);
+            ImGui::InputFloat("Water caustic intensity", &dbg.m_waterCausticIntensity, 0.01f, 0.1f);
+            ImGui::InputFloat("Water caustic level", &dbg.m_waterCausticWorldLevel, 0.01f, 0.1f);
+        }
+
+        {
+            ImGui::Spacing();
             ImGui::SeparatorText("Mirror map");
             ImGui::Spacing();
 

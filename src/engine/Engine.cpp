@@ -371,6 +371,8 @@ void Engine::prepareUBOs()
     const auto& selectionRegistry = *getRegistry()->m_selectionRegistry;
 
     uint32_t waterCausticMaterialIndex = MaterialRegistry::get().findRegisteredIndex(material_waterCausticId);
+    bool waterCausticEnabled = dbg.m_waterCausticEnabled && waterCausticMaterialIndex > 0;
+
     //auto cubeMapEnabled = dbg.m_cubeMapEnabled &&
     //    m_cubeMapRenderer->isEnabled() &&
     //    m_cubeMapRenderer->isRendered();
@@ -384,7 +386,11 @@ void Engine::prepareUBOs()
         selectionRegistry.getSelectionMaterialIndex(),
         selectionRegistry.getTagMaterialIndex(),
         selectionRegistry.getWireframeMaterialIndex(),
+
+        waterCausticEnabled,
         waterCausticMaterialIndex,
+        dbg.m_waterCausticIntensity,
+        dbg.m_waterCausticWorldLevel,
 
         dbg.m_cubeMapEnabled,
         assets.skyboxEnabled,

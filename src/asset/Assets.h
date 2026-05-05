@@ -166,6 +166,10 @@ public:
     float waterMapNearPlane;
     float waterMapFarPlane;
 
+    bool waterCausticEnabled;
+    float waterCausticIntensity;
+    float waterCausticWorldLevel;
+
     int terrainGridSize;
 
     int batchSize;

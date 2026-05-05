@@ -64,6 +64,10 @@ namespace debug {
         float m_waterMapFarPlane{ 1000.f };
         int m_waterMapTileSize{ 128 };
 
+        bool m_waterCausticEnabled{ true };
+        float m_waterCausticIntensity{ 0.5f };
+        float m_waterCausticWorldLevel{ 0.f };
+
         bool m_cubeMapEnabled{ true };
         float m_cubeMapBufferScale{ 0.5f };
         float m_cubeMapNearPlane{ 0.1f };

@@ -484,6 +484,20 @@ void AssetsLoader::loadAssets(
                 continue;
             }
         }
+        {
+            if (k == "water_caustic_enabled") {
+                data.waterCausticEnabled = readBool(v);
+                continue;
+            }
+            if (k == "water_caustic_intensity") {
+                data.waterCausticIntensity = readFloat(v);
+                continue;
+            }
+            if (k == "water_caustic_world_level") {
+                data.waterCausticWorldLevel = readFloat(v);
+                continue;
+            }
+        }
         if (k == "terrain_grid_size") {
             data.terrainGridSize = readInt(v);
             continue;

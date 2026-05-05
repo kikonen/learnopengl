@@ -173,6 +173,10 @@ Assets::Assets()
     waterMapNearPlane = 0.1f;
     waterMapFarPlane = 1000;
 
+    waterCausticEnabled = true;
+    waterCausticIntensity = 0.5f;
+    waterCausticWorldLevel = 0.f;
+
     terrainGridSize = 32;
 
     batchSize = 16;
