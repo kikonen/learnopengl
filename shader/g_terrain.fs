@@ -77,6 +77,14 @@ void main() {
     // texColor *= vec4(3.5, 0.7, 0.7, 1);
   }
 
+  vec3 worldPos = (u_invViewMatrix * vec4(fs_in.viewPos, 1)).xyz;
+  if (worldPos.y < 6.5 && u_waterCausticMaterialIndex > 0) {
+    vec2 causticTexCoord = (texCoord * 200 + vec2(sin(u_time * 0.2), cos(u_time * 0.1)) * 0.3) * 1.5;
+    vec3 causticColor = texture(sampler2D(u_materials[u_waterCausticMaterialIndex].diffuseTex), causticTexCoord).rgb;
+
+    texColor.rgb = mix(texColor.rgb, causticColor.rgb, 0.7);
+  }
+
   o_fragColor = texColor.rgb;
   o_fragMRAS = material.mras;
   o_fragEmission = material.emission;

@@ -149,11 +149,13 @@ void main() {
   //   texColor.a = alpha;
   // }
 
-  if (u_waterCausticMaterialIndex > 0) {
+  vec3 worldPos = (u_invViewMatrix * vec4(fs_in.viewPos, 1)).xyz;
+  if (worldPos.y < 6.5 && u_waterCausticMaterialIndex > 0) {
+
     vec2 causticTexCoord = (texCoord + vec2(sin(u_time * 0.2), cos(u_time * 0.1)) * 0.3) * 1.5;
     vec3 causticColor = texture(sampler2D(u_materials[u_waterCausticMaterialIndex].diffuseTex), causticTexCoord).rgb;
 
-    color.rgb = mix(color.rgb, causticColor.rgb, 0.2);
+    color.rgb = mix(color.rgb, causticColor.rgb, 0.7);
   }
 
   o_fragColor = color.rgb;

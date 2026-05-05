@@ -3,6 +3,8 @@
 #include <string>
 #include <cstdio>
 
+#include "ki/sid.h"
+
 #include "shader/LightsUBO.h"
 
 #include "engine/UpdateContext.h"
