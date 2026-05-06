@@ -109,7 +109,7 @@ types:
     flags:
       no_shadow: true
       water: true
-    water_depth: 50.0
+    water_depth: 100.0
     physics:
       body:
         type: box

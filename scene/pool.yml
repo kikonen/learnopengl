@@ -178,7 +178,7 @@ types:
     flags:
       no_shadow: true
       water: true
-    water_depth: 5.0
+    water_depth: 20.0
     physics:
       update: true
       body:

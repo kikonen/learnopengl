@@ -107,7 +107,7 @@ types:
     flags:
       no_shadow: true
       water: true
-    water_depth: 50.0
+    water_depth: 100.0
     script_file: scripts/anim_water
   - id: sea_floor
     mesh:
