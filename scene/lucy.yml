@@ -64,6 +64,7 @@ types:
     flags:
       no_shadow: true
       water: true
+    water_depth: 10.0
     script_file: scripts/anim_water_lucy
   - id: pool_side
     mesh:
@@ -155,3 +156,7 @@ nodes:
     pos: [30.0, 25.0, -40.0]
     rotation: [0.0, -45.0, 0.0]
     scale: 20.0
+
+materials:
+  - alias: water_caustics
+    map_kd: textures/water_caustics/water_caustics_001.png

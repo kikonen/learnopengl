@@ -169,6 +169,7 @@ public:
     bool waterCausticEnabled;
     float waterCausticIntensity;
     float waterCausticWorldLevel;
+    float waterCausticScale;
 
     int terrainGridSize;
 

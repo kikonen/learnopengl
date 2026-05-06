@@ -199,6 +199,7 @@ namespace render {
         mutable bool m_useSsao : 1{ true };
         mutable bool m_useBloom : 1{ true };
         mutable bool m_useScreenspaceEffects : 1{ true };
+        mutable bool m_useWaterCaustics : 1{ true };
 
         mutable bool m_forceSolid : 1{ false };
         mutable bool m_forceLineMode : 1{ false };

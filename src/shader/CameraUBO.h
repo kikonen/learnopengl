@@ -52,8 +52,9 @@ struct CameraUBO {
     float u_farPlane;
 
     int u_cameraSsaoEnabled; // bool as 4 bytes
+    int u_cameraWaterCausticsEnabled; // bool as 4 bytes
 
-    int pad1;
+    //int pad1;
     //int pad2;
 };
 #pragma pack(pop)

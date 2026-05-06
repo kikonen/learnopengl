@@ -211,6 +211,9 @@ namespace loader {
                     data.typeFlags.set(util::toLower(flagName), flagValue);
                 }
             }
+            else if (k == "water_depth") {
+                data.waterDepth = readFloat(v);
+            }
             else if (k == "front") {
                 data.front = readVec3(v);
             }

@@ -176,6 +176,7 @@ Assets::Assets()
     waterCausticEnabled = true;
     waterCausticIntensity = 0.5f;
     waterCausticWorldLevel = 0.f;
+    waterCausticScale = 0.1f;
 
     terrainGridSize = 32;
 

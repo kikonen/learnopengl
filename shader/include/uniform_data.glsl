@@ -10,6 +10,7 @@ layout(std140, binding = UBO_DATA) uniform Data {
   uint u_waterCausticMaterialIndex;
   float u_waterCausticIntensity;
   float u_waterCausticWorldLevel;
+  float u_waterCausticScale;
 
   bool u_cubeMapEnabled;
 
@@ -38,7 +39,7 @@ layout(std140, binding = UBO_DATA) uniform Data {
   int u_frame;
 
   int data_pad1;
-  int data_pad2;
+  // int data_pad2;
   // int data_pad3;
 
   vec4 u_ssaoSamples[64];

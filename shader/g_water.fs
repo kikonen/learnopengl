@@ -7,6 +7,8 @@
 #include "include/uniform_data.glsl"
 #include "include/uniform_debug.glsl"
 
+#include "include/water_caustics.glsl"
+
 // https://www.khronos.org/opengl/wiki/Early_Fragment_Test
 // https://www.gamedev.net/forums/topic/700517-performance-question-alpha-texture-vs-frag-shader-discard/5397906/
 layout(early_fragment_tests) in;
@@ -150,14 +152,9 @@ void main() {
 
   clamp_color(color);
 
-  if (u_waterCausticEnabled) {
+  {
     vec3 worldPos = (u_invViewMatrix * vec4(fs_in.viewPos, 1)).xyz;
-    if (true) {
-      vec2 causticTexCoord = (texCoord * 5 + vec2(sin(u_time * 0.2), cos(u_time * 0.1)) * 0.3) * 1.5;
-      vec3 causticColor = texture(sampler2D(u_materials[u_waterCausticMaterialIndex].diffuseTex), causticTexCoord).rgb;
-
-      color.rgb = mix(color.rgb, causticColor.rgb, u_waterCausticIntensity);
-    }
+    applyWaterCausticAlways(color.rgb, worldPos);
   }
 
   o_fragColor = color.rgb;

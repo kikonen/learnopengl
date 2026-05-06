@@ -144,6 +144,7 @@ namespace render
             m_useFog = parent->m_useFog;
             m_useBloom = parent->m_useBloom;
             m_useScreenspaceEffects = parent->m_useScreenspaceEffects;
+            m_useWaterCaustics = parent->m_useWaterCaustics;
 
             m_forceSolid = m_parent->m_forceSolid;
             m_forceLineMode = m_parent->m_forceLineMode;
@@ -219,6 +220,7 @@ namespace render
             cameraUBO.u_farPlane = m_camera->getFarPlane();
 
             cameraUBO.u_cameraSsaoEnabled = m_useSsao;
+            cameraUBO.u_cameraWaterCausticsEnabled = m_useWaterCaustics;
         }
 
         // NOTE KI keep clipping
@@ -259,6 +261,7 @@ namespace render
         {
             auto& cameraUBO = m_cameraUBO;
             cameraUBO.u_cameraSsaoEnabled = m_useSsao;
+            cameraUBO.u_cameraWaterCausticsEnabled = m_useWaterCaustics;
         }
 
         m_renderData->updateCamera(m_cameraUBO);

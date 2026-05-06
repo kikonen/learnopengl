@@ -5,6 +5,8 @@
 #include "include/uniform_camera.glsl"
 #include "include/uniform_data.glsl"
 
+#include "include/water_caustics.glsl"
+
 // NOTE KI depth is *not* updated in OIT pass
 // => testing against solid depth
 // NOTE KI "early_fragment_tests" cannot be used at same same with alpha
@@ -42,15 +44,9 @@ void main()
 
   vec4 color = material.diffuse;
 
-  if (u_waterCausticEnabled) {
+  {
     vec3 worldPos = (u_invViewMatrix * vec4(fs_in.viewPos, 1)).xyz;
-    if (worldPos.y < u_waterCausticWorldLevel) {
-
-      vec2 causticTexCoord = (texCoord + vec2(sin(u_time * 0.2), cos(u_time * 0.1)) * 0.3) * 1.5;
-      vec3 causticColor = texture(sampler2D(u_materials[u_waterCausticMaterialIndex].diffuseTex), causticTexCoord).rgb;
-
-      color.rgb = mix(color.rgb, causticColor.rgb, u_waterCausticIntensity);
-    }
+    applyWaterCaustic(color.rgb, worldPos);
   }
 
   const float alpha = color.a;

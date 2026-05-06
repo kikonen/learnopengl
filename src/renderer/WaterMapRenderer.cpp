@@ -387,6 +387,7 @@ bool WaterMapRenderer::render(
         localCtx.m_useFog = false;
         localCtx.m_useEmission = false;
         localCtx.m_useBloom = false;
+        localCtx.m_useWaterCaustics = false;
         localCtx.m_forceLineMode = false;
 
         {
@@ -431,6 +432,7 @@ bool WaterMapRenderer::render(
         localCtx.m_useFog = false;
         localCtx.m_useEmission = false;
         localCtx.m_useBloom = false;
+        localCtx.m_useWaterCaustics = false;
         localCtx.m_forceLineMode = false;
 
         {

@@ -51,6 +51,8 @@ namespace loader
 
         loader::FlagContainer typeFlags;
 
+        float waterDepth{ 0.f };
+
         glm::vec3 baseRotation{ 0.f };
         glm::vec3 baseScale{ 1.f };
 

@@ -682,6 +682,7 @@
     <ClCompile Include="src\scene\SkyboxMaterial.cpp" />
     <ClCompile Include="src\material\Image.cpp" />
     <ClCompile Include="src\render\RenderContext.cpp" />
+    <ClCompile Include="src\render\WaterCausticResolver.cpp" />
     <ClCompile Include="src\gui\Input.cpp" />
     <ClCompile Include="src\mesh_set\MeshSetImporter.cpp" />
     <ClCompile Include="src\model\Node.cpp" />
@@ -1309,6 +1310,7 @@
     <ClInclude Include="src\scene\SkyboxMaterial.h" />
     <ClInclude Include="src\material\Image.h" />
     <ClInclude Include="src\render\RenderContext.h" />
+    <ClInclude Include="src\render\WaterCausticResolver.h" />
     <ClInclude Include="src\gui\Input.h" />
     <ClInclude Include="src\mesh_set\MeshSetImporter.h" />
     <ClInclude Include="src\model\Node.h" />

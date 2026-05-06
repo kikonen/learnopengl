@@ -39,6 +39,7 @@ types:
     flags:
       no_shadow: true
       water: true
+    water_depth: 10.0
   - id: pool_floor
     mesh:
       path: quad
@@ -76,3 +77,7 @@ nodes:
       x_step: 60
       y_step: 0
       z_step: 60
+
+materials:
+  - alias: water_caustics
+    map_kd: textures/water_caustics/water_caustics_001.png

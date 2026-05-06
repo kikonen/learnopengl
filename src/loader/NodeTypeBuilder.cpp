@@ -151,6 +151,7 @@ namespace loader
 
         type->setName(typeName);
         type->m_layer = typeData.layer;
+        type->m_waterDepth = typeData.waterDepth;
 
         type->m_pivotPoint = typeData.pivot;
         type->m_front = typeData.front;

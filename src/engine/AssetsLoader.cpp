@@ -497,6 +497,10 @@ void AssetsLoader::loadAssets(
                 data.waterCausticWorldLevel = readFloat(v);
                 continue;
             }
+            if (k == "water_caustic_scale") {
+                data.waterCausticScale = readFloat(v);
+                continue;
+            }
         }
         if (k == "terrain_grid_size") {
             data.terrainGridSize = readInt(v);

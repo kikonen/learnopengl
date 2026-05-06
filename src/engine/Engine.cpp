@@ -42,6 +42,7 @@
 #include "render/RenderData.h"
 #include "render/PassSsao.h"
 #include "render/WindowBuffer.h"
+#include "render/WaterCausticResolver.h"
 
 #include "registry/VaoRegistry.h"
 #include "registry/SelectionRegistry.h"
@@ -371,7 +372,14 @@ void Engine::prepareUBOs()
     const auto& selectionRegistry = *getRegistry()->m_selectionRegistry;
 
     uint32_t waterCausticMaterialIndex = MaterialRegistry::get().findRegisteredIndex(material_waterCausticId);
-    bool waterCausticEnabled = dbg.m_waterCausticEnabled && waterCausticMaterialIndex > 0;
+
+    const auto waterCaustic = render::WaterCausticResolver::resolve(m_currentScene.get());
+    const bool waterCausticEnabled =
+        dbg.m_waterCausticEnabled
+        && waterCausticMaterialIndex > 0
+        && waterCaustic.enabled;
+    const float waterCausticWorldLevel =
+        waterCaustic.enabled ? waterCaustic.surfaceY : dbg.m_waterCausticWorldLevel;
 
     //auto cubeMapEnabled = dbg.m_cubeMapEnabled &&
     //    m_cubeMapRenderer->isEnabled() &&
@@ -390,7 +398,8 @@ void Engine::prepareUBOs()
         waterCausticEnabled,
         waterCausticMaterialIndex,
         dbg.m_waterCausticIntensity,
-        dbg.m_waterCausticWorldLevel,
+        waterCausticWorldLevel,
+        dbg.m_waterCausticScale,
 
         dbg.m_cubeMapEnabled,
         assets.skyboxEnabled,

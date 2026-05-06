@@ -67,6 +67,7 @@ namespace debug {
         bool m_waterCausticEnabled{ true };
         float m_waterCausticIntensity{ 0.5f };
         float m_waterCausticWorldLevel{ 0.f };
+        float m_waterCausticScale{ 0.1f };
 
         bool m_cubeMapEnabled{ true };
         float m_cubeMapBufferScale{ 0.5f };

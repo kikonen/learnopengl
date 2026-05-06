@@ -187,6 +187,10 @@ namespace model
         TypeFlags m_flags;
         uint8_t m_layer{ 0 };
 
+        // Y-extent below the rendered water plane, used for camera-in-water-body
+        // AABB containment (caustics activation). Only meaningful when m_flags.water.
+        float m_waterDepth{ 0.f };
+
     private:
         bool m_preparedWT : 1 {false};
         bool m_preparedRT : 1 {false};

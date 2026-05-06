@@ -31,7 +31,8 @@ layout(std140, binding = UBO_CAMERA) uniform Camera {
   float u_farPlane;
 
   bool u_cameraSsaoEnabled;
+  bool u_cameraWaterCausticsEnabled;
 
-  int camera_pad1;
+  // int camera_pad1;
   // int camera_pad2;
 };

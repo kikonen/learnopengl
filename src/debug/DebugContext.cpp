@@ -72,6 +72,7 @@ namespace debug
         dbg.m_waterCausticEnabled = assets.waterCausticEnabled;
         dbg.m_waterCausticIntensity = assets.waterCausticIntensity;
         dbg.m_waterCausticWorldLevel = assets.waterCausticWorldLevel;
+        dbg.m_waterCausticScale = assets.waterCausticScale;
 
         dbg.m_cubeMapEnabled = assets.cubeMapEnabled;
         dbg.m_cubeMapBufferScale = assets.cubeMapBufferScale;

@@ -78,6 +78,7 @@ types:
     flags:
       no_shadow: true
       water: true
+    water_depth: 20
     script_file: scripts/anim_water
   - id: pool_side
     mesh:
@@ -124,6 +125,7 @@ types:
     flags:
       no_shadow: true
       water: true
+    water_depth: 20.0
   - id: pool_side_single
     mesh:
       path: pool_brick
