@@ -601,7 +601,7 @@ types:
         category: [water]
         collision: [can_float]
         size: [30, 0.01, 30]
-    xscript_file: scripts/anim_water
+    script_file: scripts/anim_water
   - id: pool_floor
     mesh:
       path: plane
@@ -1331,7 +1331,7 @@ nodes:
     scale: 1
     selected: false
   - type: pool_surface
-    pos: [0, 6.5, -10]
+    pos: [0, 9.5, -10]
     repeat:
       x_count: 2
       y_count: 1
