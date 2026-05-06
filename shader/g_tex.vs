@@ -51,6 +51,8 @@ out VS_OUT {
 // #ifdef USE_DEBUG
 //   flat uint socketIndex;
 // #endif
+
+  vec3 objPos;
 } vs_out;
 
 out float gl_ClipDistance[CLIP_COUNT];
@@ -218,6 +220,8 @@ void main() {
   // against the interpolated normal via var_calculate_tbn.glsl.
   vs_out.tangent = vec4(tangent, tangentW);
 #endif
+
+  vs_out.objPos = a_pos;
 
 #ifdef USE_GL_POINTS
   // HACK KI for primitive GL_POINTS
