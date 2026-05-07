@@ -1,3 +1,7 @@
+// references:
+// - https://iquilezles.org/articles/biplanar/
+// - https://catlikecoding.com/unity/tutorials/advanced-rendering/triplanar-mapping/
+// - https://www.ronja-tutorials.com/post/010-triplanar-mapping/
 vec3 sampleTriPlanar(vec3 pos, uint matIdx) {
   vec3 normal = normalize(cross(dFdx(pos), dFdy(pos)));
 
