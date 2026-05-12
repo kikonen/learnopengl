@@ -20,6 +20,9 @@ in VS_OUT {
   vec3 viewPos;
   vec3 normal;
   vec2 texCoord;
+#if defined(USE_MOD) || defined(USE_TRIPLANAR)
+  vec3 objectPos;
+#endif
 
   flat uint materialIndex;
   flat uint flags;
@@ -43,8 +46,6 @@ in VS_OUT {
 #ifdef USE_WIREFRAME_MOD
   noperspective vec3 edgeDistance;
 #endif
-
-  vec3 objPos;
 } fs_in;
 
 layout(binding = UNIT_CUBE_MAP) uniform samplerCube u_cubeMap;
@@ -63,7 +64,10 @@ ResolvedMaterial material;
 #include "include/fn_calculate_parallax_mapping.glsl"
 #endif
 #include "include/fn_gbuffer_normal_encode.glsl"
-// #include "include/sample_triplanar.glsl"
+
+#if defined(USE_TRIPLANAR)
+#include "include/sample_triplanar.glsl"
+#endif
 
 void main() {
   const uint materialIndex = fs_in.materialIndex;
@@ -154,8 +158,10 @@ void main() {
   //   texColor.a = alpha;
   // }
 
+#if defined(USE_TRIPLANAR)
   // NOTE KI triPlanar prototype
-  // color.rgb = sampleTriPlanar(fs_in.objPos, materialIndex);
+  color.rgb = sampleTriPlanar(fs_in.objectPos, materialIndex);
+#endif
 
   {
     vec3 worldPos = (u_invViewMatrix * vec4(fs_in.viewPos, 1)).xyz;

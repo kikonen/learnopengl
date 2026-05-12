@@ -18,7 +18,7 @@ in VS_OUT {
   vec3 viewPos;
   vec3 normal;
   vec2 texCoord;
-  vec3 vertexPos;
+  vec3 objectPos;
 
   flat uint materialIndex;
 
@@ -40,7 +40,7 @@ out TCS_OUT {
   vec3 viewPos;
   vec3 normal;
   vec2 texCoord;
-  vec3 vertexPos;
+  vec3 objectPos;
 
   flat uint materialIndex;
 
@@ -78,7 +78,7 @@ void main()
   tcs_out[gl_InvocationID].viewPos = tcs_in[gl_InvocationID].viewPos;
   tcs_out[gl_InvocationID].normal = tcs_in[gl_InvocationID].normal;
   tcs_out[gl_InvocationID].texCoord = tcs_in[gl_InvocationID].texCoord;
-  tcs_out[gl_InvocationID].vertexPos = tcs_in[gl_InvocationID].vertexPos;
+  tcs_out[gl_InvocationID].objectPos = tcs_in[gl_InvocationID].objectPos;
   tcs_out[gl_InvocationID].materialIndex = tcs_in[gl_InvocationID].materialIndex;
 
   tcs_out[gl_InvocationID].tileIndex = tcs_in[gl_InvocationID].tileIndex;

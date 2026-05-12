@@ -63,9 +63,9 @@ void main() {
 
   const uint materialIndex = decal.u_materialIndex;
 
-  vec4 pos = vec4(VERTEX_POS[vertexIndex], 1.0);
+  vec3 pos = VERTEX_POS[vertexIndex];
 
-  vec4 worldPos = modelMatrix * pos;
+  vec4 worldPos = modelMatrix * vec4(pos, 1.0);
   vec3 normal = normalize(viewNormalMatrix * QUAD_NORMAL);
 #ifdef USE_TBN
   vec3 tangent = normalize(viewNormalMatrix * QUAD_TANGENT);

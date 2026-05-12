@@ -17,6 +17,7 @@ in TES_OUT {
   vec3 viewPos;
   vec3 normal;
   vec2 texCoord;
+  vec3 objectPos;
 
   flat uint materialIndex;
   flat uint tileIndex;
@@ -45,6 +46,10 @@ ResolvedMaterial material;
 #include "include/fn_gbuffer_normal_encode.glsl"
 #ifdef USE_PARALLAX
 #include "include/fn_calculate_parallax_mapping.glsl"
+#endif
+
+#if defined(USE_TRIPLANAR)
+#include "include/sample_triplanar.glsl"
 #endif
 
 void main() {
@@ -79,12 +84,19 @@ void main() {
     // texColor *= vec4(3.5, 0.7, 0.7, 1);
   }
 
+#if defined(USE_TRIPLANAR)
+  {
+    texColor.rgb = sampleTriPlanar(fs_in.objectPos * 0.5 + 0.5, materialIndex);
+  }
+#endif
+
   {
     vec3 worldPos = (u_invViewMatrix * vec4(fs_in.viewPos, 1)).xyz;
     applyWaterCaustic(texColor.rgb, worldPos);
   }
 
   o_fragColor = texColor.rgb;
+
   o_fragMRAS = material.mras;
   o_fragEmission = material.emission;
 

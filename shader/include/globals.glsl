@@ -229,3 +229,5 @@
 #define MRA_TEX_ROUGHNESS mrasTex.g
 #define MRA_TEX_OCCLUSION mrasTex.b
 #define MRA_TEX_SPECULAR  mrasTex.a
+
+// #define USE_TRIPLANAR 1

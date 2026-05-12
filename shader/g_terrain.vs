@@ -22,7 +22,7 @@ out VS_OUT {
   vec3 viewPos;
   vec3 normal;
   vec2 texCoord;
-  vec3 vertexPos;
+  vec3 objectPos;
 
   flat uint materialIndex;
 
@@ -106,9 +106,7 @@ void main() {
   }
 
   vs_out.viewPos = (u_viewMatrix * worldPos).xyz;
-
-  vs_out.vertexPos = a_pos;
+  vs_out.objectPos = a_pos;
 
   vs_out.normal = normal;
-
 }

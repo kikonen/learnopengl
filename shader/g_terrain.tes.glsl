@@ -18,7 +18,7 @@ in TCS_OUT {
   vec3 viewPos;
   vec3 normal;
   vec2 texCoord;
-  vec3 vertexPos;
+  vec3 objectPos;
 
   flat uint materialIndex;
 
@@ -36,6 +36,7 @@ out TES_OUT {
   vec3 viewPos;
   vec3 normal;
   vec2 texCoord;
+  vec3 objectPos;
 
   flat uint materialIndex;
   flat uint tileIndex;
@@ -92,7 +93,7 @@ void main()
 
   // Interpolate the attributes of the output vertex using the barycentric coordinates
   vec2 texCoord = interpolate2D(tes_in[0].texCoord, tes_in[1].texCoord, tes_in[2].texCoord);
-  vec3 vertexPos = interpolate3D(tes_in[0].vertexPos, tes_in[1].vertexPos, tes_in[2].vertexPos);
+  vec3 vertexPos = interpolate3D(tes_in[0].objectPos, tes_in[1].objectPos, tes_in[2].objectPos);
 
   const float rangeYmin = tes_in[0].rangeYmin;
   const float rangeYmax = tes_in[0].rangeYmax;
@@ -132,6 +133,7 @@ void main()
   tes_out.viewPos = (u_viewMatrix * worldPos).xyz;
   tes_out.normal = viewNormal;
   tes_out.texCoord = texCoord;
+  tes_out.objectPos = vertexPos;
   tes_out.materialIndex = tes_in[0].materialIndex;
 
   tes_out.tileIndex = tes_in[0].tileIndex;

@@ -24,12 +24,12 @@ layout (location = ATTR_TEX) in vec2 a_texCoord;
 #include "include/uniform_debug.glsl"
 
 out VS_OUT {
-#ifdef USE_MOD
-  vec3 objectPos;
-#endif
   vec3 viewPos;
   vec3 normal;
   vec2 texCoord;
+#if defined(USE_MOD) || defined(USE_TRIPLANAR)
+  vec3 objectPos;
+#endif
 
   flat uint materialIndex;
   flat uint flags;
@@ -51,8 +51,6 @@ out VS_OUT {
 // #ifdef USE_DEBUG
 //   flat uint socketIndex;
 // #endif
-
-  vec3 objPos;
 } vs_out;
 
 out float gl_ClipDistance[CLIP_COUNT];
@@ -204,7 +202,7 @@ void main() {
 //   vs_out.socketIndex = instance.u_socketIndex;
 // #endif
 
-#ifdef USE_MOD
+#if defined(USE_MOD) || defined(USE_TRIPLANAR)
   vs_out.objectPos = a_pos;
 #endif
 
@@ -220,8 +218,6 @@ void main() {
   // against the interpolated normal via var_calculate_tbn.glsl.
   vs_out.tangent = vec4(tangent, tangentW);
 #endif
-
-  vs_out.objPos = a_pos;
 
 #ifdef USE_GL_POINTS
   // HACK KI for primitive GL_POINTS

@@ -12,7 +12,7 @@ vec3 sampleTriPlanar(vec3 pos, uint matIdx) {
 
   // Sharpen the blend so vertical walls cleanly favor X/Z projections instead
   // of muddy averages with the down-projected XZ stripe.
-  vec3 absN = pow(abs(nrmal), vec3(4.0));
+  vec3 absN = pow(abs(normal), vec3(4.0));
   vec3 blend = absN / (absN.x + absN.y + absN.z + 1e-5);
 
   sampler2D sampler = sampler2D(u_materials[matIdx].diffuseTex);
@@ -20,5 +20,6 @@ vec3 sampleTriPlanar(vec3 pos, uint matIdx) {
   vec3 cY = texture(sampler, uvY).rgb;
   vec3 cZ = texture(sampler, uvZ).rgb;
 
+  // return vec3(pos.x, 0, 0);
   return cX * blend.x + cY * blend.y + cZ * blend.z;
 }

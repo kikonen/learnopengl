@@ -17,10 +17,10 @@ in gl_PerVertex
 } gl_in[3];
 
 in VS_OUT {
-  vec3 objectPos;
   vec3 viewPos;
   vec3 normal;
   vec2 texCoord;
+  vec3 objectPos;
 
   flat uint materialIndex;
   flat uint flags;
