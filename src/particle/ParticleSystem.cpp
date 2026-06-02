@@ -20,6 +20,7 @@
 
 #include "registry/Registry.h"
 
+#include "ParticlePool.h"
 #include "Particle.h"
 #include "ParticleSSBO.h"
 #include "ParticleGenerator.h"
@@ -29,9 +30,6 @@
 namespace {
     constexpr size_t BLOCK_SIZE = 10000;
     constexpr size_t MAX_BLOCK_COUNT = 1100;
-
-    // Threshold for parallel execution - below this, sequential is faster
-    constexpr size_t PARALLEL_THRESHOLD = 5000;
 
     static particle::ParticleSystem* s_system{ nullptr };
 }
@@ -68,50 +66,33 @@ namespace particle {
 
     void ParticleSystem::clear()
     {
-        m_updateReady = false;
-
-        m_particles.clear();
-        m_particles.reserve(1 * BLOCK_SIZE);
-
-        m_pending.clear();
-        m_snapshot.clear();
-
-        m_snapshotCount = 0;
-        m_activeCount = 0;
+        m_pools.clear();
+        m_pools.emplace_back(std::make_unique<ParticlePool>("low"));
+        m_pools.emplace_back(std::make_unique<ParticlePool>("high"));
     }
 
-    bool ParticleSystem::isFull() const noexcept {
-        return !m_enabled || m_particles.size() >= m_maxCount;
-    }
-
-    uint32_t ParticleSystem::getFreespace() const noexcept
+    uint32_t ParticleSystem::getActiveParticleCount() const noexcept
     {
-        std::lock_guard lock(m_pendingLock);
-
-        uint32_t sz = static_cast<uint32_t>(m_maxCount - m_snapshotCount + m_pending.size());
-        return std::max((uint32_t)0, sz);
+        uint32_t size = 0;
+        for (const auto& pool : m_pools) {
+            size += pool->getActiveParticleCount();
+        }
+        return size;
     }
 
-    bool ParticleSystem::addParticle(const Particle& particle)
+    ParticlePool* ParticleSystem::getPool(uint32_t poolIndex)
     {
-        // NOTE KI directly ignore invalid particles
-        if (!particle.valid()) return true;
-
-        std::lock_guard lock(m_pendingLock);
-
-        if (!m_enabled && m_snapshotCount + m_pending.size() >= m_maxCount) return false;
-
-        m_pending.push_back(particle);
-        return true;
+        return m_pools[poolIndex].get();
     }
 
     void ParticleSystem::prepare() {
         const auto& assets = Assets::get();
 
         m_enabled = assets.particleEnabled;
-        m_maxCount = std::min<int>(assets.particleMaxCount, BLOCK_SIZE * MAX_BLOCK_COUNT);
 
-        if (!isEnabled()) return;
+        for (auto& pool : m_pools) {
+            pool->prepare();
+        }
 
         // https://stackoverflow.com/questions/44203387/does-gl-map-invalidate-range-bit-require-glinvalidatebuffersubdata
         m_ssbo.createEmpty(BLOCK_SIZE * sizeof(ParticleSSBO), kigl::getBufferStorageFlags());
@@ -138,45 +119,16 @@ namespace particle {
 
         if (!isEnabled()) return;
 
-        m_maxCount = std::min<int>(dbg.m_particleMaxCount, BLOCK_SIZE * MAX_BLOCK_COUNT);
-
-        preparePending();
-
-        const size_t size = m_particles.size();
-
-        if (size >= PARALLEL_THRESHOLD) {
-            // Parallel update
-            std::for_each(
-                std::execution::par,
-                m_particles.begin(),
-                m_particles.end(),
-                [&ctx](Particle& p) { p.update(ctx); });
-
-            // Parallel partition - move alive particles to front
-            auto newEnd = std::partition(
-                std::execution::par,
-                m_particles.begin(),
-                m_particles.end(),
-                [](const Particle& p) { return p.isAlive(); });
-
-            m_particles.erase(newEnd, m_particles.end());
-        }
-        else {
-            // Sequential update for small counts
-            std::for_each(
-                m_particles.begin(),
-                m_particles.end(),
-                [&ctx](Particle& p) { p.update(ctx); });
-
-            auto newEnd = std::partition(
-                m_particles.begin(),
-                m_particles.end(),
-                [](const Particle& p) { return p.isAlive(); });
-
-            m_particles.erase(newEnd, m_particles.end());
+        for (auto& pool : m_pools) {
+            pool->updateWT(ctx);
         }
 
-        snapshotParticles();
+        {
+            std::lock_guard lock(m_snapshotLock);
+            for (auto& pool : m_pools) {
+                pool->snapshotParticles();
+            }
+        }
     }
 
     void ParticleSystem::updateRT(const UpdateContext& ctx)
@@ -184,7 +136,14 @@ namespace particle {
         m_enabled = ctx.getDebug().m_particleEnabled;
 
         if (!isEnabled()) return;
-        if (!m_updateReady) return;
+
+        {
+            bool updateReady = false;
+            for (auto& pool : m_pools) {
+                updateReady |= pool->m_updateReady;
+            }
+            if (!updateReady) return;
+        }
 
         m_frameSkipCount++;
         if (m_frameSkipCount < 1) {
@@ -195,80 +154,47 @@ namespace particle {
         upload();
     }
 
-    void ParticleSystem::preparePending()
-    {
-        std::lock_guard lock(m_pendingLock);
-
-        auto count = std::min(
-            m_pending.size(),
-            m_maxCount - m_particles.size());
-
-        if (count > 0 && isEnabled()) {
-            m_particles.insert(m_particles.end(), m_pending.begin(), m_pending.begin() + count);
-        }
-        m_pending.clear();
-    }
-
-    void ParticleSystem::snapshotParticles()
-    {
-        std::lock_guard lock(m_snapshotLock);
-
-        if (m_particles.empty()) {
-            m_snapshotCount = 0;
-            return;
-        }
-
-        constexpr size_t sz = sizeof(ParticleSSBO);
-        const size_t totalCount = m_particles.size();
-
-        if (m_snapshotCount != totalCount) {
-            m_snapshot.resize(totalCount);
-        }
-
-        for (size_t i = 0; i < totalCount; i++) {
-            m_particles[i].updateSSBO(m_snapshot[i]);
-        }
-
-        m_snapshotCount = totalCount;
-        m_updateReady = true;
-    }
-
     void ParticleSystem::upload()
     {
         std::lock_guard lock(m_snapshotLock);
 
-        if (m_snapshotCount == 0) {
-            m_activeCount = 0;
-            return;
+        {
+            size_t maxCount = 0;
+            for (auto& pool : m_pools) {
+                maxCount = std::max(maxCount, pool->m_snapshotCount);
+            }
+            resizeBuffer(maxCount);
+
+            m_pools[1]->m_baseIndex = m_entryCount;
         }
 
-        const size_t totalCount = m_snapshotCount;
+        for (auto& pool : m_pools) {
+            const auto totalCount = pool->m_snapshotCount;
+            if (totalCount == 0) {
+                pool->m_activeCount = 0;
+                continue;
+            }
 
-        resizeBuffer(totalCount);
+            const auto offset = pool->m_baseIndex * sizeof(ParticleSSBO);
 
-        auto* __restrict mappedData = m_ssbo.mapped<ParticleSSBO>(0);
+            auto* __restrict mappedData = m_ssbo.mapped<ParticleSSBO>(offset);
+            pool->upload(mappedData);
 
-        std::copy(
-            std::begin(m_snapshot),
-            std::end(m_snapshot),
-            mappedData);
-
-        // NOTE KI flush for explicit mode (no-op if using coherent mapping)
-        m_ssbo.flushRange(0, totalCount * sizeof(ParticleSSBO));
-
-        m_activeCount = totalCount;
-        m_updateReady = false;
+            // NOTE KI flush for explicit mode (no-op if using coherent mapping)
+            m_ssbo.flushRange(offset, totalCount * sizeof(ParticleSSBO));
+        }
     }
 
-    void ParticleSystem::resizeBuffer(size_t totalCount)
+    void ParticleSystem::resizeBuffer(size_t maxCount)
     {
-        if (m_entryCount >= totalCount) return;
+        if (m_entryCount >= maxCount) return;
 
-        size_t blocks = (totalCount / BLOCK_SIZE) + 2;
+        size_t blocks = (maxCount / BLOCK_SIZE) + 2;
         size_t entryCount = blocks * BLOCK_SIZE;
 
+        // NOTE KI 2 pools
         // NOTE KI *reallocate* SSBO if needed
-        m_ssbo.resizeBuffer(entryCount * sizeof(ParticleSSBO), true);
+        m_ssbo.resizeBuffer(entryCount * 2 * sizeof(ParticleSSBO), true);
 
         m_ssbo.map(kigl::getBufferMapFlags());
 
