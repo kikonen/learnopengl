@@ -3,6 +3,7 @@
 #include <vector>
 #include <mutex>
 #include <atomic>
+#include <memory>
 
 #include "kigl/GLBuffer.h"
 #include "kigl/GLFence.h"
@@ -15,10 +16,8 @@ namespace render
 struct PrepareContext;
 struct UpdateContext;
 
-class Registry;
-class Program;
-
 namespace particle {
+    class ParticlePool;
     struct Particle;
     struct ParticleSSBO;
 
@@ -40,7 +39,6 @@ namespace particle {
         void endFrame();
 
         void updateWT(const UpdateContext& ctx);
-
         void updateRT(const UpdateContext& ctx);
 
         void setEnabled(bool enabled) {
@@ -49,43 +47,26 @@ namespace particle {
 
         bool isEnabled() const noexcept { return m_enabled; }
 
-        // @return true if was added, false if full
-        bool addParticle(const Particle& particle);
-
-        uint32_t getActiveParticleCount() const noexcept
+        uint32_t getPoolCount() const noexcept
         {
-            return static_cast<uint32_t>(m_activeCount);
+            return 2;
         }
 
-        uint32_t getFreespace() const noexcept;
+        ParticlePool* getPool(uint32_t poolIndex);
 
-        bool isFull() const noexcept;
+        uint32_t getActiveParticleCount() const noexcept;
 
     private:
-
-        void preparePending();
-
-        void snapshotParticles();
         void upload();
-        void resizeBuffer(size_t totalCount);
+        void resizeBuffer(size_t maxCount);
 
     private:
         bool m_enabled{ false };
-
-        mutable std::mutex m_pendingLock{};
         std::mutex m_snapshotLock{};
 
-        std::atomic_bool m_updateReady{ false };
+        std::vector<std::unique_ptr<ParticlePool>> m_pools;
+
         size_t m_frameSkipCount{ 0 };
-
-        size_t m_maxCount{ 0 };
-        std::vector<Particle> m_particles;
-
-        std::vector<Particle> m_pending;
-
-        std::vector<ParticleSSBO> m_snapshot;
-        size_t m_snapshotCount{ 0 };
-        size_t m_activeCount{ 0 };
 
         kigl::GLBuffer m_ssbo{ "particle_ssbo" };
         kigl::GLFence m_fence{ "particle_fence" };

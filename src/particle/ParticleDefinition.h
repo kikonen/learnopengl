@@ -14,10 +14,15 @@ namespace model
 }
 
 namespace particle {
+    constexpr uint32_t PARTICLE_POOL_LOW = 0;
+    constexpr uint32_t PARTICLE_POOL_HIGH = 1;
+
     class ParticleGenerator;
 
     struct ParticleDefinition {
         std::shared_ptr<Material> m_material;
+
+        uint32_t m_pool{ PARTICLE_POOL_LOW };
 
         int m_seed{ 0 };
 

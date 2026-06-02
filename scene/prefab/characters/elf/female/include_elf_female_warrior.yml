@@ -73,6 +73,7 @@ composites:
 
 particles:
   - id: prefab_2_handed_sword
+    pool: high
     seed: 1
     #gravity: [0, -9.81, 0]
     lifetime: 0.3

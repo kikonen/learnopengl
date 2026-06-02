@@ -11,6 +11,15 @@
 
 #include "loader/Loaders.h"
 
+namespace
+{
+    uint32_t readPool(const std::string& value)
+    {
+        if (value == "high") return particle::PARTICLE_POOL_HIGH;
+        return particle::PARTICLE_POOL_LOW;
+    }
+}
+
 namespace loader
 {
     ParticleLoader::ParticleLoader(
@@ -89,6 +98,9 @@ namespace loader
                     currentDir,
                     data.materialData,
                     loaders);
+            }
+            else if (k == "pool") {
+                data.pool = readPool(readString(v));
             }
             else if (k == "seed") {
                 data.seed = readInt(v);
@@ -204,6 +216,7 @@ namespace loader
         auto definition = std::make_unique<ParticleGeneratorDefinition>();
         auto& df = definition->m_data;
 
+        df.m_pool = data.pool;
         df.m_seed = data.seed;
         df.m_gravity = data.gravity;
 

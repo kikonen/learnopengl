@@ -291,6 +291,7 @@
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\particle\ParticlePool.cpp" />
     <ClCompile Include="src\animation\Rig.cpp" />
     <ClCompile Include="src\component\definition\AddonSelectorDefinition.cpp" />
     <ClCompile Include="src\kigl\GLBuffer.cpp" />
@@ -770,6 +771,7 @@
     <ClInclude Include="src\mesh\RegisteredRig.h" />
     <ClInclude Include="src\mesh\vao\size.h" />
     <ClInclude Include="src\model\NodeAddon.h" />
+    <ClInclude Include="src\particle\ParticlePool.h" />
     <ClInclude Include="src\render\DrawableInfo.h" />
     <ClInclude Include="src\render\InstanceIndexSSBO.h" />
     <ClInclude Include="src\render\InstanceRegistry.h" />

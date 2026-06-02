@@ -19,6 +19,7 @@
 #include "backend/gl/DrawElementsIndirectCommand.h"
 
 #include "particle/ParticleSystem.h"
+#include "particle/ParticlePool.h"
 
 #include "registry/Registry.h"
 
@@ -50,10 +51,10 @@ void ParticleRenderer::render(
 {
     if (!isEnabled()) return;
 
-    auto& state = ctx.getGLState();
+    auto& particleSystem = particle::ParticleSystem::get();
+    if (!particleSystem.isEnabled()) return;
 
-    const auto instanceCount = particle::ParticleSystem::get().getActiveParticleCount();
-    if (instanceCount == 0) return;
+    auto& state = ctx.getGLState();
 
     state.setDepthMask(GL_FALSE);
     state.setEnabled(GL_BLEND, true);
@@ -67,11 +68,22 @@ void ParticleRenderer::render(
 
     m_particleProgram->bind();
 
-    glDrawArraysInstanced(
-        GL_POINTS,
-        0,
-        1,
-        instanceCount);
+    const auto poolCount = particleSystem.getPoolCount();
+    for (int poolIndex = 0; poolIndex < poolCount; poolIndex++) {
+        auto* pool = particleSystem.getPool(poolIndex);
+        const auto instanceCount = pool->getActiveParticleCount();
+        if (instanceCount == 0) continue;
+
+        // NOTE KI shader indexes via (gl_BaseInstance + gl_InstanceID);
+        // plain glDrawArraysInstanced does NOT set gl_BaseInstance (it stays 0),
+        // so the pool offset must be passed as baseInstance, not as "first"
+        glDrawArraysInstancedBaseInstance(
+            GL_POINTS,
+            0,
+            1,
+            instanceCount,
+            pool->getBaseIndex());
+    }
 
     state.setDepthMask(GL_TRUE);
     state.setEnabled(GL_BLEND, false);

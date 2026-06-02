@@ -17,6 +17,7 @@ namespace loader {
 
         BaseId baseId;
 
+        uint32_t pool{ particle::PARTICLE_POOL_LOW };
         int seed{ 0 };
 
         glm::vec3 gravity{ 0.f };
