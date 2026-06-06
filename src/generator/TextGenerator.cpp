@@ -101,6 +101,7 @@ void TextGenerator::updateRT(
         {
             drawable.indexCount = mesh->getIndexCount();
             drawable.worldVolume = worldVolume;
+            drawable.m_noFrustum = container.m_typeFlags.noFrustum;
         }
         instanceRegistry.markDirty(ref);
         instanceRegistry.updateInstances(ref);
@@ -125,7 +126,6 @@ void TextGenerator::addToBatch(
 {
     batch.addDrawablesSingleNode(
         ctx,
-        container.getType(),
         container.m_instanceRef,
         programSelector,
         programPrepare,

@@ -22,7 +22,6 @@ namespace mesh {
 
 namespace model {
     class Node;
-    class NodeType;
 }
 
 struct PrepareContext;
@@ -64,7 +63,6 @@ namespace render {
 
         void addDrawablesSingleNode(
             const RenderContext& ctx,
-            const model::NodeType* type,
             const util::BufferReference instanceRef,
             const std::function<ki::program_id(const render::DrawableInfo&)>& programSelector,
             const std::function<void(ki::program_id)>& programPrepare,
@@ -72,7 +70,6 @@ namespace render {
 
         void addDrawablesInstanced(
             const RenderContext& ctx,
-            const model::NodeType* type,
             const util::BufferReference instanceRef,
             const std::function<ki::program_id(const render::DrawableInfo&)>& programSelector,
             const std::function<void(ki::program_id)>& programPrepare,
@@ -100,6 +97,17 @@ namespace render {
 
         backend::gl::PerformanceCounters getCounters(bool clear) const;
         backend::gl::PerformanceCounters getCountersLocal(bool clear) const;
+
+    private:
+        // Shared body for addDrawablesSingleNode / addDrawablesInstanced.
+        // They became identical once frustum/LOD culling moved to the per-camera
+        // cull step (InstanceRegistry::cullFrustum).
+        void addDrawablesImpl(
+            const RenderContext& ctx,
+            const util::BufferReference instanceRef,
+            const std::function<ki::program_id(const render::DrawableInfo&)>& programSelector,
+            const std::function<void(ki::program_id)>& programPrepare,
+            uint8_t kindBits) noexcept;
 
     private:
         bool m_prepared{ false };

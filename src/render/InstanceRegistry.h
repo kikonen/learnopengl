@@ -26,6 +26,8 @@ namespace render
     enum VisibilityBit : uint8_t {
         VISIBLE_FRUSTUM = 1 << 0,
         VISIBLE_LOD     = 1 << 1,
+        // drawable is rendered only when all visibility bits are set
+        VISIBLE_ALL     = VISIBLE_FRUSTUM | VISIBLE_LOD,
     };
 
     class InstanceRegistry
