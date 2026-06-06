@@ -53,6 +53,8 @@ namespace render
         ki::program_id idProgramId{ 0 };
         ki::program_id normalProgramId{ 0 };
 
+        bool m_noShadow : 1 {false};
+
         bool isFlag(uint32_t flag) const noexcept
         {
             return drawOptions.m_flags && flag;

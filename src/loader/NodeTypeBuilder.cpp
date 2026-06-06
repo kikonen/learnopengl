@@ -497,6 +497,8 @@ namespace loader
                     auto* mesh = lodMeshRef->getMesh<mesh::ModelMesh>();
                     if (!mesh) continue;
 
+                    lodMeshRef->m_flags.noShadow = true;
+
                     if (mesh->m_jointContainer && !meshData.useRig.empty()) {
                         util::Ref<animation::Rig> rig;
                         for (const auto& rigLodMeshRef : baseContainer.getLodMeshes()) {

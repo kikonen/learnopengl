@@ -319,6 +319,8 @@ namespace model
 
                     // TODO KI volume can change per frame
                     drawable.worldVolume = snapshot.getWorldVolume();
+
+                    drawable.m_noShadow = lodMesh.m_flags.noShadow;
                 }
             }
 

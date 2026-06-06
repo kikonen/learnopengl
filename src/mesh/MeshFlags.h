@@ -8,6 +8,7 @@ namespace mesh {
         bool usePreDepth : 1 {false};
 
         bool noVolume : 1{false};
+        bool noShadow : 1{false};
 
         bool useJoints : 1 {false};
         bool useJointsDebug : 1 {false};
