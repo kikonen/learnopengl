@@ -5,6 +5,7 @@
 #include <iostream>
 #include <algorithm>
 #include <execution>
+#include <cassert>
 
 #include <fmt/format.h>
 
@@ -50,18 +51,6 @@ namespace {
     //constexpr int BATCH_RANGE_COUNT = 8;
 
     inline glm::mat4 ID_MAT{ 1.f };
-
-    constexpr int32_t SKIP{ -1 };
-    // NOTE KI store accepted *INDECES*
-    std::vector<int32_t> s_accept;
-    std::vector<float> s_distances2;
-
-    //inline bool inFrustum(
-    //    const Frustum& frustum,
-    //    const SphereVolume& worldVolume) noexcept
-    //{
-    //    worldVolume.isOnFrustum(frustum);
-    //}
 }
 
 namespace render {
@@ -86,7 +75,12 @@ namespace render {
 
         const auto& drawables = m_instanceRegistry->getRange(instanceRef);
 
-        bool frustumChecked = type->m_flags.noFrustum;
+        // NOTE KI frustum visibility is precomputed once per camera in
+        // InstanceRegistry::cullFrustum; here we only read the cached flags
+        const auto& visible = m_instanceRegistry->getVisibleRange(instanceRef);
+        const bool wantFrustum = m_frustumCPU && !type->m_flags.noFrustum;
+        const bool useFrustum = wantFrustum && !visible.empty();
+        assert(!wantFrustum || m_instanceRegistry->cullSignatureMatches(ctx.m_camera->getFrustum()));
 
         const auto& cameraPos = ctx.m_camera->getWorldPosition();
 
@@ -98,6 +92,11 @@ namespace render {
             if (!srcDrawOptions.isKind(kindBits)) continue;
             if (srcDrawOptions.m_type == backend::DrawOptions::Type::none) continue;
 
+            if (useFrustum && !visible[drawableIndex]) {
+                m_skipCount++;
+                continue;
+            }
+
             const auto drawOptions = srcDrawOptions;
 
             if (m_lodDistanceEnabled) {
@@ -108,18 +107,6 @@ namespace render {
 	                m_skipCount++;
 	                continue;
                 }
-            }
-
-            if (!frustumChecked) {
-                const auto& frustum = ctx.m_camera->getFrustum();
-                // TODO KI wrong volume; assumes that every lodMesh have same
-                // => not true in some more complex cases where node consists
-                //    from set of meshes (which are not LODn meshes)
-                if (m_frustumCPU && !drawable.worldVolume.isOnFrustum(frustum)) {
-                    m_skipCount++;
-                    continue;
-                }
-                frustumChecked = true;
             }
 
             auto programId = programSelector(drawable);
@@ -176,53 +163,11 @@ namespace render {
 
         const auto& cameraPos = ctx.m_camera->getWorldPosition();
 
-        bool useFrustum = m_frustumCPU;
-        {
-            if (type->m_flags.noFrustum)
-                useFrustum = false;
-        }
-
-        {
-            if (s_accept.size() < drawableCount) {
-                s_accept.resize(drawableCount);
-                s_distances2.resize(drawableCount);
-            }
-            for (uint32_t i = 0; i < drawableCount; i++) {
-                s_accept[i] = i; // store index
-
-                if (m_lodDistanceEnabled) {
-                    const auto& drawable = drawables[i];
-                    s_distances2[i] = glm::distance2(drawable.worldVolume.getCenter(), cameraPos);
-                }
-            }
-        }
-
-        if (useFrustum) {
-            const auto& frustum = ctx.m_camera->getFrustum();
-
-            const auto& checkFrustum = [&frustum, &drawables]
-                (int32_t& idx)
-                {
-                    if (!drawables[idx].worldVolume.isOnFrustum(frustum)) {
-                        idx = SKIP;
-                    }
-                };
-
-            if (drawableCount > m_frustumParallelLimit) {
-                std::for_each(
-                    std::execution::par_unseq,
-                    s_accept.begin(),
-                    s_accept.begin() + drawableCount,
-                    checkFrustum);
-            }
-            else {
-                std::for_each(
-                    std::execution::seq,
-                    s_accept.begin(),
-                    s_accept.begin() + drawableCount,
-                    checkFrustum);
-            }
-        }
+        // NOTE KI frustum visibility precomputed once per camera (cullFrustum)
+        const auto& visible = m_instanceRegistry->getVisibleRange(instanceRef);
+        const bool wantFrustum = m_frustumCPU && !type->m_flags.noFrustum;
+        const bool useFrustum = wantFrustum && !visible.empty();
+        assert(!wantFrustum || m_instanceRegistry->cullSignatureMatches(ctx.m_camera->getFrustum()));
 
         {
             const auto resolveProgram = [&kindBits, &programSelector, this](
@@ -245,7 +190,7 @@ namespace render {
             uint32_t skippedCount = 0;
 
             for (uint32_t drawableIndex = 0; drawableIndex < drawableCount; drawableIndex++) {
-                if (useFrustum && s_accept[drawableIndex] == SKIP) {
+                if (useFrustum && !visible[drawableIndex]) {
                     skippedCount++;
                     continue;
                 }
@@ -253,7 +198,11 @@ namespace render {
                 const auto& drawable = drawables[drawableIndex];
                 if (drawable.entityIndex == 0) continue;
 
-                const auto  programId = resolveProgram(s_distances2[drawableIndex], drawable);
+                const float dist2 = m_lodDistanceEnabled
+                    ? glm::distance2(drawable.worldVolume.getCenter(), cameraPos)
+                    : 0.f;
+
+                const auto  programId = resolveProgram(dist2, drawable);
                 if (!programId) continue;
 
                 programPrepare(programId);
@@ -311,48 +260,10 @@ namespace render {
 
         const auto& cameraPos = ctx.m_camera->getWorldPosition();
 
-        bool useFrustum = m_frustumCPU;
-
-        {
-            if (s_accept.size() < drawableCount) {
-                s_accept.resize(drawableCount);
-                s_distances2.resize(drawableCount);
-            }
-            for (uint32_t i = 0; i < drawableCount; i++) {
-                s_accept[i] = i; // store index
-
-                if (m_lodDistanceEnabled) {
-                    const auto& drawable = drawables[i];
-                    s_distances2[i] = glm::distance2(drawable.worldVolume.getCenter(), cameraPos);
-                }
-            }
-        }
-
-        if (useFrustum) {
-            const auto& frustum = ctx.m_camera->getFrustum();
-
-            const auto& checkFrustum = [&frustum, &drawables]
-            (int32_t& idx) {
-                if (!drawables[idx].worldVolume.isOnFrustum(frustum)) {
-                    idx = SKIP;
-                }
-            };
-
-            if (drawableCount > m_frustumParallelLimit) {
-                std::for_each(
-                    std::execution::par_unseq,
-                    s_accept.begin(),
-                    s_accept.begin() + drawableCount,
-                    checkFrustum);
-            }
-            else {
-                std::for_each(
-                    std::execution::seq,
-                    s_accept.begin(),
-                    s_accept.begin() + drawableCount,
-                    checkFrustum);
-            }
-        }
+        // NOTE KI frustum visibility precomputed once per camera (cullFrustum)
+        const auto& visible = m_instanceRegistry->getVisibleRange(instanceRef);
+        const bool useFrustum = m_frustumCPU && !visible.empty();
+        assert(!m_frustumCPU || m_instanceRegistry->cullSignatureMatches(ctx.m_camera->getFrustum()));
 
         {
             const auto resolveProgram = [&kindBits, this](
@@ -374,7 +285,7 @@ namespace render {
             uint32_t skippedCount = 0;
 
             for (uint32_t drawableIndex = 0; drawableIndex < drawableCount; drawableIndex++) {
-                if (useFrustum && s_accept[drawableIndex] == SKIP) {
+                if (useFrustum && !visible[drawableIndex]) {
                     skippedCount++;
                     continue;
                 }
@@ -382,7 +293,11 @@ namespace render {
                 const auto& drawable = drawables[drawableIndex];
                 if (drawable.entityIndex == 0) continue;
 
-                const auto  programId = resolveProgram(s_distances2[drawableIndex], drawable);
+                const float dist2 = m_lodDistanceEnabled
+                    ? glm::distance2(drawable.worldVolume.getCenter(), cameraPos)
+                    : 0.f;
+
+                const auto  programId = resolveProgram(dist2, drawable);
                 if (!programId) continue;
 
                 CommandEntry* commandEntry{ nullptr };
@@ -491,6 +406,14 @@ namespace render {
         m_frameFlushCount = 0;
         m_draw->endFrame();
         clearBatches();
+    }
+
+    void Batch::cullFrustum(const RenderContext& ctx)
+    {
+        m_instanceRegistry->cullFrustum(
+            ctx.m_camera->getFrustum(),
+            m_frustumCPU,
+            m_frustumParallelLimit);
     }
 
     void Batch::draw(

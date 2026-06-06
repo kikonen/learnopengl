@@ -261,6 +261,9 @@ void ShadowCascade::render(
 void ShadowCascade::drawNodes(
     const render::RenderContext& ctx)
 {
+    // NOTE KI compute frustum visibility once for this cascade's camera
+    ctx.m_batch->cullFrustum(ctx);
+
     // NOTE KI *NO* G-buffer in shadow
     const auto nodeFilter = [](const model::Node* node) {
         // NOTE KI tessellation not suppported

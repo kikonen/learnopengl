@@ -193,6 +193,9 @@ void ObjectIdRenderer::drawNodes(const render::RenderContext& parentCtx)
 
     m_idBuffer->clearAll();
 
+    // NOTE KI compute frustum visibility once for this camera before drawing
+    localCtx.m_batch->cullFrustum(localCtx);
+
     {
         render::DrawContext drawContext{
             [](const model::Node* node) { return !node->m_typeFlags.noSelect; },
