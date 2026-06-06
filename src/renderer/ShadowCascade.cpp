@@ -278,6 +278,8 @@ void ShadowCascade::drawNodes(
             ctx,
             [this](const render::DrawableInfo& drawable) {
                 if (drawable.isTesselated()) return (ki::program_id)0;
+                if (drawable.m_noShadow)
+                    return (ki::program_id)0;
                 if (drawable.shadowProgramId) return drawable.shadowProgramId;
                 return drawable.drawOptions.isAlpha() ? m_alphaShadowProgramId : m_solidShadowProgramId;
             },
