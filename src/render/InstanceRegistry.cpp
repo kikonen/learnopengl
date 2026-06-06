@@ -1,8 +1,12 @@
 #include "InstanceRegistry.h"
 
+#include <algorithm>
+#include <execution>
+
 #include "util/thread.h"
 
 #include "asset/Assets.h"
+#include "asset/Frustum.h"
 
 #include "render/InstanceSSBO.h"
 
@@ -53,6 +57,9 @@ namespace render
         m_drawables.clear();
         m_slotAllocator.clear();
         m_dirtySlots.clear();
+
+        m_visible.clear();
+        m_cullValid = false;
 
         m_instances.clear();
 
@@ -130,6 +137,59 @@ namespace render
         if (ref.offset == 0) return std::span<DrawableInfo>{};
 
         return std::span{ m_drawables }.subspan(ref.offset, ref.size);
+    }
+
+    void InstanceRegistry::cullFrustum(
+        const Frustum& frustum,
+        bool enabled,
+        uint32_t parallelLimit) noexcept
+    {
+        const size_t count = m_drawables.size();
+        if (m_visible.size() < count) {
+            m_visible.resize(count);
+        }
+
+        if (!enabled) {
+            std::fill(m_visible.begin(), m_visible.begin() + count, (uint8_t)1);
+        }
+        else {
+            const auto cull = [&frustum](const DrawableInfo& d) -> uint8_t {
+                return d.worldVolume.isOnFrustum(frustum) ? 1 : 0;
+            };
+
+            if (count > parallelLimit) {
+                std::transform(
+                    std::execution::par_unseq,
+                    m_drawables.begin(), m_drawables.begin() + count,
+                    m_visible.begin(),
+                    cull);
+            }
+            else {
+                std::transform(
+                    std::execution::seq,
+                    m_drawables.begin(), m_drawables.begin() + count,
+                    m_visible.begin(),
+                    cull);
+            }
+        }
+
+        m_cullSignature = frustum.getPlanes();
+        m_cullValid = true;
+    }
+
+    std::span<const uint8_t> InstanceRegistry::getVisibleRange(
+        const util::BufferReference ref) const noexcept
+    {
+        // NOTE KI null socket / range not covered by current cull => no flags
+        if (ref.offset == 0) return std::span<const uint8_t>{};
+        if (m_visible.size() < ref.offset + ref.size) return std::span<const uint8_t>{};
+
+        return std::span{ m_visible }.subspan(ref.offset, ref.size);
+    }
+
+    bool InstanceRegistry::cullSignatureMatches(const Frustum& frustum) const noexcept
+    {
+        return m_cullValid && m_cullSignature == frustum.getPlanes();
     }
 
     void InstanceRegistry::markDirtyAll() noexcept

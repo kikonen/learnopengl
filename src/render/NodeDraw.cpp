@@ -18,6 +18,7 @@
 #include "render/RenderContext.h"
 #include "debug/DebugContext.h"
 #include "render/CollectionRender.h"
+#include "render/Batch.h"
 
 #include "render/PassDeferred.h"
 #include "render/PassForward.h"
@@ -158,6 +159,10 @@ namespace render {
         }
 
         // drawing
+
+        // NOTE KI compute frustum visibility once for this camera; every pass
+        // below reads the cached result instead of re-culling per pass
+        ctx.m_batch->cullFrustum(ctx);
 
         // Deferred passes
         {

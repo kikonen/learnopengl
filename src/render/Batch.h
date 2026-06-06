@@ -53,6 +53,11 @@ namespace render {
         void beginFrame();
         void endFrame();
 
+        // Compute frustum visibility once for ctx.m_camera, before any pass
+        // builds batches for that camera. Must be called by every batch-building
+        // root (NodeDraw, shadow cascades, object-id) prior to drawing.
+        void cullFrustum(const RenderContext& ctx);
+
         void setInstanceRegistry(InstanceRegistry* instanceRegistry) {
             m_instanceRegistry = instanceRegistry;
         }
