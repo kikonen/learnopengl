@@ -141,7 +141,9 @@ namespace render
 
     void InstanceRegistry::cullFrustum(
         const Frustum& frustum,
-        bool enabled,
+        const glm::vec3& cameraPos,
+        bool frustumEnabled,
+        bool lodEnabled,
         uint32_t parallelLimit) noexcept
     {
         const size_t count = m_drawables.size();
@@ -149,28 +151,42 @@ namespace render
             m_visible.resize(count);
         }
 
-        if (!enabled) {
-            std::fill(m_visible.begin(), m_visible.begin() + count, (uint8_t)1);
-        }
-        else {
-            const auto cull = [&frustum](const DrawableInfo& d) -> uint8_t {
-                return d.worldVolume.isOnFrustum(frustum) ? 1 : 0;
-            };
+        const auto cull = [&frustum, &cameraPos, frustumEnabled, lodEnabled]
+            (const DrawableInfo& d) -> uint8_t
+        {
+            uint8_t v = 0;
 
-            if (count > parallelLimit) {
-                std::transform(
-                    std::execution::par_unseq,
-                    m_drawables.begin(), m_drawables.begin() + count,
-                    m_visible.begin(),
-                    cull);
+            if (!frustumEnabled || d.worldVolume.isOnFrustum(frustum)) {
+                v |= VISIBLE_FRUSTUM;
+            }
+
+            if (!lodEnabled) {
+                v |= VISIBLE_LOD;
             }
             else {
-                std::transform(
-                    std::execution::seq,
-                    m_drawables.begin(), m_drawables.begin() + count,
-                    m_visible.begin(),
-                    cull);
+                const glm::vec3 delta = d.worldVolume.getCenter() - cameraPos;
+                const float dist2 = glm::dot(delta, delta);
+                if (d.minDistance2 <= dist2 && dist2 < d.maxDistance2) {
+                    v |= VISIBLE_LOD;
+                }
             }
+
+            return v;
+        };
+
+        if (count > parallelLimit) {
+            std::transform(
+                std::execution::par_unseq,
+                m_drawables.begin(), m_drawables.begin() + count,
+                m_visible.begin(),
+                cull);
+        }
+        else {
+            std::transform(
+                std::execution::seq,
+                m_drawables.begin(), m_drawables.begin() + count,
+                m_visible.begin(),
+                cull);
         }
 
         m_cullSignature = frustum.getPlanes();
