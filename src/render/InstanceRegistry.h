@@ -21,6 +21,13 @@ namespace render
 {
     struct InstanceSSBO;
 
+    // Per-drawable visibility flags computed once per camera by cullFrustum().
+    // A bit is SET when the drawable passes that test.
+    enum VisibilityBit : uint8_t {
+        VISIBLE_FRUSTUM = 1 << 0,
+        VISIBLE_LOD     = 1 << 1,
+    };
+
     class InstanceRegistry
     {
     public:
@@ -48,13 +55,17 @@ namespace render
         std::span<render::DrawableInfo> modifyRange(
             const util::BufferReference ref) noexcept;
 
-        // Compute per-drawable frustum visibility once for the given camera
-        // frustum. Result is cached in m_visible and read via isVisible() by all
-        // passes that build batches for the same frustum.
-        // @param enabled if false, everything is marked visible (cull bypassed)
+        // Compute per-drawable visibility (frustum + LOD distance) once for the
+        // given camera. Result is cached in m_visible (VisibilityBit flags) and
+        // read via getVisibleRange() by every pass that builds batches for this
+        // camera, instead of re-testing per pass.
+        // @param frustumEnabled if false, VISIBLE_FRUSTUM is set for all
+        // @param lodEnabled if false, VISIBLE_LOD is set for all
         void cullFrustum(
             const Frustum& frustum,
-            bool enabled,
+            const glm::vec3& cameraPos,
+            bool frustumEnabled,
+            bool lodEnabled,
             uint32_t parallelLimit) noexcept;
 
         // Visibility flags for a drawable range, aligned with getRange(ref).
