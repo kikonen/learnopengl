@@ -1,7 +1,7 @@
 #pragma once
 
 #include <mutex>
-#include <set>
+#include <vector>
 
 #include <glm/glm.hpp>
 
@@ -43,11 +43,11 @@ namespace animation
             double currentTime,
             AnimationState& state,
             model::Node* node,
-            std::set<const Rig*>& changedRigs);
+            std::vector<const Rig*>& changedRigs);
 
         void updateJointsAndSockets(
             model::Node* node,
-            const std::set<const Rig*>& changedRigs);
+            const std::vector<const Rig*>& changedRigs);
 
         void updateAnimatedVolume(
             AnimationState& state,

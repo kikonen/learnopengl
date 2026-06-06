@@ -386,6 +386,24 @@ namespace animation
                         m_animateNode->animate(ctx, active.m_state, active.m_node);
                     }
                 }
+
+                // NOTE KI markDirty replayed single-threaded: the per-call dirty-set
+                // locks were serializing the parallel animate above. Mirrors the
+                // original inline marks (rigRef only for owning+changed entries;
+                // joint/socket for every registered rig whose shared rig changed).
+                for (auto& active : s_activeNodes) {
+                    const auto& changedRigs = active.m_state.m_changedRigs;
+                    if (changedRigs.empty()) continue;
+
+                    for (const auto& rr : active.m_node->getRegisteredRigs()) {
+                        if (std::find(changedRigs.begin(), changedRigs.end(), rr.m_rig)
+                            == changedRigs.end()) continue;
+
+                        if (rr.m_ownsRig) rigNodeRegistry.markDirty(rr.m_rigRef);
+                        jointRegistry.markDirty(rr.m_jointRef);
+                        if (rr.m_socketRef.size > 0) socketRegistry.markDirty(rr.m_socketRef);
+                    }
+                }
             }
         }
 
