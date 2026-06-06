@@ -27,7 +27,6 @@
 #include "mesh/Transform.h"
 
 #include "model/Node.h"
-#include "model/NodeType.h"
 #include "model/Snapshot.h"
 #include "model/EntityFlags.h"
 
@@ -62,7 +61,26 @@ namespace render {
 
     void Batch::addDrawablesSingleNode(
         const RenderContext& ctx,
-        const model::NodeType* type,
+        const util::BufferReference instanceRef,
+        const std::function<ki::program_id (const render::DrawableInfo&)>& programSelector,
+        const std::function<void(ki::program_id)>& programPrepare,
+        uint8_t kindBits) noexcept
+    {
+        addDrawablesImpl(ctx, instanceRef, programSelector, programPrepare, kindBits);
+    }
+
+    void Batch::addDrawablesInstanced(
+        const RenderContext& ctx,
+        const util::BufferReference instanceRef,
+        const std::function<ki::program_id (const render::DrawableInfo&)>& programSelector,
+        const std::function<void(ki::program_id)>& programPrepare,
+        uint8_t kindBits) noexcept
+    {
+        addDrawablesImpl(ctx, instanceRef, programSelector, programPrepare, kindBits);
+    }
+
+    void Batch::addDrawablesImpl(
+        const RenderContext& ctx,
         const util::BufferReference instanceRef,
         const std::function<ki::program_id (const render::DrawableInfo&)>& programSelector,
         const std::function<void(ki::program_id)>& programPrepare,
@@ -75,11 +93,11 @@ namespace render {
 
         const auto& drawables = m_instanceRegistry->getRange(instanceRef);
 
-        // NOTE KI frustum + LOD visibility is precomputed once per camera in
-        // InstanceRegistry::cullFrustum; here we only read the cached flags
+        // NOTE KI frustum + LOD visibility (incl. per-drawable noFrustum) is
+        // precomputed once per camera in InstanceRegistry::cullFrustum; here we
+        // only read the cached flags. A drawable renders only when all bits are set.
         const auto& visible = m_instanceRegistry->getVisibleRange(instanceRef);
         const bool haveVis = !visible.empty();
-        const bool wantFrustum = m_frustumCPU && !type->m_flags.noFrustum;
         assert(!(m_frustumCPU || m_lodDistanceEnabled) ||
             m_instanceRegistry->cullSignatureMatches(ctx.m_camera->getFrustum()));
 
@@ -87,20 +105,16 @@ namespace render {
             const auto& drawable = drawables[drawableIndex];
             if (drawable.entityIndex == 0) continue;
 
-            const auto& srcDrawOptions = drawable.drawOptions;
-            if (!srcDrawOptions.isKind(kindBits)) continue;
-            if (srcDrawOptions.m_type == backend::DrawOptions::Type::none) continue;
+            const auto& drawOptions = drawable.drawOptions;
+            if (drawOptions.m_type == backend::DrawOptions::Type::none) continue;
+            if (!drawOptions.isKind(kindBits)) continue;
 
-            if (haveVis) {
-                const uint8_t v = visible[drawableIndex];
-                // NOTE KI noFrustum types bypass the frustum bit but still LOD-cull
-                if (wantFrustum && !(v & VISIBLE_FRUSTUM)) { m_skipCount++; continue; }
-                if (m_lodDistanceEnabled && !(v & VISIBLE_LOD)) { m_skipCount++; continue; }
+            if (haveVis && (visible[drawableIndex] & VISIBLE_ALL) != VISIBLE_ALL) {
+                m_skipCount++;
+                continue;
             }
 
-            const auto drawOptions = srcDrawOptions;
-
-            auto programId = programSelector(drawable);
+            const auto programId = programSelector(drawable);
             if (!programId) continue;
 
             programPrepare(programId);
@@ -128,101 +142,16 @@ namespace render {
                 }
             }
 
+            // NOTE KI hint for the instanced case (many instances share one command);
+            // harmless for the single-node case
+            commandEntry->reserve(drawableCount);
+
             commandEntry->addInstance({
                 instanceOffset + drawableIndex
                 });
 
             m_drawCount++;
             m_pendingCount++;
-        }
-    }
-
-    void Batch::addDrawablesInstanced(
-        const RenderContext& ctx,
-        const model::NodeType* type,
-        const util::BufferReference instanceRef,
-        const std::function<ki::program_id (const render::DrawableInfo&)>& programSelector,
-        const std::function<void(ki::program_id)>& programPrepare,
-        uint8_t kindBits) noexcept
-    {
-        const uint32_t drawableCount = instanceRef.size;
-        const uint32_t instanceOffset = instanceRef.offset;
-
-        if (drawableCount == 0) return;
-
-        const auto& drawables = m_instanceRegistry->getRange(instanceRef);
-
-        // NOTE KI frustum + LOD visibility precomputed once per camera (cullFrustum)
-        const auto& visible = m_instanceRegistry->getVisibleRange(instanceRef);
-        const bool haveVis = !visible.empty();
-        const bool wantFrustum = m_frustumCPU && !type->m_flags.noFrustum;
-        assert(!(m_frustumCPU || m_lodDistanceEnabled) ||
-            m_instanceRegistry->cullSignatureMatches(ctx.m_camera->getFrustum()));
-
-        {
-            const auto resolveProgram = [&kindBits, &programSelector, this](
-                const auto& drawable) -> ki::program_id
-            {
-                const auto& drawOptions = drawable.drawOptions;
-                if (drawOptions.m_type == backend::DrawOptions::Type::none) return 0;
-                if (!drawOptions.isKind(kindBits)) return 0;
-
-                return programSelector(drawable);
-            };
-
-            uint32_t skippedCount = 0;
-
-            for (uint32_t drawableIndex = 0; drawableIndex < drawableCount; drawableIndex++) {
-                if (haveVis) {
-                    const uint8_t v = visible[drawableIndex];
-                    if (wantFrustum && !(v & VISIBLE_FRUSTUM)) { skippedCount++; continue; }
-                    if (m_lodDistanceEnabled && !(v & VISIBLE_LOD)) { skippedCount++; continue; }
-                }
-
-                const auto& drawable = drawables[drawableIndex];
-                if (drawable.entityIndex == 0) continue;
-
-                const auto  programId = resolveProgram(drawable);
-                if (!programId) continue;
-
-                programPrepare(programId);
-
-                CommandEntry* commandEntry{ nullptr };
-                {
-                    const auto drawOptions = drawable.drawOptions;
-
-                    MultiDrawEntry* drawEntry;
-                    {
-                        MultiDrawKey drawKey{
-                            programId,
-                            drawable.vaoId,
-                            drawOptions
-                        };
-
-                        const auto drawIndex = m_batchRegistry.getMultiDrawIndex(drawKey);
-                        drawEntry = m_drawEntryContainer.addDrawEntry(drawIndex);
-                    }
-                    {
-                        CommandKey commandKey{
-                            drawable.baseVertex,
-                            drawable.baseIndex,
-                        };
-                        const auto commandIndex = m_batchRegistry.getCommandIndex(commandKey);
-                        commandEntry = drawEntry->addCommandEntry(commandIndex, drawable.indexCount);
-                    }
-                }
-
-                commandEntry->reserve(drawableCount);
-
-                commandEntry->addInstance({
-                    instanceOffset + drawableIndex
-                    });
-
-                m_pendingCount++;
-            }
-
-            m_skipCount += skippedCount;
-            m_drawCount += drawableCount - skippedCount;
         }
     }
 
@@ -258,10 +187,9 @@ namespace render {
             uint32_t skippedCount = 0;
 
             for (uint32_t drawableIndex = 0; drawableIndex < drawableCount; drawableIndex++) {
-                if (haveVis) {
-                    const uint8_t v = visible[drawableIndex];
-                    if (m_frustumCPU && !(v & VISIBLE_FRUSTUM)) { skippedCount++; continue; }
-                    if (m_lodDistanceEnabled && !(v & VISIBLE_LOD)) { skippedCount++; continue; }
+                if (haveVis && (visible[drawableIndex] & VISIBLE_ALL) != VISIBLE_ALL) {
+                    skippedCount++;
+                    continue;
                 }
 
                 const auto& drawable = drawables[drawableIndex];

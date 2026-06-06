@@ -75,6 +75,9 @@ void NodeGenerator::registerDrawables(
                 // TODO KI volume/transform can change per frame
                 drawable.worldVolume = transform.getWorldVolume();
                 drawable.localTransform = transform.getMatrix() * lodMesh.m_baseTransform;
+
+                drawable.m_noShadow = lodMesh.m_flags.noShadow;
+                drawable.m_noFrustum = container.m_typeFlags.noFrustum;
             }
         }
 
@@ -126,7 +129,6 @@ void NodeGenerator::addToBatch(
 {
     batch.addDrawablesInstanced(
         ctx,
-        container.getType(),
         m_instanceRef,
         programSelector,
         programPrepare,

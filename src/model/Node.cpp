@@ -321,6 +321,7 @@ namespace model
                     drawable.worldVolume = snapshot.getWorldVolume();
 
                     drawable.m_noShadow = lodMesh.m_flags.noShadow;
+                    drawable.m_noFrustum = m_typeFlags.noFrustum;
                 }
             }
 
@@ -369,7 +370,6 @@ namespace model
         else {
             batch.addDrawablesSingleNode(
                 ctx,
-                getType(),
                 m_instanceRef,
                 programSelector,
                 programPrepare,

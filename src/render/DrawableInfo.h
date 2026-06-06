@@ -54,6 +54,8 @@ namespace render
         ki::program_id normalProgramId{ 0 };
 
         bool m_noShadow : 1 {false};
+        // type-level no_frustum: drawable is never frustum-culled
+        bool m_noFrustum : 1 {false};
 
         bool isFlag(uint32_t flag) const noexcept
         {
