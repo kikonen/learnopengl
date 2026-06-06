@@ -1,6 +1,7 @@
 #pragma once
 
 #include <array>
+#include <vector>
 #include <stdint.h>
 
 #include <glm/glm.hpp>
@@ -10,6 +11,8 @@
 #include "pool/NodeHandle.h"
 
 namespace animation {
+    struct Rig;
+
     struct AnimationState {
         struct Play {
             double m_startTime{ -1.f };
@@ -42,5 +45,10 @@ namespace animation {
         // Used to position physics capsule at animated center point
         glm::vec3 m_physicsCenterOffset{ 0.f };
         bool m_physicsCenterDirty{ false };
+
+        // Rigs changed this frame, recorded during the parallel animate pass and
+        // replayed single-threaded to mark registries dirty (avoids per-call lock
+        // contention). Reusable buffer; capacity retained across frames.
+        std::vector<const Rig*> m_changedRigs;
     };
 }

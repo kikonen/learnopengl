@@ -2,6 +2,7 @@
 
 #include <limits>
 #include <unordered_map>
+#include <algorithm>
 
 #include "engine/UpdateContext.h"
 
@@ -56,6 +57,10 @@ namespace animation
         auto& playA = state.m_current;
         auto& playB = state.m_next;
 
+        // NOTE KI reset before any early-return so an inactive node leaves an
+        // empty list (no stale dirty marks in the serial replay pass)
+        state.m_changedRigs.clear();
+
         if (anim.m_paused) {
             currentTime = m_lastCurrentTime;
         }
@@ -75,7 +80,7 @@ namespace animation
                 return;
         }
 
-        std::set<const Rig*> changedRigs;
+        auto& changedRigs = state.m_changedRigs;
 
         animateRigs(ctx, currentTime, state, node, changedRigs);
         updateJointsAndSockets(node, changedRigs);
@@ -91,7 +96,7 @@ namespace animation
         double currentTime,
         AnimationState& state,
         model::Node* node,
-        std::set<const Rig*>& changedRigs)
+        std::vector<const Rig*>& changedRigs)
     {
         const auto& dbg = debug::DebugContext::modify();
         const auto& anim = dbg.m_animation;
@@ -192,15 +197,16 @@ namespace animation
             }
 
             if (changed) {
-                m_rigNodeRegistry.markDirty(registeredRig.m_rigRef);
-                changedRigs.insert(rig);
+                // NOTE KI markDirty deferred to a single-threaded pass in
+                // AnimationSystem::updateWT to avoid lock contention here
+                changedRigs.push_back(rig);
             }
         }
     }
 
     void AnimateNode::updateJointsAndSockets(
         model::Node* node,
-        const std::set<const Rig*>& changedRigs)
+        const std::vector<const Rig*>& changedRigs)
     {
         const auto& registeredRigs = node->getRegisteredRigs();
 
@@ -208,7 +214,7 @@ namespace animation
             const auto* rig = registeredRig.m_rig;
             const auto* jointContainer = registeredRig.m_jointContainer;
 
-            if (!changedRigs.contains(rig)) continue;
+            if (std::find(changedRigs.begin(), changedRigs.end(), rig) == changedRigs.end()) continue;
 
             const auto& rigNodeTransforms = m_rigNodeRegistry.getRange(registeredRig.m_rigRef);
 
@@ -224,7 +230,8 @@ namespace animation
                     jointPalette[joint.m_jointIndex] = globalTransform * joint.m_offsetMatrix;
                 }
 
-                m_jointRegistry.markDirty(registeredRig.m_jointRef);
+                // NOTE KI markDirty (joint + socket) deferred to a single-threaded
+                // pass in AnimationSystem::updateWT to avoid lock contention here
 
                 // Update Socket Palette (only for rig-owning entries)
                 if (registeredRig.m_socketRef.size > 0) {
@@ -235,8 +242,6 @@ namespace animation
 
                         socketPalette[socket.m_index] = socket.calculateGlobalTransform(globalTransform);
                     }
-
-                    m_socketRegistry.markDirty(registeredRig.m_socketRef);
                 }
             }
         }
