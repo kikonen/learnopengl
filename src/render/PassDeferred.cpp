@@ -165,9 +165,8 @@ namespace render
                 if (!drawable.isFlag(render::INSTANCE_PRE_DEPTH_BIT)) return (ki::program_id)0;
                 return drawable.preDepthProgramId;
             },
-            [&drawContext](const model::Node* node) {
-                return drawContext.nodeSelector(node);
-            },
+            drawContext.typeSelector,
+            drawContext.drawableSelector,
             drawContext.kindBits & render::KIND_SOLID);
 
         ctx.m_batch->flush(ctx);
@@ -196,10 +195,10 @@ namespace render
                 if (!drawable.drawOptions.m_useDeferred) return (ki::program_id)0;
                 return drawable.programId;
             },
-            [&drawContext](const model::Node* node) {
-                return !node->m_typeFlags.effect &&
-                    drawContext.nodeSelector(node);
+            [&drawContext](const model::TypeFlags& flags) {
+                return !flags.effect && drawContext.typeSelector(flags);
             },
+            drawContext.drawableSelector,
             drawContext.kindBits);
 
         ctx.m_batch->flush(ctx);

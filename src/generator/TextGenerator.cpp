@@ -102,6 +102,7 @@ void TextGenerator::updateRT(
             drawable.indexCount = mesh->getIndexCount();
             drawable.worldVolume = worldVolume;
             drawable.m_noFrustum = container.m_typeFlags.noFrustum;
+            drawable.m_ignoredBy = container.m_ignoredBy;
         }
         instanceRegistry.markDirty(ref);
         instanceRegistry.updateInstances(ref);
@@ -120,6 +121,7 @@ void TextGenerator::addToBatch(
     const render::RenderContext& ctx,
     const std::function<ki::program_id (const render::DrawableInfo&)>& programSelector,
     const std::function<void(ki::program_id)>& programPrepare,
+    const std::function<bool(const render::DrawableInfo&)>& drawableSelector,
     uint8_t kindBits,
     render::Batch& batch,
     const model::Node& container)
@@ -129,6 +131,7 @@ void TextGenerator::addToBatch(
         container.m_instanceRef,
         programSelector,
         programPrepare,
+        drawableSelector,
         kindBits);
 }
 

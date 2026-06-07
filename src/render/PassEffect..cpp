@@ -74,12 +74,10 @@ namespace render
 
         collectionRender.drawBlendedImpl(
             ctx,
-            [&drawContext](const model::Node* node) {
-                return
-                    node->m_typeFlags.anyBlend &&
-                    node->m_typeFlags.effect &&
-                    drawContext.nodeSelector(node);
-            });
+            [&drawContext](const model::TypeFlags& flags) {
+                return flags.anyBlend && flags.effect && drawContext.typeSelector(flags);
+            },
+            drawContext.drawableSelector);
 
         ctx.m_batch->flush(ctx);
 

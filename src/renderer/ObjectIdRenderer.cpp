@@ -198,7 +198,8 @@ void ObjectIdRenderer::drawNodes(const render::RenderContext& parentCtx)
 
     {
         render::DrawContext drawContext{
-            [](const model::Node* node) { return !node->m_typeFlags.noSelect; },
+            render::ACCEPT_ALL_DRAWABLES,
+            [](const model::TypeFlags& flags) { return !flags.noSelect; },
             render::KIND_ALL
         };
 
@@ -208,7 +209,8 @@ void ObjectIdRenderer::drawNodes(const render::RenderContext& parentCtx)
             [this](const render::DrawableInfo& drawable) {
                 return drawable.idProgramId ? drawable.idProgramId : m_idProgramId;
             },
-            drawContext.nodeSelector,
+            drawContext.typeSelector,
+            drawContext.drawableSelector,
             drawContext.kindBits);
     }
 

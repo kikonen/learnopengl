@@ -66,6 +66,7 @@ namespace render {
             const util::BufferReference instanceRef,
             const std::function<ki::program_id(const render::DrawableInfo&)>& programSelector,
             const std::function<void(ki::program_id)>& programPrepare,
+            const std::function<bool(const render::DrawableInfo&)>& drawableSelector,
             uint8_t kindBits) noexcept;
 
         void addDrawablesInstanced(
@@ -73,6 +74,7 @@ namespace render {
             const util::BufferReference instanceRef,
             const std::function<ki::program_id(const render::DrawableInfo&)>& programSelector,
             const std::function<void(ki::program_id)>& programPrepare,
+            const std::function<bool(const render::DrawableInfo&)>& drawableSelector,
             uint8_t kindBits) noexcept;
 
         void addMeshes(
@@ -87,6 +89,7 @@ namespace render {
             model::Node* node,
             const std::function<ki::program_id(const render::DrawableInfo&)>& programSelector,
             const std::function<void(ki::program_id)>& programPrepare,
+            const std::function<bool(const render::DrawableInfo&)>& drawableSelector,
             uint8_t kindBits);
 
         bool isFlushed() const noexcept;
@@ -107,6 +110,7 @@ namespace render {
             const util::BufferReference instanceRef,
             const std::function<ki::program_id(const render::DrawableInfo&)>& programSelector,
             const std::function<void(ki::program_id)>& programPrepare,
+            const std::function<bool(const render::DrawableInfo&)>& drawableSelector,
             uint8_t kindBits) noexcept;
 
     private:

@@ -23,6 +23,7 @@
 #include "render/FrameBuffer.h"
 #include "render/NodeDraw.h"
 #include "render/DrawContext.h"
+#include "render/DrawableInfo.h"
 
 #include "registry/Registry.h"
 #include "registry/NodeRegistry.h"
@@ -391,12 +392,18 @@ void MirrorMapRenderer::drawNodes(
     {
         model::Node* sourceNode = m_sourceNode.toNode();
 
+        const auto currentEntityIndex = current->getEntityIndex();
+        const auto sourceEntityIndex = sourceNode ? sourceNode->getEntityIndex() : 0;
+        const auto currentId = current->getId();
+
         render::DrawContext drawContext{
-            [current, sourceNode](const model::Node* node) {
-                return !node->m_typeFlags.noReflect &&
-                    node != current &&
-                    node != sourceNode &&
-                    node->m_ignoredBy != current->getId();
+            [currentEntityIndex, sourceEntityIndex, currentId](const render::DrawableInfo& d) {
+                return d.entityIndex != currentEntityIndex &&
+                    d.entityIndex != sourceEntityIndex &&
+                    d.m_ignoredBy != currentId;
+            },
+            [](const model::TypeFlags& flags) {
+                return !flags.noReflect;
             },
             render::KIND_ALL,
             GL_COLOR_BUFFER_BIT

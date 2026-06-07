@@ -10,6 +10,7 @@ namespace model
 {
     class Node;
     class NodeType;
+    struct TypeFlags;
 }
 
 class Program;
@@ -31,14 +32,16 @@ namespace render
         void drawProgram(
             const RenderContext& ctx,
             const std::function<ki::program_id(const render::DrawableInfo&)>& programSelector,
-            const std::function<bool(const model::Node*)>& nodeSelector,
+            const std::function<bool(const model::TypeFlags&)>& typeSelector,
+            const std::function<bool(const render::DrawableInfo&)>& drawableSelector,
             uint8_t kindBits)
         {
             drawNodesImpl(
                 ctx,
                 programSelector,
                 [](ki::program_id programId) {},
-                nodeSelector,
+                typeSelector,
+                drawableSelector,
                 kindBits);
         }
 
@@ -50,22 +53,25 @@ namespace render
             const RenderContext& ctx,
             const std::function<ki::program_id(const render::DrawableInfo&)>& programSelector,
             const std::function<void(ki::program_id)>& programPrepare,
-            const std::function<bool(const model::Node*)>& nodeSelector,
+            const std::function<bool(const model::TypeFlags&)>& typeSelector,
+            const std::function<bool(const render::DrawableInfo&)>& drawableSelector,
             uint8_t kindBits)
         {
-            drawNodesImpl(ctx, programSelector, programPrepare, nodeSelector, kindBits);
+            drawNodesImpl(ctx, programSelector, programPrepare, typeSelector, drawableSelector, kindBits);
         }
 
         void drawBlendedImpl(
             const RenderContext& ctx,
-            const std::function<bool(const model::Node*)>& nodeSelector);
+            const std::function<bool(const model::TypeFlags&)>& typeSelector,
+            const std::function<bool(const render::DrawableInfo&)>& drawableSelector);
 
     private:
         bool drawNodesImpl(
             const RenderContext& ctx,
             const std::function<ki::program_id(const render::DrawableInfo&)>& programSelector,
             const std::function<void(ki::program_id)>& programPrepare,
-            const std::function<bool(const model::Node*)>& nodeSelector,
+            const std::function<bool(const model::TypeFlags&)>& typeSelector,
+            const std::function<bool(const render::DrawableInfo&)>& drawableSelector,
             uint8_t kindBits);
     };
 }

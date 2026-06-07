@@ -8,10 +8,10 @@
 namespace model
 {
     class NodeType;
+    struct TypeFlags;
 }
 
 struct Material;
-struct TypeFlags;
 
 namespace animation
 {
@@ -133,7 +133,7 @@ namespace loader {
 
         void assignTypeFlags(
             const NodeTypeData& typeData,
-            TypeFlags& flags);
+            model::TypeFlags& flags);
 
         void assignMeshFlags(
             const FlagContainer& container,

@@ -1,5 +1,7 @@
 #include "LayerRenderer.h"
 
+#include <unordered_set>
+
 #include "asset/Assets.h"
 
 #include "shader/Program.h"
@@ -36,6 +38,17 @@
 #include "shader/DataUBO.h"
 
 #include "kigl/GLStencilMode.h"
+
+namespace {
+    // selection/tag handles -> entityIndex set (entityIndex == NodeHandle::m_handleIndex)
+    std::unordered_set<uint32_t> toEntitySet(const std::vector<pool::NodeHandle>& handles)
+    {
+        std::unordered_set<uint32_t> set;
+        set.reserve(handles.size());
+        for (const auto& h : handles) set.insert(h.m_handleIndex);
+        return set;
+    }
+}
 
 LayerRenderer::~LayerRenderer() = default;
 
@@ -183,19 +196,26 @@ void LayerRenderer::render(
         }
 
         {
+            // NOTE KI when using wireframe selection, exclude selected objects from normal
+            // draw. Common case (no wireframe / nothing selected) keeps the trivial acceptor
+            // to avoid building a set + per-drawable lookup every frame.
+            std::function<bool(const render::DrawableInfo&)> drawableSelector = render::ACCEPT_ALL_DRAWABLES;
+            if (useWireframeSelection) {
+                std::unordered_set<uint32_t> excluded;
+                if (assets.showTagged)
+                    for (const auto& h : selectionRegistry.getTagged()) excluded.insert(h.m_handleIndex);
+                if (assets.showSelection)
+                    for (const auto& h : selectionRegistry.getSelected()) excluded.insert(h.m_handleIndex);
+                if (!excluded.empty()) {
+                    drawableSelector = [excluded = std::move(excluded)](const render::DrawableInfo& d) {
+                        return excluded.find(d.entityIndex) == excluded.end();
+                    };
+                }
+            }
+
             render::DrawContext drawContext{
-                // NOTE KI when using wireframe selection, exclude selected objects from normal draw
-                [useWireframeSelection, &selectionRegistry, &assets](const model::Node* node) {
-                    if (useWireframeSelection) {
-                        bool isSelected = false;
-                        if (assets.showTagged)
-                            isSelected |= selectionRegistry.isTagged(node->toHandle());
-                        if (assets.showSelection)
-                            isSelected |= selectionRegistry.isSelected(node->toHandle());
-                        return !isSelected;
-                    }
-                    return true;
-                },
+                drawableSelector,
+                render::ACCEPT_ALL_TYPES,
                 render::KIND_ALL,
                 // NOTE KI nothing to clear; keep stencil, depth copied from gbuffer
                 GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT
@@ -240,15 +260,23 @@ void LayerRenderer::fillHighlightMask(
 
     // draw entity data mask
     {
-        render::DrawContext drawContext{
-            [&selectionRegistry, &assets](const model::Node* node) {
-                bool accept = assets.showTagged || assets.showSelection;
-                if (assets.showTagged)
-                    accept &= selectionRegistry.isTagged(node->toHandle());
-                if (assets.showSelection)
-                    accept &= selectionRegistry.isSelected(node->toHandle());
+        const bool showTagged = assets.showTagged;
+        const bool showSelection = assets.showSelection;
+        const std::function<bool(const render::DrawableInfo&)> drawableSelector =
+            [showTagged, showSelection,
+             tagged = toEntitySet(selectionRegistry.getTagged()),
+             selected = toEntitySet(selectionRegistry.getSelected())](const render::DrawableInfo& d) {
+                bool accept = showTagged || showSelection;
+                if (showTagged)
+                    accept = accept && (tagged.find(d.entityIndex) != tagged.end());
+                if (showSelection)
+                    accept = accept && (selected.find(d.entityIndex) != selected.end());
                 return accept;
-            },
+            };
+
+        render::DrawContext drawContext{
+            drawableSelector,
+            render::ACCEPT_ALL_TYPES,
             render::KIND_ALL,
             0
         };
@@ -264,7 +292,8 @@ void LayerRenderer::fillHighlightMask(
                 program->m_uniforms->u_stencilMode.set(STENCIL_MODE_SHIFT_NONE);
                 program->m_uniforms->u_wireframeMode.set(false);
             },
-            drawContext.nodeSelector,
+            drawContext.typeSelector,
+            drawContext.drawableSelector,
             drawContext.kindBits);
     }
     localCtx.m_batch->flush(localCtx);
@@ -300,20 +329,29 @@ void LayerRenderer::renderHighlight(
         STENCIL_MODE_SHIFT_DOWN,
     };
 
+    // built once; reused across the shift passes
+    const bool showTagged = assets.showTagged;
+    const bool showSelection = assets.showSelection;
+    const std::function<bool(const render::DrawableInfo&)> drawableSelector =
+        [showTagged, showSelection,
+         tagged = toEntitySet(selectionRegistry.getTagged()),
+         selected = toEntitySet(selectionRegistry.getSelected())](const render::DrawableInfo& d) {
+            bool accept = showTagged || showSelection;
+            if (showTagged)
+                accept = accept && (tagged.find(d.entityIndex) != tagged.end());
+            if (showSelection)
+                accept = accept && (selected.find(d.entityIndex) != selected.end());
+            return accept;
+        };
+
     // draw selection color (scaled a bit bigger)
     // https://www.reddit.com/r/opengl/comments/14jisvu/how_can_i_outline_selected_meshes/
     // https://ameye.dev/notes/rendering-outlines/
     // NOTE KI using "shift mode" approach, based into "hell engine"
     for (const auto shift : SHIFTS) {
         render::DrawContext drawContext{
-            [&selectionRegistry, &assets](const model::Node* node) {
-                bool accept = assets.showTagged || assets.showSelection;
-                if (assets.showTagged)
-                    accept &= selectionRegistry.isTagged(node->toHandle());
-                if (assets.showSelection)
-                    accept &= selectionRegistry.isSelected(node->toHandle());
-                return accept;
-            },
+            drawableSelector,
+            render::ACCEPT_ALL_TYPES,
             render::KIND_ALL
         };
 
@@ -329,7 +367,8 @@ void LayerRenderer::renderHighlight(
                 program->m_uniforms->u_stencilMode.set(shift);
                 program->m_uniforms->u_wireframeMode.set(false);
             },
-            drawContext.nodeSelector,
+            drawContext.typeSelector,
+            drawContext.drawableSelector,
             drawContext.kindBits);
         localCtx.m_batch->flush(localCtx);
     }
@@ -356,6 +395,19 @@ void LayerRenderer::renderSelectionWireframe(
 
     targetBuffer->bind(localCtx);
 
+    const bool showTagged = assets.showTagged;
+    const bool showSelection = assets.showSelection;
+    const std::function<bool(const render::DrawableInfo&)> drawableSelector =
+        [showTagged, showSelection,
+         tagged = toEntitySet(selectionRegistry.getTagged()),
+         selected = toEntitySet(selectionRegistry.getSelected())](const render::DrawableInfo& d) {
+            if (showSelection && selected.find(d.entityIndex) != selected.end())
+                return true;
+            if (showTagged && tagged.find(d.entityIndex) != tagged.end())
+                return true;
+            return false;
+        };
+
     render::CollectionRender collectionRender;
     collectionRender.drawProgramWithPrepare(
         localCtx,
@@ -367,13 +419,8 @@ void LayerRenderer::renderSelectionWireframe(
             program->m_uniforms->u_stencilMode.set(STENCIL_MODE_SHIFT_NONE);
             program->m_uniforms->u_wireframeMode.set(true);
         },
-        [&selectionRegistry, &assets](const model::Node* node) {
-            if (assets.showSelection && selectionRegistry.isSelected(node->toHandle()))
-                return true;
-            if (assets.showTagged && selectionRegistry.isTagged(node->toHandle()))
-                return true;
-            return false;
-        },
+        render::ACCEPT_ALL_TYPES,
+        drawableSelector,
         render::KIND_ALL);
 
     localCtx.m_batch->flush(localCtx);

@@ -840,7 +840,7 @@ namespace loader
 
     void NodeTypeBuilder::assignTypeFlags(
         const NodeTypeData& typeData,
-        TypeFlags& flags)
+        model::TypeFlags& flags)
     {
         const auto& container = typeData.typeFlags;
 
