@@ -26,7 +26,6 @@
 #include "mesh/MeshInstance.h"
 #include "mesh/Transform.h"
 
-#include "model/Node.h"
 #include "model/Snapshot.h"
 #include "model/EntityFlags.h"
 
@@ -319,18 +318,6 @@ namespace render {
             m_frustumCPU,
             m_lodDistanceEnabled,
             m_frustumParallelLimit);
-    }
-
-    void Batch::draw(
-        const RenderContext& ctx,
-        model::Node* node,
-        const std::function<ki::program_id (const render::DrawableInfo&)>& programSelector,
-        const std::function<void(ki::program_id)>& programPrepare,
-        const std::function<bool(const render::DrawableInfo&)>& drawableSelector,
-        uint8_t kindBits)
-    {
-        if (node->m_typeFlags.invisible || !node->m_visible || !node->m_alive) return;
-        node->addToBatch(ctx, programSelector, programPrepare, drawableSelector, kindBits, *this);
     }
 
     bool Batch::isFlushed() const noexcept
