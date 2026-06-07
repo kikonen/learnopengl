@@ -101,9 +101,8 @@ void TextGenerator::updateRT(
         {
             drawable.indexCount = mesh->getIndexCount();
             drawable.worldVolume = worldVolume;
-            drawable.m_noFrustum = container.m_typeFlags.noFrustum;
             drawable.m_ignoredBy = container.m_ignoredBy;
-            drawable.m_typeFlags = container.m_typeFlags;
+            drawable.m_flags = render::toDrawableFlags(container.m_typeFlags, false);
         }
         instanceRegistry.markDirty(ref);
         instanceRegistry.updateInstances(ref);

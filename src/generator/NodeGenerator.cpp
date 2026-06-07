@@ -76,10 +76,8 @@ void NodeGenerator::registerDrawables(
                 drawable.worldVolume = transform.getWorldVolume();
                 drawable.localTransform = transform.getMatrix() * lodMesh.m_baseTransform;
 
-                drawable.m_noShadow = lodMesh.m_flags.noShadow;
-                drawable.m_noFrustum = container.m_typeFlags.noFrustum;
                 drawable.m_ignoredBy = container.m_ignoredBy;
-                drawable.m_typeFlags = container.m_typeFlags;
+                drawable.m_flags = render::toDrawableFlags(container.m_typeFlags, lodMesh.m_flags.noShadow);
             }
         }
 

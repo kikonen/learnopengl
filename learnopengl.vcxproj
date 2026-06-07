@@ -408,6 +408,7 @@
     <ClCompile Include="src\render\BlurBuffer.cpp" />
     <ClCompile Include="src\render\CollectionRender.cpp" />
     <ClCompile Include="src\render\CubeMapDebugTexture.cpp" />
+    <ClCompile Include="src\render\DrawableFlags.cpp" />
     <ClCompile Include="src\render\InstanceRegistry.cpp" />
     <ClCompile Include="src\render\NodeCollection.cpp" />
     <ClCompile Include="src\render\Pass.cpp" />
@@ -772,6 +773,7 @@
     <ClInclude Include="src\mesh\vao\size.h" />
     <ClInclude Include="src\model\NodeAddon.h" />
     <ClInclude Include="src\particle\ParticlePool.h" />
+    <ClInclude Include="src\render\DrawableFlags.h" />
     <ClInclude Include="src\render\DrawableInfo.h" />
     <ClInclude Include="src\render\InstanceIndexSSBO.h" />
     <ClInclude Include="src\render\InstanceRegistry.h" />

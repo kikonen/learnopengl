@@ -21,7 +21,7 @@ namespace render
         // would bind to a temporary that dies at the end of the construction
         // full-expression. By value DrawContext owns it for its lifetime.
 
-        // per-drawable filtering: type flags (d.m_typeFlags) + identity/selection
+        // per-drawable filtering: drawable flags (d.m_flags) + identity/selection
         std::function<bool(const render::DrawableInfo&)> drawableSelector;
 
         // rnder::KIND_NONE

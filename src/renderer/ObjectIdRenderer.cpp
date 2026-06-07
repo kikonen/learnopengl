@@ -198,7 +198,7 @@ void ObjectIdRenderer::drawNodes(const render::RenderContext& parentCtx)
 
     {
         render::DrawContext drawContext{
-            [](const render::DrawableInfo& d) { return !d.m_typeFlags.noSelect; },
+            [](const render::DrawableInfo& d) { return !d.m_flags.noSelect; },
             render::KIND_ALL
         };
 

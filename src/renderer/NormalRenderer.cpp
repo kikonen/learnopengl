@@ -56,7 +56,7 @@ void NormalRenderer::drawNodes(const render::RenderContext& ctx)
         ctx.getGLState().setStencil({});
 
         render::DrawContext drawContext{
-            [](const render::DrawableInfo& d) { return !d.m_typeFlags.noNormals; },
+            [](const render::DrawableInfo& d) { return !d.m_flags.noNormals; },
             render::KIND_ALL
         };
 

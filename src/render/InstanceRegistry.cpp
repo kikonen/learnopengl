@@ -156,8 +156,8 @@ namespace render
         {
             uint8_t v = 0;
 
-            // NOTE KI per-drawable m_noFrustum (type-level no_frustum) is never culled
-            if (!frustumEnabled || d.m_noFrustum || d.worldVolume.isOnFrustum(frustum)) {
+            // NOTE KI per-drawable noFrustum (type-level no_frustum) is never culled
+            if (!frustumEnabled || d.m_flags.noFrustum || d.worldVolume.isOnFrustum(frustum)) {
                 v |= VISIBLE_FRUSTUM;
             }
 

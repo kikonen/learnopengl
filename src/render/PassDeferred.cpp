@@ -195,7 +195,7 @@ namespace render
                 return drawable.programId;
             },
             [&drawContext](const render::DrawableInfo& d) {
-                return !d.m_typeFlags.effect && drawContext.drawableSelector(d);
+                return !d.m_flags.effect && drawContext.drawableSelector(d);
             },
             drawContext.kindBits);
 
