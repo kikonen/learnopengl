@@ -714,12 +714,9 @@ void NodeRegistry::handleNodeRemoved(model::Node* node)
 {
     if (!node) return;
 
-    auto nodeHandle = node->toHandle();
-
-    if (node->m_generator) {
-        //const PrepareContext ctx{ m_registry };
-        //node->m_generator->unprepareRT(ctx, *node);
-    }
+    // RT: free this node's (and its generator's) render instance allocation, and
+    // invalidate the freed drawables. Node is still alive here; dispose happens later.
+    node->releaseInstances();
 }
 
 void NodeRegistry::notifyPendingChanges()

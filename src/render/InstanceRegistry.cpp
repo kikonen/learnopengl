@@ -118,6 +118,15 @@ namespace render
 
         if (!m_slotAllocator.release(ref)) return {};
 
+        // NOTE KI invalidate the freed drawables so a not-yet-reused slot is skipped
+        // (entityIndex == 0) and never drawn (incl. by a future per-drawable sweep);
+        // on reuse, allocate -> populate -> upload overwrites these.
+        for (uint32_t i = 0; i < ref.size; i++) {
+            auto& drawable = m_drawables[ref.offset + i];
+            drawable.entityIndex = 0;
+            drawable.drawOptions.m_type = backend::DrawOptions::Type::none;
+        }
+
         return {};
     }
 

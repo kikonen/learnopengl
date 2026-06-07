@@ -137,6 +137,12 @@ void NodeGenerator::addToBatch(
         kindBits);
 }
 
+void NodeGenerator::releaseInstances(render::InstanceRegistry& instanceRegistry)
+{
+    instanceRegistry.release(m_instanceRef);
+    m_instanceRef = {};
+}
+
 void NodeGenerator::markDirty(
     const util::BufferReference ref)
 {

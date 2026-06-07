@@ -102,6 +102,9 @@ public:
         const model::Node& container,
         const model::Snapshot& snapshot);
 
+    // RT: release this generator's instance allocation on node removal
+    virtual void releaseInstances(render::InstanceRegistry& instanceRegistry);
+
     virtual void updateDrawables(
         render::InstanceRegistry& instanceRegistry,
         const model::Node& container,
