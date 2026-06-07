@@ -39,10 +39,12 @@ namespace render
                     if (!node) continue;
                     if (!node->m_alive) continue;
                     if (node->m_layer != ctx.m_layer) continue;
+                    if (node->m_typeFlags.invisible || !node->m_visible) continue;
                     if (!typeSelector(node->m_typeFlags)) continue;
 
+                    node->addToBatch(ctx, programSelector, programPrepare, drawableSelector, kind, *ctx.m_batch);
+
                     rendered = true;
-                    ctx.m_batch->draw(ctx, node, programSelector, programPrepare, drawableSelector, kind);
                 }
             };
 
@@ -99,13 +101,17 @@ namespace render
         // NOTE KI blending is *NOT* optimal program / nodetypw wise due to depth sorting
         // NOTE KI order = from furthest away to nearest
         for (std::map<float, model::Node*>::reverse_iterator it = sorted.rbegin(); it != sorted.rend(); ++it) {
-            ctx.m_batch->draw(
+            auto* node = it->second;
+            if (!node->m_alive) continue;
+            if (node->m_typeFlags.invisible || !node->m_visible) continue;
+
+            node->addToBatch(
                 ctx,
-                it->second,
                 [this](const render::DrawableInfo& drawable) { return drawable.programId; },
                 [](ki::program_id) {},
                 drawableSelector,
-                render::KIND_BLEND);
+                render::KIND_BLEND,
+                *ctx.m_batch);
         }
 
         // TODO KI if no flush here then render order of blended nodes is incorrect
