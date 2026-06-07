@@ -265,14 +265,15 @@ void ShadowCascade::drawNodes(
     ctx.m_batch->cullFrustum(ctx);
 
     // NOTE KI *NO* G-buffer in shadow
-    const auto nodeFilter = [](const model::Node* node) {
+    const auto typeFilter = [](const model::TypeFlags& flags) {
         // NOTE KI tessellation not suppported
-        return !node->m_typeFlags.noShadow;
+        return !flags.noShadow;
     };
 
     {
         render::DrawContext drawContext{
-            nodeFilter,
+            render::ACCEPT_ALL_DRAWABLES,
+            typeFilter,
             render::KIND_ALL
         };
 
@@ -286,7 +287,8 @@ void ShadowCascade::drawNodes(
                 if (drawable.shadowProgramId) return drawable.shadowProgramId;
                 return drawable.drawOptions.isAlpha() ? m_alphaShadowProgramId : m_solidShadowProgramId;
             },
-            drawContext.nodeSelector,
+            drawContext.typeSelector,
+            drawContext.drawableSelector,
             drawContext.kindBits);
     }
 

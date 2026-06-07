@@ -30,6 +30,7 @@
 #include "render/Batch.h"
 #include "render/FrameBuffer.h"
 #include "render/DrawContext.h"
+#include "render/DrawableInfo.h"
 #include "render/NodeDraw.h"
 #include "render/CubeMapBuffer.h"
 
@@ -360,13 +361,18 @@ void CubeMapRenderer::drawNodes(
     //targetBuffer->clear(ctx, GL_COLOR_BUFFER_BIT, debugColor);;
     targetBuffer->clearAll();
 
+    const auto currentEntityIndex = current->getEntityIndex();
+    const auto currentId = current->getId();
+
     render::DrawContext drawContext{
         // NOTE KI skip drawing center node itself (can produce odd results)
         // => i.e. show garbage from old render round and such
-        [&current](const model::Node* node) {
-            return !node->m_typeFlags.noReflect &&
-                node != current &&
-                node->m_ignoredBy != current->getId();
+        [currentEntityIndex, currentId](const render::DrawableInfo& d) {
+            return d.entityIndex != currentEntityIndex &&
+                d.m_ignoredBy != currentId;
+        },
+        [](const model::TypeFlags& flags) {
+            return !flags.noReflect;
         },
         render::KIND_ALL,
         GL_COLOR_BUFFER_BIT

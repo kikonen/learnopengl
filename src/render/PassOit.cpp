@@ -146,9 +146,8 @@ namespace render
                 if (drawable.oitProgramId) return drawable.oitProgramId;
                 return m_oitProgram->m_id;
             },
-            [&drawContext](const model::Node* node) {
-                return drawContext.nodeSelector(node);
-            },
+            drawContext.typeSelector,
+            drawContext.drawableSelector,
             drawContext.kindBits & render::KIND_BLEND);
 
         m_flushedCount = ctx.m_batch->flush(ctx);

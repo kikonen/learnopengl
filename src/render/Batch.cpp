@@ -64,9 +64,10 @@ namespace render {
         const util::BufferReference instanceRef,
         const std::function<ki::program_id (const render::DrawableInfo&)>& programSelector,
         const std::function<void(ki::program_id)>& programPrepare,
+        const std::function<bool(const render::DrawableInfo&)>& drawableSelector,
         uint8_t kindBits) noexcept
     {
-        addDrawablesImpl(ctx, instanceRef, programSelector, programPrepare, kindBits);
+        addDrawablesImpl(ctx, instanceRef, programSelector, programPrepare, drawableSelector, kindBits);
     }
 
     void Batch::addDrawablesInstanced(
@@ -74,9 +75,10 @@ namespace render {
         const util::BufferReference instanceRef,
         const std::function<ki::program_id (const render::DrawableInfo&)>& programSelector,
         const std::function<void(ki::program_id)>& programPrepare,
+        const std::function<bool(const render::DrawableInfo&)>& drawableSelector,
         uint8_t kindBits) noexcept
     {
-        addDrawablesImpl(ctx, instanceRef, programSelector, programPrepare, kindBits);
+        addDrawablesImpl(ctx, instanceRef, programSelector, programPrepare, drawableSelector, kindBits);
     }
 
     void Batch::addDrawablesImpl(
@@ -84,6 +86,7 @@ namespace render {
         const util::BufferReference instanceRef,
         const std::function<ki::program_id (const render::DrawableInfo&)>& programSelector,
         const std::function<void(ki::program_id)>& programPrepare,
+        const std::function<bool(const render::DrawableInfo&)>& drawableSelector,
         uint8_t kindBits) noexcept
     {
         const uint32_t drawableCount = instanceRef.size;
@@ -108,6 +111,8 @@ namespace render {
             const auto& drawOptions = drawable.drawOptions;
             if (drawOptions.m_type == backend::DrawOptions::Type::none) continue;
             if (!drawOptions.isKind(kindBits)) continue;
+
+            if (!drawableSelector(drawable)) continue;
 
             if (haveVis && (visible[drawableIndex] & VISIBLE_ALL) != VISIBLE_ALL) {
                 m_skipCount++;
@@ -321,10 +326,11 @@ namespace render {
         model::Node* node,
         const std::function<ki::program_id (const render::DrawableInfo&)>& programSelector,
         const std::function<void(ki::program_id)>& programPrepare,
+        const std::function<bool(const render::DrawableInfo&)>& drawableSelector,
         uint8_t kindBits)
     {
         if (node->m_typeFlags.invisible || !node->m_visible || !node->m_alive) return;
-        node->addToBatch(ctx, programSelector, programPrepare, kindBits, *this);
+        node->addToBatch(ctx, programSelector, programPrepare, drawableSelector, kindBits, *this);
     }
 
     bool Batch::isFlushed() const noexcept

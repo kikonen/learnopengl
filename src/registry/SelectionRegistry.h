@@ -44,6 +44,16 @@ public:
         return m_selected.size();
     }
 
+    const std::vector<pool::NodeHandle>& getSelected() const noexcept
+    {
+        return m_selected;
+    }
+
+    const std::vector<pool::NodeHandle>& getTagged() const noexcept
+    {
+        return m_tagged;
+    }
+
     inline bool isSelected(const pool::NodeHandle nodeHandle) const noexcept
     {
         return std::find(m_selected.begin(), m_selected.end(), nodeHandle) != m_selected.end();

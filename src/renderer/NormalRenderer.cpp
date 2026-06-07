@@ -56,7 +56,8 @@ void NormalRenderer::drawNodes(const render::RenderContext& ctx)
         ctx.getGLState().setStencil({});
 
         render::DrawContext drawContext{
-            [](const model::Node* node) { return !node->m_typeFlags.noNormals; },
+            render::ACCEPT_ALL_DRAWABLES,
+            [](const model::TypeFlags& flags) { return !flags.noNormals; },
             render::KIND_ALL
         };
 
@@ -67,7 +68,8 @@ void NormalRenderer::drawNodes(const render::RenderContext& ctx)
                 if (drawable.isTesselated()) return (ki::program_id)0;
                 return drawable.normalProgramId ? drawable.normalProgramId : m_normalProgramId;
             },
-            drawContext.nodeSelector,
+            drawContext.typeSelector,
+            drawContext.drawableSelector,
             drawContext.kindBits);
     }
 
