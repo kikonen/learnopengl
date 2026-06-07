@@ -146,7 +146,6 @@ namespace render
                 if (drawable.oitProgramId) return drawable.oitProgramId;
                 return m_oitProgram->m_id;
             },
-            drawContext.typeSelector,
             drawContext.drawableSelector,
             drawContext.kindBits & render::KIND_BLEND);
 

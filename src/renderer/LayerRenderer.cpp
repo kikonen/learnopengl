@@ -215,7 +215,6 @@ void LayerRenderer::render(
 
             render::DrawContext drawContext{
                 drawableSelector,
-                render::ACCEPT_ALL_TYPES,
                 render::KIND_ALL,
                 // NOTE KI nothing to clear; keep stencil, depth copied from gbuffer
                 GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT
@@ -276,7 +275,6 @@ void LayerRenderer::fillHighlightMask(
 
         render::DrawContext drawContext{
             drawableSelector,
-            render::ACCEPT_ALL_TYPES,
             render::KIND_ALL,
             0
         };
@@ -292,7 +290,6 @@ void LayerRenderer::fillHighlightMask(
                 program->m_uniforms->u_stencilMode.set(STENCIL_MODE_SHIFT_NONE);
                 program->m_uniforms->u_wireframeMode.set(false);
             },
-            drawContext.typeSelector,
             drawContext.drawableSelector,
             drawContext.kindBits);
     }
@@ -351,7 +348,6 @@ void LayerRenderer::renderHighlight(
     for (const auto shift : SHIFTS) {
         render::DrawContext drawContext{
             drawableSelector,
-            render::ACCEPT_ALL_TYPES,
             render::KIND_ALL
         };
 
@@ -367,7 +363,6 @@ void LayerRenderer::renderHighlight(
                 program->m_uniforms->u_stencilMode.set(shift);
                 program->m_uniforms->u_wireframeMode.set(false);
             },
-            drawContext.typeSelector,
             drawContext.drawableSelector,
             drawContext.kindBits);
         localCtx.m_batch->flush(localCtx);
@@ -419,7 +414,6 @@ void LayerRenderer::renderSelectionWireframe(
             program->m_uniforms->u_stencilMode.set(STENCIL_MODE_SHIFT_NONE);
             program->m_uniforms->u_wireframeMode.set(true);
         },
-        render::ACCEPT_ALL_TYPES,
         drawableSelector,
         render::KIND_ALL);
 

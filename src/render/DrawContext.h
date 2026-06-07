@@ -6,34 +6,23 @@
 
 #include <stdint.h>
 
-namespace model
-{
-    struct TypeFlags;
-}
-
-
 namespace render
 {
     struct DrawableInfo;
 
-    // Shared trivial selectors for sites that don't filter on that axis
+    // Shared trivial selector for sites that don't filter
     inline const std::function<bool(const render::DrawableInfo&)> ACCEPT_ALL_DRAWABLES =
         [](const render::DrawableInfo&) { return true; };
-    inline const std::function<bool(const model::TypeFlags&)> ACCEPT_ALL_TYPES =
-        [](const model::TypeFlags&) { return true; };
 
     struct DrawContext
     {
-        // NOTE KI selectors are held BY VALUE. DrawContext is aggregate-initialized
-        // (often from inline lambdas) and consumed on a later statement; reference
-        // members would bind to temporaries that die at the end of the construction
-        // full-expression. By value DrawContext owns them for its lifetime.
+        // NOTE KI selector held BY VALUE. DrawContext is aggregate-initialized (often
+        // from inline lambdas) and consumed on a later statement; a reference member
+        // would bind to a temporary that dies at the end of the construction
+        // full-expression. By value DrawContext owns it for its lifetime.
 
-        // identity / selection filtering, keyed on DrawableInfo (entityIndex etc.)
+        // per-drawable filtering: type flags (d.m_typeFlags) + identity/selection
         std::function<bool(const render::DrawableInfo&)> drawableSelector;
-
-        // type-flag filtering
-        std::function<bool(const model::TypeFlags&)> typeSelector;
 
         // rnder::KIND_NONE
         const uint8_t kindBits;

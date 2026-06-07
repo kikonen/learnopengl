@@ -398,12 +398,10 @@ void MirrorMapRenderer::drawNodes(
 
         render::DrawContext drawContext{
             [currentEntityIndex, sourceEntityIndex, currentId](const render::DrawableInfo& d) {
-                return d.entityIndex != currentEntityIndex &&
+                return !d.m_typeFlags.noReflect &&
+                    d.entityIndex != currentEntityIndex &&
                     d.entityIndex != sourceEntityIndex &&
                     d.m_ignoredBy != currentId;
-            },
-            [](const model::TypeFlags& flags) {
-                return !flags.noReflect;
             },
             render::KIND_ALL,
             GL_COLOR_BUFFER_BIT

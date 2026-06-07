@@ -8,6 +8,8 @@
 
 #include "backend/DrawOptions.h"
 
+#include "model/TypeFlags.h"
+
 namespace render
 {
     // Registered at load time - doesn't change during frame
@@ -56,6 +58,10 @@ namespace render
 
         ki::program_id idProgramId{ 0 };
         ki::program_id normalProgramId{ 0 };
+
+        // type flags mirrored from the owning node (static); used for per-drawable
+        // filtering in place of the old node-level typeSelector
+        model::TypeFlags m_typeFlags;
 
         bool m_noShadow : 1 {false};
         // type-level no_frustum: drawable is never frustum-culled

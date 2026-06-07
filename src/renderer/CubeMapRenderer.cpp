@@ -368,11 +368,9 @@ void CubeMapRenderer::drawNodes(
         // NOTE KI skip drawing center node itself (can produce odd results)
         // => i.e. show garbage from old render round and such
         [currentEntityIndex, currentId](const render::DrawableInfo& d) {
-            return d.entityIndex != currentEntityIndex &&
+            return !d.m_typeFlags.noReflect &&
+                d.entityIndex != currentEntityIndex &&
                 d.m_ignoredBy != currentId;
-        },
-        [](const model::TypeFlags& flags) {
-            return !flags.noReflect;
         },
         render::KIND_ALL,
         GL_COLOR_BUFFER_BIT
