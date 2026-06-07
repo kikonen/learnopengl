@@ -266,8 +266,9 @@ void ShadowCascade::drawNodes(
 
     {
         render::DrawContext drawContext{
-            // NOTE KI *NO* G-buffer in shadow; tessellation not supported
-            [](const render::DrawableInfo& d) { return !d.m_typeFlags.noShadow; },
+            // NOTE KI *NO* G-buffer in shadow; tessellation not supported.
+            // m_flags.noShadow combines type-level and per-mesh no-shadow.
+            [](const render::DrawableInfo& d) { return !d.m_flags.noShadow; },
             render::KIND_ALL
         };
 
@@ -276,8 +277,6 @@ void ShadowCascade::drawNodes(
             ctx,
             [this](const render::DrawableInfo& drawable) {
                 if (drawable.isTesselated()) return (ki::program_id)0;
-                if (drawable.m_noShadow)
-                    return (ki::program_id)0;
                 if (drawable.shadowProgramId) return drawable.shadowProgramId;
                 return drawable.drawOptions.isAlpha() ? m_alphaShadowProgramId : m_solidShadowProgramId;
             },

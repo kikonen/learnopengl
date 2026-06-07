@@ -1341,6 +1341,9 @@
     <ClCompile Include="src\render\InstanceRegistry.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\render\DrawableFlags.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="src\kigl\GLBuffer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -3099,6 +3102,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\render\DrawableInfo.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\render\DrawableFlags.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\render\InstanceIndexSSBO.h">

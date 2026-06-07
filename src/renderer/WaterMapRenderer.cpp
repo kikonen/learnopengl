@@ -487,8 +487,8 @@ void WaterMapRenderer::drawNodes(
 
         render::DrawContext drawContext{
             [currentEntityIndex, sourceEntityIndex, currentId, reflect](const render::DrawableInfo& d) {
-                return !d.m_typeFlags.water &&
-                    (reflect ? !d.m_typeFlags.noReflect : !d.m_typeFlags.noRefract) &&
+                return !d.m_flags.water &&
+                    (reflect ? !d.m_flags.noReflect : !d.m_flags.noRefract) &&
                     d.entityIndex != currentEntityIndex &&
                     d.entityIndex != sourceEntityIndex &&
                     d.m_ignoredBy != currentId;

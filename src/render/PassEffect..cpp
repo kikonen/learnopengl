@@ -75,7 +75,8 @@ namespace render
         collectionRender.drawBlendedImpl(
             ctx,
             [&drawContext](const render::DrawableInfo& d) {
-                return d.m_typeFlags.anyBlend && d.m_typeFlags.effect && drawContext.drawableSelector(d);
+                // NOTE KI drawBlendedImpl already restricts to KIND_BLEND
+                return d.m_flags.effect && drawContext.drawableSelector(d);
             });
 
         ctx.m_batch->flush(ctx);

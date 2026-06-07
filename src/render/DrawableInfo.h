@@ -8,7 +8,7 @@
 
 #include "backend/DrawOptions.h"
 
-#include "model/TypeFlags.h"
+#include "render/DrawableFlags.h"
 
 namespace render
 {
@@ -59,13 +59,9 @@ namespace render
         ki::program_id idProgramId{ 0 };
         ki::program_id normalProgramId{ 0 };
 
-        // type flags mirrored from the owning node (static); used for per-drawable
-        // filtering in place of the old node-level typeSelector
-        model::TypeFlags m_typeFlags;
-
-        bool m_noShadow : 1 {false};
-        // type-level no_frustum: drawable is never frustum-culled
-        bool m_noFrustum : 1 {false};
+        // drawable-relevant flags (type-derived, incl. per-mesh noShadow); used for
+        // per-drawable filtering in selectors + cull
+        DrawableFlags m_flags;
 
         bool isFlag(uint32_t flag) const noexcept
         {
