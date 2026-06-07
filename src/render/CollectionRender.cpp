@@ -21,7 +21,6 @@ namespace render
         const RenderContext& ctx,
         const std::function<ki::program_id(const render::DrawableInfo&)>& programSelector,
         const std::function<void(ki::program_id)>& programPrepare,
-        const std::function<bool(const model::TypeFlags&)>& typeSelector,
         const std::function<bool(const render::DrawableInfo&)>& drawableSelector,
         const uint8_t kindBits)
     {
@@ -30,7 +29,7 @@ namespace render
         auto& collection = *ctx.m_collection;
         auto& nodeRegistry = *ctx.getRegistry()->m_nodeRegistry;
 
-        auto renderTypes = [this, &ctx, &programSelector, &programPrepare, &typeSelector, &drawableSelector, &rendered](
+        auto renderTypes = [this, &ctx, &programSelector, &programPrepare, &drawableSelector, &rendered](
             const NodeVector& nodes,
             unsigned int kind)
             {
@@ -40,7 +39,6 @@ namespace render
                     if (!node->m_alive) continue;
                     if (node->m_layer != ctx.m_layer) continue;
                     if (node->m_typeFlags.invisible || !node->m_visible) continue;
-                    if (!typeSelector(node->m_typeFlags)) continue;
 
                     node->addToBatch(ctx, programSelector, programPrepare, drawableSelector, kind, *ctx.m_batch);
 
@@ -65,7 +63,6 @@ namespace render
 
     void CollectionRender::drawBlendedImpl(
         const RenderContext& ctx,
-        const std::function<bool(const model::TypeFlags&)>& typeSelector,
         const std::function<bool(const render::DrawableInfo&)>& drawableSelector)
     {
         auto& collection = *ctx.m_collection;
@@ -81,7 +78,6 @@ namespace render
             if (!node) continue;
             if (!node->m_alive) continue;
             if (node->m_layer != ctx.m_layer) continue;
-            if (!typeSelector(node->m_typeFlags)) continue;
 
             const auto* snapshot = node->getSnapshotRT();
             if (!snapshot) continue;

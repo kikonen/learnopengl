@@ -264,16 +264,10 @@ void ShadowCascade::drawNodes(
     // NOTE KI compute frustum visibility once for this cascade's camera
     ctx.m_batch->cullFrustum(ctx);
 
-    // NOTE KI *NO* G-buffer in shadow
-    const auto typeFilter = [](const model::TypeFlags& flags) {
-        // NOTE KI tessellation not suppported
-        return !flags.noShadow;
-    };
-
     {
         render::DrawContext drawContext{
-            render::ACCEPT_ALL_DRAWABLES,
-            typeFilter,
+            // NOTE KI *NO* G-buffer in shadow; tessellation not supported
+            [](const render::DrawableInfo& d) { return !d.m_typeFlags.noShadow; },
             render::KIND_ALL
         };
 
@@ -287,7 +281,6 @@ void ShadowCascade::drawNodes(
                 if (drawable.shadowProgramId) return drawable.shadowProgramId;
                 return drawable.drawOptions.isAlpha() ? m_alphaShadowProgramId : m_solidShadowProgramId;
             },
-            drawContext.typeSelector,
             drawContext.drawableSelector,
             drawContext.kindBits);
     }

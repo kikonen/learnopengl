@@ -12,7 +12,7 @@
 #include "render/FrameBuffer.h"
 #include "render/CollectionRender.h"
 #include "render/Batch.h"
-#include "render/CollectionRender.h"
+#include "render/DrawableInfo.h"
 
 namespace {
 }
@@ -74,10 +74,9 @@ namespace render
 
         collectionRender.drawBlendedImpl(
             ctx,
-            [&drawContext](const model::TypeFlags& flags) {
-                return flags.anyBlend && flags.effect && drawContext.typeSelector(flags);
-            },
-            drawContext.drawableSelector);
+            [&drawContext](const render::DrawableInfo& d) {
+                return d.m_typeFlags.anyBlend && d.m_typeFlags.effect && drawContext.drawableSelector(d);
+            });
 
         ctx.m_batch->flush(ctx);
 

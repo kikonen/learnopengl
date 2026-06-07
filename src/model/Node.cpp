@@ -323,6 +323,7 @@ namespace model
                     drawable.m_noShadow = lodMesh.m_flags.noShadow;
                     drawable.m_noFrustum = m_typeFlags.noFrustum;
                     drawable.m_ignoredBy = m_ignoredBy;
+                    drawable.m_typeFlags = m_typeFlags;
                 }
             }
 

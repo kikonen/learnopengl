@@ -79,6 +79,7 @@ void NodeGenerator::registerDrawables(
                 drawable.m_noShadow = lodMesh.m_flags.noShadow;
                 drawable.m_noFrustum = container.m_typeFlags.noFrustum;
                 drawable.m_ignoredBy = container.m_ignoredBy;
+                drawable.m_typeFlags = container.m_typeFlags;
             }
         }
 

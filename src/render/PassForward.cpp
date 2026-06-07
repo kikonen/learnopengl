@@ -80,7 +80,6 @@ namespace render
                     ? drawable.programId
                     : (ki::program_id)0;
             },
-            drawContext.typeSelector,
             drawContext.drawableSelector,
             // NOTE KI no blended
             drawContext.kindBits & ~render::KIND_BLEND);
