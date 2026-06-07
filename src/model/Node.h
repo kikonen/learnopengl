@@ -151,6 +151,9 @@ namespace model
             render::InstanceRegistry& instanceRegistry,
             const Snapshot& snapshot) noexcept;
 
+        // RT: release this node's (and its generator's) instance allocation on removal
+        void releaseInstances() noexcept;
+
         void updateDrawables(
             render::InstanceRegistry& instanceRegistry,
             const Snapshot& snapshot) noexcept;

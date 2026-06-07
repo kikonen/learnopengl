@@ -351,6 +351,18 @@ namespace model
         }
     }
 
+    void Node::releaseInstances() noexcept
+    {
+        auto& instanceRegistry = render::InstanceRegistry::get();
+
+        instanceRegistry.release(m_instanceRef);
+        m_instanceRef = {};
+
+        if (m_generator) {
+            m_generator->releaseInstances(instanceRegistry);
+        }
+    }
+
     void Node::addToBatch(
         const render::RenderContext& ctx,
         const std::function<ki::program_id(const render::DrawableInfo&)>& programSelector,
