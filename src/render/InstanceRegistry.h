@@ -58,38 +58,21 @@ namespace render
         std::span<render::DrawableInfo> modifyRange(
             const util::BufferReference ref) noexcept;
 
-        // single drawable by global index (for the per-drawable sweep)
-        const render::DrawableInfo& getDrawable(uint32_t index) const noexcept
+        // all drawables (for the per-drawable sweep — grab once, index directly)
+        std::span<const render::DrawableInfo> getDrawables() const noexcept
         {
-            return m_drawables[index];
+            return m_drawables;
         }
 
-        // cull result (frustum + LOD) for a global drawable index; true when no cull
-        // covers it (matches the getVisibleRange "empty => draw everything" fallback)
-        bool isVisible(uint32_t index) const noexcept
-        {
-            return index >= m_visible.size()
-                || (m_visible[index] & VISIBLE_ALL) == VISIBLE_ALL;
-        }
-
-        // Compute per-drawable visibility (frustum + LOD distance) once for the
-        // given camera. Result is cached in m_visible (VisibilityBit flags) and
-        // read via getVisibleRange() by every pass that builds batches for this
-        // camera, instead of re-testing per pass.
-        // @param frustumEnabled if false, VISIBLE_FRUSTUM is set for all
-        // @param lodEnabled if false, VISIBLE_LOD is set for all
+        // Compute per-drawable visibility (frustum + LOD + shown) once for the given
+        // camera, written in place into DrawableInfo::m_visibility (read by the draw
+        // sweep). @param frustumEnabled/lodEnabled if false that axis passes for all.
         void cullFrustum(
             const Frustum& frustum,
             const glm::vec3& cameraPos,
             bool frustumEnabled,
             bool lodEnabled,
             uint32_t parallelLimit) noexcept;
-
-        // Visibility flags for a drawable range, aligned with getRange(ref).
-        // Returns an empty span when no valid cull covers the range (callers
-        // treat empty as "frustum cull unavailable" => draw everything).
-        std::span<const uint8_t> getVisibleRange(
-            const util::BufferReference ref) const noexcept;
 
         // NOTE KI debug aid: verify the cached cull matches the frustum a pass is
         // about to render with (catches a batch-building root that forgot to cull)
@@ -122,9 +105,7 @@ namespace render
 
         std::vector<DrawableInfo> m_drawables;
 
-        // Per-drawable frustum visibility cache (parallel to m_drawables),
-        // recomputed once per camera per frame by cullFrustum()
-        std::vector<uint8_t> m_visible;
+        // cull signature (frustum planes) of the cull that last wrote DrawableInfo::m_visibility
         std::array<glm::vec4, 6> m_cullSignature{};
         bool m_cullValid{ false };
 
