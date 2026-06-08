@@ -44,9 +44,11 @@ namespace render {
         m_alphaNodes.clear();
         m_blendedNodes.clear();
 
-        m_solidDrawables.clear();
-        m_alphaDrawables.clear();
-        m_blendedDrawables.clear();
+        for (auto& ld : m_drawablesByLayer) {
+            ld.solid.clear();
+            ld.alpha.clear();
+            ld.blended.clear();
+        }
 
         m_invisibleNodes.reserve(INITIAL_SIZE);
         m_solidNodes.reserve(INITIAL_SIZE);
@@ -203,15 +205,23 @@ namespace render {
             if (drawOptions.isKind(render::KIND_BLEND)) blend.push_back(index);
         }
 
-        insertSortedBlock(m_solidDrawables, solid);
-        insertSortedBlock(m_alphaDrawables, alpha);
-        insertSortedBlock(m_blendedDrawables, blend);
+        if (node->m_layer >= MAX_LAYERS) {
+            KI_ERROR_OUT(fmt::format("DRAWABLE_BUCKET: layer index {} >= MAX_LAYERS", node->m_layer));
+            return;
+        }
+
+        auto& ld = m_drawablesByLayer[node->m_layer];
+        insertSortedBlock(ld.solid, solid);
+        insertSortedBlock(ld.alpha, alpha);
+        insertSortedBlock(ld.blended, blend);
     }
 
     void NodeCollection::removeDrawables(model::Node* node)
     {
         const auto ref = node->getInstanceRef();
         if (ref.empty()) return;
+
+        if (node->m_layer >= MAX_LAYERS) return;
 
         const uint32_t lo = ref.offset;
         const uint32_t hi = ref.offset + ref.size;
@@ -220,9 +230,10 @@ namespace render {
             return index >= lo && index < hi;
         };
 
-        std::erase_if(m_solidDrawables, inRange);
-        std::erase_if(m_alphaDrawables, inRange);
-        std::erase_if(m_blendedDrawables, inRange);
+        auto& ld = m_drawablesByLayer[node->m_layer];
+        std::erase_if(ld.solid, inRange);
+        std::erase_if(ld.alpha, inRange);
+        std::erase_if(ld.blended, inRange);
     }
 
     void NodeCollection::validateDrawables() const
@@ -230,7 +241,7 @@ namespace render {
         // NOTE KI logs (works in release, unlike assert) — on-demand consistency check
         const auto& reg = InstanceRegistry::get();
 
-        const auto check = [&reg](const char* name, const std::vector<uint32_t>& bucket, uint8_t kind) {
+        const auto check = [&reg](const char* name, uint8_t layer, const std::vector<uint32_t>& bucket, uint8_t kind) {
             const bool sorted = std::is_sorted(bucket.begin(), bucket.end());
             size_t stale = 0;
             size_t wrongKind = 0;
@@ -245,17 +256,17 @@ namespace render {
 
             if (!sorted || stale || wrongKind || outOfBounds) {
                 KI_ERROR_OUT(fmt::format(
-                    "DRAWABLE_BUCKET INVALID: {} size={} sorted={} stale={} wrongKind={} oob={}",
-                    name, bucket.size(), sorted, stale, wrongKind, outOfBounds));
-            }
-            else {
-                KI_INFO_OUT(fmt::format("DRAWABLE_BUCKET OK: {} size={}", name, bucket.size()));
+                    "DRAWABLE_BUCKET INVALID: layer={} {} size={} sorted={} stale={} wrongKind={} oob={}",
+                    layer, name, bucket.size(), sorted, stale, wrongKind, outOfBounds));
             }
         };
 
-        check("solid", m_solidDrawables, render::KIND_SOLID);
-        check("alpha", m_alphaDrawables, render::KIND_ALPHA);
-        check("blend", m_blendedDrawables, render::KIND_BLEND);
+        for (uint8_t layer = 0; layer < MAX_LAYERS; layer++) {
+            const auto& ld = m_drawablesByLayer[layer];
+            check("solid", layer, ld.solid, render::KIND_SOLID);
+            check("alpha", layer, ld.alpha, render::KIND_ALPHA);
+            check("blend", layer, ld.blended, render::KIND_BLEND);
+        }
     }
 
     void NodeCollection::setActiveCameraNode(pool::NodeHandle nodeHandle)

@@ -9,6 +9,7 @@
 #include "render/FrameBuffer.h"
 #include "render/Batch.h"
 #include "render/DrawableInfo.h"
+#include "render/InstanceRegistry.h"
 #include "render/Camera.h"
 #include "render/NodeCollection.h"
 
@@ -27,36 +28,36 @@ namespace render
         bool rendered{ false };
 
         auto& collection = *ctx.m_collection;
-        auto& nodeRegistry = *ctx.getRegistry()->m_nodeRegistry;
+        if (ctx.m_layer >= MAX_LAYERS) return false;
 
-        auto renderTypes = [this, &ctx, &programSelector, &programPrepare, &drawableSelector, &rendered](
-            const NodeVector& nodes,
-            unsigned int kind)
+        auto& reg = InstanceRegistry::get();
+        const auto& layerDrawables = collection.m_drawablesByLayer[ctx.m_layer];
+
+        // Per-drawable sweep over this layer's buckets. Node-level checks are all expressed
+        // per drawable now: alive => entityIndex!=0 (+removed from bucket on node removal),
+        // visible => !m_flags.hidden, layer => bucket key, type-invisible => never bucketed.
+        const auto sweep = [&](const std::vector<uint32_t>& bucket)
             {
-                for (auto& handle : nodes) {
-                    auto* node = handle.toNode();
-                    if (!node) continue;
-                    if (!node->m_alive) continue;
-                    if (node->m_layer != ctx.m_layer) continue;
-                    if (node->m_typeFlags.invisible || !node->m_visible) continue;
+                for (const uint32_t index : bucket) {
+                    const auto& drawable = reg.getDrawable(index);
+                    if (drawable.entityIndex == 0) continue;
+                    // isVisible = frustum + LOD + shown (hidden folded into cullFrustum)
+                    if (!reg.isVisible(index)) continue;
+                    if (!drawableSelector(drawable)) continue;
 
-                    node->addToBatch(ctx, programSelector, programPrepare, drawableSelector, kind, *ctx.m_batch);
+                    const auto programId = programSelector(drawable);
+                    if (!programId) continue;
+
+                    programPrepare(programId);
+                    ctx.m_batch->addDrawable(index, drawable, programId);
 
                     rendered = true;
                 }
             };
 
-        if (kindBits & render::KIND_SOLID) {
-            renderTypes(collection.m_solidNodes, render::KIND_SOLID);
-        }
-
-        if (kindBits & render::KIND_ALPHA) {
-            renderTypes(collection.m_alphaNodes, render::KIND_ALPHA);
-        }
-
-        if (kindBits & render::KIND_BLEND) {
-            renderTypes(collection.m_blendedNodes, render::KIND_BLEND);
-        }
+        if (kindBits & render::KIND_SOLID) sweep(layerDrawables.solid);
+        if (kindBits & render::KIND_ALPHA) sweep(layerDrawables.alpha);
+        if (kindBits & render::KIND_BLEND) sweep(layerDrawables.blended);
 
         return rendered;
     }

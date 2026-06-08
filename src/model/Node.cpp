@@ -323,7 +323,6 @@ namespace model
                     drawable.m_ignoredBy = m_ignoredBy;
                     drawable.m_flags = render::toDrawableFlags(m_typeFlags, lodMesh.m_flags.noShadow);
                     drawable.m_flags.hidden = !m_visible;
-                    drawable.m_layer = m_layer;
                 }
             }
 

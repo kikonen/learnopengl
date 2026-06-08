@@ -26,8 +26,9 @@ namespace render
     enum VisibilityBit : uint8_t {
         VISIBLE_FRUSTUM = 1 << 0,
         VISIBLE_LOD     = 1 << 1,
+        VISIBLE_SHOWN   = 1 << 2,   // not hidden (node visible)
         // drawable is rendered only when all visibility bits are set
-        VISIBLE_ALL     = VISIBLE_FRUSTUM | VISIBLE_LOD,
+        VISIBLE_ALL     = VISIBLE_FRUSTUM | VISIBLE_LOD | VISIBLE_SHOWN,
     };
 
     class InstanceRegistry
@@ -56,6 +57,20 @@ namespace render
 
         std::span<render::DrawableInfo> modifyRange(
             const util::BufferReference ref) noexcept;
+
+        // single drawable by global index (for the per-drawable sweep)
+        const render::DrawableInfo& getDrawable(uint32_t index) const noexcept
+        {
+            return m_drawables[index];
+        }
+
+        // cull result (frustum + LOD) for a global drawable index; true when no cull
+        // covers it (matches the getVisibleRange "empty => draw everything" fallback)
+        bool isVisible(uint32_t index) const noexcept
+        {
+            return index >= m_visible.size()
+                || (m_visible[index] & VISIBLE_ALL) == VISIBLE_ALL;
+        }
 
         // Compute per-drawable visibility (frustum + LOD distance) once for the
         // given camera. Result is cached in m_visible (VisibilityBit flags) and

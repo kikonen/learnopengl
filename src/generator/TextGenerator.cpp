@@ -104,7 +104,6 @@ void TextGenerator::updateRT(
             drawable.m_ignoredBy = container.m_ignoredBy;
             drawable.m_flags = render::toDrawableFlags(container.m_typeFlags, false);
             drawable.m_flags.hidden = !container.m_visible;
-            drawable.m_layer = container.m_layer;
         }
         instanceRegistry.markDirty(ref);
         instanceRegistry.updateInstances(ref);

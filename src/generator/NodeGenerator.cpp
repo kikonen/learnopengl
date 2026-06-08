@@ -79,7 +79,6 @@ void NodeGenerator::registerDrawables(
                 drawable.m_ignoredBy = container.m_ignoredBy;
                 drawable.m_flags = render::toDrawableFlags(container.m_typeFlags, lodMesh.m_flags.noShadow);
                 drawable.m_flags.hidden = !container.m_visible;
-                drawable.m_layer = container.m_layer;
             }
         }
 
