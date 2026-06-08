@@ -30,19 +30,19 @@ namespace render
         auto& collection = *ctx.m_collection;
         if (ctx.m_layer >= MAX_LAYERS) return false;
 
-        auto& reg = InstanceRegistry::get();
+        const auto drawables = InstanceRegistry::get().getDrawables();
         const auto& layerDrawables = collection.m_drawablesByLayer[ctx.m_layer];
 
         // Per-drawable sweep over this layer's buckets. Node-level checks are all expressed
         // per drawable now: alive => entityIndex!=0 (+removed from bucket on node removal),
-        // visible => !m_flags.hidden, layer => bucket key, type-invisible => never bucketed.
+        // visible+frustum+LOD => m_visibility (set by cullFrustum), layer => bucket key,
+        // type-invisible => never bucketed.
         const auto sweep = [&](const std::vector<uint32_t>& bucket)
             {
                 for (const uint32_t index : bucket) {
-                    const auto& drawable = reg.getDrawable(index);
+                    const auto& drawable = drawables[index];
                     if (drawable.entityIndex == 0) continue;
-                    // isVisible = frustum + LOD + shown (hidden folded into cullFrustum)
-                    if (!reg.isVisible(index)) continue;
+                    if ((drawable.m_visibility & VISIBLE_ALL) != VISIBLE_ALL) continue;
                     if (!drawableSelector(drawable)) continue;
 
                     const auto programId = programSelector(drawable);

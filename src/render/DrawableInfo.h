@@ -63,6 +63,10 @@ namespace render
         // per-drawable filtering in selectors + cull
         DrawableFlags m_flags;
 
+        // per-camera cull result (VisibilityBit mask), written by InstanceRegistry::cullFrustum
+        // each frame; read by the draw sweep (kept here to avoid a second array stream)
+        uint8_t m_visibility{ 0 };
+
         bool isFlag(uint32_t flag) const noexcept
         {
             return drawOptions.m_flags && flag;

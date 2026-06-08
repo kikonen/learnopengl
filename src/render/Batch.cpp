@@ -95,11 +95,8 @@ namespace render {
 
         const auto& drawables = m_instanceRegistry->getRange(instanceRef);
 
-        // NOTE KI frustum + LOD visibility (incl. per-drawable noFrustum) is
-        // precomputed once per camera in InstanceRegistry::cullFrustum; here we
-        // only read the cached flags. A drawable renders only when all bits are set.
-        const auto& visible = m_instanceRegistry->getVisibleRange(instanceRef);
-        const bool haveVis = !visible.empty();
+        // NOTE KI per-camera visibility (frustum + LOD + shown) is precomputed once in
+        // InstanceRegistry::cullFrustum and stored on each DrawableInfo (m_visibility).
         assert(!(m_frustumCPU || m_lodDistanceEnabled) ||
             m_instanceRegistry->cullSignatureMatches(ctx.m_camera->getFrustum()));
 
@@ -113,7 +110,7 @@ namespace render {
 
             if (!drawableSelector(drawable)) continue;
 
-            if (haveVis && (visible[drawableIndex] & VISIBLE_ALL) != VISIBLE_ALL) {
+            if ((drawable.m_visibility & VISIBLE_ALL) != VISIBLE_ALL) {
                 m_skipCount++;
                 continue;
             }
@@ -207,9 +204,7 @@ namespace render {
 
         const auto& drawables = m_instanceRegistry->getRange(instanceRef);
 
-        // NOTE KI frustum + LOD visibility precomputed once per camera (cullFrustum)
-        const auto& visible = m_instanceRegistry->getVisibleRange(instanceRef);
-        const bool haveVis = !visible.empty();
+        // NOTE KI per-camera visibility precomputed once (cullFrustum), stored on DrawableInfo
         assert(!(m_frustumCPU || m_lodDistanceEnabled) ||
             m_instanceRegistry->cullSignatureMatches(ctx.m_camera->getFrustum()));
 
@@ -227,13 +222,13 @@ namespace render {
             uint32_t skippedCount = 0;
 
             for (uint32_t drawableIndex = 0; drawableIndex < drawableCount; drawableIndex++) {
-                if (haveVis && (visible[drawableIndex] & VISIBLE_ALL) != VISIBLE_ALL) {
+                const auto& drawable = drawables[drawableIndex];
+                if (drawable.entityIndex == 0) continue;
+
+                if ((drawable.m_visibility & VISIBLE_ALL) != VISIBLE_ALL) {
                     skippedCount++;
                     continue;
                 }
-
-                const auto& drawable = drawables[drawableIndex];
-                if (drawable.entityIndex == 0) continue;
 
                 const auto  programId = resolveProgram(drawable);
                 if (!programId) continue;

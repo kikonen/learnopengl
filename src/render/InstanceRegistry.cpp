@@ -58,7 +58,6 @@ namespace render
         m_slotAllocator.clear();
         m_dirtySlots.clear();
 
-        m_visible.clear();
         m_cullValid = false;
 
         m_instances.clear();
@@ -156,12 +155,10 @@ namespace render
         uint32_t parallelLimit) noexcept
     {
         const size_t count = m_drawables.size();
-        if (m_visible.size() < count) {
-            m_visible.resize(count);
-        }
 
+        // write the per-camera visibility mask in place into each DrawableInfo
         const auto cull = [&frustum, &cameraPos, frustumEnabled, lodEnabled]
-            (const DrawableInfo& d) -> uint8_t
+            (DrawableInfo& d)
         {
             uint8_t v = 0;
 
@@ -186,36 +183,24 @@ namespace render
                 v |= VISIBLE_SHOWN;
             }
 
-            return v;
+            d.m_visibility = v;
         };
 
         if (count > parallelLimit) {
-            std::transform(
+            std::for_each(
                 std::execution::par_unseq,
                 m_drawables.begin(), m_drawables.begin() + count,
-                m_visible.begin(),
                 cull);
         }
         else {
-            std::transform(
+            std::for_each(
                 std::execution::seq,
                 m_drawables.begin(), m_drawables.begin() + count,
-                m_visible.begin(),
                 cull);
         }
 
         m_cullSignature = frustum.getPlanes();
         m_cullValid = true;
-    }
-
-    std::span<const uint8_t> InstanceRegistry::getVisibleRange(
-        const util::BufferReference ref) const noexcept
-    {
-        // NOTE KI null socket / range not covered by current cull => no flags
-        if (ref.offset == 0) return std::span<const uint8_t>{};
-        if (m_visible.size() < ref.offset + ref.size) return std::span<const uint8_t>{};
-
-        return std::span{ m_visible }.subspan(ref.offset, ref.size);
     }
 
     bool InstanceRegistry::cullSignatureMatches(const Frustum& frustum) const noexcept
