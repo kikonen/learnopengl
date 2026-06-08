@@ -133,6 +133,11 @@ public:
         return m_transforms;
     }
 
+    util::BufferReference getInstanceRef() const noexcept
+    {
+        return m_instanceRef;
+    }
+
     void markDirty(
         const util::BufferReference ref);
 

@@ -2,6 +2,7 @@
 
 #include <vector>
 #include <map>
+#include <cstdint>
 
 #include "pool/NodeHandle.h"
 #include "pool/TypeHandle.h"
@@ -71,6 +72,22 @@ namespace render {
         void insertNode(
             NodeVector* nodes,
             pool::NodeHandle nodeHandle);
+
+        // maintain the per-kind drawable-index buckets for a node's drawable range
+        void addDrawables(model::Node* node);
+        void removeDrawables(model::Node* node);
+
+    public:
+        // FOUNDATIONAL (not yet driving the draw): per-kind drawable-index buckets
+        // (global indices into InstanceRegistry::m_drawables) the future sweep will iterate.
+        // A drawable lands in every kind it matches (m_kindBits is a mask). Maintained on
+        // node add/remove; instanceRef is fixed for the node lifetime so these never go stale.
+        std::vector<uint32_t> m_solidDrawables;
+        std::vector<uint32_t> m_alphaDrawables;
+        std::vector<uint32_t> m_blendedDrawables;
+
+        // debug: assert every bucketed index is in-bounds, active, and correctly kinded
+        void validateDrawables() const;
 
     public:
         // NodeDraw

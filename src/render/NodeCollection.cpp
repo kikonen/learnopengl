@@ -1,12 +1,32 @@
 #include "NodeCollection.h"
 
+#include <algorithm>
+
+#include <fmt/format.h>
+
+#include "util/Log.h"
+
 #include "model/Node.h"
 
 #include "component/CameraComponent.h"
 #include "component/Light.h"
 
+#include "render/size.h"
+#include "render/DrawableInfo.h"
+#include "render/InstanceRegistry.h"
+
 namespace {
     constexpr int INITIAL_SIZE = 1000;
+
+    // Insert an ascending, disjoint block of indices into a sorted bucket, keeping it
+    // sorted. The block occupies a slot range owned exclusively by one node, so it lands
+    // contiguously at a single position (the end during upward-growing allocation => O(1)).
+    void insertSortedBlock(std::vector<uint32_t>& bucket, const std::vector<uint32_t>& block)
+    {
+        if (block.empty()) return;
+        const auto pos = std::lower_bound(bucket.begin(), bucket.end(), block.front());
+        bucket.insert(pos, block.begin(), block.end());
+    }
 }
 
 namespace render {
@@ -23,6 +43,10 @@ namespace render {
         m_solidNodes.clear();
         m_alphaNodes.clear();
         m_blendedNodes.clear();
+
+        m_solidDrawables.clear();
+        m_alphaDrawables.clear();
+        m_blendedDrawables.clear();
 
         m_invisibleNodes.reserve(INITIAL_SIZE);
         m_solidNodes.reserve(INITIAL_SIZE);
@@ -85,6 +109,9 @@ namespace render {
             if (node->m_typeFlags.anyBlend) {
                 insertNode(&m_blendedNodes, nodeHandle);
             }
+
+            // FOUNDATIONAL: per-kind drawable-index buckets (non-invisible nodes only)
+            addDrawables(node);
         }
 
         if (node->m_typeFlags.water) {
@@ -124,6 +151,10 @@ namespace render {
         if (!node) return;
         auto nodeHandle = node->toHandle();
 
+        // NOTE KI must run before Node::releaseInstances resets m_instanceRef
+        // (Scene::handleNodeRemoved is ordered collection-first for this reason)
+        removeDrawables(node);
+
         nodeHandle.removeFrom(m_invisibleNodes);
         nodeHandle.removeFrom(m_solidNodes);
         nodeHandle.removeFrom(m_alphaNodes);
@@ -145,6 +176,86 @@ namespace render {
         pool::NodeHandle nodeHandle)
     {
         nodeHandle.addTo(*handles);
+    }
+
+    void NodeCollection::addDrawables(model::Node* node)
+    {
+        const auto ref = node->getInstanceRef();
+        if (ref.empty()) return;
+
+        const auto& drawables = InstanceRegistry::get().getRange(ref);
+
+        // collect this node's matching indices (ascending) per kind, then insert as one
+        // sorted block so the buckets stay sorted for sequential sweep access
+        std::vector<uint32_t> solid, alpha, blend;
+        for (uint32_t i = 0; i < drawables.size(); i++) {
+            const auto& drawable = drawables[i];
+            if (drawable.entityIndex == 0) continue;
+
+            const auto& drawOptions = drawable.drawOptions;
+            if (drawOptions.m_type == backend::DrawOptions::Type::none) continue;
+
+            const uint32_t index = ref.offset + i;
+
+            // a drawable lands in every kind it matches (m_kindBits is a mask)
+            if (drawOptions.isKind(render::KIND_SOLID)) solid.push_back(index);
+            if (drawOptions.isKind(render::KIND_ALPHA)) alpha.push_back(index);
+            if (drawOptions.isKind(render::KIND_BLEND)) blend.push_back(index);
+        }
+
+        insertSortedBlock(m_solidDrawables, solid);
+        insertSortedBlock(m_alphaDrawables, alpha);
+        insertSortedBlock(m_blendedDrawables, blend);
+    }
+
+    void NodeCollection::removeDrawables(model::Node* node)
+    {
+        const auto ref = node->getInstanceRef();
+        if (ref.empty()) return;
+
+        const uint32_t lo = ref.offset;
+        const uint32_t hi = ref.offset + ref.size;
+
+        const auto inRange = [lo, hi](uint32_t index) {
+            return index >= lo && index < hi;
+        };
+
+        std::erase_if(m_solidDrawables, inRange);
+        std::erase_if(m_alphaDrawables, inRange);
+        std::erase_if(m_blendedDrawables, inRange);
+    }
+
+    void NodeCollection::validateDrawables() const
+    {
+        // NOTE KI logs (works in release, unlike assert) — on-demand consistency check
+        const auto& reg = InstanceRegistry::get();
+
+        const auto check = [&reg](const char* name, const std::vector<uint32_t>& bucket, uint8_t kind) {
+            const bool sorted = std::is_sorted(bucket.begin(), bucket.end());
+            size_t stale = 0;
+            size_t wrongKind = 0;
+            size_t outOfBounds = 0;
+            for (const uint32_t index : bucket) {
+                const auto span = reg.getRange({ index, 1 });
+                if (span.empty()) { outOfBounds++; continue; }
+                const auto& d = span[0];
+                if (d.entityIndex == 0) stale++;
+                if (!d.drawOptions.isKind(kind)) wrongKind++;
+            }
+
+            if (!sorted || stale || wrongKind || outOfBounds) {
+                KI_ERROR_OUT(fmt::format(
+                    "DRAWABLE_BUCKET INVALID: {} size={} sorted={} stale={} wrongKind={} oob={}",
+                    name, bucket.size(), sorted, stale, wrongKind, outOfBounds));
+            }
+            else {
+                KI_INFO_OUT(fmt::format("DRAWABLE_BUCKET OK: {} size={}", name, bucket.size()));
+            }
+        };
+
+        check("solid", m_solidDrawables, render::KIND_SOLID);
+        check("alpha", m_alphaDrawables, render::KIND_ALPHA);
+        check("blend", m_blendedDrawables, render::KIND_BLEND);
     }
 
     void NodeCollection::setActiveCameraNode(pool::NodeHandle nodeHandle)
