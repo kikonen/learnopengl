@@ -130,6 +130,7 @@ private:
 
     void handleNodeAdded(model::Node* node);
     void handleNodeRemoved(model::Node* node);
+    void handleNodeVisible(model::Node* node);
 
     void updateShadowUBO() const;
     void updateLightsUBO() const;
@@ -145,6 +146,7 @@ private:
     event::Listen m_listen_scene_loaded;
     event::Listen m_listen_node_added;
     event::Listen m_listen_node_removed;
+    event::Listen m_listen_node_visible;
     event::Listen m_listen_camera_activate;
     event::Listen m_listen_camera_activate_next;
 
