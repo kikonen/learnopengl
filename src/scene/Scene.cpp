@@ -2,6 +2,8 @@
 
 #include <iostream>
 
+#include <fmt/format.h>
+
 #include "kigl/GLState.h"
 
 #include "util/thread.h"
@@ -44,6 +46,8 @@
 #include "render/RenderData.h"
 #include "render/NodeDraw.h"
 #include "render/NodeCollection.h"
+#include "render/InstanceRegistry.h"
+#include "render/DrawableInfo.h"
 
 #include "renderer/LayerRenderer.h"
 #include "renderer/ViewportRenderer.h"
@@ -176,6 +180,14 @@ void Scene::prepareRT()
                 .target = e.body.node.target,
             };
             m_engine.getRegistry()->m_dispatcherWorker->send(evt);
+        });
+
+    m_listen_node_visible.listen(
+        event::Type::node_visible,
+        dispatcherView,
+        [this](const event::Event& e) {
+            auto* node = pool::NodeHandle::toNode(e.body.node.target);
+            this->handleNodeVisible(node);
         });
 
     m_listen_camera_activate.listen(
@@ -520,6 +532,24 @@ void Scene::handleNodeRemoved(model::Node* node)
     m_collection->handleNodeRemoved(node);
     NodeRegistry::get().handleNodeRemoved(node);
     m_collection->validateDrawables();
+}
+
+void Scene::handleNodeVisible(model::Node* node)
+{
+    if (!node) return;
+
+    // mirror node visibility to the per-drawable hidden flag (CPU-side; the future
+    // sweep reads it). Derived from current m_visible so event order/loss self-heals.
+    const bool hidden = !node->m_visible;
+
+    auto drawables = render::InstanceRegistry::get().modifyRange(node->getInstanceRef());
+    for (auto& drawable : drawables) {
+        drawable.m_flags.hidden = hidden;
+    }
+
+    KI_INFO_OUT(fmt::format(
+        "NODE_VISIBLE: id={} hidden={} drawables={}",
+        node->getId(), hidden, drawables.size()));
 }
 
 void Scene::bind(const render::RenderContext& ctx)

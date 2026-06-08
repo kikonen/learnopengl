@@ -20,6 +20,9 @@ namespace render
         bool noReflect : 1 {false};
         bool noRefract : 1 {false};
         bool noFrustum : 1 {false};
+
+        // dynamic: mirrors !node->m_visible (seeded at population, updated via node_visible event)
+        bool hidden : 1 {false};
     };
 
     // Build DrawableFlags from the owning node's TypeFlags. noShadow is the only flag

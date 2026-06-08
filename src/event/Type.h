@@ -16,6 +16,9 @@ namespace event
         // NOTE KI final cleanup (WT => RT)
         node_dispose,
 
+        // NOTE KI node visibility changed (WT => RT): update per-drawable hidden flag
+        node_visible,
+
         node_select,
         node_activate,
 
