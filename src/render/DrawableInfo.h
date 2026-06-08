@@ -63,6 +63,9 @@ namespace render
         // per-drawable filtering in selectors + cull
         DrawableFlags m_flags;
 
+        // owning node's render layer (mirrored from Node::m_layer); for the per-drawable sweep
+        uint8_t m_layer{ 0 };
+
         bool isFlag(uint32_t flag) const noexcept
         {
             return drawOptions.m_flags && flag;

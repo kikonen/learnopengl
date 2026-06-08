@@ -322,6 +322,7 @@ namespace model
 
                     drawable.m_ignoredBy = m_ignoredBy;
                     drawable.m_flags = render::toDrawableFlags(m_typeFlags, lodMesh.m_flags.noShadow);
+                    drawable.m_layer = m_layer;
                 }
             }
 
@@ -361,6 +362,14 @@ namespace model
         if (m_generator) {
             m_generator->releaseInstances(instanceRegistry);
         }
+    }
+
+    util::BufferReference Node::getInstanceRef() const noexcept
+    {
+        if (m_generator && m_generator->isLightWeight()) {
+            return m_generator->getInstanceRef();
+        }
+        return m_instanceRef;
     }
 
     void Node::addToBatch(

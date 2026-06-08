@@ -154,6 +154,9 @@ namespace model
         // RT: release this node's (and its generator's) instance allocation on removal
         void releaseInstances() noexcept;
 
+        // the active drawable range (generator's for lightweight generators, else the node's)
+        util::BufferReference getInstanceRef() const noexcept;
+
         void updateDrawables(
             render::InstanceRegistry& instanceRegistry,
             const Snapshot& snapshot) noexcept;
