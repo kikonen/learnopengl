@@ -78,6 +78,13 @@ namespace render {
             const util::BufferReference instanceRef,
             uint8_t kindBits) noexcept;
 
+        // emit a single drawable (per-drawable sweep path); the caller has already
+        // resolved + prepared programId and applied all filtering
+        void addDrawable(
+            uint32_t instanceIndex,
+            const render::DrawableInfo& drawable,
+            ki::program_id programId) noexcept;
+
         void bind() noexcept;
 
         bool isFlushed() const noexcept;

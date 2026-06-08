@@ -159,6 +159,42 @@ namespace render {
         }
     }
 
+    void Batch::addDrawable(
+        uint32_t instanceIndex,
+        const render::DrawableInfo& drawable,
+        ki::program_id programId) noexcept
+    {
+        const auto& drawOptions = drawable.drawOptions;
+
+        CommandEntry* commandEntry{ nullptr };
+        {
+            MultiDrawEntry* drawEntry;
+            {
+                MultiDrawKey drawKey{
+                    programId,
+                    drawable.vaoId,
+                    drawOptions
+                };
+
+                const auto drawIndex = m_batchRegistry.getMultiDrawIndex(drawKey);
+                drawEntry = m_drawEntryContainer.addDrawEntry(drawIndex);
+            }
+            {
+                CommandKey commandKey{
+                    drawable.baseVertex,
+                    drawable.baseIndex,
+                };
+                const auto commandIndex = m_batchRegistry.getCommandIndex(commandKey);
+                commandEntry = drawEntry->addCommandEntry(commandIndex, drawable.indexCount);
+            }
+        }
+
+        commandEntry->addInstance({ instanceIndex });
+
+        m_drawCount++;
+        m_pendingCount++;
+    }
+
     void Batch::addMeshes(
         const RenderContext& ctx,
         const util::BufferReference instanceRef,

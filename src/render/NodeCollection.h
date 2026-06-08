@@ -2,7 +2,10 @@
 
 #include <vector>
 #include <map>
+#include <array>
 #include <cstdint>
+
+#include "asset/LayerInfo.h"
 
 #include "pool/NodeHandle.h"
 #include "pool/TypeHandle.h"
@@ -78,15 +81,21 @@ namespace render {
         void removeDrawables(model::Node* node);
 
     public:
-        // FOUNDATIONAL (not yet driving the draw): per-kind drawable-index buckets
-        // (global indices into InstanceRegistry::m_drawables) the future sweep will iterate.
-        // A drawable lands in every kind it matches (m_kindBits is a mask). Maintained on
-        // node add/remove; instanceRef is fixed for the node lifetime so these never go stale.
-        std::vector<uint32_t> m_solidDrawables;
-        std::vector<uint32_t> m_alphaDrawables;
-        std::vector<uint32_t> m_blendedDrawables;
+        // Per-(layer, kind) drawable-index buckets (global indices into
+        // InstanceRegistry::m_drawables) the sweep iterates. Keyed by node layer so an
+        // unbalanced layer (e.g. ui) doesn't scan the main set. A drawable lands in every
+        // kind it matches (m_kindBits is a mask), kept sorted. Maintained on node add/remove;
+        // instanceRef is fixed for the node lifetime so these never go stale.
+        struct LayerDrawables {
+            std::vector<uint32_t> solid;
+            std::vector<uint32_t> alpha;
+            std::vector<uint32_t> blended;
+        };
+        // layer index is a small contiguous set (0 = null, ~1..5); fixed array, O(1) indexed
+        // (MAX_LAYERS from asset/LayerInfo.h)
+        std::array<LayerDrawables, MAX_LAYERS> m_drawablesByLayer;
 
-        // debug: assert every bucketed index is in-bounds, active, and correctly kinded
+        // debug/diagnostic: log if any bucketed index is out-of-bounds, stale, mis-kinded, or unsorted
         void validateDrawables() const;
 
     public:

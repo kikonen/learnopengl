@@ -520,7 +520,7 @@ void Scene::handleNodeAdded(model::Node* node)
 
     NodeRegistry::get().handleNodeAdded(node);
     m_collection->handleNodeAdded(node);
-    m_collection->validateDrawables();
+    //m_collection->validateDrawables();
 }
 
 void Scene::handleNodeRemoved(model::Node* node)
@@ -531,7 +531,7 @@ void Scene::handleNodeRemoved(model::Node* node)
     // entries; NodeRegistry::handleNodeRemoved then releases (resets) the instanceRef.
     m_collection->handleNodeRemoved(node);
     NodeRegistry::get().handleNodeRemoved(node);
-    m_collection->validateDrawables();
+    //m_collection->validateDrawables();
 }
 
 void Scene::handleNodeVisible(model::Node* node)

@@ -7,6 +7,9 @@
 
 inline constexpr uint8_t LAYER_NONE_INDEX{ 0 };
 
+// upper bound on layer indices (0 = null, ~1..5 in practice); sizes fixed per-layer arrays
+inline constexpr uint8_t MAX_LAYERS{ 8 };
+
 inline const std::string LAYER_MAIN{ "main" };
 inline const std::string LAYER_REAR{ "rear" };
 inline const std::string LAYER_PLAYER{ "player" };

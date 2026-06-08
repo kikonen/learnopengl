@@ -181,6 +181,11 @@ namespace render
                 }
             }
 
+            // dynamic node show/hide (mirrored to the drawable via node_visible event)
+            if (!d.m_flags.hidden) {
+                v |= VISIBLE_SHOWN;
+            }
+
             return v;
         };
 
