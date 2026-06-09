@@ -22,8 +22,6 @@ namespace editor {
 }
 
 namespace render {
-    using NodeVector = std::vector<pool::NodeHandle>;
-
     // Collection of nodes in *single* scene
     // i.e. vs NodeRegistry which holds data over all scenes
     class NodeCollection {
@@ -72,10 +70,6 @@ namespace render {
         void handleNodeRemoved(model::Node* node);
 
     private:
-        void insertNode(
-            NodeVector* nodes,
-            pool::NodeHandle nodeHandle);
-
         // maintain the per-kind drawable-index buckets for a node's drawable range
         void addDrawables(model::Node* node);
         void removeDrawables(model::Node* node);
@@ -86,10 +80,15 @@ namespace render {
         // unbalanced layer (e.g. ui) doesn't scan the main set. A drawable lands in every
         // kind it matches (m_kindBits is a mask), kept sorted. Maintained on node add/remove;
         // instanceRef is fixed for the node lifetime so these never go stale.
+        // NOTE KI blend is split by m_useOit so each blend pass scans only its own set:
+        // blendOit -> OIT sweep (deferred blend), blendForward -> forward "effect" pass
+        // (drawBlendedImpl). A blend drawable is also ALPHA, so its alpha-tested part is in
+        // the alpha bucket (deferred g-buffer) regardless of which blend sub-bucket it's in.
         struct LayerDrawables {
             std::vector<uint32_t> solid;
             std::vector<uint32_t> alpha;
-            std::vector<uint32_t> blended;
+            std::vector<uint32_t> blendOit;
+            std::vector<uint32_t> blendForward;
         };
         // layer index is a small contiguous set (0 = null, ~1..5); fixed array, O(1) indexed
         // (MAX_LAYERS from asset/LayerInfo.h)
@@ -99,15 +98,6 @@ namespace render {
         void validateDrawables() const;
 
     public:
-        // NodeDraw
-        NodeVector m_solidNodes;
-        // NodeDraw
-        NodeVector m_alphaNodes;
-        // NodeDraw
-        NodeVector m_blendedNodes;
-        //// OBSOLETTE
-        NodeVector m_invisibleNodes;
-
         std::vector<pool::NodeHandle> m_waterNodes;
         std::vector<pool::NodeHandle> m_mirrorNodes;
         std::vector<pool::NodeHandle> m_cubeMapNodes;

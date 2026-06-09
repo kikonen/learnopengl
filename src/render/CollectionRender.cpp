@@ -1,5 +1,9 @@
 #include "CollectionRender.h"
 
+#include <vector>
+#include <utility>
+#include <algorithm>
+
 #include "kigl/GLState.h"
 
 #include "model/Node.h"
@@ -62,61 +66,62 @@ namespace render
         // (Relies on the kind model SOLID | ALPHA | ALPHA|BLEND — see NodeCollection::addDrawables.)
         if (kindBits & render::KIND_SOLID) sweep(layerDrawables.solid);
         if (kindBits & render::KIND_ALPHA) sweep(layerDrawables.alpha);
-        if (kindBits & render::KIND_BLEND && !(kindBits & render::KIND_ALPHA)) sweep(layerDrawables.blended);
+        // blend-only (OIT) pass: only the OIT blend sub-bucket; forward "effect" blend goes
+        // through drawBlendedImpl (depth-sorted). alpha-including passes cover the alpha-tested
+        // part of blend drawables via the alpha bucket.
+        if (kindBits & render::KIND_BLEND && !(kindBits & render::KIND_ALPHA)) sweep(layerDrawables.blendOit);
 
         return rendered;
     }
 
+    // Forward-rendered blend ("effect") pass: depth-sorted back-to-front. This is NOT the OIT
+    // blend path (OIT goes through the KIND_BLEND sweep in drawNodesImpl over blendOit); kept
+    // separate because it needs per-drawable distance sorting. Iterates only the forward blend
+    // sub-bucket so OIT drawables aren't redundantly scanned.
     void CollectionRender::drawBlendedImpl(
         const RenderContext& ctx,
         const std::function<bool(const render::DrawableInfo&)>& drawableSelector)
     {
         auto& collection = *ctx.m_collection;
+        if (ctx.m_layer >= MAX_LAYERS) return;
 
-        if (collection.m_blendedNodes.empty()) return;
+        const auto& bucket = collection.m_drawablesByLayer[ctx.m_layer].blendForward;
+        if (bucket.empty()) return;
 
+        const auto drawables = InstanceRegistry::get().getDrawables();
         const glm::vec3& eyePos = ctx.m_camera->getWorldPosition();
 
-        // TODO KI discards nodes if *same* distance
-        std::map<float, model::Node*> sorted;
-        for (const auto& handle : collection.m_blendedNodes) {
-            auto* node = handle.toNode();
-            if (!node) continue;
-            if (!node->m_alive) continue;
-            if (node->m_layer != ctx.m_layer) continue;
+        // collect visible, selected forward-blend drawables with their squared eye distance
+        std::vector<std::pair<float, uint32_t>> sorted;
+        sorted.reserve(bucket.size());
+        for (const uint32_t index : bucket) {
+            const auto& drawable = drawables[index];
+            if (drawable.entityIndex == 0) continue;
+            if ((drawable.m_visibility & VISIBLE_ALL) != VISIBLE_ALL) continue;
+            if (!drawableSelector(drawable)) continue;
 
-            const auto* snapshot = node->getSnapshotRT();
-            if (!snapshot) continue;
-
-            const auto& pos = snapshot->getWorldPosition();
-            const float dist2 = glm::distance2(eyePos, pos);
-            sorted[dist2] = node;
+            const glm::vec3 delta = drawable.worldVolume.getCenter() - eyePos;
+            sorted.emplace_back(glm::dot(delta, delta), index);
         }
 
-        if (!sorted.empty()) {
-            //glMemoryBarrier(GL_ALL_BARRIER_BITS);
-            glFlush();
-            //glMemoryBarrier(GL_TEXTURE_FETCH_BARRIER_BIT | GL_FRAMEBUFFER_BARRIER_BIT);
-            //glFinish();
+        if (sorted.empty()) return;
+
+        // NOTE KI blending is *NOT* optimal program / nodetype wise due to depth sorting.
+        // order = from furthest away to nearest (back-to-front). Per-drawable sort (finer
+        // than the old per-node sort) and no same-distance discard (vector, not map).
+        if (sorted.size() > 1) {
+            std::sort(
+                sorted.begin(), sorted.end(),
+                [](const auto& a, const auto& b) { return a.first > b.first; });
         }
 
-        // NOTE KI blending is *NOT* optimal program / nodetypw wise due to depth sorting
-        // NOTE KI order = from furthest away to nearest
-        for (std::map<float, model::Node*>::reverse_iterator it = sorted.rbegin(); it != sorted.rend(); ++it) {
-            auto* node = it->second;
-            if (!node->m_alive) continue;
-            if (node->m_typeFlags.invisible || !node->m_visible) continue;
+        for (const auto& [dist2, index] : sorted) {
+            const auto& drawable = drawables[index];
 
-            node->addToBatch(
-                ctx,
-                [this](const render::DrawableInfo& drawable) { return drawable.programId; },
-                [](ki::program_id) {},
-                drawableSelector,
-                render::KIND_BLEND,
-                *ctx.m_batch);
+            const auto programId = drawable.programId;
+            if (!programId) continue;
+
+            ctx.m_batch->addDrawable(index, drawable, programId);
         }
-
-        // TODO KI if no flush here then render order of blended nodes is incorrect
-        //ctx.m_batch->flush(ctx);
     }
 }
