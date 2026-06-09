@@ -189,6 +189,10 @@ namespace mesh {
 
         auto& material = *m_material;
 
+        // NOTE KI reset: m_kindBits defaults to KIND_SOLID, so without clearing it the |=
+        // below would leave SOLID always set (alpha -> SOLID|ALPHA), which double-emits in
+        // the per-kind draw sweep. Kinds must be exclusive: SOLID | ALPHA | ALPHA+BLEND.
+        m_drawOptions.m_kindBits = 0;
         if (material.alpha) {
             m_drawOptions.m_kindBits |= render::KIND_ALPHA;
         }
@@ -221,6 +225,28 @@ namespace mesh {
         m_selectionProgramId = material.getProgram(MaterialProgramType::selection);
         m_idProgramId = material.getProgram(MaterialProgramType::object_id);
         m_normalProgramId = material.getProgram(MaterialProgramType::normal);
+
+        {
+            const auto& drawOptions = m_drawOptions;
+            const bool isSolid = drawOptions.isKind(render::KIND_SOLID);
+            const bool isAlpha = drawOptions.isKind(render::KIND_ALPHA);
+            const bool isBlend = drawOptions.isKind(render::KIND_BLEND);
+
+            // NOTE KI the sweep dispatch (CollectionRender::drawNodesImpl) assumes the kind
+            // model is SOLID | ALPHA | ALPHA|BLEND: BLEND is always also ALPHA, and SOLID is
+            // exclusive of ALPHA/BLEND. A violation (pure BLEND, or SOLID mixed with ALPHA/BLEND)
+            // would mis-handle blended-vs-alpha pass dispatch.
+            const bool valid = (isSolid && !(isAlpha || isBlend)) ||
+                (isAlpha && !(isSolid || isBlend)) ||
+                (isBlend && isAlpha && !(isSolid));
+
+            if (!valid) {
+                KI_ERROR_OUT(fmt::format(
+                    "LOD_MESH: DRAWABLE_KIND invariant violated: mesh={}, solid={} alpha={} blend={} (expected SOLID | ALPHA | ALPHA+BLEND)",
+                    m_mesh ? m_mesh->str() : "NA",
+                    isSolid, isAlpha, isBlend));
+            }
+        }
     }
 
     std::string LodMesh::getMeshName()
