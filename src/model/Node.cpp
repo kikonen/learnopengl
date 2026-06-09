@@ -343,12 +343,15 @@ namespace model
         else {
             if (m_instanceRef.empty()) return;
 
+            // NOTE KI when a non-generator node moves, only the CPU-side cull volume changes.
+            // The instance SSBO (mesh-base localTransform, material, joints, flags) is static
+            // and the node's world transform is supplied by the entity matrix (updateEntity),
+            // so no markDirty/updateInstances re-upload is needed here — worldVolume lives only
+            // on DrawableInfo and is read by InstanceRegistry::cullFrustum.
             auto drawables = instanceRegistry.modifyRange(m_instanceRef);
             for (auto& drawable : drawables) {
                 drawable.worldVolume = snapshot.getWorldVolume();
             }
-            instanceRegistry.markDirty(m_instanceRef);
-            instanceRegistry.updateInstances(m_instanceRef);
         }
     }
 
