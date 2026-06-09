@@ -55,9 +55,14 @@ namespace render
                 }
             };
 
+        // NOTE KI a BLEND drawable is always also ALPHA (spec), so it lives in BOTH the alpha
+        // and blended buckets. To avoid emitting it twice in a pass that requests both axes
+        // (e.g. KIND_ALL g-buffer/shadow): sweep blended ONLY when blend is requested without
+        // alpha (the OIT pass). Alpha-including passes cover ALPHA|BLEND via the alpha bucket.
+        // (Relies on the kind model SOLID | ALPHA | ALPHA|BLEND — see NodeCollection::addDrawables.)
         if (kindBits & render::KIND_SOLID) sweep(layerDrawables.solid);
         if (kindBits & render::KIND_ALPHA) sweep(layerDrawables.alpha);
-        if (kindBits & render::KIND_BLEND) sweep(layerDrawables.blended);
+        if (kindBits & render::KIND_BLEND && !(kindBits & render::KIND_ALPHA)) sweep(layerDrawables.blended);
 
         return rendered;
     }
