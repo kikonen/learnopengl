@@ -372,35 +372,6 @@ namespace model
         return m_instanceRef;
     }
 
-    void Node::addToBatch(
-        const render::RenderContext& ctx,
-        const std::function<ki::program_id(const render::DrawableInfo&)>& programSelector,
-        const std::function<void(ki::program_id)>& programPrepare,
-        const std::function<bool(const render::DrawableInfo&)>& drawableSelector,
-        uint8_t kindBits,
-        render::Batch& batch) noexcept
-    {
-        if (m_generator && m_generator->isLightWeight()) {
-            m_generator->addToBatch(
-                ctx,
-                programSelector,
-                programPrepare,
-                drawableSelector,
-                kindBits,
-                batch,
-                *this);
-        }
-        else {
-            batch.addDrawablesSingleNode(
-                ctx,
-                m_instanceRef,
-                programSelector,
-                programPrepare,
-                drawableSelector,
-                kindBits);
-        }
-    }
-
     audio::Source* Node::getAudioSource(audio::source_id id) const
     {
         audio::Source* source{ nullptr };

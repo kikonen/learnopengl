@@ -16,8 +16,6 @@
 #include "render/InstanceRegistry.h"
 
 namespace {
-    constexpr int INITIAL_SIZE = 1000;
-
     // Insert an ascending, disjoint block of indices into a sorted bucket, keeping it
     // sorted. The block occupies a slot range owned exclusively by one node, so it lands
     // contiguously at a single position (the end during upward-growing allocation => O(1)).
@@ -39,21 +37,12 @@ namespace render {
 
     void NodeCollection::clear()
     {
-        m_invisibleNodes.clear();
-        m_solidNodes.clear();
-        m_alphaNodes.clear();
-        m_blendedNodes.clear();
-
         for (auto& ld : m_drawablesByLayer) {
             ld.solid.clear();
             ld.alpha.clear();
-            ld.blended.clear();
+            ld.blendOit.clear();
+            ld.blendForward.clear();
         }
-
-        m_invisibleNodes.reserve(INITIAL_SIZE);
-        m_solidNodes.reserve(INITIAL_SIZE);
-        m_alphaNodes.reserve(INITIAL_SIZE);
-        m_blendedNodes.reserve(INITIAL_SIZE);
 
         m_waterNodes.clear();
         m_mirrorNodes.clear();
@@ -96,23 +85,9 @@ namespace render {
         if (!node) return;
         auto nodeHandle = node->toHandle();
 
-        if (node->m_typeFlags.invisible) {
-            insertNode(&m_invisibleNodes, nodeHandle);
-        }
-        else {
-            if (node->m_typeFlags.anySolid) {
-                insertNode(&m_solidNodes, nodeHandle);
-            }
-            else if (node->m_typeFlags.anyAlpha) {
-                insertNode(&m_alphaNodes, nodeHandle);
-            }
-
-            // NOTE KI node may be alpha + blend (OIT)
-            if (node->m_typeFlags.anyBlend) {
-                insertNode(&m_blendedNodes, nodeHandle);
-            }
-
-            // FOUNDATIONAL: per-kind drawable-index buckets (non-invisible nodes only)
+        if (!node->m_typeFlags.invisible) {
+            // per-kind drawable-index buckets (non-invisible nodes only); the draw sweep
+            // iterates these directly, no per-kind node lists needed
             addDrawables(node);
         }
 
@@ -157,11 +132,6 @@ namespace render {
         // (Scene::handleNodeRemoved is ordered collection-first for this reason)
         removeDrawables(node);
 
-        nodeHandle.removeFrom(m_invisibleNodes);
-        nodeHandle.removeFrom(m_solidNodes);
-        nodeHandle.removeFrom(m_alphaNodes);
-        nodeHandle.removeFrom(m_blendedNodes);
-
         nodeHandle.removeFrom(m_waterNodes);
         nodeHandle.removeFrom(m_mirrorNodes);
         nodeHandle.removeFrom(m_cubeMapNodes);
@@ -173,13 +143,6 @@ namespace render {
         nodeHandle.removeFrom(m_spotLightNodes);
     }
 
-    void NodeCollection::insertNode(
-        NodeVector* handles,
-        pool::NodeHandle nodeHandle)
-    {
-        nodeHandle.addTo(*handles);
-    }
-
     void NodeCollection::addDrawables(model::Node* node)
     {
         const auto ref = node->getInstanceRef();
@@ -189,7 +152,7 @@ namespace render {
 
         // collect this node's matching indices (ascending) per kind, then insert as one
         // sorted block so the buckets stay sorted for sequential sweep access
-        std::vector<uint32_t> solid, alpha, blend;
+        std::vector<uint32_t> solid, alpha, blendOit, blendForward;
         for (uint32_t i = 0; i < drawables.size(); i++) {
             const auto& drawable = drawables[i];
             if (drawable.entityIndex == 0) continue;
@@ -201,10 +164,14 @@ namespace render {
 
             // kinds are exclusive (SOLID | ALPHA | ALPHA+BLEND); the invariant is asserted at
             // the source in LodMesh::setupDrawOptions. a BLEND drawable is also ALPHA, so it
-            // lands in both alpha and blended buckets (see CollectionRender sweep dispatch).
+            // lands in both the alpha bucket (g-buffer alpha-tested part) and one blend
+            // sub-bucket (m_useOit -> OIT pass, else forward "effect" pass).
             if (drawOptions.isKind(render::KIND_SOLID)) solid.push_back(index);
             if (drawOptions.isKind(render::KIND_ALPHA)) alpha.push_back(index);
-            if (drawOptions.isKind(render::KIND_BLEND)) blend.push_back(index);
+            if (drawOptions.isKind(render::KIND_BLEND)) {
+                if (drawOptions.m_useOit) blendOit.push_back(index);
+                else blendForward.push_back(index);
+            }
         }
 
         if (node->m_layer >= MAX_LAYERS) {
@@ -215,7 +182,8 @@ namespace render {
         auto& ld = m_drawablesByLayer[node->m_layer];
         insertSortedBlock(ld.solid, solid);
         insertSortedBlock(ld.alpha, alpha);
-        insertSortedBlock(ld.blended, blend);
+        insertSortedBlock(ld.blendOit, blendOit);
+        insertSortedBlock(ld.blendForward, blendForward);
     }
 
     void NodeCollection::removeDrawables(model::Node* node)
@@ -235,7 +203,8 @@ namespace render {
         auto& ld = m_drawablesByLayer[node->m_layer];
         std::erase_if(ld.solid, inRange);
         std::erase_if(ld.alpha, inRange);
-        std::erase_if(ld.blended, inRange);
+        std::erase_if(ld.blendOit, inRange);
+        std::erase_if(ld.blendForward, inRange);
     }
 
     void NodeCollection::validateDrawables() const
@@ -243,10 +212,12 @@ namespace render {
         // NOTE KI logs (works in release, unlike assert) — on-demand consistency check
         const auto& reg = InstanceRegistry::get();
 
-        const auto check = [&reg](const char* name, uint8_t layer, const std::vector<uint32_t>& bucket, uint8_t kind) {
+        // wantOit: -1 = don't care, 0 = require !useOit, 1 = require useOit
+        const auto check = [&reg](const char* name, uint8_t layer, const std::vector<uint32_t>& bucket, uint8_t kind, int wantOit) {
             const bool sorted = std::is_sorted(bucket.begin(), bucket.end());
             size_t stale = 0;
             size_t wrongKind = 0;
+            size_t wrongOit = 0;
             size_t outOfBounds = 0;
             for (const uint32_t index : bucket) {
                 const auto span = reg.getRange({ index, 1 });
@@ -254,20 +225,22 @@ namespace render {
                 const auto& d = span[0];
                 if (d.entityIndex == 0) stale++;
                 if (!d.drawOptions.isKind(kind)) wrongKind++;
+                if (wantOit >= 0 && d.drawOptions.m_useOit != (wantOit != 0)) wrongOit++;
             }
 
-            if (!sorted || stale || wrongKind || outOfBounds) {
+            if (!sorted || stale || wrongKind || wrongOit || outOfBounds) {
                 KI_ERROR_OUT(fmt::format(
-                    "DRAWABLE_BUCKET INVALID: layer={} {} size={} sorted={} stale={} wrongKind={} oob={}",
-                    layer, name, bucket.size(), sorted, stale, wrongKind, outOfBounds));
+                    "DRAWABLE_BUCKET INVALID: layer={} {} size={} sorted={} stale={} wrongKind={} wrongOit={} oob={}",
+                    layer, name, bucket.size(), sorted, stale, wrongKind, wrongOit, outOfBounds));
             }
         };
 
         for (uint8_t layer = 0; layer < MAX_LAYERS; layer++) {
             const auto& ld = m_drawablesByLayer[layer];
-            check("solid", layer, ld.solid, render::KIND_SOLID);
-            check("alpha", layer, ld.alpha, render::KIND_ALPHA);
-            check("blend", layer, ld.blended, render::KIND_BLEND);
+            check("solid", layer, ld.solid, render::KIND_SOLID, -1);
+            check("alpha", layer, ld.alpha, render::KIND_ALPHA, -1);
+            check("blendOit", layer, ld.blendOit, render::KIND_BLEND, 1);
+            check("blendForward", layer, ld.blendForward, render::KIND_BLEND, 0);
         }
     }
 
