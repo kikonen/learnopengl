@@ -52,7 +52,7 @@ void Texture::release()
 
 int Texture::resolveMixMapLevels()
 {
-    return std::min(
+    return 1 + std::min(
         m_spec.maxMipMapLevels,
         static_cast<uint8_t>(log2(std::max(m_width, m_height))));
 }
