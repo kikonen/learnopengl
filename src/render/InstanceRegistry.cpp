@@ -57,6 +57,7 @@ namespace render
         m_drawables.clear();
         m_slotAllocator.clear();
         m_dirtySlots.clear();
+        m_cullGroups.clear();
 
         m_cullValid = false;
 
@@ -66,6 +67,7 @@ namespace render
         m_slotAllocator.reserve(BLOCK_SIZE);
         m_dirtySlots.reserve(BLOCK_SIZE);
         m_instances.reserve(BLOCK_SIZE);
+        m_cullGroups.reserve(BLOCK_SIZE);
 
         m_uploadedCount = 0;
 
@@ -84,7 +86,7 @@ namespace render
         clear();
     }
 
-    util::BufferReference InstanceRegistry::allocate(size_t count)
+    util::BufferReference InstanceRegistry::allocate(size_t count, uint32_t groupStride)
     {
         ASSERT_RT();
 
@@ -107,6 +109,15 @@ namespace render
 
         m_instances.resize(m_drawables.size());
 
+        // register cull groups for this allocation (default: one group spanning the whole range)
+        {
+            const uint32_t total = static_cast<uint32_t>(count);
+            const uint32_t stride = (groupStride == 0) ? total : groupStride;
+            for (uint32_t g = 0; g < total; g += stride) {
+                m_cullGroups.push_back({ offset + g, std::min(stride, total - g) });
+            }
+        }
+
         return { offset, count };
     }
 
@@ -125,6 +136,15 @@ namespace render
             drawable.entityIndex = 0;
             drawable.drawOptions.m_type = backend::DrawOptions::Type::none;
         }
+
+        // drop the freed range's cull groups (every group is fully within one allocation's
+        // range). Must run before the slot can be reused (both RT) so a reused offset gets a
+        // fresh group, not a stale one.
+        const uint32_t lo = ref.offset;
+        const uint32_t hi = ref.offset + ref.size;
+        std::erase_if(m_cullGroups, [lo, hi](const util::BufferReference& g) {
+            return g.offset >= lo && g.offset < hi;
+        });
 
         return {};
     }
@@ -154,48 +174,63 @@ namespace render
         bool lodEnabled,
         uint32_t parallelLimit) noexcept
     {
-        const size_t count = m_drawables.size();
+        const size_t groupCount = m_cullGroups.size();
 
-        // write the per-camera visibility mask in place into each DrawableInfo
-        const auto cull = [&frustum, &cameraPos, frustumEnabled, lodEnabled]
-            (DrawableInfo& d)
+        auto* drawables = m_drawables.data();
+
+        // Test frustum + LOD-distance ONCE per group (all drawables in a group share the world
+        // volume, so the frustum result and the eye-distance are identical), then broadcast the
+        // per-camera visibility mask to the group's drawables. Only the LOD distance *band*
+        // (min/maxDistance2) is per-drawable. An off-screen group skips all per-drawable LOD work.
+        const auto cull = [drawables, &frustum, &cameraPos, frustumEnabled, lodEnabled]
+            (const util::BufferReference& group)
         {
-            uint8_t v = 0;
+            const auto& rep = drawables[group.offset];
 
-            // NOTE KI per-drawable noFrustum (type-level no_frustum) is never culled
-            if (!frustumEnabled || d.m_flags.noFrustum || d.worldVolume.isOnFrustum(frustum)) {
-                v |= VISIBLE_FRUSTUM;
+            // defensive: freed groups are erased in release() before reuse, so this shouldn't hit
+            if (rep.entityIndex == 0) return;
+
+            // NOTE KI per-group noFrustum (type-level no_frustum) is never frustum-culled
+            const bool inFrustum =
+                !frustumEnabled || rep.m_flags.noFrustum || rep.worldVolume.isOnFrustum(frustum);
+
+            float dist2 = 0.f;
+            if (inFrustum && lodEnabled) {
+                const glm::vec3 delta = rep.worldVolume.getCenter() - cameraPos;
+                dist2 = glm::dot(delta, delta);
             }
 
-            if (!lodEnabled) {
-                v |= VISIBLE_LOD;
-            }
-            else {
-                const glm::vec3 delta = d.worldVolume.getCenter() - cameraPos;
-                const float dist2 = glm::dot(delta, delta);
-                if (d.minDistance2 <= dist2 && dist2 < d.maxDistance2) {
-                    v |= VISIBLE_LOD;
+            const uint32_t end = group.offset + group.size;
+            for (uint32_t i = group.offset; i < end; i++) {
+                auto& d = drawables[i];
+
+                uint8_t v = 0;
+                if (inFrustum) {
+                    v |= VISIBLE_FRUSTUM;
+                    if (!lodEnabled || (d.minDistance2 <= dist2 && dist2 < d.maxDistance2)) {
+                        v |= VISIBLE_LOD;
+                    }
                 }
-            }
 
-            // dynamic node show/hide (mirrored to the drawable via node_visible event)
-            if (!d.m_flags.hidden) {
-                v |= VISIBLE_SHOWN;
-            }
+                // dynamic node show/hide (mirrored to the drawable via node_visible event)
+                if (!d.m_flags.hidden) {
+                    v |= VISIBLE_SHOWN;
+                }
 
-            d.m_visibility = v;
+                d.m_visibility = v;
+            }
         };
 
-        if (count > parallelLimit) {
+        if (groupCount > parallelLimit) {
             std::for_each(
                 std::execution::par_unseq,
-                m_drawables.begin(), m_drawables.begin() + count,
+                m_cullGroups.begin(), m_cullGroups.end(),
                 cull);
         }
         else {
             std::for_each(
                 std::execution::seq,
-                m_drawables.begin(), m_drawables.begin() + count,
+                m_cullGroups.begin(), m_cullGroups.end(),
                 cull);
         }
 

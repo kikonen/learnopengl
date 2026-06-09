@@ -34,7 +34,11 @@ void NodeGenerator::registerDrawables(
 
     uint32_t groupId = 0;
 
-    m_instanceRef = instanceRegistry.allocate(m_transforms.size() * lodMeshes.size());
+    // groupStride = meshes-per-instance: each instance's LOD meshes form one cull group
+    // (they share the instance's world volume). Layout is instance-major (see loop below).
+    m_instanceRef = instanceRegistry.allocate(
+        m_transforms.size() * lodMeshes.size(),
+        static_cast<uint32_t>(lodMeshes.size()));
     auto drawables = instanceRegistry.modifyRange(m_instanceRef);
     int drawableIndex = 0;
 
