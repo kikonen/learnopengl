@@ -48,7 +48,11 @@ namespace render
         void endFrame();
 
         // @return ref to buffer
-        util::BufferReference allocate(size_t count);
+        // @param groupStride drawables per cull group within the allocation (0 = one group
+        //   spanning the whole allocation). A generator passes its meshes-per-instance so each
+        //   instance becomes a group; nodes use the default single group. count must be a
+        //   multiple of groupStride. See m_cullGroups / cullFrustum.
+        util::BufferReference allocate(size_t count, uint32_t groupStride = 0);
         // @return null ref
         util::BufferReference release(const util::BufferReference ref);
 
@@ -104,6 +108,11 @@ namespace render
         bool m_debug{ false };
 
         std::vector<DrawableInfo> m_drawables;
+
+        // Cull groups: contiguous runs of drawables sharing one world volume (a node's range,
+        // or a generator instance's LOD meshes). cullFrustum does one frustum + one LOD-distance
+        // test per group and broadcasts to its drawables. Maintained in allocate()/release().
+        std::vector<util::BufferReference> m_cullGroups;
 
         // cull signature (frustum planes) of the cull that last wrote DrawableInfo::m_visibility
         std::array<glm::vec4, 6> m_cullSignature{};

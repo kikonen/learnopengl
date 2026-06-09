@@ -48,7 +48,9 @@ void MeshRenderer::prepareRT(const PrepareContext& ctx)
 
     m_entityIndex = ID_INDEX;
 
-    m_instanceRef = render::InstanceRegistry::get().allocate(INITIAL_SIZE);
+    // groupStride=1: each mesh has its own world volume (meshInstance.getWorldVolume()),
+    // so cull per-drawable, not as one shared-volume group.
+    m_instanceRef = render::InstanceRegistry::get().allocate(INITIAL_SIZE, 1);
 }
 
 void MeshRenderer::drawObjects(
@@ -126,7 +128,8 @@ void MeshRenderer::registerDrawables(
     render::InstanceRegistry& instanceRegistry) noexcept
 {
     if (m_instanceRef.size < meshes.size()) {
-        m_instanceRef = instanceRegistry.allocate(meshes.size());
+        // groupStride=1: per-mesh world volumes (see ctor) -> per-drawable cull groups
+        m_instanceRef = instanceRegistry.allocate(meshes.size(), 1);
     }
     auto drawables = instanceRegistry.modifyRange(m_instanceRef);
 
