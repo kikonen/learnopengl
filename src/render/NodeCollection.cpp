@@ -199,24 +199,12 @@ namespace render {
 
             const uint32_t index = ref.offset + i;
 
-            const bool isSolid = drawOptions.isKind(render::KIND_SOLID);
-            const bool isAlpha = drawOptions.isKind(render::KIND_ALPHA);
-            const bool isBlend = drawOptions.isKind(render::KIND_BLEND);
-
-            // NOTE KI the sweep dispatch (CollectionRender::drawNodesImpl) assumes the kind
-            // model is SOLID | ALPHA | ALPHA|BLEND: BLEND is always also ALPHA, and SOLID is
-            // exclusive of ALPHA/BLEND. A violation (pure BLEND, or SOLID mixed with ALPHA/BLEND)
-            // would mis-handle blended-vs-alpha pass dispatch.
-            if ((isBlend && !isAlpha) || (isSolid && (isAlpha || isBlend))) {
-                KI_ERROR_OUT(fmt::format(
-                    "DRAWABLE_KIND invariant violated: solid={} alpha={} blend={} (expected SOLID | ALPHA | ALPHA+BLEND)",
-                    isSolid, isAlpha, isBlend));
-            }
-
-            // a drawable lands in every kind it matches (m_kindBits is a mask)
-            if (isSolid) solid.push_back(index);
-            if (isAlpha) alpha.push_back(index);
-            if (isBlend) blend.push_back(index);
+            // kinds are exclusive (SOLID | ALPHA | ALPHA+BLEND); the invariant is asserted at
+            // the source in LodMesh::setupDrawOptions. a BLEND drawable is also ALPHA, so it
+            // lands in both alpha and blended buckets (see CollectionRender sweep dispatch).
+            if (drawOptions.isKind(render::KIND_SOLID)) solid.push_back(index);
+            if (drawOptions.isKind(render::KIND_ALPHA)) alpha.push_back(index);
+            if (drawOptions.isKind(render::KIND_BLEND)) blend.push_back(index);
         }
 
         if (node->m_layer >= MAX_LAYERS) {
