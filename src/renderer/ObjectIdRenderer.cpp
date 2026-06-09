@@ -209,7 +209,9 @@ void ObjectIdRenderer::drawNodes(const render::RenderContext& parentCtx)
                 return drawable.idProgramId ? drawable.idProgramId : m_idProgramId;
             },
             drawContext.drawableSelector,
-            drawContext.kindBits);
+            drawContext.kindBits,
+            // pick any geometry (deferred + forward route)
+            render::ROUTE_ALL);
     }
 
     localCtx.m_batch->flush(localCtx);

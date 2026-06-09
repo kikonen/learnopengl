@@ -22,62 +22,75 @@
 
 namespace render
 {
+    bool CollectionRender::sweepBucket(
+        const RenderContext& ctx,
+        const std::vector<uint32_t>& bucket,
+        const std::function<ki::program_id(const render::DrawableInfo&)>& programSelector,
+        const std::function<void(ki::program_id)>& programPrepare,
+        const std::function<bool(const render::DrawableInfo&)>& drawableSelector)
+    {
+        // Per-drawable sweep. Node-level checks are all expressed per drawable now:
+        // alive => entityIndex!=0 (+removed from bucket on node removal), visible+frustum+LOD
+        // => m_visibility (set by cullFrustum), layer/route/kind => bucket key, type-invisible
+        // => never bucketed.
+        const auto drawables = InstanceRegistry::get().getDrawables();
+
+        bool rendered{ false };
+        for (const uint32_t index : bucket) {
+            const auto& drawable = drawables[index];
+            if (drawable.entityIndex == 0) continue;
+            if ((drawable.m_visibility & VISIBLE_ALL) != VISIBLE_ALL) continue;
+            if (!drawableSelector(drawable)) continue;
+
+            const auto programId = programSelector(drawable);
+            if (!programId) continue;
+
+            programPrepare(programId);
+            ctx.m_batch->addDrawable(index, drawable, programId);
+
+            rendered = true;
+        }
+        return rendered;
+    }
+
     bool CollectionRender::drawNodesImpl(
         const RenderContext& ctx,
         const std::function<ki::program_id(const render::DrawableInfo&)>& programSelector,
         const std::function<void(ki::program_id)>& programPrepare,
         const std::function<bool(const render::DrawableInfo&)>& drawableSelector,
-        const uint8_t kindBits)
+        const uint8_t kindBits,
+        const uint8_t routeBits)
     {
-        bool rendered{ false };
-
         auto& collection = *ctx.m_collection;
         if (ctx.m_layer >= MAX_LAYERS) return false;
 
-        const auto drawables = InstanceRegistry::get().getDrawables();
         const auto& layerDrawables = collection.m_drawablesByLayer[ctx.m_layer];
 
-        // Per-drawable sweep over this layer's buckets. Node-level checks are all expressed
-        // per drawable now: alive => entityIndex!=0 (+removed from bucket on node removal),
-        // visible+frustum+LOD => m_visibility (set by cullFrustum), layer => bucket key,
-        // type-invisible => never bucketed.
-        const auto sweep = [&](const std::vector<uint32_t>& bucket)
+        bool rendered{ false };
+
+        // Sweep the requested kinds within each requested route. A BLEND drawable is also ALPHA
+        // (spec), so it lives in BOTH its route's alpha and blend buckets; to avoid double-emit
+        // in a pass requesting both axes (KIND_ALL g-buffer/shadow), sweep blend ONLY when alpha
+        // is NOT requested (the OIT / effect-only pass). Alpha-including passes cover the
+        // alpha-tested part via the alpha bucket. (Kind model: SOLID | ALPHA | ALPHA+BLEND.)
+        const auto sweepRoute = [&](const NodeCollection::RouteBuckets& r)
             {
-                for (const uint32_t index : bucket) {
-                    const auto& drawable = drawables[index];
-                    if (drawable.entityIndex == 0) continue;
-                    if ((drawable.m_visibility & VISIBLE_ALL) != VISIBLE_ALL) continue;
-                    if (!drawableSelector(drawable)) continue;
-
-                    const auto programId = programSelector(drawable);
-                    if (!programId) continue;
-
-                    programPrepare(programId);
-                    ctx.m_batch->addDrawable(index, drawable, programId);
-
-                    rendered = true;
-                }
+                if (kindBits & render::KIND_SOLID) rendered |= sweepBucket(ctx, r.solid, programSelector, programPrepare, drawableSelector);
+                if (kindBits & render::KIND_ALPHA) rendered |= sweepBucket(ctx, r.alpha, programSelector, programPrepare, drawableSelector);
+                if (kindBits & render::KIND_BLEND && !(kindBits & render::KIND_ALPHA))
+                    rendered |= sweepBucket(ctx, r.blend, programSelector, programPrepare, drawableSelector);
             };
 
-        // NOTE KI a BLEND drawable is always also ALPHA (spec), so it lives in BOTH the alpha
-        // and blended buckets. To avoid emitting it twice in a pass that requests both axes
-        // (e.g. KIND_ALL g-buffer/shadow): sweep blended ONLY when blend is requested without
-        // alpha (the OIT pass). Alpha-including passes cover ALPHA|BLEND via the alpha bucket.
-        // (Relies on the kind model SOLID | ALPHA | ALPHA|BLEND — see NodeCollection::addDrawables.)
-        if (kindBits & render::KIND_SOLID) sweep(layerDrawables.solid);
-        if (kindBits & render::KIND_ALPHA) sweep(layerDrawables.alpha);
-        // blend-only (OIT) pass: only the OIT blend sub-bucket; forward "effect" blend goes
-        // through drawBlendedImpl (depth-sorted). alpha-including passes cover the alpha-tested
-        // part of blend drawables via the alpha bucket.
-        if (kindBits & render::KIND_BLEND && !(kindBits & render::KIND_ALPHA)) sweep(layerDrawables.blendOit);
+        if (routeBits & render::ROUTE_DEFERRED) sweepRoute(layerDrawables.deferred);
+        if (routeBits & render::ROUTE_FORWARD) sweepRoute(layerDrawables.forward);
 
         return rendered;
     }
 
     // Forward-rendered blend ("effect") pass: depth-sorted back-to-front. This is NOT the OIT
-    // blend path (OIT goes through the KIND_BLEND sweep in drawNodesImpl over blendOit); kept
-    // separate because it needs per-drawable distance sorting. Iterates only the forward blend
-    // sub-bucket so OIT drawables aren't redundantly scanned.
+    // blend path (OIT goes through the KIND_BLEND sweep in drawNodesImpl over deferred.blend);
+    // kept separate because it needs per-drawable distance sorting. Iterates only the forward
+    // route's blend bucket so OIT drawables aren't redundantly scanned.
     void CollectionRender::drawBlendedImpl(
         const RenderContext& ctx,
         const std::function<bool(const render::DrawableInfo&)>& drawableSelector)
@@ -85,7 +98,7 @@ namespace render
         auto& collection = *ctx.m_collection;
         if (ctx.m_layer >= MAX_LAYERS) return;
 
-        const auto& bucket = collection.m_drawablesByLayer[ctx.m_layer].blendForward;
+        const auto& bucket = collection.m_drawablesByLayer[ctx.m_layer].forward.blend;
         if (bucket.empty()) return;
 
         const auto drawables = InstanceRegistry::get().getDrawables();

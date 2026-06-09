@@ -1,6 +1,7 @@
 #include "NodeCollection.h"
 
 #include <algorithm>
+#include <functional>
 
 #include <fmt/format.h>
 
@@ -38,10 +39,11 @@ namespace render {
     void NodeCollection::clear()
     {
         for (auto& ld : m_drawablesByLayer) {
-            ld.solid.clear();
-            ld.alpha.clear();
-            ld.blendOit.clear();
-            ld.blendForward.clear();
+            for (auto* r : { &ld.deferred, &ld.forward }) {
+                r->solid.clear();
+                r->alpha.clear();
+                r->blend.clear();
+            }
         }
 
         m_waterNodes.clear();
@@ -150,9 +152,11 @@ namespace render {
 
         const auto& drawables = InstanceRegistry::get().getRange(ref);
 
-        // collect this node's matching indices (ascending) per kind, then insert as one
+        // collect this node's matching indices (ascending) per (route, kind), then insert as one
         // sorted block so the buckets stay sorted for sequential sweep access
-        std::vector<uint32_t> solid, alpha, blendOit, blendForward;
+        struct Local { std::vector<uint32_t> solid, alpha, blend; };
+        Local deferred, forward;
+
         for (uint32_t i = 0; i < drawables.size(); i++) {
             const auto& drawable = drawables[i];
             if (drawable.entityIndex == 0) continue;
@@ -162,16 +166,16 @@ namespace render {
 
             const uint32_t index = ref.offset + i;
 
-            // kinds are exclusive (SOLID | ALPHA | ALPHA+BLEND); the invariant is asserted at
-            // the source in LodMesh::setupDrawOptions. a BLEND drawable is also ALPHA, so it
-            // lands in both the alpha bucket (g-buffer alpha-tested part) and one blend
-            // sub-bucket (m_useOit -> OIT pass, else forward "effect" pass).
-            if (drawOptions.isKind(render::KIND_SOLID)) solid.push_back(index);
-            if (drawOptions.isKind(render::KIND_ALPHA)) alpha.push_back(index);
-            if (drawOptions.isKind(render::KIND_BLEND)) {
-                if (drawOptions.m_useOit) blendOit.push_back(index);
-                else blendForward.push_back(index);
-            }
+            // route is per drawable (material-derived): deferred -> g-buffer/OIT, else forward.
+            // (deferred blend == useOit -> deferred.blend; forward/effect blend -> forward.blend.)
+            Local& route = drawOptions.m_useDeferred ? deferred : forward;
+
+            // kinds are exclusive (SOLID | ALPHA | ALPHA+BLEND); invariant asserted at the source
+            // in LodMesh::setupDrawOptions. a BLEND drawable is also ALPHA, so it lands in both its
+            // route's alpha bucket (alpha-tested part: g-buffer/shadow) and its route's blend bucket.
+            if (drawOptions.isKind(render::KIND_SOLID)) route.solid.push_back(index);
+            if (drawOptions.isKind(render::KIND_ALPHA)) route.alpha.push_back(index);
+            if (drawOptions.isKind(render::KIND_BLEND)) route.blend.push_back(index);
         }
 
         if (node->m_layer >= MAX_LAYERS) {
@@ -180,10 +184,12 @@ namespace render {
         }
 
         auto& ld = m_drawablesByLayer[node->m_layer];
-        insertSortedBlock(ld.solid, solid);
-        insertSortedBlock(ld.alpha, alpha);
-        insertSortedBlock(ld.blendOit, blendOit);
-        insertSortedBlock(ld.blendForward, blendForward);
+        insertSortedBlock(ld.deferred.solid, deferred.solid);
+        insertSortedBlock(ld.deferred.alpha, deferred.alpha);
+        insertSortedBlock(ld.deferred.blend, deferred.blend);
+        insertSortedBlock(ld.forward.solid, forward.solid);
+        insertSortedBlock(ld.forward.alpha, forward.alpha);
+        insertSortedBlock(ld.forward.blend, forward.blend);
     }
 
     void NodeCollection::removeDrawables(model::Node* node)
@@ -201,10 +207,11 @@ namespace render {
         };
 
         auto& ld = m_drawablesByLayer[node->m_layer];
-        std::erase_if(ld.solid, inRange);
-        std::erase_if(ld.alpha, inRange);
-        std::erase_if(ld.blendOit, inRange);
-        std::erase_if(ld.blendForward, inRange);
+        for (auto* r : { &ld.deferred, &ld.forward }) {
+            std::erase_if(r->solid, inRange);
+            std::erase_if(r->alpha, inRange);
+            std::erase_if(r->blend, inRange);
+        }
     }
 
     void NodeCollection::validateDrawables() const
@@ -212,35 +219,45 @@ namespace render {
         // NOTE KI logs (works in release, unlike assert) — on-demand consistency check
         const auto& reg = InstanceRegistry::get();
 
-        // wantOit: -1 = don't care, 0 = require !useOit, 1 = require useOit
-        const auto check = [&reg](const char* name, uint8_t layer, const std::vector<uint32_t>& bucket, uint8_t kind, int wantOit) {
+        // valid: per-bucket membership predicate (route + kind); a bucket entry must be alive
+        // (entityIndex != 0), satisfy the predicate, be in range, and the bucket stays sorted.
+        const auto check = [&reg](
+            const char* name, uint8_t layer, const std::vector<uint32_t>& bucket,
+            const std::function<bool(const DrawableInfo&)>& valid)
+        {
             const bool sorted = std::is_sorted(bucket.begin(), bucket.end());
             size_t stale = 0;
-            size_t wrongKind = 0;
-            size_t wrongOit = 0;
+            size_t invalid = 0;
             size_t outOfBounds = 0;
             for (const uint32_t index : bucket) {
                 const auto span = reg.getRange({ index, 1 });
                 if (span.empty()) { outOfBounds++; continue; }
                 const auto& d = span[0];
-                if (d.entityIndex == 0) stale++;
-                if (!d.drawOptions.isKind(kind)) wrongKind++;
-                if (wantOit >= 0 && d.drawOptions.m_useOit != (wantOit != 0)) wrongOit++;
+                if (d.entityIndex == 0) { stale++; continue; }
+                if (!valid(d)) invalid++;
             }
 
-            if (!sorted || stale || wrongKind || wrongOit || outOfBounds) {
+            if (!sorted || stale || invalid || outOfBounds) {
                 KI_ERROR_OUT(fmt::format(
-                    "DRAWABLE_BUCKET INVALID: layer={} {} size={} sorted={} stale={} wrongKind={} wrongOit={} oob={}",
-                    layer, name, bucket.size(), sorted, stale, wrongKind, wrongOit, outOfBounds));
+                    "DRAWABLE_BUCKET INVALID: layer={} {} size={} sorted={} stale={} invalid={} oob={}",
+                    layer, name, bucket.size(), sorted, stale, invalid, outOfBounds));
             }
         };
 
         for (uint8_t layer = 0; layer < MAX_LAYERS; layer++) {
             const auto& ld = m_drawablesByLayer[layer];
-            check("solid", layer, ld.solid, render::KIND_SOLID, -1);
-            check("alpha", layer, ld.alpha, render::KIND_ALPHA, -1);
-            check("blendOit", layer, ld.blendOit, render::KIND_BLEND, 1);
-            check("blendForward", layer, ld.blendForward, render::KIND_BLEND, 0);
+            check("deferred.solid", layer, ld.deferred.solid,
+                [](const DrawableInfo& d) { return d.drawOptions.m_useDeferred && d.drawOptions.isKind(render::KIND_SOLID); });
+            check("deferred.alpha", layer, ld.deferred.alpha,
+                [](const DrawableInfo& d) { return d.drawOptions.m_useDeferred && d.drawOptions.isKind(render::KIND_ALPHA); });
+            check("deferred.blend", layer, ld.deferred.blend,
+                [](const DrawableInfo& d) { return d.drawOptions.m_useDeferred && d.drawOptions.isKind(render::KIND_BLEND); });
+            check("forward.solid", layer, ld.forward.solid,
+                [](const DrawableInfo& d) { return !d.drawOptions.m_useDeferred && d.drawOptions.isKind(render::KIND_SOLID); });
+            check("forward.alpha", layer, ld.forward.alpha,
+                [](const DrawableInfo& d) { return !d.drawOptions.m_useDeferred && d.drawOptions.isKind(render::KIND_ALPHA); });
+            check("forward.blend", layer, ld.forward.blend,
+                [](const DrawableInfo& d) { return !d.drawOptions.m_useDeferred && d.drawOptions.isKind(render::KIND_BLEND); });
         }
     }
 

@@ -147,7 +147,8 @@ namespace render
                 return m_oitProgram->m_id;
             },
             drawContext.drawableSelector,
-            drawContext.kindBits & render::KIND_BLEND);
+            drawContext.kindBits & render::KIND_BLEND,
+            render::ROUTE_DEFERRED);
 
         m_flushedCount = ctx.m_batch->flush(ctx);
 

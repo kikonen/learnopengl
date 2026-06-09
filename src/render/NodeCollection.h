@@ -75,21 +75,25 @@ namespace render {
         void removeDrawables(model::Node* node);
 
     public:
-        // Per-(layer, kind) drawable-index buckets (global indices into
+        // Per-(layer, route, kind) drawable-index buckets (global indices into
         // InstanceRegistry::m_drawables) the sweep iterates. Keyed by node layer so an
-        // unbalanced layer (e.g. ui) doesn't scan the main set. A drawable lands in every
-        // kind it matches (m_kindBits is a mask), kept sorted. Maintained on node add/remove;
-        // instanceRef is fixed for the node lifetime so these never go stale.
-        // NOTE KI blend is split by m_useOit so each blend pass scans only its own set:
-        // blendOit -> OIT sweep (deferred blend), blendForward -> forward "effect" pass
-        // (drawBlendedImpl). A blend drawable is also ALPHA, so its alpha-tested part is in
-        // the alpha bucket (deferred g-buffer) regardless of which blend sub-bucket it's in.
-        struct LayerDrawables {
+        // unbalanced layer (e.g. ui) doesn't scan the main set, then by render route so a
+        // route-exclusive pass (forward, g-buffer, OIT) sweeps only its own set. Kept sorted;
+        // maintained on node add/remove (instanceRef is fixed for the node lifetime).
+        // A drawable lands in every kind it matches (m_kindBits is a mask), so a BLEND drawable
+        // (also ALPHA) is in both its route's alpha bucket (alpha-tested part: g-buffer/shadow)
+        // and its route's blend bucket (deferred.blend -> OIT, forward.blend -> effect pass).
+        struct RouteBuckets {
             std::vector<uint32_t> solid;
             std::vector<uint32_t> alpha;
-            std::vector<uint32_t> blendOit;
-            std::vector<uint32_t> blendForward;
+            std::vector<uint32_t> blend;
         };
+
+        struct LayerDrawables {
+            RouteBuckets deferred;   // g-buffer, pre-depth, OIT (deferred.blend)
+            RouteBuckets forward;    // forward pass, effect (forward.blend)
+        };
+
         // layer index is a small contiguous set (0 = null, ~1..5); fixed array, O(1) indexed
         // (MAX_LAYERS from asset/LayerInfo.h)
         std::array<LayerDrawables, MAX_LAYERS> m_drawablesByLayer;
