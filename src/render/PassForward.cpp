@@ -72,17 +72,16 @@ namespace render
         state.setStencil(kigl::GLStencilMode::fill(STENCIL_SOLID | STENCIL_FOG));
 
         CollectionRender collectionRender;
+        // forward route bucket already excludes deferred drawables; KIND_SOLID|KIND_ALPHA
+        // (no blend) excludes the forward effect-blend (drawn by PassEffect / drawBlendedImpl)
         collectionRender.drawProgram(
             ctx,
             [](const render::DrawableInfo& drawable) {
-                if (drawable.drawOptions.m_useDeferred) return (ki::program_id)0;
-                return !drawable.drawOptions.isBlend() && !drawable.drawOptions.m_useDeferred
-                    ? drawable.programId
-                    : (ki::program_id)0;
+                return drawable.programId;
             },
             drawContext.drawableSelector,
-            // NOTE KI no blended
-            drawContext.kindBits & ~render::KIND_BLEND);
+            drawContext.kindBits & ~render::KIND_BLEND,
+            render::ROUTE_FORWARD);
 
         auto flushedCount = ctx.m_batch->flush(ctx);
         if (flushedCount > 0) {

@@ -291,7 +291,8 @@ void LayerRenderer::fillHighlightMask(
                 program->m_uniforms->u_wireframeMode.set(false);
             },
             drawContext.drawableSelector,
-            drawContext.kindBits);
+            drawContext.kindBits,
+            render::ROUTE_ALL);
     }
     localCtx.m_batch->flush(localCtx);
 }
@@ -364,7 +365,8 @@ void LayerRenderer::renderHighlight(
                 program->m_uniforms->u_wireframeMode.set(false);
             },
             drawContext.drawableSelector,
-            drawContext.kindBits);
+            drawContext.kindBits,
+            render::ROUTE_ALL);
         localCtx.m_batch->flush(localCtx);
     }
 
@@ -415,7 +417,8 @@ void LayerRenderer::renderSelectionWireframe(
             program->m_uniforms->u_wireframeMode.set(true);
         },
         drawableSelector,
-        render::KIND_ALL);
+        render::KIND_ALL,
+        render::ROUTE_ALL);
 
     localCtx.m_batch->flush(localCtx);
 }

@@ -68,7 +68,9 @@ void NormalRenderer::drawNodes(const render::RenderContext& ctx)
                 return drawable.normalProgramId ? drawable.normalProgramId : m_normalProgramId;
             },
             drawContext.drawableSelector,
-            drawContext.kindBits);
+            drawContext.kindBits,
+            // debug normals for all geometry (deferred + forward route)
+            render::ROUTE_ALL);
     }
 
     ctx.m_batch->flush(ctx);

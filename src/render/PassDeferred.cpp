@@ -166,7 +166,8 @@ namespace render
                 return drawable.preDepthProgramId;
             },
             drawContext.drawableSelector,
-            drawContext.kindBits & render::KIND_SOLID);
+            drawContext.kindBits & render::KIND_SOLID,
+            render::ROUTE_DEFERRED);
 
         ctx.m_batch->flush(ctx);
 
@@ -197,7 +198,8 @@ namespace render
             [&drawContext](const render::DrawableInfo& d) {
                 return !d.m_flags.effect && drawContext.drawableSelector(d);
             },
-            drawContext.kindBits);
+            drawContext.kindBits,
+            render::ROUTE_DEFERRED);
 
         ctx.m_batch->flush(ctx);
 

@@ -281,7 +281,9 @@ void ShadowCascade::drawNodes(
                 return drawable.drawOptions.isAlpha() ? m_alphaShadowProgramId : m_solidShadowProgramId;
             },
             drawContext.drawableSelector,
-            drawContext.kindBits);
+            drawContext.kindBits,
+            // all geometry casts shadows (deferred + forward route)
+            render::ROUTE_ALL);
     }
 
     ctx.m_batch->flush(ctx);

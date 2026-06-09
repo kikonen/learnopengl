@@ -1,6 +1,8 @@
 #pragma once
 
 #include <functional>
+#include <vector>
+#include <cstdint>
 
 #include "ki/size.h"
 
@@ -32,14 +34,16 @@ namespace render
             const RenderContext& ctx,
             const std::function<ki::program_id(const render::DrawableInfo&)>& programSelector,
             const std::function<bool(const render::DrawableInfo&)>& drawableSelector,
-            uint8_t kindBits)
+            uint8_t kindBits,
+            uint8_t routeBits)
         {
             drawNodesImpl(
                 ctx,
                 programSelector,
                 [](ki::program_id programId) {},
                 drawableSelector,
-                kindBits);
+                kindBits,
+                routeBits);
         }
 
         // NOTE KI special case render with prepare done for program
@@ -51,9 +55,10 @@ namespace render
             const std::function<ki::program_id(const render::DrawableInfo&)>& programSelector,
             const std::function<void(ki::program_id)>& programPrepare,
             const std::function<bool(const render::DrawableInfo&)>& drawableSelector,
-            uint8_t kindBits)
+            uint8_t kindBits,
+            uint8_t routeBits)
         {
-            drawNodesImpl(ctx, programSelector, programPrepare, drawableSelector, kindBits);
+            drawNodesImpl(ctx, programSelector, programPrepare, drawableSelector, kindBits, routeBits);
         }
 
         void drawBlendedImpl(
@@ -66,6 +71,16 @@ namespace render
             const std::function<ki::program_id(const render::DrawableInfo&)>& programSelector,
             const std::function<void(ki::program_id)>& programPrepare,
             const std::function<bool(const render::DrawableInfo&)>& drawableSelector,
-            uint8_t kindBits);
+            uint8_t kindBits,
+            uint8_t routeBits);
+
+        // Emit one bucket of drawable indices (alive + visible + selected + has program).
+        // @return true if anything was emitted.
+        bool sweepBucket(
+            const RenderContext& ctx,
+            const std::vector<uint32_t>& bucket,
+            const std::function<ki::program_id(const render::DrawableInfo&)>& programSelector,
+            const std::function<void(ki::program_id)>& programPrepare,
+            const std::function<bool(const render::DrawableInfo&)>& drawableSelector);
     };
 }
