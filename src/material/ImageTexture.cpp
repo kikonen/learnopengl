@@ -170,6 +170,7 @@ void ImageTexture::prepareNormal()
 
         const int mipMapLevels = resolveMixMapLevels();
 
+        glTextureParameteri(m_textureID, GL_TEXTURE_MAX_LEVEL, mipMapLevels - 1);
         glTextureStorage2D(m_textureID, mipMapLevels, m_internalFormat, m_width, m_height);
         glTextureSubImage2D(m_textureID, 0, 0, 0, m_width, m_height, m_format, m_pixelFormat, m_image->m_data);
         glGenerateTextureMipmap(m_textureID);
