@@ -265,25 +265,17 @@ void ShadowCascade::drawNodes(
     ctx.m_batch->cullFrustum(ctx);
 
     {
-        render::DrawContext drawContext{
-            // NOTE KI *NO* G-buffer in shadow; tessellation not supported.
-            // m_flags.noShadow combines type-level and per-mesh no-shadow.
-            [](const render::DrawableInfo& d) { return !d.m_flags.noShadow; },
-            render::KIND_ALL
-        };
-
+        // NOTE KI *NO* G-buffer in shadow; tessellation not supported. noShadow is pre-filtered
+        // into the shadow-caster bucket, so drawShadow sweeps only casters (no per-drawable reject).
         render::CollectionRender collectionRender;
-        collectionRender.drawProgram(
+        collectionRender.drawShadow(
             ctx,
             [this](const render::DrawableInfo& drawable) {
                 if (drawable.isTesselated()) return (ki::program_id)0;
                 if (drawable.shadowProgramId) return drawable.shadowProgramId;
                 return drawable.drawOptions.isAlpha() ? m_alphaShadowProgramId : m_solidShadowProgramId;
             },
-            drawContext.drawableSelector,
-            drawContext.kindBits,
-            // all geometry casts shadows (deferred + forward route)
-            render::ROUTE_ALL);
+            render::ACCEPT_ALL_DRAWABLES);
     }
 
     ctx.m_batch->flush(ctx);

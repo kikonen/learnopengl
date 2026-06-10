@@ -44,6 +44,7 @@ namespace render {
                 r->alpha.clear();
                 r->blend.clear();
             }
+            ld.shadow.clear();
         }
 
         m_waterNodes.clear();
@@ -156,6 +157,7 @@ namespace render {
         // sorted block so the buckets stay sorted for sequential sweep access
         struct Local { std::vector<uint32_t> solid, alpha, blend; };
         Local deferred, forward;
+        std::vector<uint32_t> shadow;   // !noShadow casters (cross-route)
 
         for (uint32_t i = 0; i < drawables.size(); i++) {
             const auto& drawable = drawables[i];
@@ -176,6 +178,10 @@ namespace render {
             if (drawOptions.isKind(render::KIND_SOLID)) route.solid.push_back(index);
             if (drawOptions.isKind(render::KIND_ALPHA)) route.alpha.push_back(index);
             if (drawOptions.isKind(render::KIND_BLEND)) route.blend.push_back(index);
+
+            // shadow casters (cross-route, one entry each); lets the shadow pass skip a huge
+            // noShadow set (e.g. a 1M-instance generator) instead of rejecting per drawable.
+            if (!drawable.m_flags.noShadow) shadow.push_back(index);
         }
 
         if (node->m_layer >= MAX_LAYERS) {
@@ -190,6 +196,7 @@ namespace render {
         insertSortedBlock(ld.forward.solid, forward.solid);
         insertSortedBlock(ld.forward.alpha, forward.alpha);
         insertSortedBlock(ld.forward.blend, forward.blend);
+        insertSortedBlock(ld.shadow, shadow);
     }
 
     void NodeCollection::removeDrawables(model::Node* node)
@@ -212,6 +219,7 @@ namespace render {
             std::erase_if(r->alpha, inRange);
             std::erase_if(r->blend, inRange);
         }
+        std::erase_if(ld.shadow, inRange);
     }
 
     void NodeCollection::validateDrawables() const
@@ -258,6 +266,8 @@ namespace render {
                 [](const DrawableInfo& d) { return !d.drawOptions.m_useDeferred && d.drawOptions.isKind(render::KIND_ALPHA); });
             check("forward.blend", layer, ld.forward.blend,
                 [](const DrawableInfo& d) { return !d.drawOptions.m_useDeferred && d.drawOptions.isKind(render::KIND_BLEND); });
+            check("shadow", layer, ld.shadow,
+                [](const DrawableInfo& d) { return !d.m_flags.noShadow; });
         }
     }
 
