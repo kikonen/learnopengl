@@ -72,11 +72,14 @@ namespace render
         state.setStencil(kigl::GLStencilMode::fill(STENCIL_SOLID | STENCIL_FOG));
 
         CollectionRender collectionRender;
-        // forward route bucket already excludes deferred drawables; KIND_SOLID|KIND_ALPHA
-        // (no blend) excludes the forward effect-blend (drawn by PassEffect / drawBlendedImpl)
+        // NOTE KI the forward route's alpha bucket also contains BLEND (effect) drawables
+        // (blend is a subset of alpha), and those are drawn by PassEffect / drawBlendedImpl.
+        // Not requesting KIND_BLEND skips the blend *bucket*, but the alpha bucket still yields
+        // them, so the selector must explicitly exclude blend here.
         collectionRender.drawProgram(
             ctx,
             [](const render::DrawableInfo& drawable) {
+                if (drawable.drawOptions.isBlend()) return (ki::program_id)0;
                 return drawable.programId;
             },
             drawContext.drawableSelector,
