@@ -80,6 +80,10 @@ types:
       type: asteroid_belt
       mode: random
       count: 200000
+    flags:
+      no_shadow: true
+      no_reflect: true
+      no_refract: true
   - id: dir_light
     mesh:
       path: light
