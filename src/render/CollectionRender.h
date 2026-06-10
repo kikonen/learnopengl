@@ -65,6 +65,13 @@ namespace render
             const RenderContext& ctx,
             const std::function<bool(const render::DrawableInfo&)>& drawableSelector);
 
+        // Shadow pass: sweeps ONLY the per-layer shadow-caster bucket (!noShadow), so a huge
+        // noShadow set (e.g. a 1M-instance generator) isn't streamed-and-rejected per cascade.
+        bool drawShadow(
+            const RenderContext& ctx,
+            const std::function<ki::program_id(const render::DrawableInfo&)>& programSelector,
+            const std::function<bool(const render::DrawableInfo&)>& drawableSelector);
+
     private:
         bool drawNodesImpl(
             const RenderContext& ctx,
@@ -75,6 +82,8 @@ namespace render
             uint8_t routeBits);
 
         // Emit one bucket of drawable indices (alive + visible + selected + has program).
+        // For large buckets the filter + program resolution runs in parallel (selectors are
+        // thread-safe per the class contract); programPrepare + batch emit stay serial on RT.
         // @return true if anything was emitted.
         bool sweepBucket(
             const RenderContext& ctx,
@@ -82,5 +91,9 @@ namespace render
             const std::function<ki::program_id(const render::DrawableInfo&)>& programSelector,
             const std::function<void(ki::program_id)>& programPrepare,
             const std::function<bool(const render::DrawableInfo&)>& drawableSelector);
+
+        // Scratch reused across sweepBucket calls: resolved program id per bucket slot (0 = skip).
+        // Filled in parallel, drained serially. Lives on the (per-pass) instance, capacity reused.
+        std::vector<ki::program_id> m_programScratch;
     };
 }

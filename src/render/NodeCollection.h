@@ -92,6 +92,9 @@ namespace render {
         struct LayerDrawables {
             RouteBuckets deferred;   // g-buffer, pre-depth, OIT (deferred.blend)
             RouteBuckets forward;    // forward pass, effect (forward.blend)
+            // shadow casters (!noShadow), cross-route, one entry per drawable; swept by the
+            // shadow pass so non-casters (e.g. a 1M-instance noShadow generator) aren't streamed.
+            std::vector<uint32_t> shadow;
         };
 
         // layer index is a small contiguous set (0 = null, ~1..5); fixed array, O(1) indexed

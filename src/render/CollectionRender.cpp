@@ -3,6 +3,7 @@
 #include <vector>
 #include <utility>
 #include <algorithm>
+#include <execution>
 
 #include "kigl/GLState.h"
 
@@ -20,6 +21,13 @@
 #include "registry/Registry.h"
 #include "registry/NodeRegistry.h"
 
+namespace
+{
+    // Above this bucket size, resolve the program id per drawable in parallel; below it the
+    // fork/join overhead isn't worth it and a plain serial sweep is used.
+    constexpr size_t PARALLEL_SWEEP_LIMIT = 4096;
+}
+
 namespace render
 {
     bool CollectionRender::sweepBucket(
@@ -35,19 +43,48 @@ namespace render
         // => never bucketed.
         const auto drawables = InstanceRegistry::get().getDrawables();
 
-        bool rendered{ false };
-        for (const uint32_t index : bucket) {
-            const auto& drawable = drawables[index];
-            if (drawable.entityIndex == 0) continue;
-            if ((drawable.m_visibility & VISIBLE_ALL) != VISIBLE_ALL) continue;
-            if (!drawableSelector(drawable)) continue;
+        // resolve the program id for a bucket slot, or 0 if filtered out (dead/culled/rejected/no
+        // program). Pure read-only: safe to call concurrently (selectors are thread-safe per the
+        // CollectionRender contract).
+        const auto resolve = [&](uint32_t index) -> ki::program_id
+            {
+                const auto& drawable = drawables[index];
+                if (drawable.entityIndex == 0) return 0;
+                if ((drawable.m_visibility & VISIBLE_ALL) != VISIBLE_ALL) return 0;
+                if (!drawableSelector(drawable)) return 0;
+                return programSelector(drawable);
+            };
 
-            const auto programId = programSelector(drawable);
+        bool rendered{ false };
+
+        if (bucket.size() < PARALLEL_SWEEP_LIMIT) {
+            for (const uint32_t index : bucket) {
+                const auto programId = resolve(index);
+                if (!programId) continue;
+
+                programPrepare(programId);
+                ctx.m_batch->addDrawable(index, drawables[index], programId);
+                rendered = true;
+            }
+            return rendered;
+        }
+
+        // Large bucket: resolve programs in parallel (one output slot per drawable, race-free),
+        // then emit survivors serially on RT (programPrepare + batch mutation are not thread-safe).
+        m_programScratch.resize(bucket.size());
+        std::transform(
+            std::execution::par_unseq,
+            bucket.begin(), bucket.end(),
+            m_programScratch.begin(),
+            resolve);
+
+        for (size_t i = 0; i < bucket.size(); i++) {
+            const auto programId = m_programScratch[i];
             if (!programId) continue;
 
+            const uint32_t index = bucket[i];
             programPrepare(programId);
-            ctx.m_batch->addDrawable(index, drawable, programId);
-
+            ctx.m_batch->addDrawable(index, drawables[index], programId);
             rendered = true;
         }
         return rendered;
@@ -85,6 +122,23 @@ namespace render
         if (routeBits & render::ROUTE_FORWARD) sweepRoute(layerDrawables.forward);
 
         return rendered;
+    }
+
+    bool CollectionRender::drawShadow(
+        const RenderContext& ctx,
+        const std::function<ki::program_id(const render::DrawableInfo&)>& programSelector,
+        const std::function<bool(const render::DrawableInfo&)>& drawableSelector)
+    {
+        auto& collection = *ctx.m_collection;
+        if (ctx.m_layer >= MAX_LAYERS) return false;
+
+        // shadow casters only (noShadow pre-filtered into the bucket); reuses the parallel sweep.
+        return sweepBucket(
+            ctx,
+            collection.m_drawablesByLayer[ctx.m_layer].shadow,
+            programSelector,
+            [](ki::program_id) {},
+            drawableSelector);
     }
 
     // Forward-rendered blend ("effect") pass: depth-sorted back-to-front. This is NOT the OIT
