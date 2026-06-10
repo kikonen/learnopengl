@@ -7,6 +7,8 @@
 
 #include "asset/LayerInfo.h"
 
+#include "util/BufferReference.h"
+
 #include "pool/NodeHandle.h"
 #include "pool/TypeHandle.h"
 
@@ -95,6 +97,13 @@ namespace render {
             // shadow casters (!noShadow), cross-route, one entry per drawable; swept by the
             // shadow pass so non-casters (e.g. a 1M-instance noShadow generator) aren't streamed.
             std::vector<uint32_t> shadow;
+
+            // Cull groups (volume-sharing runs: a node, or a generator instance's LOD meshes)
+            // for THIS layer, so a layer pass culls only its own drawables (a sparse layer or a
+            // shadow cascade doesn't frustum-test the whole main set). shadowCullGroups is the
+            // caster subset (groups with any !noShadow drawable) for the shadow cull.
+            std::vector<util::BufferReference> cullGroups;
+            std::vector<util::BufferReference> shadowCullGroups;
         };
 
         // layer index is a small contiguous set (0 = null, ~1..5); fixed array, O(1) indexed

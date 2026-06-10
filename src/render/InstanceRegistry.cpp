@@ -57,7 +57,6 @@ namespace render
         m_drawables.clear();
         m_slotAllocator.clear();
         m_dirtySlots.clear();
-        m_cullGroups.clear();
 
         m_cullValid = false;
 
@@ -67,7 +66,6 @@ namespace render
         m_slotAllocator.reserve(BLOCK_SIZE);
         m_dirtySlots.reserve(BLOCK_SIZE);
         m_instances.reserve(BLOCK_SIZE);
-        m_cullGroups.reserve(BLOCK_SIZE);
 
         m_uploadedCount = 0;
 
@@ -86,7 +84,7 @@ namespace render
         clear();
     }
 
-    util::BufferReference InstanceRegistry::allocate(size_t count, uint32_t groupStride)
+    util::BufferReference InstanceRegistry::allocate(size_t count)
     {
         ASSERT_RT();
 
@@ -109,15 +107,6 @@ namespace render
 
         m_instances.resize(m_drawables.size());
 
-        // register cull groups for this allocation (default: one group spanning the whole range)
-        {
-            const uint32_t total = static_cast<uint32_t>(count);
-            const uint32_t stride = (groupStride == 0) ? total : groupStride;
-            for (uint32_t g = 0; g < total; g += stride) {
-                m_cullGroups.push_back({ offset + g, std::min(stride, total - g) });
-            }
-        }
-
         return { offset, count };
     }
 
@@ -136,15 +125,6 @@ namespace render
             drawable.entityIndex = 0;
             drawable.drawOptions.m_type = backend::DrawOptions::Type::none;
         }
-
-        // drop the freed range's cull groups (every group is fully within one allocation's
-        // range). Must run before the slot can be reused (both RT) so a reused offset gets a
-        // fresh group, not a stale one.
-        const uint32_t lo = ref.offset;
-        const uint32_t hi = ref.offset + ref.size;
-        std::erase_if(m_cullGroups, [lo, hi](const util::BufferReference& g) {
-            return g.offset >= lo && g.offset < hi;
-        });
 
         return {};
     }
@@ -168,13 +148,14 @@ namespace render
     }
 
     void InstanceRegistry::cullFrustum(
+        std::span<const util::BufferReference> groups,
         const Frustum& frustum,
         const glm::vec3& cameraPos,
         bool frustumEnabled,
         bool lodEnabled,
         uint32_t parallelLimit) noexcept
     {
-        const size_t groupCount = m_cullGroups.size();
+        const size_t groupCount = groups.size();
 
         auto* drawables = m_drawables.data();
 
@@ -224,13 +205,13 @@ namespace render
         if (groupCount > parallelLimit) {
             std::for_each(
                 std::execution::par_unseq,
-                m_cullGroups.begin(), m_cullGroups.end(),
+                groups.begin(), groups.end(),
                 cull);
         }
         else {
             std::for_each(
                 std::execution::seq,
-                m_cullGroups.begin(), m_cullGroups.end(),
+                groups.begin(), groups.end(),
                 cull);
         }
 

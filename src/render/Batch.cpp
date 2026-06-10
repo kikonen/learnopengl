@@ -43,6 +43,7 @@
 #include "render/InstanceSSBO.h"
 #include "render/InstanceIndexSSBO.h"
 #include "render/BatchCommand.h"
+#include "render/NodeCollection.h"
 
 namespace {
     constexpr int ENTITY_COUNT = 100000;
@@ -106,9 +107,9 @@ namespace render {
 
         const auto& drawables = m_instanceRegistry->getRange(instanceRef);
 
-        // NOTE KI per-camera visibility precomputed once (cullFrustum), stored on DrawableInfo
-        assert(!(m_frustumCPU || m_lodDistanceEnabled) ||
-            m_instanceRegistry->cullSignatureMatches(ctx.m_camera->getFrustum()));
+        // NOTE KI addMeshes is the MeshRenderer (debug) path; those drawables aren't in the
+        // per-layer cull groups and set their own m_visibility (always visible), so the
+        // cull-signature assert no longer applies here.
 
         {
             const auto resolveProgram = [&kindBits, this](
@@ -245,7 +246,25 @@ namespace render {
 
     void Batch::cullFrustum(const RenderContext& ctx)
     {
+        if (!ctx.m_collection || ctx.m_layer >= MAX_LAYERS) return;
+
+        const auto& ld = ctx.m_collection->m_drawablesByLayer[ctx.m_layer];
         m_instanceRegistry->cullFrustum(
+            ld.cullGroups,
+            ctx.m_camera->getFrustum(),
+            ctx.m_camera->getWorldPosition(),
+            m_frustumCPU,
+            m_lodDistanceEnabled,
+            m_frustumParallelLimit);
+    }
+
+    void Batch::cullShadowFrustum(const RenderContext& ctx)
+    {
+        if (!ctx.m_collection || ctx.m_layer >= MAX_LAYERS) return;
+
+        const auto& ld = ctx.m_collection->m_drawablesByLayer[ctx.m_layer];
+        m_instanceRegistry->cullFrustum(
+            ld.shadowCullGroups,
             ctx.m_camera->getFrustum(),
             ctx.m_camera->getWorldPosition(),
             m_frustumCPU,

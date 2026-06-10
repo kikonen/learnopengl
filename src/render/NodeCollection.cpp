@@ -45,6 +45,8 @@ namespace render {
                 r->blend.clear();
             }
             ld.shadow.clear();
+            ld.cullGroups.clear();
+            ld.shadowCullGroups.clear();
         }
 
         m_waterNodes.clear();
@@ -197,6 +199,26 @@ namespace render {
         insertSortedBlock(ld.forward.alpha, forward.alpha);
         insertSortedBlock(ld.forward.blend, forward.blend);
         insertSortedBlock(ld.shadow, shadow);
+
+        // Cull groups: split this node's contiguous range into volume-sharing runs. stride =
+        // meshes-per-instance (whole ref = 1 group for a non-generator node; one group per
+        // instance for a generator). A group is a shadow-caster group if any of its drawables
+        // casts (!noShadow), so the shadow cull skips a fully-noShadow generator entirely.
+        // (Order doesn't matter: the cull writes disjoint ranges via par_unseq.)
+        const uint32_t total = ref.size;
+        uint32_t stride = static_cast<uint32_t>(node->getEnabledMeshes().size());
+        if (stride == 0) stride = total;
+        for (uint32_t g = 0; g < total; g += stride) {
+            const uint32_t size = std::min(stride, total - g);
+            const util::BufferReference group{ ref.offset + g, size };
+            ld.cullGroups.push_back(group);
+
+            bool caster = false;
+            for (uint32_t k = 0; k < size && !caster; k++) {
+                if (!drawables[g + k].m_flags.noShadow) caster = true;
+            }
+            if (caster) ld.shadowCullGroups.push_back(group);
+        }
     }
 
     void NodeCollection::removeDrawables(model::Node* node)
@@ -220,6 +242,12 @@ namespace render {
             std::erase_if(r->blend, inRange);
         }
         std::erase_if(ld.shadow, inRange);
+
+        const auto groupInRange = [lo, hi](const util::BufferReference& g) {
+            return g.offset >= lo && g.offset < hi;
+        };
+        std::erase_if(ld.cullGroups, groupInRange);
+        std::erase_if(ld.shadowCullGroups, groupInRange);
     }
 
     void NodeCollection::validateDrawables() const
