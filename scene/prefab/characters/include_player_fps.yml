@@ -80,7 +80,7 @@ types:
         xrender_back: true
     xpivot:
       offset: [0, 1.5, 0]
-    xlayer: player
+    layer: player
     script: |
       cmd:animation_play(
         self.handle,
