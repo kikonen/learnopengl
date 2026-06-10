@@ -48,9 +48,7 @@ void MeshRenderer::prepareRT(const PrepareContext& ctx)
 
     m_entityIndex = ID_INDEX;
 
-    // groupStride=1: each mesh has its own world volume (meshInstance.getWorldVolume()),
-    // so cull per-drawable, not as one shared-volume group.
-    m_instanceRef = render::InstanceRegistry::get().allocate(INITIAL_SIZE, 1);
+    m_instanceRef = render::InstanceRegistry::get().allocate(INITIAL_SIZE);
 }
 
 void MeshRenderer::drawObjects(
@@ -128,8 +126,7 @@ void MeshRenderer::registerDrawables(
     render::InstanceRegistry& instanceRegistry) noexcept
 {
     if (m_instanceRef.size < meshes.size()) {
-        // groupStride=1: per-mesh world volumes (see ctor) -> per-drawable cull groups
-        m_instanceRef = instanceRegistry.allocate(meshes.size(), 1);
+        m_instanceRef = instanceRegistry.allocate(meshes.size());
     }
     auto drawables = instanceRegistry.modifyRange(m_instanceRef);
 
@@ -165,6 +162,11 @@ void MeshRenderer::registerDrawables(
             drawable.localTransform = meshInstance.getModelMatrix();
 
             drawable.worldVolume = meshInstance.getWorldVolume();
+
+            // NOTE KI debug-renderer meshes are not in the scene's per-layer cull groups, so
+            // nothing computes their visibility. Mark always-visible: addMeshes draws them
+            // whenever this debug pass is enabled (no frustum/LOD cull for debug viz).
+            drawable.m_visibility = render::VISIBLE_ALL;
         }
     }
 

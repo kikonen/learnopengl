@@ -261,8 +261,9 @@ void ShadowCascade::render(
 void ShadowCascade::drawNodes(
     const render::RenderContext& ctx)
 {
-    // NOTE KI compute frustum visibility once for this cascade's camera
-    ctx.m_batch->cullFrustum(ctx);
+    // NOTE KI compute visibility for this cascade's camera over the shadow-caster groups only
+    // (a fully-noShadow set like the asteroid belt is skipped entirely)
+    ctx.m_batch->cullShadowFrustum(ctx);
 
     {
         // NOTE KI *NO* G-buffer in shadow; tessellation not supported. noShadow is pre-filtered

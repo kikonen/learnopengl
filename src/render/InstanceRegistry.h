@@ -48,11 +48,7 @@ namespace render
         void endFrame();
 
         // @return ref to buffer
-        // @param groupStride drawables per cull group within the allocation (0 = one group
-        //   spanning the whole allocation). A generator passes its meshes-per-instance so each
-        //   instance becomes a group; nodes use the default single group. count must be a
-        //   multiple of groupStride. See m_cullGroups / cullFrustum.
-        util::BufferReference allocate(size_t count, uint32_t groupStride = 0);
+        util::BufferReference allocate(size_t count);
         // @return null ref
         util::BufferReference release(const util::BufferReference ref);
 
@@ -68,10 +64,14 @@ namespace render
             return m_drawables;
         }
 
-        // Compute per-drawable visibility (frustum + LOD + shown) once for the given
-        // camera, written in place into DrawableInfo::m_visibility (read by the draw
-        // sweep). @param frustumEnabled/lodEnabled if false that axis passes for all.
+        // Compute per-drawable visibility (frustum + LOD + shown) for the given camera, written
+        // in place into DrawableInfo::m_visibility (read by the draw sweep). Tests the frustum +
+        // LOD-distance once per cull group (drawables in a group share a world volume) and
+        // broadcasts to the group's drawables. @param groups the cull groups to process (the
+        // layer's groups, or the shadow-caster subset) — owned per-layer by NodeCollection.
+        // @param frustumEnabled/lodEnabled if false that axis passes for all.
         void cullFrustum(
+            std::span<const util::BufferReference> groups,
             const Frustum& frustum,
             const glm::vec3& cameraPos,
             bool frustumEnabled,
@@ -108,11 +108,6 @@ namespace render
         bool m_debug{ false };
 
         std::vector<DrawableInfo> m_drawables;
-
-        // Cull groups: contiguous runs of drawables sharing one world volume (a node's range,
-        // or a generator instance's LOD meshes). cullFrustum does one frustum + one LOD-distance
-        // test per group and broadcasts to its drawables. Maintained in allocate()/release().
-        std::vector<util::BufferReference> m_cullGroups;
 
         // cull signature (frustum planes) of the cull that last wrote DrawableInfo::m_visibility
         std::array<glm::vec4, 6> m_cullSignature{};
