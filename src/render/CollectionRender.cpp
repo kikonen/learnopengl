@@ -37,25 +37,31 @@ namespace render
         const std::function<void(ki::program_id)>& programPrepare,
         const std::function<bool(const render::DrawableInfo&)>& drawableSelector)
     {
-        // Per-drawable sweep. Node-level checks are all expressed per drawable now:
-        // alive => entityIndex!=0 (+removed from bucket on node removal), visible+frustum+LOD
-        // => m_visibility (set by cullFrustum), layer/route/kind => bucket key, type-invisible
-        // => never bucketed.
-        const auto drawables = InstanceRegistry::get().getDrawables();
+        auto& batch = *ctx.m_batch;
 
-        // resolve the program id for a bucket slot, or 0 if filtered out (dead/culled/rejected/no
+        // Per-drawable sweep. Node-level checks are all expressed per drawable now:
+        // alive + visible+frustum+LOD => the dense visibility byte (set by cullFrustum,
+        // alive folded into VISIBLE_ALIVE), layer/route/kind => bucket key, type-invisible
+        // => never bucketed.
+        const auto& reg = InstanceRegistry::get();
+        const auto drawables = reg.getDrawables();
+        // hoist the dense-visibility pointer once; the reject reads one byte/drawable and
+        // never touches DrawableInfo.
+        const auto* visibility = reg.getVisibility().data();
+
+        // resolve the program id for a bucket slot, or 0 if filtered out (culled/rejected/no
         // program). Pure read-only: safe to call concurrently (selectors are thread-safe per the
         // CollectionRender contract).
         const auto resolve = [&](uint32_t index) -> ki::program_id
             {
+                if ((visibility[index] & VISIBLE_ALL) != VISIBLE_ALL) return 0;
                 const auto& drawable = drawables[index];
-                if (drawable.entityIndex == 0) return 0;
-                if ((drawable.m_visibility & VISIBLE_ALL) != VISIBLE_ALL) return 0;
                 if (!drawableSelector(drawable)) return 0;
                 return programSelector(drawable);
             };
 
         bool rendered{ false };
+        size_t emitted = 0;
 
         if (bucket.size() < PARALLEL_SWEEP_LIMIT) {
             for (const uint32_t index : bucket) {
@@ -63,9 +69,12 @@ namespace render
                 if (!programId) continue;
 
                 programPrepare(programId);
-                ctx.m_batch->addDrawable(index, drawables[index], programId);
+                batch.addDrawable(index, drawables[index], programId);
+                emitted++;
                 rendered = true;
             }
+            // skip = scanned candidates not emitted (culled or filtered); see Batch::addSkip
+            batch.addSkip(bucket.size() - emitted);
             return rendered;
         }
 
@@ -84,9 +93,11 @@ namespace render
 
             const uint32_t index = bucket[i];
             programPrepare(programId);
-            ctx.m_batch->addDrawable(index, drawables[index], programId);
+            batch.addDrawable(index, drawables[index], programId);
+            emitted++;
             rendered = true;
         }
+        batch.addSkip(bucket.size() - emitted);
         return rendered;
     }
 
@@ -149,22 +160,25 @@ namespace render
         const RenderContext& ctx,
         const std::function<bool(const render::DrawableInfo&)>& drawableSelector)
     {
-        auto& collection = *ctx.m_collection;
         if (ctx.m_layer >= MAX_LAYERS) return;
+
+        auto& batch = *ctx.m_batch;
+        auto& collection = *ctx.m_collection;
 
         const auto& bucket = collection.m_drawablesByLayer[ctx.m_layer].forward.blend;
         if (bucket.empty()) return;
 
-        const auto drawables = InstanceRegistry::get().getDrawables();
+        const auto& reg = InstanceRegistry::get();
+        const auto drawables = reg.getDrawables();
+        const auto* visibility = reg.getVisibility().data();
         const glm::vec3& eyePos = ctx.m_camera->getWorldPosition();
 
         // collect visible, selected forward-blend drawables with their squared eye distance
         std::vector<std::pair<float, uint32_t>> sorted;
         sorted.reserve(bucket.size());
         for (const uint32_t index : bucket) {
+            if ((visibility[index] & VISIBLE_ALL) != VISIBLE_ALL) continue;
             const auto& drawable = drawables[index];
-            if (drawable.entityIndex == 0) continue;
-            if ((drawable.m_visibility & VISIBLE_ALL) != VISIBLE_ALL) continue;
             if (!drawableSelector(drawable)) continue;
 
             const glm::vec3 delta = drawable.worldVolume.getCenter() - eyePos;
@@ -188,7 +202,7 @@ namespace render
             const auto programId = drawable.programId;
             if (!programId) continue;
 
-            ctx.m_batch->addDrawable(index, drawable, programId);
+            batch.addDrawable(index, drawable, programId);
         }
     }
 }

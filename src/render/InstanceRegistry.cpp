@@ -67,6 +67,9 @@ namespace render
         m_dirtySlots.reserve(BLOCK_SIZE);
         m_instances.reserve(BLOCK_SIZE);
 
+        m_visibility.clear();
+        m_visibility.reserve(BLOCK_SIZE);
+
         m_uploadedCount = 0;
 
         // NULL entry
@@ -107,6 +110,11 @@ namespace render
 
         m_instances.resize(m_drawables.size());
 
+        // keep the dense visibility array index-aligned with m_drawables; grown bytes
+        // default to 0 (dead) until cullFrustum/setVisibility writes them. A reused slot
+        // (tryAllocate path, no growth) keeps the 0 written by release() until reculled.
+        m_visibility.resize(m_drawables.size());
+
         return { offset, count };
     }
 
@@ -124,6 +132,9 @@ namespace render
             auto& drawable = m_drawables[ref.offset + i];
             drawable.entityIndex = 0;
             drawable.drawOptions.m_type = backend::DrawOptions::Type::none;
+            // clear VISIBLE_ALIVE (and all bits) so the dense reject scan skips this slot
+            // without an entityIndex read; reuse re-sets it at the next cull.
+            m_visibility[ref.offset + i] = 0;
         }
 
         return {};
@@ -158,12 +169,13 @@ namespace render
         const size_t groupCount = groups.size();
 
         auto* drawables = m_drawables.data();
+        auto* visibility = m_visibility.data();
 
         // Test frustum + LOD-distance ONCE per group (all drawables in a group share the world
         // volume, so the frustum result and the eye-distance are identical), then broadcast the
         // per-camera visibility mask to the group's drawables. Only the LOD distance *band*
         // (min/maxDistance2) is per-drawable. An off-screen group skips all per-drawable LOD work.
-        const auto cull = [drawables, &frustum, &cameraPos, frustumEnabled, lodEnabled]
+        const auto cull = [drawables, visibility, &frustum, &cameraPos, frustumEnabled, lodEnabled]
             (const util::BufferReference& group)
         {
             const auto& rep = drawables[group.offset];
@@ -183,7 +195,7 @@ namespace render
 
             const uint32_t end = group.offset + group.size;
             for (uint32_t i = group.offset; i < end; i++) {
-                auto& d = drawables[i];
+                const auto& d = drawables[i];
 
                 uint8_t v = 0;
                 if (inFrustum) {
@@ -198,7 +210,9 @@ namespace render
                     v |= VISIBLE_SHOWN;
                 }
 
-                d.m_visibility = v;
+                // group lifecycle is uniform (alloc/free as one BufferReference) and the
+                // dead-rep early-return above guarantees this group is live, so mark ALIVE.
+                visibility[i] = static_cast<uint8_t>(v | VISIBLE_ALIVE);
             }
         };
 

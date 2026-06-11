@@ -72,6 +72,11 @@ namespace render {
             const render::DrawableInfo& drawable,
             ki::program_id programId) noexcept;
 
+        // accumulate per-drawable-sweep skips (bucket candidates not emitted: culled or
+        // filtered). addDrawable counts draws; this counts the rest, so draw+skip == the
+        // candidates a sweep scanned. Called serially on RT from CollectionRender.
+        void addSkip(size_t count) noexcept { m_skipCount += count; }
+
         void bind() noexcept;
 
         bool isFlushed() const noexcept;
