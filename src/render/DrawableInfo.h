@@ -63,9 +63,10 @@ namespace render
         // per-drawable filtering in selectors + cull
         DrawableFlags m_flags;
 
-        // per-camera cull result (VisibilityBit mask), written by InstanceRegistry::cullFrustum
-        // each frame; read by the draw sweep (kept here to avoid a second array stream)
-        uint8_t m_visibility{ 0 };
+        // NOTE: per-drawable visibility is NOT stored here. It lives in a dense
+        // std::vector<uint8_t> in InstanceRegistry (parallel to the drawables), so the
+        // per-pass reject scan streams one byte/drawable instead of dragging this struct's
+        // cache lines through memory. See InstanceRegistry::m_visibility / isVisible().
 
         bool isFlag(uint32_t flag) const noexcept
         {

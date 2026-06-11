@@ -27,8 +27,11 @@ namespace render
         VISIBLE_FRUSTUM = 1 << 0,
         VISIBLE_LOD     = 1 << 1,
         VISIBLE_SHOWN   = 1 << 2,   // not hidden (node visible)
-        // drawable is rendered only when all visibility bits are set
-        VISIBLE_ALL     = VISIBLE_FRUSTUM | VISIBLE_LOD | VISIBLE_SHOWN,
+        // slot is live. Folded into the visibility byte so the reject scan needs no
+        // entityIndex (DrawableInfo) read. Set by cullFrustum/setVisibility, cleared in release().
+        VISIBLE_ALIVE   = 1 << 3,
+        // drawable is rendered only when all bits — incl. liveness — are set
+        VISIBLE_ALL     = VISIBLE_FRUSTUM | VISIBLE_LOD | VISIBLE_SHOWN | VISIBLE_ALIVE,
     };
 
     class InstanceRegistry
@@ -64,8 +67,31 @@ namespace render
             return m_drawables;
         }
 
-        // Compute per-drawable visibility (frustum + LOD + shown) for the given camera, written
-        // in place into DrawableInfo::m_visibility (read by the draw sweep). Tests the frustum +
+        // Hot per-pass reject test: true iff the drawable is alive AND fully visible for
+        // the last cull — a single dense-array byte read, no DrawableInfo access (liveness
+        // is folded into VISIBLE_ALIVE). Cold callers use this; hot sweeps hoist
+        // getVisibility().data() and index it directly.
+        bool isVisible(uint32_t index) const noexcept
+        {
+            return (m_visibility[index] & VISIBLE_ALL) == VISIBLE_ALL;
+        }
+
+        // Force a drawable's visibility mask (debug meshes that bypass cullFrustum).
+        // Pass VISIBLE_ALL to mark always-visible (includes liveness via VISIBLE_ALIVE).
+        void setVisibility(uint32_t index, uint8_t v) noexcept
+        {
+            m_visibility[index] = v;
+        }
+
+        // Dense visibility masks, parallel to getDrawables(). Hoist .data() before a hot
+        // sweep and index directly — the reject test is (v & VISIBLE_ALL) == VISIBLE_ALL.
+        std::span<const uint8_t> getVisibility() const noexcept
+        {
+            return m_visibility;
+        }
+
+        // Compute per-drawable visibility (frustum + LOD + shown + alive) for the given camera,
+        // written into the dense m_visibility array (read by the draw sweep). Tests the frustum +
         // LOD-distance once per cull group (drawables in a group share a world volume) and
         // broadcasts to the group's drawables. @param groups the cull groups to process (the
         // layer's groups, or the shadow-caster subset) — owned per-layer by NodeCollection.
@@ -109,7 +135,13 @@ namespace render
 
         std::vector<DrawableInfo> m_drawables;
 
-        // cull signature (frustum planes) of the cull that last wrote DrawableInfo::m_visibility
+        // Dense per-drawable visibility (VisibilityBit mask incl. VISIBLE_ALIVE), parallel
+        // to m_drawables (same index space). Written by cullFrustum each frame; read by every
+        // draw sweep via isVisible()/getVisibility(). Kept out of DrawableInfo so the reject
+        // scan streams 1 byte/drawable instead of dragging the struct's cache lines through memory.
+        std::vector<uint8_t> m_visibility;
+
+        // cull signature (frustum planes) of the cull that last wrote the visibility mask
         std::array<glm::vec4, 6> m_cullSignature{};
         bool m_cullValid{ false };
 

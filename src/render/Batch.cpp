@@ -108,8 +108,8 @@ namespace render {
         const auto& drawables = m_instanceRegistry->getRange(instanceRef);
 
         // NOTE KI addMeshes is the MeshRenderer (debug) path; those drawables aren't in the
-        // per-layer cull groups and set their own m_visibility (always visible), so the
-        // cull-signature assert no longer applies here.
+        // per-layer cull groups and set their own visibility (always visible) via
+        // InstanceRegistry::setVisibility, so the cull-signature assert no longer applies here.
 
         {
             const auto resolveProgram = [&kindBits, this](
@@ -126,9 +126,9 @@ namespace render {
 
             for (uint32_t drawableIndex = 0; drawableIndex < drawableCount; drawableIndex++) {
                 const auto& drawable = drawables[drawableIndex];
-                if (drawable.entityIndex == 0) continue;
 
-                if ((drawable.m_visibility & VISIBLE_ALL) != VISIBLE_ALL) {
+                // cold debug path; dense-byte visibility test (dead slots count as skipped too)
+                if (!m_instanceRegistry->isVisible(instanceOffset + drawableIndex)) {
                     skippedCount++;
                     continue;
                 }

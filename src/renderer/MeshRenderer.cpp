@@ -166,7 +166,8 @@ void MeshRenderer::registerDrawables(
             // NOTE KI debug-renderer meshes are not in the scene's per-layer cull groups, so
             // nothing computes their visibility. Mark always-visible: addMeshes draws them
             // whenever this debug pass is enabled (no frustum/LOD cull for debug viz).
-            drawable.m_visibility = render::VISIBLE_ALL;
+            // VISIBLE_ALL includes VISIBLE_ALIVE, so this also marks the slot live.
+            instanceRegistry.setVisibility(m_instanceRef.offset + i, render::VISIBLE_ALL);
         }
     }
 
