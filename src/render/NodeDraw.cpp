@@ -161,8 +161,12 @@ namespace render {
         // drawing
 
         // NOTE KI compute frustum visibility once for this camera; every pass
-        // below reads the cached result instead of re-culling per pass
-        ctx.m_batch->cullFrustum(ctx);
+        // below reads the cached result instead of re-culling per pass. The base
+        // drawableSelector is folded into VISIBLE_SELECTED here (once) so the per-pass
+        // sweeps don't call it per drawable; nullptr when it's the trivial accept-all.
+        ctx.m_batch->cullFrustum(
+            ctx,
+            drawContext.filtersDrawables ? &drawContext.drawableSelector : nullptr);
 
         // Deferred passes
         {

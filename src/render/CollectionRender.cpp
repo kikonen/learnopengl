@@ -35,7 +35,8 @@ namespace render
         const std::vector<uint32_t>& bucket,
         const std::function<ki::program_id(const render::DrawableInfo&)>& programSelector,
         const std::function<void(ki::program_id)>& programPrepare,
-        const std::function<bool(const render::DrawableInfo&)>& drawableSelector)
+        const std::function<bool(const render::DrawableInfo&)>* drawableSelector,
+        const uint8_t requireMask)
     {
         auto& batch = *ctx.m_batch;
 
@@ -54,9 +55,10 @@ namespace render
         // CollectionRender contract).
         const auto resolve = [&](uint32_t index) -> ki::program_id
             {
-                if ((visibility[index] & VISIBLE_ALL) != VISIBLE_ALL) return 0;
+                if ((visibility[index] & requireMask) != requireMask) return 0;
                 const auto& drawable = drawables[index];
-                if (!drawableSelector(drawable)) return 0;
+                // nullptr selector => accept all (base filter already folded into requireMask)
+                if (drawableSelector && !(*drawableSelector)(drawable)) return 0;
                 return programSelector(drawable);
             };
 
@@ -105,9 +107,10 @@ namespace render
         const RenderContext& ctx,
         const std::function<ki::program_id(const render::DrawableInfo&)>& programSelector,
         const std::function<void(ki::program_id)>& programPrepare,
-        const std::function<bool(const render::DrawableInfo&)>& drawableSelector,
+        const std::function<bool(const render::DrawableInfo&)>* drawableSelector,
         const uint8_t kindBits,
-        const uint8_t routeBits)
+        const uint8_t routeBits,
+        const uint8_t requireMask)
     {
         auto& collection = *ctx.m_collection;
         if (ctx.m_layer >= MAX_LAYERS) return false;
@@ -123,10 +126,10 @@ namespace render
         // alpha-tested part via the alpha bucket. (Kind model: SOLID | ALPHA | ALPHA+BLEND.)
         const auto sweepRoute = [&](const NodeCollection::RouteBuckets& r)
             {
-                if (kindBits & render::KIND_SOLID) rendered |= sweepBucket(ctx, r.solid, programSelector, programPrepare, drawableSelector);
-                if (kindBits & render::KIND_ALPHA) rendered |= sweepBucket(ctx, r.alpha, programSelector, programPrepare, drawableSelector);
+                if (kindBits & render::KIND_SOLID) rendered |= sweepBucket(ctx, r.solid, programSelector, programPrepare, drawableSelector, requireMask);
+                if (kindBits & render::KIND_ALPHA) rendered |= sweepBucket(ctx, r.alpha, programSelector, programPrepare, drawableSelector, requireMask);
                 if (kindBits & render::KIND_BLEND && !(kindBits & render::KIND_ALPHA))
-                    rendered |= sweepBucket(ctx, r.blend, programSelector, programPrepare, drawableSelector);
+                    rendered |= sweepBucket(ctx, r.blend, programSelector, programPrepare, drawableSelector, requireMask);
             };
 
         if (routeBits & render::ROUTE_DEFERRED) sweepRoute(layerDrawables.deferred);
@@ -138,7 +141,8 @@ namespace render
     bool CollectionRender::drawShadow(
         const RenderContext& ctx,
         const std::function<ki::program_id(const render::DrawableInfo&)>& programSelector,
-        const std::function<bool(const render::DrawableInfo&)>& drawableSelector)
+        const std::function<bool(const render::DrawableInfo&)>* drawableSelector,
+        const uint8_t requireMask)
     {
         auto& collection = *ctx.m_collection;
         if (ctx.m_layer >= MAX_LAYERS) return false;
@@ -149,7 +153,8 @@ namespace render
             collection.m_drawablesByLayer[ctx.m_layer].shadow,
             programSelector,
             [](ki::program_id) {},
-            drawableSelector);
+            drawableSelector,
+            requireMask);
     }
 
     // Forward-rendered blend ("effect") pass: depth-sorted back-to-front. This is NOT the OIT
@@ -158,7 +163,8 @@ namespace render
     // route's blend bucket so OIT drawables aren't redundantly scanned.
     void CollectionRender::drawBlendedImpl(
         const RenderContext& ctx,
-        const std::function<bool(const render::DrawableInfo&)>& drawableSelector)
+        const std::function<bool(const render::DrawableInfo&)>* drawableSelector,
+        const uint8_t requireMask)
     {
         if (ctx.m_layer >= MAX_LAYERS) return;
 
@@ -177,9 +183,10 @@ namespace render
         std::vector<std::pair<float, uint32_t>> sorted;
         sorted.reserve(bucket.size());
         for (const uint32_t index : bucket) {
-            if ((visibility[index] & VISIBLE_ALL) != VISIBLE_ALL) continue;
+            if ((visibility[index] & requireMask) != requireMask) continue;
             const auto& drawable = drawables[index];
-            if (!drawableSelector(drawable)) continue;
+            // nullptr selector => accept all (base filter already folded into requireMask)
+            if (drawableSelector && !(*drawableSelector)(drawable)) continue;
 
             const glm::vec3 delta = drawable.worldVolume.getCenter() - eyePos;
             sorted.emplace_back(glm::dot(delta, delta), index);

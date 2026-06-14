@@ -276,7 +276,8 @@ void ShadowCascade::drawNodes(
                 if (drawable.shadowProgramId) return drawable.shadowProgramId;
                 return drawable.drawOptions.isAlpha() ? m_alphaShadowProgramId : m_solidShadowProgramId;
             },
-            render::ACCEPT_ALL_DRAWABLES);
+            // no base filter for shadows; nullptr skips the per-drawable accept-all call
+            nullptr);
     }
 
     ctx.m_batch->flush(ctx);

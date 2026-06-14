@@ -244,7 +244,9 @@ namespace render {
         clearBatches();
     }
 
-    void Batch::cullFrustum(const RenderContext& ctx)
+    void Batch::cullFrustum(
+        const RenderContext& ctx,
+        const std::function<bool(const render::DrawableInfo&)>* selector)
     {
         if (!ctx.m_collection || ctx.m_layer >= MAX_LAYERS) return;
 
@@ -255,10 +257,13 @@ namespace render {
             ctx.m_camera->getWorldPosition(),
             m_frustumCPU,
             m_lodDistanceEnabled,
-            m_frustumParallelLimit);
+            m_frustumParallelLimit,
+            selector);
     }
 
-    void Batch::cullShadowFrustum(const RenderContext& ctx)
+    void Batch::cullShadowFrustum(
+        const RenderContext& ctx,
+        const std::function<bool(const render::DrawableInfo&)>* selector)
     {
         if (!ctx.m_collection || ctx.m_layer >= MAX_LAYERS) return;
 
@@ -269,7 +274,8 @@ namespace render {
             ctx.m_camera->getWorldPosition(),
             m_frustumCPU,
             m_lodDistanceEnabled,
-            m_frustumParallelLimit);
+            m_frustumParallelLimit,
+            selector);
     }
 
     bool Batch::isFlushed() const noexcept

@@ -193,25 +193,24 @@ void ObjectIdRenderer::drawNodes(const render::RenderContext& parentCtx)
 
     m_idBuffer->clearAll();
 
-    // NOTE KI compute frustum visibility once for this camera before drawing
-    localCtx.m_batch->cullFrustum(localCtx);
+    // NOTE KI compute frustum visibility once for this camera before drawing; fold the
+    // selectable (!noSelect) filter into VISIBLE_SELECTED so the sweep skips the per-drawable call
+    const std::function<bool(const render::DrawableInfo&)> selectable =
+        [](const render::DrawableInfo& d) { return !d.m_flags.noSelect; };
+    localCtx.m_batch->cullFrustum(localCtx, &selectable);
 
     {
-        render::DrawContext drawContext{
-            [](const render::DrawableInfo& d) { return !d.m_flags.noSelect; },
-            render::KIND_ALL
-        };
-
         render::CollectionRender collectionRender;
         collectionRender.drawProgram(
             localCtx,
             [this](const render::DrawableInfo& drawable) {
                 return drawable.idProgramId ? drawable.idProgramId : m_idProgramId;
             },
-            drawContext.drawableSelector,
-            drawContext.kindBits,
+            nullptr,
+            render::KIND_ALL,
             // pick any geometry (deferred + forward route)
-            render::ROUTE_ALL);
+            render::ROUTE_ALL,
+            render::VISIBLE_ALL_SELECTED);
     }
 
     localCtx.m_batch->flush(localCtx);

@@ -200,6 +200,7 @@ void LayerRenderer::render(
             // draw. Common case (no wireframe / nothing selected) keeps the trivial acceptor
             // to avoid building a set + per-drawable lookup every frame.
             std::function<bool(const render::DrawableInfo&)> drawableSelector = render::ACCEPT_ALL_DRAWABLES;
+            bool filtersDrawables = false;
             if (useWireframeSelection) {
                 std::unordered_set<uint32_t> excluded;
                 if (assets.showTagged)
@@ -210,6 +211,7 @@ void LayerRenderer::render(
                     drawableSelector = [excluded = std::move(excluded)](const render::DrawableInfo& d) {
                         return excluded.find(d.entityIndex) == excluded.end();
                     };
+                    filtersDrawables = true;
                 }
             }
 
@@ -217,7 +219,9 @@ void LayerRenderer::render(
                 drawableSelector,
                 render::KIND_ALL,
                 // NOTE KI nothing to clear; keep stencil, depth copied from gbuffer
-                GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT
+                GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT,
+                // when set, the selector is folded into the cull instead of called per pass
+                filtersDrawables
             };
 
             m_nodeDraw->drawNodes(
@@ -290,7 +294,8 @@ void LayerRenderer::fillHighlightMask(
                 program->m_uniforms->u_stencilMode.set(STENCIL_MODE_SHIFT_NONE);
                 program->m_uniforms->u_wireframeMode.set(false);
             },
-            drawContext.drawableSelector,
+            // own selector over the shared cull; default require-mask ignores VISIBLE_SELECTED
+            &drawContext.drawableSelector,
             drawContext.kindBits,
             render::ROUTE_ALL);
     }
@@ -364,7 +369,8 @@ void LayerRenderer::renderHighlight(
                 program->m_uniforms->u_stencilMode.set(shift);
                 program->m_uniforms->u_wireframeMode.set(false);
             },
-            drawContext.drawableSelector,
+            // own selector over the shared cull; default require-mask ignores VISIBLE_SELECTED
+            &drawContext.drawableSelector,
             drawContext.kindBits,
             render::ROUTE_ALL);
         localCtx.m_batch->flush(localCtx);
@@ -416,7 +422,10 @@ void LayerRenderer::renderSelectionWireframe(
             program->m_uniforms->u_stencilMode.set(STENCIL_MODE_SHIFT_NONE);
             program->m_uniforms->u_wireframeMode.set(true);
         },
-        drawableSelector,
+        // wireframe draws exactly the SELECTED nodes (which the main cull excluded from
+        // VISIBLE_SELECTED); default require-mask VISIBLE_ALL ignores that bit, so its own
+        // selector still finds them.
+        &drawableSelector,
         render::KIND_ALL,
         render::ROUTE_ALL);
 

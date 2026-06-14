@@ -165,9 +165,11 @@ namespace render
                 if (!drawable.isFlag(render::INSTANCE_PRE_DEPTH_BIT)) return (ki::program_id)0;
                 return drawable.preDepthProgramId;
             },
-            drawContext.drawableSelector,
+            // base selector folded into the cull (VISIBLE_SELECTED); no per-drawable call
+            nullptr,
             drawContext.kindBits & render::KIND_SOLID,
-            render::ROUTE_DEFERRED);
+            render::ROUTE_DEFERRED,
+            render::VISIBLE_ALL_SELECTED);
 
         ctx.m_batch->flush(ctx);
 
@@ -188,6 +190,11 @@ namespace render
 
         state.setStencil(kigl::GLStencilMode::fill(STENCIL_SOLID | STENCIL_FOG));
 
+        // base selector folded into the cull (VISIBLE_SELECTED); this pass only adds the
+        // non-effect axis (a cheap inline flag read) — no nested std::function call.
+        const std::function<bool(const render::DrawableInfo&)> notEffect =
+            [](const render::DrawableInfo& d) { return !d.m_flags.effect; };
+
         CollectionRender collectionRender;
         collectionRender.drawProgram(
             ctx,
@@ -195,11 +202,10 @@ namespace render
                 if (!drawable.drawOptions.m_useDeferred) return (ki::program_id)0;
                 return drawable.programId;
             },
-            [&drawContext](const render::DrawableInfo& d) {
-                return !d.m_flags.effect && drawContext.drawableSelector(d);
-            },
+            &notEffect,
             drawContext.kindBits,
-            render::ROUTE_DEFERRED);
+            render::ROUTE_DEFERRED,
+            render::VISIBLE_ALL_SELECTED);
 
         ctx.m_batch->flush(ctx);
 
