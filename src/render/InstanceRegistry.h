@@ -3,6 +3,7 @@
 #include <vector>
 #include <span>
 #include <array>
+#include <functional>
 
 #include "kigl/GLBuffer.h"
 #include "kigl/GLFence.h"
@@ -30,8 +31,16 @@ namespace render
         // slot is live. Folded into the visibility byte so the reject scan needs no
         // entityIndex (DrawableInfo) read. Set by cullFrustum/setVisibility, cleared in release().
         VISIBLE_ALIVE   = 1 << 3,
+        // base drawableSelector result, folded into the byte by cullFrustum so the
+        // per-pass sweep can drop the nested std::function call. Deliberately OUTSIDE
+        // VISIBLE_ALL: passes that reuse another root's cull (highlight/wireframe
+        // selection) must NOT be affected by it, so it is opt-in via a per-sweep
+        // require-mask (VISIBLE_ALL_SELECTED), never the global reject test.
+        VISIBLE_SELECTED = 1 << 4,
         // drawable is rendered only when all bits — incl. liveness — are set
         VISIBLE_ALL     = VISIBLE_FRUSTUM | VISIBLE_LOD | VISIBLE_SHOWN | VISIBLE_ALIVE,
+        // require-mask for passes that folded their base selector into the cull
+        VISIBLE_ALL_SELECTED = VISIBLE_ALL | VISIBLE_SELECTED,
     };
 
     class InstanceRegistry
@@ -96,13 +105,16 @@ namespace render
         // broadcasts to the group's drawables. @param groups the cull groups to process (the
         // layer's groups, or the shadow-caster subset) — owned per-layer by NodeCollection.
         // @param frustumEnabled/lodEnabled if false that axis passes for all.
+        // @param selector optional per-drawable base filter folded into VISIBLE_SELECTED;
+        // nullptr means accept-all (the bit is set unconditionally, no indirect call).
         void cullFrustum(
             std::span<const util::BufferReference> groups,
             const Frustum& frustum,
             const glm::vec3& cameraPos,
             bool frustumEnabled,
             bool lodEnabled,
-            uint32_t parallelLimit) noexcept;
+            uint32_t parallelLimit,
+            const std::function<bool(const render::DrawableInfo&)>* selector = nullptr) noexcept;
 
         // NOTE KI debug aid: verify the cached cull matches the frustum a pass is
         // about to render with (catches a batch-building root that forgot to cull)

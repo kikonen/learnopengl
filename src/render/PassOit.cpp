@@ -146,9 +146,11 @@ namespace render
                 if (drawable.oitProgramId) return drawable.oitProgramId;
                 return m_oitProgram->m_id;
             },
-            drawContext.drawableSelector,
+            // base selector folded into the cull (VISIBLE_SELECTED); no per-drawable call
+            nullptr,
             drawContext.kindBits & render::KIND_BLEND,
-            render::ROUTE_DEFERRED);
+            render::ROUTE_DEFERRED,
+            render::VISIBLE_ALL_SELECTED);
 
         m_flushedCount = ctx.m_batch->flush(ctx);
 

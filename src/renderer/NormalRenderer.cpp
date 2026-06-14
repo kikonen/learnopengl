@@ -67,7 +67,8 @@ void NormalRenderer::drawNodes(const render::RenderContext& ctx)
                 if (drawable.isTesselated()) return (ki::program_id)0;
                 return drawable.normalProgramId ? drawable.normalProgramId : m_normalProgramId;
             },
-            drawContext.drawableSelector,
+            // debug overlay reuses the prior cull; own selector, default require-mask
+            &drawContext.drawableSelector,
             drawContext.kindBits,
             // debug normals for all geometry (deferred + forward route)
             render::ROUTE_ALL);

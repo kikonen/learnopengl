@@ -29,5 +29,10 @@ namespace render
 
         // GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT
         const GLbitfield copyMask;
+
+        // true when drawableSelector is a real filter (not ACCEPT_ALL). When true the
+        // selector is folded into the cull (VISIBLE_SELECTED); when false NodeDraw passes
+        // nullptr to cullFrustum so no per-drawable std::function call happens at all.
+        const bool filtersDrawables{ false };
     };
 }

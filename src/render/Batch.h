@@ -52,9 +52,14 @@ namespace render {
         // builds batches for that camera. Must be called by every batch-building
         // root (NodeDraw, shadow cascades, object-id) prior to drawing.
         // Cull this layer's drawables (ctx.m_collection / ctx.m_layer) for ctx's camera.
-        void cullFrustum(const RenderContext& ctx);
+        // @param selector optional base filter folded into VISIBLE_SELECTED (nullptr = accept-all).
+        void cullFrustum(
+            const RenderContext& ctx,
+            const std::function<bool(const render::DrawableInfo&)>* selector = nullptr);
         // Cull only this layer's shadow-caster groups (for the shadow cascade pass).
-        void cullShadowFrustum(const RenderContext& ctx);
+        void cullShadowFrustum(
+            const RenderContext& ctx,
+            const std::function<bool(const render::DrawableInfo&)>* selector = nullptr);
 
         void setInstanceRegistry(InstanceRegistry* instanceRegistry) {
             m_instanceRegistry = instanceRegistry;

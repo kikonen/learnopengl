@@ -70,14 +70,18 @@ namespace render
         state.setStencil({});
         state.setDepthMask(GL_FALSE);
 
+        // base selector folded into the cull (VISIBLE_SELECTED); this pass only adds the
+        // effect axis (a cheap inline flag read) — no nested std::function call.
+        // NOTE KI drawBlendedImpl already restricts to KIND_BLEND
+        const std::function<bool(const render::DrawableInfo&)> isEffect =
+            [](const render::DrawableInfo& d) { return d.m_flags.effect; };
+
         CollectionRender collectionRender;
 
         collectionRender.drawBlendedImpl(
             ctx,
-            [&drawContext](const render::DrawableInfo& d) {
-                // NOTE KI drawBlendedImpl already restricts to KIND_BLEND
-                return d.m_flags.effect && drawContext.drawableSelector(d);
-            });
+            &isEffect,
+            render::VISIBLE_ALL_SELECTED);
 
         ctx.m_batch->flush(ctx);
 

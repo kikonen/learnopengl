@@ -373,7 +373,9 @@ void CubeMapRenderer::drawNodes(
                 d.m_ignoredBy != currentId;
         },
         render::KIND_ALL,
-        GL_COLOR_BUFFER_BIT
+        GL_COLOR_BUFFER_BIT,
+        // real filter => fold into the cull (VISIBLE_SELECTED), not per pass
+        true
     };
 
     m_nodeDraw->drawNodes(

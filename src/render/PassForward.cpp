@@ -82,9 +82,11 @@ namespace render
                 if (drawable.drawOptions.isBlend()) return (ki::program_id)0;
                 return drawable.programId;
             },
-            drawContext.drawableSelector,
+            // base selector folded into the cull (VISIBLE_SELECTED); no per-drawable call
+            nullptr,
             drawContext.kindBits & ~render::KIND_BLEND,
-            render::ROUTE_FORWARD);
+            render::ROUTE_FORWARD,
+            render::VISIBLE_ALL_SELECTED);
 
         auto flushedCount = ctx.m_batch->flush(ctx);
         if (flushedCount > 0) {

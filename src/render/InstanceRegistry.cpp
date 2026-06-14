@@ -164,7 +164,8 @@ namespace render
         const glm::vec3& cameraPos,
         bool frustumEnabled,
         bool lodEnabled,
-        uint32_t parallelLimit) noexcept
+        uint32_t parallelLimit,
+        const std::function<bool(const render::DrawableInfo&)>* selector) noexcept
     {
         const size_t groupCount = groups.size();
 
@@ -175,7 +176,7 @@ namespace render
         // volume, so the frustum result and the eye-distance are identical), then broadcast the
         // per-camera visibility mask to the group's drawables. Only the LOD distance *band*
         // (min/maxDistance2) is per-drawable. An off-screen group skips all per-drawable LOD work.
-        const auto cull = [drawables, visibility, &frustum, &cameraPos, frustumEnabled, lodEnabled]
+        const auto cull = [drawables, visibility, &frustum, &cameraPos, frustumEnabled, lodEnabled, selector]
             (const util::BufferReference& group)
         {
             const auto& rep = drawables[group.offset];
@@ -208,6 +209,12 @@ namespace render
                 // dynamic node show/hide (mirrored to the drawable via node_visible event)
                 if (!d.m_flags.hidden) {
                     v |= VISIBLE_SHOWN;
+                }
+
+                // base drawableSelector folded in once here (vs. per drawable per pass).
+                // nullptr selector => accept-all, no indirect call.
+                if (!selector || (*selector)(d)) {
+                    v |= VISIBLE_SELECTED;
                 }
 
                 // group lifecycle is uniform (alloc/free as one BufferReference) and the
