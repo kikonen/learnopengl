@@ -62,7 +62,6 @@ namespace render
                 return programSelector(drawable);
             };
 
-        bool rendered{ false };
         size_t emitted = 0;
 
         if (bucket.size() < PARALLEL_SWEEP_LIMIT) {
@@ -73,11 +72,10 @@ namespace render
                 programPrepare(programId);
                 batch.addDrawable(index, drawables[index], programId);
                 emitted++;
-                rendered = true;
             }
             // skip = scanned candidates not emitted (culled or filtered); see Batch::addSkip
             batch.addSkip(bucket.size() - emitted);
-            return rendered;
+            return emitted > 0;
         }
 
         // Large bucket: resolve programs in parallel (one output slot per drawable, race-free),
@@ -97,10 +95,9 @@ namespace render
             programPrepare(programId);
             batch.addDrawable(index, drawables[index], programId);
             emitted++;
-            rendered = true;
         }
         batch.addSkip(bucket.size() - emitted);
-        return rendered;
+        return emitted > 0;
     }
 
     bool CollectionRender::drawNodesImpl(
