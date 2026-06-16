@@ -16,6 +16,7 @@ namespace render
         f.noReflect = tf.noReflect;
         f.noRefract = tf.noRefract;
         f.noFrustum = tf.noFrustum;
+        f.environment = tf.environment;
         return f;
     }
 }

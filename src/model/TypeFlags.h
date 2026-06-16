@@ -24,6 +24,9 @@ namespace model {
         bool terrain : 1 {false};
         bool cubeMap : 1 {false};
         bool environmentProbe : 1 {false};
+        // opt-in: include this node's geometry in IBL env-map captures (large static
+        // surroundings). Dynamic characters / small / expensive static clutter stay false.
+        bool environment : 1 {false};
         bool effect : 1 {false};
         bool skybox : 1 {false};
 

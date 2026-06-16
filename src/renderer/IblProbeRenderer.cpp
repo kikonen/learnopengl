@@ -193,9 +193,12 @@ void IblProbeRenderer::drawNodes(
     const auto currentId = current->getId();
 
     render::DrawContext drawContext{
-        // skip the probe node itself + anything explicitly ignoring it
+        // opt-in: only `environment`-tagged static geometry (large surroundings); dynamic
+        // characters and small/expensive clutter stay out. Skybox is a separate pass, so the
+        // sky still fills the capture. Also skip the probe node itself / anything ignoring it.
         [currentEntityIndex, currentId](const render::DrawableInfo& d) {
-            return d.entityIndex != currentEntityIndex &&
+            return d.m_flags.environment &&
+                d.entityIndex != currentEntityIndex &&
                 d.m_ignoredBy != currentId;
         },
         render::KIND_ALL,
