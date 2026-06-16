@@ -857,6 +857,7 @@ namespace loader
         flags.water = container.getFlag("water", flags.water);
         flags.cubeMap = container.getFlag("cube_map", flags.cubeMap);
         flags.environmentProbe = container.getFlag("environment_probe", flags.environmentProbe);
+        flags.environment = container.getFlag("environment", flags.environment);
 
         //flags.useDeferred = container.getFlag("use_deferred", flags.useDeferred);
         //flags.useOit = container.getFlag("use_oit", flags.useOit);

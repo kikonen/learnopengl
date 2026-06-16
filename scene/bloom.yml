@@ -23,7 +23,7 @@ types:
   - id: cube_map
     type: origo
     flags:
-      cube_map: true
+      xcube_map: true
       environment_probe: true
   - id: player
     type: origo
@@ -40,9 +40,13 @@ types:
     mesh:
       path: texture_cube_4/texture_cube_4.obj
       program: g_tex
+    flags:
+      environment: true
   - id: stained_windows
     prefab:
       path: prefab/props/prefab_door_01.yml
+    flags:
+      environment: true
   - id: dir_light
     mesh:
       path: light
@@ -126,12 +130,16 @@ types:
     mesh:
       path: planet/planet.obj
       program: g_tex
+    flags:
+      environment: true
   - id: planet_2
     mesh:
       path: planet/planet.obj
       material_modifier:
         map_normal: mars_normal.png
         program: g_tex
+    flags:
+      environment: true
   - id: wood_wall
     mesh:
       path: quad
@@ -139,12 +147,14 @@ types:
         name: woodwall
         kd: [0.800000, 0.800000, 0.800000, 1.0]
         map_kd: textures/wood_1024.png
-        reflection: 0.4
+        xreflection: 0.4
         render_back: true
         program: g_tex
   - id: wooden_floor
     prefab:
       path: prefab/scenery/prefab_wooden_floor.yml
+    flags:
+      environment: true
 
 nodes:
   - type: player

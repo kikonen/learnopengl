@@ -21,6 +21,9 @@ namespace render
         bool noRefract : 1 {false};
         bool noFrustum : 1 {false};
 
+        // opt-in inclusion in IBL env-map captures (IblProbeRenderer)
+        bool environment : 1 {false};
+
         // dynamic: mirrors !node->m_visible (seeded at population, updated via node_visible event)
         bool hidden : 1 {false};
     };
