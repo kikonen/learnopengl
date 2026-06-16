@@ -284,6 +284,12 @@ public:
     int prefilterMapSize;
     int brdfLutSize;
 
+    // scene-captured IBL probes (environment_probe nodes); when baked they override the
+    // skybox-derived irradiance/prefilter maps so IBL reflects actual scenery
+    bool environmentProbeEnabled;
+    int environmentProbeRenderFrameStart;
+    int environmentProbeRenderFrameStep;
+
     std::vector<LayerInfo> layers;
 
     bool gammaCorrectEnabled;

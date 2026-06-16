@@ -117,6 +117,7 @@ namespace render {
         std::vector<pool::NodeHandle> m_waterNodes;
         std::vector<pool::NodeHandle> m_mirrorNodes;
         std::vector<pool::NodeHandle> m_cubeMapNodes;
+        std::vector<pool::NodeHandle> m_environmentProbeNodes;
 
         //std::vector<NodeComponent<CameraComponent>> m_cameraComponents;
 

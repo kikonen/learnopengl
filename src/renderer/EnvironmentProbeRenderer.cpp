@@ -22,10 +22,17 @@
 
 #include "registry/NodeRegistry.h"
 
-EnvironmentProbeRenderer::EnvironmentProbeRenderer() = default;
+EnvironmentProbeRenderer::EnvironmentProbeRenderer(
+    bool cubeMap,
+    bool envProbe)
+    : m_cubeMap{ cubeMap},
+    m_envProbe{ envProbe }
+{}
+
 EnvironmentProbeRenderer::~EnvironmentProbeRenderer() = default;
 
-void EnvironmentProbeRenderer::prepareRT(const PrepareContext& ctx)
+void EnvironmentProbeRenderer::prepareRT(
+    const PrepareContext& ctx)
 {
     MeshRenderer::prepareRT(ctx);
 
@@ -36,10 +43,18 @@ void EnvironmentProbeRenderer::prepareRT(const PrepareContext& ctx)
     generator.segments = { 8, 0, 0 };
     m_mesh = generator.create();
 
-    {
+    if (m_cubeMap) {
         auto material = Material::createMaterial(BasicMaterial::highlight);
         material.m_name = "probe";
         material.kd = glm::vec4(0.2f, 0.8f, 0.1f, 1.f);
+        material.registerMaterial();
+        m_mesh->setMaterial(&material);
+    }
+
+    if (m_envProbe) {
+        auto material = Material::createMaterial(BasicMaterial::highlight);
+        material.m_name = "probe";
+        material.kd = glm::vec4(0.1f, 0.8f, 0.8f, 1.f);
         material.registerMaterial();
         m_mesh->setMaterial(&material);
     }
@@ -65,7 +80,14 @@ void EnvironmentProbeRenderer::render(
     for (const auto* node : nodeRegistry.getCachedNodesRT()) {
         if (!node) continue;
 
-        if (!node->m_typeFlags.cubeMap) continue;
+        if (m_cubeMap) {
+            if (!node->m_typeFlags.cubeMap) continue;
+        } else if (m_envProbe) {
+            if (!node->m_typeFlags.environmentProbe) continue;
+        }
+        else {
+            continue;
+        }
 
         const auto* snapshot = nodeRegistry.getSnapshotRT(node->getEntityIndex());
 
@@ -79,7 +101,13 @@ void EnvironmentProbeRenderer::render(
         mesh::Transform transform;
         transform.setPosition(worldPos);
         transform.setRotation(m_meshFixRotation);
-        transform.setScale(2.5f);
+
+        if (m_cubeMap) {
+            transform.setScale(2.f);
+        }
+        if (m_envProbe) {
+            transform.setScale(3.f);
+        }
 
         transform.updateMatrix();
         transform.updateWorldVolume();

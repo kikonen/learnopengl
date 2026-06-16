@@ -21,6 +21,7 @@ types:
     type: origo
     flags:
       cube_map: true
+      environment_probe: true
   - id: player
     mesh:
       path: water_ball

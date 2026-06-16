@@ -26,6 +26,7 @@ namespace render {
             const PassContext& src);
 
     protected:
+        std::unique_ptr<EnvironmentProbeRenderer> m_cubeMapRenderer{ nullptr };
         std::unique_ptr<EnvironmentProbeRenderer> m_environmentProbeRenderer{ nullptr };
     };
 }

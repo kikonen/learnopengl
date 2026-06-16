@@ -289,6 +289,10 @@ Assets::Assets()
     prefilterMapSize = 256;
     brdfLutSize = 512;
 
+    environmentProbeEnabled = false;
+    environmentProbeRenderFrameStart = 1;
+    environmentProbeRenderFrameStep = 8;
+
     gammaCorrectEnabled = true;
     hardwareCorrectGammaEnabled = true;
     gammaCorrect = 2.2f;

@@ -25,7 +25,8 @@ types:
   - id: cube_map
     type: origo
     flags:
-      cube_map: true
+      xcube_map: true
+      environment_probe: true
   - id: origo_marker
     type: origo
     mesh:
@@ -356,7 +357,7 @@ types:
         z_count: 3
         x_step: 60
         z_step: 60
-  - id: cube_2
+  - id: ball_2
     mesh:
       vertex:
         type: sphere
@@ -558,9 +559,11 @@ nodes:
   - type: grass
   - type: grass_floating
   - type: grass_floating_2
-  - type: cube_2
+  - type: ball_2
     pos: [160, 42.5, 20]
     rotation: [0, 0, 45]
+    children:
+      - type: cube_map
   - type: pool_floor_single
     pos: [160.0, 3.2, 20.0]
   - type: pool_surface_single

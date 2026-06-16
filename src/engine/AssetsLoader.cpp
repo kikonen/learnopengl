@@ -861,6 +861,18 @@ void AssetsLoader::loadAssets(
                 data.brdfLutSize = readInt(v);
                 continue;
             }
+            if (k == "environment_probe_enabled") {
+                data.environmentProbeEnabled = readBool(v);
+                continue;
+            }
+            if (k == "environment_probe_render_frame_start") {
+                data.environmentProbeRenderFrameStart = readInt(v);
+                continue;
+            }
+            if (k == "environment_probe_render_frame_step") {
+                data.environmentProbeRenderFrameStep = readInt(v);
+                continue;
+            }
         }
         {
             if (k == "layers") {

@@ -41,6 +41,7 @@ class ViewportRenderer;
 class WaterMapRenderer;
 class MirrorMapRenderer;
 class CubeMapRenderer;
+class IblProbeRenderer;
 class ShadowMapRenderer;
 
 class ObjectIdRenderer;
@@ -164,6 +165,7 @@ private:
     std::unique_ptr<WaterMapRenderer> m_waterMapRenderer{ nullptr };
     std::unique_ptr<MirrorMapRenderer> m_mirrorMapRenderer{ nullptr };
     std::unique_ptr<CubeMapRenderer> m_cubeMapRenderer{ nullptr };
+    std::unique_ptr<IblProbeRenderer> m_iblProbeRenderer{ nullptr };
     std::unique_ptr<ShadowMapRenderer> m_shadowMapRenderer{ nullptr };
 
     std::unique_ptr<ObjectIdRenderer> m_objectIdRenderer{ nullptr };

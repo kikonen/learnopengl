@@ -18,16 +18,22 @@ namespace mesh {
 class EnvironmentProbeRenderer : public MeshRenderer
 {
 public:
-    EnvironmentProbeRenderer();
+    EnvironmentProbeRenderer(
+        bool cubeMap,
+        bool envProbe);
     ~EnvironmentProbeRenderer();
 
-    virtual void prepareRT(const PrepareContext& ctx) override;
+    virtual void prepareRT(
+        const PrepareContext& ctx) override;
 
     virtual void render(
         const render::RenderContext& ctx,
         render::FrameBuffer* fbo) override;
 
 private:
+    const bool m_cubeMap;
+    const bool m_envProbe;
+
     util::Ref<mesh::Mesh> m_mesh;
     glm::mat4 m_meshFixMatrix;
     glm::quat m_meshFixRotation;

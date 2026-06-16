@@ -22,8 +22,15 @@ namespace render {
 
         bool valid() { return m_cubeTexture.valid(); }
 
+        // skybox path: create + convolve once from m_envCubeMapID
         void prepareRT(
             const PrepareContext& ctx);
+
+        // allocate the cube texture (with mip chain) once (probe path); size from caller
+        void createRT(int size);
+
+        // (re)convolve the given input cube into this map's mip chain; safe to call repeatedly
+        void convolve(int envCubeMapID);
 
         void bindTexture(
             kigl::GLState& state,

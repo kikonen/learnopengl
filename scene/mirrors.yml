@@ -18,6 +18,7 @@ types:
     type: origo
     flags:
       cube_map: true
+      environment_probe: true
   - id: player
     type: origo
     front: [0, 0, -1]

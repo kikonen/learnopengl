@@ -52,6 +52,7 @@ namespace render {
         m_waterNodes.clear();
         m_mirrorNodes.clear();
         m_cubeMapNodes.clear();
+        m_environmentProbeNodes.clear();
 
         m_activeCameraNode.reset();
         m_cameraNodes.clear();
@@ -105,6 +106,9 @@ namespace render {
         if (node->m_typeFlags.cubeMap) {
             m_cubeMapNodes.push_back(nodeHandle);
         }
+        if (node->m_typeFlags.environmentProbe) {
+            m_environmentProbeNodes.push_back(nodeHandle);
+        }
 
         if (node->m_camera) {
             m_cameraNodes.push_back(nodeHandle);
@@ -140,6 +144,7 @@ namespace render {
         nodeHandle.removeFrom(m_waterNodes);
         nodeHandle.removeFrom(m_mirrorNodes);
         nodeHandle.removeFrom(m_cubeMapNodes);
+        nodeHandle.removeFrom(m_environmentProbeNodes);
 
         nodeHandle.removeFrom(m_cameraNodes);
 
