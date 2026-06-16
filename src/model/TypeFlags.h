@@ -23,6 +23,7 @@ namespace model {
         bool water : 1 {false};
         bool terrain : 1 {false};
         bool cubeMap : 1 {false};
+        bool environmentProbe : 1 {false};
         bool effect : 1 {false};
         bool skybox : 1 {false};
 

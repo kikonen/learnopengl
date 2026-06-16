@@ -32,41 +32,50 @@ namespace render {
         const PrepareContext& ctx)
     {
         const auto& assets = ctx.getAssets();
-        auto* registry = ctx.getRegistry();
-        auto& state = kigl::GLState::get();
 
         if (m_envCubeMapID <= 0) return;
 
-        m_size = assets.irradianceMapSize;
+        createRT(assets.irradianceMapSize);
+        convolve(m_envCubeMapID);
+    }
 
-        {
-            m_cubeTexture.create("irradiance_map", GL_TEXTURE_CUBE_MAP, m_size, m_size);
+    void IrradianceMap::createRT(int size)
+    {
+        if (m_cubeTexture.valid()) return;
 
-            glTextureStorage2D(m_cubeTexture, 1, GL_RGB16F, m_size, m_size);
+        m_size = size;
 
-            glTextureParameteri(m_cubeTexture, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-            glTextureParameteri(m_cubeTexture, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-            glTextureParameteri(m_cubeTexture, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+        m_cubeTexture.create("irradiance_map", GL_TEXTURE_CUBE_MAP, m_size, m_size);
 
-            // NOTE KI LINEAR *REQUIRED*
-            // => interpolation is needed to avoid square pattern
-            glTextureParameteri(m_cubeTexture, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-            glTextureParameteri(m_cubeTexture, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-        }
+        glTextureStorage2D(m_cubeTexture, 1, GL_RGB16F, m_size, m_size);
 
-        {
-            auto* program = Program::get(ProgramRegistry::get().getProgram(SHADER_IRRADIANCE_CUBE_MAP));
-            program->prepareRT();
+        glTextureParameteri(m_cubeTexture, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+        glTextureParameteri(m_cubeTexture, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+        glTextureParameteri(m_cubeTexture, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
 
-            program->bind();
-            state.bindTexture(UNIT_ENVIRONMENT_MAP, m_envCubeMapID, false);
+        // NOTE KI LINEAR *REQUIRED*
+        // => interpolation is needed to avoid square pattern
+        glTextureParameteri(m_cubeTexture, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        glTextureParameteri(m_cubeTexture, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    }
 
-            CubeRender renderer;
-            renderer.render(program, m_cubeTexture, m_size);
+    void IrradianceMap::convolve(int envCubeMapID)
+    {
+        if (envCubeMapID <= 0 || !m_cubeTexture.valid()) return;
 
-            state.unbindTexture(UNIT_ENVIRONMENT_MAP, false);
-            state.invalidateAll();
-        }
+        auto& state = kigl::GLState::get();
+
+        auto* program = Program::get(ProgramRegistry::get().getProgram(SHADER_IRRADIANCE_CUBE_MAP));
+        program->prepareRT();
+
+        program->bind();
+        state.bindTexture(UNIT_ENVIRONMENT_MAP, envCubeMapID, false);
+
+        CubeRender renderer;
+        renderer.render(program, m_cubeTexture, m_size);
+
+        state.unbindTexture(UNIT_ENVIRONMENT_MAP, false);
+        state.invalidateAll();
     }
 
     void IrradianceMap::bindTexture(

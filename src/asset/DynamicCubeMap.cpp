@@ -10,9 +10,11 @@
 
 DynamicCubeMap::DynamicCubeMap(
     std::string_view name,
-    int size)
+    int size,
+    int levels)
     : m_name(name),
     m_size(size),
+    m_levels(levels < 1 ? 1 : levels),
     m_cubeMap{ m_name + "_dyn_cubemap_cube", true }
 {
 }
@@ -74,6 +76,7 @@ void DynamicCubeMap::prepareRT(
     m_fbo.create(m_name + "_dyn_cubemap_fbo");
 
     m_cubeMap.m_size = m_size;
+    m_cubeMap.m_levels = m_levels;
     m_cubeMap.m_internalFormat = GL_RGB16F;
     m_cubeMap.prepareRT(ctx);
 

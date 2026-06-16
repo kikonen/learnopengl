@@ -24,7 +24,8 @@ class DynamicCubeMap
 public:
     DynamicCubeMap(
         std::string_view name,
-        int size);
+        int size,
+        int levels = 1);
 
     ~DynamicCubeMap();
 
@@ -50,6 +51,7 @@ public:
 
 public:
     const int m_size;
+    const int m_levels;
     std::string m_name;
 
     render::CubeMap m_cubeMap;

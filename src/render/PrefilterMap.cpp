@@ -41,45 +41,54 @@ namespace render {
         const PrepareContext& ctx)
     {
         const auto& assets = ctx.getAssets();
-        auto* registry = ctx.getRegistry();
-        auto& state = kigl::GLState::get();
 
         if (m_envCubeMapID <= 0) return;
 
-        m_size = assets.prefilterMapSize;
+        createRT(assets.prefilterMapSize);
+        convolve(m_envCubeMapID);
+    }
 
-        {
-            m_cubeTexture.create("prefilter_map", GL_TEXTURE_CUBE_MAP, m_size, m_size);
+    void PrefilterMap::createRT(int size)
+    {
+        if (m_cubeTexture.valid()) return;
 
-            // https://www.khronos.org/opengl/wiki/Common_Mistakes#Creating_a_complete_texture
-            glTextureStorage2D(m_cubeTexture, MAX_MIP_LEVELS, GL_RGB16F, m_size, m_size);
+        m_size = size;
 
-            // https://stackoverflow.com/questions/37232110/opengl-cubemap-writing-to-mipmap
-            glTextureParameteri(m_cubeTexture, GL_TEXTURE_BASE_LEVEL, 0);
-            glTextureParameteri(m_cubeTexture, GL_TEXTURE_MAX_LEVEL, MAX_MIP_LEVELS - 1);
+        m_cubeTexture.create("prefilter_map", GL_TEXTURE_CUBE_MAP, m_size, m_size);
 
-            glTextureParameteri(m_cubeTexture, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-            glTextureParameteri(m_cubeTexture, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-            glTextureParameteri(m_cubeTexture, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+        // https://www.khronos.org/opengl/wiki/Common_Mistakes#Creating_a_complete_texture
+        glTextureStorage2D(m_cubeTexture, MAX_MIP_LEVELS, GL_RGB16F, m_size, m_size);
 
-            // be sure to set minification filter to mip_linear
-            glTextureParameteri(m_cubeTexture, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-            glTextureParameteri(m_cubeTexture, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-        }
+        // https://stackoverflow.com/questions/37232110/opengl-cubemap-writing-to-mipmap
+        glTextureParameteri(m_cubeTexture, GL_TEXTURE_BASE_LEVEL, 0);
+        glTextureParameteri(m_cubeTexture, GL_TEXTURE_MAX_LEVEL, MAX_MIP_LEVELS - 1);
 
-        {
-            auto programId = ProgramRegistry::get().getProgram(SHADER_PREFILTER_CUBE_MAP);
-            auto* program = Program::get(programId);
+        glTextureParameteri(m_cubeTexture, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+        glTextureParameteri(m_cubeTexture, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+        glTextureParameteri(m_cubeTexture, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
 
-            program->prepareRT();
-            program->bind();
-            state.bindTexture(UNIT_ENVIRONMENT_MAP, m_envCubeMapID, false);
+        // be sure to set minification filter to mip_linear
+        glTextureParameteri(m_cubeTexture, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+        glTextureParameteri(m_cubeTexture, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    }
 
-            render(program, m_cubeTexture, m_size);
+    void PrefilterMap::convolve(int envCubeMapID)
+    {
+        if (envCubeMapID <= 0 || !m_cubeTexture.valid()) return;
 
-            state.unbindTexture(UNIT_ENVIRONMENT_MAP, false);
-            state.invalidateAll();
-        }
+        auto& state = kigl::GLState::get();
+
+        auto programId = ProgramRegistry::get().getProgram(SHADER_PREFILTER_CUBE_MAP);
+        auto* program = Program::get(programId);
+
+        program->prepareRT();
+        program->bind();
+        state.bindTexture(UNIT_ENVIRONMENT_MAP, envCubeMapID, false);
+
+        render(program, m_cubeTexture, m_size);
+
+        state.unbindTexture(UNIT_ENVIRONMENT_MAP, false);
+        state.invalidateAll();
     }
 
     void PrefilterMap::bindTexture(

@@ -12,7 +12,11 @@ skybox:
 script:
   scripts:
     - path: lib/common
+
 types:
+  - id: ibl_probe
+    flags:
+      environment_probe: true
   - id: world_origo
     mesh:
       path: water_ball
@@ -58,6 +62,12 @@ types:
       intensity: 1000
   - id: ball_origo
     type: origo
+    script: |
+      cmd:rotate(
+        self.handle,
+        { time=100 * 100 },
+        vec3(0, 1, 0),
+        360 * 100)
   - id: basic_ball
     mesh:
       path: water_ball
@@ -157,6 +167,8 @@ types:
       program: g_tex
 
 nodes:
+  - type: ibl_probe
+    pos: [0, 2, 0]
   - type: world_origo
     pos: [0.0, 0.0, 0.0]
     scale: 1

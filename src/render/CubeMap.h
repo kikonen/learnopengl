@@ -44,6 +44,10 @@ namespace render {
         std::vector<std::string> m_faces;
         int m_size = 0;
 
+        // mip levels for an empty cube (1 = no mips). When > 1 the min filter is set to
+        // mipmap-linear; the caller fills mips (e.g. glGenerateTextureMipmap after rendering).
+        int m_levels = 1;
+
         GLenum m_internalFormat = GL_RGB8;
 
         kigl::GLTextureHandle m_cubeTexture;

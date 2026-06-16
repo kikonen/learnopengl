@@ -666,6 +666,7 @@
     <ClCompile Include="src\particle\ParticleGenerator.cpp" />
     <ClCompile Include="src\renderer\ParticleRenderer.cpp" />
     <ClCompile Include="src\renderer\CubeMapRenderer.cpp" />
+    <ClCompile Include="src\renderer\IblProbeRenderer.cpp" />
     <ClCompile Include="src\mesh\Mesh.cpp" />
     <ClCompile Include="src\render\Batch.cpp" />
     <ClCompile Include="src\renderer\Renderer.cpp" />
@@ -1296,6 +1297,7 @@
     <ClInclude Include="src\particle\ParticleGenerator.h" />
     <ClInclude Include="src\renderer\ParticleRenderer.h" />
     <ClInclude Include="src\renderer\CubeMapRenderer.h" />
+    <ClInclude Include="src\renderer\IblProbeRenderer.h" />
     <ClInclude Include="src\mesh\Mesh.h" />
     <ClInclude Include="src\render\Batch.h" />
     <ClInclude Include="src\renderer\Renderer.h" />

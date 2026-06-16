@@ -40,6 +40,7 @@ types:
     type: origo
     flags:
       cube_map: true
+      environment_probe: true
   - id: wooden_floor
     prefab:
       path: prefab/scenery/prefab_wooden_floor.yml

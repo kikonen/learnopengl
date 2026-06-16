@@ -70,9 +70,16 @@ namespace render {
     {
         m_cubeTexture.create(fmt::format("{}_empty_cube_map", m_name), GL_TEXTURE_CUBE_MAP, m_size, m_size);
 
-        glTextureStorage2D(m_cubeTexture, 1, m_internalFormat, m_size, m_size);
+        const int levels = m_levels < 1 ? 1 : m_levels;
+        glTextureStorage2D(m_cubeTexture, levels, m_internalFormat, m_size, m_size);
 
-        glTextureParameteri(m_cubeTexture, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+        if (levels > 1) {
+            glTextureParameteri(m_cubeTexture, GL_TEXTURE_BASE_LEVEL, 0);
+            glTextureParameteri(m_cubeTexture, GL_TEXTURE_MAX_LEVEL, levels - 1);
+        }
+
+        // mipmap-linear when mips exist (e.g. captured env cube convolved at varying roughness)
+        glTextureParameteri(m_cubeTexture, GL_TEXTURE_MIN_FILTER, levels > 1 ? GL_LINEAR_MIPMAP_LINEAR : GL_LINEAR);
         glTextureParameteri(m_cubeTexture, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
         glTextureParameteri(m_cubeTexture, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);

@@ -24,6 +24,7 @@ types:
     type: origo
     flags:
       cube_map: true
+      environment_probe: true
   - id: player
     type: origo
     front: [0, 0, -1]
@@ -114,9 +115,13 @@ types:
   - id: mirror_ball
     mesh:
       path: glass_ball
+      xmaterial:
+        prefab: materials/Metal008.yml
       material_modifier:
-        reflection: 0.8
+        xreflection: 0.8
         program: g_tex
+        kd: [0.1]
+        mras: [1, 0, 1, 1]
   - id: planet_1
     mesh:
       path: planet/planet.obj

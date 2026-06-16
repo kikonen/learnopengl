@@ -63,6 +63,7 @@ types:
     type: origo
     flags:
       cube_map: true
+      environment_probe: true
   - id: mirror_ball
     mesh:
       path: glass_ball

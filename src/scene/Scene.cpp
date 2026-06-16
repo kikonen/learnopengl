@@ -55,6 +55,7 @@
 #include "renderer/WaterMapRenderer.h"
 #include "renderer/MirrorMapRenderer.h"
 #include "renderer/CubeMapRenderer.h"
+#include "renderer/IblProbeRenderer.h"
 #include "renderer/ShadowMapRenderer.h"
 
 #include "renderer/ObjectIdRenderer.h"
@@ -81,6 +82,7 @@ Scene::Scene(
         m_waterMapRenderer = std::make_unique<WaterMapRenderer>("water", true, true, false);
         m_mirrorMapRenderer = std::make_unique<MirrorMapRenderer>("mirror", true, true, false);
         m_cubeMapRenderer = std::make_unique<CubeMapRenderer>(true);
+        m_iblProbeRenderer = std::make_unique<IblProbeRenderer>(true);
         m_shadowMapRenderer = std::make_unique<ShadowMapRenderer>(true);
 
         m_objectIdRenderer = std::make_unique<ObjectIdRenderer>(false);
@@ -95,6 +97,7 @@ Scene::Scene(
         m_waterMapRenderer->setEnabled(assets.waterMapEnabled);
         m_mirrorMapRenderer->setEnabled(assets.mirrorMapEnabled);
         m_cubeMapRenderer->setEnabled(assets.cubeMapEnabled);
+        m_iblProbeRenderer->setEnabled(assets.environmentProbeEnabled);
         m_shadowMapRenderer->setEnabled(assets.shadowMapEnabled);
 
         m_objectIdRenderer->setEnabled(true);
@@ -237,6 +240,9 @@ void Scene::prepareRT()
     }
     if (m_cubeMapRenderer->isEnabled()) {
         m_cubeMapRenderer->prepareRT(ctx);
+    }
+    if (m_iblProbeRenderer->isEnabled()) {
+        m_iblProbeRenderer->prepareRT(ctx);
     }
     if (m_shadowMapRenderer->isEnabled()) {
         m_shadowMapRenderer->prepareRT(ctx);
@@ -471,6 +477,7 @@ void Scene::updateViewRT(const UpdateViewContext& ctx)
     }
 
     m_cubeMapRenderer->updateRT(ctx);
+    m_iblProbeRenderer->updateRT(ctx);
     m_mirrorMapRenderer->updateRT(ctx);
     m_waterMapRenderer->updateRT(ctx);
 
@@ -626,6 +633,14 @@ void Scene::render(const render::RenderContext& ctx)
         m_waterMapRenderer->bindTexture(ctx.getGLState());
         m_mirrorMapRenderer->bindTexture(ctx.getGLState());
     }
+
+    // Bake scene-captured IBL and bind it over the skybox-derived maps (units 71/72) for the
+    // main pass. Runs after Scene::bind bound the skybox IBL, so the probe maps win this frame;
+    // bindTexture is a no-op until the first bake (skybox IBL stays the fallback).
+    if (m_iblProbeRenderer->render(ctx)) {
+        glMemoryBarrier(GL_TEXTURE_FETCH_BARRIER_BIT);
+    }
+    m_iblProbeRenderer->bindTexture(ctx.getGLState());
 
     // NOTE KI skip main render if special update cycle
     //if (!wasCubeMap) // && renderCount <= 2)

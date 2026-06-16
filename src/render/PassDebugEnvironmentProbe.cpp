@@ -20,7 +20,8 @@ namespace render
 {
     PassDebugEnvironmentProbe::PassDebugEnvironmentProbe()
         : Pass("PassDebugEnvironmentProbe"),
-        m_environmentProbeRenderer{ std::make_unique<EnvironmentProbeRenderer>() }
+        m_cubeMapRenderer{ std::make_unique<EnvironmentProbeRenderer>(true, false) },
+        m_environmentProbeRenderer{ std::make_unique<EnvironmentProbeRenderer>(false, true) }
     {
     }
 
@@ -28,6 +29,7 @@ namespace render
 
     void PassDebugEnvironmentProbe::prepare(const PrepareContext& ctx)
     {
+        m_cubeMapRenderer->prepareRT(ctx);
         m_environmentProbeRenderer->prepareRT(ctx);
     }
 
@@ -59,6 +61,7 @@ namespace render
 
         src.buffer->bind(ctx);
 
+        m_cubeMapRenderer->render(ctx, src.buffer);
         m_environmentProbeRenderer->render(ctx, src.buffer);
 
         return src;

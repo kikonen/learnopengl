@@ -40,6 +40,7 @@ types:
     type: origo
     flags:
       cube_map: true
+      environment_probe: true
   - id: player
     type: origo
     xmesh:
@@ -821,6 +822,7 @@ types:
     type: origo
     flags:
       cube_map: true
+      environment_probe: true
   - id: rock
     mesh:
       path: rock2/rock
