@@ -214,6 +214,12 @@ namespace loader {
             else if (k == "water_depth") {
                 data.waterDepth = readFloat(v);
             }
+            else if (k == "environment_probe_inner_radius") {
+                data.environmentProbeInnerRadius = readFloat(v);
+            }
+            else if (k == "environment_probe_outer_radius") {
+                data.environmentProbeOuterRadius = readFloat(v);
+            }
             else if (k == "front") {
                 data.front = readVec3(v);
             }

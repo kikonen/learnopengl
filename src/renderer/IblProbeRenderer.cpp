@@ -1,6 +1,6 @@
 #include "IblProbeRenderer.h"
 
-#include <map>
+#include <limits>
 
 #include <glm/glm.hpp>
 #include <glm/gtx/norm.hpp>
@@ -17,6 +17,7 @@
 #include "pool/NodeHandle.h"
 
 #include "model/Node.h"
+#include "model/NodeType.h"
 #include "model/Snapshot.h"
 
 #include "engine/PrepareContext.h"
@@ -133,6 +134,9 @@ bool IblProbeRenderer::render(
     if (!isEnabled()) return false;
     if (!needRender(parentCtx)) return false;
 
+    // refresh probe metadata (pos + influence bounds) for this frame
+    enumerateProbes(parentCtx);
+
     model::Node* centerNode = findClosest(parentCtx);
     if (!centerNode) return false;
 
@@ -215,16 +219,14 @@ void IblProbeRenderer::drawNodes(
     targetBuffer->unbind(ctx);
 }
 
-model::Node* IblProbeRenderer::findClosest(const render::RenderContext& ctx)
+void IblProbeRenderer::enumerateProbes(const render::RenderContext& ctx)
 {
+    m_probes.clear();
+
+    if (!ctx.m_collection) return;
     auto& nodes = ctx.m_collection->m_environmentProbeNodes;
 
-    if (nodes.empty()) return nullptr;
-
-    const glm::vec3& cameraPos = ctx.m_camera->getWorldPosition();
-
-    std::map<float, model::Node*> sorted;
-
+    int index = 0;
     for (const auto& handle : nodes) {
         auto* node = handle.toNode();
         if (!node) continue;
@@ -232,12 +234,35 @@ model::Node* IblProbeRenderer::findClosest(const render::RenderContext& ctx)
         const auto* snapshot = node->getSnapshotRT();
         if (!snapshot) continue;
 
-        auto dist2 = glm::distance2(snapshot->getWorldPosition(), cameraPos);
-        sorted[dist2] = node;
+        auto* type = node->getType();
+
+        ProbeMeta meta;
+        meta.node = handle;
+        meta.pos = snapshot->getWorldPosition();
+        meta.innerRadius = type->m_environmentProbeInnerRadius;
+        meta.outerRadius = type->m_environmentProbeOuterRadius;
+        meta.index = index++;
+
+        m_probes.push_back(meta);
+    }
+}
+
+model::Node* IblProbeRenderer::findClosest(const render::RenderContext& ctx)
+{
+    if (m_probes.empty()) return nullptr;
+
+    const glm::vec3& cameraPos = ctx.m_camera->getWorldPosition();
+
+    const ProbeMeta* best = nullptr;
+    float bestDist2 = std::numeric_limits<float>::max();
+
+    for (const auto& probe : m_probes) {
+        const float dist2 = glm::distance2(probe.pos, cameraPos);
+        if (dist2 < bestDist2) {
+            bestDist2 = dist2;
+            best = &probe;
+        }
     }
 
-    for (auto it = sorted.begin(); it != sorted.end(); ++it) {
-        return it->second;
-    }
-    return nullptr;
+    return best ? best->node.toNode() : nullptr;
 }

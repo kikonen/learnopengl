@@ -53,6 +53,10 @@ namespace loader
 
         float waterDepth{ 0.f };
 
+        // IBL env-probe influence radii (only meaningful with environment_probe flag)
+        float environmentProbeInnerRadius{ 0.f };
+        float environmentProbeOuterRadius{ 0.f };
+
         glm::vec3 baseRotation{ 0.f };
         glm::vec3 baseScale{ 1.f };
 
