@@ -191,6 +191,11 @@ namespace model
         // AABB containment (caustics activation). Only meaningful when m_flags.water.
         float m_waterDepth{ 0.f };
 
+        // IBL env-probe influence radii (world units); only meaningful with m_flags.environmentProbe.
+        // outer <= 0 means "global" (covers everything) for the per-fragment probe blend.
+        float m_environmentProbeInnerRadius{ 0.f };
+        float m_environmentProbeOuterRadius{ 0.f };
+
     private:
         bool m_preparedWT : 1 {false};
         bool m_preparedRT : 1 {false};

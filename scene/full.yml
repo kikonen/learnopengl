@@ -665,6 +665,7 @@ types:
         pre_depth: true
     priority: 20
     type_flags:
+      environment: true
       use_deferred: true
       nav_physics: true
     generator:

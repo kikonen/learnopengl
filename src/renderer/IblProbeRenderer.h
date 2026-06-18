@@ -3,7 +3,11 @@
 #include <vector>
 #include <memory>
 
+#include <glm/glm.hpp>
+
 #include "Renderer.h"
+
+#include "pool/NodeHandle.h"
 
 #include "render/Camera.h"
 #include "render/IrradianceMap.h"
@@ -60,7 +64,22 @@ public:
     bool render(
         const render::RenderContext& ctx);
 
+    // Per-frame probe metadata (world pos + influence bounds). Built by enumerateProbes;
+    // consumed by the per-fragment probe blend (Phase 4). Phase 2 still bakes only the closest.
+    struct ProbeMeta {
+        pool::NodeHandle node;
+        glm::vec3 pos{ 0.f };
+        float innerRadius{ 0.f };
+        float outerRadius{ 0.f };   // <= 0 => global (covers everything)
+        int index{ 0 };
+    };
+
+    const std::vector<ProbeMeta>& getProbes() const noexcept { return m_probes; }
+
 private:
+    // Collect environment_probe nodes into m_probes (pos + radii from node type).
+    void enumerateProbes(const render::RenderContext& ctx);
+
     void drawNodes(
         const render::RenderContext& ctx,
         render::CubeMapBuffer* targetBuffer,
@@ -83,6 +102,8 @@ private:
 
     render::IrradianceMap m_irradianceMap;
     render::PrefilterMap m_prefilterMap;
+
+    std::vector<ProbeMeta> m_probes;
 
     std::unique_ptr<render::NodeDraw> m_nodeDraw;
 };
