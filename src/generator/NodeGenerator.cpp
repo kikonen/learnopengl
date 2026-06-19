@@ -102,20 +102,39 @@ void NodeGenerator::updateDrawables(
     const auto& lodMeshes = container.getEnabledMeshes();
 
     auto drawables = instanceRegistry.modifyRange(m_instanceRef);
-    int drawableIndex = 0;
 
-    for (auto& transform : m_transforms) {
-        for (int i = 0; i < lodMeshes.size(); i++) {
-            const auto& lodMesh = *lodMeshes[i];
-            auto& drawable = drawables[drawableIndex++];
+    if (false) {
+        int drawableIndex = 0;
 
-            drawable.worldVolume = transform.getWorldVolume();
-            drawable.localTransform = transform.getMatrix() * lodMesh.m_baseTransform;
+        for (auto& transform : m_transforms) {
+            for (int i = 0; i < lodMeshes.size(); i++) {
+                const auto& lodMesh = *lodMeshes[i];
+                auto& drawable = drawables[drawableIndex++];
+
+                drawable.worldVolume = transform.getWorldVolume();
+                drawable.localTransform = transform.getMatrix() * lodMesh.m_baseTransform;
+            }
         }
+        instanceRegistry.markDirty(m_instanceRef);
+        instanceRegistry.updateInstances(m_instanceRef);
     }
 
-    instanceRegistry.markDirty(m_instanceRef);
-    instanceRegistry.updateInstances(m_instanceRef);
+    if (true) {
+        for (const auto& dirtyRef : m_dirtySlots) {
+            for (size_t drawableIndex = dirtyRef.offset; drawableIndex < dirtyRef.offset + dirtyRef.size; drawableIndex++) {
+                const auto& transform = m_transforms[drawableIndex];
+                for (int i = 0; i < lodMeshes.size(); i++) {
+                    const auto& lodMesh = *lodMeshes[i];
+                    auto& drawable = drawables[drawableIndex];
+
+                    drawable.worldVolume = transform.getWorldVolume();
+                    drawable.localTransform = transform.getMatrix() * lodMesh.m_baseTransform;
+                }
+            }
+            instanceRegistry.markDirty(dirtyRef);
+            instanceRegistry.updateInstances(dirtyRef);
+        }
+    }
 
     m_dirtySlots.clear();
 }
