@@ -25,7 +25,7 @@
 namespace {
     bool done = false;
 
-    constexpr int STRIDES = 3;
+    constexpr int STRIDES = 10;
 }
 
 AsteroidBeltGenerator::AsteroidBeltGenerator(int asteroidCount)
@@ -62,7 +62,7 @@ void AsteroidBeltGenerator::updateWT(
 
     const auto containerLevel = container.getState().getMatrixLevel();
     const auto parentChanged = containerLevel != m_containerMatrixLevel;
-    const bool needUpdate = (m_updateIndex % m_updateStep) == 0;
+    const bool needUpdate = (m_updateIndex % m_updateStep) == 0 || true;
 
     if (needUpdate) {
         m_updateIndex = 0;
@@ -73,20 +73,34 @@ void AsteroidBeltGenerator::updateWT(
         //auto& parentMatrix = container.getParent()->getState().getModelMatrix();
         const auto& parentMatrix = container.getState().getModelMatrix();
 
-        auto fn = [this, &parentMatrix, parentChanged](const auto idx) {
-            if (!parentChanged && (idx % STRIDES) != m_strideIndex) return;
-            //if (m_strideIndex != 1) continue;
-            m_transforms[idx].updateMatrix();
-            m_transforms[idx].updateWorldVolume(parentMatrix, m_localVolume);
-            };
+        if (false) {
+            auto fn = [this, &parentMatrix, parentChanged](const auto idx) {
+                if (!parentChanged && (idx % STRIDES) != m_strideIndex) return;
+                //if (m_strideIndex != 1) continue;
+                m_transforms[idx].updateMatrix();
+                m_transforms[idx].updateWorldVolume(parentMatrix, m_localVolume);
+                };
 
-        std::for_each(
-            std::execution::par_unseq,
-            m_transformIndeces.cbegin(),
-            m_transformIndeces.cend(),
-            fn);
+            std::for_each(
+                std::execution::par_unseq,
+                m_transformIndeces.cbegin(),
+                m_transformIndeces.cend(),
+                fn);
 
-        markDirty({ 0, m_transforms.size() });
+            markDirty({ 0, m_transforms.size() });
+        }
+
+        if (true) {
+            size_t count = m_transforms.size() / STRIDES;
+            size_t offset = m_strideIndex * count;
+            size_t limit = std::min(m_transforms.size(), offset + count);
+
+            for (size_t idx = offset; idx < limit; idx++) {
+                m_transforms[idx].updateMatrix();
+                m_transforms[idx].updateWorldVolume(parentMatrix, m_localVolume);
+            }
+            markDirty({ offset, count });
+        }
     }
 
     m_strideIndex = (m_strideIndex + 1) % STRIDES;
@@ -199,29 +213,54 @@ void AsteroidBeltGenerator::rotateAsteroids(
 {
     const float elapsed = ctx.getClock().elapsedSecs;
 
-    auto fn = [this, elapsed](const auto idx) {
-        if ((idx % STRIDES) != m_strideIndex) return;
-        //if (m_strideIndex != 1) return;
+    if (false) {
+        auto fn = [this, elapsed](const auto idx) {
+            if ((idx % STRIDES) != m_strideIndex) return;
+            //if (m_strideIndex != 1) return;
 
-        auto& asteroid = m_transforms[idx];
-        auto& physics = m_physics[idx];
+            auto& asteroid = m_transforms[idx];
+            auto& physics = m_physics[idx];
 
-        {
-            float angle = physics.m_velocity * elapsed;
-            auto mat = glm::toMat4(glm::quat(glm::vec3(0.f, angle, 0.f)));
-            asteroid.setPosition(mat * glm::vec4(asteroid.getPosition(), 1.f));
+            {
+                float angle = physics.m_velocity * elapsed;
+                auto mat = glm::toMat4(glm::quat(glm::vec3(0.f, angle, 0.f)));
+                asteroid.setPosition(mat * glm::vec4(asteroid.getPosition(), 1.f));
+            }
+
+            // 3. rotation: add random rotation around a (semi)randomly picked rotation axis vector
+            {
+                auto rot = util::axisRadiansToQuat(physics.m_axis, physics.m_angularRotation * elapsed);
+                asteroid.adjustRotation(rot);
+            }
+            };
+
+        std::for_each(
+            std::execution::par_unseq,
+            m_transformIndeces.cbegin(),
+            m_transformIndeces.cend(),
+            fn);
+    }
+
+    if (true) {
+        size_t count = m_transforms.size() / STRIDES;
+        size_t offset = m_strideIndex * count;
+        size_t limit = std::min(m_transforms.size(), offset + count);
+
+        for (size_t idx = offset; idx < limit; idx++) {
+            auto& asteroid = m_transforms[idx];
+            auto& physics = m_physics[idx];
+
+            {
+                float angle = physics.m_velocity * elapsed;
+                auto mat = glm::toMat4(glm::quat(glm::vec3(0.f, angle, 0.f)));
+                asteroid.setPosition(mat * glm::vec4(asteroid.getPosition(), 1.f));
+            }
+
+            // 3. rotation: add random rotation around a (semi)randomly picked rotation axis vector
+            {
+                auto rot = util::axisRadiansToQuat(physics.m_axis, physics.m_angularRotation * elapsed);
+                asteroid.adjustRotation(rot);
+            }
         }
-
-        // 3. rotation: add random rotation around a (semi)randomly picked rotation axis vector
-        {
-            auto rot = util::axisRadiansToQuat(physics.m_axis, physics.m_angularRotation * elapsed);
-            asteroid.adjustRotation(rot);
-        }
-    };
-
-    std::for_each(
-        std::execution::par_unseq,
-        m_transformIndeces.cbegin(),
-        m_transformIndeces.cend(),
-        fn);
+    }
 }
