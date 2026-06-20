@@ -38,6 +38,8 @@ private:
         const UpdateContext& ctx,
         const model::Node& container);
 
+    util::BufferReference resolveStride();
+
 private:
     const int m_asteroidCount;
     const float m_radius;

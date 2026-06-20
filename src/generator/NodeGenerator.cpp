@@ -102,37 +102,35 @@ void NodeGenerator::updateDrawables(
     const auto& lodMeshes = container.getEnabledMeshes();
 
     auto drawables = instanceRegistry.modifyRange(m_instanceRef);
+    {
+        // NOTE KI m_dirtySlots store TRANSFORM-local ranges (0-based per generator).
+        // The drawable array holds meshCount entries per transform laid out as
+        // [transformIdx * meshCount + meshIdx] (see registerDrawables). InstanceRegistry
+        // treats refs as ABSOLUTE offsets, so the dirty range must be scaled by meshCount
+        // and shifted by m_instanceRef.offset before handing it back.
+        const size_t meshCount = lodMeshes.size();
 
-    if (false) {
-        int drawableIndex = 0;
-
-        for (auto& transform : m_transforms) {
-            for (int i = 0; i < lodMeshes.size(); i++) {
-                const auto& lodMesh = *lodMeshes[i];
-                auto& drawable = drawables[drawableIndex++];
-
-                drawable.worldVolume = transform.getWorldVolume();
-                drawable.localTransform = transform.getMatrix() * lodMesh.m_baseTransform;
-            }
-        }
-        instanceRegistry.markDirty(m_instanceRef);
-        instanceRegistry.updateInstances(m_instanceRef);
-    }
-
-    if (true) {
         for (const auto& dirtyRef : m_dirtySlots) {
-            for (size_t drawableIndex = dirtyRef.offset; drawableIndex < dirtyRef.offset + dirtyRef.size; drawableIndex++) {
-                const auto& transform = m_transforms[drawableIndex];
-                for (int i = 0; i < lodMeshes.size(); i++) {
+            for (size_t transformIndex = dirtyRef.offset;
+                transformIndex < dirtyRef.offset + dirtyRef.size;
+                transformIndex++)
+            {
+                const auto& transform = m_transforms[transformIndex];
+                for (size_t i = 0; i < meshCount; i++) {
                     const auto& lodMesh = *lodMeshes[i];
-                    auto& drawable = drawables[drawableIndex];
+                    auto& drawable = drawables[transformIndex * meshCount + i];
 
                     drawable.worldVolume = transform.getWorldVolume();
                     drawable.localTransform = transform.getMatrix() * lodMesh.m_baseTransform;
                 }
             }
-            instanceRegistry.markDirty(dirtyRef);
-            instanceRegistry.updateInstances(dirtyRef);
+
+            const util::BufferReference instanceRef{
+                m_instanceRef.offset + dirtyRef.offset * meshCount,
+                dirtyRef.size * meshCount
+            };
+            instanceRegistry.markDirty(instanceRef);
+            instanceRegistry.updateInstances(instanceRef);
         }
     }
 
