@@ -50,7 +50,7 @@ namespace loader {
         }
     }
 
-    std::unique_ptr<CustomMaterial> CustomMaterialLoader::createCustomMaterial(
+    util::Ref<CustomMaterial> CustomMaterialLoader::createCustomMaterial(
         const CustomMaterialData& data,
         Loaders& loaders)
     {

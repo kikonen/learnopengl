@@ -20,7 +20,6 @@ namespace loader {
             SkyboxData& data);
 
         void attachSkybox(
-            const ki::node_id rootId,
             const SkyboxData& data);
     };
 }

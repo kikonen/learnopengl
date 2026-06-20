@@ -39,7 +39,7 @@ namespace render
 /**
  * Base engine
  */
-class Engine {
+class Engine : public util::RefCounted<> {
 public:
     Engine();
     virtual ~Engine();
@@ -54,8 +54,8 @@ public:
     bool render();
     void processInput();
 
-    inline Registry* getRegistry() const noexcept {
-        return m_registry.get();
+    inline const util::Ref<Registry>& getRegistry() const noexcept {
+        return m_registry;
     }
 
     inline const ki::RenderClock& getClock() const noexcept {
@@ -66,7 +66,7 @@ public:
         return m_fpsCounter;
     }
 
-    util::Ref<Scene> getCurrentScene() const;
+    const util::Ref<Scene>& getCurrentScene() const;
 
     render::Batch* getBatch() const noexcept
     {
@@ -115,7 +115,7 @@ public:
     // => alloes change for graceful exit for loaders
     util::Ref<AsyncLoader> m_asyncLoader;
 
-    std::unique_ptr<Registry> m_registry;
+    util::Ref<Registry> m_registry;
 
     util::Ref<SceneUpdater> m_sceneUpdater;
     util::Ref<ParticleUpdater> m_particleUpdater;

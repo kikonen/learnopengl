@@ -437,6 +437,7 @@
     <ClCompile Include="src\sample_app\game\action\RayCastPlayer.cpp" />
     <ClCompile Include="src\sample_app\game\action\Shoot.cpp" />
     <ClCompile Include="src\sample_app\game\Player.cpp" />
+    <ClCompile Include="src\scene\BrdfLutMaterial.cpp" />
     <ClCompile Include="src\script\api\SceneAPI.cpp" />
     <ClCompile Include="src\script\binding\LuaNodeHandle.cpp" />
     <ClCompile Include="src\script\command\CancelMultiple.cpp" />
@@ -762,6 +763,7 @@
     <ClInclude Include="src\animation\ClipChannelLUT.h" />
     <ClInclude Include="src\asset\SphereVolume_format.h" />
     <ClInclude Include="src\component\definition\AddonSelectorDefinition.h" />
+    <ClInclude Include="src\event\Task.h" />
     <ClInclude Include="src\kigl\RingAllocator.h" />
     <ClInclude Include="src\loader\AddonData.h" />
     <ClInclude Include="src\loader\AddonSelectorData.h" />
@@ -779,6 +781,7 @@
     <ClInclude Include="src\render\InstanceIndexSSBO.h" />
     <ClInclude Include="src\render\InstanceRegistry.h" />
     <ClInclude Include="src\sample_app\game\Player.h" />
+    <ClInclude Include="src\scene\BrdfLutMaterial.h" />
     <ClInclude Include="src\util\preciseSleep.h" />
     <ClInclude Include="src\util\BufferReference.h" />
     <ClInclude Include="src\util\BufferReference_format.h" />

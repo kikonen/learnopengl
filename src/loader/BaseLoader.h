@@ -6,6 +6,8 @@
 
 #include <glm/glm.hpp>
 
+#include "util/Ref.h"
+
 #include "converter/base.h"
 
 #include "ki/size.h"
@@ -29,7 +31,7 @@ namespace loader
 
         ~BaseLoader();
 
-        void setRegistry(Registry* registry);
+        void setRegistry(const util::Ref<Registry>& registry);
 
         bool fileExists(std::string_view filename) const;
         std::string readFile(std::string_view filename) const;
@@ -37,7 +39,8 @@ namespace loader
     public:
         std::shared_ptr<Context> m_ctx;
 
-        Registry* m_registry;
-        event::Dispatcher* m_dispatcher { nullptr };
+        util::Ref<Registry> m_registry;
+        event::Dispatcher* m_dispatcherWorker { nullptr };
+        event::Dispatcher* m_dispatcherView{ nullptr };
     };
 }

@@ -19,6 +19,6 @@ namespace game
 
     private:
         event::Listen m_listen_action_game_shoot;
-        Engine* m_engine;
+        util::Ref<Engine> m_engine;
     };
 }

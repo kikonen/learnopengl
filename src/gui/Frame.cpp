@@ -21,7 +21,7 @@ namespace gui
 
     Registry* Frame::getRegistry()
     {
-        return m_window->getEngine().getRegistry();
+        return m_window->getEngine().getRegistry().get();
     }
 
     void Frame::prepare(const PrepareContext& ctx)

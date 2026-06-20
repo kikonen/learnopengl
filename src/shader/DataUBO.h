@@ -42,7 +42,9 @@ struct DataUBO {
     float u_time;
     int u_frame;
 
-    int pad1;
+    float u_worldTime;
+
+    //int pad1;
     //int pad2;
     //int pad3;
 

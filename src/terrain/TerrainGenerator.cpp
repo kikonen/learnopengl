@@ -179,7 +179,7 @@ namespace terrain {
     {
         const auto& assets = ctx.getAssets();
         auto* registry = ctx.getRegistry();
-        auto& dispatcher = registry->m_dispatcherWorker;
+        auto& dispatcherWorker = registry->m_dispatcherWorker;
 
         auto& entityRegistry = EntityRegistry::get();
 
@@ -253,63 +253,4 @@ namespace terrain {
             }
         }
     }
-
-    //// NOTE KI DEPRECATED
-    //pool::TypeHandle TerrainGenerator::createType(
-    //    Registry* registry,
-    //    pool::TypeHandle containerTypeHandle)
-    //{
-    //    auto* containerType = containerTypeHandle.toType();
-
-    //    std::string name = fmt::format("terrain_{}", containerType->getName());
-    //    auto typeHandle = pool::TypeHandle::allocate(SID(name));
-
-    //    auto* type = typeHandle.toType();
-    //    type->setName(name);
-
-    //    if (const auto* layer = LayerInfo::findLayer(LAYER_MAIN); layer) {
-    //        type->m_layer = layer->m_index;
-    //    }
-
-    //    auto& flags = type->m_flags;
-    //    flags = containerType->m_flags;
-    //    flags.invisible = false;
-    //    flags.terrain = true;
-    //    flags.contained = true;
-
-    //    {
-    //        // TODO KI just generate primitive mesh
-    //        auto future = MeshsetRegistry::get().getMeshSet(
-    //            "",
-    //            m_modelsDir,
-    //            TERRAIN_QUAD_MESH_NAME,
-    //            false,
-    //            false);
-    //        const auto& meshSet = future.get();
-    //        //meshSet->setAABB(aabb);
-
-    //        {
-    //            m_material.tilingX = (float)m_worldTilesU;
-    //            m_material.tilingY = (float)m_worldTilesV;
-    //        }
-
-    //        {
-    //            auto* type = typeHandle.toType();
-
-    //            type->addMeshSet(*meshSet);
-
-    //            auto* lodMesh = type->modifyLodMesh(0);
-
-    //            //lodMesh->m_priority = containerType->m_priority;
-    //            lodMesh->setMaterial(&m_material);
-    //            lodMesh->registerMaterial();
-
-    //            lodMesh->m_flags.tessellation = true;
-    //            lodMesh->m_drawOptions.m_mode = backend::DrawOptions::Mode::patches;
-    //            lodMesh->m_drawOptions.m_patchVertexCount = 3;
-    //        }
-    //    }
-
-    //    return typeHandle;
-    //}
 }

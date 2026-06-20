@@ -80,8 +80,7 @@ void VolumeRenderer::render(
         if (!node) continue;
         if (node->m_typeFlags.invisible ||
             !node->m_visible ||
-            !node->m_alive ||
-            node->m_typeFlags.skybox) continue;
+            !node->m_alive) continue;
         if (!dbg.m_showVolume && !selectionRegistry.isSelected(node->toHandle())) continue;
 
         if (const auto* generator = node->m_generator.get(); generator && generator->isLightWeight())

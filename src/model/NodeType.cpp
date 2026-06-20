@@ -182,9 +182,9 @@ namespace model
         assert(isReady());
     }
 
-    void NodeType::setCustomMaterial(std::unique_ptr<CustomMaterial> customMaterial) noexcept
+    void NodeType::setCustomMaterial(const util::Ref<CustomMaterial>& customMaterial) noexcept
     {
-        m_customMaterial = std::move(customMaterial);
+        m_customMaterial = customMaterial;
     }
 
     ki::size_t_entity_flags NodeType::resolveEntityFlags() const noexcept {

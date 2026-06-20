@@ -38,7 +38,9 @@ layout(std140, binding = UBO_DATA) uniform Data {
   float u_time;
   int u_frame;
 
-  int data_pad1;
+  float u_worldTime;
+
+  // int data_pad1;
   // int data_pad2;
   // int data_pad3;
 

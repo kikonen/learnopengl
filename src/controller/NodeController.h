@@ -2,8 +2,12 @@
 
 #include "kigl/kigl.h"
 
+#include "util/Ref.h"
+
 #include "pool/NodeHandle.h"
 #include "pool/TypeHandle.h"
+
+#include "registry/Registry.h"
 
 namespace model
 {
@@ -59,5 +63,5 @@ protected:
 
     bool m_prepared{ false };
 
-    Registry* m_registry{ nullptr };
+    util::Ref<Registry> m_registry{ nullptr };
 };

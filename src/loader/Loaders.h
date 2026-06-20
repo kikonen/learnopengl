@@ -34,7 +34,7 @@ namespace loader {
         Loaders(const std::shared_ptr<Context>& ctx);
 
         void prepare(
-            Registry* registry);
+            const util::Ref<Registry>& registry);
 
     public:
         RootLoader m_rootLoader;

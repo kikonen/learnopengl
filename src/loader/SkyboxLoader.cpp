@@ -1,6 +1,7 @@
 #include "SkyboxLoader.h"
 
 #include "util/util.h"
+#include "util/Ref.h"
 
 #include "ki/sid.h"
 
@@ -13,6 +14,9 @@
 
 #include "event/Dispatcher.h"
 
+#include "engine/Engine.h"
+#include "engine/PrepareContext.h"
+
 #include "model/Node.h"
 #include "model/NodeType.h"
 #include "model/CreateState.h"
@@ -22,6 +26,7 @@
 #include "registry/Registry.h"
 #include "registry/NodeTypeRegistry.h"
 
+#include "scene/Scene.h"
 #include "scene/SkyboxMaterial.h"
 
 #include "loader/document.h"
@@ -104,69 +109,51 @@ namespace loader {
     }
 
     void SkyboxLoader::attachSkybox(
-        const ki::node_id rootId,
         const SkyboxData& data)
     {
         if (!data.valid()) return;
 
         const auto& assets = Assets::get();
 
-        std::string name = "<skybox>";
-        auto typeHandle = pool::TypeHandle::allocate(SID_REGISTER(name).asSid());
-        auto* type = typeHandle.toType();
-        type->setName(name);
-
-        if (const auto* layer = LayerInfo::findLayer(LAYER_MAIN); layer) {
-            type->m_layer = layer->m_index;
-        }
-
-        auto& flags = type->m_flags;
-
-        flags.skybox = true;
-        flags.noShadow = true;
-        flags.noFrustum = true;
-        flags.noSelect = true;
-        flags.noNormals = true;
-
         bool gammaCorrect = data.gammaCorrect;
         if (data.hdri) {
             gammaCorrect = false;
         }
 
-        auto material{ std::make_unique<SkyboxMaterial>(
+        auto material = util::Ref<SkyboxMaterial>::create(
             data.materialName,
-            gammaCorrect) };
+            gammaCorrect);
         material->m_swapFaces = data.swapFaces;
         material->m_hdri = data.hdri;
         if (data.loadedFaces) {
             material->m_faces = data.faces;
         }
 
-        type->setCustomMaterial(std::move(material));
-
-        auto handle = pool::NodeHandle::allocate(assets.skyboxId);
-        auto* node = handle.toNode();
-
-        node->setName("<skybox>");
-        node->m_typeHandle = typeHandle;
-        node->m_typeFlags = type->m_flags;
-        node->m_layer = type->m_layer;
-
-        //util::sleep(1000);
-
         {
-            model::CreateState state{};
-            event::Event evt { event::Type::node_add };
-            auto* att = evt.attach();
-            att->nodeEntry = {
-                .state = state
+            auto fn = [
+                registry = m_registry.get(),
+                material = material]() {
+                auto scene = registry->getEngine()->getCurrentScene();
+                scene->setSkyboxMaterial(material);
+
+                PrepareContext ctx{ *registry->getEngine() };
+                material->prepareRT(ctx);
+
+                //void NodeRegistry::bindSkybox(
+                //    pool::NodeHandle handle) noexcept
+                //{
+                //    auto* node = handle.toNode();
+                //    if (!node) return;
+
+                //    auto* type = node->m_typeHandle.toType();
+
+                //    type->prepareWT({ *m_engine });
+                //    node->prepareWT({ *m_engine }, m_states[node->getEntityIndex()]);
+
+                //    m_skybox = handle;
+                //}
             };
-            evt.body.node = {
-                .target = assets.skyboxId,
-                .parentId = rootId,
-            };
-            assert(evt.body.node.target > 1);
-            m_dispatcher->send(evt);
+            m_registry->invokeLaterRT(std::move(fn));
         }
     }
 

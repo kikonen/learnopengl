@@ -28,7 +28,6 @@ namespace model {
         // surroundings). Dynamic characters / small / expensive static clutter stay false.
         bool environment : 1 {false};
         bool effect : 1 {false};
-        bool skybox : 1 {false};
 
         bool noShadow : 1 {false};
         bool noSelect : 1 {false};

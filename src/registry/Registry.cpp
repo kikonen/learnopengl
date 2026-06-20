@@ -12,6 +12,7 @@
 
 #include "debug/DebugContext.h"
 
+#include "engine/Engine.h"
 #include "engine/PrepareContext.h"
 
 #include "physics/PhysicsSystem.h"
@@ -50,7 +51,7 @@
 
 
 Registry::Registry(
-    Engine& engine,
+    const util::Ref<Engine>& engine,
     const std::shared_ptr<std::atomic_bool>& alive)
     : m_engine{ engine },
     m_alive(alive),
@@ -128,7 +129,7 @@ void Registry::prepare(const PrepareContext& ctx)
     EntityRegistry::get().prepare();
     MeshSetRegistry::get().prepare(m_alive);
 
-    NodeRegistry::get().prepare(&m_engine);
+    NodeRegistry::get().prepare(m_engine);
     SelectionRegistry::get().prepare(this);
 
     physics::PhysicsSystem::get().prepare(m_alive);
@@ -145,7 +146,7 @@ void Registry::prepare(const PrepareContext& ctx)
     text::TextSystem::get().prepare();
     VaoRegistry::get().prepare();
     ViewportRegistry::get().prepare();
-    ControllerRegistry::get().prepare(&m_engine);
+    ControllerRegistry::get().prepare(m_engine);
 
     m_instanceRegistry->prepare();
 }
@@ -201,4 +202,14 @@ void Registry::withLock(const std::function<void(Registry&)>& fn)
 {
     std::lock_guard lock(m_lock);
     fn(*this);
+}
+
+void Registry::invokeLaterWT(event::Task task)
+{
+    m_dispatcherWorker->invokeLater(std::move(task));
+}
+
+void Registry::invokeLaterRT(event::Task task)
+{
+    m_dispatcherView->invokeLater(std::move(task));
 }

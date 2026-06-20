@@ -11,7 +11,6 @@
 #include "render/EnvironmentMap.h"
 #include "render/IrradianceMap.h"
 #include "render/PrefilterMap.h"
-#include "render/BrdfLutTexture.h"
 
 namespace kigl {
     class GLState;
@@ -36,7 +35,6 @@ public:
     virtual void bindTextures(kigl::GLState& state) override;
 
     const kigl::GLTextureHandle& getHdriTextureHandle() const;
-    const kigl::GLTextureHandle& getBrdfLutTextureHandle() const;
 
     const kigl::GLTextureHandle& getIrradianceCubeMapTextureHandle() const;
     const kigl::GLTextureHandle& getPrefilterCubeMapTextureHandle() const;
@@ -62,9 +60,6 @@ private:
     void preparePrefilter(
         const PrepareContext& ctx);
 
-    void prepareBrdfLut(
-        const PrepareContext& ctx);
-
 public:
     // ORDER
     //basePath + "/right.jpg",
@@ -86,6 +81,4 @@ private:
     render::EnvironmentMap m_environmentMap{ "env" };
     render::IrradianceMap m_irradianceMap;
     render::PrefilterMap m_prefilterMap;
-
-    render::BrdfLutTexture m_brdfLutTexture;
 };

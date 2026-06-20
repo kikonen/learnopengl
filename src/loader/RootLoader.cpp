@@ -88,7 +88,7 @@ namespace loader
                 .target = data.rootId,
             };
             assert(evt.body.node.target == 1);
-            m_dispatcher->send(evt);
+            m_dispatcherWorker->send(evt);
         }
     }
 }

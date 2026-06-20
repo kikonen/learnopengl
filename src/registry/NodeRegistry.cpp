@@ -140,16 +140,12 @@ NodeRegistry::~NodeRegistry()
     //m_cachedNodesRT.clear();
     //m_entities.clear();
 
-    m_skybox.reset();
-
     pool::NodeHandle::clear();
 }
 
 void NodeRegistry::clear()
 {
     pool::NodeHandle::clear();
-
-    m_skybox.reset();
 
     m_rootHandle.reset();
     m_rootRT.reset();
@@ -224,7 +220,7 @@ void NodeRegistry::clear()
 }
 
 void NodeRegistry::prepare(
-    Engine* engine)
+    const util::Ref<Engine>& engine)
 {
     const auto& assets = Assets::get();
 
@@ -582,7 +578,7 @@ void NodeRegistry::cacheNodes(
 void NodeRegistry::attachListeners()
 {
     const auto& assets = Assets::get();
-    auto* registry = m_engine->getRegistry();
+    auto* registry = m_engine->getRegistry().get();
 
     {
         auto* dispatcher = registry->m_dispatcherWorker;
@@ -727,7 +723,7 @@ void NodeRegistry::notifyPendingChanges()
     //    m_registry->m_workerSnapshotRegistry,
     //    node->m_snapshotIndex, 1);
 
-    auto* registry = m_engine->getRegistry();
+    auto* registry = m_engine->getRegistry().get();
 
     for (auto& nodeHandle : m_pendingAdded) {
         auto* node = nodeHandle.toNode();
@@ -749,13 +745,6 @@ void NodeRegistry::notifyPendingChanges()
         {
             event::Event evt{ event::Type::node_added };
             evt.body.node.target = nodeHandle;
-            registry->m_dispatcherView->send(evt);
-        }
-
-        if (node->m_typeFlags.skybox)
-        {
-            event::Event evt{ event::Type::type_prepare_view };
-            evt.body.nodeType.target = node->m_typeHandle.toId();
             registry->m_dispatcherView->send(evt);
         }
     }
@@ -914,10 +903,6 @@ void NodeRegistry::attachNode(
             if (!controller) continue;
             ControllerRegistry::get().addController(node->m_handle, std::move(controller));
         }
-    }
-
-    if (node->m_typeFlags.skybox) {
-        bindSkybox(node->toHandle());
     }
 
     m_pendingAdded.push_back(nodeHandle);
@@ -1381,20 +1366,6 @@ void NodeRegistry::setActiveNode(pool::NodeHandle handle)
     if (!node) return;
 
     m_activeNode = handle;
-}
-
-void NodeRegistry::bindSkybox(
-    pool::NodeHandle handle) noexcept
-{
-    auto* node = handle.toNode();
-    if (!node) return;
-
-    auto* type = node->m_typeHandle.toType();
-
-    type->prepareWT({ *m_engine });
-    node->prepareWT({ *m_engine }, m_states[node->getEntityIndex()]);
-
-    m_skybox = handle;
 }
 
 void NodeRegistry::viewportChanged(

@@ -50,7 +50,7 @@ namespace loader {
         bool isRunning();
 
         void prepare(
-            Registry* registry);
+            const util::Ref<Registry>& registry);
 
         void load();
 

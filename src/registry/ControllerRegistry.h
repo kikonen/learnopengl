@@ -22,7 +22,7 @@ public:
     ControllerRegistry& operator=(const ControllerRegistry&) = delete;
 
     void clear();
-    void prepare(Engine* engine);
+    void prepare(const util::Ref<Engine>& engine);
 
     void updateWT(const UpdateContext& ctx);
 
@@ -79,7 +79,7 @@ public:
         std::unique_ptr<NodeController> controller);
 
 private:
-    Engine* m_engine{ nullptr };
+    util::Ref<Engine> m_engine{ nullptr };
 
     std::unordered_map<pool::NodeHandle, std::vector<std::unique_ptr<NodeController>>> m_controllers;
 };

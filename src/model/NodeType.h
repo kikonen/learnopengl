@@ -9,6 +9,8 @@
 
 #include "ki/limits.h"
 
+#include "util/Ref.h"
+
 #include "pool/TypeHandle.h"
 
 #include "script/size.h"
@@ -120,7 +122,7 @@ namespace model
             return dynamic_cast<T*>(m_customMaterial.get());
         }
 
-        void setCustomMaterial(std::unique_ptr<CustomMaterial> customMaterial) noexcept;
+        void setCustomMaterial(const util::Ref<CustomMaterial>& customMaterial) noexcept;
 
         void prepareWT(
             const PrepareContext& ctx);
@@ -158,7 +160,7 @@ namespace model
         std::unique_ptr<std::string> m_name{ nullptr };
         AABB m_aabb;
         std::unique_ptr<std::vector<script::script_id>> m_scripts;
-        std::unique_ptr<CustomMaterial> m_customMaterial{ nullptr };
+        util::Ref<CustomMaterial> m_customMaterial{ nullptr };
 
     public:
         pool::TypeHandle m_handle;

@@ -1,6 +1,7 @@
 #include "Player.h"
 
 #include "engine/PrepareContext.h"
+#include "engine/Engine.h"
 
 #include "registry/Registry.h"
 

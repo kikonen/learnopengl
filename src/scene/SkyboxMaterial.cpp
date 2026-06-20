@@ -48,11 +48,6 @@ const kigl::GLTextureHandle& SkyboxMaterial::getHdriTextureHandle() const
     return m_hdriTexture.m_texture;
 }
 
-const kigl::GLTextureHandle& SkyboxMaterial::getBrdfLutTextureHandle() const
-{
-    return m_brdfLutTexture.m_texture;
-}
-
 const kigl::GLTextureHandle& SkyboxMaterial::getIrradianceCubeMapTextureHandle() const
 {
     return m_irradianceMap.m_cubeTexture;
@@ -87,7 +82,6 @@ void SkyboxMaterial::prepareRT(
 
     prepareIrradiance(ctx);
     preparePrefilter(ctx);
-    prepareBrdfLut(ctx);
 }
 
 void SkyboxMaterial::prepareFaces(
@@ -196,25 +190,15 @@ void SkyboxMaterial::preparePrefilter(
     m_prefilterMap.prepareRT(ctx);
 }
 
-void SkyboxMaterial::prepareBrdfLut(
-    const PrepareContext& ctx)
-{
-    const auto& assets = ctx.getAssets();
-
-    if (!(assets.environmentMapEnabled)) return;
-
-    bindDefaultVao();
-
-    m_brdfLutTexture.prepareRT(ctx);
-}
-
 void SkyboxMaterial::bindTextures(kigl::GLState& state)
 {
     if (m_skyboxMap.valid()) {
-        m_skyboxMap.bindTexture(state, UNIT_SKYBOX);
+        m_skyboxMap.bindTexture(state, UNIT_SKYBOX_DAY);
+        m_skyboxMap.bindTexture(state, UNIT_SKYBOX_NIGHT);
     } else {
         if (m_cubeMap.valid()) {
-            m_cubeMap.bindTexture(state, UNIT_SKYBOX);
+            m_cubeMap.bindTexture(state, UNIT_SKYBOX_DAY);
+            m_cubeMap.bindTexture(state, UNIT_SKYBOX_NIGHT);
         }
     }
 
@@ -226,8 +210,5 @@ void SkyboxMaterial::bindTextures(kigl::GLState& state)
     }
     if (m_prefilterMap.valid()) {
         m_prefilterMap.bindTexture(state, UNIT_PREFILTER_MAP);
-    }
-    if (m_brdfLutTexture.valid()) {
-        m_brdfLutTexture.bindTexture(state, UNIT_BDRF_LUT);
     }
 }

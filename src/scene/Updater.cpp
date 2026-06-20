@@ -146,5 +146,5 @@ void Updater::run()
 
 Registry* Updater::getRegistry() const noexcept
 {
-    return m_engine.getRegistry();
+    return m_engine.getRegistry().get();
 }

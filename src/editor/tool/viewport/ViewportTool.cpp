@@ -39,6 +39,7 @@
 
 #include "scene/Scene.h"
 #include "scene/SkyboxMaterial.h"
+#include "scene/BrdfLutMaterial.h"
 
 #include "renderer/ObjectIdRenderer.h"
 #include "renderer/WaterMapRenderer.h"
@@ -359,13 +360,7 @@ namespace editor
         auto* scene = ctx.getScene();
         if (!scene) return;
 
-        auto& nodeRegistry = NodeRegistry::get();
-        auto* node = nodeRegistry.m_skybox.toNode();
-        if (!node) return;
-
-        auto* type = node->getType();
-        auto* material = type->getCustomMaterial<SkyboxMaterial>();
-        if (!material) return;
+        const auto& skyboxMaterial = scene->getSkyboxMaterial();
 
         const auto& renderCtx = ctx.toRenderContext();
 
@@ -417,13 +412,14 @@ namespace editor
             };
 
         if (ImGui::TreeNodeEx("BrdfLut Tex", tnFlags)) {
-            const auto& handle = material->getBrdfLutTextureHandle();
+            const auto& lutMaterial = scene->getBrdfLutMaterial();
+            const auto& handle = lutMaterial->getBrdfLutTextureHandle();
             imageTex(handle, handle.getSize(), true);
             ImGui::TreePop();
         }
 
         if (ImGui::TreeNodeEx("HDRI Tex", tnFlags)) {
-            const auto& handle = material->getHdriTextureHandle();
+            const auto& handle = skyboxMaterial->getHdriTextureHandle();
             imageTex(handle, handle.getSize(), true);
             ImGui::TreePop();
         }
@@ -431,7 +427,7 @@ namespace editor
         if (ImGui::TreeNodeEx("Environment Map", tnFlags)) {
             cubeTex(
                 *m_state.m_environmentTexture,
-                material->getEnvironmentCubeMapTextureHandle());
+                skyboxMaterial->getEnvironmentCubeMapTextureHandle());
             ImGui::TreePop();
         }
         else {
@@ -441,7 +437,7 @@ namespace editor
         if (ImGui::TreeNodeEx("Prefilter Map", tnFlags)) {
             cubeTex(
                 *m_state.m_prefilterTexture,
-                material->getPrefilterCubeMapTextureHandle());
+                skyboxMaterial->getPrefilterCubeMapTextureHandle());
             ImGui::TreePop();
         }
         else {
@@ -451,7 +447,7 @@ namespace editor
         if (ImGui::TreeNodeEx("Irradiance Map", tnFlags)) {
             cubeTex(
                 *m_state.m_irradianceTexture,
-                material->getIrradianceCubeMapTextureHandle());
+                skyboxMaterial->getIrradianceCubeMapTextureHandle());
             ImGui::TreePop();
         }
         else {
@@ -461,7 +457,7 @@ namespace editor
         if (ImGui::TreeNodeEx("Skybox Map", tnFlags)) {
             cubeTex(
                 *m_state.m_skyboxTexture,
-                material->getSkyboxCubeMapTextureHandle());
+                skyboxMaterial->getSkyboxCubeMapTextureHandle());
             ImGui::TreePop();
         }
         else {
