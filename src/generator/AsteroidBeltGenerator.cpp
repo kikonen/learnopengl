@@ -25,7 +25,7 @@
 namespace {
     bool done = false;
 
-    constexpr int STRIDES = 10;
+    constexpr int STRIDES = 20;
 }
 
 AsteroidBeltGenerator::AsteroidBeltGenerator(int asteroidCount)
@@ -62,48 +62,27 @@ void AsteroidBeltGenerator::updateWT(
 
     const auto containerLevel = container.getState().getMatrixLevel();
     const auto parentChanged = containerLevel != m_containerMatrixLevel;
-    const bool needUpdate = (m_updateIndex % m_updateStep) == 0 || true;
+    const bool needUpdate = (m_updateIndex % m_updateStep) == 0;
 
     if (needUpdate) {
         m_updateIndex = 0;
         updateAsteroids(ctx, container, needUpdate);
     }
 
-    if (parentChanged || needUpdate) {
-        //auto& parentMatrix = container.getParent()->getState().getModelMatrix();
+    if (needUpdate) {
         const auto& parentMatrix = container.getState().getModelMatrix();
 
-        if (false) {
-            auto fn = [this, &parentMatrix, parentChanged](const auto idx) {
-                if (!parentChanged && (idx % STRIDES) != m_strideIndex) return;
-                //if (m_strideIndex != 1) continue;
-                m_transforms[idx].updateMatrix();
-                m_transforms[idx].updateWorldVolume(parentMatrix, m_localVolume);
-                };
-
-            std::for_each(
-                std::execution::par_unseq,
-                m_transformIndeces.cbegin(),
-                m_transformIndeces.cend(),
-                fn);
-
-            markDirty({ 0, m_transforms.size() });
+        const auto stride = resolveStride();
+        for (size_t idx = stride.offset; idx < stride.offset + stride.size; idx++) {
+            auto& transform = m_transforms[idx];
+            transform.updateMatrix();
+            transform.updateWorldVolume(parentMatrix, m_localVolume);
         }
+        markDirty({ stride.offset, stride.size });
 
-        if (true) {
-            size_t count = m_transforms.size() / STRIDES;
-            size_t offset = m_strideIndex * count;
-            size_t limit = std::min(m_transforms.size(), offset + count);
-
-            for (size_t idx = offset; idx < limit; idx++) {
-                m_transforms[idx].updateMatrix();
-                m_transforms[idx].updateWorldVolume(parentMatrix, m_localVolume);
-            }
-            markDirty({ offset, count });
-        }
+        m_strideIndex = (m_strideIndex + 1) % STRIDES;
     }
 
-    m_strideIndex = (m_strideIndex + 1) % STRIDES;
     m_updateIndex++;
     m_containerMatrixLevel = containerLevel;
 }
@@ -213,40 +192,10 @@ void AsteroidBeltGenerator::rotateAsteroids(
 {
     const float elapsed = ctx.getClock().elapsedSecs;
 
-    if (false) {
-        auto fn = [this, elapsed](const auto idx) {
-            if ((idx % STRIDES) != m_strideIndex) return;
-            //if (m_strideIndex != 1) return;
+    {
+        const auto stride = resolveStride();
 
-            auto& asteroid = m_transforms[idx];
-            auto& physics = m_physics[idx];
-
-            {
-                float angle = physics.m_velocity * elapsed;
-                auto mat = glm::toMat4(glm::quat(glm::vec3(0.f, angle, 0.f)));
-                asteroid.setPosition(mat * glm::vec4(asteroid.getPosition(), 1.f));
-            }
-
-            // 3. rotation: add random rotation around a (semi)randomly picked rotation axis vector
-            {
-                auto rot = util::axisRadiansToQuat(physics.m_axis, physics.m_angularRotation * elapsed);
-                asteroid.adjustRotation(rot);
-            }
-            };
-
-        std::for_each(
-            std::execution::par_unseq,
-            m_transformIndeces.cbegin(),
-            m_transformIndeces.cend(),
-            fn);
-    }
-
-    if (true) {
-        size_t count = m_transforms.size() / STRIDES;
-        size_t offset = m_strideIndex * count;
-        size_t limit = std::min(m_transforms.size(), offset + count);
-
-        for (size_t idx = offset; idx < limit; idx++) {
+        for (size_t idx = stride.offset; idx < stride.offset + stride.size; idx++) {
             auto& asteroid = m_transforms[idx];
             auto& physics = m_physics[idx];
 
@@ -263,4 +212,17 @@ void AsteroidBeltGenerator::rotateAsteroids(
             }
         }
     }
+}
+
+util::BufferReference AsteroidBeltGenerator::resolveStride()
+{
+    const size_t count = m_transforms.size() / STRIDES;
+    const size_t offset = m_strideIndex * count;
+    // must match the stride window used in updateWT so positions and the
+    // matrices/world volumes derived from them stay in lockstep
+    const size_t limit = (m_strideIndex == STRIDES - 1)
+        ? m_transforms.size()
+        : std::min(m_transforms.size(), offset + count);
+
+    return { offset, limit - offset };
 }
