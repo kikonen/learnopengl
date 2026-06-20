@@ -2,6 +2,8 @@
 
 #include <string>
 
+#include "util/Ref.h"
+
 namespace kigl {
     class GLState;
 }
@@ -14,7 +16,7 @@ namespace render
 struct PrepareContext;
 
 // Special material, like skybox
-class CustomMaterial {
+class CustomMaterial : public util::RefCounted<> {
 public:
     CustomMaterial(
         const std::string& materialName,

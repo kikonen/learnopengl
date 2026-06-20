@@ -31,6 +31,16 @@ namespace event {
             m_queue.enqueue(std::forward<Event>(evt));
         }
 
+        // Defer arbitrary work to this dispatcher's drain point (= its thread).
+        // The task rides the SAME queue as events, so its order relative to
+        // events is the queue's per-producer FIFO, not a cross-queue race.
+        inline void invokeLater(event::Task task)
+        {
+            Event evt{ Type::invoke };
+            evt.attach()->task = std::move(task);
+            m_queue.enqueue(std::move(evt));
+        }
+
         Handle addListener(event::Type type, Handler handler)
         {
             auto handle = m_handleIndex.fetch_add(1, std::memory_order_relaxed);

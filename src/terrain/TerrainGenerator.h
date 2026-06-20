@@ -56,10 +56,6 @@ namespace terrain {
             const PrepareContext& ctx,
             const model::Node& container);
 
-        //pool::TypeHandle createType(
-        //    Registry* registry,
-        //    pool::TypeHandle containerTypeHandle);
-
     public:
         int m_worldTileSize{ 100 };
         int m_worldTilesU{ 1 };

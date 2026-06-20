@@ -75,7 +75,7 @@ bool Engine::init()
     SystemInit::init();
     onInit();
 
-    m_registry = std::make_unique<Registry>(*this, m_alive);
+    m_registry = util::Ref<Registry>::create(this, m_alive);
 
     m_asyncLoader = util::Ref<AsyncLoader>::create();
 
@@ -83,7 +83,7 @@ bool Engine::init()
     return m_window->create() ? 0 : -1;
 }
 
-util::Ref<Scene> Engine::getCurrentScene() const
+const util::Ref<Scene>& Engine::getCurrentScene() const
 {
     return m_currentScene;
 }

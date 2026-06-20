@@ -4,6 +4,10 @@
 #include <atomic>
 #include <mutex>
 
+#include "util/Ref.h"
+
+#include "event/Task.h"
+
 namespace event
 {
     class Dispatcher;
@@ -25,10 +29,10 @@ struct PrepareContext;
 //
 // Container for all registries to simplify passing them around
 //
-class Registry {
+class Registry : public util::RefCounted<> {
 public:
     Registry(
-        Engine& engine,
+        const util::Ref<Engine>& engine,
         const std::shared_ptr<std::atomic_bool>& alive);
 
     ~Registry();
@@ -44,10 +48,21 @@ public:
 
     void withLock(const std::function<void(Registry&)>& fn);
 
+    // Defer work to the next worker-thread (WT) dispatcher drain.
+    void invokeLaterWT(event::Task task);
+
+    // Defer work to the next view/render-thread (RT) dispatcher drain.
+    void invokeLaterRT(event::Task task);
+
+    const util::Ref<Engine>& getEngine() noexcept
+    {
+        return m_engine;
+    }
+
 private:
     bool m_prepared = false;
 
-    Engine& m_engine;
+    util::Ref<Engine> m_engine;
     std::shared_ptr<std::atomic_bool> m_alive;
     std::mutex m_lock{};
 

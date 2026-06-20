@@ -93,10 +93,9 @@ namespace loader {
     }
 
     void SceneLoader::prepare(
-        Registry* registry)
+        const util::Ref<Registry>& registry)
     {
-        m_registry = registry;
-        m_dispatcher = registry->m_dispatcherWorker;
+        setRegistry(registry);
 
         m_loaders->prepare(registry);
     }
@@ -199,7 +198,7 @@ namespace loader {
     {
         {
             event::Event evt { event::Type::scene_loaded };
-            m_dispatcher->send(evt);
+            m_dispatcherWorker->send(evt);
         }
     }
 
@@ -209,7 +208,7 @@ namespace loader {
         auto& l = *m_loaders;
 
         l.m_rootLoader.attachRoot(root, *m_sceneData->m_scriptSystemData, *m_loaders);
-        l.m_skyboxLoader.attachSkybox(root.rootId, *m_sceneData->m_skybox);
+        l.m_skyboxLoader.attachSkybox(*m_sceneData->m_skybox);
 
         {
             auto updaters = l.m_materialUpdaterLoader.createMaterialUpdaters(
@@ -307,7 +306,7 @@ namespace loader {
                 .socketId = resolved.socketId,
             };
             assert(evt.body.node.target > 1);
-            m_dispatcher->send(evt);
+            m_dispatcherWorker->send(evt);
         }
 
         if (resolved.active) {
@@ -315,7 +314,7 @@ namespace loader {
             evt.body.node = {
                 .target = nodeHandle.toId(),
             };
-            m_dispatcher->send(evt);
+            m_dispatcherWorker->send(evt);
         }
 
         // TODO KI default camera logic

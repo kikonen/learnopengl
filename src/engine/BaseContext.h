@@ -1,5 +1,7 @@
 #pragma once
 
+#include "util/Ref.h"
+
 #include "gui/Input.h"
 
 #include "ki/RenderClock.h"

@@ -2,6 +2,7 @@
 
 #include "util/thread.h"
 
+#include "engine/Engine.h"
 #include "engine/UpdateContext.h"
 
 #include "event/Dispatcher.h"
@@ -59,7 +60,7 @@ void ControllerRegistry::clear()
     m_controllers.clear();
 }
 
-void ControllerRegistry::prepare(Engine* engine)
+void ControllerRegistry::prepare(const util::Ref<Engine>& engine)
 {
     ASSERT_RT();
 

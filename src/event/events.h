@@ -5,6 +5,9 @@
 #include <vector>
 #include <variant>
 #include <memory>
+#include <functional>
+
+#include "Task.h"
 
 #include <glm/vec3.hpp>
 
@@ -43,6 +46,8 @@ namespace event {
 
         NodeAttach nodeEntry;
         Path pathEntry;
+        // deferred work for Type::invoke (see Dispatcher::invokeLater)
+        event::Task task;
     };
 
     struct NodeEvent {

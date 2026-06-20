@@ -10,6 +10,8 @@
 
 #include "ki/size.h"
 
+#include "util/Ref.h"
+
 #include "event/Listen.h"
 
 #include "pool/NodeHandle.h"
@@ -73,7 +75,7 @@ public:
     void setDebug(bool debug) noexcept { m_debug = debug; }
 
     void prepare(
-        Engine* engine);
+        const util::Ref<Engine>& engine);
 
     void updateWT(const UpdateContext& ctx);
     void postUpdateWT(const UpdateContext& ctx);
@@ -268,9 +270,6 @@ private:
         const pool::NodeHandle nodeHandle,
         ki::socket_id socketId);
 
-    void bindSkybox(
-        pool::NodeHandle handle) noexcept;
-
     void cacheNodes(
         std::vector<model::Node*>& cache,
         ki::level_id& cacheLevel);
@@ -283,9 +282,6 @@ private:
         const physics::PhysicsSystem& physicsSystem);
 
     void logDebugInfo(const std::string& err, uint32_t entityIndex) const;
-
-public:
-    pool::NodeHandle m_skybox{};
 
 private:
     event::Listen m_listen_node_add;
@@ -348,7 +344,7 @@ private:
     bool m_deferSort{ false };
     bool m_sortDirty{ false };
 
-    Engine* m_engine{ nullptr };
+    util::Ref<Engine> m_engine{ nullptr };
 
     pool::NodeHandle m_activeNode{};
 

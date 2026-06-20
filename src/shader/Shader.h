@@ -128,13 +128,15 @@ inline constexpr int UNIT_NOISE = 48;
 
 inline constexpr int UNIT_EDITOR_CUBE_MAP = 50;
 
+inline constexpr int UNIT_SKYBOX_DAY = 62;
+inline constexpr int UNIT_SKYBOX_NIGHT = 63;
+
 // https://registry.khronos.org/OpenGL-Refpages/gl4/html/glActiveTexture.xhtml
 inline constexpr int UNIT_WATER_NOISE = 64;
 inline constexpr int UNIT_WATER_REFLECTION = 65;
 inline constexpr int UNIT_WATER_REFRACTION = 66;
 inline constexpr int UNIT_MIRROR_REFLECTION = 67;
 inline constexpr int UNIT_CUBE_MAP = 68;
-inline constexpr int UNIT_SKYBOX = 69;
 
 inline constexpr int UNIT_ENVIRONMENT_MAP = 70;
 inline constexpr int UNIT_IRRADIANCE_MAP = 71;

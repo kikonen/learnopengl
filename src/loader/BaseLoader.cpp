@@ -41,10 +41,11 @@ namespace loader
 
     BaseLoader::~BaseLoader() = default;
 
-    void BaseLoader::setRegistry(Registry* registry)
+    void BaseLoader::setRegistry(const util::Ref<Registry>& registry)
     {
         m_registry = registry;
-        m_dispatcher = m_registry->m_dispatcherWorker;
+        m_dispatcherWorker = m_registry->m_dispatcherWorker;
+        m_dispatcherView = m_registry->m_dispatcherView;
     }
 
     bool BaseLoader::fileExists(std::string_view filename) const

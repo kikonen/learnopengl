@@ -12,6 +12,9 @@
 
 #include "model/Node.h"
 
+#include "engine/Engine.h"
+#include "scene/Scene.h"
+
 #include "registry/Registry.h"
 #include "registry/NodeRegistry.h"
 
@@ -66,11 +69,13 @@ namespace render
     void PassSkybox::drawSkybox(
         const RenderContext& ctx)
     {
-        auto& nodeRegistry = *ctx.getRegistry()->m_nodeRegistry;
-        auto* node = nodeRegistry.m_skybox.toNode();
-        if (!node) return;
+        auto* scene = ctx.getRegistry()->getEngine()->getCurrentScene().get();
+        if (!scene) return;
 
-        if (node->m_layer != ctx.m_layer) return;
+        auto* skyboxMaterial = scene->getSkyboxMaterial().get();
+        if (!skyboxMaterial) return;
+
+        if (ctx.m_layer != 1) return;
 
         auto& state = ctx.getGLState();
 

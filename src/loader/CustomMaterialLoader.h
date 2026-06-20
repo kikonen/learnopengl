@@ -20,7 +20,7 @@ namespace loader {
             CustomMaterialData& data,
             Loaders& loaders) const;
 
-        std::unique_ptr<CustomMaterial> createCustomMaterial(
+        util::Ref<CustomMaterial> createCustomMaterial(
             const CustomMaterialData& data,
             Loaders& loaders);
 

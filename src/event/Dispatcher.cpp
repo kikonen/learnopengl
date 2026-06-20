@@ -13,6 +13,12 @@ namespace event {
         // Dispatch events without holding any lock
         event::Event event;
         while (m_queue.try_dequeue(event)) {
+            if (event.type == Type::invoke) {
+                if (event.attachment && event.attachment->task) {
+                    event.attachment->task();
+                }
+                continue;
+            }
             for (auto& entry : m_handlers[event.type]) {
                 entry.second(event);
             }

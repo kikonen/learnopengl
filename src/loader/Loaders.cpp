@@ -29,7 +29,7 @@ namespace loader {
     {}
 
     void Loaders::prepare(
-        Registry* registry)
+        const util::Ref<Registry>& registry)
     {
         m_includeLoader.setRegistry(registry);
         m_fontLoader.setRegistry(registry);

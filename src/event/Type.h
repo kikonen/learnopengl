@@ -7,6 +7,11 @@ namespace event
     enum class Type : std::underlying_type_t<std::byte> {
         none = 0,
 
+        // NOTE KI deferred std::function<void()>, carried in Attachment::task.
+        // Runs at this dispatcher's drain point, ordered with events via the
+        // single shared queue (per-producer FIFO).
+        invoke,
+
         node_add,
         node_added,
 
