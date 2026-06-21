@@ -14,7 +14,7 @@ layout(binding = UNIT_SKYBOX_NIGHT) uniform samplerCube u_skyboxNight;
 
 layout (location = 0) out vec4 o_fragColor;
 
-const uint DAY_SECONDS = 60 * 60 * 24u;
+const float DAY_SECONDS = 60 * 60 * 24;
 
 ////////////////////////////////////////////////////////////
 //
@@ -24,10 +24,29 @@ SET_FLOAT_PRECISION;
 
 void main() {
   vec4 color;
+  float worldTime = u_worldTime;
+  worldTime = u_time * 5000;
+  // worldTime = DAY_SECONDS * 2.500001;
 
-  // const int days = floor(u_worldTime / DAY_SECONDS);
-  // const float dayPart = u_worldTime - float(days * DAY_SECONDS);
-  float dayPart = 1.0;
+  float days = floor(worldTime / DAY_SECONDS);
+  float dayPart = (worldTime - days * DAY_SECONDS);
+  dayPart = modf(worldTime / DAY_SECONDS, days);
+
+  // midday == 0.5
+  dayPart = (dayPart - 0.5) * 2.0;
+  if (dayPart < 0) {
+    dayPart = -dayPart;
+  }
+
+  // float dayPart = 0.95;
+  dayPart = clamp(dayPart, 0, 1);
+
+  if (dayPart < 0) {
+    dayPart = 1;
+  }
+  if (dayPart > 1) {
+    dayPart = 1;
+  }
 
   if (Debug.u_skyboxColorEnabled) {
     color = vec4(Debug.u_skyboxColor.rgb, 1.0);
@@ -36,6 +55,10 @@ void main() {
     vec4 color2 = textureLod(u_skyboxNight, fs_in.texCoord, 0);
     color = mix(color1, color2, dayPart);
   }
+
+  // color *= sin(u_time * 0.25) * 0.49 + 0.51;
+  // color = vec4(0, 1, 0, 1);
+  // color = vec4(1, 1, 1, 1);
 
   o_fragColor = color;
 }

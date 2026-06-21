@@ -38,6 +38,7 @@
 #include "render/CubeMapDebugTexture.h"
 
 #include "scene/Scene.h"
+#include "scene/Skybox.h"
 #include "scene/SkyboxMaterial.h"
 #include "scene/BrdfLutMaterial.h"
 
@@ -360,7 +361,11 @@ namespace editor
         auto* scene = ctx.getScene();
         if (!scene) return;
 
-        const auto& skyboxMaterial = scene->getSkyboxMaterial();
+        const auto& skybox = scene->getSkybox();
+        if (!skybox) return;
+
+        const auto& skyboxMaterial = skybox->getMaterial(0);
+        if (!skyboxMaterial) return;
 
         const auto& renderCtx = ctx.toRenderContext();
 

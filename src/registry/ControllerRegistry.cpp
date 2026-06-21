@@ -60,11 +60,11 @@ void ControllerRegistry::clear()
     m_controllers.clear();
 }
 
-void ControllerRegistry::prepare(const util::Ref<Engine>& engine)
+void ControllerRegistry::prepare(Engine& engine)
 {
     ASSERT_RT();
 
-    m_engine = engine;
+    m_engine = &engine;
 }
 
 void ControllerRegistry::updateWT(const UpdateContext& ctx)

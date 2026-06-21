@@ -51,7 +51,7 @@
 
 
 Registry::Registry(
-    const util::Ref<Engine>& engine,
+    Engine& engine,
     const std::shared_ptr<std::atomic_bool>& alive)
     : m_engine{ engine },
     m_alive(alive),

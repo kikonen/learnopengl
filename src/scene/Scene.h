@@ -46,7 +46,7 @@ class ShadowMapRenderer;
 
 class ObjectIdRenderer;
 
-class SkyboxMaterial;
+class Skybox;
 class BrdfLutMaterial;
 
 namespace editor {
@@ -119,17 +119,17 @@ public:
         return m_loaded;
     }
 
+    const util::Ref<Skybox>& getSkybox() const noexcept
+    {
+        return m_skybox;
+    }
+
+    void setSkybox(const util::Ref<Skybox> &skybox);
+
     const util::Ref<BrdfLutMaterial>& getBrdfLutMaterial() const noexcept
     {
         return m_brdfLutMaterial;
     }
-
-    const util::Ref<SkyboxMaterial>& getSkyboxMaterial() const noexcept
-    {
-        return m_skyboxMaterial;
-    }
-
-    void setSkyboxMaterial(util::Ref<SkyboxMaterial> skyboxMaterial);
 
 private:
     void renderUi(const render::RenderContext& ctx);
@@ -170,7 +170,7 @@ private:
 
     ShadowUBO m_shadowUBO;
 
-    util::Ref<SkyboxMaterial> m_skyboxMaterial{ nullptr };
+    util::Ref<Skybox> m_skybox{ nullptr };
     util::Ref<BrdfLutMaterial> m_brdfLutMaterial{ nullptr };
 
     std::unique_ptr<LayerRenderer> m_uiRenderer{ nullptr };

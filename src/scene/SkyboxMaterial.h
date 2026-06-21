@@ -24,7 +24,8 @@ public:
 
 public:
     SkyboxMaterial(
-        const std::string& materialName,
+        int skyboxUnit,
+        const std::string& path,
         bool gammaCorrect);
 
     ~SkyboxMaterial() = default;
@@ -42,13 +43,13 @@ public:
     const kigl::GLTextureHandle& getSkyboxCubeMapTextureHandle() const;
 
 private:
-    void prepareFaces(
+    void prepareFaceSkybox(
         const PrepareContext& ctx);
 
     void prepareHdri(
         const PrepareContext& ctx);
 
-    void prepareSkybox(
+    void prepareHdriSkybox(
         const PrepareContext& ctx);
 
     void prepareEnvironment(
@@ -73,11 +74,15 @@ public:
     bool m_hdri{ false };
 
 private:
+    const std::string m_path;
+    const int m_skyboxUnit;
+
     render::CubeMap m_cubeMap{ "skybox", false };
 
     HdriTexture m_hdriTexture;
 
     render::EnvironmentMap m_skyboxMap{ "skybox" };
+
     render::EnvironmentMap m_environmentMap{ "env" };
     render::IrradianceMap m_irradianceMap;
     render::PrefilterMap m_prefilterMap;

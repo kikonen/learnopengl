@@ -75,7 +75,7 @@ public:
     void setDebug(bool debug) noexcept { m_debug = debug; }
 
     void prepare(
-        const util::Ref<Engine>& engine);
+        Engine& engine);
 
     void updateWT(const UpdateContext& ctx);
     void postUpdateWT(const UpdateContext& ctx);

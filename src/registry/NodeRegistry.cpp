@@ -220,11 +220,11 @@ void NodeRegistry::clear()
 }
 
 void NodeRegistry::prepare(
-    const util::Ref<Engine>& engine)
+    Engine& engine)
 {
     const auto& assets = Assets::get();
 
-    m_engine = engine;
+    m_engine = &engine;
 
     m_debug = assets.nodeRegistryDebug;
     m_deferSort = assets.nodeRegistryDeferSort;

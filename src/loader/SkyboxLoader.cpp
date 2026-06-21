@@ -27,6 +27,7 @@
 #include "registry/NodeTypeRegistry.h"
 
 #include "scene/Scene.h"
+#include "scene/Skybox.h"
 #include "scene/SkyboxMaterial.h"
 
 #include "loader/document.h"
@@ -61,6 +62,9 @@ namespace loader {
             }
             else if (k == "material") {
                 data.materialName = readString(v);
+            }
+            else if (k == "material_2") {
+                data.materialName2 = readString(v);
             }
             else if (k == "priority") {
                 data.priority = readInt(v);
@@ -120,38 +124,41 @@ namespace loader {
             gammaCorrect = false;
         }
 
-        auto material = util::Ref<SkyboxMaterial>::create(
-            data.materialName,
-            gammaCorrect);
-        material->m_swapFaces = data.swapFaces;
-        material->m_hdri = data.hdri;
-        if (data.loadedFaces) {
-            material->m_faces = data.faces;
+        auto skybox = util::Ref<Skybox>::create();
+        {
+            auto material = util::Ref<SkyboxMaterial>::create(
+                UNIT_SKYBOX_DAY,
+                data.materialName,
+                gammaCorrect);
+            material->m_hdri = data.hdri;
+            material->m_swapFaces = data.swapFaces;
+            if (data.loadedFaces) {
+                material->m_faces = data.faces;
+            }
+            skybox->setMaterial(material, 0);
+        }
+        if (!data.materialName2.empty()) {
+            auto material = util::Ref<SkyboxMaterial>::create(
+                UNIT_SKYBOX_NIGHT,
+                data.materialName2,
+                gammaCorrect);
+            material->m_hdri = data.hdri;
+            material->m_swapFaces = data.swapFaces;
+            if (data.loadedFaces2) {
+                material->m_faces = data.faces2;
+            }
+            skybox->setMaterial(material, 1);
         }
 
         {
             auto fn = [
                 registry = m_registry.get(),
-                material = material]() {
-                auto scene = registry->getEngine()->getCurrentScene();
-                scene->setSkyboxMaterial(material);
+                skybox = skybox]() {
+                auto scene = registry->getEngine().getCurrentScene();
+                scene->setSkybox(skybox);
 
-                PrepareContext ctx{ *registry->getEngine() };
-                material->prepareRT(ctx);
-
-                //void NodeRegistry::bindSkybox(
-                //    pool::NodeHandle handle) noexcept
-                //{
-                //    auto* node = handle.toNode();
-                //    if (!node) return;
-
-                //    auto* type = node->m_typeHandle.toType();
-
-                //    type->prepareWT({ *m_engine });
-                //    node->prepareWT({ *m_engine }, m_states[node->getEntityIndex()]);
-
-                //    m_skybox = handle;
-                //}
+                PrepareContext ctx{ registry->getEngine() };
+                skybox->prepareRT(ctx);
             };
             m_registry->invokeLaterRT(std::move(fn));
         }
