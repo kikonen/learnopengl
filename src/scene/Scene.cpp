@@ -60,8 +60,8 @@
 
 #include "renderer/ObjectIdRenderer.h"
 
+#include "Skybox.h"
 #include "BrdfLutMaterial.h"
-#include "SkyboxMaterial.h"
 
 namespace {
 }
@@ -71,6 +71,7 @@ Scene::Scene(
     : m_alive{ std::make_shared<std::atomic_bool>(true) },
     m_engine{ engine },
     m_collection{ std::make_unique<render::NodeCollection>()},
+    m_skybox{ util::Ref<Skybox>::create() },
     m_brdfLutMaterial{ util::Ref<BrdfLutMaterial>::create() }
 {
     const auto& assets = Assets::get();
@@ -596,9 +597,7 @@ void Scene::render(const render::RenderContext& ctx)
     updateLightsUBO();
 
     m_brdfLutMaterial->bindTextures(state);
-    if (m_skyboxMaterial) {
-        m_skyboxMaterial->bindTextures(state);
-    }
+    m_skybox->bindTextures(state);
 
     if (m_shadowMapRenderer->render(ctx)) {
         renderCount++;
@@ -856,9 +855,9 @@ void Scene::updateLightsUBO() const
     m_engine.getRenderData()->updateLights(m_collection.get());
 }
 
-void Scene::setSkyboxMaterial(util::Ref<SkyboxMaterial> skyboxMaterial)
+void Scene::setSkybox(const util::Ref<Skybox>& skybox)
 {
-    m_skyboxMaterial = std::move(skyboxMaterial);
+    m_skybox = skybox;
 }
 
 //void Scane::copyShadowMatrixFrom(const RenderContext& b)

@@ -22,7 +22,7 @@ public:
     ControllerRegistry& operator=(const ControllerRegistry&) = delete;
 
     void clear();
-    void prepare(const util::Ref<Engine>& engine);
+    void prepare(Engine& engine);
 
     void updateWT(const UpdateContext& ctx);
 

@@ -36,9 +36,12 @@ const std::array<std::string, 6>& SkyboxMaterial::getDefaultFaces() {
 }
 
 SkyboxMaterial::SkyboxMaterial(
-    const std::string& materialName,
+    int skyboxUnit,
+    const std::string& path,
     bool gammaCorrect)
-    : CustomMaterial(materialName, gammaCorrect),
+    : CustomMaterial(path, gammaCorrect),
+    m_skyboxUnit{ skyboxUnit },
+    m_path{ path },
     m_faces{ DEFAULT_FACES }
 {
 }
@@ -74,19 +77,21 @@ void SkyboxMaterial::prepareRT(
     if (m_hdri) {
         prepareHdri(ctx);
         prepareEnvironment(ctx);
-        prepareSkybox(ctx);
+        prepareHdriSkybox(ctx);
     }
     else {
-        prepareFaces(ctx);
+        prepareFaceSkybox(ctx);
     }
 
     prepareIrradiance(ctx);
     preparePrefilter(ctx);
 }
 
-void SkyboxMaterial::prepareFaces(
+void SkyboxMaterial::prepareFaceSkybox(
     const PrepareContext& ctx)
 {
+    if (m_path.empty()) return;
+
     const auto& assets = ctx.getAssets();
 
     {
@@ -95,7 +100,7 @@ void SkyboxMaterial::prepareFaces(
         {
             basePath = util::joinPath(
                 assets.assetsDir,
-                m_materialName);
+                m_path);
         }
 
         // NOTE KI https://learnopengl.com/Advanced-Lighting/Gamma-Correction
@@ -122,6 +127,8 @@ void SkyboxMaterial::prepareFaces(
 void SkyboxMaterial::prepareHdri(
     const PrepareContext& ctx)
 {
+    if (m_path.empty()) return;
+
     const auto& assets = ctx.getAssets();
 
     // NOTE KI MUST normalize path to avoid mismatches due to \ vs /
@@ -129,7 +136,7 @@ void SkyboxMaterial::prepareHdri(
     {
         filePath = util::joinPath(
             assets.assetsDir,
-            m_materialName);
+            m_path);
     }
 
     bindDefaultVao();
@@ -138,7 +145,7 @@ void SkyboxMaterial::prepareHdri(
     m_hdriTexture.prepareRT(ctx);
 }
 
-void SkyboxMaterial::prepareSkybox(
+void SkyboxMaterial::prepareHdriSkybox(
     const PrepareContext& ctx)
 {
     const auto& assets = ctx.getAssets();
@@ -193,12 +200,10 @@ void SkyboxMaterial::preparePrefilter(
 void SkyboxMaterial::bindTextures(kigl::GLState& state)
 {
     if (m_skyboxMap.valid()) {
-        m_skyboxMap.bindTexture(state, UNIT_SKYBOX_DAY);
-        m_skyboxMap.bindTexture(state, UNIT_SKYBOX_NIGHT);
+        m_skyboxMap.bindTexture(state, m_skyboxUnit);
     } else {
         if (m_cubeMap.valid()) {
-            m_cubeMap.bindTexture(state, UNIT_SKYBOX_DAY);
-            m_cubeMap.bindTexture(state, UNIT_SKYBOX_NIGHT);
+            m_cubeMap.bindTexture(state, m_skyboxUnit);
         }
     }
 

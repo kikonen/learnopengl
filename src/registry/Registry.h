@@ -32,7 +32,7 @@ struct PrepareContext;
 class Registry : public util::RefCounted<> {
 public:
     Registry(
-        const util::Ref<Engine>& engine,
+        Engine& engine,
         const std::shared_ptr<std::atomic_bool>& alive);
 
     ~Registry();
@@ -54,7 +54,7 @@ public:
     // Defer work to the next view/render-thread (RT) dispatcher drain.
     void invokeLaterRT(event::Task task);
 
-    const util::Ref<Engine>& getEngine() noexcept
+    Engine& getEngine() noexcept
     {
         return m_engine;
     }
@@ -62,7 +62,7 @@ public:
 private:
     bool m_prepared = false;
 
-    util::Ref<Engine> m_engine;
+    Engine& m_engine;
     std::shared_ptr<std::atomic_bool> m_alive;
     std::mutex m_lock{};
 

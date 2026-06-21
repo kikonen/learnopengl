@@ -9,6 +9,8 @@ skybox:
   xmaterial: skybox/polyhaven/drakensberg_solitary_mountain_4k.hdr
   xmaterial: skybox/polyhaven/gray_pier_4k.hdr
   xmaterial: skybox/polyhaven/wasteland_clouds_puresky_4k.hdr
+  material: skybox/polyhaven/industrial_sunset_puresky_4k.hdr
+  material_2: skybox/polyhaven/dikhololo_night_4k.hdr
 script:
   scripts:
     - path: lib/common
