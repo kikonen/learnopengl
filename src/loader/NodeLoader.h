@@ -17,7 +17,7 @@ namespace loader {
     {
     public:
         NodeLoader(
-            const std::shared_ptr<Context>& ctx);
+            const util::Ref<Context>& ctx);
 
         void loadNodes(
             const loader::DocNode& node,

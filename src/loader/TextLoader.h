@@ -18,7 +18,7 @@ namespace loader {
     {
     public:
         TextLoader(
-            const std::shared_ptr<Context>& ctx);
+            const util::Ref<Context>& ctx);
 
         void loadText(
             const loader::DocNode& node,

@@ -10,11 +10,12 @@
 class AsyncLoader;
 
 namespace loader {
-    struct Context {
+    struct Context : public util::RefCounted<> {
         Context(
             util::Ref<AsyncLoader> asyncLoader,
             const std::string& sdirName,
             const std::string& fileName);
+        ~Context();
 
         std::string str() const noexcept
         {

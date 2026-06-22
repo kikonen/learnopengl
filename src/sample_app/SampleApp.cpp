@@ -521,7 +521,7 @@ util::Ref<Scene> SampleApp::loadScene(
         if (!assets.sceneFile.empty()) {
             scene->setName(assets.sceneFile);
 
-            auto ctx = std::make_shared<loader::Context>(
+            auto ctx = util::Ref<loader::Context>::create(
                 m_asyncLoader,
                 assets.sceneDir,
                 filePath

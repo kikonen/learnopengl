@@ -60,6 +60,7 @@
 #include "registry/NodeTypeRegistry.h"
 
 #include "Loaders.h"
+#include "Context.h"
 
 #include "loader_util.h"
 
@@ -110,7 +111,7 @@ namespace {
 namespace loader
 {
     NodeTypeBuilder::NodeTypeBuilder(
-        const std::shared_ptr<Context>& ctx,
+        const util::Ref<Context>& ctx,
         const std::shared_ptr<Loaders>& loaders)
         : m_ctx{ ctx },
         m_loaders{ loaders }

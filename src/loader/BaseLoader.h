@@ -27,7 +27,7 @@ namespace loader
     {
     public:
         BaseLoader(
-            const std::shared_ptr<Context>& ctx);
+            const util::Ref<Context>& ctx);
 
         ~BaseLoader();
 
@@ -37,7 +37,7 @@ namespace loader
         std::string readFile(std::string_view filename) const;
 
     public:
-        std::shared_ptr<Context> m_ctx;
+        util::Ref<Context> m_ctx;
 
         util::Ref<Registry> m_registry;
         event::Dispatcher* m_dispatcherWorker { nullptr };

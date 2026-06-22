@@ -15,7 +15,7 @@ namespace loader {
     {
     public:
         DecalLoader(
-            const std::shared_ptr<Context>& ctx);
+            const util::Ref<Context>& ctx);
 
         void loadDecals(
             const loader::DocNode& node,

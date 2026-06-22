@@ -10,7 +10,7 @@ namespace loader {
     {
     public:
         RootLoader(
-            const std::shared_ptr<Context>& ctx);
+            const util::Ref<Context>& ctx);
 
         void loadRoot(
             const loader::DocNode& node,

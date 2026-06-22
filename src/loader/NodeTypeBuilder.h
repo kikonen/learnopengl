@@ -49,7 +49,7 @@ namespace loader {
     {
     public:
         NodeTypeBuilder(
-            const std::shared_ptr<Context>& ctx,
+            const util::Ref<Context>& ctx,
             const std::shared_ptr<Loaders>& loaders);
 
         ~NodeTypeBuilder();
@@ -140,7 +140,7 @@ namespace loader {
             mesh::MeshFlags& flags);
 
     private:
-        std::shared_ptr<Context> m_ctx;
+        util::Ref<Context> m_ctx;
         std::shared_ptr<Loaders> m_loaders;
     };
 }

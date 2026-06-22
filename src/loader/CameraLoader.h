@@ -10,7 +10,7 @@ namespace loader {
     {
     public:
         CameraLoader(
-            const std::shared_ptr<Context>& ctx);
+            const util::Ref<Context>& ctx);
 
         void loadCamera(
             const loader::DocNode& node,

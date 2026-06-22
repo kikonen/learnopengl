@@ -12,7 +12,7 @@ namespace loader {
     {
     public:
         IncludeLoader(
-            const std::shared_ptr<Context>& ctx);
+            const util::Ref<Context>& ctx);
 
         void loadIncludes(
             const loader::DocNode& node,

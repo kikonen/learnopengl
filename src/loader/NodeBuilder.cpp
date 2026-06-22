@@ -82,7 +82,7 @@ namespace loader
         const ki::node_id parentId,
         const ki::socket_id socketId,
         const NodeData& baseData,
-        const std::shared_ptr<Context>& ctx,
+        const util::Ref<Context>& ctx,
         const std::shared_ptr<Loaders>& loaders)
     {
         if (!baseData.enabled) {
