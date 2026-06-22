@@ -45,4 +45,6 @@ namespace loader {
         m_name{ resolveName(fileName) }
     {
     }
+
+    Context::~Context() = default;
 }

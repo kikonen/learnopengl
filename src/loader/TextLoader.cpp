@@ -31,7 +31,7 @@ namespace {
 
 namespace loader {
     TextLoader::TextLoader(
-        const std::shared_ptr<Context>& ctx)
+        const util::Ref<Context>& ctx)
         : BaseLoader(ctx)
     {
     }

@@ -13,7 +13,7 @@ namespace loader {
     {
     public:
         PrefabLoader(
-            const std::shared_ptr<Context>& ctx);
+            const util::Ref<Context>& ctx);
 
         void loadPrefab(
             const loader::DocNode& node,

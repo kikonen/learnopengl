@@ -21,7 +21,7 @@ namespace loader {
     {
     public:
         PhysicsLoader(
-            const std::shared_ptr<Context>& ctx);
+            const util::Ref<Context>& ctx);
 
         void loadPhysics(
             const loader::DocNode& node,

@@ -11,7 +11,7 @@ namespace loader
     {
     public:
         AddonSelectorLoader(
-            const std::shared_ptr<Context>& ctx);
+            const util::Ref<Context>& ctx);
 
         void loadAddonSelector(
             const loader::DocNode& node,
