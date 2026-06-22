@@ -98,7 +98,7 @@ void SelectionRegistry::prepare(Registry* registry)
 
 void SelectionRegistry::attachListeners()
 {
-    auto* dispatcherView = m_registry->m_dispatcherView;
+    const auto& dispatcherView = m_registry->m_dispatcherView;
 
     m_listen_node_select.listen(
         event::Type::node_select,

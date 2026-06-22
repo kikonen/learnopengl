@@ -158,7 +158,7 @@ void Scene::prepareRT()
 
     std::cout << "RT: worker=" << util::isWorkerThread() << '\n';
 
-    auto* dispatcherView = m_engine.getRegistry()->m_dispatcherView;
+    const auto& dispatcherView = m_engine.getRegistry()->m_dispatcherView;
 
     m_listen_scene_loaded.listen(
         event::Type::scene_loaded,

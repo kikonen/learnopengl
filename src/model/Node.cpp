@@ -248,13 +248,6 @@ namespace model
         }
     }
 
-    void Node::updateRT(const UpdateContext& ctx) noexcept
-    {
-        if (m_generator) {
-            m_generator->updateRT(ctx, *this);
-        }
-    }
-
     const std::vector<util::Ref<mesh::LodMesh>>& Node::getEnabledMeshes() const noexcept
     {
         if (m_generator) {

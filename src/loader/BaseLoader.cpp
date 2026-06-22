@@ -20,6 +20,8 @@
 
 #include "registry/Registry.h"
 
+#include "event/Dispatcher.h"
+
 #include "Context.h"
 #include "MaterialData.h"
 

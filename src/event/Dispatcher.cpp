@@ -5,6 +5,10 @@ namespace event {
     {
     }
 
+    Dispatcher::~Dispatcher()
+    {
+    }
+
     void Dispatcher::dispatchEvents()
     {
         // Apply pending listener changes first (lock-free)

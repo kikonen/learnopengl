@@ -56,11 +56,8 @@ Registry::Registry(
     : m_engine{ engine },
     m_alive(alive),
     // registries
-    m_dispatcherWorkerImpl(std::make_unique<event::Dispatcher>()),
-    m_dispatcherViewImpl(std::make_unique<event::Dispatcher>()),
-    // pointers
-    m_dispatcherWorker(m_dispatcherWorkerImpl.get()),
-    m_dispatcherView(m_dispatcherViewImpl.get()),
+    m_dispatcherWorker(util::Ref<event::Dispatcher>::create()),
+    m_dispatcherView(util::Ref<event::Dispatcher>::create()),
     m_nodeRegistry{ &NodeRegistry::get() },
     m_selectionRegistry{ &SelectionRegistry::get() },
     m_instanceRegistry{ &render::InstanceRegistry::get() }

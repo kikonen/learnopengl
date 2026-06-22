@@ -33,7 +33,7 @@ namespace script
             auto* node = getNode();
             if (!node) return;
 
-            auto* dispatcherView = ctx.getRegistry()->m_dispatcherView;
+            const auto& dispatcherView = ctx.getRegistry()->m_dispatcherView;
             {
                 event::Event evt{ event::Type::node_select };
                 evt.body.select = {

@@ -40,7 +40,7 @@ namespace loader
         util::Ref<Context> m_ctx;
 
         util::Ref<Registry> m_registry;
-        event::Dispatcher* m_dispatcherWorker { nullptr };
-        event::Dispatcher* m_dispatcherView{ nullptr };
+        util::Ref<event::Dispatcher> m_dispatcherWorker { nullptr };
+        util::Ref<event::Dispatcher> m_dispatcherView{ nullptr };
     };
 }

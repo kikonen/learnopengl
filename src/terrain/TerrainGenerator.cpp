@@ -179,7 +179,7 @@ namespace terrain {
     {
         const auto& assets = ctx.getAssets();
         auto* registry = ctx.getRegistry();
-        auto& dispatcherWorker = registry->m_dispatcherWorker;
+        const auto& dispatcherWorker = registry->m_dispatcherWorker;
 
         auto& entityRegistry = EntityRegistry::get();
 

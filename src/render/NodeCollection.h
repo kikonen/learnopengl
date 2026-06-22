@@ -123,6 +123,7 @@ namespace render {
 
         pool::NodeHandle m_activeCameraNode{};
         std::vector<pool::NodeHandle> m_cameraNodes;
+        std::vector<pool::NodeHandle> m_generatorNodes;
 
         std::vector<pool::NodeHandle> m_dirLightNodes;
         std::vector<pool::NodeHandle> m_pointLightNodes;

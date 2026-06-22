@@ -66,13 +66,10 @@ private:
     std::shared_ptr<std::atomic_bool> m_alive;
     std::mutex m_lock{};
 
-    std::unique_ptr<event::Dispatcher> m_dispatcherWorkerImpl;
-    std::unique_ptr<event::Dispatcher> m_dispatcherViewImpl;
-
 public:
     // NOTE KI initialization order!
-    event::Dispatcher* const m_dispatcherWorker;
-    event::Dispatcher* const m_dispatcherView;
+    util::Ref<event::Dispatcher> m_dispatcherWorker;
+    util::Ref<event::Dispatcher> m_dispatcherView;
 
     NodeRegistry* const m_nodeRegistry;
     render::InstanceRegistry* const m_instanceRegistry;
