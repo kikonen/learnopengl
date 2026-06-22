@@ -72,6 +72,7 @@
 
 #include "EntitySSBO.h"
 
+#include "NodeCache.h"
 #include "Registry.h"
 #include "NodeTypeRegistry.h"
 #include "EntityRegistry.h"
@@ -84,10 +85,6 @@ namespace {
 
     constexpr int NULL_NODE_INDEX = 0;
     constexpr int ID_NODE_INDEX = 1;
-
-    // NOTE KI null/id entityIndex is reserved in node pool
-    constexpr int NULL_ENTITY_INDEX = 0;
-    constexpr int ID_ENTITY_INDEX = 1;
 
     constexpr int INITIAL_SIZE = 30000;
 
@@ -118,6 +115,8 @@ NodeRegistry& NodeRegistry::get() noexcept
 }
 
 NodeRegistry::NodeRegistry()
+    : m_nodeCacheWT{ util::Ref<NodeCache>::create() },
+    m_nodeCacheRT{ util::Ref<NodeCache>::create() }
 {
     clear();
 }
@@ -136,8 +135,6 @@ NodeRegistry::~NodeRegistry()
 
     //m_nodes.clear();
     //m_parentIndeces.clear();
-    //m_cachedNodesWT.clear();
-    //m_cachedNodesRT.clear();
     //m_entities.clear();
 
     pool::NodeHandle::clear();
@@ -162,13 +159,11 @@ void NodeRegistry::clear()
     m_entities.clear();
     m_dirtyEntities.clear();
 
-    m_cachedNodesWT.clear();
-    m_cachedNodesRT.clear();
+    m_nodeCacheWT->clear();
+    m_nodeCacheRT->clear();
     m_processedLevels.clear();
 
     m_nodeLevel = 0;
-    m_cachedNodeLevelWT = 0;
-    m_cachedNodeLevelRT = 0;
 
     m_activeNode.reset();
 
@@ -182,8 +177,6 @@ void NodeRegistry::clear()
         m_entities.reserve(INITIAL_SIZE);
         m_dirtyEntities.reserve(INITIAL_SIZE);
 
-        m_cachedNodesWT.reserve(INITIAL_SIZE);
-        m_cachedNodesRT.reserve(INITIAL_SIZE);
         m_processedLevels.reserve(INITIAL_SIZE);
         m_processedNormalLevels.reserve(INITIAL_SIZE);
 
@@ -204,8 +197,8 @@ void NodeRegistry::clear()
         state.updateRootMatrix();
 
         m_handles.emplace_back();
-        m_parentIndeces.push_back(NULL_ENTITY_INDEX);
-        m_sortedNodes.push_back(NULL_ENTITY_INDEX);
+        m_parentIndeces.push_back(ki::NULL_ENTITY_INDEX);
+        m_sortedNodes.push_back(ki::NULL_ENTITY_INDEX);
     }
 
     {
@@ -214,8 +207,8 @@ void NodeRegistry::clear()
         state.updateRootMatrix();
 
         m_handles.emplace_back();
-        m_parentIndeces.push_back(NULL_ENTITY_INDEX);
-        m_sortedNodes.push_back(ID_ENTITY_INDEX);
+        m_parentIndeces.push_back(ki::NULL_ENTITY_INDEX);
+        m_sortedNodes.push_back(ki::ID_ENTITY_INDEX);
     }
 }
 
@@ -243,18 +236,18 @@ void NodeRegistry::prepare(
 
 void NodeRegistry::updateWT(const UpdateContext& ctx)
 {
-    auto& cachedNodes = getCachedNodesWT();
+    auto& cachedNodes = getNodeCacheWT()->getNodes();
     const auto& sortedNodes = getSortedNodes();
 
     {
         auto& physicsSystem = physics::PhysicsSystem::get();
 
         {
-            auto& state = m_states[NULL_ENTITY_INDEX];
+            auto& state = m_states[ki::NULL_ENTITY_INDEX];
             state.updateRootMatrix();
         }
         {
-            auto& state = m_states[ID_ENTITY_INDEX];
+            auto& state = m_states[ki::ID_ENTITY_INDEX];
             state.updateRootMatrix();
         }
         {
@@ -300,9 +293,9 @@ void NodeRegistry::updateWT(const UpdateContext& ctx)
 
 void NodeRegistry::postUpdateWT(const UpdateContext& ctx)
 {
-    auto& cachedNodes = getCachedNodesWT();
+    auto& cachedNodes = getNodeCacheWT()->getNodes();
 
-    for (int entityIndex = ID_ENTITY_INDEX + 1; entityIndex < m_states.size(); entityIndex++) {
+    for (int entityIndex = ki::ID_ENTITY_INDEX + 1; entityIndex < m_states.size(); entityIndex++) {
         // NOTE KI skip free/root slot
         if (m_parentIndeces[entityIndex] == 0) continue;
 
@@ -331,7 +324,7 @@ void NodeRegistry::postUpdateWT(const UpdateContext& ctx)
 
 int NodeRegistry::validateModelMatrices()
 {
-    for (auto entityIndex = ID_ENTITY_INDEX + 1; entityIndex < m_states.size(); entityIndex++) {
+    for (auto entityIndex = ki::ID_ENTITY_INDEX + 1; entityIndex < m_states.size(); entityIndex++) {
         // NOTE KI skip free/root slot
         if (m_parentIndeces[entityIndex] == 0) continue;
 
@@ -344,11 +337,11 @@ int NodeRegistry::validateModelMatrices()
 void NodeRegistry::updateModelMatrices()
 {
     {
-        auto& state = m_states[NULL_ENTITY_INDEX];
+        auto& state = m_states[ki::NULL_ENTITY_INDEX];
         state.updateRootMatrix();
     }
     {
-        auto& state = m_states[ID_ENTITY_INDEX];
+        auto& state = m_states[ki::ID_ENTITY_INDEX];
         state.updateRootMatrix();
     }
     {
@@ -419,7 +412,7 @@ void NodeRegistry::syncSnapshots()
     // Swap RT's buffer with shared to get latest snapshots
     m_snapshotBuffer.sync();
 
-    cacheNodes(m_cachedNodesRT, m_cachedNodeLevelRT);
+    m_nodeCacheRT->cacheNodes(m_handles, m_nodeLevel);
 
     const auto sz = m_snapshotBuffer.size();
     m_entities.resize(sz);
@@ -440,12 +433,12 @@ void NodeRegistry::syncSnapshots()
 
 void NodeRegistry::updateDrawables()
 {
-    auto& cachedNodes = getCachedNodesRT();
+    const auto& cachedNodes = getNodeCacheRT()->getNodes();
     const auto& snapshots = m_snapshotBuffer.getSnapshots();
 
     auto& instanceRegistry = render::InstanceRegistry::get();
 
-    for (int entityIndex = ID_ENTITY_INDEX + 1; entityIndex < snapshots.size(); entityIndex++) {
+    for (int entityIndex = ki::ID_ENTITY_INDEX + 1; entityIndex < snapshots.size(); entityIndex++) {
         // NOTE KI skip free/root slot
         if (entityIndex >= m_parentIndeces.size() || m_parentIndeces[entityIndex] == 0) continue;
 
@@ -473,10 +466,10 @@ void NodeRegistry::updateDrawables()
     }
 }
 
-std::vector<model::Node*>& NodeRegistry::getCachedNodesWT()
+const util::Ref<NodeCache>& NodeRegistry::getNodeCacheWT() const noexcept
 {
-    cacheNodes(m_cachedNodesWT, m_cachedNodeLevelWT);
-    return m_cachedNodesWT;
+    m_nodeCacheWT->cacheNodes(m_handles, m_nodeLevel);
+    return m_nodeCacheWT;
 }
 
 void NodeRegistry::updateRT(const UpdateContext& ctx)
@@ -488,9 +481,9 @@ void NodeRegistry::updateRT(const UpdateContext& ctx)
 
     {
         const auto& snapshots = m_snapshotBuffer.getSnapshots();
-        auto& cachedNodes = getCachedNodesRT();
+        const auto& cachedNodes = getNodeCacheRT()->getNodes();
      
-        for (int entityIndex = ID_ENTITY_INDEX + 1; entityIndex < snapshots.size(); entityIndex++) {
+        for (int entityIndex = ki::ID_ENTITY_INDEX + 1; entityIndex < snapshots.size(); entityIndex++) {
             // NOTE KI skip free/root slot
             if (entityIndex >= m_parentIndeces.size() || m_parentIndeces[entityIndex] == 0) continue;
 
@@ -510,13 +503,12 @@ std::pair<int, int> NodeRegistry::updateEntity(const UpdateContext& ctx)
     int maxDirty = INT32_MIN;
 
     const auto& snapshots = m_snapshotBuffer.getSnapshots();
+    const auto& cachedNodes = m_nodeCacheRT->getNodes();
 
     for (int entityIndex = 0; entityIndex < snapshots.size(); entityIndex++) {
-        if (m_cachedNodesRT.size() < entityIndex + 1) continue;
+        if (cachedNodes.size() < entityIndex + 1) continue;
         if (entityIndex >= m_processedLevels.size()) continue;
 
-        auto* node = m_cachedNodesRT[entityIndex];
-        const auto& state = m_states[entityIndex];
         const auto& snapshot = snapshots[entityIndex];
 
         // NOTE KI detect slot reuse: if snapshot level < processed level, slot was reused
@@ -528,6 +520,7 @@ std::pair<int, int> NodeRegistry::updateEntity(const UpdateContext& ctx)
         // NOTE KI use level comparison instead of m_dirty flag
         if (snapshot.m_matrixLevel <= m_processedLevels[entityIndex]) continue;
 
+        auto* node = cachedNodes[entityIndex];
         auto& entity = m_entities[entityIndex];
 
         if (node) {
@@ -538,9 +531,6 @@ std::pair<int, int> NodeRegistry::updateEntity(const UpdateContext& ctx)
                 entity.u_fontHandle = textGenerator->getAtlasTextureHandle();
             }
         }
-
-        entity.u_tilingX = state.m_tilingX;
-        entity.u_tilingY = state.m_tilingY;
 
         // NOTE KI dirtyNormal based on normalLevel comparison
         const bool dirtyNormal = snapshot.m_normalLevel > m_processedNormalLevels[entityIndex];
@@ -556,23 +546,6 @@ std::pair<int, int> NodeRegistry::updateEntity(const UpdateContext& ctx)
     }
 
     return { minDirty, maxDirty };
-}
-
-void NodeRegistry::cacheNodes(
-    std::vector<model::Node*>& cache,
-    ki::level_id& cacheLevel)
-{
-    if (cacheLevel == m_nodeLevel) return;
-    cacheLevel = m_nodeLevel;
-
-    cache.resize(m_handles.size());
-    cache[NULL_ENTITY_INDEX] = nullptr;
-    cache[ID_ENTITY_INDEX] = nullptr;
-
-    for (size_t i = ID_ENTITY_INDEX + 1; i < m_handles.size(); i++) {
-		if (!m_handles[i]) continue;
-        cache[i] = m_handles[i].toNode();
-    }
 }
 
 void NodeRegistry::attachListeners()
@@ -1176,12 +1149,9 @@ void NodeRegistry::unbindNode(
             m_entities[entityIndex] = {};
             m_dirtyEntities[entityIndex] = false;
         }
-        if (entityIndex < m_cachedNodesWT.size()) {
-            m_cachedNodesWT[entityIndex] = nullptr;
-        }
-        if (entityIndex < m_cachedNodesRT.size()) {
-            m_cachedNodesRT[entityIndex] = nullptr;
-        }
+
+        m_nodeCacheWT->clearAt(entityIndex);
+        m_nodeCacheRT->clearAt(entityIndex);
 
         m_nodeLevel++;
     }
@@ -1383,7 +1353,7 @@ void NodeRegistry::viewportChanged(
         auto entityIndex = sortedNodes[sortedIndex];
         auto& state = m_states[entityIndex];
 
-        auto* node = getCachedNodesWT()[entityIndex];
+        auto* node = getNodeCacheWT()->getNodes()[entityIndex];
         if (!node) continue;
 
         if (node->m_layer == info.m_index) {

@@ -33,6 +33,9 @@ namespace model
 
         m_attachedSocketIndex = o.m_attachedSocketIndex;
 
+        m_tilingX = o.m_tilingX;
+        m_tilingY = o.m_tilingY;
+
         m_worldVolume = o.m_localVolume.calculateWorldVolume(
             o.m_modelMatrix,
             o.getWorldMaxScale());
@@ -60,5 +63,8 @@ namespace model
         entity.setModelMatrix(m_modelMatrix, uniformScale, dirtyNormal);
 
         entity.u_worldScale = m_modelScale;
+
+        entity.u_tilingX = m_tilingX;
+        entity.u_tilingY = m_tilingY;
     }
 }

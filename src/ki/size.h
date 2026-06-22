@@ -4,6 +4,10 @@
 
 namespace ki
 {
+    // NOTE KI null/id entityIndex is reserved in node pool
+    inline const int NULL_ENTITY_INDEX = 0;
+    inline const int ID_ENTITY_INDEX = 1;
+
     typedef uint32_t sid_t;
 
     typedef sid_t node_id;

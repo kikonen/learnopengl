@@ -43,6 +43,9 @@ namespace model
         // parent socket
         uint32_t m_attachedSocketIndex{ 0 };
 
+        float m_tilingX{ 1.f };
+        float m_tilingY{ 1.f };
+
     public:
         ki::size_t_entity_flags m_flags{ 0 }; // 1 * 4 = 4
 
@@ -75,6 +78,9 @@ namespace model
             m_modelScale = o.m_modelScale;
 
             m_attachedSocketIndex = o.m_attachedSocketIndex;
+
+            m_tilingX = o.m_tilingX;
+            m_tilingY = o.m_tilingY;
         }
 
         inline float getMaxScale() const noexcept

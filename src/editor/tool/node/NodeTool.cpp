@@ -54,6 +54,7 @@
 #include "controller/CameraZoomController.h"
 
 #include "registry/NodeRegistry.h"
+#include "registry/NodeCache.h"
 #include "registry/ControllerRegistry.h"
 #include "registry/SelectionRegistry.h"
 
@@ -155,11 +156,11 @@ namespace editor
     void NodeTool::renderNodeSelector(
         const gui::FrameContext& ctx)
     {
-        const auto& nr = NodeRegistry::get();
+        const auto& nodeRegistry = NodeRegistry::get();
 
         const auto currNode = m_state.m_selectedNode.toNode();
         if (ImGui::BeginCombo("Node selector", currNode ? currNode->getName().c_str() : nullptr)) {
-            for (const auto* node : nr.getCachedNodesRT())
+            for (const auto* node : nodeRegistry.getNodeCacheRT()->getNodes())
             {
                 if (!node) continue;
 
@@ -178,7 +179,7 @@ namespace editor
         }
 
         {
-            const auto& nodes = NodeRegistry::get().getCachedNodesRT();
+            const auto& nodes = NodeRegistry::get().getNodeCacheRT()->getNodes();
             NodeTree tree{ *this };
             tree.build(nodes);
             if (tree.m_root) {

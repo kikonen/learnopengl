@@ -37,6 +37,7 @@
 
 #include "registry/Registry.h"
 #include "registry/NodeRegistry.h"
+#include "registry/NodeCache.h"
 
 namespace {
     inline const glm::mat4 ID_MAT{ 1.f };
@@ -151,7 +152,7 @@ void SocketRenderer::render(
     m_meshes.clear();
     m_meshes.reserve(64);  // Reasonable initial capacity
 
-    for (const auto* node : nodeRegistry.getCachedNodesRT()) {
+    for (const auto* node : nodeRegistry.getNodeCacheRT()->getNodes()) {
         if (!node) continue;
         if (!node->m_visible || !node->m_alive) continue;
 

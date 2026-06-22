@@ -71,6 +71,11 @@ namespace pool {
             return m_id;
         }
 
+        explicit operator bool() const
+        {
+            return m_id != 0;
+        }
+
         std::string str() const noexcept;
 
         void reset() noexcept {

@@ -309,6 +309,7 @@
     <ClCompile Include="src\mesh_set\NodeTree.cpp" />
     <ClCompile Include="src\mesh_set\SceneMetaData.cpp" />
     <ClCompile Include="src\mesh_set\SkeletonSet.cpp" />
+    <ClCompile Include="src\registry\NodeCache.cpp" />
     <ClCompile Include="src\renderer\JointRenderer.cpp" />
     <ClCompile Include="src\animation\Animation.cpp" />
     <ClCompile Include="src\animation\animation_util.cpp" />
@@ -777,6 +778,7 @@
     <ClInclude Include="src\mesh\vao\size.h" />
     <ClInclude Include="src\model\NodeAddon.h" />
     <ClInclude Include="src\particle\ParticlePool.h" />
+    <ClInclude Include="src\registry\NodeCache.h" />
     <ClInclude Include="src\render\DrawableFlags.h" />
     <ClInclude Include="src\render\DrawableInfo.h" />
     <ClInclude Include="src\render\InstanceIndexSSBO.h" />
