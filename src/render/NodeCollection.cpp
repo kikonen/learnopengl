@@ -54,6 +54,8 @@ namespace render {
         m_cubeMapNodes.clear();
         m_environmentProbeNodes.clear();
 
+        m_generatorNodes.clear();
+
         m_activeCameraNode.reset();
         m_cameraNodes.clear();
 
@@ -64,6 +66,11 @@ namespace render {
 
     void NodeCollection::updateRT(const UpdateContext& ctx)
     {
+        for (auto& handle : m_generatorNodes) {
+            auto* node = handle.toNode();
+            if (!node) continue;
+            node->m_generator->updateRT(ctx, *node);
+        }
         for (auto& handle : m_cameraNodes) {
             auto* node = handle.toNode();
             if (!node) continue;
@@ -110,6 +117,10 @@ namespace render {
             m_environmentProbeNodes.push_back(nodeHandle);
         }
 
+        if (node->m_generator) {
+            m_generatorNodes.push_back(nodeHandle);
+        }
+
         if (node->m_camera) {
             m_cameraNodes.push_back(nodeHandle);
             if (!m_activeCameraNode && node->m_camera->isDefault()) {
@@ -146,6 +157,7 @@ namespace render {
         nodeHandle.removeFrom(m_cubeMapNodes);
         nodeHandle.removeFrom(m_environmentProbeNodes);
 
+        nodeHandle.removeFrom(m_generatorNodes);
         nodeHandle.removeFrom(m_cameraNodes);
 
         nodeHandle.removeFrom(m_dirLightNodes);

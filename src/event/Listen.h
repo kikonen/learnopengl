@@ -2,6 +2,8 @@
 
 #include <functional>
 
+#include "util/Ref.h"
+
 #include "Type.h"
 #include "Dispatcher.h"
 
@@ -15,7 +17,7 @@ namespace event
 
         void listen(
             event::Type type,
-            event::Dispatcher* dispatcher,
+            const util::Ref<event::Dispatcher>& dispatcher,
             Handler handler)
         {
             if (type == event::Type::none) return;
@@ -27,8 +29,8 @@ namespace event
         }
 
     private:
-        event::Type m_type{ event::Type::none };
-        event::Dispatcher* m_dispatcher{ nullptr };
+        util::Ref<event::Dispatcher> m_dispatcher{ nullptr };
         event::Handle m_handle;
+        event::Type m_type{ event::Type::none };
     };
 }

@@ -8,6 +8,8 @@
 
 #include <moodycamel/concurrentqueue.h>
 
+#include "util/Ref.h"
+
 #include "Event.h"
 
 namespace event {
@@ -15,9 +17,10 @@ namespace event {
     using Handle = uint32_t;
     using Entry = std::pair<Handle, Handler>;
 
-    class Dispatcher final {
+    class Dispatcher final : public util::RefCounted<> {
     public:
         Dispatcher();
+        ~Dispatcher();
 
         void dispatchEvents();
 

@@ -4,6 +4,8 @@
 
 #include "gui/Frame.h"
 
+#include "util/Ref.h"
+
 #include "event/Listen.h"
 
 namespace script
@@ -60,8 +62,8 @@ namespace editor
         ConsoleState m_state;
         std::unique_ptr<Executor> m_executor;
 
-        event::Dispatcher* m_dispatcherWorker{ nullptr };
-        event::Dispatcher* m_dispatcherView{ nullptr };
+        util::Ref<event::Dispatcher> m_dispatcherWorker{ nullptr };
+        util::Ref<event::Dispatcher> m_dispatcherView{ nullptr };
 
         event::Listen m_listen_console_execute;
         event::Listen m_listen_console_complete;

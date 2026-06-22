@@ -83,7 +83,7 @@ namespace editor
 
     void NodeTool::prepare(const PrepareContext& ctx)
     {
-        auto* dispatcherView = ctx.getRegistry()->m_dispatcherView;
+        const auto& dispatcherView = ctx.getRegistry()->m_dispatcherView;
 
         m_listen_node_select.listen(
             event::Type::node_select,

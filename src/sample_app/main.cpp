@@ -14,12 +14,13 @@
 #include "util/Log.h"
 #include "util/glm_format.h"
 #include "util/preciseSleep.h"
+#include "util/Ref.h"
 
 #include "engine/Engine.h"
 #include "sample_app/SampleApp.h"
 
 int runEngine() {
-    auto engine = std::make_unique<SampleApp>();
+    auto engine = util::Ref<SampleApp>::create();
 
     try {
         KI_INFO("START: ENGINE INIT");

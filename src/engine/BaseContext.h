@@ -7,6 +7,7 @@
 #include "ki/RenderClock.h"
 
 class Assets;
+class NodeRegistry;
 class Registry;
 class Engine;
 class Scene;
@@ -38,6 +39,7 @@ public:
         return m_engine;
     }
 
+    NodeRegistry& getNodeRegistry() const noexcept;
     Registry* getRegistry() const noexcept;
 
     Scene* getScene() const noexcept;

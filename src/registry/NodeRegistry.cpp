@@ -476,24 +476,6 @@ void NodeRegistry::updateRT(const UpdateContext& ctx)
 {
     m_rootRT = m_rootWT;
 
-    auto* root = getRootRT();
-    m_rootPreparedRT = root && root->m_preparedRT;
-
-    {
-        const auto& snapshots = m_snapshotBuffer.getSnapshots();
-        const auto& cachedNodes = getNodeCacheRT()->getNodes();
-     
-        for (int entityIndex = ki::ID_ENTITY_INDEX + 1; entityIndex < snapshots.size(); entityIndex++) {
-            // NOTE KI skip free/root slot
-            if (entityIndex >= m_parentIndeces.size() || m_parentIndeces[entityIndex] == 0) continue;
-
-            auto* node = cachedNodes[entityIndex];
-            if (!node) continue;
-
-            node->updateRT(ctx);
-        }
-    }
-
     updateDrawables();
 }
 
@@ -554,7 +536,7 @@ void NodeRegistry::attachListeners()
     auto* registry = m_engine->getRegistry().get();
 
     {
-        auto* dispatcher = registry->m_dispatcherWorker;
+        const auto& dispatcher = registry->m_dispatcherWorker;
 
         m_listen_node_add.listen(
             event::Type::node_add,
@@ -637,7 +619,7 @@ void NodeRegistry::attachListeners()
     }
 
     {
-        auto* dispatcherView = registry->m_dispatcherView;
+        const auto& dispatcherView = registry->m_dispatcherView;
 
         m_listen_type_prepare_view.listen(
             event::Type::type_prepare_view,

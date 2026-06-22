@@ -144,9 +144,6 @@ namespace model
             const PrepareContext& ctx,
             const Snapshot& snapshot);
 
-        void updateRT(
-            const UpdateContext& ctx) noexcept;
-
         void registerDrawables(
             render::InstanceRegistry& instanceRegistry,
             const Snapshot& snapshot) noexcept;

@@ -64,7 +64,7 @@ void SceneUpdater::prepare()
 
     std::lock_guard lock(m_prepareLock);
 
-    auto* dispatcher = registry->m_dispatcherWorker;
+    const auto& dispatcher = registry->m_dispatcherWorker;
 
     {
         auto& scriptSystem = script::ScriptSystem::get();

@@ -300,6 +300,7 @@ namespace text
             fontAtlas = text::FontRegistry::get().getDefaultFontAtlas();
         }
         if (!fontAtlas) return;
+        if (!fontAtlas->getFont()) return;
 
         const auto atlasPad = fontAtlas->getPadding();
         const auto atlasSize = fontAtlas->getAtlasSize();

@@ -20,19 +20,20 @@ namespace game
 
     void Player::prepare(const PrepareContext& ctx)
     {
-        m_engine = &ctx.getEngine();
+        // TODO KI unsafe
+        Engine* engine = &ctx.getEngine();
         auto* registry = ctx.getRegistry();
 
         m_listen_action_game_shoot.listen(
             event::Type::action_game_shoot,
             registry->m_dispatcherWorker,
-            [this](const event::Event& e)
+            [engine=engine](const event::Event& e)
         {
             const auto& action = e.body.action;
             const auto handle = pool::NodeHandle::toHandle(action.target);
 
             action::ActionContext actionCtx{
-                *m_engine,
+                *engine,
                 handle,
                 action.pos,
                 action.dir

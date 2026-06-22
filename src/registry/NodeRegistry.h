@@ -285,7 +285,6 @@ private:
     pool::NodeHandle m_rootWT{};
     pool::NodeHandle m_rootRT{};
     uint32_t m_rootEntityIndex{ 0 };
-    bool m_rootPreparedRT{ false };
 
     // Free deleted slots (entityIndeces)
     // => reuse slots after RT is synced with WT

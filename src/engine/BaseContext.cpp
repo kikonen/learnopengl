@@ -4,6 +4,8 @@
 #include "debug/DebugContext.h"
 #include "engine/Engine.h"
 
+#include "registry/NodeRegistry.h"
+
 #include "model/Node.h"
 #include "component/CameraComponent.h"
 
@@ -23,6 +25,11 @@ BaseContext::BaseContext(
     Engine& engine)
     : m_engine{ engine }
 {
+}
+
+NodeRegistry& BaseContext::getNodeRegistry() const noexcept
+{
+    return NodeRegistry::get();
 }
 
 Registry* BaseContext::getRegistry() const noexcept
