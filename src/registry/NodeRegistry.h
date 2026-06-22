@@ -33,6 +33,7 @@ struct UpdateContext;
 
 class Registry;
 class Engine;
+class NodeCache;
 
 struct EntitySSBO;
 
@@ -96,11 +97,11 @@ public:
 
     void updateDrawables();
 
-    std::vector<model::Node*>& getCachedNodesWT();
+    const util::Ref<NodeCache>& getNodeCacheWT() const noexcept;
 
-    const std::vector<model::Node*> getCachedNodesRT() const noexcept
+    const util::Ref<NodeCache>& getNodeCacheRT() const noexcept
     {
-        return m_cachedNodesRT;
+        return m_nodeCacheRT;
     }
 
     void attachListeners();
@@ -191,16 +192,6 @@ public:
         return m_states[entityIndex];
     }
 
-    //const model::Snapshot* getSnapshotWT(uint32_t entityIndex) const noexcept
-    //{
-    //    return m_snapshotsWT.size() > entityIndex ? &m_snapshotsWT[entityIndex] : nullptr;
-    //}
-
-    //bool hasSnapshotWT(uint32_t entityIndex) const noexcept
-    //{
-    //    return m_snapshotsWT.size() > entityIndex;
-    //}
-
     const model::Snapshot* getSnapshotRT(uint32_t entityIndex) const noexcept
     {
         return m_snapshotBuffer.getSnapshot(entityIndex);
@@ -270,10 +261,6 @@ private:
         const pool::NodeHandle nodeHandle,
         ki::socket_id socketId);
 
-    void cacheNodes(
-        std::vector<model::Node*>& cache,
-        ki::level_id& cacheLevel);
-
     void updateBounds(
         const UpdateContext& ctx,
         model::NodeState& state,
@@ -328,17 +315,15 @@ private:
     std::vector<bool> m_dirtyEntities;
 
     // INDEX = entityIndex
-    std::vector<model::Node*> m_cachedNodesWT;
+    util::Ref<NodeCache> m_nodeCacheWT;
     // INDEX = entityIndex
-    std::vector<model::Node*> m_cachedNodesRT;
+    util::Ref<NodeCache> m_nodeCacheRT;
     // INDEX = entityIndex - RT side tracking of last processed snapshot level
     std::vector<ki::level_id> m_processedLevels;
     // INDEX = entityIndex - RT side tracking of last processed normal level
     std::vector<ki::level_id> m_processedNormalLevels;
 
     ki::level_id m_nodeLevel{ 0 };
-    ki::level_id m_cachedNodeLevelWT{ 0 };
-    ki::level_id m_cachedNodeLevelRT{ 0 };
 
     bool m_debug{ false };
     bool m_deferSort{ false };

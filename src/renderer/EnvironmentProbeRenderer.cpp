@@ -21,6 +21,7 @@
 #include "shader/ProgramRegistry.h"
 
 #include "registry/NodeRegistry.h"
+#include "registry/NodeCache.h"
 
 EnvironmentProbeRenderer::EnvironmentProbeRenderer(
     bool cubeMap,
@@ -77,7 +78,7 @@ void EnvironmentProbeRenderer::render(
 
     m_meshes.clear();
 
-    for (const auto* node : nodeRegistry.getCachedNodesRT()) {
+    for (const auto* node : nodeRegistry.getNodeCacheRT()->getNodes()) {
         if (!node) continue;
 
         if (m_cubeMap) {

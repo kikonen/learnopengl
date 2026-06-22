@@ -24,6 +24,7 @@
 
 #include "registry/Registry.h"
 #include "registry/NodeRegistry.h"
+#include "registry/NodeCache.h"
 #include "registry/SelectionRegistry.h"
 
 
@@ -73,10 +74,10 @@ void VolumeRenderer::render(
     m_meshes.clear();
     if (dbg.m_showVolume)
     {
-        m_meshes.reserve(nodeRegistry.getCachedNodesRT().size());
+        m_meshes.reserve(nodeRegistry.getNodeCacheRT()->size());
     }
 
-    for (const auto* node : nodeRegistry.getCachedNodesRT()) {
+    for (const auto* node : nodeRegistry.getNodeCacheRT()->getNodes()) {
         if (!node) continue;
         if (node->m_typeFlags.invisible ||
             !node->m_visible ||
