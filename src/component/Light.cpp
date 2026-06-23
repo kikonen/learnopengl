@@ -14,6 +14,9 @@
 #include "registry/Registry.h"
 #include "registry/NodeRegistry.h"
 
+#include "scene/Scene.h"
+#include "scene/World.h"
+
 Light::Light() = default;
 
 Light::~Light() = default;
@@ -35,8 +38,21 @@ void Light::updateRT(
         m_worldPosition = snapshot->getWorldPosition();
     }
 
+    // Sun-driven directional light: derive direction + color from the scene World's
+    // published (atomic) world time. RT-only — Light is RT-mutated and ShadowCascade
+    // reads getWorldDirection(), so shadows follow automatically. World time advances
+    // each frame, so this recomputes unconditionally (not gated on nodeChanged).
+    if (m_sun) {
+        if (auto* scene = ctx.getScene()) {
+            if (auto* world = scene->getWorld().get()) {
+                const double t = world->publishedTimeSecs();
+                m_worldDir = world->sunLightDir(t);
+                m_diffuse = world->sunColor(t);
+            }
+        }
+    }
     // NOTE KI for "directional" lights also target may change
-    if (hasTarget()) {
+    else if (hasTarget()) {
         if (!m_targetHandle) {
             m_targetHandle = pool::NodeHandle::toHandle(m_targetId);
         }

@@ -6,6 +6,8 @@
 #include <regex>
 #include <filesystem>
 #include <iomanip>
+#include <chrono>
+#include <cstdio>
 
 #include <fmt/format.h>
 
@@ -203,6 +205,54 @@ namespace loader {
         }
 
         return node.asFloat();
+    }
+
+    double parseIso8601ToEpochSecs(const std::string& str)
+    {
+        using namespace std::chrono;
+
+        // try most-specific first; seconds and the time part are both optional
+        static const char* const FORMATS[] = {
+            "%Y-%m-%dT%H:%M:%S",
+            "%Y-%m-%dT%H:%M",
+            "%Y-%m-%d",
+        };
+
+        for (const char* fmt : FORMATS) {
+            sys_seconds tp{};
+            std::istringstream ss{ str };
+            ss >> parse(fmt, tp);
+            if (!ss.fail()) {
+                return duration_cast<duration<double>>(tp.time_since_epoch()).count();
+            }
+        }
+
+        KI_CRITICAL(fmt::format("invalid ISO8601 time_base '{}'", str));
+        return 0.0;
+    }
+
+    int parseClockToSecs(const std::string& str)
+    {
+        // "HH:MM" or "HH:MM:SS" -> seconds of day
+        int parts[3] = { 0, 0, 0 };
+        int idx = 0;
+        std::istringstream ss{ str };
+        std::string token;
+        while (idx < 3 && std::getline(ss, token, ':')) {
+            try {
+                parts[idx++] = std::stoi(token);
+            }
+            catch (...) {
+                idx = 0;
+                break;
+            }
+        }
+
+        if (idx < 2) {
+            KI_CRITICAL(fmt::format("invalid clock '{}' (expected HH:MM)", str));
+            return 0;
+        }
+        return parts[0] * 3600 + parts[1] * 60 + parts[2];
     }
 
     std::vector<std::string> readStringVector(const loader::DocNode& node, int reserve)

@@ -18,6 +18,7 @@ enum class ControllerType : std::underlying_type_t<std::byte> {
     none,
     pawn,
     camera_zoom,
+    sun,
 };
 
 struct ControllerDefinition {

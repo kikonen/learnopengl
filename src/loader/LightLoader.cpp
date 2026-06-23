@@ -31,6 +31,9 @@ namespace loader{
             if (k == "enabled") {
                 data.enabled = readBool(v);
             }
+            else if (k == "sun") {
+                data.sun = readBool(v);
+            }
             else if (k == "xxenabled" || k == "xenabled") {
                 // NOTE compat with old "disable" logic
                 data.enabled = false;
@@ -104,6 +107,7 @@ namespace loader{
         df.m_intensity = data.intensity;
 
         df.m_type = data.type;
+        df.m_sun = data.sun;
 
         return definition;
     }

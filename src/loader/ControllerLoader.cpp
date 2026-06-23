@@ -54,6 +54,9 @@ namespace loader {
                 else if (type == "camera_zoom") {
                     data.type = ControllerType::camera_zoom;
                 }
+                else if (type == "sun") {
+                    data.type = ControllerType::sun;
+                }
                 else {
                     reportUnknown("controller_type", k, v);
                 }

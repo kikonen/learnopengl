@@ -9,11 +9,25 @@ skybox:
   xmaterial: skybox/polyhaven/drakensberg_solitary_mountain_4k.hdr
   xmaterial: skybox/polyhaven/gray_pier_4k.hdr
   xmaterial: skybox/polyhaven/wasteland_clouds_puresky_4k.hdr
-  material: skybox/polyhaven/industrial_sunset_puresky_4k.hdr
-  material_2: skybox/polyhaven/dikhololo_night_4k.hdr
+  material: skybox/polyhaven/qwantani_noon_puresky_4k.hdr
+  material_2: skybox/polyhaven/qwantani_night_puresky_4k.hdr
 script:
   scripts:
     - path: lib/common
+
+includes:
+  - path: prefab/util/include_ui_time_text.yml
+
+world:
+  time_base: "1942-06-20T12:00:00"
+  time_scale: 1000
+  sun_up: "06:00"
+  sun_down: "18:00"
+  sun_angle: 25
+  sun_twilight_angle: 25
+  day_color: [1.0, 0.98, 0.95]
+  dusk_color: [1.0, 0.55, 0.25]
+  night_color: [0.35, 0.45, 0.70]
 
 types:
   - id: ibl_probe
@@ -38,7 +52,10 @@ types:
       - type: camera_zoom
   - id: dir_light
     mesh:
-      path: light
+      vertex:
+        type: sphere
+        size: [1]
+        radius: 1
       material_modifier:
         kd: [0.8, 0.8, 0.6, 1.0]
       program: g_light
@@ -46,11 +63,18 @@ types:
       no_shadow: true
     light:
       type: directional
+      sun: true
       diffuse: [0.7, 0.7, 0.7, 1.0]
       intensity: 20000
+    controllers:
+      - type: sun
+        distance: 10
   - id: point_light
     mesh:
-      path: light
+      vertex:
+        type: sphere
+        size: [1]
+        radius: 1
       material_modifier:
         kd: [0.8, 0.8, 0.6, 1.0]
       program: g_light
@@ -64,7 +88,7 @@ types:
       intensity: 1000
   - id: ball_origo
     type: origo
-    script: |
+    xscript: |
       cmd:rotate(
         self.handle,
         { time=100 * 100 },
@@ -79,6 +103,8 @@ types:
         xreflection: 0.05
         mras: [0.2, 0.1, 1.0, 0]
       program: g_tex
+    flags:
+      environment: true
   - id: gold_ball
     mesh:
       path: water_ball
@@ -89,6 +115,8 @@ types:
         xreflection: 0.05
         parallax: 0.0
       program: g_tex
+    flags:
+      environment: true
   - id: silver_ball
     mesh:
       path: water_ball
@@ -102,6 +130,8 @@ types:
         xblend: true
         render_back: true
       program: g_tex
+    flags:
+      environment: true
   - id: bronze_ball
     mesh:
       path: water_ball
@@ -112,6 +142,8 @@ types:
         xreflection: 0.05
         parallax: 0.0
       program: g_tex
+    flags:
+      environment: true
   - id: rusted_iron_ball
     mesh:
       path: water_ball
@@ -126,6 +158,8 @@ types:
         tiling: 3
         parallax: 0.0
       program: g_tex
+    flags:
+      environment: true
   - id: old_gold_ball
     mesh:
       path: water_ball
@@ -137,6 +171,8 @@ types:
         tiling: 3
         parallax: 0.0
       program: g_tex
+    flags:
+      environment: true
   - id: bubble
     mesh:
       vertex:
@@ -151,10 +187,12 @@ types:
       effect: true
       no_select: true
       no_shadow: true
-    script_file: scripts/anim_bubble.lua
+    xscript_file: scripts/anim_bubble.lua
   - id: wooden_floor
     prefab:
       path: prefab/scenery/prefab_wooden_floor.yml
+    flags:
+      environment: true
   - id: fence
     mesh:
       path: quad
@@ -167,8 +205,13 @@ types:
         alpha: true
         render_back: true
       program: g_tex
+    flags:
+      environment: true
 
 nodes:
+  - type: prefab_ui_time_text
+    id: ui_time_text
+    pos: [2, 2, -1]
   - type: ibl_probe
     pos: [0, 2, 0]
   - type: world_origo
@@ -210,6 +253,10 @@ nodes:
   - type: wooden_floor
     scale: 100
     position: [0, 0, 0]
+  - type: wooden_floor
+    scale: 100
+    rot: [180, 0, 0]
+    position: [0, 15, 0]
   - type: fence
     pos: [20.0, 5, -25]
     scale: 5

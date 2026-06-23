@@ -209,6 +209,7 @@ namespace loader {
 
         l.m_rootLoader.attachRoot(root, *m_sceneData->m_scriptSystemData, *m_loaders);
         l.m_skyboxLoader.attachSkybox(*m_sceneData->m_skybox);
+        l.m_worldLoader.attachWorld(*m_sceneData->m_world, *m_sceneData->m_scriptSystemData, *m_loaders);
 
         {
             auto updaters = l.m_materialUpdaterLoader.createMaterialUpdaters(

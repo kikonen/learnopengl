@@ -48,6 +48,7 @@ class ObjectIdRenderer;
 
 class Skybox;
 class BrdfLutMaterial;
+class World;
 
 namespace editor {
     class EditorFrame;
@@ -126,6 +127,13 @@ public:
 
     void setSkybox(const util::Ref<Skybox> &skybox);
 
+    const util::Ref<World>& getWorld() const noexcept
+    {
+        return m_world;
+    }
+
+    void setWorld(const util::Ref<World>& world);
+
     const util::Ref<BrdfLutMaterial>& getBrdfLutMaterial() const noexcept
     {
         return m_brdfLutMaterial;
@@ -171,6 +179,7 @@ private:
     ShadowUBO m_shadowUBO;
 
     util::Ref<Skybox> m_skybox{ nullptr };
+    util::Ref<World> m_world{ nullptr };
     util::Ref<BrdfLutMaterial> m_brdfLutMaterial{ nullptr };
 
     std::unique_ptr<LayerRenderer> m_uiRenderer{ nullptr };

@@ -4,6 +4,7 @@
 
 #include "MetaData.h"
 #include "RootData.h"
+#include "WorldData.h"
 #include "SkyboxData.h"
 #include "ScriptData.h"
 #include "NodeTypeData.h"
@@ -20,6 +21,7 @@ namespace loader
     SceneData::SceneData()
         : m_meta{ std::make_unique<MetaData>() },
         m_root{ std::make_unique<RootData>() },
+        m_world{ std::make_unique<WorldData>() },
         m_skybox{ std::make_unique<SkyboxData>() },
         m_scriptSystemData{ std::make_unique<ScriptSystemData>() }
     {

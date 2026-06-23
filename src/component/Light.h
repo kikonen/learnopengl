@@ -96,6 +96,10 @@ public:
     LightType m_type{ LightType::none };
     bool m_enabled : 1 { false };
 
+    // sun-driven directional light: direction + color come from the scene World's
+    // day-night clock each frame (see updateRT) instead of a fixed target/diffuse
+    bool m_sun : 1 { false };
+
 private:
     ki::level_id m_nodeMatrixLevel{ 0 };
     ki::level_id m_targetMatrixLevel{ 0 };

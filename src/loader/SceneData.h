@@ -12,6 +12,7 @@ namespace loader {
 
     struct MetaData;
     struct RootData;
+    struct WorldData;
     struct SkyboxData;
     struct ScriptSystemData;
     struct NodeTypeData;
@@ -27,6 +28,7 @@ namespace loader {
         std::unique_ptr<SkyboxData> m_skybox;
 
         std::unique_ptr<RootData> m_root;
+        std::unique_ptr<WorldData> m_world;
         std::unique_ptr<ScriptSystemData> m_scriptSystemData;
 
         std::vector<NodeTypeData> m_nodeTypes;
