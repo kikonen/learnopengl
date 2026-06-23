@@ -20,6 +20,7 @@ enum class ControllerType : std::underlying_type_t<std::byte> {
     pawn,
     camera_zoom,
     sun,
+    moon,
     clock,
 };
 

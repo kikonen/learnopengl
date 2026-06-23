@@ -26,6 +26,18 @@ void World::configure(const loader::WorldData& data) noexcept
     m_sunTiltDeg = data.sunAngle;
     m_sunTwilightDeg = data.sunTwilightAngle;
 
+    // explicit axis wins; otherwise derive from tilt so the arc matches the
+    // legacy east-west-with-tilt model exactly
+    if (data.hasSunAxis) {
+        m_sunAxis = glm::normalize(data.sunAxis);
+    }
+    else {
+        const double tilt = glm::radians(static_cast<double>(m_sunTiltDeg));
+        m_sunAxis = glm::vec3{ 0.f,
+            static_cast<float>(-std::sin(tilt)),
+            static_cast<float>(std::cos(tilt)) };
+    }
+
     m_dayColor = data.dayColor;
     m_duskColor = data.duskColor;
     m_nightColor = data.nightColor;
@@ -62,15 +74,26 @@ glm::vec3 World::sunDirectionToSun(double worldSecs) const noexcept
     const double noonFrac = (static_cast<double>(m_sunUpSecs) + static_cast<double>(m_sunDownSecs))
         * 0.5 / DAY_SECS;
     const double ha = (dayFraction(worldSecs) - noonFrac) * glm::two_pi<double>();
-    const double tilt = glm::radians(static_cast<double>(m_sunTiltDeg));
 
-    // base east-west arc (rotate up-vector around Z), then tilt the arc plane around X
-    const glm::dvec3 toSun{
-        -std::sin(ha),
-         std::cos(ha) * std::cos(tilt),
-         std::cos(ha) * std::sin(tilt)
-    };
-    return glm::normalize(glm::vec3(toSun));
+    // The sun traces a circle whose plane normal is m_sunAxis. Build an orthonormal
+    // basis (r1, r2) in that plane with r1 = the "most upward" direction, so ha=0
+    // (noon) is the highest point of the arc.
+    const glm::vec3 a = glm::normalize(m_sunAxis);
+    const glm::vec3 up{ 0.f, 1.f, 0.f };
+
+    glm::vec3 r1 = up - glm::dot(up, a) * a;
+    if (glm::dot(r1, r1) < 1e-6f) {
+        // axis ~ vertical: arc lies near the horizon plane, pick an arbitrary east
+        const glm::vec3 east{ 1.f, 0.f, 0.f };
+        r1 = east - glm::dot(east, a) * a;
+    }
+    r1 = glm::normalize(r1);
+    const glm::vec3 r2 = glm::normalize(glm::cross(a, r1));
+
+    const glm::vec3 toSun =
+        static_cast<float>(std::cos(ha)) * r1 +
+        static_cast<float>(std::sin(ha)) * r2;
+    return glm::normalize(toSun);
 }
 
 glm::vec3 World::sunLightDir(double worldSecs) const noexcept
@@ -83,18 +106,37 @@ float World::sunElevationDeg(double worldSecs) const noexcept
     return glm::degrees(std::asin(glm::clamp(sunDirectionToSun(worldSecs).y, -1.f, 1.f)));
 }
 
-glm::vec3 World::sunColor(double worldSecs) const noexcept
+DirLightState World::primaryLight(double worldSecs) const noexcept
 {
-    const float el = sunElevationDeg(worldSecs);
+    const glm::vec3 sunToward = sunDirectionToSun(worldSecs);
+
+    // pick the body above the horizon; moon is the anti-sun, so exactly one is up
+    const bool sunUp = sunToward.y >= 0.f;
+    const glm::vec3 toward = sunUp ? sunToward : -sunToward;
+
+    const float el = glm::degrees(std::asin(glm::clamp(toward.y, -1.f, 1.f))); // >= 0
     const float tw = glm::max(m_sunTwilightDeg, 0.01f);
 
-    // base: cold night below horizon -> bright day above
-    const float dayW = glm::smoothstep(0.f, tw, el);
-    const glm::vec3 base = glm::mix(m_nightColor, m_dayColor, dayW);
+    // horizon fade: energy goes to ~0 at the horizon so the sun<->moon handover is
+    // smooth and grazing light doesn't blast sideways. This is ENERGY (-> intensity),
+    // kept out of the color so chroma and energy stay separate.
+    const float w = glm::smoothstep(0.f, tw, el);
 
-    // warm tint peaks at the horizon (el == 0), fades over the twilight band
-    const float warm = 1.f - glm::clamp(std::abs(el) / tw, 0.f, 1.f);
-    return glm::mix(base, m_duskColor, warm * 0.85f);
+    glm::vec3 color;
+    if (sunUp) {
+        // warm (dusk) near the horizon -> bright white high in the sky (chroma only)
+        color = glm::mix(m_duskColor, m_dayColor, w);
+    }
+    else {
+        color = m_nightColor; // cold moonlight (chroma only)
+    }
+
+    DirLightState state;
+    state.dir = glm::normalize(-toward); // travel dir, always downward (body is above horizon)
+    state.color = color;
+    state.weight = w;
+    state.isMoon = !sunUp;
+    return state;
 }
 
 float World::skyBlend(double worldSecs) const noexcept

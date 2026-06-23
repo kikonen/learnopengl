@@ -20,11 +20,11 @@ includes:
 
 world:
   time_base: "1942-06-20T12:00:00"
-  time_scale: 1000
+  time_scale: 2000
   sun_up: "06:00"
   sun_down: "18:00"
   sun_angle: 25
-  sun_twilight_angle: 25
+  sun_twilight_angle: 40
   day_color: [1.0, 0.98, 0.95]
   dusk_color: [1.0, 0.55, 0.25]
   night_color: [0.35, 0.45, 0.70]
@@ -66,9 +66,23 @@ types:
       sun: true
       diffuse: [0.7, 0.7, 0.7, 1.0]
       intensity: 20000
+      moon_intensity_scale: 0.3
     controllers:
       - type: sun
-        distance: 10
+        distance: 40
+  - id: moon_marker
+    mesh:
+      vertex:
+        type: sphere
+        radius: 0.5
+      material_modifier:
+        kd: [0.5, 0.6, 0.9, 1.0]
+      program: g_light
+    flags:
+      no_shadow: true
+    controllers:
+      - type: moon
+        distance: 40
   - id: point_light
     mesh:
       vertex:
@@ -88,7 +102,7 @@ types:
       intensity: 1000
   - id: ball_origo
     type: origo
-    xscript: |
+    script: |
       cmd:rotate(
         self.handle,
         { time=100 * 100 },
@@ -187,7 +201,7 @@ types:
       effect: true
       no_select: true
       no_shadow: true
-    xscript_file: scripts/anim_bubble.lua
+    script_file: scripts/anim_bubble.lua
   - id: wooden_floor
     prefab:
       path: prefab/scenery/prefab_wooden_floor.yml
@@ -223,6 +237,9 @@ nodes:
   - type: dir_light
     pos: [-25, 25, 0]
     scale: 1.5
+  - type: moon_marker
+    pos: [0, 0, 0]
+    scale: 1.0
   - type: point_light
     pos: [10, 10, 25]
     scale: 0.5
@@ -253,7 +270,7 @@ nodes:
   - type: wooden_floor
     scale: 100
     position: [0, 0, 0]
-  - type: wooden_floor
+  - xtype: wooden_floor
     scale: 100
     rot: [180, 0, 0]
     position: [0, 15, 0]

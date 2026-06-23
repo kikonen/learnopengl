@@ -26,5 +26,8 @@ namespace loader {
 
         glm::vec3 diffuse{ 0.5f, 0.5f, 0.5f };
         float intensity{ 1.f };
+
+        // sun-driven light: moon energy as a scale of intensity (the sun energy)
+        float moonIntensityScale{ 0.1f };
     };
 }

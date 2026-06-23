@@ -14,6 +14,16 @@ namespace loader {
     struct WorldData;
 }
 
+// Resolved directional light for the current world time: the celestial body that
+// is above the horizon (sun by day, moon by night), so the light always points
+// downward (no upward "ceiling" shadows).
+struct DirLightState {
+    glm::vec3 dir{ 0.f, -1.f, 0.f };  // travel direction (FROM body toward scene), normalized
+    glm::vec3 color{ 0.f };           // chroma only (hue), ~[0,1]; NOT energy-scaled
+    float weight{ 0.f };              // horizon-fade energy multiplier [0,1] (0 at horizon)
+    bool isMoon{ false };
+};
+
 // Per-scene simulation world: owns the authoritative WorldTime (advanced on the
 // worker thread) plus the day-night sun model.
 //
@@ -61,15 +71,17 @@ public:
     // fraction of the day [0, 1)
     static double dayFraction(double worldSecs) noexcept;
 
-    // unit vector FROM scene origin TOWARD the sun (Y up, +X east, tilt -> +Z)
+    // unit vector FROM scene origin TOWARD the sun; rotates around m_sunAxis once/day
     glm::vec3 sunDirectionToSun(double worldSecs) const noexcept;
     // light travel direction (FROM sun toward scene) == -sunDirectionToSun
     glm::vec3 sunLightDir(double worldSecs) const noexcept;
     float sunElevationDeg(double worldSecs) const noexcept;
 
-    // dir-light color: bright white near noon, warm at sunrise/sunset, cold at night
-    glm::vec3 sunColor(double worldSecs) const noexcept;
-    // 0 = full day .. 1 = full night, smoothed across the twilight band
+    // The active directional light (sun or moon, whichever is above the horizon),
+    // with horizon-faded color. This is what a sun-driven Light should consume.
+    DirLightState primaryLight(double worldSecs) const noexcept;
+
+    // 0 = full day .. 1 = full night, smoothed across the twilight band (sun elevation)
     float skyBlend(double worldSecs) const noexcept;
 
     // Format an absolute world time using a strftime-style chrono spec
@@ -84,9 +96,13 @@ public:
     float m_sunTiltDeg{ 25.f };
     float m_sunTwilightDeg{ 10.f };
 
-    glm::vec3 m_dayColor{ 1.0f, 0.98f, 0.95f };    // midday bright white
-    glm::vec3 m_duskColor{ 1.0f, 0.55f, 0.25f };   // warm sunrise / sunset
-    glm::vec3 m_nightColor{ 0.35f, 0.45f, 0.70f }; // cold moonlight
+    // axis the sun rotates around once per day (set in configure(): explicit
+    // sun_axis, else derived from tilt as (0, -sin tilt, cos tilt))
+    glm::vec3 m_sunAxis{ 0.f, 0.f, 1.f };
+
+    glm::vec3 m_dayColor{ 1.0f, 0.98f, 0.95f };    // midday bright white (sun)
+    glm::vec3 m_duskColor{ 1.0f, 0.55f, 0.25f };   // warm sunrise / sunset (sun)
+    glm::vec3 m_nightColor{ 0.35f, 0.45f, 0.70f }; // cold moonlight (moon)
 
 private:
     WorldTime m_time;

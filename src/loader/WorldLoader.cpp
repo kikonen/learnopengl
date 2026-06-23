@@ -61,6 +61,10 @@ namespace loader
             else if (k == "sun_twilight_angle") {
                 data.sunTwilightAngle = readFloat(v);
             }
+            else if (k == "sun_axis") {
+                data.sunAxis = readVec3(v);
+                data.hasSunAxis = true;
+            }
             else if (k == "day_color") {
                 data.dayColor = readRGB(v);
             }

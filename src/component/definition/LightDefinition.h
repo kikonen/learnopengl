@@ -29,6 +29,7 @@ struct LightDefinition {
 
     glm::vec3 m_diffuse{ 0.5f, 0.5f, 0.5f };
     float m_intensity{ 1.f };
+    float m_moonIntensityScale{ 0.1f };
 
     bool m_sun{ false };
 

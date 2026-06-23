@@ -18,7 +18,10 @@ std::unique_ptr<NodeController> ControllerDefinition::createController(
         return std::make_unique<CameraZoomController>();
     }
     case ControllerType::sun: {
-        return std::make_unique<SunController>(definition.m_distance);
+        return std::make_unique<SunController>(definition.m_distance, false);
+    }
+    case ControllerType::moon: {
+        return std::make_unique<SunController>(definition.m_distance, true);
     }
     case ControllerType::clock: {
         return std::make_unique<ClockController>(definition.m_format);
