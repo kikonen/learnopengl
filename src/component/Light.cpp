@@ -46,8 +46,16 @@ void Light::updateRT(
         if (auto* scene = ctx.getScene()) {
             if (auto* world = scene->getWorld().get()) {
                 const double t = world->publishedTimeSecs();
-                m_worldDir = world->sunLightDir(t);
-                m_diffuse = world->sunColor(t);
+                // active body (sun by day, moon by night) is always above the
+                // horizon, so the light points downward -> no upward shadows
+                const auto light = world->primaryLight(t);
+                m_worldDir = light.dir;
+
+                // chroma in diffuse, energy in intensity (kept separate):
+                // intensity = base energy * horizon fade * (moon ? moon scale : 1)
+                m_diffuse = light.color;
+                m_intensity = m_baseIntensity * light.weight
+                    * (light.isMoon ? m_moonIntensityScale : 1.f);
             }
         }
     }

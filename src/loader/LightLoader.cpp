@@ -80,6 +80,9 @@ namespace loader{
             else if (k == "intensity") {
                 data.intensity = readFloat(v);
             }
+            else if (k == "moon_intensity_scale") {
+                data.moonIntensityScale = readFloat(v);
+            }
             else {
                 reportUnknown("light_entry", k, v);
             }
@@ -105,6 +108,7 @@ namespace loader{
 
         df.m_diffuse = data.diffuse;
         df.m_intensity = data.intensity;
+        df.m_moonIntensityScale = data.moonIntensityScale;
 
         df.m_type = data.type;
         df.m_sun = data.sun;

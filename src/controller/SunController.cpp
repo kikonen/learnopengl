@@ -10,9 +10,10 @@
 #include "scene/Scene.h"
 #include "scene/World.h"
 
-SunController::SunController(float distance)
+SunController::SunController(float distance, bool moon)
     : NodeController(false, false),
-    m_distance{ distance }
+    m_distance{ distance },
+    m_moon{ moon }
 {
 }
 
@@ -28,7 +29,9 @@ bool SunController::updateWT(
 
     // WT-authoritative time (already advanced this tick by SceneUpdater before controllers)
     const double t = world->getTime().getTimeSecs();
-    const glm::vec3 pos = world->sunDirectionToSun(t) * m_distance;
+    glm::vec3 toward = world->sunDirectionToSun(t);
+    if (m_moon) toward = -toward; // moon = anti-sun
+    const glm::vec3 pos = toward * m_distance;
 
     auto& state = NodeRegistry::get().modifyState(node.getEntityIndex());
     state.setPosition(pos);

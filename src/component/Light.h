@@ -91,7 +91,14 @@ public:
     // degrees
     float m_outerCutoffAngle = 25.f;
 
+    // live energy (written each frame for a sun-driven light); read by toDirLightUBO
     float m_intensity = 1.f;
+
+    // sun-driven light only: the configured base energy (= YAML intensity, the sun's
+    // full energy) and the moon's energy as a scale of it. updateRT computes the live
+    // m_intensity = m_baseIntensity * horizonFade * (moon ? m_moonIntensityScale : 1).
+    float m_baseIntensity = 1.f;
+    float m_moonIntensityScale = 0.1f;
 
     LightType m_type{ LightType::none };
     bool m_enabled : 1 { false };

@@ -27,6 +27,10 @@ namespace loader
         float sunAngle{ 25.f };
         float sunTwilightAngle{ 10.f };
 
+        // optional explicit daily-rotation axis; when unset it is derived from sunAngle
+        bool hasSunAxis{ false };
+        glm::vec3 sunAxis{ 0.f, 0.f, 1.f };
+
         // dir-light colors per phase
         glm::vec3 dayColor{ 1.0f, 0.98f, 0.95f };    // midday bright white
         glm::vec3 duskColor{ 1.0f, 0.55f, 0.25f };   // warm sunrise / sunset

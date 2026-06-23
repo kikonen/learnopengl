@@ -26,6 +26,8 @@ std::unique_ptr<Light> LightDefinition::createLight(
 
     light->m_diffuse = data.m_diffuse;
     light->m_intensity = data.m_intensity;
+    light->m_baseIntensity = data.m_intensity; // base energy (live m_intensity is recomputed)
+    light->m_moonIntensityScale = data.m_moonIntensityScale;
 
     light->m_type = data.m_type;
     light->m_sun = data.m_sun;
