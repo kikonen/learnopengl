@@ -51,6 +51,10 @@ void TextGenerator::updateRT(
     const model::Node& container)
 {
     if (!m_dirty) return;
+
+    auto* fontAtlas = text::FontRegistry::get().getPreparedFontAtlas(m_fontId, true);
+    if (!fontAtlas) return;
+
     m_dirty = false;
 
     mesh::TextMesh* mesh = m_mesh.get();

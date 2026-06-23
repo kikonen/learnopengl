@@ -36,6 +36,10 @@ namespace text {
             return it != m_fonts.end() ? &it->second : nullptr;
         }
 
+        const text::FontAtlas* getPreparedFontAtlas(
+            text::font_id id,
+            bool useDefault) const noexcept;
+
         text::font_id registerFont(
             text::FontAtlas&& src);
 
