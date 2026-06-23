@@ -82,6 +82,19 @@ namespace text {
         }
     }
 
+    const text::FontAtlas* FontRegistry::getPreparedFontAtlas(
+        text::font_id fontId,
+        bool useDefault) const noexcept
+    {
+        auto* fontAtlas = getFontAtlas(fontId);
+        if (!fontAtlas && useDefault) {
+            fontAtlas = getDefaultFontAtlas();
+        }
+        if (!fontAtlas) return nullptr;
+        if (!fontAtlas->getFont()) return nullptr;
+        return fontAtlas;
+    }
+
     text::font_id FontRegistry::registerFont(
         text::FontAtlas&& src)
     {

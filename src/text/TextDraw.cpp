@@ -295,12 +295,8 @@ namespace text
         text::Align alignVertical,
         mesh::TextMesh* mesh)
     {
-        auto* fontAtlas = text::FontRegistry::get().getFontAtlas(fontId);
-        if (!fontAtlas) {
-            fontAtlas = text::FontRegistry::get().getDefaultFontAtlas();
-        }
+        auto* fontAtlas = text::FontRegistry::get().getPreparedFontAtlas(fontId, true);
         if (!fontAtlas) return;
-        if (!fontAtlas->getFont()) return;
 
         const auto atlasPad = fontAtlas->getPadding();
         const auto atlasSize = fontAtlas->getAtlasSize();
