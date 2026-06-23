@@ -4,6 +4,7 @@
 
 #include "controller/PawnController.h"
 #include "controller/CameraZoomController.h"
+#include "controller/SunController.h"
 
 std::unique_ptr<NodeController> ControllerDefinition::createController(
     ControllerDefinition& definition)
@@ -14,6 +15,9 @@ std::unique_ptr<NodeController> ControllerDefinition::createController(
     }
     case ControllerType::camera_zoom: {
         return std::make_unique<CameraZoomController>();
+    }
+    case ControllerType::sun: {
+        return std::make_unique<SunController>(definition.m_distance);
     }
     }
 

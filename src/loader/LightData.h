@@ -13,6 +13,7 @@ struct LightDefinition;
 namespace loader {
     struct LightData {
         bool enabled{ false };
+        bool sun{ false };
         LightType type{ LightType::none };
 
         BaseId targetBaseId;

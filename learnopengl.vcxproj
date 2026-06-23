@@ -291,6 +291,7 @@
     </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\loader\WorldLoader.cpp" />
     <ClCompile Include="src\particle\ParticlePool.cpp" />
     <ClCompile Include="src\animation\Rig.cpp" />
     <ClCompile Include="src\component\definition\AddonSelectorDefinition.cpp" />
@@ -440,6 +441,8 @@
     <ClCompile Include="src\sample_app\game\Player.cpp" />
     <ClCompile Include="src\scene\BrdfLutMaterial.cpp" />
     <ClCompile Include="src\scene\Skybox.cpp" />
+    <ClCompile Include="src\scene\World.cpp" />
+    <ClCompile Include="src\scene\WorldTime.cpp" />
     <ClCompile Include="src\script\api\SceneAPI.cpp" />
     <ClCompile Include="src\script\binding\LuaNodeHandle.cpp" />
     <ClCompile Include="src\script\command\CancelMultiple.cpp" />
@@ -661,6 +664,7 @@
     <ClCompile Include="src\material\PlainTexture.cpp" />
     <ClCompile Include="src\registry\NodeRegistry.cpp" />
     <ClCompile Include="src\controller\CameraZoomController.cpp" />
+    <ClCompile Include="src\controller\SunController.cpp" />
     <ClCompile Include="src\render\CubeMap.cpp" />
     <ClCompile Include="src\engine\AsyncLoader.cpp" />
     <ClCompile Include="src\gui\FrameInit.cpp" />
@@ -772,6 +776,8 @@
     <ClInclude Include="src\loader\AddonSelectorLoader.h" />
     <ClInclude Include="src\loader\RigData.h" />
     <ClInclude Include="src\loader\value\SocketRoleValue.h" />
+    <ClInclude Include="src\loader\WorldData.h" />
+    <ClInclude Include="src\loader\WorldLoader.h" />
     <ClInclude Include="src\material\ImageArrayTexture.h" />
     <ClInclude Include="src\mesh\LodMeshContainer.h" />
     <ClInclude Include="src\mesh\RegisteredRig.h" />
@@ -786,6 +792,8 @@
     <ClInclude Include="src\sample_app\game\Player.h" />
     <ClInclude Include="src\scene\BrdfLutMaterial.h" />
     <ClInclude Include="src\scene\Skybox.h" />
+    <ClInclude Include="src\scene\World.h" />
+    <ClInclude Include="src\scene\WorldTime.h" />
     <ClInclude Include="src\util\preciseSleep.h" />
     <ClInclude Include="src\util\BufferReference.h" />
     <ClInclude Include="src\util\BufferReference_format.h" />
@@ -1296,6 +1304,7 @@
     <ClInclude Include="src\material\PlainTexture.h" />
     <ClInclude Include="src\registry\NodeRegistry.h" />
     <ClInclude Include="src\controller\CameraZoomController.h" />
+    <ClInclude Include="src\controller\SunController.h" />
     <ClInclude Include="src\render\CubeMap.h" />
     <ClInclude Include="src\engine\AsyncLoader.h" />
     <ClInclude Include="src\gui\FrameInit.h" />

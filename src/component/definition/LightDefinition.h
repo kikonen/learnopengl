@@ -30,6 +30,8 @@ struct LightDefinition {
     glm::vec3 m_diffuse{ 0.5f, 0.5f, 0.5f };
     float m_intensity{ 1.f };
 
+    bool m_sun{ false };
+
     static std::unique_ptr<Light> createLight(
         const model::NodeType* type);
 };

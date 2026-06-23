@@ -61,6 +61,7 @@
 #include "renderer/ObjectIdRenderer.h"
 
 #include "Skybox.h"
+#include "World.h"
 #include "BrdfLutMaterial.h"
 
 namespace {
@@ -858,6 +859,11 @@ void Scene::updateLightsUBO() const
 void Scene::setSkybox(const util::Ref<Skybox>& skybox)
 {
     m_skybox = skybox;
+}
+
+void Scene::setWorld(const util::Ref<World>& world)
+{
+    m_world = world;
 }
 
 //void Scane::copyShadowMatrixFrom(const RenderContext& b)

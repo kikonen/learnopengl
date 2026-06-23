@@ -62,6 +62,13 @@ namespace loader {
     int readInt(const loader::DocNode& node);
     float readFloat(const loader::DocNode& node);
 
+    // Parse an ISO8601 datetime ("YYYY-MM-DDThh:mm:ss", date-only allowed) into
+    // epoch seconds (Unix/proleptic-Gregorian). Returns 0 on parse failure.
+    double parseIso8601ToEpochSecs(const std::string& str);
+
+    // Parse a "HH:MM" (or "HH:MM:SS") clock string into seconds-of-day.
+    int parseClockToSecs(const std::string& str);
+
     std::vector<std::string> readStringVector(const loader::DocNode& node, int reserve);
     std::vector<int> readIntVector(const loader::DocNode& node, int reserve);
     std::vector<float> readFloatVector(const loader::DocNode& node, int reserve);

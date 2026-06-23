@@ -1,0 +1,6 @@
+types:
+  - id: prefab_ui_time_text
+    prefab:
+      path: prefab/util/prefab_ui_time_text.yml
+    base_scale: 0.0025
+    layer: ui

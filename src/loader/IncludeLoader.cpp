@@ -158,6 +158,7 @@ namespace loader {
         l.m_skyboxLoader.loadSkybox(node.findNode("skybox"), *sceneData.m_skybox);
 
         l.m_rootLoader.loadRoot(node.findNode("root"), *sceneData.m_root);
+        l.m_worldLoader.loadWorld(node.findNode("world"), *sceneData.m_world);
         l.m_scriptLoader.loadScriptSystem(node.findNode("script"), *sceneData.m_scriptSystemData);
         l.m_materialUpdaterLoader.loadMaterialUpdaters(
             node.findNode("material_updaters"),

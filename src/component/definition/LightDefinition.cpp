@@ -28,6 +28,7 @@ std::unique_ptr<Light> LightDefinition::createLight(
     light->m_intensity = data.m_intensity;
 
     light->m_type = data.m_type;
+    light->m_sun = data.m_sun;
 
     return light;
 }

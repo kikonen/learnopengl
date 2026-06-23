@@ -57,6 +57,9 @@
     <ClCompile Include="src\controller\CameraZoomController.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\controller\SunController.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="src\component\Light.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -1410,6 +1413,15 @@
     <ClCompile Include="src\scene\Skybox.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\scene\World.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\scene\WorldTime.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\loader\WorldLoader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="src\registry\NodeCache.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -1458,6 +1470,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\controller\CameraZoomController.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\controller\SunController.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\component\Light.h">
@@ -3207,6 +3222,18 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\scene\Skybox.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\scene\World.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\scene\WorldTime.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\loader\WorldLoader.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\loader\WorldData.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\registry\NodeCache.h">

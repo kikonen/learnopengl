@@ -3,6 +3,7 @@
 namespace loader {
     Loaders::Loaders(const util::Ref<Context>& ctx)
       : m_rootLoader(ctx),
+        m_worldLoader(ctx),
         m_includeLoader(ctx),
         m_scriptLoader(ctx),
         m_skyboxLoader(ctx),
@@ -37,6 +38,7 @@ namespace loader {
         m_materialUpdaterLoader.setRegistry(registry);
         m_customMaterialLoader.setRegistry(registry);
         m_rootLoader.setRegistry(registry);
+        m_worldLoader.setRegistry(registry);
         m_scriptLoader.setRegistry(registry);
         m_skyboxLoader.setRegistry(registry);
         m_audioLoader.setRegistry(registry);
