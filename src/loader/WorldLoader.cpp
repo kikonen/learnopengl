@@ -37,6 +37,8 @@ namespace loader
     {
         if (node.isNull()) return;
 
+        data.loaded = true;
+
         for (const auto& pair : node.getNodes()) {
             const std::string& k = pair.getName();
             const loader::DocNode& v = pair.getNode();
@@ -79,6 +81,9 @@ namespace loader
         ScriptSystemData& scriptSystemData,
         Loaders& loaders)
     {
+        // no `world:` block -> no World; skybox stays static day (skyBlend 0)
+        if (!data.loaded) return;
+
         auto world = util::Ref<World>::create();
         world->configure(data);
 
