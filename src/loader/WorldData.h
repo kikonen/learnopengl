@@ -6,6 +6,10 @@ namespace loader
 {
     struct WorldData
     {
+        // true once a `world:` block was actually parsed; scenes without one get no
+        // World (and thus a static day skybox / no day-night clock)
+        bool loaded{ false };
+
         // initial world time: epoch seconds (Unix/proleptic-Gregorian), parsed from
         // an ISO8601 "time_base" string (e.g. "2026-06-23T12:00:00"). May be negative
         // for years < 1970.
