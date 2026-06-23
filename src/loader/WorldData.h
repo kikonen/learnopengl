@@ -12,8 +12,9 @@ namespace loader
 
         // initial world time: epoch seconds (Unix/proleptic-Gregorian), parsed from
         // an ISO8601 "time_base" string (e.g. "2026-06-23T12:00:00"). May be negative
-        // for years < 1970.
-        double timeBaseSecs{ 0.0 };
+        // for years < 1970. Defaults to noon (1970-01-01 12:00) so a world without an
+        // explicit time_base starts in daylight rather than at midnight.
+        double timeBaseSecs{ 12.0 * 60.0 * 60.0 };
 
         // sim seconds advanced per real second (1 = realtime, 0 = paused)
         double timeScale{ 100.0 };

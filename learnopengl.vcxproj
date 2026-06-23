@@ -664,6 +664,7 @@
     <ClCompile Include="src\material\PlainTexture.cpp" />
     <ClCompile Include="src\registry\NodeRegistry.cpp" />
     <ClCompile Include="src\controller\CameraZoomController.cpp" />
+    <ClCompile Include="src\controller\ClockController.cpp" />
     <ClCompile Include="src\controller\SunController.cpp" />
     <ClCompile Include="src\render\CubeMap.cpp" />
     <ClCompile Include="src\engine\AsyncLoader.cpp" />
@@ -1304,6 +1305,7 @@
     <ClInclude Include="src\material\PlainTexture.h" />
     <ClInclude Include="src\registry\NodeRegistry.h" />
     <ClInclude Include="src\controller\CameraZoomController.h" />
+    <ClInclude Include="src\controller\ClockController.h" />
     <ClInclude Include="src\controller\SunController.h" />
     <ClInclude Include="src\render\CubeMap.h" />
     <ClInclude Include="src\engine\AsyncLoader.h" />

@@ -21,7 +21,7 @@ prefab:
   text:
     text: "HH:MM"
     font:
-      path: fonts/aliee13.ttf
+      path: fonts/VeraMono.ttf
       #path: fonts/LuckiestGuy.ttf
       #path: fonts/BLADRMF_.TTF
       size: 64
@@ -30,4 +30,6 @@ prefab:
   flags:
     no_shadow: true
     no_frustum: true
+  controllers:
+    - type: clock
   base_scale: 0.01
