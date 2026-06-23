@@ -15,6 +15,7 @@
 #include "engine/Engine.h"
 #include "scene/Scene.h"
 #include "scene/Skybox.h"
+#include "scene/World.h"
 
 #include "registry/Registry.h"
 #include "registry/NodeRegistry.h"
@@ -81,6 +82,12 @@ namespace render
 
         if (ctx.m_layer != 1) return;
 
+        // 0 = full day .. 1 = full night, from the World day-night model (RT-published)
+        float skyBlend = 0.f;
+        if (auto* world = scene->getWorld().get()) {
+            skyBlend = world->getSkyBlend();
+        }
+
         auto& state = ctx.getGLState();
 
         // NOTE KI cannot update stencil without depth update
@@ -93,6 +100,7 @@ namespace render
         state.polygonFrontAndBack(GL_FILL);
 
         m_program->bind();
+        m_program->setFloat("u_skyBlend", skyBlend);
         m_textureQuad.draw();
 
         state.setDepthFunc(ctx.m_depthFunc);
