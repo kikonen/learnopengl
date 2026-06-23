@@ -79,6 +79,9 @@ namespace loader {
             else if (k == "distance") {
                 data.distance = readFloat(v);
             }
+            else if (k == "format") {
+                data.format = readString(v);
+            }
             else {
                 reportUnknown("controller_entry", k, v);
             }
@@ -103,6 +106,7 @@ namespace loader {
 
         df.m_direction = data.direction;
         df.m_distance = data.distance;
+        df.m_format = data.format;
 
         return definition;
     }

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <type_traits>
+#include <string>
 
 #include <glm/glm.hpp>
 
@@ -20,5 +21,8 @@ namespace loader {
 
         glm::vec3 direction{ 0.f, 0.f, 1.f };
         float distance{ 0.f };
+
+        // clock controller: strftime-style chrono format (e.g. "%H:%M")
+        std::string format;
     };
 }

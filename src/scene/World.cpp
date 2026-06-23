@@ -2,11 +2,10 @@
 
 #include <cmath>
 #include <chrono>
+#include <format>
 
 #include <glm/glm.hpp>
 #include <glm/gtc/constants.hpp>
-
-#include <fmt/format.h>
 
 #include "loader/WorldData.h"
 
@@ -106,19 +105,20 @@ float World::skyBlend(double worldSecs) const noexcept
     return 1.f - glm::smoothstep(-tw, tw, el);
 }
 
-std::string World::formatClock(double worldSecs)
+std::string World::formatClock(double worldSecs, std::string_view fmtSpec)
 {
     using namespace std::chrono;
 
     const sys_seconds tp{ seconds{ static_cast<long long>(std::llround(worldSecs)) } };
-    const auto dp = floor<days>(tp);
-    const year_month_day ymd{ dp };
-    const hh_mm_ss hms{ tp - dp };
 
-    return fmt::format("{:04}-{:02}-{:02} {:02}:{:02}",
-        static_cast<int>(ymd.year()),
-        static_cast<unsigned>(ymd.month()),
-        static_cast<unsigned>(ymd.day()),
-        hms.hours().count(),
-        hms.minutes().count());
+    // wrap the strftime-style spec into a std::format replacement field, e.g.
+    // "%H:%M" -> "{:%H:%M}", and resolve at runtime
+    const std::string fmtStr = "{:" + std::string{ fmtSpec } + "}";
+    try {
+        return std::vformat(fmtStr, std::make_format_args(tp));
+    }
+    catch (const std::format_error&) {
+        // bad spec: surface it literally instead of throwing (callers are noexcept)
+        return std::string{ fmtSpec };
+    }
 }

@@ -2,6 +2,7 @@
 
 #include <memory>
 #include <type_traits>
+#include <string>
 
 #include <glm/glm.hpp>
 
@@ -32,6 +33,8 @@ struct ControllerDefinition {
 
     glm::vec3 m_direction{ 0.f, 0.f, 1.f };
     float m_distance{ 0.f };
+
+    std::string m_format;
 
     static std::unique_ptr<NodeController> createController(
         ControllerDefinition& definition);

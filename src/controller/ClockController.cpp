@@ -9,8 +9,9 @@
 #include "scene/Scene.h"
 #include "scene/World.h"
 
-ClockController::ClockController()
-    : NodeController(false, false)
+ClockController::ClockController(std::string_view fmtSpec)
+    : NodeController(false, false),
+    m_format{ fmtSpec.empty() ? "%Y-%m-%d %H:%M" : std::string{ fmtSpec } }
 {
 }
 
@@ -29,7 +30,7 @@ bool ClockController::updateWT(
 
     // WT-authoritative time (advanced this tick before controllers run)
     const double t = world->getTime().getTimeSecs();
-    std::string text = World::formatClock(t);
+    std::string text = World::formatClock(t, m_format);
 
     if (text != m_last) {
         generator->setText(text);
