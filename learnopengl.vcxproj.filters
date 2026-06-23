@@ -57,6 +57,9 @@
     <ClCompile Include="src\controller\CameraZoomController.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\controller\ClockController.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="src\controller\SunController.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -1470,6 +1473,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\controller\CameraZoomController.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="src\controller\ClockController.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="src\controller\SunController.h">

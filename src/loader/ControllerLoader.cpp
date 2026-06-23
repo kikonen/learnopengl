@@ -57,6 +57,9 @@ namespace loader {
                 else if (type == "sun") {
                     data.type = ControllerType::sun;
                 }
+                else if (type == "clock") {
+                    data.type = ControllerType::clock;
+                }
                 else {
                     reportUnknown("controller_type", k, v);
                 }
