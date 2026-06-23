@@ -21,7 +21,7 @@ std::unique_ptr<NodeController> ControllerDefinition::createController(
         return std::make_unique<SunController>(definition.m_distance);
     }
     case ControllerType::clock: {
-        return std::make_unique<ClockController>();
+        return std::make_unique<ClockController>(definition.m_format);
     }
     }
 

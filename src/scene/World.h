@@ -2,6 +2,7 @@
 
 #include <atomic>
 #include <string>
+#include <string_view>
 
 #include <glm/glm.hpp>
 
@@ -71,8 +72,10 @@ public:
     // 0 = full day .. 1 = full night, smoothed across the twilight band
     float skyBlend(double worldSecs) const noexcept;
 
-    // "YYYY-MM-DD HH:MM" of an absolute world time
-    static std::string formatClock(double worldSecs);
+    // Format an absolute world time using a strftime-style chrono spec
+    // (e.g. "%H:%M", "%Y-%m-%d %H:%M"). Invalid specs fall back to showing the
+    // spec literally rather than throwing (callers may be noexcept).
+    static std::string formatClock(double worldSecs, std::string_view fmtSpec);
 
 public:
     // --- config (load-time; read-only during run) ---

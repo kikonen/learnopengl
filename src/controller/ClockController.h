@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include <string_view>
 
 #include "NodeController.h"
 
@@ -10,12 +11,14 @@
 class ClockController final : public NodeController
 {
 public:
-    ClockController();
+    // fmtSpec: strftime-style chrono spec (e.g. "%H:%M"); empty -> default
+    ClockController(std::string_view fmtSpec);
 
     virtual bool updateWT(
         const UpdateContext& ctx,
         model::Node& node) noexcept override;
 
 private:
+    const std::string m_format;
     std::string m_last;
 };
