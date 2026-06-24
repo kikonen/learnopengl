@@ -6,6 +6,8 @@
 
 #include <glm/glm.hpp>
 
+#include "util/Ref.h"
+
 #include "generator/GeneratorMode.h"
 
 #include "loader/Repeat.h"
@@ -58,6 +60,6 @@ struct GeneratorDefinition {
     glm::vec3 m_boundsDir{ 0.f, -1.f, 0.f };
     uint32_t m_boundsMask{ UINT_MAX };
 
-    static std::unique_ptr<NodeGenerator> createGenerator(
+    static util::Ref<NodeGenerator> createGenerator(
         const model::NodeType* type);
 };

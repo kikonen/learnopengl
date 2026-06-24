@@ -5,6 +5,8 @@
 
 #include <glm/glm.hpp>
 
+#include "util/Ref.h"
+
 #include "text/Align.h"
 #include "text/size.h"
 
@@ -29,6 +31,6 @@ struct TextGeneratorDefinition {
 
     text::font_id m_fontId;
 
-    static std::unique_ptr<TextGenerator> createTextGenerator(
+    static util::Ref<TextGenerator> createTextGenerator(
         const model::NodeType* type);
 };

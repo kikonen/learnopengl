@@ -13,7 +13,7 @@
 
 #include "component/definition/GeneratorDefinition.h"
 
-std::unique_ptr<NodeGenerator> GeneratorDefinition::createGenerator(
+util::Ref<NodeGenerator> GeneratorDefinition::createGenerator(
     const model::NodeType* type)
 {
     if (!type->m_generatorDefinition) return nullptr;
@@ -24,7 +24,7 @@ std::unique_ptr<NodeGenerator> GeneratorDefinition::createGenerator(
 
     switch (data.m_type) {
     case GeneratorType::terrain: {
-        auto generator{ std::make_unique<terrain::TerrainGenerator>() };
+        auto generator{ util::Ref<terrain::TerrainGenerator>::create() };
 
         const auto& tiling = data.m_tiling;
 
@@ -45,7 +45,7 @@ std::unique_ptr<NodeGenerator> GeneratorDefinition::createGenerator(
         return generator;
     }
     case GeneratorType::asteroid_belt: {
-        auto generator{ std::make_unique<AsteroidBeltGenerator>(data.m_count) };
+        auto generator{ util::Ref<AsteroidBeltGenerator>::create(data.m_count) };
 
         generator->m_mode = data.m_mode;
         generator->m_offset = data.m_offset;
@@ -54,7 +54,7 @@ std::unique_ptr<NodeGenerator> GeneratorDefinition::createGenerator(
         return generator;
     }
     case GeneratorType::grid: {
-        auto generator{ std::make_unique<GridGenerator>() };
+        auto generator{ util::Ref<GridGenerator>::create() };
 
         generator->m_mode = data.m_mode;
         generator->m_offset = data.m_offset;

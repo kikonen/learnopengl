@@ -264,7 +264,7 @@ namespace loader
         if (!typeData.controllers.empty()) {
             type->m_controllerDefinitions = std::make_unique<std::vector<ControllerDefinition>>();
             for (auto& controllerData : typeData.controllers) {
-                auto df = l.m_controllerLoader.createControllerDefinition(controllerData);
+                const auto& df = l.m_controllerLoader.createControllerDefinition(controllerData);
                 if (!df) continue;
 
                 type->m_controllerDefinitions->push_back(*df);

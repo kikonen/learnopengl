@@ -6,6 +6,8 @@
 
 #include <glm/glm.hpp>
 
+#include "util/Ref.h"
+
 #include "ki/size.h"
 
 namespace model
@@ -37,6 +39,6 @@ struct ControllerDefinition {
 
     std::string m_format;
 
-    static std::unique_ptr<NodeController> createController(
+    static util::Ref<NodeController> createController(
         ControllerDefinition& definition);
 };

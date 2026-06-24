@@ -9,7 +9,7 @@
 #include "component/OrbitCamera.h"
 #include "component/SplineCamera.h"
 
-std::unique_ptr<CameraComponent> CameraComponentDefinition::createCameraComponent(
+util::Ref<CameraComponent> CameraComponentDefinition::createCameraComponent(
     const model::NodeType* type)
 {
     if (!type->m_cameraComponentDefinition) return nullptr;
@@ -17,25 +17,25 @@ std::unique_ptr<CameraComponent> CameraComponentDefinition::createCameraComponen
     const auto& data = *type->m_cameraComponentDefinition;
 
     // NOTE only node cameras in scenefile for now
-    std::unique_ptr<CameraComponent> component;
+    util::Ref<CameraComponent> component;
 
     switch (data.m_type) {
     case CameraType::fps: {
-        auto c = std::make_unique<FpsCamera>();
+        auto c = util::Ref<FpsCamera>::create();
         c->setPitch(glm::radians(data.m_pitch));
         c->setPitchSpeed(glm::radians(data.m_pitchSpeed));
         component = std::move(c);
         break;
     }
     case CameraType::follow: {
-        auto c = std::make_unique<FollowCamera>();
+        auto c = util::Ref<FollowCamera>::create();
         c->m_springConstant = data.m_springConstant;
         c->m_distance = data.m_distance;
         component = std::move(c);
         break;
     }
     case CameraType::orbit: {
-        auto c = std::make_unique<OrbitCamera>();
+        auto c = util::Ref<OrbitCamera>::create();
         c->m_offset = data.m_offset;
         c->m_up = data.m_up;
         c->m_pitchSpeed = glm::radians(data.m_pitchSpeed);
@@ -44,7 +44,7 @@ std::unique_ptr<CameraComponent> CameraComponentDefinition::createCameraComponen
         break;
     }
     case CameraType::spline: {
-        auto c = std::make_unique<SplineCamera>();
+        auto c = util::Ref<SplineCamera>::create();
         c->m_path = Spline{ data.m_path };
         c->m_speed = data.m_speed;
         component = std::move(c);

@@ -7,24 +7,24 @@
 #include "controller/SunController.h"
 #include "controller/ClockController.h"
 
-std::unique_ptr<NodeController> ControllerDefinition::createController(
+util::Ref<NodeController> ControllerDefinition::createController(
     ControllerDefinition& definition)
 {
     switch (definition.m_type) {
     case ControllerType::pawn: {
-        return std::make_unique<PawnController>();
+        return util::Ref<PawnController>::create();
     }
     case ControllerType::camera_zoom: {
-        return std::make_unique<CameraZoomController>();
+        return util::Ref<CameraZoomController>::create();
     }
     case ControllerType::sun: {
-        return std::make_unique<SunController>(definition.m_distance, false);
+        return util::Ref<SunController>::create(definition.m_distance, false);
     }
     case ControllerType::moon: {
-        return std::make_unique<SunController>(definition.m_distance, true);
+        return util::Ref<SunController>::create(definition.m_distance, true);
     }
     case ControllerType::clock: {
-        return std::make_unique<ClockController>(definition.m_format);
+        return util::Ref<ClockController>::create(definition.m_format);
     }
     }
 

@@ -2,6 +2,8 @@
 
 #include <memory>
 
+#include "util/Ref.h"
+
 #include "particle/ParticleDefinition.h"
 
 namespace particle
@@ -18,6 +20,6 @@ struct ParticleGeneratorDefinition
 {
     particle::ParticleDefinition m_data;
 
-    static std::unique_ptr<particle::ParticleGenerator> createParticleGenerator(
+    static util::Ref<particle::ParticleGenerator> createParticleGenerator(
         const model::NodeType* type);
 };

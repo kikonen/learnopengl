@@ -5,14 +5,14 @@
 #include "component/definition/LightDefinition.h"
 #include "component/Light.h"
 
-std::unique_ptr<Light> LightDefinition::createLight(
+util::Ref<Light> LightDefinition::createLight(
     const model::NodeType* type)
 {
     if (!type->m_lightDefinition) return nullptr;
 
     const auto& data = *type->m_lightDefinition;
 
-    auto light = std::make_unique<Light>();
+    auto light = util::Ref<Light>::create();
 
     light->m_enabled = true;
 

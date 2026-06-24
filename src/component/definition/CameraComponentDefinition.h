@@ -6,6 +6,8 @@
 
 #include <glm/glm.hpp>
 
+#include "util/Ref.h"
+
 #include "component/CameraType.h"
 
 namespace model
@@ -43,6 +45,6 @@ struct CameraComponentDefinition {
     std::vector<glm::vec3> m_path;
     float m_speed{ 0.f };
 
-    static std::unique_ptr<CameraComponent> createCameraComponent(
+    static util::Ref<CameraComponent> createCameraComponent(
         const model::NodeType* type);
 };

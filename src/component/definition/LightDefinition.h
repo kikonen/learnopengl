@@ -5,6 +5,8 @@
 
 #include <glm/glm.hpp>
 
+#include "util/Ref.h"
+
 #include "ki/sid.h"
 
 #include "component/LightType.h"
@@ -33,7 +35,7 @@ struct LightDefinition {
 
     bool m_sun{ false };
 
-    static std::unique_ptr<Light> createLight(
+    static util::Ref<Light> createLight(
         const model::NodeType* type);
 };
 

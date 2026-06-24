@@ -19,7 +19,7 @@ struct InputContext;
 struct UpdateContext;
 class Registry;
 
-class NodeController
+class NodeController : public util::RefCounted<>
 {
 public:
     NodeController(

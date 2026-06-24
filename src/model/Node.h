@@ -212,11 +212,11 @@ namespace model
         // Null handle means this node is its own root
         pool::NodeHandle m_compositeRootHandle;
 
-        std::unique_ptr<CameraComponent> m_camera{ nullptr };
-        std::unique_ptr<Light> m_light{ nullptr };
-        std::unique_ptr<particle::ParticleGenerator> m_particleGenerator{ nullptr };
+        util::Ref<CameraComponent> m_camera{ nullptr };
+        util::Ref<Light> m_light{ nullptr };
+        util::Ref<particle::ParticleGenerator> m_particleGenerator{ nullptr };
 
-        std::unique_ptr<NodeGenerator> m_generator{ nullptr };
+        util::Ref<NodeGenerator> m_generator{ nullptr };
 
         std::unique_ptr<audio::Listener> m_audioListener;
         std::unique_ptr<std::vector<audio::Source>> m_audioSources;

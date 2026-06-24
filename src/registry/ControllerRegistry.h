@@ -1,7 +1,8 @@
 #pragma once
 
 #include <unordered_map>
-#include <memory>
+
+#include "util/Ref.h"
 
 #include "model/Node.h"
 
@@ -60,7 +61,7 @@ public:
         return it != m_controllers.end() ? it->second[0].get() : nullptr;
     }
 
-	inline const std::vector<std::unique_ptr<NodeController>>* forNode(model::Node* node) const noexcept
+	inline const std::vector<util::Ref<NodeController>>* forNode(model::Node* node) const noexcept
 	{
         if (!node) return nullptr;
         if (!node->m_preparedRT) return nullptr;
@@ -69,17 +70,17 @@ public:
 		return it != m_controllers.end() ? &it->second : nullptr;
 	}
 
-    const std::unordered_map<pool::NodeHandle, std::vector<std::unique_ptr<NodeController>>>& getControllers() const noexcept
+    const std::unordered_map<pool::NodeHandle, std::vector<util::Ref<NodeController>>>& getControllers() const noexcept
     {
         return m_controllers;
     }
 
     void addController(
         pool::NodeHandle target,
-        std::unique_ptr<NodeController> controller);
+        const util::Ref<NodeController>& controller);
 
 private:
     util::Ref<Engine> m_engine{ nullptr };
 
-    std::unordered_map<pool::NodeHandle, std::vector<std::unique_ptr<NodeController>>> m_controllers;
+    std::unordered_map<pool::NodeHandle, std::vector<util::Ref<NodeController>>> m_controllers;
 };

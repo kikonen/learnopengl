@@ -4,6 +4,7 @@
 
 #include "ki/size.h"
 
+#include "util/Ref.h"
 #include "util/Random.h"
 
 #include "ParticleDefinition.h"
@@ -18,7 +19,7 @@ struct PrepareContext;
 struct UpdateContext;
 
 namespace particle {
-    class ParticleGenerator final
+    class ParticleGenerator final : public util::RefCounted<>
     {
     public:
         ParticleGenerator();

@@ -2,6 +2,8 @@
 
 #include <glm/glm.hpp>
 
+#include "util/Ref.h"
+
 #include "shader/LightsUBO.h"
 
 #include "ki/size.h"
@@ -16,7 +18,7 @@ namespace model
     class Node;
 }
 
-class Light final
+class Light final : public util::RefCounted<>
 {
 public:
     Light();
