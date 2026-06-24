@@ -3,6 +3,7 @@ meta:
   name: Pool
 skybox:
   material: skybox/polyhaven/wasteland_clouds_puresky_4k.hdr
+  material_2: skybox/polyhaven/qwantani_night_puresky_4k.hdr
   hdri: true
 prefab_dirs:
   - prefab
@@ -12,9 +13,21 @@ script:
 
 includes:
   - path: prefab/util/include_grid.yml
+  - path: prefab/util/include_ui_time_text.yml
   - path: prefab/util/include_origo_marker.yml
   - path: prefab/util/include_fps_counter.yml
   - path: prefab/creatures/include_skeleton_warrior.yml
+
+world:
+  time_base: "1942-06-20T12:00:00"
+  time_scale: 2000
+  sun_up: "06:00"
+  sun_down: "18:00"
+  sun_angle: 25
+  sun_twilight_angle: 40
+  day_color: [1.0, 0.98, 0.95]
+  dusk_color: [1.0, 0.55, 0.25]
+  night_color: [0.35, 0.45, 0.70]
 
 types:
   - id: grid
@@ -57,8 +70,13 @@ types:
       no_shadow: true
     light:
       type: directional
+      sun: true
       diffuse: [0.9, 0.9, 0.7, 1.0]
       intensity: 30000
+      moon_intensity_scale: 0.3
+    controllers:
+      - type: sun
+        distance: 20
   - id: cube_1
     mesh:
       path: texture_cube
@@ -488,6 +506,9 @@ composites:
 
 nodes:
   - type: grid
+  - type: prefab_ui_time_text
+    id: ui_time_text
+    pos: [2, 2, -1]
   - type: prefab_fps_counter
     id: fps_counter
     pos: [2, -2, -1]
