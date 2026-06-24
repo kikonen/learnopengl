@@ -83,10 +83,10 @@ public:
     void render(const render::RenderContext& ctx);
 
     model::Node* getActiveNode() const;
-    const std::vector<std::unique_ptr<NodeController>>* getActiveNodeControllers() const;
+    const std::vector<util::Ref<NodeController>>* getActiveNodeControllers() const;
 
     model::Node* getActiveCameraNode() const;
-    const std::vector<std::unique_ptr<NodeController>>* getActiveCameraControllers() const;
+    const std::vector<util::Ref<NodeController>>* getActiveCameraControllers() const;
 
     ki::node_id getObjectID(const render::RenderContext& ctx, float posx, float posy);
 

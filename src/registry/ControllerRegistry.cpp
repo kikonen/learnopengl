@@ -91,7 +91,7 @@ void ControllerRegistry::updateWT(const UpdateContext& ctx)
 
 void ControllerRegistry::addController(
     pool::NodeHandle target,
-    std::unique_ptr<NodeController> controller)
+    const util::Ref<NodeController>& controller)
 {
     if (!controller) return;
 
@@ -109,7 +109,7 @@ void ControllerRegistry::addController(
         if (const auto& it = m_controllers.find(target);
             it == m_controllers.end())
         {
-            m_controllers.insert({ target, std::vector<std::unique_ptr<NodeController>>{} });
+            m_controllers.insert({ target, std::vector<util::Ref<NodeController>>{} });
         }
     }
 

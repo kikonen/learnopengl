@@ -817,7 +817,7 @@ model::Node* Scene::getActiveNode() const
     return NodeRegistry::get().getActiveNode();
 }
 
-const std::vector<std::unique_ptr<NodeController>>* Scene::getActiveNodeControllers() const
+const std::vector<util::Ref<NodeController>>* Scene::getActiveNodeControllers() const
 {
     auto* node = getActiveNode();
     return node ? ControllerRegistry::get().forNode(node) : nullptr;
@@ -828,7 +828,7 @@ model::Node* Scene::getActiveCameraNode() const
     return m_collection->getActiveCameraNode();
 }
 
-const std::vector<std::unique_ptr<NodeController>>* Scene::getActiveCameraControllers() const
+const std::vector<util::Ref<NodeController>>* Scene::getActiveCameraControllers() const
 {
     auto* node = getActiveCameraNode();
     return node ? ControllerRegistry::get().forNode(node) : nullptr;

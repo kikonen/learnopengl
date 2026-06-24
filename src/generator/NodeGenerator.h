@@ -63,7 +63,7 @@ class EntityRegistry;
 //
 // Generate node OR entity instances for node
 //
-class NodeGenerator
+class NodeGenerator : public util::RefCounted<>
 {
 public:
     NodeGenerator() = default;

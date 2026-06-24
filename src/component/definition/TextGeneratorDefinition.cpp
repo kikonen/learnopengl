@@ -9,7 +9,7 @@
 
 #include "generator/TextGenerator.h"
 
-std::unique_ptr<TextGenerator> TextGeneratorDefinition::createTextGenerator(
+util::Ref<TextGenerator> TextGeneratorDefinition::createTextGenerator(
     const model::NodeType* type)
 {
     if (!type->m_textGeneratorDefinition) return nullptr;
@@ -18,7 +18,7 @@ std::unique_ptr<TextGenerator> TextGeneratorDefinition::createTextGenerator(
 
     const auto& assets = Assets::get();
 
-    auto generator = std::make_unique<TextGenerator>();
+    auto generator = util::Ref<TextGenerator>::create();
 
     generator->setFontId(data.m_fontId);
     generator->setText(data.m_text);

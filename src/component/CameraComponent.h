@@ -1,5 +1,7 @@
 #pragma once
 
+#include "util/Ref.h"
+
 #include "render/Camera.h"
 
 namespace model
@@ -10,7 +12,7 @@ namespace model
 
 struct UpdateContext;
 
-class CameraComponent
+class CameraComponent : public util::RefCounted<>
 {
 public:
     CameraComponent();
