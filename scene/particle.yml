@@ -26,7 +26,7 @@ world:
   sun_up: "05:30"
   sun_down: "22:00"
   sun_angle: 25
-  sun_twilight_angle: 30
+  sun_twilight_angle: 18
   day_color: [1.0, 0.98, 0.95]
   dusk_color: [1.0, 0.55, 0.25]
   night_color: [0.35, 0.45, 0.70]
