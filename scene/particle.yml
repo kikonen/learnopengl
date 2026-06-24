@@ -7,16 +7,29 @@ skybox:
   xmaterial: skybox/polyhaven/drakensberg_solitary_mountain_4k.hdr
   xmaterial: skybox/polyhaven/belfast_sunset_puresky_4k.hdr
   xmaterial: skybox/polyhaven/pizzo_pernice_puresky_4k.hdr
+  material_2: skybox/polyhaven/satara_night_no_lamps_4k.hdr
 script:
   scripts:
     - path: lib/common
 
 includes:
   - path: prefab/util/include_grid.yml
+  - path: prefab/util/include_ui_time_text.yml
   - path: prefab/util/include_origo_marker.yml
   - path: prefab/util/include_fps_counter.yml
   - path: prefab/characters/include_player_fps.yml
   - path: prefab/creatures/include_skeleton_warrior.yml
+
+world:
+  time_base: "1942-06-20T12:00:00"
+  time_scale: 2000
+  sun_up: "05:30"
+  sun_down: "22:00"
+  sun_angle: 25
+  sun_twilight_angle: 30
+  day_color: [1.0, 0.98, 0.95]
+  dusk_color: [1.0, 0.55, 0.25]
+  night_color: [0.35, 0.45, 0.70]
 
 types:
   - id: origo_marker
@@ -27,6 +40,11 @@ types:
         program: g_tex
     particle: origo_marker
     script_file: scripts/seq_particle_generator
+  - id: cube_map
+    type: origo
+    flags:
+      xcube_map: true
+      environment_probe: true
   - id: prefab_player_fps_camera
     camera:
       default: true
@@ -301,8 +319,13 @@ types:
       no_shadow: true
     light:
       type: directional
+      sun: true
       diffuse: [0.7, 0.7, 0.7, 1.0]
       intensity: 20000
+      moon_intensity_scale: 0.3
+    controllers:
+      - type: sun
+        distance: 50
   - id: terrain_grass_v2_generator
     mesh:
       path: quad_terrain
@@ -323,6 +346,7 @@ types:
       pre_depth: true
       use_deferred: true
       nav_physics: true
+      environment: true
     generator:
       type: terrain
       mode: grid
@@ -351,6 +375,11 @@ types:
 
 nodes:
   - type: prefab_grid
+  - type: cube_map
+    pos: [0, 2, 0]
+  - type: prefab_ui_time_text
+    id: ui_time_text
+    pos: [2, 2, -1]
   - type: prefab_fps_counter
     id: fps_counter
     pos: [2, -2, -1]

@@ -70,14 +70,38 @@ double World::dayFraction(double worldSecs) noexcept
 
 glm::vec3 World::sunDirectionToSun(double worldSecs) const noexcept
 {
-    // hour angle: 0 at solar noon (midpoint of up/down), +-PI at solar midnight
-    const double noonFrac = (static_cast<double>(m_sunUpSecs) + static_cast<double>(m_sunDownSecs))
-        * 0.5 / DAY_SECS;
-    const double ha = (dayFraction(worldSecs) - noonFrac) * glm::two_pi<double>();
+    // Map time-of-day to hour angle so the sun is exactly on the horizon at sun_up /
+    // sun_down and highest at their midpoint:
+    //   sun_up   -> ha = -pi/2  (rising, horizon)
+    //   midpoint -> ha =  0     (solar noon, peak)
+    //   sun_down -> ha = +pi/2  (setting, horizon)
+    // Night fills ha in (+pi/2 .. +3pi/2). Day length thus controls daylight duration,
+    // not just the noon position. (r2 below lies on the horizon plane, so ha = +-pi/2
+    // is an exact elevation-0 crossing.)
+    const double tod = timeOfDaySecs(worldSecs); // [0, DAY_SECS)
+    const double sunUp = static_cast<double>(m_sunUpSecs);
+    const double sunDown = static_cast<double>(m_sunDownSecs);
+    const double dayLen = sunDown - sunUp;
+
+    const double HALF_PI = glm::half_pi<double>();
+    const double PI = glm::pi<double>();
+
+    double ha;
+    if (tod >= sunUp && tod < sunDown && dayLen > 0.0) {
+        const double f = (tod - sunUp) / dayLen;            // 0..1 across daytime
+        ha = -HALF_PI + f * PI;
+    }
+    else {
+        const double nightLen = DAY_SECS - dayLen;
+        // seconds into the night since sun_down (wrapping past midnight)
+        const double tNight = (tod < sunUp) ? (tod + DAY_SECS - sunDown) : (tod - sunDown);
+        const double f = (nightLen > 0.0) ? (tNight / nightLen) : 0.0; // 0..1 across night
+        ha = HALF_PI + f * PI;
+    }
 
     // The sun traces a circle whose plane normal is m_sunAxis. Build an orthonormal
-    // basis (r1, r2) in that plane with r1 = the "most upward" direction, so ha=0
-    // (noon) is the highest point of the arc.
+    // basis (r1, r2) in that plane with r1 = the "most upward" direction (noon), and
+    // r2 on the horizon plane (the ha = +-pi/2 crossing).
     const glm::vec3 a = glm::normalize(m_sunAxis);
     const glm::vec3 up{ 0.f, 1.f, 0.f };
 
