@@ -10,7 +10,8 @@ skybox:
   xmaterial: skybox/polyhaven/gray_pier_4k.hdr
   xmaterial: skybox/polyhaven/wasteland_clouds_puresky_4k.hdr
   material: skybox/polyhaven/qwantani_noon_puresky_4k.hdr
-  material_2: skybox/polyhaven/qwantani_night_puresky_4k.hdr
+  xmaterial_2: skybox/polyhaven/qwantani_night_puresky_4k.hdr
+  material_2: skybox/polyhaven/satara_night_no_lamps_4k.hdr
 script:
   scripts:
     - path: lib/common
@@ -197,6 +198,8 @@ types:
         blend: true
         render_back: true
         program: effect_bubble
+        program_definitions:
+          EFFECT_ENV_DIM: 1
     flags:
       effect: true
       no_select: true

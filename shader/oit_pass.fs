@@ -1,9 +1,17 @@
 #version 460 core
 
+// Forward-lit transparent pass. Reuses the deferred PBR + IBL lighting (calculateLightPbr)
+// so transparent surfaces respond to the environment and day/night just like opaque ones,
+// instead of emitting full albedo (which made them "glow" in the dark).
+#define PASS_FORWARD
+
 #include "include/ssbo_materials.glsl"
 
 #include "include/uniform_camera.glsl"
 #include "include/uniform_data.glsl"
+#include "include/uniform_shadow.glsl"
+#include "include/uniform_debug.glsl"
+#include "include/uniform_lights.glsl"
 
 #include "include/water_caustics.glsl"
 
@@ -15,6 +23,7 @@
 
 in VS_OUT {
   vec3 viewPos;
+  vec3 normal;
   vec2 texCoord;
 
   flat uint materialIndex;
@@ -23,15 +32,28 @@ in VS_OUT {
 
 LAYOUT_OIT_OUT;
 
+layout(binding = UNIT_IRRADIANCE_MAP) uniform samplerCube u_irradianceMap;
+layout(binding = UNIT_PREFILTER_MAP) uniform samplerCube u_prefilterMap;
+layout(binding = UNIT_BRDF_LUT) uniform sampler2D u_brdfLut;
+
+layout(binding = UNIT_SHADOW_MAP_FIRST) uniform sampler2DShadow u_shadowMap[MAX_SHADOW_MAP_COUNT];
+
 ////////////////////////////////////////////////////////////
 //
 ////////////////////////////////////////////////////////////
 
 SET_FLOAT_PRECISION;
 
-#include "include/fn_oit_util.glsl"
-
 ResolvedMaterial material;
+
+#include "include/pbr.glsl"
+#include "include/fn_calculate_dir_light.glsl"
+#include "include/fn_calculate_point_light.glsl"
+#include "include/fn_calculate_spot_light.glsl"
+#include "include/fn_calculate_light.glsl"
+#include "include/fn_calculate_shadow_index.glsl"
+
+#include "include/fn_oit_util.glsl"
 
 void main()
 {
@@ -42,16 +64,21 @@ void main()
 
   #include "include/var_tex_material.glsl"
 
-  vec4 color = material.diffuse;
-
-  {
-    vec3 worldPos = (u_invViewMatrix * vec4(fs_in.viewPos, 1)).xyz;
-    applyWaterCaustic(color.rgb, worldPos);
-  }
-
-  const float alpha = color.a;
-
+  const float alpha = material.diffuse.a;
   OIT_DISCARD(alpha);
+
+  const vec3 viewPos = fs_in.viewPos;
+  const vec3 worldPos = (u_invViewMatrix * vec4(viewPos, 1)).xyz;
+  const vec3 viewNormal = normalize(fs_in.normal);
+
+  // Modulate ALBEDO with caustics before lighting (same as g_tex/g_terrain), so the
+  // caustic gets lit and fades at night instead of glowing on the dimmed surface.
+  applyWaterCaustic(material.diffuse.rgb, worldPos);
+
+  const uint shadowIndex = calculateShadowIndex(viewPos);
+
+  // full PBR + IBL ambient (same as deferred); returns vec4(litColor, material alpha)
+  vec4 color = calculateLightPbr(viewNormal, viewPos, worldPos, shadowIndex);
 
   float weight = clamp(pow(min(1.0, alpha * 10.0) + 0.01, 3.0) * 1e8 * pow(1.0 - gl_FragCoord.z * 0.9, 3.0), 1e-2, 3e3);
 
