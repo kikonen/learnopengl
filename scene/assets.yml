@@ -225,7 +225,11 @@ assets:
   environment_map_size: 512
   environment_probe_enabled: true
   environment_probe_render_frame_start: 1
-  environment_probe_render_frame_step: 4
+  # The probe bake is amortized: each "step" does one slice of work (one cube face,
+  # then irradiance, then one prefilter mip per step). This is the cadence per STEP,
+  # so 1 = advance one slice every frame (smoothest); a full refresh takes
+  # (6 faces + 1 irradiance + prefilter mips) steps. Raise to spend less GPU/frame.
+  environment_probe_render_frame_step: 1
 
   irradiance_map_size: 32
   prefilter_map_size: 256

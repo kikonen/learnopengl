@@ -134,51 +134,79 @@ bool IblProbeRenderer::render(
     if (!isEnabled()) return false;
     if (!needRender(parentCtx)) return false;
 
-    // refresh probe metadata (pos + influence bounds) for this frame
-    enumerateProbes(parentCtx);
+    const int step = m_buildStep;
 
-    model::Node* centerNode = findClosest(parentCtx);
-    if (!centerNode) return false;
+    // Start of a cycle: pick the probe origin once and hold it for all 6 faces, so a
+    // single bake captures from one position (re-picked next cycle). Mixing across
+    // cycles when the camera moves self-corrects within a cycle.
+    if (step == 0) {
+        enumerateProbes(parentCtx);
 
-    // capture all 6 faces of the scene into the radiance cube. The capture's deferred pass reads
-    // the IBL maps currently bound (skybox-derived this frame) => single bounce.
-    for (unsigned int face = 0; face < 6; face++) {
+        model::Node* centerNode = findClosest(parentCtx);
+        if (!centerNode) return false; // no probe yet -> stay at step 0
+
         const auto* snapshot = centerNode->getSnapshotRT();
-        if (!snapshot) continue;
+        if (!snapshot) return false;
 
-        const auto& center = snapshot->getWorldPosition();
-        auto& camera = m_cameras[face];
-        camera.setWorldPosition(center);
-
-        render::RenderContext localCtx("IBL_PROBE",
-            &parentCtx,
-            &camera,
-            m_nearPlane,
-            m_farPlane,
-            m_captureCube->m_size, m_captureCube->m_size);
-
-        localCtx.m_useSsao = false;
-        localCtx.m_useParticles = false;
-        localCtx.m_useDecals = false;
-        localCtx.m_useFog = false;
-        localCtx.m_useEmission = false;
-        localCtx.m_useBloom = false;
-        localCtx.m_forceLineMode = false;
-
-        auto targetBuffer = m_captureCube->asFrameBuffer(face);
-        drawNodes(localCtx, &targetBuffer, centerNode);
+        m_centerNode = centerNode->toHandle();
+        m_captureCenter = snapshot->getWorldPosition();
     }
 
-    // mips on the captured radiance cube so prefilter importance sampling can read them
-    glGenerateTextureMipmap(m_captureCube->getTextureHandle());
+    if (step < CAPTURE_STEPS) {
+        // capture one face into the radiance cube. The capture's deferred pass reads the
+        // IBL maps currently bound (last bake / skybox fallback) => single bounce.
+        captureFace(parentCtx, step);
+    }
+    else if (step == IRRADIANCE_STEP) {
+        // radiance cube fully captured this cycle -> mips (for prefilter sampling) + irradiance
+        glGenerateTextureMipmap(m_captureCube->getTextureHandle());
 
-    const int envCubeId = static_cast<int>(m_captureCube->getTextureHandle());
-    m_irradianceMap.convolve(envCubeId);
-    m_prefilterMap.convolve(envCubeId);
+        const int envCubeId = static_cast<int>(m_captureCube->getTextureHandle());
+        m_irradianceMap.convolve(envCubeId);
+    }
+    else {
+        const int mip = step - PREFILTER_STEP_BASE;
+        const int envCubeId = static_cast<int>(m_captureCube->getTextureHandle());
+        m_prefilterMap.convolveMip(envCubeId, mip);
 
-    m_baked = true;
+        // first full cycle complete -> outputs are valid, start overriding skybox IBL
+        if (mip == render::PrefilterMap::MAX_MIP_LEVELS - 1) {
+            m_baked = true;
+        }
+    }
+
+    m_buildStep = (step + 1) % BUILD_STEPS;
     m_rendered = true;
     return true;
+}
+
+void IblProbeRenderer::captureFace(
+    const render::RenderContext& parentCtx,
+    int face)
+{
+    auto* centerNode = m_centerNode.toNode();
+    if (!centerNode) return;
+
+    auto& camera = m_cameras[face];
+    camera.setWorldPosition(m_captureCenter);
+
+    render::RenderContext localCtx("IBL_PROBE",
+        &parentCtx,
+        &camera,
+        m_nearPlane,
+        m_farPlane,
+        m_captureCube->m_size, m_captureCube->m_size);
+
+    localCtx.m_useSsao = false;
+    localCtx.m_useParticles = false;
+    localCtx.m_useDecals = false;
+    localCtx.m_useFog = false;
+    localCtx.m_useEmission = false;
+    localCtx.m_useBloom = false;
+    localCtx.m_forceLineMode = false;
+
+    auto targetBuffer = m_captureCube->asFrameBuffer(face);
+    drawNodes(localCtx, &targetBuffer, centerNode);
 }
 
 void IblProbeRenderer::drawNodes(

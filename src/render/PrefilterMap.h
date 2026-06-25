@@ -17,6 +17,8 @@ namespace render {
     class PrefilterMap
     {
     public:
+        static constexpr int MAX_MIP_LEVELS = 5;
+
         PrefilterMap() = default;
         ~PrefilterMap() = default;
 
@@ -32,6 +34,9 @@ namespace render {
         // (re)convolve the given input cube into this map's mip chain; safe to call repeatedly
         void convolve(int envCubeMapID);
 
+        // convolve a single mip level only (amortized probe baking); mip in [0, MAX_MIP_LEVELS)
+        void convolveMip(int envCubeMapID, int mip);
+
         void bindTexture(
             kigl::GLState& state,
             int unitIndex);
@@ -43,6 +48,13 @@ namespace render {
             Program* program,
             int cubeTextureID,
             int baseSize);
+
+        // render one mip level (all 6 faces) for the given roughness; self-contained FBO
+        void renderMip(
+            Program* program,
+            int cubeTextureID,
+            int baseSize,
+            int mip);
 
     public:
         int m_size{ 0 };

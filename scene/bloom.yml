@@ -25,6 +25,8 @@ types:
     flags:
       xcube_map: true
       environment_probe: true
+    environment_probe_inner_radius: 8.0
+    environment_probe_outer_radius: 20.0
   - id: player
     type: origo
     front: [0, 0, -1]

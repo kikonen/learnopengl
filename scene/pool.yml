@@ -3,7 +3,8 @@ meta:
   name: Pool
 skybox:
   material: skybox/polyhaven/wasteland_clouds_puresky_4k.hdr
-  material_2: skybox/polyhaven/qwantani_night_puresky_4k.hdr
+  xmaterial_2: skybox/polyhaven/qwantani_night_puresky_4k.hdr
+  material_2: skybox/polyhaven/satara_night_no_lamps_4k.hdr
   hdri: true
 prefab_dirs:
   - prefab
@@ -20,9 +21,9 @@ includes:
 
 world:
   time_base: "1942-06-20T12:00:00"
-  time_scale: 2000
-  sun_up: "06:00"
-  sun_down: "18:00"
+  time_scale: 1000
+  sun_up: "05:00"
+  sun_down: "20:00"
   sun_angle: 25
   sun_twilight_angle: 18
   day_color: [1.0, 0.98, 0.95]
