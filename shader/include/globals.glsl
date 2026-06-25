@@ -172,8 +172,9 @@
 #define GBUFFER_ALPHA_THRESHOLD 0.2
 #define SHADOW_ALPHA_THRESHOLD 0.35
 
-//#define SET_FLOAT_PRECISION
-#define SET_FLOAT_PRECISION precision mediump float;
+// NOTE KI not really used by desktop GPUs
+#define SET_FLOAT_PRECISION
+// #define SET_FLOAT_PRECISION precision mediump float;
 
 #define SCREEN_TRI_VERTEX_OUT 1
 //#undef SCREEN_TRI_VERTEX_OUT
