@@ -19,6 +19,7 @@ layout (location = ATTR_TEX) in vec2 a_texCoord;
 
 out VS_OUT {
   vec3 viewPos;
+  vec3 normal;
   vec2 texCoord;
 
   flat uint materialIndex;
@@ -83,6 +84,8 @@ void main() {
   gl_Position = u_projectedMatrix * worldPos;
 
   vs_out.viewPos = (u_viewMatrix * worldPos).xyz;
+  // view-space normal (billboard => faces camera). No tangent => no normal mapping in OIT.
+  vs_out.normal = normal;
 
   vs_out.materialIndex = materialIndex;
   vs_out.flags = instance.u_flags;

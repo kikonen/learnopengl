@@ -18,6 +18,11 @@ in VS_OUT {
 
 layout(binding = UNIT_G_DEPTH) uniform sampler2D g_depth;
 
+#ifdef EFFECT_ENV_DIM
+// ambient IBL, used only to dim the stylized glow by scene light level (opt-in)
+layout(binding = UNIT_IRRADIANCE_MAP) uniform samplerCube u_irradianceMap;
+#endif
+
 layout (location = 0) out vec4 o_fragColor;
 
 ////////////////////////////////////////////////////////////
@@ -77,5 +82,19 @@ void main() {
 
   vec4 bubbleBase = material.diffuse;
 
-  o_fragColor = bubbleBase + intersection + rim;
+  vec4 colorOut = bubbleBase + intersection + rim;
+
+#ifdef EFFECT_ENV_DIM
+  // Opt-in (material: shared_definitions: { effect_env_dim: 1 }): scale the stylized
+  // glow by ambient light level so the bubble fades in the dark instead of glowing.
+  // The rim/intersection effect shape is preserved, just attenuated by the environment.
+  {
+    const vec3 worldNormal = normalize(mat3(u_invViewMatrix) * normalize(fs_in.normal));
+    const vec3 ambient = textureLod(u_irradianceMap, worldNormal, 0).rgb;
+    const float ambientLum = dot(ambient, vec3(0.2126, 0.7152, 0.0722));
+    colorOut.rgb *= clamp(ambientLum, 0.0, 1.0);
+  }
+#endif
+
+  o_fragColor = colorOut;
 }
