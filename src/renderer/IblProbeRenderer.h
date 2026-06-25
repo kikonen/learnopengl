@@ -85,10 +85,30 @@ private:
         render::CubeMapBuffer* targetBuffer,
         const model::Node* centerNode);
 
+    // capture a single cube face from the current cycle's probe origin
+    void captureFace(
+        const render::RenderContext& parentCtx,
+        int face);
+
     model::Node* findClosest(
         const render::RenderContext& ctx);
 
 private:
+    // Amortized bake: one slice of work per render() hit, cycling through
+    //   steps 0..5   : capture cube face k
+    //   step  6      : generate radiance mips + convolve irradiance
+    //   steps 7..7+N : convolve prefilter mip (N = PrefilterMap::MAX_MIP_LEVELS)
+    // Output maps (irradiance/prefilter) are only written at the convolve steps, on a
+    // fully captured cube, so what's bound for sampling stays consistent between bakes.
+    static constexpr int CAPTURE_STEPS = 6;
+    static constexpr int IRRADIANCE_STEP = CAPTURE_STEPS;            // 6
+    static constexpr int PREFILTER_STEP_BASE = IRRADIANCE_STEP + 1;  // 7
+    static constexpr int BUILD_STEPS = PREFILTER_STEP_BASE + render::PrefilterMap::MAX_MIP_LEVELS;
+
+    int m_buildStep{ 0 };
+    glm::vec3 m_captureCenter{ 0.f };
+    pool::NodeHandle m_centerNode{};
+
     float m_nearPlane{ 0.1f };
     float m_farPlane{ 500.0f };
 

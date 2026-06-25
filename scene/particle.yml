@@ -22,7 +22,7 @@ includes:
 
 world:
   time_base: "1942-06-20T12:00:00"
-  time_scale: 2000
+  time_scale: 1000
   sun_up: "05:30"
   sun_down: "22:00"
   sun_angle: 25
@@ -45,6 +45,16 @@ types:
     flags:
       xcube_map: true
       environment_probe: true
+  - id: mirror_ball
+    mesh:
+      path: glass_ball
+      xmaterial:
+        prefab: materials/Metal008.yml
+      material_modifier:
+        xreflection: 0.8
+        program: g_tex
+        kd: [0.1]
+        mras: [1, 0, 1, 1]
   - id: prefab_player_fps_camera
     camera:
       default: true
@@ -53,6 +63,8 @@ types:
       path: texture_cube_3
       program: g_tex
     base_rot: [-90, 0, 0]
+    flags:
+      environment: true
     physics:
       body:
         type: box
@@ -95,14 +107,19 @@ types:
   - id: rock
     prefab:
       path: prefab/scenery/prefab_asteroid.yml
+    flags:
+      environment: true
   - id: wooden_floor
     prefab:
       path: prefab/scenery/prefab_wooden_floor.yml
+    flags:
+      environment: true
   - id: cobblestone_floor
     prefab:
       path: prefab/scenery/prefab_cobblestone_floor.yml
     type_flags:
       nav_physics: true
+      environment: true
   - id: palm_tree_forest_generator
     prefab:
       path: prefab/scenery/prefab_palm_tree.yml
@@ -114,6 +131,7 @@ types:
       offset: [0, 17, 0.6]
     flags:
       static_bounds: true
+      environment: true
     generator:
       type: grid
       mode: random
@@ -376,7 +394,22 @@ types:
 nodes:
   - type: prefab_grid
   - type: cube_map
-    pos: [0, 2, 0]
+    pos: [0, 3, 0]
+  - type: mirror_ball
+    pos: [7, 2, 25]
+    scale: 2
+    children:
+      - type: cube_map
+  - type: mirror_ball
+    pos: [-40, 20, -40]
+    scale: 5
+    repeat:
+      x_count: 5
+      z_count: 5
+      x_step: 40
+      z_step: 40
+    children:
+      - type: cube_map
   - type: prefab_ui_time_text
     id: ui_time_text
     pos: [2, 2, -1]
