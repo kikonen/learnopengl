@@ -5,6 +5,7 @@
 #include "util/Thread.h"
 
 #include "shader/SSBO.h"
+#include "shader/Shader.h"
 
 #include "engine/UpdateContext.h"
 #include "engine/PrepareContext.h"
@@ -165,7 +166,18 @@ void MaterialRegistry::updateRT(const UpdateContext& ctx)
 void MaterialRegistry::prepare()
 {
     m_ssbo.createEmpty(BLOCK_SIZE * sizeof(MaterialSSBO), GL_DYNAMIC_STORAGE_BIT);
+
+    m_texBuffer_float.createTexBuffer("materials_float", GL_TEXTURE_BUFFER);
+    m_texBuffer_uint.createTexBuffer("materials_uint", GL_TEXTURE_BUFFER);
+}
+
+void MaterialRegistry::bindBuffers()
+{
+    ASSERT_RT();
+
     m_ssbo.bindSSBO(SSBO_MATERIALS);
+    m_texBuffer_float.bindFloatTexBuffer(UNIT_MATERIAL_FLOAT, m_ssbo);
+    m_texBuffer_float.bindUintTexBuffer(UNIT_MATERIAL_UINT, m_ssbo);
 }
 
 void MaterialRegistry::prepareMaterials(const PrepareContext& ctx)
@@ -225,8 +237,7 @@ void MaterialRegistry::updateMaterialBuffer()
         // NOTE KI *reallocate* SSBO if needed
         if (m_ssbo.size() < totalCount * sz) {
             m_ssbo.resizeBuffer(m_materialEntries.capacity() * sz, true);
-            m_ssbo.bindSSBO(SSBO_MATERIALS);
-
+            bindBuffers();
             //updateIndex = 0;
         }
 

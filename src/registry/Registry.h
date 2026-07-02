@@ -43,6 +43,8 @@ public:
     void updateWT(const UpdateContext& ctx);
     void updateRT(const UpdateContext& ctx);
 
+    void bindBuffers();
+
     void startFrame();
     void endFrame();
 

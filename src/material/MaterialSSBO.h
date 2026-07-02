@@ -46,7 +46,7 @@ struct MaterialSSBO {
 
     GLuint64 u_custom1Map;
 
-    unsigned int u_flags;
+    GLuint u_flags;
 
     float u_reflection;
     float u_refraction;

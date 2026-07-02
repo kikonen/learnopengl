@@ -10,6 +10,9 @@
 
 #include "render/RenderContext.h"
 
+#include "shader/SSBO.h"
+#include "shader/Shader.h"
+
 #include "model/Node.h"
 
 #include "registry/Registry.h"
@@ -67,7 +70,17 @@ void EntityRegistry::prepare()
     m_ssbo.createEmpty(BLOCK_SIZE * sizeof(EntitySSBO), kigl::getBufferStorageFlags());
     m_ssbo.map(kigl::getBufferMapFlags());
 
+    m_texBuffer_float.createTexBuffer("instance_float", GL_TEXTURE_BUFFER);
+    m_texBuffer_uint.createTexBuffer("instance_uint", GL_TEXTURE_BUFFER);
+}
+
+void EntityRegistry::bindBuffers()
+{
+    ASSERT_RT();
+
     m_ssbo.bindSSBO(SSBO_ENTITIES);
+    m_texBuffer_float.bindFloatTexBuffer(UNIT_ENTITY_FLOAT, m_ssbo);
+    m_texBuffer_float.bindUintTexBuffer(UNIT_ENTITY_UINT, m_ssbo);
 }
 
 void EntityRegistry::updateRT(const UpdateContext& ctx)
@@ -157,7 +170,7 @@ void EntityRegistry::resizeBuffer(size_t totalCount)
 
     m_ssbo.map(kigl::getBufferMapFlags());
 
-    m_ssbo.bindSSBO(SSBO_ENTITIES);
+    bindBuffers();
 }
 
 void EntityRegistry::beginFrame() {

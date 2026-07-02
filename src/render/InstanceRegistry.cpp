@@ -11,6 +11,7 @@
 #include "render/InstanceSSBO.h"
 
 #include "shader/SSBO.h"
+#include "shader/Shader.h"
 
 #include "kigl/GLBuffer.h"
 
@@ -82,9 +83,19 @@ namespace render
         m_ssbo.createEmpty(BLOCK_SIZE * sizeof(InstanceSSBO), kigl::getBufferStorageFlags());
         m_ssbo.map(kigl::getBufferMapFlags());
 
-        m_ssbo.bindSSBO(SSBO_INSTANCES);
+        m_texBuffer_float.createTexBuffer("instance_float", GL_TEXTURE_BUFFER);
+        m_texBuffer_uint.createTexBuffer("instance_uint", GL_TEXTURE_BUFFER);
 
         clear();
+    }
+
+    void InstanceRegistry::bindBuffers()
+    {
+        ASSERT_RT();
+
+        m_ssbo.bindSSBO(SSBO_INSTANCES);
+        m_texBuffer_float.bindFloatTexBuffer(UNIT_INSTANCE_FLOAT, m_ssbo);
+        m_texBuffer_float.bindUintTexBuffer(UNIT_INSTANCE_UINT, m_ssbo);
     }
 
     util::BufferReference InstanceRegistry::allocate(size_t count)
@@ -393,6 +404,6 @@ namespace render
 
         m_ssbo.map(kigl::getBufferMapFlags());
 
-        m_ssbo.bindSSBO(SSBO_INSTANCES);
+        bindBuffers();
     }
 }

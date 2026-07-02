@@ -9,6 +9,7 @@
 #include "material/Material.h"
 
 #include "kigl/GLBuffer.h"
+#include "kigl/GLTextureHandle.h"
 
 namespace render
 {
@@ -49,6 +50,7 @@ public:
     void renderMaterials(const render::RenderContext& ctx);
 
     void prepare();
+    void bindBuffers();
 
     void updateRT(const UpdateContext& ctx);
 
@@ -71,6 +73,8 @@ private:
     size_t m_lastSize = 0;
 
     kigl::GLBuffer m_ssbo{ "materials_ssbo" };
+    kigl::GLTextureHandle m_texBuffer_float;
+    kigl::GLTextureHandle m_texBuffer_uint;
 
     std::unordered_map<ki::material_updater_id, std::unique_ptr<MaterialUpdater>> m_updaters;
     std::unordered_map<ki::material_id, uint32_t> m_idToIndex;

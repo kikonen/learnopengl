@@ -6,6 +6,7 @@
 #include <span>
 
 #include "kigl/GLBuffer.h"
+#include "kigl/GLTextureHandle.h"
 #include "kigl/GLFence.h"
 
 #include "shader/SSBO.h"
@@ -36,6 +37,7 @@ public:
 
     void clear();
     void prepare();
+    void bindBuffers();
 
     void updateRT(const UpdateContext& ctx);
 
@@ -48,4 +50,7 @@ private:
 private:
     kigl::GLBuffer m_ssbo{ "entity_ssbo" };
     kigl::GLFence m_fence{ "entity_fence" };
+
+    kigl::GLTextureHandle m_texBuffer_float;
+    kigl::GLTextureHandle m_texBuffer_uint;
 };

@@ -1,3 +1,4 @@
+// Pull the indirect index from the streaming SSBO ring buffer
 #define GET_INSTANCE_INDEX u_instanceIndeces[gl_BaseInstance + gl_InstanceID]
 #define GET_INSTANCE u_instances[GET_INSTANCE_INDEX]
 

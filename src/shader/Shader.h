@@ -128,6 +128,15 @@ inline constexpr int UNIT_NOISE = 48;
 
 inline constexpr int UNIT_EDITOR_CUBE_MAP = 50;
 
+inline constexpr int UNIT_MATERIAL_FLOAT = 51;
+inline constexpr int UNIT_MATERIAL_UINT = 52;
+
+inline constexpr int UNIT_ENTITY_FLOAT = 53;
+inline constexpr int UNIT_ENTITY_UINT = 54;
+
+inline constexpr int UNIT_INSTANCE_FLOAT = 55;
+inline constexpr int UNIT_INSTANCE_UINT = 56;
+
 inline constexpr int UNIT_SKYBOX_DAY = 62;
 inline constexpr int UNIT_SKYBOX_NIGHT = 63;
 

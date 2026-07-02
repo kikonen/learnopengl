@@ -1,6 +1,6 @@
 #version 460 core
 
-#include "include/ssbo_materials.glsl"
+#include "include/tbo_materials.glsl"
 
 #include "include/uniform_matrices.glsl"
 #include "include/uniform_camera.glsl"
@@ -60,6 +60,8 @@ SET_FLOAT_PRECISION;
 
 ResolvedMaterial material;
 
+#include "include/fn_fill_material_tbo.glsl"
+
 #ifdef USE_PARALLAX
 #include "include/fn_calculate_parallax_mapping.glsl"
 #endif
@@ -89,7 +91,7 @@ void main() {
 
   #include "include/apply_parallax.glsl"
 
-  #include "include/var_tex_material.glsl"
+  fillMaterialTBO(materialIndex, texCoord);
 
   // NOTE KI alpha/blend does not co-op with line mode
   if (!u_forceLineMode) {
@@ -105,7 +107,7 @@ void main() {
 #endif
   }
 
-  #include "include/apply_normal_map.glsl"
+  #include "include/apply_normal_map_tbo.glsl"
 
 #ifdef USE_CUBE_MAP
   {

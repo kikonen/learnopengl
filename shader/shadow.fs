@@ -1,7 +1,7 @@
 #version 460 core
 
 #ifdef USE_ALPHA
-#include "include/ssbo_materials.glsl"
+#include "include/tbo_materials.glsl"
 #endif
 
 #ifndef USE_ALPHA
@@ -25,12 +25,18 @@ in VS_OUT {
 
 SET_FLOAT_PRECISION;
 
+#ifdef USE_ALPHA
+ResolvedMaterial material;
+
+#include "include/fn_fill_material_tbo.glsl"
+#endif
+
 void main()
 {
 #ifdef USE_ALPHA
   {
     const vec2 texCoord = fs_in.texCoord;
-    #include "include/var_tex_material_alpha.glsl"
+    float alpha = readMaterialAlphaTBO(fs_in.materialIndex, fs_in.texCoord);
 
     // NOtE KI experimental value; depends from few aspects in blended windows
     if (alpha < SHADOW_ALPHA_THRESHOLD)

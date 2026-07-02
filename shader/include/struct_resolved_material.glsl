@@ -13,5 +13,9 @@ struct ResolvedMaterial {
   // float refraction;
   // float refractionRatio;
 
+  float tilingX;
+  float tilingY;
+
+  float layersDepth;
   float parallaxDepth;
 };

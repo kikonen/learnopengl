@@ -6,6 +6,7 @@
 #include <functional>
 
 #include "kigl/GLBuffer.h"
+#include "kigl/GLTextureHandle.h"
 #include "kigl/GLFence.h"
 
 #include "util/BufferReference.h"
@@ -55,6 +56,7 @@ namespace render
 
         void clear();
         void prepare();
+        void bindBuffers();
 
         void beginFrame();
         void endFrame();
@@ -164,6 +166,9 @@ namespace render
 
         kigl::GLBuffer m_ssbo{ "instances" };
         kigl::GLFence m_fence{ "instances_fence" };
+
+        kigl::GLTextureHandle m_texBuffer_float;
+        kigl::GLTextureHandle m_texBuffer_uint;
 
         bool m_needUpload{ false };
         size_t m_uploadedCount{ 0 };
