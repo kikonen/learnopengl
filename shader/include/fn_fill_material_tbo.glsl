@@ -44,10 +44,7 @@ void fillMaterialTBO(uint materialIndex, vec2 texCoord)
   mat.refractionRatio  = slot8_float.w;
 
   // Slot 9: Tilings and sprite mapping information
-  // vec4  slot9_float = texelFetch(u_materialFloatTBO, matBase + MAT_SLOT_TILING_AND_SPRITES);
   uvec4 slot9_uint  = texelFetch(u_materialUintTBO, matBase + MAT_SLOT_TILING_AND_SPRITES);
-  // mat.tilingX          = slot9_float.x;
-  // mat.tilingY          = slot9_float.y;
   mat.spriteCount      = slot9_uint.z;
   mat.spritesX         = slot9_uint.w;
 
@@ -62,8 +59,6 @@ void fillMaterialTBO(uint materialIndex, vec2 texCoord)
   // ------------------------------------------------=================
   // FIX: Assign scalar values to global 'material' BEFORE resolving textures
   // ----------------------------------------------------------------=
-  // material.tilingX       = mat.tilingX;
-  // material.tilingY       = mat.tilingY;
   material.flags         = mat.flags;
   material.layersDepth   = mat.layersDepth;
   material.parallaxDepth = mat.parallaxDepth;
@@ -99,6 +94,25 @@ void fillMaterialTBO(uint materialIndex, vec2 texCoord)
 
     material.mras = mras.rgba;
   }
+}
+
+void fillMaterialParallaxTBO(uint materialIndex)
+{
+  const int matBase = int(materialIndex) * MATERIAL_STRIDE_VEC4;
+
+  float parallaxDepth = texelFetch(u_materialFloatTBO, matBase + MAT_SLOT_LAYERS_AND_PARALLAX).w;
+
+  material.parallaxDepth = parallaxDepth;
+}
+
+// Stripped Down: Resolves alpha values with corrected channel masks
+uvec2 readMaterialDisplacementTexTBO(uint materialIndex)
+{
+  const int matBase = int(materialIndex) * MATERIAL_STRIDE_VEC4;
+
+  uvec2 displacementTex = texelFetch(u_materialUintTBO, matBase + MAT_SLOT_TEX_MRAS_DISP).zw;
+
+  return displacementTex;
 }
 
 void fillMaterialTilingTBO(uint materialIndex)

@@ -63,7 +63,7 @@ ResolvedMaterial material;
 #include "include/fn_fill_material_tbo.glsl"
 
 #ifdef USE_PARALLAX
-#include "include/fn_calculate_parallax_mapping.glsl"
+#include "include/fn_calculate_parallax_mapping_tbo.glsl"
 #endif
 #include "include/fn_gbuffer_normal_encode.glsl"
 
@@ -89,8 +89,7 @@ void main() {
   // between VS-computed tangentPos and FS-computed tbn).
   #include "include/var_calculate_tbn.glsl"
 
-  #include "include/apply_parallax.glsl"
-
+  #include "include/apply_parallax_tbo.glsl"
   fillMaterialTBO(materialIndex, texCoord);
 
   // NOTE KI alpha/blend does not co-op with line mode
