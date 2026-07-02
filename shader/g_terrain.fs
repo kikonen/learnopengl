@@ -49,7 +49,7 @@ ResolvedMaterial material;
 #endif
 
 #if defined(USE_TRIPLANAR)
-#include "include/sample_triplanar.glsl"
+#include "include/fn_sample_triplanar.glsl"
 #endif
 
 void main() {

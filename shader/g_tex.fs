@@ -8,7 +8,7 @@
 #include "include/uniform_buffer_info.glsl"
 #include "include/uniform_debug.glsl"
 
-#include "include/water_caustics.glsl"
+ #include "include/fn_water_caustics_tbo.glsl"
 
 #ifndef USE_ALPHA
 // https://www.khronos.org/opengl/wiki/Early_Fragment_Test
@@ -68,7 +68,7 @@ ResolvedMaterial material;
 #include "include/fn_gbuffer_normal_encode.glsl"
 
 #if defined(USE_TRIPLANAR)
-#include "include/sample_triplanar.glsl"
+#include "include/fn_sample_triplanar_tbo.glsl"
 #endif
 
 void main() {
@@ -167,7 +167,7 @@ void main() {
 
   {
     vec3 worldPos = (u_invViewMatrix * vec4(fs_in.viewPos, 1)).xyz;
-    applyWaterCaustic(color.rgb, worldPos);
+    applyWaterCausticTBO(color.rgb, worldPos);
   }
 
   o_fragColor = color.rgb;
