@@ -8,11 +8,12 @@ layout (location = ATTR_TANGENT) in vec4 a_tangent;
 layout (location = ATTR_TEX) in vec2 a_texCoord;
 layout (location = ATTR_FONT_ATLAS_TEX) in vec2 a_atlasCoord;
 
-#include "include/ssbo_entities.glsl"
-#include "include/ssbo_instances.glsl"
+#include "include/tbo_entities.glsl"
+#include "include/tbo_instances.glsl"
+#include "include/tbo_materials.glsl"
+
 #include "include/ssbo_instance_indeces.glsl"
 #include "include/ssbo_socket_transforms.glsl"
-#include "include/ssbo_materials.glsl"
 
 #include "include/uniform_matrices.glsl"
 #include "include/uniform_camera.glsl"
@@ -47,13 +48,21 @@ const vec3 UP = vec3(0, 1, 0);
 
 Instance instance;
 Entity entity;
+ResolvedMaterial material;
+
+#include "include/fn_fill_instance_tbo.glsl"
+#include "include/fn_fill_entity_tbo.glsl"
+#include "include/fn_fill_material_tbo.glsl"
 
 #include "include/fn_calculate_clipping.glsl"
 
 void main() {
-  instance = GET_INSTANCE;
+  const uint instanceIndex = GET_INSTANCE_INDEX;
+  fillInstanceTBO(instanceIndex);
+
   const uint entityIndex = instance.u_entityIndex;
-  entity = u_entities[entityIndex];
+  fillEntityTBO(entityIndex);
+  fillEntityFontTBO(entityIndex);
 
   #include "include/var_entity_model_matrix.glsl"
   #include "include/var_entity_normal_matrix.glsl"
@@ -101,8 +110,10 @@ void main() {
   vs_out.materialIndex = materialIndex;
   vs_out.flags = instance.u_flags;
 
-  vs_out.texCoord.x = a_texCoord.x * u_materials[materialIndex].tilingX * entity.tilingX;
-  vs_out.texCoord.y = a_texCoord.y * u_materials[materialIndex].tilingY * entity.tilingY;
+  fillMaterialTilingTBO(materialIndex);
+
+  vs_out.texCoord.x = a_texCoord.x * material.tilingX * entity.tilingX;
+  vs_out.texCoord.y = a_texCoord.y * material.tilingY * entity.tilingY;
 
   vs_out.atlasCoord = a_atlasCoord;
   vs_out.atlasHandle = entity.u_fontHandle;

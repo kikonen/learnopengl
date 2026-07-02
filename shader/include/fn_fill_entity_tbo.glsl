@@ -20,3 +20,13 @@ void fillEntityTBO(uint entityIndex)
   entity.tilingX = entSlot9.x;
   entity.tilingY = entSlot9.y;
 }
+
+void fillEntityFontTBO(uint entityIndex)
+{
+  // Each Entity spans 10 slots of vec4
+  const int entBase = int(entityIndex) * ENTITY_STRIDE_VEC4;
+
+  uvec2 fontTex = texelFetch(u_entityUintTBO, entBase + ENT_SLOT_OBJECT_AND_FLAGS).xy;
+
+  entity.u_fontHandle = fontTex;
+}

@@ -1,4 +1,4 @@
-#include "include/tbo_offets.glsl"
+#include "include/tbo_offsets.glsl"
 #include "include/struct_entity.glsl"
 
 #define _TBO_ENTITIES

@@ -5,7 +5,7 @@
 // instead of emitting full albedo (which made them "glow" in the dark).
 #define PASS_FORWARD
 
-#include "include/ssbo_materials.glsl"
+#include "include/tbo_materials.glsl"
 
 #include "include/uniform_camera.glsl"
 #include "include/uniform_data.glsl"
@@ -13,7 +13,7 @@
 #include "include/uniform_debug.glsl"
 #include "include/uniform_lights.glsl"
 
-#include "include/water_caustics.glsl"
+#include "include/fn_water_caustics_tbo.glsl"
 
 // NOTE KI depth is *not* updated in OIT pass
 // => testing against solid depth
@@ -46,6 +46,8 @@ SET_FLOAT_PRECISION;
 
 ResolvedMaterial material;
 
+#include "include/fn_fill_material_tbo.glsl"
+
 #include "include/pbr.glsl"
 #include "include/fn_calculate_dir_light.glsl"
 #include "include/fn_calculate_point_light.glsl"
@@ -60,9 +62,9 @@ void main()
   const uint materialIndex = fs_in.materialIndex;
 
   vec2 texCoord = fs_in.texCoord;
-  #include "include/apply_parallax.glsl"
 
-  #include "include/var_tex_material.glsl"
+  #include "include/apply_parallax_tbo.glsl"
+  fillMaterialTBO(materialIndex, texCoord);
 
   const float alpha = material.diffuse.a;
   OIT_DISCARD(alpha);
@@ -73,7 +75,7 @@ void main()
 
   // Modulate ALBEDO with caustics before lighting (same as g_tex/g_terrain), so the
   // caustic gets lit and fades at night instead of glowing on the dimmed surface.
-  applyWaterCaustic(material.diffuse.rgb, worldPos);
+  applyWaterCausticTBO(material.diffuse.rgb, worldPos);
 
   const uint shadowIndex = calculateShadowIndex(viewPos);
 

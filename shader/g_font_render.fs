@@ -1,11 +1,13 @@
 #version 460 core
 
-#include "include/ssbo_materials.glsl"
+#include "include/tbo_materials.glsl"
 
 #include "include/uniform_matrices.glsl"
 #include "include/uniform_camera.glsl"
 #include "include/uniform_data.glsl"
 #include "include/uniform_debug.glsl"
+
+#include "include/fn_water_caustics_tbo.glsl"
 
 #ifndef USE_ALPHA
 // https://www.khronos.org/opengl/wiki/Early_Fragment_Test
@@ -41,6 +43,8 @@ SET_FLOAT_PRECISION;
 
 ResolvedMaterial material;
 
+#include "include/fn_fill_material_tbo.glsl"
+
 #ifdef USE_PARALLAX
 #include "include/fn_calculate_parallax_mapping.glsl"
 #endif
@@ -57,11 +61,11 @@ void main()
   vec3 normal = normalize(fs_in.normal);
 
   #include "include/var_calculate_tbn.glsl"
+
   #include "include/apply_parallax.glsl"
+  fillMaterialTBO(materialIndex, texCoord);
 
-  #include "include/var_tex_material.glsl"
-
-  #include "include/apply_normal_map.glsl"
+  #include "include/apply_normal_map_tbo.glsl"
 
   if (!gl_FrontFacing) {
     normal = -normal;
@@ -88,6 +92,11 @@ void main()
     discard;
 #endif
 #endif
+  }
+
+  {
+    vec3 worldPos = (u_invViewMatrix * vec4(fs_in.viewPos, 1)).xyz;
+    applyWaterCausticTBO(color.rgb, worldPos);
   }
 
   o_fragColor = color.rgb;

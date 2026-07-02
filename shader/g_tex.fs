@@ -8,7 +8,7 @@
 #include "include/uniform_buffer_info.glsl"
 #include "include/uniform_debug.glsl"
 
- #include "include/fn_water_caustics_tbo.glsl"
+#include "include/fn_water_caustics_tbo.glsl"
 
 #ifndef USE_ALPHA
 // https://www.khronos.org/opengl/wiki/Early_Fragment_Test

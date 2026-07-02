@@ -18,3 +18,12 @@ void fillInstanceTBO(uint instanceIndex)
 #endif
   instance.u_flags         = instSlot3.w;
 }
+
+void fillInstanceDataTBO(uint instanceIndex)
+{
+  // 2. Fetch only the parts of the 80-byte Instance we need from TBO
+  const int instBase = int(instanceIndex) * INSTANCE_STRIDE_VEC4;
+
+  uint data = texelFetch(u_instanceUintTBO, instBase + INST_SLOT_CASE_DATA).x;
+  instance.u_data = data;
+}

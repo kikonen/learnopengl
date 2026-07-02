@@ -14,7 +14,7 @@
 //                        u_waterCausticIntensity, u_waterCausticWorldLevel,
 //                        u_waterCausticScale, u_time)
 //   uniform_camera.glsl (u_cameraWaterCausticsEnabled)
-//   ssbo_materials.glsl (u_materials)
+//   tbo_materials.glsl (u_materials)
 vec3 _sampleWaterCausticTriplanarTBO(vec3 worldPos) {
   vec3 worldNormal = normalize(cross(dFdx(worldPos), dFdy(worldPos)));
 

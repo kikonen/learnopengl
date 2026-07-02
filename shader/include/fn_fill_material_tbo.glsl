@@ -25,15 +25,21 @@ void fillMaterialTBO(uint materialIndex, vec2 texCoord)
 
   uvec4 slot5 = texelFetch(u_materialUintTBO, matBase + MAT_SLOT_TEX_MRAS_DISP);
   mat.mrasMapTex       = slot5.xy;
+#ifdef false
   mat.displacementMapTex = slot5.zw;
+#endif
 
+#ifdef false
   uvec4 slot6 = texelFetch(u_materialUintTBO, matBase + MAT_SLOT_TEX_DUDV_NOISE);
   mat.dudvMapTex       = slot6.xy;
   mat.noiseMapTex      = slot6.zw;
+#endif
 
+#ifdef false
   uvec4 slot7 = texelFetch(u_materialUintTBO, matBase + MAT_SLOT_TEX_NOISE2_CUST);
   mat.noise2MapTex     = slot7.xy;
   mat.custom1Tex       = slot7.zw;
+#endif
 
   // Slot 8: Scalar uint flags and physical factors
   uvec4 slot8_uint = texelFetch(u_materialUintTBO, matBase + MAT_SLOT_FLAGS_AND_FACTORS);
@@ -43,10 +49,12 @@ void fillMaterialTBO(uint materialIndex, vec2 texCoord)
   mat.refraction       = slot8_float.z;
   mat.refractionRatio  = slot8_float.w;
 
+#ifdef false
   // Slot 9: Tilings and sprite mapping information
   uvec4 slot9_uint  = texelFetch(u_materialUintTBO, matBase + MAT_SLOT_TILING_AND_SPRITES);
   mat.spriteCount      = slot9_uint.z;
   mat.spritesX         = slot9_uint.w;
+#endif
 
   // Slot 10: Layer parameters and parallax descriptors
   uvec4 slot10_uint = texelFetch(u_materialUintTBO, matBase + MAT_SLOT_LAYERS_AND_PARALLAX);
@@ -96,6 +104,38 @@ void fillMaterialTBO(uint materialIndex, vec2 texCoord)
   }
 }
 
+void fillMaterialPlainTBO(uint materialIndex)
+{
+  Material mat;
+
+  // Each Material spans exactly 11 slots of vec4
+  const int matBase = int(materialIndex) * MATERIAL_STRIDE_VEC4;
+
+  // Slots 0, 1, 2: Raw vector constants
+  mat.diffuse  = texelFetch(u_materialFloatTBO, matBase + MAT_SLOT_DIFFUSE);
+  mat.emission = texelFetch(u_materialFloatTBO, matBase + MAT_SLOT_EMISSION);
+  mat.mras     = texelFetch(u_materialFloatTBO, matBase + MAT_SLOT_MRAS);
+
+  // Slot 8: Scalar uint flags and physical factors
+  uvec4 slot8_uint = texelFetch(u_materialUintTBO, matBase + MAT_SLOT_FLAGS_AND_FACTORS);
+  vec4  slot8_float = texelFetch(u_materialFloatTBO, matBase + MAT_SLOT_FLAGS_AND_FACTORS);
+  mat.flags            = slot8_uint.x;
+  mat.reflection       = slot8_float.y;
+  mat.refraction       = slot8_float.z;
+  mat.refractionRatio  = slot8_float.w;
+
+  // ------------------------------------------------=================
+  // FIX: Assign scalar values to global 'material' BEFORE resolving textures
+  // ----------------------------------------------------------------=
+  material.flags         = mat.flags;
+
+  {
+    material.diffuse = mat.diffuse;
+    material.emission = mat.emission.rgb;
+    material.mras = mat.mras.rgba;
+  }
+}
+
 void fillMaterialParallaxTBO(uint materialIndex)
 {
   const int matBase = int(materialIndex) * MATERIAL_STRIDE_VEC4;
@@ -105,7 +145,6 @@ void fillMaterialParallaxTBO(uint materialIndex)
   material.parallaxDepth = parallaxDepth;
 }
 
-// Stripped Down: Resolves alpha values with corrected channel masks
 uvec2 readMaterialDisplacementTexTBO(uint materialIndex)
 {
   const int matBase = int(materialIndex) * MATERIAL_STRIDE_VEC4;
@@ -113,6 +152,24 @@ uvec2 readMaterialDisplacementTexTBO(uint materialIndex)
   uvec2 displacementTex = texelFetch(u_materialUintTBO, matBase + MAT_SLOT_TEX_MRAS_DISP).zw;
 
   return displacementTex;
+}
+
+uvec2 readMaterialNormalTexTBO(uint materialIndex)
+{
+  const int matBase = int(materialIndex) * MATERIAL_STRIDE_VEC4;
+
+  uvec2 normalTex = texelFetch(u_materialUintTBO, matBase + MAT_SLOT_TEX_NORM_OPAC).xy;
+
+  return normalTex;
+}
+
+uvec2 readMaterialDudvTexTBO(uint materialIndex)
+{
+  const int matBase = int(materialIndex) * MATERIAL_STRIDE_VEC4;
+
+  uvec2 dudvTex = texelFetch(u_materialUintTBO, matBase + MAT_SLOT_TEX_DUDV_NOISE).xy;
+
+  return dudvTex;
 }
 
 void fillMaterialTilingTBO(uint materialIndex)

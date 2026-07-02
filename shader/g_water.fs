@@ -1,13 +1,13 @@
 #version 460 core
 
-#include "include/ssbo_materials.glsl"
+#include "include/tbo_materials.glsl"
 
 #include "include/uniform_matrices.glsl"
 #include "include/uniform_camera.glsl"
 #include "include/uniform_data.glsl"
 #include "include/uniform_debug.glsl"
 
-#include "include/water_caustics.glsl"
+#include "include/fn_water_caustics_tbo.glsl"
 
 // https://www.khronos.org/opengl/wiki/Early_Fragment_Test
 // https://www.gamedev.net/forums/topic/700517-performance-question-alpha-texture-vs-frag-shader-discard/5397906/
@@ -41,6 +41,8 @@ LAYOUT_G_BUFFER_OUT;
 SET_FLOAT_PRECISION;
 
 ResolvedMaterial material;
+
+#include "include/fn_fill_material_tbo.glsl"
 
 #include "include/fn_calculate_fog.glsl"
 #include "include/fn_gbuffer_normal_encode.glsl"
@@ -82,16 +84,17 @@ void main() {
   #include "include/var_calculate_tbn.glsl"
 #endif
 
-  #include "include/apply_parallax.glsl"
-
-  #include "include/var_tex_material.glsl"
+  #include "include/apply_parallax_tbo.glsl"
+  fillMaterialTBO(materialIndex, texCoord);
 
   const vec3 viewDir = -normalize(fs_in.viewPos);
 
   vec2 distortedTexCoord = texCoord;
   vec2 totalDistortion = vec2(0);
 
-  if (u_materials[materialIndex].dudvMapTex.x > 0) {
+  const uvec2 dudvTex = readMaterialDudvTexTBO(materialIndex);
+
+  if (dudvTex.x > 0) {
     float moveFactor = (sin(u_time / 10.0) + 1.0) * 0.5;
 
     // distortedTexCoord = texture(u_textures[material.dudvMapTex], vec2(texCoord.x + moveFactor, texCoord.y)).rg * 0.1;
@@ -101,7 +104,7 @@ void main() {
 
     //vec2 distortedTexCoord;
     {
-      sampler2D sampler = sampler2D(u_materials[materialIndex].dudvMapTex);
+      sampler2D sampler = sampler2D(dudvTex);
       distortedTexCoord = texture(sampler, vec2(texCoord.x + moveFactor, texCoord.y)).rg * 0.1;
       distortedTexCoord = texCoord + vec2(distortedTexCoord.x, distortedTexCoord.y + moveFactor);
       totalDistortion = (texture(sampler, distortedTexCoord).rg * 2.0 - 1.0) * waveStrength;
@@ -110,7 +113,8 @@ void main() {
 
 #if defined(USE_NORMAL_TEX) && defined(USE_TBN)
   if (Debug.u_normalMapEnabled) {
-    sampler2D sampler = sampler2D(u_materials[materialIndex].normalMapTex);
+    uvec2 normalTex = readMaterialNormalTexTBO(materialIndex);
+    sampler2D sampler = sampler2D(normalTex);
 
     normal = texture(sampler, distortedTexCoord).rgb;
     normal = normalize(tbn * normal);
@@ -154,7 +158,7 @@ void main() {
 
   {
     vec3 worldPos = (u_invViewMatrix * vec4(fs_in.viewPos, 1)).xyz;
-    applyWaterCausticAlways(color.rgb, worldPos);
+    applyWaterCausticAlwaysTBO(color.rgb, worldPos);
   }
 
   o_fragColor = color.rgb;

@@ -2,7 +2,7 @@
 
 #define PASS_FORWARD
 
-#include "include/ssbo_materials.glsl"
+#include "include/tbo_materials.glsl"
 
 #include "include/uniform_matrices.glsl"
 #include "include/uniform_camera.glsl"
@@ -31,15 +31,17 @@ layout (location = 0) out vec4 o_fragColor;
 
 SET_FLOAT_PRECISION;
 
+ResolvedMaterial material;
+
+#include "include/fn_fill_material_tbo.glsl"
+
 #include "include/fn_util.glsl"
 #include "include/fn_gbuffer_depth_decode.glsl"
-
-ResolvedMaterial material;
 
 void main() {
   const uint materialIndex = fs_in.materialIndex;
 
-  #include "include/var_plain_material.glsl"
+  fillMaterialPlainTBO(materialIndex);
 
   // - Rim lighting
   vec4 rim;
