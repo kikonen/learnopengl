@@ -1,7 +1,8 @@
 #version 460 core
 
-#include "include/ssbo_entities.glsl"
-#include "include/ssbo_instances.glsl"
+#include "include/tbo_entities.glsl"
+#include "include/tbo_instances.glsl"
+
 #include "include/ssbo_instance_indeces.glsl"
 
 #include "include/texture_plane.glsl"
@@ -24,11 +25,16 @@ SET_FLOAT_PRECISION;
 Instance instance;
 Entity entity;
 
+#include "include/fn_fill_instance_tbo.glsl"
+#include "include/fn_fill_entity_tbo.glsl"
+
 void main()
 {
-  instance = GET_INSTANCE;
+  const uint instanceIndex = GET_INSTANCE_INDEX;
+  fillInstanceTBO(instanceIndex);
+
   const uint entityIndex = instance.u_entityIndex;
-  entity = u_entities[entityIndex];
+  fillEntityTBO(entityIndex);
 
   // #include "include/var_entity_model_matrix.glsl"
   // #include "include/var_entity_normal_matrix.glsl"

@@ -56,18 +56,19 @@ types:
         tiling: 1
         program: g_tex
   - id: hello_world
-    layer: ui
+    xlayer: ui
     type: text
     mesh:
       material:
-        #prefab: materials/Plastic01.yml
-        prefab: materials/Fence007A.yml
+        prefab: materials/Plastic01.yml
+        #prefab: materials/Fence007A.yml
         #prefab: materials/Metal007.yml
         #prefab: materials/PavingStones115C.yml
         #map_displacement: ""
+        kd: [1, 1, 1, 0.8]
         tiling: 3
         alpha: true
-        xblend: true
+        blend: true
         render_back: true
         default_programs: false
         program: g_font_render

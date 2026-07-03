@@ -46,10 +46,10 @@ SET_FLOAT_PRECISION;
 
 ResolvedMaterial material;
 
+#include "include/fn_fill_material_tbo.glsl"
+
 #include "include/fn_gbuffer_depth_decode.glsl"
 #include "include/fn_gbuffer_normal_decode.glsl"
-
-#include "include/fn_fill_material_tbo.glsl"
 
 // R = halo radius
 // R2 = R^2
@@ -113,8 +113,8 @@ void main() {
   const uint materialIndex = fs_in.materialIndex;
 
   vec2 texCoord = fs_in.texCoord;
-  #include "include/apply_parallax_tbo.glsl"
 
+  #include "include/apply_parallax_tbo.glsl"
   fillMaterialTBO(materialIndex, texCoord);
 
   const vec2 pixCoord = gl_FragCoord.xy / u_bufferResolution;

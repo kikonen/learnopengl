@@ -2,8 +2,9 @@
 
 layout (local_size_x = CS_GROUP_X, local_size_y = CS_GROUP_Y) in;
 
-#include "include/ssbo_entities.glsl"
-#include "include/ssbo_instances.glsl"
+#include "include/tbo_entities.glsl"
+#include "include/tbo_instances.glsl"
+
 #include "include/ssbo_instance_indeces.glsl"
 
 #include "include/uniform_matrices.glsl"
@@ -75,6 +76,9 @@ SET_FLOAT_PRECISION;
 Instance instance;
 Entity entity;
 
+#include "include/fn_fill_instance_tbo.glsl"
+#include "include/fn_fill_entity_tbo.glsl"
+
 float getSignedDistanceToPlane(in vec4 plane, in vec3 p)
 {
   return dot(plane.xyz, p) - plane.w;
@@ -110,7 +114,7 @@ void main(void) {
   const DrawIndirectCommand cmd = u_commands[baseIndex + drawIndex];
   const uint baseInstance = param.drawType == DRAW_TYPE_ELEMENTS ? cmd.baseInstance_or_pad : cmd.baseVertex_or_baseInstance;
 
-  entity = u_entities[baseInstance];
+  fillEntityTBO(baseInstance);
 
   const bool skip = cmd.instanceCount > 0;
   bool visible = (entity.u_flags & ENTITY_NO_FRUSTUM_BIT) == ENTITY_NO_FRUSTUM_BIT;
