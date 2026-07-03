@@ -58,6 +58,9 @@ private:
 
     void prepareMaterials(const PrepareContext& ctx);
     void prepareMaterialUpdaters(const PrepareContext& ctx);
+
+    void resizeBuffer();
+
     void updateMaterialBuffer();
     void updateDirtyMaterialBuffer();
 
