@@ -1,13 +1,13 @@
 #version 460 core
 
-#include "include/ssbo_materials.glsl"
+#include "include/tbo_materials.glsl"
 
 #include "include/uniform_matrices.glsl"
 #include "include/uniform_camera.glsl"
 #include "include/uniform_data.glsl"
 #include "include/uniform_debug.glsl"
 
-#include "include/fn_water_caustics.glsl"
+#include "include/fn_water_caustics_tbo.glsl"
 
 // https://www.khronos.org/opengl/wiki/Early_Fragment_Test
 // https://www.gamedev.net/forums/topic/700517-performance-question-alpha-texture-vs-frag-shader-discard/5397906/
@@ -43,13 +43,15 @@ SET_FLOAT_PRECISION;
 
 ResolvedMaterial material;
 
+#include "include/fn_fill_material_tbo.glsl"
+
 #include "include/fn_gbuffer_normal_encode.glsl"
 #ifdef USE_PARALLAX
-#include "include/fn_calculate_parallax_mapping.glsl"
+#include "include/fn_calculate_parallax_mapping_tbo.glsl"
 #endif
 
 #if defined(USE_TRIPLANAR)
-#include "include/fn_sample_triplanar.glsl"
+#include "include/fn_sample_triplanar_tbo.glsl"
 #endif
 
 void main() {
@@ -63,9 +65,9 @@ void main() {
   #include "include/var_calculate_tbn.glsl"
   // #include "include/apply_parallax.glsl"
 
-  #include "include/var_tex_material.glsl"
+  fillMaterialTBO(materialIndex, texCoord);
 
-  #include "include/apply_normal_map.glsl"
+  #include "include/apply_normal_map_tbo.glsl"
 
   // if (!gl_FrontFacing) {
   //   normal = -normal;
@@ -74,7 +76,8 @@ void main() {
 #ifdef USE_CUBE_MAP
   {
     const vec3 viewDir = -normalize(fs_in.viewPos);
-#include "include/var_calculate_cube_map_diffuse.glsl"
+    fillMaterialReflectTBO(materialIndex);
+#include "include/var_calculate_cube_map_diffuse_tbo.glsl"
   }
 #endif
 
@@ -92,7 +95,7 @@ void main() {
 
   {
     vec3 worldPos = (u_invViewMatrix * vec4(fs_in.viewPos, 1)).xyz;
-    applyWaterCaustic(texColor.rgb, worldPos);
+    applyWaterCausticTBO(texColor.rgb, worldPos);
   }
 
   o_fragColor = texColor.rgb;

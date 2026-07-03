@@ -2,10 +2,6 @@
 
 layout(vertices=3) out;
 
-#include "include/ssbo_entities.glsl"
-#include "include/ssbo_instances.glsl"
-#include "include/ssbo_instance_indeces.glsl"
-
 #include "include/uniform_matrices.glsl"
 #include "include/uniform_camera.glsl"
 #include "include/uniform_data.glsl"
@@ -25,6 +21,8 @@ in VS_OUT {
   flat uint highlightIndex;
   flat int stencilMode;
   flat int wireframeMode;
+
+  flat mat4 modelMatrix;
 } tcs_in[];
 
 out TCS_OUT {
@@ -41,6 +39,8 @@ out TCS_OUT {
   flat uint highlightIndex;
   flat int stencilMode;
   flat int wireframeMode;
+
+  flat mat4 modelMatrix;
 } tcs_out[];
 
 
@@ -50,14 +50,9 @@ out TCS_OUT {
 
 SET_FLOAT_PRECISION;
 
-Instance instance;
-Entity entity;
-
 void main()
 {
-  instance = u_instances[tcs_in[gl_InvocationID].instanceIndex];
-  entity = u_entities[tcs_in[gl_InvocationID].entityIndex];
-  #include "include/var_entity_model_matrix.glsl"
+  const mat4 modelMatrix = tcs_in[gl_InvocationID].modelMatrix;
 
   gl_out[gl_InvocationID].gl_Position = gl_in[gl_InvocationID].gl_Position;
 
@@ -73,6 +68,8 @@ void main()
   tcs_out[gl_InvocationID].highlightIndex = tcs_in[gl_InvocationID].highlightIndex;
   tcs_out[gl_InvocationID].stencilMode = tcs_in[gl_InvocationID].stencilMode;
   tcs_out[gl_InvocationID].wireframeMode = tcs_in[gl_InvocationID].wireframeMode;
+
+  tcs_out[gl_InvocationID].modelMatrix = tcs_in[gl_InvocationID].modelMatrix;
 
   if (gl_InvocationID == 0) {
     // NOTE ratio scaling to retain more-or-less consistent level

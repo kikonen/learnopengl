@@ -2,8 +2,6 @@
 
 layout(triangles, fractional_odd_spacing, ccw) in;
 
-#include "include/ssbo_entities.glsl"
-#include "include/ssbo_instances.glsl"
 #include "include/ssbo_instance_indeces.glsl"
 
 #include "include/uniform_matrices.glsl"
@@ -25,6 +23,8 @@ in TCS_OUT {
   flat uint highlightIndex;
   flat int stencilMode;
   flat int wireframeMode;
+
+  flat mat4 modelMatrix;
 } tes_in[];
 
 out TES_OUT {
@@ -38,9 +38,6 @@ out float gl_ClipDistance[CLIP_COUNT];
 ////////////////////////////////////////////////////////////
 
 SET_FLOAT_PRECISION;
-
-Instance instance;
-Entity entity;
 
 #include "include/fn_calculate_clipping.glsl"
 #include "include/fn_render_outline.glsl"
@@ -63,9 +60,7 @@ vec3 interpolate3D(vec3 v0, vec3 v1, vec3 v2)
 
 void main()
 {
-  instance = u_instances[tes_in[0].instanceIndex];
-  entity = u_entities[tes_in[0].entityIndex];
-  #include "include/var_entity_model_matrix.glsl"
+  const mat4 modelMatrix = tes_in[0].modelMatrix;
 
   sampler2D heightMap = sampler2D(tes_in[0].heightMapTex);
 

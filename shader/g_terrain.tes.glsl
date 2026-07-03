@@ -2,8 +2,6 @@
 
 layout(triangles, fractional_odd_spacing, ccw) in;
 
-#include "include/ssbo_entities.glsl"
-#include "include/ssbo_instances.glsl"
 #include "include/ssbo_instance_indeces.glsl"
 #include "include/ssbo_socket_transforms.glsl"
 
@@ -30,6 +28,7 @@ in TCS_OUT {
   flat float rangeYmax;
   flat uvec2 heightMapTex;
 
+  flat mat4 modelMatrix;
 } tes_in[];
 
 out TES_OUT {
@@ -60,11 +59,7 @@ out float gl_ClipDistance[CLIP_COUNT];
 
 SET_FLOAT_PRECISION;
 
-Instance instance;
-Entity entity;
-
 #include "include/fn_calculate_clipping.glsl"
-
 
 vec2 interpolate2D(vec2 v0, vec2 v1, vec2 v2)
 {
@@ -84,10 +79,8 @@ vec3 interpolate3D(vec3 v0, vec3 v1, vec3 v2)
 
 void main()
 {
-  instance = u_instances[tes_in[0].instanceIndex];
-  entity = u_entities[tes_in[0].entityIndex];
-  #include "include/var_entity_model_matrix.glsl"
-  #include "include/var_entity_normal_matrix.glsl"
+  const mat4 modelMatrix = tes_in[0].modelMatrix;
+  const mat3 viewNormalMatrix = transpose(mat3(modelMatrix));
 
   sampler2D heightMap = sampler2D(tes_in[0].heightMapTex);
 

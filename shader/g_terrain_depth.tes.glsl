@@ -20,6 +20,8 @@ in TCS_OUT {
   flat float rangeYmin;
   flat float rangeYmax;
   flat uvec2 heightMapTex;
+
+  flat mat4 modelMatrix;
 } tes_in[];
 
 out float gl_ClipDistance[CLIP_COUNT];
@@ -54,9 +56,7 @@ vec3 interpolate3D(vec3 v0, vec3 v1, vec3 v2)
 
 void main()
 {
-  instance = u_instances[tes_in[0].instanceIndex];
-  entity = u_entities[tes_in[0].entityIndex];
-  #include "include/var_entity_model_matrix.glsl"
+  const mat4 modelMatrix = tes_in[0].modelMatrix;
 
   sampler2D heightMap = sampler2D(tes_in[0].heightMapTex);
 

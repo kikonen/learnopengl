@@ -5,10 +5,11 @@ layout (location = ATTR_TEX) in vec2 a_texCoord;
 
 layout(location = UNIFORM_STENCIL_MODE) uniform int u_stencilMode;
 
-#include "include/ssbo_entities.glsl"
-#include "include/ssbo_instances.glsl"
+#include "include/tbo_entities.glsl"
+#include "include/tbo_instances.glsl"
+#include "include/tbo_materials.glsl"
+
 #include "include/ssbo_instance_indeces.glsl"
-#include "include/ssbo_materials.glsl"
 #include "include/ssbo_terrain_tiles.glsl"
 
 #include "include/uniform_matrices.glsl"
@@ -28,6 +29,8 @@ out VS_OUT {
   flat uvec2 heightMapTex;
 
   flat vec4 objectID;
+
+  flat mat4 modelMatrix;
 } vs_out;
 
 ////////////////////////////////////////////////////////////
@@ -40,17 +43,22 @@ SET_FLOAT_PRECISION;
 
 Instance instance;
 Entity entity;
-
 ResolvedMaterial material;
+
+#include "include/fn_fill_instance_tbo.glsl"
+#include "include/fn_fill_entity_tbo.glsl"
+#include "include/fn_fill_material_tbo.glsl"
 
 TerrainTile tile;
 
 void main() {
   const uint instanceIndex = GET_INSTANCE_INDEX;
-  instance = u_instances[instanceIndex];
+  fillInstanceTBO(instanceIndex);
+  fillInstanceDataTBO(instanceIndex);
 
   const uint entityIndex = instance.u_entityIndex;
-  entity = u_entities[entityIndex];
+  fillEntityTBO(entityIndex);
+  fillEntityObjectIdTBO(entityIndex);
 
   const uint tileIndex = instance.u_data;
   tile = u_terrainTiles[tileIndex];
@@ -58,6 +66,7 @@ void main() {
   #include "include/var_entity_model_matrix.glsl"
 
   const uint materialIndex = instance.u_materialIndex;
+  fillMaterialTilingTBO(materialIndex);
 
   const vec4 pos = vec4(a_pos, 1.0);
   gl_Position = pos;
@@ -72,8 +81,8 @@ void main() {
   {
     float x = tile.u_tileX;
     float y = tile.u_tileY;
-    float tilingX = u_materials[materialIndex].tilingX * entity.tilingX;
-    float tilingY = u_materials[materialIndex].tilingY * entity.tilingY;
+    float tilingX = material.tilingX * entity.tilingX;
+    float tilingY = material.tilingY * entity.tilingY;
     float sizeX = 1.0 / tilingX;
     float sizeY = 1.0 / tilingY;
 
@@ -89,4 +98,6 @@ void main() {
   vs_out.vertexPos = a_pos;
 
   vs_out.objectID = convertObjectID(entity.u_objectID);
+
+  vs_out.modelMatrix = modelMatrix;
 }
