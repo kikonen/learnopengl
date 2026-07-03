@@ -136,6 +136,22 @@ void ShadowMapRenderer::bindTexture(kigl::GLState& state)
     for (auto& cascade : m_cascades) {
         cascade->bindTexture(state);
     }
+
+    // NOTE KI shaders not compiled with the dynamic cascade count (tex.fs,
+    // oit_pass.fs, ...) declare u_shadowMap[MAX_SHADOW_MAP_COUNT_ABS]. Bind a
+    // valid depth texture to every remaining slot so a sampler2DShadow never
+    // targets an unbound (non-depth) texture object, which is GL undefined
+    // behavior. These slots are never sampled dynamically (bounded by
+    // u_shadowCount), so reusing the last cascade texture is harmless.
+    if (!m_cascades.empty()) {
+        const auto lastTextureID = m_cascades.back()->getTextureID();
+        for (int index = static_cast<int>(m_cascades.size());
+            index < MAX_SHADOW_MAP_COUNT_ABS;
+            ++index)
+        {
+            state.bindTexture(UNIT_SHADOW_MAP_FIRST + index, lastTextureID, false);
+        }
+    }
 }
 
 bool ShadowMapRenderer::render(
