@@ -116,6 +116,9 @@ private:
 
     bool m_baked{ false };
 
+    // DEBUG KI logs capture-cube identity + build step each bake step
+    bool m_debug{ false };
+
     std::unique_ptr<DynamicCubeMap> m_captureCube;
 
     std::vector<render::Camera> m_cameras;

@@ -22,10 +22,39 @@
 
 #include "registry/Registry.h"
 
+#include "util/Log.h"
+
 
 namespace {
     inline const std::string SHADER_PREFILTER_CUBE_MAP{ "prefilter_cube_map" };
     inline const std::string SHADER_FLAT_CUBE_MAP{ "flat_cube_map" };
+
+    // DEBUG KI diagnose "texture (0) on unit 70 / no defined base level" warning.
+    // Logs the actual GL state of the source cube bound to UNIT_ENVIRONMENT_MAP.
+    void debugEnvCube(const char* where, int envCubeMapID, int outputCubeID, int mip)
+    {
+        GLboolean isTex = glIsTexture(static_cast<GLuint>(envCubeMapID));
+        GLint w = -1, h = -1, baseLevel = -1, maxLevel = -1, minFilter = 0;
+        if (isTex) {
+            glGetTextureLevelParameteriv(envCubeMapID, 0, GL_TEXTURE_WIDTH, &w);
+            glGetTextureLevelParameteriv(envCubeMapID, 0, GL_TEXTURE_HEIGHT, &h);
+            glGetTextureParameteriv(envCubeMapID, GL_TEXTURE_BASE_LEVEL, &baseLevel);
+            glGetTextureParameteriv(envCubeMapID, GL_TEXTURE_MAX_LEVEL, &maxLevel);
+            glGetTextureParameteriv(envCubeMapID, GL_TEXTURE_MIN_FILTER, &minFilter);
+        }
+
+        // what is *actually* bound to texture image unit 70 right now
+        GLint prevActive = 0;
+        glGetIntegerv(GL_ACTIVE_TEXTURE, &prevActive);
+        glActiveTexture(GL_TEXTURE0 + UNIT_ENVIRONMENT_MAP);
+        GLint boundCube = -1;
+        glGetIntegerv(GL_TEXTURE_BINDING_CUBE_MAP, &boundCube);
+        glActiveTexture(prevActive);
+
+        KI_INFO(fmt::format(
+            "ENVCUBE_DEBUG[{}]: envCubeMapID={}, isTexture={}, level0={}x{}, base={}, max={}, minFilter=0x{:x}, unit70_boundCube={}, outputCube={}, mip={}",
+            where, envCubeMapID, (int)isTex, w, h, baseLevel, maxLevel, minFilter, boundCube, outputCubeID, mip));
+    }
 }
 
 namespace render {
@@ -81,11 +110,21 @@ namespace render {
 
         program->prepareRT();
         program->bind();
-        state.bindTexture(UNIT_ENVIRONMENT_MAP, envCubeMapID, false);
+        // NOTE KI force: GLState caches per-unit texture ids and reused GL names
+        // (after a texture delete) can make a non-forced bind a no-op, leaving unit
+        // UNIT_ENVIRONMENT_MAP at texture 0 => "sampler on undefined texture" warning.
+        state.bindTexture(UNIT_ENVIRONMENT_MAP, envCubeMapID, true);
+
+        if (m_debug) debugEnvCube("prefilter.convolve", envCubeMapID, m_cubeTexture, -1);
 
         render(program, m_cubeTexture, m_size);
 
         state.unbindTexture(UNIT_ENVIRONMENT_MAP, false);
+        // NOTE KI reset the current program: convolve leaves this program bound while unit
+        // UNIT_ENVIRONMENT_MAP is now unbound, so a later draw (main pass) would validate a
+        // samplerCube against texture 0 => GL undefined-behavior warning. invalidateAll()
+        // only clears the cache; glUseProgram(0) actually detaches it.
+        state.useProgram(0);
         state.invalidateAll();
     }
 
@@ -101,11 +140,21 @@ namespace render {
 
         program->prepareRT();
         program->bind();
-        state.bindTexture(UNIT_ENVIRONMENT_MAP, envCubeMapID, false);
+        // NOTE KI force: GLState caches per-unit texture ids and reused GL names
+        // (after a texture delete) can make a non-forced bind a no-op, leaving unit
+        // UNIT_ENVIRONMENT_MAP at texture 0 => "sampler on undefined texture" warning.
+        state.bindTexture(UNIT_ENVIRONMENT_MAP, envCubeMapID, true);
+
+        if (m_debug) debugEnvCube("prefilter.convolveMip", envCubeMapID, m_cubeTexture, mip);
 
         renderMip(program, m_cubeTexture, m_size, mip);
 
         state.unbindTexture(UNIT_ENVIRONMENT_MAP, false);
+        // NOTE KI reset the current program: convolve leaves this program bound while unit
+        // UNIT_ENVIRONMENT_MAP is now unbound, so a later draw (main pass) would validate a
+        // samplerCube against texture 0 => GL undefined-behavior warning. invalidateAll()
+        // only clears the cache; glUseProgram(0) actually detaches it.
+        state.useProgram(0);
         state.invalidateAll();
     }
 
@@ -153,25 +202,28 @@ namespace render {
 
         const TextureCube& cube = TextureCube::get();
 
-        kigl::GLFrameBufferHandle captureFBO;
-        kigl::GLRenderBufferHandle rbo;
-        {
-            captureFBO.create("capture_fbo");
-            rbo.create("capture_rbo");
-
-            glNamedFramebufferRenderbuffer(captureFBO, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, rbo);
-            glNamedFramebufferDrawBuffer(captureFBO, GL_COLOR_ATTACHMENT0);
+        // NOTE KI create + wire the capture FBO/RBO once; both create() calls are
+        // idempotent and the attachment only needs to be set on first creation. The depth
+        // RBO is allocated once at the largest (mip 0) size and reused for every smaller mip
+        // (attachments may differ in size in GL 3.0+; the viewport clamps the render area).
+        // Reallocating it per mip triggered a driver storage-alloc every frame.
+        const bool firstUse = m_captureFBO.m_fbo <= 0;
+        m_captureFBO.create("capture_fbo");
+        m_captureRBO.create("capture_rbo");
+        if (firstUse) {
+            glNamedRenderbufferStorage(m_captureRBO, GL_DEPTH_COMPONENT24, baseSize, baseSize);
+            glNamedFramebufferRenderbuffer(m_captureFBO, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, m_captureRBO);
+            glNamedFramebufferDrawBuffer(m_captureFBO, GL_COLOR_ATTACHMENT0);
         }
 
-        glBindFramebuffer(GL_DRAW_FRAMEBUFFER, captureFBO);
+        glBindFramebuffer(GL_DRAW_FRAMEBUFFER, m_captureFBO);
 
-        // resize framebuffer according to mip-level size
+        // render area for this mip level; depth RBO (mip 0 size) covers it
         const unsigned int mipSize = static_cast<unsigned int>(baseSize * std::pow(0.5, mip));
 
         const float roughness = (float)mip / (float)(MAX_MIP_LEVELS - 1);
         program->setFloat("u_roughness", roughness);
 
-        glNamedRenderbufferStorage(rbo, GL_DEPTH_COMPONENT24, mipSize, mipSize);
         glViewport(0, 0, mipSize, mipSize);
 
         for (unsigned int face = 0; face < 6; ++face)
@@ -182,14 +234,14 @@ namespace render {
             // NOTE KI side vs. face difference
             // https://stackoverflow.com/questions/55169053/opengl-render-to-cubemap-using-dsa-direct-state-access
             glNamedFramebufferTextureLayer(
-                captureFBO,
+                m_captureFBO,
                 GL_COLOR_ATTACHMENT0,
                 cubeTextureID,
                 mip,
                 face);
 
-            glClearNamedFramebufferfv(captureFBO, GL_COLOR, 0, glm::value_ptr(clearColor));
-            glClearNamedFramebufferfv(captureFBO, GL_DEPTH, 0, &clearDepth);
+            glClearNamedFramebufferfv(m_captureFBO, GL_COLOR, 0, glm::value_ptr(clearColor));
+            glClearNamedFramebufferfv(m_captureFBO, GL_DEPTH, 0, &clearDepth);
 
             cube.draw();
         }
