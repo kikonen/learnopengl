@@ -35,6 +35,9 @@ namespace render {
             const RenderContext& ctx);
 
     protected:
+        // day-only skybox program (no UNIT_SKYBOX_NIGHT sampler)
         Program* m_program{ nullptr };
+        // day+night variant (USE_SKYBOX_NIGHT); selected only when the scene has a night skybox
+        Program* m_programNight{ nullptr };
     };
 }

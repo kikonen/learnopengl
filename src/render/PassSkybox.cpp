@@ -35,8 +35,11 @@ namespace render
 
     void PassSkybox::prepare(const PrepareContext& ctx)
     {
-        auto programId = ProgramRegistry::get().getProgram(PROGRAM_NAME);
-        m_program = Program::get(programId);
+        m_program = Program::get(ProgramRegistry::get().getProgram(PROGRAM_NAME));
+        // scenes without a day/night cycle have no night skybox; that variant omits the
+        // UNIT_SKYBOX_NIGHT sampler so it isn't validated against an unbound texture unit
+        m_programNight = Program::get(ProgramRegistry::get().getProgram(
+            PROGRAM_NAME, { { DEF_USE_SKYBOX_NIGHT, "1" } }));
     }
 
     void PassSkybox::updateRT(
@@ -82,6 +85,11 @@ namespace render
 
         if (ctx.m_layer != 1) return;
 
+        // night skybox (material 1) only exists in day/night-cycle scenes; pick the shader
+        // variant accordingly so the day-only case never declares the UNIT_SKYBOX_NIGHT sampler
+        const bool hasNight = skybox->getMaterial(1).get() != nullptr;
+        auto* program = hasNight ? m_programNight : m_program;
+
         // 0 = full day .. 1 = full night, from the World day-night model (RT-published)
         float skyBlend = 0.f;
         if (auto* world = scene->getWorld().get()) {
@@ -99,8 +107,10 @@ namespace render
         state.setStencil(kigl::GLStencilMode::fill(STENCIL_SKYBOX, STENCIL_SKYBOX, ~STENCIL_OIT));
         state.polygonFrontAndBack(GL_FILL);
 
-        m_program->bind();
-        m_program->setFloat("u_skyBlend", skyBlend);
+        program->bind();
+        if (hasNight) {
+            program->setFloat("u_skyBlend", skyBlend);
+        }
         m_textureQuad.draw();
 
         state.setDepthFunc(ctx.m_depthFunc);
