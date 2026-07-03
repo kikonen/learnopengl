@@ -136,6 +136,56 @@ void fillMaterialPlainTBO(uint materialIndex)
   }
 }
 
+void fillMaterialSpriteTBO(uint materialIndex)
+{
+  Material mat;
+
+  // Each Material spans exactly 11 slots of vec4
+  const int matBase = int(materialIndex) * MATERIAL_STRIDE_VEC4;
+
+  mat.diffuse  = texelFetch(u_materialFloatTBO, matBase + MAT_SLOT_DIFFUSE);
+
+  // Slot 8: Scalar uint flags and physical factors
+  uvec4 slot8_uint = texelFetch(u_materialUintTBO, matBase + MAT_SLOT_FLAGS_AND_FACTORS);
+  mat.flags            = slot8_uint.x;
+
+  // Slot 9: Tilings and sprite mapping information
+  uvec4 slot9_uint  = texelFetch(u_materialUintTBO, matBase + MAT_SLOT_TILING_AND_SPRITES);
+  mat.spriteCount      = slot9_uint.z;
+  mat.spritesX         = slot9_uint.w;
+
+  // Slot 10: Layer parameters and parallax descriptors
+  uvec4 slot10_uint = texelFetch(u_materialUintTBO, matBase + MAT_SLOT_LAYERS_AND_PARALLAX);
+  vec4  slot10_float = texelFetch(u_materialFloatTBO, matBase + MAT_SLOT_LAYERS_AND_PARALLAX);
+  mat.spritesY         = slot10_uint.x;
+  mat.layersDepth      = slot10_float.z;
+
+  // ------------------------------------------------=================
+  // FIX: Assign scalar values to global 'material' BEFORE resolving textures
+  // ----------------------------------------------------------------=
+  material.flags         = mat.flags;
+  material.spriteCount   = mat.spriteCount;
+  material.spritesX      = mat.spritesX;
+  material.spritesY      = mat.spritesY;
+  material.layersDepth   = mat.layersDepth;
+
+  material.diffuse   = mat.diffuse;
+}
+
+void fillMaterialReflectTBO(uint materialIndex)
+{
+  Material mat;
+
+  // Each Material spans exactly 11 slots of vec4
+  const int matBase = int(materialIndex) * MATERIAL_STRIDE_VEC4;
+
+  // Slot 8: Scalar uint flags and physical factors
+  vec4  slot8_float = texelFetch(u_materialFloatTBO, matBase + MAT_SLOT_FLAGS_AND_FACTORS);
+  mat.reflection       = slot8_float.y;
+  mat.refraction       = slot8_float.z;
+  mat.refractionRatio  = slot8_float.w;
+}
+
 void fillMaterialParallaxTBO(uint materialIndex)
 {
   const int matBase = int(materialIndex) * MATERIAL_STRIDE_VEC4;
@@ -152,6 +202,15 @@ uvec2 readMaterialDisplacementTexTBO(uint materialIndex)
   uvec2 displacementTex = texelFetch(u_materialUintTBO, matBase + MAT_SLOT_TEX_MRAS_DISP).zw;
 
   return displacementTex;
+}
+
+uvec2 readMaterialDiffuseTexTBO(uint materialIndex)
+{
+  const int matBase = int(materialIndex) * MATERIAL_STRIDE_VEC4;
+
+  uvec2 normalTex = texelFetch(u_materialUintTBO, matBase + MAT_SLOT_TEX_DIFF_EMISS).xy;
+
+  return normalTex;
 }
 
 uvec2 readMaterialNormalTexTBO(uint materialIndex)

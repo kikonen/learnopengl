@@ -1,6 +1,6 @@
 #version 460 core
 
-#include "include/ssbo_materials.glsl"
+#include "include/tbo_materials.glsl"
 
 #include "include/uniform_matrices.glsl"
 #include "include/uniform_camera.glsl"
@@ -44,10 +44,12 @@ layout (location = 0) out vec4 o_fragColor;
 
 SET_FLOAT_PRECISION;
 
+ResolvedMaterial material;
+
 #include "include/fn_gbuffer_depth_decode.glsl"
 #include "include/fn_gbuffer_normal_decode.glsl"
 
-ResolvedMaterial material;
+#include "include/fn_fill_material_tbo.glsl"
 
 // R = halo radius
 // R2 = R^2
@@ -111,9 +113,9 @@ void main() {
   const uint materialIndex = fs_in.materialIndex;
 
   vec2 texCoord = fs_in.texCoord;
-  #include "include/apply_parallax.glsl"
+  #include "include/apply_parallax_tbo.glsl"
 
-  #include "include/var_tex_material.glsl"
+  fillMaterialTBO(materialIndex, texCoord);
 
   const vec2 pixCoord = gl_FragCoord.xy / u_bufferResolution;
 

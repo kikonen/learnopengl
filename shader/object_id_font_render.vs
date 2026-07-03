@@ -6,11 +6,11 @@ layout (location = ATTR_FONT_ATLAS_TEX) in vec2 a_atlasCoord;
 
 #include "include/tech_skinned_mesh_data.glsl"
 
-#include "include/ssbo_entities.glsl"
-#include "include/ssbo_instances.glsl"
+#include "include/tbo_entities.glsl"
+#include "include/tbo_instances.glsl"
+
 #include "include/ssbo_instance_indeces.glsl"
 #include "include/ssbo_socket_transforms.glsl"
-#include "include/ssbo_materials.glsl"
 
 #include "include/uniform_matrices.glsl"
 #include "include/uniform_camera.glsl"
@@ -40,13 +40,19 @@ const vec3 UP = vec3(0, 1, 0);
 Instance instance;
 Entity entity;
 
+#include "include/fn_fill_instance_tbo.glsl"
+#include "include/fn_fill_entity_tbo.glsl"
+
 #include "include/fn_convert_object_id.glsl"
 #include "include/fn_mod.glsl"
 
 void main() {
-  instance = GET_INSTANCE;
+  const uint instanceIndex = GET_INSTANCE_INDEX;
+  fillInstanceTBO(instanceIndex);
+
   const uint entityIndex = instance.u_entityIndex;
-  entity = u_entities[entityIndex];
+  fillEntityTBO(entityIndex);
+  fillEntityFontTBO(entityIndex);
 
   #include "include/var_entity_model_matrix.glsl"
 

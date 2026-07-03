@@ -21,6 +21,14 @@ void fillEntityTBO(uint entityIndex)
   entity.tilingY = entSlot9.y;
 }
 
+void fillEntityVolumeTBO(uint entityIndex)
+{
+  // Each Entity spans 10 slots of vec4
+  const int entBase = int(entityIndex) * ENTITY_STRIDE_VEC4;
+
+  entity.u_worldVolume = texelFetch(u_entityFloatTBO, entBase + ENT_SLOT_WORLD_VOLUME);
+}
+
 void fillEntityFontTBO(uint entityIndex)
 {
   // Each Entity spans 10 slots of vec4
@@ -29,4 +37,14 @@ void fillEntityFontTBO(uint entityIndex)
   uvec2 fontTex = texelFetch(u_entityUintTBO, entBase + ENT_SLOT_OBJECT_AND_FLAGS).xy;
 
   entity.u_fontHandle = fontTex;
+}
+
+void fillEntityObjectIdTBO(uint entityIndex)
+{
+  // Each Entity spans 10 slots of vec4
+  const int entBase = int(entityIndex) * ENTITY_STRIDE_VEC4;
+
+  uint objectId = texelFetch(u_entityUintTBO, entBase + ENT_SLOT_OBJECT_AND_FLAGS).z;
+
+  entity.u_objectID = objectId;
 }

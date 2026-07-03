@@ -88,6 +88,7 @@ void main() {
   #include "include/var_entity_normal_matrix.glsl"
 
   const uint materialIndex = instance.u_materialIndex;
+  fillMaterialTilingTBO(materialIndex);
 
   float scale = 1;
   mat4 scaleMat = mat4(scale, 0, 0, 0,
@@ -166,8 +167,6 @@ void main() {
 
   vs_out.materialIndex = materialIndex;
   vs_out.flags = instance.u_flags;
-
-  fillMaterialTilingTBO(materialIndex);
 
   vs_out.texCoord.x = a_texCoord.x * material.tilingX * entity.tilingX;
   vs_out.texCoord.y = a_texCoord.y * material.tilingY * entity.tilingY;

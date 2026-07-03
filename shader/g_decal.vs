@@ -4,8 +4,9 @@
 
 #include "include/unit_cube_strip.glsl"
 
+#include "include/tbo_materials.glsl"
+
 #include "include/ssbo_decals.glsl"
-#include "include/ssbo_materials.glsl"
 
 #include "include/uniform_matrices.glsl"
 #include "include/uniform_camera.glsl"
@@ -44,6 +45,9 @@ const vec3 QUAD_TANGENT = vec3(1, 0, 0);
 const vec3 UP = vec3(0, 1, 0);
 
 Decal decal;
+ResolvedMaterial material;
+
+#include "include/fn_fill_material_tbo.glsl"
 
 #include "include/fn_calculate_clipping.glsl"
 
@@ -51,6 +55,10 @@ void main() {
   const uint vertexIndex = VERTEX_INDECES[gl_VertexID];
   const uint decalIndex = gl_BaseInstance + gl_InstanceID;
   decal = u_decals[decalIndex];
+
+  const uint materialIndex = decal.u_materialIndex;
+
+  fillMaterialSpriteTBO(materialIndex);
 
   const vec4 VEC_W = vec4(0, 0, 0, 1);
   const mat4 modelMatrix = transpose(
@@ -60,8 +68,6 @@ void main() {
       decal.u_transformRow2,
       VEC_W));
   const mat3 viewNormalMatrix = mat3(u_viewMatrix) * mat3(modelMatrix);
-
-  const uint materialIndex = decal.u_materialIndex;
 
   vec3 pos = VERTEX_POS[vertexIndex];
 
@@ -81,8 +87,8 @@ void main() {
   {
     const uint spriteIndex = decal.u_spriteIndex;
 
-    const uint spritesX = u_materials[materialIndex].spritesX;
-    const uint spritesY = u_materials[materialIndex].spritesY;
+    const uint spritesX = material.spritesX;
+    const uint spritesY = material.spritesY;
 
     const float tx = 1.0 / spritesX;
     const float ty = 1.0 / spritesY;
@@ -114,6 +120,6 @@ void main() {
 
 #ifdef USE_GL_POINTS
   // HACK KI for primitive GL_POINTS
-  gl_PointSize = u_materials[materialIndex].layersDepth;
+  gl_PointSize = material.layersDepth;
 #endif
 }

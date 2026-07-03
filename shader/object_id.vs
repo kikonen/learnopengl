@@ -7,13 +7,14 @@ layout (location = ATTR_TEX) in vec2 a_texCoord;
 
 #include "include/tech_skinned_mesh_data.glsl"
 
-#include "include/ssbo_entities.glsl"
-#include "include/ssbo_instances.glsl"
+#include "include/tbo_entities.glsl"
+#include "include/tbo_instances.glsl"
+
 #include "include/ssbo_instance_indeces.glsl"
 #include "include/ssbo_socket_transforms.glsl"
 
 #ifdef USE_ALPHA
-#include "include/ssbo_materials.glsl"
+#include "include/tbo_materials.glsl"
 #endif
 
 #include "include/uniform_matrices.glsl"
@@ -46,13 +47,24 @@ const vec3 UP = vec3(0, 1, 0);
 Instance instance;
 Entity entity;
 
+#include "include/fn_fill_instance_tbo.glsl"
+#include "include/fn_fill_entity_tbo.glsl"
+
+#ifdef USE_ALPHA
+ResolvedMaterial material;
+#include "include/fn_fill_material_tbo.glsl"
+#endif
+
 #include "include/fn_convert_object_id.glsl"
 #include "include/fn_mod.glsl"
 
 void main() {
-  instance = GET_INSTANCE;
+  const uint instanceIndex = GET_INSTANCE_INDEX;
+  fillInstanceTBO(instanceIndex);
+
   const uint entityIndex = instance.u_entityIndex;
-  entity = u_entities[entityIndex];
+  fillEntityTBO(entityIndex);
+  fillEntityObjectIdTBO(entityIndex);
 
   #include "include/var_entity_model_matrix.glsl"
 
@@ -83,12 +95,13 @@ void main() {
 
 #ifdef USE_ALPHA
   const uint materialIndex = instance.u_materialIndex;
+  fillMaterialTilingTBO(materialIndex);
 
   vs_out.materialIndex = materialIndex;
   vs_out.flags = instance.u_flags;
   vs_out.texCoord = a_texCoord;
 
-  vs_out.texCoord.x = a_texCoord.x * u_materials[materialIndex].tilingX * entity.tilingX;
-  vs_out.texCoord.y = a_texCoord.y * u_materials[materialIndex].tilingY * entity.tilingY;
+  vs_out.texCoord.x = a_texCoord.x * material.tilingX * entity.tilingX;
+  vs_out.texCoord.y = a_texCoord.y * material.tilingY * entity.tilingY;
 #endif
 }

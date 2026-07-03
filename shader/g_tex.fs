@@ -111,7 +111,8 @@ void main() {
 #ifdef USE_CUBE_MAP
   {
     const vec3 viewDir = -normalize(fs_in.viewPos);
-#include "include/var_calculate_cube_map_diffuse.glsl"
+    fillMaterialReflectTBO(materialIndex);
+#include "include/var_calculate_cube_map_diffuse_tbo.glsl"
   }
 #endif
 

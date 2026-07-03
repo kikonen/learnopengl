@@ -1,6 +1,6 @@
 #version 460 core
 
-#include "include/ssbo_materials.glsl"
+#include "include/tbo_materials.glsl"
 
 #include "include/uniform_matrices.glsl"
 #include "include/uniform_camera.glsl"
@@ -22,8 +22,14 @@ layout (location = 0) out vec4 o_fragColor;
 
 SET_FLOAT_PRECISION;
 
+ResolvedMaterial material;
+
+#include "include/fn_fill_material_tbo.glsl"
+
 void main() {
   const uint materialIndex = fs_in.materialIndex;
 
-  o_fragColor = u_materials[materialIndex].diffuse;
+  fillMaterialPlainTBO(materialIndex);
+
+  o_fragColor = material.diffuse;
 }

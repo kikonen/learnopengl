@@ -1,7 +1,8 @@
 #version 460 core
 
+#include "include/tbo_materials.glsl"
+
 #include "include/ssbo_particles.glsl"
-#include "include/ssbo_materials.glsl"
 
 #include "include/uniform_matrices.glsl"
 #include "include/uniform_camera.glsl"
@@ -28,6 +29,9 @@ SET_FLOAT_PRECISION;
 const float MAX_SCALE = 5.0;
 
 Particle particle;
+ResolvedMaterial material;
+
+#include "include/fn_fill_material_tbo.glsl"
 
 #include "include/fn_calculate_clipping.glsl"
 
@@ -49,11 +53,14 @@ void main() {
   const float particleScale = scale / gl_Position.w;
   gl_PointSize = 2000 * particleScale;
 
-  vs_out.diffuse = u_materials[materialIndex].diffuse;
-  vs_out.diffuseTex = u_materials[materialIndex].diffuseTex;
+  fillMaterialSpriteTBO(materialIndex);
+  uvec2 diffuseTex = readMaterialDiffuseTexTBO(materialIndex);
 
-  const uint spritesX = u_materials[materialIndex].spritesX;
-  const uint spritesY = u_materials[materialIndex].spritesY;
+  vs_out.diffuse = material.diffuse;
+  vs_out.diffuseTex = diffuseTex;
+
+  const uint spritesX = material.spritesX;
+  const uint spritesY = material.spritesY;
 
   const float tx = 1.0 / spritesX;
   const float ty = 1.0 / spritesY;

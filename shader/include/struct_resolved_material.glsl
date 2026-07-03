@@ -5,9 +5,13 @@ struct ResolvedMaterial {
   // MRAS: [metalness, roughnessa, ambient-occlusion, specular]
   vec4 mras;
 
+  float ssao;
+
   uint flags;
 
-  float ssao;
+  float reflection;
+  float refraction;
+  float refractionRatio;
 
   // float reflection;
   // float refraction;
@@ -16,6 +20,11 @@ struct ResolvedMaterial {
   float tilingX;
   float tilingY;
 
+  uint spriteCount;
+  uint spritesX;
+  uint spritesY;
+
+  int layers;
   float layersDepth;
   float parallaxDepth;
 };
