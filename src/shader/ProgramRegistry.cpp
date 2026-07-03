@@ -5,6 +5,7 @@
 #include "engine/UpdateContext.h"
 
 #include "debug/DebugContext.h"
+#include "util/Thread.h"
 
 #include "Program.h"
 #include "FileEntryCache.h"
@@ -56,7 +57,8 @@ ProgramRegistry::~ProgramRegistry()
 
 void ProgramRegistry::updateRT(const UpdateContext& ctx)
 {
-    std::lock_guard lock(m_programs_lock);
+    //std::lock_guard lock(m_programs_lock);
+    ASSERT_RT();
 
     for (auto& program : m_programs) {
         if (!program) continue;
@@ -69,7 +71,8 @@ void ProgramRegistry::updateRT(const UpdateContext& ctx)
 
 void ProgramRegistry::dirtyCheck(const UpdateContext& ctx)
 {
-    std::lock_guard lock(m_programs_lock);
+    //std::lock_guard lock(m_programs_lock);
+    ASSERT_RT();
 
     const auto& dbg = debug::DebugContext::get();
 
@@ -140,7 +143,8 @@ ki::program_id ProgramRegistry::getProgram(
     std::string_view geometryType,
     const std::map<std::string, std::string, std::less<>>& defines)
 {
-    std::lock_guard lock(m_programs_lock);
+    //std::lock_guard lock(m_programs_lock);
+    ASSERT_RT();
 
     std::string key{ name };
 
@@ -199,7 +203,8 @@ ki::program_id ProgramRegistry::getProgramId(
 
 void ProgramRegistry::validate()
 {
-    std::lock_guard lock(m_programs_lock);
+    //std::lock_guard lock(m_programs_lock);
+    ASSERT_RT();
 
     for (auto& program : m_programs) {
         if (!program) continue;
