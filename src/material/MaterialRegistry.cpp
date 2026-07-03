@@ -15,7 +15,7 @@
 
 namespace {
     // NOTE KI int16_t
-    constexpr size_t BLOCK_SIZE = 32;
+    constexpr size_t BLOCK_SIZE = 400;
     constexpr size_t MAX_BLOCK_COUNT = 1000;
 
     constexpr size_t MAX_COUNT = BLOCK_SIZE * MAX_BLOCK_COUNT;
@@ -75,7 +75,7 @@ void MaterialRegistry::clear()
     m_ssbo.markUsed(0);
 }
 
-ki::material_index MaterialRegistry::findRegisteredIndex(ki::material_id id) 
+ki::material_index MaterialRegistry::findRegisteredIndex(ki::material_id id)
 {
     std::lock_guard lock(m_lock);
 
@@ -234,12 +234,7 @@ void MaterialRegistry::updateMaterialBuffer()
 
         size_t updateIndex = index;
 
-        // NOTE KI *reallocate* SSBO if needed
-        if (m_ssbo.size() < totalCount * sz) {
-            m_ssbo.resizeBuffer(m_materialEntries.capacity() * sz, true);
-            bindBuffers();
-            //updateIndex = 0;
-        }
+        resizeBuffer();
 
         const size_t updateCount = totalCount - updateIndex;
 
@@ -252,6 +247,25 @@ void MaterialRegistry::updateMaterialBuffer()
     }
 
     m_lastSize = totalCount;
+}
+
+void MaterialRegistry::resizeBuffer()
+{
+    const size_t totalCount = m_materials.size();
+    constexpr size_t sz = sizeof(MaterialSSBO);
+
+    if (m_ssbo.size() >= totalCount * sz) return;
+
+    // NOTE KI *reallocate* SSBO if needed
+    m_ssbo.resizeBuffer(m_materialEntries.capacity() * sz, true);
+
+    m_texBuffer_float.release();
+    m_texBuffer_uint.release();
+
+    m_texBuffer_float.createTexBuffer("materials_float", GL_TEXTURE_BUFFER);
+    m_texBuffer_uint.createTexBuffer("materials_uint", GL_TEXTURE_BUFFER);
+
+    bindBuffers();
 }
 
 void MaterialRegistry::updateDirtyMaterialBuffer()
