@@ -22,6 +22,8 @@
 
 #include "CubeRender.h"
 
+#include "util/Log.h"
+
 namespace {
     inline const std::string SHADER_IRRADIANCE_CUBE_MAP{ "irradiance_cube_map" };
     inline const std::string SHADER_FLAT_CUBE_MAP{ "flat_cube_map" };
@@ -69,12 +71,38 @@ namespace render {
         program->prepareRT();
 
         program->bind();
-        state.bindTexture(UNIT_ENVIRONMENT_MAP, envCubeMapID, false);
+        // NOTE KI force: GLState caches per-unit texture ids and reused GL names
+        // (after a texture delete) can make a non-forced bind a no-op, leaving unit
+        // UNIT_ENVIRONMENT_MAP at texture 0 => "sampler on undefined texture" warning.
+        state.bindTexture(UNIT_ENVIRONMENT_MAP, envCubeMapID, true);
 
-        CubeRender renderer;
-        renderer.render(program, m_cubeTexture, m_size);
+        if (m_debug) {
+            // DEBUG KI diagnose unit-70 "texture (0) / no base level" warning
+            GLboolean isTex = glIsTexture(static_cast<GLuint>(envCubeMapID));
+            GLint w = -1, h = -1;
+            if (isTex) {
+                glGetTextureLevelParameteriv(envCubeMapID, 0, GL_TEXTURE_WIDTH, &w);
+                glGetTextureLevelParameteriv(envCubeMapID, 0, GL_TEXTURE_HEIGHT, &h);
+            }
+            GLint prevActive = 0;
+            glGetIntegerv(GL_ACTIVE_TEXTURE, &prevActive);
+            glActiveTexture(GL_TEXTURE0 + UNIT_ENVIRONMENT_MAP);
+            GLint boundCube = -1;
+            glGetIntegerv(GL_TEXTURE_BINDING_CUBE_MAP, &boundCube);
+            glActiveTexture(prevActive);
+            KI_INFO(fmt::format(
+                "ENVCUBE_DEBUG[irradiance.convolve]: envCubeMapID={}, isTexture={}, level0={}x{}, unit70_boundCube={}, outputCube={}",
+                envCubeMapID, (int)isTex, w, h, boundCube, (int)m_cubeTexture));
+        }
+
+        m_cubeRender.render(program, m_cubeTexture, m_size);
 
         state.unbindTexture(UNIT_ENVIRONMENT_MAP, false);
+        // NOTE KI reset the current program: convolve leaves this program bound while unit
+        // UNIT_ENVIRONMENT_MAP is now unbound, so a later clear/draw (e.g. PassDeferred::
+        // initRender -> clearAll) validates a samplerCube against texture 0 => GL
+        // undefined-behavior warning. invalidateAll() only clears the cache.
+        state.useProgram(0);
         state.invalidateAll();
     }
 

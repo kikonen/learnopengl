@@ -12,6 +12,8 @@
 
 #include "kigl/GLState.h"
 
+#include "util/Log.h"
+
 #include "shader/Shader.h"
 
 #include "pool/NodeHandle.h"
@@ -150,6 +152,20 @@ bool IblProbeRenderer::render(
 
         m_centerNode = centerNode->toHandle();
         m_captureCenter = snapshot->getWorldPosition();
+    }
+
+    // DEBUG KI diagnose unit-70 warning: log capture cube identity + build step
+    if (m_debug) {
+        const int capId = static_cast<int>(m_captureCube->getTextureHandle());
+        GLboolean isTex = glIsTexture(static_cast<GLuint>(capId));
+        GLint w = -1, h = -1;
+        if (isTex) {
+            glGetTextureLevelParameteriv(capId, 0, GL_TEXTURE_WIDTH, &w);
+            glGetTextureLevelParameteriv(capId, 0, GL_TEXTURE_HEIGHT, &h);
+        }
+        KI_INFO(fmt::format(
+            "IBL_PROBE_STEP: step={}, captureCube={}, isTexture={}, level0={}x{}, envSize={}",
+            step, capId, (int)isTex, w, h, m_envSize));
     }
 
     if (step < CAPTURE_STEPS) {

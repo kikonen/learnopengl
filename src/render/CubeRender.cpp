@@ -22,13 +22,10 @@ namespace render {
     {
         auto& state = kigl::GLState::get();
 
-        kigl::GLFrameBufferHandle fbo;
-        {
-            fbo.create("cube_map_capture_fbo");
-
-            glViewport(0, 0, size, size);
-            state.bindFrameBuffer(fbo, true);
-        }
+        // NOTE KI create() is idempotent -> the FBO is allocated once and reused
+        m_fbo.create("cube_map_capture_fbo");
+        glViewport(0, 0, size, size);
+        state.bindFrameBuffer(m_fbo, true);
 
         {
             // NTOE KI cube drawn from inside-out
@@ -63,13 +60,13 @@ namespace render {
                 // NOTE KI side vs. face difference
                 // https://stackoverflow.com/questions/55169053/opengl-render-to-cubemap-using-dsa-direct-state-access
                 glNamedFramebufferTextureLayer(
-                    fbo,
+                    m_fbo,
                     GL_COLOR_ATTACHMENT0,
                     cubeTextureID,
                     0,
                     face);
 
-                glClearNamedFramebufferfv(fbo, GL_COLOR, 0, glm::value_ptr(clearColor));
+                glClearNamedFramebufferfv(m_fbo, GL_COLOR, 0, glm::value_ptr(clearColor));
 
                 cube.draw();
             }

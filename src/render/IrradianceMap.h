@@ -7,6 +7,8 @@
 
 #include "kigl/GLTextureHandle.h"
 
+#include "CubeRender.h"
+
 class CubeMap;
 
 struct PrepareContext;
@@ -48,5 +50,13 @@ namespace render {
         kigl::GLTextureHandle m_cubeTexture;
 
         int m_envCubeMapID{ 0 };
+
+        // DEBUG KI logs source-cube / unit-70 GL state at each convolve
+        bool m_debug{ false };
+
+    private:
+        // NOTE KI persistent so its capture FBO is created once and reused across
+        // repeated convolves (probe re-bakes), instead of per-call create/destroy
+        CubeRender m_cubeRender;
     };
 }
