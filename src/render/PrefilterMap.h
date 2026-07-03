@@ -3,6 +3,8 @@
 #include "kigl/kigl.h"
 
 #include "kigl/GLTextureHandle.h"
+#include "kigl/GLFrameBufferHandle.h"
+#include "kigl/GLRenderBufferHandle.h"
 
 struct PrepareContext;
 
@@ -62,5 +64,15 @@ namespace render {
         kigl::GLTextureHandle m_cubeTexture;
 
         int m_envCubeMapID{ 0 };
+
+        // DEBUG KI logs source-cube / unit-70 GL state at each convolve
+        bool m_debug{ false };
+
+    private:
+        // NOTE KI capture FBO + depth RBO are reused across every renderMip/convolve
+        // call (created lazily once). convolveMip runs once per frame during amortized
+        // probe baking, so recreating them each call churned GL objects needlessly.
+        kigl::GLFrameBufferHandle m_captureFBO;
+        kigl::GLRenderBufferHandle m_captureRBO;
     };
 }
