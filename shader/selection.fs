@@ -29,6 +29,8 @@ layout (location = 0) out vec4 o_fragColor;
 
 SET_FLOAT_PRECISION;
 
+ResolvedMaterial material;
+
 #include "include/fn_fill_material_tbo.glsl"
 
 void main() {
