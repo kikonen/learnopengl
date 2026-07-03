@@ -2,7 +2,7 @@
 
 
 #ifdef USE_ALPHA
-#include "include/ssbo_materials.glsl"
+#include "include/tbo_materials.glsl"
 
 in VS_OUT {
   flat vec4 objectID;
@@ -30,11 +30,17 @@ layout (location = 0) out vec4 o_fragObjectID;
 //
 ////////////////////////////////////////////////////////////
 
+#ifdef USE_ALPHA
+ResolvedMaterial material;
+
+#include "include/fn_fill_material_tbo.glsl"
+#endif
+
 void main() {
 #ifdef USE_ALPHA
   {
     const vec2 texCoord = fs_in.texCoord;
-    #include "include/var_tex_material_alpha.glsl"
+    float alpha = readMaterialAlphaTBO(fs_in.materialIndex, fs_in.texCoord);
 
     // NOtE KI experimental value; depends from few aspects in blended windows
     // NOTE KI this works badly for blended objects if threshold too big

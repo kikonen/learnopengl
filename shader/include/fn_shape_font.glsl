@@ -13,7 +13,10 @@ void shapeFont(
 
 #undef USE_OUTLINE
 #undef USE_GLOW
+
+#ifndef USE_GLOW_OUTLINE
 #define USE_GLOW_OUTLINE
+#endif
 
 #endif
 #endif

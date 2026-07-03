@@ -1,6 +1,6 @@
 #version 460 core
 
-#include "include/ssbo_materials.glsl"
+#include "include/tbo_materials.glsl"
 
 #include "include/uniform_data.glsl"
 
@@ -20,6 +20,8 @@ SET_FLOAT_PRECISION;
 
 ResolvedMaterial material;
 
+#include "include/fn_fill_material_tbo.glsl"
+
 #include "include/fn_shape_font.glsl"
 
 void main()
@@ -36,6 +38,7 @@ void main()
   if (color.a < 0.01)
     discard;
 
-  const uint materialIndex = fs_in.highlightIndex;
-  o_fragColor = u_materials[materialIndex].diffuse;
+  vec4 diffuse = readMaterialDiffuseTBO(fs_in.highlightIndex);
+
+  o_fragColor = diffuse;
 }

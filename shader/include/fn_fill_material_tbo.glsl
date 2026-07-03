@@ -120,9 +120,6 @@ void fillMaterialPlainTBO(uint materialIndex)
   uvec4 slot8_uint = texelFetch(u_materialUintTBO, matBase + MAT_SLOT_FLAGS_AND_FACTORS);
   vec4  slot8_float = texelFetch(u_materialFloatTBO, matBase + MAT_SLOT_FLAGS_AND_FACTORS);
   mat.flags            = slot8_uint.x;
-  mat.reflection       = slot8_float.y;
-  mat.refraction       = slot8_float.z;
-  mat.refractionRatio  = slot8_float.w;
 
   // ------------------------------------------------=================
   // FIX: Assign scalar values to global 'material' BEFORE resolving textures
@@ -195,13 +192,13 @@ void fillMaterialParallaxTBO(uint materialIndex)
   material.parallaxDepth = parallaxDepth;
 }
 
-uvec2 readMaterialDisplacementTexTBO(uint materialIndex)
+vec4 readMaterialDiffuseTBO(uint materialIndex)
 {
   const int matBase = int(materialIndex) * MATERIAL_STRIDE_VEC4;
 
-  uvec2 displacementTex = texelFetch(u_materialUintTBO, matBase + MAT_SLOT_TEX_MRAS_DISP).zw;
+  vec4 diffuse  = texelFetch(u_materialFloatTBO, matBase + MAT_SLOT_DIFFUSE);
 
-  return displacementTex;
+  return diffuse;
 }
 
 uvec2 readMaterialDiffuseTexTBO(uint materialIndex)
@@ -211,6 +208,15 @@ uvec2 readMaterialDiffuseTexTBO(uint materialIndex)
   uvec2 normalTex = texelFetch(u_materialUintTBO, matBase + MAT_SLOT_TEX_DIFF_EMISS).xy;
 
   return normalTex;
+}
+
+uvec2 readMaterialDisplacementTexTBO(uint materialIndex)
+{
+  const int matBase = int(materialIndex) * MATERIAL_STRIDE_VEC4;
+
+  uvec2 displacementTex = texelFetch(u_materialUintTBO, matBase + MAT_SLOT_TEX_MRAS_DISP).zw;
+
+  return displacementTex;
 }
 
 uvec2 readMaterialNormalTexTBO(uint materialIndex)
@@ -229,6 +235,45 @@ uvec2 readMaterialDudvTexTBO(uint materialIndex)
   uvec2 dudvTex = texelFetch(u_materialUintTBO, matBase + MAT_SLOT_TEX_DUDV_NOISE).xy;
 
   return dudvTex;
+}
+
+uvec2 readMaterialNoiseTexTBO(uint materialIndex)
+{
+  const int matBase = int(materialIndex) * MATERIAL_STRIDE_VEC4;
+
+  uvec2 noiseTex = texelFetch(u_materialUintTBO, matBase + MAT_SLOT_TEX_DUDV_NOISE).zw;
+
+  return noiseTex;
+}
+
+uvec2 readMaterialNoise2TexTBO(uint materialIndex)
+{
+  const int matBase = int(materialIndex) * MATERIAL_STRIDE_VEC4;
+
+  uvec2 noiseTex = texelFetch(u_materialUintTBO, matBase + MAT_SLOT_TEX_NOISE2_CUST).xy;
+
+  return noiseTex;
+}
+
+uvec2 readMaterialCustom1TexTBO(uint materialIndex)
+{
+  const int matBase = int(materialIndex) * MATERIAL_STRIDE_VEC4;
+
+  uvec2 customTex = texelFetch(u_materialUintTBO, matBase + MAT_SLOT_TEX_NOISE2_CUST).zw;
+
+  return customTex;
+}
+
+void fillMaterialDepthPeeledTBO(uint materialIndex)
+{
+  // Calculate the vec4 slot offset
+  const int matBase = int(materialIndex) * MATERIAL_STRIDE_VEC4;
+
+  // Slot 10: Layer parameters and parallax descriptors
+  uvec4 slot10_uint = texelFetch(u_materialUintTBO, matBase + MAT_SLOT_LAYERS_AND_PARALLAX);
+  vec4  slot10_float = texelFetch(u_materialFloatTBO, matBase + MAT_SLOT_LAYERS_AND_PARALLAX);
+  material.layers           = int(slot10_uint.y);
+  material.layersDepth      = slot10_float.z;
 }
 
 void fillMaterialTilingTBO(uint materialIndex)

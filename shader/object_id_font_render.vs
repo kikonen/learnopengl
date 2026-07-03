@@ -42,6 +42,7 @@ Entity entity;
 
 #include "include/fn_fill_instance_tbo.glsl"
 #include "include/fn_fill_entity_tbo.glsl"
+#include "include/fn_fill_material_tbo.glsl"
 
 #include "include/fn_convert_object_id.glsl"
 #include "include/fn_mod.glsl"
@@ -53,6 +54,7 @@ void main() {
   const uint entityIndex = instance.u_entityIndex;
   fillEntityTBO(entityIndex);
   fillEntityFontTBO(entityIndex);
+  fillEntityObjectIdTBO(entityIndex);
 
   #include "include/var_entity_model_matrix.glsl"
 
@@ -87,6 +89,11 @@ void main() {
   vs_out.flags = instance.u_flags;
 
   vs_out.texCoord = a_texCoord;
+
+  fillMaterialTilingTBO(materialIndex);
+
+  vs_out.texCoord.x = a_texCoord.x * material.tilingX * entity.tilingX;
+  vs_out.texCoord.y = a_texCoord.y * material.tilingY * entity.tilingY;
 
   vs_out.atlasCoord = a_atlasCoord;
   vs_out.atlasHandle = entity.u_fontHandle;

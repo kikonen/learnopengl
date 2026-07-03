@@ -1,6 +1,6 @@
 #version 460 core
 
-#include "include/ssbo_materials.glsl"
+#include "include/tbo_materials.glsl"
 
 #include "include/uniform_matrices.glsl"
 #include "include/uniform_camera.glsl"
@@ -40,6 +40,8 @@ SET_FLOAT_PRECISION;
 
 ResolvedMaterial material;
 
+#include "include/fn_fill_material_tbo.glsl"
+
 #ifdef EFFECT_SUN
   #include "include/effect_sun.glsl"
 #endif
@@ -51,14 +53,15 @@ void main() {
   const uint materialIndex = fs_in.materialIndex;
 
   vec2 texCoord = fs_in.texCoord;
-  #include "include/apply_parallax.glsl"
 
-  #include "include/var_tex_material.glsl"
+  #include "include/apply_parallax_tbo.glsl"
+  fillMaterialTBO(materialIndex, texCoord);
 
   iTime = u_time;
   iResolution = u_bufferResolution;
   iMouse = u_bufferResolution * 0.5;
-  iChannel0 = u_materials[materialIndex].diffuseTex;
+
+  iChannel0 = readMaterialDiffuseTexTBO(materialIndex);
 
   vec4 color;
   mainImage(color, gl_FragCoord.xy);

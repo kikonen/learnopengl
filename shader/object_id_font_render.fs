@@ -1,6 +1,6 @@
 #version 460 core
 
-#include "include/ssbo_materials.glsl"
+#include "include/tbo_materials.glsl"
 
 #include "include/uniform_data.glsl"
 
@@ -25,12 +25,14 @@ layout (location = 0) out vec4 o_fragObjectID;
 
 ResolvedMaterial material;
 
+#include "include/fn_fill_material_tbo.glsl"
+
 #include "include/fn_shape_font.glsl"
 
 void main() {
   {
     const vec2 texCoord = fs_in.texCoord;
-    #include "include/var_tex_material_alpha.glsl"
+    float alpha = readMaterialAlphaTBO(fs_in.materialIndex, fs_in.texCoord);
 
     material.diffuse = vec4(1, 1, 1, 1);
 

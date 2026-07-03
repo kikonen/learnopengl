@@ -1,6 +1,6 @@
 #version 460 core
 
-#include "include/ssbo_materials.glsl"
+#include "include/tbo_materials.glsl"
 
 #include "include/uniform_camera.glsl"
 #include "include/uniform_data.glsl"
@@ -47,14 +47,16 @@ float max2(vec2 v)
 
 ResolvedMaterial material;
 
+#include "include/fn_fill_material_tbo.glsl"
+
 void main()
 {
   // const uint materialIndex = fs_in.materialIndex;
 
   // vec2 texCoord = fs_in.texCoord;
-  // #include "include/apply_parallax.glsl"
 
-  // #include "include/var_tex_material.glsl"
+  // #include "include/apply_parallax_tbo.glsl"
+  // fillMaterialTBO(materialIndex, texCoord);
 
   // o_fragColor = vec4(material.diffuse.rgb, 0.7);
 

@@ -1,6 +1,6 @@
 #version 460 core
 
-#include "include/ssbo_materials.glsl"
+#include "include/tbo_materials.glsl"
 
 #include "include/uniform_matrices.glsl"
 #include "include/uniform_camera.glsl"
@@ -42,12 +42,15 @@ SET_FLOAT_PRECISION;
 
 ResolvedMaterial material;
 
+#include "include/fn_fill_material_tbo.glsl"
+
 void main()
 {
   const uint materialIndex = u_materialIndex;
   const vec2 texCoord = fs_in.texCoord;
 
-  #include "include/var_tex_material.glsl"
+  fillMaterialTBO(materialIndex, texCoord);
+
   #include "include/init_shader_toy.glsl"
 
   vec4 color = material.diffuse;

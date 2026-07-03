@@ -1,6 +1,6 @@
 #version 460 core
 
-#include "include/ssbo_materials.glsl"
+#include "include/tbo_materials.glsl"
 
 #ifndef USE_ALPHA
 // https://www.khronos.org/opengl/wiki/Early_Fragment_Test
@@ -29,13 +29,15 @@ layout (location = 0) out vec4 o_fragColor;
 
 SET_FLOAT_PRECISION;
 
+#include "include/fn_fill_material_tbo.glsl"
 
 void main() {
 #ifdef USE_ALPHA
   {
     const vec2 texCoord = fs_in.texCoord;
 
-    #include "include/var_tex_material_alpha.glsl"
+    const uint materialIndex = fs_in.materialIndex;
+    float alpha = readMaterialAlphaTBO(materialIndex, fs_in.texCoord);
 
     // NOTE KI this works badly for blended objects if threshold too big
     if (alpha < 0.1)
@@ -43,7 +45,7 @@ void main() {
   }
 #endif
 
-  const uint materialIndex = fs_in.highlightIndex;
+  vec4 diffuse = readMaterialDiffuseTBO(fs_in.highlightIndex);
 
-  o_fragColor = u_materials[materialIndex].diffuse;
+  o_fragColor = diffuse;
 }

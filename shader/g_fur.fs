@@ -1,6 +1,6 @@
 #version 460 core
 
-#include "include/ssbo_materials.glsl"
+#include "include/tbo_materials.glsl"
 
 #include "include/uniform_matrices.glsl"
 #include "include/uniform_camera.glsl"
@@ -26,17 +26,18 @@ SET_FLOAT_PRECISION;
 
 ResolvedMaterial material;
 
+#include "include/fn_fill_material_tbo.glsl"
+
 #include "include/fn_gbuffer_normal_encode.glsl"
 
 void main() {
   const uint materialIndex = fs_in.materialIndex;
 
   vec2 texCoord = fs_in.texCoord;
-  #include "include/apply_parallax.glsl"
+  #include "include/apply_parallax_tbo.glsl"
+  fillMaterialTBO(materialIndex, texCoord);
 
-  #include "include/var_tex_material.glsl"
-
-  sampler2D sampler = sampler2D(u_materials[materialIndex].noiseMapTex);
+  sampler2D sampler = sampler2D(readMaterialNoiseTexTBO(materialIndex));
   vec4 noiseColor = texture(sampler, texCoord * 8.0);
   float noise = noiseColor.r;
 

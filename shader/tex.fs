@@ -2,7 +2,7 @@
 
 #define PASS_FORWARD
 
-#include "include/ssbo_materials.glsl"
+#include "include/tbo_materials.glsl"
 
 #include "include/uniform_matrices.glsl"
 #include "include/uniform_camera.glsl"
@@ -53,6 +53,8 @@ SET_FLOAT_PRECISION;
 
 ResolvedMaterial material;
 
+#include "include/fn_fill_material_tbo.glsl"
+
 #include "include/pbr.glsl"
 #include "include/fn_calculate_dir_light.glsl"
 #include "include/fn_calculate_point_light.glsl"
@@ -73,9 +75,9 @@ void main() {
   vec3 normal = normalize(fs_in.normal);
 
   #include "include/var_calculate_tbn.glsl"
-  #include "include/apply_parallax.glsl"
 
-  #include "include/var_tex_material.glsl"
+  #include "include/apply_parallax_tbo.glsl"
+  fillMaterialTBO(materialIndex, texCoord);
 
 #ifdef USE_ALPHA
   if (material.diffuse.a < ALPHA_THRESHOLD)

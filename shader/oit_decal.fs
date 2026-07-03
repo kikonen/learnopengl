@@ -1,6 +1,6 @@
 #version 460 core
 
-#include "include/ssbo_materials.glsl"
+#include "include/tbo_materials.glsl"
 
 #include "include/uniform_matrices.glsl"
 #include "include/uniform_camera.glsl"
@@ -44,6 +44,10 @@ LAYOUT_OIT_OUT;
 
 SET_FLOAT_PRECISION;
 
+ResolvedMaterial material;
+
+#include "include/fn_fill_material_tbo.glsl"
+
 #include "include/fn_oit_util.glsl"
 
 // NOTE KI approx cos(90), NOT exact 0.0, due to small rounding errors in math
@@ -62,6 +66,8 @@ ResolvedMaterial material;
 
 void main() {
   const uint materialIndex = fs_in.materialIndex;
+  fillMaterialTBO(materialIndex, texCoord);
+  fillMaterialTilingTBO(materialIndex);
 
   vec2 texCoord;
   vec3 worldPos;
@@ -116,13 +122,11 @@ void main() {
     #include "include/apply_parallax.glsl"
   }
 
-  texCoord.x *= u_materials[materialIndex].tilingX;
-  texCoord.y *= u_materials[materialIndex].tilingY;
+  texCoord.x *= material.tilingX;
+  texCoord.y *= material.tilingY;
 
   texCoord.x = fs_in.spriteCoord.x + texCoord.x * fs_in.spriteSize.x;
   texCoord.y = fs_in.spriteCoord.y + texCoord.y * fs_in.spriteSize.y;
-
-  #include "include/var_tex_material.glsl"
 
   OIT_DISCARD(material.diffuse.a);
 
