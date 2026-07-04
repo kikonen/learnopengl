@@ -162,6 +162,7 @@ namespace render
             ctx,
             [this](const render::DrawableInfo& drawable) {
                 if (!drawable.drawOptions.m_useDeferred) return (ki::program_id)0;
+                if (drawable.drawOptions.m_useOit) return (ki::program_id)0;
                 if (!drawable.isFlag(render::INSTANCE_PRE_DEPTH_BIT)) return (ki::program_id)0;
                 return drawable.preDepthProgramId;
             },
