@@ -25,6 +25,10 @@ in VS_OUT {
 
 SET_FLOAT_PRECISION;
 
+#ifdef USE_ALPHA
+ResolvedMaterial material;
+#endif
+
 void main()
 {
 #ifdef USE_ALPHA
@@ -34,7 +38,7 @@ void main()
     #include "include/var_tex_material_alpha.glsl"
 
     // NOtE KI experimental value; depends from few aspects in blended windows
-    if (alpha < SHADOW_ALPHA_THRESHOLD)
+    if (material.alpha < SHADOW_ALPHA_THRESHOLD)
       discard;
   }
 #endif

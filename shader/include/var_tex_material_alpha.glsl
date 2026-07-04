@@ -1,10 +1,17 @@
 #define _ALPHA_RESOLVED
-float alpha;
+#ifdef USE_ALPHA
 {
-  float opacity = texture(sampler2D(u_materials[materialIndex].opacityMapTex), texCoord).r;
+  material.diffuseTexel = texture(sampler2D(u_materials[materialIndex].diffuseTex), texCoord);
 
-  alpha =
+  material.alpha =
     (u_materials[materialIndex].diffuse.a *
-     texture(sampler2D(u_materials[materialIndex].diffuseTex), texCoord)).a *
-    opacity;
+     material.diffuseTexel.a *
+    texture(sampler2D(u_materials[materialIndex].opacityMapTex), texCoord).r);
 }
+#else
+{
+  material.diffuseTexel = texture(sampler2D(u_materials[materialIndex].diffuseTex), texCoord);
+
+  material.alpha = 1.0;
+}
+#endif

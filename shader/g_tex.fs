@@ -82,11 +82,11 @@ void main() {
   if (!u_forceLineMode) {
 #ifdef USE_ALPHA
 #ifdef USE_BLEND
-  if (alpha < u_oitMaxBlendThreshold) {
+  if (material.alpha < u_oitMaxBlendThreshold) {
       discard;
   }
 #else
-  if (alpha < GBUFFER_ALPHA_THRESHOLD)
+  if (material.alpha < GBUFFER_ALPHA_THRESHOLD)
     discard;
 #endif
 #endif

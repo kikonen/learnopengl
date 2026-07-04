@@ -30,6 +30,10 @@ layout (location = 0) out vec4 o_fragObjectID;
 //
 ////////////////////////////////////////////////////////////
 
+#ifdef USE_ALPHA
+ResolvedMaterial material;
+#endif
+
 void main() {
 #ifdef USE_ALPHA
   {
@@ -39,7 +43,7 @@ void main() {
 
     // NOtE KI experimental value; depends from few aspects in blended windows
     // NOTE KI this works badly for blended objects if threshold too big
-    if (alpha < 0.1)
+    if (material.alpha < 0.1)
       discard;
   }
 #endif

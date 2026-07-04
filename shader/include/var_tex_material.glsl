@@ -29,14 +29,21 @@
 
   vec4 mras = u_materials[i].mras.rgba * mrasTex.rgba;
 
-  material.diffuse = u_materials[i].diffuse *
-    texture(sampler2D(u_materials[i].diffuseTex), texCoord);
+#ifndef _ALPHA_RESOLVED
+  material.diffuseTexel = texture(sampler2D(u_materials[i].diffuseTex), texCoord);
 
-#ifdef _ALPHA_RESOLVED
-  material.diffuse.a = alpha;
+#ifdef USE_ALPHA
+  material.alpha =
+    (u_materials[materialIndex].diffuse.a *
+     material.diffuseTexel.a *
+    texture(sampler2D(u_materials[materialIndex].opacityMapTex), texCoord).r);
 #else
-  material.diffuse.a *= texture(sampler2D(u_materials[i].opacityMapTex), texCoord).r;
+  material.alpha = 1.0;
 #endif
+#endif
+
+  material.diffuse = u_materials[i].diffuse * material.diffuseTexel;
+  material.diffuse.a = material.alpha;
 
   // NOTE KI discard any trash, which is possibly hidden into emission tex with alpha
   // thus (0, 0, 0) == (r, g, b, 0)

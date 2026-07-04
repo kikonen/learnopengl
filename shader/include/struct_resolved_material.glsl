@@ -1,4 +1,7 @@
 struct ResolvedMaterial {
+  float alpha;
+  vec4 diffuseTexel;
+
   vec4 diffuse;
   vec3 emission;
 
