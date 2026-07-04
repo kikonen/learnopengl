@@ -253,12 +253,6 @@ void MaterialRegistry::resizeBuffer()
     // NOTE KI *reallocate* SSBO if needed
     m_ssbo.resizeBuffer(m_materialEntries.capacity() * sz, true);
 
-    m_texBuffer_float.release();
-    m_texBuffer_uint.release();
-
-    m_texBuffer_float.createTexBuffer("materials_float", GL_TEXTURE_BUFFER);
-    m_texBuffer_uint.createTexBuffer("materials_uint", GL_TEXTURE_BUFFER);
-
     bindBuffers();
 }
 
