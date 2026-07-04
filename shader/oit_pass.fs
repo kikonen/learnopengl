@@ -1,5 +1,9 @@
 #version 460 core
 
+#ifndef USE_ALPHA
+#define USE_ALPHA 1
+#endif
+
 // Forward-lit transparent pass. Reuses the deferred PBR + IBL lighting (calculateLightPbr)
 // so transparent surfaces respond to the environment and day/night just like opaque ones,
 // instead of emitting full albedo (which made them "glow" in the dark).
@@ -62,7 +66,7 @@ void main()
   vec2 texCoord = fs_in.texCoord;
 
   #include "include/var_tex_material_alpha.glsl"
-  OIT_DISCARD(alpha);
+  OIT_DISCARD(material.alpha);
 
   #include "include/var_tex_material.glsl"
 
@@ -79,10 +83,10 @@ void main()
   // full PBR + IBL ambient (same as deferred); returns vec4(litColor, material alpha)
   vec4 color = calculateLightPbr(viewNormal, viewPos, worldPos, shadowIndex);
 
-  float weight = clamp(pow(min(1.0, alpha * 10.0) + 0.01, 3.0) * 1e8 * pow(1.0 - gl_FragCoord.z * 0.9, 3.0), 1e-2, 3e3);
+  float weight = clamp(pow(min(1.0, material.alpha * 10.0) + 0.01, 3.0) * 1e8 * pow(1.0 - gl_FragCoord.z * 0.9, 3.0), 1e-2, 3e3);
 
-  o_accum = vec4(color.rgb * alpha, alpha) * weight;
-  o_reveal = alpha;
+  o_accum = vec4(color.rgb * material.alpha, material.alpha) * weight;
+  o_reveal = material.alpha;
 
   o_fragEmission = material.emission;
 }
