@@ -36,6 +36,7 @@ public:
 
     void clear();
     void prepare();
+    void bindBuffers();
 
     void updateRT(const UpdateContext& ctx);
 

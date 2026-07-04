@@ -49,6 +49,7 @@ public:
     void renderMaterials(const render::RenderContext& ctx);
 
     void prepare();
+    void bindBuffers();
 
     void updateRT(const UpdateContext& ctx);
 
