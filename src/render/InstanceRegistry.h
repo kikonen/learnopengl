@@ -55,6 +55,7 @@ namespace render
 
         void clear();
         void prepare();
+        void bindBuffers();
 
         void beginFrame();
         void endFrame();

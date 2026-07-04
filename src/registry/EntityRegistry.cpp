@@ -67,6 +67,12 @@ void EntityRegistry::prepare()
     m_ssbo.createEmpty(BLOCK_SIZE * sizeof(EntitySSBO), kigl::getBufferStorageFlags());
     m_ssbo.map(kigl::getBufferMapFlags());
 
+}
+
+void EntityRegistry::bindBuffers()
+{
+    ASSERT_RT();
+
     m_ssbo.bindSSBO(SSBO_ENTITIES);
 }
 
@@ -157,7 +163,7 @@ void EntityRegistry::resizeBuffer(size_t totalCount)
 
     m_ssbo.map(kigl::getBufferMapFlags());
 
-    m_ssbo.bindSSBO(SSBO_ENTITIES);
+    bindBuffers();
 }
 
 void EntityRegistry::beginFrame() {

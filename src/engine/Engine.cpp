@@ -193,6 +193,7 @@ bool Engine::renderFrame()
         close = update();
     }
     if (!close) {
+        getRegistry()->bindBuffers();
         close = render();
     }
     if (!close) {

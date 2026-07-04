@@ -165,6 +165,12 @@ void MaterialRegistry::updateRT(const UpdateContext& ctx)
 void MaterialRegistry::prepare()
 {
     m_ssbo.createEmpty(BLOCK_SIZE * sizeof(MaterialSSBO), GL_DYNAMIC_STORAGE_BIT);
+}
+
+void MaterialRegistry::bindBuffers()
+{
+    ASSERT_RT();
+
     m_ssbo.bindSSBO(SSBO_MATERIALS);
 }
 
@@ -225,8 +231,7 @@ void MaterialRegistry::updateMaterialBuffer()
         // NOTE KI *reallocate* SSBO if needed
         if (m_ssbo.size() < totalCount * sz) {
             m_ssbo.resizeBuffer(m_materialEntries.capacity() * sz, true);
-            m_ssbo.bindSSBO(SSBO_MATERIALS);
-
+            bindBuffers();
             //updateIndex = 0;
         }
 

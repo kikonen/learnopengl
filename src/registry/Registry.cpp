@@ -177,6 +177,13 @@ void Registry::updateRT(const UpdateContext& ctx)
     VaoRegistry::get().updateRT(ctx);
 }
 
+void Registry::bindBuffers()
+{
+    MaterialRegistry::get().bindBuffers();
+    EntityRegistry::get().bindBuffers();
+    render::InstanceRegistry::get().bindBuffers();
+}
+
 // In startFrame():
 void Registry::startFrame()
 {

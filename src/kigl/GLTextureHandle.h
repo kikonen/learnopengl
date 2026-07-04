@@ -74,6 +74,21 @@ namespace kigl {
             kigl::setLabel(GL_TEXTURE, m_textureID, name);
         }
 
+        // Create tex buffer for SSBO (or such)
+        void createTexBuffer(
+            std::string_view name,
+            GLenum target
+        )
+        {
+            if (m_textureID > 0) return;
+            glCreateTextures(target, 1, &m_textureID);
+
+            m_width = -1;
+            m_height = -1;
+
+            kigl::setLabel(GL_TEXTURE, m_textureID, name);
+        }
+
         void release()
         {
             if (m_textureID > 0)
@@ -91,6 +106,18 @@ namespace kigl {
         void unbindTexture(int unitIndex)
         {
             kigl::GLState::get().unbindTexture(unitIndex, false);
+        }
+
+        void bindFloatTexBuffer(int unitIndex, GLuint ssbo)
+        {
+            kigl::GLState::get().bindTexture(unitIndex, m_textureID, false);
+            glTextureBuffer(m_textureID, GL_RGBA32F, ssbo);
+        }
+
+        void bindUintTexBuffer(int unitIndex, GLuint ssbo)
+        {
+            kigl::GLState::get().bindTexture(unitIndex, m_textureID, false);
+            glTextureBuffer(m_textureID, GL_RGBA32UI, ssbo);
         }
 
         operator int() const { return m_textureID; }
