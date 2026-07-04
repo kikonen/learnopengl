@@ -74,6 +74,24 @@ void main() {
 
   vec2 texCoord = fs_in.texCoord;
 
+#ifdef USE_ALPHA
+  #include "include/var_tex_material_alpha.glsl"
+#endif
+
+  // NOTE KI alpha/blend does not co-op with line mode
+  if (!u_forceLineMode) {
+#ifdef USE_ALPHA
+#ifdef USE_BLEND
+  if (alpha < u_oitMaxBlendThreshold) {
+      discard;
+  }
+#else
+  if (alpha < GBUFFER_ALPHA_THRESHOLD)
+    discard;
+#endif
+#endif
+  }
+
   // NOTE KI interpolation from vs to fs denormalizes normal.
   // Declared early so var_calculate_tbn.glsl (and the old-path apply_parallax)
   // can both consume the same oriented normal.
@@ -90,20 +108,6 @@ void main() {
   #include "include/apply_parallax.glsl"
 
   #include "include/var_tex_material.glsl"
-
-  // NOTE KI alpha/blend does not co-op with line mode
-  if (!u_forceLineMode) {
-#ifdef USE_ALPHA
-#ifdef USE_BLEND
-  if (material.diffuse.a < u_oitMaxBlendThreshold) {
-      discard;
-  }
-#else
-  if (material.diffuse.a < GBUFFER_ALPHA_THRESHOLD)
-    discard;
-#endif
-#endif
-  }
 
   #include "include/apply_normal_map.glsl"
 

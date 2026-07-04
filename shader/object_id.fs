@@ -33,6 +33,7 @@ layout (location = 0) out vec4 o_fragObjectID;
 void main() {
 #ifdef USE_ALPHA
   {
+    const uint materialIndex = fs_in.materialIndex;
     const vec2 texCoord = fs_in.texCoord;
     #include "include/var_tex_material_alpha.glsl"
 

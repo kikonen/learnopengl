@@ -32,7 +32,11 @@
   material.diffuse = u_materials[i].diffuse *
     texture(sampler2D(u_materials[i].diffuseTex), texCoord);
 
+#ifdef _ALPHA_RESOLVED
+  material.diffuse.a = alpha;
+#else
   material.diffuse.a *= texture(sampler2D(u_materials[i].opacityMapTex), texCoord).r;
+#endif
 
   // NOTE KI discard any trash, which is possibly hidden into emission tex with alpha
   // thus (0, 0, 0) == (r, g, b, 0)

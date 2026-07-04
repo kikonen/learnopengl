@@ -60,12 +60,11 @@ void main()
   const uint materialIndex = fs_in.materialIndex;
 
   vec2 texCoord = fs_in.texCoord;
-  #include "include/apply_parallax.glsl"
+
+  #include "include/var_tex_material_alpha.glsl"
+  OIT_DISCARD(alpha);
 
   #include "include/var_tex_material.glsl"
-
-  const float alpha = material.diffuse.a;
-  OIT_DISCARD(alpha);
 
   const vec3 viewPos = fs_in.viewPos;
   const vec3 worldPos = (u_invViewMatrix * vec4(viewPos, 1)).xyz;

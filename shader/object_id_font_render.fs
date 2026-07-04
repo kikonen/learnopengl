@@ -29,14 +29,14 @@ ResolvedMaterial material;
 
 void main() {
   {
+    const uint materialIndex = fs_in.materialIndex;
     const vec2 texCoord = fs_in.texCoord;
-    #include "include/var_tex_material_alpha.glsl"
 
     material.diffuse = vec4(1, 1, 1, 1);
 
     vec4 color;
     shapeFont(fs_in.atlasHandle, fs_in.atlasCoord, false, color);
-    alpha = color.a;
+    float alpha = color.a;
 
     // NOtE KI experimental value; depends from few aspects in blended windows
     // NOTE KI this works badly for blended objects if threshold too big
