@@ -54,11 +54,15 @@ void MaterialRegistry::clear()
     m_idToIndex.clear();
 
     m_dirtyMaterials.clear();
-    m_materialEntries.clear();
+    m_materialMainEntries.clear();
+    m_materialCustomEntries.clear();
+    m_materialColdEntries.clear();
     m_updaters.clear();
 
     m_materials.reserve(BLOCK_SIZE);
-    m_materialEntries.reserve(BLOCK_SIZE);
+    m_materialMainEntries.reserve(BLOCK_SIZE);
+    m_materialCustomEntries.reserve(BLOCK_SIZE);
+    m_materialColdEntries.reserve(BLOCK_SIZE);
 
     m_dirtyFlag = false;
     m_lastSize = 0;
@@ -71,7 +75,9 @@ void MaterialRegistry::clear()
         registerMaterial(zero);
     }
 
-    m_ssbo.markUsed(0);
+    m_ssboMain.markUsed(0);
+    m_ssboCustom.markUsed(0);
+    m_ssboCold.markUsed(0);
 }
 
 ki::material_index MaterialRegistry::findRegisteredIndex(ki::material_id id)
@@ -164,14 +170,18 @@ void MaterialRegistry::updateRT(const UpdateContext& ctx)
 
 void MaterialRegistry::prepare()
 {
-    m_ssbo.createEmpty(BLOCK_SIZE * sizeof(MaterialSSBO), GL_DYNAMIC_STORAGE_BIT);
+    m_ssboMain.createEmpty(BLOCK_SIZE * sizeof(MaterialMainSSBO), GL_DYNAMIC_STORAGE_BIT);
+    m_ssboCustom.createEmpty(BLOCK_SIZE * sizeof(MaterialCustomSSBO), GL_DYNAMIC_STORAGE_BIT);
+    m_ssboCold.createEmpty(BLOCK_SIZE * sizeof(MaterialColdSSBO), GL_DYNAMIC_STORAGE_BIT);
 }
 
 void MaterialRegistry::bindBuffers()
 {
     ASSERT_RT();
 
-    m_ssbo.bindSSBO(SSBO_MATERIALS);
+    m_ssboMain.bindSSBO(SSBO_MATERIALS_MAIN);
+    m_ssboCustom.bindSSBO(SSBO_MATERIALS_CUSTOM);
+    m_ssboCold.bindSSBO(SSBO_MATERIALS_COLD);
 }
 
 void MaterialRegistry::prepareMaterials(const PrepareContext& ctx)
@@ -213,18 +223,23 @@ void MaterialRegistry::updateMaterialBuffer()
     if (totalCount == 0) return;
 
     {
-        m_materialEntries.reserve(totalCount);
+        m_materialMainEntries.reserve(totalCount);
+        m_materialCustomEntries.reserve(totalCount);
+        m_materialColdEntries.reserve(totalCount);
 
         // NOTE KI update m_materialsSSBO from *index*, not *updateIndex* point
         // - otherwise entries are multiplied, and indexed incorrectly
         for (size_t i = index; i < totalCount; i++) {
             const auto& material = m_materials[i];
-            m_materialEntries.emplace_back(material.toSSBO());
+            auto& main = m_materialMainEntries.emplace_back();
+            auto& custom = m_materialCustomEntries.emplace_back();
+            auto& cold = m_materialColdEntries.emplace_back();
+            material.fillSSBO(main, custom, cold);
         }
     }
 
     {
-        constexpr size_t sz = sizeof(MaterialSSBO);
+        constexpr size_t sz = sizeof(MaterialMainSSBO);
 
         size_t updateIndex = index;
 
@@ -232,12 +247,44 @@ void MaterialRegistry::updateMaterialBuffer()
 
         const size_t updateCount = totalCount - updateIndex;
 
-        m_ssbo.update(
+        m_ssboMain.update(
             updateIndex * sz,
             updateCount * sz,
-            &m_materialEntries[updateIndex]);
+            &m_materialMainEntries[updateIndex]);
 
-        m_ssbo.markUsed(totalCount * sz);
+        m_ssboMain.markUsed(totalCount * sz);
+    }
+    {
+        constexpr size_t sz = sizeof(MaterialCustomSSBO);
+
+        size_t updateIndex = index;
+
+        resizeBuffer();
+
+        const size_t updateCount = totalCount - updateIndex;
+
+        m_ssboCustom.update(
+            updateIndex * sz,
+            updateCount * sz,
+            &m_materialCustomEntries[updateIndex]);
+
+        m_ssboCustom.markUsed(totalCount * sz);
+    }
+    {
+        constexpr size_t sz = sizeof(MaterialColdSSBO);
+
+        size_t updateIndex = index;
+
+        resizeBuffer();
+
+        const size_t updateCount = totalCount - updateIndex;
+
+        m_ssboCold.update(
+            updateIndex * sz,
+            updateCount * sz,
+            &m_materialColdEntries[updateIndex]);
+
+        m_ssboCold.markUsed(totalCount * sz);
     }
 
     m_lastSize = totalCount;
@@ -246,12 +293,24 @@ void MaterialRegistry::updateMaterialBuffer()
 void MaterialRegistry::resizeBuffer()
 {
     const size_t totalCount = m_materials.size();
-    constexpr size_t sz = sizeof(MaterialSSBO);
-
-    if (m_ssbo.size() >= totalCount * sz) return;
-
-    // NOTE KI *reallocate* SSBO if needed
-    m_ssbo.resizeBuffer(m_materialEntries.capacity() * sz, true);
+    {
+        constexpr size_t sz = sizeof(MaterialMainSSBO);
+        if (m_ssboMain.size() >= totalCount * sz) return;
+        // NOTE KI *reallocate* SSBO if needed
+        m_ssboMain.resizeBuffer(m_materialMainEntries.capacity() * sz, true);
+    }
+    {
+        constexpr size_t sz = sizeof(MaterialCustomSSBO);
+        if (m_ssboCustom.size() >= totalCount * sz) return;
+        // NOTE KI *reallocate* SSBO if needed
+        m_ssboCustom.resizeBuffer(m_materialCustomEntries.capacity() * sz, true);
+    }
+    {
+        constexpr size_t sz = sizeof(MaterialColdSSBO);
+        if (m_ssboCold.size() >= totalCount * sz) return;
+        // NOTE KI *reallocate* SSBO if needed
+        m_ssboCold.resizeBuffer(m_materialColdEntries.capacity() * sz, true);
+    }
 
     bindBuffers();
 }
@@ -263,14 +322,36 @@ void MaterialRegistry::updateDirtyMaterialBuffer()
     // => if more, may need to specify logic to reserving
     //    specific limited range to be used for updatable materials, to avoid random access
     for (auto dirtyIndex : m_dirtyMaterials) {
-        m_materialEntries[dirtyIndex] = m_materials[dirtyIndex].toSSBO();
+        auto& main = m_materialMainEntries[dirtyIndex];
+        auto& custom = m_materialCustomEntries[dirtyIndex];
+        auto& cold = m_materialColdEntries[dirtyIndex];
 
-        constexpr size_t sz = sizeof(MaterialSSBO);
+        m_materials[dirtyIndex].fillSSBO(main, custom, cold);
 
-        m_ssbo.update(
-            dirtyIndex * sz,
-            1 * sz,
-            &m_materialEntries[dirtyIndex]);
+        {
+            constexpr size_t sz = sizeof(MaterialMainSSBO);
+
+            m_ssboMain.update(
+                dirtyIndex * sz,
+                1 * sz,
+                &m_materialMainEntries[dirtyIndex]);
+        }
+        {
+            constexpr size_t sz = sizeof(MaterialCustomSSBO);
+
+            m_ssboCustom.update(
+                dirtyIndex * sz,
+                1 * sz,
+                &m_materialCustomEntries[dirtyIndex]);
+        }
+        {
+            constexpr size_t sz = sizeof(MaterialColdSSBO);
+
+            m_ssboCold.update(
+                dirtyIndex * sz,
+                1 * sz,
+                &m_materialColdEntries[dirtyIndex]);
+        }
     }
     m_dirtyMaterials.clear();
 }

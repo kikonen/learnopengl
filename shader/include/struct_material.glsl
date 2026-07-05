@@ -3,7 +3,7 @@
 #define MATERIAL_INVERT_ROUGHNESS 4
 
 // NOTE KI https://stackoverflow.com/questions/38172696/should-i-ever-use-a-vec3-inside-of-a-uniform-buffer-or-shader-storage-buffer-o
-struct Material {
+struct MaterialMain {
   vec4 diffuse;
   vec4 emission;
 
@@ -23,28 +23,40 @@ struct Material {
   // - specular  (Alpha): 0 = no reflection, 1 = strong reflection
   uvec2 mrasMapTex;
 
-  uvec2 displacementMapTex;
+  uint flags;
 
+  float tilingX;
+  float tilingY;
+
+  float parallaxDepth;
+
+  int pad3_1;
+  int pad3_2;
+  // int pad3_3;
+};
+
+struct MaterialCustom {
+  uvec2 displacementMapTex;
   uvec2 dudvMapTex;
   uvec2 noiseMapTex;
   uvec2 noise2MapTex;
 
   uvec2 custom1Tex;
 
-  uint flags;
+  int pad3_1;
+  int pad3_2;
+  // int pad3_3;
+};
 
+struct MaterialCold {
   float reflection;
   float refraction;
   float refractionRatio;
-
-  float tilingX;
-  float tilingY;
 
   uint packedSprites;
 
   int layers;
   float layersDepth;
-  float parallaxDepth;
   float pointSize;
 
   int pad3_1;

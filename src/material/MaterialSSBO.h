@@ -22,8 +22,53 @@
 //
 // NOTE KI https://stackoverflow.com/questions/38172696/should-i-ever-use-a-vec3-inside-of-a-uniform-buffer-or-shader-storage-buffer-o
 //
-#pragma pack(push, 1)
-struct MaterialSSBO {
+//#pragma pack(push, 1)
+//struct MaterialSSBO {
+//    glm::vec4 u_diffuse; // 16
+//    glm::vec4 u_emission; // 16
+//
+//    // MRAS: [metalness, roughness, ambient-occlusion, specular]
+//    glm::vec4 u_mras; // 16
+//
+//    // NOTE KI "tex index", not "unit index"
+//    GLuint64 u_diffuseTex;
+//    GLuint64 u_emissionTex;
+//    //GLuint64 u_specularTex;
+//    GLuint64 u_normalMap;
+//
+//    GLuint64 u_opacityMap;
+//    GLuint64 u_mrasMap;
+//    GLuint64 displacementMapTex;
+//
+//    GLuint64 u_dudvMap;
+//    GLuint64 u_noiseMap;
+//    GLuint64 u_noise2Map;
+//
+//    GLuint64 u_custom1Map;
+//
+//    GLuint u_flags;
+//
+//    float u_reflection;
+//    float u_refraction;
+//    float u_refractionRatio;
+//
+//    float u_tilingX;
+//    float u_tilingY;
+//
+//    GLuint u_packedSprites;
+//
+//    int u_layers;
+//    float u_layersDepth;
+//    float u_parallaxDepth;
+//    float u_pointSize;
+//
+//    int pad3_1;
+//    //int pad3_2;
+//    //int pad3_3;
+//};
+//#pragma pack(pop)
+
+struct MaterialMainSSBO {
     glm::vec4 u_diffuse; // 16
     glm::vec4 u_emission; // 16
 
@@ -38,7 +83,21 @@ struct MaterialSSBO {
 
     GLuint64 u_opacityMap;
     GLuint64 u_mrasMap;
-    GLuint64 displacementMapTex;
+
+    GLuint u_flags;
+
+    float u_tilingX;
+    float u_tilingY;
+
+    float u_parallaxDepth;
+
+    int pad3_1;
+    int pad3_2;
+    //int pad3_3;
+};
+
+struct MaterialCustomSSBO{
+    GLuint64 u_displacementMap;
 
     GLuint64 u_dudvMap;
     GLuint64 u_noiseMap;
@@ -46,24 +105,23 @@ struct MaterialSSBO {
 
     GLuint64 u_custom1Map;
 
-    GLuint u_flags;
+    int pad3_1;
+    int pad3_2;
+    //int pad3_3;
+};
 
+struct MaterialColdSSBO {
     float u_reflection;
     float u_refraction;
     float u_refractionRatio;
-
-    float u_tilingX;
-    float u_tilingY;
 
     GLuint u_packedSprites;
 
     int u_layers;
     float u_layersDepth;
-    float u_parallaxDepth;
     float u_pointSize;
 
     int pad3_1;
     //int pad3_2;
     //int pad3_3;
 };
-#pragma pack(pop)

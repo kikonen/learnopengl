@@ -66,6 +66,8 @@ types:
         layers_depth: 0.2
         xxalpha: true
       program: g_fur
+    flags:
+      no_shadow: true
   - id: dir_light
     mesh:
       path: light

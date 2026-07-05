@@ -22,10 +22,12 @@ layout (location = 0) out vec4 o_fragColor;
 
 SET_FLOAT_PRECISION;
 
-Material material;
+ResolvedMaterial material;
 
 void main() {
-  material = u_materials[fs_in.materialIndex];
+  vec2 texCoord = fs_in.texCoord;
+  const uint materialIndex = fs_in.materialIndex;
+  #include "include/var_tex_material.glsl"
 
   // combined
   vec4 texColor = material.diffuse;

@@ -50,7 +50,7 @@ void main() {
   vs_out.diffuse = u_materials[materialIndex].diffuse;
   vs_out.diffuseTex = u_materials[materialIndex].diffuseTex;
 
-  const uint packedSprites = u_materials[materialIndex].packedSprites;
+  const uint packedSprites = readMaterial_packedSprites(materialIndex);
 
   const uint spritesX = unpackSpritesX(packedSprites);
   const uint spritesY = unpackSpritesY(packedSprites);

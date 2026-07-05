@@ -71,10 +71,14 @@ private:
     std::vector<Material> m_materials;
     std::vector<uint32_t> m_dirtyMaterials;
 
-    std::vector<MaterialSSBO> m_materialEntries;
+    std::vector<MaterialMainSSBO> m_materialMainEntries;
+    std::vector<MaterialCustomSSBO> m_materialCustomEntries;
+    std::vector<MaterialColdSSBO> m_materialColdEntries;
     size_t m_lastSize = 0;
 
-    kigl::GLBuffer m_ssbo{ "materials_ssbo" };
+    kigl::GLBuffer m_ssboMain{ "materials_ssbo_main" };
+    kigl::GLBuffer m_ssboCustom{ "materials_ssbo_custom" };
+    kigl::GLBuffer m_ssboCold{ "materials_ssbo_cold" };
 
     std::unordered_map<ki::material_updater_id, std::unique_ptr<MaterialUpdater>> m_updaters;
     std::unordered_map<ki::material_id, uint32_t> m_idToIndex;

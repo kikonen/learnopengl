@@ -31,7 +31,7 @@ void main() {
 
   #include "include/var_tex_material.glsl"
 
-  float d = textureLod(sampler2D(u_materials[materialIndex].custom1Tex), texCoord, 0).r;
+  float d = textureLod(sampler2D(readMaterial_custom1Tex(materialIndex)), texCoord, 0).r;
   // if (d < 0.1) {
   //   discard;
   // }

@@ -5,7 +5,7 @@ vec2 calculateParallaxMapping(
   const vec3 tangentDir,
   float parallaxDepth)
 {
-  sampler2D sampler = sampler2D(u_materials[materialIndex].displacementMapTex);
+  sampler2D sampler = sampler2D(readMaterial_displacementMapTex(materialIndex));
   float height = texture(sampler, texCoord).r;
   vec2 p = tangentDir.xy / tangentDir.z * (height * parallaxDepth);
   return texCoord - p;
@@ -17,7 +17,7 @@ vec2 calculateDeepParallaxMapping(
   const vec3 tangentDir,
   float parallaxDepth)
 {
-  sampler2D sampler = sampler2D(u_materials[materialIndex].displacementMapTex);
+  sampler2D sampler = sampler2D(readMaterial_displacementMapTex(materialIndex));
 
   // number of depth layers
   const float minLayers = 8.0;
@@ -55,7 +55,7 @@ vec2 calculateParallaxOcclusionMapping(
   vec3 tangentDir,
   const float parallaxDepth)
 {
-  sampler2D sampler = sampler2D(u_materials[materialIndex].displacementMapTex);
+  sampler2D sampler = sampler2D(readMaterial_displacementMapTex(materialIndex));
 
   // number of depth layers
   const float minLayers = 8.0;
@@ -110,7 +110,7 @@ vec2 parallaxMapMarch (
   const float parallaxDepth,
   const vec2 texCoord)
 {
-  sampler2D sampler = sampler2D(u_materials[materialIndex].displacementMapTex);
+  sampler2D sampler = sampler2D(readMaterial_displacementMapTex(materialIndex));
 
   vec2 pomUV = texCoord, optimalUV = texCoord;
 
