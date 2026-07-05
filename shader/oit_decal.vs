@@ -82,8 +82,10 @@ void main() {
   {
     const uint spriteIndex = decal.u_spriteIndex;
 
-    const uint spritesX = u_materials[materialIndex].spritesX;
-    const uint spritesY = u_materials[materialIndex].spritesY;
+    const uint packedSprites = u_materials[materialIndex].packedSprites;
+
+    const uint spritesX = unpackSpritesX(packedSprites);
+    const uint spritesY = unpackSpritesY(packedSprites);
 
     const float tx = 1.0 / spritesX;
     const float ty = 1.0 / spritesY;

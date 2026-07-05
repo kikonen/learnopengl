@@ -168,6 +168,28 @@ namespace {
 
         return { filePath.string(), found };
     }
+
+    inline uint32_t packSprites(uint32_t count, uint32_t spritesX, uint32_t spritesY) {
+        // Validate at pack time — silent truncation here is a corruption bug that
+        // only shows as wrong sprite UVs much later.
+        assert(count <= 0xFFFFu && "spriteCount exceeds 16-bit packing budget");
+        assert(spritesX <= 0xFFu && "spritesX exceeds 8-bit packing budget");
+        assert(spritesY <= 0xFFu && "spritesY exceeds 8-bit packing budget");
+        return (count << 16) | ((spritesX & 0xFFu) << 8) | (spritesY & 0xFFu);
+    }
+
+    inline uint32_t unpackSpriteCount(uint32_t packed) { return  packed >> 16; }
+    inline uint32_t unpackSpritesX(uint32_t packed) { return (packed >> 8) & 0xFFu; }
+    inline uint32_t unpackSpritesY(uint32_t packed) { return  packed & 0xFFu; }
+
+    inline uint32_t packSprites(const Material& material) {
+        uint8_t spritesY = material.spriteCount / material.spritesX;
+        if (material.spriteCount % material.spritesX != 0) {
+            spritesY++;
+        }
+
+        return packSprites(material.spriteCount, material.spritesX, spritesY);
+    }
 }
 
 Material Material::createMaterial(BasicMaterial type)
@@ -550,10 +572,6 @@ const MaterialSSBO Material::toSSBO() const
 
     // RGB8 = (128, 128, 255) = flat normal
     uint8_t flatNormal[] = { 128, 128, 255 };
-    uint8_t spritesY = spriteCount / spritesX;
-    if (spriteCount % spritesX != 0) {
-        spritesY++;
-    }
 
     const glm::vec4 mrasFactor{
         m_metalnessFactor,
@@ -592,9 +610,7 @@ const MaterialSSBO Material::toSSBO() const
         tilingX,
         tilingY,
 
-        spriteCount,
-        spritesX,
-        spritesY,
+        packSprites(*this),
 
         layers,
         layersDepth,
