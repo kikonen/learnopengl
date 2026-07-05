@@ -40,9 +40,7 @@ struct Material {
   float tilingX;
   float tilingY;
 
-  uint spriteCount;
-  uint spritesX;
-  uint spritesY;
+  uint packedSprites;
 
   int layers;
   float layersDepth;
@@ -50,6 +48,18 @@ struct Material {
   float pointSize;
 
   int pad3_1;
-  int pad3_2;
-  int pad3_3;
+  // int pad3_2;
+  // int pad3_3;
 };
+
+// packed = spriteCount(16) | spritesX(8) | spritesY(8)
+// Must match the C++ packing in Material upload — keep bit layout in sync.
+uint packSprites(uint count, uint spritesX, uint spritesY) {
+  return (count << 16) | ((spritesX & 0xFFu) << 8) | (spritesY & 0xFFu);
+}
+
+// GPU-side sprite bounds check;
+// unused until particle logic moves to GPU (currently clamped CPU-side)
+uint unpacSpriteCount(uint bits) { return  bits >> 16; }
+uint unpackSpritesX(uint bits)    { return (bits >> 8) & 0xFFu; }
+uint unpackSpritesY(uint bits)    { return  bits        & 0xFFu; }

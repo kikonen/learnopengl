@@ -55,9 +55,7 @@ struct MaterialSSBO {
     float u_tilingX;
     float u_tilingY;
 
-    GLuint u_spriteCount;
-    GLuint u_spritesX;
-    GLuint u_spritesY;
+    GLuint u_packedSprites;
 
     int u_layers;
     float u_layersDepth;
@@ -65,7 +63,7 @@ struct MaterialSSBO {
     float u_pointSize;
 
     int pad3_1;
-    int pad3_2;
-    int pad3_3;
+    //int pad3_2;
+    //int pad3_3;
 };
 #pragma pack(pop)
