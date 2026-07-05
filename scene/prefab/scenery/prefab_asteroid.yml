@@ -13,7 +13,8 @@ prefab:
         map_normal: Rock002_1K_NormalGL.png
         map_mras: Rock002_1K_mras
         xmap_displacement: Rock002_1K_displacement
-        tiling: 4
+        tiling: 0.6
+        scale_tiling: true
         parallax_depth: 0
     - path: rock2/rock_lod_1
       lod:
@@ -26,7 +27,8 @@ prefab:
         map_kd: Rock002_1K_Color.png
         map_normal: Rock002_1K_NormalGL.png
         map_mras: Rock002_1K_mras
-        tiling: 4
+        tiling: 0.6
+        scale_tiling: true
       scale: 1.5
     - path: rock2/rock_lod_2
       lod:
@@ -38,7 +40,8 @@ prefab:
         #kd: [0, 0, 1]
         map_kd: Rock002_1K_Color.png
         map_normal: Rock002_1K_NormalGL.png
-        tiling: 4
+        tiling: 0.6
+        scale_tiling: true
       scale: 1
     - path: rock2/rock_lod_3
       lod:
@@ -49,7 +52,8 @@ prefab:
         #mras: [0.5, 0.0, 1]
         #kd: [0, 1, 0]
         map_kd: Rock002_1K_Color.png
-        tiling: 4
+        tiling: 0.6
+        scale_tiling: true
       scale: 1.5
     - path: rock2/rock_lod_4
       lod:
@@ -62,7 +66,8 @@ prefab:
         #mras: [0.5, 0.0, 1]
         #kd: [1, 0, 0]
         map_kd: Rock002_1K_Color.png
-        tiling: 4
+        tiling: 0.6
+        scale_tiling: true
         render_back: true
       scale: 1.8
   program: g_tex

@@ -214,7 +214,6 @@ material_updaters:
   material:
     prefab: materials/Metal008.yml
     kd: [0.4, 0.4, 1, 0.75]
-    xtiling: 3
     alpha: true
     program: shader_toy
     program_definitions:
@@ -227,7 +226,6 @@ material_updaters:
   material:
     prefab: materials/Metal008.yml
     kd: [0.4, 0.4, 1, 0.75]
-    xtiling: 3
     alpha: true
     program: shader_toy
     program_definitions:
@@ -242,7 +240,6 @@ material_updaters:
     kd: [0.4, 0.4, 1, 0.75]
     map_noise: textures\noise\noise_1.png
     map_noise_2: textures\noise\noise_2.png
-    xtiling: 3
     alpha: true
     program: shader_toy
     program_definitions:

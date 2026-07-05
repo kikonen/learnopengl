@@ -8,7 +8,8 @@ prefab:
       map_normal: Rough_Concrete_Wall_vh2ifg1_2K_Normal.jpg
       map_mras: Rough_Concrete_Wall_vh2ifg1_2K_mras
       map_displacement: Rough_Concrete_Wall_vh2ifg1_2K_displacement
-      tiling: 20
+      tiling: 0.6
+      scale_tiling: true
       parallax_depth: 0.01
       program: g_tex
     flags:

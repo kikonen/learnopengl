@@ -109,6 +109,8 @@ types:
       material:
         name: giant_woodbox
         map_kd: textures/wood_1024.png
+        tiling: 0.1
+        scale_tiling: true
         reflection: 0.1
         render_back: true
       program: g_tex

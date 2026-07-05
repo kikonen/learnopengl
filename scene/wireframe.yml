@@ -76,7 +76,6 @@ types:
       material:
         prefab: materials/Metal008.yml
         kd: [0.4, 0.4, 1, 0.75]
-        xtiling: 3
         xparallax_depth: 0.0
         program: g_tex
         geometry_type: wireframe_mod
@@ -97,7 +96,6 @@ types:
       material:
         prefab: materials/Metal008.yml
         kd: [0.4, 0.4, 1, 0.75]
-        xtiling: 3
         xparallax_depth: 0.0
         program: g_tex
         # blend: true

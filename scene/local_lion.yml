@@ -67,7 +67,6 @@ nodes:
         name: lion_pbr
         map_pbr: lion_skin_pbr
         xmetal: [0.3, 0.4, 0, 1]
-        xtiling: 60
         xrender_back: true
         xwireframe: true
       animations:

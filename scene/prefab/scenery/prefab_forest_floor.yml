@@ -8,7 +8,8 @@ prefab:
       map_normal: Ground037_2K-PNG_NormalGL.png
       map_mras: Ground037_2K-PNG_mras
       map_displacement: Ground037_2K-PNG_displacement
-      tiling: 60
+      tiling: 0.6
+      scale_tiling: true
       parallax_depth: 0.1
       program: g_tex
   flags:

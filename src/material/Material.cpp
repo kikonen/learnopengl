@@ -37,6 +37,7 @@ namespace {
     constexpr unsigned int MATERIAL_INVERT_OCCLUSION = 1;
     constexpr unsigned int MATERIAL_INVERT_METALNESS = 2;
     constexpr unsigned int MATERIAL_INVERT_ROUGHNESS = 4;
+    constexpr unsigned int MATERIAL_SCALE_TILING = 8;
 
     const glm::vec4 WHITE_RGBA{ 1.f };
     const glm::vec4 BLACK_RGBA{ 0.f };
@@ -690,6 +691,9 @@ unsigned int Material::getFlags() const
     }
     if (m_invertRoughness) {
         flags |= MATERIAL_INVERT_ROUGHNESS;
+    }
+    if (m_scaleTiling) {
+        flags |= MATERIAL_SCALE_TILING;
     }
     return flags;
 }

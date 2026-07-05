@@ -287,6 +287,10 @@ namespace loader {
                 material.m_invertRoughness = readBool(v);
                 fields.invertRoughness = true;
             }
+            else if (k == "scale_tiling") {
+                material.m_scaleTiling = readBool(v);
+                fields.scaleTiling = true;
+            }
             else if (k == "pattern") {
                 material.pattern = readInt(v);
                 fields.pattern = true;
@@ -630,6 +634,7 @@ namespace loader {
         if (f.invertOcclusion) m.m_invertOcclusion = mod.m_invertOcclusion;
         if (f.invertMetalness) m.m_invertMetalness = mod.m_invertMetalness;
         if (f.invertRoughness) m.m_invertRoughness = mod.m_invertRoughness;
+        if (f.scaleTiling) m.m_scaleTiling = mod.m_scaleTiling;
 
         if (f.alpha) m.alpha = mod.alpha;
         if (f.blend) m.blend = mod.blend;
