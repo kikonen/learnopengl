@@ -8,7 +8,8 @@ prefab:
       map_normal: DiamondPlate002_1K_NormalGL.png
       map_mras: DiamondPlate002_1K_mras
       map_displacement: DiamondPlate002_1K_displacement
-      tiling: 60
+      tiling: 0.6
+      scale_tiling: true
       parallax_depth: 0.008
       program: g_tex
     flags:

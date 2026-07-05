@@ -61,7 +61,6 @@ nodes:
         map_kd: Polygon_City_Characters_Texture_01_C.png
         map_kd: skaterMaleA.png
         metal: [0.3, 0.4, 0, 1]
-        xtiling: 60
         xrender_back: true
         xwireframe: true
         program: g_tex

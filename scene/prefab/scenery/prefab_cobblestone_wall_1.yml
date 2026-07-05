@@ -8,7 +8,8 @@ prefab:
       map_normal: Cobblestone_wall_01_2K_Normal.png
       map_mras: Cobblestone_wall_01_2K_mras
       map_displacement: Cobblestone_wall_01_2K_displacement
-      tiling: 100
+      tiling: 0.6
+      scale_tiling: true
       parallax_depth: 0.08
       program: g_tex
     flags:

@@ -8,7 +8,8 @@ prefab:
       map_normal: PavingStones115C_1K_NormalGL.png
       map_mras: PavingStones115C_1K_mras
       map_displacement: PavingStones115C_1K_displacement
-      tiling: 60
+      tiling: 0.6
+      scale_tiling: true
       parallax_depth: 0.025
       program: g_tex
     flags:

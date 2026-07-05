@@ -4,7 +4,8 @@ prefab:
     path: plane
     material:
       prefab: materials/PavingStones115C
-      tiling: 60
+      tiling: 0.6
+      scale_tiling: true
     flags:
       pre_depth: true
   flags:

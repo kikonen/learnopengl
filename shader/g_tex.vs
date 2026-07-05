@@ -158,8 +158,22 @@ void main() {
   vs_out.materialIndex = materialIndex;
   vs_out.flags = instance.u_flags;
 
-  vs_out.texCoord.x = a_texCoord.x * u_materials[materialIndex].tilingX * entity.tilingX;
-  vs_out.texCoord.y = a_texCoord.y * u_materials[materialIndex].tilingY * entity.tilingY;
+  float tilingX = u_materials[materialIndex].tilingX * entity.tilingX;
+  float tilingY = u_materials[materialIndex].tilingY * entity.tilingY;
+  // scale-relative tiling: material tiling is "tiles per world unit".
+  // u_worldScale holds rotation-invariant local-axis scale magnitudes.
+  // Under UNIFORM scale (x==y==z) this is correct for ANY orientation (floor
+  // or wall) since both axes get the same isotropic factor. Only NON-UNIFORM
+  // scale needs a known U/V->axis pairing: the hardcoded X/Z below assumes a
+  // tile lying in local XZ, so a non-uniformly scaled wall (local XY) would
+  // need an explicit per-material axis mapping. Shear (non-uniform parent
+  // scale + child rotation) stays unsupported.
+  if ((u_materials[materialIndex].flags & MATERIAL_SCALE_TILING) != 0) {
+    tilingX *= entity.u_worldScale.x;
+    tilingY *= entity.u_worldScale.z;
+  }
+  vs_out.texCoord.x = a_texCoord.x * tilingX;
+  vs_out.texCoord.y = a_texCoord.y * tilingY;
 
 #ifdef USE_JOINTS
 #ifdef USE_DEBUG

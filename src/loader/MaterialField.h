@@ -42,6 +42,7 @@ namespace loader {
         bool invertOcclusion : 1 { false };
         bool invertMetalness : 1 { false };
         bool invertRoughness : 1 { false };
+        bool scaleTiling : 1 { false };
 
         bool alpha : 1 {false};
         bool blend : 1 {false};

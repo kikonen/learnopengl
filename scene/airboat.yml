@@ -24,7 +24,8 @@ types:
     mesh:
       path: texture_cube
       material_modifier:
-        tiling: 5
+        tiling: 2
+        scale_tiling: true
       program: g_tex
   - id: airboat
     mesh:
@@ -42,6 +43,8 @@ types:
       material:
         name: giant_woodbox
         map_kd: textures/wood_1024.png
+        tiling: 0.1
+        scale_tiling: true
         xreflection: 0.1
         render_back: true
       program: g_tex
@@ -53,8 +56,9 @@ nodes:
     pos: [0, 1, 15]
     rotation: [0, 180, 0]
     active: true
-  - xtype: other
+  - type: other
     pos: [0.0, 0.0, -20.0]
+    scale: 4
   - type: airboat
     clones:
       - pos: [0.0, 0.0, 0.0]

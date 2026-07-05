@@ -1,6 +1,8 @@
 #define MATERIAL_INVERT_OCCLUSION 1
 #define MATERIAL_INVERT_METALNESS 2
 #define MATERIAL_INVERT_ROUGHNESS 4
+// tilingX/Y are "tiles per world unit"; multiply by entity world scale
+#define MATERIAL_SCALE_TILING 8
 
 // NOTE KI https://stackoverflow.com/questions/38172696/should-i-ever-use-a-vec3-inside-of-a-uniform-buffer-or-shader-storage-buffer-o
 struct MaterialMain {

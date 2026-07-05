@@ -139,6 +139,8 @@ types:
         name: silver_ball
         prefab: materials/Fence007A.yml
         kd: [0.5075, 0.5075, 0.5075, 1.0]
+        tiling: 1.5
+        scale_tiling: true
         xreflection: 0.05
         parallax: 0.0
         alpha: true
@@ -218,7 +220,8 @@ types:
         prefab: materials/Fence007A.yml
         kd: [0.800000, 0.800000, 0.800000, 1.0]
         parallax: 0.0
-        tiling: 1
+        tiling: 0.3
+        scale_tiling: true
         alpha: true
         render_back: true
       program: g_tex
