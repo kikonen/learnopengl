@@ -37,7 +37,7 @@ void main() {
 
   #include "include/var_tex_material.glsl"
 
-  sampler2D sampler = sampler2D(u_materials[materialIndex].noiseMapTex);
+  sampler2D sampler = sampler2D(readMaterial_noiseMapTex(materialIndex));
   vec4 noiseColor = texture(sampler, texCoord * 8.0);
   float noise = noiseColor.r;
 

@@ -564,7 +564,65 @@ void Material::prepare()
     }
 }
 
-const MaterialSSBO Material::toSSBO() const
+//const MaterialSSBO Material::toSSBO() const
+//{
+//    const auto& whitePx = ColorTexture::getWhiteRGBA().m_handle;
+//    const auto& blackPx = ColorTexture::getBlackRGBA().m_handle;
+//    const auto& flatNormalPx = ColorTexture::getFlatNormalRGBA().m_handle;
+//
+//    // RGB8 = (128, 128, 255) = flat normal
+//    uint8_t flatNormal[] = { 128, 128, 255 };
+//
+//    const glm::vec4 mrasFactor{
+//        m_metalnessFactor,
+//        m_occlusionFactor,
+//        m_roughnessFactor,
+//        1.f };
+//
+//    return {
+//        kd,
+//        hasBoundTex(TextureType::emission) ? WHITE_RGBA : ke,
+//
+//        hasBoundTex(TextureType::map_mras) ? mrasFactor : mras,
+//
+//        getTexHandle(TextureType::diffuse, whitePx),
+//        getTexHandle(TextureType::emission, blackPx),
+//
+//        getTexHandle(TextureType::map_normal, flatNormalPx),
+//
+//        getTexHandle(TextureType::map_opacity, whitePx),
+//        // NOTE KI whitePx fails due to "inverse" flags
+//        getTexHandle(TextureType::map_mras, 0),
+//        getTexHandle(TextureType::map_displacement, blackPx),
+//
+//        getTexHandle(TextureType::map_dudv, 0),
+//        getTexHandle(TextureType::map_noise, 0),
+//        getTexHandle(TextureType::map_noise_2, 0),
+//
+//        getTexHandle(TextureType::map_custom_1, 0),
+//
+//        getFlags(),
+//
+//        reflection,
+//        refraction,
+//        getRefractionRatio(),
+//
+//        tilingX,
+//        tilingY,
+//
+//        packSprites(*this),
+//
+//        layers,
+//        layersDepth,
+//        parallaxDepth,
+//        pointSize,
+//    };
+//}
+
+void Material::fillSSBO(
+    MaterialMainSSBO& main,
+    MaterialCustomSSBO& custom,
+    MaterialColdSSBO& cold) const
 {
     const auto& whitePx = ColorTexture::getWhiteRGBA().m_handle;
     const auto& blackPx = ColorTexture::getBlackRGBA().m_handle;
@@ -579,46 +637,47 @@ const MaterialSSBO Material::toSSBO() const
         m_roughnessFactor,
         1.f };
 
-    return {
-        kd,
-        hasBoundTex(TextureType::emission) ? WHITE_RGBA : ke,
+    main = {
+        .u_diffuse = kd,
+        .u_emission = hasBoundTex(TextureType::emission) ? WHITE_RGBA : ke,
+        .u_mras = hasBoundTex(TextureType::map_mras) ? mrasFactor : mras,
 
-        hasBoundTex(TextureType::map_mras) ? mrasFactor : mras,
-
-        getTexHandle(TextureType::diffuse, whitePx),
-        getTexHandle(TextureType::emission, blackPx),
-
-        getTexHandle(TextureType::map_normal, flatNormalPx),
-
-        getTexHandle(TextureType::map_opacity, whitePx),
+        .u_diffuseTex = getTexHandle(TextureType::diffuse, whitePx),
+        .u_emissionTex = getTexHandle(TextureType::emission, blackPx),
+        .u_normalMap = getTexHandle(TextureType::map_normal, flatNormalPx),
+        .u_opacityMap = getTexHandle(TextureType::map_opacity, whitePx),
         // NOTE KI whitePx fails due to "inverse" flags
-        getTexHandle(TextureType::map_mras, 0),
-        getTexHandle(TextureType::map_displacement, blackPx),
+        .u_mrasMap = getTexHandle(TextureType::map_mras, 0),
 
-        getTexHandle(TextureType::map_dudv, 0),
-        getTexHandle(TextureType::map_noise, 0),
-        getTexHandle(TextureType::map_noise_2, 0),
+        .u_flags = getFlags(),
 
-        getTexHandle(TextureType::map_custom_1, 0),
+        .u_tilingX = tilingX,
+        .u_tilingY = tilingY,
 
-        getFlags(),
+        .u_parallaxDepth = parallaxDepth,
+    };
 
-        reflection,
-        refraction,
-        getRefractionRatio(),
+    custom = {
+        .u_displacementMap = getTexHandle(TextureType::map_displacement, blackPx),
 
-        tilingX,
-        tilingY,
+        .u_dudvMap = getTexHandle(TextureType::map_dudv, 0),
+        .u_noiseMap = getTexHandle(TextureType::map_noise, 0),
+        .u_noise2Map = getTexHandle(TextureType::map_noise_2, 0),
 
-        packSprites(*this),
+        .u_custom1Map = getTexHandle(TextureType::map_custom_1, 0),
+    };
+    cold = {
+        .u_reflection = reflection,
+        .u_refraction = refraction,
+        .u_refractionRatio = getRefractionRatio(),
 
-        layers,
-        layersDepth,
-        parallaxDepth,
-        pointSize,
+        .u_packedSprites = packSprites(*this),
+
+        .u_layers = layers,
+        .u_layersDepth = layersDepth,
+        .u_pointSize = pointSize,
     };
 }
-
 
 unsigned int Material::getFlags() const
 {

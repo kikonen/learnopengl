@@ -23,7 +23,10 @@
 
 class Program;
 class MaterialUpdater;
-struct MaterialSSBO;
+//struct MaterialSSBO;
+struct MaterialMainSSBO;
+struct MaterialCustomSSBO;
+struct MaterialColdSSBO;
 
 enum class BasicMaterial : std::underlying_type_t<std::byte> {
     basic,
@@ -123,7 +126,11 @@ public:
 
     void prepare();
 
-    const MaterialSSBO toSSBO() const;
+    //const MaterialSSBO toSSBO() const;
+    void fillSSBO(
+        MaterialMainSSBO& main,
+        MaterialCustomSSBO& custom,
+        MaterialColdSSBO& cold) const;
 
     unsigned int getFlags() const;
 

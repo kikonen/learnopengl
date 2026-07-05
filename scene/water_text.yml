@@ -1,0 +1,109 @@
+---
+meta:
+  name: Water only
+skybox:
+  program: g_skybox
+  material: skybox/polyhaven/drakensberg_solitary_mountain_4k.hdr
+script:
+  scripts:
+    - path: lib/common
+types:
+  - id: player
+    type: origo
+    xmesh:
+      program: g_tex
+    front: [0, 0, -1]
+    flags:
+      allow_normals: false
+    audio:
+      listener:
+        default: true
+    camera:
+      default: true
+    controllers:
+      - type: pawn
+      - type: camera_zoom
+  - id: water_surface
+    mesh:
+      path: plane
+      material:
+        name: water_surface
+        kd: [0.55, 0.55, 0.95, 1.0]
+        map_normal: textures/water_surface_512_normal.png
+        map_dudv: textures/waterDUDV_512.png
+        tiling: 2
+        render_back: true
+        program: g_water
+      flags:
+        pre_depth: true
+    flags:
+      no_shadow: true
+      water: true
+    water_depth: 10.0
+  - id: pool_floor
+    mesh:
+      path: quad
+      material:
+        name: pool_floor
+        map_kd: textures/tiles_1024_color.png
+        tiling: 8
+      program: g_tex
+    flags:
+      no_shadow: true
+  - id: hello_world
+    type: text
+    mesh:
+      material:
+        kd: [0.8, 0.8, 0.6, 1.0]
+        map_displacement: ""
+        alpha: true
+        blend: true
+        render_back: true
+        default_programs: false
+        program: g_font_render
+        oit_program: oit_font_render
+        shadow_program: shadow_font_render
+        selection_program: selection_font_render
+        id_program: object_id_font_render
+    text:
+      text: Hello world
+      font:
+        path: fonts/LuckiestGuy.ttf
+        size: 16
+      align_horizontal: center
+      align_vertical: center
+    xscript_file: scripts/anim_rotate_object
+
+nodes:
+  - type: player
+    pos: [0, 5, 5]
+    scale: 0.8
+    active: true
+  - type: water_surface
+    pos: [-30, 0, -30]
+    scale: 30
+    repeat:
+      x_count: 2
+      y_count: 1
+      z_count: 2
+      x_step: 60
+      y_step: 0
+      z_step: 60
+  - type: pool_floor
+    pos: [-30, -4, -30]
+    rotation: [270.0, 0.0, 0.0]
+    scale: 30
+    repeat:
+      x_count: 2
+      y_count: 1
+      z_count: 2
+      x_step: 60
+      y_step: 0
+      z_step: 60
+  - type: hello_world
+    pos: [0, -1.0, -9.0]
+    scale: 0.1
+
+materials:
+  - alias: water_caustics
+    map_kd: textures/water_caustics/water_caustics_001.png

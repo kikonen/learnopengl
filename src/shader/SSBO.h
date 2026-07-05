@@ -6,10 +6,10 @@
 
 #include "kigl/GLBuffer.h"
 
-constexpr GLuint SSBO_MATERIALS = 1;
-//constexpr GLuint SSBO_TEXTURES = 2;
-constexpr GLuint SSBO_ENTITIES = 3;
-//constexpr GLuint SSBO_MATERIAL_INDECES = 4;
+constexpr GLuint SSBO_MATERIALS_MAIN = 1;
+constexpr GLuint SSBO_MATERIALS_CUSTOM = 2;
+constexpr GLuint SSBO_MATERIALS_COLD = 3;
+constexpr GLuint SSBO_ENTITIES = 4;
 constexpr GLuint SSBO_DRAW_COMMANDS = 5;
 constexpr GLuint SSBO_DRAW_PARAMETERS = 6;
 constexpr GLuint SSBO_PERFORMANCE_COUNTERS = 7;

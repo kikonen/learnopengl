@@ -1,7 +1,7 @@
 #ifdef USE_CUBE_MAP
-#define MAT_REFRACT_RATIO u_materials[materialIndex].refractionRatio
-#define MAT_REFLECT u_materials[materialIndex].reflection
-#define MAT_REFRACT u_materials[materialIndex].refraction
+#define MAT_REFRACT_RATIO readMaterial_refractionRatio(materialIndex)
+#define MAT_REFLECT readMaterial_reflection(materialIndex)
+#define MAT_REFRACT readMaterial_refraction(materialIndex)
 
 if (u_cubeMapEnabled) {
   float diffuseRatio = 1.0 - MAT_REFLECT - MAT_REFRACT;

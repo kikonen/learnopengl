@@ -15,3 +15,15 @@ struct Particle {
   // index = 8 bit
   uint u_msp;
 };
+
+uint unpackParticleIndex(uint msp) {
+  return (msp >> 16);
+}
+
+float unpackParticleScale(uint msp) {
+  return (float((msp >> 8) & 255) / 255.0) * PARTICLE_MAX_SCALE;
+}
+
+uint unpackParticleSpriteIndex(uint msp) {
+  return msp & 255;;
+}
