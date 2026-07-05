@@ -80,22 +80,31 @@ types:
       water: true
     water_depth: 20
     script_file: scripts/anim_water
-  - id: pool_side
+  - id: pool_side_short
     mesh:
-      path: pool_brick
-      material_modifier:
-        base: textures/Planks 09 [8K]
-        map_kd: Planks09_col_2048.png
-        map_normal: Planks09_nrm_2048.png
-        map_mras: Planks09_mras
-        map_displacement: Planks09_displacement
-        mras: [1.0, 0.0, 1]
-        tiling_x: 30
-        tiling_y: 4
-      flags:
-        pre_depth: true
-      program: g_tex
-  - id: pool_floor_single
+      vertex:
+        type: cube
+        size: [0.1, 1.8, 5]
+      material:
+        prefab: materials/Fence007A.yml
+        tiling_x: 3
+        tiling_y: 10
+        scale_tiling: true
+        alpha: true
+        program: g_tex
+  - id: pool_side_long
+    mesh:
+      vertex:
+        type: cube
+        size: [0.1, 1.8, 5.2]
+      material:
+        prefab: materials/Fence007A.yml
+        tiling_x: 3
+        tiling_y: 10
+        scale_tiling: true
+        alpha: true
+        program: g_tex
+  - xid: pool_floor_single
     mesh:
       path: plane
       material:
@@ -108,7 +117,7 @@ types:
     priority: -10
     flags:
       no_shadow: true
-  - id: pool_surface_single
+  - xid: pool_surface_single
     mesh:
       path: plane
       material:
@@ -126,7 +135,7 @@ types:
       no_shadow: true
       water: true
     water_depth: 20.0
-  - id: pool_side_single
+  - xid: pool_side_single
     mesh:
       path: pool_brick
       material_modifier:
@@ -172,19 +181,13 @@ composites:
           z_count: 2
           x_step: 5
           z_step: 5
-      - type: pool_side
+      - type: pool_side_short
         rot: [0, 0, 0]
-        scale: [0.1, 1.8, 5]
-        tiling_x: 1
-        tiling_y: 2
         clones:
           - pos: [-5.1, 1.8, 0]
           - pos: [5.1, 1.8, 0]
-      - type: pool_side
+      - type: pool_side_long
         rot: [0, 90, 0]
-        scale: [0.1, 1.8, 5.2]
-        tiling_x: 1
-        tiling_y: 2
         clones:
           - pos: [0, 1.8, -5.1]
           - pos: [0, 1.8, 5.1]
@@ -208,6 +211,9 @@ nodes:
       z_count: 2
       x_step: 11
       z_step: 11
+  - type: pool
+    pos: [20, 0, 32]
+    scale: 2
   - xtype: pool_floor_single
     pos: [160.0, 3.2, 20.0]
   - xtype: pool_surface_single
@@ -223,7 +229,7 @@ nodes:
       - pos: [160.0, 4, -40]
         scale: [60, 6, 0.3]
   - type: wooden_floor
-    scale: 200
+    scale: 5000
 
 materials:
   - alias: water_caustics
