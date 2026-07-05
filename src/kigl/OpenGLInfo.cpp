@@ -76,13 +76,15 @@ m_preferredFormatRGB8));
             //    strstr(ext, "GL_KHR_texture_compression_astc_hdr") != nullptr));
 
             // Dump all compressed formats
-            KI_INFO("[COMPRESSED_FORMATS]");
-            GLint count;
-            glGetIntegerv(GL_NUM_COMPRESSED_TEXTURE_FORMATS, &count);
-            std::vector<GLint> formats(count);
-            glGetIntegerv(GL_COMPRESSED_TEXTURE_FORMATS, formats.data());
-            for (int i = 0; i < count; i++) {
-                KI_INFO_OUT(fmt::format("0x{:04X}", formats[i]));
+            if (false) {
+                KI_INFO("[COMPRESSED_FORMATS]");
+                GLint count;
+                glGetIntegerv(GL_NUM_COMPRESSED_TEXTURE_FORMATS, &count);
+                std::vector<GLint> formats(count);
+                glGetIntegerv(GL_COMPRESSED_TEXTURE_FORMATS, formats.data());
+                for (int i = 0; i < count; i++) {
+                    KI_INFO(fmt::format("0x{:04X}", formats[i]));
+                }
             }
         }
     }

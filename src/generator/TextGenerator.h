@@ -47,6 +47,8 @@ public:
         const UpdateContext& ctx,
         const model::Node& container) override;
 
+    void updateMaterial(const model::Node& container);
+
     void updateDrawables(
         render::InstanceRegistry& instanceRegistry,
         const model::Node& container,
@@ -117,4 +119,6 @@ private:
     text::Align m_alignVertical{ text::Align::none };
 
     std::string m_text;
+
+    bool m_fontRegistered{ false };
 };

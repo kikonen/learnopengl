@@ -45,8 +45,10 @@ struct MaterialCustom {
 
   uvec2 custom1Tex;
 
-  int pad3_1;
-  int pad3_2;
+  uvec2 fontAtlasTex;
+
+  // int pad3_1;
+  // int pad3_2;
   // int pad3_3;
 };
 

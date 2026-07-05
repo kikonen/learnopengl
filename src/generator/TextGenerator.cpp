@@ -9,7 +9,9 @@
 
 #include "model/Node.h"
 #include "model/Snapshot.h"
+#include "model/NodeType.h"
 
+#include "mesh/LodMeshContainer.h"
 #include "mesh/LodMesh.h"
 #include "mesh/TextMesh.h"
 #include "mesh/Transform.h"
@@ -23,6 +25,9 @@
 
 #include "registry/Registry.h"
 #include "registry/EntityRegistry.h"
+
+#include "material/MaterialRegistry.h"
+#include "material/Material.h"
 
 #include "text/FontRegistry.h"
 #include "text/FontAtlas.h"
@@ -50,6 +55,10 @@ void TextGenerator::updateRT(
     const UpdateContext& ctx,
     const model::Node& container)
 {
+    if (!m_fontRegistered) {
+        updateMaterial(container);
+    }
+
     if (!m_dirty) return;
 
     auto* fontAtlas = text::FontRegistry::get().getPreparedFontAtlas(m_fontId, true);
@@ -112,6 +121,26 @@ void TextGenerator::updateRT(
         instanceRegistry.markDirty(ref);
         instanceRegistry.updateInstances(ref);
         instanceRegistry.upload(ref);
+    }
+}
+
+void TextGenerator::updateMaterial(const model::Node& container)
+{
+    auto* fontAtlas = text::FontRegistry::get().getPreparedFontAtlas(m_fontId, true);
+    if (!fontAtlas) return;
+
+    auto* lodMesh = container.getType()->getMeshContainer()->getLodMesh(0);
+    auto* material = lodMesh->m_material.get();
+
+    if (material) {
+        if (material->m_registeredIndex <= 0) return;
+
+        auto atlasTex = getAtlasTextureHandle();
+        if (material->m_fontAtlasTex != atlasTex) {
+            material->m_fontAtlasTex = atlasTex;
+            MaterialRegistry::get().updateMaterial(*material);
+            m_fontRegistered = true;
+        }
     }
 }
 

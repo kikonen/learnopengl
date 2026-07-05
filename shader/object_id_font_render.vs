@@ -83,5 +83,5 @@ void main() {
   vs_out.texCoord = a_texCoord;
 
   vs_out.atlasCoord = a_atlasCoord;
-  vs_out.atlasHandle = entity.u_fontHandle;
+  vs_out.atlasHandle = readMaterial_fontAtlasTex(materialIndex);
 }
