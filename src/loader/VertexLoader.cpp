@@ -115,6 +115,9 @@ namespace loader {
                 data.size = readVec3(v);
                 data.has_size = true;
             }
+            else if (k == "scale_tiling") {
+                data.scaleTiling = readBool(v);
+            }
             else if (k == "inner_radius") {
                 data.inner_radius = readFloat(v);
                 data.has_inner_radius = true;
@@ -242,6 +245,7 @@ namespace loader {
         }
 
         if (data.has_size) generator.size = data.size;
+        generator.scaleTiling = data.scaleTiling;
         if (data.has_inner_radius) generator.inner_radius = data.inner_radius;
         if (data.has_radius) generator.radius = data.radius;
         if (data.has_length) generator.length = data.length;

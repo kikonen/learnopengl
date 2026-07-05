@@ -85,24 +85,28 @@ types:
       vertex:
         type: cube
         size: [0.1, 1.8, 5]
+        scale_tiling: true
       material:
         prefab: materials/Fence007A.yml
-        tiling_x: 3
-        tiling_y: 10
+        tiling_x: 0.5
+        tiling_y: 0.5
         scale_tiling: true
         alpha: true
+        render_back: true
         program: g_tex
   - id: pool_side_long
     mesh:
       vertex:
         type: cube
         size: [0.1, 1.8, 5.2]
+        scale_tiling: true
       material:
         prefab: materials/Fence007A.yml
-        tiling_x: 3
-        tiling_y: 10
+        tiling_x: 0.5
+        tiling_y: 0.5
         scale_tiling: true
         alpha: true
+        render_back: true
         program: g_tex
   - xid: pool_floor_single
     mesh:
