@@ -61,7 +61,7 @@ types:
       material:
         kd: [0.0, 1.0, 0.0, 1.0]
         xmras: [1.0, 0.0, 1]
-        layers_depth: 10
+        point_size: 10
       vertex:
         type: points
         vertices:

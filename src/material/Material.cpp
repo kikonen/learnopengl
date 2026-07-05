@@ -599,8 +599,10 @@ const MaterialSSBO Material::toSSBO() const
         layers,
         layersDepth,
         parallaxDepth,
+        pointSize,
     };
 }
+
 
 unsigned int Material::getFlags() const
 {
