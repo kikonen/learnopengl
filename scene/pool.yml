@@ -215,9 +215,12 @@ types:
     type: origo
     particle: pool_rain
     script_file: scripts/seq_particle_generator
-  - id: pool_side
+  - id: pool_side_short
     mesh:
-      path: pool_brick
+      vertex:
+        type: cube
+        size: [0.1, 5, 60]
+        scale_tiling: true
       material_modifier:
         base: textures/Planks 09 [8K]
         map_kd: Planks09_col_2048.png
@@ -225,8 +228,38 @@ types:
         map_mras: Planks09_mras
         map_displacement: Planks09_displacement
         mras: [1.0, 0.0, 1]
-        tiling_x: 30
-        tiling_y: 4
+        tiling_x: 0.5
+        tiling_y: 0.5
+        scale_tiling: true
+      flags:
+        pre_depth: true
+      program: g_tex
+    physics:
+      body:
+        type: box
+        kinematic: true
+        density: 0.5
+      geom:
+        type: box
+        category: [prop]
+        collision: [npc]
+        size: [1, 1, 1]
+  - id: pool_side_long
+    mesh:
+      vertex:
+        type: cube
+        size: [0.1, 5, 60.2]
+        scale_tiling: true
+      material_modifier:
+        base: textures/Planks 09 [8K]
+        map_kd: Planks09_col_2048.png
+        map_normal: Planks09_nrm_2048.png
+        map_mras: Planks09_mras
+        map_displacement: Planks09_displacement
+        mras: [1.0, 0.0, 1]
+        tiling_x: 0.5
+        tiling_y: 0.5
+        scale_tiling: true
       flags:
         pre_depth: true
       program: g_tex
@@ -451,7 +484,7 @@ types:
         collision: [can_float]
         size: [60, 0.01, 60]
     xxscript_file: scripts/cycle_water
-  - id: pool_side_single
+  - xid: pool_side_single
     mesh:
       path: pool_brick
       material_modifier:
@@ -557,16 +590,20 @@ nodes:
     children:
       - type: pool_surface_particle_origin
         pos: [0, 10, 0]
-  - type: pool_side
+  - type: pool_side_short
     clones:
-      - pos: [-30.0, 4, 20]
-        scale: [0.3, 6, 60]
-      - pos: [90.0, 4, 20]
-        scale: [0.3, 6, 60]
-      - pos: [30.0, 4, 80]
-        scale: [60, 6, 0.3]
-      - pos: [30.0, 4, -40]
-        scale: [60, 6, 0.3]
+      - pos: [-30.1, 5, 20]
+        scale: 1
+      - pos: [90.1, 5, 20]
+        scale: 1
+  - type: pool_side_long
+    clones:
+      - pos: [30.0, 5, 80.1]
+        rot: [0, 90, 0]
+        scale: 1
+      - pos: [30.0, 5, -40.1]
+        rot: [0, 90, 0]
+        scale: 1
   - type: maple_tree_forest
   - type: skeleton_warrior
     pos: [-20, 10.86, 80]
@@ -590,7 +627,21 @@ nodes:
     pos: [160.0, 3.2, 20.0]
   - type: pool_surface_single
     pos: [160, 9.0, 20]
-  - type: pool_side_single
+  - type: pool_side_short
+    clones:
+      - pos: [99.9, 4, 20]
+        scale: 1
+      - pos: [220.1, 4, 20]
+        scale: 1
+  - type: pool_side_long
+    clones:
+      - pos: [160.0, 4, 80.1]
+        rot: [0, 90, 0]
+        scale: 1
+      - pos: [160.0, 4, -40.1]
+        rot: [0, 90, 0]
+        scale: 1
+  - xtype: pool_side_single
     clones:
       - pos: [100.0, 4, 20]
         scale: [0.3, 6, 60]
