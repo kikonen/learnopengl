@@ -411,12 +411,33 @@ namespace {
             { 1, 1, 1 } };
 
         for (const auto& vertex : shape.vertices()) {
+            glm::vec2 texCoord = vertex.texCoord;
+            if (generator.scaleTiling) {
+                // Size-proportional (object-space) UVs: each face's UV = its two
+                // in-plane object-space coords, so texel density is uniform
+                // across faces of differing aspect AND identical between separate
+                // meshes (an object unit is the same unit everywhere -> sibling
+                // pieces of slightly different size still match at shared seams).
+                // Material "tiling" then means "tiles per object unit".
+                //   normal X -> (u:Z, v:Y); Y -> (u:X, v:Z); Z -> (u:X, v:Y)
+                const glm::vec3 n = glm::abs(vertex.normal);
+                if (n.x >= n.y && n.x >= n.z) {
+                    texCoord = { vertex.position.z, vertex.position.y };
+                }
+                else if (n.y >= n.x && n.y >= n.z) {
+                    texCoord = { vertex.position.x, vertex.position.z };
+                }
+                else {
+                    texCoord = { vertex.position.x, vertex.position.y };
+                }
+            }
             auto& v = vertices.emplace_back(
                 vertex.position,
-                vertex.texCoord,
+                texCoord,
                 vertex.normal,
                 ZERO,
                 ZERO);
+            KI_INFO_OUT(fmt::format("BOX: vertex={}", v.str()));
         }
 
         for (const auto& tri : shape.triangles()) {

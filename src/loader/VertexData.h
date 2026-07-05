@@ -29,6 +29,11 @@ namespace loader {
         glm::vec3 origin{ 0.f, 0.f, 0.f };
         glm::vec3 dir{ 0.f, 0.f, -1.f };
 
+        // generate object-space (size-proportional) UVs so texel density is
+        // uniform across faces of differing aspect (box only). Pairs with the
+        // material "scale_tiling" flag to get consistent world-space density.
+        bool scaleTiling{ false };
+
         bool has_size{ false };
         bool has_inner_radius{ false };
         bool has_radius{ false };

@@ -32,6 +32,10 @@ namespace mesh {
         glm::vec3 origin{ 0.f };
         glm::vec3 dir{ 0.f, 0.f, -1.f };
 
+        // object-space (size-proportional) UVs for uniform per-face texel
+        // density; currently honored by box
+        bool scaleTiling{ false };
+
         std::vector<glm::vec3> bezier_d0;
         std::vector<glm::vec3> bezier_d1;
 
