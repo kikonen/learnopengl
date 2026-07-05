@@ -32,6 +32,8 @@ namespace loader {
         //bool d : 1 { false };
         //bool illum : 1 { false };
 
+        bool pointSize : 1 { false };
+
         bool layers : 1 { false };
         bool layersDepth : 1 { false };
         bool parallaxDepth : 1 { false };

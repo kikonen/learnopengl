@@ -2,7 +2,7 @@
 if (Debug.u_parallaxEnabled && !u_forceLineMode) {
   float parallaxDepth = Debug.u_parallaxDepth >= 0
     ? Debug.u_parallaxDepth
-    : u_materials[materialIndex].parallaxDepth;
+    : readMaterialParallaxDepth(materialIndex);
 
 #ifdef USE_DECAL
 // parallaxDepth = 0.1;

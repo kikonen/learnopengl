@@ -251,6 +251,8 @@ public:
         //// Dissolve works on all illumination models.
     //float d = 1.0f;
 
+    float pointSize = 0.f;
+
     int layers = 0;
     float layersDepth = 0.f;
     float parallaxDepth = 0.f;

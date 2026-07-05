@@ -47,7 +47,9 @@ struct Material {
   int layers;
   float layersDepth;
   float parallaxDepth;
+  float pointSize;
 
-  // int pad1;
-  // int pad2;
+  int pad3_1;
+  int pad3_2;
+  int pad3_3;
 };

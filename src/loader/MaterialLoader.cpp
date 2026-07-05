@@ -327,6 +327,10 @@ namespace loader {
                 material.spritesX = readInt(v);
                 fields.spritesX = true;
             }
+            else if (k == "point_size") {
+                material.pointSize = readFloat(v);
+                fields.pointSize = true;
+            }
             else if (k == "layers") {
                 material.layers = readInt(v);
                 fields.layers = true;
@@ -614,6 +618,8 @@ namespace loader {
         //if (f.ni) m.ni = mod.ni;
         //if (f.d) m.d = mod.d;
         //if (f.illum) m.illum = mod.illum;
+
+        if (f.pointSize) m.pointSize = mod.pointSize;
 
         if (f.layers) m.layers = mod.layers;
         if (f.layersDepth) m.layersDepth = mod.layersDepth;

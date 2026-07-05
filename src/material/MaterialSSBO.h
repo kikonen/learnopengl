@@ -62,9 +62,10 @@ struct MaterialSSBO {
     int u_layers;
     float u_layersDepth;
     float u_parallaxDepth;
+    float u_pointSize;
 
-    //int pad3_1;
-    //int pad3_2;
-    //int pad3_3;
+    int pad3_1;
+    int pad3_2;
+    int pad3_3;
 };
 #pragma pack(pop)
