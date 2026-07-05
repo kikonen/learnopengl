@@ -16,8 +16,6 @@ struct Entity {
 
   vec4 u_worldScale;
 
-  uvec2 u_fontHandle;
-
   uint u_objectID;
   uint u_flags;
 
@@ -29,5 +27,5 @@ struct Entity {
   float tilingX;
   float tilingY;
 
-  int pad1;
+  // int pad1;
 };

@@ -81,7 +81,7 @@ void main() {
   vs_out.texCoord.y = a_texCoord.y * u_materials[materialIndex].tilingY * entity.tilingY;
 
   vs_out.atlasCoord = a_atlasCoord;
-  vs_out.atlasHandle = entity.u_fontHandle;
+  vs_out.atlasHandle = readMaterial_fontAtlasTex(materialIndex);
 
   calculateClipping(worldPos);
 }

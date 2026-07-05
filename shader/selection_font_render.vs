@@ -4,6 +4,7 @@
 #include "include/ssbo_instances.glsl"
 #include "include/ssbo_instance_indeces.glsl"
 #include "include/ssbo_socket_transforms.glsl"
+#include "include/ssbo_materials.glsl"
 
 #include "include/uniform_matrices.glsl"
 #include "include/uniform_camera.glsl"
@@ -41,6 +42,8 @@ void main()
   const uint entityIndex = instance.u_entityIndex;
   entity = u_entities[entityIndex];
 
+  const uint materialIndex = instance.u_materialIndex;
+
   #include "include/var_entity_model_matrix.glsl"
 
   vec4 pos = vec4(a_pos, 1.0);
@@ -61,7 +64,7 @@ void main()
   }
 
   vs_out.atlasCoord = a_atlasCoord;
-  vs_out.atlasHandle = entity.u_fontHandle;
+  vs_out.atlasHandle = readMaterial_fontAtlasTex(materialIndex);
   vs_out.highlightIndex = u_wireframeMode ? u_wireframeMaterialIndex : u_selectionMaterialIndex;
 
   gl_Position = u_projectedMatrix * worldPos;

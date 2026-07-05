@@ -324,6 +324,8 @@ public:
 
     MaterialUpdater* m_updater{ nullptr };
 
+    GLuint64 m_fontAtlasTex{ 0 };
+
 private:
     std::map<TextureType, BoundTexture> m_boundTextures{};
     std::map<TextureType, TextureInfo> m_texturePaths{};

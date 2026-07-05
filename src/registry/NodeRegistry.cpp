@@ -507,11 +507,6 @@ std::pair<int, int> NodeRegistry::updateEntity(const UpdateContext& ctx)
 
         if (node) {
             entity.u_objectID = node->getId();
-
-            auto* textGenerator = node->getGenerator<TextGenerator>();
-            if (textGenerator) {
-                entity.u_fontHandle = textGenerator->getAtlasTextureHandle();
-            }
         }
 
         // NOTE KI dirtyNormal based on normalLevel comparison

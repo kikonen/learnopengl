@@ -50,8 +50,6 @@ struct EntitySSBO {
     glm::vec3 u_worldScale{ 1.f };
     //int pad4_1;
 
-    GLuint64 u_fontHandle{ 0 };
-
     GLuint u_objectID{ 0 }; // 1 * 1 * 4 = 4
     GLuint u_flags{ 0 }; // 1 * 4 = 4
 
@@ -59,8 +57,8 @@ struct EntitySSBO {
     float u_tilingX{ 1.f };
     float u_tilingY{ 1.f };
 
-    int pad1;
-    int pad2;
+    //int pad1;
+    //int pad2;
 
     // NOTE KI M-T matrix needed *ONLY* if non uniform scale
     inline void setModelMatrix(

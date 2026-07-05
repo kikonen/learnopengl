@@ -666,6 +666,8 @@ void Material::fillSSBO(
         .u_noise2Map = getTexHandle(TextureType::map_noise_2, 0),
 
         .u_custom1Map = getTexHandle(TextureType::map_custom_1, 0),
+
+        .u_fontHAtlas = m_fontAtlasTex,
     };
     cold = {
         .u_reflection = reflection,

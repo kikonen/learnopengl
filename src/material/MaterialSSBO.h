@@ -105,8 +105,10 @@ struct MaterialCustomSSBO{
 
     GLuint64 u_custom1Map;
 
-    int pad3_1;
-    int pad3_2;
+    GLuint64 u_fontHAtlas;
+
+    //int pad3_1;
+    //int pad3_2;
     //int pad3_3;
 };
 
