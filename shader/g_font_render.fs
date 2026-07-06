@@ -47,6 +47,8 @@ ResolvedMaterial material;
 #include "include/fn_gbuffer_normal_encode.glsl"
 #include "include/fn_shape_font.glsl"
 
+#include "include/water_caustics.glsl"
+
 void main()
 {
   const uint materialIndex = fs_in.materialIndex;
@@ -55,6 +57,9 @@ void main()
 
   // NOTE KI interpolation from vs to fs denormalizes normal
   vec3 normal = normalize(fs_in.normal);
+  if (!gl_FrontFacing) {
+    normal = -normal;
+  }
 
   #include "include/var_calculate_tbn.glsl"
   #include "include/apply_parallax.glsl"
@@ -62,10 +67,6 @@ void main()
   #include "include/var_tex_material.glsl"
 
   #include "include/apply_normal_map.glsl"
-
-  if (!gl_FrontFacing) {
-    normal = -normal;
-  }
 
 #ifdef USE_CUBE_MAP
   {
@@ -88,6 +89,11 @@ void main()
     discard;
 #endif
 #endif
+  }
+
+  {
+    vec3 worldPos = (u_invViewMatrix * vec4(fs_in.viewPos, 1)).xyz;
+    applyWaterCaustic(color.rgb, worldPos);
   }
 
   o_fragColor = color.rgb;

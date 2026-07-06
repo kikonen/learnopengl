@@ -8,6 +8,19 @@ script:
   scripts:
     - path: lib/common
 types:
+  - id: dir_light
+    mesh:
+      path: light
+      material_modifier:
+        kd: [0.8, 0.8, 0.6, 1.0]
+      program: g_light
+    flags:
+      no_shadow: true
+    light:
+      type: directional
+      diffuse: [0.4, 0.4, 0.4, 1.0]
+      xdiffuse: [0.0, 0.9, 0.0, 1.0]
+      intensity: 30000
   - id: player
     type: origo
     xmesh:
@@ -54,8 +67,12 @@ types:
     type: text
     mesh:
       material:
-        kd: [0.8, 0.8, 0.6, 1.0]
-        map_displacement: ""
+        prefab: materials/PavingStones115C.yml
+        #kd: [0.8, 0.8, 0.6, 1.0]
+        # map_displacement: ""
+        # parallax_depth: 0
+        tiling: 3
+        scale_tiling: true
         alpha: true
         blend: true
         render_back: true
@@ -73,8 +90,23 @@ types:
       align_horizontal: center
       align_vertical: center
     xscript_file: scripts/anim_rotate_object
+  - id: plane
+    mesh:
+      vertex:
+        type: plane
+      material:
+        prefab: materials/Planks09.yml
+        tiling: 5
+        scale_tiling: true
+        alpha: true
+        blend: true
+        render_back: true
+        default_programs: true
 
 nodes:
+  - type: dir_light
+    pos: [-15, 25, 40]
+    scale: 2.5
   - type: player
     pos: [0, 5, 5]
     scale: 0.8
@@ -103,6 +135,12 @@ nodes:
   - type: hello_world
     pos: [0, -1.0, -9.0]
     scale: 0.1
+  - type: hello_world
+    pos: [0, 1.0, -10.0]
+    scale: 0.1
+  - xtype: plane
+    pos: [0, 0.1, -9.0]
+    scale: 10
 
 materials:
   - alias: water_caustics
