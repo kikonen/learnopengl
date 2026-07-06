@@ -57,6 +57,15 @@ namespace text
             return m_atlasSize;
         }
 
+        // Scale from atlas raster-pixel units (freetype metrics) to display
+        // units. 1.0 while display size <= raster cap; > 1.0 once the raster
+        // is capped for large text, so display size stays independent of the
+        // SDF raster resolution baked into the atlas.
+        float getGeometryScale() const noexcept
+        {
+            return m_rasterSize > 0.f ? m_fontSize / m_rasterSize : 1.f;
+        }
+
     public:
         text::font_id m_id{ 0 };
         std::string m_name;
@@ -69,7 +78,14 @@ namespace text
         bool m_prepared{ false };
 
         int m_padding;
+        // SDF raster resolution used to bake glyphs (fidelity knob), decoupled
+        // from m_fontSize (display size). Capped so large text does not balloon
+        // the atlas.
+        float m_rasterSize{ 0.f };
         glm::uvec2 m_atlasSize;
+
+        // number of mip levels allocated for the atlas texture (>1 == mipmapped)
+        int m_mipLevels{ 1 };
 
         std::unique_ptr<AtlasHandle> m_atlasHandle{ nullptr };
         size_t m_usedAtlasSize{ 0 };

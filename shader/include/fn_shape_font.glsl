@@ -37,7 +37,9 @@ void shapeFont(
   const vec3 glowColor = glyphColor * 1.3;
 // #endif
 
-  const float dist  = textureLod(atlas, atlasCoord, 0).r;
+  // implicit LOD: magnification stays on level 0 (sharp), minified / distant
+  // text drops to coarser SDF mips instead of shimmering
+  const float dist  = texture(atlas, atlasCoord).r;
   const float width = fwidth(dist);
 
   const float alpha = smoothstep(

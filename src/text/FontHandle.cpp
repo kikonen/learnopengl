@@ -53,12 +53,12 @@ namespace text
 
     void FontHandle::create(
         const std::string& fullPath,
-        float fontSize,
+        float rasterSize,
         int padding)
     {
         m_font = ftgl::texture_font_new_from_file(
             m_atlasHandle->m_atlas,
-            fontSize,
+            rasterSize,
             fullPath.c_str());
 
         if (!m_font) return;

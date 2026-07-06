@@ -18,6 +18,7 @@ prefab:
       id_program: object_id_font_render
       shared_definitions:
         USE_OUTLINE: 1
+    base_scale: 1
   text:
     text: "NA fps"
     font:
@@ -30,4 +31,3 @@ prefab:
   flags:
     no_shadow: true
     no_frustum: true
-  base_scale: 0.01

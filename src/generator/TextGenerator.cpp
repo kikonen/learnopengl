@@ -74,7 +74,7 @@ void TextGenerator::updateRT(
     std::string text = m_text;
 
     m_draw->render(
-        m_fontId,
+        fontAtlas,
         text,
         m_pivot,
         m_alignHorizontal,

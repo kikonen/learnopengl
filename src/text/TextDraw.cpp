@@ -20,7 +20,6 @@
 
 #include "mesh/vao/VBO_impl.h"
 
-#include "FontRegistry.h"
 #include "FontAtlas.h"
 #include "FontHandle.h"
 
@@ -288,18 +287,19 @@ namespace text
     {}
 
     void TextDraw::render(
-        text::font_id fontId,
+        const text::FontAtlas* fontAtlas,
         std::string_view text,
         const glm::vec2& pivot,
         text::Align alignHorizontal,
         text::Align alignVertical,
         mesh::TextMesh* mesh)
     {
-        auto* fontAtlas = text::FontRegistry::get().getPreparedFontAtlas(fontId, true);
         if (!fontAtlas) return;
 
         const auto atlasPad = fontAtlas->getPadding();
         const auto atlasSize = fontAtlas->getAtlasSize();
+
+        const size_t startVertex = mesh->m_vertices.size();
 
         addText(
             mesh, fontAtlas, text, pivot,
@@ -310,6 +310,18 @@ namespace text
             static_cast<float>(atlasPad),
             static_cast<float>(atlasPad),
             mesh->m_maxSize);
+
+        // Geometry is built in atlas raster-pixel units; scale it to display
+        // units so display size stays independent of the (capped) SDF raster
+        // resolution. Identity (== 1.0) while display size <= raster cap.
+        const float geometryScale = fontAtlas->getGeometryScale();
+        if (geometryScale != 1.f) {
+            for (size_t i = startVertex; i < mesh->m_vertices.size(); i++) {
+                auto& pos = mesh->m_vertices[i].pos;
+                pos.x *= geometryScale;
+                pos.y *= geometryScale;
+            }
+        }
 
         mesh->m_vertexCount = static_cast<uint32_t>(mesh->m_vertices.size());
         mesh->m_indexCount = static_cast<uint32_t>(mesh->m_indeces.size());

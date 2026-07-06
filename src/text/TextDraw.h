@@ -29,7 +29,7 @@ namespace text
         ~TextDraw();
 
         void render(
-            text::font_id fontId,
+            const text::FontAtlas* fontAtlas,
             std::string_view text,
             const glm::vec2& pivot,
             text::Align alignHorizontal,

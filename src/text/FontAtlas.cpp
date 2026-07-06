@@ -1,5 +1,8 @@
 #include "FontAtlas.h"
 
+#include <algorithm>
+#include <cmath>
+
 #include <freetype-gl/texture-atlas.h>
 #include <freetype-gl/texture-font.h>
 
@@ -20,13 +23,24 @@ namespace {
 
     const std::string DEFAULT_FONT{ "fonts/Vera.ttf" };
 
-    glm::uvec2 resolveAtlasSize(float fontSize, float padding)
+    // Cap on the SDF raster resolution (freetype bake size). SDF magnifies
+    // cleanly, so larger display text does not need a larger raster; capping
+    // keeps the atlas bounded instead of growing quadratically with font size.
+    // Sizes <= cap bake at their exact size (geometry scale stays 1.0), so
+    // existing text is unchanged.
+    constexpr float MAX_RASTER_SIZE{ 64.f };
+
+    // Coarse atlas mips bleed neighbouring glyphs; cap the chain so bleed stays
+    // within the per-glyph padding gutter while still covering minification.
+    constexpr int MAX_MIP_LEVELS{ 4 };
+
+    glm::uvec2 resolveAtlasSize(float rasterSize, float padding)
     {
-        if (fontSize < 8.f) fontSize = 8.f;
+        if (rasterSize < 8.f) rasterSize = 8.f;
 
         // 16 = glyphs per row == 16 * 16 = 256 glyphs
         constexpr float glyphsPerRow = 18.f;
-        const float pz = fontSize + padding;
+        const float pz = rasterSize + padding;
         const float b = pz * glyphsPerRow + pz;
 
         return glm::vec2{ b, b };
@@ -50,7 +64,9 @@ namespace text
         m_fontPath = o.m_fontPath;
         m_fontSize = o.m_fontSize;
         m_padding = o.m_padding;
+        m_rasterSize = o.m_rasterSize;
         m_atlasSize = o.m_atlasSize;
+        m_mipLevels = o.m_mipLevels;
         m_texture = std::move(o.m_texture);
         m_atlasHandle = std::move(o.m_atlasHandle);
         m_fontHandle = std::move(o.m_fontHandle);
@@ -65,7 +81,9 @@ namespace text
         m_fontPath{ o.m_fontPath },
         m_fontSize{ o.m_fontSize},
         m_padding{ o.m_padding },
+        m_rasterSize{ o.m_rasterSize },
         m_atlasSize{ o.m_atlasSize },
+        m_mipLevels{ o.m_mipLevels },
         m_texture{ std::move(o.m_texture) },
         m_atlasHandle{ std::move(o.m_atlasHandle) },
         m_fontHandle{ std::move(o.m_fontHandle) }
@@ -97,8 +115,12 @@ namespace text
 
         if (m_fontSize <= 0) return;
 
-        m_padding = static_cast<int>(m_fontSize);
-        m_atlasSize = resolveAtlasSize(m_fontSize, static_cast<float>(m_padding));
+        // Raster resolution (SDF fidelity) is decoupled from display size and
+        // capped. TextDraw scales glyph geometry back up via getGeometryScale().
+        m_rasterSize = std::min(m_fontSize, MAX_RASTER_SIZE);
+
+        m_padding = static_cast<int>(m_rasterSize);
+        m_atlasSize = resolveAtlasSize(m_rasterSize, static_cast<float>(m_padding));
 
         constexpr size_t depth = 1;
         {
@@ -110,7 +132,7 @@ namespace text
             m_fontHandle = std::make_unique<FontHandle>(m_atlasHandle.get());
             m_fontHandle->create(
                 util::joinPath(assets.assetsDir, m_fontPath),
-                m_fontSize,
+                m_rasterSize,
                 m_padding);
         }
 
@@ -140,16 +162,26 @@ namespace text
                 break;
             }
 
+            // Mipmaps let minified / distant text sample coarser SDF levels
+            // instead of shimmering. Distance fields downsample cleanly under
+            // averaging (unlike alpha coverage), so a plain mip chain works;
+            // capped to keep coarse-level bleed within the glyph padding gutter.
+            m_mipLevels = std::clamp(
+                1 + static_cast<int>(std::floor(std::log2(static_cast<float>(std::max(w, h))))),
+                1,
+                MAX_MIP_LEVELS);
+
             glTextureParameteri(texId, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
             glTextureParameteri(texId, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
             glTextureParameteri(texId, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-            glTextureParameteri(texId, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+            glTextureParameteri(texId, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
             glTextureParameterfv(texId, GL_TEXTURE_BORDER_COLOR, glm::value_ptr(BLACK));
 
-            //const int mipMapLevels = static_cast<int>(log2(std::max(w, h)));
-            glTextureStorage2D(texId, 1, internalFormat, w, h);
+            glTextureStorage2D(texId, m_mipLevels, internalFormat, w, h);
             glTextureSubImage2D(texId, 0, 0, 0, w, h, format, GL_UNSIGNED_BYTE, m_atlasHandle->m_atlas->data);
-            //glGenerateTextureMipmap(texId);
+            if (m_mipLevels > 1) {
+                glGenerateTextureMipmap(texId);
+            }
 
             m_textureHandle = glGetTextureHandleARB(m_texture);
             glMakeTextureHandleResidentARB(m_textureHandle);
@@ -175,6 +207,11 @@ namespace text
             GL_RED,
             GL_UNSIGNED_BYTE,
             m_atlasHandle->m_atlas->data);
+
+        // newly rasterized glyphs changed level 0 -> refresh the mip chain
+        if (m_mipLevels > 1) {
+            glGenerateTextureMipmap(m_texture.m_textureID);
+        }
 
         m_usedAtlasSize = currentAtlasSize;
     }
