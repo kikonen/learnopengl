@@ -18,6 +18,7 @@ prefab:
       id_program: object_id_font_render
       shared_definitions:
         USE_OUTLINE: 1
+    base_scale: 1
   text:
     text: "HH:MM"
     font:
@@ -33,4 +34,3 @@ prefab:
   controllers:
     - type: clock
       format: "%H:%M"
-  base_scale: 0.01
