@@ -38,7 +38,7 @@ namespace render {
         GLenum m_cullFace{ GL_BACK };
         GLenum m_frontFace{ GL_CCW };
         GLenum m_polygonFrontAndBack{ GL_FILL };
-        GLenum m_blendEnabled{ false };
+        //GLenum m_blendEnabled{ false };
     };
 
     class RenderContext final
