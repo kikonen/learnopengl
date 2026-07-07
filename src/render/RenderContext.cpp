@@ -244,7 +244,11 @@ namespace render
         state.frontFace(m_defaults.m_frontFace);
 
         state.polygonFrontAndBack(m_defaults.m_polygonFrontAndBack);
+
+        state.setStencil({});
+
         state.setEnabled(GL_BLEND, m_defaults.m_blendEnabled);
+        state.setBlendMode({});
     }
 
     void RenderContext::updateUBOs() const
