@@ -5,10 +5,12 @@ local function animation_scale(self)
   local cid = 0
   local dir = 1
 
+  local max_scale = 20;
+
   local function animation_listener()
     local scale = vec3(1, 1, 1)
     if dir < 0 then
-      scale = vec3(30)
+      scale = vec3(max_scale)
     end
 
     wid = cmd:wait({ after=cid, time=1 })
