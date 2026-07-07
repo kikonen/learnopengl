@@ -158,9 +158,9 @@ inline constexpr unsigned int LAST_TEXTURE_UNIT = FIRST_TEXTURE_UNIT + TEXTURE_U
 
 inline constexpr unsigned int STENCIL_FOG = 1 << 7;
 inline constexpr unsigned int STENCIL_SKYBOX = 1 << 6;
-inline constexpr unsigned int STENCIL_HIGHLIGHT = 1;
-inline constexpr unsigned int STENCIL_OIT = 2;
-inline constexpr unsigned int STENCIL_SOLID = 3;
+inline constexpr unsigned int STENCIL_HIGHLIGHT = 1 << 0;
+inline constexpr unsigned int STENCIL_OIT = 1 << 1;
+inline constexpr unsigned int STENCIL_SOLID = 1 << 2;
 
 #define ASSERT_TEX_INDEX(texIndex) assert(texIndex >= 0 && texIndex < MAX_TEXTURE_COUNT)
 
