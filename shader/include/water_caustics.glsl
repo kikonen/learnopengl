@@ -14,7 +14,14 @@
 //   uniform_camera.glsl (u_cameraWaterCausticsEnabled)
 //   ssbo_materials.glsl (u_materials)
 vec3 _sampleWaterCausticTriplanar(vec3 worldPos) {
-  vec3 worldNormal = normalize(cross(dFdx(worldPos), dFdy(worldPos)));
+  // NOTE KI reconstruct geometric normal from worldPos derivatives. For thin /
+  // near edge-on alpha-blended geometry (grass billboards) the derivatives go
+  // nearly parallel, so cross(...) ~ 0 and normalize() = NaN on NVIDIA (Intel
+  // returns 0 and hides it). NaN then propagates to a NaN caustic color -> black
+  // fringing. Guard the degenerate case with a fallback up-normal.
+  vec3 dnx = cross(dFdx(worldPos), dFdy(worldPos));
+  float dnlen = length(dnx);
+  vec3 worldNormal = dnlen > 1e-6 ? dnx / dnlen : vec3(0.0, 1.0, 0.0);
 
   vec2 offset = vec2(sin(u_time * 0.2), cos(u_time * 0.1)) * 0.3;
   vec2 uvX = worldPos.zy * u_waterCausticScale + offset;
