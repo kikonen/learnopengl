@@ -104,6 +104,7 @@ namespace render
         state.setDepthFunc(GL_LEQUAL);
         state.frontFace(GL_CCW);
 
+        state.setBlendMode({});
         state.setStencil(kigl::GLStencilMode::fill(STENCIL_SKYBOX, STENCIL_SKYBOX, ~STENCIL_OIT));
         state.polygonFrontAndBack(GL_FILL);
 

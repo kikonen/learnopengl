@@ -109,6 +109,7 @@ namespace render
         state.setDepthMask(GL_TRUE);
 
         state.setStencil({});
+        state.setBlendMode({});
         state.setEnabled(GL_BLEND, false);
     }
 }
