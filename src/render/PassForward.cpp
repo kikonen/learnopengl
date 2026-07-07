@@ -96,6 +96,9 @@ namespace render
             //    GBuffer::ATT_DEPTH_INDEX);
 
         }
+
+        state.setStencil({});
+
         // NOTE KI need to reset possibly changed drawing modes
         // ex. selection volume changes to GL_LINE
         ctx.bindDefaults();

@@ -91,7 +91,7 @@ namespace render
         startScreenPass(
             ctx,
             true,
-            kigl::GLStencilMode::only_non_zero(STENCIL_OIT),
+            kigl::GLStencilMode::only(STENCIL_OIT, STENCIL_OIT),
             true,
             { GL_FUNC_ADD, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ZERO, GL_ONE });
 
@@ -104,6 +104,7 @@ namespace render
 
         stopScreenPass(ctx);
 
+        // NOTE KI not needed; also allow debug of buffers
         //m_oitBuffer.clearAll();
 
         return src;
@@ -161,6 +162,8 @@ namespace render
             state.setBlendMode(1, {});
             state.setBlendMode(2, {});
             state.invalidateBlendMode();
+
+            state.setStencil({});
 
             state.setEnabled(GL_BLEND, false);
             state.setEnabled(GL_POLYGON_OFFSET_FILL, false);
