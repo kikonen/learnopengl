@@ -247,7 +247,7 @@ namespace render
 
         state.setStencil({});
 
-        state.setEnabled(GL_BLEND, m_defaults.m_blendEnabled);
+        state.setEnabled(GL_BLEND, false);
         state.setBlendMode({});
     }
 
