@@ -35,6 +35,11 @@ namespace render {
             const DrawContext& drawContext,
             const PassContext& src);
 
+        const OITBuffer& getOitbuffer() const noexcept
+        {
+            return m_oitBuffer;
+        }
+
     private:
         void passOit(
             const RenderContext& ctx,

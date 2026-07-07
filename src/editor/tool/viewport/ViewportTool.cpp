@@ -36,6 +36,7 @@
 #include "render/ScreenTri.h"
 #include "render/NodeDraw.h"
 #include "render/CubeMapDebugTexture.h"
+#include "render/PassOit.h"
 
 #include "scene/Scene.h"
 #include "scene/Skybox.h"
@@ -47,6 +48,7 @@
 #include "renderer/MirrorMapRenderer.h"
 #include "renderer/CubeMapRenderer.h"
 #include "renderer/ShadowMapRenderer.h"
+#include "renderer/LayerRenderer.h"
 
 #include "registry/NodeRegistry.h"
 
@@ -189,6 +191,26 @@ namespace editor
 
             ImGui::TreePop();
         }
+        if (ImGui::TreeNodeEx("Water OIT", tnFlags)) {
+            auto* fb = scene->m_waterMapRenderer->m_nodeDraw->m_passOit->getOitbuffer().m_buffer.get();
+
+            int bufferIndex = 0;
+            for (const auto& att : fb->m_spec.attachments) {
+                if (att.activeDrawBufferIndex < 0) continue;
+
+                const auto& name = fmt::format("OIT: {} - {}", bufferIndex, att.name);
+                if (ImGui::TreeNodeEx(name.c_str(), tnFlags)) {
+                    bufferTex(*fb, att.index, true);
+                    ImGui::TreePop();
+                }
+
+                bufferIndex++;
+            }
+
+            //viewportTex(*viewport, true);
+
+            ImGui::TreePop();
+        }
 
         if (ImGui::TreeNodeEx("Mirror reflection", tnFlags)) {
             auto& viewport = scene->m_mirrorMapRenderer->m_reflectionDebugViewport;
@@ -268,6 +290,27 @@ namespace editor
 
                 ImGui::TreePop();
             }
+        }
+
+        if (ImGui::TreeNodeEx("Main OIT", tnFlags)) {
+            auto* fb = scene->m_mainRenderer->m_nodeDraw->m_passOit->getOitbuffer().m_buffer.get();
+
+            int bufferIndex = 0;
+            for (const auto& att : fb->m_spec.attachments) {
+                if (att.activeDrawBufferIndex < 0) continue;
+
+                const auto& name = fmt::format("OIT: {} - {}", bufferIndex, att.name);
+                if (ImGui::TreeNodeEx(name.c_str(), tnFlags)) {
+                    bufferTex(*fb, att.index, true);
+                    ImGui::TreePop();
+                }
+
+                bufferIndex++;
+            }
+
+            //viewportTex(*viewport, true);
+
+            ImGui::TreePop();
         }
 
         {
