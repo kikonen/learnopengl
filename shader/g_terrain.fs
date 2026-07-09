@@ -92,7 +92,14 @@ void main() {
 
   {
     vec3 worldPos = (u_invViewMatrix * vec4(fs_in.viewPos, 1)).xyz;
-    applyWaterCaustic(texColor.rgb, worldPos);
+
+    // TODO KI normal calculate from heightmap is likely wrong
+    // vec3 worldNormal = (mat3(u_invViewMatrix) * fs_in.normal).xyz;
+    vec3 dnx = cross(dFdx(worldPos), dFdy(worldPos));
+    float dnlen = length(dnx);
+    vec3 worldNormal = dnlen > 1e-6 ? dnx / dnlen : vec3(0.0, 1.0, 0.0);
+
+    applyWaterCaustic(texColor.rgb, worldPos, worldNormal);
   }
 
   o_fragColor = texColor.rgb;

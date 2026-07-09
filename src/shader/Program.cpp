@@ -67,22 +67,23 @@ Program::Program(
     }
 
     if (m_compute) {
-        m_sources.insert({ GL_COMPUTE_SHADER, { true, m_basePath + ".cs.glsl" } });
+        m_sources.push_back({ GL_COMPUTE_SHADER, { true, m_basePath + ".cs.glsl" } });
     }
     else {
-        m_sources.insert({ GL_VERTEX_SHADER, { true, m_basePath + ".vs" } });
-        m_sources.insert({ GL_FRAGMENT_SHADER, { true, m_basePath + ".fs"} });;
+        m_sources.push_back({ GL_VERTEX_SHADER, { true, m_basePath + ".vs" } });
 
         if (!geometryType.empty()) {
-            m_sources.insert({ GL_GEOMETRY_SHADER, { true, m_basePath + "_" + std::string{ geometryType } + ".gs.glsl"} });
+            m_sources.push_back({ GL_GEOMETRY_SHADER, { true, m_basePath + "_" + std::string{ geometryType } + ".gs.glsl"} });
         }
         else {
             const auto& path = m_basePath + ".gs.glsl";
-            m_sources.insert({ GL_GEOMETRY_SHADER, { false, util::fileExists(path), path}});
+            m_sources.push_back({ GL_GEOMETRY_SHADER, { false, util::fileExists(path), path}});
         }
 
-        m_sources.insert({ GL_TESS_CONTROL_SHADER, { false, m_basePath + ".tcs.glsl"} });
-        m_sources.insert({ GL_TESS_EVALUATION_SHADER, { false, m_basePath + ".tes.glsl"} });
+        m_sources.push_back({ GL_TESS_CONTROL_SHADER, { false, m_basePath + ".tcs.glsl"} });
+        m_sources.push_back({ GL_TESS_EVALUATION_SHADER, { false, m_basePath + ".tes.glsl"} });
+
+        m_sources.push_back({ GL_FRAGMENT_SHADER, { true, m_basePath + ".fs"} });;
     }
 
     m_uniforms = std::make_unique<ProgramUniforms>(*this);
@@ -249,7 +250,7 @@ GLint Program::getSubroutineIndex(const std::string& name, GLenum shaderType)
 
 bool Program::setDebugGeometryType(const std::string& geometryType)
 {
-    const auto& src = m_sources[GL_GEOMETRY_SHADER];
+    const auto& src = m_sources[GL_GEOMETRY_SHADER_INDEX].second;
 
     if (src.m_required) return false;
 
@@ -257,18 +258,18 @@ bool Program::setDebugGeometryType(const std::string& geometryType)
     if (util::fileExists(path)) {
         KI_INFO_OUT(fmt::format("[PROGRAM: {}]: SET_DBG geometryType={}, path={}",
             m_key, geometryType, path));
-        m_sources[GL_GEOMETRY_SHADER] = { true, false, path };
+        m_sources[GL_GEOMETRY_SHADER_INDEX] = { GL_GEOMETRY_SHADER, { true, false, path } };
 
-        const auto& it = m_sources.find(GL_GEOMETRY_SHADER);
-        if (it != m_sources.end()) {
-            KI_INFO_OUT(fmt::format("[PROGRAM: {}]: VALID_DBG geometryType={}, path={}, exist={}",
-                m_key, geometryType, it->second.m_path, it->second.pathExists()));
-        }
+        //if (it != m_sources.end()) {
+        //    KI_INFO_OUT(fmt::format("[PROGRAM: {}]: VALID_DBG geometryType={}, path={}, exist={}",
+        //        m_key, geometryType, it->second.m_path, it->second.pathExists()));
+        //}
+
         return true;
     }
     else {
         bool wasDebug = src.m_debug;
-        m_sources[GL_GEOMETRY_SHADER] = { false, false, "" };
+        m_sources[GL_GEOMETRY_SHADER_INDEX] = { GL_GEOMETRY_SHADER, { false, false, "" } };
         return wasDebug;
     }
 }
@@ -325,10 +326,12 @@ void Program::createProgram() {
 
     // build and compile our shader program
     // ------------------------------------
-    std::unordered_map<GLenum, int> shaderIds;
-    for (auto& [type, source] : m_sources) {
+    std::vector<std::pair<int, int>> shaderIds;
+    for (int i = 0; i < m_sources.size(); i++) {
+        const auto& type = m_sources[i].first;
+        const auto& source = m_sources[i].second;
         if (source.m_path.empty()) continue;
-        shaderIds[type] = compileSource(type, m_sources[type]);
+        shaderIds.push_back({ i, compileSource(type, source) });
     }
 
     // link shaders
@@ -341,10 +344,12 @@ void Program::createProgram() {
 
         kigl::setLabel(GL_PROGRAM, programId, m_key);
 
-        for (auto& [type, shaderId] : shaderIds) {
+        for (auto& [index, shaderId] : shaderIds) {
             if (shaderId == -1) continue;
             glAttachShader(programId, shaderId);
-            kigl::setLabel(GL_SHADER, shaderId, m_sources[type].m_path);
+
+            const auto& source = m_sources[index].second;
+            kigl::setLabel(GL_SHADER, shaderId, source.m_path);
         }
 
         glLinkProgram(programId);
@@ -360,8 +365,8 @@ void Program::createProgram() {
                     "PROGRAM::ERROR: PROGRAM::LINKING_FAILED program={}\n{}",
                     m_programName, infoLog);
 
-                for (auto& [type, shaderId] : shaderIds) {
-                    const auto& source = m_sources[type];
+                for (auto& [index, shaderId] : shaderIds) {
+                    const auto& source = m_sources[index].second;
                     if (source.m_path.empty()) continue;
                     if (!source.pathExists()) continue;
 

@@ -76,7 +76,10 @@ void main()
 
   // Modulate ALBEDO with caustics before lighting (same as g_tex/g_terrain), so the
   // caustic gets lit and fades at night instead of glowing on the dimmed surface.
-  applyWaterCaustic(material.diffuse.rgb, worldPos);
+  {
+    vec3 worldNormal = (mat3(u_invViewMatrix) * fs_in.normal).xyz;
+    applyWaterCaustic(material.diffuse.rgb, worldPos, worldNormal);
+  }
 
   const uint shadowIndex = calculateShadowIndex(viewPos);
 

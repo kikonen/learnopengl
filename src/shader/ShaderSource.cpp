@@ -274,16 +274,17 @@ void ShaderSource::appendDefines(
 
     if (!dbg.m_geometryType.empty())
     {
-        const auto& it = program.m_sources.find(GL_GEOMETRY_SHADER);
+        const auto& src = program.m_sources[GL_GEOMETRY_SHADER_INDEX].second;
 
         KI_INFO_OUT(fmt::format("[PROGRAM: {}]: CHECK_DBG geometryType={}", program.m_key, dbg.m_geometryType));
 
-        if (it != program.m_sources.end()) {
+        //if (it != program.m_sources.end())
+        {
             KI_INFO_OUT(fmt::format(
                 "[PROGRAM: {}]: CHECK_PATH path={}, exists={}, debug={}",
-                program.m_key, it->second.m_path, it->second.pathExists(), it->second.m_debug));
+                program.m_key, src.m_path, src.pathExists(), src.m_debug));
 
-            if (it->second.m_debug && it->second.pathExists())
+            if (src.m_debug && src.pathExists())
             {
                 KI_INFO_OUT(fmt::format(
                     "[PROGRAM: {}]: USE_DBG geometryType={}, wireframeOnly={}",

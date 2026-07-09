@@ -93,7 +93,8 @@ void main()
 
   {
     vec3 worldPos = (u_invViewMatrix * vec4(fs_in.viewPos, 1)).xyz;
-    applyWaterCaustic(color.rgb, worldPos);
+    vec3 worldNormal = (mat3(u_invViewMatrix) * fs_in.normal).xyz;
+    applyWaterCaustic(color.rgb, worldPos, worldNormal);
   }
 
   o_fragColor = color.rgb;

@@ -112,6 +112,7 @@ void main()
     ivec2 texSize = textureSize(heightMap, 0);
     vec2 texelSize = 1.0 / vec2(texSize);
 
+    // TODO KI this normal calculation is likely wrong
     float hL = fetchHeight(heightMap, texCoord + vec2(-texelSize.x, 0));
     float hR = fetchHeight(heightMap, texCoord + vec2( texelSize.x, 0));
     float hD = fetchHeight(heightMap, texCoord + vec2(0, -texelSize.y));

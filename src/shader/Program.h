@@ -13,6 +13,13 @@
 
 #include "ShaderSource.h"
 
+inline const int GL_COMPUTE_SHADER_INDEX = 0;
+inline const int GL_VERTEX_SHADER_INDEX = 0;
+inline const int GL_GEOMETRY_SHADER_INDEX = 1;
+inline const int GL_TESS_CONTROL_SHADER_INDEX = 2;
+inline const int GL_TESS_EVALUATION_SHADER_INDEX = 3;
+inline const int GL_FRAGMENT_SHADER_INDEX = 4;
+
 namespace uniform {
     class Uniform;
     class Subroutine;
@@ -140,7 +147,7 @@ private:
     std::map<std::string, std::string, std::less<> > m_defines;
 
     std::string m_basePath;
-    std::unordered_map<GLenum, ShaderSource> m_sources;
+    std::vector<std::pair<GLenum, ShaderSource>> m_sources;
 
     std::map<std::string, GLint, std::less<> > m_uniformLocations;
     std::unordered_map<GLenum, std::map<std::string, GLuint, std::less<>> > m_subroutineIndeces;

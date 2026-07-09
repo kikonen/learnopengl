@@ -13,15 +13,18 @@
 //                        u_waterCausticScale, u_time)
 //   uniform_camera.glsl (u_cameraWaterCausticsEnabled)
 //   ssbo_materials.glsl (u_materials)
-vec3 _sampleWaterCausticTriplanar(vec3 worldPos) {
+vec3 _sampleWaterCausticTriplanar(
+  vec3 worldPos,
+  vec3 worldNormal)
+{
   // NOTE KI reconstruct geometric normal from worldPos derivatives. For thin /
   // near edge-on alpha-blended geometry (grass billboards) the derivatives go
   // nearly parallel, so cross(...) ~ 0 and normalize() = NaN on NVIDIA (Intel
   // returns 0 and hides it). NaN then propagates to a NaN caustic color -> black
   // fringing. Guard the degenerate case with a fallback up-normal.
-  vec3 dnx = cross(dFdx(worldPos), dFdy(worldPos));
-  float dnlen = length(dnx);
-  vec3 worldNormal = dnlen > 1e-6 ? dnx / dnlen : vec3(0.0, 1.0, 0.0);
+  // vec3 dnx = cross(dFdx(worldPos), dFdy(worldPos));
+  // float dnlen = length(dnx);
+  // vec3 worldNormal = dnlen > 1e-6 ? dnx / dnlen : vec3(0.0, 1.0, 0.0);
 
   vec2 offset = vec2(sin(u_time * 0.2), cos(u_time * 0.1)) * 0.3;
   vec2 uvX = worldPos.zy * u_waterCausticScale + offset;
@@ -42,19 +45,27 @@ vec3 _sampleWaterCausticTriplanar(vec3 worldPos) {
   return cX * blend.x + cY * blend.y + cZ * blend.z;
 }
 
-void applyWaterCausticAlways(inout vec3 color, vec3 worldPos) {
+void applyWaterCausticAlways(
+  inout vec3 color,
+  vec3 worldPos,
+  vec3 worldNormal)
+{
   if (!u_waterCausticEnabled) return;
   if (!u_cameraWaterCausticsEnabled) return;
 
-  vec3 causticColor = _sampleWaterCausticTriplanar(worldPos);
+  vec3 causticColor = _sampleWaterCausticTriplanar(worldPos, worldNormal);
   color = mix(color, causticColor, u_waterCausticIntensity);
 }
 
 // For surfaces strictly below the water level (terrain floor, pool walls,
 // generic meshes). The level check excludes fragments above water.
-void applyWaterCaustic(inout vec3 color, vec3 worldPos) {
+void applyWaterCaustic(
+  inout vec3 color,
+  vec3 worldPos,
+  vec3 worldNormal)
+{
   // NOTE KI strict less-than would flicker on the water plane itself — but
   // the water plane uses applyWaterCausticAlways instead, so we can be safe.
   if (worldPos.y >= u_waterCausticWorldLevel) return;
-  applyWaterCausticAlways(color, worldPos);
+  applyWaterCausticAlways(color, worldPos, worldNormal);
 }
