@@ -10,6 +10,8 @@
 
 #include "NodeRepeat.h"
 
+#include "script/ScriptFile.h"
+
 namespace model
 {
     // For defining composite types
@@ -36,6 +38,9 @@ namespace model
         glm::vec2 m_tiling{ 1.f };
 
         bool m_active{ false };
+
+        std::vector<script::ScriptFile> m_initScripts;
+        std::vector<script::script_id> m_scripts;
 
         NodeRepeat m_repeat;
         glm::vec3 m_clonePositionOffset{ 0.f };

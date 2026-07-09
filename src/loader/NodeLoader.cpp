@@ -15,6 +15,8 @@
 
 #include "model/NodeDefinition.h"
 
+#include "script/ScriptFile.h"
+
 #include "Context.h"
 #include "Loaders.h"
 
@@ -146,6 +148,20 @@ namespace loader {
             else if (k == "clone_position_offset") {
                 data.clonePositionOffset = readVec3(v);
             }
+            else if (k == "init_script") {
+                auto& scriptData = data.initScripts.emplace_back();
+                loaders.m_scriptLoader.loadScript(v, scriptData, false);
+            }
+            else if (k == "init_scripts") {
+                loaders.m_scriptLoader.loadScripts(v, data.initScripts, false);
+            }
+            else if (k == "script") {
+                auto& scriptData = data.scripts.emplace_back();
+                loaders.m_scriptLoader.loadScript(v, scriptData, false);
+            }
+            else if (k == "scripts") {
+                loaders.m_scriptLoader.loadScripts(v, data.scripts, false);
+            }
             else {
                 reportUnknown("node_entry", k, v);
             }
@@ -222,17 +238,19 @@ namespace loader {
     void NodeLoader::createNodeDefinitions(
         const std::vector<NodeData>& nodes,
         std::vector<model::NodeDefinition>& definitions,
+        Loaders& loaders,
         bool recurse) const
     {
         for (const auto& nodeData : nodes) {
             auto& definition = definitions.emplace_back();
-            createNodeDefinition(nodeData, definition, recurse);
+            createNodeDefinition(nodeData, definition, loaders, recurse);
         }
     }
 
     void NodeLoader::createNodeDefinition(
         const NodeData& nodeData,
         model::NodeDefinition& definition,
+        Loaders& loaders,
         bool recurse) const
     {
         auto& df = definition;
@@ -258,6 +276,24 @@ namespace loader {
         df.m_active = nodeData.active;
 
         {
+            const auto& scriptFiles = loaders.m_scriptLoader.resolveScripts(
+                nodeData.initScripts);
+
+            for (auto& scriptFile : scriptFiles) {
+                df.m_initScripts.push_back(scriptFile);
+            }
+        }
+
+        {
+            const auto& scriptIds = loaders.m_scriptLoader.createScripts(
+                nodeData.scripts);
+
+            for (auto& scriptId : scriptIds) {
+                df.m_scripts.push_back(scriptId);
+            }
+        }
+
+        {
             const auto& src = nodeData.repeat;
             auto& dst = df.m_repeat;
 
@@ -274,12 +310,12 @@ namespace loader {
 
         if (nodeData.clones && recurse) {
             df.m_clones = std::make_shared<std::vector<model::NodeDefinition>>();
-            createNodeDefinitions(*nodeData.clones, *df.m_clones, false);
+            createNodeDefinitions(*nodeData.clones, *df.m_clones, loaders, false);
         }
 
         if (nodeData.children) {
             df.m_children = std::make_shared<std::vector<model::NodeDefinition>>();
-            createNodeDefinitions(*nodeData.children, *df.m_children, true);
+            createNodeDefinitions(*nodeData.children, *df.m_children, loaders, true);
         }
     }
 }

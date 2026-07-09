@@ -41,6 +41,8 @@
 #include "util/DagSort.h"
 #include "util/DagSort_impl.h"
 
+#include "script/ScriptFile.h"
+
 #include "registry/Registry.h"
 #include "registry/NodeRegistry.h"
 
@@ -388,6 +390,18 @@ namespace model
                 throw fmt::format("MODEL::ERROR::IGNORED_BY_MISSING: node={}, ignored_by={}", nodeData.m_id, nodeData.m_ignoredById);
             }
             node->m_ignoredBy = *ignoredBy;
+        }
+
+        {
+            for (auto& scriptId : nodeData.m_initScripts) {
+                node->addInitScript(scriptId);
+            }
+        }
+
+        {
+            for (auto& scriptId : nodeData.m_scripts) {
+                node->addScript(scriptId);
+            }
         }
 
         const glm::vec3 pos = nodeData.m_position + positionOffset;

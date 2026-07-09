@@ -233,6 +233,15 @@ namespace loader
         }
 
         {
+            const auto& scriptFiles = m_loaders->m_scriptLoader.resolveScripts(
+                typeData.initScripts);
+
+            for (auto& scriptId : scriptFiles) {
+                type->addInitScript(scriptId);
+            }
+        }
+
+        {
             const auto& scriptIds = m_loaders->m_scriptLoader.createScripts(
                 typeData.scripts);
 

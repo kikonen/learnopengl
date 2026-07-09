@@ -83,7 +83,7 @@ namespace loader {
         auto& df = *definition;
 
         df.m_nodes = std::make_unique<std::vector<model::NodeDefinition>>();
-        loaders.m_nodeLoader.createNodeDefinitions(*compositeData.nodes, *df.m_nodes, true);
+        loaders.m_nodeLoader.createNodeDefinitions(*compositeData.nodes, *df.m_nodes, loaders, true);
 
         return definition;
     }

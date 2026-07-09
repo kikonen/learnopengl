@@ -599,6 +599,21 @@ void NodeRegistry::attachListeners()
                             registry->m_dispatcherWorker->send(evt);
                         }
                     }
+
+                    for (const auto& scriptId : node->getScripts()) {
+                        if (nodeHandle == m_rootHandle) {
+                            //scriptSystem.runGlobalScript(node, scriptId);
+                        }
+                        else
+                        {
+                            event::Event evt{ event::Type::script_run };
+                            auto& body = evt.body.script = {
+                                .target = nodeId,
+                                .id = scriptId,
+                            };
+                            registry->m_dispatcherWorker->send(evt);
+                        }
+                    }
                 });
         }
 

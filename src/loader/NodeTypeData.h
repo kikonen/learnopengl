@@ -68,6 +68,7 @@ namespace loader
         CustomMaterialData customMaterial;
         PhysicsData physics;
 
+        std::vector<ScriptData> initScripts;
         std::vector<ScriptData> scripts;
 
         std::vector<ControllerData> controllers;

@@ -5,7 +5,9 @@ local function animation_scale(self)
   local cid = 0
   local dir = 1
 
-  local max_scale = 20;
+  printf("ANIM: max_size: %s\n", self.max_size)
+
+  local max_scale = self.max_size or 30;
 
   local function animation_listener()
     local scale = vec3(1, 1, 1)

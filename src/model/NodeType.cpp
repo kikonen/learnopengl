@@ -33,6 +33,7 @@
 #include "material/Material.h"
 
 #include "script/ScriptSystem.h"
+#include "script/ScriptFile.h"
 
 #include "registry/NodeRegistry.h"
 #include "registry/NodeTypeRegistry.h"
@@ -46,6 +47,7 @@ namespace model
     NodeType::NodeType()
         : m_aabb{},
         m_name{ std::make_unique<std::string>() },
+        m_initScripts{ std::make_unique<std::vector<script::ScriptFile>>() },
         m_scripts{ std::make_unique<std::vector<script::script_id>>() }
     {
     }
@@ -59,6 +61,7 @@ namespace model
         m_preparedWT{ o.m_preparedWT },
         m_preparedRT{ o.m_preparedRT },
         m_meshContainer{ std::move(o.m_meshContainer) },
+        m_initScripts{ std::move(o.m_initScripts) },
         m_scripts{ std::move(o.m_scripts) },
         m_customMaterial{ std::move(o.m_customMaterial) },
         m_addonSelectorDefinition{ std::move(o.m_addonSelectorDefinition) },

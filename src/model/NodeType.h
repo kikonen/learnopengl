@@ -14,6 +14,7 @@
 #include "pool/TypeHandle.h"
 
 #include "script/size.h"
+#include "script/ScriptFile.h"
 
 #include "mesh/LodMesh.h"
 
@@ -22,10 +23,6 @@
 
 namespace render {
     class Batch;
-}
-
-namespace script {
-    struct Script;
 }
 
 namespace model
@@ -141,8 +138,17 @@ namespace model
 
         void prepareVolume() noexcept;
 
+        void addInitScript(const script::ScriptFile& scriptFile) {
+            m_initScripts->push_back(scriptFile);
+        }
+
         void addScript(script::script_id id) {
             m_scripts->push_back(id);
+        }
+
+        const std::vector<script::ScriptFile>& getInitScripts() const noexcept
+        {
+            return *m_initScripts;
         }
 
         const std::vector<script::script_id>& getScripts() const noexcept
@@ -159,7 +165,10 @@ namespace model
 
         std::unique_ptr<std::string> m_name{ nullptr };
         AABB m_aabb;
+
+        std::unique_ptr<std::vector<script::ScriptFile>> m_initScripts;
         std::unique_ptr<std::vector<script::script_id>> m_scripts;
+
         util::Ref<CustomMaterial> m_customMaterial{ nullptr };
 
     public:

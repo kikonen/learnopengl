@@ -42,11 +42,13 @@ namespace loader {
         void createNodeDefinitions(
             const std::vector<NodeData>& nodes,
             std::vector<model::NodeDefinition>& definitions,
+            Loaders& loaders,
             bool recurse) const;
 
         void createNodeDefinition(
             const NodeData& node,
             model::NodeDefinition& definition,
+            Loaders& loaders,
             bool recurse) const;
     };
 }
