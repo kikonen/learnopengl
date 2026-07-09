@@ -1,3 +1,13 @@
+local function defaults(o)
+  o = o or {}
+  return {
+    min = o.min or 2,
+    max = o.max or 30,
+    time = o.time or 5,
+    delay = o.delay or 1,
+  }
+end
+
 local function animation_scale(self)
   local listener_id = nil
   local orig_pos = nil
@@ -5,21 +15,25 @@ local function animation_scale(self)
   local cid = 0
   local dir = 1
 
-  printf("ANIM: max_size: %s\n", self.max_size)
+  self.bubble = defaults(self.bubble)
 
-  local max_scale = self.max_size or 30;
+  printf(
+    "BUBBLE: %d, %d, %d, %d\n",
+    self.bubble.min, self.bubble.max, self.bubble.time, self.bubble.delay)
 
   local function animation_listener()
-    local scale = vec3(1, 1, 1)
+    local bubble = defaults(self.bubble)
+
+    local scale = vec3(bubble.min)
     if dir < 0 then
-      scale = vec3(max_scale)
+      scale = vec3(bubble.max)
     end
 
-    wid = cmd:wait({ after=cid, time=1 })
+    wid = cmd:wait({ after=cid, time=bubble.delay })
 
     cid = cmd:scale(
       self.handle,
-      { after=wid, time=5, relative=false },
+      { after=wid, time=bubble.time, relative=false },
       scale)
 
     cid = cmd:emit(
