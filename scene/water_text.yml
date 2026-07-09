@@ -63,7 +63,7 @@ types:
       program: g_tex
     flags:
       no_shadow: true
-  - id: hello_below
+  - id: hello_base
     type: text
     mesh:
       material:
@@ -83,39 +83,14 @@ types:
         selection_program: selection_font_render
         id_program: object_id_font_render
     text:
-      text: Hello Below
+      text: . . .
       font:
         path: fonts/LuckiestGuy.ttf
         size: 16
       align_horizontal: center
       align_vertical: center
-    xscript_file: scripts/anim_rotate_object
-  - id: hello_above
-    type: text
-    mesh:
-      material:
-        prefab: materials/PavingStones115C.yml
-        #kd: [0.8, 0.8, 0.0, 1.0]
-        # map_displacement: ""
-        # parallax_depth: 0
-        tiling: 3
-        scale_tiling: true
-        alpha: true
-        blend: true
-        render_back: true
-        default_programs: false
-        program: g_font_render
-        oit_program: oit_font_render
-        shadow_program: shadow_font_render
-        selection_program: selection_font_render
-        id_program: object_id_font_render
-    text:
-      text: Hello Above
-      font:
-        path: fonts/LuckiestGuy.ttf
-        size: 16
-      align_horizontal: center
-      align_vertical: center
+    script: |
+      -- TODO KI should not need this
     xscript_file: scripts/anim_rotate_object
   - id: plane
     mesh:
@@ -159,12 +134,20 @@ nodes:
       x_step: 60
       y_step: 0
       z_step: 60
-  - type: hello_below
+  - type: hello_base
     pos: [0, -1.0, -9.0]
     scale: 0.1
-  - type: hello_above
+    init_script: |
+      cmd:set_text(
+        self.handle,
+        {}, { text="Hello Below" })
+  - type: hello_base
     pos: [0, 1.0, -10.0]
     scale: 0.1
+    init_script: |
+      cmd:set_text(
+        self.handle,
+        {}, { text="Hello Above" })
   - type: plane
     pos: [0, 0.1, -12.0]
     rot: [90, 0, 0]

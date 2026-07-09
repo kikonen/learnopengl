@@ -211,20 +211,26 @@ namespace model
             }
         }
         else {
-            if (!type->getScripts().empty()) {
+            bool hasScripts = !(
+                type->getScripts().empty() &&
+                type->getInitScripts().empty() &&
+                (m_scripts && m_scripts->empty()) &&
+                (m_initScripts && m_initScripts->empty()));
+
+            if (hasScripts) {
                 scriptSystem.bindNode(this);
             }
         }
 
         if (const auto& initScripts = type->getInitScripts(); !initScripts.empty()) {
-            for (auto scriptFile : initScripts)
+            for (const auto& scriptFile : initScripts)
             {
                 scriptSystem.execNodeInitScript(m_handle, scriptFile.m_source);
             }
         }
 
         if (const auto& initScripts = *m_initScripts; !initScripts.empty()) {
-            for (auto scriptFile : initScripts)
+            for (const auto& scriptFile : initScripts)
             {
                 scriptSystem.execNodeInitScript(m_handle, scriptFile.m_source);
             }
