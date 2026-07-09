@@ -187,14 +187,53 @@ namespace loader {
                 data.script);
         }
 
-        for (const auto& scriptFile : scriptFiles) {
+        for (auto& scriptSystem = script::ScriptSystem::get(); const auto& scriptFile : scriptFiles) {
             if (scriptFile.m_source.empty()) continue;
 
-            auto scriptId = script::ScriptSystem::get().registerScript(scriptFile);
+            auto scriptId = scriptSystem.registerScript(scriptFile);
             registeredIds.push_back(scriptId);
         }
 
         return registeredIds;
+    }
+
+    std::vector<script::ScriptFile> ScriptLoader::resolveScripts(
+        const std::vector<ScriptData>& scripts) const
+    {
+        std::vector<script::ScriptFile> scriptFiles;
+
+        for (auto& data : scripts) {
+            for (const auto& scriptFile : resolveScript(data)) {
+                scriptFiles.push_back(scriptFile);
+            }
+        }
+
+        return scriptFiles;
+    }
+
+    std::vector<script::ScriptFile> ScriptLoader::resolveScript(
+        const ScriptData& data) const
+    {
+        if (!data.enabled) return {};
+
+        std::vector<script::ScriptFile> scriptFiles;
+
+        if (!data.path.empty()) {
+            auto& scriptFile = scriptFiles.emplace_back(
+                false,
+                data.type,
+                data.path,
+                readFile(data.path));
+        }
+        if (!data.script.empty()) {
+            auto& scriptFile = scriptFiles.emplace_back(
+                true,
+                data.type,
+                data.path,
+                data.script);
+        }
+
+        return scriptFiles;
     }
 
     std::string ScriptLoader::resolveScriptPath(const std::string& str) const

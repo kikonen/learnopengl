@@ -11,6 +11,7 @@
 #include "Repeat.h"
 
 #include "AttachmentData.h"
+#include "ScriptData.h"
 
 namespace loader {
     struct NodeData {
@@ -43,6 +44,9 @@ namespace loader {
         // material tiling
         float tilingX{ 1.f };
         float tilingY{ 1.f };
+
+        std::vector<ScriptData> initScripts;
+        std::vector<ScriptData> scripts;
 
         std::shared_ptr<std::vector<NodeData>> clones;
         std::shared_ptr<std::vector<NodeData>> children;

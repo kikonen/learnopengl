@@ -36,6 +36,7 @@
 #include "audio/Listener.h"
 
 #include "script/ScriptSystem.h"
+#include "script/ScriptFile.h"
 
 #include "registry/Registry.h"
 #include "registry/NodeRegistry.h"
@@ -56,17 +57,23 @@ namespace {
 namespace model
 {
     Node::Node()
+        : m_initScripts{ std::make_unique<std::vector<script::ScriptFile>>() },
+        m_scripts{ std::make_unique<std::vector<script::script_id>>() }
     {
     }
 
     Node::Node(Node&& o) noexcept
-        : m_handle{ o.m_handle }
+        : m_handle{ o.m_handle },
+        m_initScripts{ std::move(o.m_initScripts) },
+        m_scripts{ std::move(o.m_scripts) }
     {
+        // TODO KI this is broken
     }
 
     Node& Node::operator=(Node&& o) noexcept
     {
         if (&o == this) return *this;
+        // TODO KI this is broken
         return *this;
     }
 
@@ -190,6 +197,13 @@ namespace model
 
         auto& scriptSystem = script::ScriptSystem::get();
 
+        if (m_scripts) {
+            for (auto scriptId : *m_scripts)
+            {
+                scriptSystem.bindTypeScript(type->m_flags.root, type->m_handle, scriptId);
+            }
+        }
+
         if (m_typeFlags.root) {
             for (auto scriptId : type->getScripts())
             {
@@ -199,6 +213,20 @@ namespace model
         else {
             if (!type->getScripts().empty()) {
                 scriptSystem.bindNode(this);
+            }
+        }
+
+        if (const auto& initScripts = type->getInitScripts(); !initScripts.empty()) {
+            for (auto scriptFile : initScripts)
+            {
+                scriptSystem.execNodeInitScript(m_handle, scriptFile.m_source);
+            }
+        }
+
+        if (const auto& initScripts = *m_initScripts; !initScripts.empty()) {
+            for (auto scriptFile : initScripts)
+            {
+                scriptSystem.execNodeInitScript(m_handle, scriptFile.m_source);
             }
         }
     }

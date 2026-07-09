@@ -290,6 +290,13 @@ namespace loader {
                 // NOTE compat with old "disable" logic
                 data.enabled = false;
             }
+            else if (k == "init_script") {
+                auto& scriptData = data.initScripts.emplace_back();
+                loaders.m_scriptLoader.loadScript(v, scriptData, false);
+            }
+            else if (k == "init_scripts") {
+                loaders.m_scriptLoader.loadScripts(v, data.initScripts, false);
+            }
             else if (k == "script") {
                 auto& scriptData = data.scripts.emplace_back();
                 loaders.m_scriptLoader.loadScript(v, scriptData, false);

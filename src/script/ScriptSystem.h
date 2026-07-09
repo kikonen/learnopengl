@@ -104,6 +104,10 @@ namespace script
             int type,
             const std::string& data);
 
+        sol::protected_function_result execNodeInitScript(
+            pool::NodeHandle nodeHandle,
+            const std::string& script);
+
         sol::protected_function_result execScript(
             const std::string& script);
 

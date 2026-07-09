@@ -9,6 +9,7 @@
 
 #include "script/CommandEngine.h"
 #include "script/ScriptSystem.h"
+#include "script/ScriptFile.h"
 
 #include "particle/ParticleSystem.h"
 

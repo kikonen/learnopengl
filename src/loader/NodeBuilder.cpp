@@ -97,7 +97,7 @@ namespace loader
                 std::vector<std::pair<std::string, ki::node_id>> aliases;
 
                 model::NodeDefinition nodeDefinition;
-                loaders->m_nodeLoader.createNodeDefinition(baseData, nodeDefinition, true);
+                loaders->m_nodeLoader.createNodeDefinition(baseData, nodeDefinition, *loaders, true);
 
                 model::CompositeBuilder builder{ NodeRegistry::get() };
                 builder.buildNode(parentId, nodeDefinition, aliases, true);

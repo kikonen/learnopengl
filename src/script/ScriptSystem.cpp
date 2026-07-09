@@ -522,6 +522,21 @@ end)", fnName, scriptFile.m_source);
         return invokeLuaScript(script);
     }
 
+    sol::protected_function_result ScriptSystem::execNodeInitScript(
+        pool::NodeHandle nodeHandle,
+        const std::string& script)
+    {
+        auto scriplet = fmt::format(
+            R"(
+(function(self)
+local State = self:class()
+{}
+end)(states[{}])
+)", script, nodeHandle.toId());
+
+        return invokeLuaScript(scriplet);
+    }
+
     sol::protected_function_result ScriptSystem::execRepl(
         const std::string& script)
     {

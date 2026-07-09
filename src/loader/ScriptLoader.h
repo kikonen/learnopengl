@@ -14,6 +14,7 @@
 namespace script
 {
     class ScriptSystem;
+    struct ScriptFile;
 }
 
 namespace loader {
@@ -41,6 +42,12 @@ namespace loader {
             const std::vector<ScriptData>& scripts) const;
 
         std::vector<script::script_id> createScript(
+            const ScriptData& data) const;
+
+        std::vector<script::ScriptFile> resolveScripts(
+            const std::vector<ScriptData>& scripts) const;
+
+        std::vector<script::ScriptFile> resolveScript(
             const ScriptData& data) const;
 
         std::string resolveScriptPath(const std::string& str) const;

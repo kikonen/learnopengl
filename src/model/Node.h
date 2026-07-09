@@ -28,6 +28,8 @@
 
 #include "registry/NodeRegistry.h"
 
+#include "script/ScriptFile.h"
+
 namespace backend {
     struct DrawOptions;
 }
@@ -201,6 +203,24 @@ namespace model
             return dynamic_cast<T*>(m_generator.get());
         }
 
+        void addInitScript(const script::ScriptFile& scriptFile){
+            m_initScripts->push_back(scriptFile);
+        }
+
+        void addScript(script::script_id id) {
+            m_scripts->push_back(id);
+        }
+
+        const std::vector<script::ScriptFile>& getInitScripts() const noexcept
+        {
+            return *m_initScripts;
+        }
+
+        const std::vector<script::script_id>& getScripts() const noexcept
+        {
+            return *m_scripts;
+        }
+
     public:
         std::string m_name;
 
@@ -220,6 +240,9 @@ namespace model
 
         std::unique_ptr<audio::Listener> m_audioListener;
         std::unique_ptr<std::vector<audio::Source>> m_audioSources;
+
+        std::unique_ptr<std::vector<script::ScriptFile>> m_initScripts;
+        std::unique_ptr<std::vector<script::script_id>> m_scripts;
 
         ki::node_id m_ignoredBy{ 0 };
 
