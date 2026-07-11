@@ -38,7 +38,7 @@ struct DirLightState {
 //  - RT reads publishedTimeSecs() / getSkyBlend() (atomics) and the const config,
 //    then derives sun dir/color via the pure functions.
 //  - RT->WT mutations (scrub time, change scale) must route via invokeLaterWT.
-class World final : public util::RefCounted<>
+class World final : public util::RefCountedSimple
 {
 public:
     World();

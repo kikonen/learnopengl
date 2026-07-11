@@ -17,7 +17,7 @@ namespace event {
     using Handle = uint32_t;
     using Entry = std::pair<Handle, Handler>;
 
-    class Dispatcher final : public util::RefCounted<> {
+    class Dispatcher final : public util::RefCountedSimple {
     public:
         Dispatcher();
         ~Dispatcher();

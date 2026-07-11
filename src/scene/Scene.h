@@ -57,7 +57,7 @@ namespace editor {
     class ViewportTool;
 }
 
-class Scene final : public util::RefCounted<>
+class Scene final : public util::RefCountedSimple
 {
     friend class editor::EditorFrame;
     friend class editor::CameraTool;

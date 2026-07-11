@@ -22,7 +22,7 @@ namespace mesh
     class Mesh;
     class MeshImporter;
 
-    class MeshSet : public util::RefCounted<>
+    class MeshSet final : public util::RefCountedSimple
     {
         friend class mesh_set::AssimpImporter;
         friend class MeshImporter;

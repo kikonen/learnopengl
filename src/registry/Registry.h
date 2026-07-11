@@ -29,7 +29,7 @@ struct PrepareContext;
 //
 // Container for all registries to simplify passing them around
 //
-class Registry : public util::RefCounted<> {
+class Registry final : public util::RefCountedSimple {
 public:
     Registry(
         Engine& engine,

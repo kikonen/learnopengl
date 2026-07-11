@@ -19,7 +19,7 @@ struct PrepareContext;
 struct UpdateContext;
 
 namespace particle {
-    class ParticleGenerator final : public util::RefCounted<>
+    class ParticleGenerator final : public util::RefCountedSimple
     {
     public:
         ParticleGenerator();

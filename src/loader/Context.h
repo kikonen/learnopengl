@@ -10,7 +10,7 @@
 class AsyncLoader;
 
 namespace loader {
-    struct Context : public util::RefCounted<> {
+    struct Context final : public util::RefCountedSimple {
         Context(
             util::Ref<AsyncLoader> asyncLoader,
             const std::string& sdirName,

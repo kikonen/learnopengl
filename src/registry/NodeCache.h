@@ -16,7 +16,7 @@ namespace model
     class Node;
 }
 
-class NodeCache : public util::RefCounted<> {
+class NodeCache final : public util::RefCountedSimple {
 public:
     NodeCache();
     ~NodeCache();
