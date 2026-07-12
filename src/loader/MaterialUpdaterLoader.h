@@ -27,11 +27,11 @@ namespace loader {
             MaterialUpdaterData& data,
             Loaders& loaders) const;
 
-        std::vector<std::unique_ptr<MaterialUpdater>> createMaterialUpdaters(
+        std::vector<util::Ref<MaterialUpdater>> createMaterialUpdaters(
             const std::vector<MaterialUpdaterData>& updaters,
             Loaders& loaders);
 
-        std::unique_ptr<MaterialUpdater> createMaterialUpdater(
+        util::Ref<MaterialUpdater> createMaterialUpdater(
             const MaterialUpdaterData& data,
             Loaders& loaders);
     };

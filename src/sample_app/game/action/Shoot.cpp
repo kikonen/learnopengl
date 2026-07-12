@@ -11,6 +11,8 @@
 
 #include "model/Node.h"
 
+#include "material/Material.h"
+
 #include "decal/DecalSystem.h"
 #include "decal/DecalRegistry.h"
 

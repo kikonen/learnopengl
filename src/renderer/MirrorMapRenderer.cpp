@@ -79,8 +79,8 @@ void MirrorMapRenderer::prepareRT(
 
     {
         m_tagMaterial = Material::createMaterial(BasicMaterial::highlight);
-        m_tagMaterial.kd = glm::vec4(0.f, 0.8f, 0.f, 1.f);
-        m_tagMaterial.registerMaterial();
+        m_tagMaterial->kd = glm::vec4(0.f, 0.8f, 0.f, 1.f);
+        m_tagMaterial->registerMaterial();
     }
 
     m_renderFrameStart = assets.mirrorMapRenderFrameStart;
@@ -240,7 +240,7 @@ bool MirrorMapRenderer::render(
     if (!needRender(parentCtx)) return false;
 
     model::Node* closest = findClosest(parentCtx);
-    setClosest(parentCtx, closest, m_tagMaterial.m_registeredIndex);
+    setClosest(parentCtx, closest, m_tagMaterial->m_registeredIndex);
     if (!closest) return false;
 
     // https://www.youtube.com/watch?v=7T5o4vZXAvI&list=PLRIWtICgwaX23jiqVByUs0bqhnalNTNZh&index=7

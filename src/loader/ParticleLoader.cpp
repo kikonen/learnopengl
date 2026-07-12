@@ -244,14 +244,17 @@ namespace loader
         df.m_spriteBase = data.spriteBase;
         df.m_spriteBaseVariation = data.spriteBaseVariation;
         df.m_spriteCount = data.spriteCount;
-        if (data.spriteCount < 1) {
-            df.m_spriteCount = data.materialData.material.spriteCount;
+        if (data.spriteCount < 1 && data.materialData.material) {
+            df.m_spriteCount = data.materialData.material->spriteCount;
         }
         df.m_spriteSpeed = data.spriteSpeed;
         df.m_spriteSpeedVariation = data.spriteSpeedVariation;
 
-        df.m_material = std::make_shared<Material>();
-        *df.m_material = data.materialData.material;
+        df.setMaterial(data.materialData.material);
+        if (!df.m_material) {
+            df.m_material = Material::createMaterial(BasicMaterial::yellow);
+        }
+
         df.m_material->loadTextures();
 
         return definition;

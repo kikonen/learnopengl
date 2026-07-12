@@ -38,7 +38,7 @@ void MeshRenderer::prepareRT(const PrepareContext& ctx)
 
     {
         m_fallbackMaterial = Material::createMaterial(BasicMaterial::yellow);
-        m_fallbackMaterial.registerMaterial();
+        m_fallbackMaterial->registerMaterial();
     }
 
     // NOTE KI this is *forward* pass

@@ -126,8 +126,8 @@ void CubeMapRenderer::prepareRT(
 
     {
         m_tagMaterial = Material::createMaterial(BasicMaterial::highlight);
-        m_tagMaterial.kd = glm::vec4(0.f, 0.8f, 0.8f, 1.f);
-        m_tagMaterial.registerMaterial();
+        m_tagMaterial->kd = glm::vec4(0.f, 0.8f, 0.8f, 1.f);
+        m_tagMaterial->registerMaterial();
     }
 
     const int size = assets.cubeMapSize;

@@ -26,7 +26,7 @@ namespace mesh_set
         // @return true if
         bool load(
             mesh::MeshSet& meshSet,
-            Material* defaultMaterial,
+            const util::Ref<Material>& defaultMaterial,
             bool forceDefaultMaterial);
 
     protected:
@@ -34,7 +34,7 @@ namespace mesh_set
             mesh::MeshSet& meshSet) = 0;
 
     protected:
-        Material m_defaultMaterial;
+        util::Ref<Material> m_defaultMaterial;
         bool m_forceDefaultMaterial{ false };
 
         std::shared_ptr<std::atomic_bool> m_alive;

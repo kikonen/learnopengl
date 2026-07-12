@@ -189,7 +189,8 @@ namespace loader
 
             // NOTE KI container does not have mesh itself, but it can setup
             // material & program for contained nodes
-            if (typeData.type != NodeKind::container) {
+            // NOTE KI text mesh is not known yet; it's built per node on-the-fly
+            if (typeData.type != NodeKind::container && !type->m_flags.dynamicMesh) {
                 if (!meshContainer->hasMeshes()) {
                     KI_WARN(fmt::format(
                         "TYPE::SCENE_FILE_IGNORE: NO_MESH id={} ({})",
@@ -317,7 +318,7 @@ namespace loader
         const MeshData& meshData,
         const LodData* lodData)
     {
-        auto* lodMaterial = lodMesh.modifyMaterial();
+        auto* lodMaterial = lodMesh.modifyMaterial().get();
         if (!lodMaterial) return;
 
         auto& material = *lodMaterial;
@@ -337,7 +338,9 @@ namespace loader
                         materialData.materialName,
                         materialData.aliasName));
 
-                    material.assign(materialData.material);
+                    if (materialData.material) {
+                        material.assign(*materialData.material);
+                    }
                 }
             }
 
@@ -352,7 +355,9 @@ namespace loader
                         materialData.materialName,
                         materialData.aliasName));
 
-                    material.assign(materialData.material);
+                    if (materialData.material) {
+                        material.assign(*materialData.material);
+                    }
                 }
             }
 
@@ -388,7 +393,9 @@ namespace loader
                         materialData.materialName,
                         materialData.aliasName));
 
-                    l.m_materialLoader.modifyMaterial(material, materialData);
+                    if (materialData.material) {
+                        l.m_materialLoader.modifyMaterial(material, materialData);
+                    }
                 }
             }
 
@@ -403,7 +410,9 @@ namespace loader
                         materialData.materialName,
                         materialData.aliasName));
 
-                    l.m_materialLoader.modifyMaterial(material, materialData);
+                    if (materialData.material) {
+                        l.m_materialLoader.modifyMaterial(material, materialData);
+                    }
                 }
             }
 
@@ -424,7 +433,9 @@ namespace loader
                             name,
                             alias));
 
-                        l.m_materialLoader.modifyMaterial(material, materialData);
+                        if (materialData.material) {
+                            l.m_materialLoader.modifyMaterial(material, materialData);
+                        }
                     }
                 }
 
@@ -444,7 +455,9 @@ namespace loader
                             name,
                             alias));
 
-                        l.m_materialLoader.modifyMaterial(material, materialData);
+                        if (materialData.material) {
+                            l.m_materialLoader.modifyMaterial(material, materialData);
+                        }
                     }
                 }
             }
@@ -560,11 +573,15 @@ namespace loader
         }
         else if (typeData.type == NodeKind::text) {
             type->m_flags.text = true;
+            type->m_flags.dynamicMesh = true;
+
+            // NOTE KI text cannot have shared mesh
+            // => this just *TEMPLATE* for programs, etc.
             auto mesh = util::Ref<mesh::TextMesh>::create();
 
             if (!mesh->getMaterial()) {
                 const auto& material = Material::createMaterial(BasicMaterial::yellow);
-                mesh->setMaterial(&material);
+                mesh->setMaterial(material);
             }
 
             mesh::LodMesh lodMesh;
@@ -648,11 +665,10 @@ namespace loader
 
             if (meshData.materials.empty()) {
                 const auto& material = Material::createMaterial(BasicMaterial::yellow);
-                mesh->setMaterial(&material);
+                mesh->setMaterial(material);
             }
             else {
-                const auto* material = &meshData.materials[0].material;
-                mesh->setMaterial(material);
+                mesh->setMaterial(meshData.materials[0].material);
             }
 
             mesh::LodMesh lodMesh;

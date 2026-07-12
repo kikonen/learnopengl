@@ -59,10 +59,10 @@ namespace {
         auto mesh = generator.create();
 
         auto material = Material::createMaterial(BasicMaterial::basic);
-        material.m_name = name;
-        material.kd = color;
-        material.registerMaterial();
-        mesh->setMaterial(&material);
+        material->m_name = name;
+        material->kd = color;
+        material->registerMaterial();
+        mesh->setMaterial(material);
 
         return mesh;
     }
@@ -81,10 +81,10 @@ namespace {
         auto mesh = generator.create();
 
         auto material = Material::createMaterial(BasicMaterial::basic);
-        material.m_name = name;
-        material.kd = glm::vec4{ 0.5f, 0.5f, 0.5f, 1.f }; // Gray color
-        material.registerMaterial();
-        mesh->setMaterial(&material);
+        material->m_name = name;
+        material->kd = glm::vec4{ 0.5f, 0.5f, 0.5f, 1.f }; // Gray color
+        material->registerMaterial();
+        mesh->setMaterial(material);
 
         return mesh;
     }

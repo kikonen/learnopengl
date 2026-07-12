@@ -78,9 +78,9 @@ namespace mesh {
 
         void setMesh(const util::Ref<Mesh>& mesh) noexcept;
 
-        const Material* getMaterial() const noexcept;
-        Material* modifyMaterial() noexcept;
-        void setMaterial(const Material* material) noexcept;
+        const util::Ref<Material>& getMaterial() const noexcept;
+        util::Ref<Material>& modifyMaterial() noexcept;
+        void setMaterial(const util::Ref<Material>& material) noexcept;
         void clearMaterial() noexcept;
 
         ki::material_index getMaterialIndex() const noexcept;
@@ -138,7 +138,7 @@ namespace mesh {
         util::Front m_baseFront{ util::Front::z };
 
         util::Ref<Mesh> m_mesh;
-        std::unique_ptr<Material> m_material;
+        util::Ref<Material> m_material;
 
         glm::vec3 m_scale{ 1.f };
 

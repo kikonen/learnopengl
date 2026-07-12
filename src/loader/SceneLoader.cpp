@@ -226,9 +226,11 @@ namespace loader {
             auto& materialRegistry = MaterialRegistry::get();
             for (auto& materialData : m_sceneData->m_materials) {
                 auto& material = materialData.material;
-                material.resolveMaterial();
-                material.setId(SID_REGISTER(materialData.materialName).asSid());
-                materialRegistry.registerMaterial(material);
+                if (material) {
+                    material->resolveMaterial();
+                    material->setId(SID_REGISTER(materialData.materialName).asSid());
+                    materialRegistry.registerMaterial(material);
+                }
             }
         }
 

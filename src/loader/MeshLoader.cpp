@@ -165,7 +165,7 @@ namespace loader {
                 auto& materialData = data.materials[0];
                 materialData.aliasName = MATERIAL_ALIAS_ANY;
                 loaders.m_materialLoader.loadMaterial(v, currentDir, materialData, loaders);
-                materialData.materialName = materialData.material.m_name;
+                materialData.materialName = materialData.material->m_name;
             }
             else if (k == "material_modifier") {
                 if (data.materialModifiers.empty()) {

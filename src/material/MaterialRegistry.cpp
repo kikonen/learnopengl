@@ -70,7 +70,7 @@ void MaterialRegistry::clear()
     {
         // NOTE KI *reserve* index 0
         // => multi-material needs to do "-index" trick, does not work for zero
-        Material zero = Material::createMaterial(BasicMaterial::basic);
+        const auto& zero = Material::createMaterial(BasicMaterial::basic);
         m_materials.emplace_back(zero);
         registerMaterial(zero);
     }
@@ -89,9 +89,9 @@ ki::material_index MaterialRegistry::findRegisteredIndex(ki::material_id id)
     return it != m_idToIndex.end() ? it->second : 0;
 }
 
-ki::material_index MaterialRegistry::registerMaterial(Material& material)
+ki::material_index MaterialRegistry::registerMaterial(const util::Ref<Material>& material)
 {
-    if (material.m_registeredIndex >= 0) return material.m_registeredIndex;
+    if (material->m_registeredIndex >= 0) return material->m_registeredIndex;
 
     std::lock_guard lock(m_lock);
 
@@ -107,25 +107,25 @@ ki::material_index MaterialRegistry::registerMaterial(Material& material)
         }
     }
 
-    material.m_registeredIndex = static_cast<ki::material_index>(m_materials.size());
+    material->m_registeredIndex = static_cast<ki::material_index>(m_materials.size());
     m_materials.emplace_back(material);
 
-    m_idToIndex.insert({ material.getId(), material.m_registeredIndex});
+    m_idToIndex.insert({ material->getId(), material->m_registeredIndex});
 
     m_dirtyFlag = true;
 
-    return material.m_registeredIndex;
+    return material->m_registeredIndex;
 }
 
-void MaterialRegistry::updateMaterial(const Material& material)
+void MaterialRegistry::updateMaterial(const util::Ref<Material>& material)
 {
     // NOTE KI don't allow update of index == 0
-    if (material.m_registeredIndex <= 0) return;
+    if (material->m_registeredIndex <= 0) return;
 
     std::lock_guard lock(m_lock);
 
-    m_materials[material.m_registeredIndex] = material;
-    markDirty(material.m_registeredIndex);
+    m_materials[material->m_registeredIndex] = material;
+    markDirty(material->m_registeredIndex);
 }
 
 void MaterialRegistry::markDirty(ki::material_index registeredIndex)
@@ -134,9 +134,9 @@ void MaterialRegistry::markDirty(ki::material_index registeredIndex)
     m_dirtyFlag = true;
 }
 
-void MaterialRegistry::addMaterialUpdater(std::unique_ptr<MaterialUpdater> updater)
+void MaterialRegistry::addMaterialUpdater(util::Ref<MaterialUpdater> updater)
 {
-    registerMaterial(*updater->m_material);
+    registerMaterial(updater->m_material);
 
     std::lock_guard lock(m_lock);
     m_updaters.insert({ updater->m_id, std::move(updater)});
@@ -194,14 +194,14 @@ void MaterialRegistry::prepareMaterials(const PrepareContext& ctx)
 
     for (size_t i = index; i < totalCount; i++) {
         auto& material = m_materials[i];
-        material.prepare();
+        material->prepare();
 
-        if (material.m_updaterId) {
-            const auto& it = m_updaters.find(material.m_updaterId);
+        if (material->m_updaterId) {
+            const auto& it = m_updaters.find(material->m_updaterId);
             if (it != m_updaters.end()) {
                 auto* updater = it->second.get();
-                material.m_updater = updater;
-                updater->m_dependentMaterials.push_back(material.m_registeredIndex);
+                material->m_updater = updater;
+                updater->m_dependentMaterials.push_back(material->m_registeredIndex);
             }
         }
     }
@@ -234,7 +234,7 @@ void MaterialRegistry::updateMaterialBuffer()
             auto& main = m_materialMainEntries.emplace_back();
             auto& custom = m_materialCustomEntries.emplace_back();
             auto& cold = m_materialColdEntries.emplace_back();
-            material.fillSSBO(main, custom, cold);
+            material->fillSSBO(main, custom, cold);
         }
     }
 
@@ -326,7 +326,7 @@ void MaterialRegistry::updateDirtyMaterialBuffer()
         auto& custom = m_materialCustomEntries[dirtyIndex];
         auto& cold = m_materialColdEntries[dirtyIndex];
 
-        m_materials[dirtyIndex].fillSSBO(main, custom, cold);
+        m_materials[dirtyIndex]->fillSSBO(main, custom, cold);
 
         {
             constexpr size_t sz = sizeof(MaterialMainSSBO);

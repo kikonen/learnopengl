@@ -50,6 +50,6 @@ private:
     std::mutex m_meshes_lock{};
     std::unordered_map<const std::string, std::shared_future<util::Ref<mesh::MeshSet>>, util::constant_string_hash> m_meshes;
 
-    std::unique_ptr<Material> m_defaultMaterial{ nullptr };
+    util::Ref<Material> m_defaultMaterial{ nullptr };
     bool m_forceDefaultMaterial = false;
 };

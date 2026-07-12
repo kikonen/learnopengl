@@ -23,7 +23,7 @@ void MaterialUpdater::render(
     //markDirty();
 }
 
-void MaterialUpdater::setMaterial(const Material* src) noexcept
+void MaterialUpdater::setMaterial(const util::Ref<Material>& src) noexcept
 {
     if (!src) {
         m_material.reset();
@@ -31,7 +31,7 @@ void MaterialUpdater::setMaterial(const Material* src) noexcept
     }
 
     if (!m_material) {
-        m_material = std::make_unique<Material>();
+        m_material = util::Ref<Material>::create();
     }
     *m_material = *src;
 }

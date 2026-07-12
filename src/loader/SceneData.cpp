@@ -26,7 +26,7 @@ namespace loader
         m_scriptSystemData{ std::make_unique<ScriptSystemData>() }
     {
         // NOTE KI white causes least unexpectedly tinted results
-        m_defaultMaterial = std::make_unique<Material>(Material::createMaterial(BasicMaterial::white));
+        m_defaultMaterial = Material::createMaterial(BasicMaterial::white);
     }
 
     SceneData::~SceneData() = default;

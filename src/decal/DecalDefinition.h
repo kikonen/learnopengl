@@ -4,7 +4,11 @@
 
 #include "ki/size.h"
 
+#include "util/Ref.h"
+
 #include "Decal.h"
+
+struct Material;
 
 namespace decal
 {
@@ -28,11 +32,15 @@ namespace decal
         glm::vec2 m_lifetimeVariation{ 0.f };
         glm::vec2 m_spriteSpeedVariation{ 0.f };
 
+        util::Ref<Material> m_material;
+
         bool m_static : 1 { true };
 
         bool isValid() const noexcept {
             return m_sid != 0;
         }
+
+        void setMaterial(const util::Ref<Material>& src) noexcept;
 
         Decal createForHit(
             pool::NodeHandle parent,

@@ -12,12 +12,13 @@ namespace loader {
         bool enabled{ false };
 
         std::string text;
+        uint32_t maxSize{ 100 };
 
         glm::vec2 pivot{ 0.f };
         text::Align alignHorizontal{ text::Align::left };
         text::Align alignVertical{ text::Align::top };
 
-        MaterialData materialData;
+        //MaterialData materialData;
         FontData fontData;
     };
 }

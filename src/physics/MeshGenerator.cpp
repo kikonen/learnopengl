@@ -58,19 +58,19 @@ namespace {
     const glm::quat GENERATOR_Z_TO_Y = glm::angleAxis(glm::radians(-90.f), glm::vec3(1.f, 0.f, 0.f));
 
     std::mutex g_materialLock;
-    std::map<physics::ShapeType, Material> g_materials;
+    std::map<physics::ShapeType, util::Ref<Material>> g_materials;
 
     void setupMaterials()
     {
         std::lock_guard lock{ g_materialLock };
 
         if (g_materials.empty()) {
-            const auto matRed = Material::createMaterial(BasicMaterial::red);
-            const auto matWhite = Material::createMaterial(BasicMaterial::white);
-            const auto matBlue = Material::createMaterial(BasicMaterial::blue);
-            const auto matGreen = Material::createMaterial(BasicMaterial::green);
-            const auto matYellow = Material::createMaterial(BasicMaterial::yellow);
-            const auto matGold = Material::createMaterial(BasicMaterial::gold);
+            const auto& matRed = Material::createMaterial(BasicMaterial::red);
+            const auto& matWhite = Material::createMaterial(BasicMaterial::white);
+            const auto& matBlue = Material::createMaterial(BasicMaterial::blue);
+            const auto& matGreen = Material::createMaterial(BasicMaterial::green);
+            const auto& matYellow = Material::createMaterial(BasicMaterial::yellow);
+            const auto& matGold = Material::createMaterial(BasicMaterial::gold);
 
             g_materials.insert({
                 { physics::ShapeType::none, matWhite },
@@ -81,7 +81,7 @@ namespace {
             });
 
             for (auto& [shapeType, material] : g_materials) {
-                material.registerMaterial();
+                material->registerMaterial();
             }
         }
     }
@@ -93,7 +93,7 @@ namespace {
         g_materials.clear();
     }
 
-    const Material& getMaterial(physics::ShapeType type)
+    const util::Ref<Material>& getMaterial(physics::ShapeType type)
     {
         setupMaterials();
         {
@@ -161,7 +161,7 @@ namespace physics {
                         default: break;
                         }
                     }
-                    instance.m_materialIndex = getMaterial(shapeType).m_registeredIndex;
+                    instance.m_materialIndex = getMaterial(shapeType)->m_registeredIndex;
                     meshes->push_back(instance);
                 }
             }

@@ -145,18 +145,22 @@ namespace loader {
         const loader::DecalData& data,
         Loaders& loaders) const
     {
-        auto mat = data.materialData.material;
-        mat.loadTextures();
-        mat.registerMaterial();
-
         decal::DecalDefinition df;
+
+        df.setMaterial(data.materialData.material);
+        if (!df.m_material) {
+            df.m_material = Material::createMaterial(BasicMaterial::yellow);
+        }
+        df.m_material->loadTextures();
+        df.m_material->registerMaterial();
+
         df.m_sid = SID_REGISTER(data.name).asSid();
-        df.m_materialIndex = mat.m_registeredIndex;
+        df.m_materialIndex = df.m_material->m_registeredIndex;
         df.m_lifetime = data.lifetime;
         df.m_rotation = data.rotation;
         df.m_scale = data.scale;
         df.m_spriteBaseIndex = data.spriteBaseIndex;
-        df.m_spriteCount = mat.spriteCount;
+        df.m_spriteCount = df.m_material->spriteCount;
         df.m_spriteSpeed = data.spriteSpeed;
 
         df.m_rotationVariation = data.rotationVariation;

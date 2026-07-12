@@ -57,6 +57,9 @@ namespace loader {
             else if (k == "font") {
                 loaders.m_fontLoader.loadFont(v, data.fontData);
             }
+            else if (k == "max_size") {
+                data.maxSize = readInt(v);
+            }
             else if (k == "pivot") {
                 data.pivot = readVec2(v);
             }
@@ -66,13 +69,13 @@ namespace loader {
             else if (k == "align_vertical") {
                 data.alignVertical = readAlign(v);
             }
-            else if (k == "material") {
-                loaders.m_materialLoader.loadMaterial(
-                    v,
-                    currentDir,
-                    data.materialData,
-                    loaders);
-            }
+            //else if (k == "material") {
+            //    loaders.m_materialLoader.loadMaterial(
+            //        v,
+            //        currentDir,
+            //        data.materialData,
+            //        loaders);
+            //}
             else {
                 reportUnknown("text_entry", k, v);
             }
@@ -92,17 +95,18 @@ namespace loader {
         auto& df = *definition;
 
         df.m_text = data.text;
+        df.m_maxSize = data.maxSize;
+
         df.m_pivot = data.pivot;
 
         df.m_alignHorizontal = data.alignHorizontal;
         df.m_alignVertical = data.alignVertical;
 
-        df.m_material = std::make_shared<Material>();
-
-        auto& material = *df.m_material;
-        material = data.materialData.material;
-        material.loadTextures();
-        material.resolveProgram();
+        //if (data.materialData.material) {
+        //    df.setMaterial(data.materialData.material);
+        //    df.m_material->loadTextures();
+        //    df.m_material->resolveProgram();
+        //}
 
         df.m_fontId = loaders.m_fontLoader.resolveFont(data.fontData);
 

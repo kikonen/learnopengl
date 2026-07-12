@@ -41,13 +41,25 @@ public:
 
     ~TextGenerator();
 
-    void setMesh(const util::Ref<mesh::TextMesh> mesh);
+    void prepareWT(
+        const PrepareContext& ctx,
+        model::Node& container) override;
+
+    void prepareRT(
+        const PrepareContext& ctx,
+        model::Node& container,
+        const model::Snapshot& snapshot) override;
 
     void updateRT(
         const UpdateContext& ctx,
         const model::Node& container) override;
 
     void updateMaterial(const model::Node& container);
+
+    void registerDrawables(
+        render::InstanceRegistry& instanceRegistry,
+        const model::Node& container,
+        const model::Snapshot& snapshot) override;
 
     void updateDrawables(
         render::InstanceRegistry& instanceRegistry,
@@ -97,12 +109,17 @@ public:
         }
     }
 
+    uint32_t getMaxSize() const noexcept {
+        return m_maxSize;
+    }
+
+    void setMaxSize(uint32_t maxSize) noexcept {
+        m_maxSize = maxSize;
+    }
+
     GLuint64 getAtlasTextureHandle() const noexcept;
 
     void clear();
-
-public:
-    Material m_material;
 
 private:
     bool m_dirty{ true };
@@ -110,6 +127,7 @@ private:
 
     std::unique_ptr<text::TextDraw> m_draw;
 
+    util::Ref<mesh::LodMesh> m_lodMesh;
     util::Ref<mesh::TextMesh> m_mesh;
 
     text::font_id m_fontId{ 0 };
@@ -119,6 +137,8 @@ private:
     text::Align m_alignVertical{ text::Align::none };
 
     std::string m_text;
+
+    uint32_t m_maxSize;
 
     bool m_fontRegistered{ false };
 };

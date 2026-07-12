@@ -38,13 +38,13 @@ public:
     ki::material_index findRegisteredIndex(ki::material_id id);
 
     // Updates m_registeredIndex of Material
-    ki::material_index registerMaterial(Material& material);
+    ki::material_index registerMaterial(const util::Ref<Material>& material);
 
     // Update data for already registered material
-    void updateMaterial(const Material& material);
+    void updateMaterial(const util::Ref<Material>& material);
     void markDirty(ki::material_index m_registeredIndex);
 
-    void addMaterialUpdater(std::unique_ptr<MaterialUpdater> updater);
+    void addMaterialUpdater(util::Ref<MaterialUpdater> updater);
 
     void renderMaterials(const render::RenderContext& ctx);
 
@@ -68,7 +68,7 @@ private:
     std::atomic_bool m_dirtyFlag;
     std::mutex m_lock{};
 
-    std::vector<Material> m_materials;
+    std::vector<util::Ref<Material>> m_materials;
     std::vector<uint32_t> m_dirtyMaterials;
 
     std::vector<MaterialMainSSBO> m_materialMainEntries;
@@ -80,6 +80,6 @@ private:
     kigl::GLBuffer m_ssboCustom{ "materials_ssbo_custom" };
     kigl::GLBuffer m_ssboCold{ "materials_ssbo_cold" };
 
-    std::unordered_map<ki::material_updater_id, std::unique_ptr<MaterialUpdater>> m_updaters;
+    std::unordered_map<ki::material_updater_id, util::Ref<MaterialUpdater>> m_updaters;
     std::unordered_map<ki::material_id, uint32_t> m_idToIndex;
 };

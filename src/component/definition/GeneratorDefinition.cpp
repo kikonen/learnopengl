@@ -13,6 +13,19 @@
 
 #include "component/definition/GeneratorDefinition.h"
 
+void GeneratorDefinition::setMaterial(const util::Ref<Material>& src) noexcept
+{
+    if (!src) {
+        m_material.reset();
+        return;
+    }
+
+    if (!m_material) {
+        m_material = util::Ref<Material>::create();
+    }
+    *m_material = *src;
+}
+
 util::Ref<NodeGenerator> GeneratorDefinition::createGenerator(
     const model::NodeType* type)
 {
@@ -40,7 +53,7 @@ util::Ref<NodeGenerator> GeneratorDefinition::createGenerator(
         generator->m_verticalRange = tiling.vertical_range;
         generator->m_horizontalScale = tiling.horizontal_scale;
 
-        generator->m_material = *data.m_material;
+        generator->setMaterial(data.m_material);
 
         return generator;
     }

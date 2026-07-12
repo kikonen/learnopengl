@@ -9,6 +9,19 @@ namespace {
 }
 
 namespace particle {
+    void ParticleDefinition::setMaterial(const util::Ref<Material>& src) noexcept
+    {
+        if (!src) {
+            m_material.reset();
+            return;
+        }
+
+        if (!m_material) {
+            m_material = util::Ref<Material>::create();
+        }
+        *m_material = *src;
+    }
+
     glm::vec3 ParticleDefinition::randomPosition(const util::Random& rnd) const
     {
         glm::vec3 p{ 0.f };

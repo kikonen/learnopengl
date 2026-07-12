@@ -41,6 +41,8 @@ namespace terrain {
             const UpdateContext& ctx,
             const model::Node& container) override;
 
+        void setMaterial(const util::Ref<Material>& src) noexcept;
+
     private:
         void updateTiles(
             const UpdateContext& ctx,
@@ -67,7 +69,7 @@ namespace terrain {
         std::string m_heightMapFile;
         util::Ref<ImageTexture> m_heightMapTex;
 
-        Material m_material;
+        util::Ref<Material> m_material;
 
         std::string m_modelsDir;
 

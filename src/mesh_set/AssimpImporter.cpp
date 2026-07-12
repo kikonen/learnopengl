@@ -373,14 +373,14 @@ namespace mesh_set
         modelMesh.m_vertices.reserve(mesh->mNumVertices);
         modelMesh.m_indeces.reserve(mesh->mNumVertices);
 
-        Material* material{ nullptr };
+        util::Ref<Material> material{ nullptr };
 
         {
             const auto& it = ctx.m_materialMapping.find(mesh->mMaterialIndex);
             if (it != ctx.m_materialMapping.end()) {
-                material = &ctx.m_materials[it->second];
+                material = ctx.m_materials[it->second];
             } else {
-                material = &m_defaultMaterial;
+                material = m_defaultMaterial;
             }
             modelMesh.setMaterial(material);
             modelMesh.m_name = fmt::format("{}[{}]", modelMesh.m_name, material->m_name);

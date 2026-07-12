@@ -47,6 +47,7 @@ namespace loader {
     {
         for (const auto& entry : node.getNodes()) {
             MaterialData& data = materials.emplace_back();
+
             loadMaterialModifier(entry, currentDir, data, loaders);
         }
     }
@@ -62,8 +63,8 @@ namespace loader {
 
         loadMaterial(node, currentDir, data, loaders);
 
-        data.material.m_name = "<modifier>";
-        data.materialName = data.material.m_name;
+        data.material->m_name = "<modifier>";
+        data.materialName = data.material->m_name;
     }
 
     void MaterialLoader::loadMaterials(
@@ -74,8 +75,9 @@ namespace loader {
     {
         for (const auto& entry : node.getNodes()) {
             MaterialData& data = materials.emplace_back();
+
             loadMaterial(entry, currentDir, data, loaders);
-            data.materialName = data.material.m_name;
+            data.materialName = data.material->m_name;
 
             if (data.materialName.empty() && data.aliasName != MATERIAL_ALIAS_ANY)
             {
@@ -90,10 +92,14 @@ namespace loader {
         MaterialData& data,
         Loaders& loaders) const
     {
-        Material& material = data.material;
-        auto& fields = data.fields;
-
         loadMaterialPrefab(node.findNode("prefab"), currentDir, data, loaders);
+
+        if (!data.material) {
+            data.material = util::Ref<Material>::create();
+        }
+
+        Material& material = *data.material;
+        auto& fields = data.fields;
 
         for (const auto& pair : node.getNodes()) {
             const std::string& key = pair.getName();
@@ -591,7 +597,7 @@ namespace loader {
         }
 
         const MaterialField& f = data.fields;
-        const Material & mod = data.material;
+        const auto& mod = *data.material;
 
         if (f.textureSpec) m.textureSpec = mod.textureSpec;
 

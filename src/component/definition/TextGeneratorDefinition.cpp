@@ -7,7 +7,22 @@
 #include "mesh/TextMesh.h"
 #include "mesh/LodMeshContainer.h"
 
+#include "material/Material.h"
+
 #include "generator/TextGenerator.h"
+
+//void TextGeneratorDefinition::setMaterial(const util::Ref<Material>& src) noexcept
+//{
+//    if (!src) {
+//        m_material.reset();
+//        return;
+//    }
+//
+//    if (!m_material) {
+//        m_material = util::Ref<Material>::create();
+//    }
+//    *m_material = *src;
+//}
 
 util::Ref<TextGenerator> TextGeneratorDefinition::createTextGenerator(
     const model::NodeType* type)
@@ -20,20 +35,16 @@ util::Ref<TextGenerator> TextGeneratorDefinition::createTextGenerator(
 
     auto generator = util::Ref<TextGenerator>::create();
 
-    generator->setFontId(data.m_fontId);
     generator->setText(data.m_text);
+    generator->setMaxSize(data.m_maxSize);
+
+    generator->setFontId(data.m_fontId);
+
     generator->setPivot(data.m_pivot);
     generator->setAlignHorizontal(data.m_alignHorizontal);
     generator->setAlignVertical(data.m_alignVertical);
 
-    generator->m_material = *data.m_material;
+    //generator->setMaterial(data.m_material);
 
-    {
-        // NOTE KI store direct mesh refesh to generator to avoid redundant querying
-        auto* lodMesh = type->getMeshContainer()->getLodMesh(0);
-        mesh::TextMesh* mesh = lodMesh->getMesh<mesh::TextMesh>();
-
-        generator->setMesh(mesh);
-    }
     return generator;
 }

@@ -1,5 +1,7 @@
 #include "DecalRegistry.h"
 
+#include "material/Material.h"
+
 namespace {
     static decal::DecalRegistry* s_registry{ nullptr };
 }

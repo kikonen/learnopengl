@@ -3,6 +3,8 @@
 #include <string>
 #include <memory>
 
+#include "util/Ref.h"
+
 #include "ki/size.h"
 
 #include "kigl/kigl.h"
@@ -17,7 +19,7 @@ namespace render
 struct PrepareContext;
 struct Material;
 
-class MaterialUpdater {
+class MaterialUpdater : public util::RefCountedSimple {
 public:
     MaterialUpdater(
         ki::material_updater_id id,
@@ -51,7 +53,7 @@ public:
         return m_dirty;
     }
 
-    void setMaterial(const Material* src) noexcept;
+    void setMaterial(const util::Ref<Material>& src) noexcept;
 
     virtual GLuint64 getTexHandle(TextureType type) const noexcept
     {
@@ -61,7 +63,7 @@ public:
 public:
     ki::material_updater_id m_id{ 0 };
 
-    std::unique_ptr<Material> m_material;
+    util::Ref<Material> m_material;
     std::vector<ki::material_id> m_dependentMaterials;
 
 protected:

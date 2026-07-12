@@ -82,7 +82,7 @@ private:
 
     std::vector<render::Camera> m_cameras;
 
-    Material m_tagMaterial;
+    util::Ref<Material> m_tagMaterial;
 
     std::unique_ptr<WaterMapRenderer> m_waterMapRenderer{ nullptr };
     std::unique_ptr<MirrorMapRenderer> m_mirrorMapRenderer{ nullptr };

@@ -193,7 +193,7 @@ void ImageArrayTexture::prepareNormal()
         glTextureParameteri(m_textureID, GL_TEXTURE_MIN_FILTER, m_spec.minFilter);
         glTextureParameteri(m_textureID, GL_TEXTURE_MAG_FILTER, m_spec.magFilter);
 
-        const int layerCount = m_images.size();
+        const int layerCount = static_cast<int>(m_images.size());
         const uint8_t mipMapLevels = std::min(
             m_spec.maxMipMapLevels,
             static_cast<uint8_t>(log2(std::max(m_width, m_height))));

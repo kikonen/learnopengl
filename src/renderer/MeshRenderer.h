@@ -47,7 +47,7 @@ protected:
         render::InstanceRegistry& instanceRegistry) noexcept;
 
 protected:
-    Material m_fallbackMaterial;
+    util::Ref<Material> m_fallbackMaterial;
 
     ki::program_id m_programId;
 

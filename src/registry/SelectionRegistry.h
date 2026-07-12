@@ -108,9 +108,9 @@ private:
 
     event::Listen m_listen_node_select;
 
-    std::unique_ptr<Material> m_selectionMaterial;
-    std::unique_ptr<Material> m_tagMaterial;
-    std::unique_ptr<Material> m_wireframeMaterial;
+    util::Ref<Material> m_selectionMaterial;
+    util::Ref<Material> m_tagMaterial;
+    util::Ref<Material> m_wireframeMaterial;
 
     std::vector<pool::NodeHandle> m_selected;
     std::vector<pool::NodeHandle> m_tagged;

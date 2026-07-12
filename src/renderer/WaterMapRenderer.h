@@ -104,5 +104,5 @@ private:
 
     unsigned int m_noiseTextureID{ 0 };
 
-    Material m_tagMaterial;
+    util::Ref<Material> m_tagMaterial;
 };

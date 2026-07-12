@@ -13,6 +13,8 @@
 #include "ki/sid.h"
 #include "kigl/kigl.h"
 
+#include "util/Ref.h"
+
 #include "TextureType.h"
 #include "TextureSpec.h"
 
@@ -84,7 +86,7 @@ illum 2
 map_Kd textures/texture_cube_512.png
 */
 
-struct Material final
+struct Material final : public util::RefCountedSimple
 {
 public:
     struct BoundTexture {
@@ -93,13 +95,13 @@ public:
 
 public:
     Material();
-    Material(Material& o);
-    Material(const Material& o);
-    Material(Material&& o) noexcept;
+    Material(Material& o) = delete;
+    Material(const Material& o) = delete;
+    Material(Material&& o) = delete;
     ~Material();
 
     Material& operator=(const Material& o);
-    Material& operator=(Material&& o) noexcept;
+    Material& operator=(Material&& o) = delete;
 
     std::string str() const noexcept;
 
@@ -138,17 +140,17 @@ public:
         return refractionRatio;
     }
 
-    static Material createMaterial(BasicMaterial type);
+    static util::Ref<Material> createMaterial(BasicMaterial type);
 
-    static Material* find(
+    static const util::Ref<Material>& find(
         std::string_view name,
-        std::vector<Material>& materials);
+        std::vector<util::Ref<Material>>& materials);
 
-    //static Material* findID(
+    //static const util::Ref<Material>& findID(
     //    const ki::material_id id,
     //    std::vector<Material>& materials);
 
-    //static const Material* findID(
+    //static const util::Ref<Material>& findID(
     //    const ki::material_id id,
     //    const std::vector<Material>& materials);
 

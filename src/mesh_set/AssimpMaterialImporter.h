@@ -25,11 +25,11 @@ namespace mesh_set
 
         void processMaterials(
             const mesh::MeshSet& meshSet,
-            std::vector<Material>& materials,
+            std::vector<util::Ref<Material>>& materials,
             std::map<size_t, size_t>& materialMapping,
             const aiScene* scene);
 
-        Material processMaterial(
+        util::Ref<Material> processMaterial(
             const mesh::MeshSet& meshSet,
             const aiScene* scene,
             const aiMaterial* material);

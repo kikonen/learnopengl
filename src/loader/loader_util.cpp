@@ -34,6 +34,8 @@
 namespace {
     IdGenerator<ki::type_id> ID_GENERATOR;
 
+    const util::Ref<Material> NULL_MATERIAL{};
+
     const float DEF_ALPHA = 1.0;
 
     const std::string MACRO_STEP_CLONE{ "c" };
@@ -795,15 +797,15 @@ namespace loader {
         return it != nodeTypes.end() ? &(*it) : nullptr;
     }
 
-    const Material* findMaterial(
+    const util::Ref<Material>& findMaterial(
         std::string_view name,
         const std::vector<MaterialData>& materials)
     {
         const auto& it = std::find_if(
             materials.cbegin(),
             materials.cend(),
-            [&name](const auto& m) { return m.material.m_name == name; });
-        return it != materials.end() ? &(it->material) : nullptr;
+            [&name](const auto& m) { return m.material->m_name == name; });
+        return it != materials.end() ? it->material : NULL_MATERIAL;
     }
 
     bool isIgnore(std::string_view k)

@@ -19,11 +19,12 @@ namespace mesh_set
 
     bool MeshSetImporter::load(
         mesh::MeshSet& meshSet,
-        Material* defaultMaterial,
+        const util::Ref<Material>& defaultMaterial,
         bool forceDefaultMaterial)
     {
         if (defaultMaterial) {
-            m_defaultMaterial = *defaultMaterial;
+            // NOTE KI keep shared reference
+            m_defaultMaterial = defaultMaterial;
         }
         else {
             // NOTE KI white causes least unexpectedly tinted results

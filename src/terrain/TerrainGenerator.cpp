@@ -119,8 +119,23 @@ namespace terrain {
         return heightMapId;
     }
 
+    void TerrainGenerator::setMaterial(const util::Ref<Material>& src) noexcept
+    {
+        if (!src) {
+            m_material = Material::createMaterial(BasicMaterial::gold);
+            return;
+        }
+
+        if (!m_material) {
+            m_material = util::Ref<Material>::create();
+        }
+        *m_material = *src;
+    }
+
     util::Ref<ImageTexture> TerrainGenerator::loadTexture(bool flipY) {
-        const auto& texturePath = m_material.resolveTexturePath(m_heightMapFile, false);
+        if (!m_material) return nullptr;
+
+        const auto& texturePath = m_material->resolveTexturePath(m_heightMapFile, false);
         KI_INFO(fmt::format("TERRAIN: height={}", texturePath));
 
         {

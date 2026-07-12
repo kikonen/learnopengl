@@ -53,12 +53,14 @@ struct GeneratorDefinition {
 
     std::string m_heightMap;
 
-    std::unique_ptr<Material> m_material;
+    util::Ref<Material> m_material;
 
     ShapeDefinition m_shape;
 
     glm::vec3 m_boundsDir{ 0.f, -1.f, 0.f };
     uint32_t m_boundsMask{ UINT_MAX };
+
+    void setMaterial(const util::Ref<Material>& src) noexcept;
 
     static util::Ref<NodeGenerator> createGenerator(
         const model::NodeType* type);

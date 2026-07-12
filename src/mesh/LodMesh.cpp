@@ -145,17 +145,17 @@ namespace mesh {
         return m_mesh->getIndexCount();
     }
 
-    const Material* LodMesh::getMaterial() const noexcept
+    const util::Ref<Material>& LodMesh::getMaterial() const noexcept
     {
-        return m_material.get();
+        return m_material;
     }
 
-    Material* LodMesh::modifyMaterial() noexcept
+    util::Ref<Material>& LodMesh::modifyMaterial() noexcept
     {
-        return m_material.get();
+        return m_material;
     }
 
-    void LodMesh::setMaterial(const Material* src) noexcept
+    void LodMesh::setMaterial(const util::Ref<Material>& src) noexcept
     {
         if (!src) {
             m_material.reset();
@@ -166,7 +166,7 @@ namespace mesh {
         // => material *is* per mesh type
         // => Sharing *might* be sometims possible, in practice tricky
         if (!m_material) {
-            m_material = std::make_unique<Material>();
+            m_material = util::Ref<Material>::create();
         }
         *m_material = *src;
 

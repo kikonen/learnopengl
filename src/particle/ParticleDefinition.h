@@ -20,7 +20,7 @@ namespace particle {
     class ParticleGenerator;
 
     struct ParticleDefinition {
-        std::shared_ptr<Material> m_material;
+        util::Ref<Material> m_material;
 
         uint32_t m_pool{ PARTICLE_POOL_LOW };
 
@@ -59,6 +59,8 @@ namespace particle {
         float m_spriteSpeedVariation{ 0.f };
 
     public:
+        void setMaterial(const util::Ref<Material>& src) noexcept;
+
         glm::vec3 randomPosition(const util::Random& rnd) const;
         glm::vec3 randomDirection(const util::Random& rnd) const;
         float randomSpeed(const util::Random& rnd) const;

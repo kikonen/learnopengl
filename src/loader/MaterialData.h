@@ -21,7 +21,7 @@ namespace loader {
         std::string updaterId;
 
         MaterialField fields;
-        Material material;
+        util::Ref<Material> material;
 
         inline bool isAny() const noexcept
         {

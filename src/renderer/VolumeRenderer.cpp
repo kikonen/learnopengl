@@ -52,10 +52,10 @@ void VolumeRenderer::prepareRT(const PrepareContext& ctx)
 
     {
         auto material = Material::createMaterial(BasicMaterial::highlight);
-        material.m_name = "volume";
-        material.kd = glm::vec4(glm::vec3(245, 150, 66) / 255.f, 1.f);
-        material.registerMaterial();
-        m_mesh->setMaterial(&material);
+        material->m_name = "volume";
+        material->kd = glm::vec4(glm::vec3(245, 150, 66) / 255.f, 1.f);
+        material->registerMaterial();
+        m_mesh->setMaterial(material);
     }
 
     m_programId = ProgramRegistry::get().getProgram(SHADER_VOLUME);

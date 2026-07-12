@@ -6,6 +6,8 @@
 #include "util/glm_util.h"
 #include "util/util.h"
 
+#include "material/Material.h"
+
 #include "model/Node.h"
 #include "model/Snapshot.h"
 
@@ -20,6 +22,19 @@ namespace {
 }
 
 namespace decal {
+    void DecalDefinition::setMaterial(const util::Ref<Material>& src) noexcept
+    {
+        if (!src) {
+            m_material = Material::createMaterial(BasicMaterial::gold);
+            return;
+        }
+
+        if (!m_material) {
+            m_material = util::Ref<Material>::create();
+        }
+        *m_material = *src;
+    }
+
     Decal DecalDefinition::createForHit(
         pool::NodeHandle parent,
         const glm::vec3& hitPos,

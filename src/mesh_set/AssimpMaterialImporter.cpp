@@ -606,19 +606,19 @@ namespace mesh_set
 
     void AssimpMaterialImporter::processMaterials(
         const mesh::MeshSet& meshSet,
-        std::vector<Material>& materials,
+        std::vector<util::Ref<Material>>& materials,
         std::map<size_t, size_t>& materialMapping,
         const aiScene* scene)
     {
         for (size_t n = 0; n < scene->mNumMaterials; ++n)
         {
-            auto material = processMaterial(meshSet, scene, scene->mMaterials[n]);
+            const auto& material = processMaterial(meshSet, scene, scene->mMaterials[n]);
             materials.push_back(material);
             materialMapping.insert({ n, materials.size() - 1 });
         }
     }
 
-    Material AssimpMaterialImporter::processMaterial(
+    util::Ref<Material> AssimpMaterialImporter::processMaterial(
         const mesh::MeshSet& meshSet,
         const aiScene* scene,
         const aiMaterial* src)
@@ -634,24 +634,24 @@ namespace mesh_set
                 src->mNumAllocated));
         }
 
-        Material material;
-        material.m_modelDir = meshSet.m_dir;
-        material.m_name = name;
+        auto material = util::Ref<Material>::create();
+        material->m_modelDir = meshSet.m_dir;
+        material->m_name = name;
 
         PBRMaterialInfo materialInfo = getPBRMaterialInfo(src);
         MaterialRenderInfo renderInfo = getMaterialRenderInfo(src);
 
         {
-            material.kd = materialInfo.baseColorFactor;
+            material->kd = materialInfo.baseColorFactor;
             if (renderInfo.hasTransparency)
-            {
-                material.kd.a = renderInfo.opacity;
+                {
+                material->kd.a = renderInfo.opacity;
             }
-            material.ke = glm::vec4{ materialInfo.emissiveFactor, 0.f };
-            material.m_metalnessFactor = materialInfo.metallicFactor;
-            material.m_roughnessFactor = materialInfo.roughnessFactor;
+            material->ke = glm::vec4{ materialInfo.emissiveFactor, 0.f };
+            material->m_metalnessFactor = materialInfo.metallicFactor;
+            material->m_roughnessFactor = materialInfo.roughnessFactor;
 
-            material.renderBack = renderInfo.doubleSided;
+            material->renderBack = renderInfo.doubleSided;
         }
 
         for (const auto& texInfo : TEXTURE_MAPPING)
@@ -709,29 +709,29 @@ namespace mesh_set
                         path);
 
                     if (texInfo.checkAlpha) {
-                        material.alpha = tex->hasAlpha();
-                        if (material.alpha) {
+                        material->alpha = tex->hasAlpha();
+                        if (material->alpha) {
                             if (renderInfo.alphaMode == AlphaMode::mask)
                             {
-                                material.alpha = true;
+                                material->alpha = true;
                             }
                             else if (renderInfo.alphaMode == AlphaMode::blend)
                             {
-                                material.alpha = true;
-                                material.blend = true;
+                                material->alpha = true;
+                                material->blend = true;
                             }
 
-                            //material.kd = glm::vec4{ 1.f };
-                            //material.blend = false;
+                            //material->kd = glm::vec4{ 1.f };
+                            //material->blend = false;
                         }
                     }
 
-                    material.addinlineTexture(
+                    material->addinlineTexture(
                         texInfo.type,
                         tex);
                 }
                 else {
-                    material.addTexture(
+                    material->addTexture(
                         texInfo.type,
                         findTexturePath(meshSet, path),
                         true);

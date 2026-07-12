@@ -85,11 +85,11 @@ namespace loader {
         }
     }
 
-    std::vector<std::unique_ptr<MaterialUpdater>> MaterialUpdaterLoader::createMaterialUpdaters(
+    std::vector<util::Ref<MaterialUpdater>> MaterialUpdaterLoader::createMaterialUpdaters(
         const std::vector<MaterialUpdaterData>& updatersData,
         Loaders& loaders)
     {
-        std::vector<std::unique_ptr<MaterialUpdater>> updaters;
+        std::vector<util::Ref<MaterialUpdater>> updaters;
         for (const auto& data : updatersData) {
             auto updater = createMaterialUpdater(data, loaders);
             if (!updater) continue;
@@ -99,28 +99,36 @@ namespace loader {
         return updaters;
     }
 
-    std::unique_ptr<MaterialUpdater> MaterialUpdaterLoader::createMaterialUpdater(
+    util::Ref<MaterialUpdater> MaterialUpdaterLoader::createMaterialUpdater(
         const MaterialUpdaterData& data,
         Loaders& loaders)
     {
         switch (data.type) {
         case MaterialUpdaterType::shader: {
-            auto cm = std::make_unique<ShaderMaterialUpdater>(SID_REGISTER(data.id).asSid(), data.id);
+            auto cm = util::Ref<ShaderMaterialUpdater>::create(SID_REGISTER(data.id).asSid(), data.id);
 
             cm->m_size = data.size;
             cm->m_frameSkip = data.frameSkip;
-            cm->setMaterial(&data.materialData.material);
-            cm->m_material->loadTextures();
 
+            cm->setMaterial(data.materialData.material);
+            if (!cm->m_material) {
+                cm->setMaterial(Material::createMaterial(BasicMaterial::basic));
+            }
+
+            cm->m_material->loadTextures();
             cm->m_material->resolveMaterial();
 
             return cm;
         }
         case MaterialUpdaterType::font_atlas: {
-            auto cm = std::make_unique<FontAtlasMaterialUpdater>(SID_REGISTER(data.id).asSid(), data.id);
+            auto cm = util::Ref<FontAtlasMaterialUpdater>::create(SID_REGISTER(data.id).asSid(), data.id);
 
-            cm->setMaterial(&data.materialData.material);
+            cm->setMaterial(data.materialData.material);
+            if (!cm->m_material) {
+                cm->setMaterial(Material::createMaterial(BasicMaterial::basic));
+            }
 
+            cm->m_material->loadTextures();
             cm->m_material->resolveMaterial();
 
             return cm;

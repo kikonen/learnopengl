@@ -34,6 +34,8 @@
 namespace {
     IdGenerator<ki::material_id> ID_GENERATOR;
 
+    const util::Ref<Material> NULL_MATERIAL{};
+
     constexpr unsigned int MATERIAL_INVERT_OCCLUSION = 1;
     constexpr unsigned int MATERIAL_INVERT_METALNESS = 2;
     constexpr unsigned int MATERIAL_INVERT_ROUGHNESS = 4;
@@ -48,66 +50,66 @@ namespace {
     //    return (ambient.x + ambient.y + ambient.z) / 3.f;
     //}
 
-    Material createDefaultMaterial() {
-        Material mat;
-        mat.m_name = "<default>";
-        mat.kd = glm::vec4(0.8f, 0.8f, 0.0f, 1.f);
+    util::Ref<Material> createDefaultMaterial() {
+        auto mat = util::Ref<Material>::create();
+        mat->m_name = "<default>";
+        mat->kd = glm::vec4(0.8f, 0.8f, 0.0f, 1.f);
         return mat;
     }
 
-    Material createBasicMaterial() {
-        Material mat;
-        mat.m_name = "<basic>";
-        mat.kd = glm::vec4(0.8f, 0.8f, 0.0f, 1.f);
+    util::Ref<Material> createBasicMaterial() {
+        auto mat = util::Ref<Material>::create();
+        mat->m_name = "<basic>";
+        mat->kd = glm::vec4(0.8f, 0.8f, 0.0f, 1.f);
         return mat;
     }
 
-    Material createRGBMaterial(std::string_view name, const glm::vec4& color) {
-        Material mat;
-        mat.m_name = name;
-        mat.kd = color;
+    util::Ref<Material> createRGBMaterial(std::string_view name, const glm::vec4& color) {
+        auto mat = util::Ref<Material>::create();
+        mat->m_name = name;
+        mat->kd = color;
         return mat;
     }
 
-    Material createGoldMaterial() {
-        Material mat;
-        mat.m_name = "<gold>";
-        mat.kd = glm::vec4(0.7516f, 0.6065f, 0.2265f, 1.f);
+    util::Ref<Material> createGoldMaterial() {
+        auto mat = util::Ref<Material>::create();
+        mat->m_name = "<gold>";
+        mat->kd = glm::vec4(0.7516f, 0.6065f, 0.2265f, 1.f);
         return mat;
     }
 
-    Material createSilverMaterial() {
-        Material mat;
-        mat.m_name = "<silver>";
-        mat.kd = glm::vec4(0.5075f, 0.5075f, 0.5075f, 1.f);
+    util::Ref<Material> createSilverMaterial() {
+        auto mat = util::Ref<Material>::create();
+        mat->m_name = "<silver>";
+        mat->kd = glm::vec4(0.5075f, 0.5075f, 0.5075f, 1.f);
         return mat;
     }
 
-    Material createBronzeMaterial() {
-        Material mat;
-        mat.m_name = "<bronze>";
-        mat.kd = glm::vec4(0.7140f, 0.4284f, 0.1814f, 1.f);
+    util::Ref<Material> createBronzeMaterial() {
+        auto mat = util::Ref<Material>::create();
+        mat->m_name = "<bronze>";
+        mat->kd = glm::vec4(0.7140f, 0.4284f, 0.1814f, 1.f);
         return mat;
     }
 
-    Material createHighlightMaterial() {
-        Material mat;
-        mat.m_name = "<highlight>";
-        mat.kd = glm::vec4(0.0f, 0.0f, 0.8f, 1.f);
+    util::Ref<Material> createHighlightMaterial() {
+        auto mat = util::Ref<Material>::create();
+        mat->m_name = "<highlight>";
+        mat->kd = glm::vec4(0.0f, 0.0f, 0.8f, 1.f);
         return mat;
     }
 
-    Material createSelectionMaterial() {
-        Material mat;
-        mat.m_name = "<selection>";
-        mat.kd = glm::vec4(0.8f, 0.0f, 0.0f, 1.f);
+    util::Ref<Material> createSelectionMaterial() {
+        auto mat = util::Ref<Material>::create();
+        mat->m_name = "<selection>";
+        mat->kd = glm::vec4(0.8f, 0.0f, 0.0f, 1.f);
         return mat;
     }
 
-    Material createWireframeMaterial() {
-        Material mat;
-        mat.m_name = "<wireframe>";
-        mat.kd = glm::vec4(0.0f, 0.8f, 0.0f, 1.f);
+    util::Ref<Material> createWireframeMaterial() {
+        auto mat = util::Ref<Material>::create();
+        mat->m_name = "<wireframe>";
+        mat->kd = glm::vec4(0.0f, 0.8f, 0.0f, 1.f);
         return mat;
     }
 
@@ -193,7 +195,7 @@ namespace {
     }
 }
 
-Material Material::createMaterial(BasicMaterial type)
+util::Ref<Material> Material::createMaterial(BasicMaterial type)
 {
     switch (type) {
     case BasicMaterial::basic: return createBasicMaterial();
@@ -214,20 +216,20 @@ Material Material::createMaterial(BasicMaterial type)
     return createDefaultMaterial();
 }
 
-Material* Material::find(
+const util::Ref<Material>& Material::find(
     std::string_view name,
-    std::vector<Material>& materials)
+    std::vector<util::Ref<Material>>& materials)
 {
     const auto& it = std::find_if(
         materials.begin(),
         materials.end(),
-        [&name](Material& m) { return m.m_name == name; });
-    return it != materials.end() ? &(*it) : nullptr;
+        [&name](const util::Ref<Material>& m) { return m->m_name == name; });
+    return it != materials.end() ? *it : NULL_MATERIAL;
 }
 
-//Material* Material::findID(
+//util::Ref<Material> Material::findID(
 //    const ki::material_id id,
-//    std::vector<Material>& materials)
+//    std::vector<util::Ref<Material>>& materials)
 //{
 //    const auto& it = std::find_if(
 //        materials.begin(),
@@ -236,9 +238,9 @@ Material* Material::find(
 //    return it != materials.end() ? &(*it) : nullptr;
 //}
 //
-//const Material* Material::findID(
+//const util::Ref<Material> Material::findID(
 //    const ki::material_id id,
-//    const std::vector<Material>& materials)
+//    const std::vector<util::Ref<Material>>& materials)
 //{
 //    const auto& it = std::find_if(
 //        materials.begin(),
@@ -253,10 +255,10 @@ Material::Material()
 {
 }
 
-Material::Material(Material& o) = default;
-Material::Material(const Material& o) = default;
+//Material::Material(Material& o) = default;
+//Material::Material(const Material& o) = default;
 
-Material::Material(Material&& o) noexcept = default;
+//Material::Material(Material&& o) noexcept = default;
 //    : m_registeredIndex{ o.m_registeredIndex },
 //    textureSpec{ o.textureSpec },
 //    pattern{ o.pattern },
@@ -332,8 +334,104 @@ Material::~Material() = default;
 //    //    m_id, m_name, m_registeredIndex));
 //}
 
-Material& Material::operator=(const Material& o) = default;
-Material& Material::operator=(Material&& o) noexcept = default;
+Material& Material::operator=(const Material& o)
+{
+    if (&o == this) return *this;
+
+    // NOTE KI Keep identity
+    //m_id = o.m_id
+    //m_refCount = o.m_refCount;
+
+    m_registeredIndex = o.m_registeredIndex;
+
+    textureSpec = o.textureSpec;
+
+    pattern = o.pattern;
+    reflection = o.reflection;
+    refraction = o.refraction;
+    refractionRatio = refractionRatio;
+
+    tilingX = o.tilingX;
+    tilingY = o.tilingY;
+
+    map_bump_strength = o.map_bump_strength;
+
+    kd = o.kd;
+    ke = o.ke;
+
+    mras = o.mras;
+
+    m_occlusionFactor = o.m_occlusionFactor;
+    m_metalnessFactor = o.m_metalnessFactor;
+    m_roughnessFactor = o.m_roughnessFactor;
+
+    m_invertOcclusion = o.m_invertOcclusion;
+    m_invertMetalness = o.m_invertMetalness;
+    m_invertRoughness = o.m_invertRoughness;
+
+    m_scaleTiling = o.m_scaleTiling;
+
+    pointSize = o.pointSize;
+
+    layers = o.layers;
+    layersDepth = o.layersDepth;
+    parallaxDepth = o.parallaxDepth;
+
+    m_name = o.m_name;
+
+    spriteCount = o.spriteCount;
+    spritesX = o.spritesX;
+
+    alpha = o.alpha;
+    blend = o.blend;
+
+    renderBack = o.renderBack;
+    lineMode = o.lineMode;
+    reverseFrontFace = o.reverseFrontFace;
+    noDepth = o.noDepth;
+
+    useDeferred = o.useDeferred;
+    inmutable = o.inmutable;
+
+    usePreDepth = o.usePreDepth;
+    useJoints = o.useJoints;
+
+    m_geometryType = o.m_geometryType;
+    m_baseDir = o.m_baseDir;
+    m_modelDir = o.m_modelDir;
+
+    m_defaultPrograms = o.m_defaultPrograms;
+    m_programNames = o.m_programNames;
+
+    m_sharedDefinitions = o.m_sharedDefinitions;
+    m_programDefinitions = o.m_programDefinitions;
+    m_oitDefinitions = o.m_oitDefinitions;
+    m_shadowDefinitions = o.m_shadowDefinitions;
+    m_selectionDefinitions = o.m_selectionDefinitions;
+    m_objectIdDefinitions = o.m_objectIdDefinitions;
+    m_normalDefinitions = o.m_normalDefinitions;
+
+    m_programs = o.m_programs;
+
+    m_updaterId = o.m_updaterId;
+
+    m_updater = o.m_updater;
+
+    m_fontAtlasTex = o.m_fontAtlasTex;
+
+    m_boundTextures = o.m_boundTextures;
+    m_texturePaths = o.m_texturePaths;
+    m_inlineTextures = o.m_inlineTextures;
+
+    m_textureTransforms = o.m_textureTransforms;
+
+    m_prepared = o.m_prepared;
+    m_loaded = o.m_loaded;
+
+    return *this;
+}
+
+//Material& Material::operator=(Material&& o) noexcept = default;
 
 std::string Material::str() const noexcept
 {
@@ -356,7 +454,7 @@ void Material::assign(const Material& o)
 
 ki::material_index Material::registerMaterial()
 {
-    return MaterialRegistry::get().registerMaterial(*this);
+    return MaterialRegistry::get().registerMaterial(this);
 }
 
 GLuint64 Material::getTexHandle(TextureType type, GLuint64 defaultValue) const noexcept

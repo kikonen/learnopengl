@@ -5,6 +5,8 @@
 #include <tuple>
 #include <memory>
 
+#include "util/Ref.h"
+
 struct Material;
 
 namespace loader {
@@ -35,7 +37,7 @@ namespace loader {
         std::vector<NodeData> m_nodes;
         std::vector<CompositeData> m_composites;
 
-        std::unique_ptr<Material> m_defaultMaterial;
+        util::Ref<Material> m_defaultMaterial;
 
         std::vector<ParticleData> m_particles;
         std::vector<DecalData> m_decals;

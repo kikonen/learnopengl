@@ -46,18 +46,18 @@ void EnvironmentProbeRenderer::prepareRT(
 
     if (m_cubeMap) {
         auto material = Material::createMaterial(BasicMaterial::highlight);
-        material.m_name = "probe";
-        material.kd = glm::vec4(0.2f, 0.8f, 0.1f, 1.f);
-        material.registerMaterial();
-        m_mesh->setMaterial(&material);
+        material->m_name = "probe";
+        material->kd = glm::vec4(0.2f, 0.8f, 0.1f, 1.f);
+        material->registerMaterial();
+        m_mesh->setMaterial(material);
     }
 
     if (m_envProbe) {
         auto material = Material::createMaterial(BasicMaterial::highlight);
-        material.m_name = "probe";
-        material.kd = glm::vec4(0.1f, 0.8f, 0.8f, 1.f);
-        material.registerMaterial();
-        m_mesh->setMaterial(&material);
+        material->m_name = "probe";
+        material->kd = glm::vec4(0.1f, 0.8f, 0.8f, 1.f);
+        material->registerMaterial();
+        m_mesh->setMaterial(material);
     }
 
     // volume is 90 degrees wrong way visulization wise

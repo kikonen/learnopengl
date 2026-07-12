@@ -165,7 +165,7 @@ namespace particle {
             }
             resizeBuffer(maxCount);
 
-            m_pools[1]->m_baseIndex = m_entryCount;
+            m_pools[1]->m_baseIndex = static_cast<uint32_t>(m_entryCount);
         }
 
         for (auto& pool : m_pools) {

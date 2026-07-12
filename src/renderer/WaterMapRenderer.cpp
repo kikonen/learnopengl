@@ -77,7 +77,7 @@ void WaterMapRenderer::prepareRT(
 
     {
         m_tagMaterial = Material::createMaterial(BasicMaterial::highlight);
-        m_tagMaterial.registerMaterial();
+        m_tagMaterial->registerMaterial();
     }
 
     m_renderFrameStart = assets.waterMapRenderFrameStart;
@@ -329,7 +329,7 @@ bool WaterMapRenderer::render(
     if (!needRender(parentCtx)) return false;
 
     auto closest = findClosest(parentCtx);
-    setClosest(parentCtx, closest, m_tagMaterial.m_registeredIndex);
+    setClosest(parentCtx, closest, m_tagMaterial->m_registeredIndex);
     if (!closest) return false;
 
     auto& state = parentCtx.getGLState();

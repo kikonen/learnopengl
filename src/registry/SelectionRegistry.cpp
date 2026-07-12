@@ -64,22 +64,19 @@ void SelectionRegistry::clear()
     m_tagged.clear();
 
     {
-        m_selectionMaterial = std::make_unique<Material>();
-        *m_selectionMaterial = Material::createMaterial(BasicMaterial::selection);
+        m_selectionMaterial = Material::createMaterial(BasicMaterial::selection);
         m_selectionMaterial->registerMaterial();
         m_selectionMaterialIndex = m_selectionMaterial->m_registeredIndex;
     }
 
     {
-        m_tagMaterial = std::make_unique<Material>();
-        *m_tagMaterial = Material::createMaterial(BasicMaterial::highlight);
+        m_tagMaterial = Material::createMaterial(BasicMaterial::highlight);
         m_tagMaterial->registerMaterial();
         m_tagMaterialIndex = m_tagMaterial->m_registeredIndex;
     }
 
     {
-        m_wireframeMaterial = std::make_unique<Material>();
-        *m_wireframeMaterial = Material::createMaterial(BasicMaterial::wireframe);
+        m_wireframeMaterial = Material::createMaterial(BasicMaterial::wireframe);
         m_wireframeMaterial->registerMaterial();
         m_wireframeMaterialIndex = m_wireframeMaterial->m_registeredIndex;
     }

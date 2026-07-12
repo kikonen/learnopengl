@@ -223,10 +223,11 @@ namespace loader {
         df.m_boundsMask = data.boundsMask;
 
         {
-            df.m_material = std::make_unique<Material>();
-            *df.m_material = data.materialData.material;
-            df.m_material->resolveMaterial();
-            df.m_material->loadTextures();
+            df.setMaterial(data.materialData.material);
+            if (df.m_material) {
+                df.m_material->resolveMaterial();
+                df.m_material->loadTextures();
+            }
         }
 
         return definition;

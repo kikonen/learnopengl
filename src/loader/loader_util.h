@@ -8,6 +8,8 @@
 #include <glm/glm.hpp>
 #include <glm/gtx/quaternion.hpp>
 
+#include "util/Ref.h"
+
 #include "loader/document.h"
 
 #include "BaseData.h"
@@ -119,7 +121,7 @@ namespace loader {
         BaseId baseId,
         const std::vector<NodeTypeData>& nodeTypes);
 
-    const Material* findMaterial(
+    const util::Ref<Material>& findMaterial(
         std::string_view name,
         const std::vector<MaterialData>& materials);
 

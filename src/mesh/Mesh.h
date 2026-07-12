@@ -50,22 +50,11 @@ namespace mesh {
             return {};
         }
 
-        void setMaterial(const Material* src) noexcept
-        {
-            if (!src) {
-                m_material.reset();
-                return;
-            }
+        void setMaterial(const util::Ref<Material>& src) noexcept;
 
-            if (!m_material) {
-                m_material = std::make_unique<Material>();
-            }
-            *m_material = *src;
-        }
-
-        const Material* getMaterial() const noexcept
+        const util::Ref<Material>& getMaterial() const noexcept
         {
-            return m_material.get();
+            return m_material;
         }
 
         // @return VAO for mesh
@@ -174,7 +163,7 @@ namespace mesh {
         uint32_t m_indexCount{ 0 };
 
     protected:
-        std::unique_ptr<Material> m_material;
+        util::Ref<Material> m_material;
         std::unique_ptr<SphereVolume> m_localVolume;
 
         const ki::mesh_id m_id;

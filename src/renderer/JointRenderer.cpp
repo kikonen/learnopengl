@@ -45,10 +45,10 @@ void JointRenderer::prepareRT(const PrepareContext& ctx)
 
     {
         auto material = Material::createMaterial(BasicMaterial::highlight);
-        material.m_name = "joint";
-        material.kd = glm::vec4(0.f, 0.f, 0.8f, 1.f);
-        m_materialIndex = material.registerMaterial();
-        m_mesh->setMaterial(&material);
+        material->m_name = "joint";
+        material->kd = glm::vec4(0.f, 0.f, 0.8f, 1.f);
+        m_materialIndex = material->registerMaterial();
+        m_mesh->setMaterial(material);
     }
 
     m_programId = ProgramRegistry::get().getProgram(SHADER_JOINT);

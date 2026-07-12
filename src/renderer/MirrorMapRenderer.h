@@ -91,5 +91,5 @@ private:
 
     std::unique_ptr<render::NodeDraw> m_nodeDraw;
 
-    Material m_tagMaterial;
+    util::Ref<Material> m_tagMaterial;
 };

@@ -127,7 +127,7 @@ namespace mesh {
                 appendLine(sb, 0, line);
             }
             {
-                const auto* material = mesh->getMaterial();
+                const auto& material = mesh->getMaterial();
 
                 const auto& line = fmt::format(
                     "    {}",

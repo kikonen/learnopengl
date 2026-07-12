@@ -267,7 +267,7 @@ namespace loader {
         auto mesh = generator.create();
         if (!mesh->getMaterial()) {
             const auto& material = Material::createMaterial(BasicMaterial::yellow);
-            mesh->setMaterial(&material);
+            mesh->setMaterial(material);
         }
         return mesh;
     }

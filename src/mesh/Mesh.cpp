@@ -45,6 +45,19 @@ namespace mesh {
             getIndexCount());
     }
 
+    void Mesh::setMaterial(const util::Ref<Material>& src) noexcept
+    {
+        if (!src) {
+            m_material.reset();
+            return;
+        }
+
+        if (!m_material) {
+            m_material = util::Ref<Material>::create();
+        }
+        *m_material = *src;
+    }
+
     const kigl::GLVertexArray* Mesh::prepareVAO()
     {
         return setupVAO(VaoRegistry::get().getTexturedVao(), true);

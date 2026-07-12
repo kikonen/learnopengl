@@ -47,5 +47,7 @@ namespace model {
         bool navPhysics : 1 {false};
 
         bool hasMeshes : 1 {false};
+
+        bool dynamicMesh : 1 {false};
     };
 }
