@@ -6,7 +6,7 @@
 #include <functional>
 #include <algorithm>
 
-#include <moodycamel/concurrentqueue.h>
+#include <concurrentqueue/moodycamel/concurrentqueue.h>
 
 #include "util/Ref.h"
 
