@@ -22,6 +22,8 @@
 #include "model/NodeType.h"
 #include "model/Snapshot.h"
 
+#include "debug/DebugContext.h"
+
 #include "engine/PrepareContext.h"
 #include "engine/UpdateViewContext.h"
 
@@ -69,6 +71,7 @@ void IblProbeRenderer::prepareRT(
     Renderer::prepareRT(ctx);
 
     const auto& assets = ctx.getAssets();
+    const auto& dbg = ctx.getDebug();
 
     {
         m_nodeDraw = std::make_unique<render::NodeDraw>(m_name);
@@ -107,10 +110,15 @@ void IblProbeRenderer::prepareRT(
     // allocate the IBL maps now; they are (re)convolved each bake
     m_irradianceMap.createRT(assets.irradianceMapSize);
     m_prefilterMap.createRT(assets.prefilterMapSize);
+
+    setEnabled(dbg.m_environmentProbeEnabled);
 }
 
 void IblProbeRenderer::updateRT(const UpdateViewContext& parentCtx)
 {
+    const auto& dbg = parentCtx.getDebug();
+    setEnabled(dbg.m_environmentProbeEnabled);
+
     if (!isEnabled()) return;
 
     UpdateViewContext localCtx{

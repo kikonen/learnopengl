@@ -403,9 +403,9 @@ void Engine::prepareUBOs()
         dbg.m_waterCausticScale,
 
         dbg.m_cubeMapEnabled,
-        assets.skyboxEnabled,
+        dbg.m_skyboxEnabled,
 
-        assets.environmentMapEnabled,
+        dbg.m_environmentMapEnabled,
 
         dbg.m_shadowVisual,
         dbg.m_forceLineMode,

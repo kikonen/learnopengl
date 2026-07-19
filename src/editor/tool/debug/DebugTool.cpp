@@ -143,6 +143,15 @@ namespace editor
 
         {
             ImGui::Spacing();
+            ImGui::SeparatorText("Environment map");
+            ImGui::Spacing();
+
+            ImGui::Checkbox("Environment map enabled", &dbg.m_environmentMapEnabled);
+            ImGui::Checkbox("Environment probe enabled", &dbg.m_environmentProbeEnabled);
+        }
+
+        {
+            ImGui::Spacing();
             ImGui::SeparatorText("Parallax");
             ImGui::Spacing();
 

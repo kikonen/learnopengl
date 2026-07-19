@@ -15,10 +15,10 @@ layout(std140, binding = UBO_DATA) uniform Data {
   bool u_cubeMapEnabled;
 
   // TODO KI NOT USED
-  bool u_skyboxExist;
+  bool u_skyboxEnabled;
 
   // TODO KI NOT USED
-  bool u_environmentMapExist;
+  bool u_environmentMapEnabled;
 
   bool u_shadowVisual;
   bool u_forceLineMode;

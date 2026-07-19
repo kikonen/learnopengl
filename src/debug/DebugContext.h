@@ -49,6 +49,9 @@ namespace debug {
         bool m_skyboxColorEnabled{ false };
         glm::vec3 m_skyboxColor{ 0.f };
 
+        bool m_environmentMapEnabled{ true };
+        bool m_environmentProbeEnabled{ true };
+
         bool m_mirrorMapEnabled{ true };
         float m_mirrorMapReflectionBufferScale{ 0.25f };
         float m_mirrorMapNearPlane{ 0.1f };

@@ -81,7 +81,10 @@ vec4 calculateLightPbr(
     vec3 kD = 1.0 - kS;
     kD *= 1.0 - metallic;
 
-    const vec3 irradiance = textureLod(u_irradianceMap, worldNormal, 0).rgb;
+    const vec3 irradiance = u_environmentMapEnabled
+      ? textureLod(u_irradianceMap, worldNormal, 0).rgb
+      : vec3(1, 1, 1);
+
     const vec3 diffuse = irradiance * albedo;
 
     // sample both the pre-filter map and the BRDF lut and combine them together
@@ -89,7 +92,9 @@ vec4 calculateLightPbr(
     const float MAX_REFLECTION_LOD = 4.0;
     // transform to world space for prefilter sampling
     const vec3 worldR = normalize(invViewMat3 * R);
-    const vec3 prefilteredColor = textureLod(u_prefilterMap, worldR,  roughness * MAX_REFLECTION_LOD).rgb;
+    const vec3 prefilteredColor = u_environmentMapEnabled
+      ? textureLod(u_prefilterMap, worldR,  roughness * MAX_REFLECTION_LOD).rgb
+      : vec3(1, 1, 1);
 
     const vec2 brdf  = textureLod(u_brdfLut, vec2(max(dot(N, V), 0.0), roughness), 0).rg;
 

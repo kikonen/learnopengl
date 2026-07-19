@@ -56,6 +56,9 @@ namespace debug
         dbg.m_skyboxColorEnabled = assets.skyboxColorEnabled;
         dbg.m_skyboxColor = assets.skyboxColor;
 
+        dbg.m_environmentMapEnabled = assets.environmentMapEnabled;
+        dbg.m_environmentProbeEnabled = assets.environmentProbeEnabled;
+
         dbg.m_mirrorMapEnabled = assets.mirrorMapEnabled;
         dbg.m_mirrorMapReflectionBufferScale = assets.mirrorMapReflectionBufferScale;
         dbg.m_mirrorMapNearPlane = assets.mirrorMapNearPlane;
