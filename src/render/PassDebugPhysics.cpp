@@ -13,14 +13,15 @@
 
 #include "renderer/PhysicsRenderer.h"
 
+#include "scene/Scene.h"
+
 namespace {
 }
 
 namespace render
 {
     PassDebugPhysics::PassDebugPhysics()
-        : Pass("PassDebugPhysics"),
-        m_physicsRenderer{ std::make_unique<PhysicsRenderer>() }
+        : Pass("PassDebugPhysics")
     {
     }
 
@@ -28,7 +29,6 @@ namespace render
 
     void PassDebugPhysics::prepare(const PrepareContext& ctx)
     {
-        m_physicsRenderer->prepareRT(ctx);
     }
 
     void PassDebugPhysics::updateRT(
@@ -60,7 +60,7 @@ namespace render
 
         src.buffer->bind(ctx);
 
-        m_physicsRenderer->render(ctx, src.buffer);
+        ctx.getScene()->getPhysicsRenderer()->draw(ctx, src.buffer);
 
         return src;
     }

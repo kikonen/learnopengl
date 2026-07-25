@@ -58,6 +58,11 @@
 #include "renderer/IblProbeRenderer.h"
 #include "renderer/ShadowMapRenderer.h"
 
+#include "renderer/VolumeRenderer.h"
+#include "renderer/EnvironmentProbeRenderer.h"
+#include "renderer/PhysicsRenderer.h"
+#include "renderer/SocketRenderer.h"
+
 #include "renderer/ObjectIdRenderer.h"
 
 #include "Skybox.h"
@@ -107,6 +112,14 @@ Scene::Scene(
         m_shadowMapRenderer->setEnabled(assets.shadowMapEnabled);
 
         m_objectIdRenderer->setEnabled(true);
+    }
+
+    {
+        m_volumeRenderer = std::make_unique<VolumeRenderer>();
+        m_cubeMapProbeRenderer = std::make_unique<EnvironmentProbeRenderer>(true, false);
+        m_environmentProbeRenderer = std::make_unique<EnvironmentProbeRenderer>(false, true);
+        m_physicsRenderer = std::make_unique<PhysicsRenderer>();
+        m_socketRenderer = std::make_unique<SocketRenderer>();
     }
 }
 
@@ -258,6 +271,14 @@ void Scene::prepareRT()
 
     if (m_objectIdRenderer->isEnabled()) {
         m_objectIdRenderer->prepareRT(ctx);
+    }
+
+    {
+        m_volumeRenderer->prepareRT(ctx);
+        m_cubeMapProbeRenderer->prepareRT(ctx);
+        m_environmentProbeRenderer->prepareRT(ctx);
+        m_physicsRenderer->prepareRT(ctx);
+        m_socketRenderer->prepareRT(ctx);
     }
 
     {
@@ -599,6 +620,14 @@ void Scene::render(const render::RenderContext& ctx)
 
     m_brdfLutMaterial->bindTextures(state);
     m_skybox->bindTextures(state);
+
+    {
+        m_volumeRenderer->update(ctx);
+        m_cubeMapProbeRenderer->update(ctx);
+        m_environmentProbeRenderer->update(ctx);
+        m_physicsRenderer->update(ctx);
+        m_socketRenderer->update(ctx);
+    }
 
     if (m_shadowMapRenderer->render(ctx)) {
         renderCount++;

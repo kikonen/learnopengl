@@ -4,8 +4,6 @@
 
 #include "Pass.h"
 
-class SocketRenderer;
-
 namespace render {
     class PassDebugSocket : Pass {
     public:
@@ -26,8 +24,5 @@ namespace render {
             const RenderContext& ctx,
             const DrawContext& drawContext,
             const PassContext& src);
-
-    protected:
-        std::unique_ptr<SocketRenderer> m_socketRenderer{ nullptr };
     };
 }

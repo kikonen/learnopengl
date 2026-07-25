@@ -14,8 +14,9 @@
 
 #include "asset/Assets.h"
 
-
 #include "registry/Registry.h"
+
+#include "engine/Engine.h"
 
 #include "render/Camera.h"
 #include "render/RenderData.h"
@@ -163,6 +164,11 @@ namespace render
 
     RenderContext::~RenderContext()
     {
+    }
+
+    const util::Ref<Scene>& RenderContext::getScene() const noexcept
+    {
+        return m_registry->getEngine().getCurrentScene();
     }
 
     void

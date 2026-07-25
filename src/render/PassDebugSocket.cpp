@@ -13,14 +13,15 @@
 
 #include "renderer/SocketRenderer.h"
 
+#include "scene/Scene.h"
+
 namespace {
 }
 
 namespace render
 {
     PassDebugSocket::PassDebugSocket()
-        : Pass("PassDebugSocket"),
-        m_socketRenderer{ std::make_unique<SocketRenderer>() }
+        : Pass("PassDebugSocket")
     {
     }
 
@@ -28,7 +29,6 @@ namespace render
 
     void PassDebugSocket::prepare(const PrepareContext& ctx)
     {
-        m_socketRenderer->prepareRT(ctx);
     }
 
     void PassDebugSocket::updateRT(
@@ -59,7 +59,7 @@ namespace render
 
         src.buffer->bind(ctx);
 
-        m_socketRenderer->render(ctx, src.buffer);
+        ctx.getScene()->getSocketRenderer()->draw(ctx, src.buffer);
 
         return src;
     }

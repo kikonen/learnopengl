@@ -21,7 +21,7 @@ bool SunController::updateWT(
     const UpdateContext& ctx,
     model::Node& node) noexcept
 {
-    auto* scene = ctx.getScene();
+    const auto& scene = ctx.getScene();
     if (!scene) return false;
 
     auto* world = scene->getWorld().get();

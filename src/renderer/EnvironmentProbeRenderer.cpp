@@ -67,9 +67,8 @@ void EnvironmentProbeRenderer::prepareRT(
     m_programId = ProgramRegistry::get().getProgram(SHADER_VOLUME);
 }
 
-void EnvironmentProbeRenderer::render(
-    const render::RenderContext& ctx,
-    render::FrameBuffer* targetBuffer)
+void EnvironmentProbeRenderer::updateImpl(
+    const render::RenderContext& ctx)
 {
     const auto& dbg = debug::DebugContext::get();
     if (!dbg.m_showEnvironmentProbe) return;
@@ -131,5 +130,5 @@ void EnvironmentProbeRenderer::render(
             true);
     }
 
-    drawObjects(ctx, targetBuffer, m_meshes);
+    updateMeshes(ctx, m_meshes);
 }

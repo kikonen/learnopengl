@@ -51,26 +51,64 @@ void MeshRenderer::prepareRT(const PrepareContext& ctx)
     m_instanceRef = render::InstanceRegistry::get().allocate(INITIAL_SIZE);
 }
 
-void MeshRenderer::drawObjects(
-    const render::RenderContext& ctx,
-    render::FrameBuffer* targetBuffer,
-    const std::vector<mesh::MeshInstance>& meshes)
+void MeshRenderer::update(
+    const render::RenderContext& ctx)
 {
-    if (meshes.empty()) return;
+    m_currentDrawableCount = 0;
+    m_currentDynamicVao = nullptr;
 
-    auto* batch = ctx.m_batch;
+    updateImpl(ctx);
+}
+
+void MeshRenderer::endFrame(
+    const render::RenderContext& ctx)
+{
+    if (m_currentDynamicVao) {
+        m_currentDynamicVao->getFence().setFence(m_useFenceDebug);
+    }
+}
+
+void MeshRenderer::draw(
+    const render::RenderContext& ctx,
+    render::FrameBuffer* targetBuffer)
+{
+    if (m_currentDrawableCount == 0) return;
 
     // NOTE KI for troubleshooting
     //GLint drawFboId = 0, readFboId = 0;
     //glGetIntegerv(GL_DRAW_FRAMEBUFFER_BINDING, &drawFboId);
     //glGetIntegerv(GL_READ_FRAMEBUFFER_BINDING, &readFboId);
 
-    auto* sharedVao = VaoRegistry::get().getSharedPrimitiveVao();
+    targetBuffer->bind(ctx);
+
+    auto& state = ctx.getGLState();
+    state.setDepthFunc(GL_LESS);
+    state.setDepthMask(GL_TRUE);
+
+    {
+        auto* batch = ctx.m_batch;
+        batch->addMeshes(
+            ctx,
+            { m_instanceRef.offset, m_currentDrawableCount },
+            render::KIND_SOLID);
+        batch->flush(ctx);
+    }
+
+    state.setDepthFunc(ctx.m_depthFunc);
+    state.setDepthMask(GL_TRUE);
+}
+
+void MeshRenderer::updateMeshes(
+    const render::RenderContext& ctx,
+    const std::vector<mesh::MeshInstance>& meshes)
+{
+    if (meshes.empty()) return;
+
     mesh::TexturedVAO* dynamicVao = nullptr;
+    auto* sharedVao = VaoRegistry::get().getSharedPrimitiveVao();
 
     bool hasDynamic = false;
-    for (const auto& meshInstance : meshes)
-    {
+    for (const auto& meshInstance : meshes) {
         hasDynamic |= !meshInstance.m_shared;
     }
 
@@ -81,8 +119,7 @@ void MeshRenderer::drawObjects(
         dynamicVao->clear();
     }
 
-    for (const auto& meshInstance : meshes)
-    {
+    for (const auto& meshInstance : meshes) {
         auto* mesh = meshInstance.m_mesh;
 
         if (meshInstance.m_shared) {
@@ -94,31 +131,15 @@ void MeshRenderer::drawObjects(
     }
 
     sharedVao->updateRT();
+
     if (dynamicVao) {
         dynamicVao->updateRT();
     }
 
-    targetBuffer->bind(ctx);
+    registerDrawables(meshes, render::InstanceRegistry::get());
 
-    auto& state = ctx.getGLState();
-    state.setDepthFunc(GL_LESS);
-    state.setDepthMask(GL_TRUE);
-
-    {
-        registerDrawables(meshes, render::InstanceRegistry::get());
-        batch->addMeshes(
-            ctx,
-            { m_instanceRef.offset, meshes.size() },
-            render::KIND_SOLID);
-        batch->flush(ctx);
-    }
-
-    state.setDepthFunc(ctx.m_depthFunc);
-    state.setDepthMask(GL_TRUE);
-
-    if (dynamicVao) {
-        dynamicVao->getFence().setFence(m_useFenceDebug);
-    }
+    m_currentDynamicVao = dynamicVao;
+    m_currentDrawableCount = meshes.size();
 }
 
 void MeshRenderer::registerDrawables(

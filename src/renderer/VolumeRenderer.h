@@ -23,9 +23,9 @@ public:
 
     virtual void prepareRT(const PrepareContext& ctx) override;
 
-    virtual void render(
-        const render::RenderContext& ctx,
-        render::FrameBuffer* fbo) override;
+protected:
+    void updateImpl(
+        const render::RenderContext& ctx) override;
 
 private:
     util::Ref<mesh::Mesh> m_mesh;

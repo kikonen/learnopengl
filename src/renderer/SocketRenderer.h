@@ -30,9 +30,9 @@ public:
 
     virtual void prepareRT(const PrepareContext& ctx) override;
 
-    void render(
-        const render::RenderContext& ctx,
-        render::FrameBuffer* targetBuffer) override;
+protected:
+    void updateImpl(
+        const render::RenderContext& ctx) override;
 
 private:
     // X, Y, Z axis meshes (colored cylinders)

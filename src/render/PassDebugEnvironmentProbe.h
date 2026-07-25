@@ -2,8 +2,6 @@
 
 #include "Pass.h"
 
-class EnvironmentProbeRenderer;
-
 namespace render {
     class PassDebugEnvironmentProbe : Pass {
     public:
@@ -24,9 +22,5 @@ namespace render {
             const RenderContext& ctx,
             const DrawContext& drawContext,
             const PassContext& src);
-
-    protected:
-        std::unique_ptr<EnvironmentProbeRenderer> m_cubeMapRenderer{ nullptr };
-        std::unique_ptr<EnvironmentProbeRenderer> m_environmentProbeRenderer{ nullptr };
     };
 }

@@ -61,9 +61,8 @@ void VolumeRenderer::prepareRT(const PrepareContext& ctx)
     m_programId = ProgramRegistry::get().getProgram(SHADER_VOLUME);
 }
 
-void VolumeRenderer::render(
-    const render::RenderContext& ctx,
-    render::FrameBuffer* targetBuffer)
+void VolumeRenderer::updateImpl(
+    const render::RenderContext& ctx)
 {
     const auto& dbg = debug::DebugContext::get();
     if (!(dbg.m_showVolume || dbg.m_showSelectionVolume)) return;
@@ -151,5 +150,5 @@ void VolumeRenderer::render(
         }
     }
 
-    drawObjects(ctx, targetBuffer, m_meshes);
+    updateMeshes(ctx, m_meshes);
 }

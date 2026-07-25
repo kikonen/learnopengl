@@ -17,9 +17,8 @@ void PhysicsRenderer::prepareRT(const PrepareContext& ctx)
     m_programId = ProgramRegistry::get().getProgram(SHADER_VOLUME);
 }
 
-void PhysicsRenderer::render(
-    const render::RenderContext& ctx,
-    render::FrameBuffer* targetBuffer)
+void PhysicsRenderer::updateImpl(
+    const render::RenderContext& ctx)
 {
     const auto& dbg = debug::DebugContext::get();
     const auto& physicsDbg = dbg.m_physics;
@@ -29,5 +28,5 @@ void PhysicsRenderer::render(
     const auto meshes = physicsDbg.m_meshesRT.load();
     if (!meshes || meshes->empty()) return;
 
-    drawObjects(ctx, targetBuffer, *meshes);
+    updateMeshes(ctx, *meshes);
 }

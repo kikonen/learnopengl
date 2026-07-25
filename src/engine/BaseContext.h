@@ -4,6 +4,8 @@
 
 #include "gui/Input.h"
 
+#include "util/Ref.h"
+
 #include "ki/RenderClock.h"
 
 class Assets;
@@ -42,7 +44,7 @@ public:
     NodeRegistry& getNodeRegistry() const noexcept;
     Registry* getRegistry() const noexcept;
 
-    Scene* getScene() const noexcept;
+    const util::Ref<Scene>& getScene() const noexcept;
 
     const Assets& getAssets() const noexcept;
     kigl::GLState& getGLState() const noexcept;

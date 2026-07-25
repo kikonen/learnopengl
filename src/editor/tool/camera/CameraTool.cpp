@@ -93,7 +93,7 @@ namespace editor
         }
 
         // Camera
-        if (auto* scene = ctx.getScene(); scene)
+        if (const auto& scene = ctx.getScene(); scene)
         {
             auto* collection = scene->getCollection();
 

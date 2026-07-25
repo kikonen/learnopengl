@@ -2,8 +2,6 @@
 
 #include "Pass.h"
 
-class VolumeRenderer;
-
 namespace render {
     class PassDebugVolume : Pass {
     public:
@@ -24,8 +22,5 @@ namespace render {
             const RenderContext& ctx,
             const DrawContext& drawContext,
             const PassContext& src);
-
-    protected:
-        std::unique_ptr<VolumeRenderer> m_volumeRenderer{ nullptr };
     };
 }

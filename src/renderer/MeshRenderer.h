@@ -18,6 +18,7 @@ struct PrepareContext;
 namespace mesh {
     struct MeshInstance;
     class Mesh;
+    class TexturedVAO;
 }
 
 namespace render {
@@ -32,14 +33,22 @@ public:
 
     virtual void prepareRT(const PrepareContext& ctx);
 
-    virtual void render(
+    void update(
+        const render::RenderContext& ctx);
+
+    void endFrame(
+        const render::RenderContext& ctx);
+
+    void draw(
         const render::RenderContext& ctx,
-        render::FrameBuffer* targetBuffer) = 0;
+        render::FrameBuffer* targetBuffer);
 
 protected:
-    void drawObjects(
+    virtual void updateImpl(
+        const render::RenderContext& ctx) = 0;
+
+    void updateMeshes(
         const render::RenderContext& ctx,
-        render::FrameBuffer* targetBuffer,
         const std::vector<mesh::MeshInstance>& meshes);
 
     void registerDrawables(
@@ -57,6 +66,9 @@ private:
     int m_dynamicVaoIndex{ -1 };
 
     bool m_useFenceDebug{ false };
+
+    mesh::TexturedVAO* m_currentDynamicVao = nullptr;
+    size_t m_currentDrawableCount{ 0 };
 
     util::BufferReference m_instanceRef;
 };

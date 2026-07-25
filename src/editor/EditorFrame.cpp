@@ -258,7 +258,7 @@ namespace editor {
     {
         std::string filePath;
 
-        if (auto* scene = ctx.getScene(); scene)
+        if (const auto& scene = ctx.getScene(); scene)
         {
             filePath = scene->getFilePath();
         }

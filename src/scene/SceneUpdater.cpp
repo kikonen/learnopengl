@@ -158,7 +158,7 @@ void SceneUpdater::update(const UpdateContext& ctx)
 
     // Advance the authoritative world clock on WT before controllers/scripts run,
     // so anything driven by world time (sun, scripts) sees the fresh value.
-    if (auto* scene = ctx.getScene()) {
+    if (const auto& scene = ctx.getScene()) {
         if (auto* world = scene->getWorld().get()) {
             world->updateWT(ctx.getClock().elapsedSecs);
         }

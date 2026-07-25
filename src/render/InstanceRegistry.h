@@ -130,8 +130,6 @@ namespace render
         void updateInstances(
             const util::BufferReference ref) noexcept;
 
-        //void updateInstances();
-
         // Upload to GPU (call once per frame after updateTransforms)
         void upload();
 

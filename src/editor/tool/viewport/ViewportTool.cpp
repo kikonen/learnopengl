@@ -108,7 +108,7 @@ namespace editor
     void ViewportTool::renderBufferDebug(
         const gui::FrameContext& ctx)
     {
-        auto* scene = ctx.getScene();
+        const auto& scene = ctx.getScene();
         if (!scene) return;
 
         const auto& renderCtx = ctx.toRenderContext();
@@ -401,7 +401,7 @@ namespace editor
 
         const auto& assets = Assets::get();
 
-        auto* scene = ctx.getScene();
+        const auto& scene = ctx.getScene();
         if (!scene) return;
 
         const auto& skybox = scene->getSkybox();

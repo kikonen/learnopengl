@@ -43,7 +43,7 @@ void Light::updateRT(
     // reads getWorldDirection(), so shadows follow automatically. World time advances
     // each frame, so this recomputes unconditionally (not gated on nodeChanged).
     if (m_sun) {
-        if (auto* scene = ctx.getScene()) {
+        if (const auto& scene = ctx.getScene()) {
             if (auto* world = scene->getWorld().get()) {
                 const double t = world->publishedTimeSecs();
                 // active body (sun by day, moon by night) is always above the

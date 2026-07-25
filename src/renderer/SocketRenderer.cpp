@@ -139,9 +139,8 @@ void SocketRenderer::prepareRT(const PrepareContext& ctx)
     m_programId = ProgramRegistry::get().getProgram(SHADER_VOLUME);
 }
 
-void SocketRenderer::render(
-    const render::RenderContext& ctx,
-    render::FrameBuffer* targetBuffer)
+void SocketRenderer::updateImpl(
+    const render::RenderContext& ctx)
 {
     const auto& dbg = debug::DebugContext::get();
     if (!dbg.m_animation.m_showSockets) return;
@@ -248,5 +247,5 @@ void SocketRenderer::render(
         }
     }
 
-    drawObjects(ctx, targetBuffer, m_meshes);
+    updateMeshes(ctx, m_meshes);
 }

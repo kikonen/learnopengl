@@ -54,13 +54,12 @@ void JointRenderer::prepareRT(const PrepareContext& ctx)
     m_programId = ProgramRegistry::get().getProgram(SHADER_JOINT);
 }
 
-void JointRenderer::render(
-    const render::RenderContext& ctx,
-    render::FrameBuffer* targetBuffer)
+void JointRenderer::updateImpl(
+    const render::RenderContext& ctx)
 {
     const auto& dbg = debug::DebugContext::get();
 
     std::vector<mesh::MeshInstance> meshes;
 
-    drawObjects(ctx, targetBuffer, meshes);
+    updateMeshes(ctx, meshes);
 }

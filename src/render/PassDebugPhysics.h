@@ -2,8 +2,6 @@
 
 #include "Pass.h"
 
-class PhysicsRenderer;
-
 namespace render {
     class PassDebugPhysics : Pass {
     public:
@@ -24,8 +22,5 @@ namespace render {
             const RenderContext& ctx,
             const DrawContext& drawContext,
             const PassContext& src);
-
-    protected:
-        std::unique_ptr<PhysicsRenderer> m_physicsRenderer{ nullptr };
     };
 }

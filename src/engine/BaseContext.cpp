@@ -37,9 +37,9 @@ Registry* BaseContext::getRegistry() const noexcept
     return m_engine.getRegistry().get();
 }
 
-Scene* BaseContext::getScene() const noexcept
+const util::Ref<Scene>& BaseContext::getScene() const noexcept
 {
-    return m_engine.getCurrentScene().get();
+    return m_engine.getCurrentScene();
 }
 
 const Assets& BaseContext::getAssets() const noexcept

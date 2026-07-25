@@ -13,14 +13,15 @@
 
 #include "renderer/VolumeRenderer.h"
 
+#include "scene/Scene.h"
+
 namespace {
 }
 
 namespace render
 {
     PassDebugVolume::PassDebugVolume()
-        : Pass("PassDebugVolume"),
-        m_volumeRenderer{ std::make_unique<VolumeRenderer>() }
+        : Pass("PassDebugVolume")
     {
     }
 
@@ -28,7 +29,6 @@ namespace render
 
     void PassDebugVolume::prepare(const PrepareContext& ctx)
     {
-        m_volumeRenderer->prepareRT(ctx);
     }
 
     void PassDebugVolume::updateRT(
@@ -59,7 +59,7 @@ namespace render
 
         src.buffer->bind(ctx);
 
-        m_volumeRenderer->render(ctx, src.buffer);
+        ctx.getScene()->getVolumeRenderer()->draw(ctx, src.buffer);
 
         return src;
     }

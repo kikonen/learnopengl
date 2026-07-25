@@ -44,6 +44,11 @@ class CubeMapRenderer;
 class IblProbeRenderer;
 class ShadowMapRenderer;
 
+class VolumeRenderer;
+class EnvironmentProbeRenderer;
+class PhysicsRenderer;
+class SocketRenderer;
+
 class ObjectIdRenderer;
 
 class Skybox;
@@ -139,6 +144,31 @@ public:
         return m_brdfLutMaterial;
     }
 
+    VolumeRenderer* getVolumeRenderer() const noexcept
+    {
+        return m_volumeRenderer.get();
+    }
+
+    EnvironmentProbeRenderer* getCubeMapProbeRenderer() const noexcept
+    {
+        return m_cubeMapProbeRenderer.get();
+    }
+
+    EnvironmentProbeRenderer* getEnvironmentProbeRenderer() const noexcept
+    {
+        return m_environmentProbeRenderer.get();
+    }
+
+    PhysicsRenderer* getPhysicsRenderer() const noexcept
+    {
+        return m_physicsRenderer.get();
+    }
+
+    SocketRenderer* getSocketRenderer() const noexcept
+    {
+        return m_socketRenderer.get();
+    }
+
 private:
     void renderUi(const render::RenderContext& ctx);
     void renderPlayer(const render::RenderContext& ctx);
@@ -196,6 +226,12 @@ private:
     std::unique_ptr<ShadowMapRenderer> m_shadowMapRenderer{ nullptr };
 
     std::unique_ptr<ObjectIdRenderer> m_objectIdRenderer{ nullptr };
+
+    std::unique_ptr<VolumeRenderer> m_volumeRenderer{ nullptr };
+    std::unique_ptr<EnvironmentProbeRenderer> m_cubeMapProbeRenderer{ nullptr };
+    std::unique_ptr<EnvironmentProbeRenderer> m_environmentProbeRenderer{ nullptr };
+    std::unique_ptr<PhysicsRenderer> m_physicsRenderer{ nullptr };
+    std::unique_ptr<SocketRenderer> m_socketRenderer{ nullptr };
 
     util::Ref<model::Viewport> m_uiViewport{ nullptr };
     util::Ref<model::Viewport> m_playerViewport{ nullptr };

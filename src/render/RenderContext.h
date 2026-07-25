@@ -20,7 +20,6 @@ namespace debug
 }
 
 namespace render {
-    //class NodeDraw;
     class Batch;
     class RenderData;
     class Camera;
@@ -71,7 +70,6 @@ namespace render {
             Registry* registry,
             render::NodeCollection* collection,
             render::RenderData* renderData,
-            //render::NodeDraw* nodeDraw,
             render::Batch* batch,
             render::Camera* camera,
             float nearPlane,
@@ -152,6 +150,8 @@ namespace render {
         {
             return m_state;
         }
+
+        const util::Ref<Scene>& getScene() const noexcept;
 
     public:
         const std::string m_name;

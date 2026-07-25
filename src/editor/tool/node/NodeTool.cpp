@@ -526,7 +526,7 @@ namespace editor
     void NodeTool::handleSelectNode(
         const InputContext& ctx)
     {
-        auto* scene = ctx.getScene();
+        const auto& scene = ctx.getScene();
         if (!scene) return;
 
         const auto& input = ctx.getInput();
