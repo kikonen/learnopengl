@@ -129,6 +129,7 @@ void NodeGenerator::updateDrawables(
                 m_instanceRef.offset + dirtyRef.offset * meshCount,
                 dirtyRef.size * meshCount
             };
+
             instanceRegistry.markDirty(instanceRef);
             instanceRegistry.updateInstances(instanceRef);
         }

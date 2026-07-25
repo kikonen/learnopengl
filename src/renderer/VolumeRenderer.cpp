@@ -15,6 +15,8 @@
 
 #include "debug/DebugContext.h"
 
+#include "engine/UpdateViewContext.h"
+
 #include "render/RenderContext.h"
 #include "render/InstanceRegistry.h"
 
@@ -29,7 +31,8 @@
 
 
 VolumeRenderer::VolumeRenderer()
-    :m_meshFixMatrix{ 1.f }
+    :m_meshFixMatrix{ 1.f },
+    m_meshFixRotation{ }
 {
 }
 
@@ -62,7 +65,7 @@ void VolumeRenderer::prepareRT(const PrepareContext& ctx)
 }
 
 void VolumeRenderer::updateImpl(
-    const render::RenderContext& ctx)
+    const UpdateViewContext& ctx)
 {
     const auto& dbg = debug::DebugContext::get();
     if (!(dbg.m_showVolume || dbg.m_showSelectionVolume)) return;

@@ -215,7 +215,8 @@ void TextGenerator::updateRT(
         }
         instanceRegistry.markDirty(ref);
         instanceRegistry.updateInstances(ref);
-        instanceRegistry.upload(ref);
+
+        //instanceRegistry.upload(ref);
     }
 }
 

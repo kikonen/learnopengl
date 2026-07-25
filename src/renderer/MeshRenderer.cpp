@@ -29,7 +29,10 @@ namespace {
     constexpr int INITIAL_SIZE = 100;
 }
 
-MeshRenderer::MeshRenderer() = default;
+MeshRenderer::MeshRenderer()
+    : m_programId{ 0 }
+{ }
+
 MeshRenderer::~MeshRenderer() = default;
 
 void MeshRenderer::prepareRT(const PrepareContext& ctx)
@@ -52,7 +55,7 @@ void MeshRenderer::prepareRT(const PrepareContext& ctx)
 }
 
 void MeshRenderer::update(
-    const render::RenderContext& ctx)
+    const UpdateViewContext& ctx)
 {
     m_currentDrawableCount = 0;
     m_currentDynamicVao = nullptr;
@@ -60,8 +63,7 @@ void MeshRenderer::update(
     updateImpl(ctx);
 }
 
-void MeshRenderer::endFrame(
-    const render::RenderContext& ctx)
+void MeshRenderer::endFrame()
 {
     if (m_currentDynamicVao) {
         m_currentDynamicVao->getFence().setFence(m_useFenceDebug);
@@ -99,7 +101,7 @@ void MeshRenderer::draw(
 }
 
 void MeshRenderer::updateMeshes(
-    const render::RenderContext& ctx,
+    const UpdateViewContext& ctx,
     const std::vector<mesh::MeshInstance>& meshes)
 {
     if (meshes.empty()) return;
@@ -198,6 +200,7 @@ void MeshRenderer::registerDrawables(
 
         instanceRegistry.prepareInstances(ref);
         instanceRegistry.markDirty(ref);
-        instanceRegistry.upload(ref);
+
+        //instanceRegistry.upload(ref);
     }
 }

@@ -87,6 +87,8 @@ public:
 
     void render(const render::RenderContext& ctx);
 
+    void endFrame();
+
     model::Node* getActiveNode() const;
     const std::vector<util::Ref<NodeController>>* getActiveNodeControllers() const;
 

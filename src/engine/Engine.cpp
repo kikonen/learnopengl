@@ -135,27 +135,32 @@ bool Engine::update()
 {
     UpdateContext ctx{ *this, m_clock };
 
-    // NOTE KI race condition with program prepare and event processing
-    // NOTE KI also race with snapshot and event processing
-    // => doing programs before snapshot reduce scope
-    //    but DOES NOT remove it
-    ProgramRegistry::get().updateRT(ctx);
-
     getRegistry()->m_dispatcherView->dispatchEvents();
 
-    render::InstanceRegistry::get().upload();
+    bool closed = onUpdate(ctx);
 
-    {
-        const glm::ivec2& size = getSize();
-        UpdateViewContext updateCtx{
-            *this,
-            size.x,
-            size.y };
-        m_windowBuffer->updateRT(updateCtx);
+    if (!closed) {
+        {
+            const glm::ivec2& size = getSize();
+            UpdateViewContext updateCtx{
+                *this,
+                size.x,
+                size.y };
+            m_windowBuffer->updateRT(updateCtx);
+        }
+
+        m_batch->updateRT(ctx);
+
+        render::InstanceRegistry::get().upload();
+
+        // NOTE KI race condition with program prepare and event processing
+        // NOTE KI also race with snapshot and event processing
+        // => doing programs before snapshot reduce scope
+        //    but DOES NOT remove it
+        ProgramRegistry::get().updateRT(ctx);
     }
 
-    m_batch->updateRT(ctx);
-    return onUpdate(ctx);
+    return closed;
 }
 
 bool Engine::render()
@@ -203,6 +208,10 @@ bool Engine::renderFrame()
     getBatch()->endFrame();
     getRenderData()->endFrame();
     getRegistry()->endFrame();
+
+    if (m_currentScene) {
+        m_currentScene->endFrame();
+    }
 
     return close;
 }

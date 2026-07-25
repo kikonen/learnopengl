@@ -18,7 +18,7 @@ void PhysicsRenderer::prepareRT(const PrepareContext& ctx)
 }
 
 void PhysicsRenderer::updateImpl(
-    const render::RenderContext& ctx)
+    const UpdateViewContext& ctx)
 {
     const auto& dbg = debug::DebugContext::get();
     const auto& physicsDbg = dbg.m_physics;

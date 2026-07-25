@@ -78,7 +78,12 @@ Scene::Scene(
     m_engine{ engine },
     m_collection{ std::make_unique<render::NodeCollection>()},
     m_skybox{ util::Ref<Skybox>::create() },
-    m_brdfLutMaterial{ util::Ref<BrdfLutMaterial>::create() }
+    m_brdfLutMaterial{ util::Ref<BrdfLutMaterial>::create() },
+    m_volumeRenderer{ std::make_unique<VolumeRenderer>() },
+    m_cubeMapProbeRenderer{ std::make_unique<EnvironmentProbeRenderer>(true, false) },
+    m_environmentProbeRenderer{ std::make_unique<EnvironmentProbeRenderer>(false, true) },
+    m_physicsRenderer{ std::make_unique<PhysicsRenderer>() },
+    m_socketRenderer{ std::make_unique<SocketRenderer>() }
 {
     const auto& assets = Assets::get();
 
@@ -112,14 +117,6 @@ Scene::Scene(
         m_shadowMapRenderer->setEnabled(assets.shadowMapEnabled);
 
         m_objectIdRenderer->setEnabled(true);
-    }
-
-    {
-        m_volumeRenderer = std::make_unique<VolumeRenderer>();
-        m_cubeMapProbeRenderer = std::make_unique<EnvironmentProbeRenderer>(true, false);
-        m_environmentProbeRenderer = std::make_unique<EnvironmentProbeRenderer>(false, true);
-        m_physicsRenderer = std::make_unique<PhysicsRenderer>();
-        m_socketRenderer = std::make_unique<SocketRenderer>();
     }
 }
 
@@ -510,6 +507,14 @@ void Scene::updateViewRT(const UpdateViewContext& ctx)
     m_mirrorMapRenderer->updateRT(ctx);
     m_waterMapRenderer->updateRT(ctx);
 
+    {
+        m_volumeRenderer->update(ctx);
+        m_cubeMapProbeRenderer->update(ctx);
+        m_environmentProbeRenderer->update(ctx);
+        m_physicsRenderer->update(ctx);
+        m_socketRenderer->update(ctx);
+    }
+
     //if (false)
     {
         const auto& spec = m_uiRenderer->m_buffer->m_spec;
@@ -621,14 +626,6 @@ void Scene::render(const render::RenderContext& ctx)
     m_brdfLutMaterial->bindTextures(state);
     m_skybox->bindTextures(state);
 
-    {
-        m_volumeRenderer->update(ctx);
-        m_cubeMapProbeRenderer->update(ctx);
-        m_environmentProbeRenderer->update(ctx);
-        m_physicsRenderer->update(ctx);
-        m_socketRenderer->update(ctx);
-    }
-
     if (m_shadowMapRenderer->render(ctx)) {
         renderCount++;
     }
@@ -693,6 +690,17 @@ void Scene::render(const render::RenderContext& ctx)
         renderUi(ctx);
     }
     renderViewports(ctx);
+}
+
+void Scene::endFrame()
+{
+    {
+        m_volumeRenderer->endFrame();
+        m_cubeMapProbeRenderer->endFrame();
+        m_environmentProbeRenderer->endFrame();
+        m_physicsRenderer->endFrame();
+        m_socketRenderer->endFrame();
+    }
 }
 
 void Scene::renderUi(const render::RenderContext& parentCtx)

@@ -32,7 +32,7 @@ public:
 
 protected:
     void updateImpl(
-        const render::RenderContext& ctx) override;
+        const UpdateViewContext& ctx) override;
 
 private:
     // X, Y, Z axis meshes (colored cylinders)

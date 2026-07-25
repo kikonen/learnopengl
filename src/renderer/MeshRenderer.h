@@ -6,6 +6,7 @@
 
 #include "util/BufferReference.h"
 
+
 namespace render
 {
     class InstanceRegistry;
@@ -14,6 +15,7 @@ namespace render
 
 class Program;
 struct PrepareContext;
+struct UpdateViewContext;
 
 namespace mesh {
     struct MeshInstance;
@@ -34,10 +36,9 @@ public:
     virtual void prepareRT(const PrepareContext& ctx);
 
     void update(
-        const render::RenderContext& ctx);
+        const UpdateViewContext& ctx);
 
-    void endFrame(
-        const render::RenderContext& ctx);
+    void endFrame();
 
     void draw(
         const render::RenderContext& ctx,
@@ -45,10 +46,10 @@ public:
 
 protected:
     virtual void updateImpl(
-        const render::RenderContext& ctx) = 0;
+        const UpdateViewContext& ctx) = 0;
 
     void updateMeshes(
-        const render::RenderContext& ctx,
+        const UpdateViewContext& ctx,
         const std::vector<mesh::MeshInstance>& meshes);
 
     void registerDrawables(

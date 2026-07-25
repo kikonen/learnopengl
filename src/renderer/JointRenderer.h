@@ -20,7 +20,7 @@ public:
 
 protected:
     void updateImpl(
-        const render::RenderContext& ctx) override;
+        const UpdateViewContext& ctx) override;
 
 private:
     util::Ref<mesh::Mesh> m_mesh;
