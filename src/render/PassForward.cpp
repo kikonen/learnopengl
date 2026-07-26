@@ -28,7 +28,7 @@ namespace render
     {
     }
 
-    void PassForward::updateRT(
+    void PassForward::updateView(
         const UpdateViewContext& ctx,
         const std::string& namePrefix,
         float bufferScale)

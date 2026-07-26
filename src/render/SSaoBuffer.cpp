@@ -19,7 +19,7 @@ namespace render {
     void SsaoBuffer::prepare()
     { }
 
-    void SsaoBuffer::updateRT(
+    void SsaoBuffer::updateView(
         const UpdateViewContext& ctx,
         const std::string& namePrefix,
         float bufferScale)

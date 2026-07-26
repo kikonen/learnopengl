@@ -24,7 +24,7 @@ namespace render {
         //}
     }
 
-    void WindowBuffer::updateRT(const UpdateViewContext& ctx)
+    void WindowBuffer::updateView(const UpdateViewContext& ctx)
     {
         const auto& res = ctx.m_resolution;
         int w = res.x;

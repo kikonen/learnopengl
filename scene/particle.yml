@@ -98,6 +98,7 @@ types:
     flags:
       dynamic_bounds: true
     physics:
+      enabled: true
       update: true
     script: scripts/seq_skeleton_2
   - id: prefab_construction_hat

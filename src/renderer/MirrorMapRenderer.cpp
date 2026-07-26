@@ -140,7 +140,7 @@ void MirrorMapRenderer::prepareRT(
     }
 }
 
-void MirrorMapRenderer::updateRT(const UpdateViewContext& parentCtx)
+void MirrorMapRenderer::updateView(const UpdateViewContext& parentCtx)
 {
     const auto& dbg = parentCtx.getDebug();
     m_enabled = dbg.m_mirrorMapEnabled;
@@ -208,14 +208,14 @@ void MirrorMapRenderer::updateRT(const UpdateViewContext& parentCtx)
             parentCtx.getEngine(),
             w,
             h};
-        m_nodeDraw->updateRT(localCtx, 1.f);
+        m_nodeDraw->updateView(localCtx, 1.f);
 
         // NOTE KI nested renderers scale down from current
         if (m_waterMapRenderer) {
-            m_waterMapRenderer->updateRT(localCtx);
+            m_waterMapRenderer->updateView(localCtx);
         }
         if (m_mirrorMapRenderer) {
-            m_mirrorMapRenderer->updateRT(localCtx);
+            m_mirrorMapRenderer->updateView(localCtx);
         }
     }
 }

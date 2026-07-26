@@ -32,6 +32,9 @@ public:
 
     void updateRT(const UpdateContext& ctx);
 
+    void beginFrame();
+    void endFrame();
+
     void bindDefaultVao();
 
     mesh::TexturedVAO* getTexturedVao()
@@ -54,17 +57,22 @@ public:
     // NOTE KI primitive VAO is "throwaway" render meshes
     // which are recalculated on every render cycle again
     // => mostly useful for debug thus
-    mesh::TexturedVAO* getDynamicPrimitiveVao(int index)
+    mesh::TexturedVAO* getCurrentDynamicPrimitiveVao()
     {
-        return m_dynamicPrimitiveVaos[index].get();
+        if (m_currentDynamicVaoIndex < 0) return nullptr;
+        return m_dynamicPrimitiveVaos[m_currentDynamicVaoIndex].get();
     }
 
 private:
+    bool m_useFenceDebug{ false };
+
     std::unique_ptr<kigl::GLVertexArray> m_nullVao;
 
     std::unique_ptr<mesh::TexturedVAO> m_texturedVao;
     std::unique_ptr<mesh::SkinnedVAO> m_skinnedVao;
 
     std::unique_ptr<mesh::TexturedVAO> m_sharedPrimitiveVao;
+
+    int m_currentDynamicVaoIndex{ -1 };
     std::vector<std::unique_ptr<mesh::TexturedVAO>> m_dynamicPrimitiveVaos;
 };

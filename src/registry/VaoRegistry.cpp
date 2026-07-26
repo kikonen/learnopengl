@@ -69,9 +69,13 @@ void VaoRegistry::prepare()
 {
     ASSERT_RT();
 
+    const auto& assets = Assets::get();
+
     // NOTE KI ensure id == 0 is not used for actual VAOs
     m_nullVao->create("NULL");
     assert(*m_nullVao < 255);
+
+    m_useFenceDebug = assets.glUseFenceDebug;
 
     m_texturedVao->prepare();
     m_skinnedVao->prepare();
@@ -92,8 +96,27 @@ void VaoRegistry::updateRT(const UpdateContext& ctx)
     m_texturedVao->updateRT();
     m_skinnedVao->updateRT();
     m_sharedPrimitiveVao->updateRT();
-    for (auto& vao : m_dynamicPrimitiveVaos) {
-        vao->updateRT();
+
+    if (m_currentDynamicVaoIndex >= 0) {
+        auto& dynamicVao = m_dynamicPrimitiveVaos[m_currentDynamicVaoIndex];
+        dynamicVao->updateRT();
+    }
+}
+
+void VaoRegistry::beginFrame()
+{
+    m_currentDynamicVaoIndex = (m_currentDynamicVaoIndex + 1) % m_dynamicPrimitiveVaos.size();
+
+    auto& dynamicVao = m_dynamicPrimitiveVaos[m_currentDynamicVaoIndex];
+    dynamicVao->getFence().waitFence(m_useFenceDebug);
+    dynamicVao->clear();
+}
+
+void VaoRegistry::endFrame()
+{
+    if (m_currentDynamicVaoIndex >= 0) {
+        auto& dynamicVao = m_dynamicPrimitiveVaos[m_currentDynamicVaoIndex];
+        dynamicVao->getFence().setFence(m_useFenceDebug);
     }
 }
 

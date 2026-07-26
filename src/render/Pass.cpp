@@ -27,7 +27,7 @@ namespace render
     {
     }
 
-    void Pass::updateRT(const UpdateViewContext& ctx)
+    void Pass::updateView(const UpdateViewContext& ctx)
     {
     }
 
@@ -46,7 +46,9 @@ namespace render
         return src;
     }
 
-    bool Pass::updateSize(const UpdateViewContext& ctx, float bufferScale)
+    bool Pass::updateSize(
+        const UpdateViewContext& ctx,
+        float bufferScale)
     {
         const auto& dbg = ctx.getDebug();
 

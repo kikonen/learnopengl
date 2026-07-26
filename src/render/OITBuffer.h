@@ -26,7 +26,7 @@ namespace render {
 
         void prepare();
 
-        void updateRT(
+        void updateView(
             const UpdateViewContext& ctx,
             GBuffer* gBuffer,
             const std::string& namePrefix,

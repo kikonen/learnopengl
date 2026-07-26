@@ -46,7 +46,7 @@ public:
     virtual void prepareRT(
         const PrepareContext& ctx) override;
 
-    void updateRT(const UpdateViewContext& ctx);
+    void updateView(const UpdateViewContext& ctx);
 
     void bindTexture(kigl::GLState& state);
 

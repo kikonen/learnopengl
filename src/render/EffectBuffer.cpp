@@ -19,7 +19,9 @@ namespace render {
         m_gBuffer = gBuffer;
     }
 
-    void EffectBuffer::updateRT(const UpdateViewContext& ctx, float bufferScale)
+    void EffectBuffer::updateView(
+        const UpdateViewContext& ctx,
+        float bufferScale)
     {
         const auto& assets = Assets::get();
         auto& dbg = debug::DebugContext::get();

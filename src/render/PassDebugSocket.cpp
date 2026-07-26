@@ -31,7 +31,7 @@ namespace render
     {
     }
 
-    void PassDebugSocket::updateRT(
+    void PassDebugSocket::updateView(
         const UpdateViewContext& ctx,
         const std::string& namePrefix,
         float bufferScale)

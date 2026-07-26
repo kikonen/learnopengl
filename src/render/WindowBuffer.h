@@ -14,7 +14,7 @@ namespace render {
 
         virtual ~WindowBuffer() override {};
 
-        void updateRT(const UpdateViewContext& ctx);
+        void updateView(const UpdateViewContext& ctx);
 
     private:
     };

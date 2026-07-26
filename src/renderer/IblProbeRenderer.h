@@ -55,7 +55,7 @@ public:
     virtual void prepareRT(
         const PrepareContext& ctx) override;
 
-    void updateRT(const UpdateViewContext& ctx);
+    void updateView(const UpdateViewContext& ctx);
 
     // Bind the convolved IBL maps over units 71/72. No-op until the first bake (so the
     // skybox-derived maps bound earlier this frame remain the fallback).

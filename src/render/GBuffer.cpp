@@ -24,7 +24,7 @@ namespace render {
     {
     }
 
-    void GBuffer::updateRT(
+    void GBuffer::updateView(
         const UpdateViewContext& ctx,
         const std::string& namePrefix,
         float bufferScale)

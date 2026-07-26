@@ -22,7 +22,7 @@ namespace render {
     {
     }
 
-    void BlurBuffer::updateRT(
+    void BlurBuffer::updateView(
         const UpdateViewContext& ctx,
         const std::string& namePrefix,
         float bufferScale)

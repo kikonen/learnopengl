@@ -56,7 +56,9 @@ namespace render {
         void prepareRT(
             const PrepareContext& ctx);
 
-        void updateRT(const UpdateViewContext& ctx, float bufferScale);
+        void updateView(
+            const UpdateViewContext& ctx,
+            float bufferScale);
 
         void drawNodes(
             const RenderContext& ctx,

@@ -25,7 +25,7 @@ namespace render
     {
     }
 
-    void PassCopy::updateRT(
+    void PassCopy::updateView(
         const UpdateViewContext& ctx,
         const std::string& namePrefix,
         float bufferScale)

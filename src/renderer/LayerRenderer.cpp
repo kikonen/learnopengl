@@ -89,7 +89,7 @@ void LayerRenderer::prepareRT(
     m_selectionProgram->prepareRT();
 }
 
-void LayerRenderer::updateRT(const UpdateViewContext& ctx)
+void LayerRenderer::updateView(const UpdateViewContext& ctx)
 {
     const auto& assets = ctx.getAssets();
     auto& dbg = debug::DebugContext::get();
@@ -114,7 +114,7 @@ void LayerRenderer::updateRT(const UpdateViewContext& ctx)
 
         KI_INFO(fmt::format("LAYER_BUFFER: update - w={}, h={}", w, h));
 
-        m_nodeDraw->updateRT(ctx, bufferScale);
+        m_nodeDraw->updateView(ctx, bufferScale);
     }
 
 

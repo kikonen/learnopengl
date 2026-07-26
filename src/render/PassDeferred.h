@@ -19,7 +19,7 @@ namespace render {
         void prepare(
             const PrepareContext& ctx);
 
-        void updateRT(
+        void updateView(
             const UpdateViewContext& ctx,
             const std::string& namePrefix,
             float bufferScale);

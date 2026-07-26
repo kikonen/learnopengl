@@ -27,7 +27,7 @@ namespace render
     {
     }
 
-    void PassDebug::updateRT(
+    void PassDebug::updateView(
         const UpdateViewContext& ctx,
         const std::string& namePrefix,
         float bufferScale)

@@ -15,12 +15,11 @@ namespace render
 
 class Program;
 struct PrepareContext;
-struct UpdateViewContext;
+struct UpdateContext;
 
 namespace mesh {
     struct MeshInstance;
     class Mesh;
-    class TexturedVAO;
 }
 
 namespace render {
@@ -36,8 +35,9 @@ public:
     virtual void prepareRT(const PrepareContext& ctx);
 
     void update(
-        const UpdateViewContext& ctx);
+        const UpdateContext& ctx);
 
+    void beginFrame();
     void endFrame();
 
     void draw(
@@ -46,10 +46,10 @@ public:
 
 protected:
     virtual void updateImpl(
-        const UpdateViewContext& ctx) = 0;
+        const UpdateContext& ctx) = 0;
 
     void updateMeshes(
-        const UpdateViewContext& ctx,
+        const UpdateContext& ctx,
         const std::vector<mesh::MeshInstance>& meshes);
 
     void registerDrawables(
@@ -64,12 +64,6 @@ protected:
 private:
     uint32_t m_entityIndex{ 0 };
 
-    int m_dynamicVaoIndex{ -1 };
-
-    bool m_useFenceDebug{ false };
-
-    mesh::TexturedVAO* m_currentDynamicVao = nullptr;
     size_t m_currentDrawableCount{ 0 };
-
     util::BufferReference m_instanceRef;
 };

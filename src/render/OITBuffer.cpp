@@ -18,7 +18,7 @@ namespace render {
     {
     }
 
-    void OITBuffer::updateRT(
+    void OITBuffer::updateView(
         const UpdateViewContext& ctx,
         GBuffer* gBuffer,
         const std::string& namePrefix,

@@ -31,7 +31,7 @@ namespace render
     {
     }
 
-    void PassDebugPhysics::updateRT(
+    void PassDebugPhysics::updateView(
         const UpdateViewContext& ctx,
         const std::string& namePrefix,
         float bufferScale)

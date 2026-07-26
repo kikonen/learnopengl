@@ -68,7 +68,7 @@ void EnvironmentProbeRenderer::prepareRT(
 }
 
 void EnvironmentProbeRenderer::updateImpl(
-    const UpdateViewContext& ctx)
+    const UpdateContext& ctx)
 {
     const auto& dbg = debug::DebugContext::get();
     if (!dbg.m_showEnvironmentProbe) return;

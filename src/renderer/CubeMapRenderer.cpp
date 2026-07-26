@@ -167,7 +167,7 @@ void CubeMapRenderer::prepareRT(
     }
 }
 
-void CubeMapRenderer::updateRT(const UpdateViewContext& parentCtx)
+void CubeMapRenderer::updateView(const UpdateViewContext& parentCtx)
 {
     const auto& dbg = parentCtx.getDebug();
     m_enabled = dbg.m_cubeMapEnabled;
@@ -183,11 +183,11 @@ void CubeMapRenderer::updateRT(const UpdateViewContext& parentCtx)
         size};
 
     const float bufferScale = dbg.m_cubeMapBufferScale;
-    m_nodeDraw->updateRT(localCtx, bufferScale);
+    m_nodeDraw->updateView(localCtx, bufferScale);
 
     // NOTE KI nested renderers scale down from current
-    m_waterMapRenderer->updateRT(localCtx);
-    m_mirrorMapRenderer->updateRT(localCtx);
+    m_waterMapRenderer->updateView(localCtx);
+    m_mirrorMapRenderer->updateView(localCtx);
 }
 
 void CubeMapRenderer::bindTexture(kigl::GLState& state)

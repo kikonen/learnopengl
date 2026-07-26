@@ -29,6 +29,9 @@ class ParticleUpdater;
 class AnimationUpdater;
 class AsyncLoader;
 
+struct UpdateContext;
+struct UpdateViewContext;
+
 namespace render
 {
     class Batch;
@@ -44,15 +47,10 @@ public:
     Engine();
     virtual ~Engine();
 
+    bool init();
     void run();
 
     bool renderFrame();
-
-    bool init();
-    bool setup();
-    bool update();
-    bool render();
-    void processInput();
 
     inline const util::Ref<Registry>& getRegistry() const noexcept {
         return m_registry;
@@ -91,11 +89,19 @@ public:
     backend::gl::PerformanceCounters getCountersLocal(bool clear) const;
 
 protected:
+    bool setup();
+    void update();
+    void updateView();
+    void render();
+    void processInput();
+
+protected:
     virtual bool onInit() = 0;
     virtual bool onSetup() = 0;
 
-    virtual bool onUpdate(const UpdateContext& ctx) = 0;
-    virtual bool onRender(const ki::RenderClock& clock) = 0;
+    virtual void onUpdate(const UpdateContext& ctx) = 0;
+    virtual void onUpdateView(const UpdateViewContext& ctx) = 0;
+    virtual void onRender(const ki::RenderClock& clock) = 0;
 
     virtual void onDestroy();
 

@@ -187,6 +187,7 @@ void Registry::bindBuffers()
 // In startFrame():
 void Registry::startFrame()
 {
+    VaoRegistry::get().beginFrame();
     render::InstanceRegistry::get().beginFrame();
     EntityRegistry::get().beginFrame();
     animation::AnimationSystem::get().beginFrame();
@@ -198,8 +199,9 @@ void Registry::endFrame()
 {
     particle::ParticleSystem::get().endFrame();
     animation::AnimationSystem::get().endFrame();
-    render::InstanceRegistry::get().endFrame();
     EntityRegistry::get().endFrame();
+    render::InstanceRegistry::get().endFrame();
+    VaoRegistry::get().endFrame();
 }
 
 void Registry::withLock(const std::function<void(Registry&)>& fn)

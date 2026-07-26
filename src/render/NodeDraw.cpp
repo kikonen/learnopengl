@@ -103,25 +103,27 @@ namespace render {
         m_glUseInvalidate = assets.glUseInvalidate;
     }
 
-    void NodeDraw::updateRT(const UpdateViewContext& ctx, float bufferScale)
+    void NodeDraw::updateView(
+        const UpdateViewContext& ctx,
+        float bufferScale)
     {
-        if (m_pipeline.m_deferred) m_passDeferred->updateRT(ctx, m_namePrefix, bufferScale);
-        if (m_pipeline.m_oit) m_passOit->updateRT(ctx, m_passDeferred.get(), m_namePrefix, bufferScale);
-        if (m_pipeline.m_ssao) m_passSsao->updateRT(ctx, m_namePrefix, bufferScale);
-        if (m_pipeline.m_forward) m_passForward->updateRT(ctx, m_namePrefix, bufferScale);
-        if (m_pipeline.m_decal) m_passDecal->updateRT(ctx, m_namePrefix, bufferScale);
-        if (m_pipeline.m_particle) m_passParticle->updateRT(ctx, m_namePrefix, bufferScale);
-        if (m_pipeline.m_effect) m_passEffect->updateRT(ctx, m_namePrefix, bufferScale);
-        if (m_pipeline.m_fog) m_passFog->updateRT(ctx, m_namePrefix, bufferScale);
-        if (m_pipeline.m_bloom) m_passBloom->updateRT(ctx, m_namePrefix, bufferScale);
-        if (m_pipeline.m_skybox) m_passSkybox->updateRT(ctx, m_namePrefix, bufferScale);
-        if (m_pipeline.m_debug) m_passDebug->updateRT(ctx, m_namePrefix, bufferScale);
-        if (m_pipeline.m_debugPhysics) m_passDebugPhysics->updateRT(ctx, m_namePrefix, bufferScale);
-        if (m_pipeline.m_debugVolume) m_passDebugVolume->updateRT(ctx, m_namePrefix, bufferScale);
-        if (m_pipeline.m_debugEnvironmentProbe) m_passDebugEnvironmentProbe->updateRT(ctx, m_namePrefix, bufferScale);
-        if (m_pipeline.m_debugNormal) m_passDebugNormal->updateRT(ctx, m_namePrefix, bufferScale);
-        if (m_pipeline.m_debugSocket) m_passDebugSocket->updateRT(ctx, m_namePrefix, bufferScale);
-        if (m_pipeline.m_copy) m_passCopy->updateRT(ctx, m_namePrefix, bufferScale);
+        if (m_pipeline.m_deferred) m_passDeferred->updateView(ctx, m_namePrefix, bufferScale);
+        if (m_pipeline.m_oit) m_passOit->updateView(ctx, m_passDeferred.get(), m_namePrefix, bufferScale);
+        if (m_pipeline.m_ssao) m_passSsao->updateView(ctx, m_namePrefix, bufferScale);
+        if (m_pipeline.m_forward) m_passForward->updateView(ctx, m_namePrefix, bufferScale);
+        if (m_pipeline.m_decal) m_passDecal->updateView(ctx, m_namePrefix, bufferScale);
+        if (m_pipeline.m_particle) m_passParticle->updateView(ctx, m_namePrefix, bufferScale);
+        if (m_pipeline.m_effect) m_passEffect->updateView(ctx, m_namePrefix, bufferScale);
+        if (m_pipeline.m_fog) m_passFog->updateView(ctx, m_namePrefix, bufferScale);
+        if (m_pipeline.m_bloom) m_passBloom->updateView(ctx, m_namePrefix, bufferScale);
+        if (m_pipeline.m_skybox) m_passSkybox->updateView(ctx, m_namePrefix, bufferScale);
+        if (m_pipeline.m_debug) m_passDebug->updateView(ctx, m_namePrefix, bufferScale);
+        if (m_pipeline.m_debugPhysics) m_passDebugPhysics->updateView(ctx, m_namePrefix, bufferScale);
+        if (m_pipeline.m_debugVolume) m_passDebugVolume->updateView(ctx, m_namePrefix, bufferScale);
+        if (m_pipeline.m_debugEnvironmentProbe) m_passDebugEnvironmentProbe->updateView(ctx, m_namePrefix, bufferScale);
+        if (m_pipeline.m_debugNormal) m_passDebugNormal->updateView(ctx, m_namePrefix, bufferScale);
+        if (m_pipeline.m_debugSocket) m_passDebugSocket->updateView(ctx, m_namePrefix, bufferScale);
+        if (m_pipeline.m_copy) m_passCopy->updateView(ctx, m_namePrefix, bufferScale);
     }
 
     void NodeDraw::drawNodes(

@@ -31,7 +31,7 @@ namespace render
     {
     }
 
-    void PassDebugEnvironmentProbe::updateRT(
+    void PassDebugEnvironmentProbe::updateView(
         const UpdateViewContext& ctx,
         const std::string& namePrefix,
         float bufferScale)

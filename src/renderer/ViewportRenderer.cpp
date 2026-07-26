@@ -45,13 +45,13 @@ void ViewportRenderer::prepareRT(
     setHardwareGammaEnabled(true);
 }
 
-void ViewportRenderer::updateRT(const UpdateViewContext& ctx)
+void ViewportRenderer::updateView(const UpdateViewContext& ctx)
 {
     const auto& assets = ctx.getAssets();
     auto& dbg = debug::DebugContext::get();
 
     for (auto& viewport : ViewportRegistry::get().getViewports()) {
-        viewport->updateRT(ctx);
+        viewport->updateView(ctx);
     }
 
     {

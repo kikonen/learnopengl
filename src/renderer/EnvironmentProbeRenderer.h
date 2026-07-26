@@ -28,7 +28,7 @@ public:
 
 protected:
     void updateImpl(
-        const UpdateViewContext& ctx) override;
+        const UpdateContext& ctx) override;
 
 private:
     const bool m_cubeMap;

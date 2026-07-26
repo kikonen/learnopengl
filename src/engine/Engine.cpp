@@ -68,6 +68,16 @@ Engine::~Engine() {
     *m_alive = false;
 }
 
+const util::Ref<Scene>& Engine::getCurrentScene() const
+{
+    return m_currentScene;
+}
+
+util::Ref<Window> Engine::getWindow() const
+{
+    return m_window;
+}
+
 bool Engine::init()
 {
     Assets::set(loadAssets());
@@ -80,17 +90,7 @@ bool Engine::init()
     m_asyncLoader = util::Ref<AsyncLoader>::create();
 
     m_window = util::Ref<Window>::create(*this);
-    return m_window->create() ? 0 : -1;
-}
-
-const util::Ref<Scene>& Engine::getCurrentScene() const
-{
-    return m_currentScene;
-}
-
-util::Ref<Window> Engine::getWindow() const
-{
-    return m_window;
+    return !m_window->create();
 }
 
 bool Engine::setup() {
@@ -131,24 +131,15 @@ bool Engine::setup() {
     return onSetup();
 }
 
-bool Engine::update()
+void Engine::update()
 {
     UpdateContext ctx{ *this, m_clock };
 
     getRegistry()->m_dispatcherView->dispatchEvents();
 
-    bool closed = onUpdate(ctx);
+    onUpdate(ctx);
 
-    if (!closed) {
-        {
-            const glm::ivec2& size = getSize();
-            UpdateViewContext updateCtx{
-                *this,
-                size.x,
-                size.y };
-            m_windowBuffer->updateRT(updateCtx);
-        }
-
+    {
         m_batch->updateRT(ctx);
 
         render::InstanceRegistry::get().upload();
@@ -159,11 +150,32 @@ bool Engine::update()
         //    but DOES NOT remove it
         ProgramRegistry::get().updateRT(ctx);
     }
-
-    return closed;
 }
 
-bool Engine::render()
+void Engine::updateView()
+{
+    Window* window = m_window.get();
+
+    auto& state = kigl::GLState::get();
+    const glm::ivec2& size = window->getSize();
+
+    UpdateViewContext ctx{
+        *this,
+        size.x,
+        size.y };
+
+    m_windowBuffer->updateView(ctx);
+
+    const auto& scene = m_currentScene;
+
+    if (scene) {
+        scene->updateView(ctx);
+    }
+
+    onUpdateView(ctx);
+}
+
+void Engine::render()
 {
     prepareUBOs();
     updateUBOs();
@@ -171,9 +183,7 @@ bool Engine::render()
     VaoRegistry::get().bindDefaultVao();
 
     m_batch->bind();
-    int result = onRender(m_clock);
-
-    return result;
+    onRender(m_clock);
 }
 
 void Engine::processInput()
@@ -192,18 +202,15 @@ bool Engine::renderFrame()
     getRenderData()->beginFrame();
     getBatch()->beginFrame();
 
-    bool close = false;
+    if (m_currentScene) {
+        m_currentScene->beginFrame();
+    }
 
-    if (!close) {
-        close = update();
-    }
-    if (!close) {
-        getRegistry()->bindBuffers();
-        close = render();
-    }
-    if (!close) {
-        processInput();
-    }
+    update();
+    updateView();
+    getRegistry()->bindBuffers();
+    render();
+    processInput();
 
     getBatch()->endFrame();
     getRenderData()->endFrame();
@@ -213,7 +220,7 @@ bool Engine::renderFrame()
         m_currentScene->endFrame();
     }
 
-    return close;
+    return m_window->isClosed();
 }
 
 void Engine::run() {
@@ -240,9 +247,11 @@ void Engine::run() {
         kigl::GL::startDebug();
     }
 
-    int res = setup();
-    if (res) {
-        m_window->close();
+    {
+        bool close = setup();
+        if (close) {
+            m_window->close();
+        }
     }
 
     auto prevLoopStart = std::chrono::high_resolution_clock::now();
@@ -265,7 +274,7 @@ void Engine::run() {
 
         fpsCounter.startFrame();
 
-        int close = 0;
+        bool close = false;
 
         {
             //KI_TIMER("loop");
@@ -308,7 +317,6 @@ void Engine::run() {
                 m_window->close();
             }
         }
-
 
         if (!close) {
             // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)

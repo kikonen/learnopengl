@@ -39,8 +39,8 @@ namespace model
         ~Viewport();
 
         // NOTE KI called from update cycle
-        void setUpdate(std::function<void(Viewport&, const UpdateViewContext& ctx)> update) {
-            m_update = update;
+        void setViewUpdate(std::function<void(Viewport&, const UpdateViewContext& ctx)> viewUpdate) {
+            m_viewUpdate = viewUpdate;
         }
 
         // NOTE KI called *before* binding program, to setup texture and such
@@ -74,7 +74,7 @@ namespace model
 
         void prepareRT();
 
-        void updateRT(const UpdateViewContext& ctx);
+        void updateView(const UpdateViewContext& ctx);
 
         void bind(const render::RenderContext& ctx);
 
@@ -241,7 +241,7 @@ namespace model
         bool m_effectEnabled{ false };
         ViewportEffect m_effect = ViewportEffect::none;
 
-        std::function<void(model::Viewport&, const UpdateViewContext&)> m_update{ [](Viewport&, const UpdateViewContext& ctx) {} };
+        std::function<void(model::Viewport&, const UpdateViewContext&)> m_viewUpdate{ [](Viewport&, const UpdateViewContext& ctx) {} };
         std::function<void(model::Viewport&)> m_bindBefore{ [](Viewport&) {} };
         std::function<void(model::Viewport&)> m_bindAfter{ [](Viewport&) {} };
     };

@@ -27,7 +27,7 @@ namespace render
         m_program = Program::get(ProgramRegistry::get().getProgram(SHADER_FOG_PASS));
     }
 
-    void PassFog::updateRT(
+    void PassFog::updateView(
         const UpdateViewContext& ctx,
         const std::string& namePrefix,
         float bufferScale)

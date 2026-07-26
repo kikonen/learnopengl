@@ -47,8 +47,9 @@ protected:
     bool onInit() override;
     bool onSetup() override;
 
-    bool onUpdate(const UpdateContext& ctx) override;
-    bool onRender(const ki::RenderClock& clock) override;
+    void onUpdate(const UpdateContext& ctx) override;
+    void onUpdateView(const UpdateViewContext& ctx) override;
+    void onRender(const ki::RenderClock& clock) override;
 
     void onDestroy() override;
 

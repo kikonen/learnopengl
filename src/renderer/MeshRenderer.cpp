@@ -47,27 +47,25 @@ void MeshRenderer::prepareRT(const PrepareContext& ctx)
     // NOTE KI this is *forward* pass
     m_programId = ProgramRegistry::get().getProgram(SHADER_TEXTURE);
 
-    m_useFenceDebug = assets.glUseFenceDebug;
-
     m_entityIndex = ID_INDEX;
 
     m_instanceRef = render::InstanceRegistry::get().allocate(INITIAL_SIZE);
 }
 
 void MeshRenderer::update(
-    const UpdateViewContext& ctx)
+    const UpdateContext& ctx)
 {
     m_currentDrawableCount = 0;
-    m_currentDynamicVao = nullptr;
 
     updateImpl(ctx);
 }
 
+void MeshRenderer::beginFrame()
+{
+}
+
 void MeshRenderer::endFrame()
 {
-    if (m_currentDynamicVao) {
-        m_currentDynamicVao->getFence().setFence(m_useFenceDebug);
-    }
 }
 
 void MeshRenderer::draw(
@@ -101,7 +99,7 @@ void MeshRenderer::draw(
 }
 
 void MeshRenderer::updateMeshes(
-    const UpdateViewContext& ctx,
+    const UpdateContext& ctx,
     const std::vector<mesh::MeshInstance>& meshes)
 {
     if (meshes.empty()) return;
@@ -115,10 +113,7 @@ void MeshRenderer::updateMeshes(
     }
 
     if (hasDynamic) {
-        m_dynamicVaoIndex = (m_dynamicVaoIndex + 1) % 2;
-        dynamicVao = VaoRegistry::get().getDynamicPrimitiveVao(m_dynamicVaoIndex);
-        dynamicVao->getFence().waitFence(m_useFenceDebug);
-        dynamicVao->clear();
+        dynamicVao = VaoRegistry::get().getCurrentDynamicPrimitiveVao();
     }
 
     for (const auto& meshInstance : meshes) {
@@ -132,15 +127,8 @@ void MeshRenderer::updateMeshes(
         }
     }
 
-    sharedVao->updateRT();
-
-    if (dynamicVao) {
-        dynamicVao->updateRT();
-    }
-
     registerDrawables(meshes, render::InstanceRegistry::get());
 
-    m_currentDynamicVao = dynamicVao;
     m_currentDrawableCount = meshes.size();
 }
 

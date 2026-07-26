@@ -80,13 +80,14 @@ public:
     void prepareRT();
 
     void updateRT(const UpdateContext& ctx);
-    void updateViewRT(const UpdateViewContext& ctx);
+    void updateView(const UpdateViewContext& ctx);
 
     void bind(const render::RenderContext& ctx);
     void unbind(const render::RenderContext& ctx);
 
     void render(const render::RenderContext& ctx);
 
+    void beginFrame();
     void endFrame();
 
     model::Node* getActiveNode() const;

@@ -120,7 +120,7 @@ void ObjectIdRenderer::prepareRT(
     m_debugViewport->prepareRT();
 }
 
-void ObjectIdRenderer::updateRT(const UpdateViewContext& ctx)
+void ObjectIdRenderer::updateView(const UpdateViewContext& ctx)
 {
     const auto& assets = ctx.getAssets();
     auto& dbg = debug::DebugContext::get();

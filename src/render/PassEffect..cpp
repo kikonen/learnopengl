@@ -30,7 +30,7 @@ namespace render
     {
     }
 
-    void PassEffect::updateRT(
+    void PassEffect::updateView(
         const UpdateViewContext& ctx,
         const std::string& namePrefix,
         float bufferScale)

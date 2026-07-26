@@ -30,7 +30,7 @@ namespace render
 
         void prepare();
 
-        void updateRT(
+        void updateView(
             const UpdateViewContext& ctx,
             const std::string& namePrefix,
             float bufferScale);

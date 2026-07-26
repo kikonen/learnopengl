@@ -42,7 +42,7 @@ namespace render
             PROGRAM_NAME, { { DEF_USE_SKYBOX_NIGHT, "1" } }));
     }
 
-    void PassSkybox::updateRT(
+    void PassSkybox::updateView(
         const UpdateViewContext& ctx,
         const std::string& namePrefix,
         float bufferScale)

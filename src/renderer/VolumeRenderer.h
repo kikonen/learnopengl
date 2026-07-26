@@ -25,7 +25,7 @@ public:
 
 protected:
     void updateImpl(
-        const UpdateViewContext& ctx) override;
+        const UpdateContext& ctx) override;
 
 private:
     util::Ref<mesh::Mesh> m_mesh;

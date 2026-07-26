@@ -290,7 +290,7 @@ void Scene::prepareRT()
             0,
             ProgramRegistry::get().getProgram(SHADER_VIEWPORT));
 
-        vp->setUpdate([](model::Viewport& vp, const UpdateViewContext& ctx) {
+        vp->setViewUpdate([](model::Viewport& vp, const UpdateViewContext& ctx) {
             });
 
         vp->setBindBefore([this](model::Viewport& vp) {
@@ -323,7 +323,7 @@ void Scene::prepareRT()
             0,
             ProgramRegistry::get().getProgram(SHADER_VIEWPORT));
 
-        vp->setUpdate([](model::Viewport& vp, const UpdateViewContext& ctx) {
+        vp->setViewUpdate([](model::Viewport& vp, const UpdateViewContext& ctx) {
             });
 
         vp->setBindBefore([this](model::Viewport& vp) {
@@ -356,7 +356,7 @@ void Scene::prepareRT()
             0,
             ProgramRegistry::get().getProgram(SHADER_VIEWPORT));
 
-        vp->setUpdate([](model::Viewport& vp, const UpdateViewContext& ctx) {
+        vp->setViewUpdate([](model::Viewport& vp, const UpdateViewContext& ctx) {
         });
 
         vp->setBindBefore([this](model::Viewport& vp) {
@@ -441,11 +441,19 @@ void Scene::updateRT(const UpdateContext& ctx)
 
     //m_engine.getRegistry()->m_dispatcherView->dispatchEvents();
 
+    {
+        m_volumeRenderer->update(ctx);
+        m_cubeMapProbeRenderer->update(ctx);
+        m_environmentProbeRenderer->update(ctx);
+        m_physicsRenderer->update(ctx);
+        m_socketRenderer->update(ctx);
+    }
+
     m_collection->updateRT(ctx);
     m_engine.getRegistry()->updateRT(ctx);
 }
 
-void Scene::updateViewRT(const UpdateViewContext& ctx)
+void Scene::updateView(const UpdateViewContext& ctx)
 {
     const auto& assets = ctx.getAssets();
     const auto& dbg = debug::DebugContext::get();
@@ -487,33 +495,25 @@ void Scene::updateViewRT(const UpdateViewContext& ctx)
     }
 
     if (m_viewportRenderer->isEnabled()) {
-        m_viewportRenderer->updateRT(ctx);
+        m_viewportRenderer->updateView(ctx);
     }
 
     if (m_objectIdRenderer->isEnabled()) {
-        m_objectIdRenderer->updateRT(ctx);
+        m_objectIdRenderer->updateView(ctx);
     }
 
-    m_uiRenderer->updateRT(ctx);
-    m_playerRenderer->updateRT(ctx);
-    m_mainRenderer->updateRT(ctx);
+    m_uiRenderer->updateView(ctx);
+    m_playerRenderer->updateView(ctx);
+    m_mainRenderer->updateView(ctx);
 
     if (assets.showRearView) {
-        m_rearRenderer->updateRT(ctx);
+        m_rearRenderer->updateView(ctx);
     }
 
-    m_cubeMapRenderer->updateRT(ctx);
-    m_iblProbeRenderer->updateRT(ctx);
-    m_mirrorMapRenderer->updateRT(ctx);
-    m_waterMapRenderer->updateRT(ctx);
-
-    {
-        m_volumeRenderer->update(ctx);
-        m_cubeMapProbeRenderer->update(ctx);
-        m_environmentProbeRenderer->update(ctx);
-        m_physicsRenderer->update(ctx);
-        m_socketRenderer->update(ctx);
-    }
+    m_cubeMapRenderer->updateView(ctx);
+    m_iblProbeRenderer->updateView(ctx);
+    m_mirrorMapRenderer->updateView(ctx);
+    m_waterMapRenderer->updateView(ctx);
 
     //if (false)
     {
@@ -692,14 +692,25 @@ void Scene::render(const render::RenderContext& ctx)
     renderViewports(ctx);
 }
 
+void Scene::beginFrame()
+{
+    {
+        m_volumeRenderer->beginFrame();
+        m_cubeMapProbeRenderer->beginFrame();
+        m_environmentProbeRenderer->beginFrame();
+        m_physicsRenderer->beginFrame();
+        m_socketRenderer->beginFrame();
+    }
+}
+
 void Scene::endFrame()
 {
     {
-        m_volumeRenderer->endFrame();
-        m_cubeMapProbeRenderer->endFrame();
-        m_environmentProbeRenderer->endFrame();
-        m_physicsRenderer->endFrame();
         m_socketRenderer->endFrame();
+        m_physicsRenderer->endFrame();
+        m_environmentProbeRenderer->endFrame();
+        m_cubeMapProbeRenderer->endFrame();
+        m_volumeRenderer->endFrame();
     }
 }
 

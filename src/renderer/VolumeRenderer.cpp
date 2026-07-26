@@ -65,7 +65,7 @@ void VolumeRenderer::prepareRT(const PrepareContext& ctx)
 }
 
 void VolumeRenderer::updateImpl(
-    const UpdateViewContext& ctx)
+    const UpdateContext& ctx)
 {
     const auto& dbg = debug::DebugContext::get();
     if (!(dbg.m_showVolume || dbg.m_showSelectionVolume)) return;

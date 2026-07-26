@@ -30,7 +30,7 @@ namespace render {
 
         void prepare(const PrepareContext& ctx);
 
-        void updateRT(const UpdateViewContext& ctx);
+        void updateView(const UpdateViewContext& ctx);
 
         void cleanup(const RenderContext& ctx);
 
@@ -43,7 +43,9 @@ namespace render {
             const PassContext& src);
 
     protected:
-        bool updateSize(const UpdateViewContext& ctx, float bufferScale);
+        bool updateSize(
+            const UpdateViewContext& ctx,
+            float bufferScale);
 
         void startScreenPass(
             const RenderContext& ctx,

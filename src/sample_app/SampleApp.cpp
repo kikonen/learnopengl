@@ -175,7 +175,7 @@ bool SampleApp::onSetup()
     return false;
 }
 
-bool SampleApp::onUpdate(const UpdateContext& ctx)
+void SampleApp::onUpdate(const UpdateContext& ctx)
 {
 	const auto& assets = ctx.getAssets();
 	const auto& dbg = ctx.getDebug();
@@ -195,11 +195,13 @@ bool SampleApp::onUpdate(const UpdateContext& ctx)
 
         glfwSwapInterval(dbg.m_glfwSwapInterval);
     }
-
-    return false;
 }
 
-bool SampleApp::onRender(const ki::RenderClock& clock)
+void SampleApp::onUpdateView(const UpdateViewContext& ctx)
+{
+}
+
+void SampleApp::onRender(const ki::RenderClock& clock)
 {
     const auto& assets = Assets::get();
 
@@ -209,17 +211,8 @@ bool SampleApp::onRender(const ki::RenderClock& clock)
     auto& state = kigl::GLState::get();
     const glm::ivec2& size = window->getSize();
 
-    if (scene) {
-        UpdateViewContext ctx{
-            *this,
-            size.x,
-            size.y };
-
-        scene->updateViewRT(ctx);
-    }
-
     render::Camera* camera = &DEFAULT_CAMERA;
-
+ 
     if (scene) {
         auto* cameraNode = scene->getActiveCameraNode();
         if (cameraNode) {
@@ -312,8 +305,6 @@ bool SampleApp::onRender(const ki::RenderClock& clock)
     }
 
     frustumDebug(clock);
-
-    return false;
 }
 
 void SampleApp::processInput()

@@ -55,7 +55,7 @@ void JointRenderer::prepareRT(const PrepareContext& ctx)
 }
 
 void JointRenderer::updateImpl(
-    const UpdateViewContext& ctx)
+    const UpdateContext& ctx)
 {
     const auto& dbg = debug::DebugContext::get();
 

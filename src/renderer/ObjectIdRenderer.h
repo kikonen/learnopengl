@@ -22,7 +22,7 @@ public:
     virtual void prepareRT(
         const PrepareContext& ctx) override;
 
-    void updateRT(
+    void updateView(
         const UpdateViewContext& ctx);
 
     void render(

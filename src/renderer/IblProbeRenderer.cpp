@@ -114,7 +114,7 @@ void IblProbeRenderer::prepareRT(
     setEnabled(dbg.m_environmentProbeEnabled);
 }
 
-void IblProbeRenderer::updateRT(const UpdateViewContext& parentCtx)
+void IblProbeRenderer::updateView(const UpdateViewContext& parentCtx)
 {
     const auto& dbg = parentCtx.getDebug();
     setEnabled(dbg.m_environmentProbeEnabled);
@@ -126,7 +126,7 @@ void IblProbeRenderer::updateRT(const UpdateViewContext& parentCtx)
         m_envSize,
         m_envSize };
 
-    m_nodeDraw->updateRT(localCtx, 1.0f);
+    m_nodeDraw->updateView(localCtx, 1.0f);
 }
 
 void IblProbeRenderer::bindTexture(kigl::GLState& state)

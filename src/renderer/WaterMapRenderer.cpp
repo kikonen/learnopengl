@@ -143,7 +143,7 @@ void WaterMapRenderer::prepareRT(
     }
 }
 
-void WaterMapRenderer::updateRT(const UpdateViewContext& parentCtx)
+void WaterMapRenderer::updateView(const UpdateViewContext& parentCtx)
 {
     const auto& dbg = parentCtx.getDebug();
     m_enabled = dbg.m_waterMapEnabled;
@@ -183,7 +183,7 @@ void WaterMapRenderer::updateRT(const UpdateViewContext& parentCtx)
             w,
             h };
 
-        m_nodeDraw->updateRT(localCtx, 1.f);
+        m_nodeDraw->updateView(localCtx, 1.f);
     }
 
     updateReflectionView(parentCtx);

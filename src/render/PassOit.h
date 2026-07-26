@@ -14,7 +14,7 @@ namespace render {
 
         void prepare(const PrepareContext& ctx);
 
-        void updateRT(
+        void updateView(
             const UpdateViewContext& ctx,
             PassDeferred* passDeferrred,
             const std::string& namePrefix,

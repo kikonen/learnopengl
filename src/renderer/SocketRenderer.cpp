@@ -23,7 +23,7 @@
 
 #include "debug/DebugContext.h"
 
-#include "engine/UpdateViewContext.h"
+#include "engine/UpdateContext.h"
 
 #include "render/RenderContext.h"
 #include "render/InstanceRegistry.h"
@@ -142,7 +142,7 @@ void SocketRenderer::prepareRT(const PrepareContext& ctx)
 }
 
 void SocketRenderer::updateImpl(
-    const UpdateViewContext& ctx)
+    const UpdateContext& ctx)
 {
     const auto& dbg = debug::DebugContext::get();
     if (!dbg.m_animation.m_showSockets) return;
