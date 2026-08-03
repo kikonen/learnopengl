@@ -19,9 +19,9 @@ namespace util
         RefCounted() = default;
         virtual ~RefCounted() = default;
 
-        void incRefCount() const { ++m_refCount; }
-        uint32_t decRefCount() const { --m_refCount; return getRefCount(); }
-        uint32_t getRefCount() const { return m_refCount.load(); }
+        void incRefCount() const noexcept { ++m_refCount; }
+        uint32_t decRefCount() const noexcept { return m_refCount.fetch_sub(1, std::memory_order_acq_rel) - 1; }
+        uint32_t getRefCount() const noexcept { return m_refCount.load(std::memory_order_acquire); }
 
     private:
         mutable std::atomic<uint32_t> m_refCount{ 0 };
@@ -34,9 +34,9 @@ namespace util
         RefCounted() = default;
         ~RefCounted() = default;  // no virtual
 
-        void incRefCount() const { ++m_refCount; }
-        uint32_t decRefCount() const { --m_refCount; return getRefCount(); }
-        uint32_t getRefCount() const { return m_refCount.load(); }
+        void incRefCount() const noexcept { ++m_refCount; }
+        uint32_t decRefCount() const noexcept { return m_refCount.fetch_sub(1, std::memory_order_acq_rel) - 1; }
+        uint32_t getRefCount() const noexcept { return m_refCount.load(std::memory_order_acquire); }
 
     private:
         mutable std::atomic<uint32_t> m_refCount{ 0 };
