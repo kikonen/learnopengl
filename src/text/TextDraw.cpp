@@ -34,6 +34,7 @@ namespace
         float right{ -1.f };
         float top{ -1.f };
         float bottom{ 10000000.f };
+        float lineHeight{ 0.f };
 
         size_t vertexOffset{ 0 };
         size_t glyphCount{ 0 };
@@ -63,7 +64,6 @@ namespace
         }
 
         std::vector<LineInfo> lineInfos;
-        float lineHeight = 0.f;
         size_t lineCount = 0;
 
         {
@@ -78,11 +78,11 @@ namespace
             auto* font = fontAtlas->getFont()->m_font;
 
             // @see freetype-gl/text-buffer.c
-            const auto line_ascender = font->ascender;
-            const auto line_descender = font->descender;
-            const auto line_height = line_ascender - line_descender;
+            const auto font_line_ascender = font->ascender;
+            const auto font_line_descender = font->descender;
+            const auto font_line_height = font_line_ascender - font_line_descender;
 
-            //pen.y += line_ascender;
+            //pen.y += font_line_ascender;
 
             float glyphMaxW;
             float glyphMaxH;
@@ -96,7 +96,6 @@ namespace
                 auto& info = lineInfos.emplace_back();
                 info.vertexOffset = mesh->m_vertices.size();
             }
-            lineHeight = line_height;
 
             // https://stackoverflow.com/questions/9438209/for-every-character-in-string
             const size_t textLen = text.length();
@@ -112,15 +111,16 @@ namespace
 
                 auto& lineInfo = lineInfos[currLine];
 
-                float line_top = pen.y + line_ascender;
+                float line_top = pen.y + font_line_ascender;
 
                 if (*codePoint == '\n') {
                     pen.x = penOrigin.x;
-                    pen.y -= line_height;
-                    //pen.y += line_descender;
+                    pen.y -= font_line_height;
+                    //pen.y += font_line_descender;
 
                     auto& info = lineInfos.emplace_back();
                     info.vertexOffset = mesh->m_vertices.size();
+                    info.lineHeight = font_line_height;
                     currLine++;
 
                     continue;
@@ -194,7 +194,8 @@ namespace
                 lineInfo.right = x0 + glyph->advance_x;
                 // NOTE KI Y-axis goes UP, not DOWN
                 lineInfo.top = std::max(lineInfo.top, y0);
-                lineInfo.bottom = y0 - line_height;
+                lineInfo.bottom = y0 - font_line_height;
+                lineInfo.lineHeight = font_line_height;
 
                 lineInfo.glyphCount++;
 
@@ -256,7 +257,7 @@ namespace
             const auto vertexOffset = lineInfo.vertexOffset;
             const auto glyphCount = lineInfo.glyphCount;
 
-            float adjustY = padY - lineHeight;
+            float adjustY = padY - lineInfo.lineHeight;
 
             switch (alignVertical) {
             case text::Align::top:
