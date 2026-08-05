@@ -26,7 +26,7 @@
 namespace
 {
     const char* MISSING_CH = "?";
-    const char* M_CH = "M";
+    static constexpr const char* const M_CH = "M";
 
     // NOTE KI Y-axis goes UP, not DOWN
     struct LineInfo {
@@ -126,7 +126,7 @@ namespace
                     continue;
                 }
 
-                const ftgl::texture_glyph_t* glyph = texture_font_get_glyph(font, codePoint);
+                const ftgl::texture_glyph_t* const glyph = texture_font_get_glyph(font, codePoint);
 
                 if (!glyph) {
                     glyph = texture_font_get_glyph(font, MISSING_CH);
