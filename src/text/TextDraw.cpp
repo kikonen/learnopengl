@@ -126,7 +126,7 @@ namespace
                     continue;
                 }
 
-                const ftgl::texture_glyph_t* const glyph = texture_font_get_glyph(font, codePoint);
+                const ftgl::texture_glyph_t* glyph = texture_font_get_glyph(font, codePoint);
 
                 if (!glyph) {
                     glyph = texture_font_get_glyph(font, MISSING_CH);
