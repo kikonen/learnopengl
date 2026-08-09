@@ -74,7 +74,7 @@ int runEngine() {
 //    }
 //}
 
-int main()
+int RunOldApp()
 {
     //testVolume();
     util::initPreciseSleep();

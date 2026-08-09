@@ -76,7 +76,7 @@ namespace audio
             m_bitDepth = audioFile.getBitDepth();
 
             m_sampleCount = audioFile.getNumSamplesPerChannel();
-            m_lengthInSeconds = audioFile.getLengthInSeconds();
+            m_lengthInSeconds = static_cast<float>(audioFile.getLengthInSeconds());
 
             m_channelCount = audioFile.getNumChannels();
             m_isMono = audioFile.isMono();

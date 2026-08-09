@@ -1,4 +1,13 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemDefinitionGroup>
+    <ClCompile>
+      <!-- UTF-8 encoding in all projects -->
+      <AdditionalOptions>/utf-8 %(AdditionalOptions)</AdditionalOptions>
+
+      <!-- Add all layout-altering definitions here, separated by semicolons -->
+      <PreprocessorDefinitions>GLM_ENABLE_EXPERIMENTAL;GLM_FORCE_INLINE;GLM_FORCE_AVX2;GLM_FORCE_ALIGNED;GLM_FORCE_ALIGNED_GENTYPES_NOPE;GENERATOR_USE_GLM;JPH_FLOATING_POINT_EXCEPTIONS_ENABLED;JPH_OBJECT_STREAM;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+  </ItemDefinitionGroup>
   <PropertyGroup>
     <EnableUnitySupport>false</EnableUnitySupport>
   </PropertyGroup>

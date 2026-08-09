@@ -157,7 +157,7 @@ void ShadowCascade::bind(
         for (const auto& v : corners) {
             center += glm::vec3(v);
         }
-        center /= corners.size();
+        center /= static_cast<float>(corners.size());
 
         m_camera.setWorldPosition(center - node->m_light->getWorldDirection());
         m_camera.setAxis(

@@ -1,0 +1,339 @@
+I [2026-08-09 13:46:36] [tid 52340] START
+I [2026-08-09 13:46:36] [tid 52340] START: ENGINE INIT
+I [2026-08-09 13:46:36] [tid 52340] NODE: delete - <NODE: id=[0.0.], name=, type=<null>>
+I [2026-08-09 13:46:36] [tid 52340] NODE: delete - <NODE: id=[0.0.], name=, type=<null>>
+I [2026-08-09 13:46:36] [tid 52340] NODE_TYPE: delete - id=[0.0]
+I [2026-08-09 13:46:36] [tid 52340] NODE_TYPE: delete - id=[0.0]
+I [2026-08-09 13:46:36] [tid 52340] START: GLFW INIT
+I [2026-08-09 13:46:37] [tid 52340] DONE: GLFW INIT
+I [2026-08-09 13:46:37] [tid 52340] START: WDINDOW CREATE
+I [2026-08-09 13:46:37] [tid 52340] DONE: ENGINE INIT
+I [2026-08-09 13:46:37] [tid 52340] 
+ENGINE::RUN
+-------------
+vendor:   Intel
+renderer: Intel(R) Arc(TM) 140V GPU (16GB)
+version:  4.6.0 - Build 32.0.101.8860
+glsl:     4.60 - Build 32.0.101.8860
+-------------
+GL_MAX_VERTEX_UNIFORM_COMPONENTS:  4096
+GL_MAX_VERTEX_ATTRIBS:             16
+GL_MAX_COMPUTE_WORK_GROUP_COUNT:   [65535, 65535, 65535]
+GL_PREFERRED_TEXTURE_FORMAT_RGBA8: 0x1908
+GL_PREFERRED_TEXTURE_FORMAT_RGB8:  0x1907
+
+I [2026-08-09 13:46:37] [tid 52340] [EXTENSIONS]
+I [2026-08-09 13:46:37] [tid 52340] GL_AMD_depth_clamp_separate
+I [2026-08-09 13:46:37] [tid 52340] GL_AMD_vertex_shader_layer
+I [2026-08-09 13:46:37] [tid 52340] GL_AMD_vertex_shader_viewport_index
+I [2026-08-09 13:46:37] [tid 52340] GL_ARB_ES2_compatibility
+I [2026-08-09 13:46:37] [tid 52340] GL_ARB_ES3_1_compatibility
+I [2026-08-09 13:46:37] [tid 52340] GL_ARB_ES3_compatibility
+I [2026-08-09 13:46:37] [tid 52340] GL_ARB_arrays_of_arrays
+I [2026-08-09 13:46:37] [tid 52340] GL_ARB_base_instance
+I [2026-08-09 13:46:37] [tid 52340] GL_ARB_bindless_texture
+I [2026-08-09 13:46:37] [tid 52340] GL_ARB_blend_func_extended
+I [2026-08-09 13:46:37] [tid 52340] GL_ARB_buffer_storage
+I [2026-08-09 13:46:37] [tid 52340] GL_ARB_cl_event
+I [2026-08-09 13:46:37] [tid 52340] GL_ARB_clear_buffer_object
+I [2026-08-09 13:46:37] [tid 52340] GL_ARB_clear_texture
+I [2026-08-09 13:46:37] [tid 52340] GL_ARB_clip_control
+I [2026-08-09 13:46:37] [tid 52340] GL_ARB_color_buffer_float
+I [2026-08-09 13:46:37] [tid 52340] GL_ARB_compressed_texture_pixel_storage
+I [2026-08-09 13:46:37] [tid 52340] GL_ARB_compute_shader
+I [2026-08-09 13:46:37] [tid 52340] GL_ARB_conditional_render_inverted
+I [2026-08-09 13:46:37] [tid 52340] GL_ARB_conservative_depth
+I [2026-08-09 13:46:37] [tid 52340] GL_ARB_copy_buffer
+I [2026-08-09 13:46:37] [tid 52340] GL_ARB_copy_image
+I [2026-08-09 13:46:37] [tid 52340] GL_ARB_cull_distance
+I [2026-08-09 13:46:37] [tid 52340] GL_ARB_debug_output
+I [2026-08-09 13:46:37] [tid 52340] GL_ARB_depth_buffer_float
+I [2026-08-09 13:46:37] [tid 52340] GL_ARB_depth_clamp
+I [2026-08-09 13:46:37] [tid 52340] GL_ARB_depth_texture
+I [2026-08-09 13:46:37] [tid 52340] GL_ARB_derivative_control
+I [2026-08-09 13:46:37] [tid 52340] GL_ARB_direct_state_access
+I [2026-08-09 13:46:37] [tid 52340] GL_ARB_draw_buffers
+I [2026-08-09 13:46:37] [tid 52340] GL_ARB_draw_buffers_blend
+I [2026-08-09 13:46:37] [tid 52340] GL_ARB_draw_elements_base_vertex
+I [2026-08-09 13:46:37] [tid 52340] GL_ARB_draw_indirect
+I [2026-08-09 13:46:37] [tid 52340] GL_ARB_draw_instanced
+I [2026-08-09 13:46:37] [tid 52340] GL_ARB_enhanced_layouts
+I [2026-08-09 13:46:37] [tid 52340] GL_ARB_explicit_attrib_location
+I [2026-08-09 13:46:37] [tid 52340] GL_ARB_explicit_uniform_location
+I [2026-08-09 13:46:37] [tid 52340] GL_ARB_fragment_coord_conventions
+I [2026-08-09 13:46:37] [tid 52340] GL_ARB_fragment_layer_viewport
+I [2026-08-09 13:46:37] [tid 52340] GL_ARB_fragment_program
+I [2026-08-09 13:46:37] [tid 52340] GL_ARB_fragment_program_shadow
+I [2026-08-09 13:46:37] [tid 52340] GL_ARB_fragment_shader
+I [2026-08-09 13:46:37] [tid 52340] GL_ARB_fragment_shader_interlock
+I [2026-08-09 13:46:37] [tid 52340] GL_ARB_framebuffer_no_attachments
+I [2026-08-09 13:46:37] [tid 52340] GL_ARB_framebuffer_object
+I [2026-08-09 13:46:37] [tid 52340] GL_ARB_framebuffer_sRGB
+I [2026-08-09 13:46:37] [tid 52340] GL_ARB_geometry_shader4
+I [2026-08-09 13:46:37] [tid 52340] GL_ARB_get_program_binary
+I [2026-08-09 13:46:37] [tid 52340] GL_ARB_get_texture_sub_image
+I [2026-08-09 13:46:37] [tid 52340] GL_ARB_gl_spirv
+I [2026-08-09 13:46:37] [tid 52340] GL_ARB_gpu_shader5
+I [2026-08-09 13:46:37] [tid 52340] GL_ARB_gpu_shader_fp64
+I [2026-08-09 13:46:37] [tid 52340] GL_ARB_half_float_pixel
+I [2026-08-09 13:46:37] [tid 52340] GL_ARB_half_float_vertex
+I [2026-08-09 13:46:37] [tid 52340] GL_ARB_indirect_parameters
+I [2026-08-09 13:46:37] [tid 52340] GL_ARB_instanced_arrays
+I [2026-08-09 13:46:37] [tid 52340] GL_ARB_internalformat_query
+I [2026-08-09 13:46:37] [tid 52340] GL_ARB_internalformat_query2
+I [2026-08-09 13:46:37] [tid 52340] GL_ARB_invalidate_subdata
+I [2026-08-09 13:46:37] [tid 52340] GL_ARB_map_buffer_alignment
+I [2026-08-09 13:46:37] [tid 52340] GL_ARB_map_buffer_range
+I [2026-08-09 13:46:37] [tid 52340] GL_ARB_multi_bind
+I [2026-08-09 13:46:37] [tid 52340] GL_ARB_multi_draw_indirect
+I [2026-08-09 13:46:37] [tid 52340] GL_ARB_multisample
+I [2026-08-09 13:46:37] [tid 52340] GL_ARB_multitexture
+I [2026-08-09 13:46:37] [tid 52340] GL_ARB_occlusion_query
+I [2026-08-09 13:46:37] [tid 52340] GL_ARB_occlusion_query2
+I [2026-08-09 13:46:37] [tid 52340] GL_ARB_pipeline_statistics_query
+I [2026-08-09 13:46:37] [tid 52340] GL_ARB_pixel_buffer_object
+I [2026-08-09 13:46:37] [tid 52340] GL_ARB_point_parameters
+I [2026-08-09 13:46:37] [tid 52340] GL_ARB_point_sprite
+I [2026-08-09 13:46:37] [tid 52340] GL_ARB_polygon_offset_clamp
+I [2026-08-09 13:46:37] [tid 52340] GL_ARB_post_depth_coverage
+I [2026-08-09 13:46:37] [tid 52340] GL_ARB_program_interface_query
+I [2026-08-09 13:46:37] [tid 52340] GL_ARB_provoking_vertex
+I [2026-08-09 13:46:37] [tid 52340] GL_ARB_query_buffer_object
+I [2026-08-09 13:46:37] [tid 52340] GL_ARB_robust_buffer_access_behavior
+I [2026-08-09 13:46:37] [tid 52340] GL_ARB_robustness
+I [2026-08-09 13:46:37] [tid 52340] GL_ARB_robustness_isolation
+I [2026-08-09 13:46:37] [tid 52340] GL_ARB_sample_shading
+I [2026-08-09 13:46:37] [tid 52340] GL_ARB_sampler_objects
+I [2026-08-09 13:46:37] [tid 52340] GL_ARB_seamless_cube_map
+I [2026-08-09 13:46:37] [tid 52340] GL_ARB_seamless_cubemap_per_texture
+I [2026-08-09 13:46:37] [tid 52340] GL_ARB_separate_shader_objects
+I [2026-08-09 13:46:37] [tid 52340] GL_ARB_shader_atomic_counter_ops
+I [2026-08-09 13:46:37] [tid 52340] GL_ARB_shader_atomic_counters
+I [2026-08-09 13:46:37] [tid 52340] GL_ARB_shader_bit_encoding
+I [2026-08-09 13:46:37] [tid 52340] GL_ARB_shader_draw_parameters
+I [2026-08-09 13:46:37] [tid 52340] GL_ARB_shader_group_vote
+I [2026-08-09 13:46:37] [tid 52340] GL_ARB_shader_image_load_store
+I [2026-08-09 13:46:37] [tid 52340] GL_ARB_shader_image_size
+I [2026-08-09 13:46:37] [tid 52340] GL_ARB_shader_objects
+I [2026-08-09 13:46:37] [tid 52340] GL_ARB_shader_precision
+I [2026-08-09 13:46:37] [tid 52340] GL_ARB_shader_stencil_export
+I [2026-08-09 13:46:37] [tid 52340] GL_ARB_shader_storage_buffer_object
+I [2026-08-09 13:46:37] [tid 52340] GL_ARB_shader_subroutine
+I [2026-08-09 13:46:37] [tid 52340] GL_ARB_shader_texture_image_samples
+I [2026-08-09 13:46:37] [tid 52340] GL_ARB_shader_texture_lod
+I [2026-08-09 13:46:37] [tid 52340] GL_ARB_shading_language_100
+I [2026-08-09 13:46:37] [tid 52340] GL_ARB_shading_language_420pack
+I [2026-08-09 13:46:37] [tid 52340] GL_ARB_shading_language_packing
+I [2026-08-09 13:46:37] [tid 52340] GL_ARB_shadow
+I [2026-08-09 13:46:37] [tid 52340] GL_ARB_sparse_texture
+I [2026-08-09 13:46:37] [tid 52340] GL_ARB_spirv_extensions
+I [2026-08-09 13:46:37] [tid 52340] GL_ARB_stencil_texturing
+I [2026-08-09 13:46:37] [tid 52340] GL_ARB_sync
+I [2026-08-09 13:46:37] [tid 52340] GL_ARB_tessellation_shader
+I [2026-08-09 13:46:37] [tid 52340] GL_ARB_texture_barrier
+I [2026-08-09 13:46:37] [tid 52340] GL_ARB_texture_border_clamp
+I [2026-08-09 13:46:37] [tid 52340] GL_ARB_texture_buffer_object
+I [2026-08-09 13:46:37] [tid 52340] GL_ARB_texture_buffer_object_rgb32
+I [2026-08-09 13:46:37] [tid 52340] GL_ARB_texture_buffer_range
+I [2026-08-09 13:46:37] [tid 52340] GL_ARB_texture_compression
+I [2026-08-09 13:46:37] [tid 52340] GL_ARB_texture_compression_bptc
+I [2026-08-09 13:46:37] [tid 52340] GL_ARB_texture_compression_rgtc
+I [2026-08-09 13:46:37] [tid 52340] GL_ARB_texture_cube_map
+I [2026-08-09 13:46:37] [tid 52340] GL_ARB_texture_cube_map_array
+I [2026-08-09 13:46:37] [tid 52340] GL_ARB_texture_env_add
+I [2026-08-09 13:46:37] [tid 52340] GL_ARB_texture_env_combine
+I [2026-08-09 13:46:37] [tid 52340] GL_ARB_texture_env_crossbar
+I [2026-08-09 13:46:37] [tid 52340] GL_ARB_texture_env_dot3
+I [2026-08-09 13:46:37] [tid 52340] GL_ARB_texture_filter_anisotropic
+I [2026-08-09 13:46:37] [tid 52340] GL_ARB_texture_float
+I [2026-08-09 13:46:37] [tid 52340] GL_ARB_texture_gather
+I [2026-08-09 13:46:37] [tid 52340] GL_ARB_texture_mirror_clamp_to_edge
+I [2026-08-09 13:46:37] [tid 52340] GL_ARB_texture_mirrored_repeat
+I [2026-08-09 13:46:37] [tid 52340] GL_ARB_texture_multisample
+I [2026-08-09 13:46:37] [tid 52340] GL_ARB_texture_non_power_of_two
+I [2026-08-09 13:46:37] [tid 52340] GL_ARB_texture_query_levels
+I [2026-08-09 13:46:37] [tid 52340] GL_ARB_texture_query_lod
+I [2026-08-09 13:46:37] [tid 52340] GL_ARB_texture_rectangle
+I [2026-08-09 13:46:37] [tid 52340] GL_ARB_texture_rg
+I [2026-08-09 13:46:37] [tid 52340] GL_ARB_texture_rgb10_a2ui
+I [2026-08-09 13:46:37] [tid 52340] GL_ARB_texture_stencil8
+I [2026-08-09 13:46:37] [tid 52340] GL_ARB_texture_storage
+I [2026-08-09 13:46:37] [tid 52340] GL_ARB_texture_storage_multisample
+I [2026-08-09 13:46:37] [tid 52340] GL_ARB_texture_swizzle
+I [2026-08-09 13:46:37] [tid 52340] GL_ARB_texture_view
+I [2026-08-09 13:46:37] [tid 52340] GL_ARB_timer_query
+I [2026-08-09 13:46:37] [tid 52340] GL_ARB_transform_feedback2
+I [2026-08-09 13:46:37] [tid 52340] GL_ARB_transform_feedback3
+I [2026-08-09 13:46:37] [tid 52340] GL_ARB_transform_feedback_instanced
+I [2026-08-09 13:46:37] [tid 52340] GL_ARB_transform_feedback_overflow_query
+I [2026-08-09 13:46:37] [tid 52340] GL_ARB_transpose_matrix
+I [2026-08-09 13:46:37] [tid 52340] GL_ARB_uniform_buffer_object
+I [2026-08-09 13:46:37] [tid 52340] GL_ARB_vertex_array_bgra
+I [2026-08-09 13:46:37] [tid 52340] GL_ARB_vertex_array_object
+I [2026-08-09 13:46:37] [tid 52340] GL_ARB_vertex_attrib_64bit
+I [2026-08-09 13:46:37] [tid 52340] GL_ARB_vertex_attrib_binding
+I [2026-08-09 13:46:37] [tid 52340] GL_ARB_vertex_buffer_object
+I [2026-08-09 13:46:37] [tid 52340] GL_ARB_vertex_program
+I [2026-08-09 13:46:37] [tid 52340] GL_ARB_vertex_shader
+I [2026-08-09 13:46:37] [tid 52340] GL_ARB_vertex_type_10f_11f_11f_rev
+I [2026-08-09 13:46:37] [tid 52340] GL_ARB_vertex_type_2_10_10_10_rev
+I [2026-08-09 13:46:37] [tid 52340] GL_ARB_viewport_array
+I [2026-08-09 13:46:37] [tid 52340] GL_ARB_window_pos
+I [2026-08-09 13:46:37] [tid 52340] GL_ATI_meminfo
+I [2026-08-09 13:46:37] [tid 52340] GL_ATI_separate_stencil
+I [2026-08-09 13:46:37] [tid 52340] GL_EXT_abgr
+I [2026-08-09 13:46:37] [tid 52340] GL_EXT_bgra
+I [2026-08-09 13:46:37] [tid 52340] GL_EXT_blend_color
+I [2026-08-09 13:46:37] [tid 52340] GL_EXT_blend_equation_separate
+I [2026-08-09 13:46:37] [tid 52340] GL_EXT_blend_func_separate
+I [2026-08-09 13:46:37] [tid 52340] GL_EXT_blend_minmax
+I [2026-08-09 13:46:37] [tid 52340] GL_EXT_blend_subtract
+I [2026-08-09 13:46:37] [tid 52340] GL_EXT_clip_volume_hint
+I [2026-08-09 13:46:37] [tid 52340] GL_EXT_compiled_vertex_array
+I [2026-08-09 13:46:37] [tid 52340] GL_EXT_depth_bounds_test
+I [2026-08-09 13:46:37] [tid 52340] GL_EXT_direct_state_access
+I [2026-08-09 13:46:37] [tid 52340] GL_EXT_draw_buffers2
+I [2026-08-09 13:46:37] [tid 52340] GL_EXT_draw_range_elements
+I [2026-08-09 13:46:37] [tid 52340] GL_EXT_fog_coord
+I [2026-08-09 13:46:37] [tid 52340] GL_EXT_framebuffer_blit
+I [2026-08-09 13:46:37] [tid 52340] GL_EXT_framebuffer_multisample
+I [2026-08-09 13:46:37] [tid 52340] GL_EXT_framebuffer_object
+I [2026-08-09 13:46:37] [tid 52340] GL_EXT_geometry_shader4
+I [2026-08-09 13:46:37] [tid 52340] GL_EXT_gpu_program_parameters
+I [2026-08-09 13:46:37] [tid 52340] GL_EXT_gpu_shader4
+I [2026-08-09 13:46:37] [tid 52340] GL_EXT_memory_object
+I [2026-08-09 13:46:37] [tid 52340] GL_EXT_memory_object_win32
+I [2026-08-09 13:46:37] [tid 52340] GL_EXT_multi_draw_arrays
+I [2026-08-09 13:46:37] [tid 52340] GL_EXT_packed_depth_stencil
+I [2026-08-09 13:46:37] [tid 52340] GL_EXT_packed_float
+I [2026-08-09 13:46:37] [tid 52340] GL_EXT_packed_pixels
+I [2026-08-09 13:46:37] [tid 52340] GL_EXT_polygon_offset_clamp
+I [2026-08-09 13:46:37] [tid 52340] GL_EXT_rescale_normal
+I [2026-08-09 13:46:37] [tid 52340] GL_EXT_secondary_color
+I [2026-08-09 13:46:37] [tid 52340] GL_EXT_semaphore
+I [2026-08-09 13:46:37] [tid 52340] GL_EXT_semaphore_win32
+I [2026-08-09 13:46:37] [tid 52340] GL_EXT_separate_specular_color
+I [2026-08-09 13:46:37] [tid 52340] GL_EXT_shader_image_load_formatted
+I [2026-08-09 13:46:37] [tid 52340] GL_EXT_shader_integer_mix
+I [2026-08-09 13:46:37] [tid 52340] GL_EXT_shadow_funcs
+I [2026-08-09 13:46:37] [tid 52340] GL_EXT_stencil_two_side
+I [2026-08-09 13:46:37] [tid 52340] GL_EXT_stencil_wrap
+I [2026-08-09 13:46:37] [tid 52340] GL_EXT_texture3D
+I [2026-08-09 13:46:37] [tid 52340] GL_EXT_texture_array
+I [2026-08-09 13:46:37] [tid 52340] GL_EXT_texture_compression_s3tc
+I [2026-08-09 13:46:37] [tid 52340] GL_EXT_texture_edge_clamp
+I [2026-08-09 13:46:37] [tid 52340] GL_EXT_texture_env_add
+I [2026-08-09 13:46:37] [tid 52340] GL_EXT_texture_env_combine
+I [2026-08-09 13:46:37] [tid 52340] GL_EXT_texture_filter_anisotropic
+I [2026-08-09 13:46:37] [tid 52340] GL_EXT_texture_integer
+I [2026-08-09 13:46:37] [tid 52340] GL_EXT_texture_lod_bias
+I [2026-08-09 13:46:37] [tid 52340] GL_EXT_texture_rectangle
+I [2026-08-09 13:46:37] [tid 52340] GL_EXT_texture_sRGB
+I [2026-08-09 13:46:37] [tid 52340] GL_EXT_texture_sRGB_decode
+I [2026-08-09 13:46:37] [tid 52340] GL_EXT_texture_shared_exponent
+I [2026-08-09 13:46:37] [tid 52340] GL_EXT_texture_snorm
+I [2026-08-09 13:46:37] [tid 52340] GL_EXT_texture_storage
+I [2026-08-09 13:46:37] [tid 52340] GL_EXT_texture_swizzle
+I [2026-08-09 13:46:37] [tid 52340] GL_EXT_timer_query
+I [2026-08-09 13:46:37] [tid 52340] GL_EXT_transform_feedback
+I [2026-08-09 13:46:37] [tid 52340] GL_IBM_texture_mirrored_repeat
+I [2026-08-09 13:46:37] [tid 52340] GL_INTEL_conservative_rasterization
+I [2026-08-09 13:46:37] [tid 52340] GL_INTEL_fragment_shader_ordering
+I [2026-08-09 13:46:37] [tid 52340] GL_INTEL_framebuffer_CMAA
+I [2026-08-09 13:46:37] [tid 52340] GL_INTEL_map_texture
+I [2026-08-09 13:46:37] [tid 52340] GL_INTEL_multi_rate_fragment_shader
+I [2026-08-09 13:46:37] [tid 52340] GL_INTEL_performance_query
+I [2026-08-09 13:46:37] [tid 52340] GL_KHR_blend_equation_advanced
+I [2026-08-09 13:46:37] [tid 52340] GL_KHR_context_flush_control
+I [2026-08-09 13:46:37] [tid 52340] GL_KHR_debug
+I [2026-08-09 13:46:37] [tid 52340] GL_KHR_no_error
+I [2026-08-09 13:46:37] [tid 52340] GL_KHR_shader_subgroup
+I [2026-08-09 13:46:37] [tid 52340] GL_KHR_shader_subgroup_arithmetic
+I [2026-08-09 13:46:37] [tid 52340] GL_KHR_shader_subgroup_ballot
+I [2026-08-09 13:46:37] [tid 52340] GL_KHR_shader_subgroup_basic
+I [2026-08-09 13:46:37] [tid 52340] GL_KHR_shader_subgroup_clustered
+I [2026-08-09 13:46:37] [tid 52340] GL_KHR_shader_subgroup_quad
+I [2026-08-09 13:46:37] [tid 52340] GL_KHR_shader_subgroup_shuffle
+I [2026-08-09 13:46:37] [tid 52340] GL_KHR_shader_subgroup_shuffle_relative
+I [2026-08-09 13:46:37] [tid 52340] GL_KHR_shader_subgroup_vote
+I [2026-08-09 13:46:37] [tid 52340] GL_NV_blend_square
+I [2026-08-09 13:46:37] [tid 52340] GL_NV_conditional_render
+I [2026-08-09 13:46:37] [tid 52340] GL_NV_primitive_restart
+I [2026-08-09 13:46:37] [tid 52340] GL_NV_texgen_reflection
+I [2026-08-09 13:46:37] [tid 52340] GL_NV_timeline_semaphore
+I [2026-08-09 13:46:37] [tid 52340] GL_OVR_multiview
+I [2026-08-09 13:46:37] [tid 52340] GL_SGIS_generate_mipmap
+I [2026-08-09 13:46:37] [tid 52340] GL_SGIS_texture_edge_clamp
+I [2026-08-09 13:46:37] [tid 52340] GL_SGIS_texture_lod
+I [2026-08-09 13:46:37] [tid 52340] GL_SUN_multi_draw_arrays
+I [2026-08-09 13:46:37] [tid 52340] GL_WIN_swap_hint
+I [2026-08-09 13:46:37] [tid 52340] WGL_EXT_swap_control
+I [2026-08-09 13:46:37] [tid 52340] setup
+D [2026-08-09 13:46:37] [tid 52340] BUFFER: create - name=materials_ssbo_main, id=1
+D [2026-08-09 13:46:37] [tid 52340] BUFFER: initEmpty - name=materials_ssbo_main, id=1, size=44800, flags=256
+D [2026-08-09 13:46:37] [tid 52340] BUFFER: create - name=materials_ssbo_custom, id=2
+D [2026-08-09 13:46:37] [tid 52340] BUFFER: initEmpty - name=materials_ssbo_custom, id=2, size=19200, flags=256
+D [2026-08-09 13:46:37] [tid 52340] BUFFER: create - name=materials_ssbo_cold, id=3
+D [2026-08-09 13:46:37] [tid 52340] BUFFER: initEmpty - name=materials_ssbo_cold, id=3, size=12800, flags=256
+D [2026-08-09 13:46:37] [tid 52340] BUFFER: create - name=entity_ssbo, id=4
+D [2026-08-09 13:46:37] [tid 52340] BUFFER: initEmpty - name=entity_ssbo, id=4, size=144000, flags=66
+D [2026-08-09 13:46:37] [tid 52340] BUFFER: mapRange - name=entity_ssbo, id=4, size=144000, offset=0, len=144000, flags=82
+I [2026-08-09 13:46:37] [tid 52340] JOLT: Initialized with 7 physics threads
+D [2026-08-09 13:46:37] [tid 52340] BUFFER: create - name=particle_ssbo, id=5
+D [2026-08-09 13:46:37] [tid 52340] BUFFER: initEmpty - name=particle_ssbo, id=5, size=160000, flags=66
+D [2026-08-09 13:46:37] [tid 52340] BUFFER: mapRange - name=particle_ssbo, id=5, size=160000, offset=0, len=160000, flags=82
+D [2026-08-09 13:46:37] [tid 52340] BUFFER: create - name=decal_ssbo, id=6
+D [2026-08-09 13:46:37] [tid 52340] BUFFER: initEmpty - name=decal_ssbo, id=6, size=640000, flags=256
+D [2026-08-09 13:46:37] [tid 52340] BUFFER: create - name=decal_ssbo, id=7
+D [2026-08-09 13:46:37] [tid 52340] BUFFER: initEmpty - name=decal_ssbo, id=7, size=640000, flags=256
+D [2026-08-09 13:46:38] [tid 52340] BUFFER: create - name=joint_ssbo, id=8
+D [2026-08-09 13:46:38] [tid 52340] BUFFER: initEmpty - name=joint_ssbo, id=8, size=49152, flags=66
+D [2026-08-09 13:46:38] [tid 52340] BUFFER: mapRange - name=joint_ssbo, id=8, size=49152, offset=0, len=49152, flags=82
+D [2026-08-09 13:46:38] [tid 52340] BUFFER: create - name=terrain_tile_ssbo, id=9
+D [2026-08-09 13:46:38] [tid 52340] BUFFER: initEmpty - name=terrain_tile_ssbo, id=9, size=384, flags=256
+D [2026-08-09 13:46:38] [tid 52340] BUFFER: create - name=text_vertex_vbo, id=10
+D [2026-08-09 13:46:38] [tid 52340] BUFFER: initEmpty - name=text_vertex_vbo, id=10, size=40000, flags=256
+D [2026-08-09 13:46:38] [tid 52340] BUFFER: create - name=text_ebo, id=11
+D [2026-08-09 13:46:38] [tid 52340] BUFFER: initEmpty - name=text_ebo, id=11, size=4000, flags=256
+D [2026-08-09 13:46:38] [tid 52340] BUFFER: create - name=vbo_font, id=12
+D [2026-08-09 13:46:38] [tid 52340] BUFFER: initEmpty - name=vbo_font, id=12, size=8000, flags=256
+D [2026-08-09 13:46:38] [tid 52340] BUFFER: create - name=mesh_textured_vertex_vbo, id=13
+D [2026-08-09 13:46:38] [tid 52340] BUFFER: initEmpty - name=mesh_textured_vertex_vbo, id=13, size=40000, flags=256
+D [2026-08-09 13:46:38] [tid 52340] BUFFER: create - name=mesh_textured_ebo, id=14
+D [2026-08-09 13:46:38] [tid 52340] BUFFER: initEmpty - name=mesh_textured_ebo, id=14, size=4000, flags=256
+D [2026-08-09 13:46:38] [tid 52340] BUFFER: create - name=mesh_skinned_vertex_vbo, id=15
+D [2026-08-09 13:46:38] [tid 52340] BUFFER: initEmpty - name=mesh_skinned_vertex_vbo, id=15, size=40000, flags=256
+D [2026-08-09 13:46:38] [tid 52340] BUFFER: create - name=mesh_skinned_ebo, id=16
+D [2026-08-09 13:46:38] [tid 52340] BUFFER: initEmpty - name=mesh_skinned_ebo, id=16, size=4000, flags=256
+D [2026-08-09 13:46:38] [tid 52340] BUFFER: create - name=mesh_skinned_joint_vbo, id=17
+D [2026-08-09 13:46:38] [tid 52340] BUFFER: initEmpty - name=mesh_skinned_joint_vbo, id=17, size=32000, flags=256
+D [2026-08-09 13:46:38] [tid 52340] BUFFER: create - name=shared_primitive_vertex_vbo, id=18
+D [2026-08-09 13:46:38] [tid 52340] BUFFER: initEmpty - name=shared_primitive_vertex_vbo, id=18, size=40000, flags=256
+D [2026-08-09 13:46:38] [tid 52340] BUFFER: create - name=shared_primitive_ebo, id=19
+D [2026-08-09 13:46:38] [tid 52340] BUFFER: initEmpty - name=shared_primitive_ebo, id=19, size=4000, flags=256
+D [2026-08-09 13:46:38] [tid 52340] BUFFER: create - name=dynamic_primitive_1_vertex_vbo, id=20
+D [2026-08-09 13:46:38] [tid 52340] BUFFER: initEmpty - name=dynamic_primitive_1_vertex_vbo, id=20, size=40000, flags=256
+D [2026-08-09 13:46:38] [tid 52340] BUFFER: create - name=dynamic_primitive_1_ebo, id=21
+D [2026-08-09 13:46:38] [tid 52340] BUFFER: initEmpty - name=dynamic_primitive_1_ebo, id=21, size=4000, flags=256
+D [2026-08-09 13:46:38] [tid 52340] BUFFER: create - name=dynamic_primitive_2_vertex_vbo, id=22
+D [2026-08-09 13:46:38] [tid 52340] BUFFER: initEmpty - name=dynamic_primitive_2_vertex_vbo, id=22, size=40000, flags=256
+D [2026-08-09 13:46:38] [tid 52340] BUFFER: create - name=dynamic_primitive_2_ebo, id=23
+D [2026-08-09 13:46:38] [tid 52340] BUFFER: initEmpty - name=dynamic_primitive_2_ebo, id=23, size=4000, flags=256
+D [2026-08-09 13:46:38] [tid 52340] BUFFER: create - name=instances, id=24
+D [2026-08-09 13:46:38] [tid 52340] BUFFER: initEmpty - name=instances, id=24, size=80000, flags=66
+D [2026-08-09 13:46:38] [tid 52340] BUFFER: mapRange - name=instances, id=24, size=80000, offset=0, len=80000, flags=82
+D [2026-08-09 13:46:38] [tid 52340] BUFFER: create - name=draw_instance_ring, id=25
+D [2026-08-09 13:46:38] [tid 52340] BUFFER: initEmpty - name=draw_instance_ring, id=25, size=60012288, flags=66
+D [2026-08-09 13:46:38] [tid 52340] BUFFER: mapRange - name=draw_instance_ring, id=25, size=60012288, offset=0, len=60012288, flags=82
+D [2026-08-09 13:46:38] [tid 52340] BUFFER: create - name=draw_command_ring, id=26
+D [2026-08-09 13:46:38] [tid 52340] BUFFER: initEmpty - name=draw_command_ring, id=26, size=1212288, flags=66
+D [2026-08-09 13:46:38] [tid 52340] BUFFER: mapRange - name=draw_command_ring, id=26, size=1212288, offset=0, len=1212288, flags=82
+D [2026-08-09 13:46:38] [tid 52340] BUFFER: create - name=render_data_ubo, id=27
+D [2026-08-09 13:46:38] [tid 52340] BUFFER: initEmpty - name=render_data_ubo, id=27, size=157728, flags=66
+D [2026-08-09 13:46:38] [tid 52340] BUFFER: mapRange - name=render_data_ubo, id=27, size=157728, offset=0, len=157728, flags=82
+I [2026-08-09 13:46:38] [tid 52340] APP: stopping NAV...
+I [2026-08-09 13:46:38] [tid 52340] APP: stopped NAV!
+I [2026-08-09 13:46:38] [tid 52340] NODE: delete - <NODE: id=[0.0.], name=, type=<null>>
+I [2026-08-09 13:46:38] [tid 52340] NODE: delete - <NODE: id=[0.0.], name=, type=<null>>
+I [2026-08-09 13:46:38] [tid 52340] NODE_TYPE: delete - id=[0.0]
+I [2026-08-09 13:46:38] [tid 52340] NODE_TYPE: delete - id=[0.0]

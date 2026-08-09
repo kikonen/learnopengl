@@ -3,6 +3,8 @@ Debug/*
 packages/*
 x64/*
 learnopengl/x64/*
+engine/x64/*
+sample_app/x64/*
 log/*
 !log/.gitkeep
 tmp/*
