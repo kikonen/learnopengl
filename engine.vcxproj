@@ -440,10 +440,6 @@
     <ClCompile Include="src\render\PassSsao.cpp" />
     <ClCompile Include="src\render\ScreenTri.cpp" />
     <ClCompile Include="src\render\SSaoBuffer.cpp" />
-    <ClCompile Include="src\sample_app\game\action\ActionContext.cpp" />
-    <ClCompile Include="src\sample_app\game\action\RayCastPlayer.cpp" />
-    <ClCompile Include="src\sample_app\game\action\Shoot.cpp" />
-    <ClCompile Include="src\sample_app\game\Player.cpp" />
     <ClCompile Include="src\scene\BrdfLutMaterial.cpp" />
     <ClCompile Include="src\scene\Skybox.cpp" />
     <ClCompile Include="src\scene\World.cpp" />
@@ -692,7 +688,6 @@
     <ClCompile Include="src\renderer\NormalRenderer.cpp" />
     <ClCompile Include="src\renderer\ShadowMapRenderer.cpp" />
     <ClCompile Include="src\kigl\kigl.cpp" />
-    <ClCompile Include="src\sample_app\TestSceneSetup.cpp" />
     <ClCompile Include="src\scene\Scene.cpp" />
     <ClCompile Include="src\asset\Assets.cpp" />
     <ClCompile Include="src\scene\SkyboxMaterial.cpp" />
@@ -706,7 +701,6 @@
     <ClCompile Include="src\render\Camera.cpp" />
     <ClCompile Include="src\mesh\ModelMesh.cpp" />
     <ClCompile Include="src\engine\Engine.cpp" />
-    <ClCompile Include="src\sample_app\main.cpp" />
     <ClCompile Include="src\material\Material.cpp" />
     <ClCompile Include="src\shader\Program.cpp" />
     <ClCompile Include="src\util\preciseSleep.cpp" />
@@ -760,7 +754,6 @@
     <ClCompile Include="vendor\stb_image\src\stb_image.cpp" />
     <ClCompile Include="src\material\Texture.cpp" />
     <ClCompile Include="src\mesh\Vertex.cpp" />
-    <ClCompile Include="src\sample_app\SampleApp.cpp" />
     <ClCompile Include="src\model\Viewport.cpp" />
     <ClCompile Include="src\renderer\ViewportRenderer.cpp" />
     <ClCompile Include="src\renderer\WaterMapRenderer.cpp" />
@@ -795,7 +788,6 @@
     <ClInclude Include="src\render\DrawableInfo.h" />
     <ClInclude Include="src\render\InstanceIndexSSBO.h" />
     <ClInclude Include="src\render\InstanceRegistry.h" />
-    <ClInclude Include="src\sample_app\game\Player.h" />
     <ClInclude Include="src\scene\BrdfLutMaterial.h" />
     <ClInclude Include="src\scene\Skybox.h" />
     <ClInclude Include="src\scene\World.h" />
@@ -900,9 +892,6 @@
     <ClInclude Include="src\mesh_set\SkeletonSet.h" />
     <ClInclude Include="src\renderer\JointRenderer.h" />
     <ClInclude Include="src\render\CubeMapDebugTexture.h" />
-    <ClInclude Include="src\sample_app\game\action\ActionContext.h" />
-    <ClInclude Include="src\sample_app\game\action\RayCastPlayer.h" />
-    <ClInclude Include="src\sample_app\game\action\Shoot.h" />
     <ClInclude Include="src\script\binding\LuaNodeHandle.h" />
     <ClInclude Include="src\util\Transform.h" />
     <ClInclude Include="src\mesh\PrimitiveRegistry.h" />
@@ -1333,7 +1322,6 @@
     <ClInclude Include="src\renderer\NormalRenderer.h" />
     <ClInclude Include="src\renderer\ShadowMapRenderer.h" />
     <ClInclude Include="src\ki\ki.h" />
-    <ClInclude Include="src\sample_app\TestSceneSetup.h" />
     <ClInclude Include="src\scene\Scene.h" />
     <ClInclude Include="src\asset\Assets.h" />
     <ClInclude Include="src\scene\SkyboxMaterial.h" />
@@ -1362,7 +1350,6 @@
     <ClInclude Include="src\shader\Program.h" />
     <ClInclude Include="src\material\Texture.h" />
     <ClInclude Include="src\mesh\Vertex.h" />
-    <ClInclude Include="src\sample_app\SampleApp.h" />
     <ClInclude Include="src\shader\UBO.h" />
     <ClInclude Include="src\model\Viewport.h" />
     <ClInclude Include="src\renderer\ViewportRenderer.h" />
