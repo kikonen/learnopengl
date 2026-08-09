@@ -168,7 +168,7 @@
     <ResourceCompile Include="sample_app.rc" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\learnopengl.vcxproj">
+    <ProjectReference Include="..\engine.vcxproj">
       <Project>{9360d352-8e02-496c-8c85-02bc0ee32693}</Project>
     </ProjectReference>
   </ItemGroup>

@@ -1,6 +1,6 @@
 TARGET_SIZE ?= 1024
 MSBUILD ?= MSBuild.exe
-PROJECT = learnopengl.vcxproj
+PROJECT = engine.vcxproj
 
 default: help
 
@@ -37,13 +37,13 @@ compile-build:
 
 # Run targets
 run-debug:
-	./x64/Debug/learnopengl.exe
+	./x64/Debug/sample_app.exe
 
 run-release:
-	./x64/Release/learnopengl.exe
+	./x64/Release/sasmple_app.exe
 
 run-build:
-	./x64/Build/learnopengl.exe
+	./x64/Build/sample_app.exe
 
 all: assets-meta assets-build
 

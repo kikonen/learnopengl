@@ -1,2 +1,2 @@
 cd ..
-x64\Debug\learnopengl.exe
+x64\Debug\sample_app.exe

@@ -1,2 +1,2 @@
 cd ..
-x64\Release\learnopengl.exe
+x64\Release\sample_app.exe

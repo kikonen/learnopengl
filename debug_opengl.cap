@@ -5,7 +5,7 @@
         "commandLine": "",
         "environment": [
         ],
-        "executable": "C:\\work\\projects\\windows\\learnopengl\\x64\\Debug\\learnopengl.exe",
+        "executable": "C:\\work\\projects\\windows\\learnopengl\\x64\\Debug\\sample_app.exe",
         "inject": false,
         "numQueuedFrames": 0,
         "options": {
