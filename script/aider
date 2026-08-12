@@ -1,1 +1,1 @@
-aider --model openai/deepseek-r1:14b --set-env OLLAMA_TEMPERATURE=0.5
+aider --model openai/deepseek-r1:14b --set-env OLLAMA_TEMPERATURE=0.5 "$@"
