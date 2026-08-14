@@ -297,6 +297,13 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\loader\WorldLoader.cpp" />
+    <ClCompile Include="src\mesh_set\encoder\Encoder.cpp" />
+    <ClCompile Include="src\mesh_set\encoder\AnimationEncoder.cpp" />
+    <ClCompile Include="src\mesh_set\encoder\ClipEncoder.cpp" />
+    <ClCompile Include="src\mesh_set\encoder\JointEncoder.cpp" />
+    <ClCompile Include="src\mesh_set\encoder\MeshSetEncoder.cpp" />
+    <ClCompile Include="src\mesh_set\encoder\ModelMeshEncoder.cpp" />
+    <ClCompile Include="src\mesh_set\encoder\MaterialEncoder.cpp" />
     <ClCompile Include="src\particle\ParticlePool.cpp" />
     <ClCompile Include="src\animation\Rig.cpp" />
     <ClCompile Include="src\component\definition\AddonSelectorDefinition.cpp" />
@@ -781,6 +788,13 @@
     <ClInclude Include="src\mesh\LodMeshContainer.h" />
     <ClInclude Include="src\mesh\RegisteredRig.h" />
     <ClInclude Include="src\mesh\vao\size.h" />
+    <ClInclude Include="src\mesh_set\encoder\AnimationEncoder.h" />
+    <ClInclude Include="src\mesh_set\encoder\ClipEncoder.h" />
+    <ClInclude Include="src\mesh_set\encoder\JointEncoder.h" />
+    <ClInclude Include="src\mesh_set\encoder\MaterialEncoder.h" />
+    <ClInclude Include="src\mesh_set\encoder\MeshSetEncoder.h" />
+    <ClInclude Include="src\mesh_set\encoder\ModelMeshEncoder.h" />
+    <ClInclude Include="src\mesh_set\encoder\Encoder.h" />
     <ClInclude Include="src\model\NodeAddon.h" />
     <ClInclude Include="src\particle\ParticlePool.h" />
     <ClInclude Include="src\registry\NodeCache.h" />
