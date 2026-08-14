@@ -9,20 +9,36 @@
 #include "kigl/kigl.h"
 
 namespace {
-    static Assets s_assets;
+    static Assets* s_assets{ nullptr };
 }
 
+//void Assets::init() noexcept
+//{
+//    assert(!s_assets);
+//    s_assets = new Assets();
+//}
+//
+//void Assets::release() noexcept
+//{
+//    auto* s = s_assets;
+//    s_assets = nullptr;
+//    delete s;
+//}
+
 const Assets& Assets::get() noexcept {
-    return s_assets;
+    assert(s_assets);
+    return *s_assets;
 }
 
 Assets& Assets::modify() noexcept {
-    return s_assets;
+    return *s_assets;
 }
 
 void Assets::set(const Assets& assets) noexcept
 {
-    s_assets = assets;
+
+    s_assets = new Assets();
+    *s_assets = assets;
 }
 
 Assets::Assets()

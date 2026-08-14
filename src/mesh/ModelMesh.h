@@ -62,21 +62,8 @@ namespace mesh
             return m_jointContainer.get();
         }
 
-        //size_t getDefinedVertexCount() const noexcept override
-        //{
-        //    return m_vertices.size();
-        //}
-
-        //size_t getDefinedIndexCount() const noexcept override
-        //{
-        //    return m_indeces.size();
-        //}
-
     public:
         std::vector<animation::VertexJoint> m_vertexJoints;
-
-        bool m_smoothNormals{ false };
-        bool m_forceNormals{ false };
 
     private:
         util::Ref<animation::Rig> m_rig;

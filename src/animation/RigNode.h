@@ -54,6 +54,6 @@ namespace animation {
         // */
         //glm::mat4 m_offsetMatrix{ 1.f };
 
-        const bool m_assimpFbx;
+        //const bool m_assimpFbx;
     };
 }

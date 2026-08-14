@@ -129,16 +129,6 @@ namespace mesh {
             return m_name == "joint_tree" || m_name == "joint_points";
         }
 
-        //virtual size_t getDefinedVertexCount() const noexcept
-        //{
-        //    return m_vertexCount;
-        //}
-
-        //virtual size_t getDefinedIndexCount() const noexcept
-        //{
-        //    return m_indexCount;
-        //}
-
         bool match(const std::string& name) const noexcept {
             return name == m_name ||
                 name == m_alias;
@@ -164,7 +154,6 @@ namespace mesh {
 
     protected:
         util::Ref<Material> m_material;
-        std::unique_ptr<SphereVolume> m_localVolume;
 
         const ki::mesh_id m_id;
 
