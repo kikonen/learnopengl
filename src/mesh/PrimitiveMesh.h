@@ -34,9 +34,9 @@ namespace mesh {
         const kigl::GLVertexArray* prepareVAO() override;
         const kigl::GLVertexArray* setupVAO(mesh::TexturedVAO* vao, bool shared) override;
 
-        animation::Rig* getRig() const override
+        const util::Ref<animation::Rig>& getRig() const override
         {
-            return m_rig.get();
+            return m_rig;
         }
 
         backend::DrawOptions::Mode getDrawMode() const noexcept override;

@@ -19,6 +19,7 @@
 #include "generator/NodeGenerator.h"
 
 #include "animation/Rig.h"
+#include "animation/JointContainer.h"
 #include "animation/AnimationSystem.h"
 
 #include "mesh/mesh_util.h"
@@ -128,15 +129,15 @@ namespace model
                 const auto& lodMesh = *lodMeshRef;
                 const auto* mesh = lodMesh.getMesh<mesh::Mesh>();
 
-                const auto* rig = mesh->getRig();
+                const auto& rig = mesh->getRig();
                 if (!rig) continue;
 
-                const auto* jointContainer = mesh->getJointContainer();
+                const auto& jointContainer = mesh->getJointContainer();
                 if (!jointContainer) continue;
 
-                if (!rigPalettes.contains(rig)) {
+                if (!rigPalettes.contains(rig.get())) {
                     int rigIndex = static_cast<int>(m_registeredRigs.size());
-                    rigPalettes.insert({ rig, rigIndex });
+                    rigPalettes.insert({ rig.get(), rigIndex});
 
                     auto& registeredRig = m_registeredRigs.emplace_back();
                     registeredRig.m_rig = rig;
@@ -146,13 +147,13 @@ namespace model
                     registeredRig.m_socketRef = animationsystem.registerSockets(registeredRig.m_rigRef, *rig);
                     registeredRig.m_jointRef = animationsystem.registerJoints(registeredRig.m_rigRef, *jointContainer);
 
-                    jointPalettes.insert({ jointContainer, registeredRig.m_jointRef });
+                    jointPalettes.insert({ jointContainer.get(), registeredRig.m_jointRef});
                 }
-                else if (!jointPalettes.contains(jointContainer)) {
+                else if (!jointPalettes.contains(jointContainer.get())) {
                     // Accessory case: same rig but different joint container
                     util::BufferReference owningRigRef;
                     {
-                        const auto rigIndex = rigPalettes[rig];
+                        const auto rigIndex = rigPalettes[rig.get()];
                         auto& owningRig = m_registeredRigs[rigIndex];
                         owningRigRef = owningRig.m_rigRef;
                     }
@@ -165,7 +166,7 @@ namespace model
                     registeredRig.m_socketRef = { 0, 0 };
                     registeredRig.m_jointRef = animationsystem.registerJoints(owningRigRef, *jointContainer);
 
-                    jointPalettes.insert({ jointContainer, registeredRig.m_jointRef });
+                    jointPalettes.insert({ jointContainer.get(), registeredRig.m_jointRef});
                 }
             }
 
@@ -175,15 +176,15 @@ namespace model
 
                 const auto& lodMesh = *lodMeshRef;
                 const auto* mesh = lodMesh.getMesh<mesh::Mesh>();
-                auto* rig = mesh->getRig();
+                const auto& rig = mesh->getRig();
                 if (!rig) continue;
 
-                auto* jointContainer = mesh->getJointContainer();
+                const auto& jointContainer = mesh->getJointContainer();
                 if (!jointContainer) continue;
 
-                const auto& owningRig = m_registeredRigs[rigPalettes[rig]];
+                const auto& owningRig = m_registeredRigs[rigPalettes[rig.get()]];
                 lod.m_socketBaseIndex = owningRig.m_socketRef.offset;
-                lod.m_jointBaseIndex = jointPalettes[jointContainer].offset;
+                lod.m_jointBaseIndex = jointPalettes[jointContainer.get()].offset;
             }
         }
 

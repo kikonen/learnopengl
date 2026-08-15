@@ -166,7 +166,7 @@ void SocketRenderer::updateImpl(
         const auto& nodeModelMatrix = snapshot->getModelMatrix();
 
         for (const auto& registeredRig : registeredRigs) {
-            const auto* rig = registeredRig.m_rig;
+            const auto& rig = registeredRig.m_rig;
             if (!rig) continue;
 
             // Get rig node transforms for computing joint positions

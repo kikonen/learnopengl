@@ -396,7 +396,7 @@ namespace animation
                     if (changedRigs.empty()) continue;
 
                     for (const auto& rr : active.m_node->getRegisteredRigs()) {
-                        if (std::find(changedRigs.begin(), changedRigs.end(), rr.m_rig)
+                        if (std::find(changedRigs.begin(), changedRigs.end(), rr.m_rig.get())
                             == changedRigs.end()) continue;
 
                         if (rr.m_ownsRig) rigNodeRegistry.markDirty(rr.m_rigRef);

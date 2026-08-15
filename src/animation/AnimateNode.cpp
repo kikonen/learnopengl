@@ -111,7 +111,7 @@ namespace animation
             if (!registeredRig.m_ownsRig) continue;
 
             auto rigNodeTransforms = m_rigNodeRegistry.modifyRange(registeredRig.m_rigRef);
-            const auto* rig = registeredRig.m_rig;
+            const auto& rig = registeredRig.m_rig;
 
             float blendFactor = -1.f;
 
@@ -199,7 +199,7 @@ namespace animation
             if (changed) {
                 // NOTE KI markDirty deferred to a single-threaded pass in
                 // AnimationSystem::updateWT to avoid lock contention here
-                changedRigs.push_back(rig);
+                changedRigs.push_back(rig.get());
             }
         }
     }
@@ -211,10 +211,10 @@ namespace animation
         const auto& registeredRigs = node->getRegisteredRigs();
 
         for (const auto& registeredRig : registeredRigs) {
-            const auto* rig = registeredRig.m_rig;
-            const auto* jointContainer = registeredRig.m_jointContainer;
+            const auto& rig = registeredRig.m_rig;
+            const auto& jointContainer = registeredRig.m_jointContainer;
 
-            if (std::find(changedRigs.begin(), changedRigs.end(), rig) == changedRigs.end()) continue;
+            if (std::find(changedRigs.begin(), changedRigs.end(), rig.get()) == changedRigs.end()) continue;
 
             const auto& rigNodeTransforms = m_rigNodeRegistry.getRange(registeredRig.m_rigRef);
 
@@ -262,8 +262,8 @@ namespace animation
 
         // Collect positions from joint nodes
         for (const auto& registeredRig : registeredRigs) {
-            const auto* rig = registeredRig.m_rig;
-            const auto* jointContainer = registeredRig.m_jointContainer;
+            const auto& rig = registeredRig.m_rig;
+            const auto& jointContainer = registeredRig.m_jointContainer;
 
             // Find LodMesh matching this rig to get correct baseTransform
             const glm::mat4* baseTransform = nullptr;
@@ -326,7 +326,7 @@ namespace animation
         float minFootY = std::numeric_limits<float>::max();
 
         for (const auto& registeredRig : registeredRigs) {
-            const auto* rig = registeredRig.m_rig;
+            const auto& rig = registeredRig.m_rig;
 
             // Find LodMesh matching this rig to get correct baseTransform
             const glm::mat4* baseTransform = nullptr;
@@ -386,7 +386,7 @@ namespace animation
         const auto& registeredRigs = node->getRegisteredRigs();
 
         for (const auto& registeredRig : registeredRigs) {
-            const auto* rig = registeredRig.m_rig;
+            const auto& rig = registeredRig.m_rig;
 
             // Find LodMesh matching this rig to get correct baseTransform
             const glm::mat4* baseTransform = nullptr;

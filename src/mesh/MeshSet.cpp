@@ -10,8 +10,6 @@
 #include "util/util.h"
 #include "util/file.h"
 
-#include "animation/RigContainer.h"
-
 #include "mesh/Mesh.h"
 
 namespace {

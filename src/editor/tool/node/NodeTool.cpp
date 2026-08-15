@@ -20,6 +20,7 @@
 #include "event/Event.h"
 #include "event/Dispatcher.h"
 
+#include "animation/JointContainer.h"
 #include "animation/AnimationSystem.h"
 #include "animation/RigNodeRegistry.h"
 #include "animation/JointRegistry.h"
@@ -295,7 +296,7 @@ namespace editor
         auto* node = m_state.m_selectedNode.toNode();
         auto* mesh = m_state.m_selectedMesh;
 
-        auto* rig = mesh->getRig();
+        const auto& rig = mesh->getRig();
         if (!rig) return;
 
         if (ImGui::CollapsingHeader("Rig", ImGuiTreeNodeFlags_DefaultOpen))
@@ -694,7 +695,7 @@ namespace editor
     void NodeTool::updateSocket(
         model::Node* node,
         mesh::Mesh* mesh,
-        animation::Rig* rig,
+        const util::Ref<animation::Rig>& rig,
         animation::RigSocket* socket)
     {
         socket->updateTransforms();

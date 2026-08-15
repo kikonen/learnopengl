@@ -339,7 +339,6 @@
     <ClCompile Include="src\animation\MeshInfo.cpp" />
     <ClCompile Include="src\animation\Metadata.cpp" />
     <ClCompile Include="src\mesh_set\MetadataImporter.cpp" />
-    <ClCompile Include="src\animation\RigContainer.cpp" />
     <ClCompile Include="src\animation\JointTransform.cpp" />
     <ClCompile Include="src\animation\JointContainer.cpp" />
     <ClCompile Include="src\animation\SocketBuffer.cpp" />
@@ -1057,7 +1056,6 @@
     <ClInclude Include="src\animation\RigNodeChannel.h" />
     <ClInclude Include="src\animation\RigNodeChannelBuilder.h" />
     <ClInclude Include="src\animation\NodeAnimation.h" />
-    <ClInclude Include="src\animation\RigContainer.h" />
     <ClInclude Include="src\animation\JointContainer.h" />
     <ClInclude Include="src\animation\VertexJoint.h" />
     <ClInclude Include="src\asset\AABB.h" />

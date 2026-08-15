@@ -66,10 +66,7 @@ namespace mesh {
             return m_id;
         }
 
-        virtual animation::Rig* getRig() const
-        {
-            return nullptr;
-        }
+        virtual const util::Ref<animation::Rig>& getRig() const;
 
         virtual const glm::mat4& getRigBaseTransform() const
         {
@@ -77,10 +74,7 @@ namespace mesh {
             return ID_MAT;
         }
 
-        virtual animation::JointContainer* getJointContainer() const
-        {
-            return nullptr;
-        }
+        virtual const util::Ref<animation::JointContainer>& getJointContainer() const;
 
         virtual backend::DrawOptions::Mode getDrawMode()
         {

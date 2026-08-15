@@ -1,5 +1,7 @@
 #pragma once
 
+#include "util/Ref.h"
+
 #include "util/BufferReference.h"
 
 namespace animation
@@ -11,8 +13,8 @@ namespace mesh
 {
     struct RegisteredRig
     {
-        const animation::Rig* m_rig{ nullptr };
-        const animation::JointContainer* m_jointContainer{ nullptr };
+        util::Ref<animation::Rig> m_rig{ nullptr };
+        util::Ref<animation::JointContainer> m_jointContainer{ nullptr };
 
         util::BufferReference m_rigRef{ 0, 0 };
         util::BufferReference m_socketRef{ 0, 0 };

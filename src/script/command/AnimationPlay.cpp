@@ -40,7 +40,7 @@ namespace script
         if (!node) return;
 
         for (const auto& registeredRig : node->getRegisteredRigs()) {
-            const auto* rig = registeredRig.m_rig;
+            const auto& rig = registeredRig.m_rig;
 
             auto* clip = rig->getClipContainer().findClip(m_clipId);
             if (clip) {

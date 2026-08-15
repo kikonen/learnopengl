@@ -4,12 +4,18 @@
 
 #include <fmt/format.h>
 
+#include "animation/Rig.h"
+#include "animation/JointContainer.h"
+
 #include "pool/IdGenerator.h"
 
 #include "registry/VaoRegistry.h"
 
 namespace {
     IdGenerator<ki::mesh_id> ID_GENERATOR;
+
+    static const util::Ref<animation::Rig> EMPTY_RIG;
+    static const util::Ref<animation::JointContainer> EMPTY_JOINT_CONTAINER;
 }
 
 namespace mesh {
@@ -43,6 +49,16 @@ namespace mesh {
             getBaseVertex(),
             getBaseIndex(),
             getIndexCount());
+    }
+
+    const util::Ref<animation::Rig>& Mesh::getRig() const
+    {
+        return EMPTY_RIG;
+    }
+
+    const util::Ref<animation::JointContainer>& Mesh::getJointContainer() const
+    {
+        return EMPTY_JOINT_CONTAINER;
     }
 
     void Mesh::setMaterial(const util::Ref<Material>& src) noexcept

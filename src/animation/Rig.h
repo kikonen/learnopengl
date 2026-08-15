@@ -89,6 +89,13 @@ namespace animation
 
         const animation::RigNode* getNode(int16_t index) const noexcept;
 
+        const std::vector<animation::RigNode>& getNodes() const noexcept
+        {
+            return m_nodes;
+        }
+
+        size_t getNodeCount() const noexcept;
+
         const animation::RigNode* findNode(const std::string& name) const noexcept;
         animation::RigNode* findNode(const std::string& name) noexcept;
 

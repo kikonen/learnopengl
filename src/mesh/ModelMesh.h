@@ -47,9 +47,9 @@ namespace mesh
         const kigl::GLVertexArray* prepareVAO() override;
         const kigl::GLVertexArray* setupVAO(mesh::TexturedVAO* vao, bool shared) override;
 
-        animation::Rig* getRig() const override
+        const util::Ref<animation::Rig>& getRig() const override
         {
-            return m_rig.get();
+            return m_rig;
         }
 
         const glm::mat4& getRigBaseTransform() const override
@@ -57,16 +57,19 @@ namespace mesh
             return m_rigBaseTransform;
         }
 
-        animation::JointContainer* getJointContainer() const override
+        const util::Ref<animation::JointContainer>& getJointContainer() const override
         {
-            return m_jointContainer.get();
+            return m_jointContainer;
         }
 
     public:
         std::vector<animation::VertexJoint> m_vertexJoints;
 
     private:
+        // shared in MeshSet
         util::Ref<animation::Rig> m_rig;
+
+        // owned by this Mesh
         util::Ref<animation::JointContainer> m_jointContainer;
 
         glm::mat4 m_rigBaseTransform{ 1.f };

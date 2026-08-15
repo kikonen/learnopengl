@@ -82,7 +82,7 @@ namespace animation
 
         int32_t m_index{ -1 };
 
-        std::string m_animationClip;
+        //std::string m_animationClip;
         std::string m_animationName;
         int32_t m_animationIndex{ -1 };
 

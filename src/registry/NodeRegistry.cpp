@@ -1236,7 +1236,7 @@ bool NodeRegistry::bindParentSocket(
         auto* modelMesh = lodMesh.getMesh<mesh::ModelMesh>();
         if (!modelMesh) continue;
 
-        auto* rig = modelMesh->getRig();
+        const auto& rig = modelMesh->getRig();
         if (!rig) continue;
 
         const auto* socket = rig->findSocket(socketName);

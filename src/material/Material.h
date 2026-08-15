@@ -46,7 +46,8 @@ enum class BasicMaterial : std::underlying_type_t<std::byte> {
     wireframe
 };
 
-enum class MaterialProgramType : std::underlying_type_t<std::byte> {
+enum class MaterialProgramType : std::underlying_type_t<std::byte>
+{
     shader,
     oit,
     shadow,

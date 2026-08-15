@@ -32,6 +32,7 @@
 #include "animation/Joint.h"
 #include "animation/MeshInfo.h"
 #include "animation/Rig.h"
+#include "animation/JointContainer.h"
 
 #include "mesh/MeshSet.h"
 #include "mesh/ModelMesh.h"
@@ -211,7 +212,7 @@ namespace mesh_set
             auto* rig = modelMesh->m_rig.get();
             if (!rig) continue;
 
-            auto* jointContainer = modelMesh->getJointContainer();
+            const auto& jointContainer = modelMesh->getJointContainer();
             if (!jointContainer) continue;
 
             if (!jointContainer->empty())
@@ -219,6 +220,7 @@ namespace mesh_set
                 if (processedRigs.contains(rig)) continue;
                 processedRigs.insert(rig);
 
+                // NOTE KI "master" refers to animations embedded in same file as mesh itself
                 loadAnimations(ctx, *rig, "master", meshSet.m_filePath, scene);
 
                 if (assets.animationNodeTree)
@@ -237,7 +239,7 @@ namespace mesh_set
                     RigNodeTreeGenerator generator;
                     if (auto mesh = generator.generateTree(
                         modelMesh->m_rig,
-                        modelMesh->m_jointContainer))
+                        jointContainer))
                     {
                         mesh->m_offset = offset;
                         mesh->m_rigNodeIndex = primaryMesh->m_rigNodeIndex;
@@ -246,7 +248,7 @@ namespace mesh_set
 
                     if (auto mesh = generator.generatePoints(
                         modelMesh->m_rig,
-                        modelMesh->m_jointContainer))
+                        jointContainer))
                     {
                         mesh->m_offset = offset;
                         mesh->m_rigNodeIndex = primaryMesh->m_rigNodeIndex;
@@ -293,7 +295,7 @@ namespace mesh_set
     void AssimpImporter::loadAnimations(
         LoadContext& ctx,
         animation::Rig& rig,
-        const std::string& namePrefix,
+        const std::string& animationPrefix,
         const std::string& filePath,
         const aiScene* scene)
     {
@@ -301,7 +303,7 @@ namespace mesh_set
 
         importer.loadAnimations(
             rig,
-            namePrefix,
+            animationPrefix,
             filePath,
             scene);
     }

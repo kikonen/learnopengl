@@ -48,8 +48,8 @@
 #include "component/definition/TextGeneratorDefinition.h"
 #include "component/definition/ParticleGeneratorDefinition.h"
 
-#include "animation/RigContainer.h"
 #include "animation/Rig.h"
+#include "animation/JointContainer.h"
 #include "animation/RigSocket.h"
 #include "animation/Clip.h"
 

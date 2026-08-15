@@ -76,7 +76,7 @@ namespace editor
         void updateSocket(
             model::Node* node,
             mesh::Mesh* mesh,
-            animation::Rig* rig,
+            const util::Ref<animation::Rig>& rig,
             animation::RigSocket* socket);
 
     private:

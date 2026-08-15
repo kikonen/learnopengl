@@ -84,6 +84,11 @@ namespace animation
         return nodeIndex >= 0 ? &m_nodes[nodeIndex] : nullptr;
     }
 
+    size_t Rig::getNodeCount() const noexcept
+    {
+        return m_nodes.size();
+    }
+
     const animation::RigNode* Rig::findNode(const std::string& name) const noexcept
     {
         const auto& it = std::find_if(

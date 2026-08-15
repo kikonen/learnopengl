@@ -52,7 +52,7 @@ namespace mesh_set
         void loadAnimations(
             LoadContext& ctx,
             animation::Rig& rig,
-            const std::string& namePrefix,
+            const std::string& animationPrefix,
             const std::string& filePath,
             const aiScene* scene);
 

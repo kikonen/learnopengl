@@ -29,7 +29,7 @@ namespace mesh_set
 
     void AnimationImporter::loadAnimations(
         animation::Rig& rig,
-        const std::string& uniquePrefix,
+        const std::string& animationPrefix,
         const std::string& filePath)
     {
         KI_INFO_OUT(fmt::format("ASSIMP::LOAD_FILE path={}", filePath));
@@ -74,12 +74,12 @@ namespace mesh_set
             scene->mNumMaterials,
             scene->mNumTextures))
 
-        loadAnimations(rig, uniquePrefix, filePath, scene);
+        loadAnimations(rig, animationPrefix, filePath, scene);
     }
 
     void AnimationImporter::loadAnimations(
         animation::Rig& rig,
-        const std::string& uniquePrefix,
+        const std::string& animationPrefix,
         const std::string& filePath,
         const aiScene* scene)
     {
@@ -93,7 +93,7 @@ namespace mesh_set
             auto animation = loadAnimation(
                 rig,
                 static_cast<int16_t>(clipContainer.m_animations.size()),
-                uniquePrefix,
+                animationPrefix,
                 scene,
                 scene->mAnimations[index]);
             auto animIndex = clipContainer.addAnimation(std::move(animation));
@@ -106,7 +106,7 @@ namespace mesh_set
             for (auto& clip : metadata->m_clips) {
                 clip.m_uniqueName = fmt::format(
                     "{}:{}",
-                    uniquePrefix.empty() ? "<ANIM_NAME_MISSING>" : uniquePrefix,
+                    animationPrefix.empty() ? "<ANIM_NAME_MISSING>" : animationPrefix,
                     clip.m_uniqueName);
 
                 // TODO KI clip sequences seem to be stored like
@@ -114,7 +114,7 @@ namespace mesh_set
                 if (clip.m_firstFrame > 0 && clip.m_firstFrame < clip.m_lastFrame) {
                     clip.m_firstFrame++;
                 }
-                clip.m_animationName = uniquePrefix + ":" + clip.m_animationName;
+                clip.m_animationName = animationPrefix + ":" + clip.m_animationName;
                 clipContainer.addClip(clip);
             }
         }
@@ -154,13 +154,13 @@ namespace mesh_set
     std::unique_ptr<animation::Animation> AnimationImporter::loadAnimation(
         animation::Rig& rig,
         int16_t animIndex,
-        const std::string& uniquePrefix,
+        const std::string& animationPrefix,
         const aiScene* scene,
         const aiAnimation* anim)
     {
         auto animation = std::make_unique<animation::Animation>(
             anim,
-            uniquePrefix);
+            animationPrefix);
         animation->m_index = animIndex;
 
         KI_INFO_OUT(fmt::format(
