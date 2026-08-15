@@ -7,6 +7,7 @@
 #include "mesh/ModelMesh.h"
 
 #include "ModelMeshEncoder.h"
+#include "RigEncoder.h"
 
 namespace mesh_set::encoder
 {
@@ -48,7 +49,9 @@ namespace mesh_set::encoder
 
             for (auto& mesh : meshSet->getMeshes()) {
                 auto* modelMesh = dynamic_cast<mesh::ModelMesh*>(mesh.get());
-                if (modelMesh) {
+                if (!modelMesh) continue;
+
+                {
                     util::Ref<mesh::ModelMesh> ref{ modelMesh };
                     mesh_set::encoder::ModelMeshEncoder encoder;
                     encoder.encode(out, ref);
@@ -58,9 +61,23 @@ namespace mesh_set::encoder
             out << YAML::EndSeq;
         }
 
-        //if (meshSet->m_refCount) {
+        {
+            out << YAML::Key << "rigs";
+            out << YAML::Value << YAML::BeginSeq;
 
-        //}
+            for (auto& mesh : meshSet->getMeshes()) {
+                auto* modelMesh = dynamic_cast<mesh::ModelMesh*>(mesh.get());
+                if (!modelMesh) continue;
+
+                const auto& rig = modelMesh->getRig();
+                if (!rig) continue;
+
+                mesh_set::encoder::RigEncoder encoder;
+                encoder.encode(out, rig);
+            }
+
+            out << YAML::EndSeq;
+        }
 
         out << YAML::EndMap;
     }

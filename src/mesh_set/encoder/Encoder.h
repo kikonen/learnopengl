@@ -26,6 +26,16 @@ namespace mesh_set::encoder
         const glm::vec4& vec
     );
 
+    void encodeMat3(
+        YAML::Emitter& out,
+        const glm::mat3& mat
+    );
+
+    void encodeMat4(
+        YAML::Emitter& out,
+        const glm::mat4& mat
+    );
+
     class Encoder
     {
     public:

@@ -3,7 +3,11 @@
 #include <algorithm>
 #include <functional>
 
+#include "animation/Rig.h"
+#include "animation/RigNode.h"
 #include "animation/VertexJoint.h"
+#include "animation/JointContainer.h"
+#include "animation/Joint.h"
 
 #include "mesh/ModelMesh.h"
 
@@ -40,6 +44,31 @@ namespace mesh_set::encoder
         }
         out << YAML::EndSeq;
     }
+
+    void encodeJoints(
+        YAML::Emitter& out,
+        const std::string& key,
+        const util::Ref<animation::JointContainer>& jointContainer
+    )
+    {
+        if (jointContainer->empty()) return;
+
+        out << YAML::Key << key;
+        out << YAML::Value << YAML::BeginSeq;
+        for (const auto& joint : jointContainer->m_joints) {
+            out << YAML::BeginMap;
+            {
+                out << YAML::Key << "name";
+                out << YAML::Value << joint.m_nodeName;
+
+                out << YAML::Key << "offset";
+                encodeMat4(out, joint.m_offsetMatrix);
+            }
+            out << YAML::EndMap;
+        }
+        out << YAML::EndSeq;
+    }
+
 
     ModelMeshEncoder::ModelMeshEncoder() = default;
     ModelMeshEncoder::~ModelMeshEncoder() = default;
@@ -129,6 +158,26 @@ namespace mesh_set::encoder
 
             MaterialEncoder encoder;
             encoder.encode(out, mesh->getMaterial());
+        }
+
+        if (const auto& rig = mesh->getRig(); rig) {
+            out << YAML::Key << "rig";
+            out << YAML::Value << rig->getName();
+
+            if (mesh->m_rigNodeIndex >= 0) {
+                const auto* node = rig->getNode(mesh->m_rigNodeIndex);
+
+                out << YAML::Key << "rig_node";
+                out << YAML::Value << node->m_name;
+            }
+
+            {
+                encodeJoints(
+                    out,
+                    "joints",
+                    mesh->getJointContainer()
+                );
+            }
         }
 
         out << YAML::EndMap;

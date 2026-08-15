@@ -1,5 +1,9 @@
 #include "MaterialEncoder.h"
 
+#include <fmt/format.h>
+
+#include "util/util.h"
+
 #include "material/Material.h"
 
 namespace
@@ -20,6 +24,37 @@ namespace
             out << YAML::Value << value;
         }
         out << YAML::EndMap;
+    }
+
+    const std::string getTextureKey(TextureType type) noexcept
+    {
+        switch (type) {
+        case TextureType::diffuse: return "map_kd";
+        case TextureType::emission: return "map_ke";
+        case TextureType::map_normal: return "map_normal";
+        case TextureType::map_dudv: return "map_dudv";
+        case TextureType::map_noise: return "map_noise";
+        case TextureType::map_noise_2: return "map_noise_2";
+        case TextureType::map_opacity: return "map_opacity";
+        case TextureType::map_custom_1: return "map_custom_1";
+        case TextureType::map_mras: return "map_mras";
+        case TextureType::map_displacement: return "map_displacement";
+        }
+        return fmt::format("INVALID_TEX_{}", util::as_integer(type));
+    }
+
+    const std::string getProgramKey(MaterialProgramType type) noexcept
+    {
+        switch (type) {
+        case MaterialProgramType::shader: return "program";
+        case MaterialProgramType::oit: return "oit_program";
+        case MaterialProgramType::shadow: return "shadow_program";
+        case MaterialProgramType::pre_depth: return "pre_depth_program";
+        case MaterialProgramType::selection: return "selection_program";
+        case MaterialProgramType::object_id: return "id_program";
+        case MaterialProgramType::normal: return "normal_program";
+        }
+        return fmt::format("INVALID_PROGRAM_{}", util::as_integer(type));
     }
 }
 
@@ -49,7 +84,7 @@ namespace mesh_set::encoder
         encodeRGBA(out, material->ke);
 
         for (const auto& [type, info] : material->getTextures()) {
-            out << YAML::Key << "map_";// << type;
+            out << YAML::Key << getTextureKey(type);
             out << YAML::Value << info.path;
         }
 
@@ -133,7 +168,7 @@ namespace mesh_set::encoder
         out << YAML::Value << material->m_defaultPrograms;
 
         for (const auto& [type, name] : material->m_programNames) {
-            out << YAML::Key << "program"; // type;
+            out << YAML::Key << getProgramKey(type);
             out << YAML::Value << name;
         }
 

@@ -22,6 +22,8 @@
 
 #include "material/Material.h"
 
+#include "loader/MaterialLoader.h"
+
 Assets loadAssets()
 {
     AssetsLoader loader{ "scene/assets.yml" };
@@ -46,13 +48,23 @@ util::Ref<mesh::MeshSet> loadMeshSet(
         forceNormals);
 
     auto material = util::Ref<Material>::create();
+    {
+        material = Material::createMaterial(BasicMaterial::gold);
+        material->addTexture(TextureType::diffuse, "foo", false);
+        material->addTexture(TextureType::map_normal, "foo_normal", false);
+        material->m_programNames.insert({ MaterialProgramType::shader, "g_tex" });
+        material->m_programNames.insert({ MaterialProgramType::shadow, "shadow" });
+        //MaterialData data;
+        //MaterialLoader loader;
+        //loader.loadMaterial(data);
+    }
 
     std::shared_ptr<std::atomic_bool> alive = std::make_shared<std::atomic_bool>(true);
     std::unique_ptr<mesh_set::MeshSetImporter> importer;
     importer = std::make_unique<mesh_set::AssimpImporter>(alive, assimpDebug);
 
     auto loaded = importer->load(*meshSet, material, false);
-    std::cout << fmt::format("loaded: {}\n", loaded);
+    //std::cout << fmt::format("loaded: {}\n", loaded);
 
     return meshSet;
 }
@@ -69,11 +81,12 @@ void saveMeshSet(
     mesh_set::encoder::MeshSetEncoder encoder;
     encoder.encode(out, meshSet);
 
-    std::cout << out.c_str() << '\n';
+    std::cout << fmt::format("mesh_set: {}", meshSet->m_name);
 
     {
         std::ofstream fout(outputPath);
         fout << out.c_str();
+        fout << "\n";
     }
 }
 
