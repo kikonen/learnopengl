@@ -150,27 +150,51 @@ namespace mesh_set::encoder
 
                             {
                                 out << YAML::Key << "positions";
-                                out << YAML::Value << YAML::Flow << YAML::BeginSeq;
-                                for (const auto& v : channelLUT.getPositions()) {
-                                    encodeVec3(out, v);
+                                {
+                                    std::vector<float> encoded;
+                                    encoded.reserve(channelLUT.getPositions().size() * 3);
+                                    for (const auto& pos : channelLUT.getPositions()) {
+                                        encodeVec3(encoded, pos);
+                                    }
+
+                                    out << YAML::Value << YAML::Flow << YAML::BeginSeq;
+                                    for (auto v : encoded) {
+                                        out << v;
+                                    }
+                                    out << YAML::EndSeq;
                                 }
-                                out << YAML::EndSeq;
                             }
                             {
                                 out << YAML::Key << "rotations";
-                                out << YAML::Value << YAML::Flow << YAML::BeginSeq;
-                                for (const auto& v : channelLUT.getRotations()) {
-                                    encodeQuat(out, v);
+                                {
+                                    std::vector<float> encoded;
+                                    encoded.reserve(channelLUT.getRotations().size() * 3);
+                                    for (const auto& pos : channelLUT.getRotations()) {
+                                        encodeQuat(encoded, pos);
+                                    }
+
+                                    out << YAML::Value << YAML::Flow << YAML::BeginSeq;
+                                    for (auto v : encoded) {
+                                        out << v;
+                                    }
+                                    out << YAML::EndSeq;
                                 }
-                                out << YAML::EndSeq;
                             }
                             {
                                 out << YAML::Key << "scales";
-                                out << YAML::Value << YAML::Flow << YAML::BeginSeq;
-                                for (const auto& v : channelLUT.getScales()) {
-                                    encodeVec3(out, v);
+                                {
+                                    std::vector<float> encoded;
+                                    encoded.reserve(channelLUT.getScales().size() * 3);
+                                    for (const auto& pos : channelLUT.getScales()) {
+                                        encodeVec3(encoded, pos);
+                                    }
+
+                                    out << YAML::Value << YAML::Flow << YAML::BeginSeq;
+                                    for (auto v : encoded) {
+                                        out << v;
+                                    }
+                                    out << YAML::EndSeq;
                                 }
-                                out << YAML::EndSeq;
                             }
 
                             out << YAML::Key << "inv_scale_factor";

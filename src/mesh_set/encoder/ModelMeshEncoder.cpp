@@ -19,13 +19,40 @@ namespace mesh_set::encoder
         YAML::Emitter& out,
         const std::string& key,
         const std::vector<mesh::Vertex>& vertices,
-        const std::function<void(YAML::Emitter&, const mesh::Vertex&)>& fn
+        const std::function<void(std::vector<float>&, const mesh::Vertex&)>& fn
     )
     {
+        std::vector<float> encoded;
+        encoded.reserve(vertices.size() * 3);
+        for (const auto& v : vertices) {
+            fn(encoded, v);
+        }
+
         out << YAML::Key << key;
         out << YAML::Value << YAML::Flow << YAML::BeginSeq;
-        for (const auto& v : vertices) {
-            fn(out, v);
+        for (auto v : encoded) {
+            out << v;
+        }
+        out << YAML::EndSeq;
+    }
+
+    void encodeIndeces(
+        YAML::Emitter& out,
+        const std::string& key,
+        std::vector<mesh::Index32>& indeces,
+        const std::function<void(std::vector<uint32_t>&, const mesh::Index32&)>& fn
+    )
+    {
+        std::vector<uint32_t> encoded;
+        encoded.reserve(indeces.size() * 3);
+        for (const auto& v : indeces) {
+            fn(encoded, v);
+        }
+
+        out << YAML::Key << key;
+        out << YAML::Value << YAML::Flow << YAML::BeginSeq;
+        for (auto v : encoded) {
+            out << v;
         }
         out << YAML::EndSeq;
     }
@@ -34,13 +61,19 @@ namespace mesh_set::encoder
         YAML::Emitter& out,
         const std::string& key,
         const std::vector<animation::VertexJoint>& joints,
-        const std::function<void(YAML::Emitter&, const animation::VertexJoint&)>& fn
+        const std::function<void(std::vector<float>&, const animation::VertexJoint&)>& fn
     )
     {
+        std::vector<float> encoded;
+        encoded.reserve(joints.size() * 4);
+        for (const auto& v : joints) {
+            fn(encoded, v);
+        }
+
         out << YAML::Key << key;
         out << YAML::Value << YAML::Flow << YAML::BeginSeq;
-        for (const auto& v : joints) {
-            fn(out, v);
+        for (auto v : encoded) {
+            out << v;
         }
         out << YAML::EndSeq;
     }
@@ -93,7 +126,7 @@ namespace mesh_set::encoder
                 out,
                 "positions",
                 mesh->m_vertices,
-                [](YAML::Emitter& out, const auto& v) {
+                [](std::vector<float>& out, const auto& v) {
                     encodeVec3(out, v.pos);
                 });
 
@@ -101,7 +134,7 @@ namespace mesh_set::encoder
                 out,
                 "tex_coords",
                 mesh->m_vertices,
-                [](YAML::Emitter& out, const auto& v) {
+                [](std::vector<float>& out, const auto& v) {
                 encodeVec2(out, v.texCoord);
             });
 
@@ -109,7 +142,7 @@ namespace mesh_set::encoder
                 out,
                 "normals",
                 mesh->m_vertices,
-                [](YAML::Emitter& out, const auto& v) {
+                [](std::vector<float>& out, const auto& v) {
                 encodeVec3(out, v.normal);
             });
 
@@ -117,7 +150,7 @@ namespace mesh_set::encoder
                 out,
                 "tangents",
                 mesh->m_vertices,
-                [](YAML::Emitter& out, const auto& v) {
+                [](std::vector<float>& out, const auto& v) {
                 encodeVec3(out, v.tangent);
             });
 
@@ -125,7 +158,7 @@ namespace mesh_set::encoder
                 out,
                 "bitangents",
                 mesh->m_vertices,
-                [](YAML::Emitter& out, const auto& v) {
+                [](std::vector<float>& out, const auto& v) {
                 encodeVec3(out, v.bitangent);
             });
 
@@ -133,24 +166,25 @@ namespace mesh_set::encoder
                 out,
                 "joint_ids",
                 mesh->m_vertexJoints,
-                [](YAML::Emitter& out, const auto& v) {
+                [](std::vector<float>& out, const auto& v) {
                 encodeVec4(out, v.m_jointIds);
             });
             encodeVertexJoints(
                 out,
                 "joint_weights",
                 mesh->m_vertexJoints,
-                [](YAML::Emitter& out, const auto& v) {
+                [](std::vector<float>& out, const auto& v) {
                 encodeVec4(out, v.m_weights);
             });
         }
         {
-            out << YAML::Key << "indeces";
-            out << YAML::Value << YAML::Flow << YAML::BeginSeq;
-            for (const auto& v : mesh->m_indeces) {
-                out << v;
-            }
-            out << YAML::EndSeq;
+            encodeIndeces(
+                out,
+                "indeces",
+                mesh->m_indeces,
+                [](std::vector<uint32_t>& out, const auto& v) {
+                out.push_back(v);
+            });
         }
         {
             out << YAML::Key << "material";
