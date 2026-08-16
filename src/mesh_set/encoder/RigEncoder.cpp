@@ -62,7 +62,7 @@ namespace mesh_set::encoder
         const animation::ClipContainer& clipContainer
     )
     {
-        out << YAML::Key << "clips";
+        out << YAML::Key << key;
         out << YAML::Value << YAML::BeginSeq;
         for (auto& clip : clipContainer.m_clips) {
             out << YAML::BeginMap;
@@ -108,6 +108,84 @@ namespace mesh_set::encoder
         out << YAML::EndSeq;
     }
 
+    void encodeClipLUTs(
+        YAML::Emitter& out,
+        const std::string& key,
+        const util::Ref<animation::Rig>& rig,
+        const animation::ClipContainer& clipContainer
+    )
+    {
+        out << YAML::Key << key;
+        out << YAML::Value << YAML::BeginSeq;
+        for (int clipIndex = -1; auto& channelLUTs : clipContainer.getClipLUTs()) {
+            clipIndex++;
+            const auto& clip = clipContainer.m_clips[clipIndex];
+
+            out << YAML::BeginMap;
+            {
+                out << YAML::Key << "unique_name";
+                out << YAML::Value << clip.m_uniqueName;
+
+                out << YAML::Key << "channel_count";
+                out << YAML::Value << channelLUTs.size();
+
+                {
+                    out << YAML::Key << "channels";
+                    out << YAML::Value << YAML::BeginSeq;
+                    for (int channelIndex = -1;  const auto& channelLUT : channelLUTs) {
+                        channelIndex++;
+
+                        out << YAML::BeginMap;
+                        {
+                            const auto* node = rig->getNode(channelIndex);
+
+                            out << YAML::Key << "node_index";
+                            out << YAML::Value << channelIndex;
+
+                            out << YAML::Key << "node";
+                            out << YAML::Value << node->m_name;
+
+                            out << YAML::Key << "size";
+                            out << YAML::Value << channelLUT.getPositions().size();
+
+                            {
+                                out << YAML::Key << "positions";
+                                out << YAML::Value << YAML::Flow << YAML::BeginSeq;
+                                for (const auto& v : channelLUT.getPositions()) {
+                                    encodeVec3(out, v);
+                                }
+                                out << YAML::EndSeq;
+                            }
+                            {
+                                out << YAML::Key << "rotations";
+                                out << YAML::Value << YAML::Flow << YAML::BeginSeq;
+                                for (const auto& v : channelLUT.getRotations()) {
+                                    encodeQuat(out, v);
+                                }
+                                out << YAML::EndSeq;
+                            }
+                            {
+                                out << YAML::Key << "scales";
+                                out << YAML::Value << YAML::Flow << YAML::BeginSeq;
+                                for (const auto& v : channelLUT.getScales()) {
+                                    encodeVec3(out, v);
+                                }
+                                out << YAML::EndSeq;
+                            }
+
+                            out << YAML::Key << "inv_scale_factor";
+                            out << YAML::Value << channelLUT.getInvScaleFactor();
+                        }
+                        out << YAML::EndMap;
+                    }
+                    out << YAML::EndSeq;
+                }
+            }
+            out << YAML::EndMap;
+        }
+        out << YAML::EndSeq;
+    }
+
     RigEncoder::RigEncoder() = default;
     RigEncoder::~RigEncoder() = default;
 
@@ -130,6 +208,9 @@ namespace mesh_set::encoder
             //out << YAML::Value << rig->m_vertices.size();
         }
         {
+            out << YAML::Key << "node_count";
+            out << YAML::Value << rig->getNodes().size();
+
             encodeNodes(
                 out,
                 "nodes",
@@ -160,6 +241,14 @@ namespace mesh_set::encoder
             encodeClips(
                 out,
                 "clips",
+                rig->getClipContainer()
+            );
+        }
+        {
+            encodeClipLUTs(
+                out,
+                "clip_luts",
+                rig,
                 rig->getClipContainer()
             );
         }

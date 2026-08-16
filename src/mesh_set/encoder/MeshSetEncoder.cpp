@@ -2,6 +2,7 @@
 
 #include <algorithm>
 #include <functional>
+#include <set>
 
 #include "mesh/MeshSet.h"
 #include "mesh/ModelMesh.h"
@@ -65,12 +66,19 @@ namespace mesh_set::encoder
             out << YAML::Key << "rigs";
             out << YAML::Value << YAML::BeginSeq;
 
+            std::set<const animation::Rig*> processedRigs;
+
             for (auto& mesh : meshSet->getMeshes()) {
                 auto* modelMesh = dynamic_cast<mesh::ModelMesh*>(mesh.get());
                 if (!modelMesh) continue;
 
                 const auto& rig = modelMesh->getRig();
                 if (!rig) continue;
+
+                if (processedRigs.contains(rig.get())) continue;
+                processedRigs.insert(rig.get());
+
+                processedRigs.insert({ rig.get() });
 
                 mesh_set::encoder::RigEncoder encoder;
                 encoder.encode(out, rig);

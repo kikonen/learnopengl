@@ -51,6 +51,19 @@ namespace mesh_set::encoder
         out << YAML::EndSeq;
     }
 
+    void encodeQuat(
+        YAML::Emitter& out,
+        const glm::quat& quat
+    )
+    {
+        out << YAML::Flow << YAML::BeginSeq;
+        out << quat.x;
+        out << quat.y;
+        out << quat.z;
+        out << quat.w;
+        out << YAML::EndSeq;
+    }
+
     void encodeMat3(
         YAML::Emitter& out,
         const glm::mat3& mat
@@ -86,4 +99,44 @@ namespace mesh_set::encoder
         out << YAML::EndSeq;
     }
 
+    void encodeVec2(
+        std::vector<float>& out,
+        const glm::vec2& vec
+    )
+    {
+        out.push_back(vec.x);
+        out.push_back(vec.y);
+    }
+
+    void encodeVec3(
+        std::vector<float>& out,
+        const glm::vec3& vec
+    )
+    {
+        out.push_back(vec.x);
+        out.push_back(vec.y);
+        out.push_back(vec.z);
+    }
+
+    void encodeVec4(
+        std::vector<float>& out,
+        const glm::vec4& vec
+    )
+    {
+        out.push_back(vec.x);
+        out.push_back(vec.y);
+        out.push_back(vec.z);
+        out.push_back(vec.w);
+    }
+
+    void encodeQuat(
+        std::vector<float>& out,
+        const glm::quat& quat
+    )
+    {
+        out.push_back(quat.x);
+        out.push_back(quat.y);
+        out.push_back(quat.z);
+        out.push_back(quat.w);
+    }
 }

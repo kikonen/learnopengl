@@ -171,6 +171,9 @@ namespace mesh_set::encoder
                 out << YAML::Value << node->m_name;
             }
 
+            out << YAML::Key << "joint_count";
+            out << YAML::Value << mesh->getJointContainer()->m_joints.size();
+
             {
                 encodeJoints(
                     out,

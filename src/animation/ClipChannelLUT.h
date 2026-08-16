@@ -44,6 +44,26 @@ namespace animation
 
         bool empty() const noexcept { return m_positions.empty(); }
 
+        const std::vector<glm::vec3>& getPositions() const noexcept
+        {
+            return m_positions;
+        }
+
+        const std::vector<glm::quat>& getRotations() const noexcept
+        {
+            return m_rotations;
+        }
+
+        const std::vector<glm::vec3>& getScales() const noexcept
+        {
+            return m_scales;
+        }
+
+        float getInvScaleFactor() const noexcept
+        {
+            return m_invScaleFactor;
+        }
+
     private:
         std::vector<glm::vec3> m_positions;
         std::vector<glm::quat> m_rotations;

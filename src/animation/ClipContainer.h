@@ -46,6 +46,11 @@ namespace animation {
             uint16_t clipIndex,
             uint16_t nodeIndex) const noexcept;
 
+        const std::vector<std::vector<ClipChannelLUT>>& getClipLUTs() const noexcept
+        {
+            return m_clipLUTs;
+        }
+
     private:
         float animationTimeToSecs(
             uint16_t animationIndex,
