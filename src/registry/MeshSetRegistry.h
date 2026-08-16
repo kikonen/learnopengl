@@ -11,6 +11,8 @@
 #include "util/util.h"
 #include "util/Ref.h"
 
+#include "animation/AnimationPath.h"
+
 struct Material;
 
 namespace mesh {
@@ -38,11 +40,19 @@ public:
         std::string_view rootDir,
         std::string_view meshPath,
         bool smoothNormals,
-        bool forceNormals);
+        bool forceNormals,
+        const std::vector<animation::AnimationPath>& animationPaths);
 
 private:
     std::shared_future<util::Ref<mesh::MeshSet>> startLoad(
         util::Ref<mesh::MeshSet> meshSet);
+
+    void loadAnimations(
+        util::Ref<mesh::MeshSet>& meshSet);
+
+    void loadAnimation(
+        util::Ref<mesh::MeshSet>& meshSet,
+        const animation::AnimationPath& animationPath);
 
 private:
     std::shared_ptr<std::atomic_bool> m_alive;

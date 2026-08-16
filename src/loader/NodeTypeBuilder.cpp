@@ -635,7 +635,8 @@ namespace loader
                 assets.modelsDir,
                 meshData.path,
                 meshData.smoothNormals,
-                meshData.forceNormals);
+                meshData.forceNormals,
+                meshData.getAnimationPaths());
 
             const auto& meshSet = future.get();
 
@@ -821,35 +822,39 @@ namespace loader
     {
         const auto& assets = Assets::get();
 
-        mesh_set::AnimationImporter importer{};
-        std::string filePath;
+        // NOTE KI animations loaded in MeshSetRegistry
+        // => encapsulated so rig is not modified afterwards
+        if (false) {
+            mesh_set::AnimationImporter importer{};
+            std::string filePath;
 
-        if (!data.path.empty()) {
-            {
-                filePath = util::joinPathExt(
-                    rootDir,
-                    baseDir,
-                    data.path, "");
+            if (!data.path.empty()) {
+                {
+                    filePath = util::joinPathExt(
+                        rootDir,
+                        baseDir,
+                        data.path, "");
+                }
+
+                if (!util::fileExists(filePath)) {
+                    filePath = util::joinPath(
+                        rootDir,
+                        data.path);
+                }
             }
 
-            if (!util::fileExists(filePath)) {
-                filePath = util::joinPath(
-                    rootDir,
-                    data.path);
+            if (!data.path.empty()) {
+                importer.loadAnimations(
+                    rig,
+                    data.getAnimationPrefix(),
+                    filePath);
             }
-        }
-
-        if (!data.path.empty()) {
-            importer.loadAnimations(
-                rig,
-                data.name,
-                filePath);
         }
 
         try {
             // map clips
             for (const auto& clipData : data.clips) {
-                const auto& uniqueName = clipData.getUniqueName(data.name);
+                const auto& uniqueName = clipData.getUniqueName(data.getAnimationPrefix());
                 auto* clip = rig.modifyClipContainer().findClipByUniqueName(uniqueName);
                 if (clip) {
                     clip->m_id = SID_REGISTER(clipData.name).asSid();

@@ -73,5 +73,16 @@ namespace loader {
 
             return any;
         }
+
+        std::vector<animation::AnimationPath> getAnimationPaths() const noexcept
+        {
+            std::vector<animation::AnimationPath> paths;
+            for (const auto& rigData : rigs) {
+                for (const auto& path : rigData.getAnimationPaths()) {
+                    paths.push_back(path);
+                }
+            }
+            return paths;
+        }
     };
 }

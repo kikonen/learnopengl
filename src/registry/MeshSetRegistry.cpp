@@ -1,7 +1,11 @@
 #include "MeshSetRegistry.h"
 
+#include <algorithm>
+
 #include <fmt/format.h>
 
+#include "util/util.h"
+#include "util/file.h"
 #include "util/Log.h"
 #include "util/Ref.h"
 
@@ -14,6 +18,7 @@
 #include "mesh/vao/SkinnedVAO.h"
 
 #include "mesh_set/AssimpImporter.h"
+#include "mesh_set/AnimationImporter.h"
 
 #include "render/RenderContext.h"
 
@@ -68,20 +73,32 @@ std::shared_future<util::Ref<mesh::MeshSet>> MeshSetRegistry::getMeshSet(
     std::string_view rootDir,
     std::string_view meshPath,
     bool smoothNormals,
-    bool forceNormals)
+    bool forceNormals,
+    const std::vector<animation::AnimationPath>& animationPaths)
 {
     if (!*m_alive) return {};
 
     std::lock_guard lock(m_meshes_lock);
 
     // NOTE KI MUST normalize path to avoid mismatches due to \ vs /
-    std::string key = fmt::format(
+    std::string baseKey = fmt::format(
         "{}_{}_{}_{}_{}",
         id,
         rootDir,
         meshPath,
         smoothNormals,
         forceNormals);
+
+    std::string animKey;
+    {
+        std::vector<std::string> paths;
+        for (const auto& animationPath : animationPaths) {
+            paths.push_back(fmt::format("{}:{}", animationPath.animationPrefix, animationPath.path));
+        }
+        std::sort(paths.begin(), paths.end());
+        std::string animKey = util::join(paths, "_");
+    }
+    std::string key = fmt::format("{}_{}", baseKey, animKey);
 
     {
         auto e = m_meshes.find(key);
@@ -94,7 +111,8 @@ std::shared_future<util::Ref<mesh::MeshSet>> MeshSetRegistry::getMeshSet(
         rootDir,
         meshPath,
         smoothNormals,
-        forceNormals);
+        forceNormals,
+        animationPaths);
 
     auto future = startLoad(meshSet);
     m_meshes[key] = future;
@@ -130,6 +148,7 @@ std::shared_future<util::Ref<mesh::MeshSet>> MeshSetRegistry::startLoad(
 
                 // NOTE KI if not valid then null; avoids internal errors in render logic
                 if (loaded) {
+                    loadAnimations(meshSet);
                     p.set_value(meshSet);
                 }
                 else {
@@ -162,4 +181,47 @@ std::shared_future<util::Ref<mesh::MeshSet>> MeshSetRegistry::startLoad(
     th.detach();
 
     return future;
+}
+
+void MeshSetRegistry::loadAnimations(
+    util::Ref<mesh::MeshSet>& meshSet)
+{
+    for (const auto& animationPath : meshSet->m_animationPaths) {
+        loadAnimation(meshSet, animationPath);
+    }
+}
+
+void MeshSetRegistry::loadAnimation(
+    util::Ref<mesh::MeshSet>& meshSet,
+    const animation::AnimationPath& animationPath)
+{
+    if (animationPath.empty()) return;
+
+    // resolve path
+    std::string filePath;
+    {
+        {
+            filePath = util::joinPathExt(
+                meshSet->m_rootDir,
+                meshSet->m_dir,
+                animationPath.path, "");
+        }
+
+        if (!util::fileExists(filePath)) {
+            filePath = util::joinPath(
+                meshSet->m_rootDir,
+                animationPath.path);
+        }
+    }
+
+    for (auto& mesh : meshSet->getMeshes()) {
+        const auto& rig = mesh->getRig();
+        if (!rig) continue;
+
+        mesh_set::AnimationImporter importer{};
+        importer.loadAnimations(
+            *rig,
+            animationPath.animationPrefix,
+            filePath);
+    }
 }

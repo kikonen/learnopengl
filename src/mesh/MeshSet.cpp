@@ -28,14 +28,16 @@ namespace mesh {
         std::string_view rootDir,
         std::string_view path,
         bool smoothNormals,
-        bool forceNormals)
+        bool forceNormals,
+        const std::vector<animation::AnimationPath>& animationPaths)
         : m_id{ id },
         m_rootDir{ rootDir },
         m_path{ path },
         m_dir{ util::dirName(path) },
         m_name{ extractName(path) },
         m_smoothNormals{ smoothNormals },
-        m_forceNormals{ forceNormals }
+        m_forceNormals{ forceNormals },
+        m_animationPaths{ animationPaths }
     {}
 
     MeshSet::~MeshSet()

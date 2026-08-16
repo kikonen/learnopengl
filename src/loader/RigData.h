@@ -4,6 +4,8 @@
 
 #include <glm/glm.hpp>
 
+#include "animation/AnimationPath.h"
+
 #include "SocketData.h"
 #include "AnimationData.h"
 
@@ -27,6 +29,17 @@ namespace loader
         inline bool match(const std::string dstName) const noexcept
         {
             return name == dstName || isAny();
+        }
+
+        std::vector<animation::AnimationPath> getAnimationPaths() const noexcept
+        {
+            std::vector<animation::AnimationPath> paths;
+            for (const auto& animation : animations) {
+                if (animation.name.empty()) continue;
+                if (animation.path.empty()) continue;
+                paths.push_back({ animation.name, animation.path });
+            }
+            return paths;
         }
     };
 }

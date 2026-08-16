@@ -14,5 +14,16 @@ namespace loader {
         // NOTE KI path is empty for animation clips embedded in mesh file itself 
         std::string path;
         std::vector<ClipData> clips;
+
+        bool hasAnimationPrefix() const noexcept
+        {
+            return !getAnimationPrefix().empty();
+        }
+
+        const std::string getAnimationPrefix() const noexcept
+        {
+            if (!name.empty()) return name;
+            return path;
+        }
     };
 }

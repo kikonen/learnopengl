@@ -4,9 +4,12 @@
 #include <vector>
 #include <memory>
 
+#include "util/Ref.h"
+
 #include "asset/AABB.h"
 
-#include "util/Ref.h"
+#include "animation/AnimationPath.h"
+
 
 namespace animation
 {
@@ -33,7 +36,8 @@ namespace mesh
             std::string_view rootDir,
             std::string_view path,
             bool smoothNormals,
-            bool forceNormals);
+            bool forceNormals,
+            const std::vector<animation::AnimationPath>& animationPaths);
 
         ~MeshSet();
 
@@ -69,6 +73,8 @@ namespace mesh
 
         const bool m_smoothNormals{ false };
         const bool m_forceNormals{ false };
+
+        const std::vector<animation::AnimationPath> m_animationPaths;
 
         std::string m_filePath;
 

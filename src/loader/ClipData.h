@@ -5,8 +5,9 @@
 namespace loader {
     struct ClipData {
         bool enabled{ false };
-        // NOTE KI if "name" is not set then refers to clips embedded in mesh file itself
+        // name for SID to reference clip in system
         std::string name;
+        // name of clip in imported animation file
         std::string clip;
 
         std::string getUniqueName(const std::string& animationPrefix) const
