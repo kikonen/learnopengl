@@ -88,7 +88,7 @@ mesh:
         - name: anim
           path: ../anim/Elf Animations.FBX
           clips:
-            - name: walkelf
+            - name: walk
               clip: Walk
             - name: run
               clip: Run
