@@ -183,8 +183,8 @@ void Image::checkAlpha()
 
     const auto alphaIndex = m_channels == 4 ? 3 : 1;
     bool opaque = true;
-    for (int x = 0; x < m_height; x++) {
-        for (int y = 0; y < m_width; y++) {
+    for (int y = 0; y < m_height; y++) {
+        for (int x = 0; x < m_width; x++) {
             int srcIndex = y * (m_width * m_channels) + x * m_channels + alphaIndex;
             if (srcByteData) {
                 if (srcByteData[srcIndex] < 255) {
