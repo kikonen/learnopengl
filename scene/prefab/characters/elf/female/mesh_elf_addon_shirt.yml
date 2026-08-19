@@ -1,5 +1,6 @@
 ---
 mesh:
+  id: shirt
   path: fbx/characters/Elf/Elf Wardrobe Female/Elf_Fem_Shirt.FBX
   lod:
     max: 70

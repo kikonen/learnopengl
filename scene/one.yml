@@ -309,7 +309,7 @@ nodes:
     pos: [0, 3.5, 0.0]
   - type: elf_female_warrior
     pos: [-1, 3.5, 0.0]
-  - type: elf_female
+  - xtype: elf_female
     tag: body
     pos: [0, 3.5, 0.0]
   - type: elf_male_warrior

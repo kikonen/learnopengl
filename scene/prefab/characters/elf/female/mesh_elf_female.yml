@@ -1,5 +1,6 @@
 ---
 mesh:
+  id: elf_female
   path: fbx/characters/Elf/Bodies/Elf Female.fbx
   lod:
     max: 100

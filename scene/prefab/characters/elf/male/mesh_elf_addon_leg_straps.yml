@@ -1,5 +1,6 @@
 ---
 mesh:
+  id: leg_straps
   path: fbx/characters/Elf/Elf Wardrobe Male/Leg_Straps.FBX
   lod:
     max: 20

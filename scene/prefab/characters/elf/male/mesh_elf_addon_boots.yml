@@ -1,5 +1,6 @@
 ---
 mesh:
+  id: boots
   path: fbx/characters/Elf/Elf Wardrobe Male/Boots.FBX
   lod:
     max: 60

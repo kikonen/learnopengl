@@ -1,5 +1,6 @@
 ---
 mesh:
+  id: arms_armor
   path: fbx/characters/Elf/Elf Wardrobe Male/Arms_Armor.FBX
   lod:
     max: 20

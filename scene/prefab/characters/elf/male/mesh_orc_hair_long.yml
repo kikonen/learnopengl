@@ -1,5 +1,6 @@
 !---
 mesh:
+  id: orc_hair_long
   path: fbx/characters/Elf/Elf Hair Male/OrcMaleHairLong.FBX
   lod:
     max: 40

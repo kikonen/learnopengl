@@ -1,5 +1,6 @@
 ---
 mesh:
+  id: belt_1b
   path: fbx/characters/Elf/Elf Wardrobe Female/Elf_Fem_Belt_1B.FBX
   lod:
     max: 20

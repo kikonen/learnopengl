@@ -1,5 +1,6 @@
 ---
 mesh:
+  id: hair_pony_buzz
   path: fbx/characters/Elf/Elf Hair Female/ElfPonyBuzz.FBX
   lod:
     max: 40

@@ -1,5 +1,6 @@
 ---
 mesh:
+  id: buckle
   path: fbx/characters/Elf/Elf Wardrobe Male/Belt_Buckle.FBX
   lod:
     max: 20

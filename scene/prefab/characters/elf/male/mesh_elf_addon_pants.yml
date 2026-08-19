@@ -1,5 +1,6 @@
 ---
 mesh:
+  id: pants
   path: fbx/characters/Elf/Elf Wardrobe Male/Pants.FBX
   lod:
     max: 100

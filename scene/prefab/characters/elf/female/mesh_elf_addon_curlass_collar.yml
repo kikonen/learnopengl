@@ -1,5 +1,6 @@
 ---
 mesh:
+  id: curlass_collar
   path: fbx/characters/Elf/Elf Wardrobe Female/Elf_Fem_Curiass_Collar.FBX
   lod:
     max: 20

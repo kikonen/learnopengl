@@ -1,5 +1,6 @@
 ---
 mesh:
+  id: hangers
   path: fbx/characters/Elf/Elf Wardrobe Male/Hangers.FBX
   lod:
     max: 20

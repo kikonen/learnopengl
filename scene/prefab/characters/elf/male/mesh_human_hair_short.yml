@@ -1,5 +1,6 @@
 ---
 mesh:
+  id: human_hair_short
   path: fbx/characters/Elf/Elf Hair Male/HumanMaleHairShort.FBX
   lod:
     max: 40

@@ -1,5 +1,6 @@
 ---
 mesh:
+  id: vest_straps
   path: fbx/characters/Elf/Elf Wardrobe Female/Elf_Fem_Vest_Straps.FBX
   lod:
     max: 20

@@ -1,5 +1,6 @@
 ---
 mesh:
+  id: hair_long_hooded
   path: fbx/characters/Elf/Elf Hair Female/ElfHairLongHooded.FBX
   lod:
     max: 40

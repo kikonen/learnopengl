@@ -1,5 +1,6 @@
 ---
 mesh:
+  id: waist_cloth
   path: fbx/characters/Elf/Elf Wardrobe Female/Elf_Fem_WaistCloth.FBX
   lod:
     max: 20

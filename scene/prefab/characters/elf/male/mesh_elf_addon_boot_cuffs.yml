@@ -1,5 +1,6 @@
 ---
 mesh:
+  id: boot_cuffs
   path: fbx/characters/Elf/Elf Wardrobe Male/Boot_Cuffs.FBX
   lod:
     max: 20

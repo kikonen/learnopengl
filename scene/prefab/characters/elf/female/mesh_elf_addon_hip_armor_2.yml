@@ -1,5 +1,6 @@
 ---
 mesh:
+  id: hip_armor_2
   path: fbx/characters/Elf/Elf Wardrobe Female/Elf_Fem_Hip_Armor_2.FBX
   lod:
     max: 20

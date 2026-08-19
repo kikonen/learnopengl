@@ -1,5 +1,6 @@
 ---
 mesh:
+  id: human_hair_buzz
   path: fbx/characters/Elf/Elf Hair Male/HumanMaleHairBuzz.FBX
   lod:
     max: 40

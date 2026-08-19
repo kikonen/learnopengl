@@ -1,5 +1,6 @@
 ---
 mesh:
+  id: sleeves
   path: fbx/characters/Elf/Elf Wardrobe Female/Elf_Fem_Sleeves.FBX
   lod:
     max: 20

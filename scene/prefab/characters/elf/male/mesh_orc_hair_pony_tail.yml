@@ -1,5 +1,6 @@
 ---
 mesh:
+  id: orc_hair_pony_tail
   path: fbx/characters/Elf/Elf Hair Male/OrcMaleHairPonytail.FBX
   lod:
     max: 40

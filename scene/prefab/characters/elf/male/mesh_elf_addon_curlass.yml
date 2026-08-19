@@ -1,5 +1,6 @@
 ---
 mesh:
+  id: curlass
   path: fbx/characters/Elf/Elf Wardrobe Male/Elf_Fem_Curiass.FBX
   lod:
     max: 100

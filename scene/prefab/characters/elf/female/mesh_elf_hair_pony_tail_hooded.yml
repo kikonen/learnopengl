@@ -1,5 +1,6 @@
 ---
 mesh:
+  id: hair_pony_tail_hooded
   path: fbx/characters/Elf/Elf Hair Female/ElfHairPonytailHooded.FBX
   lod:
     max: 40

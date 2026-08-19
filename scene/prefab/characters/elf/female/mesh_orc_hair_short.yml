@@ -1,5 +1,6 @@
 ---
 mesh:
+  id: orc_hair_short
   path: fbx/characters/Elf/Elf Hair Female/OrcHairShort.FBX
   lod:
     max: 40

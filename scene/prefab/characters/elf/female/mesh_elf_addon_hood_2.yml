@@ -1,5 +1,6 @@
 ---
 mesh:
+  id: hood_2
   path: fbx/characters/Elf/Elf Wardrobe Female/Elf_Fem_Hood_2.FBX
   lod:
     max: 20

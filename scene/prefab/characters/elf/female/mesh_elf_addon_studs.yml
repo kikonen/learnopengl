@@ -1,5 +1,6 @@
 ---
 mesh:
+  id: studs
   path: fbx/characters/Elf/Elf Wardrobe Female/Elf_Fem_Belt_Studs.FBX
   lod:
     max: 20

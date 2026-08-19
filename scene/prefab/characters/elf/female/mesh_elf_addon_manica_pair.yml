@@ -1,5 +1,6 @@
 ---
 mesh:
+  id: manica_pair
   #path: fbx/characters/Elf/Elf Wardrobe Female/Elf_Fem_ManicaPair.FBX
   path: fbx/characters/Elf/Elf Wardrobe Male/ManicaPair.FBX
   lod:

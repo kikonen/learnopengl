@@ -1,5 +1,6 @@
 ---
 mesh:
+  id: leg_armor_1
   path: fbx/characters/Elf/Elf Wardrobe Female/Elf_Fem_Leg_Armor_1.FBX
   lod:
     max: 20

@@ -1,5 +1,6 @@
 ---
 mesh:
+  id: jewelry
   path: fbx/characters/Elf/Elf Wardrobe Female/Elf_Fem_Jewelry.FBX
   lod:
     max: 20

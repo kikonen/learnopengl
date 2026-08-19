@@ -1,5 +1,6 @@
 ---
 mesh:
+  id: mask
   path: fbx/characters/Elf/Elf Wardrobe Female/Elf_Fem_Mask.FBX
   lod:
     max: 20

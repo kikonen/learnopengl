@@ -1,5 +1,6 @@
 ---
 mesh:
+  id: elf_male
   path: fbx/characters/Elf/Bodies/Elf Male.fbx
   lod:
     max: 100

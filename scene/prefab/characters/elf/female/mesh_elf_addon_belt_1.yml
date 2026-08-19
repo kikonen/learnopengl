@@ -1,5 +1,6 @@
 ---
 mesh:
+  id: belt_1
   #path: fbx/characters/Elf/Elf Wardrobe Female/Elf_Fem_Belt_1.FBX
   path: fbx/characters/Elf/Elf Wardrobe Male/Belt_1.FBX
   lod:
