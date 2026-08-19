@@ -1,7 +1,67 @@
 #include "Encoder.h"
 
+#include "util/compress.h"
+
 namespace mesh_set::encoder
 {
+    void encodeCompressed(
+        YAML::Emitter& out,
+        std::vector<float> values
+    )
+    {
+        if (true) {
+            if (values.empty()) {
+                out << YAML::Null;
+            }
+            else {
+                const auto& compressed = util::compress_zlib(
+                    reinterpret_cast<const unsigned char*>(values.data()),
+                    values.size() * sizeof(float));
+
+                out << YAML::Binary(
+                    reinterpret_cast<const unsigned char*>(compressed.data()),
+                    compressed.size()
+                );
+            }
+        }
+        else {
+            out << YAML::Flow << YAML::BeginSeq;
+            for (auto v : values) {
+                out << v;
+            }
+            out << YAML::EndSeq;
+        }
+    }
+
+    void encodeCompressed(
+        YAML::Emitter& out,
+        std::vector<uint32_t> values
+    )
+    {
+        if (values.empty()) {
+            out << YAML::Null;
+        }
+        else {
+            if (true) {
+                const auto& compressed = util::compress_zlib(
+                    reinterpret_cast<const unsigned char*>(values.data()),
+                    values.size() * sizeof(float));
+
+                out << YAML::Binary(
+                    reinterpret_cast<const unsigned char*>(compressed.data()),
+                    compressed.size()
+                );
+            }
+            else {
+                out << YAML::BeginSeq;
+                for (auto v : values) {
+                    out << v;
+                }
+                out << YAML::EndSeq;
+            }
+        }
+    }
+
     void encodeVec3(
         YAML::Emitter& out,
         const glm::vec3& vec

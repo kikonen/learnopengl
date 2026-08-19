@@ -9,6 +9,16 @@
 
 namespace mesh_set::encoder
 {
+    void encodeCompressed(
+        YAML::Emitter& out,
+        std::vector<float> values
+    );
+
+    void encodeCompressed(
+        YAML::Emitter& out,
+        std::vector<uint32_t> values
+    );
+
     void encodeVec2(
         YAML::Emitter& out,
         const glm::vec2& vec

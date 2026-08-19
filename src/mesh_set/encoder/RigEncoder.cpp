@@ -1,7 +1,5 @@
 #include "RigEncoder.h"
 
-#include "util/compress.h"
-
 #include "animation/Rig.h"
 #include "animation/RigNode.h"
 #include "animation/ClipContainer.h"
@@ -158,28 +156,8 @@ namespace mesh_set::encoder
                                     for (const auto& pos : channelLUT.getPositions()) {
                                         encodeVec3(values, pos);
                                     }
-
-                                    if (true) {
-                                        if (values.empty()) {
-                                            out << YAML::Value << YAML::Null;
-                                        }
-                                        else {
-                                            const auto& compressed = util::compress_zlib(
-                                                reinterpret_cast<const unsigned char*>(values.data()),
-                                                values.size() * sizeof(float));
-
-                                            out << YAML::Value << YAML::Binary(
-                                                reinterpret_cast<const unsigned char*>(compressed.data()),
-                                                compressed.size()
-                                            );
-                                        }
-                                    } else {
-                                        out << YAML::Value << YAML::Flow << YAML::BeginSeq;
-                                        for (auto v : values) {
-                                            out << v;
-                                        }
-                                        out << YAML::EndSeq;
-                                    }
+                                    out << YAML::Value;
+                                    encodeCompressed(out, values);
                                 }
                             }
                             {
@@ -190,29 +168,8 @@ namespace mesh_set::encoder
                                     for (const auto& pos : channelLUT.getRotations()) {
                                         encodeQuat(values, pos);
                                     }
-
-                                    if (true) {
-                                        if (values.empty()) {
-                                            out << YAML::Value << YAML::Null;
-                                        }
-                                        else {
-                                            const auto& compressed = util::compress_zlib(
-                                                reinterpret_cast<const unsigned char*>(values.data()),
-                                                values.size() * sizeof(float));
-
-                                            out << YAML::Value << YAML::Binary(
-                                                reinterpret_cast<const unsigned char*>(compressed.data()),
-                                                compressed.size()
-                                            );
-                                        }
-                                    }
-                                    else {
-                                        out << YAML::Value << YAML::Flow << YAML::BeginSeq;
-                                        for (auto v : values) {
-                                            out << v;
-                                        }
-                                        out << YAML::EndSeq;
-                                    }
+                                    out << YAML::Value;
+                                    encodeCompressed(out, values);
                                 }
                             }
                             {
@@ -223,29 +180,8 @@ namespace mesh_set::encoder
                                     for (const auto& pos : channelLUT.getScales()) {
                                         encodeVec3(values, pos);
                                     }
-
-                                    if (true) {
-                                        if (values.empty()) {
-                                            out << YAML::Value << YAML::Null;
-                                        }
-                                        else {
-                                            const auto& compressed = util::compress_zlib(
-                                                reinterpret_cast<const unsigned char*>(values.data()),
-                                                values.size() * sizeof(float));
-
-                                            out << YAML::Value << YAML::Binary(
-                                                reinterpret_cast<const unsigned char*>(compressed.data()),
-                                                compressed.size()
-                                            );
-                                        }
-                                    }
-                                    else {
-                                        out << YAML::Value << YAML::Flow << YAML::BeginSeq;
-                                        for (auto v : values) {
-                                            out << v;
-                                        }
-                                        out << YAML::EndSeq;
-                                    }
+                                    out << YAML::Value;
+                                    encodeCompressed(out, values);
                                 }
                             }
 

@@ -22,18 +22,15 @@ namespace mesh_set::encoder
         const std::function<void(std::vector<float>&, const mesh::Vertex&)>& fn
     )
     {
-        std::vector<float> encoded;
-        encoded.reserve(vertices.size() * 3);
+        std::vector<float> values;
+        values.reserve(vertices.size() * 3);
         for (const auto& v : vertices) {
-            fn(encoded, v);
+            fn(values, v);
         }
 
         out << YAML::Key << key;
-        out << YAML::Value << YAML::Flow << YAML::BeginSeq;
-        for (auto v : encoded) {
-            out << v;
-        }
-        out << YAML::EndSeq;
+        out << YAML::Value;
+        encodeCompressed(out, values);
     }
 
     void encodeIndeces(
@@ -43,18 +40,15 @@ namespace mesh_set::encoder
         const std::function<void(std::vector<uint32_t>&, const mesh::Index32&)>& fn
     )
     {
-        std::vector<uint32_t> encoded;
-        encoded.reserve(indeces.size() * 3);
+        std::vector<uint32_t> values;
+        values.reserve(indeces.size() * 3);
         for (const auto& v : indeces) {
-            fn(encoded, v);
+            fn(values, v);
         }
 
         out << YAML::Key << key;
-        out << YAML::Value << YAML::Flow << YAML::BeginSeq;
-        for (auto v : encoded) {
-            out << v;
-        }
-        out << YAML::EndSeq;
+        out << YAML::Value;
+        encodeCompressed(out, values);
     }
 
     void encodeVertexJoints(
@@ -64,18 +58,15 @@ namespace mesh_set::encoder
         const std::function<void(std::vector<float>&, const animation::VertexJoint&)>& fn
     )
     {
-        std::vector<float> encoded;
-        encoded.reserve(joints.size() * 4);
+        std::vector<float> values;
+        values.reserve(joints.size() * 4);
         for (const auto& v : joints) {
-            fn(encoded, v);
+            fn(values, v);
         }
 
         out << YAML::Key << key;
-        out << YAML::Value << YAML::Flow << YAML::BeginSeq;
-        for (auto v : encoded) {
-            out << v;
-        }
-        out << YAML::EndSeq;
+        out << YAML::Value;
+        encodeCompressed(out, values);
     }
 
     void encodeJoints(
