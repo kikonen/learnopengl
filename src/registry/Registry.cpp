@@ -51,10 +51,8 @@
 
 
 Registry::Registry(
-    Engine& engine,
-    const std::shared_ptr<std::atomic_bool>& alive)
+    Engine& engine)
     : m_engine{ engine },
-    m_alive(alive),
     // registries
     m_dispatcherWorker(util::Ref<event::Dispatcher>::create()),
     m_dispatcherView(util::Ref<event::Dispatcher>::create()),
@@ -124,12 +122,12 @@ void Registry::prepare(const PrepareContext& ctx)
 
     MaterialRegistry::get().prepare();
     EntityRegistry::get().prepare();
-    MeshSetRegistry::get().prepare(m_alive);
+    MeshSetRegistry::get().prepare(m_engine.getAlive());
 
-    NodeRegistry::get().prepare(m_engine);
+    NodeRegistry::get().prepare(this);
     SelectionRegistry::get().prepare(this);
 
-    physics::PhysicsSystem::get().prepare(m_alive);
+    physics::PhysicsSystem::get().prepare(m_engine.getAlive());
     particle::ParticleSystem::get().prepare();
     decal::DecalSystem::get().prepare();
     audio::AudioSystem::get().prepare();
@@ -143,7 +141,7 @@ void Registry::prepare(const PrepareContext& ctx)
     text::TextSystem::get().prepare();
     VaoRegistry::get().prepare();
     ViewportRegistry::get().prepare();
-    ControllerRegistry::get().prepare(m_engine);
+    ControllerRegistry::get().prepare(this);
 
     m_instanceRegistry->prepare();
 }

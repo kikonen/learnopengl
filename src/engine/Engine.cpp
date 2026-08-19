@@ -85,9 +85,7 @@ bool Engine::init()
     SystemInit::init();
     onInit();
 
-    m_registry = util::Ref<Registry>::create(*this, m_alive);
-
-    m_asyncLoader = util::Ref<AsyncLoader>::create();
+    m_registry = util::Ref<Registry>::create(*this);
 
     m_window = util::Ref<Window>::create(*this);
     return !m_window->create();

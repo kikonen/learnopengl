@@ -52,6 +52,11 @@ public:
 
     bool renderFrame();
 
+    inline std::shared_ptr<std::atomic_bool>& getAlive() const noexcept
+    {
+        return m_alive;
+    }
+
     inline const util::Ref<Registry>& getRegistry() const noexcept {
         return m_registry;
     }
@@ -96,12 +101,12 @@ protected:
     void processInput();
 
 protected:
-    virtual bool onInit() = 0;
-    virtual bool onSetup() = 0;
+    virtual bool onInit() { return false; };
+    virtual bool onSetup() { return false; };
 
-    virtual void onUpdate(const UpdateContext& ctx) = 0;
-    virtual void onUpdateView(const UpdateViewContext& ctx) = 0;
-    virtual void onRender(const ki::RenderClock& clock) = 0;
+    virtual void onUpdate(const UpdateContext& ctx) {};
+    virtual void onUpdateView(const UpdateViewContext& ctx) {};
+    virtual void onRender(const ki::RenderClock& clock) {};
 
     virtual void onDestroy();
 
@@ -116,10 +121,6 @@ public:
     bool m_debug = false;
 
     ki::RenderClock m_startClock;
-
-    // NOTE KI MUST destroy async loaded *BEFORE* other registries
-    // => alloes change for graceful exit for loaders
-    util::Ref<AsyncLoader> m_asyncLoader;
 
     util::Ref<Registry> m_registry;
 
@@ -136,7 +137,7 @@ protected:
     ki::RenderClock m_clock;
     ki::FpsCounter m_fpsCounter;
 
-    std::shared_ptr<std::atomic_bool> m_alive;
+    mutable std::shared_ptr<std::atomic_bool> m_alive;
 
     std::string m_title;
 

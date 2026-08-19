@@ -21,6 +21,15 @@
 #include "engine/Engine.h"
 #include "sample_app/SampleApp.h"
 
+namespace
+{
+#ifdef _DEBUG
+    const std::string LOG_FILE = "log/development.log";
+#else
+    const std::string LOG_FILE = "log/production.log";
+#endif
+}
+
 int runEngine()
 {
     auto engine = util::Ref<SampleApp>::create();
@@ -86,7 +95,7 @@ int main()
     std::ios_base::sync_with_stdio(false);
 
     entt::registry registry;
-    Log::init();
+    Log::init(LOG_FILE);
     KI_INFO_OUT("START");
 
     runEngine();

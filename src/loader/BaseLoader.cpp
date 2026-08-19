@@ -50,13 +50,13 @@ namespace loader
         m_dispatcherView = m_registry->m_dispatcherView;
     }
 
-    bool BaseLoader::fileExists(std::string_view filename) const
+    bool BaseLoader::fileExists(std::string_view sceneFile) const
     {
-        return util::fileExists(m_ctx->m_dirName, filename);
+        return util::fileExists(m_ctx->m_defaultSceneDir, sceneFile);
     }
 
-    std::string BaseLoader::readFile(std::string_view filename) const
+    std::string BaseLoader::readFile(std::string_view sceneFile) const
     {
-        return util::readFile(m_ctx->m_dirName, filename);
+        return util::readFile(m_ctx->m_defaultSceneDir, sceneFile);
     }
 }

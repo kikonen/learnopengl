@@ -7,7 +7,7 @@
 #include "model/Node.h"
 
 struct UpdateContext;
-class Engine;
+class Registry;
 
 class NodeController;
 
@@ -23,7 +23,7 @@ public:
     ControllerRegistry& operator=(const ControllerRegistry&) = delete;
 
     void clear();
-    void prepare(Engine& engine);
+    void prepare(Registry* registry);
 
     void updateWT(const UpdateContext& ctx);
 
@@ -80,7 +80,7 @@ public:
         const util::Ref<NodeController>& controller);
 
 private:
-    util::Ref<Engine> m_engine{ nullptr };
+    Registry* m_registry{ nullptr };
 
     std::unordered_map<pool::NodeHandle, std::vector<util::Ref<NodeController>>> m_controllers;
 };

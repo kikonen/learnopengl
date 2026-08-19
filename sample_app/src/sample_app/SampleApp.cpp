@@ -513,7 +513,6 @@ util::Ref<Scene> SampleApp::loadScene(
             scene->setName(assets.sceneFile);
 
             auto ctx = util::Ref<loader::Context>::create(
-                m_asyncLoader,
                 assets.sceneDir,
                 filePath
             );

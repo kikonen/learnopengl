@@ -12,9 +12,8 @@ class AsyncLoader;
 namespace loader {
     struct Context final : public util::RefCountedSimple {
         Context(
-            util::Ref<AsyncLoader> asyncLoader,
-            const std::string& sdirName,
-            const std::string& fileName);
+            const std::string& defaultSceneDir,
+            const std::string& sceneFile);
         ~Context();
 
         std::string str() const noexcept
@@ -24,8 +23,8 @@ namespace loader {
 
     public:
         const std::string m_assetsDir;
-        const std::string m_dirName;
-        const std::string m_fileName;
+        const std::string m_defaultSceneDir;
+        const std::string m_sceneFile;
 
         const std::string m_fullPath;
         const std::string m_name;

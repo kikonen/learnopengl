@@ -11,38 +11,37 @@
 
 namespace {
     std::string resolveFilePath(
-        const std::string& dirName,
-        const std::string& fileName)
+        const std::string& defaultSceneDir,
+        const std::string& sceneFile)
     {
-        if (util::fileExists(fileName))
+        if (util::fileExists(sceneFile))
         {
-            return fileName;
+            return sceneFile;
         }
 
-        return util::joinPath(dirName, fileName);
+        return util::joinPath(defaultSceneDir, sceneFile);
     }
 
     std::string resolveName(
-        const std::string& fileName)
+        const std::string& sceneFile)
     {
-        std::filesystem::path p{ fileName };
+        std::filesystem::path p{ sceneFile };
         return p.stem().string();
     }
 }
 
 namespace loader {
     Context::Context(
-        util::Ref<AsyncLoader> asyncLoader,
-        const std::string& dirName,
-        const std::string& fileName)
+        const std::string& defaultSceneDir,
+        const std::string& sceneFile)
         : m_alive{ std::make_shared<std::atomic_bool>(true)},
         m_runningCount{ std::make_shared<std::atomic<int>>(0) },
-        m_asyncLoader(asyncLoader),
+        m_asyncLoader{ util::Ref<AsyncLoader>::create() },
         m_assetsDir{ Assets::get().assetsDir},
-        m_dirName{ dirName },
-        m_fileName{ fileName },
-        m_fullPath{ resolveFilePath(dirName, fileName) },
-        m_name{ resolveName(fileName) }
+        m_defaultSceneDir{ defaultSceneDir },
+        m_sceneFile{ sceneFile },
+        m_fullPath{ resolveFilePath(defaultSceneDir, sceneFile) },
+        m_name{ resolveName(sceneFile) }
     {
     }
 

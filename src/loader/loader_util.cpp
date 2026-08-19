@@ -66,12 +66,12 @@ namespace loader {
         if (!util::fileExists(fullPath)) {
             fullPath = util::joinPath(currentDir, path);
             if (!util::fileExists(fullPath)) {
-                fullPath = util::joinPath(ctx.m_dirName, fullPath);
+                fullPath = util::joinPath(ctx.m_defaultSceneDir, fullPath);
             }
         }
 
         if (!util::fileExists(fullPath)) {
-            fullPath = util::joinPath(ctx.m_dirName, path);
+            fullPath = util::joinPath(ctx.m_defaultSceneDir, path);
         }
 
         if (!util::fileExists(fullPath)) {

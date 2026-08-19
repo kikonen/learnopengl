@@ -213,11 +213,11 @@ void NodeRegistry::clear()
 }
 
 void NodeRegistry::prepare(
-    Engine& engine)
+    Registry* registry)
 {
     const auto& assets = Assets::get();
 
-    m_engine = &engine;
+    m_registry = registry;
 
     m_debug = assets.nodeRegistryDebug;
     m_deferSort = assets.nodeRegistryDeferSort;
@@ -528,7 +528,7 @@ std::pair<int, int> NodeRegistry::updateEntity(const UpdateContext& ctx)
 void NodeRegistry::attachListeners()
 {
     const auto& assets = Assets::get();
-    auto* registry = m_engine->getRegistry().get();
+    auto* registry = m_registry;
 
     {
         const auto& dispatcher = registry->m_dispatcherWorker;
@@ -638,7 +638,7 @@ void NodeRegistry::attachListeners()
                 auto& data = e.body.nodeType;
                 auto* type = pool::TypeHandle::toType(data.target);
                 if (!type) return;
-                type->prepareRT({ *m_engine });
+                type->prepareRT({ m_registry->getEngine() });
             });
     }
 }
@@ -657,10 +657,10 @@ void NodeRegistry::handleNodeAdded(model::Node* node)
 
     auto nodeHandle = node->toHandle();
 
-    node->prepareRT({ *m_engine }, *snapshot);
+    node->prepareRT({ m_registry->getEngine() }, *snapshot);
 
     if (node->m_generator) {
-        const PrepareContext ctx{ *m_engine };
+        const PrepareContext ctx{ m_registry->getEngine() };
         node->m_generator->prepareRT(ctx, *node, *snapshot);
     }
 
@@ -688,7 +688,7 @@ void NodeRegistry::notifyPendingChanges()
     //    m_registry->m_workerSnapshotRegistry,
     //    node->m_snapshotIndex, 1);
 
-    auto* registry = m_engine->getRegistry().get();
+    auto* registry = m_registry;
 
     for (auto& nodeHandle : m_pendingAdded) {
         auto* node = nodeHandle.toNode();
@@ -828,13 +828,13 @@ void NodeRegistry::attachNode(
 
     auto* type = node->m_typeHandle.toType();
 
-    type->prepareWT({ *m_engine });
+    type->prepareWT({ m_registry->getEngine() });
 
     if (auto* definition = type->m_addonSelectorDefinition.get(); definition) {
         definition->selectAddons(type, node);
     }
 
-    node->prepareWT({ *m_engine }, m_states[node->getEntityIndex()]);
+    node->prepareWT({ m_registry->getEngine() }, m_states[node->getEntityIndex()]);
 
     if (type->m_physicsDefinition &&
         !(node->m_generator &&
@@ -896,7 +896,7 @@ void NodeRegistry::detachNode(
         return;
     }
 
-    node->unprepareWT({ *m_engine }, m_states[node->getEntityIndex()]);
+    node->unprepareWT({ m_registry->getEngine() }, m_states[node->getEntityIndex()]);
 
     const auto* type = node->m_typeHandle.toType();
 

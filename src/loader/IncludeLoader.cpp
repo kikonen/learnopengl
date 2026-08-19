@@ -105,7 +105,7 @@ namespace loader {
         }
 
         if (!util::fileExists(fullPath)) {
-            fullPath = util::joinPath(m_ctx->m_dirName, path);
+            fullPath = util::joinPath(m_ctx->m_defaultSceneDir, path);
         }
 
         if (disabled) {

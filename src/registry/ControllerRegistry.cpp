@@ -60,11 +60,11 @@ void ControllerRegistry::clear()
     m_controllers.clear();
 }
 
-void ControllerRegistry::prepare(Engine& engine)
+void ControllerRegistry::prepare(Registry* registry)
 {
     ASSERT_RT();
 
-    m_engine = &engine;
+    m_registry = registry;
 }
 
 void ControllerRegistry::updateWT(const UpdateContext& ctx)
@@ -102,7 +102,7 @@ void ControllerRegistry::addController(
         return;
     }
 
-    PrepareContext ctx{ *m_engine };
+    PrepareContext ctx{ m_registry->getEngine() };
     controller->prepare(ctx, *node);
 
     {

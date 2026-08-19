@@ -32,7 +32,6 @@ namespace model {
 struct UpdateContext;
 
 class Registry;
-class Engine;
 class NodeCache;
 
 struct EntitySSBO;
@@ -76,7 +75,7 @@ public:
     void setDebug(bool debug) noexcept { m_debug = debug; }
 
     void prepare(
-        Engine& engine);
+        Registry* registry);
 
     void updateWT(const UpdateContext& ctx);
     void postUpdateWT(const UpdateContext& ctx);
@@ -328,7 +327,7 @@ private:
     bool m_deferSort{ false };
     bool m_sortDirty{ false };
 
-    util::Ref<Engine> m_engine{ nullptr };
+    Registry* m_registry{ nullptr };
 
     pool::NodeHandle m_activeNode{};
 

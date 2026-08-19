@@ -494,6 +494,7 @@
     <ClCompile Include="src\loader\converter\DocNode.cpp" />
     <ClCompile Include="src\loader\converter\DocNodeData.cpp" />
     <ClCompile Include="src\loader\converter\YamlConverter.cpp" />
+    <ClCompile Include="src\util\compress.cpp" />
     <ClCompile Include="src\util\DagSort_impl.h" />
     <ClCompile Include="src\loader\FontLoader.cpp" />
     <ClCompile Include="src\loader\Loaders.cpp" />
@@ -808,6 +809,7 @@
     <ClInclude Include="src\scene\Skybox.h" />
     <ClInclude Include="src\scene\World.h" />
     <ClInclude Include="src\scene\WorldTime.h" />
+    <ClInclude Include="src\util\compress.h" />
     <ClInclude Include="src\util\preciseSleep.h" />
     <ClInclude Include="src\util\BufferReference.h" />
     <ClInclude Include="src\util\BufferReference_format.h" />

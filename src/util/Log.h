@@ -28,7 +28,7 @@
 class Log
 {
 public:
-    static void init();
+    static void init(std::string_view logFile);
     static void shutdown();
     static void flush() noexcept;
 

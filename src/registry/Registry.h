@@ -1,7 +1,6 @@
 #pragma once
 
 #include <functional>
-#include <atomic>
 #include <mutex>
 
 #include "util/Ref.h"
@@ -32,8 +31,7 @@ struct PrepareContext;
 class Registry final : public util::RefCountedSimple {
 public:
     Registry(
-        Engine& engine,
-        const std::shared_ptr<std::atomic_bool>& alive);
+        Engine& engine);
 
     ~Registry();
 
@@ -65,7 +63,6 @@ private:
     bool m_prepared = false;
 
     Engine& m_engine;
-    std::shared_ptr<std::atomic_bool> m_alive;
     std::mutex m_lock{};
 
 public:
