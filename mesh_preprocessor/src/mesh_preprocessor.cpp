@@ -8,12 +8,15 @@
 #include <fmt/format.h>
 
 #include "util/Ref.h"
+#include "util/file.h"
 
 #include "asset/Assets.h"
 #include "engine/AssetsLoader.h"
+#include "engine/SystemInit.h"
 
 #include "mesh/MeshSet.h"
 #include "mesh_set/AssimpImporter.h"
+#include "mesh_set/AnimationImporter.h"
 
 #include "mesh_set/encoder/MeshSetEncoder.h"
 #include "mesh_set/encoder/ModelMeshEncoder.h"
@@ -22,6 +25,16 @@
 
 #include "material/Material.h"
 
+#include "animation/AnimationPath.h"
+
+#include "engine/Engine.h"
+#include "registry/Registry.h"
+
+#include "loader/converter/YamlConverter.h"
+#include "loader/document.h"
+#include "loader/Context.h"
+#include "loader/Loaders.h"
+#include "loader/MeshLoader.h"
 #include "loader/MaterialLoader.h"
 
 Assets loadAssets()
@@ -35,17 +48,42 @@ util::Ref<mesh::MeshSet> loadMeshSet(
 {
     const auto& assets = Assets::get();
 
-    const std::string& rootDir = assets.rootDir;
-    bool smoothNormals = true;
-    bool forceNormals = true;
-    bool assimpDebug = assets.assimpDebug;
+    //auto future = MeshSetRegistry::get().getMeshSet(
+    //    meshData.id,
+    //    assets.modelsDir,
+    //    meshData.path,
+    //    meshData.smoothNormals,
+    //    meshData.forceNormals,
+    //    meshData.getAnimationPaths());
+
+    loader::MeshData meshData;
+    {
+
+        loader::YamlConverter converter;
+        const auto& currDir = util::dirName(meshPath);
+        auto doc = converter.load(meshPath);
+
+        Engine engine;
+        auto registry = util::Ref<Registry>::create(engine);
+        auto ctx = util::Ref<loader::Context>::create(assets.sceneDir, "na");
+        loader::Loaders loaders{ ctx };
+        loaders.prepare(registry);
+
+        std::vector<animation::AnimationPath> animationPaths;
+        loaders.m_meshLoader.loadMesh(
+            doc.findNode("mesh"),
+            currDir,
+            meshData,
+            loaders);
+    }
 
     auto meshSet = util::Ref<mesh::MeshSet>::create(
-        "1",
-        rootDir,
-        meshPath,
-        smoothNormals,
-        forceNormals);
+        meshData.id,
+        assets.modelsDir,
+        meshData.path,
+        meshData.smoothNormals,
+        meshData.forceNormals,
+        meshData.getAnimationPaths());
 
     auto material = util::Ref<Material>::create();
     {
@@ -59,12 +97,48 @@ util::Ref<mesh::MeshSet> loadMeshSet(
         //loader.loadMaterial(data);
     }
 
-    std::shared_ptr<std::atomic_bool> alive = std::make_shared<std::atomic_bool>(true);
-    std::unique_ptr<mesh_set::MeshSetImporter> importer;
-    importer = std::make_unique<mesh_set::AssimpImporter>(alive, assimpDebug);
+    bool loaded;
+    {
+        bool assimpDebug = assets.assimpDebug;
+        std::shared_ptr<std::atomic_bool> alive = std::make_shared<std::atomic_bool>(true);
+        std::unique_ptr<mesh_set::MeshSetImporter> importer;
+        importer = std::make_unique<mesh_set::AssimpImporter>(alive, assimpDebug);
 
-    auto loaded = importer->load(*meshSet, material, false);
-    //std::cout << fmt::format("loaded: {}\n", loaded);
+        loaded = importer->load(*meshSet, material, false);
+        //std::cout << fmt::format("loaded: {}\n", loaded);
+    }
+
+    {
+        for (const auto& animationPath : meshSet->m_animationPaths) {
+            // resolve path
+            std::string filePath;
+            {
+                {
+                    filePath = util::joinPathExt(
+                        meshSet->m_rootDir,
+                        meshSet->m_dir,
+                        animationPath.path, "");
+                }
+
+                if (!util::fileExists(filePath)) {
+                    filePath = util::joinPath(
+                        meshSet->m_rootDir,
+                        animationPath.path);
+                }
+            }
+
+            for (auto& mesh : meshSet->getMeshes()) {
+                const auto& rig = mesh->getRig();
+                if (!rig) continue;
+
+                mesh_set::AnimationImporter importer{};
+                importer.loadAnimations(
+                    *rig,
+                    animationPath.animationPrefix,
+                    filePath);
+            }
+        }
+    }
 
     return meshSet;
 }
@@ -96,16 +170,21 @@ int main(int argc, char** argv) {
         return EXIT_FAILURE;
     }
 
+    Log::init("log/mesh_preprocessor.log");
+
     const std::string inputFile = argv[1];
     const std::string outputPath = argv[2];
 
     std::cout << fmt::format("input: {}\n", inputFile);
     std::cout << fmt::format("output: {}\n", outputPath);
 
+    SystemInit::init();
     Assets::set(loadAssets());
 
     auto meshSet = loadMeshSet(inputFile);
     saveMeshSet(meshSet, outputPath);
+
+    SystemInit::release();
 
     if (0) {
         std::cout << "PRESS [ENTER] TO CLOSE";
