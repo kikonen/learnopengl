@@ -107,15 +107,6 @@ namespace particle
                 m_particles.begin(),
                 m_particles.end(),
                 [&ctx](Particle& p) { p.update(ctx); });
-
-            // Parallel partition - move alive particles to front
-            auto newEnd = std::partition(
-                std::execution::par,
-                m_particles.begin(),
-                m_particles.end(),
-                [](const Particle& p) { return p.isAlive(); });
-
-            m_particles.erase(newEnd, m_particles.end());
         }
         else {
             // Sequential update for small counts
@@ -123,13 +114,18 @@ namespace particle
                 m_particles.begin(),
                 m_particles.end(),
                 [&ctx](Particle& p) { p.update(ctx); });
+        }
 
-            auto newEnd = std::partition(
-                m_particles.begin(),
-                m_particles.end(),
-                [](const Particle& p) { return p.isAlive(); });
-
-            m_particles.erase(newEnd, m_particles.end());
+        // NOTE KI linear scan for compact; more cache line friendly
+        {
+            size_t write = 0;
+            for (size_t read = 0; read < m_particles.size(); ++read) {
+                if (m_particles[read].isAlive()) {
+                    if (write != read) m_particles[write] = m_particles[read];
+                    ++write;
+                }
+            }
+            m_particles.resize(write);
         }
     }
 

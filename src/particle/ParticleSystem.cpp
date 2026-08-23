@@ -31,6 +31,8 @@ namespace {
     constexpr size_t BLOCK_SIZE = 10000;
     constexpr size_t MAX_BLOCK_COUNT = 1100;
 
+    constexpr int SKIP_FRAMES = 1;
+
     static particle::ParticleSystem* s_system{ nullptr };
 }
 
@@ -67,8 +69,14 @@ namespace particle {
     void ParticleSystem::clear()
     {
         m_pools.clear();
+        m_pools.reserve(2);
         m_pools.emplace_back(std::make_unique<ParticlePool>("low"));
         m_pools.emplace_back(std::make_unique<ParticlePool>("high"));
+
+        m_snapshotLocks.clear();
+        m_snapshotLocks.reserve(2);
+        m_snapshotLocks.emplace_back(std::make_unique<std::mutex>());
+        m_snapshotLocks.emplace_back(std::make_unique<std::mutex>());
     }
 
     uint32_t ParticleSystem::getActiveParticleCount() const noexcept
@@ -119,15 +127,14 @@ namespace particle {
 
         if (!isEnabled()) return;
 
-        for (auto& pool : m_pools) {
-            pool->updateWT(ctx);
-        }
-
         {
-            std::lock_guard lock(m_snapshotLock);
-            for (auto& pool : m_pools) {
-                pool->snapshotParticles();
-            }
+            auto* pool = m_pools[m_updatePoolIndexWT].get();
+            auto* mutex = m_snapshotLocks[m_updatePoolIndexWT].get();
+            m_updatePoolIndexWT = (m_updatePoolIndexWT + 1) % m_pools.size();
+
+            pool->updateWT(ctx);
+            std::lock_guard lock(*mutex);
+            pool->snapshotParticles();
         }
     }
 
@@ -137,42 +144,46 @@ namespace particle {
 
         if (!isEnabled()) return;
 
-        {
-            bool updateReady = false;
-            for (auto& pool : m_pools) {
-                updateReady |= pool->m_updateReady;
-            }
-            if (!updateReady) return;
-        }
+        auto poolIndex = m_updatePoolIndexRT;
+        auto* pool = m_pools[m_updatePoolIndexRT].get();
+        m_updatePoolIndexRT = (m_updatePoolIndexRT + 1) % m_pools.size();
+
+        if (!pool->m_updateReady) return;
 
         m_frameSkipCount++;
-        if (m_frameSkipCount < 1) {
+        if (m_frameSkipCount < SKIP_FRAMES) {
             return;
         }
         m_frameSkipCount = 0;
 
-        upload();
+        upload(poolIndex);
     }
 
-    void ParticleSystem::upload()
+    void ParticleSystem::upload(size_t poolIndex)
     {
-        std::lock_guard lock(m_snapshotLock);
+        auto* pool = m_pools[poolIndex].get();
+        auto* mutex = m_snapshotLocks[poolIndex].get();
+        std::lock_guard lock(*mutex);
 
+        bool resized = false;
         {
             size_t maxCount = 0;
             for (auto& pool : m_pools) {
                 maxCount = std::max(maxCount, pool->m_snapshotCount);
             }
-            resizeBuffer(maxCount);
+            resized = resizeBuffer(maxCount);
 
-            m_pools[1]->m_baseIndex = static_cast<uint32_t>(m_entryCount);
+            m_pools[0]->m_baseIndex = 0;
+            for (int i = 1; i < m_pools.size(); i++) {
+                m_pools[i]->m_baseIndex = static_cast<uint32_t>(m_entryCount * i);
+            }
         }
 
-        for (auto& pool : m_pools) {
+        {
             const auto totalCount = pool->m_snapshotCount;
             if (totalCount == 0) {
                 pool->m_activeCount = 0;
-                continue;
+                return;
             }
 
             const auto offset = pool->m_baseIndex * sizeof(ParticleSSBO);
@@ -185,9 +196,9 @@ namespace particle {
         }
     }
 
-    void ParticleSystem::resizeBuffer(size_t maxCount)
+    bool ParticleSystem::resizeBuffer(size_t maxCount)
     {
-        if (m_entryCount >= maxCount) return;
+        if (m_entryCount >= maxCount) return false;
 
         size_t blocks = (maxCount / BLOCK_SIZE) + 2;
         size_t entryCount = blocks * BLOCK_SIZE;
@@ -201,5 +212,7 @@ namespace particle {
         m_ssbo.bindSSBO(SSBO_PARTICLES);
 
         m_entryCount = entryCount;
+
+        return true;
     }
 }

@@ -57,14 +57,17 @@ namespace particle {
         uint32_t getActiveParticleCount() const noexcept;
 
     private:
-        void upload();
-        void resizeBuffer(size_t maxCount);
+        void upload(size_t poolIndex);
+        bool resizeBuffer(size_t maxCount);
 
     private:
         bool m_enabled{ false };
-        std::mutex m_snapshotLock{};
+
+        size_t m_updatePoolIndexWT{ 0 };
+        size_t m_updatePoolIndexRT{ 0 };
 
         std::vector<std::unique_ptr<ParticlePool>> m_pools;
+        std::vector<std::unique_ptr<std::mutex>> m_snapshotLocks;
 
         size_t m_frameSkipCount{ 0 };
 
