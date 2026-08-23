@@ -8,6 +8,7 @@
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
     <LocalDebuggerCommandArguments>resources/assets/fbx/creatures/skeleton/skeleton_animated.FBX tmp/encoded.yml</LocalDebuggerCommandArguments>
     <LocalDebuggerCommand>$(TargetPath)</LocalDebuggerCommand>
+    <LocalDebuggerCommandArgumentsHistory>resources/assets/fbx/creatures/skeleton/skeleton_animated.FBX tmp/encoded.yml|</LocalDebuggerCommandArgumentsHistory>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LocalDebuggerCommandArguments>resources/assets/fbx/creatures/skeleton/skeleton_animated.FBX tmp/encoded.yml</LocalDebuggerCommandArguments>
