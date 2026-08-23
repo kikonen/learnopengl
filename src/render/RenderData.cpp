@@ -30,12 +30,12 @@ namespace
     // - BufferInfo, ClipPlanes: per context, ~6 per frame
     //
     // Conservative estimate per frame:
-    constexpr size_t MAX_CAMERA_PER_FRAME = 16;
+    constexpr size_t MAX_CAMERA_PER_FRAME = 20;
     constexpr size_t MAX_DATA_PER_FRAME = 2;
     constexpr size_t MAX_SHADOW_PER_FRAME = 2;
     constexpr size_t MAX_DEBUG_PER_FRAME = 2;
-    constexpr size_t MAX_BUFFER_INFO_PER_FRAME = 8;
-    constexpr size_t MAX_CLIP_PLANES_PER_FRAME = 8;
+    constexpr size_t MAX_BUFFER_INFO_PER_FRAME = 16;
+    constexpr size_t MAX_CLIP_PLANES_PER_FRAME = 16;
     constexpr size_t MAX_LIGHTS_PER_FRAME = 2;
 
     constexpr size_t estimateUboSizePerFrame()
@@ -64,6 +64,8 @@ namespace render
 
     void RenderData::prepare(bool debug)
     {
+        const auto& assets = Assets::get();
+
         GLint bufferAlignment;
         glGetIntegerv(GL_UNIFORM_BUFFER_OFFSET_ALIGNMENT, &bufferAlignment);
 
@@ -71,7 +73,7 @@ namespace render
         m_ring = std::make_unique<kigl::RingAllocator>(
             "render_data_ubo",
             static_cast<size_t>(bufferAlignment),
-            3,
+            assets.dataRingBufferCount,
             1.5f);
 
         m_ring->create(estimateUboSizePerFrame());

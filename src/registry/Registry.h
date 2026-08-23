@@ -43,7 +43,7 @@ public:
 
     void bindBuffers();
 
-    void startFrame();
+    void beginFrame();
     void endFrame();
 
     void withLock(const std::function<void(Registry&)>& fn);

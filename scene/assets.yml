@@ -100,6 +100,9 @@ assets:
   batch_buffers: 64
   batch_debug: false
 
+  draw_ring_buffer_count: 4
+  data_ring_buffer_count: 4
+
   draw_debug: false
 
   node_registry_debug: false

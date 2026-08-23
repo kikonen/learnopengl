@@ -74,7 +74,7 @@ namespace backend {
             m_instanceRing = std::make_unique<kigl::RingAllocator>(
                 "draw_instance_ring",
                 bufferAlignment,
-                3,
+                assets.drawRingBufferCount,
                 1.5f);
             m_instanceRing->create(estimateInstanceSizePerFrame());
         }
@@ -86,7 +86,7 @@ namespace backend {
             m_commandRing = std::make_unique<kigl::RingAllocator>(
                 "draw_command_ring",
                 BUFFER_ALIGNMENT,
-                3,
+                assets.drawRingBufferCount,
                 1.5f);
             m_commandRing->create(estimateCommandSizePerFrame());
         }

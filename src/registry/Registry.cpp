@@ -183,7 +183,7 @@ void Registry::bindBuffers()
 }
 
 // In startFrame():
-void Registry::startFrame()
+void Registry::beginFrame()
 {
     VaoRegistry::get().beginFrame();
     render::InstanceRegistry::get().beginFrame();

@@ -12,7 +12,7 @@
 namespace kigl
 {
     constexpr size_t DEFAULT_RING_FRAMES = 3;
-    constexpr size_t MAX_RING_FRAMES = 4;
+    constexpr size_t MAX_RING_FRAMES = 5;
 
     template<typename T>
     struct RingAllocation

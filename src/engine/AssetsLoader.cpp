@@ -519,6 +519,14 @@ void AssetsLoader::loadAssets(
                 data.batchDebug = readBool(v);
                 continue;
             }
+            if (k == "draw_ring_buffer_count") {
+                data.drawRingBufferCount = readInt(v);
+                continue;
+            }
+            if (k == "data_ring_buffer_count") {
+                data.dataRingBufferCount = readInt(v);
+                continue;
+            }
             if (k == "draw_debug") {
                 data.drawDebug = readBool(v);
                 continue;

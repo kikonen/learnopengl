@@ -180,6 +180,9 @@ public:
     int batchBuffers;
     bool batchDebug;
 
+    int drawRingBufferCount;
+    int dataRingBufferCount;
+
     bool drawDebug;
 
     bool nodeRegistryDebug;

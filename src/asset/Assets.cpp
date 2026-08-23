@@ -200,6 +200,9 @@ Assets::Assets()
     batchBuffers = 3;
     batchDebug = false;
 
+    drawRingBufferCount = 3;
+    dataRingBufferCount = 3;
+
     drawDebug = false;
 
     nodeRegistryDebug = false;

@@ -196,7 +196,7 @@ void Engine::processInput()
 
 bool Engine::renderFrame()
 {
-    getRegistry()->startFrame();
+    getRegistry()->beginFrame();
     getRenderData()->beginFrame();
     getBatch()->beginFrame();
 
