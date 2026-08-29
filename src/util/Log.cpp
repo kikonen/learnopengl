@@ -5,6 +5,7 @@
 #include <iosfwd>
 
 #include <spdlog/spdlog.h>
+#include "spdlog/async.h"
 #include <spdlog/fmt/ostr.h>
 
 #include <spdlog/sinks/stdout_color_sinks.h>
@@ -17,6 +18,8 @@ namespace {
 
 void Log::init(std::string_view logFile)
 {
+    if (g_logger) return;
+
     try
     {
         spdlog::set_level(spdlog::level::trace);
@@ -34,7 +37,8 @@ void Log::init(std::string_view logFile)
 
         std::vector<spdlog::sink_ptr> sinks{ console_sink, file_sink };
 
-        g_logger = std::make_shared<spdlog::logger>("main", sinks.begin(), sinks.end());
+        spdlog::init_thread_pool(8192, 1);
+        g_logger = std::make_shared<spdlog::async_logger>("main", sinks.begin(), sinks.end(), spdlog::thread_pool());
         g_logger->set_level(spdlog::level::debug);
 
         spdlog::register_logger(g_logger);
@@ -97,7 +101,7 @@ void Log::trace(std::string_view msg) noexcept
 void Log::debug_out(std::string_view msg) noexcept
 {
     Log::debug(msg);
-    std::cout << "I: " << msg << '\n';
+    std::cout << "D: " << msg << '\n';
 }
 
 void Log::info_out(std::string_view msg) noexcept
@@ -115,6 +119,7 @@ void Log::warn_out(std::string_view msg) noexcept
 void Log::error_out(std::string_view msg) noexcept
 {
     Log::error(msg);
+    // NOTE KI goes already by default to console
     //std::cout << "E: " << msg << '\n';
 }
 
