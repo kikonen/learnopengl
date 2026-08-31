@@ -1,1 +1,7 @@
-aider --model openai/deepseek-r1:14b --set-env OLLAMA_TEMPERATURE=0.5 "$@"
+#!/bin/env bash
+
+export OPENAI_API_BASE="https://llm.ikari.fi/v1"
+
+#aider --model openai/deepseek-r1:14b --set-env OLLAMA_TEMPERATURE=0.5 "$@"
+#aider --model openai/qwen3.8:27b "$@"
+aider --model openai/muse-glimmer-30b-ki-64k:latest "$@"
