@@ -22,6 +22,7 @@ module Encode
     attr_reader :src_dir,
       :dst_dir,
       :target_size,
+      :target_depth,
       :force,
       :dry_run,
       :tid
@@ -30,12 +31,14 @@ module Encode
       src_dir:,
       dst_dir:,
       target_size:,
+      target_depth:,
       force:,
       dry_run:
     )
       @src_dir = src_dir
       @dst_dir = dst_dir
       @target_size = target_size
+      @target_depth = target_depth
       @force = force
       @dry_run = dry_run
     end

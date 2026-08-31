@@ -31,10 +31,12 @@ module Encode
       digest_path:,
       src_dir:,
       dst_dir:,
+      target_size:,
+      target_depth:,
       force:,
       dry_run:
     )
-      super(src_dir:, dst_dir:, target_size:, force:, dry_run:)
+      super(src_dir:, dst_dir:, target_size:, target_depth:, force:, dry_run:)
 
       @digest_path = digest_path
     end
@@ -134,6 +136,7 @@ module Encode
         salt: {
           version: KTX_VERSION,
           size: target_size,
+          depth: target_depth,
           type:,
           cmd: base_cmd,
           parts: [

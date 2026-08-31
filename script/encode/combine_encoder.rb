@@ -8,6 +8,9 @@ module Encode
   # combine
   ############################################################
   class CombineEncoder < FileEncoder
+    HEIGHT_MAP_SIZE = 2048
+    HEIGHT_MAP_DEPTH = 16
+
     attr_reader :target_name,
       :target_mode,
       :parts
@@ -19,10 +22,11 @@ module Encode
       target_mode:,
       parts:,
       target_size:,
+      target_depth:,
       force:,
       dry_run:
     )
-      super(src_dir:, dst_dir:, target_size:, force:, dry_run:)
+      super(src_dir:, dst_dir:, target_size:, target_depth:, force:, dry_run:)
 
       @target_name = target_name
       @target_mode = target_mode
@@ -135,19 +139,18 @@ module Encode
           duplicates:}}"
       end
 
-      if parts.map(&:target_depth).uniq.size > 1
-        raise "ERROR: target_depth mismatch: #{{
-          src_dir:,
-          group:,
-          target_name:,
-          parts: parts.map(&:name),
-          depths: parts.map(&:target_depth).uniq.size}}"
-      end
+      # if parts.map(&:target_depth).uniq.size > 1
+      #   raise "ERROR: target_depth mismatch: #{{
+      #     src_dir:,
+      #     group:,
+      #     target_name:,
+      #     parts: parts.map(&:name),
+      #     depths: parts.map(&:target_depth).uniq.size}}"
+      # end
 
       dst_path = "#{dst_dir}/#{target_name}#{BUILD_SUFFIX}.png"
 
       sorted_parts = parts.sort_by { |e| e.name }
-      target_depth = sorted_parts.first.target_depth
 
       source_paths = sorted_parts.map do |tex_info|
         "#{src_dir}/#{tex_info.name}"
@@ -172,6 +175,7 @@ module Encode
               name: tex_info.name,
               source_channel: tex_info.source_channel,
               target_channel: tex_info.target_channel,
+              source_depth: tex_info.source_depth,
               srgb: tex_info.srgb,
             }
           end.sort_by { |e| e[:name] }
@@ -323,6 +327,10 @@ module Encode
       target_name,
       parts
     )
+      # NOTE KI heightmap needs higher resolution
+      @target_size = HEIGHT_MAP_SIZE
+      @target_depth = HEIGHT_MAP_DEPTH
+
       if parts.size > 1
         raise "ERROR: too many parts: #{{
           src_dir:,
@@ -336,7 +344,6 @@ module Encode
 
       tex_info = parts.first
       src_path = tex_info.src_path(src_dir)
-      target_depth = tex_info.target_depth
 
       dst_digest = TextureDigest.new(
         dst_path,
@@ -357,6 +364,7 @@ module Encode
               name: tex_info.name,
               source_channel: tex_info.source_channel,
               target_channel: tex_info.target_channel,
+              source_depth: tex_info.source_depth,
               srgb: tex_info.srgb,
             }
           ]
@@ -392,13 +400,14 @@ module Encode
 
       # black placeholder for empty channels
       black = black_image(target_w, target_h, target_depth)
+      white = white_image(target_w, target_h, target_depth)
 
       # all channels empty, except RED holding heightmap
       target_channels = {
         Magick::RedChannel => black,
         Magick::GreenChannel => black,
         Magick::BlueChannel => black,
-        Magick::AlphaChannel => black,
+        Magick::AlphaChannel => white,
       }
       target_channels[dst_channel] = channel_img
 
@@ -465,7 +474,6 @@ module Encode
 
       tex_info = parts.first
       src_path = tex_info.src_path(src_dir)
-      target_depth = tex_info.target_depth
 
       dst_digest = TextureDigest.new(
         dst_path,
@@ -486,6 +494,7 @@ module Encode
               name: tex_info.name,
               source_channel: tex_info.source_channel,
               target_channel: tex_info.target_channel,
+              source_depth: tex_info.source_depth,
               srgb: tex_info.srgb,
             }
           ]
@@ -521,12 +530,13 @@ module Encode
 
       # placeholder iamge for empty channels
       black = black_image(target_w, target_h, target_depth)
+      white = white_image(target_w, target_h, target_depth)
 
       target_channels = {
         Magick::RedChannel => black,
         Magick::GreenChannel => black,
         Magick::BlueChannel => black,
-        Magick::AlphaChannel => black,
+        Magick::AlphaChannel => white,
       }
       target_channels[dst_channel] = channel_img
 

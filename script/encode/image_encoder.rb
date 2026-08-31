@@ -15,11 +15,12 @@ module Encode
       src_dir:,
       dst_dir:,
       target_size:,
+      target_depth:,
       force:,
       dry_run:,
       tex_info:
     )
-      super(src_dir:, dst_dir:, target_size:, force:, dry_run:)
+      super(src_dir:, dst_dir:, target_size:, target_depth:, force:, dry_run:)
 
       @tex_info = tex_info
     end
@@ -44,7 +45,6 @@ module Encode
       tex_info:
     )
       group = tex_info.group
-      target_depth = tex_info.target_depth
       target_name = tex_info.target_name
 
       src_path = tex_info.src_path(src_dir)
@@ -69,6 +69,7 @@ module Encode
               name: tex_info.name,
               source_channel: tex_info.source_channel,
               target_channel: tex_info.target_channel,
+              source_depth: tex_info.source_depth,
               srgb: tex_info.srgb,
             }
           ]

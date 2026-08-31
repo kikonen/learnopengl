@@ -215,27 +215,36 @@ module Encode
     # Resolve scaled size
     #
     # NOTE KI iamge sizes may differ in width/height
-    # => only scale down, not up
+    # => scaling done BOTH ways for sampler2dArray support
+    #
+    # @return [bool, w, h]
+    #
+    #
+    # Resolve scaled size
+    #
+    # NOTE KI image sizes may differ in width/height
+    # => normalized strictly into target_size (supports both scale down AND up)
     #
     # @return [bool, w, h]
     #
     def self.resolve_size(img, target_size)
-      # NOTE KI iamge sizes may differ in width/height
-      # => only scale down, not up
       target_w = img.columns
       target_h = img.rows
 
-      need_scale = false
       min_size = [target_w, target_h].min
-      if min_size > target_size
+
+      # FIX: Check if the size differs from target_size in EITHER direction
+      if min_size != target_size
         need_scale = true
         scale = target_size.to_f / min_size.to_f
 
         target_w = (target_w * scale).ceil
         target_h = (target_h * scale).ceil
-      end
 
-      [need_scale, target_w, target_h]
+        [need_scale, target_w, target_h]
+      else
+        [false, target_w, target_h]
+      end
     end
   end
 end

@@ -1,4 +1,5 @@
-TARGET_SIZE ?= 1024
+TEX_SIZE ?= 1024
+TEX_DEPTH ?= 8
 MSBUILD ?= MSBuild.exe
 PROJECT = engine.vcxproj
 
@@ -18,10 +19,10 @@ help:
 	@echo ""
 	@echo "Assets:"
 	@echo "  make setup"
-	@echo "  make all TARGET_SIZE=${TARGET_SIZE}"
+	@echo "  make all TEX_SIZE=${TEX_SIZE}"
 	@echo "    OR"
-	@echo "  make assets-meta TARGET_SIZE=${TARGET_SIZE}"
-	@echo "  make assets-build TARGET_SIZE=${TARGET_SIZE}"
+	@echo "  make assets-meta TEX_SIZE=${TEX_SIZE}"
+	@echo "  make assets-build TEX_SIZE=${TEX_SIZE}"
 
 # Build targets (MSYS2)
 compile: compile-debug compile-release
@@ -56,10 +57,10 @@ setup:
 assets: assets-meta assets-build
 
 assets-meta:
-	ruby script/convert_tex.rb meta --src resources/assets --dry-run false --recursive true --target-size ${TARGET_SIZE}
+	ruby script/convert_tex.rb meta --src resources/assets --dry-run false --recursive true --target-size ${TEX_SIZE} --target-depth ${TEX_DEPTH}
 
 assets-build:
-	ruby script/convert_tex.rb build --src resources/assets --dry-run false --recursive true --target-size ${TARGET_SIZE} --encode --combine
+	ruby script/convert_tex.rb build --src resources/assets --dry-run false --recursive true --target-size ${TEX_SIZE} --target-depth ${TEX_DEPTH} --encode --combine
 
 assets-ktx:
-	ruby script/convert_tex.rb build --src resources/assets --dry-run false --recursive true --target-size ${TARGET_SIZE} --ktx
+	ruby script/convert_tex.rb build --src resources/assets --dry-run false --recursive true --target-size ${TEX_SIZE} --target-depth ${TEX_DEPTH} --ktx
