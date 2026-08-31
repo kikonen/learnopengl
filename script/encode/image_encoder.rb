@@ -124,7 +124,8 @@ module Encode
         dst_channel = dst_channels[idx]
 
         img = src_img
-          .separate(src_channel)[0]
+          .separate(src_channel)
+          .first
 
         # NOTE KI enforce RGB colorspace (instead of gray)
         img.colorspace = src_img.colorspace

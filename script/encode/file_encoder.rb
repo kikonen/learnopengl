@@ -72,7 +72,9 @@ module Encode
             }
         else
           img = Magick::Image.read("#{assets_root_dir}/textures/placeholder/black.png").first
-          img = img.separate(Magick::RedChannel)[0]
+          img = img
+            .separate(Magick::RedChannel)
+            .first
 
           # FIX: Pakotetaan lineaariseksi dataksi erottelun jälkeen!
           img.colorspace = Magick::RGBColorspace
@@ -95,7 +97,9 @@ module Encode
             }
         else
           img = Magick::Image.read("#{assets_root_dir}/textures/placeholder/white.png").first
-          img = img.separate(Magick::RedChannel)[0]
+          img = img
+            .separate(Magick::RedChannel)
+            .first
 
           # NOTE KI enforce RGB colorspace (instead of gray)
           img.colorspace = Magick::RGBColorspace

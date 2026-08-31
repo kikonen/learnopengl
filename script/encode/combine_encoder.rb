@@ -207,7 +207,7 @@ module Encode
 
           next unless src_channel && dst_channel
 
-          src_path = "#{src_dir}/#{tex_info.name}"
+          src_path = tex_info.src_path(src_dir)
 
           info "LOAD: [#{group}] #{dst_channel} = #{src_channel} #{src_path}"
 
@@ -216,7 +216,8 @@ module Encode
           # => should be resonable restriction
           channel_img = Magick::Image.read(src_path)
             .first
-            .separate(src_channel)[0]
+            .separate(src_channel)
+            .first
 
           # NOTE KI enforce RGB space (not grayscale)
           channel_img.colorspace = Magick::RGBColorspace
@@ -333,9 +334,9 @@ module Encode
 
       dst_path = "#{dst_dir}/#{target_name}#{BUILD_SUFFIX}.png"
 
-      part = parts.first
-      src_path = "#{src_dir}/#{part.name}"
-      target_depth = part.target_depth
+      tex_info = parts.first
+      src_path = tex_info.src_path(src_dir)
+      target_depth = tex_info.target_depth
 
       dst_digest = TextureDigest.new(
         dst_path,
@@ -343,9 +344,8 @@ module Encode
         meta: {
           target: File.basename(dst_path),
           type: :height,
-          target_channel: RED,
-          srgb: part.srgb,
-          no_ktx: true,
+          target_channel: RGBA,
+          srgb: false
         },
         salt: {
           version: HEIGHT_VERSION,
@@ -354,10 +354,10 @@ module Encode
           depth: target_depth,
           parts: [
             {
-              name: part.name,
-              source_channel: part.source_channel,
-              target_channel: part.target_channel,
-              srgb: part.srgb,
+              name: tex_info.name,
+              source_channel: tex_info.source_channel,
+              target_channel: tex_info.target_channel,
+              srgb: tex_info.srgb,
             }
           ]
         },
@@ -370,25 +370,45 @@ module Encode
 
       info "HEIG: [#{group}] [size=#{target_size}] [depth=#{target_depth}] ]#{dst_path}"
 
-      src_channel = select_channel(part.source_channel) || select_channel(RED)
-      dst_channel = select_channel(part.target_channel) || select_channel(RED)
+      src_channel = select_channel(tex_info.source_channel) || select_channel(RED)
+      dst_channel = select_channel(tex_info.target_channel) || select_channel(RED)
+
+      info "LOAD: [#{group}] #{dst_channel} = #{src_channel} #{src_path}"
 
       # https://imagemagick.org/script/command-line-options.php#separate
-      src_path = part.src_path(src_dir)
-      src_img = Magick::Image.read(src_path)
+      channel_img = Magick::Image.read(src_path)
         .first
-        .separate(src_channel)[0]
+        .separate(src_channel)
+        .first
 
       # NOTE KI enforce RGB space (not grayscale)
-      src_img.colorspace = Magick::RGBColorspace
+      channel_img.colorspace = Magick::RGBColorspace
 
-      src_img = Util.scale_data_image(src_img, target_size)
-      src_img = src_img.set_channel_depth(Magick::AllChannels, target_depth)
+      channel_img = Util.scale_data_image(channel_img, target_size)
+      channel_img = channel_img.set_channel_depth(Magick::AllChannels, target_depth)
 
-      info "#{dst_channel} = #{src_img.inspect}"
+      target_w = channel_img.columns
+      target_h = channel_img.rows
 
+      # black placeholder for empty channels
+      black = black_image(target_w, target_h, target_depth)
+
+      # all channels empty, except RED holding heightmap
+      target_channels = {
+        Magick::RedChannel => black,
+        Magick::GreenChannel => black,
+        Magick::BlueChannel => black,
+        Magick::AlphaChannel => black,
+      }
+      target_channels[dst_channel] = channel_img
+
+      # build image list for combine (R, G, B)
       img_list = Magick::ImageList.new
-      img_list << src_img
+      img_list << target_channels[Magick::RedChannel]
+      img_list << target_channels[Magick::GreenChannel]
+      img_list << target_channels[Magick::BlueChannel]
+
+      alpha_img = target_channels[Magick::AlphaChannel]
 
       # NOTE KI workaround segmentation fault, which happens
       # if running without pause
@@ -396,17 +416,29 @@ module Encode
       #sleep 0.2
 
       # https://imagemagick.org/script/command-line-options.php#combine
+      # combine linear channels (R, G, B)
       dst_img = img_list.combine(Magick::RGBColorspace)
+
+      # FIX 2: Pakotetaan AINA Alpha-tila päälle 4-kanavaista tallennusta varten
+      dst_img.alpha(Magick::SetAlphaChannel)
+      dst_img
+        .composite_channel!(
+          alpha_img,
+          0, 0,
+          Magick::CopyAlphaCompositeOp,
+          Magick::AlphaChannel)
 
       unless dry_run
         FileUtils.mkdir_p(dst_dir)
 
-        info "SAVE: #{dst_path}"
-        dst_img.write(dst_path)
+        file_format = dst_img.quantum_depth == 16 ? "PNG64:" : "PNG32:"
+
+        info "SAVE: [#{group}] #{file_format + dst_path}"
+        dst_img.write(file_format + dst_path)
 
         dst_digest.write_digest
 
-        info "DONE: #{dst_path}"
+        info "DONE: [#{group}] #{dst_path}"
       end
     end
 
@@ -431,9 +463,9 @@ module Encode
 
       dst_path = "#{dst_dir}/#{target_name}#{BUILD_SUFFIX}.png"
 
-      part = parts.first
-      src_path = "#{src_dir}/#{part.name}"
-      target_depth = part.target_depth
+      tex_info = parts.first
+      src_path = tex_info.src_path(src_dir)
+      target_depth = tex_info.target_depth
 
       dst_digest = TextureDigest.new(
         dst_path,
@@ -441,9 +473,8 @@ module Encode
         meta: {
           target: File.basename(dst_path),
           type: :displacement,
-          target_channel: RED,
-          srgb: part.srgb,
-          no_ktx: true,
+          target_channel: RGBA,
+          srgb: false,
         },
         salt: {
           version: DISPLACEMENT_VERSION,
@@ -452,10 +483,10 @@ module Encode
           depth: target_depth,
           parts: [
             {
-              name: part.name,
-              source_channel: part.source_channel,
-              target_channel: part.target_channel,
-              srgb: part.srgb,
+              name: tex_info.name,
+              source_channel: tex_info.source_channel,
+              target_channel: tex_info.target_channel,
+              srgb: tex_info.srgb,
             }
           ]
         },
@@ -466,27 +497,46 @@ module Encode
         return dst_digest.update_if_needed
       end
 
-      info "DISP: [#{group}] [size=#{target_size}] [depth=#{target_depth}] ]#{dst_path}"
+      info "DISP: [#{group}] [size=#{target_size}] [depth=#{target_depth}]] #{dst_path}"
 
-      src_channel = select_channel(part.source_channel) || select_channel(RED)
-      dst_channel = select_channel(part.target_channel) || select_channel(RED)
+      src_channel = select_channel(tex_info.source_channel) || select_channel(RED)
+      dst_channel = select_channel(tex_info.target_channel) || select_channel(RED)
+
+      info "LOAD: [#{group}] #{dst_channel} = #{src_channel} #{src_path}"
 
       # https://imagemagick.org/script/command-line-options.php#separate
-      src_path = part.src_path(src_dir)
-      src_img = Magick::Image.read(src_path)
+      channel_img = Magick::Image.read(src_path)
         .first
-        .separate(src_channel)[0]
+        .separate(src_channel)
+        .first
 
       # NOTE KI enforce RGB space (not grayscale)
-      src_img.colorspace = Magick::RGBColorspace
+      channel_img.colorspace = Magick::RGBColorspace
 
-      src_img = Util.scale_data_image(src_img, target_size)
-      src_img = src_img.set_channel_depth(Magick::AllChannels, target_depth)
+      channel_img = Util.scale_data_image(channel_img, target_size)
+      channel_img = channel_img.set_channel_depth(Magick::AllChannels, target_depth)
 
-      info "#{dst_channel} = #{src_img.inspect}"
+      target_w = channel_img.columns
+      target_h = channel_img.rows
 
+      # placeholder iamge for empty channels
+      black = black_image(target_w, target_h, target_depth)
+
+      target_channels = {
+        Magick::RedChannel => black,
+        Magick::GreenChannel => black,
+        Magick::BlueChannel => black,
+        Magick::AlphaChannel => black,
+      }
+      target_channels[dst_channel] = channel_img
+
+      # Assemble sequential image list descriptor array for ImageMagick combine
       img_list = Magick::ImageList.new
-      img_list << src_img
+      img_list << target_channels[Magick::RedChannel]
+      img_list << target_channels[Magick::GreenChannel]
+      img_list << target_channels[Magick::BlueChannel]
+
+      alpha_img = target_channels[Magick::AlphaChannel]
 
       # NOTE KI workaround segmentation fault, which happens
       # if running without pause
@@ -496,15 +546,26 @@ module Encode
       # https://imagemagick.org/script/command-line-options.php#combine
       dst_img = img_list.combine(Magick::RGBColorspace)
 
+      # Explicitly activate alpha transparency bitflag descriptor tracking layer
+      dst_img.alpha(Magick::SetAlphaChannel)
+      dst_img
+        .composite_channel!(
+          alpha_img,
+          0, 0,
+          Magick::CopyAlphaCompositeOp,
+          Magick::AlphaChannel)
+
       unless dry_run
         FileUtils.mkdir_p(dst_dir)
 
-        info "SAVE: #{dst_path}"
-        dst_img.write(dst_path)
+        file_format = dst_img.quantum_depth == 16 ? "PNG64:" : "PNG32:"
+
+        info "SAVE: [#{group}] #{file_format + dst_path}"
+        dst_img.write(file_format + dst_path)
 
         dst_digest.write_digest
 
-        info "DONE: #{dst_path}"
+        info "DONE: [#{group}] #{dst_path}"
       end
     end
   end
