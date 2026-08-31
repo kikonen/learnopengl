@@ -397,10 +397,15 @@ module Encode
       dst_img = Util.scale_data_image(dst_img, target_size)
       dst_img = dst_img.set_channel_depth(Magick::AllChannels, target_depth)
 
+      # Force into pure Gray Colorspace and GrayscaleType metadata
+      dst_img.colorspace = Magick::GRAYColorspace
+      dst_img.image_type = Magick::GrayscaleType
+
       unless dry_run
         FileUtils.mkdir_p(dst_dir)
 
-        file_format = dst_img.quantum_depth == 16 ? "PNG64:" : "PNG32:"
+        # "PNG00:" prefix to strictly enforce a 1-channel 16-bit Grayscale PNG output
+        file_format = "PNG00:"
 
         info "SAVE: [#{group}] #{file_format + dst_path}"
         dst_img.write(file_format + dst_path)
@@ -485,10 +490,16 @@ module Encode
       dst_img = Util.scale_data_image(dst_img, target_size)
       dst_img = dst_img.set_channel_depth(Magick::AllChannels, target_depth)
 
+      # Force into pure Gray Colorspace and GrayscaleType metadata
+      dst_img.colorspace = Magick::GRAYColorspace
+      dst_img.image_type = Magick::GrayscaleType
+
       unless dry_run
         FileUtils.mkdir_p(dst_dir)
 
-        file_format = dst_img.quantum_depth == 16 ? "PNG64:" : "PNG32:"
+        # FIX: Force 8-bit single-channel grayscale output utilizing the "PNG8:" prefix.
+        # This completely bypasses the Q16 quantum pipeline expansion during disk write.
+        file_format = "PNG8:"
 
         info "SAVE: [#{group}] #{file_format + dst_path}"
         dst_img.write(file_format + dst_path)
