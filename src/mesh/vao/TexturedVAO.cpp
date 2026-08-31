@@ -129,7 +129,7 @@ namespace mesh {
 
     void TexturedVAO::updateVertices(
         uint32_t baseVbo,
-        std::span<Vertex> vertices)
+        std::span<const Vertex> vertices)
     {
         ASSERT_RT();
 
@@ -146,7 +146,7 @@ namespace mesh {
 
     void TexturedVAO::updateIndeces(
         uint32_t baseEbo,
-        std::span<Index32> indeces)
+        std::span<const Index32> indeces)
     {
         ASSERT_RT();
 

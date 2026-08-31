@@ -186,7 +186,7 @@ std::shared_future<util::Ref<mesh::MeshSet>> MeshSetRegistry::startLoad(
 void MeshSetRegistry::loadAnimations(
     util::Ref<mesh::MeshSet>& meshSet)
 {
-    for (const auto& animationPath : meshSet->m_animationPaths) {
+    for (const auto& animationPath : meshSet->getAnimationPaths()) {
         loadAnimation(meshSet, animationPath);
     }
 }
@@ -202,14 +202,14 @@ void MeshSetRegistry::loadAnimation(
     {
         {
             filePath = util::joinPathExt(
-                meshSet->m_rootDir,
-                meshSet->m_dir,
+                meshSet->getRootDir(),
+                meshSet->getDir(),
                 animationPath.path, "");
         }
 
         if (!util::fileExists(filePath)) {
             filePath = util::joinPath(
-                meshSet->m_rootDir,
+                meshSet->getRootDir(),
                 animationPath.path);
         }
     }

@@ -89,7 +89,7 @@ namespace mesh {
 
         uint32_t getBaseVertex() const noexcept;
         uint32_t getBaseIndex() const noexcept;
-        uint32_t getVertexCount() const noexcept;
+        //uint32_t getVertexCount() const noexcept;
         uint32_t getIndexCount() const noexcept;
 
         inline ki::vao_id getVaoId() const noexcept {

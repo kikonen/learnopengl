@@ -35,14 +35,15 @@ namespace nav
         m_vertexCount = m_mesh->getVertexCount();
         m_vertices = new float[m_vertexCount * 3];
 
-        m_tris = new int[vaoMesh->m_indeces.size()];
-        m_triCount = static_cast<int>(vaoMesh->m_indeces.size()) / 3;
+        const auto indexCount = vaoMesh->getIndeces().size();
+        m_tris = new int[indexCount];
+        m_triCount = static_cast<int>(indexCount) / 3;
 
         glm::vec3 meshBMin;
         glm::vec3 meshBMax;
         {
             int i = 0;
-            for (auto& vertex : vaoMesh->m_vertices)
+            for (auto& vertex : vaoMesh->getVertices())
             {
                 const auto& pos = glm::vec3{ m_modelMatrix * glm::vec4{ vertex.pos, 1.f } };
                 if (i == 0) {
@@ -61,7 +62,7 @@ namespace nav
 
         {
             int i = 0;
-            for (auto& index : vaoMesh->m_indeces)
+            for (const auto& index : vaoMesh->getIndeces())
             {
                 m_tris[i] = index;
                 i++;

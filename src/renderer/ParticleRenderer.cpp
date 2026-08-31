@@ -69,7 +69,7 @@ void ParticleRenderer::render(
     m_particleProgram->bind();
 
     const auto poolCount = particleSystem.getPoolCount();
-    for (int poolIndex = 0; poolIndex < poolCount; poolIndex++) {
+    for (unsigned int poolIndex = 0; poolIndex < poolCount; poolIndex++) {
         auto* pool = particleSystem.getPool(poolIndex);
         const auto instanceCount = pool->getActiveParticleCount();
         if (instanceCount == 0) continue;

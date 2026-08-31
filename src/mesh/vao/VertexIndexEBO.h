@@ -29,7 +29,7 @@ namespace mesh
 
         void updateIndeces(
             uint32_t baseIndex,
-            std::span<mesh::Index32> indeces) noexcept;
+            std::span<const mesh::Index32> indeces) noexcept;
 
         void clear();
 

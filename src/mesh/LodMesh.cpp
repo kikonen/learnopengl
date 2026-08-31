@@ -135,10 +135,10 @@ namespace mesh {
         return m_mesh->getBaseIndex();
     }
 
-    uint32_t LodMesh::getVertexCount() const noexcept
-    {
-        return m_mesh->getVertexCount();
-    }
+    //uint32_t LodMesh::getVertexCount() const noexcept
+    //{
+    //    return m_mesh->getVertexCount();
+    //}
 
     uint32_t LodMesh::getIndexCount() const noexcept
     {
@@ -252,7 +252,7 @@ namespace mesh {
     std::string LodMesh::getMeshName()
     {
         auto* mesh = getMesh<mesh::Mesh>();
-        return mesh ? mesh->m_name : "NA";
+        return mesh ? mesh->getName() : "NA";
     }
 
     void LodMesh::setMesh(
@@ -336,7 +336,7 @@ namespace mesh {
         m_baseTransform =
             glm::mat4(baseRotation) *
             glm::scale(glm::mat4{ 1.f }, m_scale * m_baseScale) *
-            m_mesh->m_offset.toMatrix();
+            m_mesh->getOffset().toMatrix();
 
         if (!m_flags.useJoints) {
             m_baseTransform = m_baseTransform * m_mesh->getRigBaseTransform();

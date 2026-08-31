@@ -29,9 +29,6 @@ namespace mesh {
         m_vertices.clear();
         m_atlasCoords.clear();
         m_indeces.clear();
-
-        m_vertexCount = 0;
-        m_indexCount = 0;
     }
 
     const kigl::GLVertexArray* TextMesh::prepareVAO()

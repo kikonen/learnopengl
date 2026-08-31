@@ -54,7 +54,7 @@ namespace mesh {
 
     void VertexIndexEBO::updateIndeces(
         uint32_t baseIndex,
-        std::span<mesh::Index32> indeces) noexcept
+        std::span<const mesh::Index32> indeces) noexcept
     {
         assert(baseIndex + indeces.size() <= m_entries.size());
 

@@ -36,7 +36,7 @@ namespace mesh_set::encoder
     void encodeIndeces(
         YAML::Emitter& out,
         const std::string& key,
-        std::vector<mesh::Index32>& indeces,
+        const std::vector<mesh::Index32>& indeces,
         const std::function<void(std::vector<uint32_t>&, const mesh::Index32&)>& fn
     )
     {
@@ -104,19 +104,19 @@ namespace mesh_set::encoder
         out << YAML::BeginMap;
         {
             out << YAML::Key << "name";
-            out << YAML::Value << mesh->m_name;
+            out << YAML::Value << mesh->getName();
 
             out << YAML::Key << "alias";
-            out << YAML::Value << mesh->m_alias;
+            out << YAML::Value << mesh->getAlias();
 
             out << YAML::Key << "vertex_count";
-            out << YAML::Value << mesh->m_vertices.size();
+            out << YAML::Value << mesh->getVertices().size();
         }
         {
             encodeVertices(
                 out,
                 "positions",
-                mesh->m_vertices,
+                mesh->getVertices(),
                 [](std::vector<float>& out, const auto& v) {
                     encodeVec3(out, v.pos);
                 });
@@ -124,7 +124,7 @@ namespace mesh_set::encoder
             encodeVertices(
                 out,
                 "tex_coords",
-                mesh->m_vertices,
+                mesh->getVertices(),
                 [](std::vector<float>& out, const auto& v) {
                 encodeVec2(out, v.texCoord);
             });
@@ -132,7 +132,7 @@ namespace mesh_set::encoder
             encodeVertices(
                 out,
                 "normals",
-                mesh->m_vertices,
+                mesh->getVertices(),
                 [](std::vector<float>& out, const auto& v) {
                 encodeVec3(out, v.normal);
             });
@@ -140,7 +140,7 @@ namespace mesh_set::encoder
             encodeVertices(
                 out,
                 "tangents",
-                mesh->m_vertices,
+                mesh->getVertices(),
                 [](std::vector<float>& out, const auto& v) {
                 encodeVec3(out, v.tangent);
             });
@@ -148,7 +148,7 @@ namespace mesh_set::encoder
             encodeVertices(
                 out,
                 "bitangents",
-                mesh->m_vertices,
+                mesh->getVertices(),
                 [](std::vector<float>& out, const auto& v) {
                 encodeVec3(out, v.bitangent);
             });
@@ -156,14 +156,14 @@ namespace mesh_set::encoder
             encodeVertexJoints(
                 out,
                 "joint_ids",
-                mesh->m_vertexJoints,
+                mesh->getVertexJoints(),
                 [](std::vector<float>& out, const auto& v) {
                 encodeVec4(out, v.m_jointIds);
             });
             encodeVertexJoints(
                 out,
                 "joint_weights",
-                mesh->m_vertexJoints,
+                mesh->getVertexJoints(),
                 [](std::vector<float>& out, const auto& v) {
                 encodeVec4(out, v.m_weights);
             });
@@ -172,7 +172,7 @@ namespace mesh_set::encoder
             encodeIndeces(
                 out,
                 "indeces",
-                mesh->m_indeces,
+                mesh->getIndeces(),
                 [](std::vector<uint32_t>& out, const auto& v) {
                 out.push_back(v);
             });
@@ -189,8 +189,8 @@ namespace mesh_set::encoder
             out << YAML::Key << "rig";
             out << YAML::Value << rig->getName();
 
-            if (mesh->m_rigNodeIndex >= 0) {
-                const auto* node = rig->getNode(mesh->m_rigNodeIndex);
+            if (mesh->getRigNodeIndex() >= 0) {
+                const auto* node = rig->getNode(mesh->getRigNodeIndex());
 
                 out << YAML::Key << "rig_node";
                 out << YAML::Value << node->m_name;

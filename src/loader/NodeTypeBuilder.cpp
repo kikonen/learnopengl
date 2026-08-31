@@ -645,7 +645,7 @@ namespace loader
 
                 KI_INFO_OUT(fmt::format(
                     "\n=======================\n[MESH_SET SUMMARY: {}]\n{}\n=======================",
-                    meshSet->m_name,
+                    meshSet->getName(),
                     meshSet->getSummary()));
             }
             break;
@@ -718,11 +718,11 @@ namespace loader
 
         lodMesh.m_priority = typeData.priority;
 
-        const auto* lod = meshData.findLod(mesh->m_name);
+        const auto* lod = meshData.findLod(mesh->getName());
         if (!lod) {
             // NOTE KI if lods defined then default to 0 mask
             if (!meshData.lods.empty()) {
-                KI_WARN_OUT(fmt::format("TYPE::SCENE: MISSING_LOD : mesh={}", mesh->m_name));
+                KI_WARN_OUT(fmt::format("TYPE::SCENE: MISSING_LOD : mesh={}", mesh->getName()));
                 //lodMesh.m_levelMask = 0;
             }
             return nullptr;

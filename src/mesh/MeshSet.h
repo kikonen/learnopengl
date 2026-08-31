@@ -64,21 +64,73 @@ namespace mesh
 
         std::string getSummary() const;
 
-    public:
-        const std::string m_id;
-        const std::string m_rootDir;
-        const std::string m_dir;
-        const std::string m_path;
-        const std::string m_name;
+        const std::string& getId() const noexcept
+        {
+            return m_id;
+        }
 
-        const bool m_smoothNormals{ false };
-        const bool m_forceNormals{ false };
+        const std::string& getRootDir() const noexcept
+        {
+            return m_rootDir;
+        }
 
-        const std::vector<animation::AnimationPath> m_animationPaths;
+        const std::string& getDir() const noexcept
+        {
+            return m_dir;
+        }
+
+        const std::string& getPath() const noexcept
+        {
+            return m_path;
+        }
+
+        const std::string& getName() const noexcept
+        {
+            return m_name;
+        }
+
+        bool getSmoothNormals() const noexcept
+        {
+            return m_smoothNormals;
+        }
+
+        bool getForceNormals() const noexcept
+        {
+            return m_forceNormals;
+        }
+
+        const std::string& getFilePath() const noexcept
+        {
+            return m_filePath;
+        }
+
+        const std::vector<animation::AnimationPath>& getAnimationPaths() const noexcept
+        {
+            return m_animationPaths;
+        }
+
+    private:
+        // immutable
+        std::string m_id;
+        // immutable
+        std::string m_rootDir;
+        // immutable
+        std::string m_dir;
+        // immutable
+        std::string m_path;
+        // immutable
+        std::string m_name;
+
+        // immutable
+        bool m_smoothNormals{ false };
+        // immutable
+        bool m_forceNormals{ false };
+
+        // immutable
+        std::vector<animation::AnimationPath> m_animationPaths;
 
         std::string m_filePath;
 
-    private:
         std::vector<util::Ref<mesh::Mesh>> m_meshes;
     };
 }

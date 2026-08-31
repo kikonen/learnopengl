@@ -56,6 +56,10 @@ namespace
     {
         if (text.empty()) return;
 
+        auto& meshVertices = mesh->modifyVertices();
+        auto& meshIndeces = mesh->modifyIndeces();
+        auto& meshAtlasCoords = mesh->modifyAtlasCoords();
+
         if (alignHorizontal == text::Align::none) {
             alignHorizontal = text::Align::left;
         }
@@ -94,7 +98,7 @@ namespace
 
             {
                 auto& info = lineInfos.emplace_back();
-                info.vertexOffset = mesh->m_vertices.size();
+                info.vertexOffset = meshVertices.size();
             }
 
             // https://stackoverflow.com/questions/9438209/for-every-character-in-string
@@ -119,7 +123,7 @@ namespace
                     //pen.y += font_line_descender;
 
                     auto& info = lineInfos.emplace_back();
-                    info.vertexOffset = mesh->m_vertices.size();
+                    info.vertexOffset = meshVertices.size();
                     info.lineHeight = font_line_height;
                     currLine++;
 
@@ -154,7 +158,7 @@ namespace
                 const float glyphW = s1 - s0;
                 const float glyphH = t1 - t0;
 
-                const GLuint index = (GLuint)mesh->m_vertices.size();
+                const GLuint index = (GLuint)meshVertices.size();
 
                 const glm::vec3 positions[4]{
                     { x0, y0, 0.f },
@@ -182,12 +186,12 @@ namespace
                 };
 
                 for (int i = 0; i < 4; i++) {
-                    mesh->m_vertices.emplace_back(positions[i], materialCoords[i], normal, tangent, bitangent);
-                    mesh->m_atlasCoords.emplace_back(atlasCoords[i]);
+                    meshVertices.emplace_back(positions[i], materialCoords[i], normal, tangent, bitangent);
+                    meshAtlasCoords.emplace_back(atlasCoords[i]);
                 }
 
                 for (const auto& v : indeces) {
-                    mesh->m_indeces.push_back(v);
+                    meshIndeces.push_back(v);
                 }
 
                 lineInfo.left = std::min(lineInfo.left, x0);
@@ -242,7 +246,7 @@ namespace
             }
 
             for (size_t glyphIndex = 0; glyphIndex < lineInfo.glyphCount * 4; glyphIndex++) {
-                auto& vertex = mesh->m_vertices[vertexOffset + glyphIndex];
+                auto& vertex = meshVertices[vertexOffset + glyphIndex];
                 vertex.pos.x += adjustX;
             }
         }
@@ -272,7 +276,7 @@ namespace
             }
 
             for (size_t glyphIndex = 0; glyphIndex < glyphCount * 4; glyphIndex++) {
-                auto& vertex = mesh->m_vertices[vertexOffset + glyphIndex];
+                auto& vertex = meshVertices[vertexOffset + glyphIndex];
                 vertex.pos.y += adjustY;
             }
         }
@@ -300,7 +304,7 @@ namespace text
         const auto atlasPad = fontAtlas->getPadding();
         const auto atlasSize = fontAtlas->getAtlasSize();
 
-        const size_t startVertex = mesh->m_vertices.size();
+        const size_t startVertex = mesh->getVertices().size();
 
         addText(
             mesh, fontAtlas, text, pivot,
@@ -310,21 +314,19 @@ namespace text
             //static_cast<float>(atlasPad / atlasSize.y),
             static_cast<float>(atlasPad),
             static_cast<float>(atlasPad),
-            mesh->m_maxSize);
+            mesh->getMaxSize());
 
         // Geometry is built in atlas raster-pixel units; scale it to display
         // units so display size stays independent of the (capped) SDF raster
         // resolution. Identity (== 1.0) while display size <= raster cap.
         const float geometryScale = fontAtlas->getGeometryScale();
         if (geometryScale != 1.f) {
-            for (size_t i = startVertex; i < mesh->m_vertices.size(); i++) {
-                auto& pos = mesh->m_vertices[i].pos;
+            auto& meshVertices = mesh->modifyVertices();
+            for (size_t i = startVertex; i < meshVertices.size(); i++) {
+                auto& pos = meshVertices[i].pos;
                 pos.x *= geometryScale;
                 pos.y *= geometryScale;
             }
         }
-
-        mesh->m_vertexCount = static_cast<uint32_t>(mesh->m_vertices.size());
-        mesh->m_indexCount = static_cast<uint32_t>(mesh->m_indeces.size());
     }
 }

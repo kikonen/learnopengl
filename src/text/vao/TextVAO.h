@@ -18,7 +18,7 @@ namespace text {
 
         void updateAtlasCoords(
             uint32_t baseVbo,
-            std::span<glm::vec2> atlasCoords);
+            std::span<const glm::vec2> atlasCoords);
 
     protected:
         virtual void prepareVAO() override;

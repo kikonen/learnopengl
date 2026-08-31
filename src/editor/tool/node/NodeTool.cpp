@@ -265,11 +265,11 @@ namespace editor
             ImGui::Text(type->getName().c_str());
 
             const auto currMesh = m_state.m_selectedMesh;
-            if (ImGui::BeginCombo("Mesh", currMesh ? currMesh->m_name.c_str() : nullptr)) {
+            if (ImGui::BeginCombo("Mesh", currMesh ? currMesh->getName().c_str() : nullptr)) {
                 for (auto& lodMeshRef : node->getEnabledMeshes()) {
                     auto* mesh = lodMeshRef->getMesh<mesh::Mesh>();
 
-                    const auto* name = mesh->m_name.c_str();
+                    const auto* name = mesh->getName().c_str();
 
                     ImGui::PushID((void*)mesh);
                     const bool isSelected = currMesh == mesh;

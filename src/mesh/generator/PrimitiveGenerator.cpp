@@ -50,11 +50,11 @@ namespace {
         if (generator.vertices.empty() || generator.indeces.empty()) return nullptr;
 
         auto mesh = util::Ref<mesh::PrimitiveMesh>::create(generator.name);
-        mesh->m_type = generator.type;
-        mesh->m_alias = generator.alias;
+        mesh->setPrimitiveType(generator.type);
+        mesh->setAlias(generator.alias);
 
-        auto& vertices = mesh->m_vertices;
-        auto& indeces = mesh->m_indeces;
+        auto& vertices = mesh->modifyVertices();
+        auto& indeces = mesh->modifyIndeces();
 
         vertices.reserve(generator.vertices.size());
         indeces.reserve(generator.indeces.size());
@@ -77,11 +77,11 @@ namespace {
         if (generator.length == 0) return nullptr;
 
         auto mesh = util::Ref<mesh::PrimitiveMesh>::create(generator.name);
-        mesh->m_type = generator.type;
-        mesh->m_alias = generator.alias;
+        mesh->setPrimitiveType(generator.type);
+        mesh->setAlias(generator.alias);
 
-        auto& vertices = mesh->m_vertices;
-        auto& indeces = mesh->m_indeces;
+        auto& vertices = mesh->modifyVertices();
+        auto& indeces = mesh->modifyIndeces();
 
         vertices.reserve(2);
         indeces.reserve(2);
@@ -117,11 +117,11 @@ namespace {
         if (generator.length == 0) return nullptr;
 
         auto mesh = util::Ref<mesh::PrimitiveMesh>::create(generator.name);
-        mesh->m_type = generator.type;
-        mesh->m_alias = generator.alias;
+        mesh->setPrimitiveType(generator.type);
+        mesh->setAlias(generator.alias);
 
-        auto& vertices = mesh->m_vertices;
-        auto& indeces = mesh->m_indeces;
+        auto& vertices = mesh->modifyVertices();
+        auto& indeces = mesh->modifyIndeces();
 
         vertices.reserve(2);
         indeces.reserve(2);
@@ -155,11 +155,11 @@ namespace {
         mesh::PrimitiveGenerator generator)
     {
         auto mesh = util::Ref<mesh::PrimitiveMesh>::create(generator.name);
-        mesh->m_type = generator.type;
-        mesh->m_alias = generator.alias;
+        mesh->setPrimitiveType(generator.type);
+        mesh->setAlias(generator.alias);
 
-        auto& vertices = mesh->m_vertices;
-        auto& indeces = mesh->m_indeces;
+        auto& vertices = mesh->modifyVertices();
+        auto& indeces = mesh->modifyIndeces();
 
         glm::dvec3 controlPoints[2][2]{
             generator.bezier_d0[0],
@@ -196,11 +196,11 @@ namespace {
         mesh::PrimitiveGenerator generator)
     {
         auto mesh = util::Ref<mesh::PrimitiveMesh>::create(generator.name);
-        mesh->m_type = generator.type;
-        mesh->m_alias = generator.alias;
+        mesh->setPrimitiveType(generator.type);
+        mesh->setAlias(generator.alias);
 
-        auto& vertices = mesh->m_vertices;
-        auto& indeces = mesh->m_indeces;
+        auto& vertices = mesh->modifyVertices();
+        auto& indeces = mesh->modifyIndeces();
 
         vertices.reserve(4);
         indeces.reserve(indeces.size());
@@ -242,11 +242,11 @@ namespace {
         mesh::PrimitiveGenerator generator)
     {
         auto mesh = util::Ref<mesh::PrimitiveMesh>::create(generator.name);
-        mesh->m_type = generator.type;
-        mesh->m_alias = generator.alias;
+        mesh->setPrimitiveType(generator.type);
+        mesh->setAlias(generator.alias);
 
-        auto& vertices = mesh->m_vertices;
-        auto& indeces = mesh->m_indeces;
+        auto& vertices = mesh->modifyVertices();
+        auto& indeces = mesh->modifyIndeces();
 
         vertices.reserve(4);
         indeces.reserve(indeces.size());
@@ -288,11 +288,11 @@ namespace {
         mesh::PrimitiveGenerator generator)
     {
         auto mesh = util::Ref<mesh::PrimitiveMesh>::create(generator.name);
-        mesh->m_type = generator.type;
-        mesh->m_alias = generator.alias;
+        mesh->setPrimitiveType(generator.type);
+        mesh->setAlias(generator.alias);
 
-        auto& vertices = mesh->m_vertices;
-        auto& indeces = mesh->m_indeces;
+        auto& vertices = mesh->modifyVertices();
+        auto& indeces = mesh->modifyIndeces();
 
         const auto sizeX = generator.size.x;
         const auto sizeZ = generator.size.z;
@@ -366,11 +366,11 @@ namespace {
         mesh::PrimitiveGenerator generator)
     {
         auto mesh = util::Ref<mesh::PrimitiveMesh>::create(generator.name);
-        mesh->m_type = generator.type;
-        mesh->m_alias = generator.alias;
+        mesh->setPrimitiveType(generator.type);
+        mesh->setAlias(generator.alias);
 
-        auto& vertices = mesh->m_vertices;
-        auto& indeces = mesh->m_indeces;
+        auto& vertices = mesh->modifyVertices();
+        auto& indeces = mesh->modifyIndeces();
 
         generator::PlaneMesh shape{
             glm::dvec2{ generator.size },
@@ -400,11 +400,11 @@ namespace {
         mesh::PrimitiveGenerator generator)
     {
         auto mesh = util::Ref<mesh::PrimitiveMesh>::create(generator.name);
-        mesh->m_type = generator.type;
-        mesh->m_alias = generator.alias;
+        mesh->setPrimitiveType(generator.type);
+        mesh->setAlias(generator.alias);
 
-        auto& vertices = mesh->m_vertices;
-        auto& indeces = mesh->m_indeces;
+        auto& vertices = mesh->modifyVertices();
+        auto& indeces = mesh->modifyIndeces();
 
         generator::BoxMesh shape{
             generator.size,
@@ -455,11 +455,11 @@ namespace {
         mesh::PrimitiveGenerator generator)
     {
         auto mesh = util::Ref<mesh::PrimitiveMesh>::create(generator.name);
-        mesh->m_type = generator.type;
-        mesh->m_alias = generator.alias;
+        mesh->setPrimitiveType(generator.type);
+        mesh->setAlias(generator.alias);
 
-        auto& vertices = mesh->m_vertices;
-        auto& indeces = mesh->m_indeces;
+        auto& vertices = mesh->modifyVertices();
+        auto& indeces = mesh->modifyIndeces();
 
         generator::RoundedBoxMesh shape{
             generator.radius,
@@ -491,11 +491,11 @@ namespace {
         mesh::PrimitiveGenerator generator)
     {
         auto mesh = util::Ref<mesh::PrimitiveMesh>::create(generator.name);
-        mesh->m_type = generator.type;
-        mesh->m_alias = generator.alias;
+        mesh->setPrimitiveType(generator.type);
+        mesh->setAlias(generator.alias);
 
-        auto& vertices = mesh->m_vertices;
-        auto& indeces = mesh->m_indeces;
+        auto& vertices = mesh->modifyVertices();
+        auto& indeces = mesh->modifyIndeces();
 
         generator::DodecahedronMesh shape{
             generator.radius,
@@ -526,11 +526,11 @@ namespace {
         mesh::PrimitiveGenerator generator)
     {
         auto mesh = util::Ref<mesh::PrimitiveMesh>::create(generator.name);
-        mesh->m_type = generator.type;
-        mesh->m_alias = generator.alias;
+        mesh->setPrimitiveType(generator.type);
+        mesh->setAlias(generator.alias);
 
-        auto& vertices = mesh->m_vertices;
-        auto& indeces = mesh->m_indeces;
+        auto& vertices = mesh->modifyVertices();
+        auto& indeces = mesh->modifyIndeces();
 
         generator::IcosahedronMesh shape{
             generator.radius,
@@ -561,11 +561,11 @@ namespace {
         mesh::PrimitiveGenerator generator)
     {
         auto mesh = util::Ref<mesh::PrimitiveMesh>::create(generator.name);
-        mesh->m_type = generator.type;
-        mesh->m_alias = generator.alias;
+        mesh->setPrimitiveType(generator.type);
+        mesh->setAlias(generator.alias);
 
-        auto& vertices = mesh->m_vertices;
-        auto& indeces = mesh->m_indeces;
+        auto& vertices = mesh->modifyVertices();
+        auto& indeces = mesh->modifyIndeces();
 
         generator::IcoSphereMesh shape{
             generator.radius,
@@ -596,11 +596,11 @@ namespace {
         mesh::PrimitiveGenerator generator)
     {
         auto mesh = util::Ref<mesh::PrimitiveMesh>::create(generator.name);
-        mesh->m_type = generator.type;
-        mesh->m_alias = generator.alias;
+        mesh->setPrimitiveType(generator.type);
+        mesh->setAlias(generator.alias);
 
-        auto& vertices = mesh->m_vertices;
-        auto& indeces = mesh->m_indeces;
+        auto& vertices = mesh->modifyVertices();
+        auto& indeces = mesh->modifyIndeces();
 
         generator::SphereMesh shape{
             generator.radius,
@@ -632,11 +632,11 @@ namespace {
         mesh::PrimitiveGenerator generator)
     {
         auto mesh = util::Ref<mesh::PrimitiveMesh>::create(generator.name);
-        mesh->m_type = generator.type;
-        mesh->m_alias = generator.alias;
+        mesh->setPrimitiveType(generator.type);
+        mesh->setAlias(generator.alias);
 
-        auto& vertices = mesh->m_vertices;
-        auto& indeces = mesh->m_indeces;
+        auto& vertices = mesh->modifyVertices();
+        auto& indeces = mesh->modifyIndeces();
 
         generator::CapsuleMesh shape{
             generator.radius,
@@ -670,11 +670,11 @@ namespace {
         mesh::PrimitiveGenerator generator)
     {
         auto mesh = util::Ref<mesh::PrimitiveMesh>::create(generator.name);
-        mesh->m_type = generator.type;
-        mesh->m_alias = generator.alias;
+        mesh->setPrimitiveType(generator.type);
+        mesh->setAlias(generator.alias);
 
-        auto& vertices = mesh->m_vertices;
-        auto& indeces = mesh->m_indeces;
+        auto& vertices = mesh->modifyVertices();
+        auto& indeces = mesh->modifyIndeces();
 
         generator::CylinderMesh shape{
             generator.radius,
@@ -707,11 +707,11 @@ namespace {
         mesh::PrimitiveGenerator generator)
     {
         auto mesh = util::Ref<mesh::PrimitiveMesh>::create(generator.name);
-        mesh->m_type = generator.type;
-        mesh->m_alias = generator.alias;
+        mesh->setPrimitiveType(generator.type);
+        mesh->setAlias(generator.alias);
 
-        auto& vertices = mesh->m_vertices;
-        auto& indeces = mesh->m_indeces;
+        auto& vertices = mesh->modifyVertices();
+        auto& indeces = mesh->modifyIndeces();
 
         generator::CappedCylinderMesh shape{
             generator.radius,
@@ -744,11 +744,11 @@ namespace {
         mesh::PrimitiveGenerator generator)
     {
         auto mesh = util::Ref<mesh::PrimitiveMesh>::create(generator.name);
-        mesh->m_type = generator.type;
-        mesh->m_alias = generator.alias;
+        mesh->setPrimitiveType(generator.type);
+        mesh->setAlias(generator.alias);
 
-        auto& vertices = mesh->m_vertices;
-        auto& indeces = mesh->m_indeces;
+        auto& vertices = mesh->modifyVertices();
+        auto& indeces = mesh->modifyIndeces();
 
         generator::ConeMesh shape{
             generator.radius,
@@ -781,11 +781,11 @@ namespace {
         mesh::PrimitiveGenerator generator)
     {
         auto mesh = util::Ref<mesh::PrimitiveMesh>::create(generator.name);
-        mesh->m_type = generator.type;
-        mesh->m_alias = generator.alias;
+        mesh->setPrimitiveType(generator.type);
+        mesh->setAlias(generator.alias);
 
-        auto& vertices = mesh->m_vertices;
-        auto& indeces = mesh->m_indeces;
+        auto& vertices = mesh->modifyVertices();
+        auto& indeces = mesh->modifyIndeces();
 
         generator::SphericalConeMesh shape{
             generator.radius,
@@ -819,11 +819,11 @@ namespace {
         mesh::PrimitiveGenerator generator)
     {
         auto mesh = util::Ref<mesh::PrimitiveMesh>::create(generator.name);
-        mesh->m_type = generator.type;
-        mesh->m_alias = generator.alias;
+        mesh->setPrimitiveType(generator.type);
+        mesh->setAlias(generator.alias);
 
-        auto& vertices = mesh->m_vertices;
-        auto& indeces = mesh->m_indeces;
+        auto& vertices = mesh->modifyVertices();
+        auto& indeces = mesh->modifyIndeces();
 
         generator::SphericalConeMesh shape{
             generator.radius,
@@ -857,11 +857,11 @@ namespace {
         mesh::PrimitiveGenerator generator)
     {
         auto mesh = util::Ref<mesh::PrimitiveMesh>::create(generator.name);
-        mesh->m_type = generator.type;
-        mesh->m_alias = generator.alias;
+        mesh->setPrimitiveType(generator.type);
+        mesh->setAlias(generator.alias);
 
-        auto& vertices = mesh->m_vertices;
-        auto& indeces = mesh->m_indeces;
+        auto& vertices = mesh->modifyVertices();
+        auto& indeces = mesh->modifyIndeces();
 
         generator::TubeMesh shape{
             generator.radius,
@@ -895,11 +895,11 @@ namespace {
         mesh::PrimitiveGenerator generator)
     {
         auto mesh = util::Ref<mesh::PrimitiveMesh>::create(generator.name);
-        mesh->m_type = generator.type;
-        mesh->m_alias = generator.alias;
+        mesh->setPrimitiveType(generator.type);
+        mesh->setAlias(generator.alias);
 
-        auto& vertices = mesh->m_vertices;
-        auto& indeces = mesh->m_indeces;
+        auto& vertices = mesh->modifyVertices();
+        auto& indeces = mesh->modifyIndeces();
 
         generator::CappedTubeMesh shape{
             generator.radius,
@@ -934,11 +934,11 @@ namespace {
         mesh::PrimitiveGenerator generator)
     {
         auto mesh = util::Ref<mesh::PrimitiveMesh>::create(generator.name);
-        mesh->m_type = generator.type;
-        mesh->m_alias = generator.alias;
+        mesh->setPrimitiveType(generator.type);
+        mesh->setAlias(generator.alias);
 
-        auto& vertices = mesh->m_vertices;
-        auto& indeces = mesh->m_indeces;
+        auto& vertices = mesh->modifyVertices();
+        auto& indeces = mesh->modifyIndeces();
 
         generator::TorusMesh shape{
             generator.inner_radius,
@@ -971,11 +971,11 @@ namespace {
         mesh::PrimitiveGenerator generator)
     {
         auto mesh = util::Ref<mesh::PrimitiveMesh>::create(generator.name);
-        mesh->m_type = generator.type;
-        mesh->m_alias = generator.alias;
+        mesh->setPrimitiveType(generator.type);
+        mesh->setAlias(generator.alias);
 
-        auto& vertices = mesh->m_vertices;
-        auto& indeces = mesh->m_indeces;
+        auto& vertices = mesh->modifyVertices();
+        auto& indeces = mesh->modifyIndeces();
 
         generator::TorusKnotMesh shape{
             generator.p,
@@ -1008,11 +1008,11 @@ namespace {
         mesh::PrimitiveGenerator generator)
     {
         auto mesh = util::Ref<mesh::PrimitiveMesh>::create(generator.name);
-        mesh->m_type = generator.type;
-        mesh->m_alias = generator.alias;
+        mesh->setPrimitiveType(generator.type);
+        mesh->setAlias(generator.alias);
 
-        auto& vertices = mesh->m_vertices;
-        auto& indeces = mesh->m_indeces;
+        auto& vertices = mesh->modifyVertices();
+        auto& indeces = mesh->modifyIndeces();
 
         generator::DiskMesh shape{
             generator.inner_radius,
@@ -1045,11 +1045,11 @@ namespace {
         mesh::PrimitiveGenerator generator)
     {
         auto mesh = util::Ref<mesh::PrimitiveMesh>::create(generator.name);
-        mesh->m_type = generator.type;
-        mesh->m_alias = generator.alias;
+        mesh->setPrimitiveType(generator.type);
+        mesh->setAlias(generator.alias);
 
-        auto& vertices = mesh->m_vertices;
-        auto& indeces = mesh->m_indeces;
+        auto& vertices = mesh->modifyVertices();
+        auto& indeces = mesh->modifyIndeces();
 
         generator::SpringMesh shape{
             generator.inner_radius,

@@ -52,8 +52,11 @@ void Log::init(std::string_view logFile)
 
 void Log::shutdown()
 {
-    flush();
-    g_logger.reset();
+    if (!g_logger) return;
+
+    g_logger->flush();
+    spdlog::drop("main");
+    g_logger = nullptr;
 }
 
 void Log::flush() noexcept

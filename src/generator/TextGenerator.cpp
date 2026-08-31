@@ -66,7 +66,7 @@ void TextGenerator::prepareRT(
 
     auto mesh = util::Ref<mesh::TextMesh>::create();
     mesh->setMaterial(templateLodMesh->m_material);
-    mesh->m_maxSize = m_maxSize;
+    mesh->setMaxSize(m_maxSize);
 
     auto lodMesh = util::Ref<mesh::LodMesh>::create();
     lodMesh->setMesh(mesh);
@@ -181,16 +181,16 @@ void TextGenerator::updateRT(
     text::TextVAO* vao = text::TextSystem::get().getTextVAO();
 
     vao->updateVertices(
-        mesh->m_vboIndex,
-        mesh->m_vertices);
+        mesh->getBaseVertex(),
+        mesh->getVertices());
 
     vao->updateIndeces(
-        mesh->m_eboIndex,
-        mesh->m_indeces);
+        mesh->getBaseIndex(),
+        mesh->getIndeces());
 
     vao->updateAtlasCoords(
-        mesh->m_vboIndex,
-        mesh->m_atlasCoords);
+        mesh->getBaseVertex(),
+        mesh->getAtlasCoords());
 
     SphereVolume worldVolume;
     {

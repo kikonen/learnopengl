@@ -53,7 +53,7 @@ namespace mesh {
     template<typename T_Vertex, typename T_Entry>
     void VBO<T_Vertex, T_Entry>::updateVertices(
         uint32_t baseIndex,
-        const std::span<T_Vertex>& vertices)
+        const std::span<const T_Vertex>& vertices)
     {
         assert(baseIndex + vertices.size() <= m_entries.size());
 

@@ -62,9 +62,6 @@ namespace mesh {
         m_vboIndex = vao->reserveVertices(m_vertices.size());
         m_eboIndex = vao->reserveIndeces(m_indeces.size());
 
-        m_vertexCount = static_cast<uint32_t>(m_vertices.size());
-        m_indexCount = static_cast<uint32_t>(m_indeces.size());
-
         SkinnedVAO* skinnedVao = dynamic_cast<mesh::SkinnedVAO*>(vao);
 
         vao->updateVertices(

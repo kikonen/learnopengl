@@ -25,12 +25,12 @@ namespace mesh_set
         auto& rig = *rigPtr;
         const auto& jointContainer = *jointContainerPtr;
 
-        mesh->m_rig = rigPtr;
-        mesh->m_type = mesh::PrimitiveType::lines;
+        mesh->setRig(rigPtr);
+        mesh->setPrimitiveType(mesh::PrimitiveType::lines);
 
-        auto& vertices = mesh->m_vertices;
-        auto& vertexJoints = mesh->m_vertexJoints;
-        auto& indeces = mesh->m_indeces;
+        auto& vertices = mesh->modifyVertices();
+        auto& vertexJoints = mesh->modifyVertexJoints();
+        auto& indeces = mesh->modifyIndeces();
 
         const size_t expectedCount = rig.m_nodes.size();
 
@@ -110,12 +110,12 @@ namespace mesh_set
         auto& rig = *rigPtr;
         const auto& jointContainer = *jointContainerPtr;
 
-        mesh->m_rig = rigPtr;
-        mesh->m_type = mesh::PrimitiveType::points;
+        mesh->setRig(rigPtr);
+        mesh->setPrimitiveType(mesh::PrimitiveType::points);
 
-        auto& vertices = mesh->m_vertices;
-        auto& vertexJoints = mesh->m_vertexJoints;
-        auto& indeces = mesh->m_indeces;
+        auto& vertices = mesh->modifyVertices();
+        auto& vertexJoints = mesh->modifyVertexJoints();
+        auto& indeces = mesh->modifyIndeces();
 
         const size_t expetedCount = rig.m_nodes.size();
 

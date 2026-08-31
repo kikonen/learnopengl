@@ -21,11 +21,49 @@ namespace mesh {
 
         void setupVertexCounts()
         {
-            m_vertexCount = static_cast<uint32_t>(m_vertices.size());
-            m_indexCount = static_cast<uint32_t>(m_indeces.size());
         }
 
-    public:
+        uint32_t getVertexCount() const noexcept override
+        {
+            return static_cast<uint32_t>(m_vertices.size());
+        }
+
+        uint32_t getIndexCount() const noexcept override
+        {
+            return static_cast<uint32_t>(m_indeces.size());
+        }
+
+        const std::vector<mesh::Vertex>& getVertices() const noexcept
+        {
+            return m_vertices;
+        }
+
+        const std::vector<mesh::Index32>& getIndeces() const noexcept
+        {
+            return m_indeces;
+        }
+
+        std::vector<mesh::Vertex>& modifyVertices() noexcept
+        {
+            return m_vertices;
+        }
+
+        std::vector<mesh::Index32>& modifyIndeces() noexcept
+        {
+            return m_indeces;
+        }
+
+        int32_t getRigNodeIndex() const noexcept
+        {
+            return m_rigNodeIndex;
+        }
+
+        void setRigNodeIndex(int32_t rigNodeIndex) noexcept
+        {
+            m_rigNodeIndex = rigNodeIndex;
+        }
+
+    protected:
         std::vector<mesh::Vertex> m_vertices;
         std::vector<mesh::Index32> m_indeces;
 
@@ -34,6 +72,5 @@ namespace mesh {
 
     protected:
         const kigl::GLVertexArray* m_vao{ nullptr };
-
     };
 }

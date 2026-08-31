@@ -22,26 +22,29 @@ namespace mesh_set::encoder
         out << YAML::BeginMap;
 
         {
+            out << YAML::Key << "id";
+            out << YAML::Value << meshSet->getId();
+
             out << YAML::Key << "name";
-            out << YAML::Value << meshSet->m_name;
+            out << YAML::Value << meshSet->getName();
 
             out << YAML::Key << "dir";
-            out << YAML::Value << meshSet->m_dir;
+            out << YAML::Value << meshSet->getDir();
 
             out << YAML::Key << "path";
-            out << YAML::Value << meshSet->m_path;
+            out << YAML::Value << meshSet->getPath();
 
             out << YAML::Key << "smooth_normals";
-            out << YAML::Value << meshSet->m_smoothNormals;
+            out << YAML::Value << meshSet->getSmoothNormals();
 
             out << YAML::Key << "force_normals";
-            out << YAML::Value << meshSet->m_forceNormals;
+            out << YAML::Value << meshSet->getForceNormals();
 
             out << YAML::Key << "root_dir";
-            out << YAML::Value << meshSet->m_rootDir;
+            out << YAML::Value << meshSet->getRootDir();
 
             out << YAML::Key << "file_path";
-            out << YAML::Value << meshSet->m_filePath;
+            out << YAML::Value << meshSet->getFilePath();
         }
 
         {
@@ -57,6 +60,22 @@ namespace mesh_set::encoder
                     mesh_set::encoder::ModelMeshEncoder encoder;
                     encoder.encode(out, ref);
                 }
+            }
+
+            out << YAML::EndSeq;
+        }
+
+        {
+            out << YAML::Key << "animation_paths";
+            out << YAML::Value << YAML::BeginSeq;
+
+            for (const auto& animationPath : meshSet->getAnimationPaths()) {
+                out << YAML::BeginMap;
+                out << YAML::Key << "prefix";
+                out << YAML::Value << animationPath.animationPrefix;
+                out << YAML::Key << "path";
+                out << YAML::Value << animationPath.path;
+                out << YAML::EndMap;
             }
 
             out << YAML::EndSeq;

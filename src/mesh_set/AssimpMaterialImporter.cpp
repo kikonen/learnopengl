@@ -628,14 +628,14 @@ namespace mesh_set
         if (m_debug) {
             KI_INFO_OUT(fmt::format(
                 "ASSIMP::MATERIAL mesh_set={}, name={}, properties={}, allocated={}",
-                meshSet.m_name,
+                meshSet.getName(),
                 name,
                 src->mNumProperties,
                 src->mNumAllocated));
         }
 
         auto material = util::Ref<Material>::create();
-        material->m_modelDir = meshSet.m_dir;
+        material->m_modelDir = meshSet.getDir();
         material->m_name = name;
 
         PBRMaterialInfo materialInfo = getPBRMaterialInfo(src);
@@ -701,7 +701,7 @@ namespace mesh_set
                     }
 
                     auto tex = loadInlineTexture(
-                        meshSet.m_name,
+                        meshSet.getName(),
                         scene,
                         texInfo,
                         spec,
@@ -746,8 +746,8 @@ namespace mesh_set
         const mesh::MeshSet& meshSet,
         const std::string& origPath)
     {
-        const auto& rootDir = meshSet.m_rootDir;
-        const auto& meshName = meshSet.m_name;
+        const auto& rootDir = meshSet.getRootDir();
+        const auto& meshName = meshSet.getName();
 
         std::string assetPath = origPath;
         std::filesystem::path meshPath{ meshName };
@@ -772,7 +772,7 @@ namespace mesh_set
 
         if (m_debug) {
             KI_INFO_OUT(fmt::format("ASSIMP::TEX mesh_set={}, path={}, was={}",
-                meshSet.m_name,
+                meshSet.getName(),
                 assetPath,
                 origPath));
         }

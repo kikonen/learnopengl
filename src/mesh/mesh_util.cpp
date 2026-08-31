@@ -25,7 +25,7 @@ namespace mesh{
         std::vector<std::string> names;
 
         for (auto& lodMesh : lodMeshes) {
-            names.push_back(lodMesh.m_mesh->m_name);
+            names.push_back(lodMesh.m_mesh->getName());
         }
         return names;
     }
@@ -37,7 +37,7 @@ namespace mesh{
         std::vector<std::string> aliases;
 
         for (auto& lodMesh : lodMeshes) {
-            aliases.push_back(lodMesh.m_mesh->m_alias);
+            aliases.push_back(lodMesh.m_mesh->getAlias());
         }
 
         return aliases;

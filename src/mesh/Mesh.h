@@ -85,16 +85,16 @@ namespace mesh {
             return m_vboIndex;
         }
 
-        uint32_t getVertexCount() const noexcept {
-            return m_vertexCount;
-        }
-
         inline uint32_t getBaseIndex() const noexcept {
             return m_eboIndex;
         }
 
-        uint32_t getIndexCount() const noexcept {
-            return m_indexCount;
+        virtual uint32_t getVertexCount() const noexcept {
+            return 0;
+        }
+
+        virtual uint32_t getIndexCount() const noexcept {
+            return 0;
         }
 
         virtual backend::DrawOptions::Type getDrawType() const noexcept
@@ -128,23 +128,44 @@ namespace mesh {
                 name == m_alias;
         }
 
-    public:
+        const std::string& getName() const noexcept
+        {
+            return m_name;
+        }
+
+        const std::string& getAlias() const noexcept
+        {
+            return m_alias;
+        }
+
+        void setAlias(const std::string& alias) noexcept
+        {
+            m_alias = alias;
+        }
+
+        const util::Transform& getOffset() const noexcept
+        {
+            return m_offset;
+        }
+
+        void setOffset(const util::Transform& offset) noexcept
+        {
+            m_offset = offset;
+        }
+
+    protected:
         std::string m_name;
         std::string m_alias;
 
         util::Transform m_offset;
 
+        // == baseVertex
         // NOTE KI absolute index into VBO
         uint32_t m_vboIndex{ 0 };
 
+        // == baseIndex
         // NOTE KI absolute index into EBO
         uint32_t m_eboIndex{ 0 };
-
-        // vertex entries stored starting from m_vboIndex
-        uint32_t m_vertexCount{ 0 };
-
-        // index entries stored starting from m_eboIndex
-        uint32_t m_indexCount{ 0 };
 
     protected:
         util::Ref<Material> m_material;

@@ -8,8 +8,6 @@ namespace mesh {
     {
         // NOTE KI matches OGLDEV: glDrawArrays(GL_TRIANGLES, 0, 6)
         // shader uses hardcoded vertex data + VERTEX_INDECES[gl_VertexID]
-        m_vertexCount = 0;
-        m_indexCount = 6;
     }
 
     NonVaoMesh::~NonVaoMesh() = default;

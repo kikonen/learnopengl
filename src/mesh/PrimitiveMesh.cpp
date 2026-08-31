@@ -27,13 +27,13 @@
 namespace mesh {
     PrimitiveMesh::PrimitiveMesh()
         : VaoMesh("primitive"),
-        m_type{ PrimitiveType::none }
+        m_primitiveType{ PrimitiveType::none }
     {
     }
 
     PrimitiveMesh::PrimitiveMesh(std::string_view name)
         : VaoMesh(name),
-        m_type{ PrimitiveType::none }
+        m_primitiveType{ PrimitiveType::none }
     {
     }
 
@@ -44,6 +44,11 @@ namespace mesh {
     void PrimitiveMesh::clear() {
         m_vertices.clear();
         m_indeces.clear();
+    }
+
+    void PrimitiveMesh::setRig(const util::Ref<animation::Rig>& rig)
+    {
+        m_rig = rig;
     }
 
     const kigl::GLVertexArray* PrimitiveMesh::prepareVAO()
@@ -69,9 +74,6 @@ namespace mesh {
 
         m_vboIndex = vao->reserveVertices(m_vertices.size());
         m_eboIndex = vao->reserveIndeces(m_indeces.size());
-
-        m_vertexCount = static_cast<uint32_t>(m_vertices.size());
-        m_indexCount = static_cast<uint32_t>(m_indeces.size());
 
         SkinnedVAO* skinnedVao = dynamic_cast<mesh::SkinnedVAO*>(vao);
 
@@ -99,7 +101,7 @@ namespace mesh {
 
     backend::DrawOptions::Mode PrimitiveMesh::getDrawMode() const noexcept
     {
-        switch (m_type) {
+        switch (m_primitiveType) {
         case PrimitiveType::lines:
             return backend::DrawOptions::Mode::lines;
         case PrimitiveType::points:

@@ -36,9 +36,9 @@ namespace mesh {
 
         const float angleEpsilon = 0.9999f;
 
-        auto& vertices = mesh.m_vertices;
+        auto& vertices = mesh.modifyVertices();
         // each 3 indeces form face
-        const auto& indeces = mesh.m_indeces;
+        const auto& indeces = mesh.getIndeces();
 
         std::vector<bool> vertexDone(vertices.size(), false);
         const float qnan = get_qnan();

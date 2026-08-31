@@ -37,7 +37,7 @@ namespace mesh {
 
         void updateVertices(
             uint32_t baseIndex,
-            const std::span<T_Vertex>& vertices);
+            const std::span<const T_Vertex>& vertices);
 
         virtual T_Entry convertVertex(
             const T_Vertex& vertex) = 0;

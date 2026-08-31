@@ -62,7 +62,17 @@ namespace mesh
             return m_jointContainer;
         }
 
-    public:
+        const std::vector<animation::VertexJoint>& getVertexJoints() const noexcept
+        {
+            return m_vertexJoints;
+        }
+
+        std::vector<animation::VertexJoint>& modifyVertexJoints() noexcept
+        {
+            return m_vertexJoints;
+        }
+
+    private:
         std::vector<animation::VertexJoint> m_vertexJoints;
 
     private:

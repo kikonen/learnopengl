@@ -43,7 +43,7 @@ namespace text {
 
     void TextVAO::updateAtlasCoords(
         uint32_t baseVbo,
-        std::span<glm::vec2> atlasCoords)
+        std::span<const glm::vec2> atlasCoords)
     {
         ASSERT_RT();
 

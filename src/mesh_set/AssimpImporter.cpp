@@ -241,8 +241,8 @@ namespace mesh_set
                         modelMesh->m_rig,
                         jointContainer))
                     {
-                        mesh->m_offset = offset;
-                        mesh->m_rigNodeIndex = primaryMesh->m_rigNodeIndex;
+                        mesh->setOffset(offset);
+                        mesh->setRigNodeIndex(primaryMesh->getRigNodeIndex());
                         additionalMeshes.push_back(std::move(mesh));
                     }
 
@@ -250,8 +250,8 @@ namespace mesh_set
                         modelMesh->m_rig,
                         jointContainer))
                     {
-                        mesh->m_offset = offset;
-                        mesh->m_rigNodeIndex = primaryMesh->m_rigNodeIndex;
+                        mesh->setOffset(offset);
+                        mesh->setRigNodeIndex(primaryMesh->getRigNodeIndex());
                         additionalMeshes.push_back(std::move(mesh));
                     }
                 }

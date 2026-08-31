@@ -39,10 +39,32 @@ namespace mesh {
             return m_rig;
         }
 
+        void setRig(const util::Ref<animation::Rig>& rig);
+
         backend::DrawOptions::Mode getDrawMode() const noexcept override;
 
-    public:
-        PrimitiveType m_type;
+        PrimitiveType getPrimitiveType() const noexcept
+        {
+            return m_primitiveType;
+        }
+
+        void setPrimitiveType(PrimitiveType primitiveType) noexcept
+        {
+            m_primitiveType = primitiveType;
+        }
+
+        const std::vector<animation::VertexJoint>& getVertexJoints() const noexcept
+        {
+            return m_vertexJoints;
+        }
+
+        std::vector<animation::VertexJoint>& modifyVertexJoints() noexcept
+        {
+            return m_vertexJoints;
+        }
+
+    protected:
+        PrimitiveType m_primitiveType;
 
         std::vector<animation::VertexJoint> m_vertexJoints;
 

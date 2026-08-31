@@ -33,11 +33,11 @@ namespace mesh {
 
         void updateVertices(
             uint32_t baseVbo,
-            std::span<Vertex> vertices);
+            std::span<const Vertex> vertices);
 
         void updateIndeces(
             uint32_t baseEbo,
-            std::span<Index32> indeces);
+            std::span<const Index32> indeces);
 
         ki::vao_id getVaoId() const noexcept
         {
