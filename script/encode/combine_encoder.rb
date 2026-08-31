@@ -351,7 +351,7 @@ module Encode
         meta: {
           target: File.basename(dst_path),
           type: :height,
-          target_channel: RGBA,
+          target_channel: RED,
           srgb: false
         },
         salt: {
@@ -379,63 +379,19 @@ module Encode
       info "HEIG: [#{group}] [size=#{target_size}] [depth=#{target_depth}] ]#{dst_path}"
 
       src_channel = select_channel(tex_info.source_channel) || select_channel(RED)
-      dst_channel = select_channel(tex_info.target_channel) || select_channel(RED)
 
-      info "LOAD: [#{group}] #{dst_channel} = #{src_channel} #{src_path}"
+      info "LOAD: [#{group}] Extracting channel #{src_channel} from #{src_path}"
 
-      # https://imagemagick.org/script/command-line-options.php#separate
-      channel_img = Magick::Image.read(src_path)
+      # Extract the single raw channel
+      dst_img = Magick::Image.read(src_path)
         .first
         .separate(src_channel)
         .first
 
-      # NOTE KI enforce RGB space (not grayscale)
-      channel_img.colorspace = Magick::RGBColorspace
-
-      channel_img = Util.scale_data_image(channel_img, target_size)
-      channel_img = channel_img.set_channel_depth(Magick::AllChannels, target_depth)
-
-      target_w = channel_img.columns
-      target_h = channel_img.rows
-
-      # black placeholder for empty channels
-      black = black_image(target_w, target_h, target_depth)
-      white = white_image(target_w, target_h, target_depth)
-
-      # all channels empty, except RED holding heightmap
-      target_channels = {
-        Magick::RedChannel => black,
-        Magick::GreenChannel => black,
-        Magick::BlueChannel => black,
-        Magick::AlphaChannel => white,
-      }
-      target_channels[dst_channel] = channel_img
-
-      # build image list for combine (R, G, B)
-      img_list = Magick::ImageList.new
-      img_list << target_channels[Magick::RedChannel]
-      img_list << target_channels[Magick::GreenChannel]
-      img_list << target_channels[Magick::BlueChannel]
-
-      alpha_img = target_channels[Magick::AlphaChannel]
-
-      # NOTE KI workaround segmentation fault, which happens
-      # if running without pause
-      #GC.start
-      #sleep 0.2
-
-      # https://imagemagick.org/script/command-line-options.php#combine
-      # combine linear channels (R, G, B)
-      dst_img = img_list.combine(Magick::RGBColorspace)
-
-      # FIX 2: Pakotetaan AINA Alpha-tila päälle 4-kanavaista tallennusta varten
-      dst_img.alpha(Magick::SetAlphaChannel)
-      dst_img
-        .composite_channel!(
-          alpha_img,
-          0, 0,
-          Magick::CopyAlphaCompositeOp,
-          Magick::AlphaChannel)
+      # Enforce RGB/Linear space for accurate calculations
+      dst_img.colorspace = Magick::RGBColorspace
+      dst_img = Util.scale_data_image(dst_img, target_size)
+      dst_img = dst_img.set_channel_depth(Magick::AllChannels, target_depth)
 
       unless dry_run
         FileUtils.mkdir_p(dst_dir)
@@ -481,7 +437,7 @@ module Encode
         meta: {
           target: File.basename(dst_path),
           type: :displacement,
-          target_channel: RGBA,
+          target_channel: RED,
           srgb: false,
         },
         salt: {
@@ -506,64 +462,24 @@ module Encode
         return dst_digest.update_if_needed
       end
 
-      info "DISP: [#{group}] [size=#{target_size}] [depth=#{target_depth}]] #{dst_path}"
+      info "DISP: [#{group}] [size=#{target_size}] [depth=#{target_depth}] #{dst_path}"
 
       src_channel = select_channel(tex_info.source_channel) || select_channel(RED)
-      dst_channel = select_channel(tex_info.target_channel) || select_channel(RED)
 
-      info "LOAD: [#{group}] #{dst_channel} = #{src_channel} #{src_path}"
+      info "LOAD: [#{group}] Extracting channel #{src_channel} from #{src_path}"
 
-      # https://imagemagick.org/script/command-line-options.php#separate
-      channel_img = Magick::Image.read(src_path)
+      # Separate the single raw displacement data channel
+      dst_img = Magick::Image.read(src_path)
         .first
         .separate(src_channel)
         .first
 
-      # NOTE KI enforce RGB space (not grayscale)
-      channel_img.colorspace = Magick::RGBColorspace
+      # Enforce RGB/Linear space for accurate calculations
+      dst_img.colorspace = Magick::RGBColorspace
 
-      channel_img = Util.scale_data_image(channel_img, target_size)
-      channel_img = channel_img.set_channel_depth(Magick::AllChannels, target_depth)
-
-      target_w = channel_img.columns
-      target_h = channel_img.rows
-
-      # placeholder iamge for empty channels
-      black = black_image(target_w, target_h, target_depth)
-      white = white_image(target_w, target_h, target_depth)
-
-      target_channels = {
-        Magick::RedChannel => black,
-        Magick::GreenChannel => black,
-        Magick::BlueChannel => black,
-        Magick::AlphaChannel => white,
-      }
-      target_channels[dst_channel] = channel_img
-
-      # Assemble sequential image list descriptor array for ImageMagick combine
-      img_list = Magick::ImageList.new
-      img_list << target_channels[Magick::RedChannel]
-      img_list << target_channels[Magick::GreenChannel]
-      img_list << target_channels[Magick::BlueChannel]
-
-      alpha_img = target_channels[Magick::AlphaChannel]
-
-      # NOTE KI workaround segmentation fault, which happens
-      # if running without pause
-      #GC.start
-      #sleep 0.2
-
-      # https://imagemagick.org/script/command-line-options.php#combine
-      dst_img = img_list.combine(Magick::RGBColorspace)
-
-      # Explicitly activate alpha transparency bitflag descriptor tracking layer
-      dst_img.alpha(Magick::SetAlphaChannel)
-      dst_img
-        .composite_channel!(
-          alpha_img,
-          0, 0,
-          Magick::CopyAlphaCompositeOp,
-          Magick::AlphaChannel)
+      # Scale to target size utilizing data-preserving Cubic Filter
+      dst_img = Util.scale_data_image(dst_img, target_size)
+      dst_img = dst_img.set_channel_depth(Magick::AllChannels, target_depth)
 
       unless dry_run
         FileUtils.mkdir_p(dst_dir)
