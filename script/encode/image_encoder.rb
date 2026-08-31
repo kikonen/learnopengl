@@ -80,7 +80,7 @@ module Encode
         return dst_digest.update_if_needed
       end
 
-      info "ENCODE: [#{group}] [size=#{target_size}] [depth=#{target_depth}] [#{tex_info.target_channel}=#{tex_info.source_channel}] #{dst_path}"
+      info "IMAG: [#{group}] [size=#{target_size}] [depth=#{target_depth}] [#{tex_info.target_channel}=#{tex_info.source_channel}] #{dst_path}"
 
       src_channels = select_channels(tex_info.source_channel)
       dst_channels = select_channels(tex_info.target_channel)
@@ -157,6 +157,13 @@ module Encode
         img_list << channel_img
       end
 
+      # NOTE KI enforce output to be RGBA always
+      # (for sampler2darray
+      unless alpha_img
+        info "INFO: [#{group}] ENFORCE RGB to RGBA #{dst_path}"
+        alpha_img = white
+      end
+
       # NOTE KI workaround segmentation fault, which happens
       # if running without pause
       #GC.start
@@ -196,11 +203,12 @@ module Encode
           if (alpha_img)
             file_format = dst_img.quantum_depth == 16 ? "PNG64:" : "PNG32:"
           else
+            info "ERROR:  [#{group}] unexpected RGB format RGBA expected #{dst_path}"
             file_format = dst_img.quantum_depth == 16 ? "PNG48:" : "PNG24:"
           end
         end
 
-        info "WRITE: [#{group}] #{file_format + dst_path}"
+        info "SAVE: [#{group}] #{file_format + dst_path}"
         dst_img.write(file_format + dst_path)
 
         # dst_img.write(dst_path) do |info|

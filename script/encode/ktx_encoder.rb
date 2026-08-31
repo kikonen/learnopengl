@@ -151,7 +151,7 @@ module Encode
         return
       end
 
-      info "ENCODE[#{type.to_s.upcase}]: #{src_path}"
+      info "ENCODE: [#{type.to_s.upcase}]: #{src_path}"
 
       unless dry_run
         FileUtils.mkdir_p(dst_dir)
@@ -170,10 +170,10 @@ module Encode
       cmd << %Q["#{dst_pathname.cleanpath}"]
       cmd << %Q["#{src_pathname.cleanpath}"]
 
-      info "CMD: #{cmd.join(" ")}"
+      info "CMD:  #{cmd.join(" ")}"
 
       unless dry_run
-        info "WRITE: #{dst_path}"
+        info "SAVE: #{dst_path}"
 
         %x{#{cmd.join(" ")}}
 
@@ -181,11 +181,11 @@ module Encode
           FileUtils.cp(dst_tmp_path, dst_path)
           FileUtils.rm_f(dst_tmp_path)
 
-          info "DONE:  #{dst_path}"
+          info "DONE: #{dst_path}"
         end
 
         unless File.exist?(dst_path)
-          info "FAIL:  #{src_path}"
+          info "FAIL: #{src_path}"
           return
         end
 

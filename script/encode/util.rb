@@ -149,7 +149,7 @@ module Encode
       dry_run:
     )
       metadata_path = "#{src_dir}/_assets.meta"
-      info "WRITE: #{metadata_path}"
+      info "SAVE: #{metadata_path}"
 
       if dry_run
         info JSON.pretty_generate(data)

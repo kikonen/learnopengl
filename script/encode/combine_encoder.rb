@@ -303,7 +303,7 @@ module Encode
           end
         end
 
-        info "WRITE: [#{group}] #{file_format + dst_path}"
+        info "SAVE: [#{group}] #{file_format + dst_path}"
         dst_img.write(file_format + dst_path)
 
         dst_digest.write_digest
@@ -368,7 +368,7 @@ module Encode
         return dst_digest.update_if_needed
       end
 
-      info "HEIGHT: [#{group}] [size=#{target_size}] [depth=#{target_depth}] ]#{dst_path}"
+      info "HEIG: [#{group}] [size=#{target_size}] [depth=#{target_depth}] ]#{dst_path}"
 
       src_channel = select_channel(part.source_channel) || select_channel(RED)
       dst_channel = select_channel(part.target_channel) || select_channel(RED)
@@ -401,12 +401,12 @@ module Encode
       unless dry_run
         FileUtils.mkdir_p(dst_dir)
 
-        info "WRITE: #{dst_path}"
+        info "SAVE: #{dst_path}"
         dst_img.write(dst_path)
 
         dst_digest.write_digest
 
-        info "DONE:  #{dst_path}"
+        info "DONE: #{dst_path}"
       end
     end
 
@@ -466,7 +466,7 @@ module Encode
         return dst_digest.update_if_needed
       end
 
-      info "DISPLACEMENT: [#{group}] [size=#{target_size}] [depth=#{target_depth}] ]#{dst_path}"
+      info "DISP: [#{group}] [size=#{target_size}] [depth=#{target_depth}] ]#{dst_path}"
 
       src_channel = select_channel(part.source_channel) || select_channel(RED)
       dst_channel = select_channel(part.target_channel) || select_channel(RED)
@@ -499,12 +499,12 @@ module Encode
       unless dry_run
         FileUtils.mkdir_p(dst_dir)
 
-        info "WRITE: #{dst_path}"
+        info "SAVE: #{dst_path}"
         dst_img.write(dst_path)
 
         dst_digest.write_digest
 
-        info "DONE:  #{dst_path}"
+        info "DONE: #{dst_path}"
       end
     end
   end
