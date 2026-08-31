@@ -35,6 +35,9 @@ module Encode
 
     private
 
+    ########################################
+    # IMAGE
+    ########################################
     def encode_image(
       src_dir:,
       dst_dir:,
@@ -95,11 +98,14 @@ module Encode
 
       src_img = Magick::Image.read(src_path)
         .first
-        .set_channel_depth(Magick::AllChannels, target_depth)
 
-      src_img = src_img
-        .set_channel_depth(Magick::AllChannels, target_depth)
-      src_img = Util.scale_image(src_img, target_size)
+      if tex_info[:type] == :diffuse || tex_info[:type] == :emission
+        src_img = Util.scale_diffuse_image(src_img, target_size)
+      else
+        src_img = Util.scale_data_image(src_img, target_size)
+      end
+
+      src_img = src_img.set_channel_depth(Magick::AllChannels, target_depth)
 
       target_w = src_img.columns
       target_h = src_img.rows
@@ -119,6 +125,9 @@ module Encode
 
         img = src_img
           .separate(src_channel)[0]
+
+        # NOTE KI enforce RGB colorspace (instead of gray)
+        img.colorspace = src_img.colorspace
 
         target_channels[dst_channel] = {
           image: img,
@@ -167,7 +176,7 @@ module Encode
         dst_img.alpha(Magick::SetAlphaChannel)
         dst_img
           .composite_channel!(
-            src_img,
+            alpha_img,
             0, 0,
             Magick::CopyAlphaCompositeOp,
             Magick::AlphaChannel)

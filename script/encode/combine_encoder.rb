@@ -216,11 +216,13 @@ module Encode
           # => should be resonable restriction
           channel_img = Magick::Image.read(src_path)
             .first
-
-          channel_img = channel_img
             .separate(src_channel)[0]
-            .set_channel_depth(Magick::AllChannels, target_depth)
-          channel_img = Util.scale_image(channel_img, target_size)
+
+          # NOTE KI enforce RGB space (not grayscale)
+          channel_img.colorspace = Magick::RGBColorspace
+
+          channel_img = Util.scale_data_image(channel_img, target_size)
+          channel_img = channel_img.set_channel_depth(Magick::AllChannels, target_depth)
 
           target_w = channel_img.columns
           target_h = channel_img.rows
@@ -376,8 +378,12 @@ module Encode
       src_img = Magick::Image.read(src_path)
         .first
         .separate(src_channel)[0]
-        .set_channel_depth(Magick::AllChannels, target_depth)
-      src_img = Util.scale_image(src_img, target_size)
+
+      # NOTE KI enforce RGB space (not grayscale)
+      src_img.colorspace = Magick::RGBColorspace
+
+      src_img = Util.scale_data_image(src_img, target_size)
+      src_img = src_img.set_channel_depth(Magick::AllChannels, target_depth)
 
       info "#{dst_channel} = #{src_img.inspect}"
 
@@ -470,8 +476,12 @@ module Encode
       src_img = Magick::Image.read(src_path)
         .first
         .separate(src_channel)[0]
-        .set_channel_depth(Magick::AllChannels, target_depth)
-      src_img = Util.scale_image(src_img, target_size)
+
+      # NOTE KI enforce RGB space (not grayscale)
+      src_img.colorspace = Magick::RGBColorspace
+
+      src_img = Util.scale_data_image(src_img, target_size)
+      src_img = src_img.set_channel_depth(Magick::AllChannels, target_depth)
 
       info "#{dst_channel} = #{src_img.inspect}"
 

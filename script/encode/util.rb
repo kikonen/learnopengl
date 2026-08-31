@@ -173,6 +173,37 @@ module Encode
       path.gsub(/[\/]*\z/, "")
     end
 
+    def self.scale_diffuse_image(img, target_size)
+      need_scale, target_w, target_h = resolve_size(img, target_size)
+      return img unless need_scale
+
+      # save colorspace
+      orig_colorspace = img.colorspace
+      img.colorspace = Magick::RGBColorspace
+
+      # NOTE KI use Lanczos-filter (should be better for diffuse textures)
+      resized_img = img.resize(target_w, target_h, Magick::LanczosFilter)
+
+      # restore colorspace
+      img.colorspace = orig_colorspace
+      resized_img.colorspace = orig_colorspace
+
+      resized_img
+    end
+
+    # Skaalausmetodi datakartoille (Normal, MRA, DuDv, Displacement, jne.)
+    def self.scale_data_image(img, target_size)
+      need_scale, target_w, target_h = resolve_size(img, target_size)
+      return img unless need_scale
+
+      # TÄRKEÄÄ: Ei kosketa colorspaceen (pidetään raakana datana / RGBColorspace)
+
+      # Käytetään Cubic-suodatinta Lanczosin sijaan, jotta raakadata ei korruptoidu
+      resized_img = img.resize(target_w, target_h, Magick::CubicFilter)
+
+      resized_img
+    end
+
     def self.scale_image(img, target_size)
       need_scale, target_w, target_h = resolve_size(img, target_size)
       return img unless need_scale

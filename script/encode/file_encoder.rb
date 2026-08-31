@@ -59,8 +59,8 @@ module Encode
     end
 
     def black_image(target_w, target_h, target_depth)
-      @black_iamge ||= {}
-      @black_iamge[[target_w, target_h, target_depth]] ||=
+      @black_image ||= {}
+      @black_image[[target_w, target_h, target_depth]] ||=
         if true
           Magick::Image
             .new(target_w, target_h) { |opt|
@@ -71,12 +71,13 @@ module Encode
               opt.filename = "black"
             }
         else
-          Magick::Image
-            .read("#{assets_root_dir}/textures/placeholder/black.png")
-            .first
-            .separate(Magick::RedChannel)[0]
-            .set_channel_depth(Magick::AllChannels, target_depth)
-            .resize(target_w, target_h)
+          img = Magick::Image.read("#{assets_root_dir}/textures/placeholder/black.png").first
+          img = img.separate(Magick::RedChannel)[0]
+
+          # FIX: Pakotetaan lineaariseksi dataksi erottelun jälkeen!
+          img.colorspace = Magick::RGBColorspace
+          img = Util.scale_data_image(img, target_w) # Käytetään CubicFilteriä resizen sijaan
+          img.set_channel_depth(Magick::AllChannels, target_depth)
         end
     end
 
@@ -93,12 +94,13 @@ module Encode
               opt.filename = "white"
             }
         else
-          Magick::Image
-            .read("#{assets_root_dir}/textures/placeholder/white.png")
-            .first
-            .separate(Magick::RedChannel)[0]
-            .set_channel_depth(Magick::AllChannels, target_depth)
-            .resize(target_w, target_h)
+          img = Magick::Image.read("#{assets_root_dir}/textures/placeholder/white.png").first
+          img = img.separate(Magick::RedChannel)[0]
+
+          # NOTE KI enforce RGB colorspace (instead of gray)
+          img.colorspace = Magick::RGBColorspace
+          img = Util.scale_data_image(img, target_w)
+          img.set_channel_depth(Magick::AllChannels, target_depth)
         end
     end
   end
