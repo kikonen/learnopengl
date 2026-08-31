@@ -36,6 +36,10 @@ module Encode
     def encode(tid:)
       @tid = tid
 
+      parts.each do |tex_info|
+        tex_info[:type] = tex_info[:type].to_sym
+      end
+
       create_combound_texture(
         src_dir,
         dst_dir,

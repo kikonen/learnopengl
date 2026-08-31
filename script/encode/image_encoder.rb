@@ -9,6 +9,8 @@ module Encode
   # image encode
   ############################################################
   class ImageEncoder < FileEncoder
+    NORMAL_MAP_DEPTH = 16
+
     attr_reader :tex_info
 
     def initialize(
@@ -28,10 +30,20 @@ module Encode
     def encode(tid:)
       @tid = tid
 
-      encode_image(
-        src_dir:,
-        dst_dir:,
-        tex_info:)
+      tex_info[:type] = tex_info[:type].to_sym
+
+      case tex_info.type.to_sym
+      when :normal
+        encode_normal_texture(
+          src_dir:,
+          dst_dir:,
+          tex_info:)
+      else
+        encode_image(
+          src_dir:,
+          dst_dir:,
+          tex_info:)
+      end
     end
 
     private
@@ -56,7 +68,7 @@ module Encode
         meta: {
           target: File.basename(dst_path),
           type: tex_info[:type],
-          target_channel: tex_info.target_channel,
+          target_channel: RGBA,
           srgb: tex_info.srgb,
         },
         salt: {
@@ -217,6 +229,143 @@ module Encode
         #   p info.image_type
         #   #info.image_type = Magick::TrueColorType
         # end
+
+        dst_digest.write_digest
+
+        info "DONE: [#{group}] #{dst_path}"
+      end
+    end
+
+    ########################################
+    # NORMAL
+    ########################################
+    def encode_normal_texture(
+      src_dir:,
+      dst_dir:,
+      tex_info:
+    )
+      # NOTE KI normal needs higher depth
+      @target_depth = NORMAL_MAP_DEPTH
+
+      group = tex_info.group
+      target_name = tex_info.target_name
+
+      src_path = tex_info.src_path(src_dir)
+      dst_path = "#{dst_dir}/#{target_name}#{BUILD_SUFFIX}.png"
+
+      dst_digest = TextureDigest.new(
+        dst_path,
+        [src_path],
+        meta: {
+          target: File.basename(dst_path),
+          type: tex_info[:type],
+          target_channel: tex_info.target_channel,
+          srgb: false,
+        },
+        salt: {
+          version: IMAGE_VERSION,
+          size: target_size,
+          type: tex_info[:type],
+          depth: target_depth,
+          parts: [
+            {
+              name: tex_info.name,
+              source_channel: tex_info.source_channel,
+              target_channel: tex_info.target_channel,
+              source_depth: tex_info.source_depth,
+              srgb: tex_info.srgb,
+            }
+          ]
+        },
+        force:,
+        tid:)
+
+      unless dst_digest.changed?
+        return dst_digest.update_if_needed
+      end
+
+      info "NORM: [#{group}] [size=#{target_size}] [depth=#{target_depth}] [#{tex_info.target_channel}=#{tex_info.source_channel}] #{dst_path}"
+
+      src_channels = select_channels(tex_info.source_channel)
+      dst_channels = select_channels(tex_info.target_channel)
+
+      target_channels = {
+        Magick::RedChannel => nil,
+        Magick::GreenChannel => nil,
+        Magick::BlueChannel => nil,
+      }
+
+      target_channels.keys.each do |ch|
+        target_channels.delete(ch) unless dst_channels.include?(ch)
+      end
+
+      src_img = Magick::Image.read(src_path)
+        .first
+
+      src_img = Util.scale_data_image(src_img, target_size)
+      src_img = src_img.set_channel_depth(Magick::AllChannels, target_depth)
+
+      target_w = src_img.columns
+      target_h = src_img.rows
+
+      black = black_image(target_w, target_h, target_depth)
+
+      target_placeholders = {
+        Magick::RedChannel => black,
+        Magick::GreenChannel => black,
+        Magick::BlueChannel => black,
+      }
+
+      src_channels.each_with_index do |src_channel, idx|
+        dst_channel = dst_channels[idx]
+        next unless target_channels.key?(dst_channel)
+
+        img = src_img
+          .separate(src_channel)
+          .first
+
+        # NOTE KI enforce RGB colorspace (instead of gray)
+        img.colorspace = src_img.colorspace
+
+        target_channels[dst_channel] = {
+          image: img,
+          channel: src_channel,
+        }
+      end
+
+      img_list = Magick::ImageList.new
+
+      target_channels.each do |dst_channel, image_info|
+        channel_img = target_placeholders[dst_channel]
+        src_channel = nil
+
+        if image_info
+          channel_img = image_info[:image]
+          src_channel = image_info[:channel]
+        end
+
+        info "MAP:  [#{group}] #{dst_channel} = #{src_channel} #{channel_img.inspect}"
+
+        img_list << channel_img
+      end
+
+      # NOTE KI workaround segmentation fault, which happens
+      # if running without pause
+      #GC.start
+      #sleep 0.2
+
+      # https://imagemagick.org/script/command-line-options.php#combine
+      # Magick::RGBColorspace
+      dst_img = img_list.combine(src_img.colorspace)
+
+      unless dry_run
+        FileUtils.mkdir_p(dst_dir)
+
+        # https://unix.stackexchange.com/questions/689906/imagemagick-not-converting-grayscale-to-rgb
+        file_format = dst_img.quantum_depth == 16 ? "PNG48:" : "PNG24:"
+
+        info "SAVE: [#{group}] #{file_format + dst_path}"
+        dst_img.write(file_format + dst_path)
 
         dst_digest.write_digest
 
