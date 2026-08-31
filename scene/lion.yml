@@ -1,0 +1,119 @@
+---
+name: Origo
+skybox:
+  program: g_skybox
+  material: skybox/polyhaven/drakensberg_solitary_mountain_4k.hdr
+script:
+  scripts:
+    - path: lib/common
+
+includes:
+  - xpath: prefab/creatures/include_skeleton_warrior.yml
+
+types:
+  - id: player
+    type: origo
+    front: [0, 0, -1]
+    active: true
+    audio:
+      listener:
+        default: true
+    camera:
+      default: true
+    controllers:
+      - type: pawn
+      - type: camera_zoom
+  - id: dir_light
+    type: origo
+    mesh:
+      path: light
+      program: g_light
+    flags:
+      no_shadow: true
+    light:
+      type: directional
+      diffuse: [0.7, 0.7, 0.7, 1.0]
+      intensity: 30000
+  - id: cube_map
+    type: origo
+    flags:
+      cube_map: true
+      environment_probe: true
+  - id: wooden_floor
+    prefab:
+      path: prefab/scenery/prefab_wooden_floor.yml
+  - id: lion
+    prefab:
+      path: prefab/creatures/prefab_lion_male.yml
+    mesh:
+      material:
+        kd: a8773e
+        #kd: [1, 0.5, 1, 1]
+        map_kd: ""
+        #map_normal: ""
+    script: |
+      cmd:animation_play(
+        self.handle,
+        { name = "walk" })
+  - id: lion_fur
+    prefab:
+      path: prefab/creatures/prefab_lion_male.yml
+    mesh:
+      material_modifier:
+        kd: a8773e
+        #map_kd: textures/Dirt_vh_1024.png
+        map_noise: noise2_256_build.png
+        #map_noise: T_Lion_BaseColor.tga
+        alpha: true
+        #blend: true
+        #render_back: true
+        #default_programs: true
+        tiling: 1
+        layers: 1
+        layers_depth: 0.1
+        render_back: true
+        #default_programs: false
+        #program: g_fur
+    flags:
+      no_shadow: true
+    physics:
+      enabled: false
+      update: false
+    script: |
+      cmd:animation_play(
+        self.handle,
+        { name = "walk" })
+
+nodes:
+  - type: player
+    pos: [0, 1, 5]
+    active: true
+  - type: dir_light
+    pos: [-15, 25, 25]
+  - xtype: cube_map
+    pos: [0, 5, 10]
+  - type: wooden_floor
+    scale: 100
+    position: [0, 0, 0]
+  - xtype: cobblestone_floor
+    scale: 100
+    position: [0, 0, 0]
+  - type: lion
+    pos: [0.0, 1.0, 0.0]
+    rotation: [0, 0, 0]
+    scale: 1
+    children:
+     - type: lion_fur
+       #pos: [0.0, 1.0, 0.0]
+       rotation: [0, 0, 0]
+       scale: 1.001
+       clones:
+         - scale: 1.011
+         - scale: 1.012
+         - scale: 1.013
+         - scale: 1.014
+         - scale: 1.015
+         - scale: 1.016
+         - scale: 1.017
+         - scale: 1.018
+         - scale: 1.019
