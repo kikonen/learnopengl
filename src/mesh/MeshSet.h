@@ -18,6 +18,11 @@ namespace animation
 namespace mesh_set
 {
     class AssimpImporter;
+
+    namespace decoder
+    {
+        class MeshSetDecoder;
+    }
 }
 
 namespace mesh
@@ -28,6 +33,7 @@ namespace mesh
     class MeshSet final : public util::RefCountedSimple
     {
         friend class mesh_set::AssimpImporter;
+        friend class mesh_set::decoder::MeshSetDecoder;
         friend class MeshImporter;
 
     public:

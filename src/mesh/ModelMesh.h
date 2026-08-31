@@ -23,6 +23,11 @@ namespace mesh_set
 {
     class ModelImporter;
     class AssimpImporter;
+
+    namespace decoder
+    {
+        class ModelMeshDecoder;
+    }
 }
 
 namespace loader
@@ -36,6 +41,7 @@ namespace mesh
     {
         friend class mesh_set::ModelImporter;
         friend class mesh_set::AssimpImporter;
+        friend class mesh_set::decoder::ModelMeshDecoder;
         friend class loader::NodeTypeBuilder;
 
     public:

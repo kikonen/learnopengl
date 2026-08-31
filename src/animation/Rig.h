@@ -20,6 +20,11 @@ namespace mesh_set
     class AssimpImporter;
     class AnimationImporter;
     class RigNodeTreeGenerator;
+
+    namespace decoder
+    {
+        class RigDecoder;
+    }
 }
 
 struct aiBone;
@@ -40,6 +45,7 @@ namespace animation
         friend class mesh_set::AssimpImporter;
         friend class mesh_set::AnimationImporter;
         friend class mesh_set::RigNodeTreeGenerator;
+        friend class mesh_set::decoder::RigDecoder;
         friend class AnimationSystem;
         friend class AnimateNode;
         friend class Animator;

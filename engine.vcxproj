@@ -297,6 +297,14 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\loader\WorldLoader.cpp" />
+    <ClCompile Include="src\mesh_set\decoder\AnimationDecoder.cpp" />
+    <ClCompile Include="src\mesh_set\decoder\ClipDecoder.cpp" />
+    <ClCompile Include="src\mesh_set\decoder\Decoder.cpp" />
+    <ClCompile Include="src\mesh_set\decoder\JointDecoder.cpp" />
+    <ClCompile Include="src\mesh_set\decoder\MaterialDecoder.cpp" />
+    <ClCompile Include="src\mesh_set\decoder\MeshSetDecoder.cpp" />
+    <ClCompile Include="src\mesh_set\decoder\ModelMeshDecoder.cpp" />
+    <ClCompile Include="src\mesh_set\decoder\RigDecoder.cpp" />
     <ClCompile Include="src\mesh_set\encoder\Encoder.cpp" />
     <ClCompile Include="src\mesh_set\encoder\AnimationEncoder.cpp" />
     <ClCompile Include="src\mesh_set\encoder\ClipEncoder.cpp" />
@@ -790,6 +798,14 @@
     <ClInclude Include="src\mesh\LodMeshContainer.h" />
     <ClInclude Include="src\mesh\RegisteredRig.h" />
     <ClInclude Include="src\mesh\vao\size.h" />
+    <ClInclude Include="src\mesh_set\decoder\AnimationDecoder.h" />
+    <ClInclude Include="src\mesh_set\decoder\ClipDecoder.h" />
+    <ClInclude Include="src\mesh_set\decoder\Decoder.h" />
+    <ClInclude Include="src\mesh_set\decoder\JointDecoder.h" />
+    <ClInclude Include="src\mesh_set\decoder\MaterialDecoder.h" />
+    <ClInclude Include="src\mesh_set\decoder\MeshSetDecoder.h" />
+    <ClInclude Include="src\mesh_set\decoder\ModelMeshDecoder.h" />
+    <ClInclude Include="src\mesh_set\decoder\RigDecoder.h" />
     <ClInclude Include="src\mesh_set\encoder\AnimationEncoder.h" />
     <ClInclude Include="src\mesh_set\encoder\ClipEncoder.h" />
     <ClInclude Include="src\mesh_set\encoder\JointEncoder.h" />

@@ -6,14 +6,14 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LocalDebuggerWorkingDirectory>$(SolutionDir)</LocalDebuggerWorkingDirectory>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
-    <LocalDebuggerCommandArguments>resources/assets/fbx/creatures/skeleton/skeleton_animated.FBX tmp/encoded.yml</LocalDebuggerCommandArguments>
+    <LocalDebuggerCommandArguments>scene/prefab/characters/elf/female/mesh_elf_female.yml tmp/encoded.yml</LocalDebuggerCommandArguments>
     <LocalDebuggerCommand>$(TargetPath)</LocalDebuggerCommand>
-    <LocalDebuggerCommandArgumentsHistory>resources/assets/fbx/creatures/skeleton/skeleton_animated.FBX tmp/encoded.yml|</LocalDebuggerCommandArgumentsHistory>
+    <LocalDebuggerCommandArgumentsHistory>scene/prefab/characters/elf/female/mesh_elf_female.yml tmp/encoded.yml|</LocalDebuggerCommandArgumentsHistory>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
-    <LocalDebuggerCommandArguments>resources/assets/fbx/creatures/skeleton/skeleton_animated.FBX tmp/encoded.yml</LocalDebuggerCommandArguments>
+    <LocalDebuggerCommandArguments>scene/prefab/characters/elf/female/mesh_elf_female.yml tmp/encoded.yml</LocalDebuggerCommandArguments>
     <DebuggerFlavor>WindowsLocalDebugger</DebuggerFlavor>
-    <LocalDebuggerCommandArgumentsHistory>resources/assets/cube.obj .|resources/assets/fbx/creatures/skeleton/skeleton_animated.FBX .|resources/assets/fbx/creatures/skeleton/skeleton_animated.FBX tmp/encoded.yaml|resources/assets/fbx/creatures/skeleton/skeleton_animated.FBX tmp/encoded.yml|</LocalDebuggerCommandArgumentsHistory>
+    <LocalDebuggerCommandArgumentsHistory>resources/assets/fbx/creatures/skeleton/skeleton_animated.FBX tmp/encoded.yaml|resources/assets/fbx/creatures/skeleton/skeleton_animated.FBX tmp/encoded.yml|resources/assets/fbx/characters/Elf/Bodies/Elf Male.fbx tmp/encoded.yml|"resources/assets/fbx/characters/Elf/Bodies/Elf Male.fbx" tmp/encoded.yml|scene/prefab/characters/elf/female/mesh_elf_female.yml tmp/encoded.yml|</LocalDebuggerCommandArgumentsHistory>
     <LocalDebuggerWorkingDirectory>$(SolutionDir)</LocalDebuggerWorkingDirectory>
   </PropertyGroup>
 </Project>
