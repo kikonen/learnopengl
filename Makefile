@@ -56,10 +56,10 @@ setup:
 assets: assets-meta assets-build
 
 assets-meta:
-	ruby script/encode_ktx.rb meta --src resources/assets --dry-run false --recursive true --target-size ${TARGET_SIZE}
+	ruby script/convert_tex.rb meta --src resources/assets --dry-run false --recursive true --target-size ${TARGET_SIZE}
 
 assets-build:
-	ruby script/encode_ktx.rb build --src resources/assets --dry-run false --recursive true --target-size ${TARGET_SIZE} --encode --combine
+	ruby script/convert_tex.rb build --src resources/assets --dry-run false --recursive true --target-size ${TARGET_SIZE} --encode --combine
 
 assets-ktx:
-	ruby script/encode_ktx.rb build --src resources/assets --dry-run false --recursive true --target-size ${TARGET_SIZE} --ktx
+	ruby script/convert_tex.rb build --src resources/assets --dry-run false --recursive true --target-size ${TARGET_SIZE} --ktx

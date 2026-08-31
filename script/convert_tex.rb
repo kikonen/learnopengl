@@ -28,7 +28,7 @@ module Encode
   ################################################################################
   # Converter
   ################################################################################
-  class Converter < Thor
+  class Convert < Thor
     attr_reader :assets_root_dir,
       :build_root_dir,
       :target_size,
@@ -378,4 +378,4 @@ module Encode
   end
 end
 
-Encode::Converter.start(ARGV)
+Encode::Convert.start(ARGV)
