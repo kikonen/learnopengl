@@ -285,8 +285,8 @@ nodes:
   - type: ground
     position: [0, 3.5, 0]
     scale: 200
-  - type: dandelion
-  - type: flower
+  - xtype: dandelion
+  - xtype: flower
   - type: orc_01
     pos: [-3.0, 1, 0.0]
   - type: griffon

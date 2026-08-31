@@ -14,6 +14,7 @@ prefab:
       program: g_tex
   flags:
     no_shadow: true
+    environment: true
   physics:
     geom:
       type: plane

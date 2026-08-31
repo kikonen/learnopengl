@@ -222,8 +222,6 @@ types:
   - id: wooden_floor
     prefab:
       path: prefab/scenery/prefab_wooden_floor.yml
-    flags:
-      environment: true
   - id: fence
     mesh:
       path: quad
