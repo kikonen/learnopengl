@@ -52,5 +52,7 @@ public:
     const bool m_is16Bbit;
     const bool m_hasAlpha;
 
+    GLenum m_pixelFormat{ 0 };
+
     bool m_valid{ true };
 };

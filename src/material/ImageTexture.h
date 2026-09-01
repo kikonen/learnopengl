@@ -28,7 +28,7 @@ public:
     void release() override;
     void prepare() override;
 
-    void prepareNormal();
+    void preparePlain();
     void prepareKtx();
 
     bool isValid() const noexcept { return m_valid; }
@@ -54,6 +54,8 @@ private:
 
     int m_channels{ 0 };
     bool m_is16Bbit{ false };
+
+    GLenum m_pixelFormat{ 0 };
 
 private:
     bool m_valid{ false };

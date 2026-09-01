@@ -28,4 +28,6 @@ public:
 
 private:
     glm::vec4 m_color;
+
+    GLenum m_pixelFormat{ 0 };
 };

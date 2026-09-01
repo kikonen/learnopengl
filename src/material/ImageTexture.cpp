@@ -85,11 +85,11 @@ void ImageTexture::prepare()
         prepareKtx();
     }
     else {
-        prepareNormal();
+        preparePlain();
     }
 }
 
-void ImageTexture::prepareNormal()
+void ImageTexture::preparePlain()
 {
     m_pixelFormat = GL_UNSIGNED_BYTE;
 

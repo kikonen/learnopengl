@@ -3,7 +3,8 @@
 #include <glm/ext.hpp>
 
 namespace {
-    TextureSpec getTextureSpec() {
+    TextureSpec getTextureSpec()
+    {
         TextureSpec spec;
         spec.minFilter = GL_NEAREST;
         spec.magFilter = GL_NEAREST;
