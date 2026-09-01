@@ -72,6 +72,7 @@ types:
       vertex:
         type: box
         size: [5, 3, 0.2]
+        scale_tiling: true
       material:
         base: textures/Bricks007_1K-PNG
         map_kd: Bricks007_1K_Color.png
@@ -79,8 +80,10 @@ types:
         map_mras: Bricks007_1K_mras
         map_displacement: Bricks007_1K_displacement
         parallax_depth: 0.02
-        tiling_x: 1.25
-        tiling_y: 0.75
+        tiling: 0.25
+        # tiling_x: 1.25
+        # tiling_y: 0.75
+        scale_tiling: true
         program: g_tex
       flags:
         pre_depth: true
@@ -106,8 +109,10 @@ types:
         360 * 100)
   - id: brick_wall_2
     mesh:
-      path: texture_cube.obj
-      base_scale: [5, 3, 0.2]
+      vertex:
+        type: box
+        size: [5, 3, 0.2]
+        scale_tiling: true
       material:
         base: textures/Bricks007_1K-PNG
         map_kd: Bricks007_1K_Color.png
@@ -115,8 +120,10 @@ types:
         map_mras: Bricks007_1K_mras
         map_displacement: Bricks007_1K_displacement
         parallax_depth: 0.02
-        tiling_x: 5
-        tiling_y: 3
+        tiling: 0.25
+        # tiling_x: 5
+        # tiling_y: 3
+        scale_tiling: true
         program: g_tex
       flags:
         pre_depth: true

@@ -15,6 +15,7 @@
 #include "asset/Assets.h"
 #include "asset/AABB.h"
 
+#include "material/material_util.h"
 #include "material/ImageRegistry.h"
 #include "material/ImageTexture.h"
 
@@ -135,8 +136,12 @@ namespace terrain {
     util::Ref<ImageTexture> TerrainGenerator::loadTexture(bool flipY) {
         if (!m_material) return nullptr;
 
-        const auto& texturePath = m_material->resolveTexturePath(m_heightMapFile, false);
-        KI_INFO(fmt::format("TERRAIN: height={}", texturePath));
+        const auto& texturePath = material::resolveTexturePath(m_heightMapFile);
+
+        KI_INFO(fmt::format("TEX::TERRAIN: valid={}, texture={}",
+            texturePath.valid, texturePath.path));
+
+        if (!texturePath.valid) return nullptr;
 
         {
             TextureSpec spec;
@@ -145,8 +150,8 @@ namespace terrain {
             spec.maxMipMapLevels = 1;
 
             auto future = ImageRegistry::get().getTexture(
-                texturePath,
-                texturePath,
+                texturePath.name,
+                texturePath.path,
                 true,
                 false,
                 false,

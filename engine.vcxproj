@@ -297,6 +297,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\loader\WorldLoader.cpp" />
+    <ClCompile Include="src\material\material_util.cpp" />
     <ClCompile Include="src\mesh_set\decoder\AnimationDecoder.cpp" />
     <ClCompile Include="src\mesh_set\decoder\ClipDecoder.cpp" />
     <ClCompile Include="src\mesh_set\decoder\Decoder.cpp" />
@@ -795,6 +796,7 @@
     <ClInclude Include="src\loader\WorldData.h" />
     <ClInclude Include="src\loader\WorldLoader.h" />
     <ClInclude Include="src\material\ImageArrayTexture.h" />
+    <ClInclude Include="src\material\material_util.h" />
     <ClInclude Include="src\mesh\LodMeshContainer.h" />
     <ClInclude Include="src\mesh\RegisteredRig.h" />
     <ClInclude Include="src\mesh\vao\size.h" />

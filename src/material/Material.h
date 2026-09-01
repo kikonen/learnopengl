@@ -62,7 +62,6 @@ struct TextureInfo {
     bool compressed;
 };
 
-
 class Texture;
 class InlineTexture;
 class ImageTexture;
@@ -154,10 +153,6 @@ public:
     //static const util::Ref<Material>& findID(
     //    const ki::material_id id,
     //    const std::vector<Material>& materials);
-
-    std::string resolveTexturePath(
-        std::string_view textureName,
-        bool compressed);
 
     // @param compressed use compressed if possible
     void addTexture(
