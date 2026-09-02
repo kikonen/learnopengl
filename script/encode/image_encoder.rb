@@ -112,13 +112,8 @@ module Encode
       src_img = Magick::Image.read(src_path)
         .first
 
-      # NOTE KI convert to srgb always
-      if tex_info.encode_srgb?
-        unless tex_info.srgb
-          src_img.colorspace = Magick::RGBColorspace
-          src_img = src_img.transform_colorspace(Magick::SRGBColorspace)
-        end
-      end
+      # NOTE KI convert to srgb always?!?
+      # => HOW
 
       if tex_info.diffuse?
         src_img = Util.scale_diffuse_image(src_img, target_size)
