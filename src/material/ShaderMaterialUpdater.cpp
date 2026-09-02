@@ -77,13 +77,13 @@ void ShaderMaterialUpdater::prepareRT(
         glGenSamplers(1, &m_samplerId);
 
         auto& spec = m_material->textureSpec;
-        glSamplerParameteri(m_samplerId, GL_TEXTURE_WRAP_S, spec.wrapS);
-        glSamplerParameteri(m_samplerId, GL_TEXTURE_WRAP_T, spec.wrapT);
+        glSamplerParameteri(m_samplerId, GL_TEXTURE_WRAP_S, spec.asWrapS());
+        glSamplerParameteri(m_samplerId, GL_TEXTURE_WRAP_T, spec.asWrapT());
 
         // https://community.khronos.org/t/gl-nearest-mipmap-linear-or-gl-linear-mipmap-nearest/37648/5
         // https://stackoverflow.com/questions/12363463/when-should-i-set-gl-texture-min-filter-and-gl-texture-mag-filter
-        //glSamplerParameteri(m_samplerId, GL_TEXTURE_MIN_FILTER, spec.minFilter);
-        //glSamplerParameteri(m_samplerId, GL_TEXTURE_MAG_FILTER, spec.magFilter);
+        //glSamplerParameteri(m_samplerId, GL_TEXTURE_MIN_FILTER, spec.asMinFilter());
+        //glSamplerParameteri(m_samplerId, GL_TEXTURE_MAG_FILTER, spec.asMagFilter());
 
         // https://stackoverflow.com/questions/42886835/modifying-parameters-of-bindless-resident-textures
         m_handle = glGetTextureSamplerHandleARB(m_buffer->m_spec.attachments[0].textureID, m_samplerId);
@@ -130,9 +130,9 @@ void ShaderMaterialUpdater::render(
     setNeedUpdate(true);
 }
 
-GLuint64 ShaderMaterialUpdater::getTexHandle(TextureType type) const noexcept
+GLuint64 ShaderMaterialUpdater::getTexHandle(material::TextureType type) const noexcept
 {
-    if (type == TextureType::diffuse) {
+    if (type == material::TextureType::diffuse) {
         return m_handle;
         //return m_samplerId;
     }

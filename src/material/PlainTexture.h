@@ -9,8 +9,8 @@ public:
         std::string_view name,
         bool grayScale,
         bool gammaCorrect,
-        TextureType type,
-        const TextureSpec& spec,
+        material::TextureType type,
+        const material::TextureSpec& spec,
         int width,
         int height);
 

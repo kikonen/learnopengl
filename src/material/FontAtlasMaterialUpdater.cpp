@@ -59,9 +59,9 @@ void FontAtlasMaterialUpdater::render(
     }
 }
 
-GLuint64 FontAtlasMaterialUpdater::getTexHandle(TextureType type) const noexcept
+GLuint64 FontAtlasMaterialUpdater::getTexHandle(material::TextureType type) const noexcept
 {
-    if (type == TextureType::map_custom_1) {
+    if (type == material::TextureType::map_custom_1) {
         return m_handle;
     }
     return 0;

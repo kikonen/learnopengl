@@ -7,6 +7,8 @@
 #include "shader/Program.h"
 #include "shader/Shader.h"
 
+#include "util/Util.h"
+
 
 namespace {
 }
@@ -15,8 +17,8 @@ Texture::Texture(
     std::string_view name,
     bool grayScale,
     bool gammaCorrect,
-    TextureType type,
-    const TextureSpec& spec)
+    material::TextureType type,
+    const material::TextureSpec& spec)
     : m_name(name),
     m_grayScale{ grayScale },
     m_gammaCorrect(gammaCorrect),
@@ -33,11 +35,10 @@ Texture::~Texture()
 std::string Texture::str() const noexcept
 {
     return fmt::format(
-        "<TEX: {}, gammaCorrect={}, wrapS={}, wrapT={}>",
+        "<TEX: {}, gammaCorrect={}, wrap={}>",
         m_name,
         m_gammaCorrect,
-        kigl::formatEnum(m_spec.wrapS),
-        kigl::formatEnum(m_spec.wrapT));
+        util::as_integer(m_spec.wrap));
 }
 
 void Texture::release()

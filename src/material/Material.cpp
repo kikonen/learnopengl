@@ -400,7 +400,9 @@ ki::material_index Material::registerMaterial()
     return MaterialRegistry::get().registerMaterial(this);
 }
 
-GLuint64 Material::getTexHandle(TextureType type, GLuint64 defaultValue) const noexcept
+GLuint64 Material::getTexHandle(
+    material::TextureType type,
+    GLuint64 defaultValue) const noexcept
 {
     if (m_updater) {
         auto handle = m_updater->getTexHandle(type);
@@ -425,12 +427,12 @@ void Material::loadTextures()
         bool flipY = true;
         bool usePlaceholder = false;
 
-        if (type == TextureType::diffuse) {
+        if (type == material::TextureType::diffuse) {
             grayScale = true;
             gammaCorrect = true;
             usePlaceholder = true;
         }
-        else if (type == TextureType::emission) {
+        else if (type == material::TextureType::emission) {
             grayScale = true;
             gammaCorrect = true;
         }
@@ -448,7 +450,7 @@ void Material::loadTextures()
 }
 
 void Material::loadTexture(
-    TextureType type,
+    material::TextureType type,
     bool grayScale,
     bool gammaCorrect,
     bool flipY,
@@ -508,7 +510,7 @@ void Material::loadTexture(
             true,
             gammaCorrect,
             flipY,
-            TextureType::diffuse,
+            material::TextureType::diffuse,
             textureSpec);
 
         future.wait();
@@ -525,7 +527,7 @@ void Material::loadTexture(
 
 // @param compressed use compressed if possible
 void Material::addTexture(
-    TextureType type,
+    material::TextureType type,
     const std::string& path,
     bool compressed) noexcept
 {
@@ -539,7 +541,7 @@ void Material::addTexture(
 }
 
 void Material::addinlineTexture(
-    TextureType type,
+    material::TextureType type,
     const util::Ref<InlineTexture>& texture) noexcept
 {
     m_inlineTextures.insert({ type, texture });
@@ -575,25 +577,25 @@ void Material::prepare()
 //
 //    return {
 //        kd,
-//        hasBoundTex(TextureType::emission) ? WHITE_RGBA : ke,
+//        hasBoundTex(material::TextureType::emission) ? WHITE_RGBA : ke,
 //
-//        hasBoundTex(TextureType::map_mras) ? mrasFactor : mras,
+//        hasBoundTex(material::TextureType::map_mras) ? mrasFactor : mras,
 //
-//        getTexHandle(TextureType::diffuse, whitePx),
-//        getTexHandle(TextureType::emission, blackPx),
+//        getTexHandle(material::TextureType::diffuse, whitePx),
+//        getTexHandle(material::TextureType::emission, blackPx),
 //
-//        getTexHandle(TextureType::map_normal, flatNormalPx),
+//        getTexHandle(material::TextureType::map_normal, flatNormalPx),
 //
-//        getTexHandle(TextureType::map_opacity, whitePx),
+//        getTexHandle(material::TextureType::map_opacity, whitePx),
 //        // NOTE KI whitePx fails due to "inverse" flags
-//        getTexHandle(TextureType::map_mras, 0),
-//        getTexHandle(TextureType::map_displacement, blackPx),
+//        getTexHandle(material::TextureType::map_mras, 0),
+//        getTexHandle(material::TextureType::map_displacement, blackPx),
 //
-//        getTexHandle(TextureType::map_dudv, 0),
-//        getTexHandle(TextureType::map_noise, 0),
-//        getTexHandle(TextureType::map_noise_2, 0),
+//        getTexHandle(material::TextureType::map_dudv, 0),
+//        getTexHandle(material::TextureType::map_noise, 0),
+//        getTexHandle(material::TextureType::map_noise_2, 0),
 //
-//        getTexHandle(TextureType::map_custom_1, 0),
+//        getTexHandle(material::TextureType::map_custom_1, 0),
 //
 //        getFlags(),
 //
@@ -633,15 +635,15 @@ void Material::fillSSBO(
 
     main = {
         .u_diffuse = kd,
-        .u_emission = hasBoundTex(TextureType::emission) ? WHITE_RGBA : ke,
-        .u_mras = hasBoundTex(TextureType::map_mras) ? mrasFactor : mras,
+        .u_emission = hasBoundTex(material::TextureType::emission) ? WHITE_RGBA : ke,
+        .u_mras = hasBoundTex(material::TextureType::map_mras) ? mrasFactor : mras,
 
-        .u_diffuseTex = getTexHandle(TextureType::diffuse, whitePx),
-        .u_emissionTex = getTexHandle(TextureType::emission, blackPx),
-        .u_normalMap = getTexHandle(TextureType::map_normal, flatNormalPx),
-        .u_opacityMap = getTexHandle(TextureType::map_opacity, whitePx),
+        .u_diffuseTex = getTexHandle(material::TextureType::diffuse, whitePx),
+        .u_emissionTex = getTexHandle(material::TextureType::emission, blackPx),
+        .u_normalMap = getTexHandle(material::TextureType::map_normal, flatNormalPx),
+        .u_opacityMap = getTexHandle(material::TextureType::map_opacity, whitePx),
         // NOTE KI whitePx fails due to "inverse" flags
-        .u_mrasMap = getTexHandle(TextureType::map_mras, 0),
+        .u_mrasMap = getTexHandle(material::TextureType::map_mras, 0),
 
         .u_flags = getFlags(),
 
@@ -652,13 +654,13 @@ void Material::fillSSBO(
     };
 
     custom = {
-        .u_displacementMap = getTexHandle(TextureType::map_displacement, blackPx),
+        .u_displacementMap = getTexHandle(material::TextureType::map_displacement, blackPx),
 
-        .u_dudvMap = getTexHandle(TextureType::map_dudv, 0),
-        .u_noiseMap = getTexHandle(TextureType::map_noise, 0),
-        .u_noise2Map = getTexHandle(TextureType::map_noise_2, 0),
+        .u_dudvMap = getTexHandle(material::TextureType::map_dudv, 0),
+        .u_noiseMap = getTexHandle(material::TextureType::map_noise, 0),
+        .u_noise2Map = getTexHandle(material::TextureType::map_noise_2, 0),
 
-        .u_custom1Map = getTexHandle(TextureType::map_custom_1, 0),
+        .u_custom1Map = getTexHandle(material::TextureType::map_custom_1, 0),
 
         .u_fontHAtlas = m_fontAtlasTex,
     };
@@ -717,7 +719,7 @@ void Material::resolveMaterial()
     resolveProgram();
 
     {
-        bool useParallax = material.hasBoundTex(TextureType::map_displacement) && material.parallaxDepth > 0;
+        bool useParallax = material.hasBoundTex(material::TextureType::map_displacement) && material.parallaxDepth > 0;
         if (!useParallax) {
             material.parallaxDepth = 0.f;
         }
@@ -730,12 +732,12 @@ void Material::resolveProgram()
 
     const auto& assets = Assets::get();
 
-    const bool useDudvTex = material.hasBoundTex(TextureType::map_dudv);
-    const bool useDisplacementTex = material.hasBoundTex(TextureType::map_displacement);
-    const bool useNormalTex = material.hasBoundTex(TextureType::map_normal);
+    const bool useDudvTex = material.hasBoundTex(material::TextureType::map_dudv);
+    const bool useDisplacementTex = material.hasBoundTex(material::TextureType::map_displacement);
+    const bool useNormalTex = material.hasBoundTex(material::TextureType::map_normal);
     const bool useCubeMap = 1.0 - material.reflection - material.refraction < 1.0;
     const bool useNormalPattern = material.pattern > 0;
-    const bool useParallax = material.hasBoundTex(TextureType::map_displacement) && material.parallaxDepth > 0;
+    const bool useParallax = material.hasBoundTex(material::TextureType::map_displacement) && material.parallaxDepth > 0;
 
     const bool useTBN = useNormalTex || useDudvTex || useDisplacementTex;
 

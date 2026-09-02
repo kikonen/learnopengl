@@ -156,33 +156,33 @@ public:
 
     // @param compressed use compressed if possible
     void addTexture(
-        TextureType type,
+        material::TextureType type,
         const std::string& path,
         bool compressed) noexcept;
 
     void addinlineTexture(
-        TextureType type,
+        material::TextureType type,
         const util::Ref<InlineTexture>& texture) noexcept;
 
-    bool hasRegisteredTex(TextureType type) const noexcept
+    bool hasRegisteredTex(material::TextureType type) const noexcept
     {
         return m_texturePaths.find(type) != m_texturePaths.end();
     }
 
-    bool hasBoundTex(TextureType type) const noexcept
+    bool hasBoundTex(material::TextureType type) const noexcept
     {
         return m_boundTextures.find(type) != m_boundTextures.end();
     }
 
-    const BoundTexture* getBoundTex(TextureType type) const noexcept
+    const BoundTexture* getBoundTex(material::TextureType type) const noexcept
     {
         const auto& it = m_boundTextures.find(type);
         return it != m_boundTextures.end() ? &it->second : nullptr;
     }
 
-    GLuint64 getTexHandle(TextureType type, GLuint64 defaultValue) const noexcept;
+    GLuint64 getTexHandle(material::TextureType type, GLuint64 defaultValue) const noexcept;
 
-    const std::map<TextureType, TextureInfo>& getTextures() const noexcept
+    const std::map<material::TextureType, TextureInfo>& getTextures() const noexcept
     {
         return m_texturePaths;
     }
@@ -202,7 +202,7 @@ public:
 
 private:
     void loadTexture(
-        TextureType type,
+        material::TextureType type,
         bool grayScale,
         bool gammaCorrect,
         bool flipY,
@@ -211,7 +211,7 @@ private:
 public:
     mutable ki::material_index m_registeredIndex{ -1 };
 
-    TextureSpec textureSpec;
+    material::TextureSpec textureSpec;
 
     int pattern = -1;
     float reflection = 0.f;
@@ -325,11 +325,11 @@ public:
     GLuint64 m_fontAtlasTex{ 0 };
 
 private:
-    std::map<TextureType, BoundTexture> m_boundTextures{};
-    std::map<TextureType, TextureInfo> m_texturePaths{};
-    std::map<TextureType, util::Ref<InlineTexture>> m_inlineTextures{};
+    std::map<material::TextureType, BoundTexture> m_boundTextures{};
+    std::map<material::TextureType, TextureInfo> m_texturePaths{};
+    std::map<material::TextureType, util::Ref<InlineTexture>> m_inlineTextures{};
 
-    std::map<TextureType, util::UVTransform> m_textureTransforms;
+    std::map<material::TextureType, util::UVTransform> m_textureTransforms;
 
     ki::material_id m_id;
 

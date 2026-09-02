@@ -9,8 +9,8 @@ PlainTexture::PlainTexture(
     std::string_view name,
     bool grayScale,
     bool gammaCorrect,
-    TextureType type,
-    const TextureSpec& spec,
+    material::TextureType type,
+    const material::TextureSpec& spec,
     int width,
     int height)
     : Texture(name, grayScale, gammaCorrect, type, spec)
@@ -43,11 +43,11 @@ void PlainTexture::prepare()
     //KI_GL_CALL(glad_glTextureStorage2D(m_textureID, 1, m_internalFormat, m_width, m_height));
     glTextureStorage2D(m_textureID, mipMapLevels, m_internalFormat, m_width, m_height);
 
-    glTextureParameteri(m_textureID, GL_TEXTURE_WRAP_S, m_spec.wrapS);
-    glTextureParameteri(m_textureID, GL_TEXTURE_WRAP_T, m_spec.wrapT);
+    glTextureParameteri(m_textureID, GL_TEXTURE_WRAP_S, m_spec.asWrapS());
+    glTextureParameteri(m_textureID, GL_TEXTURE_WRAP_T, m_spec.asWrapT());
 
-    glTextureParameteri(m_textureID, GL_TEXTURE_MIN_FILTER, m_spec.minFilter);
-    glTextureParameteri(m_textureID, GL_TEXTURE_MAG_FILTER, m_spec.magFilter);
+    glTextureParameteri(m_textureID, GL_TEXTURE_MIN_FILTER, m_spec.asMinFilter());
+    glTextureParameteri(m_textureID, GL_TEXTURE_MAG_FILTER, m_spec.asMagFilter());
 
     glGenerateTextureMipmap(m_textureID);
 }

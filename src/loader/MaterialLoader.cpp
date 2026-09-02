@@ -156,21 +156,21 @@ namespace loader {
             else if (k == "map_kd") {
                 std::string line = readString(v);
                 material.addTexture(
-                    TextureType::diffuse,
+                    material::TextureType::diffuse,
                     line,
                     true);
             }
             else if (k == "map_ke") {
                 std::string line = readString(v);
                 material.addTexture(
-                    TextureType::emission,
+                    material::TextureType::emission,
                     line,
                     true);
             }
             else if (k == "map_ks") {
                 std::string line = readString(v);
                 material.addTexture(
-                    TextureType::specular,
+                    material::TextureType::specular,
                     line,
                     true);
             }
@@ -179,7 +179,7 @@ namespace loader {
                 // k == "map_bump" ||
                 std::string line = readString(v);
                 material.addTexture(
-                    TextureType::map_normal,
+                    material::TextureType::map_normal,
                     line,
                     true);
             }
@@ -190,49 +190,49 @@ namespace loader {
             else if (k == "map_dudv") {
                 std::string line = readString(v);
                 material.addTexture(
-                    TextureType::map_dudv,
+                    material::TextureType::map_dudv,
                     line,
                     true);
             }
             else if (k == "map_noise") {
                 std::string line = readString(v);
                 material.addTexture(
-                    TextureType::map_noise,
+                    material::TextureType::map_noise,
                     line,
                     true);
             }
             else if (k == "map_noise_2") {
                 std::string line = readString(v);
                 material.addTexture(
-                    TextureType::map_noise_2,
+                    material::TextureType::map_noise_2,
                     line,
                     true);
             }
             else if (k == "map_displacement" || k == "map_di") {
                 std::string line = readString(v);
                 material.addTexture(
-                    TextureType::map_displacement,
+                    material::TextureType::map_displacement,
                     line,
                     true);
             }
             else if (k == "map_opacity") {
                 std::string line = readString(v);
                 material.addTexture(
-                    TextureType::map_opacity,
+                    material::TextureType::map_opacity,
                     line,
                     true);
             }
             else if (k == "map_custom_1") {
                 std::string line = readString(v);
                 material.addTexture(
-                    TextureType::map_custom_1,
+                    material::TextureType::map_custom_1,
                     line,
                     true);
             }
             else if (k == "map_mras") {
                 std::string line = readString(v);
                 material.addTexture(
-                    TextureType::map_mras,
+                    material::TextureType::map_mras,
                     line,
                     true);
             }
@@ -469,7 +469,7 @@ namespace loader {
         if (material.m_name == "female_elf_hooded_pants_set")
             int x = 0;
 
-        if (material.hasRegisteredTex(TextureType::map_displacement)) {
+        if (material.hasRegisteredTex(material::TextureType::map_displacement)) {
             if (!fields.parallaxDepth) {
                 const auto& assets = Assets::get();
                 KI_INFO_OUT(fmt::format("LOADER_MATERIAL: apply_default_parallax={}", assets.parallaxDepth));
@@ -547,21 +547,14 @@ namespace loader {
 
     void MaterialLoader::loadTextureSpec(
         const loader::DocNode& node,
-        TextureSpec& textureSpec) const
+        material::TextureSpec& textureSpec) const
     {
         for (const auto& pair : node.getNodes()) {
             const std::string& k = pair.getName();
             const loader::DocNode& v = pair.getNode();
 
             if (k == "wrap") {
-                loadTextureWrap(k, v, textureSpec.wrapS);
-                loadTextureWrap(k, v, textureSpec.wrapT);
-            }
-            else if (k == "wrap_s") {
-                loadTextureWrap(k, v, textureSpec.wrapS);
-            }
-            else if (k == "wrap_t") {
-                loadTextureWrap(k, v, textureSpec.wrapT);
+                textureSpec.wrap = loadTextureWrap(k, v);
             }
             else {
                 reportUnknown("tex_spec", k, v);
@@ -569,22 +562,21 @@ namespace loader {
         }
     }
 
-    void MaterialLoader::loadTextureWrap(
+    material::WrapMode MaterialLoader::loadTextureWrap(
         const std::string& k,
-        const loader::DocNode& v,
-        uint16_t& wrapMode) const
+        const loader::DocNode& v) const
     {
         const std::string& wrap = readString(v);
-        if (wrap == "GL_REPEAT") {
-            wrapMode = GL_REPEAT;
+        if (wrap == "repeat") {
+            return material::WrapMode::repeat;
         }
-        else if (wrap == "GL_CLAMP_TO_EDGE") {
-            wrapMode = GL_CLAMP_TO_EDGE;
+        else if (wrap == "clamp_to_edge") {
+            return material::WrapMode::clamp_to_edge;
         }
         else {
             // NOTE KI GL_REPEAT is GL default
-            wrapMode = GL_REPEAT;
             reportUnknown("wrap_mode", k, v);
+            return material::WrapMode::repeat;
         }
     }
 

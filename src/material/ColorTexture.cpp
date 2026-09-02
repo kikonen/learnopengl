@@ -3,11 +3,11 @@
 #include <glm/ext.hpp>
 
 namespace {
-    TextureSpec getTextureSpec()
+    material::TextureSpec getTextureSpec()
     {
-        TextureSpec spec;
-        spec.minFilter = GL_NEAREST;
-        spec.magFilter = GL_NEAREST;
+        material::TextureSpec spec;
+        spec.minFilter = material::TextureFilter::nearest;
+        spec.magFilter = material::TextureFilter::nearest;
         spec.maxMipMapLevels = 1;
         return spec;
     }
@@ -68,7 +68,7 @@ ColorTexture::ColorTexture(
     glm::vec4 color,
     GLenum internalFormat,
     bool usePrepare)
-    : Texture(name, false, false, TextureType::diffuse, getTextureSpec()),
+    : Texture(name, false, false, material::TextureType::diffuse, getTextureSpec()),
     m_color{ color }
 {
     m_internalFormat = internalFormat;
@@ -98,13 +98,13 @@ void ColorTexture::prepare()
     kigl::setLabel(GL_TEXTURE, m_textureID, m_name);
 
     {
-        glTextureParameteri(m_textureID, GL_TEXTURE_WRAP_S, m_spec.wrapS);
-        glTextureParameteri(m_textureID, GL_TEXTURE_WRAP_T, m_spec.wrapT);
+        glTextureParameteri(m_textureID, GL_TEXTURE_WRAP_S, m_spec.asWrapS());
+        glTextureParameteri(m_textureID, GL_TEXTURE_WRAP_T, m_spec.asWrapT());
 
         // https://community.khronos.org/t/gl-nearest-mipmap-linear-or-gl-linear-mipmap-nearest/37648/5
         // https://stackoverflow.com/questions/12363463/when-should-i-set-gl-texture-min-filter-and-gl-texture-mag-filter
-        glTextureParameteri(m_textureID, GL_TEXTURE_MIN_FILTER, m_spec.minFilter);
-        glTextureParameteri(m_textureID, GL_TEXTURE_MAG_FILTER, m_spec.magFilter);
+        glTextureParameteri(m_textureID, GL_TEXTURE_MIN_FILTER, m_spec.asMinFilter());
+        glTextureParameteri(m_textureID, GL_TEXTURE_MAG_FILTER, m_spec.asMagFilter());
 
         const int mipMapLevels = m_spec.maxMipMapLevels;
 

@@ -22,8 +22,8 @@ public:
         bool is16Bbit,
         bool hasAlpha,
         bool gammaCorrect,
-        TextureType type,
-        const TextureSpec& spec);
+        material::TextureType type,
+        const material::TextureSpec& spec);
 
     virtual ~InlineTexture();
 

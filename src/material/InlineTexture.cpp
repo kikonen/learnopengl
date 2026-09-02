@@ -31,8 +31,8 @@ InlineTexture::InlineTexture(
     bool is16Bbit,
     bool hasAlpha,
     bool gammaCorrect,
-    TextureType type,
-    const TextureSpec& spec)
+    material::TextureType type,
+    const material::TextureSpec& spec)
     : Texture{ name, false, gammaCorrect, type, spec },
     m_name{ name },
     m_data{ data },
@@ -51,7 +51,7 @@ InlineTexture::~InlineTexture()
 std::string InlineTexture::str() const noexcept
 {
     return fmt::format(
-        "<IMG: {} {}bit {}ch {}x{} {}{} ({}), [{}, {}], [{}, {}]>",
+        "<IMG: {} {}bit {}ch {}x{} {}{} ({}), [{}], [{}, {}]>",
         m_name,
         m_is16Bbit ? "16" : "8",
         m_channels,
@@ -60,10 +60,9 @@ std::string InlineTexture::str() const noexcept
         m_grayScale ? "GRAY " : "",
         kigl::formatEnum(m_internalFormat),
         kigl::formatEnum(m_format),
-        kigl::formatEnum(m_spec.wrapS),
-        kigl::formatEnum(m_spec.wrapT),
-        kigl::formatEnum(m_spec.minFilter),
-        kigl::formatEnum(m_spec.magFilter)
+        util::as_integer(m_spec.wrap),
+        util::as_integer(m_spec.minFilter),
+        util::as_integer(m_spec.magFilter)
     );
 }
 
@@ -150,13 +149,13 @@ void InlineTexture::prepareNormal()
     kigl::setLabel(GL_TEXTURE, m_textureID, m_name);
 
     {
-        glTextureParameteri(m_textureID, GL_TEXTURE_WRAP_S, m_spec.wrapS);
-        glTextureParameteri(m_textureID, GL_TEXTURE_WRAP_T, m_spec.wrapT);
+        glTextureParameteri(m_textureID, GL_TEXTURE_WRAP_S, m_spec.asWrapS());
+        glTextureParameteri(m_textureID, GL_TEXTURE_WRAP_T, m_spec.asWrapT());
 
         // https://community.khronos.org/t/gl-nearest-mipmap-linear-or-gl-linear-mipmap-nearest/37648/5
         // https://stackoverflow.com/questions/12363463/when-should-i-set-gl-texture-min-filter-and-gl-texture-mag-filter
-        glTextureParameteri(m_textureID, GL_TEXTURE_MIN_FILTER, m_spec.minFilter);
-        glTextureParameteri(m_textureID, GL_TEXTURE_MAG_FILTER, m_spec.magFilter);
+        glTextureParameteri(m_textureID, GL_TEXTURE_MIN_FILTER, m_spec.asMinFilter());
+        glTextureParameteri(m_textureID, GL_TEXTURE_MAG_FILTER, m_spec.asMagFilter());
 
         const int mipMapLevels = resolveMixMapLevels();
 

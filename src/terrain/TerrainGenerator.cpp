@@ -144,9 +144,8 @@ namespace terrain {
         if (!texturePath.valid) return nullptr;
 
         {
-            TextureSpec spec;
-            spec.wrapS = GL_CLAMP_TO_EDGE;
-            spec.wrapT = GL_CLAMP_TO_EDGE;
+            material::TextureSpec spec;
+            spec.wrap = material::WrapMode::clamp_to_edge;
             spec.maxMipMapLevels = 1;
 
             auto future = ImageRegistry::get().getTexture(
@@ -156,7 +155,7 @@ namespace terrain {
                 false,
                 false,
                 true,
-                TextureType::map_custom_1,
+                material::TextureType::map_custom_1,
                 spec);
 
             future.wait();
