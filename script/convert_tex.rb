@@ -200,10 +200,10 @@ module Encode
       puts "DRY_RUN:      #{dry_run}"
       puts "THREAD_COUNT: #{thread_count}"
 
-      if use_combine || use_encode
+      if use_combine || use_encode || use_copy
         @processor = AsyncProcessor.new(thread_count:)
 
-         if use_combine
+        if use_combine
           puts "[COMBINE]"
           build_pass_2(
             src_dir:,
@@ -287,6 +287,11 @@ module Encode
         end
 
         if action == :encode
+          encode_textures << tex_info
+          next
+        end
+
+        if action == :copy
           encode_textures << tex_info
           next
         end

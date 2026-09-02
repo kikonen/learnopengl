@@ -30,19 +30,27 @@ module Encode
     def encode(tid:)
       @tid = tid
 
+      tex_info[:action] = tex_info.action.to_sym
       tex_info[:type] = tex_info.type.to_sym
 
-      case tex_info.type.to_sym
-      when :normal
-        encode_normal_map(
+      if tex_info[:action] == :copy
+        copy_image(
           src_dir:,
           dst_dir:,
           tex_info:)
       else
-        encode_image(
-          src_dir:,
-          dst_dir:,
-          tex_info:)
+        case tex_info.type.to_sym
+        when :normal
+          encode_normal_map(
+            src_dir:,
+            dst_dir:,
+            tex_info:)
+        else
+          encode_image(
+            src_dir:,
+            dst_dir:,
+            tex_info:)
+        end
       end
     end
 
@@ -369,6 +377,65 @@ module Encode
 
         info "SAVE: [#{group}] #{file_format + dst_path}"
         dst_img.write(file_format + dst_path)
+
+        dst_digest.write_digest
+
+        info "DONE: [#{group}] #{dst_path}"
+      end
+    end
+
+    ########################################
+    # COPY
+    ########################################
+    def copy_image(
+      src_dir:,
+      dst_dir:,
+      tex_info:
+    )
+      group = tex_info.group
+      target_name = tex_info.target_name
+
+      src_path = tex_info.src_path(src_dir)
+      dst_path = "#{dst_dir}/#{target_name}#{BUILD_SUFFIX}.png"
+
+      dst_digest = TextureDigest.new(
+        dst_path,
+        [src_path],
+        meta: {
+          target: File.basename(dst_path),
+          type: tex_info.type,
+          target_channel: RGBA,
+          srgb: tex_info.encode_srgb?,
+        },
+        salt: {
+          version: IMAGE_VERSION,
+          size: target_size,
+          type: tex_info.type,
+          depth: target_depth,
+          parts: [
+            {
+              name: tex_info.name,
+              source_channel: tex_info.source_channel,
+              target_channel: tex_info.target_channel,
+              source_depth: tex_info.source_depth,
+              srgb: tex_info.srgb,
+            }
+          ]
+        },
+        force:,
+        tid:)
+
+      unless dst_digest.changed?
+        return dst_digest.update_if_needed
+      end
+
+      info "COPY: [#{group}] [size=#{target_size}] [depth=#{target_depth}] [#{tex_info.target_channel}=#{tex_info.source_channel}] #{dst_path}"
+
+      unless dry_run
+        FileUtils.mkdir_p(dst_dir)
+
+        info "SAVE: [#{group}] #{dst_path}"
+        FileUtils.copy src_path, dst_path
 
         dst_digest.write_digest
 

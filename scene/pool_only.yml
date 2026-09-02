@@ -237,4 +237,4 @@ nodes:
 
 materials:
   - alias: water_caustics
-    map_kd: textures/water_caustics/water_caustics_001.png
+    map_kd: textures/water_caustics/water_caustics_color_001.png
