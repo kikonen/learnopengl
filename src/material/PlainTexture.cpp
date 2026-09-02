@@ -57,3 +57,6 @@ void PlainTexture::setData(void* data, int size)
     glTextureSubImage2D(m_textureID, 0, 0, 0, m_width, m_height, m_format, GL_UNSIGNED_BYTE, data);
 }
 
+void PlainTexture::prepareArray()
+{
+}

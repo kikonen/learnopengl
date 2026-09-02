@@ -25,6 +25,7 @@
 
 #include "material/MaterialRegistry.h"
 #include "material/ImageRegistry.h"
+#include "material/TextureRegistry.h"
 
 #include "nav/NavigationSystem.h"
 
@@ -44,6 +45,7 @@ void SystemInit::init() noexcept
     FileEntryCache::init();
 
     ImageRegistry::init();
+    TextureRegistry::init();
     ProgramRegistry::init();
     MeshSetRegistry::init();
     text::FontRegistry::init();
@@ -114,6 +116,7 @@ void SystemInit::release() noexcept
     VaoRegistry::release();
     MaterialRegistry::release();
     ImageRegistry::release();
+    TextureRegistry::release();
 
     render::InstanceRegistry::release();
 }

@@ -28,6 +28,7 @@ public:
 
     virtual void release();
     virtual void prepare() = 0;
+    virtual void prepareArray() = 0;
 
     int resolveMixMapLevels();
 

@@ -127,3 +127,7 @@ void ColorTexture::prepare()
         glMakeTextureHandleResidentARB(m_handle);
     }
 }
+
+void ColorTexture::prepareArray()
+{
+}

@@ -182,3 +182,7 @@ void InlineTexture::prepareNormal()
 
     m_data.resize(0);
 }
+
+void InlineTexture::prepareArray()
+{
+}

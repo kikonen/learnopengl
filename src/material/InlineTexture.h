@@ -31,6 +31,7 @@ public:
 
     void release() override;
     void prepare() override;
+    void prepareArray() override;
 
     void prepareNormal();
 

@@ -25,6 +25,7 @@ public:
 
     void release() override;
     void prepare() override;
+    void prepareArray() override;
 
 private:
     glm::vec4 m_color;

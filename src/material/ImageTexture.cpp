@@ -88,6 +88,10 @@ void ImageTexture::prepare()
     }
 }
 
+void ImageTexture::prepareArray()
+{
+}
+
 void ImageTexture::preparePlain()
 {
     m_pixelFormat = GL_UNSIGNED_BYTE;
