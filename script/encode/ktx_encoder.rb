@@ -51,7 +51,7 @@ module Encode
       unless meta
         ap digest_data
       end
-      type = (meta[:type] || :color).to_sym
+      type = (meta[:type] || :diffuse).to_sym
 
       if meta[:no_ktx]
         info "NO_KTX: #{src_path}"

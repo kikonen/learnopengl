@@ -139,7 +139,7 @@ types:
     mesh:
       path: quad
       material:
-        map_kd: textures/Marble White_VH_512.PNG
+        map_kd: textures/Marble White_VH_512_color.PNG
         reflection: 0.5
         refraction: 0.05
         refraction_ratio: [1.0, 1.52]
@@ -154,7 +154,7 @@ types:
       path: quad
       material:
         kd: [0.800000, 2.800000, 0.800000, 1.0]
-        map_kd: textures/Marble White_VH_512.PNG
+        map_kd: textures/Marble White_VH_512_color.PNG
         program: g_tex
       scale: 10.0
       front: -z
@@ -188,7 +188,7 @@ types:
       material:
         kd: [0.55, 0.55, 0.95, 1.0]
         map_normal: textures/water_surface_512_normal.png
-        map_dudv: textures/waterDUDV_512.png
+        map_dudv: textures/water_512_dudv.png
         tiling: 2
         render_back: true
         program: g_water
@@ -460,7 +460,7 @@ types:
       material:
         kd: [0.55, 0.55, 0.95, 1.0]
         map_normal: textures/water_surface_512_normal.png
-        map_dudv: textures/waterDUDV_512.png
+        map_dudv: textures/water_512_dudv.png
         tiling: 2
         render_back: true
         program: g_water

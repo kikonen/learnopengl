@@ -30,11 +30,11 @@ module Encode
     def encode(tid:)
       @tid = tid
 
-      tex_info[:type] = tex_info[:type].to_sym
+      tex_info[:type] = tex_info.type.to_sym
 
       case tex_info.type.to_sym
       when :normal
-        encode_normal_texture(
+        encode_normal_map(
           src_dir:,
           dst_dir:,
           tex_info:)
@@ -67,14 +67,14 @@ module Encode
         [src_path],
         meta: {
           target: File.basename(dst_path),
-          type: tex_info[:type],
+          type: tex_info.type,
           target_channel: RGBA,
-          srgb: tex_info.srgb,
+          srgb: tex_info.encode_srgb?,
         },
         salt: {
           version: IMAGE_VERSION,
           size: target_size,
-          type: tex_info[:type],
+          type: tex_info.type,
           depth: target_depth,
           parts: [
             {
@@ -112,7 +112,15 @@ module Encode
       src_img = Magick::Image.read(src_path)
         .first
 
-      if tex_info[:type] == :diffuse || tex_info[:type] == :emission
+      # NOTE KI convert to srgb always
+      if tex_info.encode_srgb?
+        unless tex_info.srgb
+          src_img.colorspace = Magick::RGBColorspace
+          src_img = src_img.transform_colorspace(Magick::SRGBColorspace)
+        end
+      end
+
+      if tex_info.diffuse?
         src_img = Util.scale_diffuse_image(src_img, target_size)
       else
         src_img = Util.scale_data_image(src_img, target_size)
@@ -239,7 +247,7 @@ module Encode
     ########################################
     # NORMAL
     ########################################
-    def encode_normal_texture(
+    def encode_normal_map(
       src_dir:,
       dst_dir:,
       tex_info:
@@ -258,14 +266,14 @@ module Encode
         [src_path],
         meta: {
           target: File.basename(dst_path),
-          type: tex_info[:type],
+          type: tex_info.type,
           target_channel: tex_info.target_channel,
           srgb: false,
         },
         salt: {
           version: IMAGE_VERSION,
           size: target_size,
-          type: tex_info[:type],
+          type: tex_info.type,
           depth: target_depth,
           parts: [
             {

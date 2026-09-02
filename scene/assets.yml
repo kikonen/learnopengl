@@ -25,7 +25,7 @@ assets:
 
   g_buffer_scale: 0.5
 
-  window_icon: textures/kari_512.png
+  window_icon: textures/kari_512_color.png
   window_size: [800, 600]
   window_maximized: true
   window_full_screen: false
@@ -45,7 +45,7 @@ assets:
   assimp_debug: false
 
   assets_dir: resources/assets
-  assets_build_dir: resources/build/1024
+  assets_build_dir: resources/build/1024/8
   shaders_dir: shader
 
   placeholder_texture_always: false

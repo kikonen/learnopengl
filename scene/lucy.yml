@@ -43,7 +43,7 @@ types:
         name: pool_floor
         prefab: materials/Tiles074.yml
         kd: [0.8, 0.8, 0.8, 1.0]
-        #map_kd: textures/Marble White_VH_512.PNG
+        #map_kd: textures/Marble White_VH_512_color.PNG
         #map_kd: textures/tiles_1024_color.png
         tiling: 16
       program: g_tex
@@ -56,7 +56,7 @@ types:
         name: pool_surface
         kd: [0.55, 0.55, 0.95, 1.0]
         map_normal: textures/water_surface_512_normal.png
-        map_dudv: textures/waterDUDV_512.png
+        map_dudv: textures/water_512_dudv.png
         tiling: 2
         render_back: true
         program: g_water
@@ -114,7 +114,7 @@ types:
       material:
         name: mirror
         kd: [0.800000, 0.800000, 0.800000, 1.0]
-        map_kd: textures/Marble White_VH_512.PNG
+        map_kd: textures/Marble White_VH_512_color.PNG
         reflection: 0.5
         refraction: 0.05
         refraction_ratio: [1.0, 1.52]

@@ -331,7 +331,7 @@ types:
       path: quad
       material:
         kd: [0.800000, 0.800000, 0.800000, 1.0]
-        map_kd: textures/Marble White_VH_512.PNG
+        map_kd: textures/Marble White_VH_512_color.PNG
         reflection: 0.5
         refraction: 0.05
         refraction_ratio: [1.0, 1.52]
@@ -346,7 +346,7 @@ types:
       path: quad
       material:
         kd: [0.800000, 1.800000, 0.800000, 1.0]
-        map_kd: textures/Marble White_VH_512.PNG
+        map_kd: textures/Marble White_VH_512_color.PNG
         program: g_tex
       base_scale: 15.0
       front: -z
@@ -443,8 +443,8 @@ types:
       material:
         name: cow_fur
         kd: [0.5075, 0.5075, 0.5075, 1.0]
-        map_kd: textures/Dirt_vh_1024.png
-        map_noise: textures/noise2_256.png
+        map_kd: textures/Dirt_vh_1024_color.png
+        map_noise: textures/noise_2_256.png
         tiling: 1
         layers: 25
         layers_depth: 0.2
@@ -601,7 +601,7 @@ types:
         name: pool_surface
         kd: [0.55, 0.55, 0.95, 1.0]
         map_normal: textures/water_surface_512_normal.png
-        map_dudv: textures/waterDUDV_512.png
+        map_dudv: textures/water_512_dudv.png
         tiling: 2
         render_back: true
         program: g_water
@@ -631,7 +631,7 @@ types:
       material:
         name: pool_floor
         kd: [0.8, 0.8, 0.8, 1.0]
-        xxmap_kd: textures/Marble White_VH_512.PNG
+        xxmap_kd: textures/Marble White_VH_512_color.PNG
         map_kd: textures/tiles_1024_color.png
         tiling: 8
       scale: 30
@@ -732,7 +732,7 @@ types:
         name: sea_surface
         kd: [0.55, 0.55, 0.95, 1.0]
         map_normal: textures/water_surface_512_normal.png
-        map_dudv: textures/waterDUDV_512.png
+        map_dudv: textures/water_512_dudv.png
         tiling: 2
         render_back: true
         program: g_water

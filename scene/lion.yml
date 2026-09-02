@@ -61,8 +61,8 @@ types:
     mesh:
       material_modifier:
         kd: a8773e
-        #map_kd: textures/Dirt_vh_1024.png
-        map_noise: noise2_256_build.png
+        #map_kd: textures/Dirt_vh_1024_color.png
+        map_noise: noise_2_256_build.png
         #map_noise: T_Lion_BaseColor.tga
         alpha: true
         #blend: true

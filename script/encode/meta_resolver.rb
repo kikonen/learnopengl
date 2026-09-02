@@ -23,7 +23,7 @@ module Encode
     REG_EX = [
       # Level 1: most accurate
       {
-        color: [
+        diffuse: [
           /\Acolor\z/,
           /\Acolor[-_ ]/,
           /[-_ ]color[-_ ]/,
@@ -47,6 +47,10 @@ module Encode
           /\Aalbedo[-_ ]/,
           /[-_ ]albedo/,
           /[-_ ]albedo\z/,
+          ###
+          /[-_ ]colormap\z/,
+          ###
+          /[-_ ]spritesheet\z/,
           ###
         ],
         emission: [
@@ -78,6 +82,11 @@ module Encode
           /[-_ ]alpha\z/,
           ###
         ],
+        translucency: [
+          /\Atranslucency[-_ ]/,
+          /[-_ ]translucency[-_ ]/,
+          ###
+        ],
         normal: [
           /[-_ ]normalgl[-_ ]/,
           /[-_ ]normalgl\z/,
@@ -91,6 +100,8 @@ module Encode
           /\Anormals[-_ ]/,
           /[-_ ]normals[-_ ]/,
           /[-_ ]normals\z/,
+          ###
+          /[-_ ]normalmap\z/,
           ###
         ],
         bump: [
@@ -198,13 +209,16 @@ module Encode
           /[-_ ]noise[-_ ]/,
           /[-_ ]noise\z/,
         ],
+        dudv: [
+          /[-_ ]dudv\z/,
+        ],
         preview: [
           /preview/,
         ],
       },
       # Level 2; less accurate
       {
-        color: [
+        diffuse: [
           /\Acol\z/,
           /\Acol[-_ ]/,
           /[-_ ]col[-_ ]/,
@@ -311,7 +325,7 @@ module Encode
       },
       # Level 3; even less accurate (TLA, OLA)
       {
-        color: [
+        diffuse: [
           /\Abc\z/,
           /\Abc[-_ ]/,
           /[-_ ]bc[-_ ]/,
@@ -442,15 +456,17 @@ module Encode
           type = detect_type(name)
 
           case type
-          when :color
+          when :diffuse
             tex_info = {
-              type: :color,
+              type: :diffuse,
               action: :encode,
+              mode: :diffuse,
             }
           when :emission
             tex_info = {
               type: :emission,
               action: :encode,
+              mode: :emission,
             }
           when :normal
             tex_info = {
@@ -476,16 +492,25 @@ module Encode
             tex_info = {
               type: :specular,
               action: :skip,
+              mode: :specular,
               srgb: false,
             }
           when :opacity
             tex_info = {
               type: :opacity,
               action: :encode,
+              mode: :opacity,
               #mode: MODE_OPACITY,
               #target_name: OPACITY_MAP,
               #source_channel: RED,
               #target_channel: RED,
+              srgb: false,
+            }
+          when :translucency
+            tex_info = {
+              type: :translucency,
+              action: :skip,
+              mode: :translucency,
               srgb: false,
             }
           when :metal
@@ -637,22 +662,33 @@ module Encode
             tex_info = {
               type: :gloss,
               action: :skip,
+              mode: :none
             }
           when :noise
             tex_info = {
               type: :noise,
               action: :copy,
+              mode: :noise,
+              srgb: false,
+            }
+          when :dudv
+            tex_info = {
+              type: :dudv,
+              action: :copy,
+              mode: :dudv,
               srgb: false,
             }
           when :preview
             tex_info = {
               type: :preview,
               action: :skip,
+              mode: :none
             }
           else
             tex_info = {
               type: :unknown,
-              action: :copy,
+              action: :skip,
+              mode: :unknown,
             }
           end
 
@@ -669,7 +705,7 @@ module Encode
               group: nil,
               type: :unknown,
               action: :skip,
-              mode: 'copy',
+              mode: :unknown,
               detected_channels: channels,
               source_channel: channels,
               target_channel: channels,
@@ -692,7 +728,7 @@ module Encode
 
         if tex_info
           if tex_info[:type] == :unknown
-            info "**WARN** unknown type: #{src_dir}  #{tex_info[:name]} **"
+            info "**WARN** unknown type: #{src_dir}/#{tex_info[:name]} **"
           end
 
           textures << tex_info.compact

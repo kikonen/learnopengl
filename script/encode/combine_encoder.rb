@@ -37,7 +37,7 @@ module Encode
       @tid = tid
 
       parts.each do |tex_info|
-        tex_info[:type] = tex_info[:type].to_sym
+        tex_info[:type] = tex_info.type.to_sym
       end
 
       create_combound_texture(

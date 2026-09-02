@@ -35,5 +35,13 @@ module Encode
     def src_path(src_dir)
       "#{src_dir}/#{self.name}"
     end
+
+    def encode_srgb?
+      diffuse?
+    end
+
+    def diffuse?
+      self.type == :diffuse || self.type == :emission
+    end
   end
 end

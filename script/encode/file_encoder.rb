@@ -74,7 +74,7 @@ module Encode
               opt.filename = "black"
             }
         else
-          img = Magick::Image.read("#{assets_root_dir}/textures/placeholder/black.png").first
+          img = Magick::Image.read("#{assets_root_dir}/textures/placeholder/black_color.png").first
           img = img
             .separate(Magick::RedChannel)
             .first
@@ -99,7 +99,7 @@ module Encode
               opt.filename = "white"
             }
         else
-          img = Magick::Image.read("#{assets_root_dir}/textures/placeholder/white.png").first
+          img = Magick::Image.read("#{assets_root_dir}/textures/placeholder/white_color.png").first
           img = img
             .separate(Magick::RedChannel)
             .first

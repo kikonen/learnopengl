@@ -120,7 +120,7 @@ types:
     mesh:
       path: quad
       material:
-        map_kd: textures/Marble White_VH_512.PNG
+        map_kd: textures/Marble White_VH_512_color.PNG
         reflection: 0.9
         refraction: 0.1
         refraction_ratio: [1.0, 1.52]
