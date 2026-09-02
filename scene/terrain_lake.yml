@@ -38,7 +38,7 @@ types:
       material:
         prefab: materials/Terrain2
         texture_spec:
-          wrap: GL_CLAMP_TO_EDGE
+          wrap: clamp_to_edge
         xxline_mode: true
         xrender_back: true
         program: g_terrain

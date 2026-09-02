@@ -220,7 +220,7 @@ particles:
       sprites: 73
       sprites_x: 9
       texture_spec:
-        wrap: GL_CLAMP_TO_EDGE
+        wrap: clamp_to_edge
 
   - id: rocket_1
     base: rocket

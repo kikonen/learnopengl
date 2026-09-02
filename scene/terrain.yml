@@ -56,7 +56,7 @@ types:
       material:
         prefab: materials/Terrain2
         texture_spec:
-          wrap: GL_CLAMP_TO_EDGE
+          wrap: clamp_to_edge
         program: g_terrain
         pre_depth_program: g_terrain_depth
         id_program: g_terrain_object_id
@@ -315,7 +315,7 @@ particles:
       sprites: 61
       sprites_x: 8
       texture_spec:
-        wrap: GL_CLAMP_TO_EDGE
+        wrap: clamp_to_edge
 
   - id: snow_storm
     seed: 1
@@ -345,7 +345,7 @@ particles:
       sprites: 73
       sprites_x: 9
       texture_spec:
-        wrap: GL_CLAMP_TO_EDGE
+        wrap: clamp_to_edge
 
 materials:
   - alias: water_caustics

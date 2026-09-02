@@ -221,7 +221,7 @@ particles:
       sprites: 73
       sprites_x: 9
       texture_spec:
-        wrap: GL_CLAMP_TO_EDGE
+        wrap: clamp_to_edge
 
   - id: particle_tree_particle_generator_2
     seed: 1
@@ -252,7 +252,7 @@ particles:
       sprites: 28
       sprites_x: 5
       texture_spec:
-        wrap: GL_CLAMP_TO_EDGE
+        wrap: clamp_to_edge
 
   - id: particle_tree_particle_generator_3
     seed: 1
@@ -283,4 +283,4 @@ particles:
       sprites: 29
       sprites_x: 4
       texture_spec:
-        wrap: GL_CLAMP_TO_EDGE
+        wrap: clamp_to_edge

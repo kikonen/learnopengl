@@ -151,4 +151,4 @@ particles:
       sprites: 61
       sprites_x: 8
       texture_spec:
-        wrap: GL_CLAMP_TO_EDGE
+        wrap: clamp_to_edge

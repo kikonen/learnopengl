@@ -14,21 +14,6 @@ skybox:
     - Front_Tex.png
     - Back_Tex.png
   material: skybox/polyhaven/wasteland_clouds_puresky_4k.hdr
-  xmaterial: skybox/polyhaven/qwantani_noon_puresky_4k.hdr
-  xmaterial_2: skybox/polyhaven/qwantani_night_puresky_4k.hdr
-  material_2: skybox/polyhaven/satara_night_no_lamps_4k.hdr
-
-world:
-  time_base: "0432-06-01T12:00:00"
-  time_scale: 1000
-  sun_up: "05:00"
-  sun_down: "22:00"
-  sun_angle: 25
-  sun_twilight_angle: 18
-  day_color: [1.0, 0.98, 0.95]
-  dusk_color: [1.0, 0.55, 0.25]
-  night_color: [0.35, 0.45, 0.70]
-
 root:
   type: origo
   pos: [200, 0, 200]
@@ -38,7 +23,6 @@ script:
     - path: lib/common
 
 includes:
-  - path: prefab/util/include_ui_time_text.yml
   - path: prefab/util/include_grid.yml
   - path: prefab/util/include_origo_marker.yml
   - path: prefab/util/include_fps_counter.yml
@@ -55,7 +39,7 @@ types:
   - id: cube_map
     type: origo
     flags:
-      xcube_map: true
+      cube_map: true
       environment_probe: true
   - id: player
     type: origo
@@ -87,6 +71,33 @@ types:
         type: capsule
         category: [player]
         size: [0.25, 3, 0]
+  - id: player_3rd_person_skeleton_warrior
+    base: prefab_composite_skeleton_warrior
+    camera:
+      type: follow
+      distance: [5, 2.5, 10]
+      default: true
+    controllers:
+      - type: pawn
+      - type: camera_zoom
+    audio:
+      listener:
+        default: true
+    flags:
+      dynamic_bounds: true
+    physics:
+      enabled: true
+      update: true
+      body:
+        kinematic: true
+        density: 0.01
+      geom:
+        category: [player]
+    script: |
+      local wid = cmd:wait({ time=2 })
+      cmd:animation_play(
+        self.handle,
+        { after=wid, tag = "body", name = "walk_2" });
   - id: zero_origo
     type: origo
     script_file: scripts/seq_zero_origo
@@ -118,14 +129,9 @@ types:
       no_shadow: true
     light:
       type: directional
-      sun: true
       target_id: dir_light_target
       diffuse: [0.4, 0.4, 0.4, 1.0]
       intensity: 20000
-      moon_intensity_scale: 0.5
-    controllers:
-      - type: sun
-        distance: 40
   - id: moving_point_light_origo
     type: origo
     script_file: scripts/anim_moving_point_light
@@ -492,8 +498,7 @@ types:
       material:
         name: default_ball
         kd: [0.8, 0.8, 0.0, 1.0]
-        xmras: [0.6, 0.3, 1]
-        mras: [1, 0, 1, 1]
+        mras: [0.6, 0.3, 1]
       program: g_tex
   - id: gold_ball
     mesh:
@@ -687,7 +692,6 @@ types:
         pre_depth: true
     priority: 20
     type_flags:
-      environment: true
       use_deferred: true
       nav_physics: true
     generator:
@@ -844,7 +848,7 @@ types:
   - id: rock_origo
     type: origo
     flags:
-      xcube_map: true
+      cube_map: true
       environment_probe: true
   - id: rock
     mesh:
@@ -1062,8 +1066,6 @@ types:
         name: giant_woodbox
         kd: [0.800000, 0.800000, 0.800000, 1.0]
         map_kd: textures/wood_1024.png
-        tiling: 0.1
-        scale_tiling: true
         xreflection: 0.1
         render_back: true
       program: g_tex
@@ -1098,8 +1100,6 @@ composites:
 
 nodes:
   - xtype: grid
-  - type: prefab_ui_time_text
-    id: ui_time_text
   - type: prefab_fps_counter
     id: fps_counter
     pos: [2, -2, -1]
@@ -1165,7 +1165,7 @@ nodes:
   - type: zero
     pos: [0.0, 0.0, 0.0]
     scale: 0.2
-  - type: player
+  - xtype: player
     pos: [-10, 12, -20.0]
     rotation: [0, 180, 0.0]
     scale: 0.8
@@ -1173,6 +1173,10 @@ nodes:
     children:
       - type: cube_map
         pos: [0, 0, 1]
+  - type: player_3rd_person_skeleton_warrior
+    pos: [-10, 12, -20.0]
+    rotation: [0, 180, 0]
+    active: true
   - xtype: cube_map
     pos: [0.0, 4.5, 0.0]
   - type: example

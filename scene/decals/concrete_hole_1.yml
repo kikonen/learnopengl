@@ -13,4 +13,4 @@ decal:
     map_displacement: Hole_in_Concrete_sfvodqg_2K_displacement
     parallax_depth: 0.05
     texture_spec:
-      wrap: GL_CLAMP_TO_EDGE
+      wrap: clamp_to_edge

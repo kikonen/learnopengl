@@ -14,4 +14,4 @@ decal:
     xparallax_depth: 0.05
     parallax_depth: 0.008
     texture_spec:
-      wrap: GL_CLAMP_TO_EDGE
+      wrap: clamp_to_edge

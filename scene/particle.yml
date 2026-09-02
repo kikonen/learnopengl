@@ -351,7 +351,7 @@ types:
       material:
         prefab: materials/Terrain2
         texture_spec:
-          wrap: GL_CLAMP_TO_EDGE
+          wrap: clamp_to_edge
         program: g_terrain
         pre_depth_program: g_terrain_depth
         id_program: g_terrain_object_id
@@ -508,7 +508,7 @@ particles:
       sprites: 61
       sprites_x: 8
       texture_spec:
-        wrap: GL_CLAMP_TO_EDGE
+        wrap: clamp_to_edge
 
   - id: four_cubes_1
     seed: 1
@@ -539,7 +539,7 @@ particles:
       sprites: 28
       sprites_x: 4
       texture_spec:
-        wrap: GL_CLAMP_TO_EDGE
+        wrap: clamp_to_edge
 
   - id: four_cubes_2
     seed: 1
@@ -570,7 +570,7 @@ particles:
       sprites: 29
       sprites_x: 4
       texture_spec:
-        wrap: GL_CLAMP_TO_EDGE
+        wrap: clamp_to_edge
 
   - id: four_cubes_3
     seed: 1
@@ -601,7 +601,7 @@ particles:
       sprites: 28
       sprites_x: 5
       texture_spec:
-        wrap: GL_CLAMP_TO_EDGE
+        wrap: clamp_to_edge
 
   - id: four_cubes_4
     seed: 1
@@ -632,7 +632,7 @@ particles:
       sprites: 73
       sprites_x: 9
       texture_spec:
-        wrap: GL_CLAMP_TO_EDGE
+        wrap: clamp_to_edge
 
 decals:
   - name: bullet_1
