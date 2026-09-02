@@ -47,7 +47,7 @@ namespace loader {
         std::vector<RigData> rigs;
 
         bool defaultPrograms{ false };
-        std::unordered_map<MaterialProgramType, std::string> programs;
+        std::unordered_map<material::ProgramType, std::string> programs;
 
         std::vector<MaterialData> materials;
         std::vector<MaterialData> materialModifiers;

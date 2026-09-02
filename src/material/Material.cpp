@@ -203,7 +203,7 @@ Material::Material()
 
 //Material::Material(Material&& o) noexcept = default;
 //    : m_registeredIndex{ o.m_registeredIndex },
-//    textureSpec{ o.textureSpec },
+//    defaultTextureSpec{ o.defaultTextureSpec },
 //    pattern{ o.pattern },
 //    reflection{ o.reflection },
 //    refraction{ o.refraction },
@@ -287,7 +287,7 @@ Material& Material::operator=(const Material& o)
 
     m_registeredIndex = o.m_registeredIndex;
 
-    textureSpec = o.textureSpec;
+    defaultTextureSpec = o.defaultTextureSpec;
 
     pattern = o.pattern;
     reflection = o.reflection;
@@ -442,9 +442,9 @@ void Material::loadTextures()
 
     for (const auto& it : m_inlineTextures) {
         const auto type = it.first;
-        const auto& texture = it.second;
-        if (texture && texture->isValid()) {
-            m_boundTextures.insert({ type, BoundTexture{ texture } });
+        const auto& info = it.second;
+        if (info.texture && info.texture->isValid()) {
+            m_boundTextures.insert({ type, material::BoundTexture{ info.texture } });
         }
     }
 }
@@ -491,7 +491,7 @@ void Material::loadTexture(
         gammaCorrect,
         flipY,
         type,
-        textureSpec);
+        info.spec);
 
     future.wait();
 
@@ -511,7 +511,7 @@ void Material::loadTexture(
             gammaCorrect,
             flipY,
             material::TextureType::diffuse,
-            textureSpec);
+            info.spec);
 
         future.wait();
         if (future.valid()) {
@@ -520,7 +520,7 @@ void Material::loadTexture(
     }
 
     if (texture && texture->isValid()) {
-        m_boundTextures.insert({ type, BoundTexture{ texture } });
+        m_boundTextures.insert({ type, material::BoundTexture{ texture } });
     }
 }
 
@@ -528,6 +528,7 @@ void Material::loadTexture(
 // @param compressed use compressed if possible
 void Material::addTexture(
     material::TextureType type,
+    material::TextureSpec spec,
     const std::string& path,
     bool compressed) noexcept
 {
@@ -536,7 +537,7 @@ void Material::addTexture(
         KI_INFO_OUT(fmt::format("TEX::CLEAR: type={}, path={}", util::as_integer(type), path));
     }
     else {
-        m_texturePaths[type] = { path, compressed };
+        m_texturePaths[type] = { path, spec, compressed };
     }
 }
 
@@ -544,7 +545,7 @@ void Material::addinlineTexture(
     material::TextureType type,
     const util::Ref<InlineTexture>& texture) noexcept
 {
-    m_inlineTextures.insert({ type, texture });
+    m_inlineTextures.insert({ type, { texture } });
 }
 
 void Material::prepare()
@@ -701,7 +702,7 @@ void Material::resolveMaterial()
 
     {
         const auto& shaderName = selectProgram(
-            MaterialProgramType::shader,
+            material::ProgramType::shader,
             material.m_programNames,
             material.m_defaultPrograms ? SHADER_G_TEX : "");
 
@@ -742,37 +743,37 @@ void Material::resolveProgram()
     const bool useTBN = useNormalTex || useDudvTex || useDisplacementTex;
 
     const auto& shaderName = selectProgram(
-        MaterialProgramType::shader,
+        material::ProgramType::shader,
         material.m_programNames,
         material.m_defaultPrograms ? SHADER_G_TEX : "");
 
     auto preDepthName = selectProgram(
-        MaterialProgramType::pre_depth,
+        material::ProgramType::pre_depth,
         material.m_programNames,
         SHADER_PRE_DEPTH_PASS);
 
     const auto& oitName = selectProgram(
-        MaterialProgramType::oit,
+        material::ProgramType::oit,
         material.m_programNames,
         material.m_defaultPrograms ? SHADER_OIT_PASS : "");
 
     const auto& shadowName = selectProgram(
-        MaterialProgramType::shadow,
+        material::ProgramType::shadow,
         material.m_programNames,
         material.m_defaultPrograms ? SHADER_SHADOW : "");
 
     const auto& selectionName = selectProgram(
-        MaterialProgramType::selection,
+        material::ProgramType::selection,
         material.m_programNames,
         SHADER_SELECTION);
 
     const auto& objectIdName = selectProgram(
-        MaterialProgramType::object_id,
+        material::ProgramType::object_id,
         material.m_programNames,
         SHADER_OBJECT_ID);
 
     const auto& normalName = selectProgram(
-        MaterialProgramType::normal,
+        material::ProgramType::normal,
         material.m_programNames,
         SHADER_NORMAL);
 
@@ -879,14 +880,14 @@ void Material::resolveProgram()
             definitions[DEF_USE_DEBUG] = "1";
         }
 
-        material.m_programs[MaterialProgramType::shader] = ProgramRegistry::get().getProgramId(
+        material.m_programs[material::ProgramType::shader] = ProgramRegistry::get().getProgramId(
             shaderName,
             false,
             material.m_geometryType,
             definitions);
 
         if (!oitName.empty()) {
-            material.m_programs[MaterialProgramType::oit] = ProgramRegistry::get().getProgramId(
+            material.m_programs[material::ProgramType::oit] = ProgramRegistry::get().getProgramId(
                 oitName,
                 false,
                 "",
@@ -902,7 +903,7 @@ void Material::resolveProgram()
             //    shadowDefinitions[DEF_MAX_SHADOW_MAP_COUNT] = std::to_string(shadowCount);
             //}
 
-            material.m_programs[MaterialProgramType::shadow] = ProgramRegistry::get().getProgramId(
+            material.m_programs[material::ProgramType::shadow] = ProgramRegistry::get().getProgramId(
                 shadowName,
                 false,
                 "",
@@ -910,7 +911,7 @@ void Material::resolveProgram()
         }
 
         if (usePreDepth) {
-            material.m_programs[MaterialProgramType::pre_depth] = ProgramRegistry::get().getProgramId(
+            material.m_programs[material::ProgramType::pre_depth] = ProgramRegistry::get().getProgramId(
                 preDepthName,
                 false,
                 "",
@@ -918,7 +919,7 @@ void Material::resolveProgram()
         }
 
         if (!selectionName.empty()) {
-            material.m_programs[MaterialProgramType::selection] = ProgramRegistry::get().getProgramId(
+            material.m_programs[material::ProgramType::selection] = ProgramRegistry::get().getProgramId(
                 selectionName,
                 false,
                 "",
@@ -926,7 +927,7 @@ void Material::resolveProgram()
         }
 
         if (!objectIdName.empty()) {
-            material.m_programs[MaterialProgramType::object_id] = ProgramRegistry::get().getProgramId(
+            material.m_programs[material::ProgramType::object_id] = ProgramRegistry::get().getProgramId(
                 objectIdName,
                 false,
                 "",
@@ -934,7 +935,7 @@ void Material::resolveProgram()
         }
 
         if (!normalName.empty()) {
-            material.m_programs[MaterialProgramType::normal] = ProgramRegistry::get().getProgramId(
+            material.m_programs[material::ProgramType::normal] = ProgramRegistry::get().getProgramId(
                 normalName,
                 false,
                 "",
@@ -944,8 +945,8 @@ void Material::resolveProgram()
 }
 
 std::string Material::selectProgram(
-    MaterialProgramType type,
-    const std::map<MaterialProgramType, std::string> programs,
+    material::ProgramType type,
+    const std::map<material::ProgramType, std::string> programs,
     const std::string& defaultValue)
 {
     std::string program;

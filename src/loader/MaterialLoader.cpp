@@ -157,6 +157,7 @@ namespace loader {
                 std::string line = readString(v);
                 material.addTexture(
                     material::TextureType::diffuse,
+                    material.defaultTextureSpec,
                     line,
                     true);
             }
@@ -164,6 +165,7 @@ namespace loader {
                 std::string line = readString(v);
                 material.addTexture(
                     material::TextureType::emission,
+                    material.defaultTextureSpec,
                     line,
                     true);
             }
@@ -171,6 +173,7 @@ namespace loader {
                 std::string line = readString(v);
                 material.addTexture(
                     material::TextureType::specular,
+                    material.defaultTextureSpec,
                     line,
                     true);
             }
@@ -180,6 +183,7 @@ namespace loader {
                 std::string line = readString(v);
                 material.addTexture(
                     material::TextureType::map_normal,
+                    material.defaultTextureSpec,
                     line,
                     true);
             }
@@ -191,6 +195,7 @@ namespace loader {
                 std::string line = readString(v);
                 material.addTexture(
                     material::TextureType::map_dudv,
+                    material.defaultTextureSpec,
                     line,
                     true);
             }
@@ -198,6 +203,7 @@ namespace loader {
                 std::string line = readString(v);
                 material.addTexture(
                     material::TextureType::map_noise,
+                    material.defaultTextureSpec,
                     line,
                     true);
             }
@@ -205,6 +211,7 @@ namespace loader {
                 std::string line = readString(v);
                 material.addTexture(
                     material::TextureType::map_noise_2,
+                    material.defaultTextureSpec,
                     line,
                     true);
             }
@@ -212,6 +219,7 @@ namespace loader {
                 std::string line = readString(v);
                 material.addTexture(
                     material::TextureType::map_displacement,
+                    material.defaultTextureSpec,
                     line,
                     true);
             }
@@ -219,6 +227,7 @@ namespace loader {
                 std::string line = readString(v);
                 material.addTexture(
                     material::TextureType::map_opacity,
+                    material.defaultTextureSpec,
                     line,
                     true);
             }
@@ -226,6 +235,7 @@ namespace loader {
                 std::string line = readString(v);
                 material.addTexture(
                     material::TextureType::map_custom_1,
+                    material.defaultTextureSpec,
                     line,
                     true);
             }
@@ -233,6 +243,7 @@ namespace loader {
                 std::string line = readString(v);
                 material.addTexture(
                     material::TextureType::map_mras,
+                    material.defaultTextureSpec,
                     line,
                     true);
             }
@@ -354,8 +365,8 @@ namespace loader {
                 fields.parallaxDepth = true;
             }
             else if (k == "texture_spec") {
-                loadTextureSpec(v, material.textureSpec);
-                fields.textureSpec = true;
+                material.defaultTextureSpec = loadTextureSpec(v);
+                fields.defaultTextureSpec = true;
             }
             else if (k == "alpha") {
                 material.alpha = readBool(v);
@@ -386,25 +397,25 @@ namespace loader {
                 fields.defaultPrograms = true;
             }
             else if (k == "program" || k == "shader") {
-                material.m_programNames[MaterialProgramType::shader] = readString(v);
+                material.m_programNames[material::ProgramType::shader] = readString(v);
             }
             else if (k == "oit_program") {
-                material.m_programNames[MaterialProgramType::oit] = readString(v);
+                material.m_programNames[material::ProgramType::oit] = readString(v);
             }
             else if (k == "shadow_program") {
-                material.m_programNames[MaterialProgramType::shadow] = readString(v);
+                material.m_programNames[material::ProgramType::shadow] = readString(v);
             }
             else if (k == "pre_depth_program") {
-                material.m_programNames[MaterialProgramType::pre_depth] = readString(v);
+                material.m_programNames[material::ProgramType::pre_depth] = readString(v);
             }
             else if (k == "selection_program") {
-                material.m_programNames[MaterialProgramType::selection] = readString(v);
+                material.m_programNames[material::ProgramType::selection] = readString(v);
             }
             else if (k == "id_program") {
-                material.m_programNames[MaterialProgramType::object_id] = readString(v);
+                material.m_programNames[material::ProgramType::object_id] = readString(v);
             }
             else if (k == "normal_program") {
-                material.m_programNames[MaterialProgramType::normal] = readString(v);
+                material.m_programNames[material::ProgramType::normal] = readString(v);
             }
             else if (k == "geometry_type") {
                 material.m_geometryType = readString(v);
@@ -545,10 +556,11 @@ namespace loader {
         }
     }
 
-    void MaterialLoader::loadTextureSpec(
-        const loader::DocNode& node,
-        material::TextureSpec& textureSpec) const
+    material::TextureSpec MaterialLoader::loadTextureSpec(
+        const loader::DocNode& node) const
     {
+        material::TextureSpec textureSpec;
+
         for (const auto& pair : node.getNodes()) {
             const std::string& k = pair.getName();
             const loader::DocNode& v = pair.getNode();
@@ -560,6 +572,7 @@ namespace loader {
                 reportUnknown("tex_spec", k, v);
             }
         }
+        return textureSpec;
     }
 
     material::WrapMode MaterialLoader::loadTextureWrap(
@@ -591,7 +604,7 @@ namespace loader {
         const MaterialField& f = data.fields;
         const auto& mod = *data.material;
 
-        if (f.textureSpec) m.textureSpec = mod.textureSpec;
+        if (f.defaultTextureSpec) m.defaultTextureSpec = mod.defaultTextureSpec;
 
         if (f.baseDir) m.m_baseDir = mod.m_baseDir;
         if (f.geometryType) m.m_geometryType = mod.m_geometryType;
@@ -647,7 +660,7 @@ namespace loader {
         if (f.defaultPrograms) m.m_defaultPrograms = mod.m_defaultPrograms;
 
         for (const auto& [type, info] : mod.getTextures()) {
-            m.addTexture(type, info.path, info.compressed);
+            m.addTexture(type, info.spec, info.path, info.compressed);
         }
 
         for (const auto& progIt : mod.m_programNames) {

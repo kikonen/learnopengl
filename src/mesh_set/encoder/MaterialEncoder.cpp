@@ -43,16 +43,16 @@ namespace
         return fmt::format("INVALID_TEX_{}", util::as_integer(type));
     }
 
-    const std::string getProgramKey(MaterialProgramType type) noexcept
+    const std::string getProgramKey(material::ProgramType type) noexcept
     {
         switch (type) {
-        case MaterialProgramType::shader: return "program";
-        case MaterialProgramType::oit: return "oit_program";
-        case MaterialProgramType::shadow: return "shadow_program";
-        case MaterialProgramType::pre_depth: return "pre_depth_program";
-        case MaterialProgramType::selection: return "selection_program";
-        case MaterialProgramType::object_id: return "id_program";
-        case MaterialProgramType::normal: return "normal_program";
+        case material::ProgramType::shader: return "program";
+        case material::ProgramType::oit: return "oit_program";
+        case material::ProgramType::shadow: return "shadow_program";
+        case material::ProgramType::pre_depth: return "pre_depth_program";
+        case material::ProgramType::selection: return "selection_program";
+        case material::ProgramType::object_id: return "id_program";
+        case material::ProgramType::normal: return "normal_program";
         }
         return fmt::format("INVALID_PROGRAM_{}", util::as_integer(type));
     }

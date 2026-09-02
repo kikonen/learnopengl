@@ -2,7 +2,7 @@
 
 namespace loader {
     struct MaterialField {
-        bool textureSpec : 1 { false };
+        bool defaultTextureSpec : 1 { false };
 
         bool baseDir : 1{false};
         bool geometryType : 1 {false};

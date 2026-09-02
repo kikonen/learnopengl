@@ -49,7 +49,7 @@ void ShaderMaterialUpdater::prepareRT(
 
     if (!m_material) return;
 
-    auto programId = m_material->getProgram(MaterialProgramType::shader);
+    auto programId = m_material->getProgram(material::ProgramType::shader);
     if (!programId) return;
 
     {
@@ -76,7 +76,7 @@ void ShaderMaterialUpdater::prepareRT(
 
         glGenSamplers(1, &m_samplerId);
 
-        auto& spec = m_material->textureSpec;
+        auto& spec = m_material->defaultTextureSpec;
         glSamplerParameteri(m_samplerId, GL_TEXTURE_WRAP_S, spec.asWrapS());
         glSamplerParameteri(m_samplerId, GL_TEXTURE_WRAP_T, spec.asWrapT());
 
@@ -104,7 +104,7 @@ void ShaderMaterialUpdater::render(
 
     if (!m_material) return;
 
-    auto programId = m_material->getProgram(MaterialProgramType::shader);
+    auto programId = m_material->getProgram(material::ProgramType::shader);
     if (!programId) return;
 
     m_buffer->bind(ctx);

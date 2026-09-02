@@ -30,6 +30,10 @@ struct MaterialMainSSBO;
 struct MaterialCustomSSBO;
 struct MaterialColdSSBO;
 
+class Texture;
+class InlineTexture;
+class ImageTexture;
+
 enum class BasicMaterial : std::underlying_type_t<std::byte> {
     basic,
     black,
@@ -46,25 +50,37 @@ enum class BasicMaterial : std::underlying_type_t<std::byte> {
     wireframe
 };
 
-enum class MaterialProgramType : std::underlying_type_t<std::byte>
+namespace material
 {
-    shader,
-    oit,
-    shadow,
-    pre_depth,
-    selection,
-    object_id,
-    normal,
-};
+    enum class ProgramType : std::underlying_type_t<std::byte>
+    {
+        shader,
+        oit,
+        shadow,
+        pre_depth,
+        selection,
+        object_id,
+        normal,
+    };
 
-struct TextureInfo {
-    std::string path;
-    bool compressed;
-};
+    struct TextureInfo
+    {
+        std::string path;
+        material::TextureSpec spec;
+        bool compressed;
+    };
 
-class Texture;
-class InlineTexture;
-class ImageTexture;
+    struct InlineTextureInfo
+    {
+        util::Ref<InlineTexture> texture;
+    };
+
+
+    struct BoundTexture
+    {
+        util::Ref<Texture> m_texture;
+    };
+}
 
 
 /*
@@ -88,11 +104,6 @@ map_Kd textures/texture_cube_512_color.png
 
 struct Material final : public util::RefCountedSimple
 {
-public:
-    struct BoundTexture {
-        util::Ref<Texture> m_texture;
-    };
-
 public:
     Material();
     Material(Material& o) = delete;
@@ -157,6 +168,7 @@ public:
     // @param compressed use compressed if possible
     void addTexture(
         material::TextureType type,
+        material::TextureSpec spec,
         const std::string& path,
         bool compressed) noexcept;
 
@@ -174,7 +186,7 @@ public:
         return m_boundTextures.find(type) != m_boundTextures.end();
     }
 
-    const BoundTexture* getBoundTex(material::TextureType type) const noexcept
+    const material::BoundTexture* getBoundTex(material::TextureType type) const noexcept
     {
         const auto& it = m_boundTextures.find(type);
         return it != m_boundTextures.end() ? &it->second : nullptr;
@@ -182,12 +194,12 @@ public:
 
     GLuint64 getTexHandle(material::TextureType type, GLuint64 defaultValue) const noexcept;
 
-    const std::map<material::TextureType, TextureInfo>& getTextures() const noexcept
+    const std::map<material::TextureType, material::TextureInfo>& getTextures() const noexcept
     {
         return m_texturePaths;
     }
 
-    ki::program_id getProgram(MaterialProgramType type) noexcept
+    ki::program_id getProgram(material::ProgramType type) noexcept
     {
         const auto& it = m_programs.find(type);
         return it != m_programs.end() ? it->second : (ki::program_id)0;
@@ -196,8 +208,8 @@ public:
     void resolveMaterial();
     void resolveProgram();
     std::string selectProgram(
-        MaterialProgramType type,
-        const std::map<MaterialProgramType, std::string> programs,
+        material::ProgramType type,
+        const std::map<material::ProgramType, std::string> programs,
         const std::string& defaultValue);
 
 private:
@@ -211,7 +223,7 @@ private:
 public:
     mutable ki::material_index m_registeredIndex{ -1 };
 
-    material::TextureSpec textureSpec;
+    material::TextureSpec defaultTextureSpec;
 
     int pattern = -1;
     float reflection = 0.f;
@@ -306,7 +318,7 @@ public:
     std::string m_modelDir;
 
     bool m_defaultPrograms{ false };
-    std::map<MaterialProgramType, std::string> m_programNames{};
+    std::map<material::ProgramType, std::string> m_programNames{};
 
     std::map<std::string, std::string> m_sharedDefinitions{};
     std::map<std::string, std::string> m_programDefinitions{};
@@ -316,7 +328,7 @@ public:
     std::map<std::string, std::string> m_objectIdDefinitions{};
     std::map<std::string, std::string> m_normalDefinitions{};
 
-    std::map<MaterialProgramType, ki::program_id> m_programs{};
+    std::map<material::ProgramType, ki::program_id> m_programs{};
 
     ki::material_updater_id m_updaterId;
 
@@ -325,9 +337,9 @@ public:
     GLuint64 m_fontAtlasTex{ 0 };
 
 private:
-    std::map<material::TextureType, BoundTexture> m_boundTextures{};
-    std::map<material::TextureType, TextureInfo> m_texturePaths{};
-    std::map<material::TextureType, util::Ref<InlineTexture>> m_inlineTextures{};
+    std::map<material::TextureType, material::BoundTexture> m_boundTextures{};
+    std::map<material::TextureType, material::TextureInfo> m_texturePaths{};
+    std::map<material::TextureType, material::InlineTextureInfo> m_inlineTextures{};
 
     std::map<material::TextureType, util::UVTransform> m_textureTransforms;
 

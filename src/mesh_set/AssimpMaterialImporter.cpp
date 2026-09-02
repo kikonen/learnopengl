@@ -729,6 +729,7 @@ namespace mesh_set
                 else {
                     material->addTexture(
                         texInfo.type,
+                        material->defaultTextureSpec,
                         findTexturePath(meshSet, path),
                         true);
                 }
