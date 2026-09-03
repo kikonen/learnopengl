@@ -196,10 +196,23 @@ module Encode
       need_scale, target_w, target_h = resolve_size(img, target_size)
       return img unless need_scale
 
-      # TÄRKEÄÄ: Ei kosketa colorspaceen (pidetään raakana datana / RGBColorspace)
+      # NOTE don't touch color space; (raw data / RGBColorspace)
 
-      # Käytetään Cubic-suodatinta Lanczosin sijaan, jotta raakadata ei korruptoidu
+      # Use Cubic-filter, reduces raw data corruption
       resized_img = img.resize(target_w, target_h, Magick::CubicFilter)
+
+      resized_img
+    end
+
+    # scaling noise data
+    def self.scale_nearest_image(img, target_size)
+      need_scale, target_w, target_h = resolve_size(img, target_size)
+      return img unless need_scale
+
+      # NOTE don't touch color space; (raw data / RGBColorspace)
+
+      # Point filter for "noise"
+      resized_img = img.resize(target_w, target_h, Magick::PointFilter)
 
       resized_img
     end

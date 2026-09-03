@@ -667,14 +667,14 @@ module Encode
           when :noise
             tex_info = {
               type: :noise,
-              action: :copy,
+              action: :encode,
               mode: :noise,
               srgb: false,
             }
           when :dudv
             tex_info = {
               type: :dudv,
-              action: :copy,
+              action: :encode,
               mode: :dudv,
               srgb: false,
             }

@@ -49,6 +49,7 @@ module Encode
         args = task[:args] || {}
 
         encoder = cls.new(**args)
+        encoder.resolve_overrides(args[:parts] || [args[:tex_info]].compact)
         encoder.encode(tid:)
 
         response = { response: DONE, task_id: task_id }
@@ -83,11 +84,17 @@ module Encode
       end
 
       if args[:parts]
-        args[:parts] = args[:parts].map { |e| TextureInfo.new(e) }
+        args[:parts] = args[:parts].map do |e|
+          TextureInfo
+            .new(e)
+            .normalize!
+        end
       end
 
       if args[:tex_info]
-        args[:tex_info] = TextureInfo.new(args[:tex_info])
+        args[:tex_info] = TextureInfo
+          .new(args[:tex_info])
+          .normalize!
       end
 
       task

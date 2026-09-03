@@ -43,6 +43,18 @@ module Encode
       @dry_run = dry_run
     end
 
+    def resolve_overrides(parts)
+      tex_info = parts.first
+
+      overrides = {
+        target_size:,
+        target_depth:,
+      }.merge(ENCODE_OPTIONS[tex_info.type] || {})
+
+      @target_size = overrides[:target_size]
+      @target_depth = overrides[:target_depth]
+    end
+
     def encode(tid:)
       raise "NYI!"
     end

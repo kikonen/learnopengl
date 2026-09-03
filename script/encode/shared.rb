@@ -156,9 +156,29 @@ module Encode
   MODE_DISPLACEMENT = :displacement
   MODE_HEIGHT = :height
 
-  IMAGE_VERSION = 8.4
+  IMAGE_VERSION = 8.5
   MRAS_VERSION = 9.4
   DISPLACEMENT_VERSION = 8.4
   HEIGHT_VERSION = 8.4
   KTX_VERSION = 11.4
+
+  # Define explicit overrides for encoding
+  ENCODE_OPTIONS = {
+    normal: {
+      target_depth: 16,
+      # target_size == diffuse
+    },
+    dudv: {
+      target_depth: 8,
+      target_size: 256
+    },
+    noise: {
+      target_depth: 8,
+      target_size: 128
+    },
+    height: {
+      target_depth: 16,
+      target_size: 2048
+    },
+  }
 end

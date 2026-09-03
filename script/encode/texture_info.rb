@@ -28,8 +28,11 @@ module Encode
     property :srgb
     property :manual
 
-    def action_sym
-      self.action&.to_sym
+    def normalize!
+      self[:type] = self.type.to_sym if self.type
+      self[:action] = self.action.to_sym if self.action
+      self[:mode] = self.mode.to_sym if self.mode
+      self
     end
 
     def src_path(src_dir)

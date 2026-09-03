@@ -8,9 +8,6 @@ module Encode
   # combine
   ############################################################
   class CombineEncoder < FileEncoder
-    HEIGHT_MAP_SIZE = 2048
-    HEIGHT_MAP_DEPTH = 16
-
     attr_reader :target_name,
       :target_mode,
       :parts
@@ -30,15 +27,12 @@ module Encode
 
       @target_name = target_name
       @target_mode = target_mode
+
       @parts = parts
     end
 
     def encode(tid:)
       @tid = tid
-
-      parts.each do |tex_info|
-        tex_info[:type] = tex_info.type.to_sym
-      end
 
       create_combound_texture(
         src_dir,
@@ -280,11 +274,6 @@ module Encode
         img_list << channel_img
       end
 
-      # NOTE KI workaround segmentation fault, which happens
-      # if running without pause
-      #GC.start
-      #sleep 0.2
-
       # https://imagemagick.org/script/command-line-options.php#combine
       dst_img = img_list.combine(Magick::RGBColorspace)
 
@@ -331,10 +320,6 @@ module Encode
       target_name,
       parts
     )
-      # NOTE KI heightmap needs higher resolution
-      @target_size = HEIGHT_MAP_SIZE
-      @target_depth = HEIGHT_MAP_DEPTH
-
       if parts.size > 1
         raise "ERROR: too many parts: #{{
           src_dir:,
