@@ -16,18 +16,18 @@ prefab:
         - name: palm_trunk
           alias: Tree_0Mat
           base: textures
-          map_kd: palm02.png
+          map_kd: palm02_color.png
           map_normal: palm02_normal.png
         - name: palm_leaf
           alias: Tree_1Mat
           base: textures
-          map_kd: coconut palm leaf.png
+          map_kd: coconut palm leaf_color.png
           map_normal: coconut palm leaf_Normal.png
           render_back: true
         - name: palm_branch
           alias: Tree_2Mat
           base: textures
-          map_kd: palm02.png
+          map_kd: palm02_color.png
           map_normal: palm02_normal.png
       base_scale: 0.05
       default_programs: true
