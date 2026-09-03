@@ -49,5 +49,7 @@ namespace material
 
         GLenum asMinFilter() const noexcept;
         GLenum asMagFilter() const noexcept;
+
+        static TextureSpec noiseSpec();
     };
 }

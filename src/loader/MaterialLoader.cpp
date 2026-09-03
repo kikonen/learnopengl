@@ -195,7 +195,7 @@ namespace loader {
                 std::string line = readString(v);
                 material.addTexture(
                     material::TextureType::map_dudv,
-                    material.defaultTextureSpec,
+                    material::TextureSpec::noiseSpec(),
                     line,
                     true);
             }
@@ -203,7 +203,7 @@ namespace loader {
                 std::string line = readString(v);
                 material.addTexture(
                     material::TextureType::map_noise,
-                    material.defaultTextureSpec,
+                    material::TextureSpec::noiseSpec(),
                     line,
                     true);
             }
@@ -211,7 +211,7 @@ namespace loader {
                 std::string line = readString(v);
                 material.addTexture(
                     material::TextureType::map_noise_2,
-                    material.defaultTextureSpec,
+                    material::TextureSpec::noiseSpec(),
                     line,
                     true);
             }
@@ -235,7 +235,7 @@ namespace loader {
                 std::string line = readString(v);
                 material.addTexture(
                     material::TextureType::map_custom_1,
-                    material.defaultTextureSpec,
+                    material::TextureSpec::noiseSpec(),
                     line,
                     true);
             }

@@ -56,4 +56,13 @@ namespace material
     {
         return asFilter(magFilter);
     }
+
+    TextureSpec TextureSpec::noiseSpec()
+    {
+        return {
+            .wrap = WrapMode::repeat,
+            .minFilter = TextureFilter::nearest,
+            .magFilter = TextureFilter::nearest,
+        };
+    }
 }
