@@ -51,5 +51,6 @@ namespace material
         GLenum asMagFilter() const noexcept;
 
         static TextureSpec noiseSpec();
+        static TextureSpec dudvSpec();
     };
 }

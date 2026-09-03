@@ -195,7 +195,7 @@ namespace loader {
                 std::string line = readString(v);
                 material.addTexture(
                     material::TextureType::map_dudv,
-                    material::TextureSpec::noiseSpec(),
+                    material::TextureSpec::dudvSpec(),
                     line,
                     true);
             }

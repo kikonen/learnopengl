@@ -63,6 +63,19 @@ namespace material
             .wrap = WrapMode::repeat,
             .minFilter = TextureFilter::nearest,
             .magFilter = TextureFilter::nearest,
+            .maxMipMapLevels = 1,
+        };
+    }
+
+    TextureSpec TextureSpec::dudvSpec()
+    {
+        return {
+            .wrap = WrapMode::repeat,
+            // Linear sampling with full mipmap chains is mandatory to prevent distant pixel shimmering
+            .minFilter = TextureFilter::linear_mipmap_linear,
+            .magFilter = TextureFilter::linear,
+            // Full mipmap support (e.g. 10-12 levels depending on size)
+            .maxMipMapLevels = MIP_MAP_LEVELS,
         };
     }
 }
