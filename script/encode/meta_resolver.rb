@@ -18,6 +18,8 @@ module Encode
   # Meta data encoding
   ################################################################################
   class MetaResolver
+    DEFAULT_GROUP = 'default'
+
     # NOTE KI match against *basename" without *extension*
     # => thus \z instead of \.
     REG_EX = [
@@ -515,7 +517,7 @@ module Encode
             }
           when :metal
             tex_info = {
-              group: 'default',
+              group: DEFAULT_GROUP,
               type: :metalness,
               action: :combine,
               mode: MODE_MRAS,
@@ -526,7 +528,7 @@ module Encode
             }
           when :roughness
             tex_info = {
-              group: 'default',
+              group: DEFAULT_GROUP,
               type: :roughness,
               action: :combine,
               mode: MODE_MRAS,
@@ -537,7 +539,7 @@ module Encode
             }
           when :occlusion
             tex_info = {
-              group: 'default',
+              group: DEFAULT_GROUP,
               type: :occlusion,
               action: :combine,
               mode: MODE_MRAS,
@@ -548,7 +550,7 @@ module Encode
             }
           when :metal_roughness
             tex_info = {
-              group: 'default',
+              group: DEFAULT_GROUP,
               type: :metal_roughness,
               action: :combine,
               mode: MODE_MRAS,
@@ -559,7 +561,7 @@ module Encode
             }
           when :metal_roughness_occlusion
             tex_info = {
-              group: 'default',
+              group: DEFAULT_GROUP,
               type: :metal_roughness_occlusion,
               action: :combine,
               mode: MODE_MRAS,
@@ -570,7 +572,7 @@ module Encode
             }
           when :roughness_metal_occlusion
             tex_info = {
-              group: 'default',
+              group: DEFAULT_GROUP,
               type: :roughness_metal_occlusion,
               action: :combine,
               mode: MODE_MRAS,
@@ -581,7 +583,7 @@ module Encode
             }
           when :roughness_occlusion_metal
             tex_info = {
-              group: 'default',
+              group: DEFAULT_GROUP,
               type: :roughness_occlusion_metal,
               action: :combine,
               mode: MODE_MRAS,
@@ -592,7 +594,7 @@ module Encode
             }
           when :occlusion_roughness_metal
             tex_info = {
-              group: 'default',
+              group: DEFAULT_GROUP,
               type: :occlusion_roughness_metal,
               action: :combine,
               mode: MODE_MRAS,
@@ -603,7 +605,7 @@ module Encode
             }
           when :metal_occlusion_height_roughness
             tex_info = {
-              group: 'default',
+              group: DEFAULT_GROUP,
               type: :metal_occlusion_height_roughness,
               action: :combine,
               mode: MODE_MRAS,
@@ -615,7 +617,7 @@ module Encode
           # Kitbash MADS
           when :metal_occlusion_height_smoothness
             tex_info = {
-              group: 'default',
+              group: DEFAULT_GROUP,
               type: :metal_occlusion_height_smoothness,
               action: :combine,
               mode: MODE_MRAS,
@@ -627,7 +629,7 @@ module Encode
             }
           when :displacement
             tex_info = {
-              group: 'default',
+              group: DEFAULT_GROUP,
               type: :displacement,
               action: :combine,
               mode: MODE_DISPLACEMENT,
@@ -638,7 +640,7 @@ module Encode
             }
           when :height
             tex_info = {
-              group: 'default',
+              group: DEFAULT_GROUP,
               type: :height,
               action: :combine,
               mode: MODE_HEIGHT,
@@ -649,7 +651,7 @@ module Encode
             }
           when :cavity
             tex_info = {
-              group: 'default',
+              group: DEFAULT_GROUP,
               type: :cavity,
               action: :combine,
               mode: :displacement,
