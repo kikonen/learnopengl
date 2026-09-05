@@ -16,6 +16,7 @@
 #include <fmt/format.h>
 
 #include "material/Image.h"
+#include "material/ArrayTexture.h"
 
 #include "util/util.h"
 #include "util/Log.h"
@@ -54,7 +55,7 @@ std::string ImageTexture::str() const noexcept
     return fmt::format(
         "<IMG: {} {}bit {}ch {}x{} {}{} ({}), [{}], [{}, {}]>",
         m_name,
-        m_is16Bbit ? "16" : "8",
+        m_is16Bit ? "16" : "8",
         m_channels,
         m_width,
         m_height,
@@ -73,7 +74,7 @@ void ImageTexture::release()
     Texture::release();
 }
 
-void ImageTexture::prepare()
+void ImageTexture::prepareSingle()
 {
     if (m_prepared) return;
     m_prepared = true;
@@ -88,8 +89,78 @@ void ImageTexture::prepare()
     }
 }
 
-void ImageTexture::prepareArray()
+void ImageTexture::prepareArray(
+    const util::Ref<ArrayTexture>& arr,
+    uint32_t layer)
 {
+    if (m_prepared) return;
+    m_prepared = true;
+
+    if (!m_valid || !m_image || !m_image->m_data) {
+        KI_WARN(fmt::format("TEX::PREPARE_ARRAY: Invalid image data for {}", m_name));
+        m_valid = false;
+        return;
+    }
+
+    // 1. Resolve exact CPU-side raw pixel format mappings (RAM layout)
+    // This defines how OpenGL reads the byte array from m_image->m_data
+    m_pixelFormat = GL_UNSIGNED_BYTE;
+
+    if (m_channels == 1) {
+        m_format = GL_RED;
+        if (m_is16Bit) {
+            // Upgrade data read stride to 16-bit
+            m_pixelFormat = GL_UNSIGNED_SHORT;
+        }
+    }
+    else if (m_channels == 2) {
+        m_format = GL_RG;
+    }
+    else if (m_channels == 3) {
+        m_format = GL_RGB;
+        if (m_hdri) {
+            // Read buffer as 32-bit floating point markers
+            m_pixelFormat = GL_FLOAT;
+        }
+        else if (m_is16Bit) {
+            m_pixelFormat = GL_UNSIGNED_SHORT;
+        }
+    }
+    else if (m_channels == 4) {
+        m_format = GL_RGBA;
+        if (m_is16Bit) {
+            m_pixelFormat = GL_UNSIGNED_SHORT;
+        }
+    }
+
+    // 2. Fetch the global unified hardware ID from the designated ArrayTexture block container
+    m_textureID = arr->getTextureID();
+
+    // 3. Directly stream compressed/uncompressed raw pixels straight into the requested array layer slot
+    // We override glTextureSubImage2D with glTextureSubImage3D completely!
+    glTextureSubImage3D(
+        m_textureID,
+        0,                                   // Target Mipmap Level 0
+        0, 0, static_cast<GLint>(layer),     // xoffset, yoffset, zoffset (The assigned Layer Slot Index!)
+        m_width, m_height, 1,                // width, height, layer depth slice count (strictly 1 asset slice)
+        m_format,                            // CPU RAM layout configuration mapping (e.g. GL_RGBA, GL_RGB)
+        m_pixelFormat,                       // CPU RAM component type size context (GL_UNSIGNED_BYTE / GL_UNSIGNED_SHORT)
+        m_image->m_data                      // Hard raw byte memory pointer address context
+    );
+
+    // 4. Update the handle signature variable pointer to store the pure tight layer slice integer offset
+    // Instead of texture handles, this raw integer is what will be passed into the MaterialSSBO uniform block layout!
+    m_handle = static_cast<GLuint64>(layer);
+
+    KI_INFO(fmt::format(
+        "TEX::ARRAY::SLOT::UPLOAD: asset={}, streamed into target array textureID={}, assigned layer index={}",
+        m_name, m_textureID, layer
+    ));
+
+    // Cleanup host RAM allocation memory resources safely if not shared globally
+    if (!m_shared) {
+        m_image.reset();
+    }
 }
 
 void ImageTexture::preparePlain()
@@ -100,14 +171,14 @@ void ImageTexture::preparePlain()
     // => need to convert manually to RGB(A) s
     // NOTE KI https://learnopengl.com/Advanced-Lighting/Gamma-Correction
     if (m_channels == 1) {
-        if (m_is16Bbit) {
+        if (m_is16Bit) {
             m_format = GL_RED;
-            m_internalFormat = m_grayScale ? GL_RGB16 : GL_R16;
+            m_internalFormat = GL_R16;
             m_pixelFormat = GL_UNSIGNED_SHORT;
         }
         else {
             m_format = GL_RED;
-            m_internalFormat = m_grayScale ? GL_RGB8 : GL_R8;
+            m_internalFormat = GL_R8;
         }
         //m_specialTexture = true;
     }
@@ -123,7 +194,7 @@ void ImageTexture::preparePlain()
             m_internalFormat = GL_RGB16F;
             m_pixelFormat = GL_FLOAT;
         }
-        else if (m_is16Bbit) {
+        else if (m_is16Bit) {
             m_format = GL_RGB;
             m_internalFormat = m_gammaCorrect ? GL_SRGB8 : GL_RGB16;
             m_pixelFormat = GL_UNSIGNED_SHORT;
@@ -135,7 +206,7 @@ void ImageTexture::preparePlain()
         }
     }
     else if (m_channels == 4) {
-        if (m_is16Bbit) {
+        if (m_is16Bit) {
             m_format = GL_RGBA;
             m_internalFormat = m_gammaCorrect ? GL_SRGB8_ALPHA8 : GL_RGBA16;
             m_pixelFormat = GL_UNSIGNED_SHORT;
@@ -163,6 +234,11 @@ void ImageTexture::preparePlain()
     kigl::setLabel(GL_TEXTURE, m_textureID, m_name);
 
     {
+        if (m_grayScale && m_channels == 1) {
+            GLint swizzleMask[] = { GL_RED, GL_RED, GL_RED, GL_ONE };
+            glTextureParameteriv(m_textureID, GL_TEXTURE_SWIZZLE_RGBA, swizzleMask);
+        }
+
         glTextureParameteri(m_textureID, GL_TEXTURE_WRAP_S, m_spec.asWrapS());
         glTextureParameteri(m_textureID, GL_TEXTURE_WRAP_T, m_spec.asWrapT());
 
@@ -188,9 +264,6 @@ void ImageTexture::preparePlain()
             m_path,
             compFlag,
             str()));
-
-        m_handle = glGetTextureHandleARB(m_textureID);
-        glMakeTextureHandleResidentARB(m_handle);
     }
 
     //m_texIndex = Texture::nextIndex();
@@ -319,9 +392,6 @@ void ImageTexture::prepareKtx()
             str()));
     }
 
-    m_handle = glGetTextureHandleARB(m_textureID);
-    glMakeTextureHandleResidentARB(m_handle);
-
     if (!m_shared) {
         m_image.reset();
     }
@@ -337,11 +407,11 @@ void ImageTexture::load() {
         return;
     }
 
-    m_is16Bbit = m_image->m_is16Bbit;
+    m_is16Bit = m_image->m_is16Bit;
     m_width = m_image->m_width;
     m_height = m_image->m_height;
     m_channels = m_image->m_channels;
-    m_is16Bbit = m_image->m_is16Bbit;
+    m_is16Bit = m_image->m_is16Bit;
 
     m_valid = true;
 }

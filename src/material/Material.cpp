@@ -30,6 +30,7 @@
 #include "MaterialSSBO.h"
 #include "MaterialRegistry.h"
 #include "MaterialUpdater.h"
+#include "TextureRegistry.h"
 
 #include "material_util.h"
 
@@ -555,7 +556,7 @@ void Material::prepare()
 
     for (auto& it : m_boundTextures) {
         auto& tex = it.second;
-        tex.m_texture->prepare();
+        TextureRegistry::get().registerTexture(tex.m_texture);
     }
 }
 

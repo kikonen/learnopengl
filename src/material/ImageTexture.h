@@ -26,8 +26,12 @@ public:
     virtual std::string str() const noexcept override;
 
     void release() override;
-    void prepare() override;
-    void prepareArray() override;
+
+    void prepareSingle() override;
+
+    void prepareArray(
+        const util::Ref<ArrayTexture>& arr,
+        uint32_t layer) override;
 
     void preparePlain();
     void prepareKtx();
@@ -54,7 +58,7 @@ private:
     bool m_hdri{ false };
 
     int m_channels{ 0 };
-    bool m_is16Bbit{ false };
+    bool m_is16Bit{ false };
 
     GLenum m_pixelFormat{ 0 };
 

@@ -88,10 +88,19 @@ util::Ref<mesh::MeshSet> loadMeshSet(
     auto material = util::Ref<Material>::create();
     {
         material = Material::createMaterial(BasicMaterial::gold);
-        material->addTexture(TextureType::diffuse, "foo", false);
-        material->addTexture(TextureType::map_normal, "foo_normal", false);
-        material->m_programNames.insert({ MaterialProgramType::shader, "g_tex" });
-        material->m_programNames.insert({ MaterialProgramType::shadow, "shadow" });
+        material->addTexture(
+            material::TextureType::diffuse,
+            material->defaultTextureSpec,
+            "foo", false);
+
+        material->addTexture(
+            material::TextureType::map_normal,
+            material->defaultTextureSpec,
+            "foo_normal", false);
+
+        material->m_programNames.insert({ material::ProgramType::shader, "g_tex" });
+        material->m_programNames.insert({ material::ProgramType::shadow, "shadow" });
+
         //MaterialData data;
         //MaterialLoader loader;
         //loader.loadMaterial(data);

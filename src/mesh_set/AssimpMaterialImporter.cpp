@@ -475,7 +475,7 @@ namespace
         int width = 0;
         int height = 0;
         int channels = 0;
-        bool is16Bbit = false;
+        bool is16Bit = false;
         bool hasAlpha = false;
 
         if (texture->mHeight == 0) {
@@ -509,10 +509,10 @@ namespace
             width = image.m_width;
             height = image.m_height;
             channels = image.m_channels;
-            is16Bbit = image.m_is16Bbit;
+            is16Bit = image.m_is16Bit;
             hasAlpha = texInfo.checkAlpha && image.m_hasAlpha;
 
-            const size_t channelSize = is16Bbit ? 2 : 1;
+            const size_t channelSize = is16Bit ? 2 : 1;
             const size_t size = width * height * channels * channelSize;
 
             data.resize(size);
@@ -543,7 +543,7 @@ namespace
             width,
             height,
             channels,
-            is16Bbit,
+            is16Bit,
             hasAlpha,
             texInfo.gammaCorrect,
             // TODO KI detect normalmap somehow

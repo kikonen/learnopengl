@@ -2,6 +2,10 @@
 
 #include <glm/ext.hpp>
 
+#include "material/ArrayTexture.h"
+
+#include "material/material_util.h"
+
 namespace {
     material::TextureSpec getTextureSpec()
     {
@@ -87,7 +91,7 @@ void ColorTexture::release()
     if (!m_prepared) return;
 }
 
-void ColorTexture::prepare()
+void ColorTexture::prepareSingle()
 {
     if (m_prepared) return;
     m_prepared = true;
@@ -122,12 +126,102 @@ void ColorTexture::prepare()
 
         // OpenGL Superbible, 7th Edition, page 552
         // https://sites.google.com/site/john87connor/indirect-rendering/2-a-using-bindless-textures
-
-        m_handle = glGetTextureHandleARB(m_textureID);
-        glMakeTextureHandleResidentARB(m_handle);
     }
 }
 
-void ColorTexture::prepareArray()
+void ColorTexture::prepareArray(
+    const util::Ref<ArrayTexture>& arr,
+    uint32_t layer)
 {
+    if (m_prepared) return;
+    m_prepared = true;
+
+    // 1. sizes from array texture
+    int targetWidth = arr->getWidth();
+    int targetHeight = arr->getHeight();
+    int targetChannels = arr->getChannels();
+    bool is16Bit = arr->is16Bit();
+    // gammaCorrect; only for SRGB case
+    bool isSRGB = arr->isGammaCorrect();
+
+    m_textureID = arr->getTextureID();
+    m_handle = static_cast<GLuint64>(layer);
+
+    // 2. generate image buffer
+    if (is16Bit) {
+        // --- 16 image
+        std::vector<uint16_t> pixelData(targetWidth * targetHeight * targetChannels);
+
+        // SRGB conversion
+        float r = isSRGB ? material::linearToSRGB(m_color.r) : m_color.r;
+        float g = isSRGB ? material::linearToSRGB(m_color.g) : m_color.g;
+        float b = isSRGB ? material::linearToSRGB(m_color.b) : m_color.b;
+        // Alpha is ALWAYS linear
+        float a = m_color.a;
+
+        uint16_t valR = static_cast<uint16_t>(glm::clamp(r * 65535.0f, 0.0f, 65535.0f));
+        uint16_t valG = static_cast<uint16_t>(glm::clamp(g * 65535.0f, 0.0f, 65535.0f));
+        uint16_t valB = static_cast<uint16_t>(glm::clamp(b * 65535.0f, 0.0f, 65535.0f));
+        uint16_t valA = static_cast<uint16_t>(glm::clamp(a * 65535.0f, 0.0f, 65535.0f));
+
+        for (int i = 0; i < targetWidth * targetHeight; ++i) {
+            int idx = i * targetChannels;
+            if (targetChannels >= 1) pixelData[idx + 0] = valR;
+            // Ex. DuDv variation
+            if (targetChannels >= 2) pixelData[idx + 1] = valG;
+            // Ex. Normal/Plain color 16-bit
+            if (targetChannels >= 3) pixelData[idx + 2] = valB;
+            if (targetChannels >= 4) pixelData[idx + 3] = valA;
+        }
+
+        // stream to GPU
+        glTextureSubImage3D(
+            m_textureID, 0,
+            0, 0, static_cast<GLint>(layer),
+            targetWidth, targetHeight, 1,
+            // format (ex. GL_RED, GL_RGB, GL_RGBA)
+            arr->getFormat(),
+            GL_UNSIGNED_SHORT,
+            pixelData.data()
+        );
+    }
+    else {
+        // --- 8-bit image
+        std::vector<uint8_t> pixelData(targetWidth * targetHeight * targetChannels);
+
+        // SRGB conversion
+        float r = isSRGB ? material::linearToSRGB(m_color.r) : m_color.r;
+        float g = isSRGB ? material::linearToSRGB(m_color.g) : m_color.g;
+        float b = isSRGB ? material::linearToSRGB(m_color.b) : m_color.b;
+        float a = m_color.a;
+
+        uint8_t valR = static_cast<uint8_t>(glm::clamp(r * 255.0f, 0.0f, 255.0f));
+        uint8_t valG = static_cast<uint8_t>(glm::clamp(g * 255.0f, 0.0f, 255.0f));
+        uint8_t valB = static_cast<uint8_t>(glm::clamp(b * 255.0f, 0.0f, 255.0f));
+        uint8_t valA = static_cast<uint8_t>(glm::clamp(a * 255.0f, 0.0f, 255.0f));
+
+        for (int i = 0; i < targetWidth * targetHeight; ++i) {
+            int idx = i * targetChannels;
+            if (targetChannels >= 1) pixelData[idx + 0] = valR;
+            if (targetChannels >= 2) pixelData[idx + 1] = valG;
+            if (targetChannels >= 3) pixelData[idx + 2] = valB;
+            if (targetChannels >= 4) pixelData[idx + 3] = valA;
+        }
+
+        // stream to GPU
+        glTextureSubImage3D(
+            m_textureID, 0,
+            0, 0, static_cast<GLint>(layer),
+            targetWidth, targetHeight, 1,
+            // format (ex. GL_RED, GL_RGB, GL_RGBA)
+            arr->getFormat(),
+            GL_UNSIGNED_BYTE,
+            pixelData.data()
+        );
+    }
+
+    KI_INFO(fmt::format(
+        "TEX::COLOR::GENERATED: Pure color filled into array id={}, layer={}, format={}, channels={}, sRGB={}",
+        m_textureID, layer, kigl::formatEnum(arr->getInternalFormat()), targetChannels, isSRGB
+    ));
 }

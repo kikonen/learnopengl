@@ -22,7 +22,9 @@
 #include "editor/EditorFrame.h"
 
 #include "asset/DynamicCubeMap.h"
+
 #include "material/Material.h"
+#include "material/TextureRegistry.h"
 
 #include "backend/gl/PerformanceCounters.h"
 
@@ -138,32 +140,32 @@ bool SampleApp::onSetup()
             event::Type::action_editor_scene_load,
             m_registry->m_dispatcherView,
             [this](const event::Event& e) {
-                if (!e.attachment) return;
-                const auto& filePath = e.attachment->pathEntry.filePath;
-                onLoadScene(filePath);
-			});
+            if (!e.attachment) return;
+            const auto& filePath = e.attachment->pathEntry.filePath;
+            onLoadScene(filePath);
+        });
 
         m_listen_action_editor_scene_unload.listen(
             event::Type::action_editor_scene_unload,
             m_registry->m_dispatcherView,
             [this](const event::Event& e) {
-                onUnloadScene();
-            });
+            onUnloadScene();
+        });
     }
 
     m_listen_scene_loaded.listen(
         event::Type::scene_loaded,
         m_registry->m_dispatcherView,
         [this](const event::Event& e) {
-            stopLoader();
-        });
+        stopLoader();
+    });
 
     m_listen_scene_unload.listen(
         event::Type::scene_unload,
         m_registry->m_dispatcherView,
         [this](const event::Event& e) {
-            stopLoader();
-        });
+        stopLoader();
+    });
 
     //m_currentScene = loadScene();
 
@@ -173,6 +175,156 @@ bool SampleApp::onSetup()
     }
 
     return false;
+}
+
+void SampleApp::setupTextures()
+{
+    auto& textureRegistry = TextureRegistry::get();
+
+    const auto srgbIndex = textureRegistry.addArrayTexture({
+        "srgb",
+        4,
+        1024,
+        256,
+        false,
+        false,
+        true,
+        false,
+        {
+            .wrap = material::WrapMode::repeat,
+            .minFilter = material::TextureFilter::linear_mipmap_nearest,
+            .magFilter = material::TextureFilter::linear,
+        }
+        });
+
+    const auto dataIndex = textureRegistry.addArrayTexture({
+        "data",
+        4,
+        1024,
+        256,
+        false,
+        false,
+        false,
+        false,
+        {
+            .wrap = material::WrapMode::repeat,
+            .minFilter = material::TextureFilter::linear_mipmap_nearest,
+            .magFilter = material::TextureFilter::linear,
+        }
+        });
+
+    const auto normalIndex = textureRegistry.addArrayTexture({
+        "normal",
+        3,
+        1024,
+        256,
+        true,
+        false,
+        false,
+        false,
+        {
+            .wrap = material::WrapMode::repeat,
+            .minFilter = material::TextureFilter::linear_mipmap_nearest,
+            .magFilter = material::TextureFilter::linear,
+        }
+        });
+
+    const auto dudvIndex = textureRegistry.addArrayTexture({
+        "dudv",
+        3,
+        256,
+        32,
+        false,
+        false,
+        false,
+        false,
+        {
+            .wrap = material::WrapMode::repeat,
+            .minFilter = material::TextureFilter::linear_mipmap_nearest,
+            .magFilter = material::TextureFilter::linear,
+        }
+        });
+
+    const auto displacementIndex = textureRegistry.addArrayTexture({
+        "displacement",
+        1,
+        1024,
+        128,
+        false,
+        false,
+        false,
+        false,
+        {
+            .wrap = material::WrapMode::repeat,
+            .minFilter = material::TextureFilter::linear_mipmap_nearest,
+            .magFilter = material::TextureFilter::linear,
+        }
+        });
+
+    const auto noiseIndex = textureRegistry.addArrayTexture({
+        "noise",
+        3,
+        128,
+        16,
+        false,
+        false,
+        false,
+        false,
+        {
+            .wrap = material::WrapMode::repeat,
+            .minFilter = material::TextureFilter::nearest,
+            .magFilter = material::TextureFilter::nearest,
+            .maxMipMapLevels = 1,
+        }
+        });
+
+    const auto heightIndex = textureRegistry.addArrayTexture({
+        "height",
+        1,
+        2048,
+        32,
+        true,
+        false,
+        false,
+        false,
+        {
+            .wrap = material::WrapMode::clamp_to_edge,
+            .minFilter = material::TextureFilter::linear_mipmap_nearest,
+            .magFilter = material::TextureFilter::linear,
+        }
+        });
+
+    const auto fontAtlasIndex = textureRegistry.addArrayTexture({
+        "font",
+        1,
+        1024,
+        32,
+        false,
+        false,
+        false,
+        false,
+        {
+            .wrap = material::WrapMode::clamp_to_edge,
+            .minFilter = material::TextureFilter::linear_mipmap_linear,
+            .magFilter = material::TextureFilter::linear,
+        }
+        });
+
+    textureRegistry.bindTextureType(material::TextureType::diffuse, srgbIndex);
+    textureRegistry.bindTextureType(material::TextureType::emission, srgbIndex);
+    textureRegistry.bindTextureType(material::TextureType::map_custom_1, srgbIndex);
+
+    textureRegistry.bindTextureType(material::TextureType::map_mras, dataIndex);
+    textureRegistry.bindTextureType(material::TextureType::map_displacement, displacementIndex);
+
+    textureRegistry.bindTextureType(material::TextureType::map_normal, normalIndex);
+    textureRegistry.bindTextureType(material::TextureType::map_dudv, dudvIndex);
+
+    textureRegistry.bindTextureType(material::TextureType::map_noise, noiseIndex);
+    textureRegistry.bindTextureType(material::TextureType::map_noise_2, noiseIndex);
+
+    textureRegistry.bindTextureType(material::TextureType::map_height, heightIndex);
+    textureRegistry.bindTextureType(material::TextureType::map_font_atlas, fontAtlasIndex);
 }
 
 void SampleApp::onUpdate(const UpdateContext& ctx)

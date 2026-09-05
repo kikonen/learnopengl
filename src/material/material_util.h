@@ -26,6 +26,13 @@ namespace material
 
     ResolvedTexturePath getPlaceholderTexturePath();
 
+    //
+    // Official convert to SRGB from linear colorspace
+    // 
+    // @see IEC 61966-2-1:1999 -color standard[W3C sRGB Color Standard Specification]
+    //
+    float linearToSRGB(float linear);
+
     // Generate texture data for ColorTexture
     std::vector<uint8_t> generateSRGBPixelBuffer(
         const glm::vec4& linearColor,

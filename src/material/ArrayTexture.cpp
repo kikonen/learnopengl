@@ -35,7 +35,7 @@ ArrayTexture::ArrayTexture(
     bool grayScale,
     bool gammaCorrect,
     int channels,
-    bool is16Bbit,
+    bool is16Bit,
     int width,
     int height,
     int maxLayers,
@@ -43,7 +43,7 @@ ArrayTexture::ArrayTexture(
     const material::TextureSpec& spec)
     : Texture{ name, grayScale, gammaCorrect, material::TextureType::array, spec },
     m_channels{ channels },
-    m_is16Bbit{ is16Bbit },
+    m_is16Bit{ is16Bit },
     m_maxLayers{ maxLayers },
     m_hdri{ hdri }
 {
@@ -61,7 +61,7 @@ std::string ArrayTexture::str() const noexcept
         "<IMG: {}[{}] {}bit {}ch {}x{} {}{} ({}), [{}], [{}, {}]>",
         m_name,
         m_textures.size(),
-        m_is16Bbit ? "16" : "8",
+        m_is16Bit ? "16" : "8",
         m_channels,
         m_width,
         m_height,
@@ -74,59 +74,28 @@ std::string ArrayTexture::str() const noexcept
     );
 }
 
-bool ArrayTexture::validateLayers()
-{
-    //if (m_images.empty()) return false;
-
-    //const auto* ref = m_images[0].get();
-    //bool refHdri = util::matchAny(hdrMatchers, ref->m_path);
-
-    //for (int i = -1; const auto& img : m_images) {
-    //    i++;
-    //    bool hdri = util::matchAny(hdrMatchers, ref->m_path);
-
-    //    if (img->m_width != ref->m_width ||
-    //        img->m_height != ref->m_height ||
-    //        img->m_channels != ref->m_channels ||
-    //        img->m_is16Bbit != ref->m_is16Bbit ||
-    //        hdri != refHdri) {
-    //        KI_ERROR(fmt::format(
-    //            "TEX::ARRAY::MISMATCH: layer {} differs from layer 0", i));
-    //        return false;
-    //    }
-    //}
-    return true;
-}
-
 void ArrayTexture::release()
 {
     if (!m_prepared) return;
     Texture::release();
 }
 
-void ArrayTexture::prepare()
+void ArrayTexture::prepareSingle()
 {
     if (m_prepared) return;
     m_prepared = true;
 
-    if (!m_valid) return;
-
-    preparePlain();
-}
-
-void ArrayTexture::preparePlain()
-{
     // NOTE KI 1 & 2 channels have issues
     // => need to convert manually to RGB(A) s
     // NOTE KI https://learnopengl.com/Advanced-Lighting/Gamma-Correction
     if (m_channels == 1) {
-        if (m_is16Bbit) {
+        if (m_is16Bit) {
             m_format = GL_RED;
-            m_internalFormat = m_grayScale ? GL_RGB16 : GL_R16;
+            m_internalFormat = GL_R16;
         }
         else {
             m_format = GL_RED;
-            m_internalFormat = m_grayScale ? GL_RGB8 : GL_R8;
+            m_internalFormat = GL_R8;
         }
     }
     else if (m_channels == 2) {
@@ -140,7 +109,7 @@ void ArrayTexture::preparePlain()
             m_format = GL_RGB;
             m_internalFormat = GL_RGB16F;
         }
-        else if (m_is16Bbit) {
+        else if (m_is16Bit) {
             m_format = GL_RGB;
             m_internalFormat = m_gammaCorrect ? GL_SRGB8 : GL_RGB16;
         }
@@ -151,7 +120,7 @@ void ArrayTexture::preparePlain()
         }
     }
     else if (m_channels == 4) {
-        if (m_is16Bbit) {
+        if (m_is16Bit) {
             m_format = GL_RGBA;
             m_internalFormat = m_gammaCorrect ? GL_SRGB8_ALPHA8 : GL_RGBA16;
         }
@@ -175,6 +144,11 @@ void ArrayTexture::preparePlain()
     kigl::setLabel(GL_TEXTURE_2D_ARRAY, m_textureID, m_name);
 
     {
+        if (m_grayScale && m_channels == 1) {
+            GLint swizzleMask[] = { GL_RED, GL_RED, GL_RED, GL_ONE };
+            glTextureParameteriv(m_textureID, GL_TEXTURE_SWIZZLE_RGBA, swizzleMask);
+        }
+
         glTextureParameteri(m_textureID, GL_TEXTURE_WRAP_S, m_spec.asWrapS());
         glTextureParameteri(m_textureID, GL_TEXTURE_WRAP_T, m_spec.asWrapT());
 
@@ -190,19 +164,18 @@ void ArrayTexture::preparePlain()
 
         glTextureStorage3D(m_textureID, mipMapLevels, m_internalFormat, m_width, m_height, layerCount);
 
-        for (int layer = 0; layer < layerCount; layer++) {
-            //glTextureSubImage3D(
-            //    m_textureID,
-            //    0,
-            //    0, 0, layer,
-            //    m_width, m_height,
-            //    1,
-            //    m_format,
-            //    m_pixelFormat,
-            //    m_images[layer]->m_data);
-        }
+        //for (int layer = 0; layer < layerCount; layer++) {
+        //    //glTextureSubImage3D(
+        //    //    m_textureID,
+        //    //    0,
+        //    //    0, 0, layer,
+        //    //    m_width, m_height,
+        //    //    1,
+        //    //    m_format,
+        //    //    m_pixelFormat,
+        //    //    m_images[layer]->m_data);
+        //}
 
-        glGenerateTextureMipmap(m_textureID);
 
         // OpenGL Superbible, 7th Edition, page 552
         // https://sites.google.com/site/john87connor/indirect-rendering/2-a-using-bindless-textures
@@ -215,6 +188,22 @@ void ArrayTexture::preparePlain()
             compFlag,
             str()));
     }
+}
 
-    //m_texIndex = Texture::nextIndex();
+void ArrayTexture::prepareArray(
+    const util::Ref<ArrayTexture>& arr,
+    uint32_t layer)
+{
+    // NOTE KI array cannot be in array
+}
+
+void ArrayTexture::prepareMipMaps()
+{
+    glGenerateTextureMipmap(m_textureID);
+}
+
+uint32_t ArrayTexture::allocateLayer()
+{
+    m_layerCount++;
+    return static_cast<uint32_t>(m_layerCount);
 }

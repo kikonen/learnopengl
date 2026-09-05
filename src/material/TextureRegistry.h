@@ -2,12 +2,14 @@
 
 #include <string>
 #include <unordered_map>
-#include <memory>
-#include <mutex>
-#include <future>
+#include <vector>
 
 #include "util/Ref.h"
 
+#include "ArrayTextureInfo.h"
+#include "TextureType.h"
+
+class ArrayTexture;
 class Texture;
 
 // Mapped from TextureType into sampler2dArray typing
@@ -38,8 +40,13 @@ public:
     void prepareRT();
     void updateRT();
 
+    // @return array ID
+    uint32_t addArrayTexture(const material::ArrayTextureInfo& info);
+
+    void bindTextureType(material::TextureType type, uint32_t arrayId);
+
     uint64_t registerTexture(
-        const Texture* texture);
+        const util::Ref<Texture>& texture);
 
 private:
     void upload();
@@ -47,5 +54,8 @@ private:
 private:
     std::unordered_map<TextureSamplerType, std::vector<util::Ref<Texture>>> m_typeTextures;
     std::unordered_map<TextureSamplerType, uint32_t> m_typeUploadedSizes;
+
+    std::vector<util::Ref<ArrayTexture>> m_arrayTextures;
+    std::unordered_map<material::TextureType, uint32_t> m_mapping;
 };
 

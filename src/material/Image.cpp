@@ -30,7 +30,7 @@ Image::Image(Image&& o) noexcept
     m_width{ o.m_width },
     m_height{ o.m_height },
     m_channels{ o.m_channels },
-    m_is16Bbit{ o.m_is16Bbit },
+    m_is16Bit{ o.m_is16Bit },
     m_data{ o.m_data },
     m_loaded{ o.m_loaded },
     m_res{ o.m_res }
@@ -83,7 +83,7 @@ int Image::loadNormal()
     stbi_set_flip_vertically_on_load_thread(m_flipped);
     //stbi_set_flip_vertically_on_load(flip);
 
-    m_is16Bbit = stbi_is_16_bit(m_path.c_str());
+    m_is16Bit = stbi_is_16_bit(m_path.c_str());
 
     if (m_hdri) {
         m_data = (unsigned char*)stbi_loadf(
@@ -92,7 +92,7 @@ int Image::loadNormal()
             &m_height,
             &m_channels,
             STBI_default);
-    } else if (m_is16Bbit) {
+    } else if (m_is16Bit) {
         m_data = (unsigned char*)stbi_load_16(
             m_path.c_str(),
             &m_width,
@@ -127,7 +127,7 @@ int Image::loadNormal()
 int Image::loadFromMememory(
     const std::vector<unsigned char>& data)
 {
-    m_is16Bbit = stbi_is_16_bit_from_memory(data.data(), static_cast<int>(data.size()));
+    m_is16Bit = stbi_is_16_bit_from_memory(data.data(), static_cast<int>(data.size()));
 
     stbi_set_flip_vertically_on_load_thread(m_flipped);
 
@@ -174,7 +174,7 @@ void Image::checkAlpha()
     unsigned char* srcByteData{ nullptr };
     unsigned short* srcShortData{ nullptr };
 
-    if (m_is16Bbit) {
+    if (m_is16Bit) {
         srcShortData = (unsigned short*)m_data;
     }
     else {

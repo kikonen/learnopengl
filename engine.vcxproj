@@ -799,6 +799,7 @@
     <ClInclude Include="src\loader\WorldLoader.h" />
     <ClInclude Include="src\material\ArrayTexture.h" />
     <ClInclude Include="src\material\material_util.h" />
+    <ClInclude Include="src\material\ArrayTextureInfo.h" />
     <ClInclude Include="src\material\TextureRegistry.h" />
     <ClInclude Include="src\mesh\LodMeshContainer.h" />
     <ClInclude Include="src\mesh\RegisteredRig.h" />

@@ -14,7 +14,7 @@ public:
         bool grayScale,
         bool gammaCorrect,
         int channels,
-        bool is16Bbit,
+        bool is16Bit,
         int width,
         int height,
         int maxLayers,
@@ -25,20 +25,34 @@ public:
 
     virtual std::string str() const noexcept override;
 
-    bool validateLayers();
-
     void release() override;
-    void prepare() override;
+    void prepareSingle() override;
+
+    void prepareArray(
+        const util::Ref<ArrayTexture>& arr,
+        uint32_t layer) override;
+
+    void prepareMipMaps();
 
     // @return layer index
-    int32_t allocateLayer(const util::Ref<Texture>& texture);
+    uint32_t allocateLayer();
+
+    int getChannels() const noexcept
+    {
+        return m_channels;
+    }
+
+    bool is16Bit() const noexcept
+    {
+        return m_is16Bit;
+    }
 
 private:
     void preparePlain();
 
 private:
     const int m_channels;
-    const bool m_is16Bbit;
+    const bool m_is16Bit;
 
     const int m_maxLayers;
 
@@ -48,6 +62,8 @@ private:
 
     int m_format{ 0 };
     int m_internalFormat{ 0 };
+
+    int m_layerCount{ -1 };
 
 private:
     bool m_valid{ false };

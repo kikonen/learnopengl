@@ -17,7 +17,12 @@ public:
     virtual ~PlainTexture();
 
     void release() override;
-    void prepare() override;
-    void prepareArray() override;
+
+    void prepareSingle() override;
+
+    void prepareArray(
+        const util::Ref<ArrayTexture>& arr,
+        uint32_t layer) override;
+
     void setData(void* data, int size);
 };

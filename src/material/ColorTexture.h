@@ -24,8 +24,11 @@ public:
     ~ColorTexture();
 
     void release() override;
-    void prepare() override;
-    void prepareArray() override;
+    void prepareSingle() override;
+
+    void prepareArray(
+        const util::Ref<ArrayTexture>& arr,
+        uint32_t layer) override;
 
 private:
     glm::vec4 m_color;

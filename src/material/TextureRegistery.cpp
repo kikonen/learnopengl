@@ -6,7 +6,8 @@
 
 #include "kigl/kigl.h"
 
-#include "material/ImageTexture.h"
+#include "material/ArrayTexture.h"
+#include "material/Texture.h"
 
 namespace
 {
@@ -60,6 +61,8 @@ TextureRegistry::~TextureRegistry()
 {
     clear();
 
+    addArrayTexture({});
+
     // TODO KI reserve NULL, black, white textures
     registerTexture({ nullptr });
     registerTexture({ nullptr });
@@ -71,23 +74,6 @@ void TextureRegistry::clear()
     m_typeTextures.clear();
 }
 
-uint64_t TextureRegistry::registerTexture(
-    const Texture* texture)
-{
-    if (!texture) return 0;
-
-    auto samplerType = getSamplerType(texture);
-
-    auto& textures = m_typeTextures[samplerType];
-    uint64_t index = static_cast<uint32_t>(textures.size());
-    //textures.push_back(texture);
-
-    auto handle = glGetTextureHandleARB(texture->m_textureID);
-    glMakeTextureHandleResidentARB(handle);
-
-    return handle;
-}
-
 void TextureRegistry::prepareRT()
 {
     upload();
@@ -96,6 +82,58 @@ void TextureRegistry::prepareRT()
 void TextureRegistry::updateRT()
 {
     upload();
+}
+
+// @return array ID
+uint32_t TextureRegistry::addArrayTexture(const material::ArrayTextureInfo& info)
+{
+    uint32_t index = static_cast<uint32_t>(m_arrayTextures.size());
+
+    const auto arr = util::Ref<ArrayTexture>::create(
+        info.name,
+        info.grayScale,
+        info.gammaCorrect,
+        info.channels,
+        info.is16Bit,
+        info.size,
+        info.size,
+        info.maxLayers,
+        info.hdri,
+        info.spec);
+
+    m_arrayTextures.push_back(arr);
+
+    arr->prepareSingle();
+
+    return index;
+}
+
+void TextureRegistry::bindTextureType(material::TextureType type, uint32_t arrayId)
+{
+    m_mapping.insert({ type, arrayId });
+}
+
+uint64_t TextureRegistry::registerTexture(
+    const util::Ref<Texture>& texture)
+{
+    if (!texture) return 0;
+
+    if (true) {
+        const auto& it = m_mapping.find(texture->m_type);
+        if (it == m_mapping.end()) return 0;
+
+        util::Ref<ArrayTexture> arr = m_arrayTextures[it->second];
+        uint32_t layer = arr->allocateLayer();
+        texture->prepareArray(arr, layer);
+        arr->prepareMipMaps();
+
+        return layer;
+    }
+    else {
+        texture->prepareSingle();
+        texture->prepareHandle();
+        return texture->m_handle;
+    }
 }
 
 void TextureRegistry::upload()

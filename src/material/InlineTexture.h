@@ -19,7 +19,7 @@ public:
         int width,
         int height,
         int channels,
-        bool is16Bbit,
+        bool is16Bit,
         bool hasAlpha,
         bool gammaCorrect,
         material::TextureType type,
@@ -30,10 +30,11 @@ public:
     virtual std::string str() const noexcept override;
 
     void release() override;
-    void prepare() override;
-    void prepareArray() override;
+    void prepareSingle() override;
 
-    void prepareNormal();
+    void prepareArray(
+        const util::Ref<ArrayTexture>& arr,
+        uint32_t layer) override;
 
     bool isValid() const noexcept { return true; }
 
@@ -50,7 +51,7 @@ public:
     const int m_width;
     const int m_height;
     const int m_channels;
-    const bool m_is16Bbit;
+    const bool m_is16Bit;
     const bool m_hasAlpha;
 
     GLenum m_pixelFormat{ 0 };

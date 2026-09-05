@@ -4,6 +4,7 @@
 
 #include "kigl/kigl.h"
 
+#include "material/ArrayTexture.h"
 
 PlainTexture::PlainTexture(
     std::string_view name,
@@ -31,7 +32,7 @@ void PlainTexture::release()
     if (!m_prepared) return;
 }
 
-void PlainTexture::prepare()
+void PlainTexture::prepareSingle()
 {
     if (m_prepared) return;
     m_prepared = true;
@@ -57,6 +58,8 @@ void PlainTexture::setData(void* data, int size)
     glTextureSubImage2D(m_textureID, 0, 0, 0, m_width, m_height, m_format, GL_UNSIGNED_BYTE, data);
 }
 
-void PlainTexture::prepareArray()
+void PlainTexture::prepareArray(
+    const util::Ref<ArrayTexture>& arr,
+    uint32_t layer)
 {
 }

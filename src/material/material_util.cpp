@@ -22,20 +22,6 @@
 
 namespace
 {
-    //
-    // Official convert to SRGB from linear colorspace
-    // 
-    // @see IEC 61966-2-1:1999 -color standard[W3C sRGB Color Standard Specification]
-    //
-    float linearToSRGB(float linear)
-    {
-        if (linear <= 0.0031308f) {
-            return linear * 12.92f;
-        }
-        else {
-            return 1.055f * std::pow(linear, 1.0f / 2.4f) - 0.055f;
-        }
-    }
 }
 
 namespace material
@@ -156,6 +142,16 @@ namespace material
         auto texturePath = resolveTexturePath("", "", assets.placeholderTexture, false);
         texturePath.name = "tex-placeholder";
         return texturePath;
+    }
+
+    float linearToSRGB(float linear)
+    {
+        if (linear <= 0.0031308f) {
+            return linear * 12.92f;
+        }
+        else {
+            return 1.055f * std::pow(linear, 1.0f / 2.4f) - 0.055f;
+        }
     }
 
     std::vector<uint8_t> generateSRGBPixelBuffer(
