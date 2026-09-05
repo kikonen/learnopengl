@@ -22,8 +22,6 @@
 
 namespace
 {
-    const std::regex CONTAINS_BUILD = std::regex(".*_build.*");
-
     //
     // Official convert to SRGB from linear colorspace
     // 
@@ -57,12 +55,7 @@ namespace material
             std::filesystem::path buildPath{ path };
             const auto& stem = buildPath.stem().string();
 
-            if (std::regex_match(stem, CONTAINS_BUILD)) {
-                buildPath.replace_filename(fmt::format("{}.{}", stem, "png"));
-            }
-            else {
-                buildPath.replace_filename(fmt::format("{}_build.{}", stem, "png"));
-            }
+            buildPath.replace_filename(fmt::format("{}_build.{}", stem, "png"));
 
             if (useCompressed && assets.compressedTexturesEnabled) {
                 std::filesystem::path ktxPath{ buildPath };
@@ -78,11 +71,6 @@ namespace material
                 }
             }
 
-            //const auto re = std::regex(".*scenery_build.png");
-            //if (std::regex_match(buildPath.string(), re)) {
-            //    int x = 0;
-            //}
-
             if (!found) {
                 const auto fullPath = util::joinPath(
                     assets.assetsBuildDir,
@@ -96,6 +84,7 @@ namespace material
         }
 
         if (!found) {
+            // NOTE KI for troubleshooting only
             filePath = util::joinPath(assets.assetsDir, path);
         }
 
@@ -120,46 +109,28 @@ namespace material
 
         ResolvedTexturePath texturePath{ "", "", false, false };
 
+        std::vector<std::string> searchPaths;
+
         if (!baseDir.empty()) {
-            // NOTE KI MUST normalize path to avoid mismatches due to \ vs /
-            texturePath = selectTexturePath(
-                textureName,
-                util::joinPathExt(
+            searchPaths.push_back(
+                util::joinPath(
                     modelDir,
-                    baseDir,
-                    textureName,
-                    ""),
-                compressed);
+                    baseDir));
         }
+        searchPaths.push_back(modelDir);
+        if (!baseDir.empty()) {
+            searchPaths.push_back(baseDir);
+        }
+        searchPaths.push_back("");
 
-        if (!texturePath.valid) {
-            // NOTE KI MUST normalize path to avoid mismatches due to \ vs /
+        for (const auto& dir : searchPaths) {
             texturePath = selectTexturePath(
                 textureName,
-                util::joinPathExt(
-                    modelDir,
-                    textureName,
-                    ""),
+                util::joinPath(
+                    dir,
+                    textureName),
                 compressed);
-        }
-
-        if (!texturePath.valid && !baseDir.empty()) {
-            // NOTE KI MUST normalize path to avoid mismatches due to \ vs /
-            texturePath = selectTexturePath(
-                textureName,
-                util::joinPathExt(
-                    baseDir,
-                    textureName,
-                    ""),
-                compressed);
-        }
-
-        if (!texturePath.valid && baseDir.empty()) {
-            // NOTE KI MUST normalize path to avoid mismatches due to \ vs /
-            texturePath = selectTexturePath(
-                textureName,
-                textureName,
-                compressed);
+            if (texturePath.valid) break;
         }
 
         if (!texturePath.valid) {

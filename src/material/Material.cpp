@@ -46,8 +46,6 @@ namespace {
     const glm::vec4 WHITE_RGBA{ 1.f };
     const glm::vec4 BLACK_RGBA{ 0.f };
 
-    const std::regex CONTAINS_BUILD = std::regex(".*_build.*");
-
     //float calculateAmbient(glm::vec3 ambient) {
     //    return (ambient.x + ambient.y + ambient.z) / 3.f;
     //}
