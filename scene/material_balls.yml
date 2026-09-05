@@ -165,12 +165,8 @@ types:
     mesh:
       path: water_ball
       material:
-        base: textures\Metal022_1K-PNG
+        prefab: materials/Metal022.yml
         kd: [0.7140, 0.4284, 0.1814, 1.0]
-        map_kd: Metal022_1K_Color.png
-        map_normal: Metal022_1K_NormalGL.png
-        map_mras: Metal022_1K_mras
-        map_displacement: Metal022_1K_displacement
         xreflection: 0.05
         tiling: 3
         parallax: 0.0

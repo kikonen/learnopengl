@@ -770,6 +770,8 @@ module Encode
         end
 
         textures.each do |tex_info|
+          next unless tex_info[:group]
+
           groups = texture_to_groups[tex_info[:name]]
           next unless groups
 
@@ -792,7 +794,9 @@ module Encode
         next if tex_info[:manual]
         next if tex_info[:action] != :combine
 
-        tex_info[:target_name] = "#{tex_info[:group]}_#{tex_info[:target_name]}"
+        if tex_info[:group]
+          tex_info[:target_name] = "#{tex_info[:group]}_#{tex_info[:target_name]}"
+        end
       end
 
       if need_process
@@ -828,11 +832,16 @@ module Encode
       groups = {}
 
       textures.each do |tex_info|
-        # NOTE KI "group" names are resolved over all (encode/combine)
+        next unless tex_info[:group]
+
         parts = tex_info[:plain_name].split('_')
 
         parts.size.times do |idx|
           group = parts[0, idx + 1].join('_')
+
+          # NOTE KI don't use typed name as group
+          type = detect_type(group)
+          next if type != :unknown
 
           (groups[group] ||= []) << tex_info
         end
@@ -843,22 +852,34 @@ module Encode
       # => for diffuse group can contain only one pair (diffuse + opacity)
       groups.each do |group, parts|
         diffuse_count = 0
-
-        parts.each do |part|
-          diffuse_count +=1 if part[:type] == :diffuse
-        end
-
-        next if diffuse_count <= 1
+        opacity_count = 0
 
         diffuse_parts = parts.select { |part| part[:type] == :diffuse }
         other_parts = parts.select { |part| part[:type] != :diffuse }
+
+        parts.each do |part|
+          diffuse_count +=1 if part[:type] == :diffuse
+          opacity_count +=1 if part[:type] == :opacity
+        end
+
+        next if diffuse_count == 0
+
+        if diffuse_count == 1
+          tex_info = diffuse_parts.first
+          if opacity_count == 0
+            tex_info[:group] = nil
+            tex_info[:target_name] = tex_info[:plain_name]
+          end
+          next
+        end
 
         puts "NOT_GROUPED: #{group}, parts=#{diffuse_parts.map { |e| e[:name] } }"
 
         groups[group] = other_parts
 
         diffuse_parts.each do |part|
-          part[:group] = part[:plain_name]
+          part[:group] = nil
+          part[:target_name] = part[:plain_name]
         end
       end
 

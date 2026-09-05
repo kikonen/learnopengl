@@ -245,6 +245,11 @@ module Encode
         img_list << channel_img
       end
 
+      # NOTE KI workaround segmentation fault, which happens
+      # if running without pause
+      GC.start
+      sleep 0.2
+
       # https://imagemagick.org/script/command-line-options.php#combine
       # => combine as SRGB
       dst_img = img_list.combine(Magick::SRGBColorspace)

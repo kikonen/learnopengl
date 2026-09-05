@@ -6,8 +6,8 @@ decal:
   rotation_variation: [-90, 90]
   material:
     base: decals/rubble_tbcs3qo_2k
-    map_kd: Rubble_tbcs3qo_2K_BaseColor
-    map_opacity: Rubble_tbcs3qo_2K_Opacity
+    map_kd: Rubble_tbcs3qo_2K_diffuse
+    #map_opacity: Rubble_tbcs3qo_2K_Opacity
     map_normal: Rubble_tbcs3qo_2K_Normal
     map_mras: Rubble_tbcs3qo_2K_mras
     map_displacement: Rubble_tbcs3qo_2K_displacement
