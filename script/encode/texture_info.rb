@@ -10,6 +10,7 @@ module Encode
     include Hashie::Extensions::MergeInitializer
     include Hashie::Extensions::MethodAccess
     include Hashie::Extensions::Dash::PropertyTranslation
+    include Hashie::Extensions::IgnoreUndeclared
 
     property :name
     property :target_name
@@ -37,6 +38,10 @@ module Encode
 
     def src_path(src_dir)
       "#{src_dir}/#{self.name}"
+    end
+
+    def plain_name
+      name ? File.basename(name, ".*") : nil
     end
 
     def encode_srgb?

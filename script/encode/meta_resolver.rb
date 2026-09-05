@@ -459,10 +459,27 @@ module Encode
 
           case type
           when :diffuse
+            source_channel = RGB
+            target_channel = RGB
+
+            if img.colorspace == Magick::GRAYColorspace
+              source_channel = RED
+              target_channel = RGB
+            else
+              if img.alpha?
+                source_channel = RGBA
+                target_channel = RGBA
+              end
+            end
+
             tex_info = {
+              group: DEFAULT_GROUP,
               type: :diffuse,
-              action: :encode,
-              mode: :diffuse,
+              action: :combine,
+              mode: MODE_DIFFUSE,
+              target_name: DIFFUSE,
+              source_channel:,
+              target_channel:,
             }
           when :emission
             tex_info = {
@@ -499,13 +516,13 @@ module Encode
             }
           when :opacity
             tex_info = {
+              group: DEFAULT_GROUP,
               type: :opacity,
-              action: :encode,
-              mode: :opacity,
-              #mode: MODE_OPACITY,
-              #target_name: OPACITY_MAP,
-              #source_channel: RED,
-              #target_channel: RED,
+              action: :combine,
+              mode: MODE_DIFFUSE,
+              target_name: DIFFUSE,
+              source_channel: RED,
+              target_channel: ALPHA,
               srgb: false,
             }
           when :translucency
@@ -614,7 +631,7 @@ module Encode
               target_channel: RED_ALPHA_GREEN,
               srgb: false,
             }
-          # Kitbash MADS
+            # Kitbash MADS
           when :metal_occlusion_height_smoothness
             tex_info = {
               group: DEFAULT_GROUP,
@@ -702,6 +719,7 @@ module Encode
             end
 
             base = {
+              plain_name:,
               name:,
               target_name: plain_name,
               group: nil,
@@ -757,8 +775,10 @@ module Encode
 
           # NOTE KI ignore group with single entry if better ones exist
           # => at extreme there is no groups
+          # => if all groups are size 1 then use longest
           group_sizes = groups.map { |e| [e, grouped_textures[e].size] }.to_h
-          if groups.size > 1
+
+          if group_sizes.values.any? { |e| e > 1 }
             groups.delete_if { |e| group_sizes[e] == 1 }
           end
 
@@ -780,6 +800,7 @@ module Encode
         metadata[:textures] = textures
           .sort_by { |e| e[:name].downcase }
 
+        puts "here"
         Util.write_metadata(src_dir:, data: metadata, dry_run:)
       end
 
@@ -807,17 +828,37 @@ module Encode
       groups = {}
 
       textures.each do |tex_info|
-        #next unless tex_info[:action] == :combine
+        # NOTE KI "group" names are resolved over all (encode/combine)
+        parts = tex_info[:plain_name].split('_')
 
-        parts = tex_info[:name].split('_')
         parts.size.times do |idx|
           group = parts[0, idx + 1].join('_')
-          next if group == tex_info[:name]
-
-          type = detect_type(group)
-          next if type != :unknown
 
           (groups[group] ||= []) << tex_info
+        end
+      end
+
+      # NOTE KI check for diffuse textures which don't actually have
+      # opacity
+      # => for diffuse group can contain only one pair (diffuse + opacity)
+      groups.each do |group, parts|
+        diffuse_count = 0
+
+        parts.each do |part|
+          diffuse_count +=1 if part[:type] == :diffuse
+        end
+
+        next if diffuse_count <= 1
+
+        diffuse_parts = parts.select { |part| part[:type] == :diffuse }
+        other_parts = parts.select { |part| part[:type] != :diffuse }
+
+        puts "NOT_GROUPED: #{group}, parts=#{diffuse_parts.map { |e| e[:name] } }"
+
+        groups[group] = other_parts
+
+        diffuse_parts.each do |part|
+          part[:group] = part[:plain_name]
         end
       end
 

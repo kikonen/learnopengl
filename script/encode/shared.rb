@@ -106,7 +106,7 @@
 module Encode
   EXTENSIONS = ["png", "jpg", "jpeg", "tga"].freeze
 
-  OPACITY_MAP = 'opacity'
+  DIFFUSE = 'diffuse'
   MRAS_MAP = 'mras'
   MADS_MAP = "mads"
   DISPLACEMENT_MAP = 'displacement'
@@ -152,11 +152,12 @@ module Encode
   # S (Alpha) — Smoothness (inverse of roughness)
   MODE_MADS = :mads
 
-  MODE_OPACITY = :opacity
+  MODE_DIFFUSE = :diffuse
   MODE_DISPLACEMENT = :displacement
   MODE_HEIGHT = :height
 
   IMAGE_VERSION = 8.5
+  DIFFUSE_VERSION = 1.0
   MRAS_VERSION = 9.4
   DISPLACEMENT_VERSION = 8.4
   HEIGHT_VERSION = 8.4

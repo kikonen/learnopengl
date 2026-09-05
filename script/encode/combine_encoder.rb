@@ -55,6 +55,14 @@ module Encode
       group = parts.first.group
 
       case target_mode
+      when MODE_DIFFUSE
+        create_diffuse_texture(
+          src_dir,
+          dst_dir,
+          parts.first.group,
+          target_name,
+          parts
+        )
       when MODE_MRAS
         create_mras_texture(
           src_dir,
@@ -90,6 +98,181 @@ module Encode
       end
 
       GC.start
+    end
+
+    ########################################
+    # DIFFUSE
+    ########################################
+    def create_diffuse_texture(
+      src_dir,
+      dst_dir,
+      group,
+      target_name,
+      parts
+    )
+      # NOTE KI diffuse can have only diffuse and opacity parts
+      # => if opacity exists, it WILL override pre-existing alpha
+      #    in diffuse alpha channel
+      if parts.size > 2
+        raise "ERROR: too many parts: #{{
+          src_dir:,
+          group:,
+          target_name:,
+          parts: parts.map(&:name),
+        }}"
+      end
+
+      dst_path = "#{dst_dir}/#{target_name}#{BUILD_SUFFIX}.png"
+
+      # NOTE KI sort opacity last so it WILL override alpha
+      sorted_parts = parts.sort_by { |e| [e.type == :opacity ? 1 : 0, e.name] }
+
+      source_paths = sorted_parts.map do |tex_info|
+        "#{src_dir}/#{tex_info.name}"
+      end
+
+      dst_digest = TextureDigest.new(
+        dst_path,
+        source_paths,
+        meta: {
+          target: File.basename(dst_path),
+          type: :diffuse,
+          target_channel: RGBA,
+          srgb: true,
+        },
+        salt: {
+          version: DIFFUSE_VERSION,
+          size: target_size,
+          type: :diffuse,
+          depth: target_depth,
+          parts: sorted_parts.map do |tex_info|
+            {
+              name: tex_info.name,
+              source_channel: tex_info.source_channel,
+              target_channel: tex_info.target_channel,
+              source_depth: tex_info.source_depth,
+              srgb: tex_info.srgb,
+            }
+          end.sort_by { |e| e[:name] }
+        },
+        force:,
+        tid:)
+
+      unless dst_digest.changed?
+        return dst_digest.update_if_needed
+      end
+
+      info "DIFF: [#{group}] [size=#{target_size}] [depth=#{target_depth}] #{dst_path}"
+
+      target_channels = {
+        Magick::RedChannel => nil,
+        Magick::GreenChannel => nil,
+        Magick::BlueChannel => nil,
+        Magick::AlphaChannel => nil,
+      }
+
+      target_w = target_size
+      target_h = target_size
+
+      parts.each do |tex_info|
+        # NOTE KI use detected channels
+        src_channel_ids = tex_info.source_channel.chars
+        dst_channel_ids = tex_info.target_channel.chars
+
+        src_channel_ids.zip(dst_channel_ids).each do |src_channel_id, dst_channel_id|
+          src_channel = select_channel(src_channel_id)
+          dst_channel = select_channel(dst_channel_id)
+
+          next unless src_channel && dst_channel
+
+          src_path = tex_info.src_path(src_dir)
+
+          info "LOAD: [#{group}] #{dst_channel} = #{src_channel} #{src_path}"
+
+          # https://imagemagick.org/script/command-line-options.php#separate
+          # NOTE KI *NOT* supporting non power-of-2 images
+          # => should be resonable restriction
+          channel_img = Magick::Image.read(src_path)
+            .first
+            .separate(src_channel)
+            .first
+
+          # NOTE KI enforce RGB space (not grayscale)
+          channel_img.colorspace = Magick::SRGBColorspace
+
+          channel_img = Util.scale_diffuse_image(channel_img, target_size)
+          channel_img = channel_img.set_channel_depth(Magick::AllChannels, target_depth)
+
+          target_w = channel_img.columns
+          target_h = channel_img.rows
+
+          target_channels[dst_channel] = {
+            image: channel_img,
+            channel: src_channel,
+          }
+        end
+      end
+
+      img_list = Magick::ImageList.new
+      alpha_img = nil
+
+      black = black_image(target_w, target_h, target_depth)
+      white = white_image(target_w, target_h, target_depth)
+
+      target_placeholders = {
+        Magick::RedChannel => black,
+        Magick::GreenChannel => black,
+        Magick::BlueChannel => black,
+        Magick::AlphaChannel => white,
+      }
+
+      target_channels.each do |dst_channel, image_info|
+        channel_img = target_placeholders[dst_channel]
+        src_channel = nil
+
+        if image_info
+          channel_img = image_info[:image]
+          src_channel = image_info[:channel]
+        end
+
+        info "MAP:  [#{group}] #{dst_channel} = #{src_channel} #{channel_img.inspect}"
+
+        if dst_channel == Magick::AlphaChannel
+          alpha_img = channel_img
+          next
+        end
+
+        img_list << channel_img
+      end
+
+      # https://imagemagick.org/script/command-line-options.php#combine
+      # => combine as SRGB
+      dst_img = img_list.combine(Magick::SRGBColorspace)
+
+      dst_img.alpha(Magick::SetAlphaChannel)
+      dst_img
+        .composite_channel!(
+          alpha_img,
+          0, 0,
+          Magick::CopyAlphaCompositeOp,
+          Magick::AlphaChannel)
+
+      # NOTE KI force SRGB
+      dst_img.colorspace = Magick::SRGBColorspace
+
+      unless dry_run
+        FileUtils.mkdir_p(dst_dir)
+
+        # https://unix.stackexchange.com/questions/689906/imagemagick-not-converting-grayscale-to-rgb
+        file_format = dst_img.quantum_depth == 16 ? "PNG64:" : "PNG32:"
+
+        info "SAVE: [#{group}] #{file_format + dst_path}"
+        dst_img.write(file_format + dst_path)
+
+        dst_digest.write_digest
+
+        info "DONE: [#{group}] #{dst_path}"
+      end
     end
 
     ########################################
