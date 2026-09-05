@@ -620,9 +620,9 @@ void Material::fillSSBO(
     MaterialCustomSSBO& custom,
     MaterialColdSSBO& cold) const
 {
-    const auto& whitePx = ColorTexture::getWhiteRGBA().m_handle;
-    const auto& blackPx = ColorTexture::getBlackRGBA().m_handle;
-    const auto& flatNormalPx = ColorTexture::getFlatNormalRGBA().m_handle;
+    const auto& whitePx = ColorTexture::getWhiteRGBA()->getHandle();
+    const auto& blackPx = ColorTexture::getBlackRGBA()->getHandle();
+    const auto& flatNormalPx = ColorTexture::getFlatNormalRGBA()->getHandle();
 
     // RGB8 = (128, 128, 255) = flat normal
     uint8_t flatNormal[] = { 128, 128, 255 };

@@ -141,7 +141,7 @@ void ArrayTexture::prepareSingle()
     // https://computergraphics.stackexchange.com/questions/4479/how-to-do-texturing-with-opengl-direct-state-access
     glCreateTextures(GL_TEXTURE_2D_ARRAY, 1, &m_textureID);
 
-    kigl::setLabel(GL_TEXTURE_2D_ARRAY, m_textureID, m_name);
+    //kigl::setLabel(GL_TEXTURE_2D_ARRAY, m_textureID, m_name);
 
     {
         if (m_grayScale && m_channels == 1) {
@@ -163,19 +163,6 @@ void ArrayTexture::prepareSingle()
             static_cast<uint8_t>(log2(std::max(m_width, m_height))));
 
         glTextureStorage3D(m_textureID, mipMapLevels, m_internalFormat, m_width, m_height, layerCount);
-
-        //for (int layer = 0; layer < layerCount; layer++) {
-        //    //glTextureSubImage3D(
-        //    //    m_textureID,
-        //    //    0,
-        //    //    0, 0, layer,
-        //    //    m_width, m_height,
-        //    //    1,
-        //    //    m_format,
-        //    //    m_pixelFormat,
-        //    //    m_images[layer]->m_data);
-        //}
-
 
         // OpenGL Superbible, 7th Edition, page 552
         // https://sites.google.com/site/john87connor/indirect-rendering/2-a-using-bindless-textures
@@ -199,7 +186,9 @@ void ArrayTexture::prepareArray(
 
 void ArrayTexture::prepareMipMaps()
 {
-    glGenerateTextureMipmap(m_textureID);
+    if (m_spec.maxMipMapLevels > 1) {
+        glGenerateTextureMipmap(m_textureID);
+    }
 }
 
 uint32_t ArrayTexture::allocateLayer()

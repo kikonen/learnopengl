@@ -174,6 +174,8 @@ bool SampleApp::onSetup()
         m_editorFrame->clear();
     }
 
+    setupTextures();
+
     return false;
 }
 

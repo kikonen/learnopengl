@@ -1,8 +1,11 @@
 #include "ColorTexture.h"
 
+#include <iostream>
+
 #include <glm/ext.hpp>
 
 #include "material/ArrayTexture.h"
+#include "material/TextureRegistry.h"
 
 #include "material/material_util.h"
 
@@ -15,72 +18,88 @@ namespace {
         spec.maxMipMapLevels = 1;
         return spec;
     }
+
+    util::Ref<ColorTexture> s_whitePixelRGBA;
+    util::Ref<ColorTexture> s_whitePixelRGB;
+    util::Ref<ColorTexture> s_whitePixelR;
+
+    util::Ref<ColorTexture> s_blackPixelRGBA;
+    util::Ref<ColorTexture> s_blackPixelRGB;
+    util::Ref<ColorTexture> s_blackPixelR;
+
+    util::Ref<ColorTexture> s_flatNormalPixelRGBA;
 }
 
-const ColorTexture& ColorTexture::getWhiteRGBA()
+util::Ref<ColorTexture> ColorTexture::getWhiteRGBA()
 {
-    static ColorTexture s_whitePixel{
-        "WHITE_RGBA",
-        glm::vec4{ 1.f, 1.f, 1.f, 1.f },
-        GL_RGBA8,
-        true };
-    return s_whitePixel;
+    if (!s_whitePixelRGBA) {
+        s_whitePixelRGBA = util::Ref<ColorTexture>::create(
+            "WHITE_RGBA",
+            glm::vec4{ 1.f, 1.f, 1.f, 1.f },
+            GL_RGBA8);
+        TextureRegistry::get().registerTexture(s_whitePixelRGBA);
+    }
+    return s_whitePixelRGBA;
 }
 
-const ColorTexture& ColorTexture::getWhiteRGB()
+util::Ref<ColorTexture> ColorTexture::getWhiteRGB()
 {
-    static ColorTexture s_whitePixel{
-        "WHITE_RGB",
-        glm::vec4{ 1.f, 1.f, 1.f, 1.f },
-        GL_RGB8,
-        true };
-    return s_whitePixel;
+    if (!s_whitePixelRGB) {
+        s_whitePixelRGB = util::Ref<ColorTexture>::create(
+            "WHITE_RGB",
+            glm::vec4{ 1.f, 1.f, 1.f, 1.f },
+            GL_RGB8);
+        TextureRegistry::get().registerTexture(s_whitePixelRGB);
+    };
+    return s_whitePixelRGB;
 }
 
-const ColorTexture& ColorTexture::getWhiteR()
+util::Ref<ColorTexture> ColorTexture::getWhiteR()
 {
-    static ColorTexture s_whitePixel{
-        "WHITE_R",
-        glm::vec4{ 1.f, 1.f, 1.f, 1.f },
-        GL_R8,
-        true };
-    return s_whitePixel;
+    if (!s_whitePixelR) {
+        s_whitePixelR = util::Ref<ColorTexture>::create(
+            "WHITE_R",
+            glm::vec4{ 1.f, 1.f, 1.f, 1.f },
+            GL_R8);
+        TextureRegistry::get().registerTexture(s_whitePixelR);
+    }
+    return s_whitePixelR;
 }
 
-const ColorTexture& ColorTexture::getBlackRGBA()
+util::Ref<ColorTexture> ColorTexture::getBlackRGBA()
 {
-    static ColorTexture s_blackPixel{
-        "BLACK_RGBA",
-        glm::vec4{ 0.f },
-        GL_RGBA8,
-        true };
-    return s_blackPixel;
+    if (!s_blackPixelRGBA) {
+        s_blackPixelRGBA = util::Ref<ColorTexture>::create(
+            "BLACK_RGBA",
+            glm::vec4{ 0.f },
+            GL_RGBA8);
+        TextureRegistry::get().registerTexture(s_blackPixelRGBA);
+    }
+    return s_blackPixelRGBA;
 }
 
-const ColorTexture& ColorTexture::getFlatNormalRGBA()
+util::Ref<ColorTexture> ColorTexture::getFlatNormalRGBA()
 {
-    static ColorTexture s_flatNormalPixel{
-        "FLAT_NORMAL_RGBA",
-        glm::vec4{ 0.5f, 0.5f, 1.f, 1.f },
-        GL_RGBA8,
-        true };
-    return s_flatNormalPixel;
+    if (!s_flatNormalPixelRGBA) {
+        s_flatNormalPixelRGBA = util::Ref<ColorTexture>::create(
+            "FLAT_NORMAL_RGBA",
+            glm::vec4{ 0.5f, 0.5f, 1.f, 1.f },
+            GL_RGBA8);
+        TextureRegistry::get().registerTexture(s_flatNormalPixelRGBA);
+    }
+    return s_flatNormalPixelRGBA;
 }
 
 ColorTexture::ColorTexture(
     std::string_view name,
     glm::vec4 color,
-    GLenum internalFormat,
-    bool usePrepare)
+    GLenum internalFormat)
     : Texture(name, false, false, material::TextureType::diffuse, getTextureSpec()),
     m_color{ color }
 {
     m_internalFormat = internalFormat;
     m_format = GL_RGBA;
     m_pixelFormat = GL_UNSIGNED_BYTE;
-    if (usePrepare) {
-        prepare();
-    }
 }
 
 ColorTexture::~ColorTexture()
@@ -144,7 +163,7 @@ void ColorTexture::prepareArray(
     // gammaCorrect; only for SRGB case
     bool isSRGB = arr->isGammaCorrect();
 
-    m_textureID = arr->getTextureID();
+    auto textureID = arr->getTextureID();
     m_handle = static_cast<GLuint64>(layer);
 
     // 2. generate image buffer
@@ -176,7 +195,7 @@ void ColorTexture::prepareArray(
 
         // stream to GPU
         glTextureSubImage3D(
-            m_textureID, 0,
+            textureID, 0,
             0, 0, static_cast<GLint>(layer),
             targetWidth, targetHeight, 1,
             // format (ex. GL_RED, GL_RGB, GL_RGBA)
@@ -210,7 +229,7 @@ void ColorTexture::prepareArray(
 
         // stream to GPU
         glTextureSubImage3D(
-            m_textureID, 0,
+            textureID, 0,
             0, 0, static_cast<GLint>(layer),
             targetWidth, targetHeight, 1,
             // format (ex. GL_RED, GL_RGB, GL_RGBA)
@@ -222,6 +241,6 @@ void ColorTexture::prepareArray(
 
     KI_INFO(fmt::format(
         "TEX::COLOR::GENERATED: Pure color filled into array id={}, layer={}, format={}, channels={}, sRGB={}",
-        m_textureID, layer, kigl::formatEnum(arr->getInternalFormat()), targetChannels, isSRGB
+        textureID, layer, kigl::formatEnum(arr->getInternalFormat()), targetChannels, isSRGB
     ));
 }

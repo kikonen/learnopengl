@@ -48,9 +48,6 @@ public:
     }
 
 private:
-    void preparePlain();
-
-private:
     const int m_channels;
     const bool m_is16Bit;
 
@@ -60,10 +57,7 @@ private:
 
     std::vector<util::Ref<Texture>> m_textures;
 
-    int m_format{ 0 };
-    int m_internalFormat{ 0 };
-
-    int m_layerCount{ -1 };
+    int m_layerCount{ 0 };
 
 private:
     bool m_valid{ false };

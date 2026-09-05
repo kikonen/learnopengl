@@ -134,12 +134,12 @@ void ImageTexture::prepareArray(
     }
 
     // 2. Fetch the global unified hardware ID from the designated ArrayTexture block container
-    m_textureID = arr->getTextureID();
+    auto textureID = arr->getTextureID();
 
     // 3. Directly stream compressed/uncompressed raw pixels straight into the requested array layer slot
     // We override glTextureSubImage2D with glTextureSubImage3D completely!
     glTextureSubImage3D(
-        m_textureID,
+        textureID,
         0,                                   // Target Mipmap Level 0
         0, 0, static_cast<GLint>(layer),     // xoffset, yoffset, zoffset (The assigned Layer Slot Index!)
         m_width, m_height, 1,                // width, height, layer depth slice count (strictly 1 asset slice)
@@ -154,7 +154,7 @@ void ImageTexture::prepareArray(
 
     KI_INFO(fmt::format(
         "TEX::ARRAY::SLOT::UPLOAD: asset={}, streamed into target array textureID={}, assigned layer index={}",
-        m_name, m_textureID, layer
+        m_name, textureID, layer
     ));
 
     // Cleanup host RAM allocation memory resources safely if not shared globally

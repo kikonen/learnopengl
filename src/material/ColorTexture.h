@@ -7,19 +7,18 @@
 // Single pixel, single color texture
 class ColorTexture : public Texture {
 public:
-    static const ColorTexture& getWhiteRGBA();
-    static const ColorTexture& getWhiteRGB();
-    static const ColorTexture& getWhiteR();
+    static util::Ref<ColorTexture> getWhiteRGBA();
+    static util::Ref<ColorTexture> getWhiteRGB();
+    static util::Ref<ColorTexture> getWhiteR();
 
-    static const ColorTexture& getBlackRGBA();
+    static util::Ref<ColorTexture> getBlackRGBA();
 
-    static const ColorTexture& getFlatNormalRGBA();
+    static util::Ref<ColorTexture> getFlatNormalRGBA();
 
     ColorTexture(
         std::string_view name,
         glm::vec4 color,
-        GLenum internalFormat,
-        bool usePrepare);
+        GLenum internalFormat);
 
     ~ColorTexture();
 
