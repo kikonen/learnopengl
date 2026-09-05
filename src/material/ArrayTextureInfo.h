@@ -9,6 +9,7 @@ namespace material
     struct ArrayTextureInfo
     {
         std::string name;
+        int uniformId;
         int channels;
         int size;
         int maxLayers;

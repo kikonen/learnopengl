@@ -11,6 +11,7 @@ class ArrayTexture final : public Texture
 public:
     ArrayTexture(
         const std::string& name,
+        int uniformId,
         bool grayScale,
         bool gammaCorrect,
         int channels,
@@ -37,6 +38,11 @@ public:
     // @return layer index
     uint32_t allocateLayer();
 
+    int getUniformId() const noexcept
+    {
+        return m_uniformId;
+    }
+
     int getChannels() const noexcept
     {
         return m_channels;
@@ -48,6 +54,7 @@ public:
     }
 
 private:
+    const int m_uniformId;
     const int m_channels;
     const bool m_is16Bit;
 
@@ -57,7 +64,8 @@ private:
 
     std::vector<util::Ref<Texture>> m_textures;
 
-    int m_layerCount{ 0 };
+    // NOTE KI starts from 0, thus 0 becomes "NULL" layer
+    int m_layerIndex{ 0 };
 
 private:
     bool m_valid{ false };

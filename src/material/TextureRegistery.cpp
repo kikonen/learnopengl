@@ -7,7 +7,10 @@
 #include "kigl/kigl.h"
 
 #include "material/ArrayTexture.h"
+#include "material/ColorTexture.h"
 #include "material/Texture.h"
+
+#include "shader/Uniform.h"
 
 namespace
 {
@@ -76,12 +79,20 @@ void TextureRegistry::clear()
 
 void TextureRegistry::prepareRT()
 {
-    upload();
 }
 
 void TextureRegistry::updateRT()
 {
     upload();
+}
+
+void TextureRegistry::bindBuffers()
+{
+    for (const auto& arr : m_arrayTextures) {
+        if (auto uniform = arr->getUniformId(); uniform > 0) {
+            glBindTextureUnit(uniform, arr->getTextureID());
+        }
+    }
 }
 
 // @return array ID
@@ -91,6 +102,7 @@ uint32_t TextureRegistry::addArrayTexture(const material::ArrayTextureInfo& info
 
     const auto arr = util::Ref<ArrayTexture>::create(
         info.name,
+        info.uniformId,
         info.grayScale,
         info.gammaCorrect,
         info.channels,
@@ -104,6 +116,27 @@ uint32_t TextureRegistry::addArrayTexture(const material::ArrayTextureInfo& info
     m_arrayTextures.push_back(arr);
 
     arr->prepareSingle();
+
+    {
+        int layer = arr->allocateLayer();
+        assert(layer == material::TEX_ARRAY_LAYER_BLACK);
+        const auto& px = ColorTexture::getBlackRGBA(false);
+        px->prepareArray(arr, material::TEX_ARRAY_LAYER_BLACK);
+    }
+    {
+        int layer = arr->allocateLayer();
+        assert(layer == material::TEX_ARRAY_LAYER_WHITE);
+        const auto& px = ColorTexture::getWhiteRGBA(false);
+        px->prepareArray(arr, material::TEX_ARRAY_LAYER_WHITE);
+    }
+    {
+        int layer = arr->allocateLayer();
+        assert(layer == material::TEX_ARRAY_LAYER_NORMAL);
+        const auto& px = ColorTexture::getFlatNormalRGBA(false);
+        px->prepareArray(arr, material::TEX_ARRAY_LAYER_NORMAL);
+    }
+
+    arr->prepareMipMaps();
 
     return index;
 }
@@ -140,16 +173,16 @@ uint64_t TextureRegistry::registerTexture(
 
 void TextureRegistry::upload()
 {
-    for (const auto& [type, textures] : m_typeTextures) {
-        uint32_t size = static_cast<uint32_t>(textures.size());
-        auto uploadedSize = m_typeUploadedSizes[type];
+    //for (const auto& [type, textures] : m_typeTextures) {
+    //    uint32_t size = static_cast<uint32_t>(textures.size());
+    //    auto uploadedSize = m_typeUploadedSizes[type];
 
-        if (size == uploadedSize) continue;
+    //    if (size == uploadedSize) continue;
 
-        for (uint32_t textureIndex = 0; textureIndex < size; textureIndex++) {
-            const auto& texture = textures[textureIndex];
-        }
+    //    for (uint32_t textureIndex = 0; textureIndex < size; textureIndex++) {
+    //        const auto& texture = textures[textureIndex];
+    //    }
 
-        m_typeUploadedSizes[type] = size;
-    }
+    //    m_typeUploadedSizes[type] = size;
+    //}
 }

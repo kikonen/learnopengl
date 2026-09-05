@@ -23,6 +23,14 @@ enum class TextureSamplerType : std::underlying_type_t<std::byte>
     map_height
 };
 
+namespace material
+{
+    const inline int TEX_ARRAY_LAYER_NULL = 0;
+    const inline int TEX_ARRAY_LAYER_BLACK = 1;
+    const inline int TEX_ARRAY_LAYER_WHITE = 2;
+    const inline int TEX_ARRAY_LAYER_NORMAL = 3;
+}
+
 class TextureRegistry final
 {
 public:
@@ -39,6 +47,8 @@ public:
 
     void prepareRT();
     void updateRT();
+
+    void bindBuffers();
 
     // @return array ID
     uint32_t addArrayTexture(const material::ArrayTextureInfo& info);

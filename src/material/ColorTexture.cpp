@@ -30,62 +30,72 @@ namespace {
     util::Ref<ColorTexture> s_flatNormalPixelRGBA;
 }
 
-util::Ref<ColorTexture> ColorTexture::getWhiteRGBA()
+util::Ref<ColorTexture> ColorTexture::getWhiteRGBA(bool prepare)
 {
     if (!s_whitePixelRGBA) {
         s_whitePixelRGBA = util::Ref<ColorTexture>::create(
             "WHITE_RGBA",
             glm::vec4{ 1.f, 1.f, 1.f, 1.f },
             GL_RGBA8);
-        TextureRegistry::get().registerTexture(s_whitePixelRGBA);
+        if (prepare) {
+            TextureRegistry::get().registerTexture(s_whitePixelRGBA);
+        }
     }
     return s_whitePixelRGBA;
 }
 
-util::Ref<ColorTexture> ColorTexture::getWhiteRGB()
+util::Ref<ColorTexture> ColorTexture::getWhiteRGB(bool prepare)
 {
     if (!s_whitePixelRGB) {
         s_whitePixelRGB = util::Ref<ColorTexture>::create(
             "WHITE_RGB",
             glm::vec4{ 1.f, 1.f, 1.f, 1.f },
             GL_RGB8);
-        TextureRegistry::get().registerTexture(s_whitePixelRGB);
+        if (prepare) {
+            TextureRegistry::get().registerTexture(s_whitePixelRGB);
+        }
     };
     return s_whitePixelRGB;
 }
 
-util::Ref<ColorTexture> ColorTexture::getWhiteR()
+util::Ref<ColorTexture> ColorTexture::getWhiteR(bool prepare)
 {
     if (!s_whitePixelR) {
         s_whitePixelR = util::Ref<ColorTexture>::create(
             "WHITE_R",
             glm::vec4{ 1.f, 1.f, 1.f, 1.f },
             GL_R8);
-        TextureRegistry::get().registerTexture(s_whitePixelR);
+        if (prepare) {
+            TextureRegistry::get().registerTexture(s_whitePixelR);
+        }
     }
     return s_whitePixelR;
 }
 
-util::Ref<ColorTexture> ColorTexture::getBlackRGBA()
+util::Ref<ColorTexture> ColorTexture::getBlackRGBA(bool prepare)
 {
     if (!s_blackPixelRGBA) {
         s_blackPixelRGBA = util::Ref<ColorTexture>::create(
             "BLACK_RGBA",
             glm::vec4{ 0.f },
             GL_RGBA8);
-        TextureRegistry::get().registerTexture(s_blackPixelRGBA);
+        if (prepare) {
+            TextureRegistry::get().registerTexture(s_blackPixelRGBA);
+        }
     }
     return s_blackPixelRGBA;
 }
 
-util::Ref<ColorTexture> ColorTexture::getFlatNormalRGBA()
+util::Ref<ColorTexture> ColorTexture::getFlatNormalRGBA(bool prepare)
 {
     if (!s_flatNormalPixelRGBA) {
         s_flatNormalPixelRGBA = util::Ref<ColorTexture>::create(
             "FLAT_NORMAL_RGBA",
             glm::vec4{ 0.5f, 0.5f, 1.f, 1.f },
             GL_RGBA8);
-        TextureRegistry::get().registerTexture(s_flatNormalPixelRGBA);
+        if (prepare) {
+            TextureRegistry::get().registerTexture(s_flatNormalPixelRGBA);
+        }
     }
     return s_flatNormalPixelRGBA;
 }

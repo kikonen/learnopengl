@@ -30,6 +30,15 @@ constexpr int UNIFORM_BLEND_FACTOR = 20;
 constexpr int UNIFORM_VIEWPORT = 21;
 constexpr int UNIFORM_WIREFRAME_MODE = 22;
 
+constexpr int UNIFORM_TEXTURE_ARRAY_SRGB = 30;
+constexpr int UNIFORM_TEXTURE_ARRAY_LINEAR = 31;
+constexpr int UNIFORM_TEXTURE_ARRAY_NORMAL = 32;
+constexpr int UNIFORM_TEXTURE_ARRAY_DUDV = 33;
+constexpr int UNIFORM_TEXTURE_ARRAY_DISPLACEMENT = 34;
+constexpr int UNIFORM_TEXTURE_ARRAY_NOISE = 35;
+constexpr int UNIFORM_TEXTURE_ARRAY_HEIGHT = 36;
+constexpr int UNIFORM_TEXTURE_ARRAY_FONT_ATLAS = 37;
+
 // NOTE KI subroutine uniform locations overlap other uniforms
 constexpr int SUBROUTINE_EFFECT = 0;
 

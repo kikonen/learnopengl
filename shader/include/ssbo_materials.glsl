@@ -1,6 +1,8 @@
 #include "include/struct_material.glsl"
 #include "include/struct_resolved_material.glsl"
 
+#include "include/uniform_texture_arrays.glsl"
+
 #define _SSBO_MATERIALS
 layout (std430, binding = SSBO_MATERIALS_MAIN) readonly buffer MaterialMainSSBO {
   MaterialMain u_materials[];

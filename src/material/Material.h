@@ -139,8 +139,17 @@ public:
 
     void prepare();
 
-    //const MaterialSSBO toSSBO() const;
     void fillSSBO(
+        MaterialMainSSBO& main,
+        MaterialCustomSSBO& custom,
+        MaterialColdSSBO& cold) const;
+
+    void fillSSBOBindless(
+        MaterialMainSSBO& main,
+        MaterialCustomSSBO& custom,
+        MaterialColdSSBO& cold) const;
+
+    void fillSSBOArray(
         MaterialMainSSBO& main,
         MaterialCustomSSBO& custom,
         MaterialColdSSBO& cold) const;

@@ -7,13 +7,13 @@
 // Single pixel, single color texture
 class ColorTexture : public Texture {
 public:
-    static util::Ref<ColorTexture> getWhiteRGBA();
-    static util::Ref<ColorTexture> getWhiteRGB();
-    static util::Ref<ColorTexture> getWhiteR();
+    static util::Ref<ColorTexture> getWhiteRGBA(bool prepare);
+    static util::Ref<ColorTexture> getWhiteRGB(bool prepare);
+    static util::Ref<ColorTexture> getWhiteR(bool prepare);
 
-    static util::Ref<ColorTexture> getBlackRGBA();
+    static util::Ref<ColorTexture> getBlackRGBA(bool prepare);
 
-    static util::Ref<ColorTexture> getFlatNormalRGBA();
+    static util::Ref<ColorTexture> getFlatNormalRGBA(bool prepare);
 
     ColorTexture(
         std::string_view name,

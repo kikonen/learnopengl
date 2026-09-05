@@ -560,69 +560,34 @@ void Material::prepare()
     }
 }
 
-//const MaterialSSBO Material::toSSBO() const
-//{
-//    const auto& whitePx = ColorTexture::getWhiteRGBA().m_handle;
-//    const auto& blackPx = ColorTexture::getBlackRGBA().m_handle;
-//    const auto& flatNormalPx = ColorTexture::getFlatNormalRGBA().m_handle;
-//
-//    // RGB8 = (128, 128, 255) = flat normal
-//    uint8_t flatNormal[] = { 128, 128, 255 };
-//
-//    const glm::vec4 mrasFactor{
-//        m_metalnessFactor,
-//        m_occlusionFactor,
-//        m_roughnessFactor,
-//        1.f };
-//
-//    return {
-//        kd,
-//        hasBoundTex(material::TextureType::emission) ? WHITE_RGBA : ke,
-//
-//        hasBoundTex(material::TextureType::map_mras) ? mrasFactor : mras,
-//
-//        getTexHandle(material::TextureType::diffuse, whitePx),
-//        getTexHandle(material::TextureType::emission, blackPx),
-//
-//        getTexHandle(material::TextureType::map_normal, flatNormalPx),
-//
-//        getTexHandle(material::TextureType::map_opacity, whitePx),
-//        // NOTE KI whitePx fails due to "inverse" flags
-//        getTexHandle(material::TextureType::map_mras, 0),
-//        getTexHandle(material::TextureType::map_displacement, blackPx),
-//
-//        getTexHandle(material::TextureType::map_dudv, 0),
-//        getTexHandle(material::TextureType::map_noise, 0),
-//        getTexHandle(material::TextureType::map_noise_2, 0),
-//
-//        getTexHandle(material::TextureType::map_custom_1, 0),
-//
-//        getFlags(),
-//
-//        reflection,
-//        refraction,
-//        getRefractionRatio(),
-//
-//        tilingX,
-//        tilingY,
-//
-//        packSprites(*this),
-//
-//        layers,
-//        layersDepth,
-//        parallaxDepth,
-//        pointSize,
-//    };
-//}
-
 void Material::fillSSBO(
     MaterialMainSSBO& main,
     MaterialCustomSSBO& custom,
     MaterialColdSSBO& cold) const
 {
-    const auto& whitePx = ColorTexture::getWhiteRGBA()->getHandle();
-    const auto& blackPx = ColorTexture::getBlackRGBA()->getHandle();
-    const auto& flatNormalPx = ColorTexture::getFlatNormalRGBA()->getHandle();
+    const auto& assets = Assets::get();
+    if (assets.drawUseArrayTexture) {
+        fillSSBOArray(
+            main,
+            custom,
+            cold);
+    }
+    else {
+        fillSSBOBindless(
+            main,
+            custom,
+            cold);
+    }
+}
+
+void Material::fillSSBOBindless(
+    MaterialMainSSBO& main,
+    MaterialCustomSSBO& custom,
+    MaterialColdSSBO& cold) const
+{
+    const auto& whitePx = ColorTexture::getWhiteRGBA(true)->getHandle();
+    const auto& blackPx = ColorTexture::getBlackRGBA(true)->getHandle();
+    const auto& flatNormalPx = ColorTexture::getFlatNormalRGBA(true)->getHandle();
 
     // RGB8 = (128, 128, 255) = flat normal
     uint8_t flatNormal[] = { 128, 128, 255 };
@@ -655,6 +620,70 @@ void Material::fillSSBO(
 
     custom = {
         .u_displacementMap = getTexHandle(material::TextureType::map_displacement, blackPx),
+
+        .u_dudvMap = getTexHandle(material::TextureType::map_dudv, 0),
+        .u_noiseMap = getTexHandle(material::TextureType::map_noise, 0),
+        .u_noise2Map = getTexHandle(material::TextureType::map_noise_2, 0),
+
+        .u_custom1Map = getTexHandle(material::TextureType::map_custom_1, 0),
+
+        .u_fontHAtlas = m_fontAtlasTex,
+    };
+    cold = {
+        .u_reflection = reflection,
+        .u_refraction = refraction,
+        .u_refractionRatio = getRefractionRatio(),
+
+        .u_packedSprites = packSprites(*this),
+
+        .u_layers = layers,
+        .u_layersDepth = layersDepth,
+        .u_pointSize = pointSize,
+    };
+}
+
+void Material::fillSSBOArray(
+    MaterialMainSSBO& main,
+    MaterialCustomSSBO& custom,
+    MaterialColdSSBO& cold) const
+{
+    // Unified fixed fallback layer indices within the Array Texture slots
+    // Layer 1 = Black placeholder, Layer 2 = White placeholder, Layer 3 = Flat Normal
+    const int blackLayer = material::TEX_ARRAY_LAYER_BLACK;
+    const int whiteLayer = material::TEX_ARRAY_LAYER_WHITE;
+    const int normalLayer = material::TEX_ARRAY_LAYER_NORMAL;
+
+    // RGB8 = (128, 128, 255) = flat normal
+    uint8_t flatNormal[] = { 128, 128, 255 };
+
+    const glm::vec4 mrasFactor{
+        m_metalnessFactor,
+        m_occlusionFactor,
+        m_roughnessFactor,
+        1.f };
+
+    main = {
+        .u_diffuse = kd,
+        .u_emission = hasBoundTex(material::TextureType::emission) ? WHITE_RGBA : ke,
+        .u_mras = hasBoundTex(material::TextureType::map_mras) ? mrasFactor : mras,
+
+        .u_diffuseTex = getTexHandle(material::TextureType::diffuse, whiteLayer),
+        .u_emissionTex = getTexHandle(material::TextureType::emission, blackLayer),
+        .u_normalMap = getTexHandle(material::TextureType::map_normal, normalLayer),
+        .u_opacityMap = getTexHandle(material::TextureType::map_opacity, whiteLayer),
+        // NOTE KI whitePx fails due to "inverse" flags
+        .u_mrasMap = getTexHandle(material::TextureType::map_mras, 0),
+
+        .u_flags = getFlags(),
+
+        .u_tilingX = tilingX,
+        .u_tilingY = tilingY,
+
+        .u_parallaxDepth = parallaxDepth,
+    };
+
+    custom = {
+        .u_displacementMap = getTexHandle(material::TextureType::map_displacement, blackLayer),
 
         .u_dudvMap = getTexHandle(material::TextureType::map_dudv, 0),
         .u_noiseMap = getTexHandle(material::TextureType::map_noise, 0),

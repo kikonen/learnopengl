@@ -35,6 +35,7 @@
 
 #include "material/MaterialRegistry.h"
 #include "material/ImageRegistry.h"
+#include "material/TextureRegistry.h"
 
 #include "render/InstanceRegistry.h"
 
@@ -86,6 +87,7 @@ void Registry::clear()
 
     //ImageRegistry::get().clear();
     MaterialRegistry::get().clear();
+    TextureRegistry::get().clear();
     //ProgramRegistry::get().clear();
 
     audio::AudioSystem::get().clear();
@@ -120,6 +122,7 @@ void Registry::prepare(const PrepareContext& ctx)
     if (m_prepared) return;
     m_prepared = true;
 
+    TextureRegistry::get().prepareRT();
     MaterialRegistry::get().prepare();
     EntityRegistry::get().prepare();
     MeshSetRegistry::get().prepare(m_engine.getAlive());
@@ -163,6 +166,7 @@ void Registry::updateRT(const UpdateContext& ctx)
     text::FontRegistry::get().updateRT(ctx);
     text::TextSystem::get().updateRT(ctx);
 
+    TextureRegistry::get().updateRT();
     MaterialRegistry::get().updateRT(ctx);
     NodeRegistry::get().updateRT(ctx);
     //SelectionRegistry::get().updateRT(ctx);
@@ -177,6 +181,7 @@ void Registry::updateRT(const UpdateContext& ctx)
 
 void Registry::bindBuffers()
 {
+    TextureRegistry::get().bindBuffers();
     MaterialRegistry::get().bindBuffers();
     EntityRegistry::get().bindBuffers();
     render::InstanceRegistry::get().bindBuffers();

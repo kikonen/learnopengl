@@ -68,6 +68,7 @@
 #include "loader/SceneLoader.h"
 
 #include "shader/ProgramRegistry.h"
+#include "shader/Uniform.h"
 
 #include "scene/Scene.h"
 #include "scene/SceneUpdater.h"
@@ -185,6 +186,7 @@ void SampleApp::setupTextures()
 
     const auto srgbIndex = textureRegistry.addArrayTexture({
         "srgb",
+        UNIFORM_TEXTURE_ARRAY_SRGB,
         4,
         1024,
         256,
@@ -201,6 +203,7 @@ void SampleApp::setupTextures()
 
     const auto dataIndex = textureRegistry.addArrayTexture({
         "data",
+        UNIFORM_TEXTURE_ARRAY_LINEAR,
         4,
         1024,
         256,
@@ -217,6 +220,7 @@ void SampleApp::setupTextures()
 
     const auto normalIndex = textureRegistry.addArrayTexture({
         "normal",
+        UNIFORM_TEXTURE_ARRAY_NORMAL,
         3,
         1024,
         256,
@@ -233,6 +237,7 @@ void SampleApp::setupTextures()
 
     const auto dudvIndex = textureRegistry.addArrayTexture({
         "dudv",
+        UNIFORM_TEXTURE_ARRAY_DUDV,
         3,
         256,
         32,
@@ -249,6 +254,7 @@ void SampleApp::setupTextures()
 
     const auto displacementIndex = textureRegistry.addArrayTexture({
         "displacement",
+        UNIFORM_TEXTURE_ARRAY_DISPLACEMENT,
         1,
         1024,
         128,
@@ -265,6 +271,7 @@ void SampleApp::setupTextures()
 
     const auto noiseIndex = textureRegistry.addArrayTexture({
         "noise",
+        UNIFORM_TEXTURE_ARRAY_NOISE,
         3,
         128,
         16,
@@ -282,6 +289,7 @@ void SampleApp::setupTextures()
 
     const auto heightIndex = textureRegistry.addArrayTexture({
         "height",
+        UNIFORM_TEXTURE_ARRAY_HEIGHT,
         1,
         2048,
         32,
@@ -297,7 +305,8 @@ void SampleApp::setupTextures()
         });
 
     const auto fontAtlasIndex = textureRegistry.addArrayTexture({
-        "font",
+        "font_atlas",
+        UNIFORM_TEXTURE_ARRAY_FONT_ATLAS,
         1,
         1024,
         32,

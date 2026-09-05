@@ -20,6 +20,8 @@ inline const std::string SHADER_OIT_PASS{ "oit_pass" };
 inline const std::string DEF_USE_ALPHA{ "USE_ALPHA" };
 inline const std::string DEF_USE_BLEND{ "USE_BLEND" };
 
+inline const std::string DEF_USE_TEXTURE_ARRAY{ "USE_TEXTURE_ARRAY" };
+
 //inline const std::string DEF_USE_BILLBOARD{ "USE_BILLBOARD" };
 
 inline const std::string DEF_USE_DEBUG{ "USE_DEBUG" };
