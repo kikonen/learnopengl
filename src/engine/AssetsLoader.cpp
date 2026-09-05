@@ -527,6 +527,9 @@ void AssetsLoader::loadAssets(
                 data.dataRingBufferCount = readInt(v);
                 continue;
             }
+            if (k == "draw_use_array_texture") {
+                data.drawUseArrayTexture = readBool(v);
+            }
             if (k == "draw_debug") {
                 data.drawDebug = readBool(v);
                 continue;

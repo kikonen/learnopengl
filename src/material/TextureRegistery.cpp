@@ -118,7 +118,9 @@ uint64_t TextureRegistry::registerTexture(
 {
     if (!texture) return 0;
 
-    if (true) {
+    const auto& assets = Assets::get();
+
+    if (assets.drawUseArrayTexture) {
         const auto& it = m_mapping.find(texture->m_type);
         if (it == m_mapping.end()) return 0;
 

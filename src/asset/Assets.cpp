@@ -203,6 +203,7 @@ Assets::Assets()
     drawRingBufferCount = 3;
     dataRingBufferCount = 3;
 
+    drawUseArrayTexture = false;
     drawDebug = false;
 
     nodeRegistryDebug = false;

@@ -103,6 +103,7 @@ assets:
   draw_ring_buffer_count: 4
   data_ring_buffer_count: 4
 
+  draw_use_array_texture: false
   draw_debug: false
 
   node_registry_debug: false
