@@ -1,5 +1,6 @@
 #version 460 core
 
+#include "include/uniform_Texture_arrays.glsl"
 #include "include/uniform_data.glsl"
 
 in VS_OUT {
@@ -24,6 +25,7 @@ SET_FLOAT_PRECISION;
 void main() {
   vec4 texColor = fs_in.diffuse;
 
+#ifndef USE_TEXTURE_ARRAY
   if (fs_in.diffuseTex.x > 0) {
     vec2 texCoord = fs_in.spriteCoord;
     texCoord.x += gl_PointCoord.x * fs_in.spriteSize.x;
@@ -33,6 +35,21 @@ void main() {
       sampler2D(fs_in.diffuseTex),
       texCoord);
   }
+#endif
+
+#ifdef USE_TEXTURE_ARRAY
+  if (fs_in.diffuseTex.x > 0) {
+    int diffuseLayer = int(fs_in.diffuseTex.x);
+
+    vec2 texCoord = fs_in.spriteCoord;
+    texCoord.x += gl_PointCoord.x * fs_in.spriteSize.x;
+    texCoord.y += gl_PointCoord.y * fs_in.spriteSize.y;
+
+    vec4 diffuseTexel = texture(u_texturesSRGB, vec3(texCoord, float(diffuseLayer)));
+
+    texColor *= diffuseTexel;
+  }
+#endif
 
 //  texColor = vec4(1, 0, 0, 0.5);
 

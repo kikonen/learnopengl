@@ -79,7 +79,7 @@
 
   // Isolate sampling logic to valid layers only
   if (mrasLayer > 0) {
-    mrasTex = texture(u_TexturesLinear, vec3(texCoord, float(mrasLayer))).rgba;
+    mrasTex = texture(u_texturesLinear, vec3(texCoord, float(mrasLayer))).rgba;
 
     if ((material.flags & MATERIAL_INVERT_METALNESS) != 0)
     {
@@ -108,7 +108,7 @@
     int diffuseLayer = int(u_materials[i].diffuseTex.x);
 
     // Sample unified sRGB textures array
-    material.diffuseTexel = texture(u_TexturesSRGB, vec3(texCoord, float(diffuseLayer)));
+    material.diffuseTexel = texture(u_texturesSRGB, vec3(texCoord, float(diffuseLayer)));
   }
 
   #ifdef USE_ALPHA
@@ -132,7 +132,7 @@
 
   if (emissionLayer > 0) {
     // Read the emissive color maps from the same hardware-linearizing sRGB container pool
-    emission = texture(u_TexturesSRGB, vec3(texCoord + vec2(0.0, u_time) * -0.0, float(emissionLayer)));
+    emission = texture(u_texturesSRGB, vec3(texCoord + vec2(0.0, u_time) * -0.0, float(emissionLayer)));
   }
 
   // Safely strip away any unintentional color leaks stored in the emissive alpha layer channel

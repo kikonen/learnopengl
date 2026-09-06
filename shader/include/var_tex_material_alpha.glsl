@@ -25,16 +25,16 @@
   int diffuseLayer = int(u_materials[materialIndex].diffuseTex.x);
 
   // Sample unified sRGB textures array
-  material.diffuseTexel = texture(u_TexturesSRGB, vec3(texCoord, float(diffuseLayer)));
+  material.diffuseTexel = texture(u_texturesSRGB, vec3(texCoord, float(diffuseLayer)));
 
   material.alpha = u_materials[materialIndex].diffuse.a * material.diffuseTexel.a;
 }
 #else
 {
-'  int diffuseLayer = int(u_materials[materialIndex].diffuseTex.x);
+  int diffuseLayer = int(u_materials[materialIndex].diffuseTex.x);
 
   // Sample unified sRGB textures array
-  material.diffuseTexel = texture(u_TexturesSRGB, vec3(texCoord, float(diffuseLayer)));
+  material.diffuseTexel = texture(u_texturesSRGB, vec3(texCoord, float(diffuseLayer)));
   material.alpha = 1.0;
 }
 #endif

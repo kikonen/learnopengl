@@ -109,6 +109,7 @@ void main() {
     }
   }
 
+#ifndef USE_TEXTURE_ARRAY
 #if defined(USE_NORMAL_TEX) && defined(USE_TBN)
   if (Debug.u_normalMapEnabled) {
     sampler2D sampler = sampler2D(u_materials[materialIndex].normalMapTex);
@@ -116,6 +117,20 @@ void main() {
     normal = texture(sampler, distortedTexCoord).rgb;
     normal = normalize(tbn * normal);
   }
+#endif
+#endif
+
+#ifdef USE_TEXTURE_ARRAY
+#if defined(USE_NORMAL_TEX) && defined(USE_TBN)
+  if (Debug.u_normalMapEnabled) {
+    int normalLayer = int(u_materials[materialIndex].normalMapTex.x);
+    if (normalLayer > 0) {
+      vec3 normalTexel = texture(u_texturesNormal, vec3(distortedTexCoord, float(normalLayer))).rgb * 2.0 - 1.0;
+
+      normal = normalize(tbn * normal);
+    }
+  }
+#endif
 #endif
 
   // estimate the normal using the noise texture
