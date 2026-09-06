@@ -43,7 +43,10 @@ namespace loader
             const std::string& k = pair.getName();
             const loader::DocNode& v = pair.getNode();
 
-            if (k == "time_base") {
+            if (k == "paused") {
+                data.paused = readBool(v);
+            }
+            else if (k == "time_base") {
                 data.timeBaseSecs = parseIso8601ToEpochSecs(readString(v));
             }
             else if (k == "time_scale") {

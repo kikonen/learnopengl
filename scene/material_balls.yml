@@ -20,7 +20,8 @@ includes:
   - path: prefab/util/include_ui_time_text.yml
 
 world:
-  time_base: "1942-06-20T12:00:00"
+  paused: true
+  time_base: "1942-06-20T14:00:00"
   time_scale: 2000
   sun_up: "06:00"
   sun_down: "18:00"

@@ -18,6 +18,8 @@ World::~World() = default;
 
 void World::configure(const loader::WorldData& data) noexcept
 {
+    m_paused = data.paused;
+
     m_time.setTimeScale(data.timeScale);
     m_time.setBaseSecs(data.timeBaseSecs);
 
@@ -50,7 +52,9 @@ void World::configure(const loader::WorldData& data) noexcept
 
 void World::updateWT(double realElapsedSecs) noexcept
 {
-    m_time.updateRealElapsed(realElapsedSecs);
+    if (!m_paused) {
+        m_time.updateRealElapsed(realElapsedSecs);
+    }
 
     const double t = m_time.getTimeSecs();
     m_pubTimeSecs.store(t, std::memory_order_release);
