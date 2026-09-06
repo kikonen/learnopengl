@@ -30,13 +30,18 @@ public:
     void prepareSingle() override;
 
     void prepareArray(
-        const util::Ref<ArrayTexture>& arr,
+        ArrayTexture& arr,
         uint32_t layer) override;
 
     void prepareMipMaps();
 
     // @return layer index
     uint32_t allocateLayer();
+
+    uint32_t peekNextLayerIndex()
+    {
+        return m_layerIndex + 1;
+    }
 
     int getUniformId() const noexcept
     {
@@ -53,6 +58,9 @@ public:
         return m_is16Bit;
     }
 
+    uint64_t registerTexture(
+        const util::Ref<Texture>& texture);
+
 private:
     const int m_uniformId;
     const int m_channels;
@@ -62,10 +70,10 @@ private:
 
     const bool m_hdri;
 
-    std::vector<util::Ref<Texture>> m_textures;
-
     // NOTE KI starts from 0, thus 0 becomes "NULL" layer
     int m_layerIndex{ 0 };
+
+    std::vector<util::Ref<Texture>> m_registeredTextures;
 
 private:
     bool m_valid{ false };

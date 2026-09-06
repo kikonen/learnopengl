@@ -183,7 +183,7 @@ void InlineTexture::prepareSingle()
 }
 
 void InlineTexture::prepareArray(
-    const util::Ref<ArrayTexture>& arr,
+    ArrayTexture& arr,
     uint32_t layer)
 {
 }

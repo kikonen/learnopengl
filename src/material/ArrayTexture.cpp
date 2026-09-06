@@ -3,6 +3,7 @@
 #include <unordered_map>
 #include <mutex>
 #include <regex>
+#include <algorithm>
 
 #include <iostream>
 
@@ -62,7 +63,7 @@ std::string ArrayTexture::str() const noexcept
     return fmt::format(
         "<IMG: {}[{}] {}bit {}ch {}x{} {}{} ({}), [{}], [{}, {}]>",
         m_name,
-        m_textures.size(),
+        m_registeredTextures.size(),
         m_is16Bit ? "16" : "8",
         m_channels,
         m_width,
@@ -180,7 +181,7 @@ void ArrayTexture::prepareSingle()
 }
 
 void ArrayTexture::prepareArray(
-    const util::Ref<ArrayTexture>& arr,
+    ArrayTexture& arr,
     uint32_t layer)
 {
     // NOTE KI array cannot be in array
@@ -197,4 +198,27 @@ uint32_t ArrayTexture::allocateLayer()
 {
     m_layerIndex++;
     return static_cast<uint32_t>(m_layerIndex);
+}
+
+uint64_t ArrayTexture::registerTexture(
+    const util::Ref<Texture>& texture)
+{
+    const auto& it = std::find_if(
+        m_registeredTextures.begin(),
+        m_registeredTextures.end(),
+        [&texture](const auto& tex) {
+        return tex.get() == texture.get();
+    });
+
+    if (it != m_registeredTextures.end())
+        return it->get()->getHandle();
+
+    uint32_t layer = allocateLayer();
+    texture->prepareArray(*this, layer);
+
+    m_registeredTextures.push_back(texture);
+
+    prepareMipMaps();
+
+    return layer;
 }

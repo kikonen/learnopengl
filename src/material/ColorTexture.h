@@ -26,7 +26,7 @@ public:
     void prepareSingle() override;
 
     void prepareArray(
-        const util::Ref<ArrayTexture>& arr,
+        ArrayTexture& arr,
         uint32_t layer) override;
 
 private:

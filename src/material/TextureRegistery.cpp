@@ -107,31 +107,31 @@ uint32_t TextureRegistry::addArrayTexture(const material::ArrayTextureInfo& info
         arr->prepareSingle();
 
         {
-            int layer = arr->allocateLayer();
+            int layer = arr->peekNextLayerIndex();
             assert(layer == material::TEX_ARRAY_LAYER_BLACK);
             const auto& px = util::Ref<ColorTexture>::create(
                 "BLACK_RGBA",
                 glm::vec4{ 0.f },
                 GL_RGBA8);
-            px->prepareArray(arr, material::TEX_ARRAY_LAYER_BLACK);
+            arr->registerTexture(px);
         }
         {
-            int layer = arr->allocateLayer();
+            int layer = arr->peekNextLayerIndex();
             assert(layer == material::TEX_ARRAY_LAYER_WHITE);
             const auto& px = util::Ref<ColorTexture>::create(
                 "WHITE_RGBA",
                 glm::vec4{ 1.f, 1.f, 1.f, 1.f },
                 GL_RGBA8);
-            px->prepareArray(arr, material::TEX_ARRAY_LAYER_WHITE);
+            arr->registerTexture(px);
         }
         {
-            int layer = arr->allocateLayer();
+            int layer = arr->peekNextLayerIndex();
             assert(layer == material::TEX_ARRAY_LAYER_NORMAL);
             const auto& px = util::Ref<ColorTexture>::create(
                 "FLAT_NORMAL_RGBA",
                 glm::vec4{ 0.5f, 0.5f, 1.f, 1.f },
                 GL_RGBA8);
-            px->prepareArray(arr, material::TEX_ARRAY_LAYER_NORMAL);
+            arr->registerTexture(px);
         }
 
         arr->prepareMipMaps();
@@ -158,11 +158,7 @@ uint64_t TextureRegistry::registerTexture(
             return 0;
 
         util::Ref<ArrayTexture> arr = m_arrayTextures[it->second];
-        uint32_t layer = arr->allocateLayer();
-        texture->prepareArray(arr, layer);
-        arr->prepareMipMaps();
-
-        return layer;
+        return arr->registerTexture(texture);
     }
     else {
         texture->prepareSingle();

@@ -59,7 +59,7 @@ void PlainTexture::setData(void* data, int size)
 }
 
 void PlainTexture::prepareArray(
-    const util::Ref<ArrayTexture>& arr,
+    ArrayTexture& arr,
     uint32_t layer)
 {
 }

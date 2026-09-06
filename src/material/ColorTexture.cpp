@@ -159,21 +159,21 @@ void ColorTexture::prepareSingle()
 }
 
 void ColorTexture::prepareArray(
-    const util::Ref<ArrayTexture>& arr,
+    ArrayTexture& arr,
     uint32_t layer)
 {
     if (m_prepared) return;
     m_prepared = true;
 
     // 1. sizes from array texture
-    int targetWidth = arr->getWidth();
-    int targetHeight = arr->getHeight();
-    int targetChannels = arr->getChannels();
-    bool is16Bit = arr->is16Bit();
+    int targetWidth = arr.getWidth();
+    int targetHeight = arr.getHeight();
+    int targetChannels = arr.getChannels();
+    bool is16Bit = arr.is16Bit();
     // gammaCorrect; only for SRGB case
-    bool isSRGB = arr->isGammaCorrect();
+    bool isSRGB = arr.isGammaCorrect();
 
-    auto textureID = arr->getTextureID();
+    auto textureID = arr.getTextureID();
     m_handle = static_cast<GLuint64>(layer);
 
     // 2. generate image buffer
@@ -209,7 +209,7 @@ void ColorTexture::prepareArray(
             0, 0, static_cast<GLint>(layer),
             targetWidth, targetHeight, 1,
             // format (ex. GL_RED, GL_RGB, GL_RGBA)
-            arr->getFormat(),
+            arr.getFormat(),
             GL_UNSIGNED_SHORT,
             pixelData.data()
         );
@@ -243,7 +243,7 @@ void ColorTexture::prepareArray(
             0, 0, static_cast<GLint>(layer),
             targetWidth, targetHeight, 1,
             // format (ex. GL_RED, GL_RGB, GL_RGBA)
-            arr->getFormat(),
+            arr.getFormat(),
             GL_UNSIGNED_BYTE,
             pixelData.data()
         );
@@ -251,6 +251,6 @@ void ColorTexture::prepareArray(
 
     KI_INFO(fmt::format(
         "TEX::COLOR::GENERATED: Pure color filled into array id={}, layer={}, format={}, channels={}, sRGB={}",
-        textureID, layer, kigl::formatEnum(arr->getInternalFormat()), targetChannels, isSRGB
+        textureID, layer, kigl::formatEnum(arr.getInternalFormat()), targetChannels, isSRGB
     ));
 }

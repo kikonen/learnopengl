@@ -90,7 +90,7 @@ void ImageTexture::prepareSingle()
 }
 
 void ImageTexture::prepareArray(
-    const util::Ref<ArrayTexture>& arr,
+    ArrayTexture& arr,
     uint32_t layer)
 {
     if (m_prepared) return;
@@ -134,7 +134,7 @@ void ImageTexture::prepareArray(
     }
 
     // 2. Fetch the global unified hardware ID from the designated ArrayTexture block container
-    auto textureID = arr->getTextureID();
+    auto textureID = arr.getTextureID();
 
     // 3. Directly stream compressed/uncompressed raw pixels straight into the requested array layer slot
     // We override glTextureSubImage2D with glTextureSubImage3D completely!

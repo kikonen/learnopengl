@@ -33,7 +33,7 @@ public:
     void prepareSingle() override;
 
     void prepareArray(
-        const util::Ref<ArrayTexture>& arr,
+        ArrayTexture& arr,
         uint32_t layer) override;
 
     bool isValid() const noexcept { return true; }
