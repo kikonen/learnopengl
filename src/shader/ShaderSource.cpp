@@ -122,6 +122,8 @@ std::vector<std::string> ShaderSource::loadSourceLines(
     bool optional,
     const Program& program)
 {
+    const auto& assets = Assets::get();
+
     FileEntry* fileEntry = FileEntryCache::get().getEntry(path);
 
     if (!fileEntry) {
@@ -158,7 +160,9 @@ std::vector<std::string> ShaderSource::loadSourceLines(
 
             if (k == "#version") {
                 lines.push_back(line);
-                lines.push_back("#extension GL_ARB_bindless_texture : require");
+                if (true || !assets.drawUseArrayTexture) {
+                    lines.push_back("#extension GL_ARB_bindless_texture : require");
+                }
                 appendDefines(shaderType, lines, program);
 
                 // Globals

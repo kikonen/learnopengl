@@ -4,6 +4,7 @@
 // normal.xy = normal.rg * 2.0 - 1.0;
 // normal.z = sqrt(max(1.0 - dot(normal.xy, normal.xy), 0.0));
 
+#ifndef USE_TEXTURE_ARRAY
 #ifdef USE_NORMAL_TEX
 {
   if (Debug.u_normalMapEnabled) {
@@ -13,4 +14,18 @@
     normal = normalize(tbn * normal);
   }
 }
+#endif
+#endif
+
+#ifdef USE_TEXTURE_ARRAY
+#ifdef USE_NORMAL_TEX
+{
+  if (Debug.u_normalMapEnabled) {
+    int normalLayer = int(u_materials[materialIndex].normalMapTex.x);
+
+    normal = texture(u_TexturesNormal, vec3(texCoord, float(normalLayer))).rgb * 2.0 - 1.0;
+    normal = normalize(tbn * normal);
+  }
+}
+#endif
 #endif

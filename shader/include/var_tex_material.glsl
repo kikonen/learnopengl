@@ -78,20 +78,20 @@
   int mrasLayer = int(u_materials[i].mrasMapTex.x);
 
   // Isolate sampling logic to valid layers only
-  if (mrasLayer >= 0) {
+  if (mrasLayer > 0) {
     mrasTex = texture(u_TexturesLinear, vec3(texCoord, float(mrasLayer))).rgba;
 
-    // Apply metallic channel data inversion mapping
-    if ((material.flags & MATERIAL_INVERT_METALNESS) != 0) {
-      mrasTex.g = 1.0 - mrasTex.g;
+    if ((material.flags & MATERIAL_INVERT_METALNESS) != 0)
+    {
+      MRA_TEX_METALNESS = 1.0 - MRA_TEX_METALNESS;
     }
-    // Apply roughness channel data inversion mapping
-    if ((material.flags & MATERIAL_INVERT_ROUGHNESS) != 0) {
-      mrasTex.r = 1.0 - mrasTex.r;
+    if ((material.flags & MATERIAL_INVERT_ROUGHNESS) != 0)
+    {
+      MRA_TEX_ROUGHNESS = 1.0 - MRA_TEX_ROUGHNESS;
     }
-    // Apply occlusion channel data inversion mapping
-    if ((material.flags & MATERIAL_INVERT_OCCLUSION) != 0) {
-      mrasTex.b = 1.0 - mrasTex.b;
+    if ((material.flags & MATERIAL_INVERT_OCCLUSION) != 0)
+    {
+      MRA_TEX_OCCLUSION = 1.0 - MRA_TEX_OCCLUSION;
     }
   }
 
@@ -103,12 +103,14 @@
   // DIFFUSE & OPACITY RESOLUTION (sRGB Pool)
   // ==========================================
 
-  int diffuseLayer = int(u_materials[i].diffuseTex.x);
-
-  // Sample unified sRGB textures array
-  material.diffuseTexel = texture(u_TexturesSRGB, vec3(texCoord, float(diffuseLayer)));
-
 #ifndef _ALPHA_RESOLVED
+  {
+    int diffuseLayer = int(u_materials[i].diffuseTex.x);
+
+    // Sample unified sRGB textures array
+    material.diffuseTexel = texture(u_TexturesSRGB, vec3(texCoord, float(diffuseLayer)));
+  }
+
   #ifdef USE_ALPHA
     // Evaluate alpha utilizing baked diffuse texture component data
     material.alpha = u_materials[materialIndex].diffuse.a * material.diffuseTexel.a;
@@ -128,7 +130,7 @@
   int emissionLayer = int(u_materials[i].emissionTex.x);
   vec4 emission = vec4(0.0);
 
-  if (emissionLayer >= 0) {
+  if (emissionLayer > 0) {
     // Read the emissive color maps from the same hardware-linearizing sRGB container pool
     emission = texture(u_TexturesSRGB, vec3(texCoord + vec2(0.0, u_time) * -0.0, float(emissionLayer)));
   }
