@@ -5,6 +5,7 @@
 #include "util/util.h"
 
 #include "kigl/kigl.h"
+#include "kigl/GLState.h"
 
 #include "material/ArrayTexture.h"
 #include "material/ColorTexture.h"
@@ -15,25 +16,6 @@
 namespace
 {
     static TextureRegistry* s_registry{ nullptr };
-
-    TextureSamplerType getSamplerType(const Texture* texture)
-    {
-        switch (texture->m_type) {
-        case material::TextureType::map_normal:
-            return TextureSamplerType::map_normal;
-        case material::TextureType::map_displacement:
-            return TextureSamplerType::map_displacement;
-        case material::TextureType::map_height:
-            return TextureSamplerType::map_height;
-        }
-        return TextureSamplerType::none;
-    }
-    //none,
-    //    color_rgba,
-    //    color_r,
-    //    map_normal,
-    //    map_displacement,
-    //    map_height
 }
 
 void TextureRegistry::init() noexcept
@@ -63,18 +45,23 @@ TextureRegistry::TextureRegistry()
 TextureRegistry::~TextureRegistry()
 {
     clear();
-
-    addArrayTexture({});
-
-    // TODO KI reserve NULL, black, white textures
-    registerTexture({ nullptr });
-    registerTexture({ nullptr });
-    registerTexture({ nullptr });
 }
 
 void TextureRegistry::clear()
 {
-    m_typeTextures.clear();
+    auto& state = kigl::GLState::get();
+
+    for (const auto& arr : m_arrayTextures) {
+        if (auto uniform = arr->getUniformId(); uniform > 0) {
+            state.bindTexture(uniform, 0, true);
+        }
+    }
+
+    m_arrayTextures.clear();
+    m_mapping.clear();
+
+    // NOTE KI reserve null texture
+    addArrayTexture({});
 }
 
 void TextureRegistry::prepareRT()
@@ -83,14 +70,15 @@ void TextureRegistry::prepareRT()
 
 void TextureRegistry::updateRT()
 {
-    upload();
 }
 
 void TextureRegistry::bindBuffers()
 {
+    auto& state = kigl::GLState::get();
+
     for (const auto& arr : m_arrayTextures) {
         if (auto uniform = arr->getUniformId(); uniform > 0) {
-            glBindTextureUnit(uniform, arr->getTextureID());
+            state.bindTexture(uniform, arr->getTextureID(), false);
         }
     }
 }
@@ -115,28 +103,39 @@ uint32_t TextureRegistry::addArrayTexture(const material::ArrayTextureInfo& info
 
     m_arrayTextures.push_back(arr);
 
-    arr->prepareSingle();
+    if (arr->getUniformId() != 0) {
+        arr->prepareSingle();
 
-    {
-        int layer = arr->allocateLayer();
-        assert(layer == material::TEX_ARRAY_LAYER_BLACK);
-        const auto& px = ColorTexture::getBlackRGBA(false);
-        px->prepareArray(arr, material::TEX_ARRAY_LAYER_BLACK);
-    }
-    {
-        int layer = arr->allocateLayer();
-        assert(layer == material::TEX_ARRAY_LAYER_WHITE);
-        const auto& px = ColorTexture::getWhiteRGBA(false);
-        px->prepareArray(arr, material::TEX_ARRAY_LAYER_WHITE);
-    }
-    {
-        int layer = arr->allocateLayer();
-        assert(layer == material::TEX_ARRAY_LAYER_NORMAL);
-        const auto& px = ColorTexture::getFlatNormalRGBA(false);
-        px->prepareArray(arr, material::TEX_ARRAY_LAYER_NORMAL);
-    }
+        {
+            int layer = arr->allocateLayer();
+            assert(layer == material::TEX_ARRAY_LAYER_BLACK);
+            const auto& px = util::Ref<ColorTexture>::create(
+                "BLACK_RGBA",
+                glm::vec4{ 0.f },
+                GL_RGBA8);
+            px->prepareArray(arr, material::TEX_ARRAY_LAYER_BLACK);
+        }
+        {
+            int layer = arr->allocateLayer();
+            assert(layer == material::TEX_ARRAY_LAYER_WHITE);
+            const auto& px = util::Ref<ColorTexture>::create(
+                "WHITE_RGBA",
+                glm::vec4{ 1.f, 1.f, 1.f, 1.f },
+                GL_RGBA8);
+            px->prepareArray(arr, material::TEX_ARRAY_LAYER_WHITE);
+        }
+        {
+            int layer = arr->allocateLayer();
+            assert(layer == material::TEX_ARRAY_LAYER_NORMAL);
+            const auto& px = util::Ref<ColorTexture>::create(
+                "FLAT_NORMAL_RGBA",
+                glm::vec4{ 0.5f, 0.5f, 1.f, 1.f },
+                GL_RGBA8);
+            px->prepareArray(arr, material::TEX_ARRAY_LAYER_NORMAL);
+        }
 
-    arr->prepareMipMaps();
+        arr->prepareMipMaps();
+    }
 
     return index;
 }
@@ -155,7 +154,8 @@ uint64_t TextureRegistry::registerTexture(
 
     if (assets.drawUseArrayTexture) {
         const auto& it = m_mapping.find(texture->m_type);
-        if (it == m_mapping.end()) return 0;
+        if (it == m_mapping.end())
+            return 0;
 
         util::Ref<ArrayTexture> arr = m_arrayTextures[it->second];
         uint32_t layer = arr->allocateLayer();
@@ -169,20 +169,4 @@ uint64_t TextureRegistry::registerTexture(
         texture->prepareHandle();
         return texture->m_handle;
     }
-}
-
-void TextureRegistry::upload()
-{
-    //for (const auto& [type, textures] : m_typeTextures) {
-    //    uint32_t size = static_cast<uint32_t>(textures.size());
-    //    auto uploadedSize = m_typeUploadedSizes[type];
-
-    //    if (size == uploadedSize) continue;
-
-    //    for (uint32_t textureIndex = 0; textureIndex < size; textureIndex++) {
-    //        const auto& texture = textures[textureIndex];
-    //    }
-
-    //    m_typeUploadedSizes[type] = size;
-    //}
 }

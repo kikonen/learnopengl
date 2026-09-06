@@ -46,7 +46,7 @@ void Texture::release()
     if (m_boundBindless && m_handle) {
         glMakeTextureHandleNonResidentARB(m_handle);
     }
-    if (m_textureID) {
+    if (m_textureID > 0) {
         glDeleteTextures(1, &m_textureID);
     }
 }

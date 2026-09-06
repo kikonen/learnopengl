@@ -741,6 +741,8 @@ void SampleApp::unloadScene()
     }
     m_currentScene = nullptr;
 
+    setupTextures();
+
     showFps(m_fpsCounter);
 }
 

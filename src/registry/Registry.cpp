@@ -71,6 +71,8 @@ void Registry::clear()
 {
     ASSERT_RT();
 
+    const auto& assets = Assets::get();
+
     debug::DebugContext::modify().clear();
 
     nav::NavigationSystem::get().stop();
@@ -85,9 +87,9 @@ void Registry::clear()
     NodeRegistry::get().clear();
     NodeTypeRegistry::get().clear();
 
-    //ImageRegistry::get().clear();
-    MaterialRegistry::get().clear();
+    ImageRegistry::get().clear();
     TextureRegistry::get().clear();
+    MaterialRegistry::get().clear();
     //ProgramRegistry::get().clear();
 
     audio::AudioSystem::get().clear();

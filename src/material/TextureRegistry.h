@@ -12,17 +12,6 @@
 class ArrayTexture;
 class Texture;
 
-// Mapped from TextureType into sampler2dArray typing
-enum class TextureSamplerType : std::underlying_type_t<std::byte>
-{
-    none,
-    color_rgba,
-    color_r,
-    map_normal,
-    map_displacement,
-    map_height
-};
-
 namespace material
 {
     const inline int TEX_ARRAY_LAYER_NULL = 0;
@@ -59,12 +48,6 @@ public:
         const util::Ref<Texture>& texture);
 
 private:
-    void upload();
-
-private:
-    std::unordered_map<TextureSamplerType, std::vector<util::Ref<Texture>>> m_typeTextures;
-    std::unordered_map<TextureSamplerType, uint32_t> m_typeUploadedSizes;
-
     std::vector<util::Ref<ArrayTexture>> m_arrayTextures;
     std::unordered_map<material::TextureType, uint32_t> m_mapping;
 };
