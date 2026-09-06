@@ -4,4 +4,5 @@ layout(binding = UNIFORM_TEXTURE_ARRAY_SRGB)   uniform sampler2DArray u_textures
 layout(binding = UNIFORM_TEXTURE_ARRAY_LINEAR) uniform sampler2DArray u_texturesLinear;
 layout(binding = UNIFORM_TEXTURE_ARRAY_NORMAL) uniform sampler2DArray u_texturesNormal;
 layout(binding = UNIFORM_TEXTURE_ARRAY_NOISE)  uniform sampler2DArray u_texturesNoise;
+layout(binding = UNIFORM_TEXTURE_ARRAY_DISPLACEMENT)  uniform sampler2DArray u_texturesDisplacement;
 #endif

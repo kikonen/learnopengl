@@ -138,6 +138,8 @@ module Encode
           target: File.basename(dst_path),
           type: :diffuse,
           target_channel: RGBA,
+          scale_max: true,
+          keep_aspect: false,
           srgb: true,
         },
         salt: {
@@ -200,11 +202,11 @@ module Encode
           # NOTE KI enforce RGB space (not grayscale)
           channel_img.colorspace = Magick::SRGBColorspace
 
-          channel_img = Util.scale_diffuse_image(channel_img, target_size)
+          channel_img = Util.scale_diffuse_image(channel_img, target_size, true)
           channel_img = channel_img.set_channel_depth(Magick::AllChannels, target_depth)
 
-          target_w = channel_img.columns
-          target_h = channel_img.rows
+          # target_w = channel_img.columns
+          # target_h = channel_img.rows
 
           target_channels[dst_channel] = {
             image: channel_img,
@@ -264,6 +266,9 @@ module Encode
 
       # NOTE KI force SRGB
       dst_img.colorspace = Magick::SRGBColorspace
+
+      # NOTE KI fill upto full size with black+transparent color
+      dst_img = Util.extent_image(dst_img, :diffuse, target_size)
 
       unless dry_run
         FileUtils.mkdir_p(dst_dir)
@@ -349,6 +354,8 @@ module Encode
           target: File.basename(dst_path),
           type: :mras,
           target_channel: RGBA,
+          scale_max: true,
+          keep_aspect: false,
           srgb: false,
         },
         salt: {
@@ -412,11 +419,11 @@ module Encode
           # NOTE KI enforce RGB space (not grayscale)
           channel_img.colorspace = Magick::RGBColorspace
 
-          channel_img = Util.scale_data_image(channel_img, target_size)
+          channel_img = Util.scale_data_image(channel_img, target_size, true)
           channel_img = channel_img.set_channel_depth(Magick::AllChannels, target_depth)
 
-          target_w = channel_img.columns
-          target_h = channel_img.rows
+          # target_w = channel_img.columns
+          # target_h = channel_img.rows
 
           target_channels[dst_channel] = {
             image: channel_img,
@@ -475,6 +482,9 @@ module Encode
             Magick::AlphaChannel)
       end
 
+      # NOTE KI fill upto full size with black+transparent color
+      dst_img = Util.extent_image(dst_img, :mras, target_size)
+
       unless dry_run
         FileUtils.mkdir_p(dst_dir)
 
@@ -529,6 +539,8 @@ module Encode
           target: File.basename(dst_path),
           type: :height,
           target_channel: RED,
+          scale_max: true,
+          keep_aspect: false,
           srgb: false
         },
         salt: {
@@ -567,12 +579,15 @@ module Encode
 
       # Enforce RGB/Linear space for accurate calculations
       dst_img.colorspace = Magick::RGBColorspace
-      dst_img = Util.scale_data_image(dst_img, target_size)
+      dst_img = Util.scale_data_image(dst_img, target_size, true)
       dst_img = dst_img.set_channel_depth(Magick::AllChannels, target_depth)
 
       # Force into pure Gray Colorspace and GrayscaleType metadata
       dst_img.colorspace = Magick::GRAYColorspace
       dst_img.image_type = Magick::GrayscaleType
+
+      # NOTE KI fill upto full size with black+transparent color
+      dst_img = Util.extent_image(dst_img, :height, target_size)
 
       unless dry_run
         FileUtils.mkdir_p(dst_dir)
@@ -620,6 +635,8 @@ module Encode
           target: File.basename(dst_path),
           type: :displacement,
           target_channel: RED,
+          scale_max: true,
+          keep_aspect: false,
           srgb: false,
         },
         salt: {
@@ -660,12 +677,15 @@ module Encode
       dst_img.colorspace = Magick::RGBColorspace
 
       # Scale to target size utilizing data-preserving Cubic Filter
-      dst_img = Util.scale_data_image(dst_img, target_size)
+      dst_img = Util.scale_data_image(dst_img, target_size, true)
       dst_img = dst_img.set_channel_depth(Magick::AllChannels, target_depth)
 
       # Force into pure Gray Colorspace and GrayscaleType metadata
       dst_img.colorspace = Magick::GRAYColorspace
       dst_img.image_type = Magick::GrayscaleType
+
+      # NOTE KI fill upto full size with black+transparent color
+      dst_img = Util.extent_image(dst_img, :displacement, target_size)
 
       unless dry_run
         FileUtils.mkdir_p(dst_dir)

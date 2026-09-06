@@ -93,7 +93,8 @@ module Encode
 
           # FIX: Pakotetaan lineaariseksi dataksi erottelun jälkeen!
           img.colorspace = Magick::RGBColorspace
-          img = Util.scale_data_image(img, target_w) # Käytetään CubicFilteriä resizen sijaan
+          # Käytetään CubicFilteriä resizen sijaan
+          img = Util.scale_data_image(img, target_w, true)
           img.set_channel_depth(Magick::AllChannels, target_depth)
         end
     end
@@ -118,7 +119,7 @@ module Encode
 
           # NOTE KI enforce RGB colorspace (instead of gray)
           img.colorspace = Magick::RGBColorspace
-          img = Util.scale_data_image(img, target_w)
+          img = Util.scale_data_image(img, target_w, true)
           img.set_channel_depth(Magick::AllChannels, target_depth)
         end
     end

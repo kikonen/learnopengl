@@ -246,4 +246,4 @@
 
 // #define USE_TRIPLANAR 1
 
-#define USE_TEXTURE_ARRAY 1
+// #define USE_TEXTURE_ARRAY 1

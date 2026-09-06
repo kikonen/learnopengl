@@ -82,6 +82,8 @@ module Encode
           target: File.basename(dst_path),
           type: tex_info.type,
           target_channel: RGBA,
+          scale_max: true,
+          keep_aspect: false,
           srgb: tex_info.encode_srgb?,
         },
         salt: {
@@ -129,9 +131,9 @@ module Encode
       # => HOW
 
       if tex_info.diffuse?
-        src_img = Util.scale_diffuse_image(src_img, target_size)
+        src_img = Util.scale_diffuse_image(src_img, target_size, true)
       else
-        src_img = Util.scale_data_image(src_img, target_size)
+        src_img = Util.scale_data_image(src_img, target_size, true)
       end
 
       src_img = src_img.set_channel_depth(Magick::AllChannels, target_depth)
@@ -214,6 +216,9 @@ module Encode
             Magick::AlphaChannel)
       end
 
+      # NOTE KI fill upto full size with black+transparent color
+      dst_img = Util.extent_image(dst_img, :diffuse, target_size)
+
       unless dry_run
         FileUtils.mkdir_p(dst_dir)
 
@@ -268,6 +273,8 @@ module Encode
           target: File.basename(dst_path),
           type: tex_info.type,
           target_channel: tex_info.target_channel,
+          scale_max: true,
+          keep_aspect: false,
           srgb: false,
         },
         salt: {
@@ -310,7 +317,7 @@ module Encode
       src_img = Magick::Image.read(src_path)
         .first
 
-      src_img = Util.scale_data_image(src_img, target_size)
+      src_img = Util.scale_data_image(src_img, target_size, true)
       src_img = src_img.set_channel_depth(Magick::AllChannels, target_depth)
 
       target_w = src_img.columns
@@ -361,6 +368,9 @@ module Encode
       # Magick::RGBColorspace
       dst_img = img_list.combine(src_img.colorspace)
 
+      # NOTE KI fill upto full size with black+transparent color
+      dst_img = Util.extent_image(dst_img, :normal, target_size)
+
       unless dry_run
         FileUtils.mkdir_p(dst_dir)
 
@@ -397,6 +407,8 @@ module Encode
           target: File.basename(dst_path),
           type: tex_info.type,
           target_channel: tex_info.target_channel,
+          scale_max: true,
+          keep_aspect: false,
           srgb: false,
         },
         salt: {
@@ -439,7 +451,7 @@ module Encode
       src_img = Magick::Image.read(src_path)
         .first
 
-      src_img = Util.scale_data_image(src_img, target_size)
+      src_img = Util.scale_data_image(src_img, target_size, true)
       src_img = src_img.set_channel_depth(Magick::AllChannels, target_depth)
 
       target_w = src_img.columns
@@ -490,6 +502,9 @@ module Encode
       # Magick::RGBColorspace
       dst_img = img_list.combine(src_img.colorspace)
 
+      # NOTE KI fill upto full size with black+transparent color
+      dst_img = Util.extent_image(dst_img, :dudv, target_size)
+
       unless dry_run
         FileUtils.mkdir_p(dst_dir)
 
@@ -526,6 +541,8 @@ module Encode
           target: File.basename(dst_path),
           type: tex_info.type,
           target_channel: tex_info.target_channel,
+          scale_max: true,
+          keep_aspect: false,
           srgb: false,
         },
         salt: {
@@ -568,7 +585,7 @@ module Encode
       src_img = Magick::Image.read(src_path)
         .first
 
-      src_img = Util.scale_nearest_image(src_img, target_size)
+      src_img = Util.scale_nearest_image(src_img, target_size, true)
       src_img = src_img.set_channel_depth(Magick::AllChannels, target_depth)
 
       target_w = src_img.columns
@@ -619,6 +636,9 @@ module Encode
       # Magick::RGBColorspace
       dst_img = img_list.combine(src_img.colorspace)
 
+      # NOTE KI fill upto full size with black+transparent color
+      dst_img = Util.extent_image(dst_img, :noise, target_size)
+
       unless dry_run
         FileUtils.mkdir_p(dst_dir)
 
@@ -655,6 +675,8 @@ module Encode
           target: File.basename(dst_path),
           type: tex_info.type,
           target_channel: RGBA,
+          scale_max: true,
+          keep_aspect: false,
           srgb: tex_info.encode_srgb?,
         },
         salt: {

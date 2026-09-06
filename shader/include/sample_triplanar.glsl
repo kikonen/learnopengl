@@ -23,6 +23,7 @@ vec3 sampleTriPlanar(vec3 pos, uint matIdx) {
 
   // return vec3(pos.x, 0, 0);
   return cX * blend.x + cY * blend.y + cZ * blend.z;
+#endif
 
 #ifdef USE_TEXTURE_ARRAY
   int diffuseLayer = int(u_materials[matIdx].diffuseTex.x);

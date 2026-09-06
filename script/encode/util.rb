@@ -173,9 +173,60 @@ module Encode
       path.gsub(/[\/]*\z/, "")
     end
 
-    def self.scale_diffuse_image(img, target_size)
-      need_scale, target_w, target_h = resolve_size(img, target_size)
-      return img unless need_scale
+    #
+    # Extent image canvas to target_size
+    #
+    #
+    # Extent image canvas to target_size
+    #
+    def self.extent_image(img, type, target_size)
+      # ==========================================
+      # RESOLVE NEUTRAL BACKGROUND COLOR FOR EXTENT
+      # ==========================================
+
+      # Max quantum intensity value for fully opaque channel pixel mapping (16-bit)
+      opaque_alpha = 65535
+
+      if type == :normal || type == :dudv
+        # Flat Normal vector (128, 128, 255) with fully opaque alpha layout.
+        # This keeps the image strictly at 3 channels (RGB) without adding alpha clutter!
+        bg_pixel = Magick::Pixel.new(128 * 257, 128 * 257, 255 * 257, opaque_alpha)
+
+      elsif type == :mras
+        # Neutral PBR factor state (0, 255, 255) with fully opaque alpha container setup.
+        # This keeps the MRAS data tight at 3 (or 4) channels depending on your structural needs.
+        bg_pixel = Magick::Pixel.new(0, 255 * 257, 255 * 257, opaque_alpha)
+
+      elsif type == :displacement || type == :noise || type == :height
+        # Pure opaque black placeholder fill layer for raw single channel mathematical maps
+        bg_pixel = Magick::Pixel.new(0, 0, 0, opaque_alpha)
+
+      else
+        # Diffuse, Emission, and Spritesheets require a true transparent black canvas padding area
+        bg_pixel = Magick::Pixel.new(0, 0, 0, 0)
+      end
+
+      # Assign the strictly typed explicit background pixel mapping template
+      img.background_color = bg_pixel
+
+      # Pad the boundaries safely without destroying preexisting embedded alpha data
+      img = img.extent(target_size, target_size, 0, 0)
+
+      # Force final colorspace target conversions ONLY after the extent pass is fully completed
+      if type == :diffuse || type == :emission
+        img.colorspace = Magick::SRGBColorspace
+      else
+        img.colorspace = Magick::RGBColorspace
+      end
+
+      img
+    end
+
+    def self.scale_diffuse_image(img, target_size, max)
+      resolved = resolve_size(img, target_size, max)
+      return img unless resolved[:need_scale]
+      target_w = resolved[:w]
+      target_h = resolved[:h]
 
       # save colorspace
       orig_colorspace = img.colorspace
@@ -192,9 +243,11 @@ module Encode
     end
 
     # Skaalausmetodi datakartoille (Normal, MRA, DuDv, Displacement, jne.)
-    def self.scale_data_image(img, target_size)
-      need_scale, target_w, target_h = resolve_size(img, target_size)
-      return img unless need_scale
+    def self.scale_data_image(img, target_size, max)
+      resolved = resolve_size(img, target_size, max)
+      return img unless resolved[:need_scale]
+      target_w = resolved[:w]
+      target_h = resolved[:h]
 
       # NOTE don't touch color space; (raw data / RGBColorspace)
 
@@ -205,9 +258,11 @@ module Encode
     end
 
     # scaling noise data
-    def self.scale_nearest_image(img, target_size)
-      need_scale, target_w, target_h = resolve_size(img, target_size)
-      return img unless need_scale
+    def self.scale_nearest_image(img, target_size, max)
+      resolved = resolve_size(img, target_size, max)
+      return img unless resolved[:need_scale]
+      target_w = resolved[:w]
+      target_h = resolved[:h]
 
       # NOTE don't touch color space; (raw data / RGBColorspace)
 
@@ -217,15 +272,16 @@ module Encode
       resized_img
     end
 
-    def self.scale_image(img, target_size)
-      need_scale, target_w, target_h = resolve_size(img, target_size)
-      return img unless need_scale
-
-      img.resize(target_w, target_h)
+    def self.resolve_size(img, target_size, max)
+      if max
+        resolve_max_size(img, target_size)
+      else
+        resolve_min_size(img, target_size)
+      end
     end
 
     #
-    # Resolve scaled size
+    # Resolve scaled size based into min size
     #
     # NOTE KI iamge sizes may differ in width/height
     # => scaling done BOTH ways for sampler2dArray support
@@ -240,23 +296,57 @@ module Encode
     #
     # @return [bool, w, h]
     #
-    def self.resolve_size(img, target_size)
-      target_w = img.columns
-      target_h = img.rows
+    def self.resolve_min_size(img, target_size)
+      img_w = img.columns
+      img_h = img.rows
 
-      min_size = [target_w, target_h].min
+      min_size = [img_w, img_h].min
 
       # FIX: Check if the size differs from target_size in EITHER direction
       if min_size != target_size
-        need_scale = true
         scale = target_size.to_f / min_size.to_f
 
-        target_w = (target_w * scale).ceil
-        target_h = (target_h * scale).ceil
+        target_w = (img_w * scale).ceil
+        target_h = (img_h * scale).ceil
 
-        [need_scale, target_w, target_h]
+        { w: target_w, h: target_h, need_scale: true, scale: }
       else
-        [false, target_w, target_h]
+        { w: img_w, h: img_h, need_scale: false, scale: 1.0 }
+      end
+    end
+
+    #
+    # Resolve scaled based into max size
+    #
+    # NOTE KI iamge sizes may differ in width/height
+    # => scaling done BOTH ways for sampler2dArray support
+    #
+    # @return [bool, w, h]
+    #
+    #
+    # Resolve scaled size
+    #
+    # NOTE KI image sizes may differ in width/height
+    # => normalized strictly into target_size (supports both scale down AND up)
+    #
+    # @return [bool, w, h]
+    #
+    def self.resolve_max_size(img, target_size)
+      img_w = img.columns
+      img_h = img.rows
+
+      max_size = [img_w, img_h].max
+
+      # FIX: Check if the size differs from target_size in EITHER direction
+      if max_size != target_size
+        scale = target_size.to_f / max_size.to_f
+
+        target_w = (img_w * scale).ceil
+        target_h = (img_h * scale).ceil
+
+        { w: target_w, h: target_h, need_scale: true, scale: }
+      else
+        { w: img_w, h: img_h, need_scale: false, scale: 1.0 }
       end
     end
   end

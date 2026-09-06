@@ -34,9 +34,8 @@
 
 #ifdef USE_ALPHA
   material.alpha =
-    (u_materials[materialIndex].diffuse.a *
-     material.diffuseTexel.a *
-    texture(sampler2D(u_materials[materialIndex].opacityMapTex), texCoord).r);
+    u_materials[materialIndex].diffuse.a *
+    material.diffuseTexel.a;
 #else
   material.alpha = 1.0;
 #endif
