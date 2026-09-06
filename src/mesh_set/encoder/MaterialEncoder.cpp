@@ -128,6 +128,9 @@ namespace mesh_set::encoder
         out << YAML::Key << "sprites";
         out << YAML::Value << static_cast<int>(material->spriteCount);
 
+        out << YAML::Key << "sprites_per_row";
+        out << YAML::Value << static_cast<int>(material->spritesPerRow);
+
         out << YAML::Key << "sprites_x";
         out << YAML::Value << static_cast<int>(material->spritesX);
 

@@ -114,27 +114,19 @@ namespace {
         return mat;
     }
 
-    inline uint32_t packSprites(uint32_t count, uint32_t spritesX, uint32_t spritesY) {
-        // Validate at pack time — silent truncation here is a corruption bug that
-        // only shows as wrong sprite UVs much later.
-        assert(count <= 0xFFFFu && "spriteCount exceeds 16-bit packing budget");
-        assert(spritesX <= 0xFFu && "spritesX exceeds 8-bit packing budget");
-        assert(spritesY <= 0xFFu && "spritesY exceeds 8-bit packing budget");
-        return (count << 16) | ((spritesX & 0xFFu) << 8) | (spritesY & 0xFFu);
-    }
+    //inline uint32_t packSprites(
+    //    uint32_t count,
+    //    uint32_t spritesX,
+    //    uint32_t spritesY)
+    //{
+    //    // Validate at pack time — silent truncation here is a corruption bug that
+    //    // only shows as wrong sprite UVs much later.
+    //    assert(count <= 0xFFFFu && "spriteCount exceeds 16-bit packing budget");
+    //    assert(spritesX <= 0xFFu && "spritesX exceeds 8-bit packing budget");
+    //    assert(spritesY <= 0xFFu && "spritesY exceeds 8-bit packing budget");
+    //    return (count << 16) | ((spritesX & 0xFFu) << 8) | (spritesY & 0xFFu);
+    //}
 
-    inline uint32_t unpackSpriteCount(uint32_t packed) { return  packed >> 16; }
-    inline uint32_t unpackSpritesX(uint32_t packed) { return (packed >> 8) & 0xFFu; }
-    inline uint32_t unpackSpritesY(uint32_t packed) { return  packed & 0xFFu; }
-
-    inline uint32_t packSprites(const Material& material) {
-        uint8_t spritesY = material.spriteCount / material.spritesX;
-        if (material.spriteCount % material.spritesX != 0) {
-            spritesY++;
-        }
-
-        return packSprites(material.spriteCount, material.spritesX, spritesY);
-    }
 }
 
 util::Ref<Material> Material::createMaterial(BasicMaterial type)
@@ -322,6 +314,7 @@ Material& Material::operator=(const Material& o)
     m_name = o.m_name;
 
     spriteCount = o.spriteCount;
+    spritesPerRow = o.spritesPerRow;
     spritesX = o.spritesX;
 
     alpha = o.alpha;
@@ -634,7 +627,7 @@ void Material::fillSSBOBindless(
         .u_refraction = refraction,
         .u_refractionRatio = getRefractionRatio(),
 
-        .u_packedSprites = packSprites(*this),
+        .u_packedSprites = material::packSprites(*this),
 
         .u_layers = layers,
         .u_layersDepth = layersDepth,
@@ -698,7 +691,7 @@ void Material::fillSSBOArray(
         .u_refraction = refraction,
         .u_refractionRatio = getRefractionRatio(),
 
-        .u_packedSprites = packSprites(*this),
+        .u_packedSprites = material::packSprites(*this),
 
         .u_layers = layers,
         .u_layersDepth = layersDepth,

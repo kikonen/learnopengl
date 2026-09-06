@@ -76,6 +76,7 @@ uint packSprites(uint count, uint spritesX, uint spritesY) {
 
 // GPU-side sprite bounds check;
 // unused until particle logic moves to GPU (currently clamped CPU-side)
-uint unpacSpriteCount(uint bits) { return  bits >> 16; }
-uint unpackSpritesX(uint bits)    { return (bits >> 8) & 0xFFu; }
-uint unpackSpritesY(uint bits)    { return  bits        & 0xFFu; }
+uint unpacSpriteCount(uint bits)   { return (bits >> 24) & 0xFFu; }
+uint unpacSpritesPerRow(uint bits) { return (bits >> 16) & 0xFFu; }
+uint unpackSpritesX(uint bits)     { return (bits >> 8)  & 0xFFu; }
+uint unpackSpritesY(uint bits)     { return  bits        & 0xFFu; }

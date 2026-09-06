@@ -344,6 +344,10 @@ namespace loader {
                 material.spriteCount = readInt(v);
                 fields.spriteCount = true;
             }
+            else if (k == "sprites_per_row") {
+                material.spritesPerRow = readInt(v);
+                fields.spritesPerRow = true;
+            }
             else if (k == "sprites_x") {
                 material.spritesX = readInt(v);
                 fields.spritesX = true;
@@ -618,6 +622,7 @@ namespace loader {
         if (f.tilingY) m.tilingY = mod.tilingY;
 
         if (f.spriteCount) m.spriteCount = mod.spriteCount;
+        if (f.spritesPerRow) m.spritesPerRow = mod.spritesPerRow;
         if (f.spritesX) m.spritesX = mod.spritesX;
 
         //if (f.ns) m.ns = mod.ns;

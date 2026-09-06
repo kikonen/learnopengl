@@ -20,6 +20,8 @@
 #include "util/util.h"
 #include "util/file.h"
 
+#include "material/Material.h"
+
 namespace
 {
 }
@@ -222,5 +224,40 @@ namespace material
         }
 
         return srgbBytes;
+    }
+
+    uint32_t unpackSpriteCount(uint32_t packed) { return (packed >> 24) & 0xFFu; }
+    uint32_t unpackSpritesPerRow(uint32_t packed) { return (packed >> 16) & 0xFFu; }
+    uint32_t unpackSpritesX(uint32_t packed) { return (packed >> 8) & 0xFFu; }
+    uint32_t unpackSpritesY(uint32_t packed) { return  packed & 0xFFu; }
+
+    uint32_t packSprites(
+        uint8_t count,
+        uint8_t spritesPerRow,
+        uint8_t spritesX,
+        uint8_t spritesY)
+    {
+        return (static_cast<uint32_t>(count) << 24) |
+            (static_cast<uint32_t>(spritesPerRow) << 16) |
+            (static_cast<uint32_t>(spritesY) << 8) |
+            (static_cast<uint32_t>(spritesX));
+    }
+
+    uint32_t packSprites(const Material& material)
+    {
+        // Calculate the total vertical row count safely using active sprites per row.
+        // We must divide by spritePerRow (valid cells before padding) instead of spritesX!
+        uint8_t spritesY = material.spriteCount / material.spritesPerRow;
+
+        // Add a fallback row if there are remaining trailing active sprites on the final row
+        if (material.spriteCount % material.spritesPerRow != 0) {
+            spritesY++;
+        }
+
+        return packSprites(
+            material.spriteCount,
+            material.spritesPerRow,
+            material.spritesX,
+            spritesY);
     }
 }

@@ -338,6 +338,7 @@ particles:
       map_kd: particles/4_casting_spritesheet.png
       sprites: 73
       sprites_x: 9
+      sprites_per_row: 9
       texture_spec:
         wrap: clamp_to_edge
 
@@ -347,6 +348,9 @@ decals:
 
   - name: firespin_1
     prefab: decals/firespin_1.yml
+
+  - name: bones_1
+    prefab: decals/bones_1.yml
 
   - name: blood_1
     prefab: decals/blood_1.yml

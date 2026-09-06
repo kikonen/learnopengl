@@ -52,14 +52,18 @@ void main() {
 
   const uint packedSprites = readMaterial_packedSprites(materialIndex);
 
+  const uint spritesPerRow = unpacSpritesPerRow(packedSprites);
   const uint spritesX = unpackSpritesX(packedSprites);
   const uint spritesY = unpackSpritesY(packedSprites);
 
   const float tx = 1.0 / spritesX;
   const float ty = 1.0 / spritesY;
 
-  const uint sx = spriteIndex % spritesX;
-  const uint sy = spriteIndex / spritesX;
+  const uint sx = spriteIndex % spritesPerRow;
+  const uint sy = spriteIndex / spritesPerRow;
+
+  // vec2 finalTexCoord = TexCoords * spriteSize +
+  //   vec2(float(sx) * spriteSize.x, float(sy) * spriteSize.y);
 
   vs_out.spriteCoord.x = sx * tx;
   vs_out.spriteCoord.y = 1.0 - (sy + 1) * ty;

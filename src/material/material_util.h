@@ -5,6 +5,8 @@
 
 #include <glm/glm.hpp>
 
+struct Material;
+
 namespace material
 {
     struct ResolvedTexturePath
@@ -47,4 +49,11 @@ namespace material
 
     std::vector<uint8_t> convertLinearToSRGBBuffer(
         const std::vector<glm::vec4>& linearPixels);
+
+    uint32_t unpackSpriteCount(uint32_t packed);
+    uint32_t unpackSpritesPerRow(uint32_t packed);
+    uint32_t unpackSpritesX(uint32_t packed);
+    uint32_t unpackSpritesY(uint32_t packed);
+
+    uint32_t packSprites(const Material& material);
 }

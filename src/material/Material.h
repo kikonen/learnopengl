@@ -305,8 +305,8 @@ public:
     std::string m_name;
 
     uint8_t spriteCount = 1;
+    uint8_t spritesPerRow = 1;
     uint8_t spritesX = 1;
-    //uint8_t spritesY = 1;
 
     bool alpha : 1 {false};
     bool blend : 1 {false};

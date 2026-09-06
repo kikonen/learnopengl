@@ -1,5 +1,5 @@
 decal:
-  name: firespin_1
+  name: bones_1
   lifetime: 99999
   scale: 0.4
   scale_variation: [-0.2, 0.2]
@@ -8,9 +8,9 @@ decal:
   static: false
   material:
     base: particles
-    map_kd: 7_firespin_spritesheet.png
-    sprites: 61
-    sprites_x: 8
-    sprites_per_row: 8
+    map_kd: particles/bones_1_spritesheet.png
+    sprites: 28
+    sprites_x: 6
+    sprites_per_row: 4
     texture_spec:
       wrap: clamp_to_edge

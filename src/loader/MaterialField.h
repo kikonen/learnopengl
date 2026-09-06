@@ -16,6 +16,7 @@ namespace loader {
         bool tilingY : 1 { false };
 
         bool spriteCount : 1 { false };
+        bool spritesPerRow : 1 { false };
         bool spritesX : 1 { false };
 
         //bool ns : 1 { false };
