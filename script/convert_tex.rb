@@ -151,7 +151,7 @@ module Encode
       default: ['all']
     method_option :thread_count,
       type: :numeric,
-      default: Etc.nprocessors
+      default: [2, (Etc.nprocessors * 0.75).floor].max
     def build
       src_dir = options[:src]
       extensions = options[:ext] || EXTENSIONS
