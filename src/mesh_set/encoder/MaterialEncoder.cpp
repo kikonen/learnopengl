@@ -39,6 +39,8 @@ namespace
         case material::TextureType::map_custom_1: return "map_custom_1";
         case material::TextureType::map_mras: return "map_mras";
         case material::TextureType::map_displacement: return "map_displacement";
+        case material::TextureType::map_height: return "map_height";
+        case material::TextureType::map_font_atlas: return "map_font_atlas";
         }
         return fmt::format("INVALID_TEX_{}", util::as_integer(type));
     }

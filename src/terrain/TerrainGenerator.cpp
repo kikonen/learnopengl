@@ -155,7 +155,7 @@ namespace terrain {
                 false,
                 false,
                 true,
-                material::TextureType::map_custom_1,
+                material::TextureType::map_height,
                 spec);
 
             future.wait();
