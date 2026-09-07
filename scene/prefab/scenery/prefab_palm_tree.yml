@@ -23,6 +23,7 @@ prefab:
           base: textures
           map_kd: coconut palm leaf_color.png
           map_normal: coconut palm leaf_Normal.png
+          alpha: true
           render_back: true
         - name: palm_branch
           alias: Tree_2Mat
