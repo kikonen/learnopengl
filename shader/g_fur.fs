@@ -47,7 +47,7 @@ void main() {
 
   float noise = texture(
     u_texturesNoise,
-    vec3(texCoord * 8.0, float(noiseLayer))).r
+    vec3(texCoord * 8.0, float(noiseLayer))).r;
 #endif
 
   float alpha = material.diffuse.a;
