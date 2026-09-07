@@ -251,18 +251,31 @@ namespace text
         const GLsizei w = static_cast<GLsizei>(m_atlasHandle->m_atlas->width);
         const GLsizei h = static_cast<GLsizei>(m_atlasHandle->m_atlas->height);
 
-        //glTextureSubImage2D(
-        //    m_texture.m_textureID,
-        //    0,
-        //    0, 0, w, h,
-        //    GL_RED,
-        //    GL_UNSIGNED_BYTE,
-        //    m_atlasHandle->m_atlas->data);
+        // Fetch the global unified hardware ID from your assigned ArrayTexture pool
+        //GLuint arrayTextureID = m_texture.getTextureID();
+        GLuint arrayTextureID = 0;
 
-        //// newly rasterized glyphs changed level 0 -> refresh the mip chain
-        //if (m_mipLevels > 1) {
-        //    glGenerateTextureMipmap(m_texture.m_textureID);
-        //}
+        // Fetch the assigned layer index slot where this specific font atlas texture lives
+        //GLint layerSlot = static_cast<GLint>(m_texture.getLayerIndex());
+        GLint layerSlot = 0;
+
+        // Update strictly the base level (Level 0) of the targeted layer slice.
+        // We replace glTextureSubImage2D with glTextureSubImage3D cleanly!
+        glTextureSubImage3D(
+            arrayTextureID,
+            0,                                   // Target Mipmap Level 0
+            0, 0, layerSlot,                     // xoffset, yoffset, zoffset (The assigned Layer Slot Index!)
+            w, h, 1,                             // width, height, layer depth slice count (strictly 1 asset slice)
+            GL_RED,                              // Input host RAM buffer format (Font atlases are raw Grayscale bytes)
+            GL_UNSIGNED_BYTE,                    // Input host RAM data type size marker
+            m_atlasHandle->m_atlas->data         // Hard raw memory buffer pointer address
+        );
+
+        // Newly rasterized glyphs changed level 0 -> refresh the mip chain for the whole array
+        // Note: OpenGL mip generation always processes all active allocated layer slices at once!
+        if (m_mipLevels > 1) {
+            glGenerateTextureMipmap(arrayTextureID);
+        }
 
         m_usedAtlasSize = currentAtlasSize;
     }
