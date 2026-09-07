@@ -186,7 +186,7 @@ material_updaters:
       TOY_1: 1
 - id: shader_toy_2
   type: shader
-  size: 512
+  size: 1024
   frame_skip: 1
   material:
     prefab: materials/Metal008.yml
@@ -198,7 +198,7 @@ material_updaters:
       TOY_2: 1
 - id: shader_toy_3
   type: shader
-  size: 512
+  size: 1024
   frame_skip: 1
   material:
     prefab: materials/Metal008.yml

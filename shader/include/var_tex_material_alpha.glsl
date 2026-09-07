@@ -21,7 +21,7 @@
 #ifdef USE_TEXTURE_ARRAY
 #ifdef USE_ALPHA
 {
-  int diffuseLayer = int(u_materials[materialIndex].diffuseTex.x);
+  const int diffuseLayer = int(u_materials[materialIndex].diffuseTex.x);
 
   // Sample unified sRGB textures array
   material.diffuseTexel = texture(u_texturesSRGB, vec3(texCoord, float(diffuseLayer)));
@@ -30,7 +30,7 @@
 }
 #else
 {
-  int diffuseLayer = int(u_materials[materialIndex].diffuseTex.x);
+  const int diffuseLayer = int(u_materials[materialIndex].diffuseTex.x);
 
   // Sample unified sRGB textures array
   material.diffuseTexel = texture(u_texturesSRGB, vec3(texCoord, float(diffuseLayer)));

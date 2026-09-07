@@ -400,6 +400,12 @@ GLuint64 Material::getTexHandle(
         auto handle = m_updater->getTexHandle(type);
         if (handle) return handle;
     }
+
+    // TODO KI special case for FontAtlas
+    if (type == material::TextureType::map_font_atlas) {
+        return m_fontAtlasTex;
+    }
+
     const auto& it = m_boundTextures.find(type);
     return it != m_boundTextures.end() ? it->second.m_texture->m_handle : defaultValue;
 }
@@ -620,7 +626,7 @@ void Material::fillSSBOBindless(
 
         .u_custom1Map = getTexHandle(material::TextureType::map_custom_1, 0),
 
-        .u_fontHAtlas = m_fontAtlasTex,
+        .u_fontHAtlas = getTexHandle(material::TextureType::map_font_atlas, 0),
     };
     cold = {
         .u_reflection = reflection,

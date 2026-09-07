@@ -91,8 +91,15 @@ void main()
   const int heightMapLayer = int(tes_in[0].heightMapTex.x);
 
   // Interpolate the attributes of the output vertex using the barycentric coordinates
-  vec2 texCoord = interpolate2D(tes_in[0].texCoord, tes_in[1].texCoord, tes_in[2].texCoord);
-  vec3 vertexPos = interpolate3D(tes_in[0].vertexPos, tes_in[1].vertexPos, tes_in[2].vertexPos);
+  vec2 texCoord = interpolate2D(
+    tes_in[0].texCoord,
+    tes_in[1].texCoord,
+    tes_in[2].texCoord);
+
+  vec3 vertexPos = interpolate3D(
+    tes_in[0].vertexPos,
+    tes_in[1].vertexPos,
+    tes_in[2].vertexPos);
 
   const float rangeYmin = tes_in[0].rangeYmin;
   const float rangeYmax = tes_in[0].rangeYmax;

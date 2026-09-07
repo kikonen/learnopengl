@@ -39,13 +39,15 @@ void main() {
 
 #ifdef USE_TEXTURE_ARRAY
   if (fs_in.diffuseTex.x > 0) {
-    int diffuseLayer = int(fs_in.diffuseTex.x);
+    const int diffuseLayer = int(fs_in.diffuseTex.x);
 
     vec2 texCoord = fs_in.spriteCoord;
     texCoord.x += gl_PointCoord.x * fs_in.spriteSize.x;
     texCoord.y += gl_PointCoord.y * fs_in.spriteSize.y;
 
-    vec4 diffuseTexel = texture(u_texturesSRGB, vec3(texCoord, float(diffuseLayer)));
+    vec4 diffuseTexel = texture(
+      u_texturesSRGB,
+      vec3(texCoord, float(diffuseLayer)));
 
     texColor *= diffuseTexel;
   }

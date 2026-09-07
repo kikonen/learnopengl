@@ -26,7 +26,8 @@ vec3 sampleTriPlanar(vec3 pos, uint matIdx) {
 #endif
 
 #ifdef USE_TEXTURE_ARRAY
-  int diffuseLayer = int(u_materials[matIdx].diffuseTex.x);
+  const int diffuseLayer = int(u_materials[matIdx].diffuseTex.x);
+
   vec3 cX = texture(u_texturesSRGB, vec3(uvX, float(diffuseLayer))).rgb;
   vec3 cY = texture(u_texturesSRGB, vec3(uvY, float(diffuseLayer))).rgb;
   vec3 cZ = texture(u_texturesSRGB, vec3(uvZ, float(diffuseLayer))).rgb;

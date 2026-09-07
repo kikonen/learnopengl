@@ -46,6 +46,7 @@ ResolvedMaterial material;
 #include "include/fn_calculate_fog.glsl"
 #include "include/fn_gbuffer_normal_encode.glsl"
 
+// TODO KI 2darray
 vec3 estimateWaveNormal(
   in sampler3D sampler,
   in vec2 tc,
@@ -113,7 +114,7 @@ void main() {
 
 #ifdef USE_TEXTURE_ARRAY
     {
-      int dudvLayer = int(dudvMapTex.x);
+      const int dudvLayer = int(dudvMapTex.x);
 
       distortedTexCoord = texture(
 	u_texturesDudv,
@@ -146,9 +147,12 @@ void main() {
 #ifdef USE_TEXTURE_ARRAY
 #if defined(USE_NORMAL_TEX) && defined(USE_TBN)
   if (Debug.u_normalMapEnabled) {
-    int normalLayer = int(u_materials[materialIndex].normalMapTex.x);
+    const int normalLayer = int(u_materials[materialIndex].normalMapTex.x);
+
     if (normalLayer > 0) {
-      vec3 normalTexel = texture(u_texturesNormal, vec3(distortedTexCoord, float(normalLayer))).rgb * 2.0 - 1.0;
+      vec3 normalTexel = texture(
+	u_texturesNormal,
+	vec3(distortedTexCoord, float(normalLayer))).rgb * 2.0 - 1.0;
 
       normal = normalize(tbn * normal);
     }

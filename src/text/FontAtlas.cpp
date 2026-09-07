@@ -34,6 +34,9 @@ namespace {
     // within the per-glyph padding gutter while still covering minification.
     constexpr int MAX_MIP_LEVELS{ 4 };
 
+    constexpr size_t ATLAS_DEPTH = 1;
+
+
     glm::uvec2 resolveAtlasSize(float rasterSize, float padding)
     {
         if (rasterSize < 8.f) rasterSize = 8.f;
@@ -122,10 +125,9 @@ namespace text
         m_padding = static_cast<int>(m_rasterSize);
         m_atlasSize = resolveAtlasSize(m_rasterSize, static_cast<float>(m_padding));
 
-        constexpr size_t depth = 1;
         {
             m_atlasHandle = std::make_unique<AtlasHandle>();
-            m_atlasHandle->create(m_atlasSize.x, m_atlasSize.y, depth);
+            m_atlasHandle->create(m_atlasSize.x, m_atlasSize.y, ATLAS_DEPTH);
         }
 
         {
@@ -138,59 +140,82 @@ namespace text
 
         if (!m_fontHandle->valid()) return;
 
-
-        if (true)
-        {
-            const GLsizei w = static_cast<GLsizei>(m_atlasHandle->m_atlas->width);
-            const GLsizei h = static_cast<GLsizei>(m_atlasHandle->m_atlas->height);
-
-            m_texture.create(fmt::format("{}_font_atlas", m_name), GL_TEXTURE_2D, w, h);
-            m_atlasHandle->m_atlas->id = m_texture.m_textureID;
-            const auto texId = m_texture.m_textureID;
-
-            GLenum internalFormat;
-            GLenum format;
-
-            switch (depth) {
-            case 1:
-                internalFormat = GL_R8;
-                format = GL_RED;
-                break;
-            case 3:
-                internalFormat = GL_RGB8;
-                format = GL_RGB;
-                break;
-            }
-
-            // Mipmaps let minified / distant text sample coarser SDF levels
-            // instead of shimmering. Distance fields downsample cleanly under
-            // averaging (unlike alpha coverage), so a plain mip chain works;
-            // capped to keep coarse-level bleed within the glyph padding gutter.
-            m_mipLevels = std::clamp(
-                1 + static_cast<int>(std::floor(std::log2(static_cast<float>(std::max(w, h))))),
-                1,
-                MAX_MIP_LEVELS);
-
-            glTextureParameteri(texId, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-            glTextureParameteri(texId, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-            glTextureParameteri(texId, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-            glTextureParameteri(texId, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-            glTextureParameterfv(texId, GL_TEXTURE_BORDER_COLOR, glm::value_ptr(BLACK));
-
-            glTextureStorage2D(texId, m_mipLevels, internalFormat, w, h);
-            glTextureSubImage2D(texId, 0, 0, 0, w, h, format, GL_UNSIGNED_BYTE, m_atlasHandle->m_atlas->data);
-            if (m_mipLevels > 1) {
-                glGenerateTextureMipmap(texId);
-            }
-
-            m_textureHandle = glGetTextureHandleARB(m_texture);
-            glMakeTextureHandleResidentARB(m_textureHandle);
-
-            m_usedAtlasSize = m_atlasHandle->m_atlas->used;
+        if (assets.drawUseArrayTexture) {
+            registerArray();
+        }
+        else {
+            registerSingle();
         }
     }
 
+    void FontAtlas::registerSingle()
+    {
+        const GLsizei w = static_cast<GLsizei>(m_atlasHandle->m_atlas->width);
+        const GLsizei h = static_cast<GLsizei>(m_atlasHandle->m_atlas->height);
+
+        m_texture.create(fmt::format("{}_font_atlas", m_name), GL_TEXTURE_2D, w, h);
+        m_atlasHandle->m_atlas->id = m_texture.m_textureID;
+        const auto texId = m_texture.m_textureID;
+
+        GLenum internalFormat;
+        GLenum format;
+
+        switch (ATLAS_DEPTH) {
+        case 1:
+            internalFormat = GL_R8;
+            format = GL_RED;
+            break;
+        case 3:
+            internalFormat = GL_RGB8;
+            format = GL_RGB;
+            break;
+        }
+
+        // Mipmaps let minified / distant text sample coarser SDF levels
+        // instead of shimmering. Distance fields downsample cleanly under
+        // averaging (unlike alpha coverage), so a plain mip chain works;
+        // capped to keep coarse-level bleed within the glyph padding gutter.
+        m_mipLevels = std::clamp(
+            1 + static_cast<int>(std::floor(std::log2(static_cast<float>(std::max(w, h))))),
+            1,
+            MAX_MIP_LEVELS);
+
+        glTextureParameteri(texId, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+        glTextureParameteri(texId, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+        glTextureParameteri(texId, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        glTextureParameteri(texId, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+        glTextureParameterfv(texId, GL_TEXTURE_BORDER_COLOR, glm::value_ptr(BLACK));
+
+        glTextureStorage2D(texId, m_mipLevels, internalFormat, w, h);
+        glTextureSubImage2D(texId, 0, 0, 0, w, h, format, GL_UNSIGNED_BYTE, m_atlasHandle->m_atlas->data);
+        if (m_mipLevels > 1) {
+            glGenerateTextureMipmap(texId);
+        }
+
+        m_textureHandle = glGetTextureHandleARB(m_texture);
+        glMakeTextureHandleResidentARB(m_textureHandle);
+
+        m_usedAtlasSize = m_atlasHandle->m_atlas->used;
+    }
+
+    void FontAtlas::registerArray()
+    {
+        //TextureReegistry::get().registerTexture();
+    }
+
     void FontAtlas::update()
+    {
+        const auto& assets = Assets::get();
+
+        if (assets.drawUseArrayTexture) {
+            updateArray();
+        }
+        else {
+            updateSingle();
+        }
+    }
+
+    void FontAtlas::updateSingle()
     {
         if (!valid()) return;
 
@@ -212,6 +237,32 @@ namespace text
         if (m_mipLevels > 1) {
             glGenerateTextureMipmap(m_texture.m_textureID);
         }
+
+        m_usedAtlasSize = currentAtlasSize;
+    }
+
+    void FontAtlas::updateArray()
+    {
+        if (!valid()) return;
+
+        size_t currentAtlasSize = m_atlasHandle->m_atlas->used;
+        if (m_usedAtlasSize == currentAtlasSize) return;
+
+        const GLsizei w = static_cast<GLsizei>(m_atlasHandle->m_atlas->width);
+        const GLsizei h = static_cast<GLsizei>(m_atlasHandle->m_atlas->height);
+
+        //glTextureSubImage2D(
+        //    m_texture.m_textureID,
+        //    0,
+        //    0, 0, w, h,
+        //    GL_RED,
+        //    GL_UNSIGNED_BYTE,
+        //    m_atlasHandle->m_atlas->data);
+
+        //// newly rasterized glyphs changed level 0 -> refresh the mip chain
+        //if (m_mipLevels > 1) {
+        //    glGenerateTextureMipmap(m_texture.m_textureID);
+        //}
 
         m_usedAtlasSize = currentAtlasSize;
     }

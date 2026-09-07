@@ -230,9 +230,9 @@
  layout(binding = UNIT_OIT_REVEAL) uniform sampler2D oit_reveal;
 
 #define LAYOUT_EFFECT_SAMPLERS\
- layout(binding = UNIT_EFFECT_ALBEDO) uniform sampler2D effect_albedo;\
- layout(binding = UNIT_EFFECT_BRIGHT) uniform sampler2D effect_bright; \
- layout(binding = UNIT_EFFECT_WORK) uniform sampler2D effect_work;
+ layout(binding = UNIT_EFFECT_ALBEDO) uniform sampler2D u_effect_albedo;\
+ layout(binding = UNIT_EFFECT_BRIGHT) uniform sampler2D u_effect_bright; \
+ layout(binding = UNIT_EFFECT_WORK) uniform sampler2D u_effect_work;
 
 #define MATERIAL_MRA_METALNESS material.mras.r
 #define MATERIAL_MRA_ROUGHNESS material.mras.g

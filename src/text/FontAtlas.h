@@ -66,6 +66,13 @@ namespace text
             return m_rasterSize > 0.f ? m_fontSize / m_rasterSize : 1.f;
         }
 
+    private:
+        void registerSingle();
+        void registerArray();
+
+        void updateSingle();
+        void updateArray();
+
     public:
         text::font_id m_id{ 0 };
         std::string m_name;
