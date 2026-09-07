@@ -349,8 +349,17 @@ decals:
   - name: firespin_1
     prefab: decals/firespin_1.yml
 
+  - name: 4_casting
+    prefab: decals/4_casting.yml
+
   - name: bones_1
     prefab: decals/bones_1.yml
+
+  - name: bones_2
+    prefab: decals/bones_2.yml
+
+  - name: bones_3
+    prefab: decals/bones_3.yml
 
   - name: blood_1
     prefab: decals/blood_1.yml

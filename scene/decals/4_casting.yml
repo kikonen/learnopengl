@@ -1,17 +1,17 @@
 decal:
-  name: bones_1
+  name: 4_casting
   lifetime: 99999
-  scale: 0.4
+  scale: 1
   scale_variation: [-0.2, 0.2]
   sprite_speed: 0
   sprite_speed_variation: [-10, 10]
   static: false
   material:
     base: particles
-    map_kd: particles/bones_1_spritesheet.png
-    sprites: 28
-    sprites_x: 7
-    sprites_per_row: 4
+    map_kd: particles/4_casting_spritesheet.png
+    sprites: 73
+    sprites_x: 9
+    sprites_per_row: 9
     alpha: true
     #blend: true
     texture_spec:

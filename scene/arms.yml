@@ -181,7 +181,7 @@ particles:
       #sprites_per_row: 8
       map_kd: particles/bones_1_spritesheet.png
       sprites: 28
-      sprites_x: 4
+      sprites_x: 7
       sprites_per_row: 4
       texture_spec:
         wrap: clamp_to_edge
@@ -217,7 +217,7 @@ particles:
       ¤sprites_per_row: 8
       map_kd: particles/bones_2_spritesheet.png
       sprites: 29
-      sprites_x: 4
+      sprites_x: 7
       sprites_per_row: 4
       texture_spec:
         wrap: clamp_to_edge

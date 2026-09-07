@@ -239,12 +239,13 @@ namespace material
     {
         return (static_cast<uint32_t>(count) << 24) |
             (static_cast<uint32_t>(spritesPerRow) << 16) |
-            (static_cast<uint32_t>(spritesY) << 8) |
-            (static_cast<uint32_t>(spritesX));
+            (static_cast<uint32_t>(spritesX) << 8) |
+            (static_cast<uint32_t>(spritesY));
     }
 
     uint32_t packSprites(const Material& material)
     {
+        // NOTE KI spritesY !== spritesY in case sprite shape is not rectangular
         // Calculate the total vertical row count safely using active sprites per row.
         // We must divide by spritePerRow (valid cells before padding) instead of spritesX!
         uint8_t spritesY = material.spriteCount / material.spritesPerRow;

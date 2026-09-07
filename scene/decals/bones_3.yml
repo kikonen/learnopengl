@@ -1,5 +1,5 @@
 decal:
-  name: bones_1
+  name: bones_3
   lifetime: 99999
   scale: 0.4
   scale_variation: [-0.2, 0.2]
@@ -8,10 +8,10 @@ decal:
   static: false
   material:
     base: particles
-    map_kd: particles/bones_1_spritesheet.png
-    sprites: 28
-    sprites_x: 7
-    sprites_per_row: 4
+    map_kd: particles/bones_3_spritesheet.png
+    sprites: 27
+    sprites_x: 5
+    sprites_per_row: 5
     alpha: true
     #blend: true
     texture_spec:

@@ -36,7 +36,6 @@ void main() {
   const uint msp = particle.u_msp;
   const uint materialIndex = unpackParticleIndex(msp);;
   const float scale = unpackParticleScale(msp);
-  const uint spriteIndex = unpackParticleSpriteIndex(msp);
 
   const vec3 pos = vec3(particle.u_x, particle.u_y, particle.u_z);
   const vec4 worldPos = vec4(pos, 1.0);
@@ -52,18 +51,18 @@ void main() {
 
   const uint packedSprites = readMaterial_packedSprites(materialIndex);
 
+  const uint spriteCount = unpacSpriteCount(packedSprites);
   const uint spritesPerRow = unpacSpritesPerRow(packedSprites);
   const uint spritesX = unpackSpritesX(packedSprites);
   const uint spritesY = unpackSpritesY(packedSprites);
+
+  const uint spriteIndex = unpackParticleSpriteIndex(msp) % spriteCount;
 
   const float tx = 1.0 / spritesX;
   const float ty = 1.0 / spritesY;
 
   const uint sx = spriteIndex % spritesPerRow;
   const uint sy = spriteIndex / spritesPerRow;
-
-  // vec2 finalTexCoord = TexCoords * spriteSize +
-  //   vec2(float(sx) * spriteSize.x, float(sy) * spriteSize.y);
 
   vs_out.spriteCoord.x = sx * tx;
   vs_out.spriteCoord.y = 1.0 - (sy + 1) * ty;

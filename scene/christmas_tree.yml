@@ -250,7 +250,7 @@ particles:
     material:
       kd: [1, 1, 1, 1]
       map_kd: particles/bones_3_spritesheet.png
-      sprites: 28
+      sprites: 27
       sprites_x: 5
       sprites_per_row: 5
       texture_spec:
@@ -283,7 +283,7 @@ particles:
       kd: [1, 1, 1, 1]
       map_kd: particles/bones_2_spritesheet.png
       sprites: 29
-      sprites_x: 4
+      sprites_x: 7
       sprites_per_row: 4
       texture_spec:
         wrap: clamp_to_edge
