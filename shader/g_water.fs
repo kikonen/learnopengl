@@ -2,6 +2,7 @@
 
 #include "include/ssbo_materials.glsl"
 
+#include "include/uniform_texture_arrays.glsl"
 #include "include/uniform_matrices.glsl"
 #include "include/uniform_camera.glsl"
 #include "include/uniform_data.glsl"
@@ -101,12 +102,34 @@ void main() {
     //totalDistortion = (texture(u_textures[material.dudvMapTex], distortedTexCoord).rg * 2.0 - 1.0) * waveStrength;
 
     //vec2 distortedTexCoord;
+#ifndef USE_TEXTURE_ARRAY
     {
       sampler2D sampler = sampler2D(dudvMapTex);
       distortedTexCoord = texture(sampler, vec2(texCoord.x + moveFactor, texCoord.y)).rg * 0.1;
       distortedTexCoord = texCoord + vec2(distortedTexCoord.x, distortedTexCoord.y + moveFactor);
       totalDistortion = (texture(sampler, distortedTexCoord).rg * 2.0 - 1.0) * waveStrength;
     }
+#endif
+
+#ifdef USE_TEXTURE_ARRAY
+    {
+      int dudvLayer = int(dudvMapTex.x);
+
+      distortedTexCoord = texture(
+	u_texturesDudv,
+	vec3(vec2(texCoord.x + moveFactor, texCoord.y), float(dudvLayer))
+      ).rg * 0.1;
+
+      distortedTexCoord = texCoord +
+	vec2(distortedTexCoord.x, distortedTexCoord.y + moveFactor);
+
+      totalDistortion = (
+	texture(
+	  u_texturesDudv,
+	  vec3(distortedTexCoord, float(dudvLayer))
+        ).rg * 2.0 - 1.0) * waveStrength;
+    }
+#endif
   }
 
 #ifndef USE_TEXTURE_ARRAY
