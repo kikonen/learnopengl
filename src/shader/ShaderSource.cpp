@@ -163,8 +163,8 @@ std::vector<std::string> ShaderSource::loadSourceLines(
                 if (assets.drawUseArrayTexture) {
                     lines.push_back("#define USE_TEXTURE_ARRAY 1");
                 } else {
+                    lines.push_back("#extension GL_ARB_bindless_texture : require");
                 }
-                lines.push_back("#extension GL_ARB_bindless_texture : require");
                 appendDefines(shaderType, lines, program);
 
                 // Globals
