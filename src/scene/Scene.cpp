@@ -540,6 +540,10 @@ void Scene::handleLoaded()
 {
     m_loaded = true;
 
+    if (m_world) {
+        m_world->m_loading = false;
+    }
+
     //const auto& spec = m_uiRenderer->m_buffer->m_spec;
     //const glm::u16vec2 aspectRatio = { spec.width, spec.height };
     //m_uiRenderer->m_aspectRatio = aspectRatio;

@@ -52,7 +52,7 @@ void World::configure(const loader::WorldData& data) noexcept
 
 void World::updateWT(double realElapsedSecs) noexcept
 {
-    if (!m_paused) {
+    if (!(m_paused || m_loading)) {
         m_time.updateRealElapsed(realElapsedSecs);
     }
 

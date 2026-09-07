@@ -93,6 +93,7 @@ namespace loader
 
         auto world = util::Ref<World>::create();
         world->configure(data);
+        world->m_loading = true;
 
         // World is advanced on WT but owned by the (RT-managed) Scene; publish it
         // to the scene at the RT drain, same pattern as SkyboxLoader::attachSkybox.
