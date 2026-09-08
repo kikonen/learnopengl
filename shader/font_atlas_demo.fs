@@ -34,7 +34,7 @@ void main() {
 
 #ifndef USE_TEXTURE_ARRAY
   sampler2D sampler = sampler2D(readMaterial_fontAtlasTex(materialIndex));
-  float d = textureLod(sampler), texCoord, 0).r;
+  float d = textureLod(sampler, texCoord, 0).r;
 #endif
 
 #ifdef USE_TEXTURE_ARRAY
