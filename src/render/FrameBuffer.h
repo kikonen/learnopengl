@@ -7,6 +7,8 @@
 
 #include "kigl/kigl.h"
 
+#include "util/Ref.h"
+
 #include "shader/BufferInfoUBO.h"
 
 #include "FrameBufferAttachment.h"
@@ -14,7 +16,7 @@
 namespace render {
     class RenderContext;
 
-    class FrameBuffer
+    class FrameBuffer : public util::RefCountedVirtual
     {
     public:
         FrameBuffer(

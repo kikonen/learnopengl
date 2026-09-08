@@ -119,12 +119,10 @@ void LayerRenderer::updateView(const UpdateViewContext& ctx)
 
 
     {
-        render::FrameBuffer* buffer{ nullptr };
-
         if (m_useHighlight) {
-            buffer = new render::FrameBuffer(
+            m_frameBuffer = util::Ref<render::FrameBuffer>::create(
                 fmt::format("{}_layer_{}x{}", m_name, w, h),
-                {
+                render::FrameBufferSpecification {
                     w, h,
                     {
                     // NOTE KI alpha NEEDED for layers
@@ -135,9 +133,9 @@ void LayerRenderer::updateView(const UpdateViewContext& ctx)
                 });
         }
         else {
-            buffer = new render::FrameBuffer(
+            m_frameBuffer = util::Ref<render::FrameBuffer>::create(
                 fmt::format("{}_layer_{}x{}", m_name, w, h),
-                {
+                render::FrameBufferSpecification {
                     w, h,
                     {
                     // NOTE KI alpha NEEDED for layers
@@ -146,15 +144,14 @@ void LayerRenderer::updateView(const UpdateViewContext& ctx)
                 });
         }
 
-        m_buffer.reset(buffer);
-        m_buffer->prepare();
+        m_frameBuffer->prepare();
 
         // NOTE KI ensure buffer is cleared initially
         {
             auto& state = kigl::GLState::get();
             state.setStencil({});
 
-            m_buffer->clearAll();
+            m_frameBuffer->clearAll();
         }
     }
 }

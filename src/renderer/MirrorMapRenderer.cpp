@@ -193,7 +193,7 @@ void MirrorMapRenderer::updateView(const UpdateViewContext& parentCtx)
                 }
             };
 
-            m_reflectionBuffers.push_back(std::make_unique<render::FrameBuffer>(
+            m_reflectionBuffers.push_back(util::Ref<render::FrameBuffer>::create(
                 fmt::format("{}_reflect_{}x{}_{}", m_name, w, h, i),
                 spec));
         }

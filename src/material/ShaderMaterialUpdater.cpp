@@ -55,20 +55,18 @@ void ShaderMaterialUpdater::prepareRT(
     {
         // NOTE KI depth is irrelevant, since this renders just one quad over buffer
         // => depth comes from quad, and thus should not need depth buffer
-        auto buffer = new render::FrameBuffer(
+        m_frameBuffer = util::Ref<render::FrameBuffer>::create(
             fmt::format("material_{}", m_material->m_name),
-            {
+            render::FrameBufferSpecification {
                 m_size.x, m_size.y,
                 {
                     render::FrameBufferAttachment::getTextureRGBA(GL_COLOR_ATTACHMENT0),
                     //render::FrameBufferAttachment::getDepthStencilRbo(),
                 }
             });
+        m_frameBuffer->prepare();
 
-        m_buffer.reset(buffer);
-        m_buffer->prepare();
-
-        //m_buffer->m_spec.attachments[0].clearColor = glm::vec4(0, 1, 0, 1);
+        //m_frameBuffer->m_spec.attachments[0].clearColor = glm::vec4(0, 1, 0, 1);
     }
 
     prepareTexture();
@@ -101,7 +99,7 @@ void ShaderMaterialUpdater::prepareSingle()
     //glSamplerParameteri(m_samplerId, GL_TEXTURE_MAG_FILTER, spec.asMagFilter());
 
     // https://stackoverflow.com/questions/42886835/modifying-parameters-of-bindless-resident-textures
-    m_handle = glGetTextureSamplerHandleARB(m_buffer->m_spec.attachments[0].textureID, m_samplerId);
+    m_handle = glGetTextureSamplerHandleARB(m_frameBuffer->m_spec.attachments[0].textureID, m_samplerId);
     glMakeTextureHandleResidentARB(m_handle);
 }
 
@@ -135,7 +133,7 @@ void ShaderMaterialUpdater::render(
     m_dirty |= m_frameCounter++ > m_frameSkip;
 
     if (!m_dirty) return;
-    if (!m_buffer) return;
+    if (!m_frameBuffer) return;
 
     m_dirty = false;
     m_frameCounter = 0;
@@ -145,8 +143,8 @@ void ShaderMaterialUpdater::render(
     auto programId = m_material->getProgram(material::ProgramType::shader);
     if (!programId) return;
 
-    m_buffer->bind(ctx);
-    m_buffer->clearAll();
+    m_frameBuffer->bind(ctx);
+    m_frameBuffer->clearAll();
 
     auto& state = ctx.getGLState();
 

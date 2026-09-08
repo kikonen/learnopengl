@@ -63,8 +63,8 @@ namespace render
             && dbg.m_effectBloomEnabled;
 
         if (m_enabled) {
-            for (auto& buffer : m_blurBuffer.m_buffers) {
-                buffer->clearAll();
+            for (auto& fbo : m_blurBuffer.m_frameBuffers) {
+                fbo->clearAll();
             }
         }
     }
@@ -105,8 +105,8 @@ namespace render
                 GL_SHADER_IMAGE_ACCESS_BARRIER_BIT |
                 GL_TEXTURE_FETCH_BARRIER_BIT);
 
-            auto* buffer = m_blurBuffer.m_buffers[i].get();
-            buffer->bind(ctx);
+            auto* fbo = m_blurBuffer.m_frameBuffers[i].get();
+            fbo->bind(ctx);
 
             {
                 if (prev) {
@@ -120,20 +120,20 @@ namespace render
                     m_bloomInitProgram->bind();
                 }
 
-                buffer->setDrawBuffer(BlurBuffer::ATT_COLOR_A_INDEX);
+                fbo->setDrawBuffer(BlurBuffer::ATT_COLOR_A_INDEX);
 
                 m_screenTri.draw();
             }
 
             {
-                buffer->bindTexture(ctx.getGLState(), BlurBuffer::ATT_COLOR_A_INDEX, UNIT_SOURCE);
-                buffer->setDrawBuffer(BlurBuffer::ATT_COLOR_B_INDEX);
+                fbo->bindTexture(ctx.getGLState(), BlurBuffer::ATT_COLOR_A_INDEX, UNIT_SOURCE);
+                fbo->setDrawBuffer(BlurBuffer::ATT_COLOR_B_INDEX);
 
                 m_blurVerticalProgram->bind();
                 m_screenTri.draw();
             }
 
-            prev = buffer;
+            prev = fbo;
         }
 
         {
@@ -145,13 +145,13 @@ namespace render
             };
 
             for (int i = 0; i < BlurBuffer::BUFFER_COUNT; i++) {
-                auto* buffer = m_blurBuffer.m_buffers[i].get();
-                buffer->bindTexture(ctx.getGLState(), BlurBuffer::ATT_COLOR_B_INDEX, channels[i]);
+                auto* fbo= m_blurBuffer.m_frameBuffers[i].get();
+                fbo->bindTexture(ctx.getGLState(), BlurBuffer::ATT_COLOR_B_INDEX, channels[i]);
             }
 
             //{
-            //    auto* buffer = m_blurBuffer.m_buffers[0].get();
-            //    buffer->bindTexture(ctx, BlurBuffer::ATT_COLOR_A_INDEX, UNIT_SOURCE);
+            //    auto* fbo= m_blurBuffer.m_frameBuffer[0].get();
+            //    fbo->bindTexture(ctx, BlurBuffer::ATT_COLOR_A_INDEX, UNIT_SOURCE);
             //}
 
             {

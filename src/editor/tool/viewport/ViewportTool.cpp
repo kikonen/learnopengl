@@ -192,7 +192,7 @@ namespace editor
             ImGui::TreePop();
         }
         if (ImGui::TreeNodeEx("Water OIT", tnFlags)) {
-            auto* fb = scene->m_waterMapRenderer->m_nodeDraw->m_passOit->getOitbuffer().m_buffer.get();
+            auto* fb = scene->m_waterMapRenderer->m_nodeDraw->m_passOit->getOitbuffer().m_frameBuffer.get();
 
             int bufferIndex = 0;
             for (const auto& att : fb->m_spec.attachments) {
@@ -293,15 +293,15 @@ namespace editor
         }
 
         if (ImGui::TreeNodeEx("Main OIT", tnFlags)) {
-            auto* fb = scene->m_mainRenderer->m_nodeDraw->m_passOit->getOitbuffer().m_buffer.get();
+            auto* fbo = scene->m_mainRenderer->m_nodeDraw->m_passOit->getOitbuffer().m_frameBuffer.get();
 
             int bufferIndex = 0;
-            for (const auto& att : fb->m_spec.attachments) {
+            for (const auto& att : fbo->m_spec.attachments) {
                 if (att.activeDrawBufferIndex < 0) continue;
 
                 const auto& name = fmt::format("OIT: {} - {}", bufferIndex, att.name);
                 if (ImGui::TreeNodeEx(name.c_str(), tnFlags)) {
-                    bufferTex(*fb, att.index, true);
+                    bufferTex(*fbo, att.index, true);
                     ImGui::TreePop();
                 }
 
@@ -314,7 +314,7 @@ namespace editor
         }
 
         {
-            //const auto& fb = scene.m_nodeDraw->m_oitBuffer.m_buffer;
+            //const auto& fb = scene.m_nodeDraw->m_oitBuffer.m_frameBuffer;
             //int bufferIndex = 0;
             //for (const auto& att : fb->m_spec.attachments) {
             //    if (att.drawBufferIndex < 0) continue;
@@ -360,7 +360,7 @@ namespace editor
         }
         {
             //int bufferIndex = 0;
-            //for (const auto& fb : scene.m_nodeDraw->m_effectBuffer.m_buffers) {
+            //for (const auto& fb : scene.m_nodeDraw->m_effectBuffer.m_frameBuffers) {
             //    for (const auto& att : fb->m_spec.attachments) {
             //        if (att.drawBufferIndex < 0) continue;
 
@@ -375,7 +375,7 @@ namespace editor
             //}
         }
         {
-            //const auto& fb = scene.m_nodeDraw->m_gBuffer.m_buffer;
+            //const auto& fb = scene.m_nodeDraw->m_gBuffer.m_frameBuffer;
             //int bufferIndex = 0;
             //for (const auto& att : fb->m_spec.attachments) {
             //    if (att.drawBufferIndex < 0) continue;

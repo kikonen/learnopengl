@@ -58,8 +58,8 @@ ki::node_id ObjectIdRenderer::getObjectId(
     const float w = screenW * (vpSize.x / GL_SCREEN_SIZE);
     const float h = screenH * (vpSize.y / GL_SCREEN_SIZE);
 
-    const float ratioX = m_idBuffer->m_spec.width / w;
-    const float ratioY = m_idBuffer->m_spec.height / h;
+    const float ratioX = m_frameBuffer->m_spec.width / w;
+    const float ratioY = m_frameBuffer->m_spec.height / h;
 
     const float offsetX = screenW * (vpPos.x + 1.f) / GL_SCREEN_SIZE;
     const float offsetY = screenH * (1.f - (vpPos.y + 1.f) / GL_SCREEN_SIZE);
@@ -71,19 +71,19 @@ ki::node_id ObjectIdRenderer::getObjectId(
 
 
     {
-        glBindFramebuffer(GL_READ_FRAMEBUFFER, *m_idBuffer);
+        glBindFramebuffer(GL_READ_FRAMEBUFFER, *m_frameBuffer);
         glReadBuffer(GL_COLOR_ATTACHMENT0);
-        //glNamedFramebufferReadBuffer(*m_idBuffer, GL_COLOR_ATTACHMENT0);
+        //glNamedFramebufferReadBuffer(*m_frameBuffer, GL_COLOR_ATTACHMENT0);
 
         //int readFormat;
         //glGetFramebufferParameteriv(GL_FRAMEBUFFER, GL_IMPLEMENTATION_COLOR_READ_FORMAT, &readFormat);
 
         glReadPixels(
             static_cast<GLint>(posx),
-            static_cast<GLint>(m_idBuffer->m_spec.height - posy),
+            static_cast<GLint>(m_frameBuffer->m_spec.height - posy),
             1, 1, GL_RGBA, GL_UNSIGNED_BYTE, data);
 
-        m_idBuffer->unbind(ctx);
+        m_frameBuffer->unbind(ctx);
     }
 
     const ki::node_id nodeId =
@@ -134,13 +134,16 @@ void ObjectIdRenderer::updateView(const UpdateViewContext& ctx)
     if (w < 1) w = 1;
     if (h < 1) h = 1;
 
-    bool changed = !m_idBuffer || w != m_idBuffer->m_spec.width || h != m_idBuffer->m_spec.height;
+    bool changed = !m_frameBuffer ||
+        w != m_frameBuffer->m_spec.width ||
+        h != m_frameBuffer->m_spec.height;
+
     if (!changed) return;
 
     // https://riptutorial.com/opengl/example/28872/using-pbos
-    auto buffer = new render::FrameBuffer(
+    m_frameBuffer = util::Ref<render::FrameBuffer>::create(
         fmt::format("object_id_{}x{}", w, h),
-        {
+        render::FrameBufferSpecification {
             w, h,
             {
                 render::FrameBufferAttachment::getObjectId(),
@@ -148,14 +151,13 @@ void ObjectIdRenderer::updateView(const UpdateViewContext& ctx)
             }
         });
 
-    m_idBuffer.reset(buffer);
-    m_idBuffer->prepare();
+    m_frameBuffer->prepare();
 
     m_debugViewport->setTexture(
-        m_idBuffer->m_spec.attachments[0].textureID,
-        m_idBuffer->m_spec.getSize());
+        m_frameBuffer->m_spec.attachments[0].textureID,
+        m_frameBuffer->m_spec.getSize());
 
-    m_debugViewport->setSourceFrameBuffer(m_idBuffer.get());
+    m_debugViewport->setSourceFrameBuffer(m_frameBuffer.get());
 }
 
 void ObjectIdRenderer::render(
@@ -165,8 +167,8 @@ void ObjectIdRenderer::render(
         "OBJECT_ID",
         &ctx,
         ctx.m_camera,
-        m_idBuffer->m_spec.width,
-        m_idBuffer->m_spec.height);
+        m_frameBuffer->m_spec.width,
+        m_frameBuffer->m_spec.height);
 
     localCtx.m_forceSolid = true;
     localCtx.m_forceLineMode = false;
@@ -174,10 +176,10 @@ void ObjectIdRenderer::render(
     localCtx.updateUBOs();
     localCtx.bindDefaults();
 
-    m_idBuffer->bind(localCtx);
+    m_frameBuffer->bind(localCtx);
 
     drawNodes(localCtx);
-    m_idBuffer->unbind(ctx);
+    m_frameBuffer->unbind(ctx);
 }
 
 void ObjectIdRenderer::drawNodes(const render::RenderContext& parentCtx)
@@ -191,7 +193,7 @@ void ObjectIdRenderer::drawNodes(const render::RenderContext& parentCtx)
 
     localCtx.bindDefaults();
 
-    m_idBuffer->clearAll();
+    m_frameBuffer->clearAll();
 
     // NOTE KI compute frustum visibility once for this camera before drawing; fold the
     // selectable (!noSelect) filter into VISIBLE_SELECTED so the sweep skips the per-drawable call

@@ -42,9 +42,9 @@ namespace render {
 
         {
             // NOTE KI alpha NOT needed
-            auto buffer = new FrameBuffer(
+            m_frameBuffer = util::Ref<FrameBuffer>::create(
                 fmt::format("{}_oit_buffer_{}x{}", namePrefix, w, h),
-                {
+                FrameBufferSpecification {
                     w, h,
                     {
                         FrameBufferAttachment::getOITAccumulatorTexture(GL_COLOR_ATTACHMENT0),
@@ -53,12 +53,10 @@ namespace render {
                             gBuffer->getAttachment(GBuffer::ATT_EMISSION_INDEX),
                             GL_COLOR_ATTACHMENT2),
                         // NOTE KI *SHARE* depth with gbuffer
-                        FrameBufferAttachment::getShared(gBuffer->m_buffer->getDepthAttachment()),
+                        FrameBufferAttachment::getShared(gBuffer->m_frameBuffer->getDepthAttachment()),
                     }
                 });
-
-            m_buffer.reset(buffer);
-            m_buffer->prepare();
+            m_frameBuffer->prepare();
 
             unbindTexture(ctx.getGLState());
         }
@@ -69,28 +67,28 @@ namespace render {
 
     void OITBuffer::bind(const RenderContext& ctx)
     {
-        m_buffer->bind(ctx);
+        m_frameBuffer->bind(ctx);
     }
 
     void OITBuffer::bindTexture(kigl::GLState& state)
     {
-        m_buffer->bindTexture(state, ATT_ACCUMULATOR_INDEX, UNIT_OIT_ACCUMULATOR);
-        m_buffer->bindTexture(state, ATT_REVEAL_INDEX, UNIT_OIT_REVEAL);
+        m_frameBuffer->bindTexture(state, ATT_ACCUMULATOR_INDEX, UNIT_OIT_ACCUMULATOR);
+        m_frameBuffer->bindTexture(state, ATT_REVEAL_INDEX, UNIT_OIT_REVEAL);
     }
 
     void OITBuffer::unbindTexture(kigl::GLState& state)
     {
-        m_buffer->unbindTexture(state, UNIT_OIT_ACCUMULATOR);
-        m_buffer->unbindTexture(state, UNIT_OIT_REVEAL);
+        m_frameBuffer->unbindTexture(state, UNIT_OIT_ACCUMULATOR);
+        m_frameBuffer->unbindTexture(state, UNIT_OIT_REVEAL);
     }
 
     void OITBuffer::clearAll()
     {
-        m_buffer->clearAll();
+        m_frameBuffer->clearAll();
     }
 
     void OITBuffer::invalidateAll()
     {
-        m_buffer->invalidateAll();
+        m_frameBuffer->invalidateAll();
     }
 }

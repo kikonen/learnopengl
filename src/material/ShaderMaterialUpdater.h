@@ -5,6 +5,8 @@
 
 #include <glm/glm.hpp>
 
+#include "util/Ref.h"
+
 #include "kigl/kigl.h"
 
 #include "ki/size.h"
@@ -50,7 +52,7 @@ public:
     int m_frameSkip{ 1 };
 
 private:
-    std::unique_ptr<render::FrameBuffer> m_buffer{ nullptr };
+    util::Ref<render::FrameBuffer> m_frameBuffer{ nullptr };
 
     GLuint64 m_handle{ 0 };
     GLuint m_samplerId{ 0 };

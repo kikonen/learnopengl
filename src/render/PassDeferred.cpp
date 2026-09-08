@@ -64,18 +64,16 @@ namespace render
 
         // NOTE KI this is start of all whole chain (i.e. after GBuffer pass)
         {
-            auto buffer = new FrameBuffer(
+            m_frameBuffer = util::Ref<FrameBuffer>::create(
                 fmt::format("{}_{}", namePrefix, m_name),
-                {
+                FrameBufferSpecification {
                     m_width, m_height,
                     {
                         FrameBufferAttachment::getEffectTextureHdr(ATT_ALBEDO_ENUM),
-                        FrameBufferAttachment::getShared(m_gBuffer.m_buffer->getDepthAttachment()),
+                        FrameBufferAttachment::getShared(m_gBuffer.m_frameBuffer->getDepthAttachment()),
                     }
                 });
-
-            m_buffer.reset(buffer);
-            m_buffer->prepare();
+            m_frameBuffer->prepare();
         }
     }
 
@@ -90,10 +88,10 @@ namespace render
         auto& state = ctx.getGLState();
         const auto& dbg = ctx.getDebug();
 
-        m_gBuffer.m_buffer->resetDrawBuffers();
+        m_gBuffer.m_frameBuffer->resetDrawBuffers();
         m_gBuffer.clearAll();
 
-        m_buffer->clearAll();
+        m_frameBuffer->clearAll();
 
         m_preDepthEnabled = dbg.m_prepassDepthEnabled;
     }
@@ -102,7 +100,7 @@ namespace render
         const RenderContext& ctx,
         const DrawContext& drawContext)
     {
-        return { m_gBuffer.m_buffer.get(), GBuffer::ATT_ALBEDO_INDEX};
+        return { m_gBuffer.m_frameBuffer.get(), GBuffer::ATT_ALBEDO_INDEX};
     }
 
     PassContext PassDeferred::preDepth(
@@ -153,7 +151,7 @@ namespace render
         const RenderContext& ctx,
         const DrawContext& drawContext)
     {
-        m_gBuffer.m_buffer->removeDrawBuffers();
+        m_gBuffer.m_frameBuffer->removeDrawBuffers();
         m_gBuffer.bind(ctx);
 
         // NOTE KI only *solid* render in pre-pass
@@ -186,7 +184,7 @@ namespace render
     {
         auto& state = ctx.getGLState();
 
-        m_gBuffer.m_buffer->resetDrawBuffers();
+        m_gBuffer.m_frameBuffer->resetDrawBuffers();
         m_gBuffer.bind(ctx);
 
         state.setStencil(kigl::GLStencilMode::fill(STENCIL_SOLID | STENCIL_FOG));
@@ -233,12 +231,12 @@ namespace render
             false,
             {});
 
-        m_buffer->bind(ctx);
+        m_frameBuffer->bind(ctx);
         m_combineProgram->bind();
         m_screenTri.draw();
 
         stopScreenPass(ctx);
 
-        return { m_buffer.get(), ATT_ALBEDO_INDEX };
+        return { m_frameBuffer.get(), ATT_ALBEDO_INDEX };
     }
 }
