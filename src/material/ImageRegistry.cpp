@@ -88,7 +88,9 @@ std::shared_future<util::Ref<ImageTexture>> ImageRegistry::getTexture(
     }
 
     auto future = startLoad(
-        util::Ref<ImageTexture>::create(name, path, shared, grayScale, gammaCorrect, flipY, type, spec));
+        util::Ref<ImageTexture>::create(
+            name, path,
+            shared, grayScale, gammaCorrect, flipY, type, spec));
 
     m_textures[cacheKey] = future;
 

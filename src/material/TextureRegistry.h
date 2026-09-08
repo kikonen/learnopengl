@@ -39,12 +39,18 @@ public:
 
     void bindBuffers();
 
+    const util::Ref<ArrayTexture>& findArrayTexture(
+        material::TextureType type);
+
     // @return array ID
     uint32_t addArrayTexture(const material::ArrayTextureInfo& info);
 
     void bindTextureType(material::TextureType type, uint32_t arrayId);
 
     uint64_t registerTexture(
+        const util::Ref<Texture>& texture);
+
+    void updateTexture(
         const util::Ref<Texture>& texture);
 
 private:

@@ -37,6 +37,12 @@ public:
         ArrayTexture& arr,
         uint32_t layer) = 0;
 
+    virtual void updateSingle() {}
+
+    virtual void updateArray(
+        ArrayTexture& arr,
+        uint32_t layer) {}
+
     int resolveMixMapLevels();
 
     int getWidth() const noexcept

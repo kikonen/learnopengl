@@ -33,7 +33,13 @@ public:
         ArrayTexture& arr,
         uint32_t layer) override;
 
-    void prepareMipMaps();
+    uint64_t registerTexture(
+        const util::Ref<Texture>& texture);
+
+    void updateTexture(
+        const util::Ref<Texture>& texture);
+
+    void updateMipMaps();
 
     // @return layer index
     uint32_t allocateLayer();
@@ -57,9 +63,6 @@ public:
     {
         return m_is16Bit;
     }
-
-    uint64_t registerTexture(
-        const util::Ref<Texture>& texture);
 
 private:
     const int m_uniformId;

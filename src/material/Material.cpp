@@ -626,7 +626,7 @@ void Material::fillSSBOBindless(
 
         .u_custom1Map = getTexHandle(material::TextureType::map_custom_1, 0),
 
-        .u_fontHAtlas = getTexHandle(material::TextureType::map_font_atlas, 0),
+        .u_fontAtlas = getTexHandle(material::TextureType::map_font_atlas, 0),
     };
     cold = {
         .u_reflection = reflection,
@@ -690,7 +690,7 @@ void Material::fillSSBOArray(
 
         .u_custom1Map = getTexHandle(material::TextureType::map_custom_1, 0),
 
-        .u_fontHAtlas = m_fontAtlasTex,
+        .u_fontAtlas = getTexHandle(material::TextureType::map_font_atlas, 0),
     };
     cold = {
         .u_reflection = reflection,

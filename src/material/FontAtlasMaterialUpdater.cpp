@@ -45,9 +45,9 @@ void FontAtlasMaterialUpdater::render(
     if (changed || !m_handle) {
         m_fontId = dbg.m_showFontId;
 
-        auto* fontAtlas = text::FontRegistry::get().getFontAtlas(m_fontId);
+        auto* fontAtlas = text::FontRegistry::get().getFontAtlas(m_fontId).get();
         if (!fontAtlas || !fontAtlas->valid()) {
-            fontAtlas = text::FontRegistry::get().getDefaultFontAtlas();
+            fontAtlas = text::FontRegistry::get().getDefaultFontAtlas().get();
         }
 
         auto handle = fontAtlas ? fontAtlas->getTextureHandle() : 0;

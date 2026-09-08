@@ -6,7 +6,7 @@
 #include "shader/Shader.h"
 #include "shader/ProgramRegistry.h"
 
-#include "material/PlainTexture.h"
+#include "material/RawTexture.h"
 
 #include "pool/NodeHandle.h"
 #include "ki/sid.h"
@@ -94,11 +94,16 @@ void TestSceneSetup::setupViewport1()
     material::TextureSpec spec;
 
     // NOTE KI memory_leak
-    auto texture = new PlainTexture("checkerboard", false, false, material::TextureType::diffuse, spec, 1, 1);
+    const auto texture = util::Ref<RawTexture>::create(
+        "checkerboard",
+        false, false,
+        material::TextureType::diffuse,
+        spec,
+        1, 1);
     texture->prepareSingle();
 
     unsigned int color = 0x90ff2020;
-    texture->setData(&color, sizeof(unsigned int));
+    texture->setData(&color, sizeof(unsigned int), GL_UNSIGNED_BYTE);
 
     auto viewport = util::Ref<model::Viewport>::create(
         "Viewport-1",

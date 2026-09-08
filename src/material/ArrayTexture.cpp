@@ -187,7 +187,7 @@ void ArrayTexture::prepareArray(
     // NOTE KI array cannot be in array
 }
 
-void ArrayTexture::prepareMipMaps()
+void ArrayTexture::updateMipMaps()
 {
     if (m_spec.maxMipMapLevels > 1) {
         glGenerateTextureMipmap(m_textureID);
@@ -218,7 +218,27 @@ uint64_t ArrayTexture::registerTexture(
 
     m_registeredTextures.push_back(texture);
 
-    prepareMipMaps();
+    updateMipMaps();
 
     return layer;
+}
+
+void ArrayTexture::updateTexture(
+    const util::Ref<Texture>& texture)
+{
+    const auto& it = std::find_if(
+        m_registeredTextures.begin(),
+        m_registeredTextures.end(),
+        [&texture](const auto& tex) {
+        return tex.get() == texture.get();
+    });
+
+    if (it == m_registeredTextures.end())
+        return;
+
+    auto layer = static_cast<int>(texture->getHandle());
+
+    texture->updateArray(*this, layer);
+
+    updateMipMaps();
 }

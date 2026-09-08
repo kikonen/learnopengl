@@ -27,6 +27,8 @@ ResolvedMaterial material;
 void main() {
   const uint materialIndex = fs_in.materialIndex;
 
+  float texScale = 1.0;
+
   vec2 texCoord = fs_in.texCoord;
   #include "include/apply_parallax.glsl"
 
@@ -42,7 +44,7 @@ void main() {
 
   float d = texture(
     u_texturesFontAtlas,
-    vec3(texCoord * 8.0, float(fontAtlasLayer))).r;
+    vec3(texCoord * texScale, float(fontAtlasLayer))).r;
 #endif
 
   // if (d < 0.1) {

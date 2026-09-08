@@ -15,10 +15,17 @@
 
 #include "shader/Shader.h"
 
+#include "material/TextureSpec.h"
+#include "material/RawTexture.h"
+#include "material/ArrayTexture.h"
+#include "material/TextureRegistry.h"
+
 #include "AtlasHandle.h"
 #include "FontHandle.h"
 
 namespace {
+    const uint32_t FONT_ATLAS_SIZE{ 1024 };
+
     const glm::vec3 BLACK{ 0.f };
 
     const std::string DEFAULT_FONT{ "fonts/Vera.ttf" };
@@ -69,7 +76,6 @@ namespace text
         m_padding = o.m_padding;
         m_rasterSize = o.m_rasterSize;
         m_atlasSize = o.m_atlasSize;
-        m_mipLevels = o.m_mipLevels;
         m_texture = std::move(o.m_texture);
         m_atlasHandle = std::move(o.m_atlasHandle);
         m_fontHandle = std::move(o.m_fontHandle);
@@ -86,7 +92,6 @@ namespace text
         m_padding{ o.m_padding },
         m_rasterSize{ o.m_rasterSize },
         m_atlasSize{ o.m_atlasSize },
-        m_mipLevels{ o.m_mipLevels },
         m_texture{ std::move(o.m_texture) },
         m_atlasHandle{ std::move(o.m_atlasHandle) },
         m_fontHandle{ std::move(o.m_fontHandle) }
@@ -106,7 +111,12 @@ namespace text
 
     bool FontAtlas::valid() const
     {
-        return m_fontHandle && m_fontHandle->valid();
+        return m_texture && m_texture->getHandle() > 0;
+    }
+
+    GLuint64 FontAtlas::getTextureHandle() const noexcept
+    {
+        return m_texture ? m_texture->getHandle() : 0;
     }
 
     void FontAtlas::prepare()
@@ -125,6 +135,9 @@ namespace text
         m_padding = static_cast<int>(m_rasterSize);
         m_atlasSize = resolveAtlasSize(m_rasterSize, static_cast<float>(m_padding));
 
+        // TODO KI need to derive this from shared place
+        m_atlasSize = glm::uvec2{ FONT_ATLAS_SIZE };
+
         {
             m_atlasHandle = std::make_unique<AtlasHandle>();
             m_atlasHandle->create(m_atlasSize.x, m_atlasSize.y, ATLAS_DEPTH);
@@ -140,142 +153,54 @@ namespace text
 
         if (!m_fontHandle->valid()) return;
 
-        if (assets.drawUseArrayTexture) {
-            registerArray();
-        }
-        else {
-            registerSingle();
-        }
+        registerTexture();
     }
 
-    void FontAtlas::registerSingle()
+    void FontAtlas::registerTexture()
     {
-        const GLsizei w = static_cast<GLsizei>(m_atlasHandle->m_atlas->width);
-        const GLsizei h = static_cast<GLsizei>(m_atlasHandle->m_atlas->height);
+        const GLsizei width = static_cast<GLsizei>(m_atlasHandle->m_atlas->width);
+        const GLsizei height = static_cast<GLsizei>(m_atlasHandle->m_atlas->height);
 
-        m_texture.create(fmt::format("{}_font_atlas", m_name), GL_TEXTURE_2D, w, h);
-        m_atlasHandle->m_atlas->id = m_texture.m_textureID;
-        const auto texId = m_texture.m_textureID;
+        material::TextureSpec spec{
+            .wrap = material::WrapMode::clamp_to_edge,
+            .minFilter = material::TextureFilter::linear_mipmap_linear,
+            .magFilter = material::TextureFilter::linear,
+        };
 
-        GLenum internalFormat;
-        GLenum format;
+        m_texture = util::Ref<RawTexture>::create(
+            m_name,
+            false,
+            false,
+            material::TextureType::map_font_atlas,
+            spec,
+            width,
+            height
+        );
 
-        switch (ATLAS_DEPTH) {
-        case 1:
-            internalFormat = GL_R8;
-            format = GL_RED;
-            break;
-        case 3:
-            internalFormat = GL_RGB8;
-            format = GL_RGB;
-            break;
-        }
+        m_texture->setData(
+            m_atlasHandle->m_atlas->data,
+            width * height,
+            GL_UNSIGNED_BYTE
+        );
 
-        // Mipmaps let minified / distant text sample coarser SDF levels
-        // instead of shimmering. Distance fields downsample cleanly under
-        // averaging (unlike alpha coverage), so a plain mip chain works;
-        // capped to keep coarse-level bleed within the glyph padding gutter.
-        m_mipLevels = std::clamp(
-            1 + static_cast<int>(std::floor(std::log2(static_cast<float>(std::max(w, h))))),
-            1,
-            MAX_MIP_LEVELS);
-
-        glTextureParameteri(texId, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-        glTextureParameteri(texId, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-        glTextureParameteri(texId, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-        glTextureParameteri(texId, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-        glTextureParameterfv(texId, GL_TEXTURE_BORDER_COLOR, glm::value_ptr(BLACK));
-
-        glTextureStorage2D(texId, m_mipLevels, internalFormat, w, h);
-        glTextureSubImage2D(texId, 0, 0, 0, w, h, format, GL_UNSIGNED_BYTE, m_atlasHandle->m_atlas->data);
-        if (m_mipLevels > 1) {
-            glGenerateTextureMipmap(texId);
-        }
-
-        m_textureHandle = glGetTextureHandleARB(m_texture);
-        glMakeTextureHandleResidentARB(m_textureHandle);
+        TextureRegistry::get().registerTexture(m_texture);
 
         m_usedAtlasSize = m_atlasHandle->m_atlas->used;
     }
 
-    void FontAtlas::registerArray()
-    {
-        //TextureReegistry::get().registerTexture();
-    }
-
     void FontAtlas::update()
     {
-        const auto& assets = Assets::get();
-
-        if (assets.drawUseArrayTexture) {
-            updateArray();
-        }
-        else {
-            updateSingle();
-        }
+        updateTexture();
     }
 
-    void FontAtlas::updateSingle()
+    void FontAtlas::updateTexture()
     {
         if (!valid()) return;
 
         size_t currentAtlasSize = m_atlasHandle->m_atlas->used;
         if (m_usedAtlasSize == currentAtlasSize) return;
 
-        const GLsizei w = static_cast<GLsizei>(m_atlasHandle->m_atlas->width);
-        const GLsizei h = static_cast<GLsizei>(m_atlasHandle->m_atlas->height);
-
-        glTextureSubImage2D(
-            m_texture.m_textureID,
-            0,
-            0, 0, w, h,
-            GL_RED,
-            GL_UNSIGNED_BYTE,
-            m_atlasHandle->m_atlas->data);
-
-        // newly rasterized glyphs changed level 0 -> refresh the mip chain
-        if (m_mipLevels > 1) {
-            glGenerateTextureMipmap(m_texture.m_textureID);
-        }
-
-        m_usedAtlasSize = currentAtlasSize;
-    }
-
-    void FontAtlas::updateArray()
-    {
-        if (!valid()) return;
-
-        size_t currentAtlasSize = m_atlasHandle->m_atlas->used;
-        if (m_usedAtlasSize == currentAtlasSize) return;
-
-        const GLsizei w = static_cast<GLsizei>(m_atlasHandle->m_atlas->width);
-        const GLsizei h = static_cast<GLsizei>(m_atlasHandle->m_atlas->height);
-
-        // Fetch the global unified hardware ID from your assigned ArrayTexture pool
-        //GLuint arrayTextureID = m_texture.getTextureID();
-        GLuint arrayTextureID = 0;
-
-        // Fetch the assigned layer index slot where this specific font atlas texture lives
-        //GLint layerSlot = static_cast<GLint>(m_texture.getLayerIndex());
-        GLint layerSlot = 0;
-
-        // Update strictly the base level (Level 0) of the targeted layer slice.
-        // We replace glTextureSubImage2D with glTextureSubImage3D cleanly!
-        glTextureSubImage3D(
-            arrayTextureID,
-            0,                                   // Target Mipmap Level 0
-            0, 0, layerSlot,                     // xoffset, yoffset, zoffset (The assigned Layer Slot Index!)
-            w, h, 1,                             // width, height, layer depth slice count (strictly 1 asset slice)
-            GL_RED,                              // Input host RAM buffer format (Font atlases are raw Grayscale bytes)
-            GL_UNSIGNED_BYTE,                    // Input host RAM data type size marker
-            m_atlasHandle->m_atlas->data         // Hard raw memory buffer pointer address
-        );
-
-        // Newly rasterized glyphs changed level 0 -> refresh the mip chain for the whole array
-        // Note: OpenGL mip generation always processes all active allocated layer slices at once!
-        if (m_mipLevels > 1) {
-            glGenerateTextureMipmap(arrayTextureID);
-        }
+        TextureRegistry::get().updateTexture(m_texture);
 
         m_usedAtlasSize = currentAtlasSize;
     }

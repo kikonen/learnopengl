@@ -16,6 +16,8 @@
 namespace
 {
     static TextureRegistry* s_registry{ nullptr };
+
+    const util::Ref<ArrayTexture> NULL_TEXTURE;
 }
 
 void TextureRegistry::init() noexcept
@@ -82,6 +84,15 @@ void TextureRegistry::bindBuffers()
         }
     }
 }
+const util::Ref<ArrayTexture>& TextureRegistry::findArrayTexture(
+    material::TextureType type)
+{
+    const auto& it = m_mapping.find(type);
+    if (it == m_mapping.end())
+        return NULL_TEXTURE;
+
+    return m_arrayTextures[it->second];
+}
 
 // @return array ID
 uint32_t TextureRegistry::addArrayTexture(const material::ArrayTextureInfo& info)
@@ -134,7 +145,7 @@ uint32_t TextureRegistry::addArrayTexture(const material::ArrayTextureInfo& info
             arr->registerTexture(px);
         }
 
-        arr->prepareMipMaps();
+        arr->updateMipMaps();
     }
 
     return index;
@@ -164,5 +175,27 @@ uint64_t TextureRegistry::registerTexture(
         texture->prepareSingle();
         texture->prepareHandle();
         return texture->m_handle;
+    }
+}
+
+void TextureRegistry::updateTexture(
+    const util::Ref<Texture>& texture)
+{
+    if (!texture) return;
+    if (texture->getHandle() == 0) return;
+
+    const auto& assets = Assets::get();
+
+    if (assets.drawUseArrayTexture) {
+        const auto& it = m_mapping.find(texture->m_type);
+        if (it == m_mapping.end())
+            return;
+
+        util::Ref<ArrayTexture> arr = m_arrayTextures[it->second];
+        arr->updateTexture(texture);
+    }
+    else {
+        texture->updateSingle();
+        texture->m_handle;
     }
 }
