@@ -1,6 +1,8 @@
 #include "ProgramRegistry.h"
 
-#include "fmt/format.h"
+#include <fmt/format.h>
+
+#include "asset/Assets.h"
 
 #include "engine/UpdateContext.h"
 
@@ -142,7 +144,13 @@ ki::program_id ProgramRegistry::getProgram(
 {
     std::lock_guard lock(m_programs_lock);
 
+    const auto& assets = Assets::get();
+
     std::string key{ name };
+
+    if (assets.drawUseArrayTexture) {
+        key += "ARR";
+    }
 
     if (compute) {
         key += "_CS_";
