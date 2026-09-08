@@ -34,6 +34,16 @@ public:
 
     virtual GLuint64 getTexHandle(material::TextureType type) const noexcept override;
 
+    void prepareTexture();
+    void updateTexture();
+
+private:
+    void prepareSingle();
+    void prepareArray();
+
+    void updateSingle();
+    void updateArray();
+
 public:
     glm::ivec2 m_size;
     float m_updateSpeed{ 0.f };

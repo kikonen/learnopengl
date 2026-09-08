@@ -60,7 +60,7 @@ void ShaderMaterialUpdater::prepareRT(
             {
                 m_size.x, m_size.y,
                 {
-                    render::FrameBufferAttachment::getTextureRGBAHdr(GL_COLOR_ATTACHMENT0),
+                    render::FrameBufferAttachment::getTextureRGBA(GL_COLOR_ATTACHMENT0),
                     //render::FrameBufferAttachment::getDepthStencilRbo(),
                 }
             });
@@ -71,24 +71,62 @@ void ShaderMaterialUpdater::prepareRT(
         //m_buffer->m_spec.attachments[0].clearColor = glm::vec4(0, 1, 0, 1);
     }
 
-    {
-        // MaterialRegistry::get().registerMaterial(*m_material);
+    prepareTexture();
+}
 
-        glGenSamplers(1, &m_samplerId);
-
-        auto& spec = m_material->defaultTextureSpec;
-        glSamplerParameteri(m_samplerId, GL_TEXTURE_WRAP_S, spec.asWrapS());
-        glSamplerParameteri(m_samplerId, GL_TEXTURE_WRAP_T, spec.asWrapT());
-
-        // https://community.khronos.org/t/gl-nearest-mipmap-linear-or-gl-linear-mipmap-nearest/37648/5
-        // https://stackoverflow.com/questions/12363463/when-should-i-set-gl-texture-min-filter-and-gl-texture-mag-filter
-        //glSamplerParameteri(m_samplerId, GL_TEXTURE_MIN_FILTER, spec.asMinFilter());
-        //glSamplerParameteri(m_samplerId, GL_TEXTURE_MAG_FILTER, spec.asMagFilter());
-
-        // https://stackoverflow.com/questions/42886835/modifying-parameters-of-bindless-resident-textures
-        m_handle = glGetTextureSamplerHandleARB(m_buffer->m_spec.attachments[0].textureID, m_samplerId);
-        glMakeTextureHandleResidentARB(m_handle);
+void ShaderMaterialUpdater::prepareTexture()
+{
+    const auto& assets = Assets::get();
+    if (assets.drawUseArrayTexture) {
+        prepareSingle();
     }
+    else {
+        prepareArray();
+    }
+}
+
+void ShaderMaterialUpdater::prepareSingle()
+{
+    // MaterialRegistry::get().registerMaterial(*m_material);
+
+    glGenSamplers(1, &m_samplerId);
+
+    auto& spec = m_material->defaultTextureSpec;
+    glSamplerParameteri(m_samplerId, GL_TEXTURE_WRAP_S, spec.asWrapS());
+    glSamplerParameteri(m_samplerId, GL_TEXTURE_WRAP_T, spec.asWrapT());
+
+    // https://community.khronos.org/t/gl-nearest-mipmap-linear-or-gl-linear-mipmap-nearest/37648/5
+    // https://stackoverflow.com/questions/12363463/when-should-i-set-gl-texture-min-filter-and-gl-texture-mag-filter
+    //glSamplerParameteri(m_samplerId, GL_TEXTURE_MIN_FILTER, spec.asMinFilter());
+    //glSamplerParameteri(m_samplerId, GL_TEXTURE_MAG_FILTER, spec.asMagFilter());
+
+    // https://stackoverflow.com/questions/42886835/modifying-parameters-of-bindless-resident-textures
+    m_handle = glGetTextureSamplerHandleARB(m_buffer->m_spec.attachments[0].textureID, m_samplerId);
+    glMakeTextureHandleResidentARB(m_handle);
+}
+
+void ShaderMaterialUpdater::prepareArray()
+{
+}
+
+void ShaderMaterialUpdater::updateTexture()
+{
+    const auto& assets = Assets::get();
+    if (assets.drawUseArrayTexture) {
+        updateSingle();
+    }
+    else {
+        updateArray();
+    }
+}
+
+void ShaderMaterialUpdater::updateSingle()
+{
+}
+
+void ShaderMaterialUpdater::updateArray()
+{
+    // TODO KI copy frameuffer
 }
 
 void ShaderMaterialUpdater::render(
@@ -124,7 +162,8 @@ void ShaderMaterialUpdater::render(
         render::TextureQuad::get().draw();
     }
 
-    //glMemoryBarrier(GL_TEXTURE_FETCH_BARRIER_BIT | GL_FRAMEBUFFER_BARRIER_BIT);
+    glMemoryBarrier(GL_TEXTURE_FETCH_BARRIER_BIT | GL_FRAMEBUFFER_BARRIER_BIT);
+    updateTexture();
     glFlush();
 
     setNeedUpdate(true);
