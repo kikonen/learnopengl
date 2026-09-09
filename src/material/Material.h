@@ -268,6 +268,8 @@ public:
     bool m_invertMetalness : 1{ false };
     bool m_invertRoughness : 1{ false };
 
+    float m_dynamicRatio{ 0.f };
+
     // NOTE KI treat material tilingX/Y as "tiles per world unit":
     // final tiling is multiplied by entity world scale in the vertex shader.
     // Only valid for tileable materials on tileable geometry (planes/quads).

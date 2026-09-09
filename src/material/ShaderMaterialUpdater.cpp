@@ -48,6 +48,8 @@ void ShaderMaterialUpdater::prepareRT(
 
     if (!m_material) return;
 
+    m_size = { 512, 512 };
+
     auto programId = m_material->getProgram(material::ProgramType::shader);
     if (!programId) return;
 
@@ -79,7 +81,7 @@ void ShaderMaterialUpdater::prepareTexture()
         fmt::format("fbo_{}", m_name),
         false,
         true,
-        material::TextureType::diffuse,
+        material::TextureType::dynamic,
         material::TextureSpec {
             .wrap = material::WrapMode::repeat,
             .minFilter = material::TextureFilter::linear_mipmap_nearest,
@@ -140,7 +142,7 @@ void ShaderMaterialUpdater::render(
 
 GLuint64 ShaderMaterialUpdater::getTexHandle(material::TextureType type) const noexcept
 {
-    if (type == material::TextureType::diffuse) {
+    if (type == material::TextureType::dynamic) {
         return m_texture->getHandle();
     }
     return 0;

@@ -303,6 +303,8 @@ Material& Material::operator=(const Material& o)
     m_invertMetalness = o.m_invertMetalness;
     m_invertRoughness = o.m_invertRoughness;
 
+    m_dynamicRatio = o.m_dynamicRatio;
+
     m_scaleTiling = o.m_scaleTiling;
 
     pointSize = o.pointSize;
@@ -615,6 +617,7 @@ void Material::fillSSBOBindless(
         .u_tilingY = tilingY,
 
         .u_parallaxDepth = parallaxDepth,
+        .u_dynamicRatio = m_dynamicRatio,
     };
 
     custom = {
@@ -627,6 +630,8 @@ void Material::fillSSBOBindless(
         .u_custom1Map = getTexHandle(material::TextureType::map_custom_1, 0),
 
         .u_fontAtlas = getTexHandle(material::TextureType::map_font_atlas, 0),
+
+        .u_dynamic = getTexHandle(material::TextureType::dynamic, whitePx),
     };
     cold = {
         .u_reflection = reflection,
@@ -679,6 +684,7 @@ void Material::fillSSBOArray(
         .u_tilingY = tilingY,
 
         .u_parallaxDepth = parallaxDepth,
+        .u_dynamicRatio = m_dynamicRatio,
     };
 
     custom = {
@@ -691,6 +697,8 @@ void Material::fillSSBOArray(
         .u_custom1Map = getTexHandle(material::TextureType::map_custom_1, 0),
 
         .u_fontAtlas = getTexHandle(material::TextureType::map_font_atlas, 0),
+
+        .u_dynamic = getTexHandle(material::TextureType::dynamic, whiteLayer),
     };
     cold = {
         .u_reflection = reflection,

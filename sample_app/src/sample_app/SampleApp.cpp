@@ -321,6 +321,24 @@ void SampleApp::setupTextures()
         }
         });
 
+    const auto dynamicIndex = textureRegistry.addArrayTexture({
+        "dynamic",
+        UNIFORM_TEXTURE_ARRAY_DYNAMIC,
+        4,
+        512,
+        16,
+        false,
+        false,
+        true,
+        false,
+        {
+            .wrap = material::WrapMode::repeat,
+            .minFilter = material::TextureFilter::linear_mipmap_nearest,
+            .magFilter = material::TextureFilter::linear,
+            .maxMipMapLevels = 1,
+        }
+        });
+
     textureRegistry.bindTextureType(material::TextureType::diffuse, srgbIndex);
     textureRegistry.bindTextureType(material::TextureType::emission, srgbIndex);
     textureRegistry.bindTextureType(material::TextureType::map_custom_1, srgbIndex);
@@ -336,6 +354,8 @@ void SampleApp::setupTextures()
 
     textureRegistry.bindTextureType(material::TextureType::map_height, heightIndex);
     textureRegistry.bindTextureType(material::TextureType::map_font_atlas, fontAtlasIndex);
+
+    textureRegistry.bindTextureType(material::TextureType::dynamic, dynamicIndex);
 }
 
 void SampleApp::onUpdate(const UpdateContext& ctx)

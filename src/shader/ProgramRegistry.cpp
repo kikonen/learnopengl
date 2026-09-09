@@ -149,7 +149,7 @@ ki::program_id ProgramRegistry::getProgram(
     std::string key{ name };
 
     if (assets.drawUseArrayTexture) {
-        key += "ARR";
+        key += "_ARR";
     }
 
     if (compute) {

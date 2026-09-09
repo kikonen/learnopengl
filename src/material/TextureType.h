@@ -40,5 +40,6 @@ namespace material
         map_displacement,
         map_height,
         map_font_atlas,
+        dynamic,
     };
 }

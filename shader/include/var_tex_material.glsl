@@ -105,6 +105,23 @@
   // ==========================================
 
 #ifndef _ALPHA_RESOLVED
+#ifdef USE_DYNAMIC_TEXTURE
+  {
+    const int diffuseLayer = int(u_materials[i].diffuseTex.x);
+    const int dynamicLayer = int(readMaterial_dynamicTex(i).x);
+
+    vec4 staticTexel  = texture(
+      u_texturesSRGB,
+      vec3(texCoord, float(diffuseLayer)));
+
+    vec4 dynamicTexel = texture(
+      u_texturesDynamic,
+      vec3(texCoord, float(dynamicLayer)));
+
+    float mixRatio = u_materials[materialIndex].dynamicRatio;
+    material.diffuseTexel = mix(staticTexel, dynamicTexel, mixRatio);
+  }
+#else
   {
     const int diffuseLayer = int(u_materials[i].diffuseTex.x);
 
@@ -113,6 +130,7 @@
       u_texturesSRGB,
       vec3(texCoord, float(diffuseLayer)));
   }
+#endif
 
   #ifdef USE_ALPHA
     // Evaluate alpha utilizing baked diffuse texture component data

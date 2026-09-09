@@ -368,6 +368,10 @@ namespace loader {
                 material.parallaxDepth = readFloat(v);
                 fields.parallaxDepth = true;
             }
+            else if (k == "dynamic_ratio") {
+                material.m_dynamicRatio = readFloat(v);
+                fields.dynamicRatio = true;
+            }
             else if (k == "texture_spec") {
                 material.defaultTextureSpec = loadTextureSpec(v);
                 fields.defaultTextureSpec = true;
@@ -644,6 +648,8 @@ namespace loader {
         if (f.layers) m.layers = mod.layers;
         if (f.layersDepth) m.layersDepth = mod.layersDepth;
         if (f.parallaxDepth) m.parallaxDepth = mod.parallaxDepth;
+
+        if (f.dynamicRatio) m.m_dynamicRatio = mod.m_dynamicRatio;
 
         if (f.mras) m.mras = mod.mras;
 

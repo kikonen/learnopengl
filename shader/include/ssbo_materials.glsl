@@ -34,3 +34,4 @@ uvec2 readMaterial_noiseMapTex(uint i)     { return u_materialsCustom[i].noiseMa
 uvec2 readMaterial_noise2MapTex(uint i)     { return u_materialsCustom[i].noise2MapTex; }
 uvec2 readMaterial_custom1Tex(uint i)     { return u_materialsCustom[i].custom1Tex; }
 uvec2 readMaterial_fontAtlasTex(uint i)     { return u_materialsCustom[i].fontAtlasTex; }
+uvec2 readMaterial_dynamicTex(uint i)     { return u_materialsCustom[i].dynamicTex; }

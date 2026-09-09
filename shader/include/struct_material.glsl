@@ -32,8 +32,10 @@ struct MaterialMain {
 
   float parallaxDepth;
 
+  float dynamicRatio;
+
   int pad3_1;
-  int pad3_2;
+  // int pad3_2;
   // int pad3_3;
 };
 
@@ -46,6 +48,8 @@ struct MaterialCustom {
   uvec2 custom1Tex;
 
   uvec2 fontAtlasTex;
+
+  uvec2 dynamicTex;
 
   // int pad3_1;
   // int pad3_2;

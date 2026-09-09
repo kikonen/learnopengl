@@ -39,6 +39,8 @@ namespace loader {
         bool layersDepth : 1 { false };
         bool parallaxDepth : 1 { false };
 
+        bool dynamicRatio : 1 { false };
+
         bool mras : 1 { false };
         bool invertOcclusion : 1 { false };
         bool invertMetalness : 1 { false };

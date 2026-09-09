@@ -91,8 +91,10 @@ struct MaterialMainSSBO {
 
     float u_parallaxDepth;
 
+    float u_dynamicRatio;
+
     int pad3_1;
-    int pad3_2;
+    //int pad3_2;
     //int pad3_3;
 };
 
@@ -106,6 +108,8 @@ struct MaterialCustomSSBO{
     GLuint64 u_custom1Map;
 
     GLuint64 u_fontAtlas;
+
+    GLuint64 u_dynamic;
 
     //int pad3_1;
     //int pad3_2;

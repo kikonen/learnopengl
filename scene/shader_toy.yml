@@ -34,6 +34,9 @@ types:
         alpha: true
         render_back: true
         updater_id: shader_toy_3
+        dynamic_ratio: 1
+        shared_definitions:
+          USE_DYNAMIC_TEXTURE: 1
     physics:
       xupdate: true
       body:
@@ -59,6 +62,9 @@ types:
         alpha: true
         render_back: true
         updater_id: shader_toy_3
+        dynamic_ratio: 0.8
+        shared_definitions:
+          USE_DYNAMIC_TEXTURE: 1
     physics:
       xupdate: true
       body:
@@ -85,6 +91,9 @@ types:
         alpha: true
         render_back: true
         updater_id: shader_toy_3
+        dynamic_ratio: 0.8
+        shared_definitions:
+          USE_DYNAMIC_TEXTURE: 1
       base_rot: [0, 0, 0]
     physics:
       xupdate: true
@@ -123,6 +132,10 @@ types:
     mesh:
       material:
         render_back: true
+        updater_id: shader_toy_3
+        dynamic_ratio: 0.2
+        shared_definitions:
+          USE_DYNAMIC_TEXTURE: 1
     physics:
       geom:
         type: plane
