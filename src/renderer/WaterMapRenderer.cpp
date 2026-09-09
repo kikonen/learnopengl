@@ -105,11 +105,11 @@ void WaterMapRenderer::prepareRT(
             ProgramRegistry::get().getProgram(SHADER_VIEWPORT));
 
         m_reflectionDebugViewport->setBindBefore([this](model::Viewport& vp) {
-            auto& buffer = m_reflectionBuffers[m_prevIndex];
+            auto& fbo = m_reflectionFrameBuffers[m_prevIndex];
             vp.setTexture(
-                buffer->m_spec.attachments[0].textureID,
-                buffer->m_spec.getSize());
-            vp.setSourceFrameBuffer(buffer.get());
+                fbo->m_spec.attachments[0].textureID,
+                fbo->m_spec.getSize());
+            vp.setSourceFrameBuffer(fbo);
             });
 
         m_reflectionDebugViewport->prepareRT();
@@ -126,11 +126,11 @@ void WaterMapRenderer::prepareRT(
             ProgramRegistry::get().getProgram(SHADER_VIEWPORT));
 
         m_refractionDebugViewport->setBindBefore([this](model::Viewport& vp) {
-            auto& buffer = m_refractionBuffers[m_prevIndex];
+            auto& fbo = m_refractionFrameBuffers[m_prevIndex];
             vp.setTexture(
-                buffer->m_spec.attachments[0].textureID,
-                buffer->m_spec.getSize());
-            vp.setSourceFrameBuffer(buffer.get());
+                fbo->m_spec.attachments[0].textureID,
+                fbo->m_spec.getSize());
+            vp.setSourceFrameBuffer(fbo);
             });
 
         m_refractionDebugViewport->prepareRT();
@@ -217,7 +217,7 @@ void WaterMapRenderer::updateReflectionView(const UpdateViewContext& ctx)
         m_reflectionHeight = h;
     }
 
-    m_reflectionBuffers.clear();
+    m_reflectionFrameBuffers.clear();
 
     auto albedo = render::FrameBufferAttachment::getTextureRGBHdr();
     albedo.minFilter = GL_LINEAR;
@@ -234,13 +234,13 @@ void WaterMapRenderer::updateReflectionView(const UpdateViewContext& ctx)
                 }
             };
 
-            m_reflectionBuffers.push_back(util::Ref<render::FrameBuffer>::create(
+            m_reflectionFrameBuffers.push_back(util::Ref<render::FrameBuffer>::create(
                 fmt::format("{}_reflect_{}x{}_{}", m_name, w, h, i),
                 spec));
         }
     }
 
-    for (auto& buf : m_reflectionBuffers) {
+    for (auto& buf : m_reflectionFrameBuffers) {
         buf->prepare();
     }
 }
@@ -272,7 +272,7 @@ void WaterMapRenderer::updateRefractionView(const UpdateViewContext& ctx)
         m_refractionHeight = h;
     }
 
-    m_refractionBuffers.clear();
+    m_refractionFrameBuffers.clear();
 
     auto albedo = render::FrameBufferAttachment::getTextureRGBHdr();
     albedo.minFilter = GL_LINEAR;
@@ -289,13 +289,13 @@ void WaterMapRenderer::updateRefractionView(const UpdateViewContext& ctx)
                 }
             };
 
-            m_refractionBuffers.push_back(util::Ref<render::FrameBuffer>::create(
+            m_refractionFrameBuffers.push_back(util::Ref<render::FrameBuffer>::create(
                 fmt::format("{}_refract_{}x{}_{}", m_name, w, h, i),
                 spec));
         }
     }
 
-    for (auto& buf : m_refractionBuffers) {
+    for (auto& buf : m_refractionFrameBuffers) {
         buf->prepare();
     }
 }
@@ -304,8 +304,8 @@ void WaterMapRenderer::bindTexture(kigl::GLState& state)
 {
     //if (!m_rendered) return;
 
-    auto& refractionBuffer = m_refractionBuffers[m_prevIndex];
-    auto& reflectionBuffer = m_reflectionBuffers[m_prevIndex];
+    auto& refractionBuffer = m_refractionFrameBuffers[m_prevIndex];
+    auto& reflectionBuffer = m_reflectionFrameBuffers[m_prevIndex];
 
     if (!isEnabled()) {
         reflectionBuffer->unbindTexture(state, UNIT_WATER_REFLECTION);
@@ -371,7 +371,7 @@ bool WaterMapRenderer::render(
             camera.setFov(parentCameraFov);
         }
 
-        auto& reflectionBuffer = m_reflectionBuffers[m_currIndex];
+        auto& reflectionBuffer = m_reflectionFrameBuffers[m_currIndex];
 
         render::RenderContext localCtx(
             "WATER_REFLECT",
@@ -416,7 +416,7 @@ bool WaterMapRenderer::render(
             camera.setFov(parentCameraFov);
         }
 
-        auto& refractionBuffer = m_refractionBuffers[m_currIndex];
+        auto& refractionBuffer = m_refractionFrameBuffers[m_currIndex];
 
         render::RenderContext localCtx(
             "WATER_REFRACT",

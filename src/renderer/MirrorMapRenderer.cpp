@@ -111,11 +111,11 @@ void MirrorMapRenderer::prepareRT(
             ProgramRegistry::get().getProgram(SHADER_VIEWPORT));
 
         m_reflectionDebugViewport->setBindBefore([this](model::Viewport& vp) {
-            auto& buffer = m_reflectionBuffers[m_prevIndex];
+            auto& fbo = m_reflectionFrameBuffers[m_prevIndex];
             vp.setTexture(
-                buffer->m_spec.attachments[0].textureID,
-                buffer->m_spec.getSize());
-            vp.setSourceFrameBuffer(buffer.get());
+                fbo->m_spec.attachments[0].textureID,
+                fbo->m_spec.getSize());
+            vp.setSourceFrameBuffer(fbo);
             });
 
         m_reflectionDebugViewport->prepareRT();
@@ -193,13 +193,13 @@ void MirrorMapRenderer::updateView(const UpdateViewContext& parentCtx)
                 }
             };
 
-            m_reflectionBuffers.push_back(util::Ref<render::FrameBuffer>::create(
+            m_reflectionFrameBuffers.push_back(util::Ref<render::FrameBuffer>::create(
                 fmt::format("{}_reflect_{}x{}_{}", m_name, w, h, i),
                 spec));
         }
     }
 
-    for (auto& buf : m_reflectionBuffers) {
+    for (auto& buf : m_reflectionFrameBuffers) {
         buf->prepare();
     }
 
@@ -222,7 +222,7 @@ void MirrorMapRenderer::updateView(const UpdateViewContext& parentCtx)
 
 void MirrorMapRenderer::bindTexture(kigl::GLState& state)
 {
-    auto& reflectionBuffer = m_reflectionBuffers[m_prevIndex];
+    auto& reflectionBuffer = m_reflectionFrameBuffers[m_prevIndex];
 
     if (!isEnabled()) {
         reflectionBuffer->unbindTexture(state, UNIT_MIRROR_REFLECTION);
@@ -302,7 +302,7 @@ bool MirrorMapRenderer::render(
             nearPlane = dist + m_nearPlane;
         }
 
-        auto& reflectionBuffer = m_reflectionBuffers[m_currIndex];
+        auto& reflectionBuffer = m_reflectionFrameBuffers[m_currIndex];
 
         // NOTE KI "dist" to cut-off render at mirror plane; camera is mirrored *behind* the mirror
         render::RenderContext localCtx("MIRROR",

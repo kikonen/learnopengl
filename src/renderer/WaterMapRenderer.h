@@ -99,8 +99,8 @@ private:
     int m_prevIndex{ 0 };
 
     int m_bufferCount{ 1 };
-    std::vector<util::Ref<render::FrameBuffer>> m_reflectionBuffers;
-    std::vector<util::Ref<render::FrameBuffer>> m_refractionBuffers;
+    std::vector<util::Ref<render::FrameBuffer>> m_reflectionFrameBuffers;
+    std::vector<util::Ref<render::FrameBuffer>> m_refractionFrameBuffers;
 
     std::unique_ptr<render::NodeDraw> m_nodeDraw;
 

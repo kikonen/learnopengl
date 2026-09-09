@@ -86,7 +86,7 @@ private:
     int m_prevIndex{ 0 };
 
     int m_bufferCount{ 1 };
-    std::vector<util::Ref<render::FrameBuffer>> m_reflectionBuffers;
+    std::vector<util::Ref<render::FrameBuffer>> m_reflectionFrameBuffers;
 
     std::unique_ptr<WaterMapRenderer> m_waterMapRenderer{ nullptr };
     std::unique_ptr<MirrorMapRenderer> m_mirrorMapRenderer{ nullptr };

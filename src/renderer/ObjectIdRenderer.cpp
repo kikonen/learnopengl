@@ -157,7 +157,7 @@ void ObjectIdRenderer::updateView(const UpdateViewContext& ctx)
         m_frameBuffer->m_spec.attachments[0].textureID,
         m_frameBuffer->m_spec.getSize());
 
-    m_debugViewport->setSourceFrameBuffer(m_frameBuffer.get());
+    m_debugViewport->setSourceFrameBuffer(m_frameBuffer);
 }
 
 void ObjectIdRenderer::render(
