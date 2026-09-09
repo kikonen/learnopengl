@@ -14,6 +14,7 @@
 #include "material/MaterialUpdater.h"
 
 struct Material;
+class FrameBufferTexture;
 
 namespace render {
     class FrameBuffer;
@@ -39,13 +40,6 @@ public:
     void prepareTexture();
     void updateTexture();
 
-private:
-    void prepareSingle();
-    void prepareArray();
-
-    void updateSingle();
-    void updateArray();
-
 public:
     glm::ivec2 m_size;
     float m_updateSpeed{ 0.f };
@@ -53,9 +47,7 @@ public:
 
 private:
     util::Ref<render::FrameBuffer> m_frameBuffer{ nullptr };
-
-    GLuint64 m_handle{ 0 };
-    GLuint m_samplerId{ 0 };
+    util::Ref<FrameBufferTexture> m_texture{ nullptr };
 
     int m_frameCounter{ 0 };
 };

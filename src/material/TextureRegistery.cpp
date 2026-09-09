@@ -163,19 +163,23 @@ uint64_t TextureRegistry::registerTexture(
 
     const auto& assets = Assets::get();
 
+    uint64_t handle;
     if (assets.drawUseArrayTexture) {
         const auto& it = m_mapping.find(texture->m_type);
         if (it == m_mapping.end())
             return 0;
 
         util::Ref<ArrayTexture> arr = m_arrayTextures[it->second];
-        return arr->registerTexture(texture);
+        handle = arr->registerTexture(texture);
+        arr->updateMipMaps();
     }
     else {
         texture->prepareSingle();
         texture->prepareHandle();
-        return texture->m_handle;
+        handle = texture->m_handle;
     }
+
+    return handle;
 }
 
 void TextureRegistry::updateTexture(
@@ -193,6 +197,7 @@ void TextureRegistry::updateTexture(
 
         util::Ref<ArrayTexture> arr = m_arrayTextures[it->second];
         arr->updateTexture(texture);
+        arr->updateMipMaps();
     }
     else {
         texture->updateSingle();

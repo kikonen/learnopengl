@@ -218,8 +218,6 @@ uint64_t ArrayTexture::registerTexture(
 
     m_registeredTextures.push_back(texture);
 
-    updateMipMaps();
-
     return layer;
 }
 
@@ -239,6 +237,4 @@ void ArrayTexture::updateTexture(
     auto layer = static_cast<int>(texture->getHandle());
 
     texture->updateArray(*this, layer);
-
-    updateMipMaps();
 }

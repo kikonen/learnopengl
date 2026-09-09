@@ -19,7 +19,9 @@
 #include "render/TextureQuad.h"
 
 #include "material/Material.h"
+#include "material/FrameBufferTexture.h"
 #include "material/MaterialRegistry.h"
+#include "material/TextureRegistry.h"
 
 namespace {
     constexpr int ATT_ALBEDO_INDEX = 0;
@@ -36,9 +38,6 @@ ShaderMaterialUpdater::ShaderMaterialUpdater(
 
 ShaderMaterialUpdater::~ShaderMaterialUpdater()
 {
-    if (m_samplerId) {
-        glDeleteSamplers(1, &m_samplerId);
-    }
 }
 
 void ShaderMaterialUpdater::prepareRT(
@@ -74,57 +73,28 @@ void ShaderMaterialUpdater::prepareRT(
 
 void ShaderMaterialUpdater::prepareTexture()
 {
-    const auto& assets = Assets::get();
-    if (assets.drawUseArrayTexture) {
-        prepareSingle();
-    }
-    else {
-        prepareArray();
-    }
-}
+    constexpr int ATT_DIFFUSE_INDEX = 0;
 
-void ShaderMaterialUpdater::prepareSingle()
-{
-    // MaterialRegistry::get().registerMaterial(*m_material);
+    m_texture = util::Ref<FrameBufferTexture>::create(
+        fmt::format("fbo_{}", m_name),
+        false,
+        true,
+        material::TextureType::diffuse,
+        material::TextureSpec {
+            .wrap = material::WrapMode::repeat,
+            .minFilter = material::TextureFilter::linear_mipmap_nearest,
+            .magFilter = material::TextureFilter::linear,
+        },
+        m_frameBuffer,
+        ATT_DIFFUSE_INDEX
+    );
 
-    glGenSamplers(1, &m_samplerId);
-
-    auto& spec = m_material->defaultTextureSpec;
-    glSamplerParameteri(m_samplerId, GL_TEXTURE_WRAP_S, spec.asWrapS());
-    glSamplerParameteri(m_samplerId, GL_TEXTURE_WRAP_T, spec.asWrapT());
-
-    // https://community.khronos.org/t/gl-nearest-mipmap-linear-or-gl-linear-mipmap-nearest/37648/5
-    // https://stackoverflow.com/questions/12363463/when-should-i-set-gl-texture-min-filter-and-gl-texture-mag-filter
-    //glSamplerParameteri(m_samplerId, GL_TEXTURE_MIN_FILTER, spec.asMinFilter());
-    //glSamplerParameteri(m_samplerId, GL_TEXTURE_MAG_FILTER, spec.asMagFilter());
-
-    // https://stackoverflow.com/questions/42886835/modifying-parameters-of-bindless-resident-textures
-    m_handle = glGetTextureSamplerHandleARB(m_frameBuffer->m_spec.attachments[0].textureID, m_samplerId);
-    glMakeTextureHandleResidentARB(m_handle);
-}
-
-void ShaderMaterialUpdater::prepareArray()
-{
+    TextureRegistry::get().registerTexture(m_texture);
 }
 
 void ShaderMaterialUpdater::updateTexture()
 {
-    const auto& assets = Assets::get();
-    if (assets.drawUseArrayTexture) {
-        updateSingle();
-    }
-    else {
-        updateArray();
-    }
-}
-
-void ShaderMaterialUpdater::updateSingle()
-{
-}
-
-void ShaderMaterialUpdater::updateArray()
-{
-    // TODO KI copy frameuffer
+    TextureRegistry::get().updateTexture(m_texture);
 }
 
 void ShaderMaterialUpdater::render(
@@ -148,8 +118,6 @@ void ShaderMaterialUpdater::render(
 
     auto& state = ctx.getGLState();
 
-    glBindSampler(UNIT_CHANNEL_0, m_samplerId);
-
     {
         auto* program = Program::get(programId);
         program->bind();
@@ -160,8 +128,11 @@ void ShaderMaterialUpdater::render(
         render::TextureQuad::get().draw();
     }
 
-    glMemoryBarrier(GL_TEXTURE_FETCH_BARRIER_BIT | GL_FRAMEBUFFER_BARRIER_BIT);
+    // Execute the unified pipeline texture registry stream copy step loop.
+    // This dynamically routes execution straight into FrameBufferTexture::updateArray!
     updateTexture();
+
+    glMemoryBarrier(GL_TEXTURE_FETCH_BARRIER_BIT | GL_FRAMEBUFFER_BARRIER_BIT);
     glFlush();
 
     setNeedUpdate(true);
@@ -170,8 +141,7 @@ void ShaderMaterialUpdater::render(
 GLuint64 ShaderMaterialUpdater::getTexHandle(material::TextureType type) const noexcept
 {
     if (type == material::TextureType::diffuse) {
-        return m_handle;
-        //return m_samplerId;
+        return m_texture->getHandle();
     }
     return 0;
 }

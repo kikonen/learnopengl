@@ -297,6 +297,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\loader\WorldLoader.cpp" />
+    <ClCompile Include="src\material\FrameBufferTexture.cpp" />
     <ClCompile Include="src\material\material_util.cpp" />
     <ClCompile Include="src\material\TextureRegistery.cpp" />
     <ClCompile Include="src\material\TextureSpec.cpp" />

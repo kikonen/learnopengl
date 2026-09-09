@@ -2,26 +2,28 @@
 
 #include <glm/glm.hpp>
 
+#include "util/Ref.h"
 #include "Texture.h"
 
-// Single pixel, single color texture
-class ColorTexture : public Texture
+namespace render
+{
+    class FrameBuffer;
+}
+
+// Single pixel, single FrameBuffer texture
+class FrameBufferTexture : public Texture
 {
 public:
-    static util::Ref<ColorTexture> getWhiteRGBA(bool prepare);
-    static util::Ref<ColorTexture> getWhiteRGB(bool prepare);
-    static util::Ref<ColorTexture> getWhiteR(bool prepare);
-
-    static util::Ref<ColorTexture> getBlackRGBA(bool prepare);
-
-    static util::Ref<ColorTexture> getFlatNormalRGBA(bool prepare);
-
-    ColorTexture(
+    FrameBufferTexture(
         std::string_view name,
-        glm::vec4 color,
-        GLenum internalFormat);
+        bool grayScale,
+        bool gammaCorrect,
+        material::TextureType type,
+        const material::TextureSpec& spec,
+        util::Ref<render::FrameBuffer> fbo,
+        int attachmentIndex);
 
-    ~ColorTexture();
+    ~FrameBufferTexture();
 
     void release() override;
     void prepareSingle() override;
@@ -30,6 +32,15 @@ public:
         ArrayTexture& arr,
         uint32_t layer) override;
 
+    void updateSingle() override;
+
+    void updateArray(
+        ArrayTexture& arr,
+        uint32_t layer) override;
+
 private:
-    util::Ref<FrameBuffer> m_frameBuffer;
+    util::Ref<render::FrameBuffer> m_frameBuffer;
+    int m_attachmentIndex;
+
+    GLuint m_samplerId{ 0 };
 };
