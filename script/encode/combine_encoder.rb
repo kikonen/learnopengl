@@ -235,9 +235,10 @@ module Encode
         if image_info
           channel_img = image_info[:image]
           src_channel = image_info[:channel]
+          info "MAP:  [#{group}] #{dst_channel} = #{src_channel} #{channel_img.inspect}"
+        else
+          info "DEF:  [#{group}] #{dst_channel} = #{channel_img.inspect}"
         end
-
-        info "MAP:  [#{group}] #{dst_channel} = #{src_channel} #{channel_img.inspect}"
 
         if dst_channel == Magick::AlphaChannel
           alpha_img = channel_img
@@ -457,9 +458,10 @@ module Encode
         if image_info
           channel_img = image_info[:image]
           src_channel = image_info[:channel]
+          info "MAP:  [#{group}] #{dst_channel} = #{src_channel} #{channel_img.inspect}"
+        else
+          info "DEF:  [#{group}] #{dst_channel} = #{channel_img.inspect}"
         end
-
-        info "MAP:  [#{group}] #{dst_channel} = #{src_channel} #{channel_img.inspect}"
 
         if dst_channel == Magick::AlphaChannel
           alpha_img = channel_img

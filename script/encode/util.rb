@@ -184,6 +184,8 @@ module Encode
       # RESOLVE NEUTRAL BACKGROUND COLOR FOR EXTENT
       # ==========================================
 
+      return img unless img.columns != target_size || img.rows != target_size
+
       # Max quantum intensity value for fully opaque channel pixel mapping (16-bit)
       opaque_alpha = 65535
 
