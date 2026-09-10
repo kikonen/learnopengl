@@ -181,7 +181,7 @@
 // => earlier was 0.05 (ccaeb4feea8c49fe48ede73e87987753846ff8a5)
 #define ALPHA_THRESHOLD 0.2
 #define GBUFFER_ALPHA_THRESHOLD 0.2
-#define SHADOW_ALPHA_THRESHOLD 0.35
+#define SHADOW_ALPHA_THRESHOLD 0.45
 
 // NOTE KI not really used by desktop GPUs
 #define SET_FLOAT_PRECISION

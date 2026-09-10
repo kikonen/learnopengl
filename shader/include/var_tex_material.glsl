@@ -119,7 +119,19 @@
       vec3(texCoord, float(dynamicLayer)));
 
     float mixRatio = u_materials[materialIndex].dynamicRatio;
+
     material.diffuseTexel = mix(staticTexel, dynamicTexel, mixRatio);
+    material.diffuseTexel.rgb = mix(staticTexel.rgb, dynamicTexel.rgb, mixRatio);
+
+#ifdef USE_ALPHA
+#ifdef USE_BLEND
+  material.diffuseTexel.a = mix(staticTexel.a, dynamicTexel.a, mixRatio);
+  // material.diffuseTexel.a = min(staticTexel.a, dynamicTexel.a);
+  // material.diffuseTexel.a = dynamicTexel.a;
+#else
+  material.diffuseTexel.a = staticTexel.a;
+#endif
+#endif
   }
 #else
   {
@@ -137,6 +149,7 @@
     material.alpha = u_materials[materialIndex].diffuse.a * material.diffuseTexel.a;
   #else
     // Force absolute opaque state for regular solid drawing paths
+    material.diffuseTexel.a = 1.0;
     material.alpha = 1.0;
   #endif
 #endif
