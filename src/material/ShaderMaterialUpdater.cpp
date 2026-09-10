@@ -48,7 +48,7 @@ void ShaderMaterialUpdater::prepareRT(
 
     if (!m_material) return;
 
-    m_size = { 512, 512 };
+    m_size = { 1024, 1024 };
 
     auto programId = m_material->getProgram(material::ProgramType::shader);
     if (!programId) return;

@@ -325,7 +325,7 @@ void SampleApp::setupTextures()
         "dynamic",
         UNIFORM_TEXTURE_ARRAY_DYNAMIC,
         4,
-        512,
+        1024,
         16,
         false,
         false,
