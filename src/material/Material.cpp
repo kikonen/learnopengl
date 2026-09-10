@@ -30,6 +30,9 @@
 #include "MaterialSSBO.h"
 #include "MaterialRegistry.h"
 #include "MaterialUpdater.h"
+#include "TextureRegistry.h"
+
+#include "material_util.h"
 
 namespace {
     IdGenerator<ki::material_id> ID_GENERATOR;
@@ -43,8 +46,6 @@ namespace {
 
     const glm::vec4 WHITE_RGBA{ 1.f };
     const glm::vec4 BLACK_RGBA{ 0.f };
-
-    const std::regex CONTAINS_BUILD = std::regex(".*_build.*");
 
     //float calculateAmbient(glm::vec3 ambient) {
     //    return (ambient.x + ambient.y + ambient.z) / 3.f;
@@ -113,86 +114,19 @@ namespace {
         return mat;
     }
 
-    std::pair<std::string, bool> selectTexturePath(
-        std::string_view path,
-        bool useCompressed)
-    {
-        const auto& assets = Assets::get();
+    //inline uint32_t packSprites(
+    //    uint32_t count,
+    //    uint32_t spritesX,
+    //    uint32_t spritesY)
+    //{
+    //    // Validate at pack time — silent truncation here is a corruption bug that
+    //    // only shows as wrong sprite UVs much later.
+    //    assert(count <= 0xFFFFu && "spriteCount exceeds 16-bit packing budget");
+    //    assert(spritesX <= 0xFFu && "spritesX exceeds 8-bit packing budget");
+    //    assert(spritesY <= 0xFFu && "spritesY exceeds 8-bit packing budget");
+    //    return (count << 16) | ((spritesX & 0xFFu) << 8) | (spritesY & 0xFFu);
+    //}
 
-        std::filesystem::path filePath;
-
-        bool found = false;
-
-        {
-            std::filesystem::path buildPath{ path };
-            const auto& stem = buildPath.stem().string();
-
-            if (std::regex_match(stem, CONTAINS_BUILD)) {
-                buildPath.replace_filename(fmt::format("{}.{}", stem, "png"));
-            }
-            else {
-                buildPath.replace_filename(fmt::format("{}_build.{}", stem, "png"));
-            }
-
-            if (useCompressed && assets.compressedTexturesEnabled) {
-                std::filesystem::path ktxPath{ buildPath };
-                ktxPath.replace_extension(".ktx");
-
-                const auto fullPath = util::joinPath(
-                    assets.assetsBuildDir,
-                    ktxPath.string());
-
-                if (util::fileExists(fullPath)) {
-                    filePath = fullPath;
-                    found = true;
-                }
-            }
-
-            //const auto re = std::regex(".*scenery_build.png");
-            //if (std::regex_match(buildPath.string(), re)) {
-            //    int x = 0;
-            //}
-
-            if (!found) {
-                const auto fullPath = util::joinPath(
-                    assets.assetsBuildDir,
-                    buildPath.string());
-
-                if (util::fileExists(fullPath)) {
-                    filePath = fullPath;
-                    found = true;
-                }
-            }
-        }
-
-        if (!found) {
-            filePath = util::joinPath(assets.assetsDir, path);
-        }
-
-        return { filePath.string(), found };
-    }
-
-    inline uint32_t packSprites(uint32_t count, uint32_t spritesX, uint32_t spritesY) {
-        // Validate at pack time — silent truncation here is a corruption bug that
-        // only shows as wrong sprite UVs much later.
-        assert(count <= 0xFFFFu && "spriteCount exceeds 16-bit packing budget");
-        assert(spritesX <= 0xFFu && "spritesX exceeds 8-bit packing budget");
-        assert(spritesY <= 0xFFu && "spritesY exceeds 8-bit packing budget");
-        return (count << 16) | ((spritesX & 0xFFu) << 8) | (spritesY & 0xFFu);
-    }
-
-    inline uint32_t unpackSpriteCount(uint32_t packed) { return  packed >> 16; }
-    inline uint32_t unpackSpritesX(uint32_t packed) { return (packed >> 8) & 0xFFu; }
-    inline uint32_t unpackSpritesY(uint32_t packed) { return  packed & 0xFFu; }
-
-    inline uint32_t packSprites(const Material& material) {
-        uint8_t spritesY = material.spriteCount / material.spritesX;
-        if (material.spriteCount % material.spritesX != 0) {
-            spritesY++;
-        }
-
-        return packSprites(material.spriteCount, material.spritesX, spritesY);
-    }
 }
 
 util::Ref<Material> Material::createMaterial(BasicMaterial type)
@@ -260,7 +194,7 @@ Material::Material()
 
 //Material::Material(Material&& o) noexcept = default;
 //    : m_registeredIndex{ o.m_registeredIndex },
-//    textureSpec{ o.textureSpec },
+//    defaultTextureSpec{ o.defaultTextureSpec },
 //    pattern{ o.pattern },
 //    reflection{ o.reflection },
 //    refraction{ o.refraction },
@@ -344,7 +278,7 @@ Material& Material::operator=(const Material& o)
 
     m_registeredIndex = o.m_registeredIndex;
 
-    textureSpec = o.textureSpec;
+    defaultTextureSpec = o.defaultTextureSpec;
 
     pattern = o.pattern;
     reflection = o.reflection;
@@ -369,6 +303,8 @@ Material& Material::operator=(const Material& o)
     m_invertMetalness = o.m_invertMetalness;
     m_invertRoughness = o.m_invertRoughness;
 
+    m_dynamicRatio = o.m_dynamicRatio;
+
     m_scaleTiling = o.m_scaleTiling;
 
     pointSize = o.pointSize;
@@ -380,6 +316,7 @@ Material& Material::operator=(const Material& o)
     m_name = o.m_name;
 
     spriteCount = o.spriteCount;
+    spritesPerRow = o.spritesPerRow;
     spritesX = o.spritesX;
 
     alpha = o.alpha;
@@ -457,12 +394,20 @@ ki::material_index Material::registerMaterial()
     return MaterialRegistry::get().registerMaterial(this);
 }
 
-GLuint64 Material::getTexHandle(TextureType type, GLuint64 defaultValue) const noexcept
+GLuint64 Material::getTexHandle(
+    material::TextureType type,
+    GLuint64 defaultValue) const noexcept
 {
     if (m_updater) {
         auto handle = m_updater->getTexHandle(type);
         if (handle) return handle;
     }
+
+    // TODO KI special case for FontAtlas
+    if (type == material::TextureType::map_font_atlas) {
+        return m_fontAtlasTex;
+    }
+
     const auto& it = m_boundTextures.find(type);
     return it != m_boundTextures.end() ? it->second.m_texture->m_handle : defaultValue;
 }
@@ -482,12 +427,12 @@ void Material::loadTextures()
         bool flipY = true;
         bool usePlaceholder = false;
 
-        if (type == TextureType::diffuse) {
+        if (type == material::TextureType::diffuse) {
             grayScale = true;
             gammaCorrect = true;
             usePlaceholder = true;
         }
-        else if (type == TextureType::emission) {
+        else if (type == material::TextureType::emission) {
             grayScale = true;
             gammaCorrect = true;
         }
@@ -497,15 +442,15 @@ void Material::loadTextures()
 
     for (const auto& it : m_inlineTextures) {
         const auto type = it.first;
-        const auto& texture = it.second;
-        if (texture && texture->isValid()) {
-            m_boundTextures.insert({ type, BoundTexture{ texture } });
+        const auto& info = it.second;
+        if (info.texture && info.texture->isValid()) {
+            m_boundTextures.insert({ type, material::BoundTexture{ info.texture } });
         }
     }
 }
 
 void Material::loadTexture(
-    TextureType type,
+    material::TextureType type,
     bool grayScale,
     bool gammaCorrect,
     bool flipY,
@@ -518,21 +463,35 @@ void Material::loadTexture(
 
     const auto& assets = Assets::get();
 
-    std::string texturePath = resolveTexturePath(info.path, info.compressed);
+    material::ResolvedTexturePath texturePath;
 
-    KI_INFO(fmt::format("TEX::LOAD: ID={}, name={}, texture={}", m_id, m_name, texturePath));
+    bool placeholder = false;
+    if (usePlaceholder && assets.placeholderTextureAlways) {
+        texturePath = material::getPlaceholderTexturePath();
+        placeholder = true;
+    } else {
+        texturePath = material::resolveTexturePath(m_baseDir, m_modelDir, info.path, info.compressed);
 
-    const std::string& placeholderPath = util::joinPath(assets.assetsDir, assets.placeholderTexture);
+        KI_INFO(fmt::format("TEX::LOAD: ID={}, name={}, valid={}, compressed={}, texture={}",
+            m_id, m_name, texturePath.valid, texturePath.compressed, texturePath.path));
+
+        if (usePlaceholder && !texturePath.valid) {
+            texturePath = material::getPlaceholderTexturePath();
+            placeholder = true;
+        }
+    }
+
+    if (!texturePath.valid) return;
 
     auto future = ImageRegistry::get().getTexture(
-        info.path,
-        usePlaceholder && assets.placeholderTextureAlways ? placeholderPath : texturePath,
+        texturePath.name,
+        texturePath.path,
         false,
         grayScale,
         gammaCorrect,
         flipY,
         type,
-        textureSpec);
+        info.spec);
 
     future.wait();
 
@@ -541,16 +500,18 @@ void Material::loadTexture(
         texture = future.get();
     }
 
-    if (usePlaceholder && !texture->isValid()) {
+    if (!placeholder && usePlaceholder && !texture->isValid()) {
+        const auto& placeholderPath = material::getPlaceholderTexturePath();
+
         future = ImageRegistry::get().getTexture(
-            "tex-placeholder",
-            placeholderPath,
+            placeholderPath.name,
+            placeholderPath.path,
             false,
             true,
             gammaCorrect,
             flipY,
-            TextureType::diffuse,
-            textureSpec);
+            material::TextureType::diffuse,
+            info.spec);
 
         future.wait();
         if (future.valid()) {
@@ -559,78 +520,15 @@ void Material::loadTexture(
     }
 
     if (texture && texture->isValid()) {
-        m_boundTextures.insert({ type, BoundTexture{ texture } });
+        m_boundTextures.insert({ type, material::BoundTexture{ texture } });
     }
 }
 
-std::string Material::resolveTexturePath(
-    std::string_view textureName,
-    bool compressed)
-{
-    if (textureName.empty()) return {};
-
-    const auto& assets = Assets::get();
-
-    std::pair<std::string, bool> texturePath{ "", false };
-
-    if (!m_baseDir.empty()) {
-        // NOTE KI MUST normalize path to avoid mismatches due to \ vs /
-        texturePath = selectTexturePath(
-            util::joinPathExt(
-                m_modelDir,
-                m_baseDir,
-                textureName,
-                ""),
-            compressed);
-    }
-
-    if (!texturePath.second) {
-        // NOTE KI MUST normalize path to avoid mismatches due to \ vs /
-        texturePath = selectTexturePath(
-            util::joinPathExt(
-                m_modelDir,
-                textureName,
-                ""),
-            compressed);
-    }
-
-    if (!texturePath.second && !m_baseDir.empty()) {
-        // NOTE KI MUST normalize path to avoid mismatches due to \ vs /
-        texturePath = selectTexturePath(
-            util::joinPathExt(
-                m_baseDir,
-                textureName,
-                ""),
-            compressed);
-    }
-
-    if (!texturePath.second && m_baseDir.empty()) {
-        // NOTE KI MUST normalize path to avoid mismatches due to \ vs /
-        texturePath = selectTexturePath(
-            textureName,
-            compressed);
-    }
-
-    if (!texturePath.second) {
-        KI_WARN_OUT(fmt::format(
-            "TEX::MISSING: base_dir={}, name={}",
-            m_baseDir,
-            textureName));
-    }
-    else {
-        KI_INFO_OUT(fmt::format(
-            "TEX::FOUND: base_dir={}, name={}, path={}",
-            m_baseDir,
-            textureName,
-            texturePath.first));
-    }
-
-    return texturePath.first;
-}
 
 // @param compressed use compressed if possible
 void Material::addTexture(
-    TextureType type,
+    material::TextureType type,
+    material::TextureSpec spec,
     const std::string& path,
     bool compressed) noexcept
 {
@@ -639,15 +537,15 @@ void Material::addTexture(
         KI_INFO_OUT(fmt::format("TEX::CLEAR: type={}, path={}", util::as_integer(type), path));
     }
     else {
-        m_texturePaths[type] = { path, compressed };
+        m_texturePaths[type] = { path, spec, compressed };
     }
 }
 
 void Material::addinlineTexture(
-    TextureType type,
+    material::TextureType type,
     const util::Ref<InlineTexture>& texture) noexcept
 {
-    m_inlineTextures.insert({ type, texture });
+    m_inlineTextures.insert({ type, { texture } });
 }
 
 void Material::prepare()
@@ -659,73 +557,38 @@ void Material::prepare()
 
     for (auto& it : m_boundTextures) {
         auto& tex = it.second;
-        tex.m_texture->prepare();
+        TextureRegistry::get().registerTexture(tex.m_texture);
     }
 }
-
-//const MaterialSSBO Material::toSSBO() const
-//{
-//    const auto& whitePx = ColorTexture::getWhiteRGBA().m_handle;
-//    const auto& blackPx = ColorTexture::getBlackRGBA().m_handle;
-//    const auto& flatNormalPx = ColorTexture::getFlatNormalRGBA().m_handle;
-//
-//    // RGB8 = (128, 128, 255) = flat normal
-//    uint8_t flatNormal[] = { 128, 128, 255 };
-//
-//    const glm::vec4 mrasFactor{
-//        m_metalnessFactor,
-//        m_occlusionFactor,
-//        m_roughnessFactor,
-//        1.f };
-//
-//    return {
-//        kd,
-//        hasBoundTex(TextureType::emission) ? WHITE_RGBA : ke,
-//
-//        hasBoundTex(TextureType::map_mras) ? mrasFactor : mras,
-//
-//        getTexHandle(TextureType::diffuse, whitePx),
-//        getTexHandle(TextureType::emission, blackPx),
-//
-//        getTexHandle(TextureType::map_normal, flatNormalPx),
-//
-//        getTexHandle(TextureType::map_opacity, whitePx),
-//        // NOTE KI whitePx fails due to "inverse" flags
-//        getTexHandle(TextureType::map_mras, 0),
-//        getTexHandle(TextureType::map_displacement, blackPx),
-//
-//        getTexHandle(TextureType::map_dudv, 0),
-//        getTexHandle(TextureType::map_noise, 0),
-//        getTexHandle(TextureType::map_noise_2, 0),
-//
-//        getTexHandle(TextureType::map_custom_1, 0),
-//
-//        getFlags(),
-//
-//        reflection,
-//        refraction,
-//        getRefractionRatio(),
-//
-//        tilingX,
-//        tilingY,
-//
-//        packSprites(*this),
-//
-//        layers,
-//        layersDepth,
-//        parallaxDepth,
-//        pointSize,
-//    };
-//}
 
 void Material::fillSSBO(
     MaterialMainSSBO& main,
     MaterialCustomSSBO& custom,
     MaterialColdSSBO& cold) const
 {
-    const auto& whitePx = ColorTexture::getWhiteRGBA().m_handle;
-    const auto& blackPx = ColorTexture::getBlackRGBA().m_handle;
-    const auto& flatNormalPx = ColorTexture::getFlatNormalRGBA().m_handle;
+    const auto& assets = Assets::get();
+    if (assets.drawUseArrayTexture) {
+        fillSSBOArray(
+            main,
+            custom,
+            cold);
+    }
+    else {
+        fillSSBOBindless(
+            main,
+            custom,
+            cold);
+    }
+}
+
+void Material::fillSSBOBindless(
+    MaterialMainSSBO& main,
+    MaterialCustomSSBO& custom,
+    MaterialColdSSBO& cold) const
+{
+    const auto& whitePx = ColorTexture::getWhiteRGBA(true)->getHandle();
+    const auto& blackPx = ColorTexture::getBlackRGBA(true)->getHandle();
+    const auto& flatNormalPx = ColorTexture::getFlatNormalRGBA(true)->getHandle();
 
     // RGB8 = (128, 128, 255) = flat normal
     uint8_t flatNormal[] = { 128, 128, 255 };
@@ -738,15 +601,15 @@ void Material::fillSSBO(
 
     main = {
         .u_diffuse = kd,
-        .u_emission = hasBoundTex(TextureType::emission) ? WHITE_RGBA : ke,
-        .u_mras = hasBoundTex(TextureType::map_mras) ? mrasFactor : mras,
+        .u_emission = hasBoundTex(material::TextureType::emission) ? WHITE_RGBA : ke,
+        .u_mras = hasBoundTex(material::TextureType::map_mras) ? mrasFactor : mras,
 
-        .u_diffuseTex = getTexHandle(TextureType::diffuse, whitePx),
-        .u_emissionTex = getTexHandle(TextureType::emission, blackPx),
-        .u_normalMap = getTexHandle(TextureType::map_normal, flatNormalPx),
-        .u_opacityMap = getTexHandle(TextureType::map_opacity, whitePx),
+        .u_diffuseTex = getTexHandle(material::TextureType::diffuse, whitePx),
+        .u_emissionTex = getTexHandle(material::TextureType::emission, blackPx),
+        .u_normalMap = getTexHandle(material::TextureType::map_normal, flatNormalPx),
+        .u_opacityMap = getTexHandle(material::TextureType::map_opacity, whitePx),
         // NOTE KI whitePx fails due to "inverse" flags
-        .u_mrasMap = getTexHandle(TextureType::map_mras, 0),
+        .u_mrasMap = getTexHandle(material::TextureType::map_mras, 0),
 
         .u_flags = getFlags(),
 
@@ -754,25 +617,95 @@ void Material::fillSSBO(
         .u_tilingY = tilingY,
 
         .u_parallaxDepth = parallaxDepth,
+        .u_dynamicRatio = m_dynamicRatio,
     };
 
     custom = {
-        .u_displacementMap = getTexHandle(TextureType::map_displacement, blackPx),
+        .u_displacementMap = getTexHandle(material::TextureType::map_displacement, blackPx),
 
-        .u_dudvMap = getTexHandle(TextureType::map_dudv, 0),
-        .u_noiseMap = getTexHandle(TextureType::map_noise, 0),
-        .u_noise2Map = getTexHandle(TextureType::map_noise_2, 0),
+        .u_dudvMap = getTexHandle(material::TextureType::map_dudv, 0),
+        .u_noiseMap = getTexHandle(material::TextureType::map_noise, 0),
+        .u_noise2Map = getTexHandle(material::TextureType::map_noise_2, 0),
 
-        .u_custom1Map = getTexHandle(TextureType::map_custom_1, 0),
+        .u_custom1Map = getTexHandle(material::TextureType::map_custom_1, 0),
 
-        .u_fontHAtlas = m_fontAtlasTex,
+        .u_fontAtlas = getTexHandle(material::TextureType::map_font_atlas, 0),
+
+        .u_dynamic = getTexHandle(material::TextureType::dynamic, whitePx),
     };
     cold = {
         .u_reflection = reflection,
         .u_refraction = refraction,
         .u_refractionRatio = getRefractionRatio(),
 
-        .u_packedSprites = packSprites(*this),
+        .u_packedSprites = material::packSprites(*this),
+
+        .u_layers = layers,
+        .u_layersDepth = layersDepth,
+        .u_pointSize = pointSize,
+    };
+}
+
+void Material::fillSSBOArray(
+    MaterialMainSSBO& main,
+    MaterialCustomSSBO& custom,
+    MaterialColdSSBO& cold) const
+{
+    // Unified fixed fallback layer indices within the Array Texture slots
+    // Layer 1 = Black placeholder, Layer 2 = White placeholder, Layer 3 = Flat Normal
+    const int blackLayer = material::TEX_ARRAY_LAYER_BLACK;
+    const int whiteLayer = material::TEX_ARRAY_LAYER_WHITE;
+    const int normalLayer = material::TEX_ARRAY_LAYER_NORMAL;
+
+    // RGB8 = (128, 128, 255) = flat normal
+    uint8_t flatNormal[] = { 128, 128, 255 };
+
+    const glm::vec4 mrasFactor{
+        m_metalnessFactor,
+        m_occlusionFactor,
+        m_roughnessFactor,
+        1.f };
+
+    main = {
+        .u_diffuse = kd,
+        .u_emission = hasBoundTex(material::TextureType::emission) ? WHITE_RGBA : ke,
+        .u_mras = hasBoundTex(material::TextureType::map_mras) ? mrasFactor : mras,
+
+        .u_diffuseTex = getTexHandle(material::TextureType::diffuse, whiteLayer),
+        .u_emissionTex = getTexHandle(material::TextureType::emission, blackLayer),
+        .u_normalMap = getTexHandle(material::TextureType::map_normal, normalLayer),
+        .u_opacityMap = getTexHandle(material::TextureType::map_opacity, whiteLayer),
+        // NOTE KI whitePx fails due to "inverse" flags
+        .u_mrasMap = getTexHandle(material::TextureType::map_mras, 0),
+
+        .u_flags = getFlags(),
+
+        .u_tilingX = tilingX,
+        .u_tilingY = tilingY,
+
+        .u_parallaxDepth = parallaxDepth,
+        .u_dynamicRatio = m_dynamicRatio,
+    };
+
+    custom = {
+        .u_displacementMap = getTexHandle(material::TextureType::map_displacement, blackLayer),
+
+        .u_dudvMap = getTexHandle(material::TextureType::map_dudv, 0),
+        .u_noiseMap = getTexHandle(material::TextureType::map_noise, 0),
+        .u_noise2Map = getTexHandle(material::TextureType::map_noise_2, 0),
+
+        .u_custom1Map = getTexHandle(material::TextureType::map_custom_1, 0),
+
+        .u_fontAtlas = getTexHandle(material::TextureType::map_font_atlas, 0),
+
+        .u_dynamic = getTexHandle(material::TextureType::dynamic, whiteLayer),
+    };
+    cold = {
+        .u_reflection = reflection,
+        .u_refraction = refraction,
+        .u_refractionRatio = getRefractionRatio(),
+
+        .u_packedSprites = material::packSprites(*this),
 
         .u_layers = layers,
         .u_layersDepth = layersDepth,
@@ -804,7 +737,7 @@ void Material::resolveMaterial()
 
     {
         const auto& shaderName = selectProgram(
-            MaterialProgramType::shader,
+            material::ProgramType::shader,
             material.m_programNames,
             material.m_defaultPrograms ? SHADER_G_TEX : "");
 
@@ -822,7 +755,7 @@ void Material::resolveMaterial()
     resolveProgram();
 
     {
-        bool useParallax = material.hasBoundTex(TextureType::map_displacement) && material.parallaxDepth > 0;
+        bool useParallax = material.hasBoundTex(material::TextureType::map_displacement) && material.parallaxDepth > 0;
         if (!useParallax) {
             material.parallaxDepth = 0.f;
         }
@@ -835,47 +768,47 @@ void Material::resolveProgram()
 
     const auto& assets = Assets::get();
 
-    const bool useDudvTex = material.hasBoundTex(TextureType::map_dudv);
-    const bool useDisplacementTex = material.hasBoundTex(TextureType::map_displacement);
-    const bool useNormalTex = material.hasBoundTex(TextureType::map_normal);
+    const bool useDudvTex = material.hasBoundTex(material::TextureType::map_dudv);
+    const bool useDisplacementTex = material.hasBoundTex(material::TextureType::map_displacement);
+    const bool useNormalTex = material.hasBoundTex(material::TextureType::map_normal);
     const bool useCubeMap = 1.0 - material.reflection - material.refraction < 1.0;
     const bool useNormalPattern = material.pattern > 0;
-    const bool useParallax = material.hasBoundTex(TextureType::map_displacement) && material.parallaxDepth > 0;
+    const bool useParallax = material.hasBoundTex(material::TextureType::map_displacement) && material.parallaxDepth > 0;
 
     const bool useTBN = useNormalTex || useDudvTex || useDisplacementTex;
 
     const auto& shaderName = selectProgram(
-        MaterialProgramType::shader,
+        material::ProgramType::shader,
         material.m_programNames,
         material.m_defaultPrograms ? SHADER_G_TEX : "");
 
     auto preDepthName = selectProgram(
-        MaterialProgramType::pre_depth,
+        material::ProgramType::pre_depth,
         material.m_programNames,
         SHADER_PRE_DEPTH_PASS);
 
     const auto& oitName = selectProgram(
-        MaterialProgramType::oit,
+        material::ProgramType::oit,
         material.m_programNames,
         material.m_defaultPrograms ? SHADER_OIT_PASS : "");
 
     const auto& shadowName = selectProgram(
-        MaterialProgramType::shadow,
+        material::ProgramType::shadow,
         material.m_programNames,
         material.m_defaultPrograms ? SHADER_SHADOW : "");
 
     const auto& selectionName = selectProgram(
-        MaterialProgramType::selection,
+        material::ProgramType::selection,
         material.m_programNames,
         SHADER_SELECTION);
 
     const auto& objectIdName = selectProgram(
-        MaterialProgramType::object_id,
+        material::ProgramType::object_id,
         material.m_programNames,
         SHADER_OBJECT_ID);
 
     const auto& normalName = selectProgram(
-        MaterialProgramType::normal,
+        material::ProgramType::normal,
         material.m_programNames,
         SHADER_NORMAL);
 
@@ -982,14 +915,14 @@ void Material::resolveProgram()
             definitions[DEF_USE_DEBUG] = "1";
         }
 
-        material.m_programs[MaterialProgramType::shader] = ProgramRegistry::get().getProgramId(
+        material.m_programs[material::ProgramType::shader] = ProgramRegistry::get().getProgramId(
             shaderName,
             false,
             material.m_geometryType,
             definitions);
 
         if (!oitName.empty()) {
-            material.m_programs[MaterialProgramType::oit] = ProgramRegistry::get().getProgramId(
+            material.m_programs[material::ProgramType::oit] = ProgramRegistry::get().getProgramId(
                 oitName,
                 false,
                 "",
@@ -1005,7 +938,7 @@ void Material::resolveProgram()
             //    shadowDefinitions[DEF_MAX_SHADOW_MAP_COUNT] = std::to_string(shadowCount);
             //}
 
-            material.m_programs[MaterialProgramType::shadow] = ProgramRegistry::get().getProgramId(
+            material.m_programs[material::ProgramType::shadow] = ProgramRegistry::get().getProgramId(
                 shadowName,
                 false,
                 "",
@@ -1013,7 +946,7 @@ void Material::resolveProgram()
         }
 
         if (usePreDepth) {
-            material.m_programs[MaterialProgramType::pre_depth] = ProgramRegistry::get().getProgramId(
+            material.m_programs[material::ProgramType::pre_depth] = ProgramRegistry::get().getProgramId(
                 preDepthName,
                 false,
                 "",
@@ -1021,7 +954,7 @@ void Material::resolveProgram()
         }
 
         if (!selectionName.empty()) {
-            material.m_programs[MaterialProgramType::selection] = ProgramRegistry::get().getProgramId(
+            material.m_programs[material::ProgramType::selection] = ProgramRegistry::get().getProgramId(
                 selectionName,
                 false,
                 "",
@@ -1029,7 +962,7 @@ void Material::resolveProgram()
         }
 
         if (!objectIdName.empty()) {
-            material.m_programs[MaterialProgramType::object_id] = ProgramRegistry::get().getProgramId(
+            material.m_programs[material::ProgramType::object_id] = ProgramRegistry::get().getProgramId(
                 objectIdName,
                 false,
                 "",
@@ -1037,7 +970,7 @@ void Material::resolveProgram()
         }
 
         if (!normalName.empty()) {
-            material.m_programs[MaterialProgramType::normal] = ProgramRegistry::get().getProgramId(
+            material.m_programs[material::ProgramType::normal] = ProgramRegistry::get().getProgramId(
                 normalName,
                 false,
                 "",
@@ -1047,8 +980,8 @@ void Material::resolveProgram()
 }
 
 std::string Material::selectProgram(
-    MaterialProgramType type,
-    const std::map<MaterialProgramType, std::string> programs,
+    material::ProgramType type,
+    const std::map<material::ProgramType, std::string> programs,
     const std::string& defaultValue)
 {
     std::string program;

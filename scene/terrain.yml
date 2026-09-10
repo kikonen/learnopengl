@@ -56,7 +56,7 @@ types:
       material:
         prefab: materials/Terrain2
         texture_spec:
-          wrap: GL_CLAMP_TO_EDGE
+          wrap: clamp_to_edge
         program: g_terrain
         pre_depth_program: g_terrain_depth
         id_program: g_terrain_object_id
@@ -99,7 +99,7 @@ types:
         name: sea_surface
         kd: [0.55, 0.55, 0.95, 1.0]
         map_normal: textures/water_surface_512_normal.png
-        map_dudv: textures/waterDUDV_512.png
+        map_dudv: textures/water_512_dudv.png
         tiling: 2
         render_back: true
         program: g_water
@@ -314,8 +314,9 @@ particles:
       map_kd: particles/7_firespin_spritesheet.png
       sprites: 61
       sprites_x: 8
+      sprites_per_row: 8
       texture_spec:
-        wrap: GL_CLAMP_TO_EDGE
+        wrap: clamp_to_edge
 
   - id: snow_storm
     seed: 1
@@ -344,9 +345,10 @@ particles:
       map_kd: particles/4_casting_spritesheet.png
       sprites: 73
       sprites_x: 9
+      sprites_per_row: 9
       texture_spec:
-        wrap: GL_CLAMP_TO_EDGE
+        wrap: clamp_to_edge
 
 materials:
   - alias: water_caustics
-    map_kd: textures/water_caustics/water_caustics_001.png
+    map_kd: textures/water_caustics/water_caustics_color_001.png

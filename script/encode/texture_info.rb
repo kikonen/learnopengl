@@ -10,6 +10,7 @@ module Encode
     include Hashie::Extensions::MergeInitializer
     include Hashie::Extensions::MethodAccess
     include Hashie::Extensions::Dash::PropertyTranslation
+    include Hashie::Extensions::IgnoreUndeclared
 
     property :name
     property :target_name
@@ -28,12 +29,27 @@ module Encode
     property :srgb
     property :manual
 
-    def action_sym
-      self.action&.to_sym
+    def normalize!
+      self[:type] = self.type.to_sym if self.type
+      self[:action] = self.action.to_sym if self.action
+      self[:mode] = self.mode.to_sym if self.mode
+      self
     end
 
     def src_path(src_dir)
       "#{src_dir}/#{self.name}"
+    end
+
+    def plain_name
+      name ? File.basename(name, ".*") : nil
+    end
+
+    def encode_srgb?
+      diffuse?
+    end
+
+    def diffuse?
+      self.type == :diffuse || self.type == :emission
     end
   end
 end

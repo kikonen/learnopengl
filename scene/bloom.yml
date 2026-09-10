@@ -148,7 +148,7 @@ types:
       material:
         name: woodwall
         kd: [0.800000, 0.800000, 0.800000, 1.0]
-        map_kd: textures/wood_1024.png
+        map_kd: textures/wood_1024_color.png
         xreflection: 0.4
         render_back: true
         program: g_tex

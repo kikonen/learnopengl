@@ -220,8 +220,9 @@ particles:
       map_kd: particles/4_casting_spritesheet.png
       sprites: 73
       sprites_x: 9
+      sprites_per_row: 9
       texture_spec:
-        wrap: GL_CLAMP_TO_EDGE
+        wrap: clamp_to_edge
 
   - id: particle_tree_particle_generator_2
     seed: 1
@@ -249,10 +250,11 @@ particles:
     material:
       kd: [1, 1, 1, 1]
       map_kd: particles/bones_3_spritesheet.png
-      sprites: 28
+      sprites: 27
       sprites_x: 5
+      sprites_per_row: 5
       texture_spec:
-        wrap: GL_CLAMP_TO_EDGE
+        wrap: clamp_to_edge
 
   - id: particle_tree_particle_generator_3
     seed: 1
@@ -281,6 +283,7 @@ particles:
       kd: [1, 1, 1, 1]
       map_kd: particles/bones_2_spritesheet.png
       sprites: 29
-      sprites_x: 4
+      sprites_x: 7
+      sprites_per_row: 4
       texture_spec:
-        wrap: GL_CLAMP_TO_EDGE
+        wrap: clamp_to_edge

@@ -18,17 +18,22 @@ public:
         bool grayScale,
         bool gammaCorrect,
         bool flipY,
-        TextureType type,
-        const TextureSpec& spec);
+        material::TextureType type,
+        const material::TextureSpec& spec);
 
     virtual ~ImageTexture();
 
     virtual std::string str() const noexcept override;
 
     void release() override;
-    void prepare() override;
 
-    void prepareNormal();
+    void prepareSingle() override;
+
+    void prepareArray(
+        ArrayTexture& arr,
+        uint32_t layer) override;
+
+    void preparePlain();
     void prepareKtx();
 
     bool isValid() const noexcept { return m_valid; }
@@ -53,7 +58,9 @@ private:
     bool m_hdri{ false };
 
     int m_channels{ 0 };
-    bool m_is16Bbit{ false };
+    bool m_is16Bit{ false };
+
+    GLenum m_pixelFormat{ 0 };
 
 private:
     bool m_valid{ false };

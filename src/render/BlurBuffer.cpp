@@ -49,7 +49,7 @@ namespace render {
         int currW = w;
         int currH = h;
 
-        m_buffers.clear();
+        m_frameBuffers.clear();
 
         for (int i = 0; i < BUFFER_COUNT; i++)
         {
@@ -58,9 +58,9 @@ namespace render {
             if (currW < 1) currW = 1;
             if (currH < 1) currH = 1;
 
-            auto fb = new FrameBuffer(
+            auto fbo = util::Ref<FrameBuffer>::create(
                 fmt::format("{}_blur_buffer_{}x{}_{}", namePrefix, w, h, i),
-                {
+                FrameBufferSpecification {
                     w, h,
                     {
                         FrameBufferAttachment::getGBufferEmissionHdr(ATT_COLOR_A_ENUM),
@@ -68,11 +68,11 @@ namespace render {
                     }
                 });
 
-            m_buffers.push_back(std::unique_ptr<FrameBuffer>(fb));
+            m_frameBuffers.push_back(fbo);
         }
 
-        for (auto& buf : m_buffers) {
-            buf->prepare();
+        for (auto& fbo : m_frameBuffers) {
+            fbo->prepare();
         }
 
         m_width = w;
@@ -83,8 +83,8 @@ namespace render {
         const RenderContext& ctx,
         int bufferIndex)
     {
-        auto& buffer = m_buffers[bufferIndex];
-        buffer->bind(ctx);
+        auto& fbo = m_frameBuffers[bufferIndex];
+        fbo->bind(ctx);
     }
 
     void BlurBuffer::bindTexture(
@@ -93,9 +93,9 @@ namespace render {
         int attachmentIndex,
         int unitIndex)
     {
-        auto& buffer = m_buffers[bufferIndex];
+        auto& fbo = m_frameBuffers[bufferIndex];
 
-        buffer->bindTexture(state, attachmentIndex, unitIndex);
+        fbo->bindTexture(state, attachmentIndex, unitIndex);
     }
 
     void BlurBuffer::unbindTexture(
@@ -103,8 +103,8 @@ namespace render {
         int bufferIndex,
         int unitIndex)
     {
-        auto& buffer = m_buffers[bufferIndex];
+        auto& fbo = m_frameBuffers[bufferIndex];
 
-        buffer->unbindTexture(state, unitIndex);
+        fbo->unbindTexture(state, unitIndex);
     }
 }

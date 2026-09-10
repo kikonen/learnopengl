@@ -156,21 +156,24 @@ namespace loader {
             else if (k == "map_kd") {
                 std::string line = readString(v);
                 material.addTexture(
-                    TextureType::diffuse,
+                    material::TextureType::diffuse,
+                    material.defaultTextureSpec,
                     line,
                     true);
             }
             else if (k == "map_ke") {
                 std::string line = readString(v);
                 material.addTexture(
-                    TextureType::emission,
+                    material::TextureType::emission,
+                    material.defaultTextureSpec,
                     line,
                     true);
             }
             else if (k == "map_ks") {
                 std::string line = readString(v);
                 material.addTexture(
-                    TextureType::specular,
+                    material::TextureType::specular,
+                    material.defaultTextureSpec,
                     line,
                     true);
             }
@@ -179,7 +182,8 @@ namespace loader {
                 // k == "map_bump" ||
                 std::string line = readString(v);
                 material.addTexture(
-                    TextureType::map_normal,
+                    material::TextureType::map_normal,
+                    material.defaultTextureSpec,
                     line,
                     true);
             }
@@ -190,49 +194,56 @@ namespace loader {
             else if (k == "map_dudv") {
                 std::string line = readString(v);
                 material.addTexture(
-                    TextureType::map_dudv,
+                    material::TextureType::map_dudv,
+                    material::TextureSpec::dudvSpec(),
                     line,
                     true);
             }
             else if (k == "map_noise") {
                 std::string line = readString(v);
                 material.addTexture(
-                    TextureType::map_noise,
+                    material::TextureType::map_noise,
+                    material::TextureSpec::noiseSpec(),
                     line,
                     true);
             }
             else if (k == "map_noise_2") {
                 std::string line = readString(v);
                 material.addTexture(
-                    TextureType::map_noise_2,
+                    material::TextureType::map_noise_2,
+                    material::TextureSpec::noiseSpec(),
                     line,
                     true);
             }
             else if (k == "map_displacement" || k == "map_di") {
                 std::string line = readString(v);
                 material.addTexture(
-                    TextureType::map_displacement,
+                    material::TextureType::map_displacement,
+                    material.defaultTextureSpec,
                     line,
                     true);
             }
             else if (k == "map_opacity") {
                 std::string line = readString(v);
                 material.addTexture(
-                    TextureType::map_opacity,
+                    material::TextureType::map_opacity,
+                    material.defaultTextureSpec,
                     line,
                     true);
             }
             else if (k == "map_custom_1") {
                 std::string line = readString(v);
                 material.addTexture(
-                    TextureType::map_custom_1,
+                    material::TextureType::map_custom_1,
+                    material::TextureSpec::noiseSpec(),
                     line,
                     true);
             }
             else if (k == "map_mras") {
                 std::string line = readString(v);
                 material.addTexture(
-                    TextureType::map_mras,
+                    material::TextureType::map_mras,
+                    material.defaultTextureSpec,
                     line,
                     true);
             }
@@ -333,6 +344,10 @@ namespace loader {
                 material.spriteCount = readInt(v);
                 fields.spriteCount = true;
             }
+            else if (k == "sprites_per_row") {
+                material.spritesPerRow = readInt(v);
+                fields.spritesPerRow = true;
+            }
             else if (k == "sprites_x") {
                 material.spritesX = readInt(v);
                 fields.spritesX = true;
@@ -353,9 +368,13 @@ namespace loader {
                 material.parallaxDepth = readFloat(v);
                 fields.parallaxDepth = true;
             }
+            else if (k == "dynamic_ratio") {
+                material.m_dynamicRatio = readFloat(v);
+                fields.dynamicRatio = true;
+            }
             else if (k == "texture_spec") {
-                loadTextureSpec(v, material.textureSpec);
-                fields.textureSpec = true;
+                material.defaultTextureSpec = loadTextureSpec(v);
+                fields.defaultTextureSpec = true;
             }
             else if (k == "alpha") {
                 material.alpha = readBool(v);
@@ -386,25 +405,25 @@ namespace loader {
                 fields.defaultPrograms = true;
             }
             else if (k == "program" || k == "shader") {
-                material.m_programNames[MaterialProgramType::shader] = readString(v);
+                material.m_programNames[material::ProgramType::shader] = readString(v);
             }
             else if (k == "oit_program") {
-                material.m_programNames[MaterialProgramType::oit] = readString(v);
+                material.m_programNames[material::ProgramType::oit] = readString(v);
             }
             else if (k == "shadow_program") {
-                material.m_programNames[MaterialProgramType::shadow] = readString(v);
+                material.m_programNames[material::ProgramType::shadow] = readString(v);
             }
             else if (k == "pre_depth_program") {
-                material.m_programNames[MaterialProgramType::pre_depth] = readString(v);
+                material.m_programNames[material::ProgramType::pre_depth] = readString(v);
             }
             else if (k == "selection_program") {
-                material.m_programNames[MaterialProgramType::selection] = readString(v);
+                material.m_programNames[material::ProgramType::selection] = readString(v);
             }
             else if (k == "id_program") {
-                material.m_programNames[MaterialProgramType::object_id] = readString(v);
+                material.m_programNames[material::ProgramType::object_id] = readString(v);
             }
             else if (k == "normal_program") {
-                material.m_programNames[MaterialProgramType::normal] = readString(v);
+                material.m_programNames[material::ProgramType::normal] = readString(v);
             }
             else if (k == "geometry_type") {
                 material.m_geometryType = readString(v);
@@ -469,7 +488,7 @@ namespace loader {
         if (material.m_name == "female_elf_hooded_pants_set")
             int x = 0;
 
-        if (material.hasRegisteredTex(TextureType::map_displacement)) {
+        if (material.hasRegisteredTex(material::TextureType::map_displacement)) {
             if (!fields.parallaxDepth) {
                 const auto& assets = Assets::get();
                 KI_INFO_OUT(fmt::format("LOADER_MATERIAL: apply_default_parallax={}", assets.parallaxDepth));
@@ -545,46 +564,40 @@ namespace loader {
         }
     }
 
-    void MaterialLoader::loadTextureSpec(
-        const loader::DocNode& node,
-        TextureSpec& textureSpec) const
+    material::TextureSpec MaterialLoader::loadTextureSpec(
+        const loader::DocNode& node) const
     {
+        material::TextureSpec textureSpec;
+
         for (const auto& pair : node.getNodes()) {
             const std::string& k = pair.getName();
             const loader::DocNode& v = pair.getNode();
 
             if (k == "wrap") {
-                loadTextureWrap(k, v, textureSpec.wrapS);
-                loadTextureWrap(k, v, textureSpec.wrapT);
-            }
-            else if (k == "wrap_s") {
-                loadTextureWrap(k, v, textureSpec.wrapS);
-            }
-            else if (k == "wrap_t") {
-                loadTextureWrap(k, v, textureSpec.wrapT);
+                textureSpec.wrap = loadTextureWrap(k, v);
             }
             else {
                 reportUnknown("tex_spec", k, v);
             }
         }
+        return textureSpec;
     }
 
-    void MaterialLoader::loadTextureWrap(
+    material::WrapMode MaterialLoader::loadTextureWrap(
         const std::string& k,
-        const loader::DocNode& v,
-        uint16_t& wrapMode) const
+        const loader::DocNode& v) const
     {
         const std::string& wrap = readString(v);
-        if (wrap == "GL_REPEAT") {
-            wrapMode = GL_REPEAT;
+        if (wrap == "repeat") {
+            return material::WrapMode::repeat;
         }
-        else if (wrap == "GL_CLAMP_TO_EDGE") {
-            wrapMode = GL_CLAMP_TO_EDGE;
+        else if (wrap == "clamp_to_edge") {
+            return material::WrapMode::clamp_to_edge;
         }
         else {
             // NOTE KI GL_REPEAT is GL default
-            wrapMode = GL_REPEAT;
             reportUnknown("wrap_mode", k, v);
+            return material::WrapMode::repeat;
         }
     }
 
@@ -599,7 +612,7 @@ namespace loader {
         const MaterialField& f = data.fields;
         const auto& mod = *data.material;
 
-        if (f.textureSpec) m.textureSpec = mod.textureSpec;
+        if (f.defaultTextureSpec) m.defaultTextureSpec = mod.defaultTextureSpec;
 
         if (f.baseDir) m.m_baseDir = mod.m_baseDir;
         if (f.geometryType) m.m_geometryType = mod.m_geometryType;
@@ -613,6 +626,7 @@ namespace loader {
         if (f.tilingY) m.tilingY = mod.tilingY;
 
         if (f.spriteCount) m.spriteCount = mod.spriteCount;
+        if (f.spritesPerRow) m.spritesPerRow = mod.spritesPerRow;
         if (f.spritesX) m.spritesX = mod.spritesX;
 
         //if (f.ns) m.ns = mod.ns;
@@ -635,6 +649,8 @@ namespace loader {
         if (f.layersDepth) m.layersDepth = mod.layersDepth;
         if (f.parallaxDepth) m.parallaxDepth = mod.parallaxDepth;
 
+        if (f.dynamicRatio) m.m_dynamicRatio = mod.m_dynamicRatio;
+
         if (f.mras) m.mras = mod.mras;
 
         if (f.invertOcclusion) m.m_invertOcclusion = mod.m_invertOcclusion;
@@ -655,7 +671,7 @@ namespace loader {
         if (f.defaultPrograms) m.m_defaultPrograms = mod.m_defaultPrograms;
 
         for (const auto& [type, info] : mod.getTextures()) {
-            m.addTexture(type, info.path, info.compressed);
+            m.addTexture(type, info.spec, info.path, info.compressed);
         }
 
         for (const auto& progIt : mod.m_programNames) {

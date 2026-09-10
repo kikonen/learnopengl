@@ -1,0 +1,18 @@
+decal:
+  name: 4_casting
+  lifetime: 99999
+  scale: 1
+  scale_variation: [-0.2, 0.2]
+  sprite_speed: 0
+  sprite_speed_variation: [-10, 10]
+  static: false
+  material:
+    base: particles
+    map_kd: particles/4_casting_spritesheet.png
+    sprites: 73
+    sprites_x: 9
+    sprites_per_row: 9
+    alpha: true
+    #blend: true
+    texture_spec:
+      wrap: clamp_to_edge

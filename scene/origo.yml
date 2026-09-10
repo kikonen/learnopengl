@@ -53,7 +53,7 @@ types:
       path: texture_cube
       material:
         name: woodwall
-        map_kd: textures/wood_1024.png
+        map_kd: textures/wood_1024_color.png
         reflection: 0.4
       program: g_tex
   - id: four_cubes
@@ -99,7 +99,7 @@ types:
       path: quad
       material:
         name: woodwall
-        map_kd: textures/wood_1024.png
+        map_kd: textures/wood_1024_color.png
         reflection: 0.4
         render_back: true
       program: g_tex
@@ -108,7 +108,7 @@ types:
       path: quad
       material:
         name: giant_woodbox
-        map_kd: textures/wood_1024.png
+        map_kd: textures/wood_1024_color.png
         tiling: 0.1
         scale_tiling: true
         reflection: 0.1
@@ -120,7 +120,7 @@ types:
     mesh:
       path: quad
       material:
-        map_kd: textures/Marble White_VH_512.PNG
+        map_kd: textures/Marble White_VH_512_color.PNG
         reflection: 0.9
         refraction: 0.1
         refraction_ratio: [1.0, 1.52]

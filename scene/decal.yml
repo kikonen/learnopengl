@@ -72,6 +72,7 @@ types:
       vertex:
         type: box
         size: [5, 3, 0.2]
+        scale_tiling: true
       material:
         base: textures/Bricks007_1K-PNG
         map_kd: Bricks007_1K_Color.png
@@ -79,8 +80,10 @@ types:
         map_mras: Bricks007_1K_mras
         map_displacement: Bricks007_1K_displacement
         parallax_depth: 0.02
-        tiling_x: 1.25
-        tiling_y: 0.75
+        tiling: 0.25
+        # tiling_x: 1.25
+        # tiling_y: 0.75
+        scale_tiling: true
         program: g_tex
       flags:
         pre_depth: true
@@ -106,8 +109,10 @@ types:
         360 * 100)
   - id: brick_wall_2
     mesh:
-      path: texture_cube.obj
-      base_scale: [5, 3, 0.2]
+      vertex:
+        type: box
+        size: [5, 3, 0.2]
+        scale_tiling: true
       material:
         base: textures/Bricks007_1K-PNG
         map_kd: Bricks007_1K_Color.png
@@ -115,8 +120,10 @@ types:
         map_mras: Bricks007_1K_mras
         map_displacement: Bricks007_1K_displacement
         parallax_depth: 0.02
-        tiling_x: 5
-        tiling_y: 3
+        tiling: 0.25
+        # tiling_x: 5
+        # tiling_y: 3
+        scale_tiling: true
         program: g_tex
       flags:
         pre_depth: true
@@ -331,8 +338,9 @@ particles:
       map_kd: particles/4_casting_spritesheet.png
       sprites: 73
       sprites_x: 9
+      sprites_per_row: 9
       texture_spec:
-        wrap: GL_CLAMP_TO_EDGE
+        wrap: clamp_to_edge
 
 decals:
   - name: bullet_1
@@ -340,6 +348,18 @@ decals:
 
   - name: firespin_1
     prefab: decals/firespin_1.yml
+
+  - name: 4_casting
+    prefab: decals/4_casting.yml
+
+  - name: bones_1
+    prefab: decals/bones_1.yml
+
+  - name: bones_2
+    prefab: decals/bones_2.yml
+
+  - name: bones_3
+    prefab: decals/bones_3.yml
 
   - name: blood_1
     prefab: decals/blood_1.yml

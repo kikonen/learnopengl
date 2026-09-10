@@ -1,0 +1,18 @@
+decal:
+  name: bones_2
+  lifetime: 99999
+  scale: 0.4
+  scale_variation: [-0.2, 0.2]
+  sprite_speed: 0
+  sprite_speed_variation: [-10, 10]
+  static: false
+  material:
+    base: particles
+    map_kd: particles/bones_2_spritesheet.png
+    sprites: 29
+    sprites_x: 7
+    sprites_per_row: 4
+    alpha: true
+    #blend: true
+    texture_spec:
+      wrap: clamp_to_edge

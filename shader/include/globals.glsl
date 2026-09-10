@@ -81,6 +81,17 @@
 #define UNIFORM_VIEWPORT 21
 #define UNIFORM_WIREFRAME_MODE 22
 
+// Unified Hardware Texture Array Uniform Binding Slots
+#define UNIFORM_TEXTURE_ARRAY_SRGB 30
+#define UNIFORM_TEXTURE_ARRAY_LINEAR 31
+#define UNIFORM_TEXTURE_ARRAY_NORMAL 32
+#define UNIFORM_TEXTURE_ARRAY_DUDV 33
+#define UNIFORM_TEXTURE_ARRAY_DISPLACEMENT 34
+#define UNIFORM_TEXTURE_ARRAY_NOISE 35
+#define UNIFORM_TEXTURE_ARRAY_HEIGHT 36
+#define UNIFORM_TEXTURE_ARRAY_FONT_ATLAS 37
+#define UNIFORM_TEXTURE_ARRAY_DYNAMIC 38
+
 #define SUBROUTINE_EFFECT 0
 
 #define UNIT_0 0
@@ -219,9 +230,9 @@
  layout(binding = UNIT_OIT_REVEAL) uniform sampler2D oit_reveal;
 
 #define LAYOUT_EFFECT_SAMPLERS\
- layout(binding = UNIT_EFFECT_ALBEDO) uniform sampler2D effect_albedo;\
- layout(binding = UNIT_EFFECT_BRIGHT) uniform sampler2D effect_bright; \
- layout(binding = UNIT_EFFECT_WORK) uniform sampler2D effect_work;
+ layout(binding = UNIT_EFFECT_ALBEDO) uniform sampler2D u_effect_albedo;\
+ layout(binding = UNIT_EFFECT_BRIGHT) uniform sampler2D u_effect_bright; \
+ layout(binding = UNIT_EFFECT_WORK) uniform sampler2D u_effect_work;
 
 #define MATERIAL_MRA_METALNESS material.mras.r
 #define MATERIAL_MRA_ROUGHNESS material.mras.g
@@ -234,3 +245,5 @@
 #define MRA_TEX_SPECULAR  mrasTex.a
 
 // #define USE_TRIPLANAR 1
+
+// #define USE_TEXTURE_ARRAY 1

@@ -42,9 +42,9 @@ namespace render {
         // primary
         {
             // NOTE KI alpha NOT needed
-            auto buffer = new FrameBuffer(
+            m_primary = util::Ref<FrameBuffer>::create(
                 fmt::format("effect_primary_{}x{}", w, h),
-                {
+                FrameBufferSpecification {
                     w, h,
                     {
                     // diffuse
@@ -57,20 +57,18 @@ namespace render {
                     // NOTE KI depth needed since there may be "non gbuffer" render steps
                     // NOTE DepthTexture instead of RBODepth to allow *copy* instead of *blit*
                     // NOTE KI *SHARE* depth with gbuffer
-                    FrameBufferAttachment::getShared(m_gBuffer->m_buffer->getDepthAttachment()),
+                    FrameBufferAttachment::getShared(m_gBuffer->m_frameBuffer->getDepthAttachment()),
                 }
                 });
-
-            m_primary.reset(buffer);
             m_primary->prepare();
         }
 
         // secondary
         {
             // NOTE KI alpha NOT needed
-            auto buffer = new FrameBuffer(
+            m_secondary = util::Ref<FrameBuffer>::create(
                 fmt::format("effect_secondary_{}x{}", w, h),
-                {
+                FrameBufferSpecification {
                     w, h,
                     {
                     // diffuse
@@ -80,14 +78,12 @@ namespace render {
                     //FrameBufferAttachment::getShared(m_gBuffer->m_buffer->getDepthAttachment()),
                 }
                 });
-
-            m_secondary.reset(buffer);
             m_secondary->prepare();
         }
 
         // work buffers
         {
-            m_buffers.clear();
+            m_frameBuffers.clear();
 
             int workW = static_cast<int>(w * 0.5f);
             int workH = static_cast<int>(h * 0.5f);
@@ -96,20 +92,20 @@ namespace render {
 
             for (int i = 0; i < 2; i++) {
                 // NOTE KI alpha NOT needed
-                auto buffer = new FrameBuffer(
+                auto fbo = util::Ref<FrameBuffer>::create(
                     fmt::format("effect_worker_{}", i),
-                    {
+                    FrameBufferSpecification {
                         workW, workH,
                         {
                         // src - diffuse from previous pass
                         FrameBufferAttachment::getEffectTextureHdr(GL_COLOR_ATTACHMENT0),
                     }
                     });
-                m_buffers.push_back(std::unique_ptr<FrameBuffer>(buffer));
+                m_frameBuffers.push_back(fbo);
             }
 
-            for (auto& buf : m_buffers) {
-                buf->prepare();
+            for (auto& fbo : m_frameBuffers) {
+                fbo->prepare();
             }
         }
 
@@ -121,8 +117,8 @@ namespace render {
     {
         m_primary->clearAll();
         m_secondary->clearAll();
-        for (auto& buf : m_buffers) {
-            buf->clearAll();
+        for (auto& fbo : m_frameBuffers) {
+            fbo->clearAll();
         }
     }
 
@@ -130,8 +126,8 @@ namespace render {
     {
         m_primary->invalidateAll();
         m_secondary->invalidateAll();
-        for (auto& buf : m_buffers) {
-            buf->invalidateAll();
+        for (auto& fbo : m_frameBuffers) {
+            fbo->invalidateAll();
         }
     }
 
@@ -143,8 +139,8 @@ namespace render {
         m_secondary->unbindTexture(state, UNIT_EFFECT_ALBEDO);
         m_secondary->unbindTexture(state, UNIT_EFFECT_BRIGHT);
 
-        for (auto& buf : m_buffers) {
-            buf->unbindTexture(state, UNIT_EFFECT_WORK);
+        for (auto& fbo : m_frameBuffers) {
+            fbo->unbindTexture(state, UNIT_EFFECT_WORK);
         }
     }
 }

@@ -3,6 +3,8 @@
 #include <vector>
 #include <memory>
 
+#include <util/Ref.h>
+
 #include "render/Camera.h"
 
 #include "kigl/kigl.h"
@@ -29,12 +31,7 @@ public:
         int index,
         float shadowBegin,
         float shadowEnd,
-        int mapSize)
-    : m_index(index),
-    m_shadowBegin(shadowBegin),
-    m_shadowEnd(shadowEnd),
-    m_mapSize(mapSize)
-    {}
+        int mapSize);
 
     ~ShadowCascade();
 
@@ -68,8 +65,7 @@ public:
     const int m_mapSize;
 
 private:
-    // NOTE KI std::unique_ptr triggered exhaustive error loop
-    render::FrameBuffer* m_buffer{ nullptr };
+    util::Ref<render::FrameBuffer> m_frameBuffer{ nullptr };
 
     size_t m_cascadeCount{ 0 };
 

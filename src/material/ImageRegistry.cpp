@@ -59,11 +59,11 @@ std::shared_future<util::Ref<ImageTexture>> ImageRegistry::getTexture(
     bool grayScale,
     bool gammaCorrect,
     bool flipY,
-    TextureType type,
-    const TextureSpec& spec)
+    material::TextureType type,
+    const material::TextureSpec& spec)
 {
     const std::string cacheKey = fmt::format(
-        "{}_{}-{}_{}_{}-{}_{}-{}-{}_{}_{}",
+        "{}_{}-{}_{}_{}-{}_{}-{}_{}-{}",
         path,
         shared,
         //
@@ -73,9 +73,12 @@ std::shared_future<util::Ref<ImageTexture>> ImageRegistry::getTexture(
         //
         util::as_integer(type),
         //
-        spec.wrapS, spec.wrapT,
+        util::as_integer(spec.wrap),
         //
-        spec.minFilter, spec.magFilter, spec.maxMipMapLevels);
+        util::as_integer(spec.minFilter),
+        util::as_integer(spec.magFilter),
+        //
+        spec.maxMipMapLevels);
 
     std::lock_guard lock(m_lock);
     {
@@ -85,7 +88,9 @@ std::shared_future<util::Ref<ImageTexture>> ImageRegistry::getTexture(
     }
 
     auto future = startLoad(
-        util::Ref<ImageTexture>::create(name, path, shared, grayScale, gammaCorrect, flipY, type, spec));
+        util::Ref<ImageTexture>::create(
+            name, path,
+            shared, grayScale, gammaCorrect, flipY, type, spec));
 
     m_textures[cacheKey] = future;
 

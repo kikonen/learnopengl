@@ -1,0 +1,1643 @@
+---
+meta:
+  name: Full
+viewports:
+skybox:
+  #material: skybox/BluePinkNebular
+  #swap_faces: true
+  xmaterial: skybox/Skybox_3
+  xfaces:
+    - Left_Tex.png
+    - Right_Tex.png
+    - Up_Tex.png
+    - Down_Tex.png
+    - Front_Tex.png
+    - Back_Tex.png
+  material: skybox/polyhaven/wasteland_clouds_puresky_4k.hdr
+root:
+  type: origo
+  pos: [200, 0, 200]
+  xxscript_file: scripts/seq_spin_root
+script:
+  scripts:
+    - path: lib/common
+
+includes:
+  - path: prefab/util/include_grid.yml
+  - path: prefab/util/include_origo_marker.yml
+  - path: prefab/util/include_fps_counter.yml
+  - path: prefab/creatures/include_skeleton_warrior.yml
+  - path: prefab/characters/elf/female/include_elf_female_warrior.yml
+  - xpath: prefab/characters/elf/male/include_elf_male_warrior.yml
+
+types:
+  - id: grid
+    prefab:
+      path: prefab/util/prefab_grid.yml
+  - id: origo
+    type: origo
+  - id: cube_map
+    type: origo
+    flags:
+      cube_map: true
+      environment_probe: true
+  - id: player
+    type: origo
+    xmesh:
+      path: player
+    mesh:
+      program: g_tex
+    front: [0, 0, -1]
+    flags:
+      allow_normals: false
+    audio:
+      listener:
+        default: true
+    camera:
+      default: true
+    controllers:
+      - type: pawn
+      - type: camera_zoom
+    physics:
+      update: true
+      body:
+        kinematic: true
+        type: capsule
+        density: 0.01
+        rot: [90, 0, 0]
+        max_angular_velocity: 0
+        force_axis: true
+      geom:
+        type: capsule
+        category: [player]
+        size: [0.25, 3, 0]
+  - id: player_3rd_person_skeleton_warrior
+    base: prefab_composite_skeleton_warrior
+    camera:
+      type: follow
+      distance: [5, 2.5, 10]
+      default: true
+    controllers:
+      - type: pawn
+      - type: camera_zoom
+    audio:
+      listener:
+        default: true
+    flags:
+      dynamic_bounds: true
+    physics:
+      enabled: true
+      update: true
+      body:
+        kinematic: true
+        density: 0.01
+      geom:
+        category: [player]
+    script: |
+      local wid = cmd:wait({ time=2 })
+      cmd:animation_play(
+        self.handle,
+        { after=wid, tag = "body", name = "walk_2" });
+  - id: zero_origo
+    type: origo
+    script_file: scripts/seq_zero_origo
+  - id: zero
+    mesh:
+      path: ball_volume
+      material:
+        name: default_ball
+        kd: [0, 0.8, 0]
+      program: g_tex
+  - id: moving_water_ball
+    mesh:
+      path: water_ball
+      program: g_tex
+    script_file: scripts/seq_zero
+  - id: light_dir_origo
+    type: origo
+    script_file: scripts/anim_sun_light
+  - id: sun_light
+    mesh:
+      path: light
+      material_modifier:
+        kd: [0.0, 0.7, 0.0, 1.0]
+        program: ball_effect
+        program_definitions:
+          effect_sun: 1
+    flags:
+      effect: true
+      no_shadow: true
+    light:
+      type: directional
+      target_id: dir_light_target
+      diffuse: [0.4, 0.4, 0.4, 1.0]
+      intensity: 20000
+  - id: moving_point_light_origo
+    type: origo
+    script_file: scripts/anim_moving_point_light
+  - id: moving_point_light
+    desc: "NOTE overriding material in clones is *NOT* supported"
+    mesh:
+      path: light
+      program: g_light
+    base_scale: 0.5
+    flags:
+      no_shadow: true
+    light:
+      type: point
+      linear: 0.09
+      quadratic: 0.032
+      diffuse: [0.8, 0.8, 0.8, 1.0]
+      intensity: 1000
+  - id: moving_point_light_5
+    base: moving_point_light
+    mesh:
+      material:
+        kd: [0.8, 0.0, 0.0, 1.0]
+    light:
+      diffuse: [0.9, 0.0, 0.0, 1.0]
+  - id: moving_point_light_6
+    base: moving_point_light
+    mesh:
+      material:
+        kd: [0.0, 0.9, 0.0, 1.0]
+    light:
+      diffuse: [0.0, 0.9, 0.0, 1.0]
+  - id: moving_point_light_7
+    base: moving_point_light
+    mesh:
+      material:
+        kd: [0.0, 0.0, 0.9, 1.0]
+    light:
+      diffuse: [0.0, 0.0, 0.9, 1.0]
+  - id: moving_point_light_8
+    base: moving_point_light
+    mesh:
+      material:
+        kd: [0.9, 0.0, 0.9, 1.0]
+    light:
+      diffuse: [0.9, 0.0, 0.9, 1.0]
+  - id: moving_point_light_halo
+    mesh:
+      vertex:
+        type: box
+        size: 1
+      material:
+        kd: [0.6, 0.6, 0.1, 1.0]
+        program: effect_halo
+        blend: true
+        reverse_front_face: true
+        no_depth: true
+    flags:
+      effect: true
+      no_select: true
+      no_shadow: true
+  - id: moving_point_light_5_halo
+    base: moving_point_light_halo
+    mesh:
+      material_modifier:
+        kd: [0.8, 0.0, 0.0, 1.0]
+  - id: moving_point_light_6_halo
+    base: moving_point_light_halo
+    mesh:
+      material_modifier:
+        kd: [0.0, 0.9, 0.0, 1.0]
+  - id: moving_point_light_7_halo
+    base: moving_point_light_halo
+    mesh:
+      material_modifier:
+        kd: [0.0, 0.0, 0.9, 1.0]
+  - id: moving_point_light_8_halo
+    base: moving_point_light_halo
+    mesh:
+      material_modifier:
+        kd: [0.9, 0.0, 0.9, 1.0]
+  - id: rock_light_origo
+    type: origo
+    script_file: scripts/anim_rock_light
+  - id: rock_light
+    mesh:
+      path: light
+      program: g_tex
+    flags:
+      no_shadow: true
+    light:
+      type: point
+      linear: 0.09
+      quadratic: 0.032
+      diffuse: [0.8, 0.8, 0.8, 1.0]
+      intensity: 1000
+  - id: active_node
+    mesh:
+      path: texture_cube
+      material_modifier:
+        tiling_x: 2
+        tiling_y: 2
+      program: g_tex
+    script_file: scripts/anim_node_path
+  - id: active_node_around_rock
+    mesh:
+      path: texture_cube
+      program: g_tex
+    script_file: scripts/anim_node_path
+  - id: example
+    mesh:
+      path: glass_ball
+      material:
+        name: default_glass_ball_todo
+        kd: [0.8, 0.8, 0.0, 1.0]
+        reflection: 0.1
+        refraction: 0.7
+        refraction_ratio: [1.0, 1.52]
+      material_modifier:
+        reflection: 0.7
+        refraction: 0.05
+        refraction_ratio: [1.0, 1.52]
+      program: g_tex
+    repeat:
+      x_count: 2
+      y_count: 1
+      z_count: 2
+      x_step: 3
+      y_step: 0
+      z_step: 3
+  - id: window_1
+    prefab:
+      path: prefab/props/prefab_door_01.yml
+  - id: door_1
+    prefab:
+      path: prefab/props/prefab_door_05.yml
+  - id: window_1_1
+    prefab:
+      path: prefab/props/prefab_door_06.yml
+  - id: window_2
+    prefab:
+      path: prefab/props/prefab_door_01.yml
+  - id: stained_windows
+    prefab:
+      path: prefab/props/prefab_door_01.yml
+  - id: brick_wall
+    mesh:
+      path: quad
+      material:
+        name: brickwall
+        prefab: materials/brickwall_1024
+        kd: [0.800000, 0.800000, 0.800000, 1.0]
+        parallax_depth: 0.017
+        xreflection: 0.02
+        render_back: true
+      flags:
+        pre_depth: true
+      program: g_tex
+  - id: brick_wall_one
+    mesh:
+      path: quad
+      material:
+        name: brickwall
+        prefab: materials/brickwall_1024
+        kd: [0.800000, 0.800000, 0.800000, 1.0]
+        parallax_depth: 0.017
+        xreflection: 0.02
+        render_back: true
+      flags:
+        pre_depth: true
+      program: g_tex
+  - id: wood_wall
+    mesh:
+      path: quad
+      material:
+        name: woodwall
+        kd: [0.800000, 0.800000, 0.800000, 1.0]
+        map_kd: textures/wood_1024_color.png
+        xreflection: 0.1
+        render_back: true
+      flags:
+        pre_depth: true
+      program: g_tex
+  - id: wood_wall_upper_normal
+    mesh:
+      path: quad
+      material:
+        name: woodwall
+        kd: [0.800000, 0.800000, 0.800000, 1.0]
+        map_kd: textures/wood_1024_color.png
+        xreflection: 0.1
+        render_back: true
+      material_modifier:
+        map_normal: textures/wood_1024_normal.png
+        parallax_depth: 0.02
+      flags:
+        pre_depth: true
+      program: g_tex
+  - id: big_mirror
+    type: composite
+    composite: big_mirror_composite
+  - id: big_mirror_front
+    mesh:
+      path: quad
+      material:
+        kd: [0.800000, 0.800000, 0.800000, 1.0]
+        map_kd: textures/Marble White_VH_512_color.PNG
+        reflection: 0.5
+        refraction: 0.05
+        refraction_ratio: [1.0, 1.52]
+        program: g_mirror
+      base_scale: 15.0
+      flags:
+        pre_depth: true
+    flags:
+      mirror: true
+  - id: big_mirror_back
+    mesh:
+      path: quad
+      material:
+        kd: [0.800000, 1.800000, 0.800000, 1.0]
+        map_kd: textures/Marble White_VH_512_color.PNG
+        program: g_tex
+      base_scale: 15.0
+      front: -z
+      flags:
+        pre_depth: true
+  - id: big_mirror_1_origo
+    base: big_mirror
+    script_file: scripts/anim_mirror
+  - id: big_mirror_2_origo
+    base: big_mirror
+    script_file: scripts/anim_mirror
+  - id: airboat
+    mesh:
+      path: airboat_fixed_colors
+      program: g_tex
+    physics:
+      body:
+        type: box
+        density: 0.3
+        size: [4, 2.5, 2]
+      geom:
+        type: box
+        category: can_float
+        collision: [prop, npc]
+        size: [4, 2.5, 2]
+  - id: spyro
+    mesh:
+      path: spyro2
+      program: g_tex
+    material_modifier:
+      prefab: materials/Lava05
+      tiling: 6
+  - id: wyvern
+    prefab:
+      path: prefab/creatures/prefab_wyvern.yml
+    script: |
+      local wid = cmd:wait({ time=2 })
+      cmd:animation_play(
+        self.handle,
+        { after=wid, name = "fire" });
+  - id: backback
+    prefab:
+      path: prefab/props/prefab_backpack.yml
+  - id: bunny
+    mesh:
+      path: bunny
+      material_modifier:
+        reflection: 0.7
+        render_back: true
+      program: g_tex
+  - id: dragon
+    mesh:
+      path: dragon
+      material_modifier:
+        render_back: true
+      program: g_tex
+  - id: shuttle
+    mesh:
+      path: opengl_book/NasaShuttle/shuttle
+      material_modifier:
+        kd: [1, 1, 1, 1]
+      program: g_tex
+  - id: cylon_ship
+    prefab:
+      path: prefab/vehicles/prefab_cylon_raider.yml
+  - id: sword_2
+    mesh:
+      path: sword2
+      program: g_tex
+  - id: sword_excalibur
+    mesh:
+      path: sword2
+      program: g_tex
+  - id: teapot
+    desc: Dir light target (back needed due to gap in lid)
+    mesh:
+      path: smooth_teapot
+      material:
+        name: teapot
+        prefab: materials/Metal008.yml
+        kd: [0.578, 0.578, 0.168, 1.0]
+        xreflection: 0.7
+        xrefraction: 0.05
+        xrefraction_ratio: [1.0, 1.52]
+        tiling: 6
+      program: g_tex
+    particle: teapot
+    script_file: scripts/seq_particle_generator
+  - id: cow
+    prefab: prefab/creatures/prefab_cow.yml
+  - id: cow_fur
+    mesh:
+      path: cow
+      material:
+        name: cow_fur
+        kd: [0.5075, 0.5075, 0.5075, 1.0]
+        map_kd: textures/Dirt_vh_1024_color.png
+        map_noise: textures/noise_2_256.png
+        tiling: 1
+        layers: 25
+        layers_depth: 0.2
+        alpha: true
+      program: g_fur
+  - id: cow_2
+    mesh:
+      path: cow
+      material:
+        prefab: materials/Plastic01.yml
+        xreflection: 0.1
+      program: g_tex
+  - id: ball
+    mesh:
+      path: texture_ball
+      program: g_tex
+      material_modifier:
+        alpha: true
+        blend: true
+        render_back: true
+        kd: [1, 1, 1, 0.7]
+  - id: refract_ball
+    mesh:
+      path: glass_ball
+      material_modifier:
+        reflection: 0.05
+        refraction: 0.85
+        refraction_ratio: [1.0, 1.52]
+      program: g_tex
+  - id: reflect_ball
+    mesh:
+      path: glass_ball
+      material_modifier:
+        reflection: 0.8
+      program: g_tex
+  - id: water_ball
+    mesh:
+      path: water_ball
+      material_modifier:
+        xreflection: 0.3
+      program: g_tex
+  - id: basic_ball
+    mesh:
+      path: water_ball
+      material:
+        name: default_ball
+        kd: [0.8, 0.8, 0.0, 1.0]
+        mras: [0.6, 0.3, 1]
+      program: g_tex
+  - id: gold_ball
+    mesh:
+      path: water_ball
+      material:
+        name: gold_ball
+        prefab: materials/Metal008.yml
+        kd: [0.7516, 0.6065, 0.2265, 1.0]
+      program: g_tex
+  - id: ball_origo
+    type: origo
+  - id: silver_ball
+    mesh:
+      path: water_ball
+      material:
+        name: silver_ball
+        kd: [0.5075, 0.5075, 0.5075, 1.0]
+        mras: [1, 0.3, 1]
+      program: g_tex
+    physics:
+      body:
+        type: sphere
+        density: 0.07
+      geom:
+        type: sphere
+        category: can_float
+        collision: [prop, npc]
+  - id: bronze_ball
+    mesh:
+      path: water_ball
+      material:
+        name: bronze_ball
+        kd: [0.7140, 0.4284, 0.1814, 1.0]
+        mras: [1, 0.3, 1]
+      program: g_tex
+  - id: copper_ball
+    mesh:
+      path: water_ball
+      material:
+        name: copper
+        prefab: materials/Metal008.yml
+        kd: [0.800000, 0.800000, 0.800000]
+        mras: [1, 0.3, 1]
+      program: g_tex
+  - id: plasma_ball
+    mesh:
+      vertex:
+        type: box
+        size: 3
+      material:
+        kd: [0.8, 0.3, 0, 1]
+        program: effect_halo
+        blend: true
+        reverse_front_face: true
+        no_depth: true
+    flags:
+      effect: true
+      no_select: true
+      no_shadow: true
+  - id: brick_cube
+    mesh:
+      path: texture_cube
+      material_modifier:
+        tiling_x: 2
+        tiling_y: 2
+      flags:
+        pre_depth: true
+      program: g_tex
+  - id: four_cubes
+    mesh:
+      path: texture_cube_3
+      flags:
+        pre_depth: true
+      program: g_tex
+    camera:
+      fov: 80
+    controllers:
+      - type: camera_zoom
+    particle: four_cubes
+    script_files:
+      - scripts/anim_four_cubes
+      - scripts/seq_particle_generator
+  - id: blend_cubes
+    mesh:
+      path: rubik_cube.fbx
+      lod:
+        max: 200
+      material_modifier:
+        alpha: true
+        blend: true
+        render_back: true
+        program: g_tex
+      base_scale: 0.01
+    script_file: scripts/anim_four_cubes
+  - id: wooden_matrix_cube
+    mesh:
+      path: texture_cube_4/texture_cube_4.obj
+      flags:
+        pre_depth: true
+      program: g_tex
+  - id: pool_surface
+    mesh:
+      path: plane
+      material:
+        name: pool_surface
+        kd: [0.55, 0.55, 0.95, 1.0]
+        map_normal: textures/water_surface_512_normal.png
+        map_dudv: textures/water_512_dudv.png
+        tiling: 2
+        render_back: true
+        program: g_water
+      scale: 30
+      flags:
+        pre_depth: true
+    priority: -5
+    flags:
+      no_shadow: true
+      water: true
+    water_depth: 10.0
+    physics:
+      update: true
+      body:
+        type: box
+        kinematic: true
+        density: 0.5
+      geom:
+        type: box
+        category: [water]
+        collision: [can_float]
+        size: [30, 0.01, 30]
+    script_file: scripts/anim_water
+  - id: pool_floor
+    mesh:
+      path: plane
+      material:
+        name: pool_floor
+        kd: [0.8, 0.8, 0.8, 1.0]
+        xxmap_kd: textures/Marble White_VH_512_color.PNG
+        map_kd: textures/tiles_1024_color.png
+        tiling: 8
+      scale: 30
+      flags:
+        pre_depth: true
+      program: g_tex
+    priority: -10
+    flags:
+      no_shadow: true
+    physics:
+      body:
+        type: box
+        kinematic: true
+        density: 0.5
+      geom:
+        type: box
+        category: [terrain]
+        collision: [can_terrain]
+        size: [30, 0.01, 30]
+  - id: pool_side
+    mesh:
+      path: pool_brick
+      material_modifier:
+        tiling_x: 100
+        tiling_y: 10
+      flags:
+        pre_depth: true
+      program: g_tex
+    physics:
+      body:
+        type: box
+        kinematic: true
+        density: 0.5
+      geom:
+        type: box
+        category: [prop]
+        collision: [npc]
+        size: [1, 1, 1]
+  - id: terrain_grass_v2
+    mesh:
+      path: quad_terrain
+      material:
+        prefab: materials/Terrain2
+        texture_spec:
+          wrap: clamp_to_edge
+        program: g_terrain
+        pre_depth_program: g_terrain_depth
+        id_program: g_terrain_object_id
+        selection_program: g_terrain_selection
+        tiling: 8
+      flags:
+        tessellation: true
+        pre_depth: true
+    priority: 20
+    type_flags:
+      use_deferred: true
+      nav_physics: true
+    generator:
+      type: terrain
+      mode: grid
+      terrain:
+        map_height: textures/terrain_2/terrain_2_height.png
+      tiling:
+        tile_size: 256
+        tiles: [8, 0, 8]
+        vert_range: [-62.54, 221.9]
+        horiz_scale: 2
+    physics:
+      geom:
+        type: height_field
+        category: [terrain]
+        collision: [can_terrain]
+        size: [2048, 0, 2048]
+  - id: grid_points
+    mesh:
+      path: glass_ball
+      material:
+        name: sea_floor
+        map_kd: textures/tiles_1024_color.png
+        tiling: 2
+      material_modifier:
+        ke: [0, 0.2, 0]
+      program: g_tex
+    light:
+      type: point
+      linear: 0.014
+      quadratic: 0.0007
+      diffuse: [0.6, 1.2, 0.6, 1.0]
+      intensity: 1000
+      enabled: false
+  - id: sea_surface
+    desc: TODO KI conflicting water reflect with pool
+    priority: -20
+    mesh:
+      path: plane
+      material:
+        name: sea_surface
+        kd: [0.55, 0.55, 0.95, 1.0]
+        map_normal: textures/water_surface_512_normal.png
+        map_dudv: textures/water_512_dudv.png
+        tiling: 2
+        render_back: true
+        program: g_water
+      scale: 128
+      flags:
+        pre_depth: true
+    flags:
+      no_shadow: true
+      water: true
+    water_depth: 100.0
+    physics:
+      body:
+        type: box
+        kinematic: true
+        density: 0.5
+      geom:
+        type: box
+        category: [water]
+        collision: [can_float]
+        size: [128, 0.01, 128]
+  - id: sea_floor
+    priority: -25
+    mesh:
+      path: plane
+      material:
+        name: sea_floor
+        map_kd: textures/tiles_1024_color.png
+        tiling: 2
+        render_back: true
+      flags:
+        pre_depth: true
+      program: g_tex
+    flags:
+      no_shadow: true
+    physics:
+      geom:
+        type: plane
+        category: [terrain]
+        collision: [can_terrain]
+  - id: planet_old
+    mesh:
+      path: planet/planet.obj
+      material_modifier:
+        map_normal: mars_normal.png
+      flags:
+        pre_depth: true
+      program: g_tex
+    script_file: scripts/anim_planet
+  - id: planet
+    mesh:
+      path: planets/planet.obj
+      material:
+        base_dir: textures/planets/earth
+        map_kd: 2k_earth_daymap_color.jpg
+        map_normal: 2k_earth_daymap_normal.png
+      default_programs: true
+      base_scale: 20
+    script: |
+      cmd:rotate(
+        self.handle,
+        { time=60 * 100 },
+        vec3(0, 1, 0),
+        360 * 30)
+  - id: planet_cloud
+    mesh:
+      path: planets/planet.obj
+      material:
+        kd: [1, 1, 1.3, 0.3]
+        base_dir: textures/planets/earth
+        map_kd: 2k_earth_clouds_color.jpg
+        alpha: true
+        blend: true
+      default_programs: true
+      base_scale: 21
+    flags:
+      no_shadow: true
+    script: |
+      cmd:rotate(
+        self.handle,
+        { time=40 * 100 },
+        vec3(0, 1, 0),
+        360 * 50)
+  - id: cylon_group_origo
+    type: origo
+    script: |
+      cmd:rotate(
+        self.handle,
+        { time=60 * 100 },
+        vec3(0, 1, 0),
+        360 * 200)
+  - id: cylon_group
+    prefab:
+      path: prefab/vehicles/prefab_cylon_raider.yml
+    priority: -20
+    audio:
+      sources:
+        - name: fly
+          path: audio/fab/noise_static_pass_by_sweetener_037.wav
+          reference_distance: 10
+          gain: 1
+          loop: true
+    particle: cylon_group
+    script: |
+      local fly_sid = util.sid("fly")
+      cid = cmd:audio_play(
+        self.handle,
+        { sid=fly_sid })
+    script_file: scripts/seq_particle_generator
+  - id: rock_origo
+    type: origo
+    flags:
+      cube_map: true
+      environment_probe: true
+  - id: rock
+    mesh:
+      path: rock2/rock
+      material_modifier:
+        prefab: materials/Rock002.yml
+        mras: [0.5, 0.0, 1]
+        tiling: 4
+      program: g_tex
+  - id: asteroid_belt
+    prefab:
+      path: prefab/scenery/prefab_asteroid.yml
+    generator:
+      type: asteroid_belt
+      mode: random
+      count: 1000
+  - id: scale_1
+    mesh:
+      path: quad
+      material:
+        name: brickwall
+        prefab: materials/brickwall_1024
+        kd: [0.800000, 0.800000, 0.800000, 1.0]
+        parallax_depth: 0.017
+        xreflection: 0.02
+        render_back: true
+      program: g_tex
+  - id: scale_2
+    mesh:
+      path: quad
+      material:
+        name: brickwall
+        prefab: materials/brickwall_1024
+        kd: [0.800000, 0.800000, 0.800000, 1.0]
+        parallax_depth: 0.017
+        xreflection: 0.02
+        render_back: true
+      flags:
+        pre_depth: true
+      program: g_tex
+  - id: scale_3
+    mesh:
+      path: quad
+      material:
+        name: brickwall
+        prefab: materials/brickwall_1024
+        kd: [0.800000, 0.800000, 0.800000, 1.0]
+        parallax_depth: 0.017
+        xreflection: 0.02
+        render_back: true
+      flags:
+        pre_depth: true
+      program: g_tex
+  - id: palm_tree_forest
+    prefab:
+      path: prefab/scenery/prefab_palm_tree.yml
+    mesh:
+      material_modifier:
+        shared_definitions:
+          USE_TREE_WIND: 1
+    priority: -17
+    flags:
+      static_bounds: true
+    generator:
+      type: grid
+      mode: random
+      offset: [350, 10.0, 150.0]
+      seed: [424242, 121212, 333333]
+      repeat:
+        x_count: 40
+        z_count: 40
+        x_step: -25
+        z_step: 25
+  - id: maple_tree_forest
+    prefab:
+      path: prefab/scenery/prefab_maple_tree.yml
+    mesh:
+      material_modifier:
+        shared_definitions:
+          USE_TREE_WIND: 1
+    priority: -17
+    flags:
+      static_bounds: true
+    generator:
+      type: grid
+      mode: random
+      offset: [250, 10.0, 150.0]
+      seed: [424242, 121212, 333333]
+      repeat:
+        x_count: 40
+        z_count: 40
+        x_step: -20
+        z_step: 20
+  - id: grass
+    prefab:
+      path: prefab/scenery/prefab_grass.yml
+    mesh:
+      material_modifier:
+        shared_definitions:
+          USE_TREE_WIND: 1
+    priority: -20
+    flags:
+      static_bounds: true
+      no_shadow: true
+    generator:
+      type: grid
+      mode: random
+      offset: [400, 10.0, -400.0]
+      scale: 3
+      seed: [4242, 1212, 3333]
+      count: 1000
+      repeat:
+        x_count: 100
+        z_count: 150
+        x_step: -9
+        z_step: 9
+  - id: bush01
+    prefab:
+      path: prefab/scenery/prefab_bush01.yml
+    mesh:
+      material_modifier:
+        shared_definitions:
+          USE_TREE_WIND: 1
+    priority: -20
+    flags:
+      static_bounds: true
+      no_shadow: true
+    generator:
+      type: grid
+      mode: random
+      offset: [-400, 0, -400]
+      scale: 3
+      seed: [12, 13, 14]
+      count: 100
+      repeat:
+        x_count: 21
+        z_count: 35
+        x_step: 40
+        z_step: 40
+  - id: bush02
+    prefab:
+      path: prefab/scenery/prefab_bush02.yml
+    mesh:
+      material_modifier:
+        shared_definitions:
+          USE_TREE_WIND: 1
+    priority: -20
+    flags:
+      static_bounds: true
+      no_shadow: true
+    generator:
+      type: grid
+      mode: random
+      offset: [-400, 0, -400]
+      scale: 4
+      seed: [6116, 1188, 2299]
+      count: 50
+      repeat:
+        x_count: 21
+        z_count: 35
+        x_step: 40
+        z_step: 40
+  - id: bush03
+    prefab:
+      path: prefab/scenery/prefab_bush03.yml
+    mesh:
+      material_modifier:
+        shared_definitions:
+          USE_TREE_WIND: 1
+    priority: -20
+    flags:
+      static_bounds: true
+      no_shadow: true
+    generator:
+      type: grid
+      mode: random
+      offset: [-300, 0, -300]
+      scale: 1.5
+      seed: [61236, 8855, 9934]
+      count: 600
+      repeat:
+        x_count: 21
+        z_count: 35
+        x_step: 40
+        z_step: 40
+  - id: elf_female_warrior
+    base: prefab_elf_female_warrior
+    flags:
+      dynamic_bounds: true
+    physics:
+      enabled: true
+    script: |
+      cmd:animation_play(
+        self.handle,
+        { tag="body", name = "idle" })
+    script_file: scripts/seq_elf_random_nav
+  - id: skeleton_warrior
+    base: prefab_composite_skeleton_warrior
+    priority: -15
+    type_flags:
+      dynamic_bounds: true
+    physics:
+      enabled: true
+      update: true
+      body:
+        kinematic: true
+      geom:
+        category: npc
+        collision: [prop, npc]
+    script_file: scripts/seq_skeleton_random_nav
+  - id: giant_wooden_box
+    mesh:
+      path: quad
+      material:
+        name: giant_woodbox
+        kd: [0.800000, 0.800000, 0.800000, 1.0]
+        map_kd: textures/wood_1024_color.png
+        xreflection: 0.1
+        render_back: true
+      program: g_tex
+    flags:
+      no_shadow: true
+    clones:
+      - pos: [0.0, 100.0, 0.0]
+        rot: [90, 0, 0]
+      - pos: [0.0, -100.0, .0]
+        rot: [270, 0, 0]
+      - pos: [100.0, 0.0, 0.0]
+        rot: [0, 270, 0]
+      - pos: [-100.0, 0.0, 0.0]
+        rot: [0, 90, 0]
+      - pos: [0.0, 0.0, 100.0]
+        rot: [0, 180, 0]
+      - pos: [0.0, 0.0, -100.0]
+        rot: [0, 0, 0]
+  - id: world_plane
+    type: origo
+    physics:
+      geom:
+        type: plane
+
+composites:
+  - id: big_mirror_composite
+    nodes:
+      - type: big_mirror_front
+        alias: mirror_front
+      - type: big_mirror_back
+        ignored_by: mirror_front
+
+nodes:
+  - xtype: grid
+  - type: prefab_fps_counter
+    id: fps_counter
+    pos: [2, -2, -1]
+  - type: zero_origo
+    pos: [0.0, 0.0, 0.0]
+    children:
+      - type: active_node
+        pos: [0, 15, 0]
+      - type: moving_water_ball
+        pos: [0.0, 0.0, 0.0]
+        scale: 0.3
+      - type: moving_point_light_origo
+        pos: [0, 14, 0]
+        clones:
+          - pos: [-15.0, 14.0, -15.0]
+            children:
+              - type: moving_point_light
+                pos: [0.0, 0.0, 10.0]
+              - type: moving_point_light_halo
+                pos: [0.0, 0.0, 10.0]
+          - pos: [15.0, 14.0, -15.0]
+            children:
+              - type: moving_point_light
+                pos: [0.0, 0.0, 10.0]
+              - type: moving_point_light_halo
+                pos: [0.0, 0.0, 10.0]
+          - pos: [-15.0, 14.0, 15.0]
+            children:
+              - type: moving_point_light
+                pos: [0.0, 0.0, 10.0]
+              - type: moving_point_light_halo
+                pos: [0.0, 0.0, 10.0]
+          - pos: [15.0, 14.0, 15.0]
+            children:
+              - type: moving_point_light
+                pos: [0.0, 0.0, 10.0]
+              - type: moving_point_light_halo
+                pos: [0.0, 0.0, 10.0]
+          - pos: [-25.0, 10.0, -25.0]
+            children:
+              - type: moving_point_light_5
+                pos: [0.0, 0.0, 15.0]
+              - type: moving_point_light_5_halo
+                pos: [0.0, 0.0, 15.0]
+          - pos: [25.0, 10.0, -25.0]
+            children:
+              - type: moving_point_light_6
+                pos: [0.0, 0.0, 15.0]
+              - type: moving_point_light_6_halo
+                pos: [0.0, 0.0, 15.0]
+          - pos: [-25, 10.0, 25.0]
+            children:
+              - type: moving_point_light_7
+                pos: [0.0, 0.0, 15.0]
+              - type: moving_point_light_7_halo
+                pos: [0.0, 0.0, 15.0]
+          - pos: [25.0, 10.0, 25.0]
+            children:
+              - type: moving_point_light_8
+                pos: [0.0, 0.0, 15.0]
+              - type: moving_point_light_8_halo
+                pos: [0.0, 0.0, 15.0]
+  - type: zero
+    pos: [0.0, 0.0, 0.0]
+    scale: 0.2
+  - xtype: player
+    pos: [-10, 12, -20.0]
+    rotation: [0, 180, 0.0]
+    scale: 0.8
+    active: true
+    children:
+      - type: cube_map
+        pos: [0, 0, 1]
+  - type: player_3rd_person_skeleton_warrior
+    pos: [-10, 12, -20.0]
+    rotation: [0, 180, 0]
+    active: true
+  - xtype: cube_map
+    pos: [0.0, 4.5, 0.0]
+  - type: example
+    pos: [-1.5, 5.0, -1.5]
+    rotation: [0.0, 0.0, 0.0]
+    scale: 1.0
+    repeat:
+      x_count: 2
+      y_count: 1
+      z_count: 2
+      x_step: 3
+      y_step: 0
+      z_step: 3
+  - type: window_1
+    pos: [5.0, 10.0, -5.0]
+    scale: 2
+  - type: door_1
+    pos: [-5.0, 10.0, -5.0]
+    scale: 2
+  - type: window_1_1
+    pos: [5.0, 8.0, 0.0]
+    rotation: [0, -45.0, 0.0]
+    scale: 4
+  - type: window_2
+    pos: [7.0, 14.0, -8.0]
+    scale: 2
+  - type: stained_windows
+    pos: [-10.0, 20.0, 10.0]
+    scale: 2
+    repeat:
+      x_count: 10
+      x_step: 2
+  - xtype: cube_map
+    pos: [-1.0, 13.5, 14.0]
+  - type: brick_wall
+    pos: [-5.0, 13.5, 14.0]
+    repeat:
+      x_count: 3
+      x_step: 4
+  - type: brick_wall_one
+    pos: [5.0, 13.5, 14.0]
+    rotation: [0, 180, 0]
+  - type: wood_wall
+    pos: [-3.0, 13.5, 14.0]
+    repeat:
+      x_count: 2
+      x_step: 4
+  - type: wood_wall_upper_normal
+    pos: [-3.0, 15.5, 14.0]
+    repeat:
+      x_count: 2
+      x_step: 4
+  - type: big_mirror_1_origo
+    pos: [-55.0, 25.0, 10.0]
+    rotation: [0.0, 45.0, 0.0]
+  - type: big_mirror_2_origo
+    pos: [55.0, 25.0, 10.0]
+    rotation: [0.0, 215.0, 0.0]
+  - type: airboat
+    clones:
+      - pos: [24.0, 11.0, 15.0]
+      - pos: [6.0, 19.0, 22.0]
+        scale: 0.5
+      - pos: [260.0, 5.0, -170.0]
+  - xtype: spyro
+    pos: [0.0, 15.0, 30.0]
+    scale: 0.06
+  - type: wyvern
+    pos: [0.0, 35.0, 30.0]
+    rotation: [0, 0, 0]
+    scale: 2
+    repeat:
+      x_count: 2
+      z_count: 2
+      x_step: 100
+      z_step: -100
+  - type: backback
+    pos: [10.0, 10.0, 5.0]
+    scale: 1.5
+    enabled: false
+  - type: bunny
+    pos: [-15.0, 14.0, 5.0]
+    scale: 20.0
+    enabled: false
+  - type: dragon
+    pos: [-15.0, 25.0, 0.0]
+    scale: 30.0
+    enabled: false
+  - xtype: shuttle
+    pos: [20.0, 40.0, -50.0]
+    scale: 20.0
+  - type: cylon_ship
+    pos: [20.0, 40.0, -50.0]
+    rotation: [0, 180, 0]
+  - type: sword_2
+    pos: [0.0, 40.0, -50.0]
+    scale: 1.0
+  - type: sword_excalibur
+    rotation: [223, 28, 24]
+    pos: [250.0, 10.0, -190.0]
+    scale: 1.0
+  - type: teapot
+    id: dir_light_target
+    pos: [-5.0, 25.0, -5.0]
+    scale: 1.0
+    selected: false
+  - type: cow
+    rotation: [0, 180, 0]
+    scale: 0.8
+    selected: false
+    clones:
+      - pos: [5.0, 25.0, -5.0]
+      - pos: [5.0, 25.0, -15.0]
+  - xtype: cow_fur
+    pos: [5.0, 25.0, -5.0]
+    rotation: [0, 180, 0]
+    scale: 0.8
+  - xtype: cow_2
+    pos: [5.0, 25.0, -15.0]
+    rotation: [0, 180, 0]
+    scale: 0.8
+    selected: false
+  - type: ball
+    pos: [0.0, 13.0, 0.0]
+    scale: 2.0
+  - xtype: cube_map
+    pos: [0.0, 28.0, 8.0]
+  - xtype: cube_map
+    pos: [5.0, 25.0, 0.0]
+  - type: refract_ball
+    pos: [5.0, 25.0, 0.0]
+    scale: 1.3
+  - xtype: cube_map
+    pos: [-10.0, 25.0, 0.0]
+  - type: reflect_ball
+    pos: [-10.0, 25.0, 0.0]
+    scale: 1.3
+  - type: water_ball
+    pos: [5.0, 30.0, 0.0]
+    scale: 1.3
+  - type: basic_ball
+    pos: [5.0, 30.0, 5.0]
+    scale: 1.3
+  - type: gold_ball
+    pos: [5.0, 30.0, 10.0]
+    scale: 1.3
+  - type: ball_origo
+    id: ball_origo
+    pos: [5.0, 30.0, 15.0]
+    children:
+      - type: bronze_ball
+        pos: [0.0, 0.0, 5.0]
+        scale: 1.3
+      - type: copper_ball
+        pos: [0.0, 0.0, 10.0]
+        scale: 1.3
+  - type: silver_ball
+    pos: [5.0, 30.0, 15.0]
+    scale: 1.3
+  - type: brick_cube
+    pos: [5.0, 25.0, 5.0]
+    scale: 1
+  - type: four_cubes
+    scale: 1
+    clones:
+      - pos: [-5.0, 20.0, -5.0]
+        id: cube_1
+      - pos: [5.0, 20.0, -5.0]
+        id: cube_2
+      - pos: [-5.0, 20.0, 5.0]
+        children:
+          - type: plasma_ball
+            pos: [0, 0, 0]
+      - pos: [5.0, 20.0, 5.0]
+        id: cube_4
+  - type: blend_cubes
+    clones:
+      - pos: [-5.0, 30.0, -5.0]
+      - pos: [5.0, 30.0, -5.0]
+      - pos: [-5.0, 30.0, 5.0]
+      - pos: [5.0, 30.0, 5.0]
+  - type: wooden_matrix_cube
+    pos: [-5.0, 25.0, 5.0]
+    rotation: [0, 180, 0]
+    scale: 1
+    selected: false
+  - type: pool_surface
+    pos: [0, 9.5, -10]
+    repeat:
+      x_count: 2
+      y_count: 1
+      z_count: 2
+      x_step: 60
+      y_step: 0
+      z_step: 60
+  - type: pool_floor
+    pos: [0.0, 3.7, -10.0]
+    repeat:
+      x_count: 2
+      y_count: 1
+      z_count: 2
+      x_step: 60
+      y_step: 0
+      z_step: 60
+  - type: pool_side
+    clones:
+      - pos: [-30.0, 4, 20]
+        scale: [0.3, 6, 60]
+      - pos: [90.0, 4, 20]
+        scale: [0.3, 6, 60]
+      - pos: [30.0, 4, 80]
+        scale: [60, 6, 0.3]
+      - pos: [30.0, 4, -40]
+        scale: [60, 6, 0.3]
+  - type: terrain_grass_v2
+    pos: [-1200, -5.5, -900]
+    xxpos: [-1024, -5.5, -1024]
+  - type: grid_points
+    pos: [-1024, 150, -1024]
+    scale: 5.0
+    repeat:
+      x_count: 9
+      y_count: 1
+      z_count: 9
+      x_step: 256
+      y_step: 0
+      z_step: 256
+  - type: sea_surface
+    pos: [-1072, 0.0, -772]
+    repeat:
+      x_count: 8
+      y_count: 1
+      z_count: 8
+      x_step: 256
+      y_step: 0
+      z_step: 256
+  - type: sea_floor
+    pos: [-1072, -70.0, -772]
+    scale: 128
+    repeat:
+      x_count: 8
+      y_count: 1
+      z_count: 8
+      x_step: 256
+      y_step: 0
+      z_step: 256
+  - type: origo
+    id: planet_origo
+    pos: [10.0, 150.0, 200.0]
+    children:
+      - type: light_dir_origo
+        pos: [0.0, 400.0, 0.0]
+        rotation: [0.0, 25.0, 0.0]
+        children:
+          - type: sun_light
+            pos: [0, 0, 600]
+            scale: 20
+      - type: asteroid_belt
+      - xtype: planet_old
+        pos: [0, 0, 0]
+        scale: 10
+      - type: planet
+      - type: planet_cloud
+      - type: rock_origo
+        pos: [0.0, -50.0, 0.0]
+        children:
+          - type: rock
+            pos: [0.0, 0, 0.0]
+            scale: 1.5
+          - type: active_node_around_rock
+            pos: [0, -5, 0]
+          - type: rock_light_origo
+            pos: [0.0, 10.0, 0.0]
+            children:
+              - type: rock_light
+                pos: [-10, 0, 0]
+                scale: 0.5
+      - type: cylon_group_origo
+        children:
+          - type: cylon_group
+            scale: 0.125
+            rotation: [0, -90, 0]
+            position: [0, 5, 24]
+            repeat:
+              x_count: 2
+              x_step: 6
+              y_step: 2
+              z_count: 2
+              z_step: 6
+  - type: scale_1
+    pos: [15, 11.5, 20.0]
+    enabled: false
+  - type: scale_2
+    scale: 2
+    pos: [10, 11.5, 20.0]
+    enabled: false
+  - type: scale_3
+    scale: 3
+    pos: [5, 11.5, 20.0]
+    enabled: false
+  - type: palm_tree_forest
+  - xtype: maple_tree_forest
+  - type: grass
+  - type: bush01
+  - type: bush02
+  - type: bush03
+  - type: elf_female_warrior
+    pos: [37, 11.5, 62.0]
+    scale: 3
+    rotation: [0, -180, 0]
+    repeat:
+      x_count: 10
+      z_count: 10
+      x_step: -10
+      z_step: 10
+  - type: skeleton_warrior
+    pos: [35, 11.5, 60.0]
+    scale: 3
+    rotation: [0, -180, 0]
+    repeat:
+      x_count: 10
+      z_count: 10
+      x_step: -10
+      z_step: 10
+  - xtype: giant_wooden_box
+    clone_position_offset: [0, 40, 0]
+    scale: 100
+    clones:
+      - pos: [0.0, 100.0, 0.0]
+        rot: [90, 0, 0]
+      - pos: [0.0, -100.0, .0]
+        rot: [270, 0, 0]
+      - pos: [100.0, 0.0, 0.0]
+        rot: [0, 270, 0]
+      - pos: [-100.0, 0.0, 0.0]
+        rot: [0, 90, 0]
+      - pos: [0.0, 0.0, 100.0]
+        rot: [0, 180, 0]
+      - pos: [0.0, 0.0, -100.0]
+        rot: [0, 0, 0]
+  - type: world_plane
+    id: world_x_minus
+    pos: [-1200, 0, 0]
+    rot: [0, 0, -90]
+  - type: world_plane
+    id: world_x_plus
+    pos: [850, 0, 0]
+    rot: [0, 0, 90]
+  - type: world_plane
+    id: world_y_minus
+    pos: [0, -400, 0]
+    rot: [0, 0, 0]
+  - xtype: world_plane
+    id: world_y_plus
+    pos: [0, 400, 0]
+    rot: [180, 0, 0]
+  - type: world_plane
+    id: world_z_minus
+    pos: [0, 0, -900]
+    rot: [90, 0, 0]
+  - type: world_plane
+    id: world_z_plus
+    pos: [0, 0, 1150]
+    rot: [-90, 0, 0]
+
+particles:
+  - id: teapot
+    seed: 1
+    gravity: [0, -0.81, 0]
+    lifetime: 20
+    lifetime_variation: 5
+    area_type: point
+    area_radius: 10
+    area_variation: 0.1
+    dir: [0, 1, 0]
+    dir_variation: 0.5
+    speed: 3
+    speed_variation: 2
+    size: 0.1
+    size_variation: 0.1
+    rate: 1000
+    rate_variation: 50
+    sprite_base: 0
+    sprite_base_variation: 0
+    sprite_count: -1
+    sprite_speed: 10
+    sprite_speed_variation: 20
+    material:
+      name: particle_casting
+      kd: [1, 1, 1, 1]
+      map_kd: particles/bones_2_spritesheet.png
+      sprites: 29
+      sprites_x: 7
+      sprites_per_row: 4
+      texture_spec:
+        wrap: clamp_to_edge
+
+  - id: four_cubes
+    seed: 1
+    gravity: [0, -0.01, 0]
+    lifetime: 5
+    lifetime_variation: 5
+    area_type: box_line
+    area_radius: 1
+    area_size: [1, 1, 1]
+    area_variation: 0.1
+    dir: [0, 1, 0]
+    dir_variation: 0.5
+    speed: 0
+    speed_variation: 0
+    size: 0.1
+    size_variation: 0.1
+    rate: 200
+    rate_variation: 50
+    sprite_base: 0
+    sprite_base_variation: 0
+    sprite_count: -1
+    sprite_speed: 10
+    sprite_speed_variation: 20
+    material:
+      name: particle_casting
+      kd: [1, 1, 1, 1]
+      map_kd: particles/4_casting_spritesheet.png
+      sprites: 73
+      sprites_x: 9
+      sprites_per_row: 9
+      texture_spec:
+        wrap: clamp_to_edge
+
+  - id: cylon_group
+    seed: 1
+    gravity: [0, -0.01, 0]
+    lifetime: 5
+    lifetime_variation: 5
+    area_type: point
+    area_radius: 1
+    area_size: [1, 1, 1]
+    area_variation: 0.1
+    dir: [0, 1, 0]
+    dir_variation: 0.5
+    speed: 0
+    speed_variation: 0
+    size: 0.1
+    size_variation: 0.1
+    rate: 200
+    rate_variation: 50
+    sprite_base: 0
+    sprite_base_variation: 0
+    sprite_count: -1
+    sprite_speed: 10
+    sprite_speed_variation: 20
+    material:
+      name: particle_casting
+      kd: [1, 1, 1, 1]
+      map_kd: particles/bones_3_spritesheet.png
+      sprites: 27
+      sprites_x: 5
+      sprites_per_row: 5
+      texture_spec:
+        wrap: clamp_to_edge
+
+materials:
+  - alias: water_caustics
+    map_kd: textures/water_caustics/water_caustics_color_001.png

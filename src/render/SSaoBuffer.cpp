@@ -44,18 +44,16 @@ namespace render {
 
         {
             // NOTE KI alpha NOT needed
-            auto buffer = new FrameBuffer(
+            m_frameBuffer = util::Ref<FrameBuffer>::create(
                 fmt::format("{}_ssao_buffer_{}x{}", namePrefix, w, h),
-                {
+                FrameBufferSpecification {
                     w, h,
                     {
                         FrameBufferAttachment::getSsaoTexture(GL_COLOR_ATTACHMENT0),
                         FrameBufferAttachment::getSsaoTexture(GL_COLOR_ATTACHMENT1),
                     }
                  });
-
-            m_buffer.reset(buffer);
-            m_buffer->prepare();
+            m_frameBuffer->prepare();
 
             unbindSsaoTexture(ctx.getGLState());
             unbindSsaoBlurTexture(ctx.getGLState());
@@ -67,36 +65,36 @@ namespace render {
 
     void SsaoBuffer::bind(const RenderContext& ctx)
     {
-        m_buffer->bind(ctx);
+        m_frameBuffer->bind(ctx);
     }
 
     void SsaoBuffer::bindSsaoTexture(kigl::GLState& state)
     {
-        m_buffer->bindTexture(state, ATT_SSAO_INDEX, UNIT_SSAO);
+        m_frameBuffer->bindTexture(state, ATT_SSAO_INDEX, UNIT_SSAO);
     }
 
     void SsaoBuffer::bindSsaoBlurTexture(kigl::GLState& state)
     {
-        m_buffer->bindTexture(state, ATT_SSAO_BLUR_INDEX, UNIT_SSAO_BLUR);
+        m_frameBuffer->bindTexture(state, ATT_SSAO_BLUR_INDEX, UNIT_SSAO_BLUR);
     }
 
     void SsaoBuffer::unbindSsaoTexture(kigl::GLState& state)
     {
-        m_buffer->unbindTexture(state, UNIT_SSAO);
+        m_frameBuffer->unbindTexture(state, UNIT_SSAO);
     }
 
     void SsaoBuffer::unbindSsaoBlurTexture(kigl::GLState& state)
     {
-        m_buffer->unbindTexture(state, UNIT_SSAO_BLUR);
+        m_frameBuffer->unbindTexture(state, UNIT_SSAO_BLUR);
     }
 
     void SsaoBuffer::clearAll()
     {
-        m_buffer->clearAll();
+        m_frameBuffer->clearAll();
     }
 
     void SsaoBuffer::invalidateAll()
     {
-        m_buffer->invalidateAll();
+        m_frameBuffer->invalidateAll();
     }
 }

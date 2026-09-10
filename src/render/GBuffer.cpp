@@ -47,9 +47,9 @@ namespace render {
 
         {
             // NOTE KI alpha NOT needed
-            auto buffer = new FrameBuffer(
+            m_frameBuffer = util::Ref<FrameBuffer>::create(
                 fmt::format("{}_gbuffer_{}x{}", namePrefix, w, h),
-                {
+                FrameBufferSpecification {
                     w, h,
                     {
                         FrameBufferAttachment::getGBufferAlbedoHdr(ATT_ALBEDO_ENUM),
@@ -65,9 +65,7 @@ namespace render {
                         FrameBufferAttachment::getDepthStencilTexture(),
                     }
                 });
-
-            m_buffer.reset(buffer);
-            m_buffer->prepare();
+            m_frameBuffer->prepare();
 
             unbindTexture(ctx.getGLState());
         }
@@ -88,20 +86,20 @@ namespace render {
 
     void GBuffer::bind(const RenderContext& ctx)
     {
-        m_buffer->bind(ctx);
+        m_frameBuffer->bind(ctx);
     }
 
     void GBuffer::bindTexture(kigl::GLState& state)
     {
-        m_buffer->bindTexture(state, ATT_ALBEDO_INDEX, UNIT_G_ALBEDO);
-        //m_buffer->bindTexture(state, ATT_SPECULAR_INDEX, UNIT_G_SPECULAR);
-        m_buffer->bindTexture(state, ATT_EMISSION_INDEX, UNIT_G_EMISSION);
-        //m_buffer->bindTexture(state, ATT_POSITION_INDEX, UNIT_G_POSITION);
-        m_buffer->bindTexture(state, ATT_NORMAL_INDEX, UNIT_G_NORMAL);
-        m_buffer->bindTexture(state, ATT_MRAS_INDEX, UNIT_G_MRAS);
-        //m_buffer->bindTexture(state, ATT_VIEW_POSITION_INDEX, UNIT_G_VIEW_POSITION);
-        //m_buffer->bindTexture(state, ATT_VIEW_Z_INDEX, UNIT_G_VIEW_Z);
-        m_buffer->bindTexture(state, ATT_DEPTH_INDEX, UNIT_G_DEPTH);
+        m_frameBuffer->bindTexture(state, ATT_ALBEDO_INDEX, UNIT_G_ALBEDO);
+        //m_frameBuffer->bindTexture(state, ATT_SPECULAR_INDEX, UNIT_G_SPECULAR);
+        m_frameBuffer->bindTexture(state, ATT_EMISSION_INDEX, UNIT_G_EMISSION);
+        //m_frameBuffer->bindTexture(state, ATT_POSITION_INDEX, UNIT_G_POSITION);
+        m_frameBuffer->bindTexture(state, ATT_NORMAL_INDEX, UNIT_G_NORMAL);
+        m_frameBuffer->bindTexture(state, ATT_MRAS_INDEX, UNIT_G_MRAS);
+        //m_frameBuffer->bindTexture(state, ATT_VIEW_POSITION_INDEX, UNIT_G_VIEW_POSITION);
+        //m_frameBuffer->bindTexture(state, ATT_VIEW_Z_INDEX, UNIT_G_VIEW_Z);
+        m_frameBuffer->bindTexture(state, ATT_DEPTH_INDEX, UNIT_G_DEPTH);
 
         if (m_depthCopyEnabled && m_depthTexture) {
             m_depthTexture->bindTexture(state, UNIT_G_DEPTH_COPY);
@@ -110,15 +108,15 @@ namespace render {
 
     void GBuffer::unbindTexture(kigl::GLState& state)
     {
-        m_buffer->unbindTexture(state, UNIT_G_ALBEDO);
-        //m_buffer->unbindTexture(state, UNIT_G_SPECULAR);
-        m_buffer->unbindTexture(state, UNIT_G_EMISSION);
-        //m_buffer->unbindTexture(state, UNIT_G_POSITION);
-        m_buffer->unbindTexture(state, UNIT_G_NORMAL);
-        m_buffer->unbindTexture(state, UNIT_G_MRAS);
-        //m_buffer->unbindTexture(state, UNIT_G_VIEW_POSITION);
-        //m_buffer->unbindTexture(state, UNIT_G_VIEW_Z);
-        m_buffer->unbindTexture(state, UNIT_G_DEPTH);
+        m_frameBuffer->unbindTexture(state, UNIT_G_ALBEDO);
+        //m_frameBuffer->unbindTexture(state, UNIT_G_SPECULAR);
+        m_frameBuffer->unbindTexture(state, UNIT_G_EMISSION);
+        //m_frameBuffer->unbindTexture(state, UNIT_G_POSITION);
+        m_frameBuffer->unbindTexture(state, UNIT_G_NORMAL);
+        m_frameBuffer->unbindTexture(state, UNIT_G_MRAS);
+        //m_frameBuffer->unbindTexture(state, UNIT_G_VIEW_POSITION);
+        //m_frameBuffer->unbindTexture(state, UNIT_G_VIEW_Z);
+        m_frameBuffer->unbindTexture(state, UNIT_G_DEPTH);
 
         if (m_depthCopyEnabled && m_depthTexture) {
             //m_depthTexture->unbindTexture(state, UNIT_G_DEPTH);
@@ -127,30 +125,30 @@ namespace render {
 
     void GBuffer::bindDepthTexture(kigl::GLState& state)
     {
-        m_buffer->bindTexture(state, ATT_DEPTH_INDEX, UNIT_G_DEPTH);
+        m_frameBuffer->bindTexture(state, ATT_DEPTH_INDEX, UNIT_G_DEPTH);
         m_depthTexture->bindTexture(state, UNIT_G_DEPTH_COPY);
     }
 
     void GBuffer::unbindDepthTexture(kigl::GLState& state)
     {
-        m_buffer->unbindTexture(state, UNIT_G_DEPTH);
+        m_frameBuffer->unbindTexture(state, UNIT_G_DEPTH);
         //m_depthTexture->unbindTexture(state, UNIT_G_DEPTH);
     }
 
     void GBuffer::clearAll()
     {
-        m_buffer->clearAll();
+        m_frameBuffer->clearAll();
     }
 
     void GBuffer::invalidateAll()
     {
-        m_buffer->invalidateAll();
+        m_frameBuffer->invalidateAll();
     }
 
     void GBuffer::updateDepthCopy()
     {
         if (m_depthCopyEnabled && m_depthTexture) {
-            m_buffer->copy(
+            m_frameBuffer->copy(
                 m_depthTexture.get(),
                 GBuffer::ATT_DEPTH_INDEX);
         }
@@ -158,6 +156,6 @@ namespace render {
 
     FrameBufferAttachment* GBuffer::getAttachment(int attachmentIndex)
     {
-        return &m_buffer->m_spec.attachments[attachmentIndex];
+        return &m_frameBuffer->m_spec.attachments[attachmentIndex];
     }
 }

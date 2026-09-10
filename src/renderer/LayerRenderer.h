@@ -5,6 +5,8 @@
 
 #include <glm/glm.hpp>
 
+#include "util/Ref.h"
+
 #include "Renderer.h"
 
 namespace render {
@@ -52,7 +54,7 @@ private:
         render::FrameBuffer* targetBuffer);
 
 public:
-    std::unique_ptr<render::FrameBuffer> m_buffer{ nullptr };
+    util::Ref<render::FrameBuffer> m_frameBuffer{ nullptr };
 
     std::unique_ptr<render::NodeDraw> m_nodeDraw;
 

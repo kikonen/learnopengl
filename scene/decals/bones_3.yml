@@ -1,0 +1,18 @@
+decal:
+  name: bones_3
+  lifetime: 99999
+  scale: 0.4
+  scale_variation: [-0.2, 0.2]
+  sprite_speed: 0
+  sprite_speed_variation: [-10, 10]
+  static: false
+  material:
+    base: particles
+    map_kd: particles/bones_3_spritesheet.png
+    sprites: 27
+    sprites_x: 5
+    sprites_per_row: 5
+    alpha: true
+    #blend: true
+    texture_spec:
+      wrap: clamp_to_edge

@@ -1,0 +1,264 @@
+#include "material_util.h"
+
+#include <string>
+#include <map>
+#include <fstream>
+#include <sstream>
+#include <filesystem>
+#include <regex>
+#include <tuple>
+
+#include <cmath>
+#include <vector>
+#include <cstdint>
+
+#include <fmt/format.h>
+
+#include "asset/Assets.h"
+
+#include "util/Log.h"
+#include "util/util.h"
+#include "util/file.h"
+
+#include "material/Material.h"
+
+namespace
+{
+}
+
+namespace material
+{
+    ResolvedTexturePath selectTexturePath(
+        const std::string& name,
+        const std::string& path,
+        bool useCompressed)
+    {
+        const auto& assets = Assets::get();
+
+        std::filesystem::path filePath;
+
+        bool found = false;
+
+        {
+            std::filesystem::path buildPath{ path };
+            const auto& stem = buildPath.stem().string();
+
+            buildPath.replace_filename(fmt::format("{}_build.{}", stem, "png"));
+
+            if (useCompressed && assets.compressedTexturesEnabled) {
+                std::filesystem::path ktxPath{ buildPath };
+                ktxPath.replace_extension(".ktx");
+
+                const auto fullPath = util::joinPath(
+                    assets.assetsBuildDir,
+                    ktxPath.string());
+
+                if (util::fileExists(fullPath)) {
+                    filePath = fullPath;
+                    found = true;
+                }
+            }
+
+            if (!found) {
+                const auto fullPath = util::joinPath(
+                    assets.assetsBuildDir,
+                    buildPath.string());
+
+                if (util::fileExists(fullPath)) {
+                    filePath = fullPath;
+                    found = true;
+                }
+            }
+        }
+
+        if (!found) {
+            // NOTE KI for troubleshooting only
+            filePath = util::joinPath(assets.assetsDir, path);
+        }
+
+        return { name, filePath.string(), useCompressed, found};
+    }
+
+    ResolvedTexturePath resolveTexturePath(
+        const std::string& textureName)
+    {
+        return resolveTexturePath("", "", textureName, false);
+    }
+
+    ResolvedTexturePath resolveTexturePath(
+        const std::string& baseDir,
+        const std::string& modelDir,
+        const std::string& textureName,
+        bool compressed)
+    {
+        if (textureName.empty()) return {};
+
+        const auto& assets = Assets::get();
+
+        ResolvedTexturePath texturePath{ "", "", false, false };
+
+        std::vector<std::string> searchPaths;
+
+        if (!baseDir.empty()) {
+            searchPaths.push_back(
+                util::joinPath(
+                    modelDir,
+                    baseDir));
+        }
+        searchPaths.push_back(modelDir);
+        if (!baseDir.empty()) {
+            searchPaths.push_back(baseDir);
+        }
+        searchPaths.push_back("");
+
+        for (const auto& dir : searchPaths) {
+            texturePath = selectTexturePath(
+                textureName,
+                util::joinPath(
+                    dir,
+                    textureName),
+                compressed);
+            if (texturePath.valid) break;
+        }
+
+        if (!texturePath.valid) {
+            KI_WARN_OUT(fmt::format(
+                "TEX::MISSING: base_dir={}, name={}",
+                baseDir,
+                textureName));
+        }
+        else {
+            KI_INFO_OUT(fmt::format(
+                "TEX::FOUND: base_dir={}, name={}, path={}",
+                baseDir,
+                textureName,
+                texturePath.path));
+        }
+
+        return texturePath;
+    }
+
+    ResolvedTexturePath getPlaceholderTexturePath()
+    {
+        const auto& assets = Assets::get();
+        auto texturePath = resolveTexturePath("", "", assets.placeholderTexture, false);
+        texturePath.name = "tex-placeholder";
+        return texturePath;
+    }
+
+    float linearToSRGB(float linear)
+    {
+        if (linear <= 0.0031308f) {
+            return linear * 12.92f;
+        }
+        else {
+            return 1.055f * std::pow(linear, 1.0f / 2.4f) - 0.055f;
+        }
+    }
+
+    std::vector<uint8_t> generateSRGBPixelBuffer(
+        const glm::vec4& linearColor,
+        int width,
+        int height)
+    {
+        // Muunnetaan R, G ja B kanavat sRGB-avaruuteen. Alpha (A) pidetään aina lineaarisena!
+        uint8_t srgbR = static_cast<uint8_t>(glm::clamp(linearToSRGB(linearColor.r) * 255.0f, 0.0f, 255.0f));
+        uint8_t srgbG = static_cast<uint8_t>(glm::clamp(linearToSRGB(linearColor.g) * 255.0f, 0.0f, 255.0f));
+        uint8_t srgbB = static_cast<uint8_t>(glm::clamp(linearToSRGB(linearColor.b) * 255.0f, 0.0f, 255.0f));
+        uint8_t rawA = static_cast<uint8_t>(glm::clamp(linearColor.a * 255.0f, 0.0f, 255.0f));
+
+        // Luodaan 4-kanavainen tavupuskuri taulukkolatausta varten
+        std::vector<uint8_t> pixelData(width * height * 4);
+        for (int i = 0; i < width * height; ++i) {
+            pixelData[i * 4 + 0] = srgbR;
+            pixelData[i * 4 + 1] = srgbG;
+            pixelData[i * 4 + 2] = srgbB;
+            pixelData[i * 4 + 3] = rawA;
+        }
+
+        return pixelData;
+    }
+
+    std::vector<uint16_t> generateSRGBPixelBuffer16(
+        const glm::vec4& linearColor,
+        int width,
+        int height)
+    {
+        // Muunnetaan R, G ja B kanavat sRGB-avaruuteen. Alpha (A) pidetään aina lineaarisena.
+        // Skaalataan arvo välille 0.0 - 65535.0f (16-bit unsigned short maksimi)
+        uint16_t srgbR = static_cast<uint16_t>(glm::clamp(linearToSRGB(linearColor.r) * 65535.0f, 0.0f, 65535.0f));
+        uint16_t srgbG = static_cast<uint16_t>(glm::clamp(linearToSRGB(linearColor.g) * 65535.0f, 0.0f, 65535.0f));
+        uint16_t srgbB = static_cast<uint16_t>(glm::clamp(linearToSRGB(linearColor.b) * 65535.0f, 0.0f, 65535.0f));
+        uint16_t rawA = static_cast<uint16_t>(glm::clamp(linearColor.a * 65535.0f, 0.0f, 65535.0f));
+
+        // Luodaan 4-kanavainen 16-bittinen puskuri (leveys * korkeus * 4 kanavaa)
+        std::vector<uint16_t> pixelData(width * height * 4);
+        for (int i = 0; i < width * height; ++i) {
+            pixelData[i * 4 + 0] = srgbR;
+            pixelData[i * 4 + 1] = srgbG;
+            pixelData[i * 4 + 2] = srgbB;
+            pixelData[i * 4 + 3] = rawA;
+        }
+
+        return pixelData;
+    }
+
+    // Muuntaa dynaamisen lineaarisen puskurin sRGB RGBA8 -tavuiksi
+    std::vector<uint8_t> convertLinearToSRGBBuffer(
+        const std::vector<glm::vec4>& linearPixels)
+    {
+        std::vector<uint8_t> srgbBytes;
+        srgbBytes.reserve(linearPixels.size() * 4);
+
+        for (const auto& color : linearPixels) {
+            // R, G, B kanavat gammakorjataan, Alpha (A) pidetään aina lineaarisena raakadatana!
+            uint8_t r = static_cast<uint8_t>(glm::clamp(linearToSRGB(color.r) * 255.0f, 0.0f, 255.0f));
+            uint8_t g = static_cast<uint8_t>(glm::clamp(linearToSRGB(color.g) * 255.0f, 0.0f, 255.0f));
+            uint8_t b = static_cast<uint8_t>(glm::clamp(linearToSRGB(color.b) * 255.0f, 0.0f, 255.0f));
+            uint8_t a = static_cast<uint8_t>(glm::clamp(color.a * 255.0f, 0.0f, 255.0f));
+
+            srgbBytes.push_back(r);
+            srgbBytes.push_back(g);
+            srgbBytes.push_back(b);
+            srgbBytes.push_back(a);
+        }
+
+        return srgbBytes;
+    }
+
+    uint32_t unpackSpriteCount(uint32_t packed) { return (packed >> 24) & 0xFFu; }
+    uint32_t unpackSpritesPerRow(uint32_t packed) { return (packed >> 16) & 0xFFu; }
+    uint32_t unpackSpritesX(uint32_t packed) { return (packed >> 8) & 0xFFu; }
+    uint32_t unpackSpritesY(uint32_t packed) { return  packed & 0xFFu; }
+
+    uint32_t packSprites(
+        uint8_t count,
+        uint8_t spritesPerRow,
+        uint8_t spritesX,
+        uint8_t spritesY)
+    {
+        return (static_cast<uint32_t>(count) << 24) |
+            (static_cast<uint32_t>(spritesPerRow) << 16) |
+            (static_cast<uint32_t>(spritesX) << 8) |
+            (static_cast<uint32_t>(spritesY));
+    }
+
+    uint32_t packSprites(const Material& material)
+    {
+        // NOTE KI spritesY !== spritesY in case sprite shape is not rectangular
+        // Calculate the total vertical row count safely using active sprites per row.
+        // We must divide by spritePerRow (valid cells before padding) instead of spritesX!
+        uint8_t spritesY = material.spriteCount / material.spritesPerRow;
+
+        // Add a fallback row if there are remaining trailing active sprites on the final row
+        if (material.spriteCount % material.spritesPerRow != 0) {
+            spritesY++;
+        }
+
+        return packSprites(
+            material.spriteCount,
+            material.spritesPerRow,
+            material.spritesX,
+            spritesY);
+    }
+}

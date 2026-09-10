@@ -21,14 +21,14 @@ if (Debug.u_parallaxEnabled && !u_forceLineMode) {
     }
 
     // https://www.reddit.com/r/GraphicsProgramming/comments/18qqz77/parallax_occlusion_mapping_revisited/
-    if (Debug.u_parallaxMethod == 0)
-    {
-      texCoord = parallaxMapMarch(
-	materialIndex,
-	tangentDir,
-	parallaxDepth,
-	texCoord);
-    }
+    // if (Debug.u_parallaxMethod == 0)
+    // {
+    //   texCoord = parallaxMapMarch(
+    // 	materialIndex,
+    // 	tangentDir,
+    // 	parallaxDepth,
+    // 	texCoord);
+    // }
   }
 
 // NOTE KI with texture tiling in material, texCoords *CAN*

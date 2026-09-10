@@ -19,7 +19,9 @@
 #include "render/TextureQuad.h"
 
 #include "material/Material.h"
+#include "material/FrameBufferTexture.h"
 #include "material/MaterialRegistry.h"
+#include "material/TextureRegistry.h"
 
 namespace {
     constexpr int ATT_ALBEDO_INDEX = 0;
@@ -36,9 +38,6 @@ ShaderMaterialUpdater::ShaderMaterialUpdater(
 
 ShaderMaterialUpdater::~ShaderMaterialUpdater()
 {
-    if (m_samplerId) {
-        glDeleteSamplers(1, &m_samplerId);
-    }
 }
 
 void ShaderMaterialUpdater::prepareRT(
@@ -49,46 +48,55 @@ void ShaderMaterialUpdater::prepareRT(
 
     if (!m_material) return;
 
-    auto programId = m_material->getProgram(MaterialProgramType::shader);
+    m_size = { 1024, 1024 };
+
+    auto programId = m_material->getProgram(material::ProgramType::shader);
     if (!programId) return;
 
     {
         // NOTE KI depth is irrelevant, since this renders just one quad over buffer
         // => depth comes from quad, and thus should not need depth buffer
-        auto buffer = new render::FrameBuffer(
+        m_frameBuffer = util::Ref<render::FrameBuffer>::create(
             fmt::format("material_{}", m_material->m_name),
-            {
+            render::FrameBufferSpecification {
                 m_size.x, m_size.y,
                 {
-                    render::FrameBufferAttachment::getTextureRGBAHdr(GL_COLOR_ATTACHMENT0),
+                    render::FrameBufferAttachment::getTextureRGBA(GL_COLOR_ATTACHMENT0),
                     //render::FrameBufferAttachment::getDepthStencilRbo(),
                 }
             });
+        m_frameBuffer->prepare();
 
-        m_buffer.reset(buffer);
-        m_buffer->prepare();
-
-        //m_buffer->m_spec.attachments[0].clearColor = glm::vec4(0, 1, 0, 1);
+        //m_frameBuffer->m_spec.attachments[0].clearColor = glm::vec4(0, 1, 0, 1);
     }
 
-    {
-        // MaterialRegistry::get().registerMaterial(*m_material);
+    prepareTexture();
+}
 
-        glGenSamplers(1, &m_samplerId);
+void ShaderMaterialUpdater::prepareTexture()
+{
+    constexpr int ATT_DIFFUSE_INDEX = 0;
 
-        auto& spec = m_material->textureSpec;
-        glSamplerParameteri(m_samplerId, GL_TEXTURE_WRAP_S, spec.wrapS);
-        glSamplerParameteri(m_samplerId, GL_TEXTURE_WRAP_T, spec.wrapT);
+    m_texture = util::Ref<FrameBufferTexture>::create(
+        fmt::format("fbo_{}", m_name),
+        false,
+        true,
+        material::TextureType::dynamic,
+        material::TextureSpec {
+            .wrap = material::WrapMode::repeat,
+            .minFilter = material::TextureFilter::linear_mipmap_nearest,
+            .magFilter = material::TextureFilter::linear,
+        },
+        m_frameBuffer,
+        ATT_DIFFUSE_INDEX
+    );
 
-        // https://community.khronos.org/t/gl-nearest-mipmap-linear-or-gl-linear-mipmap-nearest/37648/5
-        // https://stackoverflow.com/questions/12363463/when-should-i-set-gl-texture-min-filter-and-gl-texture-mag-filter
-        //glSamplerParameteri(m_samplerId, GL_TEXTURE_MIN_FILTER, spec.minFilter);
-        //glSamplerParameteri(m_samplerId, GL_TEXTURE_MAG_FILTER, spec.magFilter);
+    TextureRegistry::get().registerTexture(m_texture);
+}
 
-        // https://stackoverflow.com/questions/42886835/modifying-parameters-of-bindless-resident-textures
-        m_handle = glGetTextureSamplerHandleARB(m_buffer->m_spec.attachments[0].textureID, m_samplerId);
-        glMakeTextureHandleResidentARB(m_handle);
-    }
+void ShaderMaterialUpdater::updateTexture()
+{
+    TextureRegistry::get().updateTexture(m_texture);
 }
 
 void ShaderMaterialUpdater::render(
@@ -97,22 +105,20 @@ void ShaderMaterialUpdater::render(
     m_dirty |= m_frameCounter++ > m_frameSkip;
 
     if (!m_dirty) return;
-    if (!m_buffer) return;
+    if (!m_frameBuffer) return;
 
     m_dirty = false;
     m_frameCounter = 0;
 
     if (!m_material) return;
 
-    auto programId = m_material->getProgram(MaterialProgramType::shader);
+    auto programId = m_material->getProgram(material::ProgramType::shader);
     if (!programId) return;
 
-    m_buffer->bind(ctx);
-    m_buffer->clearAll();
+    m_frameBuffer->bind(ctx);
+    m_frameBuffer->clearAll();
 
     auto& state = ctx.getGLState();
-
-    glBindSampler(UNIT_CHANNEL_0, m_samplerId);
 
     {
         auto* program = Program::get(programId);
@@ -124,17 +130,20 @@ void ShaderMaterialUpdater::render(
         render::TextureQuad::get().draw();
     }
 
-    //glMemoryBarrier(GL_TEXTURE_FETCH_BARRIER_BIT | GL_FRAMEBUFFER_BARRIER_BIT);
+    // Execute the unified pipeline texture registry stream copy step loop.
+    // This dynamically routes execution straight into FrameBufferTexture::updateArray!
+    updateTexture();
+
+    glMemoryBarrier(GL_TEXTURE_FETCH_BARRIER_BIT | GL_FRAMEBUFFER_BARRIER_BIT);
     glFlush();
 
     setNeedUpdate(true);
 }
 
-GLuint64 ShaderMaterialUpdater::getTexHandle(TextureType type) const noexcept
+GLuint64 ShaderMaterialUpdater::getTexHandle(material::TextureType type) const noexcept
 {
-    if (type == TextureType::diffuse) {
-        return m_handle;
-        //return m_samplerId;
+    if (type == material::TextureType::dynamic) {
+        return m_texture->getHandle();
     }
     return 0;
 }

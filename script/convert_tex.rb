@@ -28,10 +28,14 @@ module Encode
   ################################################################################
   # Converter
   ################################################################################
-  class Converter < Thor
+  class Convert < Thor
+    TARGET_SIZE = 1024
+    TARGET_DEPTH = 8
+
     attr_reader :assets_root_dir,
       :build_root_dir,
       :target_size,
+      :target_depth,
       :use_combine,
       :use_encode,
       :use_encode_ktx,
@@ -54,7 +58,11 @@ module Encode
     method_option :target_size,
       type: :numeric,
       required: false,
-      default: 2048
+      default: TARGET_SIZE
+    method_option :target_depth,
+      type: :numeric,
+      required: false,
+      default: TARGET_DEPTH
     method_option :ext,
       type: :array,
       default: nil
@@ -74,6 +82,7 @@ module Encode
 
       @assets_root_dir = options[:assets_root_dir]
       @target_size = options[:target_size]
+      @target_depth = options[:target_depth]
       @recursive = options[:recursive]
       @force = options[:force]
       @dry_run = options[:dry_run]
@@ -81,12 +90,13 @@ module Encode
       @assets_root_dir = Util.clean_dir_path(@assets_root_dir)
       src_dir = Util.clean_dir_path(src_dir)
 
-      puts "SRC_DIR:     #{src_dir}"
-      puts "EXT:         #{extensions}"
-      puts "TARGET_SIZE: #{target_size}"
-      puts "FORCE:       #{force}"
-      puts "RECURSIVE:   #{recursive}"
-      puts "DRY_RUN:     #{dry_run}"
+      puts "SRC_DIR:      #{src_dir}"
+      puts "EXT:          #{extensions}"
+      puts "TARGET_SIZE:  #{target_size}"
+      puts "TARGET_DEPTH: #{target_depth}"
+      puts "FORCE:        #{force}"
+      puts "RECURSIVE:    #{recursive}"
+      puts "DRY_RUN:      #{dry_run}"
 
       MetaResolver
         .new(
@@ -106,7 +116,12 @@ module Encode
     method_option :build_root_dir, default: 'resources/build'
     method_option :target_size,
       type: :numeric,
-      required: true
+      required: false,
+      default: TARGET_SIZE
+    method_option :target_depth,
+      type: :numeric,
+      required: false,
+      default: TARGET_DEPTH
     method_option :ext,
       type: :array,
       default: nil
@@ -136,7 +151,7 @@ module Encode
       default: ['all']
     method_option :thread_count,
       type: :numeric,
-      default: Etc.nprocessors
+      default: [2, (Etc.nprocessors * 0.75).floor].max
     def build
       src_dir = options[:src]
       extensions = options[:ext] || EXTENSIONS
@@ -145,6 +160,7 @@ module Encode
       @assets_root_dir = options[:assets_root_dir]
       @build_root_dir = options[:build_root_dir]
       @target_size = options[:target_size]
+      @target_depth = options[:target_depth]
       @recursive = options[:recursive]
       @force = options[:force]
       @dry_run = options[:dry_run]
@@ -169,24 +185,25 @@ module Encode
       @build_root_dir = Util.clean_dir_path(@build_root_dir)
       src_dir = Util.clean_dir_path(src_dir)
 
-      puts "SRC_DIR:     #{src_dir}"
-      puts "ASSETS_DIR:  #{assets_root_dir}"
-      puts "BUILD_DIR:   #{build_root_dir}"
-      puts "TYPE:        #{types}"
-      puts "TARGET_SIZE: #{target_size}"
-      puts "COMBINE:     #{use_combine}"
-      puts "ENCODE:      #{use_encode}"
-      puts "ENCODE_KTX:  #{use_encode_ktx}"
-      puts "EXT:         #{extensions}"
-      puts "FORCE:       #{force}"
-      puts "RECURSIVE:   #{recursive}"
-      puts "DRY_RUN:     #{dry_run}"
-      puts "THREAD_COUNT:#{thread_count}"
+      puts "SRC_DIR:      #{src_dir}"
+      puts "ASSETS_DIR:   #{assets_root_dir}"
+      puts "BUILD_DIR:    #{build_root_dir}"
+      puts "TYPE:         #{types}"
+      puts "TARGET_SIZE:  #{target_size}"
+      puts "TARGET_DEPTH: #{target_depth}"
+      puts "COMBINE:      #{use_combine}"
+      puts "ENCODE:       #{use_encode}"
+      puts "ENCODE_KTX:   #{use_encode_ktx}"
+      puts "EXT:          #{extensions}"
+      puts "FORCE:        #{force}"
+      puts "RECURSIVE:    #{recursive}"
+      puts "DRY_RUN:      #{dry_run}"
+      puts "THREAD_COUNT: #{thread_count}"
 
-      if use_combine || use_encode
+      if use_combine || use_encode || use_copy
         @processor = AsyncProcessor.new(thread_count:)
 
-         if use_combine
+        if use_combine
           puts "[COMBINE]"
           build_pass_2(
             src_dir:,
@@ -215,7 +232,7 @@ module Encode
         @processor = AsyncProcessor.new(thread_count:)
 
         plain_dir = src_dir[assets_root_dir.length + 1, src_dir.length]
-        ktx_src_dir = "#{build_root_dir}/#{target_size}"
+        ktx_src_dir = "#{build_root_dir}/#{target_size}/#{target_depth}"
         if plain_dir && plain_dir.size > 0
           ktx_src_dir = "#{ktx_src_dir}/#{plain_dir}"
         end
@@ -245,7 +262,7 @@ module Encode
       pass:)
 
       plain_dir = src_dir[assets_root_dir.length + 1, src_dir.length]
-      dst_dir = "#{build_root_dir}/#{target_size}/#{plain_dir}"
+      dst_dir = "#{build_root_dir}/#{target_size}/#{target_depth}/#{plain_dir}"
       puts "DIR: #{src_dir} => #{dst_dir}"
 
       metadata = Util.read_metadata(src_dir:)
@@ -274,6 +291,11 @@ module Encode
           next
         end
 
+        if action == :copy
+          encode_textures << tex_info
+          next
+        end
+
         puts "IGNORE: #{type} #{src_dir} #{tex_info.name}"
       end
 
@@ -290,6 +312,7 @@ module Encode
               target_mode:,
               parts:,
               target_size:,
+              target_depth:,
               force:,
               dry_run:
             })
@@ -305,6 +328,7 @@ module Encode
               dst_dir:,
               tex_info:,
               target_size:,
+              target_depth:,
               force:,
               dry_run:})
         end
@@ -378,4 +402,4 @@ module Encode
   end
 end
 
-Encode::Converter.start(ARGV)
+Encode::Convert.start(ARGV)

@@ -70,9 +70,9 @@ void ViewportRenderer::updateView(const UpdateViewContext& ctx)
 
             {
                 // NOTE KI alpha NOT needed
-                auto buffer = new render::FrameBuffer(
+                m_frameBuffer = util::Ref<render::FrameBuffer>::create(
                     fmt::format("final_buffer_{}x{}", w, h),
-                    {
+                    render::FrameBufferSpecification {
                         w, h,
                         {
                             render::FrameBufferAttachment::getTextureRGBAHdr(GL_COLOR_ATTACHMENT0),
@@ -80,8 +80,7 @@ void ViewportRenderer::updateView(const UpdateViewContext& ctx)
                         }
                     });
 
-                m_buffer.reset(buffer);
-                m_buffer->prepare();
+                m_frameBuffer->prepare();
             }
 
             m_width = w;
@@ -118,7 +117,7 @@ void ViewportRenderer::drawViewports(
     state.invalidateBlendMode();
     state.setBlendMode({ GL_FUNC_ADD, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ZERO, GL_ONE });
 
-    auto* buffer = m_buffer.get();
+    auto* buffer = m_frameBuffer.get();
 
     buffer->bind(ctx);
     buffer->clear(
@@ -142,7 +141,7 @@ void ViewportRenderer::blitWindow(
 
     state.polygonFrontAndBack(GL_FILL);
     state.setEnabled(GL_DEPTH_TEST, false);
-    state.bindTexture(UNIT_VIEWPORT, m_buffer->m_spec.attachments[0].textureID, true);
+    state.bindTexture(UNIT_VIEWPORT, m_frameBuffer->m_spec.attachments[0].textureID, true);
 
     // NOTE KI this clears *window* buffer, not actual "main" buffer used for drawing
     // => Stencil is not supposed to exist here

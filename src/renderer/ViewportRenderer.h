@@ -2,6 +2,8 @@
 
 #include <memory>
 
+#include "util/Ref.h"
+
 #include "ki/size.h"
 
 #include "Renderer.h"
@@ -63,7 +65,8 @@ private:
         render::FrameBuffer* destinationBuffer);
 
 private:
-    std::unique_ptr<render::FrameBuffer> m_buffer{ nullptr };
+    util::Ref<render::FrameBuffer> m_frameBuffer{ nullptr };
+
     int m_width{ -1 };
     int m_height{ -1 };
 

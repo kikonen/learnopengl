@@ -1,5 +1,7 @@
 #pragma once
 
+#include "util/Ref.h"
+
 #include "Renderer.h"
 
 #include "model/Viewport.h"
@@ -37,5 +39,5 @@ public:
 private:
     ki::program_id m_idProgramId{ 0 };
 
-    std::unique_ptr<render::FrameBuffer> m_idBuffer{ nullptr };
+    util::Ref<render::FrameBuffer> m_frameBuffer{ nullptr };
 };

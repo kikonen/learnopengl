@@ -26,7 +26,7 @@ types:
       xxmaterial:
         name: fur_base
         kd: [0.5075, 0.5075, 0.5075, 1.0]
-        map_kd: textures/Dirt_vh_1024.png
+        map_kd: textures/Dirt_vh_1024_color.png
         tiling: 1
       program: g_tex
   - id: dir_light

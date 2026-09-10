@@ -50,14 +50,12 @@ namespace loader {
             std::vector<MaterialData>& materials,
             Loaders& loaders) const;
 
-        void loadTextureSpec(
-            const loader::DocNode& node,
-            TextureSpec& textureSpec) const;
+        material::TextureSpec loadTextureSpec(
+            const loader::DocNode& node) const;
 
-        void loadTextureWrap(
+        material::WrapMode loadTextureWrap(
             const std::string& k,
-            const loader::DocNode& v,
-            uint16_t& wrapMode) const;
+            const loader::DocNode& v) const;
 
         void modifyMaterial(
             Material& m,

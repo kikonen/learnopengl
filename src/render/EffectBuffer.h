@@ -3,6 +3,8 @@
 #include <vector>
 #include <memory>
 
+#include "util/Ref.h"
+
 namespace kigl {
     class GLState;
 }
@@ -43,9 +45,9 @@ namespace render {
         void unbindTexture(kigl::GLState& state);
 
     public:
-        std::unique_ptr<FrameBuffer> m_primary{ nullptr };
-        std::unique_ptr<FrameBuffer> m_secondary{ nullptr };
-        std::vector<std::unique_ptr<FrameBuffer>> m_buffers;
+        util::Ref<FrameBuffer> m_primary{ nullptr };
+        util::Ref<FrameBuffer> m_secondary{ nullptr };
+        std::vector<util::Ref<FrameBuffer>> m_frameBuffers;
 
     private:
         GBuffer* m_gBuffer{ nullptr };

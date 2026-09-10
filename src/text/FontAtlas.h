@@ -2,6 +2,7 @@
 
 #include <memory>
 
+#include "util/Ref.h"
 
 #include "kigl/GLTextureHandle.h"
 
@@ -9,6 +10,8 @@
 
 #include "text/FontHandle.h"
 #include "text/AtlasHandle.h"
+
+class RawTexture;
 
 namespace render
 {
@@ -20,7 +23,7 @@ namespace text
     //
     // Prepare freetext-gl material
     //
-    class FontAtlas
+    class FontAtlas final : public util::RefCountedSimple
     {
     public:
         FontAtlas();
@@ -43,9 +46,7 @@ namespace text
             return m_fontHandle.get();
         }
 
-        GLuint64 getTextureHandle() const noexcept {
-            return m_textureHandle;
-        }
+        GLuint64 getTextureHandle() const noexcept;
 
         int getPadding() const noexcept
         {
@@ -66,6 +67,10 @@ namespace text
             return m_rasterSize > 0.f ? m_fontSize / m_rasterSize : 1.f;
         }
 
+    private:
+        void registerTexture();
+        void updateTexture();
+
     public:
         text::font_id m_id{ 0 };
         std::string m_name;
@@ -84,15 +89,11 @@ namespace text
         float m_rasterSize{ 0.f };
         glm::uvec2 m_atlasSize;
 
-        // number of mip levels allocated for the atlas texture (>1 == mipmapped)
-        int m_mipLevels{ 1 };
-
         std::unique_ptr<AtlasHandle> m_atlasHandle{ nullptr };
         size_t m_usedAtlasSize{ 0 };
 
         std::unique_ptr<FontHandle> m_fontHandle{ nullptr };
 
-        GLuint64 m_textureHandle{ 0 };
-        kigl::GLTextureHandle m_texture;
+        util::Ref<RawTexture> m_texture;
     };
 }

@@ -32,8 +32,10 @@ struct MaterialMain {
 
   float parallaxDepth;
 
+  float dynamicRatio;
+
   int pad3_1;
-  int pad3_2;
+  // int pad3_2;
   // int pad3_3;
 };
 
@@ -46,6 +48,8 @@ struct MaterialCustom {
   uvec2 custom1Tex;
 
   uvec2 fontAtlasTex;
+
+  uvec2 dynamicTex;
 
   // int pad3_1;
   // int pad3_2;
@@ -70,12 +74,20 @@ struct MaterialCold {
 
 // packed = spriteCount(16) | spritesX(8) | spritesY(8)
 // Must match the C++ packing in Material upload — keep bit layout in sync.
-uint packSprites(uint count, uint spritesX, uint spritesY) {
-  return (count << 16) | ((spritesX & 0xFFu) << 8) | (spritesY & 0xFFu);
+uint packSprites(
+  uint count,
+  uint spritesPerRow,
+  uint spritesX,
+  uint spritesY) {
+  return (count & 0xFFu << 24) |
+    ((spritesPerRow & 0xFFu) << 16) |
+    ((spritesX & 0xFFu) << 8) |
+    (spritesY & 0xFFu);
 }
 
 // GPU-side sprite bounds check;
 // unused until particle logic moves to GPU (currently clamped CPU-side)
-uint unpacSpriteCount(uint bits) { return  bits >> 16; }
-uint unpackSpritesX(uint bits)    { return (bits >> 8) & 0xFFu; }
-uint unpackSpritesY(uint bits)    { return  bits        & 0xFFu; }
+uint unpacSpriteCount(uint bits)   { return (bits >> 24) & 0xFFu; }
+uint unpacSpritesPerRow(uint bits) { return (bits >> 16) & 0xFFu; }
+uint unpackSpritesX(uint bits)     { return (bits >> 8)  & 0xFFu; }
+uint unpackSpritesY(uint bits)     { return  bits        & 0xFFu; }

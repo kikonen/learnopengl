@@ -39,7 +39,7 @@ namespace {
     {
         std::string name;
         aiTextureType asssimpType;
-        TextureType type;
+        material::TextureType type;
         bool gammaCorrect;
         bool checkAlpha{ false };
     };
@@ -111,35 +111,35 @@ namespace
         {
             "diffuse",
             aiTextureType_DIFFUSE,
-            TextureType::diffuse,
+            material::TextureType::diffuse,
             true,
             true,
         },
         {
             "normal",
             aiTextureType_NORMALS,
-            TextureType::map_normal,
+            material::TextureType::map_normal,
             false,
             false,
         },
         {
             "emission",
             aiTextureType_EMISSIVE,
-            TextureType::emission,
+            material::TextureType::emission,
             true,
             true,
         },
         {
             "displacement",
             aiTextureType_DISPLACEMENT,
-            TextureType::map_displacement,
+            material::TextureType::map_displacement,
             false,
             false,
         },
         {
             "metal",
             aiTextureType_METALNESS,
-            TextureType::map_mras,
+            material::TextureType::map_mras,
             false,
             false,
         },
@@ -147,13 +147,13 @@ namespace
         //{
         //    "roughness",
         //    aiTextureType_DIFFUSE_ROUGHNESS,
-        //    TextureType::map_mras,
+        //    material::TextureType::map_mras,
         //    false,
         //},
         {
             "ambient_occlusion",
             aiTextureType_AMBIENT_OCCLUSION,
-            TextureType::map_mras,
+            material::TextureType::map_mras,
             false,
             false,
         },
@@ -469,13 +469,13 @@ namespace
         const std::string& name,
         const aiTexture* texture,
         TextureMapping texInfo,
-        TextureSpec spec)
+        material::TextureSpec spec)
     {
         std::vector<unsigned char> data;
         int width = 0;
         int height = 0;
         int channels = 0;
-        bool is16Bbit = false;
+        bool is16Bit = false;
         bool hasAlpha = false;
 
         if (texture->mHeight == 0) {
@@ -509,10 +509,10 @@ namespace
             width = image.m_width;
             height = image.m_height;
             channels = image.m_channels;
-            is16Bbit = image.m_is16Bbit;
+            is16Bit = image.m_is16Bit;
             hasAlpha = texInfo.checkAlpha && image.m_hasAlpha;
 
-            const size_t channelSize = is16Bbit ? 2 : 1;
+            const size_t channelSize = is16Bit ? 2 : 1;
             const size_t size = width * height * channels * channelSize;
 
             data.resize(size);
@@ -543,11 +543,11 @@ namespace
             width,
             height,
             channels,
-            is16Bbit,
+            is16Bit,
             hasAlpha,
             texInfo.gammaCorrect,
             // TODO KI detect normalmap somehow
-            TextureType::diffuse,
+            material::TextureType::diffuse,
             spec);
     }
 
@@ -555,7 +555,7 @@ namespace
         const std::string& meshSetName,
         const aiScene* scene,
         TextureMapping texInfo,
-        TextureSpec spec,
+        material::TextureSpec spec,
         const aiMaterial* material,
         const std::string& path
     )
@@ -679,24 +679,20 @@ namespace mesh_set
 
                 if (isEmbeddedTexture(path))
                 {
-                    TextureSpec spec;
+                    material::TextureSpec spec;
 
                     switch (wrapModeU) {
                     case aiTextureMapMode_Wrap:
-                        spec.wrapS = GL_REPEAT;
-                        spec.wrapS = GL_REPEAT;
+                        spec.wrap = material::WrapMode::repeat;
                         break;
                     case aiTextureMapMode_Clamp:
-                        spec.wrapS = GL_CLAMP_TO_EDGE;
-                        spec.wrapS = GL_CLAMP_TO_EDGE;
+                        spec.wrap = material::WrapMode::clamp_to_edge;
                         break;
                     case aiTextureMapMode_Mirror:
-                        spec.wrapS = GL_MIRRORED_REPEAT;
-                        spec.wrapS = GL_MIRRORED_REPEAT;
+                        spec.wrap = material::WrapMode::mirrored_repeat;
                         break;
                     case aiTextureMapMode_Decal:
-                        spec.wrapS = GL_CLAMP_TO_BORDER;
-                        spec.wrapS = GL_CLAMP_TO_BORDER;
+                        spec.wrap = material::WrapMode::clamp_to_border;
                         break;
                     }
 
@@ -733,6 +729,7 @@ namespace mesh_set
                 else {
                     material->addTexture(
                         texInfo.type,
+                        material->defaultTextureSpec,
                         findTexturePath(meshSet, path),
                         true);
                 }

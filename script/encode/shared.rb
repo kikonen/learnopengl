@@ -106,7 +106,7 @@
 module Encode
   EXTENSIONS = ["png", "jpg", "jpeg", "tga"].freeze
 
-  OPACITY_MAP = 'opacity'
+  DIFFUSE = 'diffuse'
   MRAS_MAP = 'mras'
   MADS_MAP = "mads"
   DISPLACEMENT_MAP = 'displacement'
@@ -152,13 +152,34 @@ module Encode
   # S (Alpha) — Smoothness (inverse of roughness)
   MODE_MADS = :mads
 
-  MODE_OPACITY = :opacity
+  MODE_DIFFUSE = :diffuse
   MODE_DISPLACEMENT = :displacement
   MODE_HEIGHT = :height
 
-  IMAGE_VERSION = 8
-  MRAS_VERSION = 9
-  DISPLACEMENT_VERSION = 8
-  HEIGHT_VERSION = 8
-  KTX_VERSION = 11
+  IMAGE_VERSION = 8.6
+  DIFFUSE_VERSION = 1.1
+  MRAS_VERSION = 9.5
+  DISPLACEMENT_VERSION = 8.5
+  HEIGHT_VERSION = 8.5
+  KTX_VERSION = 11.5
+
+  # Define explicit overrides for encoding
+  ENCODE_OPTIONS = {
+    normal: {
+      target_depth: 16,
+      # target_size == diffuse
+    },
+    dudv: {
+      target_depth: 8,
+      target_size: 256
+    },
+    noise: {
+      target_depth: 8,
+      target_size: 128
+    },
+    height: {
+      target_depth: 16,
+      target_size: 2048
+    },
+  }
 end

@@ -5,6 +5,8 @@
 
 #include <glm/glm.hpp>
 
+#include "util/Ref.h"
+
 #include "kigl/kigl.h"
 
 #include "ki/size.h"
@@ -12,6 +14,7 @@
 #include "material/MaterialUpdater.h"
 
 struct Material;
+class FrameBufferTexture;
 
 namespace render {
     class FrameBuffer;
@@ -32,7 +35,10 @@ public:
     virtual void render(
         const render::RenderContext& ctx) override;
 
-    virtual GLuint64 getTexHandle(TextureType type) const noexcept override;
+    virtual GLuint64 getTexHandle(material::TextureType type) const noexcept override;
+
+    void prepareTexture();
+    void updateTexture();
 
 public:
     glm::ivec2 m_size;
@@ -40,10 +46,8 @@ public:
     int m_frameSkip{ 1 };
 
 private:
-    std::unique_ptr<render::FrameBuffer> m_buffer{ nullptr };
-
-    GLuint64 m_handle{ 0 };
-    GLuint m_samplerId{ 0 };
+    util::Ref<render::FrameBuffer> m_frameBuffer{ nullptr };
+    util::Ref<FrameBufferTexture> m_texture{ nullptr };
 
     int m_frameCounter{ 0 };
 };
