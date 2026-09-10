@@ -836,6 +836,12 @@ module Encode
 
         parts = tex_info[:plain_name].split('_')
 
+        if parts.size == 1
+          group = parts.first
+          (groups[group] ||= []) << tex_info
+          next
+        end
+
         parts.size.times do |idx|
           group = parts[0, idx + 1].join('_')
 
