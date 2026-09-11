@@ -146,7 +146,6 @@ void ViewportRenderer::blitWindow(
 
     state.polygonFrontAndBack(GL_FILL);
     state.setEnabled(GL_DEPTH_TEST, false);
-    state.bindTexture(UNIT_VIEWPORT, m_frameBuffer->m_spec.attachments[0].textureID, true);
 
     // NOTE KI this clears *window* buffer, not actual "main" buffer used for drawing
     // => Stencil is not supposed to exist here
@@ -162,6 +161,15 @@ void ViewportRenderer::blitWindow(
         GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT,
         { 0.f, 0.f, 0.f, 1.f });
 
+    // NOTE KI bind source *after* destination; m_frameBuffer must not be the
+    // bound draw buffer while its attachment is bound as texture
+    state.bindTexture(UNIT_VIEWPORT, m_frameBuffer->m_spec.attachments[0].textureID, true);
+
+    // NOTE KI hardware gamma is a no-op unless the target is actually sRGB encoded
+    // => fall back to shader gamma instead of losing gamma altogether
+    const bool useHardwareGamma =
+        m_gammaCorrectEnabled && m_hardwareGammaEnabled && targetBuffer->isSrgbEnabled();
+
     auto* program = Program::get(m_blitterId);
     {
         program->bind();
@@ -169,10 +177,10 @@ void ViewportRenderer::blitWindow(
         auto* uniforms = program->m_uniforms.get();
 
         uniforms->u_hdrToneEnabled.set(m_hdrToneMappingEnabled);
-        uniforms->u_gammaCorrectEnabled.set(m_hardwareGammaEnabled ? false : m_gammaCorrectEnabled);
+        uniforms->u_gammaCorrectEnabled.set(m_gammaCorrectEnabled && !useHardwareGamma);
     }
 
-    if (m_gammaCorrectEnabled && m_hardwareGammaEnabled) {
+    if (useHardwareGamma) {
         glEnable(GL_FRAMEBUFFER_SRGB);
         render::ScreenTri::get().draw();
         glDisable(GL_FRAMEBUFFER_SRGB);

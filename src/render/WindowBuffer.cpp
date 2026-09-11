@@ -9,8 +9,10 @@
 namespace render {
     WindowBuffer::WindowBuffer(
         GLuint fbo,
-        bool forceBind)
-        : FrameBuffer("window", { 0, 0, {} })
+        bool forceBind,
+        bool srgbEnabled)
+        : FrameBuffer("window", { 0, 0, {} }),
+        m_srgbEnabled{ srgbEnabled }
     {
         m_fbo = fbo;
         m_forceBind = forceBind;
@@ -37,5 +39,7 @@ namespace render {
 
         m_spec.width = w;
         m_spec.height = h;
+
+        m_bufferInfo.u_bufferResolution = { m_spec.width, m_spec.height };
     }
 }

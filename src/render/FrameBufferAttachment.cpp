@@ -238,6 +238,7 @@ namespace render {
         spec.internalFormat = GL_RGBA8;
         spec.attachment = attachment;
         spec.useDrawBuffer = true;
+        spec.clearColor = { 0.f, 0.f, 0.f, 1.f };
         spec.clearMask = GL_COLOR_BUFFER_BIT;
         spec.name = "texture_RGBA8";
 
@@ -252,6 +253,7 @@ namespace render {
         spec.internalFormat = GL_RGBA16F;
         spec.attachment = attachment;
         spec.useDrawBuffer = true;
+        spec.clearColor = { 0.f, 0.f, 0.f, 1.f };
         spec.clearMask = GL_COLOR_BUFFER_BIT;
         spec.name = "texture_RGBA16F";
 
@@ -265,6 +267,7 @@ namespace render {
         spec.internalFormat = GL_RGB8;
         spec.attachment = attachment;
         spec.useDrawBuffer = true;
+        spec.clearColor = { 0.f, 0.f, 0.f, 1.f };
         spec.clearMask = GL_COLOR_BUFFER_BIT;
         spec.name = "texture_RGB8";
 
@@ -279,6 +282,7 @@ namespace render {
         spec.internalFormat = GL_R11F_G11F_B10F;
         spec.attachment = attachment;
         spec.useDrawBuffer = true;
+        spec.clearColor = { 0.f, 0.f, 0.f, 1.f };
         spec.clearMask = GL_COLOR_BUFFER_BIT;
         spec.name = "texture_GL_R11F_G11F_B10F";
 
@@ -292,6 +296,7 @@ namespace render {
         spec.internalFormat = GL_RGBA8;
         spec.attachment = GL_COLOR_ATTACHMENT0;
         spec.useDrawBuffer = true;
+        spec.clearColor = { 0.f, 0.f, 0.f, 0.f };
         spec.clearMask = GL_COLOR_BUFFER_BIT;
         spec.name = "object_id";
 
@@ -306,6 +311,7 @@ namespace render {
         spec.internalFormat = GL_RGB8;
         spec.attachment = attachment;
         spec.useDrawBuffer = true;
+        spec.clearColor = { 0.f, 0.f, 0.f, 1.f };
         spec.clearMask = GL_COLOR_BUFFER_BIT;
         spec.name = "albedo_RGB8";
 
@@ -321,6 +327,7 @@ namespace render {
         spec.internalFormat = GL_R11F_G11F_B10F;
         spec.attachment = attachment;
         spec.useDrawBuffer = true;
+        spec.clearColor = { 0.f, 0.f, 0.f, 1.f };
         spec.clearMask = GL_COLOR_BUFFER_BIT;
         spec.name = "albedo_R11F_G11F_B10F";
 
@@ -335,6 +342,7 @@ namespace render {
         spec.internalFormat = GL_RGBA8;
         spec.attachment = attachment;
         spec.useDrawBuffer = true;
+        spec.clearColor = { 0.f, 0.f, 0.f, 1.f };
         spec.clearMask = GL_COLOR_BUFFER_BIT;
         spec.name = "specular_RGBA8";
 
@@ -350,6 +358,7 @@ namespace render {
         spec.internalFormat = GL_R11F_G11F_B10F;
         spec.attachment = attachment;
         spec.useDrawBuffer = true;
+        spec.clearColor = { 0.f, 0.f, 0.f, 1.f };
         spec.clearMask = GL_COLOR_BUFFER_BIT;
         spec.name = "specular_GL_R11F_G11F_B10F";
 
@@ -364,6 +373,7 @@ namespace render {
         spec.internalFormat = GL_RGBA8;
         spec.attachment = attachment;
         spec.useDrawBuffer = true;
+        spec.clearColor = { 0.f, 0.f, 0.f, 0.f };
         spec.clearMask = GL_COLOR_BUFFER_BIT;
         spec.name = "mras_RGBA8";
 
@@ -379,6 +389,7 @@ namespace render {
         spec.internalFormat = GL_RGBA16;
         spec.attachment = attachment;
         spec.useDrawBuffer = true;
+        spec.clearColor = { 0.f, 0.f, 0.f, 0.f };
         spec.clearMask = GL_COLOR_BUFFER_BIT;
         spec.name = "mras_RGBA16";
 
@@ -393,6 +404,7 @@ namespace render {
         spec.internalFormat = GL_RGB8;
         spec.attachment = attachment;
         spec.useDrawBuffer = true;
+        spec.clearColor = { 0.f, 0.f, 0.f, 1.f };
         spec.clearMask = GL_COLOR_BUFFER_BIT;
         spec.name = "emission_RGB8";
 
@@ -408,6 +420,7 @@ namespace render {
         spec.internalFormat = GL_R11F_G11F_B10F;
         spec.attachment = attachment;
         spec.useDrawBuffer = true;
+        spec.clearColor = { 0.f, 0.f, 0.f, 1.f };
         spec.clearMask = GL_COLOR_BUFFER_BIT;
         spec.name = "emission_R11F_G11F_B10F";
 
@@ -424,6 +437,7 @@ namespace render {
         spec.internalFormat = GL_RGB32F;
         spec.attachment = attachment;
         spec.useDrawBuffer = true;
+        spec.clearColor = { 0.f, 0.f, 0.f, 0.f };
         spec.clearMask = GL_COLOR_BUFFER_BIT;
         spec.name = "position_RGB32F";
 
@@ -447,6 +461,7 @@ namespace render {
         spec.internalFormat = GL_RG16_SNORM;
         spec.attachment = attachment;
         spec.useDrawBuffer = true;
+        spec.clearColor = { 0.f, 0.f, 0.f, 0.f };
         spec.clearMask = GL_COLOR_BUFFER_BIT;
         spec.name = "normal_GL_RG16_SNORM";
 
@@ -461,6 +476,7 @@ namespace render {
         spec.internalFormat = GL_R16F;
         spec.attachment = attachment;
         spec.useDrawBuffer = true;
+        spec.clearColor = { 0.f, 0.f, 0.f, 0.f };
         spec.clearMask = GL_COLOR_BUFFER_BIT;
         spec.name = "view_z_R16F";
 
@@ -475,6 +491,7 @@ namespace render {
         spec.internalFormat = GL_RGBA8;
         spec.attachment = attachment;
         spec.useDrawBuffer = true;
+        spec.clearColor = { 0.f, 0.f, 0.f, 0.f };
         spec.clearMask = GL_COLOR_BUFFER_BIT;
         spec.name = "ettect_RGBA8";
 
@@ -490,6 +507,7 @@ namespace render {
         spec.internalFormat = GL_RGBA16F;
         spec.attachment = attachment;
         spec.useDrawBuffer = true;
+        spec.clearColor = { 0.f, 0.f, 0.f, 0.f };
         spec.clearMask = GL_COLOR_BUFFER_BIT;
         spec.name = "ettect_RGBA16F";
 

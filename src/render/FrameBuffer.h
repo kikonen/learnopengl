@@ -106,6 +106,11 @@ namespace render {
 
         operator int() const { return m_fbo; }
 
+        virtual bool isSrgbEnabled() const noexcept
+        {
+            return false;
+        }
+
     public:
         const std::string m_name;
 

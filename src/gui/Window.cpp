@@ -329,6 +329,8 @@ void Window::createGLFWWindow()
         glfwWindowHint(GLFW_CONTEXT_NO_ERROR, GLFW_TRUE);
     }
 
+    glfwWindowHint(GLFW_SRGB_CAPABLE, GLFW_TRUE);
+
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, assets.glsl_version[0]);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, assets.glsl_version[1]);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
@@ -360,6 +362,14 @@ void Window::createGLFWWindow()
         glfwTerminate();
         KI_ERROR("Failed to initialize GLAD");
         return;
+    }
+
+    {
+        GLint enc = 0;
+        glGetNamedFramebufferAttachmentParameteriv(0, GL_BACK_LEFT, GL_FRAMEBUFFER_ATTACHMENT_COLOR_ENCODING, &enc);
+        // GL_SRGB(0x8C40) => hardware gamma works;
+        // GL_LINEAR(0x2601) => it silently does nothing
+        m_srgbEnabled = enc == GL_SRGB;
     }
 
     if (!assets.windowIcon.empty()) {

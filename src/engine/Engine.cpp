@@ -123,7 +123,8 @@ bool Engine::setup() {
     m_renderData->prepare(assets.batchDebug);
 
     {
-        m_windowBuffer = util::Ref<render::WindowBuffer>::create(true);
+        bool srgbEnabled = m_window->isSrgbEnabled();
+        m_windowBuffer = util::Ref<render::WindowBuffer>::create(true, srgbEnabled);
     }
 
     return onSetup();

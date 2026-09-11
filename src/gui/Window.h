@@ -39,6 +39,11 @@ public:
     void close();
     bool isClosed() const;
 
+    bool isSrgbEnabled() const noexcept
+    {
+        return m_srgbEnabled;
+    }
+
     void setTitle(std::string_view title);
 
     void toggleFullScreen();
@@ -73,6 +78,8 @@ protected:
     glm::u16vec2 m_windowedPos{ 0 };
     glm::u16vec2 m_windowedSize{ 0 };
     bool m_windowedWasMaximized{ false };
+
+    bool m_srgbEnabled{ false };
 
     bool m_fullScreen{ false };
 
