@@ -91,18 +91,25 @@ void ViewportRenderer::updateView(const UpdateViewContext& ctx)
 
 void ViewportRenderer::render(
     const render::RenderContext& parentCtx,
-    render::FrameBuffer* destinationBuffer)
+    const util::Ref<render::FrameBuffer>& destinationBuffer)
 {
     render::RenderContext localCtx(parentCtx);
     localCtx.m_forceLineMode = false;
     localCtx.bindDefaults();
 
-    drawViewports(localCtx);
-    blitWindow(localCtx, destinationBuffer);
+    if (true) {
+        drawViewports(localCtx, m_frameBuffer);
+        blitWindow(localCtx, destinationBuffer);
+    }
+    else {
+        drawViewports(localCtx, destinationBuffer);
+        //blitWindow(localCtx, destinationBuffer);
+    }
 }
 
 void ViewportRenderer::drawViewports(
-    const render::RenderContext& ctx)
+    const render::RenderContext& ctx,
+    const util::Ref<render::FrameBuffer>& targetBuffer)
 {
     auto& state = ctx.getGLState();
 
@@ -117,16 +124,14 @@ void ViewportRenderer::drawViewports(
     state.invalidateBlendMode();
     state.setBlendMode({ GL_FUNC_ADD, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ZERO, GL_ONE });
 
-    auto* buffer = m_frameBuffer.get();
-
-    buffer->bind(ctx);
-    buffer->clear(
+    targetBuffer->bind(ctx);
+    targetBuffer->clear(
         ctx,
         GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT,
         { 0.f, 0.f, 0.f, 1.f });
 
     for (auto& viewport : viewports) {
-        viewport->draw(ctx, buffer);
+        viewport->draw(ctx, targetBuffer.get());
     }
 
     state.setEnabled(GL_BLEND, false);
@@ -135,7 +140,7 @@ void ViewportRenderer::drawViewports(
 
 void ViewportRenderer::blitWindow(
     const render::RenderContext& ctx,
-    render::FrameBuffer* destinationBuffer)
+    const util::Ref<render::FrameBuffer>& targetBuffer)
 {
     auto& state = ctx.getGLState();
 
@@ -151,8 +156,8 @@ void ViewportRenderer::blitWindow(
     // NOTE KI *CLEAR* buffer
     // - https://stackoverflow.com/questions/37335281/is-glcleargl-color-buffer-bit-preferred-before-a-whole-frame-buffer-overwritte
     //
-    destinationBuffer->bind(ctx);
-    destinationBuffer->clear(
+    targetBuffer->bind(ctx);
+    targetBuffer->clear(
         ctx,
         GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT,
         { 0.f, 0.f, 0.f, 1.f });

@@ -123,7 +123,7 @@ bool Engine::setup() {
     m_renderData->prepare(assets.batchDebug);
 
     {
-        m_windowBuffer = std::make_unique<render::WindowBuffer>(true);
+        m_windowBuffer = util::Ref<render::WindowBuffer>::create(true);
     }
 
     return onSetup();

@@ -25,7 +25,7 @@ public:
 
     void render(
         const render::RenderContext& ctx,
-        render::FrameBuffer* destinationBuffer);
+        const util::Ref<render::FrameBuffer>& destinationBuffer);
 
     void setGammaCorrectEnabled(bool enabled) {
         m_gammaCorrectEnabled = enabled;
@@ -58,11 +58,12 @@ public:
 
 private:
     void drawViewports(
-        const render::RenderContext& ctx);
+        const render::RenderContext& ctx,
+        const util::Ref<render::FrameBuffer>& destinationBuffer);
 
     void blitWindow(
         const render::RenderContext& ctx,
-        render::FrameBuffer* destinationBuffer);
+        const util::Ref<render::FrameBuffer>& destinationBuffer);
 
 private:
     util::Ref<render::FrameBuffer> m_frameBuffer{ nullptr };

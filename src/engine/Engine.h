@@ -83,9 +83,9 @@ public:
 
     util::Ref<Window> getWindow() const;
 
-    render::WindowBuffer* getWindowBuffer() const noexcept
+    const util::Ref<render::WindowBuffer>& getWindowBuffer() const noexcept
     {
-        return m_windowBuffer.get();
+        return m_windowBuffer;
     }
 
     const glm::ivec2& getSize() const;
@@ -129,7 +129,7 @@ public:
     util::Ref<AnimationUpdater> m_animationUpdater;
 
     util::Ref<Window> m_window;
-    std::unique_ptr<render::WindowBuffer> m_windowBuffer{ nullptr };
+    util::Ref<render::WindowBuffer> m_windowBuffer{ nullptr };
 
     debug::DebugContext& m_dbg;
 
