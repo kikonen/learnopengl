@@ -147,6 +147,7 @@ module Encode
           size: target_size,
           type: :diffuse,
           depth: target_depth,
+          fit:,
           parts: sorted_parts.map do |tex_info|
             {
               name: tex_info.name,
@@ -202,7 +203,7 @@ module Encode
           # NOTE KI enforce RGB space (not grayscale)
           channel_img.colorspace = Magick::SRGBColorspace
 
-          channel_img = Util.scale_diffuse_image(channel_img, target_size, true)
+          channel_img = Util.scale_diffuse_image(channel_img, target_size, true, fit)
           channel_img = channel_img.set_channel_depth(Magick::AllChannels, target_depth)
 
           # target_w = channel_img.columns
@@ -364,6 +365,7 @@ module Encode
           size: target_size,
           type: :mras,
           depth: target_depth,
+          fit:,
           parts: sorted_parts.map do |tex_info|
             {
               name: tex_info.name,
@@ -420,7 +422,7 @@ module Encode
           # NOTE KI enforce RGB space (not grayscale)
           channel_img.colorspace = Magick::RGBColorspace
 
-          channel_img = Util.scale_data_image(channel_img, target_size, true)
+          channel_img = Util.scale_data_image(channel_img, target_size, true, fit)
           channel_img = channel_img.set_channel_depth(Magick::AllChannels, target_depth)
 
           # target_w = channel_img.columns
@@ -550,6 +552,7 @@ module Encode
           size: target_size,
           type: :height,
           depth: target_depth,
+          fit:,
           parts: [
             {
               name: tex_info.name,
@@ -581,7 +584,7 @@ module Encode
 
       # Enforce RGB/Linear space for accurate calculations
       dst_img.colorspace = Magick::RGBColorspace
-      dst_img = Util.scale_data_image(dst_img, target_size, true)
+      dst_img = Util.scale_data_image(dst_img, target_size, true, fit)
       dst_img = dst_img.set_channel_depth(Magick::AllChannels, target_depth)
 
       # Force into pure Gray Colorspace and GrayscaleType metadata
@@ -646,6 +649,7 @@ module Encode
           size: target_size,
           type: :displacement,
           depth: target_depth,
+          fit:,
           parts: [
             {
               name: tex_info.name,
@@ -679,7 +683,7 @@ module Encode
       dst_img.colorspace = Magick::RGBColorspace
 
       # Scale to target size utilizing data-preserving Cubic Filter
-      dst_img = Util.scale_data_image(dst_img, target_size, true)
+      dst_img = Util.scale_data_image(dst_img, target_size, true, fit)
       dst_img = dst_img.set_channel_depth(Magick::AllChannels, target_depth)
 
       # Force into pure Gray Colorspace and GrayscaleType metadata

@@ -164,6 +164,25 @@ module Encode
   KTX_VERSION = 11.5
 
   # Define explicit overrides for encoding
+  #
+  # Fit mode; how a non-square source is normalized into a square array layer
+  #
+  # :stretch - aspect deliberately NOT preserved. Valid whenever normalized UV
+  #            spans the whole source image, since the distortion cancels when
+  #            sampled: tiled materials, equirectangular maps, sprite sheets
+  #            (cell UV extent is invariant under a global rescale).
+  # :pad     - aspect IS meaningful against geometry; letterbox into the layer
+  #            and let the neutral background fill the remainder.
+  #
+  # NOTE KI square sources never reach a decision; resolve_*_size and
+  # extent_image both no-op once dimensions already match target_size.
+  #
+  # NOTE KI decals resolve as :diffuse in MetaResolver, so they do NOT get :pad
+  # from the type alone. A decal needs an explicit "fit": "pad" entry in
+  # _assets.meta, with "manual": true so it survives metadata regeneration.
+  #
+  DEFAULT_FIT = :stretch
+
   ENCODE_OPTIONS = {
     normal: {
       target_depth: 16,

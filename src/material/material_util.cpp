@@ -245,19 +245,23 @@ namespace material
 
     uint32_t packSprites(const Material& material)
     {
+        uint8_t spritesPerRow = material.spritesPerRow;
+        if (spritesPerRow == 0)
+            spritesPerRow = material.spritesX;
+
         // NOTE KI spritesY !== spritesY in case sprite shape is not rectangular
         // Calculate the total vertical row count safely using active sprites per row.
         // We must divide by spritePerRow (valid cells before padding) instead of spritesX!
-        uint8_t spritesY = material.spriteCount / material.spritesPerRow;
+        uint8_t spritesY = material.spriteCount / spritesPerRow;
 
         // Add a fallback row if there are remaining trailing active sprites on the final row
-        if (material.spriteCount % material.spritesPerRow != 0) {
+        if (material.spriteCount % spritesPerRow != 0) {
             spritesY++;
         }
 
         return packSprites(
             material.spriteCount,
-            material.spritesPerRow,
+            spritesPerRow,
             material.spritesX,
             spritesY);
     }

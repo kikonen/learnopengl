@@ -307,7 +307,8 @@ public:
     std::string m_name;
 
     uint8_t spriteCount = 1;
-    uint8_t spritesPerRow = 1;
+    // sprtiesPerRow == spritesX if 0
+    uint8_t spritesPerRow = 0;
     uint8_t spritesX = 1;
 
     bool alpha : 1 {false};

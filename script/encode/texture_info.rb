@@ -29,10 +29,15 @@ module Encode
     property :srgb
     property :manual
 
+    # Per texture fit override; :stretch / :pad
+    # @see Encode::DEFAULT_FIT
+    property :fit
+
     def normalize!
       self[:type] = self.type.to_sym if self.type
       self[:action] = self.action.to_sym if self.action
       self[:mode] = self.mode.to_sym if self.mode
+      self[:fit] = self.fit.to_sym if self.fit
       self
     end
 

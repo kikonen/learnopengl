@@ -150,6 +150,6 @@ particles:
       map_kd: particles/7_firespin_spritesheet.png
       sprites: 61
       sprites_x: 8
-      sprites_per_row: 8
+      #sprites_per_row: 8
       texture_spec:
         wrap: clamp_to_edge

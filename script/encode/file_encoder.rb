@@ -23,6 +23,7 @@ module Encode
       :dst_dir,
       :target_size,
       :target_depth,
+      :fit,
       :force,
       :dry_run,
       :tid
@@ -49,10 +50,16 @@ module Encode
       overrides = {
         target_size:,
         target_depth:,
+        fit: DEFAULT_FIT,
       }.merge(ENCODE_OPTIONS[tex_info.type] || {})
+
+      # NOTE KI per texture fit wins over the type default
+      # => needed for decals, which resolve as :diffuse but must keep aspect
+      overrides[:fit] = tex_info.fit if tex_info.fit
 
       @target_size = overrides[:target_size]
       @target_depth = overrides[:target_depth]
+      @fit = overrides[:fit]
     end
 
     def encode(tid:)

@@ -224,8 +224,9 @@ module Encode
       img
     end
 
-    def self.scale_diffuse_image(img, target_size, max)
-      resolved = resolve_size(img, target_size, max)
+    def self.scale_diffuse_image(img, target_size, max, fit)
+      resolved = resolve_size(img, target_size, max, fit)
+
       return img unless resolved[:need_scale]
       target_w = resolved[:w]
       target_h = resolved[:h]
@@ -245,8 +246,9 @@ module Encode
     end
 
     # Skaalausmetodi datakartoille (Normal, MRA, DuDv, Displacement, jne.)
-    def self.scale_data_image(img, target_size, max)
-      resolved = resolve_size(img, target_size, max)
+    def self.scale_data_image(img, target_size, max, fit)
+      resolved = resolve_size(img, target_size, max, fit)
+
       return img unless resolved[:need_scale]
       target_w = resolved[:w]
       target_h = resolved[:h]
@@ -260,8 +262,8 @@ module Encode
     end
 
     # scaling noise data
-    def self.scale_nearest_image(img, target_size, max)
-      resolved = resolve_size(img, target_size, max)
+    def self.scale_nearest_image(img, target_size, max, fit)
+      resolved = resolve_size(img, target_size, max, fit)
       return img unless resolved[:need_scale]
       target_w = resolved[:w]
       target_h = resolved[:h]
@@ -274,12 +276,30 @@ module Encode
       resized_img
     end
 
-    def self.resolve_size(img, target_size, max)
+    # @see Encode::DEFAULT_FIT for what the fit modes mean
+    def self.resolve_size(img, target_size, max, fit)
+      raise "missing fit "unless fit
+      return resolve_stretch_size(img, target_size) if fit.to_sym == :stretch
+
       if max
         resolve_max_size(img, target_size)
       else
         resolve_min_size(img, target_size)
       end
+    end
+
+    #
+    # Resolve stretched size
+    #
+    # NOTE KI normalized straight to target_size in BOTH axes; aspect is
+    # dropped on purpose. extent_image then no-ops via its own guard.
+    #
+    # @return [bool, w, h]
+    #
+    def self.resolve_stretch_size(img, target_size)
+      need_scale = img.columns != target_size || img.rows != target_size
+
+      { w: target_size, h: target_size, need_scale:, scale: nil }
     end
 
     #

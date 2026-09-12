@@ -220,7 +220,7 @@ particles:
       map_kd: particles/4_casting_spritesheet.png
       sprites: 73
       sprites_x: 9
-      sprites_per_row: 9
+      #sprites_per_row: 9
       texture_spec:
         wrap: clamp_to_edge
 
@@ -252,7 +252,7 @@ particles:
       map_kd: particles/bones_3_spritesheet.png
       sprites: 27
       sprites_x: 5
-      sprites_per_row: 5
+      #sprites_per_row: 5
       texture_spec:
         wrap: clamp_to_edge
 
@@ -283,7 +283,7 @@ particles:
       kd: [1, 1, 1, 1]
       map_kd: particles/bones_2_spritesheet.png
       sprites: 29
-      sprites_x: 7
-      sprites_per_row: 4
+      sprites_x: 4
+      #sprites_per_row: 4
       texture_spec:
         wrap: clamp_to_edge

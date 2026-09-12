@@ -91,6 +91,7 @@ module Encode
           size: target_size,
           type: tex_info.type,
           depth: target_depth,
+          fit:,
           parts: [
             {
               name: tex_info.name,
@@ -131,9 +132,9 @@ module Encode
       # => HOW
 
       if tex_info.diffuse?
-        src_img = Util.scale_diffuse_image(src_img, target_size, true)
+        src_img = Util.scale_diffuse_image(src_img, target_size, true, fit)
       else
-        src_img = Util.scale_data_image(src_img, target_size, true)
+        src_img = Util.scale_data_image(src_img, target_size, true, fit)
       end
 
       src_img = src_img.set_channel_depth(Magick::AllChannels, target_depth)
@@ -282,6 +283,7 @@ module Encode
           size: target_size,
           type: tex_info.type,
           depth: target_depth,
+          fit:,
           parts: [
             {
               name: tex_info.name,
@@ -317,7 +319,7 @@ module Encode
       src_img = Magick::Image.read(src_path)
         .first
 
-      src_img = Util.scale_data_image(src_img, target_size, true)
+      src_img = Util.scale_data_image(src_img, target_size, true, fit)
       src_img = src_img.set_channel_depth(Magick::AllChannels, target_depth)
 
       target_w = src_img.columns
@@ -416,6 +418,7 @@ module Encode
           size: target_size,
           type: tex_info.type,
           depth: target_depth,
+          fit:,
           parts: [
             {
               name: tex_info.name,
@@ -451,7 +454,7 @@ module Encode
       src_img = Magick::Image.read(src_path)
         .first
 
-      src_img = Util.scale_data_image(src_img, target_size, true)
+      src_img = Util.scale_data_image(src_img, target_size, true, fit)
       src_img = src_img.set_channel_depth(Magick::AllChannels, target_depth)
 
       target_w = src_img.columns
@@ -550,6 +553,7 @@ module Encode
           size: target_size,
           type: tex_info.type,
           depth: target_depth,
+          fit:,
           parts: [
             {
               name: tex_info.name,
@@ -585,7 +589,7 @@ module Encode
       src_img = Magick::Image.read(src_path)
         .first
 
-      src_img = Util.scale_nearest_image(src_img, target_size, true)
+      src_img = Util.scale_nearest_image(src_img, target_size, true, fit)
       src_img = src_img.set_channel_depth(Magick::AllChannels, target_depth)
 
       target_w = src_img.columns
@@ -684,6 +688,7 @@ module Encode
           size: target_size,
           type: tex_info.type,
           depth: target_depth,
+          fit:,
           parts: [
             {
               name: tex_info.name,

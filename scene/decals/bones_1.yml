@@ -10,8 +10,8 @@ decal:
     base: particles
     map_kd: particles/bones_1_spritesheet.png
     sprites: 28
-    sprites_x: 7
-    sprites_per_row: 4
+    sprites_x: 4
+    #sprites_per_row: 4
     alpha: true
     #blend: true
     texture_spec:
