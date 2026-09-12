@@ -79,7 +79,7 @@ uint packSprites(
   uint spritesPerRow,
   uint spritesX,
   uint spritesY) {
-  return (count & 0xFFu << 24) |
+  return ((count & 0xFFu) << 24) |
     ((spritesPerRow & 0xFFu) << 16) |
     ((spritesX & 0xFFu) << 8) |
     (spritesY & 0xFFu);
