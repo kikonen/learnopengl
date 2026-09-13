@@ -90,6 +90,7 @@ namespace render {
 
     void SsaoBuffer::clearAll()
     {
+        m_frameBuffer->invalidateAll();
         m_frameBuffer->clearAll();
     }
 

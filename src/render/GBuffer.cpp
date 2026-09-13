@@ -137,6 +137,7 @@ namespace render {
 
     void GBuffer::clearAll()
     {
+        m_frameBuffer->invalidateAll();
         m_frameBuffer->clearAll();
     }
 

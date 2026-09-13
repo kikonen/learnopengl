@@ -385,6 +385,7 @@ void MirrorMapRenderer::drawNodes(
 
     //const glm::vec4 debugColor{ 0.9f, 0.0f, 0.9f, 0.0f };
     //targetBuffer->clear(ctx, GL_COLOR_BUFFER_BIT, debugColor);
+    targetBuffer->invalidateAll();
     targetBuffer->clearAll();
 
     //ctx.updateClipPlanesUBO();

@@ -4,6 +4,8 @@
 
 #include "asset/Assets.h"
 
+#include "kigl/GLState.h"
+
 #include "shader/Program.h"
 #include "shader/ProgramUniforms.h"
 #include "shader/Shader.h"
@@ -115,7 +117,9 @@ void ShadowCascade::prepareRT(
         fmt::format("shadow_cascade_{}", m_index),
         render::FrameBufferSpecification {
             m_mapSize, m_mapSize,
-            { render::FrameBufferAttachment::getShadow() }
+            {
+               render::FrameBufferAttachment::getShadow(),
+            }
         });
 
     m_frameBuffer->prepare();
@@ -123,6 +127,7 @@ void ShadowCascade::prepareRT(
 
 void ShadowCascade::clear()
 {
+    m_frameBuffer->invalidateAll();
     m_frameBuffer->clearAll();
 }
 
@@ -263,9 +268,13 @@ void ShadowCascade::render(
     localCtx.updateUBOs();
     localCtx.bindDefaults();
 
+    m_frameBuffer->bind(localCtx);
+
+    // TODO KI for some reason clear does not work if done before bind
+    // => dummy RGB attachment neither affects situation
+    m_frameBuffer->invalidateAll();
     m_frameBuffer->clearAll();
 
-    m_frameBuffer->bind(localCtx);
     drawNodes(localCtx);
 }
 

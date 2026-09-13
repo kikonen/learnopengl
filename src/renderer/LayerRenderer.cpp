@@ -151,6 +151,7 @@ void LayerRenderer::updateView(const UpdateViewContext& ctx)
             auto& state = kigl::GLState::get();
             state.setStencil({});
 
+            m_frameBuffer->invalidateAll();
             m_frameBuffer->clearAll();
         }
     }
@@ -165,6 +166,8 @@ void LayerRenderer::render(
     if (!isEnabled())
     {
         state.setStencil({});
+
+        targetBuffer->invalidateAll();
         targetBuffer->clearAll();
         return;
     }
@@ -185,6 +188,8 @@ void LayerRenderer::render(
 
     {
         state.setStencil({});
+
+        targetBuffer->invalidateAll();
         targetBuffer->clearAll();
 
         // NOTE KI skip stencil mask when using wireframe selection

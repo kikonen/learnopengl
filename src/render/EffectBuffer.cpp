@@ -115,9 +115,14 @@ namespace render {
 
     void EffectBuffer::clearAll()
     {
+        m_primary->invalidateAll();
         m_primary->clearAll();
+
+        m_secondary->invalidateAll();
         m_secondary->clearAll();
+
         for (auto& fbo : m_frameBuffers) {
+            fbo->invalidateAll();
             fbo->clearAll();
         }
     }

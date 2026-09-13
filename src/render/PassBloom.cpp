@@ -64,6 +64,7 @@ namespace render
 
         if (m_enabled) {
             for (auto& fbo : m_blurBuffer.m_frameBuffers) {
+                fbo->invalidateAll();
                 fbo->clearAll();
             }
         }

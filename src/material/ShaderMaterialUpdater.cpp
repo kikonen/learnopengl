@@ -116,6 +116,8 @@ void ShaderMaterialUpdater::render(
     if (!programId) return;
 
     m_frameBuffer->bind(ctx);
+
+    m_frameBuffer->invalidateAll();
     m_frameBuffer->clearAll();
 
     auto& state = ctx.getGLState();

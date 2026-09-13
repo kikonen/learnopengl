@@ -84,6 +84,7 @@ namespace render {
 
     void OITBuffer::clearAll()
     {
+        m_frameBuffer->invalidateAll();
         m_frameBuffer->clearAll();
     }
 

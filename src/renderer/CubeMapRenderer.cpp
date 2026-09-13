@@ -359,6 +359,7 @@ void CubeMapRenderer::drawNodes(
     targetBuffer->bindFace();
 
     //targetBuffer->clear(ctx, GL_COLOR_BUFFER_BIT, debugColor);;
+    targetBuffer->invalidateAll();
     targetBuffer->clearAll();
 
     const auto currentEntityIndex = current->getEntityIndex();

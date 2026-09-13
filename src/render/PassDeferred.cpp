@@ -91,6 +91,7 @@ namespace render
         m_gBuffer.m_frameBuffer->resetDrawBuffers();
         m_gBuffer.clearAll();
 
+        m_frameBuffer->invalidateAll();
         m_frameBuffer->clearAll();
 
         m_preDepthEnabled = dbg.m_prepassDepthEnabled;

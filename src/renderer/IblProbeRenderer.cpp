@@ -243,6 +243,8 @@ void IblProbeRenderer::drawNodes(
 
     // TODO KI match special logic in CubeMapBuffer
     targetBuffer->bindFace();
+
+    targetBuffer->invalidateAll();
     targetBuffer->clearAll();
 
     const auto currentEntityIndex = current->getEntityIndex();

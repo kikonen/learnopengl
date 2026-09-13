@@ -193,6 +193,7 @@ void ObjectIdRenderer::drawNodes(const render::RenderContext& parentCtx)
 
     localCtx.bindDefaults();
 
+    m_frameBuffer->invalidateAll();
     m_frameBuffer->clearAll();
 
     // NOTE KI compute frustum visibility once for this camera before drawing; fold the
