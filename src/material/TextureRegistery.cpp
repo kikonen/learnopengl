@@ -2,6 +2,7 @@
 
 #include "asset/Assets.h"
 
+#include "util/Log.h"
 #include "util/util.h"
 
 #include "kigl/kigl.h"
@@ -54,8 +55,8 @@ void TextureRegistry::clear()
     auto& state = kigl::GLState::get();
 
     for (const auto& arr : m_arrayTextures) {
-        if (auto uniform = arr->getUniformId(); uniform > 0) {
-            state.bindTexture(uniform, 0, true);
+        if (auto unitIndex = arr->getUnitIndex(); unitIndex > 0) {
+            state.bindTexture(unitIndex, 0, true);
         }
     }
 
@@ -74,13 +75,13 @@ void TextureRegistry::updateRT()
 {
 }
 
-void TextureRegistry::bindBuffers()
+void TextureRegistry::bindTextures()
 {
     auto& state = kigl::GLState::get();
 
     for (const auto& arr : m_arrayTextures) {
-        if (auto uniform = arr->getUniformId(); uniform > 0) {
-            state.bindTexture(uniform, arr->getTextureID(), false);
+        if (auto unitIndex = arr->getUnitIndex(); unitIndex > 0) {
+            state.bindTexture(unitIndex, arr->getTextureID(), false);
         }
     }
 }
@@ -97,6 +98,9 @@ const util::Ref<ArrayTexture>& TextureRegistry::findArrayTexture(
 // @return array ID
 uint32_t TextureRegistry::addArrayTexture(const material::ArrayTextureInfo& info)
 {
+    const auto& assets = Assets::get();
+    if (!assets.drawUseArrayTexture) return 0;
+
     uint32_t index = static_cast<uint32_t>(m_arrayTextures.size());
 
     const auto arr = util::Ref<ArrayTexture>::create(
@@ -114,7 +118,7 @@ uint32_t TextureRegistry::addArrayTexture(const material::ArrayTextureInfo& info
 
     m_arrayTextures.push_back(arr);
 
-    if (arr->getUniformId() != 0) {
+    if (arr->getUnitIndex() != 0) {
         arr->prepareSingle();
 
         {
@@ -159,7 +163,15 @@ void TextureRegistry::bindTextureType(material::TextureType type, uint32_t array
 uint64_t TextureRegistry::registerTexture(
     const util::Ref<Texture>& texture)
 {
-    if (!texture) return 0;
+    if (!texture) {
+        KI_WARN_OUT("TEX::REGISTRY: attempt to register null texture");
+        return 0;
+    }
+
+    if (m_arrayTextures.empty()) {
+        KI_CRITICAL_OUT("TEX::REGISTRY: empty registry");
+        return 0;
+    }
 
     const auto& assets = Assets::get();
 

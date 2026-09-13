@@ -16,7 +16,7 @@ struct MaterialMain {
   uvec2 emissionTex;
   uvec2 normalMapTex;
 
-  uvec2 opacityMapTex;
+  // uvec2 opacityMapTex;
 
   // MRAS: [metalness, roughness, ambient-occlusion, specular]
   // - metalness (Red):   0 = dielectric, 1 = metal

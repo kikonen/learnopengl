@@ -183,7 +183,7 @@ void Registry::updateRT(const UpdateContext& ctx)
 
 void Registry::bindBuffers()
 {
-    TextureRegistry::get().bindBuffers();
+    TextureRegistry::get().bindTextures();
     MaterialRegistry::get().bindBuffers();
     EntityRegistry::get().bindBuffers();
     render::InstanceRegistry::get().bindBuffers();

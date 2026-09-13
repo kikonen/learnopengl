@@ -37,7 +37,7 @@ public:
     void prepareRT();
     void updateRT();
 
-    void bindBuffers();
+    void bindTextures();
 
     const util::Ref<ArrayTexture>& findArrayTexture(
         material::TextureType type);

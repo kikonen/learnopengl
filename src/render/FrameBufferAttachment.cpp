@@ -1,6 +1,10 @@
 #include "FrameBufferAttachment.h"
 
-#include "glm/ext.hpp"
+#include <glm/ext.hpp>
+#include <fmt/format.h>
+
+#include "util/Log.h"
+#include "util/Util.h"
 
 #include "kigl/GLState.h"
 
@@ -136,6 +140,13 @@ namespace render {
     void FrameBufferAttachment::clearBuffer(int fbo) const
     {
         if (shared) return;
+
+        if (fbo == 0) {
+            KI_ERROR_OUT(fmt::format(
+                "FBO::ATTACHMENT::CLEAR: fbo missing, att={}, index={}, type={}",
+                name, index, util::as_integer(type)
+            ));
+        }
 
         switch (clearType) {
         case ClearType::NONE:

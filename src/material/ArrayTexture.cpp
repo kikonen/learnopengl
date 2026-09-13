@@ -33,7 +33,7 @@ namespace
 
 ArrayTexture::ArrayTexture(
     const std::string& name,
-    int uniformId,
+    int unitIndex,
     bool grayScale,
     bool gammaCorrect,
     int channels,
@@ -44,7 +44,7 @@ ArrayTexture::ArrayTexture(
     bool hdri,
     const material::TextureSpec& spec)
     : Texture{ name, grayScale, gammaCorrect, material::TextureType::array, spec },
-    m_uniformId{ uniformId },
+    m_unitIndex{ unitIndex },
     m_channels{ channels },
     m_is16Bit{ is16Bit },
     m_maxLayers{ maxLayers },
@@ -196,6 +196,12 @@ void ArrayTexture::updateMipMaps()
 
 uint32_t ArrayTexture::allocateLayer()
 {
+    if (m_layerIndex >= m_maxLayers) {
+        KI_CRITICAL_OUT(fmt::format(
+            "TEX::REGISTRY: array_texturee full. name={}, max_count={}",
+            m_name, m_maxLayers));
+    }
+
     m_layerIndex++;
     return static_cast<uint32_t>(m_layerIndex);
 }

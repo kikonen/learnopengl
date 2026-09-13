@@ -175,21 +175,20 @@ bool SampleApp::onSetup()
         m_editorFrame->clear();
     }
 
-    setupTextures();
-
     return false;
 }
 
 void SampleApp::setupTextures()
 {
     auto& textureRegistry = TextureRegistry::get();
+    constexpr int DIFFUSE_LAYERS = 32;
 
     const auto srgbIndex = textureRegistry.addArrayTexture({
         "srgb",
-        UNIFORM_TEXTURE_ARRAY_SRGB,
+        UNIT_TEXTURE_ARRAY_SRGB,
         4,
         1024,
-        256,
+        DIFFUSE_LAYERS,
         false,
         false,
         true,
@@ -203,10 +202,10 @@ void SampleApp::setupTextures()
 
     const auto dataIndex = textureRegistry.addArrayTexture({
         "data",
-        UNIFORM_TEXTURE_ARRAY_LINEAR,
+        UNIT_TEXTURE_ARRAY_LINEAR,
         4,
         1024,
-        256,
+        DIFFUSE_LAYERS,
         false,
         false,
         false,
@@ -220,10 +219,10 @@ void SampleApp::setupTextures()
 
     const auto normalIndex = textureRegistry.addArrayTexture({
         "normal",
-        UNIFORM_TEXTURE_ARRAY_NORMAL,
+        UNIT_TEXTURE_ARRAY_NORMAL,
         3,
         1024,
-        256,
+        DIFFUSE_LAYERS,
         true,
         false,
         false,
@@ -237,7 +236,7 @@ void SampleApp::setupTextures()
 
     const auto dudvIndex = textureRegistry.addArrayTexture({
         "dudv",
-        UNIFORM_TEXTURE_ARRAY_DUDV,
+        UNIT_TEXTURE_ARRAY_DUDV,
         3,
         256,
         16,
@@ -254,7 +253,7 @@ void SampleApp::setupTextures()
 
     const auto displacementIndex = textureRegistry.addArrayTexture({
         "displacement",
-        UNIFORM_TEXTURE_ARRAY_DISPLACEMENT,
+        UNIT_TEXTURE_ARRAY_DISPLACEMENT,
         1,
         1024,
         64,
@@ -271,7 +270,7 @@ void SampleApp::setupTextures()
 
     const auto noiseIndex = textureRegistry.addArrayTexture({
         "noise",
-        UNIFORM_TEXTURE_ARRAY_NOISE,
+        UNIT_TEXTURE_ARRAY_NOISE,
         3,
         128,
         8,
@@ -289,7 +288,7 @@ void SampleApp::setupTextures()
 
     const auto heightIndex = textureRegistry.addArrayTexture({
         "height",
-        UNIFORM_TEXTURE_ARRAY_HEIGHT,
+        UNIT_TEXTURE_ARRAY_HEIGHT,
         1,
         2048,
         16,
@@ -306,7 +305,7 @@ void SampleApp::setupTextures()
 
     const auto fontAtlasIndex = textureRegistry.addArrayTexture({
         "font_atlas",
-        UNIFORM_TEXTURE_ARRAY_FONT_ATLAS,
+        UNIT_TEXTURE_ARRAY_FONT_ATLAS,
         1,
         1024,
         16,
@@ -323,7 +322,7 @@ void SampleApp::setupTextures()
 
     const auto dynamicIndex = textureRegistry.addArrayTexture({
         "dynamic",
-        UNIFORM_TEXTURE_ARRAY_DYNAMIC,
+        UNIT_TEXTURE_ARRAY_DYNAMIC,
         4,
         1024,
         16,
@@ -689,6 +688,8 @@ util::Ref<Scene> SampleApp::loadScene(
 
     Assets::set(loadAssets());
 
+    setupTextures();
+
     auto scene = util::Ref<Scene>::create(*this);
 
     {
@@ -760,8 +761,6 @@ void SampleApp::unloadScene()
         m_editorFrame->clear();
     }
     m_currentScene = nullptr;
-
-    setupTextures();
 
     showFps(m_fpsCounter);
 }

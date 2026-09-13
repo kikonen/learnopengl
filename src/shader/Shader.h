@@ -154,9 +154,20 @@ inline constexpr int MAX_SHADOW_MAP_COUNT = 4;
 inline constexpr int UNIT_SHADOW_MAP_FIRST = 75;
 inline constexpr int UNIT_SHADOW_MAP_LAST = UNIT_SHADOW_MAP_FIRST + MAX_SHADOW_MAP_COUNT - 1;
 
-inline constexpr unsigned int TEXTURE_UNIT_COUNT = 64;
-inline constexpr unsigned int FIRST_TEXTURE_UNIT = 0;
-inline constexpr unsigned int LAST_TEXTURE_UNIT = FIRST_TEXTURE_UNIT + TEXTURE_UNIT_COUNT - 1;
+constexpr int UNIT_TEXTURE_ARRAY_SRGB = 80;
+constexpr int UNIT_TEXTURE_ARRAY_LINEAR = 81;
+constexpr int UNIT_TEXTURE_ARRAY_NORMAL = 82;
+constexpr int UNIT_TEXTURE_ARRAY_DUDV = 83;
+constexpr int UNIT_TEXTURE_ARRAY_DISPLACEMENT = 84;
+constexpr int UNIT_TEXTURE_ARRAY_NOISE = 85;
+constexpr int UNIT_TEXTURE_ARRAY_HEIGHT = 86;
+constexpr int UNIT_TEXTURE_ARRAY_FONT_ATLAS = 87;
+constexpr int UNIT_TEXTURE_ARRAY_DYNAMIC = 88;
+
+// NOTE KI obsolete logic related into  old "texture unit mapping" logic
+//inline constexpr unsigned int TEXTURE_UNIT_COUNT = 64;
+//inline constexpr unsigned int FIRST_TEXTURE_UNIT = 0;
+//inline constexpr unsigned int LAST_TEXTURE_UNIT = FIRST_TEXTURE_UNIT + TEXTURE_UNIT_COUNT - 1;
 
 inline constexpr unsigned int STENCIL_FOG = 1 << 7;
 inline constexpr unsigned int STENCIL_SKYBOX = 1 << 6;
@@ -164,6 +175,6 @@ inline constexpr unsigned int STENCIL_HIGHLIGHT = 1 << 0;
 inline constexpr unsigned int STENCIL_OIT = 1 << 1;
 inline constexpr unsigned int STENCIL_SOLID = 1 << 2;
 
-#define ASSERT_TEX_INDEX(texIndex) assert(texIndex >= 0 && texIndex < MAX_TEXTURE_COUNT)
-
-#define ASSERT_TEX_UNIT(unitIndex) assert(unitIndex >= FIRST_TEXTURE_UNIT && unitIndex <= LAST_TEXTURE_UNIT)
+// NOTE KI obsolete logic related into  old "texture unit mapping" logic
+//#define ASSERT_TEX_INDEX(texIndex) assert(texIndex >= 0 && texIndex < MAX_TEXTURE_COUNT)
+//#define ASSERT_TEX_UNIT(unitIndex) assert(unitIndex >= FIRST_TEXTURE_UNIT && unitIndex <= LAST_TEXTURE_UNIT)

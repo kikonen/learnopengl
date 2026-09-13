@@ -81,7 +81,7 @@ struct MaterialMainSSBO {
     //GLuint64 u_specularTex;
     GLuint64 u_normalMap;
 
-    GLuint64 u_opacityMap;
+    //GLuint64 u_opacityMap;
     GLuint64 u_mrasMap;
 
     GLuint u_flags;

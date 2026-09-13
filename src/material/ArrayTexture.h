@@ -11,7 +11,7 @@ class ArrayTexture final : public Texture
 public:
     ArrayTexture(
         const std::string& name,
-        int uniformId,
+        int unitIndex,
         bool grayScale,
         bool gammaCorrect,
         int channels,
@@ -49,9 +49,9 @@ public:
         return m_layerIndex + 1;
     }
 
-    int getUniformId() const noexcept
+    int getUnitIndex() const noexcept
     {
-        return m_uniformId;
+        return m_unitIndex;
     }
 
     int getChannels() const noexcept
@@ -65,7 +65,7 @@ public:
     }
 
 private:
-    const int m_uniformId;
+    const int m_unitIndex;
     const int m_channels;
     const bool m_is16Bit;
 

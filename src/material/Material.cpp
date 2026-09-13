@@ -607,7 +607,7 @@ void Material::fillSSBOBindless(
         .u_diffuseTex = getTexHandle(material::TextureType::diffuse, whitePx),
         .u_emissionTex = getTexHandle(material::TextureType::emission, blackPx),
         .u_normalMap = getTexHandle(material::TextureType::map_normal, flatNormalPx),
-        .u_opacityMap = getTexHandle(material::TextureType::map_opacity, whitePx),
+        //.u_opacityMap = getTexHandle(material::TextureType::map_opacity, whitePx),
         // NOTE KI whitePx fails due to "inverse" flags
         .u_mrasMap = getTexHandle(material::TextureType::map_mras, 0),
 
@@ -674,7 +674,7 @@ void Material::fillSSBOArray(
         .u_diffuseTex = getTexHandle(material::TextureType::diffuse, whiteLayer),
         .u_emissionTex = getTexHandle(material::TextureType::emission, blackLayer),
         .u_normalMap = getTexHandle(material::TextureType::map_normal, normalLayer),
-        .u_opacityMap = getTexHandle(material::TextureType::map_opacity, whiteLayer),
+        //.u_opacityMap = getTexHandle(material::TextureType::map_opacity, diffuseWhiteLayer),
         // NOTE KI whitePx fails due to "inverse" flags
         .u_mrasMap = getTexHandle(material::TextureType::map_mras, 0),
 
