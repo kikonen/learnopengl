@@ -198,8 +198,8 @@ uint32_t ArrayTexture::allocateLayer()
 {
     if (m_layerIndex >= m_maxLayers) {
         KI_CRITICAL_OUT(fmt::format(
-            "TEX::REGISTRY: array_texturee full. name={}, max_count={}",
-            m_name, m_maxLayers));
+            "TEX::ARRAY::FULL: name={}, layer={}, max_count={}",
+            m_name, m_layerIndex + 1, m_maxLayers));
     }
 
     m_layerIndex++;
@@ -223,6 +223,10 @@ uint64_t ArrayTexture::registerTexture(
     texture->prepareArray(*this, layer);
 
     m_registeredTextures.push_back(texture);
+
+    KI_INFO(fmt::format(
+        "TEX::ARRAY::REGISTER: name={}, layer={}, max_count={}, texture={}",
+        m_name, m_layerIndex + 1, m_maxLayers, texture->str()));
 
     return layer;
 }

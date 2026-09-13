@@ -181,7 +181,7 @@ bool SampleApp::onSetup()
 void SampleApp::setupTextures()
 {
     auto& textureRegistry = TextureRegistry::get();
-    constexpr int DIFFUSE_LAYERS = 32;
+    constexpr int DIFFUSE_LAYERS = 64;
 
     const auto srgbIndex = textureRegistry.addArrayTexture({
         "srgb",
@@ -197,6 +197,10 @@ void SampleApp::setupTextures()
             .wrap = material::WrapMode::repeat,
             .minFilter = material::TextureFilter::linear_mipmap_nearest,
             .magFilter = material::TextureFilter::linear,
+        },
+        {
+            material::PixelType::black,
+            material::PixelType::white
         }
         });
 
@@ -214,6 +218,10 @@ void SampleApp::setupTextures()
             .wrap = material::WrapMode::repeat,
             .minFilter = material::TextureFilter::linear_mipmap_nearest,
             .magFilter = material::TextureFilter::linear,
+        },
+        {
+            material::PixelType::black,
+            material::PixelType::none,
         }
         });
 
@@ -231,6 +239,10 @@ void SampleApp::setupTextures()
             .wrap = material::WrapMode::repeat,
             .minFilter = material::TextureFilter::linear_mipmap_nearest,
             .magFilter = material::TextureFilter::linear,
+        },
+        {
+            material::PixelType::normal,
+            material::PixelType::none
         }
         });
 
@@ -248,6 +260,10 @@ void SampleApp::setupTextures()
             .wrap = material::WrapMode::repeat,
             .minFilter = material::TextureFilter::linear_mipmap_nearest,
             .magFilter = material::TextureFilter::linear,
+        },
+        {
+            material::PixelType::none,
+            material::PixelType::none,
         }
         });
 
@@ -265,6 +281,10 @@ void SampleApp::setupTextures()
             .wrap = material::WrapMode::repeat,
             .minFilter = material::TextureFilter::linear_mipmap_nearest,
             .magFilter = material::TextureFilter::linear,
+        },
+        {
+            material::PixelType::black,
+            material::PixelType::none,
         }
         });
 
@@ -283,6 +303,10 @@ void SampleApp::setupTextures()
             .minFilter = material::TextureFilter::nearest,
             .magFilter = material::TextureFilter::nearest,
             .maxMipMapLevels = 1,
+        },
+        {
+            material::PixelType::none,
+            material::PixelType::none,
         }
         });
 
@@ -300,6 +324,10 @@ void SampleApp::setupTextures()
             .wrap = material::WrapMode::clamp_to_edge,
             .minFilter = material::TextureFilter::linear_mipmap_nearest,
             .magFilter = material::TextureFilter::linear,
+        },
+        {
+            material::PixelType::none,
+            material::PixelType::none,
         }
         });
 
@@ -317,6 +345,10 @@ void SampleApp::setupTextures()
             .wrap = material::WrapMode::clamp_to_edge,
             .minFilter = material::TextureFilter::linear_mipmap_linear,
             .magFilter = material::TextureFilter::linear,
+        },
+        {
+            material::PixelType::none,
+            material::PixelType::none,
         }
         });
 
@@ -335,6 +367,10 @@ void SampleApp::setupTextures()
             .minFilter = material::TextureFilter::linear_mipmap_nearest,
             .magFilter = material::TextureFilter::linear,
             .maxMipMapLevels = 1,
+        },
+        {
+            material::PixelType::white,
+            material::PixelType::none,
         }
         });
 
@@ -763,6 +799,8 @@ void SampleApp::unloadScene()
     m_currentScene = nullptr;
 
     showFps(m_fpsCounter);
+
+    kigl::GLState::get().invalidateAll();
 }
 
 void SampleApp::stopLoader()

@@ -73,8 +73,7 @@ private:
 
     const bool m_hdri;
 
-    // NOTE KI starts from 0, thus 0 becomes "NULL" layer
-    int m_layerIndex{ 0 };
+    int m_layerIndex{ -1 };
 
     std::vector<util::Ref<Texture>> m_registeredTextures;
 

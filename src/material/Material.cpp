@@ -653,9 +653,21 @@ void Material::fillSSBOArray(
 {
     // Unified fixed fallback layer indices within the Array Texture slots
     // Layer 1 = Black placeholder, Layer 2 = White placeholder, Layer 3 = Flat Normal
-    const int blackLayer = material::TEX_ARRAY_LAYER_BLACK;
-    const int whiteLayer = material::TEX_ARRAY_LAYER_WHITE;
-    const int normalLayer = material::TEX_ARRAY_LAYER_NORMAL;
+    //const int blackLayer = material::TEX_ARRAY_LAYER_BLACK;
+    //const int whiteLayer = material::TEX_ARRAY_LAYER_WHITE;
+    //const int normalLayer = material::TEX_ARRAY_LAYER_NORMAL;
+
+    //const int diffuseBlackLayer = blackLayer;
+    //const int diffuseWhiteLayer = whiteLayer;
+    //const int dynamicWhiteLayer = whiteLayer;
+    //const int displacementBlackLayer = blackLayer;
+    ////const int normalLayer = normalLayer;
+
+    const int diffuseBlackLayer = 1;
+    const int diffuseWhiteLayer = 2;
+    const int dynamicWhiteLayer = 1;
+    const int displacementBlackLayer = 1;
+    const int normalLayer = 1;
 
     // RGB8 = (128, 128, 255) = flat normal
     uint8_t flatNormal[] = { 128, 128, 255 };
@@ -671,8 +683,8 @@ void Material::fillSSBOArray(
         .u_emission = hasBoundTex(material::TextureType::emission) ? WHITE_RGBA : ke,
         .u_mras = hasBoundTex(material::TextureType::map_mras) ? mrasFactor : mras,
 
-        .u_diffuseTex = getTexHandle(material::TextureType::diffuse, whiteLayer),
-        .u_emissionTex = getTexHandle(material::TextureType::emission, blackLayer),
+        .u_diffuseTex = getTexHandle(material::TextureType::diffuse, diffuseWhiteLayer),
+        .u_emissionTex = getTexHandle(material::TextureType::emission, diffuseBlackLayer),
         .u_normalMap = getTexHandle(material::TextureType::map_normal, normalLayer),
         //.u_opacityMap = getTexHandle(material::TextureType::map_opacity, diffuseWhiteLayer),
         // NOTE KI whitePx fails due to "inverse" flags
@@ -688,7 +700,7 @@ void Material::fillSSBOArray(
     };
 
     custom = {
-        .u_displacementMap = getTexHandle(material::TextureType::map_displacement, blackLayer),
+        .u_displacementMap = getTexHandle(material::TextureType::map_displacement, displacementBlackLayer),
 
         .u_dudvMap = getTexHandle(material::TextureType::map_dudv, 0),
         .u_noiseMap = getTexHandle(material::TextureType::map_noise, 0),
@@ -698,7 +710,7 @@ void Material::fillSSBOArray(
 
         .u_fontAtlas = getTexHandle(material::TextureType::map_font_atlas, 0),
 
-        .u_dynamic = getTexHandle(material::TextureType::dynamic, whiteLayer),
+        .u_dynamic = getTexHandle(material::TextureType::dynamic, dynamicWhiteLayer),
     };
     cold = {
         .u_reflection = reflection,

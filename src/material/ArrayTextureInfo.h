@@ -1,11 +1,23 @@
 #pragma once
 
 #include <string>
+#include <array>
+
+#include <stdint.h>
 
 #include "TextureSpec.h"
 
 namespace material
 {
+    enum PixelType : std::underlying_type_t<std::byte>
+    {
+        none,
+        magenta,
+        black,
+        white,
+        normal
+    };
+
     struct ArrayTextureInfo
     {
         std::string name;
@@ -20,5 +32,6 @@ namespace material
         bool gammaCorrect;
         bool hdri;
         material::TextureSpec spec;
+        std::array<PixelType, 2> pixels { PixelType::none, PixelType::none };
     };
 }

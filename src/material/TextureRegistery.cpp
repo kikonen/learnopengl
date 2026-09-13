@@ -19,6 +19,35 @@ namespace
     static TextureRegistry* s_registry{ nullptr };
 
     const util::Ref<ArrayTexture> NULL_TEXTURE;
+
+    util::Ref<ColorTexture> getPixel(material::PixelType type)
+    {
+        switch (type) {
+        case material::PixelType::none:
+                return nullptr;
+        case material::PixelType::magenta:
+            return util::Ref<ColorTexture>::create(
+                "MAGENTA_RGBA",
+                glm::vec4{ 1.f, 0.f, 1.f, 1.f },
+                GL_RGBA8);
+        case material::PixelType::black:
+            return util::Ref<ColorTexture>::create(
+                "BLACK_RGBA",
+                glm::vec4{ 0.f },
+                GL_RGBA8);
+        case material::PixelType::white:
+            return util::Ref<ColorTexture>::create(
+                "WHITE_RGBA",
+                glm::vec4{ 1.f, 1.f, 1.f, 1.f },
+                GL_RGBA8);
+        case material::PixelType::normal:
+            return util::Ref<ColorTexture>::create(
+                "FLAT_NORMAL_RGBA",
+                glm::vec4{ 0.5f, 0.5f, 1.f, 1.f },
+                GL_RGBA8);
+        }
+        return nullptr;
+    }
 }
 
 void TextureRegistry::init() noexcept
@@ -121,32 +150,54 @@ uint32_t TextureRegistry::addArrayTexture(const material::ArrayTextureInfo& info
     if (arr->getUnitIndex() != 0) {
         arr->prepareSingle();
 
-        {
-            int layer = arr->peekNextLayerIndex();
-            assert(layer == material::TEX_ARRAY_LAYER_BLACK);
-            const auto& px = util::Ref<ColorTexture>::create(
-                "BLACK_RGBA",
-                glm::vec4{ 0.f },
-                GL_RGBA8);
-            arr->registerTexture(px);
+        // NULL
+        if (false) {
+            const auto& px = getPixel(material::PixelType::magenta);
+            if (px) {
+                arr->registerTexture(px);
+            }
         }
-        {
-            int layer = arr->peekNextLayerIndex();
-            assert(layer == material::TEX_ARRAY_LAYER_WHITE);
-            const auto& px = util::Ref<ColorTexture>::create(
-                "WHITE_RGBA",
-                glm::vec4{ 1.f, 1.f, 1.f, 1.f },
-                GL_RGBA8);
-            arr->registerTexture(px);
+        if (true) {
+            arr->allocateLayer();
         }
-        {
-            int layer = arr->peekNextLayerIndex();
-            assert(layer == material::TEX_ARRAY_LAYER_NORMAL);
-            const auto& px = util::Ref<ColorTexture>::create(
-                "FLAT_NORMAL_RGBA",
-                glm::vec4{ 0.5f, 0.5f, 1.f, 1.f },
-                GL_RGBA8);
-            arr->registerTexture(px);
+
+        if (true) {
+            for (const auto& pixelType : info.pixels) {
+                const auto& px = getPixel(pixelType);
+                if (px) {
+                    arr->registerTexture(px);
+                }
+            }
+        }
+
+        if (false) {
+            {
+                int layer = arr->peekNextLayerIndex();
+                assert(layer == material::TEX_ARRAY_LAYER_BLACK);
+                const auto& px = util::Ref<ColorTexture>::create(
+                    "BLACK_RGBA",
+                    glm::vec4{ 0.f },
+                    GL_RGBA8);
+                arr->registerTexture(px);
+            }
+            {
+                int layer = arr->peekNextLayerIndex();
+                assert(layer == material::TEX_ARRAY_LAYER_WHITE);
+                const auto& px = util::Ref<ColorTexture>::create(
+                    "WHITE_RGBA",
+                    glm::vec4{ 1.f, 1.f, 1.f, 1.f },
+                    GL_RGBA8);
+                arr->registerTexture(px);
+            }
+            {
+                int layer = arr->peekNextLayerIndex();
+                assert(layer == material::TEX_ARRAY_LAYER_NORMAL);
+                const auto& px = util::Ref<ColorTexture>::create(
+                    "FLAT_NORMAL_RGBA",
+                    glm::vec4{ 0.5f, 0.5f, 1.f, 1.f },
+                    GL_RGBA8);
+                arr->registerTexture(px);
+            }
         }
 
         arr->updateMipMaps();
