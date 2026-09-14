@@ -343,7 +343,6 @@ void LayerRenderer::fillHighlightMask(
             },
             [this](ki::program_id programId) {
                 auto* program = Program::get(programId);
-                program->m_uniforms->u_stencilMode.set(STENCIL_MODE_SHIFT_NONE);
                 program->m_uniforms->u_wireframeMode.set(false);
             },
             // own selector over the shared cull; default require-mask ignores VISIBLE_SELECTED
@@ -449,7 +448,6 @@ void LayerRenderer::renderSelectionWireframe(
         },
         [](ki::program_id programId) {
             auto* program = Program::get(programId);
-            program->m_uniforms->u_stencilMode.set(STENCIL_MODE_SHIFT_NONE);
             program->m_uniforms->u_wireframeMode.set(true);
         },
         // wireframe draws exactly the SELECTED nodes (which the main cull excluded from

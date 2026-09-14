@@ -24,7 +24,6 @@ in TCS_OUT {
   flat uvec2 heightMapTex;
 
   flat uint highlightIndex;
-  flat int stencilMode;
   flat int wireframeMode;
 } tes_in[];
 
@@ -90,10 +89,6 @@ void main()
 
   gl_Position = u_projectedMatrix * worldPos;
 
-  if (tes_in[0].wireframeMode == 0) {
-    renderOutline(tes_in[0].stencilMode);
-  }
-
   tes_out.highlightIndex = tes_in[0].highlightIndex;
 }
 #endif
@@ -132,10 +127,6 @@ void main()
   calculateClipping(worldPos);
 
   gl_Position = u_projectedMatrix * worldPos;
-
-  if (tes_in[0].wireframeMode == 0) {
-    renderOutline(tes_in[0].stencilMode);
-  }
 
   tes_out.highlightIndex = tes_in[0].highlightIndex;
 }
