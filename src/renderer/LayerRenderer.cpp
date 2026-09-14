@@ -41,6 +41,11 @@
 #include "kigl/GLStencilMode.h"
 
 namespace {
+    // NOTE KI selection mask resolution vs. layer buffer. OUTLINE_WIDTH in
+    // screen_selection_outline_pass.fs is in *mask* texels, thus changing this
+    // scales the outline thickness with it
+    constexpr float SELECTION_MASK_SCALE = 0.5f;
+
     // selection/tag handles -> entityIndex set (entityIndex == NodeHandle::m_handleIndex)
     std::unordered_set<uint32_t> toEntitySet(const std::vector<pool::NodeHandle>& handles)
     {
@@ -164,12 +169,19 @@ void LayerRenderer::updateView(const UpdateViewContext& ctx)
     }
 
     if (m_useHighlight) {
-        // NOTE KI same size as layer buffer => outline pass is 1:1 in texels
+        // NOTE KI smaller buffer to save memory; outline is only a few pixels
+        // wide, and LINEAR sampling of the smaller mask gives a *smoother*
+        // silhouette edge than a 1:1 mask would
+        int mw = (int)(w * SELECTION_MASK_SCALE);
+        int mh = (int)(h * SELECTION_MASK_SCALE);
+        if (mw < 1) mw = 1;
+        if (mh < 1) mh = 1;
+
         // NOTE KI *NO* depth/stencil; silhouette does not need them
         m_maskBuffer = util::Ref<render::FrameBuffer>::create(
-            fmt::format("{}_selection_mask_{}x{}", m_name, w, h),
+            fmt::format("{}_selection_mask_{}x{}", m_name, mw, mh),
             render::FrameBufferSpecification {
-                w, h,
+                mw, mh,
                 {
                 render::FrameBufferAttachment::getSelectionMaskTexture(GL_COLOR_ATTACHMENT0),
             }
@@ -292,6 +304,11 @@ void LayerRenderer::fillHighlightMask(
     state.setEnabled(GL_DEPTH_TEST, false);
     state.setDepthMask(GL_FALSE);
 
+    // NOTE KI mask alpha must be the raw coverage; runs after drawNodes, thus
+    // blend state cannot be assumed to be off
+    state.setEnabled(GL_BLEND, false);
+    state.setBlendMode({});
+
     // draw entity data mask
     {
         const bool showTagged = assets.showTagged;
@@ -360,20 +377,30 @@ void LayerRenderer::renderHighlight(
     targetBuffer->bind(localCtx);
 
     // NOTE KI pure screen space pass; outline pixels are picked by the shader
-    // via discard, thus no depth/stencil/blend needed
+    // via discard, thus no depth/stencil needed
     state.setEnabled(GL_DEPTH_TEST, false);
     state.setDepthMask(GL_FALSE);
     state.setStencil({});
-    state.setEnabled(GL_BLEND, false);
-    state.setBlendMode({});
     state.frontFace(GL_CCW);
     state.polygonFrontAndBack(GL_FILL);
+
+    // NOTE KI outline edge is *anti-aliased*, i.e. partial coverage; blend it
+    // over existing layer content instead of overwriting. Alpha uses
+    // ONE/ONE_MINUS_SRC_ALPHA so that coverage accumulates correctly for the
+    // later layer composite (layer buffer alpha is meaningful)
+    state.setEnabled(GL_BLEND, true);
+    state.setBlendMode({
+        GL_FUNC_ADD,
+        GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA,
+        GL_ONE, GL_ONE_MINUS_SRC_ALPHA });
 
     m_maskBuffer->bindTexture(state, ATT_MASK_INDEX, UNIT_SELECTION_MASK);
 
     m_selectionOutlineProgram->bind();
     render::ScreenTri::get().draw();
 
+    state.setBlendMode({});
+    state.setEnabled(GL_BLEND, false);
     state.setDepthMask(GL_TRUE);
     state.setEnabled(GL_DEPTH_TEST, true);
 }

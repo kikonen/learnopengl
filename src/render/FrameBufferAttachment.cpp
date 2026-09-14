@@ -701,13 +701,15 @@ namespace render {
     //   cheaply (and GL->VK translation gets wrong)
     // - RGBA so that the selection material color rides along with the mask
     //   => alpha != 0 marks "inside silhouette", rgb gives the outline color
+    // - LINEAR *required*; mask is rendered at lower res than the layer buffer
+    //   and the outline pass relies on interpolation to get a smooth edge
     FrameBufferAttachment FrameBufferAttachment::getSelectionMaskTexture(GLenum attachment)
     {
         FrameBufferAttachment spec;
         spec.type = FrameBufferAttachmentType::texture;
         spec.internalFormat = GL_RGBA8;
-        spec.minFilter = GL_NEAREST;
-        spec.magFilter = GL_NEAREST;
+        spec.minFilter = GL_LINEAR;
+        spec.magFilter = GL_LINEAR;
         spec.textureWrapS = GL_CLAMP_TO_EDGE;
         spec.textureWrapT = GL_CLAMP_TO_EDGE;
         spec.attachment = attachment;
