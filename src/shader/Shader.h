@@ -17,6 +17,8 @@ inline const std::string SHADER_PRE_DEPTH_PASS{ "g_pre_depth" };
 
 inline const std::string SHADER_OIT_PASS{ "oit_pass" };
 
+inline const std::string SHADER_SELECTION_OUTLINE_PASS{ "screen_selection_outline_pass" };
+
 inline const std::string DEF_USE_ALPHA{ "USE_ALPHA" };
 inline const std::string DEF_USE_BLEND{ "USE_BLEND" };
 
@@ -129,6 +131,7 @@ inline constexpr int UNIT_EFFECT_WORK = 44;
 inline constexpr int UNIT_SSAO = 46;
 inline constexpr int UNIT_SSAO_BLUR = 47;
 inline constexpr int UNIT_NOISE = 48;
+inline constexpr int UNIT_SELECTION_MASK = 49;
 
 inline constexpr int UNIT_EDITOR_CUBE_MAP = 50;
 

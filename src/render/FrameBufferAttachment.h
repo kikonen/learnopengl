@@ -149,6 +149,8 @@ namespace render {
         static FrameBufferAttachment getOITRevealTexture(GLenum attachment);
 
         static FrameBufferAttachment getSsaoTexture(GLenum attachment);
+
+        static FrameBufferAttachment getSelectionMaskTexture(GLenum attachment);
     };
 
     struct FrameBufferSpecification {

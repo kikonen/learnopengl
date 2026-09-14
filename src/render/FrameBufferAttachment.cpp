@@ -694,4 +694,32 @@ namespace render {
 
         return spec;
     }
+
+    // NOTE KI selection silhouette mask; separate buffer *on purpose*
+    // - stencil of the layer buffer cannot be used, since the depth copy from
+    //   gbuffer is a partial copy of packed DEPTH24_STENCIL8, which no HW does
+    //   cheaply (and GL->VK translation gets wrong)
+    // - RGBA so that the selection material color rides along with the mask
+    //   => alpha != 0 marks "inside silhouette", rgb gives the outline color
+    FrameBufferAttachment FrameBufferAttachment::getSelectionMaskTexture(GLenum attachment)
+    {
+        FrameBufferAttachment spec;
+        spec.type = FrameBufferAttachmentType::texture;
+        spec.internalFormat = GL_RGBA8;
+        spec.minFilter = GL_NEAREST;
+        spec.magFilter = GL_NEAREST;
+        spec.textureWrapS = GL_CLAMP_TO_EDGE;
+        spec.textureWrapT = GL_CLAMP_TO_EDGE;
+        spec.attachment = attachment;
+        spec.useDrawBuffer = true;
+
+        // NOTE KI alpha == 0 means "not selected"
+        spec.clearColor = { 0.f, 0.f, 0.f, 0.f };
+        spec.borderColor = { 0.f, 0.f, 0.f, 0.f };
+
+        spec.clearMask = GL_COLOR_BUFFER_BIT;
+        spec.name = "selection_mask_RGBA8";
+
+        return spec;
+    }
 }

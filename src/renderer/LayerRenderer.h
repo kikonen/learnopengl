@@ -20,6 +20,8 @@ public:
     static const int ATT_ALBEDO_INDEX = 0;
     static const int ATT_DEPTH_INDEX = 1;
 
+    static const int ATT_MASK_INDEX = 0;
+
 public:
     LayerRenderer(
         std::string_view name,
@@ -56,12 +58,17 @@ private:
 public:
     util::Ref<render::FrameBuffer> m_frameBuffer{ nullptr };
 
+    // NOTE KI selection silhouette mask; separate buffer so that it cannot be
+    // damaged by the partial depth/stencil copy done into m_frameBuffer
+    util::Ref<render::FrameBuffer> m_maskBuffer{ nullptr };
+
     std::unique_ptr<render::NodeDraw> m_nodeDraw;
 
     glm::u16vec2 m_aspectRatio{ 1, 1 };
 
 private:
     Program* m_selectionProgram{ nullptr };
+    Program* m_selectionOutlineProgram{ nullptr };
 
     const bool m_useHighlight;
 
