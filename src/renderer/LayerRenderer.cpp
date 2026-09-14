@@ -249,8 +249,12 @@ void LayerRenderer::render(
             render::DrawContext drawContext{
                 drawableSelector,
                 render::KIND_ALL,
-                // NOTE KI nothing to clear; keep stencil, depth copied from gbuffer
-                GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT,
+                // NOTE KI copy *all* aspects from gbuffer. Depth/stencil is packed
+                // DEPTH24_STENCIL8; copying only the depth aspect would be a
+                // read-modify-write of a compressed surface (and is not even
+                // expressible in VK, thus mistranslated by GL-on-VK drivers).
+                // Nothing reads the layer stencil anymore => copy the lot.
+                GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT,
                 // when set, the selector is folded into the cull instead of called per pass
                 filtersDrawables
             };

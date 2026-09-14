@@ -174,7 +174,7 @@ constexpr int UNIT_TEXTURE_ARRAY_DYNAMIC = 88;
 
 inline constexpr unsigned int STENCIL_FOG = 1 << 7;
 inline constexpr unsigned int STENCIL_SKYBOX = 1 << 6;
-inline constexpr unsigned int STENCIL_HIGHLIGHT = 1 << 0;
+// NOTE KI 1 << 0 was STENCIL_HIGHLIGHT; selection outline is screen space now
 inline constexpr unsigned int STENCIL_OIT = 1 << 1;
 inline constexpr unsigned int STENCIL_SOLID = 1 << 2;
 
