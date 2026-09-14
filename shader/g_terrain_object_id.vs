@@ -3,8 +3,6 @@
 layout (location = ATTR_POS) in vec3 a_pos;
 layout (location = ATTR_TEX) in vec2 a_texCoord;
 
-layout(location = UNIFORM_STENCIL_MODE) uniform int u_stencilMode;
-
 #include "include/ssbo_entities.glsl"
 #include "include/ssbo_instances.glsl"
 #include "include/ssbo_instance_indeces.glsl"

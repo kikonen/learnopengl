@@ -45,9 +45,9 @@ void FontAtlasMaterialUpdater::render(
     if (changed || !m_handle) {
         m_fontId = dbg.m_showFontId;
 
-        auto* fontAtlas = text::FontRegistry::get().getFontAtlas(m_fontId);
+        auto* fontAtlas = text::FontRegistry::get().getFontAtlas(m_fontId).get();
         if (!fontAtlas || !fontAtlas->valid()) {
-            fontAtlas = text::FontRegistry::get().getDefaultFontAtlas();
+            fontAtlas = text::FontRegistry::get().getDefaultFontAtlas().get();
         }
 
         auto handle = fontAtlas ? fontAtlas->getTextureHandle() : 0;
@@ -59,9 +59,9 @@ void FontAtlasMaterialUpdater::render(
     }
 }
 
-GLuint64 FontAtlasMaterialUpdater::getTexHandle(TextureType type) const noexcept
+GLuint64 FontAtlasMaterialUpdater::getTexHandle(material::TextureType type) const noexcept
 {
-    if (type == TextureType::map_custom_1) {
+    if (type == material::TextureType::map_font_atlas) {
         return m_handle;
     }
     return 0;

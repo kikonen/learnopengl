@@ -74,4 +74,11 @@ void main() {
 #else
   o_fragColor = vec4(color.rgb, 1.0);
 #endif
+
+  // if (false) {
+  //   sampler2D sampler = sampler2D(readMaterial_noiseMapTex(materialIndex));
+  //   o_fragColor.rgb = material.diffuse.rgb;
+  //   o_fragColor.rgb = texture(sampler, texCoord).rgb;
+  //   o_fragColor.a = 1;
+  // }
 }

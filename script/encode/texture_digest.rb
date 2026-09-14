@@ -58,17 +58,20 @@ module Encode
       return true if force
       return true if salt_sha_changed?
 
-      unless timestamp_changed?
-        info "SKIP: TIMESTAMP_NOT_ChANGED #{dst_path}"
-        return
+      # NOTE KI timestamp is robust only unidirectionally
+      # => if changed then it's changed (but other direction; cannot assume)
+      if timestamp_changed?
+        return true
       end
 
-      unless file_sha_changed
-        info "SKIP: DIGEST_NOT_ChANGED #{dst_path}"
-        return
-      end
+      # NOTE KI this is just broken
+      # unless file_sha_changed?
+      #   info "SKIP: DIGEST_NOT_CHANGED #{dst_path}"
+      #   return
+      # end
 
-      true
+      info "SKIP: NOT_CHANGED #{dst_path}"
+      false
     end
 
     def read_digest

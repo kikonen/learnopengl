@@ -2,6 +2,7 @@
 
 #include "include/ssbo_materials.glsl"
 
+#include "include/uniform_texture_arrays.glsl"
 #include "include/uniform_data.glsl"
 
 in VS_OUT {

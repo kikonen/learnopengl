@@ -106,7 +106,7 @@
 module Encode
   EXTENSIONS = ["png", "jpg", "jpeg", "tga"].freeze
 
-  OPACITY_MAP = 'opacity'
+  DIFFUSE = 'diffuse'
   MRAS_MAP = 'mras'
   MADS_MAP = "mads"
   DISPLACEMENT_MAP = 'displacement'
@@ -152,13 +152,53 @@ module Encode
   # S (Alpha) — Smoothness (inverse of roughness)
   MODE_MADS = :mads
 
-  MODE_OPACITY = :opacity
+  MODE_DIFFUSE = :diffuse
   MODE_DISPLACEMENT = :displacement
   MODE_HEIGHT = :height
 
-  IMAGE_VERSION = 8
-  MRAS_VERSION = 9
-  DISPLACEMENT_VERSION = 8
-  HEIGHT_VERSION = 8
-  KTX_VERSION = 11
+  IMAGE_VERSION = 8.6
+  DIFFUSE_VERSION = 1.1
+  MRAS_VERSION = 9.5
+  DISPLACEMENT_VERSION = 8.5
+  HEIGHT_VERSION = 8.5
+  KTX_VERSION = 11.5
+
+  # Define explicit overrides for encoding
+  #
+  # Fit mode; how a non-square source is normalized into a square array layer
+  #
+  # :stretch - aspect deliberately NOT preserved. Valid whenever normalized UV
+  #            spans the whole source image, since the distortion cancels when
+  #            sampled: tiled materials, equirectangular maps, sprite sheets
+  #            (cell UV extent is invariant under a global rescale).
+  # :pad     - aspect IS meaningful against geometry; letterbox into the layer
+  #            and let the neutral background fill the remainder.
+  #
+  # NOTE KI square sources never reach a decision; resolve_*_size and
+  # extent_image both no-op once dimensions already match target_size.
+  #
+  # NOTE KI decals resolve as :diffuse in MetaResolver, so they do NOT get :pad
+  # from the type alone. A decal needs an explicit "fit": "pad" entry in
+  # _assets.meta, with "manual": true so it survives metadata regeneration.
+  #
+  DEFAULT_FIT = :stretch
+
+  ENCODE_OPTIONS = {
+    normal: {
+      target_depth: 16,
+      # target_size == diffuse
+    },
+    dudv: {
+      target_depth: 8,
+      target_size: 256
+    },
+    noise: {
+      target_depth: 8,
+      target_size: 128
+    },
+    height: {
+      target_depth: 16,
+      target_size: 2048
+    },
+  }
 end

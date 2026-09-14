@@ -14,7 +14,6 @@
 layout (location = ATTR_POS) in vec3 a_pos;
 layout (location = ATTR_FONT_ATLAS_TEX) in vec2 a_atlasCoord;
 
-layout(location = UNIFORM_STENCIL_MODE) uniform int u_stencilMode;
 layout(location = UNIFORM_WIREFRAME_MODE) uniform bool u_wireframeMode;
 
 out VS_OUT {
@@ -68,8 +67,4 @@ void main()
   vs_out.highlightIndex = u_wireframeMode ? u_wireframeMaterialIndex : u_selectionMaterialIndex;
 
   gl_Position = u_projectedMatrix * worldPos;
-
-  if (!u_wireframeMode) {
-    renderOutline(u_stencilMode);
-  }
 }

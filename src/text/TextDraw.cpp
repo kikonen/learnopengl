@@ -92,6 +92,8 @@ namespace
             float glyphMaxH;
             {
                 const ftgl::texture_glyph_t* glyph = texture_font_get_glyph(font, M_CH);
+                if (!glyph) return;
+
                 glyphMaxW = glyph->s1 - glyph->s0;
                 glyphMaxH = glyph->t1 - glyph->t0;
             }

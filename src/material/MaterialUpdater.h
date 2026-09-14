@@ -55,7 +55,7 @@ public:
 
     void setMaterial(const util::Ref<Material>& src) noexcept;
 
-    virtual GLuint64 getTexHandle(TextureType type) const noexcept
+    virtual GLuint64 getTexHandle(material::TextureType type) const noexcept
     {
         return 0;
     }

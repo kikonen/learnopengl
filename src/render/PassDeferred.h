@@ -1,5 +1,7 @@
 #pragma once
 
+#include "util/Ref.h"
+
 #include "Pass.h"
 
 #include "GBuffer.h"
@@ -70,7 +72,7 @@ namespace render {
         bool m_preDepthEnabled{ true };
 
         GBuffer m_gBuffer;
-        std::unique_ptr<FrameBuffer> m_buffer;
+        util::Ref<FrameBuffer> m_frameBuffer;
 
         Program* m_combineProgram{ nullptr };
     };

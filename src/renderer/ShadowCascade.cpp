@@ -4,6 +4,8 @@
 
 #include "asset/Assets.h"
 
+#include "kigl/GLState.h"
+
 #include "shader/Program.h"
 #include "shader/ProgramUniforms.h"
 #include "shader/Shader.h"
@@ -82,9 +84,20 @@ namespace {
     }
 }
 
+ShadowCascade::ShadowCascade(
+    int index,
+    float shadowBegin,
+    float shadowEnd,
+    int mapSize)
+    : m_index(index),
+    m_shadowBegin(shadowBegin),
+    m_shadowEnd(shadowEnd),
+    m_mapSize(mapSize)
+{
+}
+
 ShadowCascade::~ShadowCascade()
 {
-    delete m_buffer;
 }
 
 void ShadowCascade::prepareRT(
@@ -100,36 +113,39 @@ void ShadowCascade::prepareRT(
 
     m_cascadeCount = assets.shadowPlanes.size() - 1;
 
-    m_buffer = new render::FrameBuffer(
+    m_frameBuffer = util::Ref<render::FrameBuffer>::create(
         fmt::format("shadow_cascade_{}", m_index),
-        {
+        render::FrameBufferSpecification {
             m_mapSize, m_mapSize,
-            { render::FrameBufferAttachment::getShadow() }
+            {
+               render::FrameBufferAttachment::getShadow(),
+            }
         });
 
-    m_buffer->prepare();
+    m_frameBuffer->prepare();
 }
 
 void ShadowCascade::clear()
 {
-    m_buffer->clearAll();
+    m_frameBuffer->invalidateAll();
+    m_frameBuffer->clearAll();
 }
 
 void ShadowCascade::bindTexture(kigl::GLState& state)
 {
     // NOTE KI important, how binding works in uniforms for array
     // https://stackoverflow.com/questions/62031259/specifying-binding-for-texture-arrays-in-glsl
-    m_buffer->bindTexture(state, 0, UNIT_SHADOW_MAP_FIRST + m_index);
+    m_frameBuffer->bindTexture(state, 0, UNIT_SHADOW_MAP_FIRST + m_index);
 }
 
 GLuint ShadowCascade::getTextureID()
 {
-    return m_buffer->m_spec.attachments[0].textureID;
+    return m_frameBuffer->m_spec.attachments[0].textureID;
 }
 
 glm::ivec2 ShadowCascade::getTextureSize()
 {
-    return m_buffer->m_spec.getSize();
+    return m_frameBuffer->m_spec.getSize();
 }
 
 void ShadowCascade::bind(
@@ -252,9 +268,13 @@ void ShadowCascade::render(
     localCtx.updateUBOs();
     localCtx.bindDefaults();
 
-    m_buffer->clearAll();
+    m_frameBuffer->bind(localCtx);
 
-    m_buffer->bind(localCtx);
+    // TODO KI for some reason clear does not work if done before bind
+    // => dummy RGB attachment neither affects situation
+    m_frameBuffer->invalidateAll();
+    m_frameBuffer->clearAll();
+
     drawNodes(localCtx);
 }
 

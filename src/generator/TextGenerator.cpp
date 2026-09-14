@@ -156,7 +156,7 @@ void TextGenerator::updateRT(
 
     if (!m_dirty) return;
 
-    auto* fontAtlas = text::FontRegistry::get().getPreparedFontAtlas(m_fontId, true);
+    auto* fontAtlas = text::FontRegistry::get().getPreparedFontAtlas(m_fontId, true).get();
     if (!fontAtlas) return;
 
     m_dirty = false;
@@ -222,7 +222,7 @@ void TextGenerator::updateRT(
 
 void TextGenerator::updateMaterial(const model::Node& container)
 {
-    auto* fontAtlas = text::FontRegistry::get().getPreparedFontAtlas(m_fontId, true);
+    auto* fontAtlas = text::FontRegistry::get().getPreparedFontAtlas(m_fontId, true).get();
     if (!fontAtlas) return;
 
     auto* lodMesh = m_lodMesh.get();
@@ -249,9 +249,9 @@ void TextGenerator::updateDrawables(
 
 GLuint64 TextGenerator::getAtlasTextureHandle() const noexcept
 {
-    auto* fontAtlas = text::FontRegistry::get().getFontAtlas(m_fontId);
+    auto* fontAtlas = text::FontRegistry::get().getFontAtlas(m_fontId).get();
     if (!fontAtlas) {
-        fontAtlas = text::FontRegistry::get().getDefaultFontAtlas();
+        fontAtlas = text::FontRegistry::get().getDefaultFontAtlas().get();
     }
 
     return fontAtlas ? fontAtlas->getTextureHandle() : 0;

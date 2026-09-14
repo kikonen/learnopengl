@@ -297,6 +297,10 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\loader\WorldLoader.cpp" />
+    <ClCompile Include="src\material\FrameBufferTexture.cpp" />
+    <ClCompile Include="src\material\material_util.cpp" />
+    <ClCompile Include="src\material\TextureRegistery.cpp" />
+    <ClCompile Include="src\material\TextureSpec.cpp" />
     <ClCompile Include="src\mesh_set\decoder\AnimationDecoder.cpp" />
     <ClCompile Include="src\mesh_set\decoder\ClipDecoder.cpp" />
     <ClCompile Include="src\mesh_set\decoder\Decoder.cpp" />
@@ -322,7 +326,7 @@
     <ClCompile Include="src\kigl\GLTextureHandle.cpp" />
     <ClCompile Include="src\kigl\GLVertexArray.cpp" />
     <ClCompile Include="src\loader\AddonSelectorLoader.cpp" />
-    <ClCompile Include="src\material\ImageArrayTexture.cpp" />
+    <ClCompile Include="src\material\ArrayTexture.cpp" />
     <ClCompile Include="src\material\InlineTexture.cpp" />
     <ClCompile Include="src\mesh\LodMeshContainer.cpp" />
     <ClCompile Include="src\mesh\MeshInstance.cpp" />
@@ -502,6 +506,7 @@
     <ClCompile Include="src\loader\converter\DocNode.cpp" />
     <ClCompile Include="src\loader\converter\DocNodeData.cpp" />
     <ClCompile Include="src\loader\converter\YamlConverter.cpp" />
+    <ClCompile Include="src\text\FontAtlastTexture.cpp" />
     <ClCompile Include="src\util\compress.cpp" />
     <ClCompile Include="src\util\DagSort_impl.h" />
     <ClCompile Include="src\loader\FontLoader.cpp" />
@@ -678,7 +683,7 @@
     <ClCompile Include="src\util\glm_util.cpp" />
     <ClCompile Include="src\util\Log.cpp" />
     <ClCompile Include="src\material\ImageTexture.cpp" />
-    <ClCompile Include="src\material\PlainTexture.cpp" />
+    <ClCompile Include="src\material\RawTexture.cpp" />
     <ClCompile Include="src\registry\NodeRegistry.cpp" />
     <ClCompile Include="src\controller\CameraZoomController.cpp" />
     <ClCompile Include="src\controller\ClockController.cpp" />
@@ -794,7 +799,11 @@
     <ClInclude Include="src\loader\value\SocketRoleValue.h" />
     <ClInclude Include="src\loader\WorldData.h" />
     <ClInclude Include="src\loader\WorldLoader.h" />
-    <ClInclude Include="src\material\ImageArrayTexture.h" />
+    <ClInclude Include="src\material\ArrayTexture.h" />
+    <ClInclude Include="src\material\FrameBufferTexture.h" />
+    <ClInclude Include="src\material\material_util.h" />
+    <ClInclude Include="src\material\ArrayTextureInfo.h" />
+    <ClInclude Include="src\material\TextureRegistry.h" />
     <ClInclude Include="src\mesh\LodMeshContainer.h" />
     <ClInclude Include="src\mesh\RegisteredRig.h" />
     <ClInclude Include="src\mesh\vao\size.h" />
@@ -825,6 +834,7 @@
     <ClInclude Include="src\scene\Skybox.h" />
     <ClInclude Include="src\scene\World.h" />
     <ClInclude Include="src\scene\WorldTime.h" />
+    <ClInclude Include="src\text\FontAtlasTexture.h" />
     <ClInclude Include="src\util\compress.h" />
     <ClInclude Include="src\util\preciseSleep.h" />
     <ClInclude Include="src\util\BufferReference.h" />
@@ -1329,7 +1339,7 @@
     <ClInclude Include="src\pool\IdGenerator.h" />
     <ClInclude Include="src\util\Log.h" />
     <ClInclude Include="src\material\ImageTexture.h" />
-    <ClInclude Include="src\material\PlainTexture.h" />
+    <ClInclude Include="src\material\RawTexture.h" />
     <ClInclude Include="src\registry\NodeRegistry.h" />
     <ClInclude Include="src\controller\CameraZoomController.h" />
     <ClInclude Include="src\controller\ClockController.h" />

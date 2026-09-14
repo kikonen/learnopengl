@@ -3,6 +3,7 @@
 #include "asset/Assets.h"
 
 #include "material/ImageTexture.h"
+#include "material/TextureRegistry.h"
 
 #include "shader/SSBO.h"
 
@@ -96,7 +97,8 @@ namespace terrain {
                 if (!tile.m_heightMapTex) continue;
                 if (tile.m_heightMapTexHandle) continue;
 
-                tile.m_heightMapTex->prepare();
+                TextureRegistry::get().registerTexture(tile.m_heightMapTex);
+
                 tile.m_heightMapTexHandle = tile.m_heightMapTex->m_handle;
                 m_snapshot[i].u_heightMapTex = tile.m_heightMapTexHandle;
             }

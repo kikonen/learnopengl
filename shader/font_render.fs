@@ -1,5 +1,6 @@
 #version 460 core
 
+#include "include/uniform_texture_arrays.glsl"
 #include "include/ssbo_materials.glsl"
 
 

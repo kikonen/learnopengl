@@ -18,12 +18,14 @@ module Encode
   # Meta data encoding
   ################################################################################
   class MetaResolver
+    DEFAULT_GROUP = 'default'
+
     # NOTE KI match against *basename" without *extension*
     # => thus \z instead of \.
     REG_EX = [
       # Level 1: most accurate
       {
-        color: [
+        diffuse: [
           /\Acolor\z/,
           /\Acolor[-_ ]/,
           /[-_ ]color[-_ ]/,
@@ -47,6 +49,10 @@ module Encode
           /\Aalbedo[-_ ]/,
           /[-_ ]albedo/,
           /[-_ ]albedo\z/,
+          ###
+          /[-_ ]colormap\z/,
+          ###
+          /[-_ ]spritesheet\z/,
           ###
         ],
         emission: [
@@ -78,6 +84,11 @@ module Encode
           /[-_ ]alpha\z/,
           ###
         ],
+        translucency: [
+          /\Atranslucency[-_ ]/,
+          /[-_ ]translucency[-_ ]/,
+          ###
+        ],
         normal: [
           /[-_ ]normalgl[-_ ]/,
           /[-_ ]normalgl\z/,
@@ -91,6 +102,8 @@ module Encode
           /\Anormals[-_ ]/,
           /[-_ ]normals[-_ ]/,
           /[-_ ]normals\z/,
+          ###
+          /[-_ ]normalmap\z/,
           ###
         ],
         bump: [
@@ -198,13 +211,16 @@ module Encode
           /[-_ ]noise[-_ ]/,
           /[-_ ]noise\z/,
         ],
+        dudv: [
+          /[-_ ]dudv\z/,
+        ],
         preview: [
           /preview/,
         ],
       },
       # Level 2; less accurate
       {
-        color: [
+        diffuse: [
           /\Acol\z/,
           /\Acol[-_ ]/,
           /[-_ ]col[-_ ]/,
@@ -311,7 +327,7 @@ module Encode
       },
       # Level 3; even less accurate (TLA, OLA)
       {
-        color: [
+        diffuse: [
           /\Abc\z/,
           /\Abc[-_ ]/,
           /[-_ ]bc[-_ ]/,
@@ -442,15 +458,34 @@ module Encode
           type = detect_type(name)
 
           case type
-          when :color
+          when :diffuse
+            source_channel = RGB
+            target_channel = RGB
+
+            if img.colorspace == Magick::GRAYColorspace
+              source_channel = RED
+              target_channel = RGB
+            else
+              if img.alpha?
+                source_channel = RGBA
+                target_channel = RGBA
+              end
+            end
+
             tex_info = {
-              type: :color,
-              action: :encode,
+              group: DEFAULT_GROUP,
+              type: :diffuse,
+              action: :combine,
+              mode: MODE_DIFFUSE,
+              target_name: DIFFUSE,
+              source_channel:,
+              target_channel:,
             }
           when :emission
             tex_info = {
               type: :emission,
               action: :encode,
+              mode: :emission,
             }
           when :normal
             tex_info = {
@@ -476,21 +511,30 @@ module Encode
             tex_info = {
               type: :specular,
               action: :skip,
+              mode: :specular,
               srgb: false,
             }
           when :opacity
             tex_info = {
+              group: DEFAULT_GROUP,
               type: :opacity,
-              action: :encode,
-              #mode: MODE_OPACITY,
-              #target_name: OPACITY_MAP,
-              #source_channel: RED,
-              #target_channel: RED,
+              action: :combine,
+              mode: MODE_DIFFUSE,
+              target_name: DIFFUSE,
+              source_channel: RED,
+              target_channel: ALPHA,
+              srgb: false,
+            }
+          when :translucency
+            tex_info = {
+              type: :translucency,
+              action: :skip,
+              mode: :translucency,
               srgb: false,
             }
           when :metal
             tex_info = {
-              group: 'default',
+              group: DEFAULT_GROUP,
               type: :metalness,
               action: :combine,
               mode: MODE_MRAS,
@@ -501,7 +545,7 @@ module Encode
             }
           when :roughness
             tex_info = {
-              group: 'default',
+              group: DEFAULT_GROUP,
               type: :roughness,
               action: :combine,
               mode: MODE_MRAS,
@@ -512,7 +556,7 @@ module Encode
             }
           when :occlusion
             tex_info = {
-              group: 'default',
+              group: DEFAULT_GROUP,
               type: :occlusion,
               action: :combine,
               mode: MODE_MRAS,
@@ -523,7 +567,7 @@ module Encode
             }
           when :metal_roughness
             tex_info = {
-              group: 'default',
+              group: DEFAULT_GROUP,
               type: :metal_roughness,
               action: :combine,
               mode: MODE_MRAS,
@@ -534,7 +578,7 @@ module Encode
             }
           when :metal_roughness_occlusion
             tex_info = {
-              group: 'default',
+              group: DEFAULT_GROUP,
               type: :metal_roughness_occlusion,
               action: :combine,
               mode: MODE_MRAS,
@@ -545,7 +589,7 @@ module Encode
             }
           when :roughness_metal_occlusion
             tex_info = {
-              group: 'default',
+              group: DEFAULT_GROUP,
               type: :roughness_metal_occlusion,
               action: :combine,
               mode: MODE_MRAS,
@@ -556,7 +600,7 @@ module Encode
             }
           when :roughness_occlusion_metal
             tex_info = {
-              group: 'default',
+              group: DEFAULT_GROUP,
               type: :roughness_occlusion_metal,
               action: :combine,
               mode: MODE_MRAS,
@@ -567,7 +611,7 @@ module Encode
             }
           when :occlusion_roughness_metal
             tex_info = {
-              group: 'default',
+              group: DEFAULT_GROUP,
               type: :occlusion_roughness_metal,
               action: :combine,
               mode: MODE_MRAS,
@@ -578,7 +622,7 @@ module Encode
             }
           when :metal_occlusion_height_roughness
             tex_info = {
-              group: 'default',
+              group: DEFAULT_GROUP,
               type: :metal_occlusion_height_roughness,
               action: :combine,
               mode: MODE_MRAS,
@@ -587,10 +631,10 @@ module Encode
               target_channel: RED_ALPHA_GREEN,
               srgb: false,
             }
-          # Kitbash MADS
+            # Kitbash MADS
           when :metal_occlusion_height_smoothness
             tex_info = {
-              group: 'default',
+              group: DEFAULT_GROUP,
               type: :metal_occlusion_height_smoothness,
               action: :combine,
               mode: MODE_MRAS,
@@ -602,7 +646,7 @@ module Encode
             }
           when :displacement
             tex_info = {
-              group: 'default',
+              group: DEFAULT_GROUP,
               type: :displacement,
               action: :combine,
               mode: MODE_DISPLACEMENT,
@@ -613,7 +657,7 @@ module Encode
             }
           when :height
             tex_info = {
-              group: 'default',
+              group: DEFAULT_GROUP,
               type: :height,
               action: :combine,
               mode: MODE_HEIGHT,
@@ -624,7 +668,7 @@ module Encode
             }
           when :cavity
             tex_info = {
-              group: 'default',
+              group: DEFAULT_GROUP,
               type: :cavity,
               action: :combine,
               mode: :displacement,
@@ -637,22 +681,33 @@ module Encode
             tex_info = {
               type: :gloss,
               action: :skip,
+              mode: :none
             }
           when :noise
             tex_info = {
               type: :noise,
-              action: :copy,
+              action: :encode,
+              mode: :noise,
+              srgb: false,
+            }
+          when :dudv
+            tex_info = {
+              type: :dudv,
+              action: :encode,
+              mode: :dudv,
               srgb: false,
             }
           when :preview
             tex_info = {
               type: :preview,
               action: :skip,
+              mode: :none
             }
           else
             tex_info = {
               type: :unknown,
-              action: :copy,
+              action: :skip,
+              mode: :unknown,
             }
           end
 
@@ -664,12 +719,13 @@ module Encode
             end
 
             base = {
+              plain_name:,
               name:,
               target_name: plain_name,
               group: nil,
               type: :unknown,
               action: :skip,
-              mode: 'copy',
+              mode: :unknown,
               detected_channels: channels,
               source_channel: channels,
               target_channel: channels,
@@ -692,7 +748,7 @@ module Encode
 
         if tex_info
           if tex_info[:type] == :unknown
-            info "**WARN** unknown type: #{src_dir}  #{tex_info[:name]} **"
+            info "**WARN** unknown type: #{src_dir}/#{tex_info[:name]} **"
           end
 
           textures << tex_info.compact
@@ -714,13 +770,17 @@ module Encode
         end
 
         textures.each do |tex_info|
+          next unless tex_info[:group]
+
           groups = texture_to_groups[tex_info[:name]]
           next unless groups
 
           # NOTE KI ignore group with single entry if better ones exist
           # => at extreme there is no groups
+          # => if all groups are size 1 then use longest
           group_sizes = groups.map { |e| [e, grouped_textures[e].size] }.to_h
-          if groups.size > 1
+
+          if group_sizes.values.any? { |e| e > 1 }
             groups.delete_if { |e| group_sizes[e] == 1 }
           end
 
@@ -734,7 +794,9 @@ module Encode
         next if tex_info[:manual]
         next if tex_info[:action] != :combine
 
-        tex_info[:target_name] = "#{tex_info[:group]}_#{tex_info[:target_name]}"
+        if tex_info[:group]
+          tex_info[:target_name] = "#{tex_info[:group]}_#{tex_info[:target_name]}"
+        end
       end
 
       if need_process
@@ -742,6 +804,7 @@ module Encode
         metadata[:textures] = textures
           .sort_by { |e| e[:name].downcase }
 
+        puts "here"
         Util.write_metadata(src_dir:, data: metadata, dry_run:)
       end
 
@@ -769,17 +832,60 @@ module Encode
       groups = {}
 
       textures.each do |tex_info|
-        #next unless tex_info[:action] == :combine
+        next unless tex_info[:group]
 
-        parts = tex_info[:name].split('_')
+        parts = tex_info[:plain_name].split('_')
+
+        if parts.size == 1
+          group = parts.first
+          (groups[group] ||= []) << tex_info
+          next
+        end
+
         parts.size.times do |idx|
           group = parts[0, idx + 1].join('_')
-          next if group == tex_info[:name]
 
+          # NOTE KI don't use typed name as group
           type = detect_type(group)
           next if type != :unknown
 
           (groups[group] ||= []) << tex_info
+        end
+      end
+
+      # NOTE KI check for diffuse textures which don't actually have
+      # opacity
+      # => for diffuse group can contain only one pair (diffuse + opacity)
+      groups.each do |group, parts|
+        diffuse_count = 0
+        opacity_count = 0
+
+        diffuse_parts = parts.select { |part| part[:type] == :diffuse }
+        other_parts = parts.select { |part| part[:type] != :diffuse }
+
+        parts.each do |part|
+          diffuse_count +=1 if part[:type] == :diffuse
+          opacity_count +=1 if part[:type] == :opacity
+        end
+
+        next if diffuse_count == 0
+
+        if diffuse_count == 1
+          tex_info = diffuse_parts.first
+          if opacity_count == 0
+            tex_info[:group] = nil
+            tex_info[:target_name] = tex_info[:plain_name]
+          end
+          next
+        end
+
+        puts "NOT_GROUPED: #{group}, parts=#{diffuse_parts.map { |e| e[:name] } }"
+
+        groups[group] = other_parts
+
+        diffuse_parts.each do |part|
+          part[:group] = nil
+          part[:target_name] = part[:plain_name]
         end
       end
 

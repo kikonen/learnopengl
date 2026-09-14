@@ -2,6 +2,8 @@
 
 #include <memory>
 
+#include "util/Ref.h"
+
 #include "kigl/kigl.h"
 
 struct UpdateViewContext;
@@ -56,7 +58,7 @@ namespace render {
         FrameBufferAttachment* getAttachment(int attachmentIndex);
 
     public:
-        std::unique_ptr<FrameBuffer> m_buffer{ nullptr };
+        util::Ref<FrameBuffer> m_frameBuffer{ nullptr };
 
         bool m_depthCopyEnabled{ false };
 

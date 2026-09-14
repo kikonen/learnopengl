@@ -45,7 +45,7 @@ public:
     int m_width{ 0 };
     int m_height{ 0 };
     int m_channels{ 0 };
-    bool m_is16Bbit{ false };
+    bool m_is16Bit{ false };
     bool m_hasAlpha{ false };
 
     unsigned char* m_data{ nullptr };

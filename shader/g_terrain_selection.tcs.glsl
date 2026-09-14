@@ -23,7 +23,6 @@ in VS_OUT {
   flat uvec2 heightMapTex;
 
   flat uint highlightIndex;
-  flat int stencilMode;
   flat int wireframeMode;
 } tcs_in[];
 
@@ -39,7 +38,6 @@ out TCS_OUT {
   flat uvec2 heightMapTex;
 
   flat uint highlightIndex;
-  flat int stencilMode;
   flat int wireframeMode;
 } tcs_out[];
 
@@ -71,7 +69,6 @@ void main()
   tcs_out[gl_InvocationID].heightMapTex = tcs_in[gl_InvocationID].heightMapTex;
 
   tcs_out[gl_InvocationID].highlightIndex = tcs_in[gl_InvocationID].highlightIndex;
-  tcs_out[gl_InvocationID].stencilMode = tcs_in[gl_InvocationID].stencilMode;
   tcs_out[gl_InvocationID].wireframeMode = tcs_in[gl_InvocationID].wireframeMode;
 
   if (gl_InvocationID == 0) {

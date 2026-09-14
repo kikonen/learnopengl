@@ -30,7 +30,7 @@ public:
     virtual void render(
         const render::RenderContext& ctx) override;
 
-    virtual GLuint64 getTexHandle(TextureType type) const noexcept override;
+    virtual GLuint64 getTexHandle(material::TextureType type) const noexcept override;
 
 private:
     GLuint64 m_handle{ 0 };

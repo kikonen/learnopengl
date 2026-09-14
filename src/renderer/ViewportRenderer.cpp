@@ -70,9 +70,9 @@ void ViewportRenderer::updateView(const UpdateViewContext& ctx)
 
             {
                 // NOTE KI alpha NOT needed
-                auto buffer = new render::FrameBuffer(
+                m_frameBuffer = util::Ref<render::FrameBuffer>::create(
                     fmt::format("final_buffer_{}x{}", w, h),
-                    {
+                    render::FrameBufferSpecification {
                         w, h,
                         {
                             render::FrameBufferAttachment::getTextureRGBAHdr(GL_COLOR_ATTACHMENT0),
@@ -80,8 +80,7 @@ void ViewportRenderer::updateView(const UpdateViewContext& ctx)
                         }
                     });
 
-                m_buffer.reset(buffer);
-                m_buffer->prepare();
+                m_frameBuffer->prepare();
             }
 
             m_width = w;
@@ -92,18 +91,25 @@ void ViewportRenderer::updateView(const UpdateViewContext& ctx)
 
 void ViewportRenderer::render(
     const render::RenderContext& parentCtx,
-    render::FrameBuffer* destinationBuffer)
+    const util::Ref<render::FrameBuffer>& destinationBuffer)
 {
     render::RenderContext localCtx(parentCtx);
     localCtx.m_forceLineMode = false;
     localCtx.bindDefaults();
 
-    drawViewports(localCtx);
-    blitWindow(localCtx, destinationBuffer);
+    if (true) {
+        drawViewports(localCtx, m_frameBuffer);
+        blitWindow(localCtx, destinationBuffer);
+    }
+    else {
+        drawViewports(localCtx, destinationBuffer);
+        //blitWindow(localCtx, destinationBuffer);
+    }
 }
 
 void ViewportRenderer::drawViewports(
-    const render::RenderContext& ctx)
+    const render::RenderContext& ctx,
+    const util::Ref<render::FrameBuffer>& targetBuffer)
 {
     auto& state = ctx.getGLState();
 
@@ -118,16 +124,14 @@ void ViewportRenderer::drawViewports(
     state.invalidateBlendMode();
     state.setBlendMode({ GL_FUNC_ADD, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ZERO, GL_ONE });
 
-    auto* buffer = m_buffer.get();
-
-    buffer->bind(ctx);
-    buffer->clear(
+    targetBuffer->bind(ctx);
+    targetBuffer->clear(
         ctx,
         GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT,
         { 0.f, 0.f, 0.f, 1.f });
 
     for (auto& viewport : viewports) {
-        viewport->draw(ctx, buffer);
+        viewport->draw(ctx, targetBuffer.get());
     }
 
     state.setEnabled(GL_BLEND, false);
@@ -136,13 +140,12 @@ void ViewportRenderer::drawViewports(
 
 void ViewportRenderer::blitWindow(
     const render::RenderContext& ctx,
-    render::FrameBuffer* destinationBuffer)
+    const util::Ref<render::FrameBuffer>& targetBuffer)
 {
     auto& state = ctx.getGLState();
 
     state.polygonFrontAndBack(GL_FILL);
     state.setEnabled(GL_DEPTH_TEST, false);
-    state.bindTexture(UNIT_VIEWPORT, m_buffer->m_spec.attachments[0].textureID, true);
 
     // NOTE KI this clears *window* buffer, not actual "main" buffer used for drawing
     // => Stencil is not supposed to exist here
@@ -152,11 +155,20 @@ void ViewportRenderer::blitWindow(
     // NOTE KI *CLEAR* buffer
     // - https://stackoverflow.com/questions/37335281/is-glcleargl-color-buffer-bit-preferred-before-a-whole-frame-buffer-overwritte
     //
-    destinationBuffer->bind(ctx);
-    destinationBuffer->clear(
+    targetBuffer->bind(ctx);
+    targetBuffer->clear(
         ctx,
         GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT,
         { 0.f, 0.f, 0.f, 1.f });
+
+    // NOTE KI bind source *after* destination; m_frameBuffer must not be the
+    // bound draw buffer while its attachment is bound as texture
+    state.bindTexture(UNIT_VIEWPORT, m_frameBuffer->m_spec.attachments[0].textureID, true);
+
+    // NOTE KI hardware gamma is a no-op unless the target is actually sRGB encoded
+    // => fall back to shader gamma instead of losing gamma altogether
+    const bool useHardwareGamma =
+        m_gammaCorrectEnabled && m_hardwareGammaEnabled && targetBuffer->isSrgbEnabled();
 
     auto* program = Program::get(m_blitterId);
     {
@@ -165,10 +177,10 @@ void ViewportRenderer::blitWindow(
         auto* uniforms = program->m_uniforms.get();
 
         uniforms->u_hdrToneEnabled.set(m_hdrToneMappingEnabled);
-        uniforms->u_gammaCorrectEnabled.set(m_hardwareGammaEnabled ? false : m_gammaCorrectEnabled);
+        uniforms->u_gammaCorrectEnabled.set(m_gammaCorrectEnabled && !useHardwareGamma);
     }
 
-    if (m_gammaCorrectEnabled && m_hardwareGammaEnabled) {
+    if (useHardwareGamma) {
         glEnable(GL_FRAMEBUFFER_SRGB);
         render::ScreenTri::get().draw();
         glDisable(GL_FRAMEBUFFER_SRGB);

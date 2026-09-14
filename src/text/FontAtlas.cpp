@@ -15,10 +15,17 @@
 
 #include "shader/Shader.h"
 
+#include "material/TextureSpec.h"
+#include "material/RawTexture.h"
+#include "material/ArrayTexture.h"
+#include "material/TextureRegistry.h"
+
 #include "AtlasHandle.h"
 #include "FontHandle.h"
 
 namespace {
+    const uint32_t FONT_ATLAS_SIZE{ 1024 };
+
     const glm::vec3 BLACK{ 0.f };
 
     const std::string DEFAULT_FONT{ "fonts/Vera.ttf" };
@@ -33,6 +40,9 @@ namespace {
     // Coarse atlas mips bleed neighbouring glyphs; cap the chain so bleed stays
     // within the per-glyph padding gutter while still covering minification.
     constexpr int MAX_MIP_LEVELS{ 4 };
+
+    constexpr size_t ATLAS_DEPTH = 1;
+
 
     glm::uvec2 resolveAtlasSize(float rasterSize, float padding)
     {
@@ -66,7 +76,6 @@ namespace text
         m_padding = o.m_padding;
         m_rasterSize = o.m_rasterSize;
         m_atlasSize = o.m_atlasSize;
-        m_mipLevels = o.m_mipLevels;
         m_texture = std::move(o.m_texture);
         m_atlasHandle = std::move(o.m_atlasHandle);
         m_fontHandle = std::move(o.m_fontHandle);
@@ -83,7 +92,6 @@ namespace text
         m_padding{ o.m_padding },
         m_rasterSize{ o.m_rasterSize },
         m_atlasSize{ o.m_atlasSize },
-        m_mipLevels{ o.m_mipLevels },
         m_texture{ std::move(o.m_texture) },
         m_atlasHandle{ std::move(o.m_atlasHandle) },
         m_fontHandle{ std::move(o.m_fontHandle) }
@@ -103,7 +111,12 @@ namespace text
 
     bool FontAtlas::valid() const
     {
-        return m_fontHandle && m_fontHandle->valid();
+        return m_texture && m_texture->getHandle() > 0;
+    }
+
+    GLuint64 FontAtlas::getTextureHandle() const noexcept
+    {
+        return m_texture ? m_texture->getHandle() : 0;
     }
 
     void FontAtlas::prepare()
@@ -122,10 +135,12 @@ namespace text
         m_padding = static_cast<int>(m_rasterSize);
         m_atlasSize = resolveAtlasSize(m_rasterSize, static_cast<float>(m_padding));
 
-        constexpr size_t depth = 1;
+        // TODO KI need to derive this from shared place
+        m_atlasSize = glm::uvec2{ FONT_ATLAS_SIZE };
+
         {
             m_atlasHandle = std::make_unique<AtlasHandle>();
-            m_atlasHandle->create(m_atlasSize.x, m_atlasSize.y, depth);
+            m_atlasHandle->create(m_atlasSize.x, m_atlasSize.y, ATLAS_DEPTH);
         }
 
         {
@@ -138,80 +153,54 @@ namespace text
 
         if (!m_fontHandle->valid()) return;
 
+        registerTexture();
+    }
 
-        if (true)
-        {
-            const GLsizei w = static_cast<GLsizei>(m_atlasHandle->m_atlas->width);
-            const GLsizei h = static_cast<GLsizei>(m_atlasHandle->m_atlas->height);
+    void FontAtlas::registerTexture()
+    {
+        const GLsizei width = static_cast<GLsizei>(m_atlasHandle->m_atlas->width);
+        const GLsizei height = static_cast<GLsizei>(m_atlasHandle->m_atlas->height);
 
-            m_texture.create(fmt::format("{}_font_atlas", m_name), GL_TEXTURE_2D, w, h);
-            m_atlasHandle->m_atlas->id = m_texture.m_textureID;
-            const auto texId = m_texture.m_textureID;
+        material::TextureSpec spec{
+            .wrap = material::WrapMode::clamp_to_edge,
+            .minFilter = material::TextureFilter::linear_mipmap_linear,
+            .magFilter = material::TextureFilter::linear,
+        };
 
-            GLenum internalFormat;
-            GLenum format;
+        m_texture = util::Ref<RawTexture>::create(
+            m_name,
+            false,
+            false,
+            material::TextureType::map_font_atlas,
+            spec,
+            width,
+            height
+        );
 
-            switch (depth) {
-            case 1:
-                internalFormat = GL_R8;
-                format = GL_RED;
-                break;
-            case 3:
-                internalFormat = GL_RGB8;
-                format = GL_RGB;
-                break;
-            }
+        m_texture->setData(
+            m_atlasHandle->m_atlas->data,
+            width * height,
+            GL_UNSIGNED_BYTE
+        );
 
-            // Mipmaps let minified / distant text sample coarser SDF levels
-            // instead of shimmering. Distance fields downsample cleanly under
-            // averaging (unlike alpha coverage), so a plain mip chain works;
-            // capped to keep coarse-level bleed within the glyph padding gutter.
-            m_mipLevels = std::clamp(
-                1 + static_cast<int>(std::floor(std::log2(static_cast<float>(std::max(w, h))))),
-                1,
-                MAX_MIP_LEVELS);
+        TextureRegistry::get().registerTexture(m_texture);
 
-            glTextureParameteri(texId, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-            glTextureParameteri(texId, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-            glTextureParameteri(texId, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-            glTextureParameteri(texId, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-            glTextureParameterfv(texId, GL_TEXTURE_BORDER_COLOR, glm::value_ptr(BLACK));
-
-            glTextureStorage2D(texId, m_mipLevels, internalFormat, w, h);
-            glTextureSubImage2D(texId, 0, 0, 0, w, h, format, GL_UNSIGNED_BYTE, m_atlasHandle->m_atlas->data);
-            if (m_mipLevels > 1) {
-                glGenerateTextureMipmap(texId);
-            }
-
-            m_textureHandle = glGetTextureHandleARB(m_texture);
-            glMakeTextureHandleResidentARB(m_textureHandle);
-
-            m_usedAtlasSize = m_atlasHandle->m_atlas->used;
-        }
+        m_usedAtlasSize = m_atlasHandle->m_atlas->used;
     }
 
     void FontAtlas::update()
+    {
+        updateTexture();
+    }
+
+    void FontAtlas::updateTexture()
     {
         if (!valid()) return;
 
         size_t currentAtlasSize = m_atlasHandle->m_atlas->used;
         if (m_usedAtlasSize == currentAtlasSize) return;
 
-        const GLsizei w = static_cast<GLsizei>(m_atlasHandle->m_atlas->width);
-        const GLsizei h = static_cast<GLsizei>(m_atlasHandle->m_atlas->height);
-
-        glTextureSubImage2D(
-            m_texture.m_textureID,
-            0,
-            0, 0, w, h,
-            GL_RED,
-            GL_UNSIGNED_BYTE,
-            m_atlasHandle->m_atlas->data);
-
-        // newly rasterized glyphs changed level 0 -> refresh the mip chain
-        if (m_mipLevels > 1) {
-            glGenerateTextureMipmap(m_texture.m_textureID);
-        }
+        TextureRegistry::get().updateTexture(m_texture);
 
         m_usedAtlasSize = currentAtlasSize;
     }

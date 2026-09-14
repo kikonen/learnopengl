@@ -16,6 +16,8 @@
 
 #include "kigl/kigl.h"
 
+#include "material/ArrayTexture.h"
+
 namespace {
     const std::vector<std::regex> hdrMatchers{
         std::regex(".*[\\.]hdr"),
@@ -28,18 +30,18 @@ InlineTexture::InlineTexture(
     int width,
     int height,
     int channels,
-    bool is16Bbit,
+    bool is16Bit,
     bool hasAlpha,
     bool gammaCorrect,
-    TextureType type,
-    const TextureSpec& spec)
+    material::TextureType type,
+    const material::TextureSpec& spec)
     : Texture{ name, false, gammaCorrect, type, spec },
     m_name{ name },
     m_data{ data },
     m_width{ width },
     m_height{ height },
     m_channels{ channels },
-    m_is16Bbit{ is16Bbit },
+    m_is16Bit{ is16Bit },
     m_hasAlpha{ hasAlpha }
 {
 }
@@ -51,19 +53,18 @@ InlineTexture::~InlineTexture()
 std::string InlineTexture::str() const noexcept
 {
     return fmt::format(
-        "<IMG: {} {}bit {}ch {}x{} {}{} ({}), [{}, {}], [{}, {}]>",
+        "<IMG: {} {}bit {}ch {}x{} {}{} ({}), [{}], [{}, {}]>",
         m_name,
-        m_is16Bbit ? "16" : "8",
+        m_is16Bit ? "16" : "8",
         m_channels,
         m_width,
         m_height,
         m_grayScale ? "GRAY " : "",
         kigl::formatEnum(m_internalFormat),
         kigl::formatEnum(m_format),
-        kigl::formatEnum(m_spec.wrapS),
-        kigl::formatEnum(m_spec.wrapT),
-        kigl::formatEnum(m_spec.minFilter),
-        kigl::formatEnum(m_spec.magFilter)
+        util::as_integer(m_spec.wrap),
+        util::as_integer(m_spec.minFilter),
+        util::as_integer(m_spec.magFilter)
     );
 }
 
@@ -73,30 +74,25 @@ void InlineTexture::release()
     Texture::release();
 }
 
-void InlineTexture::prepare()
+void InlineTexture::prepareSingle()
 {
     if (m_prepared) return;
     m_prepared = true;
 
-    prepareNormal();
-}
-
-void InlineTexture::prepareNormal()
-{
     m_pixelFormat = GL_UNSIGNED_BYTE;
 
     // NOTE KI 1 & 2 channels have issues
     // => need to convert manually to RGB(A) format
     // NOTE KI https://learnopengl.com/Advanced-Lighting/Gamma-Correction
     if (m_channels == 1) {
-        if (m_is16Bbit) {
+        if (m_is16Bit) {
             m_format = GL_RED;
-            m_internalFormat = m_grayScale ? GL_RGB16 : GL_R16;
+            m_internalFormat = GL_R16;
             m_pixelFormat = GL_UNSIGNED_SHORT;
         }
         else {
             m_format = GL_RED;
-            m_internalFormat = m_grayScale ? GL_RGB8 : GL_R8;
+            m_internalFormat = GL_R8;
         }
         //m_specialTexture = true;
     }
@@ -112,7 +108,7 @@ void InlineTexture::prepareNormal()
             m_internalFormat = GL_RGB16F;
             m_pixelFormat = GL_FLOAT;
         }
-        else if (m_is16Bbit) {
+        else if (m_is16Bit) {
             m_format = GL_RGB;
             m_internalFormat = m_gammaCorrect ? GL_SRGB8 : GL_RGB16;
             m_pixelFormat = GL_UNSIGNED_SHORT;
@@ -124,7 +120,7 @@ void InlineTexture::prepareNormal()
         }
     }
     else if (m_channels == 4) {
-        if (m_is16Bbit) {
+        if (m_is16Bit) {
             m_format = GL_RGBA;
             m_internalFormat = m_gammaCorrect ? GL_SRGB8_ALPHA8 : GL_RGBA16;
             m_pixelFormat = GL_UNSIGNED_SHORT;
@@ -150,13 +146,18 @@ void InlineTexture::prepareNormal()
     kigl::setLabel(GL_TEXTURE, m_textureID, m_name);
 
     {
-        glTextureParameteri(m_textureID, GL_TEXTURE_WRAP_S, m_spec.wrapS);
-        glTextureParameteri(m_textureID, GL_TEXTURE_WRAP_T, m_spec.wrapT);
+        if (m_grayScale && m_channels == 1) {
+            GLint swizzleMask[] = { GL_RED, GL_RED, GL_RED, GL_ONE };
+            glTextureParameteriv(m_textureID, GL_TEXTURE_SWIZZLE_RGBA, swizzleMask);
+        }
+
+        glTextureParameteri(m_textureID, GL_TEXTURE_WRAP_S, m_spec.asWrapS());
+        glTextureParameteri(m_textureID, GL_TEXTURE_WRAP_T, m_spec.asWrapT());
 
         // https://community.khronos.org/t/gl-nearest-mipmap-linear-or-gl-linear-mipmap-nearest/37648/5
         // https://stackoverflow.com/questions/12363463/when-should-i-set-gl-texture-min-filter-and-gl-texture-mag-filter
-        glTextureParameteri(m_textureID, GL_TEXTURE_MIN_FILTER, m_spec.minFilter);
-        glTextureParameteri(m_textureID, GL_TEXTURE_MAG_FILTER, m_spec.magFilter);
+        glTextureParameteri(m_textureID, GL_TEXTURE_MIN_FILTER, m_spec.asMinFilter());
+        glTextureParameteri(m_textureID, GL_TEXTURE_MAG_FILTER, m_spec.asMagFilter());
 
         const int mipMapLevels = resolveMixMapLevels();
 
@@ -174,12 +175,15 @@ void InlineTexture::prepareNormal()
             m_name,
             compFlag,
             str()));
-
-        m_handle = glGetTextureHandleARB(m_textureID);
-        glMakeTextureHandleResidentARB(m_handle);
     }
 
     //m_texIndex = Texture::nextIndex();
 
     m_data.resize(0);
+}
+
+void InlineTexture::prepareArray(
+    ArrayTexture& arr,
+    uint32_t layer)
+{
 }

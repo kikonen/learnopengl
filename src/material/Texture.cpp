@@ -7,6 +7,8 @@
 #include "shader/Program.h"
 #include "shader/Shader.h"
 
+#include "util/Util.h"
+
 
 namespace {
 }
@@ -15,8 +17,8 @@ Texture::Texture(
     std::string_view name,
     bool grayScale,
     bool gammaCorrect,
-    TextureType type,
-    const TextureSpec& spec)
+    material::TextureType type,
+    const material::TextureSpec& spec)
     : m_name(name),
     m_grayScale{ grayScale },
     m_gammaCorrect(gammaCorrect),
@@ -33,21 +35,31 @@ Texture::~Texture()
 std::string Texture::str() const noexcept
 {
     return fmt::format(
-        "<TEX: {}, gammaCorrect={}, wrapS={}, wrapT={}>",
+        "<TEX: {}, gammaCorrect={}, wrap={}>",
         m_name,
         m_gammaCorrect,
-        kigl::formatEnum(m_spec.wrapS),
-        kigl::formatEnum(m_spec.wrapT));
+        util::as_integer(m_spec.wrap));
 }
 
 void Texture::release()
 {
-    if (m_handle) {
+    if (m_boundBindless && m_handle) {
         glMakeTextureHandleNonResidentARB(m_handle);
     }
-    if (m_textureID) {
+    if (m_textureID > 0) {
         glDeleteTextures(1, &m_textureID);
     }
+}
+
+void Texture::prepareHandle()
+{
+    if (!m_prepared) return;
+    if (m_boundBindless) return;
+
+    m_handle = glGetTextureHandleARB(m_textureID);
+    glMakeTextureHandleResidentARB(m_handle);
+
+    m_boundBindless  = true;
 }
 
 int Texture::resolveMixMapLevels()

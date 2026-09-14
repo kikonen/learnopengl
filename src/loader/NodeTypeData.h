@@ -47,7 +47,7 @@ namespace loader
 
         AddonSelectorData addonSelector;
 
-        std::unordered_map<MaterialProgramType, std::string> programs;
+        std::unordered_map<material::ProgramType, std::string> programs;
 
         loader::FlagContainer typeFlags;
 
