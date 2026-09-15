@@ -31,8 +31,50 @@ namespace
     };
 }
 
+namespace
+{
+    const std::string MISSING = "";
+
+    std::unordered_map<material::ArrayTextureType, std::string> s_typeMapping;
+    static std::unordered_map<std::string, material::ArrayTextureType> s_nameMapping;
+
+    void init()
+    {
+        if (!s_typeMapping.empty()) return;
+
+        s_typeMapping.insert({
+            { material::ArrayTextureType::srgb, "srgb" },
+            { material::ArrayTextureType::data, "data" },
+            { material::ArrayTextureType::normal, "normal" },
+            { material::ArrayTextureType::displacement, "displacement" },
+            { material::ArrayTextureType::dudv, "dudv" },
+            { material::ArrayTextureType::noise, "noise" },
+            { material::ArrayTextureType::height, "height" },
+            { material::ArrayTextureType::font_atlas, "font_atlas" },
+            { material::ArrayTextureType::dynamic, "string" }
+            });
+
+        for (const auto& pair : s_typeMapping) {
+            s_nameMapping.insert({ pair.second, pair.first });
+        }
+    }
+
+    const std::unordered_map<material::ArrayTextureType, std::string>& getTypeMapping()
+    {
+        init();
+        return s_typeMapping;
+    }
+
+    const std::unordered_map<std::string, material::ArrayTextureType>& getNameMapping()
+    {
+        init();
+        return s_nameMapping;
+    }
+
+}
+
 ArrayTexture::ArrayTexture(
-    const std::string& name,
+    material::ArrayTextureType arrayType,
     int unitIndex,
     bool grayScale,
     bool gammaCorrect,
@@ -43,7 +85,8 @@ ArrayTexture::ArrayTexture(
     int maxLayers,
     bool hdri,
     const material::TextureSpec& spec)
-    : Texture{ name, grayScale, gammaCorrect, material::TextureType::array, spec },
+    : Texture{ typeToName(arrayType), grayScale, gammaCorrect, material::TextureType::array, spec},
+    m_arrayType{ arrayType },
     m_unitIndex{ unitIndex },
     m_channels{ channels },
     m_is16Bit{ is16Bit },
@@ -190,6 +233,10 @@ void ArrayTexture::prepareArray(
 void ArrayTexture::updateMipMaps()
 {
     if (m_spec.maxMipMapLevels > 1) {
+        KI_INFO(fmt::format(
+            "TEX::ARRAY::MIP_MAPS: name={}, layers={}, max_count={}",
+            m_name, m_layerIndex + 1, m_maxLayers));
+
         glGenerateTextureMipmap(m_textureID);
     }
 }
@@ -247,4 +294,21 @@ void ArrayTexture::updateTexture(
     auto layer = static_cast<int>(texture->getHandle());
 
     texture->updateArray(*this, layer);
+}
+
+const std::string& ArrayTexture::typeToName(material::ArrayTextureType type)
+{
+    const auto& mapping = getTypeMapping();
+    const auto& it = mapping.find(type);
+    if (it == mapping.end()) return MISSING;
+    return it->second;
+
+}
+
+material::ArrayTextureType ArrayTexture::nameToType(const std::string& name)
+{
+    const auto& mapping = getNameMapping();
+    const auto& it = mapping.find(name);
+    if (it == mapping.end()) return material::ArrayTextureType::none;
+    return it->second;
 }

@@ -57,6 +57,10 @@ namespace loader {
             const std::string& k,
             const loader::DocNode& v) const;
 
+        material::TextureFilter loadTextureFilter(
+            const std::string& k,
+            const loader::DocNode& v) const;
+
         void modifyMaterial(
             Material& m,
             const MaterialData& data);

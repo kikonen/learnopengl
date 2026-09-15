@@ -82,8 +82,14 @@ public:
 
 public:
     const std::string m_name;
+
+    // If true treat channels == 1 as RGB instead RED
+    // => i.e. color instead of "data"
     const bool m_grayScale : 1;
+
+    // Data is in srgb format
     const bool m_gammaCorrect : 1;
+
     const material::TextureType m_type;
     const material::TextureSpec m_spec;
 

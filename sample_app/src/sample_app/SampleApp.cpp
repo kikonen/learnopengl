@@ -181,10 +181,10 @@ bool SampleApp::onSetup()
 void SampleApp::setupTextures()
 {
     auto& textureRegistry = TextureRegistry::get();
-    constexpr int DIFFUSE_LAYERS = 64;
+    constexpr int DIFFUSE_LAYERS = 128;
 
     const auto srgbIndex = textureRegistry.addArrayTexture({
-        "srgb",
+        material::ArrayTextureType::srgb,
         UNIT_TEXTURE_ARRAY_SRGB,
         4,
         1024,
@@ -205,7 +205,7 @@ void SampleApp::setupTextures()
         });
 
     const auto dataIndex = textureRegistry.addArrayTexture({
-        "data",
+        material::ArrayTextureType::data,
         UNIT_TEXTURE_ARRAY_LINEAR,
         4,
         1024,
@@ -226,7 +226,7 @@ void SampleApp::setupTextures()
         });
 
     const auto normalIndex = textureRegistry.addArrayTexture({
-        "normal",
+        material::ArrayTextureType::normal,
         UNIT_TEXTURE_ARRAY_NORMAL,
         3,
         1024,
@@ -246,29 +246,8 @@ void SampleApp::setupTextures()
         }
         });
 
-    const auto dudvIndex = textureRegistry.addArrayTexture({
-        "dudv",
-        UNIT_TEXTURE_ARRAY_DUDV,
-        3,
-        256,
-        16,
-        false,
-        false,
-        false,
-        false,
-        {
-            .wrap = material::WrapMode::repeat,
-            .minFilter = material::TextureFilter::linear_mipmap_nearest,
-            .magFilter = material::TextureFilter::linear,
-        },
-        {
-            material::PixelType::none,
-            material::PixelType::none,
-        }
-        });
-
     const auto displacementIndex = textureRegistry.addArrayTexture({
-        "displacement",
+        material::ArrayTextureType::displacement,
         UNIT_TEXTURE_ARRAY_DISPLACEMENT,
         1,
         1024,
@@ -288,8 +267,29 @@ void SampleApp::setupTextures()
         }
         });
 
+    const auto dudvIndex = textureRegistry.addArrayTexture({
+        material::ArrayTextureType::dudv,
+        UNIT_TEXTURE_ARRAY_DUDV,
+        3,
+        256,
+        16,
+        false,
+        false,
+        false,
+        false,
+        {
+            .wrap = material::WrapMode::repeat,
+            .minFilter = material::TextureFilter::linear_mipmap_nearest,
+            .magFilter = material::TextureFilter::linear,
+        },
+        {
+            material::PixelType::none,
+            material::PixelType::none,
+        }
+        });
+
     const auto noiseIndex = textureRegistry.addArrayTexture({
-        "noise",
+        material::ArrayTextureType::noise,
         UNIT_TEXTURE_ARRAY_NOISE,
         3,
         128,
@@ -311,7 +311,7 @@ void SampleApp::setupTextures()
         });
 
     const auto heightIndex = textureRegistry.addArrayTexture({
-        "height",
+        material::ArrayTextureType::height,
         UNIT_TEXTURE_ARRAY_HEIGHT,
         1,
         2048,
@@ -332,7 +332,7 @@ void SampleApp::setupTextures()
         });
 
     const auto fontAtlasIndex = textureRegistry.addArrayTexture({
-        "font_atlas",
+        material::ArrayTextureType::font_atlas,
         UNIT_TEXTURE_ARRAY_FONT_ATLAS,
         1,
         1024,
@@ -353,7 +353,7 @@ void SampleApp::setupTextures()
         });
 
     const auto dynamicIndex = textureRegistry.addArrayTexture({
-        "dynamic",
+        material::ArrayTextureType::dynamic,
         UNIT_TEXTURE_ARRAY_DYNAMIC,
         4,
         1024,

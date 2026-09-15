@@ -5,12 +5,13 @@
 #include <future>
 
 #include "Texture.h"
+#include "ArrayTextureType.h"
 
 class ArrayTexture final : public Texture
 {
 public:
     ArrayTexture(
-        const std::string& name,
+        material::ArrayTextureType arrayType,
         int unitIndex,
         bool grayScale,
         bool gammaCorrect,
@@ -65,6 +66,7 @@ public:
     }
 
 private:
+    const material::ArrayTextureType m_arrayType;
     const int m_unitIndex;
     const int m_channels;
     const bool m_is16Bit;
@@ -76,6 +78,9 @@ private:
     int m_layerIndex{ -1 };
 
     std::vector<util::Ref<Texture>> m_registeredTextures;
+
+    static const std::string& typeToName(material::ArrayTextureType type);
+    static material::ArrayTextureType nameToType(const std::string& name);
 
 private:
     bool m_valid{ false };

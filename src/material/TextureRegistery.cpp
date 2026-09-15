@@ -133,7 +133,7 @@ uint32_t TextureRegistry::addArrayTexture(const material::ArrayTextureInfo& info
     uint32_t index = static_cast<uint32_t>(m_arrayTextures.size());
 
     const auto arr = util::Ref<ArrayTexture>::create(
-        info.name,
+        info.type,
         info.uniformId,
         info.grayScale,
         info.gammaCorrect,

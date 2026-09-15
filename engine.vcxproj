@@ -297,6 +297,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\loader\WorldLoader.cpp" />
+    <ClCompile Include="src\material\ArrayTextureType.cpp" />
     <ClCompile Include="src\material\FrameBufferTexture.cpp" />
     <ClCompile Include="src\material\material_util.cpp" />
     <ClCompile Include="src\material\TextureRegistery.cpp" />
@@ -800,6 +801,7 @@
     <ClInclude Include="src\loader\WorldData.h" />
     <ClInclude Include="src\loader\WorldLoader.h" />
     <ClInclude Include="src\material\ArrayTexture.h" />
+    <ClInclude Include="src\material\ArrayTextureType.h" />
     <ClInclude Include="src\material\FrameBufferTexture.h" />
     <ClInclude Include="src\material\material_util.h" />
     <ClInclude Include="src\material\ArrayTextureInfo.h" />

@@ -6,6 +6,7 @@
 #include <stdint.h>
 
 #include "TextureSpec.h"
+#include "ArrayTextureType.h"
 
 namespace material
 {
@@ -20,7 +21,7 @@ namespace material
 
     struct ArrayTextureInfo
     {
-        std::string name;
+        material::ArrayTextureType type;
         int uniformId;
         int channels;
         int size;
@@ -29,9 +30,13 @@ namespace material
         // If true treat channels == 1 as RGB instead RED
         // => i.e. color instead of "data"
         bool grayScale;
+        // Data is in srgb format
         bool gammaCorrect;
         bool hdri;
         material::TextureSpec spec;
-        std::array<PixelType, 2> pixels { PixelType::none, PixelType::none };
+        std::array<material::PixelType, 2> pixels {
+            material::PixelType::none,
+            material::PixelType::none
+        };
     };
 }

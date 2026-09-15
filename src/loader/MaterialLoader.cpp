@@ -576,6 +576,12 @@ namespace loader {
             if (k == "wrap") {
                 textureSpec.wrap = loadTextureWrap(k, v);
             }
+            else if (k == "min_filter") {
+                textureSpec.minFilter = loadTextureFilter(k, v);
+            }
+            else if (k == "mag_filter") {
+                textureSpec.magFilter = loadTextureFilter(k, v);
+            }
             else {
                 reportUnknown("tex_spec", k, v);
             }
@@ -591,13 +597,46 @@ namespace loader {
         if (wrap == "repeat") {
             return material::WrapMode::repeat;
         }
+        else if (wrap == "mirrored_repeat") {
+            return material::WrapMode::mirrored_repeat;
+        }
         else if (wrap == "clamp_to_edge") {
             return material::WrapMode::clamp_to_edge;
+        }
+        else if (wrap == "clamp_to_border") {
+            return material::WrapMode::clamp_to_border;
         }
         else {
             // NOTE KI GL_REPEAT is GL default
             reportUnknown("wrap_mode", k, v);
             return material::WrapMode::repeat;
+        }
+    }
+
+    material::TextureFilter MaterialLoader::loadTextureFilter(
+        const std::string& k,
+        const loader::DocNode& v) const
+    {
+        const std::string& wrap = readString(v);
+        if (wrap == "nearest") {
+            return material::TextureFilter::nearest;
+        }
+        else if (wrap == "linear") {
+            return material::TextureFilter::linear;
+        }
+        else if (wrap == "linear_mipmap_nearest") {
+            return material::TextureFilter::linear_mipmap_nearest;
+        }
+        else if (wrap == "nearest_mipmap_linear") {
+            return material::TextureFilter::nearest_mipmap_linear;
+        }
+        else if (wrap == "linear_mipmap_linear") {
+            return material::TextureFilter::linear_mipmap_linear;
+        }
+        else {
+            // NOTE KI default to "fast" mode
+            reportUnknown("texture_filter", k, v);
+            return material::TextureFilter::nearest;
         }
     }
 
