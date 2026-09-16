@@ -2,30 +2,28 @@
 
 #include <glm/glm.hpp>
 
-#include "kigl/kigl.h"
-
 // NOTE KI align 16 for UBO struct
 #pragma pack(push, 1)
 struct DataUBO {
     glm::vec4 u_fogColor;
 
-    GLuint u_selectionMaterialIndex;
-    GLuint u_tagMaterialIndex;
-    GLuint u_wireframeMaterialIndex;
+    uint32_t u_selectionMaterialIndex;
+    uint32_t u_tagMaterialIndex;
+    uint32_t u_wireframeMaterialIndex;
 
-    int  u_waterCausticEnabled; // bool as 4 bytes
-    GLuint u_waterCausticMaterialIndex;
+    int32_t u_waterCausticEnabled; // bool as 4 bytes
+    uint32_t u_waterCausticMaterialIndex;
     float u_waterCausticIntensity;
     float u_waterCausticWorldLevel;
     float u_waterCausticScale;
 
-    int u_cubeMapEnabled; // bool as 4 bytes
-    int u_skyboxExist; // bool as 4 bytes
+    int32_t u_cubeMapEnabled; // bool as 4 bytes
+    int32_t u_skyboxExist; // bool as 4 bytes
 
-    int u_environmentMapExist; // bool as 4 bytes
+    int32_t  u_environmentMapExist; // bool as 4 bytes
 
-    int u_shadowVisual; // bool as 4 bytes
-    int u_forceLineMode; // bool as 4 bytes
+    int32_t u_shadowVisual; // bool as 4 bytes
+    int32_t u_forceLineMode; // bool as 4 bytes
 
     float u_fogStart;
     float u_fogEnd;
@@ -40,7 +38,7 @@ struct DataUBO {
     float u_hdrExposure;
 
     float u_time;
-    int u_frame;
+    int32_t u_frame;
 
     float u_worldTime;
 

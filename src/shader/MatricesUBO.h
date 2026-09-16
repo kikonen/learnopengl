@@ -4,7 +4,6 @@
 
 #include "Shader.h"
 
-
 // NOTE KI align 16 for UBO struct
 #pragma pack(push, 1)
 struct MatricesUBO {
