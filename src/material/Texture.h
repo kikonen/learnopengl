@@ -35,13 +35,13 @@ public:
 
     virtual void prepareArray(
         ArrayTexture& arr,
-        uint32_t layer) = 0;
+        uint16_t layer) = 0;
 
     virtual void updateSingle() {}
 
     virtual void updateArray(
         ArrayTexture& arr,
-        uint32_t layer) {}
+        uint16_t layer) {}
 
     int resolveMixMapLevels();
 
@@ -65,7 +65,7 @@ public:
         return m_textureID;
     }
 
-    GLuint getLayer() const noexcept
+    uint16_t getLayer() const noexcept
     {
         return m_layer;
     }
@@ -94,7 +94,7 @@ public:
     const material::TextureSpec m_spec;
 
     GLuint m_textureID{ 0 };
-    GLuint m_layer{ 0 };
+    uint16_t m_layer{ 0 };
 
     mutable bool m_sent : 1 { false };
 

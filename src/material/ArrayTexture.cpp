@@ -225,7 +225,7 @@ void ArrayTexture::prepareSingle()
 
 void ArrayTexture::prepareArray(
     ArrayTexture& arr,
-    uint32_t layer)
+    uint16_t layer)
 {
     // NOTE KI array cannot be in array
 }
@@ -241,7 +241,7 @@ void ArrayTexture::updateMipMaps()
     }
 }
 
-uint32_t ArrayTexture::allocateLayer()
+uint16_t ArrayTexture::allocateLayer()
 {
     if (m_layerIndex >= m_maxLayers) {
         KI_CRITICAL_OUT(fmt::format(
@@ -250,10 +250,10 @@ uint32_t ArrayTexture::allocateLayer()
     }
 
     m_layerIndex++;
-    return static_cast<uint32_t>(m_layerIndex);
+    return static_cast<uint16_t>(m_layerIndex);
 }
 
-uint32_t ArrayTexture::registerTexture(
+uint16_t ArrayTexture::registerTexture(
     const util::Ref<Texture>& texture)
 {
     const auto& it = std::find_if(
@@ -266,7 +266,7 @@ uint32_t ArrayTexture::registerTexture(
     if (it != m_registeredTextures.end())
         return it->get()->getLayer();
 
-    uint32_t layer = allocateLayer();
+    uint16_t layer = allocateLayer();
     texture->prepareArray(*this, layer);
 
     m_registeredTextures.push_back(texture);

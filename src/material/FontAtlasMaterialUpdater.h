@@ -5,8 +5,6 @@
 
 #include <glm/glm.hpp>
 
-#include "kigl/kigl.h"
-
 #include "ki/size.h"
 
 #include "render/TextureQuad.h"
@@ -30,10 +28,10 @@ public:
     virtual void render(
         const render::RenderContext& ctx) override;
 
-    virtual GLuint getTexLayer(material::TextureType type) const noexcept override;
+    virtual uint16_t getTexLayer(material::TextureType type) const noexcept override;
 
 private:
-    GLuint m_layer{ 0 };
+    uint16_t m_layer{ 0 };
 
     int m_fontId{ -1 };
 };

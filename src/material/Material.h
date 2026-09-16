@@ -196,9 +196,9 @@ public:
         return it != m_boundTextures.end() ? &it->second : nullptr;
     }
 
-    GLuint getTexLayer(
+    uint16_t getTexLayer(
         material::TextureType type,
-        GLuint defaultValue) const noexcept;
+        uint16_t defaultValue) const noexcept;
 
     const std::map<material::TextureType, material::TextureInfo>& getTextures() const noexcept
     {

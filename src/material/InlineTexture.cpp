@@ -184,6 +184,6 @@ void InlineTexture::prepareSingle()
 
 void InlineTexture::prepareArray(
     ArrayTexture& arr,
-    uint32_t layer)
+    uint16_t layer)
 {
 }

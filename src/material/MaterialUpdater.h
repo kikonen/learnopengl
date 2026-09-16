@@ -2,12 +2,11 @@
 
 #include <string>
 #include <memory>
+#include <vector>
 
 #include "util/Ref.h"
 
 #include "ki/size.h"
-
-#include "kigl/kigl.h"
 
 #include "TextureType.h"
 
@@ -55,7 +54,7 @@ public:
 
     void setMaterial(const util::Ref<Material>& src) noexcept;
 
-    virtual GLuint getTexLayer(material::TextureType type) const noexcept
+    virtual uint16_t getTexLayer(material::TextureType type) const noexcept
     {
         return 0;
     }

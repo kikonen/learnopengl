@@ -72,7 +72,7 @@ void RawTexture::prepareSingle()
 
 void RawTexture::prepareArray(
     ArrayTexture& arr,
-    uint32_t layer)
+    uint16_t layer)
 {
     if (m_prepared) return;
     m_prepared = true;
@@ -86,7 +86,7 @@ void RawTexture::prepareArray(
     bool isSRGB = arr.isGammaCorrect();
 
     auto textureID = arr.getTextureID();
-    m_layer = static_cast<GLuint>(layer);
+    m_layer = layer;
 
     // 2. generate image buffer
     if (is16Bit) {
@@ -138,7 +138,7 @@ void RawTexture::updateSingle()
 
 void RawTexture::updateArray(
     ArrayTexture& arr,
-    uint32_t layer)
+    uint16_t layer)
 {
     glTextureSubImage3D(
         arr.getTextureID(),

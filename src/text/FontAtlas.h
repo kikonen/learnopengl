@@ -2,9 +2,9 @@
 
 #include <memory>
 
-#include "util/Ref.h"
+#include <glm/glm.hpp>
 
-#include "kigl/GLTextureHandle.h"
+#include "util/Ref.h"
 
 #include "text/size.h"
 
@@ -46,7 +46,7 @@ namespace text
             return m_fontHandle.get();
         }
 
-        GLuint getTextureLayer() const noexcept;
+        uint16_t getTextureLayer() const noexcept;
 
         int getPadding() const noexcept
         {

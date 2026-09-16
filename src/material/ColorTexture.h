@@ -27,7 +27,7 @@ public:
 
     void prepareArray(
         ArrayTexture& arr,
-        uint32_t layer) override;
+        uint16_t layer) override;
 
 private:
     glm::vec4 m_color;

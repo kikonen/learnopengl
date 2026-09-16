@@ -35,7 +35,7 @@ public:
     virtual void render(
         const render::RenderContext& ctx) override;
 
-    virtual GLuint getTexLayer(material::TextureType type) const noexcept override;
+    virtual uint16_t getTexLayer(material::TextureType type) const noexcept override;
 
     void prepareTexture();
     void updateTexture();

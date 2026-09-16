@@ -114,7 +114,7 @@ namespace text
         return m_texture && m_texture->getLayer() > 0;
     }
 
-    GLuint FontAtlas::getTextureLayer() const noexcept
+    uint16_t FontAtlas::getTextureLayer() const noexcept
     {
         return m_texture ? m_texture->getLayer() : 0;
     }

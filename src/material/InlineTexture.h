@@ -34,7 +34,7 @@ public:
 
     void prepareArray(
         ArrayTexture& arr,
-        uint32_t layer) override;
+        uint16_t layer) override;
 
     bool isValid() const noexcept { return true; }
 

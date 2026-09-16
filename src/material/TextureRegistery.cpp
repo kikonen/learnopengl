@@ -231,7 +231,7 @@ uint32_t TextureRegistry::registerTexture(
         return 0;
 
     util::Ref<ArrayTexture> arr = m_arrayTextures[it->second];
-    uint32_t layer = arr->registerTexture(texture);
+    auto layer = arr->registerTexture(texture);
     arr->updateMipMaps();
 
     return layer;

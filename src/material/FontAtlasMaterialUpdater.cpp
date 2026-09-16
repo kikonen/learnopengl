@@ -59,7 +59,7 @@ void FontAtlasMaterialUpdater::render(
     }
 }
 
-GLuint FontAtlasMaterialUpdater::getTexLayer(material::TextureType type) const noexcept
+uint16_t FontAtlasMaterialUpdater::getTexLayer(material::TextureType type) const noexcept
 {
     if (type == material::TextureType::map_font_atlas) {
         return m_layer;

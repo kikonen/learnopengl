@@ -32,10 +32,10 @@ public:
 
     void prepareArray(
         ArrayTexture& arr,
-        uint32_t layer) override;
+        uint16_t layer) override;
 
     // @return registered layer index
-    uint32_t registerTexture(
+    uint16_t registerTexture(
         const util::Ref<Texture>& texture);
 
     void updateTexture(
@@ -44,11 +44,11 @@ public:
     void updateMipMaps();
 
     // @return layer index
-    uint32_t allocateLayer();
+    uint16_t allocateLayer();
 
-    uint32_t peekNextLayerIndex()
+    uint16_t peekNextLayerIndex()
     {
-        return m_layerIndex + 1;
+        return static_cast<uint16_t>(m_layerIndex + 1);
     }
 
     int getUnitIndex() const noexcept

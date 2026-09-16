@@ -394,9 +394,9 @@ ki::material_index Material::registerMaterial()
     return MaterialRegistry::get().registerMaterial(this);
 }
 
-GLuint Material::getTexLayer(
+uint16_t Material::getTexLayer(
     material::TextureType type,
-    GLuint defaultValue) const noexcept
+    uint16_t defaultValue) const noexcept
 {
     if (m_updater) {
         auto layer = m_updater->getTexLayer(type);

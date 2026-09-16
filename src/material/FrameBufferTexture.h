@@ -30,13 +30,13 @@ public:
 
     void prepareArray(
         ArrayTexture& arr,
-        uint32_t layer) override;
+        uint16_t layer) override;
 
     void updateSingle() override;
 
     void updateArray(
         ArrayTexture& arr,
-        uint32_t layer) override;
+        uint16_t layer) override;
 
 private:
     util::Ref<render::FrameBuffer> m_frameBuffer;

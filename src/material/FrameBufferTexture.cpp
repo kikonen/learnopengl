@@ -57,7 +57,7 @@ void FrameBufferTexture::prepareSingle()
 
 void FrameBufferTexture::prepareArray(
     ArrayTexture& arr,
-    uint32_t layer) 
+    uint16_t layer)
 {
     m_prepared = true;
 
@@ -66,7 +66,7 @@ void FrameBufferTexture::prepareArray(
     m_height = arr.getHeight();
 
     // Assign the pure layout integer layer slice offset position index
-    m_layer = static_cast<GLuint>(layer);
+    m_layer = layer;
 
     // Clear the newly claimed layer slice to pure transparent black 
     // to guarantee no random VRAM memory garbage artifact leaks show up
@@ -94,7 +94,7 @@ void FrameBufferTexture::updateSingle()
 
 void FrameBufferTexture::updateArray(
     ArrayTexture& arr,
-    uint32_t layer) 
+    uint16_t layer)
 {
     if (!m_frameBuffer) return;
 
