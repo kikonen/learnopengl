@@ -343,7 +343,7 @@ public:
 
     MaterialUpdater* m_updater{ nullptr };
 
-    GLuint m_fontAtlasTex{ 0 };
+    uint16_t m_fontAtlasTex{ 0 };
 
 private:
     std::map<material::TextureType, material::BoundTexture> m_boundTextures{};

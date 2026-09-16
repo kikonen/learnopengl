@@ -84,7 +84,7 @@ namespace model
     }
 
     void Viewport::setTexture(
-            GLuint textureId,
+        GLuint textureId,
         glm::ivec2 textureSize)
     {
         m_textureId = textureId;

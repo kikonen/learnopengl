@@ -160,7 +160,7 @@ namespace
                 const float glyphW = s1 - s0;
                 const float glyphH = t1 - t0;
 
-                const GLuint index = (GLuint)meshVertices.size();
+                const uint32_t index = (uint32_t)meshVertices.size();
 
                 const glm::vec3 positions[4]{
                     { x0, y0, 0.f },

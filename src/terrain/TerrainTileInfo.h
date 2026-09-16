@@ -19,7 +19,7 @@ namespace terrain {
         float u_rangeYmax{ 0.f };
 
         util::Ref<ImageTexture> m_heightMapTex;
-        GLuint m_heightMapTexLayer{ 0 };
+        uint16_t m_heightMapTexLayer{ 0 };
 
         uint32_t m_registeredIndex{ 0 };
 

@@ -26,7 +26,7 @@ WaterNoiseGenerator::WaterNoiseGenerator()
     generateNoise();
 }
 
-GLuint WaterNoiseGenerator::generate()
+GLuint WaterNoiseGenerator::generateTexture()
 {
     GLuint textureID;
     GLubyte* data = new GLubyte[noiseHeight * noiseWidth * noiseDepth * 4];

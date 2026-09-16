@@ -117,7 +117,7 @@ public:
         m_maxSize = maxSize;
     }
 
-    GLuint getAtlasTextureLayer() const noexcept;
+    uint16_t getAtlasTextureLayer() const noexcept;
 
     void clear();
 

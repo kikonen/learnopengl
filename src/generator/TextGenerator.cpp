@@ -247,7 +247,7 @@ void TextGenerator::updateDrawables(
 {
 }
 
-GLuint TextGenerator::getAtlasTextureLayer() const noexcept
+uint16_t TextGenerator::getAtlasTextureLayer() const noexcept
 {
     auto* fontAtlas = text::FontRegistry::get().getFontAtlas(m_fontId).get();
     if (!fontAtlas) {
