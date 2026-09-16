@@ -9,7 +9,7 @@ in VS_OUT {
   vec3 viewPos;
 
   flat vec4 diffuse;
-  flat uvec2 diffuseTex;
+  flat uint diffuseTex;
 } fs_in;
 
 layout (location = 0) out vec4 o_fragColor;
@@ -25,21 +25,8 @@ SET_FLOAT_PRECISION;
 void main() {
   vec4 texColor = fs_in.diffuse;
 
-#ifndef USE_TEXTURE_ARRAY
-  if (fs_in.diffuseTex.x > 0) {
-    vec2 texCoord = fs_in.spriteCoord;
-    texCoord.x += gl_PointCoord.x * fs_in.spriteSize.x;
-    texCoord.y += gl_PointCoord.y * fs_in.spriteSize.y;
-
-    texColor *= texture(
-      sampler2D(fs_in.diffuseTex),
-      texCoord);
-  }
-#endif
-
-#ifdef USE_TEXTURE_ARRAY
-  if (fs_in.diffuseTex.x > 0) {
-    const int diffuseLayer = int(fs_in.diffuseTex.x);
+  if (fs_in.diffuseTex > 0) {
+    const uint diffuseLayer = fs_in.diffuseTex;
 
     vec2 texCoord = fs_in.spriteCoord;
     texCoord.x += gl_PointCoord.x * fs_in.spriteSize.x;
@@ -51,7 +38,6 @@ void main() {
 
     texColor *= diffuseTexel;
   }
-#endif
 
 //  texColor = vec4(1, 0, 0, 0.5);
 

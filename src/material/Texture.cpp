@@ -43,9 +43,9 @@ std::string Texture::str() const noexcept
 
 void Texture::release()
 {
-    if (m_boundBindless && m_handle) {
-        glMakeTextureHandleNonResidentARB(m_handle);
-    }
+    //if (m_boundBindless && m_handle) {
+    //    glMakeTextureHandleNonResidentARB(m_handle);
+    //}
     if (m_textureID > 0) {
         glDeleteTextures(1, &m_textureID);
     }
@@ -53,13 +53,13 @@ void Texture::release()
 
 void Texture::prepareHandle()
 {
-    if (!m_prepared) return;
-    if (m_boundBindless) return;
+    //if (!m_prepared) return;
+    //if (m_boundBindless) return;
 
-    m_handle = glGetTextureHandleARB(m_textureID);
-    glMakeTextureHandleResidentARB(m_handle);
+    //m_handle = glGetTextureHandleARB(m_textureID);
+    //glMakeTextureHandleResidentARB(m_handle);
 
-    m_boundBindless  = true;
+    //m_boundBindless  = true;
 }
 
 int Texture::resolveMixMapLevels()

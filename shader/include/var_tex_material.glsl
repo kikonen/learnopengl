@@ -2,66 +2,7 @@
 //   if (material.tx ## Tex.x > 0) { \
 //     material.tx = texture(sampler2D(material.tx ## Tex), texCoord); \
 //   }
-#ifndef USE_TEXTURE_ARRAY
-{
-  const uint i = materialIndex;
 
-  material.flags = u_materials[i].flags;
-
-  vec4 mrasTex = vec4(0, 1, 1, 0);
-
-  if (u_materials[i].mrasMapTex.x > 0) {
-    mrasTex = texture(sampler2D(u_materials[i].mrasMapTex), texCoord).rgba;
-
-    if ((material.flags & MATERIAL_INVERT_METALNESS) != 0)
-    {
-      MRA_TEX_METALNESS = 1.0 - MRA_TEX_METALNESS;
-    }
-    if ((material.flags & MATERIAL_INVERT_ROUGHNESS) != 0)
-    {
-      MRA_TEX_ROUGHNESS = 1.0 - MRA_TEX_ROUGHNESS;
-    }
-    if ((material.flags & MATERIAL_INVERT_OCCLUSION) != 0)
-    {
-      MRA_TEX_OCCLUSION = 1.0 - MRA_TEX_OCCLUSION;
-    }
-  }
-
-  vec4 mras = u_materials[i].mras.rgba * mrasTex.rgba;
-
-#ifndef _ALPHA_RESOLVED
-  material.diffuseTexel = texture(sampler2D(u_materials[i].diffuseTex), texCoord);
-
-#ifdef USE_ALPHA
-  material.alpha =
-    u_materials[materialIndex].diffuse.a *
-    material.diffuseTexel.a;
-#else
-  material.alpha = 1.0;
-#endif
-#endif
-
-  material.diffuse = u_materials[i].diffuse * material.diffuseTexel;
-  material.diffuse.a = material.alpha;
-
-  // NOTE KI discard any trash, which is possibly hidden into emission tex with alpha
-  // thus (0, 0, 0) == (r, g, b, 0)
-  vec4 emission = texture(
-    sampler2D(u_materials[i].emissionTex),
-    texCoord + vec2(0, u_time) * -0);
-
-  material.emission = u_materials[i].emission.rgb *
-    emission.rgb * emission.a;
-
-  material.mras = mras.rgba;
-
-  // material.reflection = u_materials[i].reflection;
-  // material.refraction = u_materials[i].refraction;
-  // material.refractionRatio = u_materials[i].refractionRatio;
-}
-#endif
-
-#ifdef USE_TEXTURE_ARRAY
 {
   const uint i = materialIndex;
 
@@ -74,7 +15,7 @@
   // Default placeholder: Roughness=1.0, Metallic=1.0, AO=1.0
   vec4 mrasTex = vec4(0.0, 1.0, 1.0, 0.0);
 
-  const int mrasLayer = int(u_materials[i].mrasMapTex.x);
+  const uint mrasLayer = u_materials[i].mrasMapTex;
 
   // Isolate sampling logic to valid layers only
   if (mrasLayer > 0) {
@@ -107,8 +48,8 @@
 #ifndef _ALPHA_RESOLVED
 #ifdef USE_DYNAMIC_TEXTURE
   {
-    const int diffuseLayer = int(u_materials[i].diffuseTex.x);
-    const int dynamicLayer = int(readMaterial_dynamicTex(i).x);
+    const int diffuseLayer = int(u_materials[i].diffuseTex);
+    const int dynamicLayer = int(readMaterial_dynamicTex(i));
 
     vec4 staticTexel  = texture(
       u_texturesSRGB,
@@ -118,7 +59,9 @@
       u_texturesDynamic,
       vec3(texCoord, float(dynamicLayer)));
 
-    float mixRatio = u_materials[materialIndex].dynamicRatio;
+    float mixRatio = readMaterial_dynamicRatio(materialIndex);
+    mixRatio = 0;
+    staticTexel = vec4(1, 0, 0, 1);
 
     material.diffuseTexel = mix(staticTexel, dynamicTexel, mixRatio);
     material.diffuseTexel.rgb = mix(staticTexel.rgb, dynamicTexel.rgb, mixRatio);
@@ -135,7 +78,7 @@
   }
 #else
   {
-    const int diffuseLayer = int(u_materials[i].diffuseTex.x);
+    const int diffuseLayer = int(u_materials[i].diffuseTex);
 
     // Sample unified sRGB textures array
     material.diffuseTexel = texture(
@@ -161,7 +104,7 @@
   // ==========================================
   // 3. EMISSION / LUMINANCE RESOLUTION (sRGB Pool)
   // ==========================================
-  const int emissionLayer = int(u_materials[i].emissionTex.x);
+  const int emissionLayer = int(u_materials[i].emissionTex);
 
   vec4 emission = vec4(0.0);
 
@@ -175,4 +118,3 @@
   // Safely strip away any unintentional color leaks stored in the emissive alpha layer channel
   material.emission = u_materials[i].emission.rgb * emission.rgb * emission.a;
 }
-#endif

@@ -211,7 +211,7 @@ void TextureRegistry::bindTextureType(material::TextureType type, uint32_t array
     m_mapping.insert({ type, arrayId });
 }
 
-uint64_t TextureRegistry::registerTexture(
+uint32_t TextureRegistry::registerTexture(
     const util::Ref<Texture>& texture)
 {
     if (!texture) {
@@ -226,44 +226,31 @@ uint64_t TextureRegistry::registerTexture(
 
     const auto& assets = Assets::get();
 
-    uint64_t handle;
-    if (assets.drawUseArrayTexture) {
-        const auto& it = m_mapping.find(texture->m_type);
-        if (it == m_mapping.end())
-            return 0;
+    const auto& it = m_mapping.find(texture->m_type);
+    if (it == m_mapping.end())
+        return 0;
 
-        util::Ref<ArrayTexture> arr = m_arrayTextures[it->second];
-        handle = arr->registerTexture(texture);
-        arr->updateMipMaps();
-    }
-    else {
-        texture->prepareSingle();
-        texture->prepareHandle();
-        handle = texture->m_handle;
-    }
+    util::Ref<ArrayTexture> arr = m_arrayTextures[it->second];
+    uint32_t layer = arr->registerTexture(texture);
+    arr->updateMipMaps();
 
-    return handle;
+    return layer;
 }
 
 void TextureRegistry::updateTexture(
     const util::Ref<Texture>& texture)
 {
     if (!texture) return;
-    if (texture->getHandle() == 0) return;
+    // NOTE KI don't update textures which are not registered
+    if (texture->getLayer() == 0) return;
 
     const auto& assets = Assets::get();
 
-    if (assets.drawUseArrayTexture) {
-        const auto& it = m_mapping.find(texture->m_type);
-        if (it == m_mapping.end())
-            return;
+    const auto& it = m_mapping.find(texture->m_type);
+    if (it == m_mapping.end())
+        return;
 
-        util::Ref<ArrayTexture> arr = m_arrayTextures[it->second];
-        arr->updateTexture(texture);
-        arr->updateMipMaps();
-    }
-    else {
-        texture->updateSingle();
-        texture->m_handle;
-    }
+    util::Ref<ArrayTexture> arr = m_arrayTextures[it->second];
+    arr->updateTexture(texture);
+    arr->updateMipMaps();
 }

@@ -18,7 +18,7 @@ layout(location = UNIFORM_WIREFRAME_MODE) uniform bool u_wireframeMode;
 
 out VS_OUT {
   vec2 atlasCoord;
-  flat uvec2 atlasHandle;
+  flat uint atlasLayer;
   flat uint highlightIndex;
 } vs_out;
 
@@ -63,7 +63,7 @@ void main()
   }
 
   vs_out.atlasCoord = a_atlasCoord;
-  vs_out.atlasHandle = readMaterial_fontAtlasTex(materialIndex);
+  vs_out.atlasLayer = readMaterial_fontAtlasTex(materialIndex);
   vs_out.highlightIndex = u_wireframeMode ? u_wireframeMaterialIndex : u_selectionMaterialIndex;
 
   gl_Position = u_projectedMatrix * worldPos;

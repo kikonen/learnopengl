@@ -46,7 +46,7 @@ namespace text
             return m_fontHandle.get();
         }
 
-        GLuint64 getTextureHandle() const noexcept;
+        GLuint getTextureLayer() const noexcept;
 
         int getPadding() const noexcept
         {

@@ -10,6 +10,6 @@ namespace terrain {
         float u_rangeYmin{ 0.f };
         float u_rangeYmax{ 0.f };
 
-        GLuint64 u_heightMapTex{ 0 };
+        GLuint u_heightMapTex{ 0 };
     };
 }

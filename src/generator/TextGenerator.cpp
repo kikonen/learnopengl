@@ -231,7 +231,7 @@ void TextGenerator::updateMaterial(const model::Node& container)
     if (material) {
         if (material->m_registeredIndex <= 0) return;
 
-        auto atlasTex = getAtlasTextureHandle();
+        auto atlasTex = getAtlasTextureLayer();
         if (material->m_fontAtlasTex != atlasTex) {
             material->m_fontAtlasTex = atlasTex;
             MaterialRegistry::get().updateMaterial(material);
@@ -247,14 +247,14 @@ void TextGenerator::updateDrawables(
 {
 }
 
-GLuint64 TextGenerator::getAtlasTextureHandle() const noexcept
+GLuint TextGenerator::getAtlasTextureLayer() const noexcept
 {
     auto* fontAtlas = text::FontRegistry::get().getFontAtlas(m_fontId).get();
     if (!fontAtlas) {
         fontAtlas = text::FontRegistry::get().getDefaultFontAtlas().get();
     }
 
-    return fontAtlas ? fontAtlas->getTextureHandle() : 0;
+    return fontAtlas ? fontAtlas->getTextureLayer() : 0;
 }
 
 void TextGenerator::clear()

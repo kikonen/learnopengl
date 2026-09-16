@@ -50,9 +50,9 @@ void FrameBufferTexture::prepareSingle()
 
     // => perhaps should fill with empty data to avoid random garbage?!?
 
-    m_handle = glGetTextureSamplerHandleARB(m_frameBuffer->m_spec.attachments[0].textureID, m_samplerId);
-    glMakeTextureHandleResidentARB(m_handle);
-    m_boundBindless = true;
+    //m_handle = glGetTextureSamplerHandleARB(m_frameBuffer->m_spec.attachments[0].textureID, m_samplerId);
+    //glMakeTextureHandleResidentARB(m_handle);
+    //m_boundBindless = true;
 }
 
 void FrameBufferTexture::prepareArray(
@@ -66,7 +66,7 @@ void FrameBufferTexture::prepareArray(
     m_height = arr.getHeight();
 
     // Assign the pure layout integer layer slice offset position index
-    m_handle = static_cast<GLuint64>(layer);
+    m_layer = static_cast<GLuint>(layer);
 
     // Clear the newly claimed layer slice to pure transparent black 
     // to guarantee no random VRAM memory garbage artifact leaks show up

@@ -93,8 +93,8 @@ void main() {
   vec2 distortedTexCoord = texCoord;
   vec2 totalDistortion = vec2(0);
 
-  uvec2 dudvMapTex = readMaterial_dudvMapTex(materialIndex);
-  if (dudvMapTex.x > 0) {
+  uint dudvMapTex = readMaterial_dudvMapTex(materialIndex);
+  if (dudvMapTex > 0) {
     float moveFactor = (sin(u_time / 10.0) + 1.0) * 0.5;
 
     // distortedTexCoord = texture(u_textures[material.dudvMapTex], vec2(texCoord.x + moveFactor, texCoord.y)).rg * 0.1;
@@ -103,18 +103,8 @@ void main() {
     //totalDistortion = (texture(u_textures[material.dudvMapTex], distortedTexCoord).rg * 2.0 - 1.0) * waveStrength;
 
     //vec2 distortedTexCoord;
-#ifndef USE_TEXTURE_ARRAY
     {
-      sampler2D sampler = sampler2D(dudvMapTex);
-      distortedTexCoord = texture(sampler, vec2(texCoord.x + moveFactor, texCoord.y)).rg * 0.1;
-      distortedTexCoord = texCoord + vec2(distortedTexCoord.x, distortedTexCoord.y + moveFactor);
-      totalDistortion = (texture(sampler, distortedTexCoord).rg * 2.0 - 1.0) * waveStrength;
-    }
-#endif
-
-#ifdef USE_TEXTURE_ARRAY
-    {
-      const int dudvLayer = int(dudvMapTex.x);
+      const int dudvLayer = int(dudvMapTex);
 
       distortedTexCoord = texture(
 	u_texturesDudv,
@@ -130,24 +120,11 @@ void main() {
 	  vec3(distortedTexCoord, float(dudvLayer))
         ).rg * 2.0 - 1.0) * waveStrength;
     }
-#endif
   }
 
-#ifndef USE_TEXTURE_ARRAY
 #if defined(USE_NORMAL_TEX) && defined(USE_TBN)
   if (Debug.u_normalMapEnabled) {
-    sampler2D sampler = sampler2D(u_materials[materialIndex].normalMapTex);
-
-    normal = texture(sampler, distortedTexCoord).rgb;
-    normal = normalize(tbn * normal);
-  }
-#endif
-#endif
-
-#ifdef USE_TEXTURE_ARRAY
-#if defined(USE_NORMAL_TEX) && defined(USE_TBN)
-  if (Debug.u_normalMapEnabled) {
-    const int normalLayer = int(u_materials[materialIndex].normalMapTex.x);
+    const int normalLayer = int(u_materials[materialIndex].normalMapTex);
 
     if (normalLayer > 0) {
       vec3 normalTexel = texture(
@@ -157,7 +134,6 @@ void main() {
       normal = normalize(tbn * normal);
     }
   }
-#endif
 #endif
 
   // estimate the normal using the noise texture

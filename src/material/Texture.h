@@ -65,9 +65,9 @@ public:
         return m_textureID;
     }
 
-    GLuint64 getHandle() const noexcept
+    GLuint getLayer() const noexcept
     {
-        return m_handle;
+        return m_layer;
     }
 
     int getFormat() const noexcept
@@ -94,8 +94,7 @@ public:
     const material::TextureSpec m_spec;
 
     GLuint m_textureID{ 0 };
-    GLuint64 m_handle{ 0 };
-    bool m_boundBindless{ false };
+    GLuint m_layer{ 0 };
 
     mutable bool m_sent : 1 { false };
 

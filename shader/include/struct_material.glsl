@@ -12,18 +12,18 @@ struct MaterialMain {
   // MRAS: [metalness, roughness, ambient-occlusion, specular]
   vec4 mras;
 
-  uvec2 diffuseTex;
-  uvec2 emissionTex;
-  uvec2 normalMapTex;
+  uint diffuseTex;
+  uint emissionTex;
+  uint normalMapTex;
 
-  // uvec2 opacityMapTex;
+  // uint opacityMapTex;
 
   // MRAS: [metalness, roughness, ambient-occlusion, specular]
   // - metalness (Red):   0 = dielectric, 1 = metal
   // - roughness (Green): 0 = smooth/shiny, 1 = rough/matte
   // - occlusion (Blue):  0 = fully occluded, 1 = no occlusion
   // - specular  (Alpha): 0 = no reflection, 1 = strong reflection
-  uvec2 mrasMapTex;
+  uint mrasMapTex;
 
   uint flags;
 
@@ -32,24 +32,24 @@ struct MaterialMain {
 
   float parallaxDepth;
 
-  float dynamicRatio;
-
-  int pad3_1;
+  // int pad3_1;
   // int pad3_2;
   // int pad3_3;
 };
 
 struct MaterialCustom {
-  uvec2 displacementMapTex;
-  uvec2 dudvMapTex;
-  uvec2 noiseMapTex;
-  uvec2 noise2MapTex;
+  uint displacementMapTex;
+  uint dudvMapTex;
+  uint noiseMapTex;
+  uint noise2MapTex;
 
-  uvec2 custom1Tex;
+  uint custom1Tex;
 
-  uvec2 fontAtlasTex;
+  uint fontAtlasTex;
 
-  uvec2 dynamicTex;
+  uint dynamicTex;
+
+  float dynamicRatio;
 
   // int pad3_1;
   // int pad3_2;

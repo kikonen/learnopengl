@@ -47,7 +47,7 @@ public:
 
     void bindTextureType(material::TextureType type, uint32_t arrayId);
 
-    uint64_t registerTexture(
+    uint32_t registerTexture(
         const util::Ref<Texture>& texture);
 
     void updateTexture(

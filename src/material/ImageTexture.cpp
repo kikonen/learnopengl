@@ -150,7 +150,7 @@ void ImageTexture::prepareArray(
 
     // 4. Update the handle signature variable pointer to store the pure tight layer slice integer offset
     // Instead of texture handles, this raw integer is what will be passed into the MaterialSSBO uniform block layout!
-    m_handle = static_cast<GLuint64>(layer);
+    m_layer = static_cast<GLuint>(layer);
 
     KI_INFO(fmt::format(
         "TEX::ARRAY::SLOT::UPLOAD: asset={}, streamed into target array textureID={}, assigned layer index={}",

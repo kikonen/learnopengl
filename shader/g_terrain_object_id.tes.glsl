@@ -21,7 +21,7 @@ in TCS_OUT {
 
   flat float rangeYmin;
   flat float rangeYmax;
-  flat uvec2 heightMapTex;
+  flat uint heightMapTex;
 
   flat vec4 objectID;
 } tes_in[];
@@ -58,46 +58,13 @@ vec3 interpolate3D(vec3 v0, vec3 v1, vec3 v2)
     vec3(gl_TessCoord.z) * v2;
 }
 
-#ifndef USE_TEXTURE_ARRAY
 void main()
 {
   instance = u_instances[tes_in[0].instanceIndex];
   entity = u_entities[tes_in[0].entityIndex];
   #include "include/var_entity_model_matrix.glsl"
 
-  sampler2D heightMap = sampler2D(tes_in[0].heightMapTex);
-
-  // Interpolate the attributes of the output vertex using the barycentric coordinates
-  vec2 texCoord = interpolate2D(tes_in[0].texCoord, tes_in[1].texCoord, tes_in[2].texCoord);
-  vec3 vertexPos = interpolate3D(tes_in[0].vertexPos, tes_in[1].vertexPos, tes_in[2].vertexPos);
-
-  const float rangeYmin = tes_in[0].rangeYmin;
-  const float rangeYmax = tes_in[0].rangeYmax;
-  const float rangeY = rangeYmax - rangeYmin;
-
-  float avgHeight = fetchHeight(heightMap, texCoord);
-  float h = rangeYmin + avgHeight * rangeY;
-
-  vertexPos.y += h;
-
-  vec4 worldPos = modelMatrix * vec4(vertexPos, 1.0);
-
-  calculateClipping(worldPos);
-
-  gl_Position = u_projectedMatrix * worldPos;
-
-  tes_out.objectID = tes_in[0].objectID;
-}
-#endif
-
-#ifdef USE_TEXTURE_ARRAY
-void main()
-{
-  instance = u_instances[tes_in[0].instanceIndex];
-  entity = u_entities[tes_in[0].entityIndex];
-  #include "include/var_entity_model_matrix.glsl"
-
-  const int heightMapLayer = int(tes_in[0].heightMapTex.x);
+  const uint heightMapLayer = tes_in[0].heightMapTex;
 
   // Interpolate the attributes of the output vertex using the barycentric coordinates
   vec2 texCoord = interpolate2D(
@@ -127,4 +94,3 @@ void main()
 
   tes_out.objectID = tes_in[0].objectID;
 }
-#endif

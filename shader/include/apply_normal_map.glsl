@@ -4,24 +4,10 @@
 // normal.xy = normal.rg * 2.0 - 1.0;
 // normal.z = sqrt(max(1.0 - dot(normal.xy, normal.xy), 0.0));
 
-#ifndef USE_TEXTURE_ARRAY
 #ifdef USE_NORMAL_TEX
 {
   if (Debug.u_normalMapEnabled) {
-    sampler2D sampler = sampler2D(u_materials[materialIndex].normalMapTex);
-
-    normal = texture(sampler, texCoord).rgb * 2.0 - 1.0;
-    normal = normalize(tbn * normal);
-  }
-}
-#endif
-#endif
-
-#ifdef USE_TEXTURE_ARRAY
-#ifdef USE_NORMAL_TEX
-{
-  if (Debug.u_normalMapEnabled) {
-    const int normalLayer = int(u_materials[materialIndex].normalMapTex.x);
+    const uint normalLayer = u_materials[materialIndex].normalMapTex;
 
     // Only apply normal mapping if a valid texture is explicitly bound
     // Layer 0 is reserved for NULL/None, which skips texture sampling
@@ -35,5 +21,4 @@
     }
   }
 }
-#endif
 #endif

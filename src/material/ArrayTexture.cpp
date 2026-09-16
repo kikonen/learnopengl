@@ -253,7 +253,7 @@ uint32_t ArrayTexture::allocateLayer()
     return static_cast<uint32_t>(m_layerIndex);
 }
 
-uint64_t ArrayTexture::registerTexture(
+uint32_t ArrayTexture::registerTexture(
     const util::Ref<Texture>& texture)
 {
     const auto& it = std::find_if(
@@ -264,7 +264,7 @@ uint64_t ArrayTexture::registerTexture(
     });
 
     if (it != m_registeredTextures.end())
-        return it->get()->getHandle();
+        return it->get()->getLayer();
 
     uint32_t layer = allocateLayer();
     texture->prepareArray(*this, layer);
@@ -291,7 +291,7 @@ void ArrayTexture::updateTexture(
     if (it == m_registeredTextures.end())
         return;
 
-    auto layer = static_cast<int>(texture->getHandle());
+    auto layer = static_cast<int>(texture->getLayer());
 
     texture->updateArray(*this, layer);
 }

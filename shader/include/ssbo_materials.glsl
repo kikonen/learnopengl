@@ -28,10 +28,11 @@ float readMaterial_reflection(uint i)     { return u_materialsCold[i].reflection
 float readMaterial_refraction(uint i)     { return u_materialsCold[i].refraction; }
 float readMaterial_refractionRatio(uint i)     { return u_materialsCold[i].refractionRatio; }
 
-uvec2 readMaterial_displacementMapTex(uint i)     { return u_materialsCustom[i].displacementMapTex; }
-uvec2 readMaterial_dudvMapTex(uint i)     { return u_materialsCustom[i].dudvMapTex; }
-uvec2 readMaterial_noiseMapTex(uint i)     { return u_materialsCustom[i].noiseMapTex; }
-uvec2 readMaterial_noise2MapTex(uint i)     { return u_materialsCustom[i].noise2MapTex; }
-uvec2 readMaterial_custom1Tex(uint i)     { return u_materialsCustom[i].custom1Tex; }
-uvec2 readMaterial_fontAtlasTex(uint i)     { return u_materialsCustom[i].fontAtlasTex; }
-uvec2 readMaterial_dynamicTex(uint i)     { return u_materialsCustom[i].dynamicTex; }
+uint readMaterial_displacementMapTex(uint i)     { return u_materialsCustom[i].displacementMapTex; }
+uint readMaterial_dudvMapTex(uint i)     { return u_materialsCustom[i].dudvMapTex; }
+uint readMaterial_noiseMapTex(uint i)     { return u_materialsCustom[i].noiseMapTex; }
+uint readMaterial_noise2MapTex(uint i)     { return u_materialsCustom[i].noise2MapTex; }
+uint readMaterial_custom1Tex(uint i)     { return u_materialsCustom[i].custom1Tex; }
+uint readMaterial_fontAtlasTex(uint i)     { return u_materialsCustom[i].fontAtlasTex; }
+uint readMaterial_dynamicTex(uint i)     { return u_materialsCustom[i].dynamicTex; }
+float readMaterial_dynamicRatio(uint i)     { return u_materialsCustom[i].dynamicRatio; }

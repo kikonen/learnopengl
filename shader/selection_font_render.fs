@@ -7,7 +7,7 @@
 
 in VS_OUT {
   vec2 atlasCoord;
-  flat uvec2 atlasHandle;
+  flat uint atlasLayer;
   flat uint highlightIndex;
 } fs_in;
 
@@ -32,7 +32,7 @@ void main()
 #ifdef USE_BLEND
   blend = true;
 #endif
-  shapeFont(fs_in.atlasHandle, fs_in.atlasCoord, blend, color);
+  shapeFont(fs_in.atlasLayer, fs_in.atlasCoord, blend, color);
 
   if (color.a < 0.01)
     discard;

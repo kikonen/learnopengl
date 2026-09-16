@@ -38,23 +38,12 @@ vec3 _sampleWaterCausticTriplanar(
 
   uint matIdx = u_waterCausticMaterialIndex;
 
-#ifndef USE_TEXTURE_ARRAY
-  sampler2D sampler = sampler2D(u_materials[matIdx].diffuseTex);
-  vec3 cX = texture(sampler, uvX).rgb;
-  vec3 cY = texture(sampler, uvY).rgb;
-  vec3 cZ = texture(sampler, uvZ).rgb;
-  return cX * blend.x + cY * blend.y + cZ * blend.z;
-#endif
-
-#ifdef USE_TEXTURE_ARRAY
-  const int diffuseLayer = int(u_materials[matIdx].diffuseTex.x);
+  const uint diffuseLayer = u_materials[matIdx].diffuseTex;
 
   vec3 cX = texture(u_texturesSRGB, vec3(uvX, float(diffuseLayer))).rgb;
   vec3 cY = texture(u_texturesSRGB, vec3(uvY, float(diffuseLayer))).rgb;
   vec3 cZ = texture(u_texturesSRGB, vec3(uvZ, float(diffuseLayer))).rgb;
   return cX * blend.x + cY * blend.y + cZ * blend.z;
-#endif
-
 }
 
 void applyWaterCausticAlways(

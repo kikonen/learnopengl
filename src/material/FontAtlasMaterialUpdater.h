@@ -30,10 +30,10 @@ public:
     virtual void render(
         const render::RenderContext& ctx) override;
 
-    virtual GLuint64 getTexHandle(material::TextureType type) const noexcept override;
+    virtual GLuint getTexLayer(material::TextureType type) const noexcept override;
 
 private:
-    GLuint64 m_handle{ 0 };
+    GLuint m_layer{ 0 };
 
     int m_fontId{ -1 };
 };

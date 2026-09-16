@@ -15,7 +15,7 @@ in VS_OUT {
   vec2 texCoord;
 
   vec2 atlasCoord;
-  flat uvec2 atlasHandle;
+  flat uint atlasLayer;
 
   flat uint materialIndex;
   flat uint flags;
@@ -45,7 +45,7 @@ void main()
   #include "include/var_tex_material.glsl"
 
   vec4 color;
-  shapeFont(fs_in.atlasHandle, fs_in.atlasCoord, true, color);
+  shapeFont(fs_in.atlasLayer, fs_in.atlasCoord, true, color);
 
   OIT_DISCARD(color.a);
 

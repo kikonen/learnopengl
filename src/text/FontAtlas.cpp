@@ -111,12 +111,12 @@ namespace text
 
     bool FontAtlas::valid() const
     {
-        return m_texture && m_texture->getHandle() > 0;
+        return m_texture && m_texture->getLayer() > 0;
     }
 
-    GLuint64 FontAtlas::getTextureHandle() const noexcept
+    GLuint FontAtlas::getTextureLayer() const noexcept
     {
-        return m_texture ? m_texture->getHandle() : 0;
+        return m_texture ? m_texture->getLayer() : 0;
     }
 
     void FontAtlas::prepare()

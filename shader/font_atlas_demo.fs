@@ -34,18 +34,11 @@ void main() {
 
   #include "include/var_tex_material.glsl"
 
-#ifndef USE_TEXTURE_ARRAY
-  sampler2D sampler = sampler2D(readMaterial_fontAtlasTex(materialIndex));
-  float d = textureLod(sampler, texCoord, 0).r;
-#endif
-
-#ifdef USE_TEXTURE_ARRAY
-  const int fontAtlasLayer = int(readMaterial_fontAtlasTex(materialIndex).x);
+  const int fontAtlasLayer = int(readMaterial_fontAtlasTex(materialIndex));
 
   float d = texture(
     u_texturesFontAtlas,
     vec3(texCoord * texScale, float(fontAtlasLayer))).r;
-#endif
 
   // if (d < 0.1) {
   //   discard;

@@ -174,7 +174,7 @@ void ColorTexture::prepareArray(
     bool isSRGB = arr.isGammaCorrect();
 
     auto textureID = arr.getTextureID();
-    m_handle = static_cast<GLuint64>(layer);
+    m_layer = static_cast<GLuint>(layer);
 
     // 2. generate image buffer
     if (is16Bit) {

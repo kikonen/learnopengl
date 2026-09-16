@@ -37,18 +37,11 @@ void main() {
 
   #include "include/var_tex_material.glsl"
 
-#ifndef USE_TEXTURE_ARRAY
-  sampler2D sampler = sampler2D(readMaterial_noiseMapTex(materialIndex));
-  float noise = texture(sampler, texCoord * 8.0).r;
-#endif
-
-#ifdef USE_TEXTURE_ARRAY
-  const int noiseLayer = int(readMaterial_noiseMapTex(materialIndex).x);
+  const uint noiseLayer = readMaterial_noiseMapTex(materialIndex);
 
   float noise = texture(
     u_texturesNoise,
     vec3(texCoord * 8.0, float(noiseLayer))).r;
-#endif
 
   float alpha = material.diffuse.a;
   float t = material.diffuse.a;

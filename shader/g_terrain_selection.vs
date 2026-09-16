@@ -25,7 +25,7 @@ out VS_OUT {
   flat float tilingX;
   flat float rangeYmin;
   flat float rangeYmax;
-  flat uvec2 heightMapTex;
+  flat uint heightMapTex;
 
   flat uint highlightIndex;
   flat int wireframeMode;

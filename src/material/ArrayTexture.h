@@ -34,7 +34,8 @@ public:
         ArrayTexture& arr,
         uint32_t layer) override;
 
-    uint64_t registerTexture(
+    // @return registered layer index
+    uint32_t registerTexture(
         const util::Ref<Texture>& texture);
 
     void updateTexture(

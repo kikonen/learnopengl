@@ -394,13 +394,13 @@ ki::material_index Material::registerMaterial()
     return MaterialRegistry::get().registerMaterial(this);
 }
 
-GLuint64 Material::getTexHandle(
+GLuint Material::getTexLayer(
     material::TextureType type,
-    GLuint64 defaultValue) const noexcept
+    GLuint defaultValue) const noexcept
 {
     if (m_updater) {
-        auto handle = m_updater->getTexHandle(type);
-        if (handle) return handle;
+        auto layer = m_updater->getTexLayer(type);
+        if (layer) return layer;
     }
 
     // TODO KI special case for FontAtlas
@@ -409,7 +409,7 @@ GLuint64 Material::getTexHandle(
     }
 
     const auto& it = m_boundTextures.find(type);
-    return it != m_boundTextures.end() ? it->second.m_texture->m_handle : defaultValue;
+    return it != m_boundTextures.end() ? it->second.m_texture->m_layer : defaultValue;
 }
 
 void Material::loadTextures()
@@ -567,83 +567,10 @@ void Material::fillSSBO(
     MaterialColdSSBO& cold) const
 {
     const auto& assets = Assets::get();
-    if (assets.drawUseArrayTexture) {
-        fillSSBOArray(
-            main,
-            custom,
-            cold);
-    }
-    else {
-        fillSSBOBindless(
-            main,
-            custom,
-            cold);
-    }
-}
-
-void Material::fillSSBOBindless(
-    MaterialMainSSBO& main,
-    MaterialCustomSSBO& custom,
-    MaterialColdSSBO& cold) const
-{
-    const auto& whitePx = ColorTexture::getWhiteRGBA(true)->getHandle();
-    const auto& blackPx = ColorTexture::getBlackRGBA(true)->getHandle();
-    const auto& flatNormalPx = ColorTexture::getFlatNormalRGBA(true)->getHandle();
-
-    // RGB8 = (128, 128, 255) = flat normal
-    uint8_t flatNormal[] = { 128, 128, 255 };
-
-    const glm::vec4 mrasFactor{
-        m_metalnessFactor,
-        m_occlusionFactor,
-        m_roughnessFactor,
-        1.f };
-
-    main = {
-        .u_diffuse = kd,
-        .u_emission = hasBoundTex(material::TextureType::emission) ? WHITE_RGBA : ke,
-        .u_mras = hasBoundTex(material::TextureType::map_mras) ? mrasFactor : mras,
-
-        .u_diffuseTex = getTexHandle(material::TextureType::diffuse, whitePx),
-        .u_emissionTex = getTexHandle(material::TextureType::emission, blackPx),
-        .u_normalMap = getTexHandle(material::TextureType::map_normal, flatNormalPx),
-        //.u_opacityMap = getTexHandle(material::TextureType::map_opacity, whitePx),
-        // NOTE KI whitePx fails due to "inverse" flags
-        .u_mrasMap = getTexHandle(material::TextureType::map_mras, 0),
-
-        .u_flags = getFlags(),
-
-        .u_tilingX = tilingX,
-        .u_tilingY = tilingY,
-
-        .u_parallaxDepth = parallaxDepth,
-        .u_dynamicRatio = m_dynamicRatio,
-    };
-
-    custom = {
-        .u_displacementMap = getTexHandle(material::TextureType::map_displacement, blackPx),
-
-        .u_dudvMap = getTexHandle(material::TextureType::map_dudv, 0),
-        .u_noiseMap = getTexHandle(material::TextureType::map_noise, 0),
-        .u_noise2Map = getTexHandle(material::TextureType::map_noise_2, 0),
-
-        .u_custom1Map = getTexHandle(material::TextureType::map_custom_1, 0),
-
-        .u_fontAtlas = getTexHandle(material::TextureType::map_font_atlas, 0),
-
-        .u_dynamic = getTexHandle(material::TextureType::dynamic, whitePx),
-    };
-    cold = {
-        .u_reflection = reflection,
-        .u_refraction = refraction,
-        .u_refractionRatio = getRefractionRatio(),
-
-        .u_packedSprites = material::packSprites(*this),
-
-        .u_layers = layers,
-        .u_layersDepth = layersDepth,
-        .u_pointSize = pointSize,
-    };
+    fillSSBOArray(
+        main,
+        custom,
+        cold);
 }
 
 void Material::fillSSBOArray(
@@ -683,12 +610,12 @@ void Material::fillSSBOArray(
         .u_emission = hasBoundTex(material::TextureType::emission) ? WHITE_RGBA : ke,
         .u_mras = hasBoundTex(material::TextureType::map_mras) ? mrasFactor : mras,
 
-        .u_diffuseTex = getTexHandle(material::TextureType::diffuse, diffuseWhiteLayer),
-        .u_emissionTex = getTexHandle(material::TextureType::emission, diffuseBlackLayer),
-        .u_normalMap = getTexHandle(material::TextureType::map_normal, normalLayer),
-        //.u_opacityMap = getTexHandle(material::TextureType::map_opacity, diffuseWhiteLayer),
+        .u_diffuseTex = getTexLayer(material::TextureType::diffuse, diffuseWhiteLayer),
+        .u_emissionTex = getTexLayer(material::TextureType::emission, diffuseBlackLayer),
+        .u_normalMap = getTexLayer(material::TextureType::map_normal, normalLayer),
+        //.u_opacityMap = getTexLayer(material::TextureType::map_opacity, diffuseWhiteLayer),
         // NOTE KI whitePx fails due to "inverse" flags
-        .u_mrasMap = getTexHandle(material::TextureType::map_mras, 0),
+        .u_mrasMap = getTexLayer(material::TextureType::map_mras, 0),
 
         .u_flags = getFlags(),
 
@@ -696,21 +623,22 @@ void Material::fillSSBOArray(
         .u_tilingY = tilingY,
 
         .u_parallaxDepth = parallaxDepth,
-        .u_dynamicRatio = m_dynamicRatio,
     };
 
     custom = {
-        .u_displacementMap = getTexHandle(material::TextureType::map_displacement, displacementBlackLayer),
+        .u_displacementMap = getTexLayer(material::TextureType::map_displacement, displacementBlackLayer),
 
-        .u_dudvMap = getTexHandle(material::TextureType::map_dudv, 0),
-        .u_noiseMap = getTexHandle(material::TextureType::map_noise, 0),
-        .u_noise2Map = getTexHandle(material::TextureType::map_noise_2, 0),
+        .u_dudvMap = getTexLayer(material::TextureType::map_dudv, 0),
+        .u_noiseMap = getTexLayer(material::TextureType::map_noise, 0),
+        .u_noise2Map = getTexLayer(material::TextureType::map_noise_2, 0),
 
-        .u_custom1Map = getTexHandle(material::TextureType::map_custom_1, 0),
+        .u_custom1Map = getTexLayer(material::TextureType::map_custom_1, 0),
 
-        .u_fontAtlas = getTexHandle(material::TextureType::map_font_atlas, 0),
+        .u_fontAtlas = getTexLayer(material::TextureType::map_font_atlas, 0),
 
-        .u_dynamic = getTexHandle(material::TextureType::dynamic, dynamicWhiteLayer),
+        .u_dynamic = getTexLayer(material::TextureType::dynamic, dynamicWhiteLayer),
+
+        .u_dynamicRatio = m_dynamicRatio,
     };
     cold = {
         .u_reflection = reflection,

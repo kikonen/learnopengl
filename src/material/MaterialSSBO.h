@@ -76,13 +76,13 @@ struct MaterialMainSSBO {
     glm::vec4 u_mras; // 16
 
     // NOTE KI "tex index", not "unit index"
-    GLuint64 u_diffuseTex;
-    GLuint64 u_emissionTex;
-    //GLuint64 u_specularTex;
-    GLuint64 u_normalMap;
+    GLuint u_diffuseTex;
+    GLuint u_emissionTex;
+    //GLuint u_specularTex;
+    GLuint u_normalMap;
 
-    //GLuint64 u_opacityMap;
-    GLuint64 u_mrasMap;
+    //GLuint u_opacityMap;
+    GLuint u_mrasMap;
 
     GLuint u_flags;
 
@@ -91,25 +91,25 @@ struct MaterialMainSSBO {
 
     float u_parallaxDepth;
 
-    float u_dynamicRatio;
-
-    int pad3_1;
+    //int pad3_1;
     //int pad3_2;
     //int pad3_3;
 };
 
 struct MaterialCustomSSBO{
-    GLuint64 u_displacementMap;
+    GLuint u_displacementMap;
 
-    GLuint64 u_dudvMap;
-    GLuint64 u_noiseMap;
-    GLuint64 u_noise2Map;
+    GLuint u_dudvMap;
+    GLuint u_noiseMap;
+    GLuint u_noise2Map;
 
-    GLuint64 u_custom1Map;
+    GLuint u_custom1Map;
 
-    GLuint64 u_fontAtlas;
+    GLuint u_fontAtlas;
 
-    GLuint64 u_dynamic;
+    GLuint u_dynamic;
+
+    float u_dynamicRatio;
 
     //int pad3_1;
     //int pad3_2;

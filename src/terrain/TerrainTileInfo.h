@@ -19,7 +19,7 @@ namespace terrain {
         float u_rangeYmax{ 0.f };
 
         util::Ref<ImageTexture> m_heightMapTex;
-        GLuint64 m_heightMapTexHandle{ 0 };
+        GLuint m_heightMapTexLayer{ 0 };
 
         uint32_t m_registeredIndex{ 0 };
 
@@ -31,7 +31,7 @@ namespace terrain {
             ssbo.u_rangeYmin = u_rangeYmin;
             ssbo.u_rangeYmax = u_rangeYmax;
 
-            ssbo.u_heightMapTex = m_heightMapTexHandle;
+            ssbo.u_heightMapTex = m_heightMapTexLayer;
         }
     };
 }

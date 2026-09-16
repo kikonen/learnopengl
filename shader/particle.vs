@@ -14,7 +14,7 @@ out VS_OUT {
   vec3 viewPos;
 
   flat vec4 diffuse;
-  flat uvec2 diffuseTex;
+  flat uint diffuseTex;
 } vs_out;
 
 out float gl_ClipDistance[CLIP_COUNT];

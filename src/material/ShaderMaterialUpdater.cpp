@@ -142,10 +142,10 @@ void ShaderMaterialUpdater::render(
     setNeedUpdate(true);
 }
 
-GLuint64 ShaderMaterialUpdater::getTexHandle(material::TextureType type) const noexcept
+GLuint ShaderMaterialUpdater::getTexLayer(material::TextureType type) const noexcept
 {
     if (type == material::TextureType::dynamic) {
-        return m_texture->getHandle();
+        return m_texture->getLayer();
     }
     return 0;
 }

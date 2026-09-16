@@ -144,11 +144,6 @@ public:
         MaterialCustomSSBO& custom,
         MaterialColdSSBO& cold) const;
 
-    void fillSSBOBindless(
-        MaterialMainSSBO& main,
-        MaterialCustomSSBO& custom,
-        MaterialColdSSBO& cold) const;
-
     void fillSSBOArray(
         MaterialMainSSBO& main,
         MaterialCustomSSBO& custom,
@@ -201,7 +196,9 @@ public:
         return it != m_boundTextures.end() ? &it->second : nullptr;
     }
 
-    GLuint64 getTexHandle(material::TextureType type, GLuint64 defaultValue) const noexcept;
+    GLuint getTexLayer(
+        material::TextureType type,
+        GLuint defaultValue) const noexcept;
 
     const std::map<material::TextureType, material::TextureInfo>& getTextures() const noexcept
     {
@@ -346,7 +343,7 @@ public:
 
     MaterialUpdater* m_updater{ nullptr };
 
-    GLuint64 m_fontAtlasTex{ 0 };
+    GLuint m_fontAtlasTex{ 0 };
 
 private:
     std::map<material::TextureType, material::BoundTexture> m_boundTextures{};
