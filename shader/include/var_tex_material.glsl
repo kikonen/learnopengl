@@ -60,8 +60,6 @@
       vec3(texCoord, float(dynamicLayer)));
 
     float mixRatio = readMaterial_dynamicRatio(materialIndex);
-    mixRatio = 0;
-    staticTexel = vec4(1, 0, 0, 1);
 
     material.diffuseTexel = mix(staticTexel, dynamicTexel, mixRatio);
     material.diffuseTexel.rgb = mix(staticTexel.rgb, dynamicTexel.rgb, mixRatio);
