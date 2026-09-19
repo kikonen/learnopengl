@@ -42,24 +42,35 @@ module Encode
         break unless task
         break if task[:action] == EXIT
 
-        @tid = task[:tid]
-        task_id = task[:task_id]
-
-        cls = Object.const_get(task[:class])
-        args = task[:args] || {}
-
-        encoder = cls.new(**args)
-        encoder.encode(tid:)
-
-        response = { response: DONE, task_id: task_id }
-        puts response.to_json
+        run_task(task)
       end
     rescue => e
       stacktrace = e.backtrace.join("\n")
-      info "ERROR: #{e.message}\n#{stacktrace}"
+      info "FATAL: #{e.message}\n#{stacktrace}"
     rescue Interrupt => e
       stacktrace = e.backtrace.join("\n")
+      info "FATAL: #{e.message}\n#{stacktrace}"
+    end
+
+    def run_task(task)
+      @tid = task[:tid]
+      task_id = task[:task_id]
+
+      cls = Object.const_get(task[:class])
+      args = task[:args] || {}
+
+      encoder = cls.new(**args)
+      encoder.resolve_overrides(args[:parts] || [args[:tex_info]].compact)
+      encoder.encode(tid:)
+
+      response = { response: DONE, task_id: task_id }
+      puts response.to_json
+    rescue => e
+      stacktrace = e.backtrace.join("\n")
       info "ERROR: #{e.message}\n#{stacktrace}"
+
+      response = { response: DONE, task_id: task_id, status: :fail }
+      puts response.to_json
     end
 
     def read_task
@@ -83,11 +94,17 @@ module Encode
       end
 
       if args[:parts]
-        args[:parts] = args[:parts].map { |e| TextureInfo.new(e) }
+        args[:parts] = args[:parts].map do |e|
+          TextureInfo
+            .new(e)
+            .normalize!
+        end
       end
 
       if args[:tex_info]
-        args[:tex_info] = TextureInfo.new(args[:tex_info])
+        args[:tex_info] = TextureInfo
+          .new(args[:tex_info])
+          .normalize!
       end
 
       task

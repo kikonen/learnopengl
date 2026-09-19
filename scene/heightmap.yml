@@ -132,7 +132,7 @@ types:
       material:
         prefab: materials/Terrain2
         texture_spec:
-          wrap: GL_CLAMP_TO_EDGE
+          wrap: clamp_to_edge
         program: g_terrain
         pre_depth_program: g_terrain_depth
         id_program: g_terrain_object_id

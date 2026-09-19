@@ -3,8 +3,6 @@
 layout (location = ATTR_POS) in vec3 a_pos;
 layout (location = ATTR_TEX) in vec2 a_texCoord;
 
-layout(location = UNIFORM_STENCIL_MODE) uniform int u_stencilMode;
-
 #include "include/ssbo_entities.glsl"
 #include "include/ssbo_instances.glsl"
 #include "include/ssbo_instance_indeces.glsl"
@@ -25,7 +23,7 @@ out VS_OUT {
   flat float tilingX;
   flat float rangeYmin;
   flat float rangeYmax;
-  flat uvec2 heightMapTex;
+  flat uint heightMapTex;
 
   flat vec4 objectID;
 } vs_out;

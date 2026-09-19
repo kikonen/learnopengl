@@ -3,7 +3,7 @@
 // - material
 //
 void shapeFont(
-  in uvec2 atlasHandle,
+  in uint atlasLayer,
   in vec2 atlasCoord,
   in bool useBlend,
   out vec4 result)
@@ -18,7 +18,7 @@ void shapeFont(
 #endif
 #endif
 
-  sampler2D atlas = sampler2D(atlasHandle);
+  const uint fontAtlasLayer = atlasLayer;
 
   const float glyphCenter = 0.5;
   const vec3 glyphColor = material.diffuse.rgb;
@@ -39,7 +39,10 @@ void shapeFont(
 
   // implicit LOD: magnification stays on level 0 (sharp), minified / distant
   // text drops to coarser SDF mips instead of shimmering
-  const float dist  = texture(atlas, atlasCoord).r;
+  const float dist  = texture(
+    u_texturesFontAtlas,
+    vec3(atlasCoord, float(fontAtlasLayer))).r;
+
   const float width = fwidth(dist);
 
   const float alpha = smoothstep(

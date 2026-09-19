@@ -26,33 +26,35 @@ namespace
         out << YAML::EndMap;
     }
 
-    const std::string getTextureKey(TextureType type) noexcept
+    const std::string getTextureKey(material::TextureType type) noexcept
     {
         switch (type) {
-        case TextureType::diffuse: return "map_kd";
-        case TextureType::emission: return "map_ke";
-        case TextureType::map_normal: return "map_normal";
-        case TextureType::map_dudv: return "map_dudv";
-        case TextureType::map_noise: return "map_noise";
-        case TextureType::map_noise_2: return "map_noise_2";
-        case TextureType::map_opacity: return "map_opacity";
-        case TextureType::map_custom_1: return "map_custom_1";
-        case TextureType::map_mras: return "map_mras";
-        case TextureType::map_displacement: return "map_displacement";
+        case material::TextureType::diffuse: return "map_kd";
+        case material::TextureType::emission: return "map_ke";
+        case material::TextureType::map_normal: return "map_normal";
+        case material::TextureType::map_dudv: return "map_dudv";
+        case material::TextureType::map_noise: return "map_noise";
+        case material::TextureType::map_noise_2: return "map_noise_2";
+        case material::TextureType::map_opacity: return "map_opacity";
+        case material::TextureType::map_custom_1: return "map_custom_1";
+        case material::TextureType::map_mras: return "map_mras";
+        case material::TextureType::map_displacement: return "map_displacement";
+        case material::TextureType::map_height: return "map_height";
+        case material::TextureType::map_font_atlas: return "map_font_atlas";
         }
         return fmt::format("INVALID_TEX_{}", util::as_integer(type));
     }
 
-    const std::string getProgramKey(MaterialProgramType type) noexcept
+    const std::string getProgramKey(material::ProgramType type) noexcept
     {
         switch (type) {
-        case MaterialProgramType::shader: return "program";
-        case MaterialProgramType::oit: return "oit_program";
-        case MaterialProgramType::shadow: return "shadow_program";
-        case MaterialProgramType::pre_depth: return "pre_depth_program";
-        case MaterialProgramType::selection: return "selection_program";
-        case MaterialProgramType::object_id: return "id_program";
-        case MaterialProgramType::normal: return "normal_program";
+        case material::ProgramType::shader: return "program";
+        case material::ProgramType::oit: return "oit_program";
+        case material::ProgramType::shadow: return "shadow_program";
+        case material::ProgramType::pre_depth: return "pre_depth_program";
+        case material::ProgramType::selection: return "selection_program";
+        case material::ProgramType::object_id: return "id_program";
+        case material::ProgramType::normal: return "normal_program";
         }
         return fmt::format("INVALID_PROGRAM_{}", util::as_integer(type));
     }
@@ -127,6 +129,9 @@ namespace mesh_set::encoder
 
         out << YAML::Key << "sprites";
         out << YAML::Value << static_cast<int>(material->spriteCount);
+
+        out << YAML::Key << "sprites_per_row";
+        out << YAML::Value << static_cast<int>(material->spritesPerRow);
 
         out << YAML::Key << "sprites_x";
         out << YAML::Value << static_cast<int>(material->spritesX);

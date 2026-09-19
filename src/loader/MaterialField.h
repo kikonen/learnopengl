@@ -2,7 +2,7 @@
 
 namespace loader {
     struct MaterialField {
-        bool textureSpec : 1 { false };
+        bool defaultTextureSpec : 1 { false };
 
         bool baseDir : 1{false};
         bool geometryType : 1 {false};
@@ -16,6 +16,7 @@ namespace loader {
         bool tilingY : 1 { false };
 
         bool spriteCount : 1 { false };
+        bool spritesPerRow : 1 { false };
         bool spritesX : 1 { false };
 
         //bool ns : 1 { false };
@@ -37,6 +38,8 @@ namespace loader {
         bool layers : 1 { false };
         bool layersDepth : 1 { false };
         bool parallaxDepth : 1 { false };
+
+        bool dynamicRatio : 1 { false };
 
         bool mras : 1 { false };
         bool invertOcclusion : 1 { false };

@@ -73,18 +73,17 @@ namespace render {
         const glm::vec4 clearColor{ 0.f };
         const float clearDepth{ 1.f };
 
-        std::unique_ptr<FrameBuffer> captureFBO{ nullptr };
+        util::Ref<FrameBuffer> captureFBO;
         {
-            auto buffer = new FrameBuffer(
+            captureFBO = util::Ref<FrameBuffer>::create(
                 "flat_capture_fbo",
-                {
+                FrameBufferSpecification {
                     size, size,
                     {
                         FrameBufferAttachment::getDrawBuffer(),
                         FrameBufferAttachment::getDepthRbo(),
                     }
                 });
-            captureFBO.reset(buffer);
             captureFBO->prepare();
 
             glNamedFramebufferTexture(*captureFBO, GL_COLOR_ATTACHMENT0, textureID, 0);

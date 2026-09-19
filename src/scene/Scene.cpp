@@ -294,11 +294,11 @@ void Scene::prepareRT()
             });
 
         vp->setBindBefore([this](model::Viewport& vp) {
-            auto* buffer = m_uiRenderer->m_buffer.get();
+            auto& fbo = m_uiRenderer->m_frameBuffer;
             vp.setTexture(
-                buffer->m_spec.attachments[LayerRenderer::ATT_ALBEDO_INDEX].textureID,
-                buffer->m_spec.getSize());
-            vp.setSourceFrameBuffer(buffer);
+                fbo->m_spec.attachments[LayerRenderer::ATT_ALBEDO_INDEX].textureID,
+                fbo->m_spec.getSize());
+            vp.setSourceFrameBuffer(fbo);
             });
 
         if (const auto* layer = LayerInfo::findLayer(LAYER_UI); layer) {
@@ -327,11 +327,11 @@ void Scene::prepareRT()
             });
 
         vp->setBindBefore([this](model::Viewport& vp) {
-            auto* buffer = m_playerRenderer->m_buffer.get();
+            auto& fbo = m_playerRenderer->m_frameBuffer;
             vp.setTexture(
-                buffer->m_spec.attachments[LayerRenderer::ATT_ALBEDO_INDEX].textureID,
-                buffer->m_spec.getSize());
-            vp.setSourceFrameBuffer(buffer);
+                fbo->m_spec.attachments[LayerRenderer::ATT_ALBEDO_INDEX].textureID,
+                fbo->m_spec.getSize());
+            vp.setSourceFrameBuffer(fbo);
             });
 
         if (const auto* layer = LayerInfo::findLayer(LAYER_PLAYER); layer) {
@@ -360,11 +360,11 @@ void Scene::prepareRT()
         });
 
         vp->setBindBefore([this](model::Viewport& vp) {
-            auto* buffer = m_mainRenderer->m_buffer.get();
+            auto& fbo = m_mainRenderer->m_frameBuffer;
             vp.setTexture(
-                buffer->m_spec.attachments[LayerRenderer::ATT_ALBEDO_INDEX].textureID,
-                buffer->m_spec.getSize());
-            vp.setSourceFrameBuffer(buffer);
+                fbo->m_spec.attachments[LayerRenderer::ATT_ALBEDO_INDEX].textureID,
+                fbo->m_spec.getSize());
+            vp.setSourceFrameBuffer(fbo);
         });
 
 
@@ -389,11 +389,11 @@ void Scene::prepareRT()
             ProgramRegistry::get().getProgram(SHADER_VIEWPORT));
 
         vp->setBindBefore([this](model::Viewport& vp) {
-            auto* buffer = m_rearRenderer->m_buffer.get();
+            auto& fbo = m_rearRenderer->m_frameBuffer;
             vp.setTexture(
-                buffer->m_spec.attachments[LayerRenderer::ATT_ALBEDO_INDEX].textureID,
-                buffer->m_spec.getSize());
-            vp.setSourceFrameBuffer(buffer);
+                fbo->m_spec.attachments[LayerRenderer::ATT_ALBEDO_INDEX].textureID,
+                fbo->m_spec.getSize());
+            vp.setSourceFrameBuffer(fbo);
         });
 
         if (const auto* layer = LayerInfo::findLayer(LAYER_REAR); layer) {
@@ -517,7 +517,7 @@ void Scene::updateView(const UpdateViewContext& ctx)
 
     //if (false)
     {
-        const auto& spec = m_uiRenderer->m_buffer->m_spec;
+        const auto& spec = m_uiRenderer->m_frameBuffer->m_spec;
         const glm::u16vec2 aspectRatio = { spec.width, spec.height };
         if (aspectRatio != m_uiRenderer->m_aspectRatio) {
             m_uiRenderer->m_aspectRatio = aspectRatio;
@@ -540,7 +540,11 @@ void Scene::handleLoaded()
 {
     m_loaded = true;
 
-    //const auto& spec = m_uiRenderer->m_buffer->m_spec;
+    if (m_world) {
+        m_world->m_loading = false;
+    }
+
+    //const auto& spec = m_uiRenderer->m_frameBuffer->m_spec;
     //const glm::u16vec2 aspectRatio = { spec.width, spec.height };
     //m_uiRenderer->m_aspectRatio = aspectRatio;
 
@@ -721,8 +725,8 @@ void Scene::renderUi(const render::RenderContext& parentCtx)
 
     render::Camera camera{};
 
-    auto aspectRatio = (float)m_uiRenderer->m_buffer->m_spec.width /
-        (float)m_uiRenderer->m_buffer->m_spec.height;
+    auto aspectRatio = (float)m_uiRenderer->m_frameBuffer->m_spec.width /
+        (float)m_uiRenderer->m_frameBuffer->m_spec.height;
 
     float w = 4.f;
     float h = w;
@@ -744,8 +748,8 @@ void Scene::renderUi(const render::RenderContext& parentCtx)
         &camera,
         0.1f,
         5.f,
-        m_uiRenderer->m_buffer->m_spec.width,
-        m_uiRenderer->m_buffer->m_spec.height,
+        m_uiRenderer->m_frameBuffer->m_spec.width,
+        m_uiRenderer->m_frameBuffer->m_spec.height,
         parentCtx.getDebug());
 
     localCtx.m_layer = layer->m_index;
@@ -772,8 +776,8 @@ void Scene::renderPlayer(const render::RenderContext& parentCtx)
         "player",
         &parentCtx,
         parentCtx.m_camera,
-        m_playerRenderer->m_buffer->m_spec.width,
-        m_playerRenderer->m_buffer->m_spec.height);
+        m_playerRenderer->m_frameBuffer->m_spec.width,
+        m_playerRenderer->m_frameBuffer->m_spec.height);
 
     localCtx.m_layer = layer->m_index;
     localCtx.m_useParticles = false;
@@ -797,8 +801,8 @@ void Scene::renderMain(const render::RenderContext& parentCtx)
         "MAIN",
         &parentCtx,
         parentCtx.m_camera,
-        m_mainRenderer->m_buffer->m_spec.width,
-        m_mainRenderer->m_buffer->m_spec.height);
+        m_mainRenderer->m_frameBuffer->m_spec.width,
+        m_mainRenderer->m_frameBuffer->m_spec.height);
 
     localCtx.m_layer = layer->m_index;
 
@@ -832,8 +836,8 @@ void Scene::renderRear(const render::RenderContext& parentCtx)
         "BACK",
         &parentCtx,
         &camera,
-        m_rearRenderer->m_buffer->m_spec.width,
-        m_rearRenderer->m_buffer->m_spec.height);
+        m_rearRenderer->m_frameBuffer->m_spec.width,
+        m_rearRenderer->m_frameBuffer->m_spec.height);
 
     localCtx.m_layer = 0; // LayerInfo::LAYER_MAIN;
 
@@ -855,7 +859,7 @@ void Scene::renderScene(
         ctx.updateUBOs();
         ctx.bindDefaults();
 
-        auto* fb = layerRenderer->m_buffer.get();
+        auto* fb = layerRenderer->m_frameBuffer.get();
         layerRenderer->render(ctx, fb);
     }
 }

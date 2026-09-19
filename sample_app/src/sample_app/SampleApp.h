@@ -56,6 +56,8 @@ protected:
     virtual void showFps(const ki::FpsCounter& fpsCounter) override;
 
 private:
+    void setupTextures();
+
     void processInput();
 
     void frustumDebug(

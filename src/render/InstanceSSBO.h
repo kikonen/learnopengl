@@ -1,6 +1,6 @@
 #pragma once
 
-#include "kigl/kigl.h"
+#include <cstdint>
 
 namespace render
 {
@@ -12,28 +12,28 @@ namespace render
         glm::vec4 u_transformMatrixRow1{ 0.f, 1.f, 0.f, 0.f };
         glm::vec4 u_transformMatrixRow2{ 0.f, 0.f, 1.f, 0.f };
 
-        GLuint u_entityIndex;
-        GLuint u_materialIndex;
+        uint32_t u_entityIndex;
+        uint32_t u_materialIndex;
     
-        GLuint u_jointBaseIndex{ 0 };
+        uint32_t u_jointBaseIndex{ 0 };
 
-        GLuint u_flags{ 0 };
+        uint32_t u_flags{ 0 };
 
-        GLuint u_data{ 0 };
+        uint32_t u_data{ 0 };
 
         int pad2_1;
         int pad2_2;
         int pad2_3;
 
-        inline void setMaterialIndex(GLuint materialIndex) {
+        inline void setMaterialIndex(uint32_t materialIndex) {
             u_materialIndex = materialIndex;
         }
 
-        inline void setJointBaseIndex(GLuint baseIndex) {
+        inline void setJointBaseIndex(uint32_t baseIndex) {
             u_jointBaseIndex = baseIndex;
         };
 
-        inline void setFlags(GLushort flags) {
+        inline void setFlags(uint16_t flags) {
             u_flags = flags;
         }
 

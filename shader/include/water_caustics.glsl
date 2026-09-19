@@ -37,11 +37,12 @@ vec3 _sampleWaterCausticTriplanar(
   vec3 blend = absN / (absN.x + absN.y + absN.z + 1e-5);
 
   uint matIdx = u_waterCausticMaterialIndex;
-  sampler2D sampler = sampler2D(u_materials[matIdx].diffuseTex);
-  vec3 cX = texture(sampler, uvX).rgb;
-  vec3 cY = texture(sampler, uvY).rgb;
-  vec3 cZ = texture(sampler, uvZ).rgb;
 
+  const uint diffuseLayer = u_materials[matIdx].diffuseTex;
+
+  vec3 cX = texture(u_texturesSRGB, vec3(uvX, float(diffuseLayer))).rgb;
+  vec3 cY = texture(u_texturesSRGB, vec3(uvY, float(diffuseLayer))).rgb;
+  vec3 cZ = texture(u_texturesSRGB, vec3(uvZ, float(diffuseLayer))).rgb;
   return cX * blend.x + cY * blend.y + cZ * blend.z;
 }
 

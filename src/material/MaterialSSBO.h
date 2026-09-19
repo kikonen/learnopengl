@@ -2,7 +2,7 @@
 
 #include <glm/glm.hpp>
 
-#include "kigl/kigl.h"
+#include <cstdint>
 
 // NOTE KI align 16 for UBO struct
 //
@@ -76,40 +76,41 @@ struct MaterialMainSSBO {
     glm::vec4 u_mras; // 16
 
     // NOTE KI "tex index", not "unit index"
-    GLuint64 u_diffuseTex;
-    GLuint64 u_emissionTex;
-    //GLuint64 u_specularTex;
-    GLuint64 u_normalMap;
+    uint32_t u_diffuseTex;
+    uint32_t u_emissionTex;
+    uint32_t u_normalMap;
+    uint32_t u_mrasMap;
 
-    GLuint64 u_opacityMap;
-    GLuint64 u_mrasMap;
-
-    GLuint u_flags;
+    uint32_t u_flags;
 
     float u_tilingX;
     float u_tilingY;
 
     float u_parallaxDepth;
 
-    int pad3_1;
-    int pad3_2;
-    //int pad3_3;
+    //uint32_t pad3_1;
+    //uint32_t pad3_2;
+    //uint32_t pad3_3;
 };
 
 struct MaterialCustomSSBO{
-    GLuint64 u_displacementMap;
+    uint32_t u_displacementMap;
 
-    GLuint64 u_dudvMap;
-    GLuint64 u_noiseMap;
-    GLuint64 u_noise2Map;
+    uint32_t u_dudvMap;
+    uint32_t u_noiseMap;
+    uint32_t u_noise2Map;
 
-    GLuint64 u_custom1Map;
+    uint32_t u_custom1Map;
 
-    GLuint64 u_fontHAtlas;
+    uint32_t u_fontAtlas;
 
-    //int pad3_1;
-    //int pad3_2;
-    //int pad3_3;
+    uint32_t u_dynamic;
+
+    float u_dynamicRatio;
+
+    //uint32_t pad3_1;
+    //uint32_t pad3_2;
+    //uint32_t pad3_3;
 };
 
 struct MaterialColdSSBO {
@@ -117,13 +118,13 @@ struct MaterialColdSSBO {
     float u_refraction;
     float u_refractionRatio;
 
-    GLuint u_packedSprites;
+    uint32_t u_packedSprites;
 
-    int u_layers;
+    int32_t u_layers;
     float u_layersDepth;
     float u_pointSize;
 
-    int pad3_1;
+    uint32_t pad3_1;
     //int pad3_2;
     //int pad3_3;
 };

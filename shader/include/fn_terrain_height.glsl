@@ -1,11 +1,11 @@
 // Jolt-compatible height sampling using triangulated interpolation
 // Matches Jolt HeightFieldShape's triangle-based height calculation
 float fetchHeight(
-  in sampler2D heightMap,
+  in uint heightMapLayer,
   in vec2 texCoord)
 {
   // Get texture dimensions
-  ivec2 texSize = textureSize(heightMap, 0);
+  ivec2 texSize = textureSize(u_texturesHeight, 0).xy;
 
   // Convert normalized coords to texel space
   vec2 texelCoord = texCoord * vec2(texSize) - 0.5;
@@ -20,10 +20,21 @@ float fetchHeight(
   cell = clamp(cell, ivec2(0), texSize - 2);
 
   // Fetch 4 corner heights (no filtering)
-  float h00 = texelFetch(heightMap, cell + ivec2(0, 0), 0).r;
-  float h10 = texelFetch(heightMap, cell + ivec2(1, 0), 0).r;
-  float h01 = texelFetch(heightMap, cell + ivec2(0, 1), 0).r;
-  float h11 = texelFetch(heightMap, cell + ivec2(1, 1), 0).r;
+  float h00 = texelFetch(
+    u_texturesHeight,
+    ivec3(cell + ivec2(0, 0), heightMapLayer), 0).r;
+
+  float h10 = texelFetch(
+    u_texturesHeight,
+    ivec3(cell + ivec2(1, 0), heightMapLayer), 0).r;
+
+  float h01 = texelFetch(
+    u_texturesHeight,
+    ivec3(cell + ivec2(0, 1), heightMapLayer), 0).r;
+
+  float h11 = texelFetch(
+    u_texturesHeight,
+    ivec3(cell + ivec2(1, 1), heightMapLayer), 0).r;
 
   // Jolt uses checkered diagonal pattern: (x^z)&1 determines diagonal
   // When pattern bit is 0: diagonal from (0,0) to (1,1)

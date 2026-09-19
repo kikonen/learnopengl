@@ -151,11 +151,11 @@ namespace editor
         auto viewportTex = [&ctx, &renderCtx, &imageTex](model::Viewport& viewport, bool useAspectRatio) {
             viewport.invokeBindBefore();
 
-            const auto& fb = viewport.getSourceFrameBuffer();
-            auto& att = fb->m_spec.attachments[0];
+            const auto& fbo = viewport.getSourceFrameBuffer();
+            auto& att = fbo->m_spec.attachments[0];
             ImTextureID texId = att.textureID;
 
-            imageTex(texId, { fb->m_spec.width, fb->m_spec.height }, true);
+            imageTex(texId, { fbo->m_spec.width, fbo->m_spec.height }, true);
             };
 
         auto bufferTex = [&ctx, &renderCtx, &imageTex](render::FrameBuffer& fb, int attachmentIndex, bool useAspectRatio) {
@@ -192,15 +192,15 @@ namespace editor
             ImGui::TreePop();
         }
         if (ImGui::TreeNodeEx("Water OIT", tnFlags)) {
-            auto* fb = scene->m_waterMapRenderer->m_nodeDraw->m_passOit->getOitbuffer().m_buffer.get();
+            const auto& fbo = scene->m_waterMapRenderer->m_nodeDraw->m_passOit->getOitbuffer().m_frameBuffer;
 
             int bufferIndex = 0;
-            for (const auto& att : fb->m_spec.attachments) {
+            for (const auto& att : fbo->m_spec.attachments) {
                 if (att.activeDrawBufferIndex < 0) continue;
 
                 const auto& name = fmt::format("OIT: {} - {}", bufferIndex, att.name);
                 if (ImGui::TreeNodeEx(name.c_str(), tnFlags)) {
-                    bufferTex(*fb, att.index, true);
+                    bufferTex(*fbo, att.index, true);
                     ImGui::TreePop();
                 }
 
@@ -293,15 +293,15 @@ namespace editor
         }
 
         if (ImGui::TreeNodeEx("Main OIT", tnFlags)) {
-            auto* fb = scene->m_mainRenderer->m_nodeDraw->m_passOit->getOitbuffer().m_buffer.get();
+            auto* fbo = scene->m_mainRenderer->m_nodeDraw->m_passOit->getOitbuffer().m_frameBuffer.get();
 
             int bufferIndex = 0;
-            for (const auto& att : fb->m_spec.attachments) {
+            for (const auto& att : fbo->m_spec.attachments) {
                 if (att.activeDrawBufferIndex < 0) continue;
 
                 const auto& name = fmt::format("OIT: {} - {}", bufferIndex, att.name);
                 if (ImGui::TreeNodeEx(name.c_str(), tnFlags)) {
-                    bufferTex(*fb, att.index, true);
+                    bufferTex(*fbo, att.index, true);
                     ImGui::TreePop();
                 }
 
@@ -314,9 +314,9 @@ namespace editor
         }
 
         {
-            //const auto& fb = scene.m_nodeDraw->m_oitBuffer.m_buffer;
+            //const auto& fb = scene.m_nodeDraw->m_oitBuffer.m_frameBuffer;
             //int bufferIndex = 0;
-            //for (const auto& att : fb->m_spec.attachments) {
+            //for (const auto& att : fbo->m_spec.attachments) {
             //    if (att.drawBufferIndex < 0) continue;
 
             //    const auto& name = fmt::format("OIT: {} - {}", bufferIndex, att.name);
@@ -331,7 +331,7 @@ namespace editor
         {
             //const auto& fb = scene.m_nodeDraw->m_effectBuffer.m_primary;
             //int bufferIndex = 0;
-            //for (const auto& att : fb->m_spec.attachments) {
+            //for (const auto& att : fbo->m_spec.attachments) {
             //    if (att.drawBufferIndex < 0) continue;
 
             //    const auto& name = fmt::format("Effect primary: {} - {}", bufferIndex, att.name);
@@ -346,7 +346,7 @@ namespace editor
         {
             //const auto& fb = scene.m_nodeDraw->m_effectBuffer.m_secondary;
             //int bufferIndex = 0;
-            //for (const auto& att : fb->m_spec.attachments) {
+            //for (const auto& att : fbo->m_spec.attachments) {
             //    if (att.drawBufferIndex < 0) continue;
 
             //    const auto& name = fmt::format("Effect secondary: {} - {}", bufferIndex, att.name);
@@ -360,8 +360,8 @@ namespace editor
         }
         {
             //int bufferIndex = 0;
-            //for (const auto& fb : scene.m_nodeDraw->m_effectBuffer.m_buffers) {
-            //    for (const auto& att : fb->m_spec.attachments) {
+            //for (const auto& fb : scene.m_nodeDraw->m_effectBuffer.m_frameBuffers) {
+            //    for (const auto& att : fbo->m_spec.attachments) {
             //        if (att.drawBufferIndex < 0) continue;
 
             //        const auto& name = fmt::format("Effect buffers: {} - {}", bufferIndex, att.name);
@@ -375,9 +375,9 @@ namespace editor
             //}
         }
         {
-            //const auto& fb = scene.m_nodeDraw->m_gBuffer.m_buffer;
+            //const auto& fb = scene.m_nodeDraw->m_gBuffer.m_frameBuffer;
             //int bufferIndex = 0;
-            //for (const auto& att : fb->m_spec.attachments) {
+            //for (const auto& att : fbo->m_spec.attachments) {
             //    if (att.drawBufferIndex < 0) continue;
 
             //    const auto& name = fmt::format("GBuffer: {} - {}", bufferIndex, att.name);

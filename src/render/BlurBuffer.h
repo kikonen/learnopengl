@@ -3,6 +3,8 @@
 #include<vector>
 #include <memory>
 
+#include "util/Ref.h"
+
 #include "kigl/kigl.h"
 
 struct UpdateViewContext;
@@ -51,7 +53,7 @@ namespace render
             int unitIndex);
 
     public:
-        std::vector<std::unique_ptr<FrameBuffer>> m_buffers;
+        std::vector<util::Ref<FrameBuffer>> m_frameBuffers;
 
     private:
         int m_width{ -1 };

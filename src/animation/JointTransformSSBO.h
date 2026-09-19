@@ -2,8 +2,6 @@
 
 #include <glm/glm.hpp>
 
-#include "kigl/kigl.h"
-
 namespace animation
 {
 #pragma pack(push, 1)

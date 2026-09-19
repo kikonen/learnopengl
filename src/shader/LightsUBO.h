@@ -2,8 +2,6 @@
 
 #include <glm/glm.hpp>
 
-#include "kigl/kigl.h"
-
 constexpr size_t MAX_LIGHT_COUNT = 128;
 
 // NOTE KI https://stackoverflow.com/questions/38172696/should-i-ever-use-a-vec3-inside-of-a-uniform-buffer-or-shader-storage-buffer-o
@@ -52,16 +50,17 @@ struct SpotLightUBO {
     float u_outerCutoff;
     float u_radius;
 
-    int pad5;
-    int pad6;
+    uint32_t pad5;
+    uint32_t pad6;
 };
 
 // NOTE KI align 16 for UBO struct
 struct LightsUBO {
-    GLuint u_dirCount;
-    GLuint u_pointCount;
-    GLuint u_spotCount;
-    int pad1;
+    uint32_t u_dirCount;
+    uint32_t u_pointCount;
+    uint32_t u_spotCount;
+
+    uint32_t pad1;
 
     DirLightUBO u_dir[1];
     // NOTE KI align 16 for UBO array entries

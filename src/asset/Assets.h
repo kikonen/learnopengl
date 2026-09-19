@@ -183,6 +183,7 @@ public:
     int drawRingBufferCount;
     int dataRingBufferCount;
 
+    bool drawUseArrayTexture;
     bool drawDebug;
 
     bool nodeRegistryDebug;

@@ -4,7 +4,6 @@
 #include <glm/gtc/matrix_inverse.hpp>
 
 #include "ki/size.h"
-#include "kigl/kigl.h"
 
 // TerrainTile entry
 //
@@ -27,8 +26,8 @@
 //
 #pragma pack(push, 1)
 struct TerrainTileSSBO {
-    GLuint u_tileX{ 0 };
-    GLuint u_tileY{ 0 };
+    uint32_t u_tileX{ 0 };
+    uint32_t u_tileY{ 0 };
 
     float u_rangeYmin{ 0.f };
     float u_rangeYmax{ 0.f };

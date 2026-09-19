@@ -78,13 +78,13 @@ namespace model
         m_bindAfter(*this);
     }
 
-    void Viewport::setSourceFrameBuffer(render::FrameBuffer* frameBuffer)
+    void Viewport::setSourceFrameBuffer(const util::Ref<render::FrameBuffer>& frameBuffer)
     {
         m_sourceBuffer = frameBuffer;
     }
 
     void Viewport::setTexture(
-            GLuint textureId,
+        GLuint textureId,
         glm::ivec2 textureSize)
     {
         m_textureId = textureId;

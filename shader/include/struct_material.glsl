@@ -12,18 +12,18 @@ struct MaterialMain {
   // MRAS: [metalness, roughness, ambient-occlusion, specular]
   vec4 mras;
 
-  uvec2 diffuseTex;
-  uvec2 emissionTex;
-  uvec2 normalMapTex;
+  uint diffuseTex;
+  uint emissionTex;
+  uint normalMapTex;
 
-  uvec2 opacityMapTex;
+  // uint opacityMapTex;
 
   // MRAS: [metalness, roughness, ambient-occlusion, specular]
   // - metalness (Red):   0 = dielectric, 1 = metal
   // - roughness (Green): 0 = smooth/shiny, 1 = rough/matte
   // - occlusion (Blue):  0 = fully occluded, 1 = no occlusion
   // - specular  (Alpha): 0 = no reflection, 1 = strong reflection
-  uvec2 mrasMapTex;
+  uint mrasMapTex;
 
   uint flags;
 
@@ -32,20 +32,24 @@ struct MaterialMain {
 
   float parallaxDepth;
 
-  int pad3_1;
-  int pad3_2;
+  // int pad3_1;
+  // int pad3_2;
   // int pad3_3;
 };
 
 struct MaterialCustom {
-  uvec2 displacementMapTex;
-  uvec2 dudvMapTex;
-  uvec2 noiseMapTex;
-  uvec2 noise2MapTex;
+  uint displacementMapTex;
+  uint dudvMapTex;
+  uint noiseMapTex;
+  uint noise2MapTex;
 
-  uvec2 custom1Tex;
+  uint custom1Tex;
 
-  uvec2 fontAtlasTex;
+  uint fontAtlasTex;
+
+  uint dynamicTex;
+
+  float dynamicRatio;
 
   // int pad3_1;
   // int pad3_2;
@@ -70,12 +74,20 @@ struct MaterialCold {
 
 // packed = spriteCount(16) | spritesX(8) | spritesY(8)
 // Must match the C++ packing in Material upload — keep bit layout in sync.
-uint packSprites(uint count, uint spritesX, uint spritesY) {
-  return (count << 16) | ((spritesX & 0xFFu) << 8) | (spritesY & 0xFFu);
+uint packSprites(
+  uint count,
+  uint spritesPerRow,
+  uint spritesX,
+  uint spritesY) {
+  return ((count & 0xFFu) << 24) |
+    ((spritesPerRow & 0xFFu) << 16) |
+    ((spritesX & 0xFFu) << 8) |
+    (spritesY & 0xFFu);
 }
 
 // GPU-side sprite bounds check;
 // unused until particle logic moves to GPU (currently clamped CPU-side)
-uint unpacSpriteCount(uint bits) { return  bits >> 16; }
-uint unpackSpritesX(uint bits)    { return (bits >> 8) & 0xFFu; }
-uint unpackSpritesY(uint bits)    { return  bits        & 0xFFu; }
+uint unpacSpriteCount(uint bits)   { return (bits >> 24) & 0xFFu; }
+uint unpacSpritesPerRow(uint bits) { return (bits >> 16) & 0xFFu; }
+uint unpackSpritesX(uint bits)     { return (bits >> 8)  & 0xFFu; }
+uint unpackSpritesY(uint bits)     { return  bits        & 0xFFu; }

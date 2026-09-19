@@ -6,6 +6,7 @@ layout(triangles, fractional_odd_spacing, ccw) in;
 #include "include/ssbo_instances.glsl"
 #include "include/ssbo_instance_indeces.glsl"
 
+#include "include/uniform_texture_arrays.glsl"
 #include "include/uniform_matrices.glsl"
 #include "include/uniform_camera.glsl"
 #include "include/uniform_clip_planes.glsl"
@@ -20,10 +21,9 @@ in TCS_OUT {
 
   flat float rangeYmin;
   flat float rangeYmax;
-  flat uvec2 heightMapTex;
+  flat uint heightMapTex;
 
   flat uint highlightIndex;
-  flat int stencilMode;
   flat int wireframeMode;
 } tes_in[];
 
@@ -44,6 +44,7 @@ Entity entity;
 
 #include "include/fn_calculate_clipping.glsl"
 #include "include/fn_render_outline.glsl"
+#include "include/fn_terrain_height.glsl"
 
 vec2 interpolate2D(vec2 v0, vec2 v1, vec2 v2)
 {
@@ -59,7 +60,6 @@ vec3 interpolate3D(vec3 v0, vec3 v1, vec3 v2)
     vec3(gl_TessCoord.z) * v2;
 }
 
-#include "include/fn_terrain_height.glsl"
 
 void main()
 {
@@ -67,17 +67,24 @@ void main()
   entity = u_entities[tes_in[0].entityIndex];
   #include "include/var_entity_model_matrix.glsl"
 
-  sampler2D heightMap = sampler2D(tes_in[0].heightMapTex);
+  const uint heightMapLayer = tes_in[0].heightMapTex;
 
   // Interpolate the attributes of the output vertex using the barycentric coordinates
-  vec2 texCoord = interpolate2D(tes_in[0].texCoord, tes_in[1].texCoord, tes_in[2].texCoord);
-  vec3 vertexPos = interpolate3D(tes_in[0].vertexPos, tes_in[1].vertexPos, tes_in[2].vertexPos);
+  vec2 texCoord = interpolate2D(
+    tes_in[0].texCoord,
+    tes_in[1].texCoord,
+    tes_in[2].texCoord);
+
+  vec3 vertexPos = interpolate3D(
+    tes_in[0].vertexPos,
+    tes_in[1].vertexPos,
+    tes_in[2].vertexPos);
 
   const float rangeYmin = tes_in[0].rangeYmin;
   const float rangeYmax = tes_in[0].rangeYmax;
   const float rangeY = rangeYmax - rangeYmin;
 
-  float avgHeight = fetchHeight(heightMap, texCoord);
+  float avgHeight = fetchHeight(heightMapLayer, texCoord);
   float h = rangeYmin + avgHeight * rangeY;
 
   vertexPos.y += h;
@@ -87,10 +94,6 @@ void main()
   calculateClipping(worldPos);
 
   gl_Position = u_projectedMatrix * worldPos;
-
-  if (tes_in[0].wireframeMode == 0) {
-    renderOutline(tes_in[0].stencilMode);
-  }
 
   tes_out.highlightIndex = tes_in[0].highlightIndex;
 }

@@ -2,6 +2,7 @@
 
 #include "include/ssbo_materials.glsl"
 
+#include "include/uniform_texture_arrays.glsl"
 #include "include/uniform_matrices.glsl"
 #include "include/uniform_camera.glsl"
 #include "include/uniform_data.glsl"
@@ -45,6 +46,7 @@ ResolvedMaterial material;
 #include "include/fn_calculate_fog.glsl"
 #include "include/fn_gbuffer_normal_encode.glsl"
 
+// TODO KI 2darray
 vec3 estimateWaveNormal(
   in sampler3D sampler,
   in vec2 tc,
@@ -91,8 +93,8 @@ void main() {
   vec2 distortedTexCoord = texCoord;
   vec2 totalDistortion = vec2(0);
 
-  uvec2 dudvMapTex = readMaterial_dudvMapTex(materialIndex);
-  if (dudvMapTex.x > 0) {
+  uint dudvMapTex = readMaterial_dudvMapTex(materialIndex);
+  if (dudvMapTex > 0) {
     float moveFactor = (sin(u_time / 10.0) + 1.0) * 0.5;
 
     // distortedTexCoord = texture(u_textures[material.dudvMapTex], vec2(texCoord.x + moveFactor, texCoord.y)).rg * 0.1;
@@ -102,19 +104,35 @@ void main() {
 
     //vec2 distortedTexCoord;
     {
-      sampler2D sampler = sampler2D(dudvMapTex);
-      distortedTexCoord = texture(sampler, vec2(texCoord.x + moveFactor, texCoord.y)).rg * 0.1;
-      distortedTexCoord = texCoord + vec2(distortedTexCoord.x, distortedTexCoord.y + moveFactor);
-      totalDistortion = (texture(sampler, distortedTexCoord).rg * 2.0 - 1.0) * waveStrength;
+      const int dudvLayer = int(dudvMapTex);
+
+      distortedTexCoord = texture(
+	u_texturesDudv,
+	vec3(vec2(texCoord.x + moveFactor, texCoord.y), float(dudvLayer))
+      ).rg * 0.1;
+
+      distortedTexCoord = texCoord +
+	vec2(distortedTexCoord.x, distortedTexCoord.y + moveFactor);
+
+      totalDistortion = (
+	texture(
+	  u_texturesDudv,
+	  vec3(distortedTexCoord, float(dudvLayer))
+        ).rg * 2.0 - 1.0) * waveStrength;
     }
   }
 
 #if defined(USE_NORMAL_TEX) && defined(USE_TBN)
   if (Debug.u_normalMapEnabled) {
-    sampler2D sampler = sampler2D(u_materials[materialIndex].normalMapTex);
+    const int normalLayer = int(u_materials[materialIndex].normalMapTex);
 
-    normal = texture(sampler, distortedTexCoord).rgb;
-    normal = normalize(tbn * normal);
+    if (normalLayer > 0) {
+      vec3 normalTexel = texture(
+	u_texturesNormal,
+	vec3(distortedTexCoord, float(normalLayer))).rgb * 2.0 - 1.0;
+
+      normal = normalize(tbn * normal);
+    }
   }
 #endif
 

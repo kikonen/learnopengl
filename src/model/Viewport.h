@@ -56,12 +56,12 @@ namespace model
         void invokeBindBefore();
         void invokeBindAfter();
 
-        render::FrameBuffer* getSourceFrameBuffer() const
+        const util::Ref<render::FrameBuffer>& getSourceFrameBuffer() const
         {
             return m_sourceBuffer;
         }
 
-        void setSourceFrameBuffer(render::FrameBuffer* frameBuffer);
+        void setSourceFrameBuffer(const util::Ref<render::FrameBuffer>& frameBuffer);
 
         const glm::ivec2& getTextureSize() const noexcept
         {
@@ -230,8 +230,8 @@ namespace model
 
         glm::mat4 m_transformMatrix{ 1.f };
 
-        render::FrameBuffer* m_sourceBuffer{ nullptr };
-        render::FrameBuffer* m_destinationBuffer{ nullptr };
+        util::Ref<render::FrameBuffer> m_sourceBuffer{ nullptr };
+        util::Ref<render::FrameBuffer> m_destinationBuffer{ nullptr };
 
         GLuint m_textureId;
         glm::ivec2 m_textureSize{ 0 };

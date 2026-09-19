@@ -404,7 +404,7 @@ namespace render {
 
         // NOTE KI if no attachments cannot know
         if (hasAttachments) {
-            if (m_depthIndex >= 0) {
+            if (m_depthIndex < 0) {
                 clearMask &= ~GL_DEPTH_BUFFER_BIT;
             }
             if (!m_hasStencil) {

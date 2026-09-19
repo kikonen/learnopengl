@@ -5,6 +5,8 @@
 
 #include <glm/glm.hpp>
 
+#include "util/Ref.h"
+
 #include "Renderer.h"
 
 namespace render {
@@ -17,6 +19,8 @@ class LayerRenderer final : public Renderer
 public:
     static const int ATT_ALBEDO_INDEX = 0;
     static const int ATT_DEPTH_INDEX = 1;
+
+    static const int ATT_MASK_INDEX = 0;
 
 public:
     LayerRenderer(
@@ -52,7 +56,11 @@ private:
         render::FrameBuffer* targetBuffer);
 
 public:
-    std::unique_ptr<render::FrameBuffer> m_buffer{ nullptr };
+    util::Ref<render::FrameBuffer> m_frameBuffer{ nullptr };
+
+    // NOTE KI selection silhouette mask; separate buffer so that it cannot be
+    // damaged by the partial depth/stencil copy done into m_frameBuffer
+    util::Ref<render::FrameBuffer> m_maskBuffer{ nullptr };
 
     std::unique_ptr<render::NodeDraw> m_nodeDraw;
 
@@ -60,6 +68,7 @@ public:
 
 private:
     Program* m_selectionProgram{ nullptr };
+    Program* m_selectionOutlineProgram{ nullptr };
 
     const bool m_useHighlight;
 

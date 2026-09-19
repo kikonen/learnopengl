@@ -7,10 +7,18 @@
 #ifdef USE_NORMAL_TEX
 {
   if (Debug.u_normalMapEnabled) {
-    sampler2D sampler = sampler2D(u_materials[materialIndex].normalMapTex);
+    const uint normalLayer = u_materials[materialIndex].normalMapTex;
 
-    normal = texture(sampler, texCoord).rgb * 2.0 - 1.0;
-    normal = normalize(tbn * normal);
+    // Only apply normal mapping if a valid texture is explicitly bound
+    // Layer 0 is reserved for NULL/None, which skips texture sampling
+    if (normalLayer > 0) {
+      vec3 normalTexel = texture(
+	u_texturesNormal,
+	vec3(texCoord, float(normalLayer))).rgb * 2.0 - 1.0;
+
+      // Override the geometry normal only with the transformed tangent space vector
+      normal = normalize(tbn * normalTexel);
+    }
   }
 }
 #endif

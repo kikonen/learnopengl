@@ -2,6 +2,7 @@
 
 #include "include/ssbo_materials.glsl"
 
+#include "include/uniform_texture_arrays.glsl"
 #include "include/uniform_matrices.glsl"
 #include "include/uniform_camera.glsl"
 #include "include/uniform_data.glsl"
@@ -26,12 +27,19 @@ ResolvedMaterial material;
 void main() {
   const uint materialIndex = fs_in.materialIndex;
 
+  float texScale = 1.0;
+
   vec2 texCoord = fs_in.texCoord;
   #include "include/apply_parallax.glsl"
 
   #include "include/var_tex_material.glsl"
 
-  float d = textureLod(sampler2D(readMaterial_custom1Tex(materialIndex)), texCoord, 0).r;
+  const int fontAtlasLayer = int(readMaterial_fontAtlasTex(materialIndex));
+
+  float d = texture(
+    u_texturesFontAtlas,
+    vec3(texCoord * texScale, float(fontAtlasLayer))).r;
+
   // if (d < 0.1) {
   //   discard;
   // }
