@@ -1,0 +1,13 @@
+# Default rule: Auto-detect text files and normalize line endings to LF
+* text=auto eol=lf
+
+# Windows batch files require CRLF
+*.bat text eol=crlf
+*.cmd text eol=crlf
+*.filters eol=crlf
+*.vcxproj.user eol=crlf
+*.ini eol=crlf
+*.sln eol=crlf
+
+# Shell scripts require LF
+*.sh text eol=lf
