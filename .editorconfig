@@ -8,20 +8,24 @@ root = true
 #end_of_line = lf
 insert_final_newline = true
 trim_trailing_whitespace = true
+indent_style = space
 charset = utf-8
+end_of_line = lf
 
 # 4 space indentation
 [*.cpp]
-indent_style = space
 indent_size = 4
-charset = utf-8
 
 # 4 space indentation
 [*.h]
-indent_style = space
 indent_size = 4
-charset = utf-8
 
 # Tab indentation (no size specified)
 [Makefile]
 indent_style = tab
+
+[*.{bat,cmd,filters,vcxproj,vcxproj.user,ini,sln}]
+end_of_line = crlf
+
+[*.{sh}]
+end_of_line = lf
