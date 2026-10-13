@@ -22,7 +22,7 @@ out VS_OUT {
   vec2 texCoord;
 
   vec2 atlasCoord;
-  flat uvec2 atlasHandle;
+  flat uint atlasLayer;
 
   flat uint materialIndex;
   flat uint flags;
@@ -83,5 +83,5 @@ void main() {
   vs_out.texCoord = a_texCoord;
 
   vs_out.atlasCoord = a_atlasCoord;
-  vs_out.atlasHandle = readMaterial_fontAtlasTex(materialIndex);
+  vs_out.atlasLayer = readMaterial_fontAtlasTex(materialIndex);
 }

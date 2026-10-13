@@ -42,7 +42,7 @@ types:
       path: quad
       material:
         name: giant_woodbox
-        map_kd: textures/wood_1024.png
+        map_kd: textures/wood_1024_color.png
         tiling: 0.1
         scale_tiling: true
         xreflection: 0.1

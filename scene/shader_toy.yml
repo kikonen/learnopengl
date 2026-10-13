@@ -29,11 +29,14 @@ types:
         prefab: materials/Metal008.yml
         kd: [0.4, 0.4, 1, 0.75]
         xparallax_depth: 0.0
-        program: g_tex
         blend: true
         alpha: true
         render_back: true
         updater_id: shader_toy_3
+        dynamic_ratio: 1
+        default_programs: true
+        shared_definitions:
+          USE_DYNAMIC_TEXTURE: 1
     physics:
       xupdate: true
       body:
@@ -52,13 +55,16 @@ types:
         size: [1]
       material:
         #prefab: materials/Metal008.yml
-        xkd: [0.4, 0.4, 1, 0.75]
+        kd: [0.4, 0.4, 1, 0.75]
         xparallax_depth: 0.0
-        program: g_tex
         blend: true
         alpha: true
         render_back: true
         updater_id: shader_toy_3
+        dynamic_ratio: 0.8
+        default_programs: true
+        shared_definitions:
+          USE_DYNAMIC_TEXTURE: 1
     physics:
       xupdate: true
       body:
@@ -80,11 +86,14 @@ types:
         prefab: materials/Metal008.yml
         kd: [0.4, 0.4, 1, 0.75]
         xparallax_depth: 0.0
-        program: g_tex
         blend: true
         alpha: true
         render_back: true
         updater_id: shader_toy_3
+        dynamic_ratio: 0.8
+        default_programs: true
+        shared_definitions:
+          USE_DYNAMIC_TEXTURE: 1
       base_rot: [0, 0, 0]
     physics:
       xupdate: true
@@ -115,7 +124,7 @@ types:
         name: default_ball
         kd: [0.0, 0.2, 0.8, 1.0]
         mras: [0.2, 0.1, 1.0]
-        program: g_tex
+        default_programs: true
       scale: 0.05
   - id: wooden_floor
     prefab:
@@ -123,6 +132,10 @@ types:
     mesh:
       material:
         render_back: true
+        updater_id: shader_toy_3
+        dynamic_ratio: 0.2
+        shared_definitions:
+          USE_DYNAMIC_TEXTURE: 1
     physics:
       geom:
         type: plane
@@ -186,7 +199,7 @@ material_updaters:
       TOY_1: 1
 - id: shader_toy_2
   type: shader
-  size: 512
+  size: 1024
   frame_skip: 1
   material:
     prefab: materials/Metal008.yml
@@ -198,7 +211,7 @@ material_updaters:
       TOY_2: 1
 - id: shader_toy_3
   type: shader
-  size: 512
+  size: 1024
   frame_skip: 1
   material:
     prefab: materials/Metal008.yml

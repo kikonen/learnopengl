@@ -19,7 +19,7 @@ out VS_OUT {
   vec2 texCoord;
 
   vec2 atlasCoord;
-  flat uvec2 atlasHandle;
+  flat uint atlasLayer;
 
   flat uint materialIndex;
 } vs_out;
@@ -50,7 +50,7 @@ void main()
   vs_out.texCoord.y = a_texCoord.y * u_materials[materialIndex].tilingY * entity.tilingY;
 
   vs_out.atlasCoord = a_atlasCoord;
-  vs_out.atlasHandle = readMaterial_fontAtlasTex(materialIndex);
+  vs_out.atlasLayer = readMaterial_fontAtlasTex(materialIndex);
 
   gl_Position = u_projectedMatrix * modelMatrix * vec4(a_pos, 1.0);
 }

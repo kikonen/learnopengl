@@ -20,7 +20,8 @@ includes:
   - path: prefab/util/include_ui_time_text.yml
 
 world:
-  time_base: "1942-06-20T12:00:00"
+  paused: true
+  time_base: "1942-06-20T14:00:00"
   time_scale: 2000
   sun_up: "06:00"
   sun_down: "18:00"
@@ -129,6 +130,10 @@ types:
         kd: [0.7516, 0.6065, 0.2265, 1.0]
         xreflection: 0.05
         parallax: 0.0
+        updater_id: shader_toy_3
+        dynamic_ratio: 0.3
+        shared_definitions:
+          USE_DYNAMIC_TEXTURE: 1
       program: g_tex
     flags:
       environment: true
@@ -165,12 +170,8 @@ types:
     mesh:
       path: water_ball
       material:
-        base: textures\Metal022_1K-PNG
+        prefab: materials/Metal022.yml
         kd: [0.7140, 0.4284, 0.1814, 1.0]
-        map_kd: Metal022_1K_Color.png
-        map_normal: Metal022_1K_NormalGL.png
-        map_mras: Metal022_1K_mras
-        map_displacement: Metal022_1K_displacement
         xreflection: 0.05
         tiling: 3
         parallax: 0.0
@@ -234,6 +235,10 @@ types:
         scale_tiling: true
         alpha: true
         render_back: true
+        updater_id: shader_toy_3
+        dynamic_ratio: 0.4
+        shared_definitions:
+          USE_DYNAMIC_TEXTURE: 1
       program: g_tex
     flags:
       environment: true
@@ -311,3 +316,42 @@ nodes:
     repeat:
       z_count: 5
       z_step: 10
+
+material_updaters:
+- id: shader_toy_1
+  type: shader
+  size: 1024
+  frame_skip: 1
+  material:
+    prefab: materials/Metal008.yml
+    kd: [0.4, 0.4, 1, 0.75]
+    alpha: true
+    program: shader_toy
+    program_definitions:
+      SHADER_1: 1
+      TOY_1: 1
+- id: shader_toy_2
+  type: shader
+  size: 1024
+  frame_skip: 1
+  material:
+    prefab: materials/Metal008.yml
+    kd: [0.4, 0.4, 1, 0.75]
+    alpha: true
+    program: shader_toy
+    program_definitions:
+      SHADER_2: 1
+      TOY_2: 1
+- id: shader_toy_3
+  type: shader
+  size: 1024
+  frame_skip: 1
+  material:
+    prefab: materials/Metal008.yml
+    kd: [0.4, 0.4, 1, 0.75]
+    map_noise: textures\noise\noise_1.png
+    map_noise_2: textures\noise\noise_2.png
+    alpha: true
+    program: shader_toy
+    program_definitions:
+      SHADER_2: 1

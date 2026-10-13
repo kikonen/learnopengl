@@ -1,5 +1,6 @@
 #version 460 core
 
+#include "include/uniform_texture_arrays.glsl"
 #include "include/ssbo_materials.glsl"
 
 
@@ -7,7 +8,7 @@ in VS_OUT {
   vec2 texCoord;
 
   vec2 atlasCoord;
-  flat uvec2 atlasHandle;
+  flat uint atlasLayer;
 
   flat uint materialIndex;
 } fs_in;
@@ -35,7 +36,7 @@ void main()
   #include "include/var_tex_material.glsl"
 
   vec4 color;
-  shapeFont(fs_in.atlasHandle, fs_in.atlasCoord, true, color);
+  shapeFont(fs_in.atlasLayer, fs_in.atlasCoord, true, color);
 
 #ifdef USE_ALPHA
 #ifdef USE_BLEND

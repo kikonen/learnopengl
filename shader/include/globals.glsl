@@ -117,6 +117,7 @@
 #define UNIT_SSAO 46
 #define UNIT_SSAO_BLUR 47
 #define UNIT_NOISE 48
+#define UNIT_SELECTION_MASK 49
 
 #define UNIT_EDITOR_CUBE_MAP 50
 
@@ -138,6 +139,17 @@
 
 #define UNIT_SHADOW_MAP_FIRST 75
 #define UNIT_SHADOW_MAP_LAST (UNIT_SHADOW_MAP_FIRST + MAX_SHADOW_MAP_COUNT - 1)
+
+// Unified Hardware Texture Array Unit Binding Slots
+#define UNIT_TEXTURE_ARRAY_SRGB 80
+#define UNIT_TEXTURE_ARRAY_LINEAR 81
+#define UNIT_TEXTURE_ARRAY_NORMAL 82
+#define UNIT_TEXTURE_ARRAY_DUDV 83
+#define UNIT_TEXTURE_ARRAY_DISPLACEMENT 84
+#define UNIT_TEXTURE_ARRAY_NOISE 85
+#define UNIT_TEXTURE_ARRAY_HEIGHT 86
+#define UNIT_TEXTURE_ARRAY_FONT_ATLAS 87
+#define UNIT_TEXTURE_ARRAY_DYNAMIC 88
 
 #define ATTR_POS 0
 #define ATTR_TEX 1
@@ -170,7 +182,7 @@
 // => earlier was 0.05 (ccaeb4feea8c49fe48ede73e87987753846ff8a5)
 #define ALPHA_THRESHOLD 0.2
 #define GBUFFER_ALPHA_THRESHOLD 0.2
-#define SHADOW_ALPHA_THRESHOLD 0.35
+#define SHADOW_ALPHA_THRESHOLD 0.45
 
 // NOTE KI not really used by desktop GPUs
 #define SET_FLOAT_PRECISION
@@ -219,9 +231,9 @@
  layout(binding = UNIT_OIT_REVEAL) uniform sampler2D oit_reveal;
 
 #define LAYOUT_EFFECT_SAMPLERS\
- layout(binding = UNIT_EFFECT_ALBEDO) uniform sampler2D effect_albedo;\
- layout(binding = UNIT_EFFECT_BRIGHT) uniform sampler2D effect_bright; \
- layout(binding = UNIT_EFFECT_WORK) uniform sampler2D effect_work;
+ layout(binding = UNIT_EFFECT_ALBEDO) uniform sampler2D u_effect_albedo;\
+ layout(binding = UNIT_EFFECT_BRIGHT) uniform sampler2D u_effect_bright; \
+ layout(binding = UNIT_EFFECT_WORK) uniform sampler2D u_effect_work;
 
 #define MATERIAL_MRA_METALNESS material.mras.r
 #define MATERIAL_MRA_ROUGHNESS material.mras.g
@@ -234,3 +246,5 @@
 #define MRA_TEX_SPECULAR  mrasTex.a
 
 // #define USE_TRIPLANAR 1
+
+// #define USE_TEXTURE_ARRAY 1

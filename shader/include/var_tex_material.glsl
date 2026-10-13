@@ -8,10 +8,20 @@
 
   material.flags = u_materials[i].flags;
 
-  vec4 mrasTex = vec4(0, 1, 1, 0);
+  // ==========================================
+  // PBR MRAS TEXTURE RESOLUTION (Linear Pool)
+  // ==========================================
 
-  if (u_materials[i].mrasMapTex.x > 0) {
-    mrasTex = texture(sampler2D(u_materials[i].mrasMapTex), texCoord).rgba;
+  // Default placeholder: Roughness=1.0, Metallic=1.0, AO=1.0
+  vec4 mrasTex = vec4(0.0, 1.0, 1.0, 0.0);
+
+  const uint mrasLayer = u_materials[i].mrasMapTex;
+
+  // Isolate sampling logic to valid layers only
+  if (mrasLayer > 0) {
+    mrasTex = texture(
+      u_texturesLinear,
+      vec3(texCoord, float(mrasLayer))).rgba;
 
     if ((material.flags & MATERIAL_INVERT_METALNESS) != 0)
     {
@@ -27,36 +37,82 @@
     }
   }
 
+  // Cross-multiply factors across resolved layout values
   vec4 mras = u_materials[i].mras.rgba * mrasTex.rgba;
+  material.mras = mras.rgba;
+
+  // ==========================================
+  // DIFFUSE & OPACITY RESOLUTION (sRGB Pool)
+  // ==========================================
 
 #ifndef _ALPHA_RESOLVED
-  material.diffuseTexel = texture(sampler2D(u_materials[i].diffuseTex), texCoord);
+#ifdef USE_DYNAMIC_TEXTURE
+  {
+    const int diffuseLayer = int(u_materials[i].diffuseTex);
+    const int dynamicLayer = int(readMaterial_dynamicTex(i));
+
+    vec4 staticTexel  = texture(
+      u_texturesSRGB,
+      vec3(texCoord, float(diffuseLayer)));
+
+    vec4 dynamicTexel = texture(
+      u_texturesDynamic,
+      vec3(texCoord, float(dynamicLayer)));
+
+    float mixRatio = readMaterial_dynamicRatio(materialIndex);
+
+    material.diffuseTexel = mix(staticTexel, dynamicTexel, mixRatio);
+    material.diffuseTexel.rgb = mix(staticTexel.rgb, dynamicTexel.rgb, mixRatio);
 
 #ifdef USE_ALPHA
-  material.alpha =
-    (u_materials[materialIndex].diffuse.a *
-     material.diffuseTexel.a *
-    texture(sampler2D(u_materials[materialIndex].opacityMapTex), texCoord).r);
+#ifdef USE_BLEND
+  material.diffuseTexel.a = mix(staticTexel.a, dynamicTexel.a, mixRatio);
+  // material.diffuseTexel.a = min(staticTexel.a, dynamicTexel.a);
+  // material.diffuseTexel.a = dynamicTexel.a;
 #else
-  material.alpha = 1.0;
+  material.diffuseTexel.a = staticTexel.a;
 #endif
+#endif
+  }
+#else
+  {
+    const int diffuseLayer = int(u_materials[i].diffuseTex);
+
+    // Sample unified sRGB textures array
+    material.diffuseTexel = texture(
+      u_texturesSRGB,
+      vec3(texCoord, float(diffuseLayer)));
+  }
 #endif
 
+  #ifdef USE_ALPHA
+    // Evaluate alpha utilizing baked diffuse texture component data
+    material.alpha = u_materials[materialIndex].diffuse.a * material.diffuseTexel.a;
+  #else
+    // Force absolute opaque state for regular solid drawing paths
+    material.diffuseTexel.a = 1.0;
+    material.alpha = 1.0;
+  #endif
+#endif
+
+  // Apply final color scaling matrix operations
   material.diffuse = u_materials[i].diffuse * material.diffuseTexel;
   material.diffuse.a = material.alpha;
 
-  // NOTE KI discard any trash, which is possibly hidden into emission tex with alpha
-  // thus (0, 0, 0) == (r, g, b, 0)
-  vec4 emission = texture(
-    sampler2D(u_materials[i].emissionTex),
-    texCoord + vec2(0, u_time) * -0);
+  // ==========================================
+  // 3. EMISSION / LUMINANCE RESOLUTION (sRGB Pool)
+  // ==========================================
+  const int emissionLayer = int(u_materials[i].emissionTex);
 
-  material.emission = u_materials[i].emission.rgb *
-    emission.rgb * emission.a;
+  vec4 emission = vec4(0.0);
 
-  material.mras = mras.rgba;
+  if (emissionLayer > 0) {
+    // Read the emissive color maps from the same hardware-linearizing sRGB container pool
+    emission = texture(
+      u_texturesSRGB,
+      vec3(texCoord + vec2(0.0, u_time) * -0.0, float(emissionLayer)));
+  }
 
-  // material.reflection = u_materials[i].reflection;
-  // material.refraction = u_materials[i].refraction;
-  // material.refractionRatio = u_materials[i].refractionRatio;
+  // Safely strip away any unintentional color leaks stored in the emissive alpha layer channel
+  material.emission = u_materials[i].emission.rgb * emission.rgb * emission.a;
 }

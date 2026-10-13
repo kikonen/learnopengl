@@ -20,7 +20,7 @@ in VS_OUT {
   flat float tilingX;
   flat float rangeYmin;
   flat float rangeYmax;
-  flat uvec2 heightMapTex;
+  flat uint heightMapTex;
 } tcs_in[];
 
 out TCS_OUT {
@@ -32,7 +32,7 @@ out TCS_OUT {
 
   flat float rangeYmin;
   flat float rangeYmax;
-  flat uvec2 heightMapTex;
+  flat uint heightMapTex;
 } tcs_out[];
 
 

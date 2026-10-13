@@ -225,8 +225,8 @@ namespace render
 
         //m_ssaoProgram->setVec3Array(U_SAMPLES, getKernelValues());
         m_ssaoProgram->bind();
-        m_ssaoBuffer.m_buffer->setDrawBuffer(SsaoBuffer::ATT_SSAO_INDEX);
-        m_ssaoBuffer.m_buffer->clearAttachment(SsaoBuffer::ATT_SSAO_INDEX);
+        m_ssaoBuffer.m_frameBuffer->setDrawBuffer(SsaoBuffer::ATT_SSAO_INDEX);
+        m_ssaoBuffer.m_frameBuffer->clearAttachment(SsaoBuffer::ATT_SSAO_INDEX);
         {
             auto* noiseTex = noise::getNoiseTexture();
             //KI_INFO(fmt::format("SSAO_NOISE: prepared={}, texId={}", noiseTex->m_prepared, (int)noiseTex->m_tex));
@@ -236,8 +236,8 @@ namespace render
 
         m_ssaoBlurProgram->bind();
         m_ssaoBuffer.bindSsaoTexture(state);
-        m_ssaoBuffer.m_buffer->setDrawBuffer(SsaoBuffer::ATT_SSAO_BLUR_INDEX);
-        m_ssaoBuffer.m_buffer->clearAttachment(SsaoBuffer::ATT_SSAO_BLUR_INDEX);
+        m_ssaoBuffer.m_frameBuffer->setDrawBuffer(SsaoBuffer::ATT_SSAO_BLUR_INDEX);
+        m_ssaoBuffer.m_frameBuffer->clearAttachment(SsaoBuffer::ATT_SSAO_BLUR_INDEX);
         m_screenTri.draw();
 
         m_ssaoBuffer.bindSsaoBlurTexture(state);

@@ -8,5 +8,5 @@ struct TerrainTile {
   float u_rangeYmin;
   float u_rangeYmax;
 
-  uvec2 heightMapTex;
+  uint heightMapTex;
 };

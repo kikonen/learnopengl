@@ -162,6 +162,8 @@ bool ShadowMapRenderer::render(
     if (!needRender(ctx)) return false;
 
     const auto& dbg = ctx.getDebug();
+    const auto& assets = ctx.getAssets();
+    auto& state = ctx.getGLState();
 
     // NOTE KI avoid opengl errors while scene is loading
     // or if no light setup
@@ -175,8 +177,6 @@ bool ShadowMapRenderer::render(
     auto* node = ctx.m_collection->getDirLightNode().toNode();
     if (!node) return false;
 
-    const auto& assets = ctx.getAssets();
-    auto& state = ctx.getGLState();
 
     {
         // OpenGL Programming Guide, 8th Edition, page 404

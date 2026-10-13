@@ -107,10 +107,18 @@ void Log::debug_out(std::string_view msg) noexcept
     std::cout << "D: " << msg << '\n';
 }
 
-void Log::info_out(std::string_view msg) noexcept
+void Log::critical_out(std::string_view msg) noexcept
 {
-    Log::info(msg);
-    std::cout << "I: " << msg << '\n';
+    Log::critical(msg);
+    // NOTE KI goes already by default to console
+    //std::cout << "C: " << msg << '\n';
+}
+
+void Log::error_out(std::string_view msg) noexcept
+{
+    Log::error(msg);
+    // NOTE KI goes already by default to console
+    //std::cout << "E: " << msg << '\n';
 }
 
 void Log::warn_out(std::string_view msg) noexcept
@@ -119,11 +127,10 @@ void Log::warn_out(std::string_view msg) noexcept
     std::cout << "W: " << msg << '\n';
 }
 
-void Log::error_out(std::string_view msg) noexcept
+void Log::info_out(std::string_view msg) noexcept
 {
-    Log::error(msg);
-    // NOTE KI goes already by default to console
-    //std::cout << "E: " << msg << '\n';
+    Log::info(msg);
+    std::cout << "I: " << msg << '\n';
 }
 
 void Log::out(std::string_view msg) noexcept

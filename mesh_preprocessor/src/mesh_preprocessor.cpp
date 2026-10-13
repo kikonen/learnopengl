@@ -88,10 +88,19 @@ util::Ref<mesh::MeshSet> loadMeshSet(
     auto material = util::Ref<Material>::create();
     {
         material = Material::createMaterial(BasicMaterial::gold);
-        material->addTexture(TextureType::diffuse, "foo", false);
-        material->addTexture(TextureType::map_normal, "foo_normal", false);
-        material->m_programNames.insert({ MaterialProgramType::shader, "g_tex" });
-        material->m_programNames.insert({ MaterialProgramType::shadow, "shadow" });
+        material->addTexture(
+            material::TextureType::diffuse,
+            material->defaultTextureSpec,
+            "foo", false);
+
+        material->addTexture(
+            material::TextureType::map_normal,
+            material->defaultTextureSpec,
+            "foo_normal", false);
+
+        material->m_programNames.insert({ material::ProgramType::shader, "g_tex" });
+        material->m_programNames.insert({ material::ProgramType::shadow, "shadow" });
+
         //MaterialData data;
         //MaterialLoader loader;
         //loader.loadMaterial(data);
@@ -109,20 +118,20 @@ util::Ref<mesh::MeshSet> loadMeshSet(
     }
 
     {
-        for (const auto& animationPath : meshSet->m_animationPaths) {
+        for (const auto& animationPath : meshSet->getAnimationPaths()) {
             // resolve path
             std::string filePath;
             {
                 {
                     filePath = util::joinPathExt(
-                        meshSet->m_rootDir,
-                        meshSet->m_dir,
+                        meshSet->getRootDir(),
+                        meshSet->getDir(),
                         animationPath.path, "");
                 }
 
                 if (!util::fileExists(filePath)) {
                     filePath = util::joinPath(
-                        meshSet->m_rootDir,
+                        meshSet->getRootDir(),
                         animationPath.path);
                 }
             }
@@ -155,7 +164,7 @@ void saveMeshSet(
     mesh_set::encoder::MeshSetEncoder encoder;
     encoder.encode(out, meshSet);
 
-    std::cout << fmt::format("mesh_set: {}", meshSet->m_name);
+    std::cout << fmt::format("mesh_set: {}", meshSet->getName());
 
     {
         std::ofstream fout(outputPath);

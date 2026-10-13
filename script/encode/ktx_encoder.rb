@@ -31,10 +31,12 @@ module Encode
       digest_path:,
       src_dir:,
       dst_dir:,
+      target_size:,
+      target_depth:,
       force:,
       dry_run:
     )
-      super(src_dir:, dst_dir:, target_size:, force:, dry_run:)
+      super(src_dir:, dst_dir:, target_size:, target_depth:, force:, dry_run:)
 
       @digest_path = digest_path
     end
@@ -49,7 +51,7 @@ module Encode
       unless meta
         ap digest_data
       end
-      type = (meta[:type] || :color).to_sym
+      type = (meta[:type] || :diffuse).to_sym
 
       if meta[:no_ktx]
         info "NO_KTX: #{src_path}"
@@ -134,6 +136,7 @@ module Encode
         salt: {
           version: KTX_VERSION,
           size: target_size,
+          depth: target_depth,
           type:,
           cmd: base_cmd,
           parts: [
@@ -151,7 +154,7 @@ module Encode
         return
       end
 
-      info "ENCODE[#{type.to_s.upcase}]: #{src_path}"
+      info "ENCODE: [#{type.to_s.upcase}]: #{src_path}"
 
       unless dry_run
         FileUtils.mkdir_p(dst_dir)
@@ -170,10 +173,10 @@ module Encode
       cmd << %Q["#{dst_pathname.cleanpath}"]
       cmd << %Q["#{src_pathname.cleanpath}"]
 
-      info "CMD: #{cmd.join(" ")}"
+      info "CMD:  #{cmd.join(" ")}"
 
       unless dry_run
-        info "WRITE: #{dst_path}"
+        info "SAVE: #{dst_path}"
 
         %x{#{cmd.join(" ")}}
 
@@ -181,11 +184,11 @@ module Encode
           FileUtils.cp(dst_tmp_path, dst_path)
           FileUtils.rm_f(dst_tmp_path)
 
-          info "DONE:  #{dst_path}"
+          info "DONE: #{dst_path}"
         end
 
         unless File.exist?(dst_path)
-          info "FAIL:  #{src_path}"
+          info "FAIL: #{src_path}"
           return
         end
 

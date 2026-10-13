@@ -4,11 +4,15 @@
 #include <unordered_map>
 #include <shared_mutex>
 
-#include "text/FontAtlas.h"
+#include "util/Ref.h"
+
+#include "text/size.h"
 
 struct UpdateContext;
 
 namespace text {
+    class FontAtlas;
+
     class FontRegistry {
     public:
         static void init() noexcept;
@@ -25,23 +29,16 @@ namespace text {
 
         void updateRT(const UpdateContext& ctx);
 
-        const text::FontAtlas* getDefaultFontAtlas() const noexcept
-        {
-            return getFontAtlas(m_defaultFontId);
-        }
+        const util::Ref<text::FontAtlas>& getDefaultFontAtlas() const noexcept;
 
-        const text::FontAtlas* getFontAtlas(text::font_id id) const noexcept
-        {
-            const auto& it = m_fonts.find(id);
-            return it != m_fonts.end() ? &it->second : nullptr;
-        }
+        const util::Ref<text::FontAtlas>& getFontAtlas(text::font_id id) const noexcept;
 
-        const text::FontAtlas* getPreparedFontAtlas(
+        const util::Ref<text::FontAtlas>& getPreparedFontAtlas(
             text::font_id id,
             bool useDefault) const noexcept;
 
         text::font_id registerFont(
-            text::FontAtlas&& src);
+            const util::Ref<text::FontAtlas>& src);
 
         const std::vector<text::font_id>& getFontIds() const noexcept
         {
@@ -51,7 +48,7 @@ namespace text {
     private:
         mutable std::shared_mutex m_lock{};
 
-        std::unordered_map<text::font_id, text::FontAtlas> m_fonts;
+        std::unordered_map<text::font_id, util::Ref<text::FontAtlas>> m_fonts;
         std::vector<text::font_id> m_fontIds;
 
         text::font_id m_defaultFontId{ 0 };

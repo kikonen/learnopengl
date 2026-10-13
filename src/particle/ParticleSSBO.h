@@ -3,7 +3,6 @@
 #include <glm/glm.hpp>
 
 #include "ki/size.h"
-#include "kigl/kigl.h"
 
 namespace particle {
     //
@@ -16,22 +15,22 @@ namespace particle {
         float u_y;
         float u_z;
 
-        //GLuint u_materialIndex;
+        //uint32_t u_materialIndex;
         //float u_scale;
-        //GLuint u_spriteIndex;
-        GLuint u_msp;
+        //uint32_t u_spriteIndex;
+        uint32_t u_msp;
 
         void setMaterialScaleSprite(
-            GLuint materialIndex,
+            uint32_t materialIndex,
             float scale,
-            GLuint spriteIndex)
+            uint32_t spriteIndex)
         {
             // range = 0..5
             constexpr float MAX_SCALE = 5.f;
-            GLuint mappedScale = static_cast<GLuint>((std::min(MAX_SCALE, scale) / MAX_SCALE) * 0xff);
+            uint32_t mappedScale = static_cast<uint32_t>((std::min(MAX_SCALE, scale) / MAX_SCALE) * 0xff);
             u_msp = (materialIndex << 16)
                 | (mappedScale << 8)
-                | std::min((GLuint)0xff, spriteIndex);
+                | std::min((uint32_t)0xff, spriteIndex);
         }
     };
 #pragma pack(pop)

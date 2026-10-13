@@ -31,6 +31,7 @@
 #include "editor/EditorFrame.h"
 
 #include "text/FontRegistry.h"
+#include "text/FontAtlas.h"
 
 class PawnController;
 
@@ -124,14 +125,14 @@ namespace editor
 
             const auto& fontRegistry = text::FontRegistry::get();
 
-            const auto* currFont = fontRegistry.getFontAtlas(dbg.m_showFontId);
+            const auto* currFont = fontRegistry.getFontAtlas(dbg.m_showFontId).get();
             const auto& currLabel = currFont
                 ? fmt::format("{} - {}", currFont->m_fontSize, currFont->m_fontPath)
                 : "";
 
             if (ImGui::BeginCombo("Font", currLabel.c_str())) {
                 for (const auto& fontId : fontRegistry.getFontIds()) {
-                    const auto* font = fontRegistry.getFontAtlas(fontId);
+                    const auto* font = fontRegistry.getFontAtlas(fontId).get();
                     const auto& label = fmt::format("{} - {}", font->m_fontSize, font->m_fontPath);
 
                     ImGui::PushID((void*)fontId);

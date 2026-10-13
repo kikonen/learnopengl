@@ -7,6 +7,7 @@ layout(triangles, fractional_odd_spacing, ccw) in;
 #include "include/ssbo_instance_indeces.glsl"
 #include "include/ssbo_socket_transforms.glsl"
 
+#include "include/uniform_texture_arrays.glsl"
 #include "include/uniform_matrices.glsl"
 #include "include/uniform_camera.glsl"
 #include "include/uniform_clip_planes.glsl"
@@ -28,7 +29,7 @@ in TCS_OUT {
 
   flat float rangeYmin;
   flat float rangeYmax;
-  flat uvec2 heightMapTex;
+  flat uint heightMapTex;
 
 } tes_in[];
 
@@ -64,7 +65,7 @@ Instance instance;
 Entity entity;
 
 #include "include/fn_calculate_clipping.glsl"
-
+#include "include/fn_terrain_height.glsl"
 
 vec2 interpolate2D(vec2 v0, vec2 v1, vec2 v2)
 {
@@ -80,8 +81,6 @@ vec3 interpolate3D(vec3 v0, vec3 v1, vec3 v2)
     vec3(gl_TessCoord.z) * v2;
 }
 
-#include "include/fn_terrain_height.glsl"
-
 void main()
 {
   instance = u_instances[tes_in[0].instanceIndex];
@@ -89,17 +88,24 @@ void main()
   #include "include/var_entity_model_matrix.glsl"
   #include "include/var_entity_normal_matrix.glsl"
 
-  sampler2D heightMap = sampler2D(tes_in[0].heightMapTex);
+  const uint heightMapLayer = tes_in[0].heightMapTex;
 
   // Interpolate the attributes of the output vertex using the barycentric coordinates
-  vec2 texCoord = interpolate2D(tes_in[0].texCoord, tes_in[1].texCoord, tes_in[2].texCoord);
-  vec3 vertexPos = interpolate3D(tes_in[0].objectPos, tes_in[1].objectPos, tes_in[2].objectPos);
+  vec2 texCoord = interpolate2D(
+    tes_in[0].texCoord,
+    tes_in[1].texCoord,
+    tes_in[2].texCoord);
+
+  vec3 vertexPos = interpolate3D(
+    tes_in[0].objectPos,
+    tes_in[1].objectPos,
+    tes_in[2].objectPos);
 
   const float rangeYmin = tes_in[0].rangeYmin;
   const float rangeYmax = tes_in[0].rangeYmax;
   const float rangeY = rangeYmax - rangeYmin;
 
-  float avgHeight = fetchHeight(heightMap, texCoord);
+  float avgHeight = fetchHeight(heightMapLayer, texCoord);
   float h = rangeYmin + avgHeight * rangeY;
 
   vertexPos.y += h;
@@ -109,14 +115,14 @@ void main()
   vec3 normal;
   vec3 objTangent;
   {
-    ivec2 texSize = textureSize(heightMap, 0);
+    ivec2 texSize = textureSize(u_texturesHeight, 0).xy;
     vec2 texelSize = 1.0 / vec2(texSize);
 
     // TODO KI this normal calculation is likely wrong
-    float hL = fetchHeight(heightMap, texCoord + vec2(-texelSize.x, 0));
-    float hR = fetchHeight(heightMap, texCoord + vec2( texelSize.x, 0));
-    float hD = fetchHeight(heightMap, texCoord + vec2(0, -texelSize.y));
-    float hU = fetchHeight(heightMap, texCoord + vec2(0,  texelSize.y));
+    float hL = fetchHeight(heightMapLayer, texCoord + vec2(-texelSize.x, 0));
+    float hR = fetchHeight(heightMapLayer, texCoord + vec2( texelSize.x, 0));
+    float hD = fetchHeight(heightMapLayer, texCoord + vec2(0, -texelSize.y));
+    float hU = fetchHeight(heightMapLayer, texCoord + vec2(0,  texelSize.y));
 
     // Object-space tangent vectors for the displaced surface:
     // T_u = (2, dh/du * rangeY, 0), T_v = (0, dh/dv * rangeY, 2)

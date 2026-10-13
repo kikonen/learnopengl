@@ -3,6 +3,8 @@
 #include <string>
 #include <memory>
 
+#include "util/Ref.h"
+
 namespace kigl {
     class GLState;
 }
@@ -41,7 +43,7 @@ namespace render {
         void invalidateAll();
 
     public:
-        std::unique_ptr<FrameBuffer> m_buffer{ nullptr };
+        util::Ref<FrameBuffer> m_frameBuffer{ nullptr };
 
     private:
         int m_width{ -1 };

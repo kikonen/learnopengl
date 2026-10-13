@@ -10,7 +10,7 @@ struct BufferInfoUBO {
     // "the size of the underlying scalar type."
     glm::vec2 u_bufferResolution;
 
-    int pad1_1;
-    int pad1_2;
+    uint32_t pad1_1;
+    uint32_t pad1_2;
 };
 #pragma pack(pop)

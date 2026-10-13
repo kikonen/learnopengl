@@ -9,9 +9,11 @@
 #include "TextureSpec.h"
 #include "TextureType.h"
 
-/*
-* https://learnopengl.com/Getting-started/Textures
-*/
+class ArrayTexture;
+
+//
+// https://learnopengl.com/Getting-started/Textures
+//
 class Texture : public util::RefCounted<>
 {
 public:
@@ -19,27 +21,80 @@ public:
         std::string_view name,
         bool grayScale,
         bool gammaCorrect,
-        TextureType type,
-        const TextureSpec& spec);
+        material::TextureType type,
+        const material::TextureSpec& spec);
 
     virtual ~Texture();
 
     virtual std::string str() const noexcept;
 
     virtual void release();
-    virtual void prepare() = 0;
+
+    virtual void prepareSingle() = 0;
+    virtual void prepareHandle();
+
+    virtual void prepareArray(
+        ArrayTexture& arr,
+        uint16_t layer) = 0;
+
+    virtual void updateSingle() {}
+
+    virtual void updateArray(
+        ArrayTexture& arr,
+        uint16_t layer) {}
 
     int resolveMixMapLevels();
 
+    int getWidth() const noexcept
+    {
+        return m_width;
+    }
+
+    int getHeight() const noexcept
+    {
+        return m_height;
+    }
+
+    bool isGammaCorrect() const noexcept
+    {
+        return m_gammaCorrect;
+    }
+
+    GLuint getTextureID() const noexcept
+    {
+        return m_textureID;
+    }
+
+    uint16_t getLayer() const noexcept
+    {
+        return m_layer;
+    }
+
+    int getFormat() const noexcept
+    {
+        return m_format;
+    }
+
+    int getInternalFormat() const noexcept
+    {
+        return m_internalFormat;
+    }
+
 public:
     const std::string m_name;
+
+    // If true treat channels == 1 as RGB instead RED
+    // => i.e. color instead of "data"
     const bool m_grayScale : 1;
+
+    // Data is in srgb format
     const bool m_gammaCorrect : 1;
-    const TextureType m_type;
-    const TextureSpec m_spec;
+
+    const material::TextureType m_type;
+    const material::TextureSpec m_spec;
 
     GLuint m_textureID{ 0 };
-    GLuint64 m_handle{ 0 };
+    uint16_t m_layer{ 0 };
 
     mutable bool m_sent : 1 { false };
 
@@ -50,6 +105,4 @@ protected:
     int m_height{ 0 };
     int m_format{ 0 };
     int m_internalFormat{ 0 };
-
-    GLenum m_pixelFormat{ 0 };
 };

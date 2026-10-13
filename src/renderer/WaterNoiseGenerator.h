@@ -7,7 +7,8 @@ class WaterNoiseGenerator final
 public:
     WaterNoiseGenerator();
 
-    GLuint generate();
+    // @return textureID
+    GLuint generateTexture();
 
 private:
     double smoothNoise(double fov, double x1, double y1, double z1);

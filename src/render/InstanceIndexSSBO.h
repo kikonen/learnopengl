@@ -1,8 +1,8 @@
 #pragma once
 
-#include "kigl/kigl.h"
+#include <cstdint>
 
 namespace render
 {
-    using InstanceIndexSSBO = GLuint;
+    using InstanceIndexSSBO = uint32_t;
 }

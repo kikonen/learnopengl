@@ -4,8 +4,6 @@
 #include <glm/gtc/matrix_inverse.hpp>
 
 #include "ki/size.h"
-#include "kigl/kigl.h"
-
 
 // SSBO entry
 //
@@ -50,8 +48,8 @@ struct EntitySSBO {
     glm::vec3 u_worldScale{ 1.f };
     //int pad4_1;
 
-    GLuint u_objectID{ 0 }; // 1 * 1 * 4 = 4
-    GLuint u_flags{ 0 }; // 1 * 4 = 4
+    uint32_t u_objectID{ 0 }; // 1 * 1 * 4 = 4
+    uint32_t u_flags{ 0 }; // 1 * 4 = 4
 
     // material tiling
     float u_tilingX{ 1.f };

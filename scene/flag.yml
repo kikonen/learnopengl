@@ -93,7 +93,7 @@ types:
         size: [1, 0.6]
         segments: [10, 6, 6]
       material:
-        map_kd: textures/flags/fi.png
+        map_kd: textures/flags/fi_color.png
         render_back: true
         default_programs: true
         shared_definitions:
@@ -106,7 +106,7 @@ types:
         size: [1, 0.6]
         segments: [10, 6, 6]
       material:
-        map_kd: textures/flags/fi.png
+        map_kd: textures/flags/fi_color.png
         blend: true
         alpha: true
         render_back: true
@@ -121,7 +121,7 @@ types:
         size: [1, 0.6]
         segments: [10, 6, 6]
       material:
-        map_kd: textures/flags/fi.png
+        map_kd: textures/flags/fi_color.png
         blend: true
         alpha: true
         render_back: true

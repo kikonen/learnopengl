@@ -27,8 +27,8 @@
 
 namespace
 {
-    constexpr float HIT_RATE = 0.01f;
-    float g_hitElapsed = 0.f;
+    constexpr float HIT_RATE = 0.1f;
+    float g_hitElapsed = HIT_RATE;
 }
 
 namespace action

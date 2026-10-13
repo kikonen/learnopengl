@@ -61,20 +61,20 @@ IRB.conf[:USE_AUTOCOMPLETE] = false
 
 ```bash
 # all
-ruby script/encode_ktx.rb meta --src resources/assets --dry-run false --recursive true --target-size 20248
+ruby script/convert_tex.rb meta --src resources/assets --dry-run false --recursive true --target-size 20248
 
 # single
-ruby script/encode_ktx.rb meta --src resources/assets/textures/Metal022_1K-PNG --dry-run false --force true
+ruby script/convert_tex.rb meta --src resources/assets/textures/Metal022_1K-PNG --dry-run false --force true
 ```
 
 ### build assets
 
 ```bash
 # all
-ruby script/encode_ktx.rb build --src resources/assets --dry-run false --recursive true --target-size 2048 --encode --combine
+ruby script/convert_tex.rb build --src resources/assets --dry-run false --recursive true --target-size 2048 --encode --combine
 
 # single
-ruby script/encode_ktx.rb build --src resources/assets/textures/Metal022_1K-PNG --dry-run false --target-size 2048  --encode --combine --force true
+ruby script/convert_tex.rb build --src resources/assets/textures/Metal022_1K-PNG --dry-run false --target-size 2048  --encode --combine --force true
 
 ```
 

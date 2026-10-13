@@ -21,7 +21,7 @@ namespace kigl {
     };
 
     struct GLStencilFunc {
-        // glStencilFunc(GL_ALWAYS, STENCIL_HIGHLIGHT, 0xff);
+        // glStencilFunc(GL_ALWAYS, STENCIL_SOLID, 0xff);
         GLenum func{ GL_ALWAYS };
         GLint ref{ 0 };
         GLuint mask{ 0xff };

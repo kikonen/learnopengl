@@ -8,12 +8,12 @@ prefab:
       materials:
         - base: pine_trunk_pbr
           alias: MI_TreeBarkPine_01a
-          map_kd: T_TreePineBark_01a_A.PNG
-          map_normal: T_TreePineBark_01a_N.PNG
+          map_kd: T_TreePineBark_01a_A_color.PNG
+          map_normal: T_TreePineBark_01a_N_normal.PNG
         - base: pine_leaf_pbr
           alias: MI_PineTree_01a
-          map_kd: T_PineBranch_01a_A.PNG
-          map_normal: T_PineBranch_01a_N.PNG
+          map_kd: T_PineBranch_01a_A_color.PNG
+          map_normal: T_PineBranch_01a_N_normal.PNG
           alpha: true
           blend: true
           render_back: true
@@ -26,12 +26,12 @@ prefab:
       materials:
         - base: pine_trunk_pbr
           alias: MI_TreeBarkPine_01a
-          map_kd: T_TreePineBark_01a_A.PNG
-          map_normal: T_TreePineBark_01a_N.PNG
+          map_kd: T_TreePineBark_01a_A_color.PNG
+          map_normal: T_TreePineBark_01a_N_normal.PNG
         - base: pine_leaf_pbr
           alias: MI_PineTree_01a
-          map_kd: T_PineBranch_01a_A.PNG
-          map_normal: T_PineBranch_01a_N.PNG
+          map_kd: T_PineBranch_01a_A_color.PNG
+          map_normal: T_PineBranch_01a_N_normal_.PNG
           alpha: true
           render_back: true
       default_programs: true
@@ -43,10 +43,10 @@ prefab:
       materials:
         - base: pine_trunk_pbr
           alias: MI_TreeBarkPine_01a
-          map_kd: T_TreePineBark_01a_A.PNG
+          map_kd: T_TreePineBark_01a_A_color.PNG
         - base: pine_leaf_pbr
           alias: MI_PineTree_01a
-          map_kd: T_PineBranch_01a_A.PNG
+          map_kd: T_PineBranch_01a_A_color.PNG
           alpha: true
           render_back: true
       default_programs: true
@@ -58,10 +58,10 @@ prefab:
       materials:
         - base: pine_trunk_pbr
           alias: MI_TreeBarkPine_01a
-          map_kd: T_TreePineBark_01a_A
+          map_kd: T_TreePineBark_01a_A_color.PNG
         - base: pine_leaf_pbr
           alias: MI_PineTree_01a
-          map_kd: T_PineBranch_01a_A
+          map_kd: T_PineBranch_01a_A_color.PNG
           alpha: true
       default_programs: true
       base_scale: 0.01
@@ -72,9 +72,9 @@ prefab:
       materials:
         - base: pine_trunk_pbr
           alias: MI_TreeBarkPine_01a
-          map_kd: T_TreePineBark_01a_A.PNG
+          map_kd: T_TreePineBark_01a_A_color.PNG
         - base: pine_leaf_pbr
           alias: MI_PineTree_01a
-          map_kd: T_PineBranch_01a_A.PNG
+          map_kd: T_PineBranch_01a_A_color.PNG
       default_programs: true
       base_scale: 0.01

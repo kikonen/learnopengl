@@ -2,6 +2,8 @@
 
 #include <memory>
 
+#include "util/Ref.h"
+
 #include "ki/size.h"
 
 #include "Renderer.h"
@@ -23,7 +25,7 @@ public:
 
     void render(
         const render::RenderContext& ctx,
-        render::FrameBuffer* destinationBuffer);
+        const util::Ref<render::FrameBuffer>& destinationBuffer);
 
     void setGammaCorrectEnabled(bool enabled) {
         m_gammaCorrectEnabled = enabled;
@@ -56,14 +58,16 @@ public:
 
 private:
     void drawViewports(
-        const render::RenderContext& ctx);
+        const render::RenderContext& ctx,
+        const util::Ref<render::FrameBuffer>& destinationBuffer);
 
     void blitWindow(
         const render::RenderContext& ctx,
-        render::FrameBuffer* destinationBuffer);
+        const util::Ref<render::FrameBuffer>& destinationBuffer);
 
 private:
-    std::unique_ptr<render::FrameBuffer> m_buffer{ nullptr };
+    util::Ref<render::FrameBuffer> m_frameBuffer{ nullptr };
+
     int m_width{ -1 };
     int m_height{ -1 };
 

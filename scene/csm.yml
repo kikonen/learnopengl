@@ -85,7 +85,7 @@ types:
       path: quad
       material:
         name: woodwall
-        map_kd: textures/wood_1024.png
+        map_kd: textures/wood_1024_color.png
         xreflection: 0.4
         mras: [1, 0, 1]
         render_back: true

@@ -1,7 +1,7 @@
 ---
 material:
   name: Graffiti
-  base: textures/Graffiti
+  base: local/textures/Graffiti
   map_kd: Graffiti-basecolor.png
   map_normal: Graffiti-normal.png
   map_mras: Graffiti_mras

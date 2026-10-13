@@ -21,7 +21,6 @@ layout (location = ATTR_TEX) in vec2 a_texCoord;
 #include "include/uniform_data.glsl"
 #include "include/uniform_buffer_info.glsl"
 
-layout(location = UNIFORM_STENCIL_MODE) uniform int u_stencilMode;
 layout(location = UNIFORM_WIREFRAME_MODE) uniform bool u_wireframeMode;
 
 #ifdef USE_ALPHA
@@ -81,11 +80,6 @@ void main() {
   }
 
   gl_Position = u_projectedMatrix * worldPos;
-
-  // NOTE KI skip outline shift in wireframe mode
-  if (!u_wireframeMode) {
-    renderOutline(u_stencilMode);
-  }
 
 #ifdef USE_ALPHA
   const uint materialIndex = instance.u_materialIndex;

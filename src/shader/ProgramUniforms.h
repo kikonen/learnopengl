@@ -34,7 +34,6 @@ struct ProgramUniforms {
     uniform::Mat4 u_modelMatrix;
     uniform::UInt u_materialIndex;
 
-    uniform::Int u_stencilMode;
     uniform::Bool u_wireframeMode;
 
     uniform::Float u_blendFactor;

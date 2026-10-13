@@ -90,6 +90,9 @@ public:
     static std::string formatClock(double worldSecs, std::string_view fmtSpec);
 
 public:
+    bool m_paused{ false };
+    bool m_loading{ false };
+
     // --- config (load-time; read-only during run) ---
     int   m_sunUpSecs{ 6 * 3600 };
     int   m_sunDownSecs{ 18 * 3600 };

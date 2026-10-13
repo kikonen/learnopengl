@@ -53,10 +53,10 @@ namespace loader {
     {
         auto& fr = text::FontRegistry::get();
 
-        text::FontAtlas font;
-        font.m_name = data.name;
-        font.m_fontPath = data.path;
-        font.m_fontSize = data.size;
+        auto font = util::Ref<text::FontAtlas>::create();
+        font->m_name = data.name;
+        font->m_fontPath = data.path;
+        font->m_fontSize = data.size;
 
         return fr.registerFont(std::move(font));
     }

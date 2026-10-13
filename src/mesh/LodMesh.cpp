@@ -218,13 +218,13 @@ namespace mesh {
         if (m_flags.billboard) m_drawOptions.m_flags |= render::INSTANCE_BILLBOARD_BIT;
         //if (m_flags.tessellation) m_drawOptions.m_flags |= render::INSTANCE_TESSELATION_BIT;
 
-        m_programId = material.getProgram(MaterialProgramType::shader);
-        m_oitProgramId = material.getProgram(MaterialProgramType::oit);
-        m_shadowProgramId = material.getProgram(MaterialProgramType::shadow);
-        m_preDepthProgramId = material.getProgram(MaterialProgramType::pre_depth);
-        m_selectionProgramId = material.getProgram(MaterialProgramType::selection);
-        m_idProgramId = material.getProgram(MaterialProgramType::object_id);
-        m_normalProgramId = material.getProgram(MaterialProgramType::normal);
+        m_programId = material.getProgram(material::ProgramType::shader);
+        m_oitProgramId = material.getProgram(material::ProgramType::oit);
+        m_shadowProgramId = material.getProgram(material::ProgramType::shadow);
+        m_preDepthProgramId = material.getProgram(material::ProgramType::pre_depth);
+        m_selectionProgramId = material.getProgram(material::ProgramType::selection);
+        m_idProgramId = material.getProgram(material::ProgramType::object_id);
+        m_normalProgramId = material.getProgram(material::ProgramType::normal);
 
         {
             const auto& drawOptions = m_drawOptions;

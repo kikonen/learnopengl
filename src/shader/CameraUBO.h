@@ -2,8 +2,6 @@
 
 #include <glm/glm.hpp>
 
-#include "kigl/kigl.h"
-
 // NOTE KI align 16 for UBO struct
 #pragma pack(push, 1)
 struct CameraUBO {
@@ -51,10 +49,10 @@ struct CameraUBO {
     float u_nearPlane;
     float u_farPlane;
 
-    int u_cameraSsaoEnabled; // bool as 4 bytes
-    int u_cameraWaterCausticsEnabled; // bool as 4 bytes
+    int32_t u_cameraSsaoEnabled; // bool as 4 bytes
+    int32_t u_cameraWaterCausticsEnabled; // bool as 4 bytes
 
-    //int pad1;
-    //int pad2;
+    //uint32_t pad1;
+    //uint32_t pad2;
 };
 #pragma pack(pop)

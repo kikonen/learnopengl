@@ -4,7 +4,7 @@
 
 #include "include/screen_tri_vertex_out.glsl"
 
-layout(binding = UNIT_EFFECT_ALBEDO) uniform sampler2D effect_albedo;
+layout(binding = UNIT_EFFECT_ALBEDO) uniform sampler2D u_effect_albedo;
 
 layout (location = 0) out vec4 o_fragColor;
 
@@ -18,7 +18,7 @@ void main()
 {
   #include "include/screen_tri_tex_coord.glsl"
 
-  vec3 hdrColor = texture(effect_albedo, texCoord).rgb;
+  vec3 hdrColor = texture(u_effect_albedo, texCoord).rgb;
 
   // reinhard
   // vec3 result = hdrColor / (hdrColor + vec3(1.0));

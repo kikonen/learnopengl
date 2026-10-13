@@ -3,7 +3,6 @@
 #include <glm/glm.hpp>
 
 #include "ki/size.h"
-#include "kigl/kigl.h"
 
 //
 // SSBO entry
@@ -15,11 +14,11 @@ struct DecalSSBO {
     glm::vec4 u_transformMatrixRow1{ 0.f, 1.f, 0.f, 0.f };
     glm::vec4 u_transformMatrixRow2{ 0.f, 0.f, 1.f, 0.f };
 
-    GLuint u_materialIndex;
-    GLuint u_spriteIndex;
+    uint32_t u_materialIndex;
+    uint32_t u_spriteIndex;
 
-    int pad1;
-    int pad2;
+    uint32_t pad1;
+    uint32_t pad2;
 
     // NOTE KI M-T matrix needed *ONLY* if non uniform scale
     inline void setTransform(

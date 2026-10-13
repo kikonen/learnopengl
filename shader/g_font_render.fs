@@ -2,6 +2,7 @@
 
 #include "include/ssbo_materials.glsl"
 
+#include "include/uniform_texture_arrays.glsl"
 #include "include/uniform_matrices.glsl"
 #include "include/uniform_camera.glsl"
 #include "include/uniform_data.glsl"
@@ -19,7 +20,7 @@ in VS_OUT {
   vec2 texCoord;
 
   vec2 atlasCoord;
-  flat uvec2 atlasHandle;
+  flat uint atlasLayer;
 
   flat uint materialIndex;
   flat uint flags;
@@ -76,7 +77,7 @@ void main()
 #endif
 
   vec4 color;
-  shapeFont(fs_in.atlasHandle, fs_in.atlasCoord, true, color);
+  shapeFont(fs_in.atlasLayer, fs_in.atlasCoord, true, color);
 
   // NOTE KI alpha/blend does not co-op with line mode
   if (!u_forceLineMode) {
