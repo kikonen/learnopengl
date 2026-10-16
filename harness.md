@@ -30,10 +30,16 @@ AI-assisted work. Human-facing conventions live in `CONVENTIONS.md`; formatting 
 * **Never merge automatically.** Do not run `gh pr merge`, `git merge`, rebase onto the base branch,
   or push to `master` / `dev` / `epic/*`. Create the PR, then stop and wait for the user to review
   and merge.
+* **Merge policy: rebase only.** When a merge is explicitly requested, use `gh pr merge --rebase`.
+  Never `gh pr merge --merge`, never `git merge`, never squash. History must stay linear - no merge
+  commits. If the branch is not up to date with its base, rebase the PR branch onto the base tip and
+  force-push that PR branch (allowed for your own PR branch) before merging.
 * Allowed without asking: create a branch, commit, `git push -u origin <branch>`,
   `gh pr create` / `gh pr edit` / `gh pr comment`.
 * Requires an explicit instruction from the user: merging, force-push, deleting branches, rewriting
   published history, closing issues.
+* Base new branches on the branch the work is actually for (e.g. the current `epic/*` branch when the
+  work belongs to an epic) - not on a stale `master`. Retarget the PR to that base.
 * One commit per logical change. The message says what and why, and references the issue
   (`Fix #212: MaterialUpdater uses RefCountedVirtual`).
 * Do not commit local tool files (`CLAUDE.md`, `.harness/`, scratch notes in `tmp/`). Promote only
