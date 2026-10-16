@@ -2,6 +2,7 @@
 
 #include <atomic>
 #include <cassert>
+#include <type_traits>
 
 namespace util
 {
@@ -53,19 +54,10 @@ namespace util
     template<typename T_type>
     class Ref
     {
-        // NOTE KI have to disable asserts since it would require defining
-        // also ref counted types in headers
-
-        //static_assert(
-        //    std::is_base_of_v<RefCounted<true>, T_type> ||
-        //    std::is_base_of_v<RefCounted<false>, T_type>,
-        //    "T_type must derive from RefCountedPolymorphic or RefCountedSimple");
-
-        //static_assert(
-        //    std::is_base_of_v<RefCounted<false>, T_type> && !std::is_polymorphic_v<T_type> ||
-        //    std::is_base_of_v<RefCounted<true>, T_type>,
-        //    "Class derived from RefCountedSimple must not have virtual functions"
-        //    );
+        // NOTE KI the T_type checks are done in assertRefCountedType() (member body) instead of
+        // here at class scope: a class-scope assert requires T_type to be complete wherever
+        // Ref<T_type> is merely named (e.g. a forward declared type in a header), while member
+        // bodies are instantiated only where T_type really is complete. See #214.
 
     public:
         Ref()
@@ -142,12 +134,13 @@ namespace util
 
         T_type* operator->() const noexcept
         {
-            //assert(m_instance != nullptr);
+            assert(m_instance != nullptr);
             return m_instance;
         }
 
         T_type& operator*() const noexcept
         {
+            assert(m_instance != nullptr);
             return *m_instance;
         }
 
@@ -182,6 +175,8 @@ namespace util
     private:
         void incRef()
         {
+            assertRefCountedType();
+
             if (m_instance) {
                 m_instance->incRefCount();
             }
@@ -189,12 +184,30 @@ namespace util
 
         void decRef()
         {
+            assertRefCountedType();
+
             if (m_instance) {
                 if (m_instance->decRefCount() == 0) {
                     delete m_instance;
                     m_instance = nullptr;
                 }
             }
+        }
+
+        // NOTE KI compile time contract checks. A polymorphic T_type must use RefCountedVirtual:
+        // decRef() deletes through T_type*, so with a non-virtual destructor the derived
+        // destructor is skipped (UB, leaked derived members) - see #212.
+        static void assertRefCountedType() noexcept
+        {
+            static_assert(
+                std::is_base_of_v<RefCounted<true>, T_type> ||
+                std::is_base_of_v<RefCounted<false>, T_type>,
+                "T_type must derive from RefCountedVirtual or RefCountedSimple");
+
+            static_assert(
+                !std::is_polymorphic_v<T_type> ||
+                std::is_base_of_v<RefCounted<true>, T_type>,
+                "polymorphic T_type must derive from RefCountedVirtual (Ref deletes through T_type*)");
         }
 
         template<class T_type2>
