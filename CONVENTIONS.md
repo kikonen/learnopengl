@@ -5,9 +5,11 @@
 
 * One branch per issue. Never work on several issues in the same branch.
 * Branch naming follows the existing style:
-  * `fix/<short-name>` for bugs (e.g. `fix/ref-count-underflow`)
-  * `feature/<short-name>` for new features
-  * `refactor/<short-name>` for refactors / cleanups
+  * `fix/<issue>-<short-name>` for bugs (e.g. `fix/212-material-updater-refcounted`)
+  * `feature/<issue>-<short-name>` for new features
+  * `refactor/<issue>-<short-name>` for refactors / cleanups
+  * `chore/<issue>-<short-name>` for maintenance
+  * the issue number goes right after the kind prefix whenever it is known
   * `epic/<short-name>` only for large multi-issue epics
 * Never commit directly into `master` (or `dev`), and never commit directly into an `epic/*` branch.
   Branch off the appropriate base and open a pull request instead.
