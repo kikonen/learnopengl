@@ -21,8 +21,11 @@ AI-assisted work. Human-facing conventions live in `CONVENTIONS.md`; formatting 
 ## Git workflow
 
 * One branch per issue. Never work on several issues in the same branch.
-* Branch naming: `fix/<short-name>` (bugs), `feature/<short-name>` (features),
-  `refactor/<short-name>` (refactors/cleanups). `epic/<short-name>` only for multi-issue epics.
+* Branch naming: `fix/<issue>-<short-name>` (bugs), `feature/<issue>-<short-name>` (features),
+  `refactor/<issue>-<short-name>` (refactors/cleanups), `chore/<issue>-<short-name>` (maintenance).
+  When an issue number is known it goes right after the kind prefix, so the branch, its PR and its
+  issue are easy to match: `fix/212-material-updater-refcounted`, `chore/219-harness-rules`.
+  `epic/<short-name>` only for multi-issue epics (no single issue number to put in the name).
 * Never commit directly into `master` or `dev`. Never commit directly into an `epic/*` branch.
   Branch off the appropriate base and open a pull request.
 * Every change goes through a pull request. The PR body references its issue (`Fixes #212`,
@@ -39,7 +42,8 @@ AI-assisted work. Human-facing conventions live in `CONVENTIONS.md`; formatting 
 * Requires an explicit instruction from the user: merging, force-push, deleting branches, rewriting
   published history, closing issues.
 * Base new branches on the branch the work is actually for (e.g. the current `epic/*` branch when the
-  work belongs to an epic) - not on a stale `master`. Retarget the PR to that base.
+  work belongs to an epic) - not on a stale `master`. Fetch first and branch off its tip, not off a
+  stale local copy. Retarget the PR to that base.
 * One commit per logical change. The message says what and why, and references the issue
   (`Fix #212: MaterialUpdater uses RefCountedVirtual`).
 * Do not commit local tool files (`CLAUDE.md`, `.harness/`, scratch notes in `tmp/`). Promote only
@@ -83,6 +87,18 @@ env -u _CL_ -u CL "C:/Program Files/Microsoft Visual Studio/18/Community/MSBuild
 (`//p:` because MSYS2 rewrites single-slash arguments into paths.) Note `git status` shows the
 `resources` submodule dirty in normal use - leave it alone.
 
+## Tooling available
+
+* **Ruby is available and is the project's scripting tool** (`ruby 4.x`, `bundler` - `Gemfile` /
+  `Gemfile.lock`, gems already installed). Use it for one-off scripts, data checks and asset work
+  instead of writing throwaway C++ or shell pipelines. The asset pipeline is Ruby:
+  `script/convert_tex.rb`, `script/encode.rb`, driven by `make assets` / `assets-meta` /
+  `assets-build` / `assets-ktx`. Gems: `thor`, `rmagick`, `hashie`, `amazing_print`, `mittsu`, `debug`.
+* `gh` (GitHub CLI) and `git` are available; prefer them over raw `curl` for GitHub operations.
+* Lua is the in-engine scripting language (`src/script/`), not a tooling language - do not confuse
+  the two.
+* Scratch files for experiments go in `tmp/` (gitignored). Do not leave them in the repo root.
+
 ## C++ style (matches the existing code - follow it, do not "modernize" unrelated code)
 
 * Types: PascalCase. Member variables: `m_` prefix. Constants: `ALL_CAPS`.
@@ -105,3 +121,7 @@ env -u _CL_ -u CL "C:/Program Files/Microsoft Visual Studio/18/Community/MSBuild
 * Report findings with concrete `file:line` references.
 * Do not silently change behaviour while "cleaning up" - separate a behavioural change from a
   refactor, in separate commits or separate PRs.
+* **Never discard the user's uncommitted work.** `git reset --hard`, `git checkout -- <path>` and
+  branch switching can destroy transient changes. Check `git status` first; if the user has
+  uncommitted changes, stash them (or ask) before syncing a branch. The `resources` submodule is
+  normally dirty - leave it.
