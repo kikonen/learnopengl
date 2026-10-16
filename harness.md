@@ -54,11 +54,34 @@ AI-assisted work. Human-facing conventions live in `CONVENTIONS.md`; formatting 
 
 ## Build and test
 
+* **Do not build unless asked.** Builds in this project are really long (full rebuild of ~600
+  translation units, several minutes; a full Debug+Release `make compile` is much worse). Prefer
+  reasoning from the code, and say explicitly in the PR that the change was not built so the user
+  can build it. Build only when the user asks, or when the change is risky enough that guessing is
+  worse than waiting.
 * Build: `make compile-debug`, `make compile-release` (or `make compile` for both).
   Run: `make run-debug`, `make run-release`. Assets: `make assets` / `make assets-ktx`.
 * Visual Studio: `learnopengl.sln`, configurations Debug/Release, platform x64.
 * Dependencies come from vcpkg (`vcpkg.json`); do not add a dependency without saying why in the PR.
-* Build the change before claiming it works. If a build cannot be run, say so instead of assuming.
+* If a build is needed, prefer the narrowest one (single configuration, incremental) and give it a
+  generous timeout; report the outcome honestly instead of assuming it worked.
+
+### Known build environment gotcha (MSYS2 / MSVC)
+
+`make compile-debug` fails from an MSYS2 shell with ~96 `error C1083: Cannot open source file
+'C:/app/msys64/cgthreads8'` (plus `error C7613`). This is **not** a project error: MSYS2 exports
+`_CL_=C:/app/msys64/cgthreads8` and MSVC reads `_CL_` as compiler options, so it tries to use that
+path as a forced include.
+
+Working invocation from MSYS2 (clear the injected vars, call MSBuild directly):
+
+```bash
+env -u _CL_ -u CL "C:/Program Files/Microsoft Visual Studio/18/Community/MSBuild/Current/Bin/MSBuild.exe" \
+    engine.vcxproj //p:Configuration=Debug //p:Platform=x64 //m //v:m
+```
+
+(`//p:` because MSYS2 rewrites single-slash arguments into paths.) Note `git status` shows the
+`resources` submodule dirty in normal use - leave it alone.
 
 ## C++ style (matches the existing code - follow it, do not "modernize" unrelated code)
 
