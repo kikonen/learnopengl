@@ -16,6 +16,10 @@
 * Never merge automatically. Do not run `gh pr merge`, `git merge`, `git rebase` onto the base
   branch, or push to `master` / `dev` / `epic/*`. After creating the PR, stop and wait for the user
   to review and merge.
+* Merge policy: **rebase only** (`gh pr merge --rebase`). No merge commits, no squash merges -
+  history stays linear. Keep a PR branch rebased onto its base tip before it is merged.
+* Base a branch on the branch the work is really for (the current `epic/*` branch when the work
+  belongs to an epic), not on a stale `master`.
 * Allowed without asking: create the branch, commit, `git push -u origin <branch>`, `gh pr create`,
   `gh pr edit`, `gh pr comment`.
 * Requires an explicit instruction from the user: merging, force-push, deleting branches, rewriting
