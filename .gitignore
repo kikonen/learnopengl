@@ -34,3 +34,5 @@ vcpkg_installed/*
 *_REMOTE_*
 
 .aider*
+
+.harness/
