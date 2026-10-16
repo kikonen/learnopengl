@@ -36,3 +36,4 @@ vcpkg_installed/*
 .aider*
 
 .harness/
+CLAUDE.md
