@@ -2,6 +2,8 @@
 
 #include <atomic>
 #include <cassert>
+#include <cstdint>
+#include <utility>
 #include <type_traits>
 
 namespace util
@@ -9,6 +11,13 @@ namespace util
     /////////////////////////////////////////////////////////
     // RefCounted
     /////////////////////////////////////////////////////////
+
+    // NOTE KI copy and move are intentionally NOT provided: std::atomic has no copy/move, so the
+    // implicit ones are deleted and every ref counted type is non-copyable and non-movable. That is
+    // the current contract (see #213): a ref counted object is only ever reached through Ref<T>,
+    // copying it by value would create an object with ref count 0 that nobody owns.
+    // Derived classes must therefore not write Derived(Derived&&) = default - move them by hand
+    // (see audio::Sound::swap) or keep them non-movable.
 
     template<bool T_virtual = true>
     class RefCounted;
@@ -21,7 +30,17 @@ namespace util
         virtual ~RefCounted() = default;
 
         void incRefCount() const noexcept { ++m_refCount; }
-        uint32_t decRefCount() const noexcept { return m_refCount.fetch_sub(1, std::memory_order_acq_rel) - 1; }
+
+        // NOTE KI assert instead of wrapping: decrementing a count that is already 0 means the
+        // object was not owned by any Ref (raw new/delete, or a double decRef). Wrapping to
+        // UINT32_MAX would make Ref::decRef() skip the delete and leak the object silently.
+        uint32_t decRefCount() const noexcept
+        {
+            const uint32_t previous = m_refCount.fetch_sub(1, std::memory_order_acq_rel);
+            assert(previous > 0 && "ref count underflow: object is not owned by a Ref");
+            return previous - 1;
+        }
+
         uint32_t getRefCount() const noexcept { return m_refCount.load(std::memory_order_acquire); }
 
     private:
@@ -36,7 +55,16 @@ namespace util
         ~RefCounted() = default;  // no virtual
 
         void incRefCount() const noexcept { ++m_refCount; }
-        uint32_t decRefCount() const noexcept { return m_refCount.fetch_sub(1, std::memory_order_acq_rel) - 1; }
+
+        // NOTE KI see RefCounted<true>: assert instead of wrapping to UINT32_MAX, which would make
+        // Ref::decRef() skip the delete and leak the object silently.
+        uint32_t decRefCount() const noexcept
+        {
+            const uint32_t previous = m_refCount.fetch_sub(1, std::memory_order_acq_rel);
+            assert(previous > 0 && "ref count underflow: object is not owned by a Ref");
+            return previous - 1;
+        }
+
         uint32_t getRefCount() const noexcept { return m_refCount.load(std::memory_order_acquire); }
 
     private:
@@ -144,6 +172,9 @@ namespace util
             return *m_instance;
         }
 
+        // NOTE KI noexcept: the destructor of a ref counted type must not throw. If it does, the
+        // delete inside decRef() propagates through here (and through ~Ref(), which is implicitly
+        // noexcept) -> std::terminate. All ref counted types in this project already satisfy that.
         void reset() noexcept
         {
             decRef();
