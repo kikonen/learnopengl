@@ -18,13 +18,17 @@ namespace render
 struct PrepareContext;
 struct Material;
 
-class MaterialUpdater : public util::RefCountedSimple {
+// NOTE KI must be RefCountedVirtual: this class has virtual functions and derived
+// updaters (ShaderMaterialUpdater, FontAtlasMaterialUpdater) are stored as
+// util::Ref<MaterialUpdater>. With RefCountedSimple the delete in Ref::decRef()
+// has a non-virtual destructor -> derived destructors are skipped (UB, leaked members).
+class MaterialUpdater : public util::RefCountedVirtual {
 public:
     MaterialUpdater(
         ki::material_updater_id id,
         const std::string& name);
 
-    ~MaterialUpdater();
+    virtual ~MaterialUpdater();
 
     virtual void prepareRT(
         const PrepareContext& ctx);

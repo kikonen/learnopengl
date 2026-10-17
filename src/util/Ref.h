@@ -2,12 +2,22 @@
 
 #include <atomic>
 #include <cassert>
+#include <cstdint>
+#include <utility>
+#include <type_traits>
 
 namespace util
 {
     /////////////////////////////////////////////////////////
     // RefCounted
     /////////////////////////////////////////////////////////
+
+    // NOTE KI copy and move are intentionally NOT provided: std::atomic has no copy/move, so the
+    // implicit ones are deleted and every ref counted type is non-copyable and non-movable. That is
+    // the current contract (see #213): a ref counted object is only ever reached through Ref<T>,
+    // copying it by value would create an object with ref count 0 that nobody owns.
+    // Derived classes must therefore not write Derived(Derived&&) = default - move them by hand
+    // (see audio::Sound::swap) or keep them non-movable.
 
     template<bool T_virtual = true>
     class RefCounted;
@@ -20,7 +30,17 @@ namespace util
         virtual ~RefCounted() = default;
 
         void incRefCount() const noexcept { ++m_refCount; }
-        uint32_t decRefCount() const noexcept { return m_refCount.fetch_sub(1, std::memory_order_acq_rel) - 1; }
+
+        // NOTE KI assert instead of wrapping: decrementing a count that is already 0 means the
+        // object was not owned by any Ref (raw new/delete, or a double decRef). Wrapping to
+        // UINT32_MAX would make Ref::decRef() skip the delete and leak the object silently.
+        uint32_t decRefCount() const noexcept
+        {
+            const uint32_t previous = m_refCount.fetch_sub(1, std::memory_order_acq_rel);
+            assert(previous > 0 && "ref count underflow: object is not owned by a Ref");
+            return previous - 1;
+        }
+
         uint32_t getRefCount() const noexcept { return m_refCount.load(std::memory_order_acquire); }
 
     private:
@@ -35,7 +55,16 @@ namespace util
         ~RefCounted() = default;  // no virtual
 
         void incRefCount() const noexcept { ++m_refCount; }
-        uint32_t decRefCount() const noexcept { return m_refCount.fetch_sub(1, std::memory_order_acq_rel) - 1; }
+
+        // NOTE KI see RefCounted<true>: assert instead of wrapping to UINT32_MAX, which would make
+        // Ref::decRef() skip the delete and leak the object silently.
+        uint32_t decRefCount() const noexcept
+        {
+            const uint32_t previous = m_refCount.fetch_sub(1, std::memory_order_acq_rel);
+            assert(previous > 0 && "ref count underflow: object is not owned by a Ref");
+            return previous - 1;
+        }
+
         uint32_t getRefCount() const noexcept { return m_refCount.load(std::memory_order_acquire); }
 
     private:
@@ -53,19 +82,10 @@ namespace util
     template<typename T_type>
     class Ref
     {
-        // NOTE KI have to disable asserts since it would require defining
-        // also ref counted types in headers
-
-        //static_assert(
-        //    std::is_base_of_v<RefCounted<true>, T_type> ||
-        //    std::is_base_of_v<RefCounted<false>, T_type>,
-        //    "T_type must derive from RefCountedPolymorphic or RefCountedSimple");
-
-        //static_assert(
-        //    std::is_base_of_v<RefCounted<false>, T_type> && !std::is_polymorphic_v<T_type> ||
-        //    std::is_base_of_v<RefCounted<true>, T_type>,
-        //    "Class derived from RefCountedSimple must not have virtual functions"
-        //    );
+        // NOTE KI the T_type checks are done in assertRefCountedType() (member body) instead of
+        // here at class scope: a class-scope assert requires T_type to be complete wherever
+        // Ref<T_type> is merely named (e.g. a forward declared type in a header), while member
+        // bodies are instantiated only where T_type really is complete. See #214.
 
     public:
         Ref()
@@ -142,15 +162,19 @@ namespace util
 
         T_type* operator->() const noexcept
         {
-            //assert(m_instance != nullptr);
+            assert(m_instance != nullptr);
             return m_instance;
         }
 
         T_type& operator*() const noexcept
         {
+            assert(m_instance != nullptr);
             return *m_instance;
         }
 
+        // NOTE KI noexcept: the destructor of a ref counted type must not throw. If it does, the
+        // delete inside decRef() propagates through here (and through ~Ref(), which is implicitly
+        // noexcept) -> std::terminate. All ref counted types in this project already satisfy that.
         void reset() noexcept
         {
             decRef();
@@ -182,6 +206,8 @@ namespace util
     private:
         void incRef()
         {
+            assertRefCountedType();
+
             if (m_instance) {
                 m_instance->incRefCount();
             }
@@ -189,12 +215,30 @@ namespace util
 
         void decRef()
         {
+            assertRefCountedType();
+
             if (m_instance) {
                 if (m_instance->decRefCount() == 0) {
                     delete m_instance;
                     m_instance = nullptr;
                 }
             }
+        }
+
+        // NOTE KI compile time contract checks. A polymorphic T_type must use RefCountedVirtual:
+        // decRef() deletes through T_type*, so with a non-virtual destructor the derived
+        // destructor is skipped (UB, leaked derived members) - see #212.
+        static void assertRefCountedType() noexcept
+        {
+            static_assert(
+                std::is_base_of_v<RefCounted<true>, T_type> ||
+                std::is_base_of_v<RefCounted<false>, T_type>,
+                "T_type must derive from RefCountedVirtual or RefCountedSimple");
+
+            static_assert(
+                !std::is_polymorphic_v<T_type> ||
+                std::is_base_of_v<RefCounted<true>, T_type>,
+                "polymorphic T_type must derive from RefCountedVirtual (Ref deletes through T_type*)");
         }
 
         template<class T_type2>

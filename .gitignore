@@ -34,3 +34,6 @@ vcpkg_installed/*
 *_REMOTE_*
 
 .aider*
+
+.harness/
+CLAUDE.md
