@@ -29,7 +29,10 @@ namespace util
         RefCounted() = default;
         virtual ~RefCounted() = default;
 
-        void incRefCount() const noexcept { ++m_refCount; }
+        // NOTE KI relaxed: only the thread that decrements the count to 0 deletes the object, and
+        // decRefCount() already provides the acquire/release pairing. An increment needs no
+        // ordering, while ++m_refCount compiles to a full seq_cst read-modify-write.
+        void incRefCount() const noexcept { m_refCount.fetch_add(1, std::memory_order_relaxed); }
 
         // NOTE KI assert instead of wrapping: decrementing a count that is already 0 means the
         // object was not owned by any Ref (raw new/delete, or a double decRef). Wrapping to
@@ -54,7 +57,9 @@ namespace util
         RefCounted() = default;
         ~RefCounted() = default;  // no virtual
 
-        void incRefCount() const noexcept { ++m_refCount; }
+        // NOTE KI see RefCounted<true>: an increment needs no ordering; decRefCount() provides the
+        // synchronization that actually matters.
+        void incRefCount() const noexcept { m_refCount.fetch_add(1, std::memory_order_relaxed); }
 
         // NOTE KI see RefCounted<true>: assert instead of wrapping to UINT32_MAX, which would make
         // Ref::decRef() skip the delete and leak the object silently.
@@ -109,26 +114,36 @@ namespace util
             incRef();
         }
 
-        Ref(const Ref<T_type>& o)
+        Ref(const Ref<T_type>& o) noexcept
             : m_instance{ o.m_instance }
         {
             incRef();
         }
 
         template<typename T_type2>
-        Ref(const Ref<T_type2>& o)
+        Ref(const Ref<T_type2>& o) noexcept
             : m_instance{ dynamic_cast<T_type*>(o.m_instance) }
         {
             incRef();
         }
 
-        Ref(Ref<T_type>&& o)
+        // NOTE KI stealing conversion (up-/down-cast). Without it, moving a Ref<Derived> into a
+        // Ref<Base> falls back to the const-ref converting ctor above: dynamic_cast + an extra
+        // incRef/decRef pair, and the source keeps owning the object until it dies.
+        template<typename T_type2>
+        Ref(Ref<T_type2>&& o) noexcept
+            : m_instance{ dynamic_cast<T_type*>(o.m_instance) }
+        {
+            o.m_instance = nullptr;
+        }
+
+        Ref(Ref<T_type>&& o) noexcept
             : m_instance{ o.m_instance }
         {
             o.m_instance = nullptr;
         }
 
-        Ref& operator=(const Ref<T_type>& o)
+        Ref& operator=(const Ref<T_type>& o) noexcept
         {
             if (this != &o) {
                 decRef();
@@ -139,7 +154,7 @@ namespace util
             return *this;
         }
 
-        Ref& operator=(Ref<T_type>&& o)
+        Ref& operator=(Ref<T_type>&& o) noexcept
         {
             if (this != &o) {
                 decRef();
