@@ -27,16 +27,16 @@ namespace mesh_set::decoder
 
             if (k == "name") {
                 mesh->m_name = v.as<std::string>();
-                break;
+                continue;
             }
             if (k == "alias") {
                 mesh->m_alias = v.as<std::string>();
-                break;
+                continue;
             }
             if (k == "vertex_count") {
                 const size_t vertexCount = v.as<size_t>();
                 vertices.resize(vertexCount);
-                break;
+                continue;
             }
             if (k == "positions") {
                 const auto& values = decodeCompressedFloats(v);
@@ -45,7 +45,7 @@ namespace mesh_set::decoder
                         vertices[i].pos = glm::vec3(values[i * 3], values[i * 3 + 1], values[i * 3 + 2]);
                     }
                 }
-                break;
+                continue;
             }
             if (k == "tex_coords") {
                 const auto& values = decodeCompressedFloats(v);
@@ -54,7 +54,7 @@ namespace mesh_set::decoder
                         vertices[i].texCoord = glm::vec2(values[i * 2], values[i * 2 + 1]);
                     }
                 }
-                break;
+                continue;
             }
             if (k == "normals") {
                 const auto& values = decodeCompressedFloats(v);
@@ -63,7 +63,7 @@ namespace mesh_set::decoder
                         vertices[i].normal = glm::vec3(values[i * 3], values[i * 3 + 1], values[i * 3 + 2]);
                     }
                 }
-                break;
+                continue;
             }
             if (k == "indeces") {
                 const auto& values = decodeCompressedUint32(v);
@@ -71,13 +71,13 @@ namespace mesh_set::decoder
                 for (size_t i = 0; i < indeces.size(); ++i) {
                     indeces[i] = static_cast<mesh::Index32>(values[i]);
                 }
-                break;
+                continue;
             }
             if (k == "material") {
                 MaterialDecoder decoder;
                 mesh->setMaterial(Material::createMaterial(BasicMaterial::basic));
                 decoder.decode(v, mesh->getMaterial());
-                break;
+                continue;
             }
         }
     }

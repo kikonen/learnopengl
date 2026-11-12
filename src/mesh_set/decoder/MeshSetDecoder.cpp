@@ -28,39 +28,39 @@ namespace mesh_set::decoder
 
             if (k == "id") {
                 meshSet->m_id = v.as<std::string>();
-                break;
+                continue;
             }
             if (k == "name") {
                 meshSet->m_name = v.as<std::string>();
-                break;
+                continue;
             }
             if (k == "dir") {
                 meshSet->m_dir = v.as<std::string>();
-                break;
+                continue;
             }
             if (k == "path") {
                 meshSet->m_path = v.as<std::string>();
-                break;
+                continue;
             }
             if (k == "smooth_normals") {
                 meshSet->m_smoothNormals = v.as<bool>();
-                break;
+                continue;
             }
             if (k == "force_normals") {
                 meshSet->m_forceNormals = v.as<bool>();
-                break;
+                continue;
             }
             if (k == "root_dir") {
                 meshSet->m_rootDir = v.as<std::string>();
-                break;
+                continue;
             }
             if (k == "file_path") {
                 meshSet->m_filePath = v.as<std::string>();
-                break;
+                continue;
             }
             if (k == "animation_paths") {
                 decodeAnimationPaths(v, meshSet);
-                break;
+                continue;
             }
         }
     }
@@ -80,11 +80,11 @@ namespace mesh_set::decoder
 
                 if (k == "prefix") {
                     animationPath.animationPrefix = v.as<std::string>();
-                    break;
+                    continue;
                 }
                 if (k == "path") {
                     animationPath.path = v.as<std::string>();
-                    break;
+                    continue;
                 }
             }
         }
