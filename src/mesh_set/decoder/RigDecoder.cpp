@@ -29,14 +29,15 @@ namespace mesh_set::decoder
 
             if (k == "name") {
                 rig->m_name = v.as<std::string>();
-                break;
+                continue;
             }
             if (k == "nodes") {
                 // Nodes would be decoded here
-                break;
+                continue;
             }
             if (k == "animations") {
                 decodeAnimations(v, rig);
+                continue;
             }
         }
     }
