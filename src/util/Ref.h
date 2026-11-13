@@ -108,7 +108,10 @@ namespace util
         {
         }
 
-        Ref(T_type* instance)
+        // NOTE KI #215 explicit: this ctor takes ownership, so it must not happen implicitly.
+        // A raw pointer silently becoming an owning Ref (assignment or argument) can give the same
+        // object to two Refs -> double delete in decRef(). Call sites must write Ref<T>{ ptr }.
+        explicit Ref(T_type* instance)
             : m_instance{ instance }
         {
             incRef();
@@ -120,10 +123,15 @@ namespace util
             incRef();
         }
 
+        // NOTE KI #215 explicit + assert: a failed down-cast used to yield a null Ref with no
+        // diagnostic, so the next operator-> dereferenced null. A null source is a legal null
+        // conversion; only a non-null source that casts away is a real failure.
         template<typename T_type2>
-        Ref(const Ref<T_type2>& o) noexcept
+        explicit Ref(const Ref<T_type2>& o) noexcept
             : m_instance{ dynamic_cast<T_type*>(o.m_instance) }
         {
+            assert((o.m_instance == nullptr || m_instance != nullptr)
+                && "Ref converting ctor: dynamic_cast failed, yielded a null Ref");
             incRef();
         }
 
@@ -209,7 +217,12 @@ namespace util
         template<typename T_type2>
         Ref<T_type2> as() const
         {
-            return Ref<T_type2>{ dynamic_cast<T_type2*>(m_instance) };
+            // NOTE KI #215: same rule as the converting ctor - a null instance may legitimately
+            // produce a null Ref, but a non-null instance must not cast away silently.
+            T_type2* casted = dynamic_cast<T_type2*>(m_instance);
+            assert((m_instance == nullptr || casted != nullptr)
+                && "Ref::as() failed - instance is not of the requested type");
+            return Ref<T_type2>{ casted };
         }
 
         template<typename... T_args>
